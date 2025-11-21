@@ -1,14 +1,13 @@
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Breadcrumb } from "@/components/breadcrumb"
 import { ArticleCTA } from "@/components/article-cta"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight } from "lucide-react"
+import { RelatedArticles } from "@/components/related-articles"
+import { ArticleToc } from "@/components/article-toc"
 import { getFundType } from "@/lib/content/fund-types"
 import { getPillar } from "@/lib/content/pillars"
-import { getArticlesByPillar } from "@/lib/content/articles"
+import { getArticleByPillar, getRelatedArticles } from "@/lib/content/articles"
 
 interface PillarPageProps {
   params: {
@@ -21,106 +20,107 @@ export default async function PillarPage({ params }: PillarPageProps) {
   const { fundType: fundTypeSlug, pillar: pillarSlug } = await params
   const fundType = getFundType(fundTypeSlug)
   const pillar = getPillar(pillarSlug)
+  const article = getArticleByPillar(fundTypeSlug, pillarSlug)
 
-  if (!fundType || !pillar || !pillar.fundTypes.includes(fundTypeSlug)) {
+  if (!fundType || !pillar || !article) {
     notFound()
   }
 
-  const articles = getArticlesByPillar(fundTypeSlug, pillarSlug)
+  const relatedArticles = getRelatedArticles(article)
 
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
 
       <main className="flex-1">
-        {/* Hero Section */}
-        <section
-          className="relative border-b border-border py-20"
-          style={{
-            background: `linear-gradient(135deg, oklch(0.165 0.01 250) 0%, ${fundType.color}15 100%)`,
-          }}
-        >
-          <div className="container relative mx-auto px-4">
-            <Breadcrumb
-              items={[
-                { label: "Fund Types", href: "/" },
-                { label: fundType.name, href: `/funds/${fundType.slug}` },
-                { label: pillar.title },
-              ]}
-            />
-
-            <div className="mt-8 flex items-center gap-4 mb-6">
-              <div className="h-2 w-16 rounded-full" style={{ backgroundColor: fundType.color }} />
-              <h1 className="text-5xl font-bold tracking-tight">
-                {pillar.title} for {fundType.name}
-              </h1>
-            </div>
-            <p className="max-w-3xl text-xl text-muted-foreground leading-relaxed">
-              {pillar.description}
-            </p>
-          </div>
-        </section>
-
-        {/* Overview Section */}
-        <section className="py-16">
+        {/* Article Header */}
+        <article className="py-16">
           <div className="container mx-auto px-4">
-            <div className="prose prose-lg max-w-none">
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                {pillar.title} operations for {fundType.name.toLowerCase()} funds involve unique
-                considerations that differ from other fund strategies. This section covers the key
-                operational aspects, regulatory requirements, and best practices specific to managing{" "}
-                {pillar.title.toLowerCase()} functions within {fundType.name.toLowerCase()} organizations.
-              </p>
+            <div className="max-w-7xl mx-auto">
+              <div className="max-w-4xl">
+                <Breadcrumb
+                  items={[
+                    { label: "Fund Types", href: "/" },
+                    { label: fundType.name, href: `/funds/${fundType.slug}` },
+                    { label: pillar.title },
+                  ]}
+                />
+
+                <div className="mt-8 mb-4 flex items-center gap-3">
+                  <div className="h-1.5 w-12 rounded-full" style={{ backgroundColor: fundType.color }} />
+                  <span className="text-sm font-medium uppercase tracking-wider" style={{ color: fundType.color }}>
+                    {fundType.name}
+                  </span>
+                </div>
+
+                <h1 className="mb-4 text-5xl font-bold tracking-tight leading-tight">{article.title}</h1>
+
+                {article.subtitle && (
+                  <p className="text-xl text-muted-foreground leading-relaxed mb-6">{article.subtitle}</p>
+                )}
+
+                <div className="flex items-center gap-4 text-sm text-muted-foreground border-b border-border pb-6">
+                  <span>{article.publishedDate}</span>
+                  <span>•</span>
+                  <span>{article.readingTime} min read</span>
+                </div>
+              </div>
+
+              {/* Article Content with TOC */}
+              <div className="grid grid-cols-1 xl:grid-cols-[1fr_280px] gap-12 mt-12">
+                <div className="max-w-4xl">
+                  {/* Article Content */}
+                  <div className="prose prose-lg max-w-none">
+                    <div dangerouslySetInnerHTML={{ __html: article.content }} />
+                  </div>
+
+                  {/* Article CTA */}
+                  <ArticleCTA topic={pillar.title} />
+
+                  {/* Related Articles */}
+                  {relatedArticles.length > 0 && (
+                    <RelatedArticles
+                      articles={relatedArticles.map(a => ({
+                        title: a.title,
+                        description: a.subtitle,
+                        href: `/funds/${a.fundType}/${a.pillar}`,
+                        category: getFundType(a.fundType)?.name || '',
+                      }))}
+                    />
+                  )}
+                </div>
+
+                {/* Table of Contents */}
+                <ArticleToc content={article.content} />
+              </div>
             </div>
           </div>
-        </section>
-
-        {/* Articles Grid */}
-        <section className="border-t border-border bg-accent/20 py-16">
-          <div className="container mx-auto px-4">
-            <h2 className="mb-8 text-3xl font-bold">Articles</h2>
-
-            {articles.length > 0 ? (
-              <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {articles.map((article) => (
-                  <Link
-                    key={article.id}
-                    href={`/funds/${fundTypeSlug}/${pillarSlug}/${article.slug}`}
-                  >
-                    <Card className="h-full transition-all hover:border-accent hover:shadow-lg">
-                      <CardHeader>
-                        <CardTitle className="text-xl leading-snug">{article.title}</CardTitle>
-                        <CardDescription className="leading-relaxed">{article.subtitle}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex items-center justify-between text-sm text-muted-foreground">
-                          <span>{article.readingTime} min read</span>
-                          <ArrowRight className="h-4 w-4" />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <div className="rounded-lg border border-border bg-card p-12 text-center">
-                <p className="text-muted-foreground">
-                  Articles for this topic are being developed. Check back soon.
-                </p>
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* CTA */}
-        <section className="py-16">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <ArticleCTA topic={`${pillar.title} for ${fundType.name}`} />
-          </div>
-        </section>
+        </article>
       </main>
 
       <SiteFooter />
     </div>
   )
+}
+
+export async function generateMetadata({ params }: PillarPageProps) {
+  const { fundType: fundTypeSlug, pillar: pillarSlug } = await params
+  const article = getArticleByPillar(fundTypeSlug, pillarSlug)
+
+  if (!article) {
+    return {
+      title: 'Article Not Found',
+    }
+  }
+
+  return {
+    title: article.metaTitle,
+    description: article.metaDescription,
+    openGraph: {
+      title: article.metaTitle,
+      description: article.metaDescription,
+      type: 'article',
+      publishedTime: article.publishedDate,
+    },
+  }
 }

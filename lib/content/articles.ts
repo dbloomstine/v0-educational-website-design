@@ -222,6 +222,10 @@ export const getArticlesByPillar = (fundType: string, pillar: string): Article[]
   return Object.values(articles).filter(a => a.fundType === fundType && a.pillar === pillar)
 }
 
+export const getArticleByPillar = (fundType: string, pillar: string): Article | undefined => {
+  return Object.values(articles).find(a => a.fundType === fundType && a.pillar === pillar)
+}
+
 export const getRelatedArticles = (article: Article, limit: number = 5): Article[] => {
   const related: Article[] = []
 
