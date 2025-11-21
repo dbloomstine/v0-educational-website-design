@@ -107,3 +107,36 @@ export async function generateStaticParams() {
     { fundType: 'gp-stakes' },
   ]
 }
+
+export async function generateMetadata({ params }: FundTypePageProps) {
+  const { fundType: fundTypeSlug } = await params
+  const fundType = getFundType(fundTypeSlug)
+
+  if (!fundType) {
+    return {
+      title: 'Fund Type Not Found',
+    }
+  }
+
+  const title = `${fundType.name} Fund Operations Resources`
+  const description = `Comprehensive ${fundType.name.toLowerCase()} fund operations resources covering CFO responsibilities, compliance, fund administration, investor relations, tax, banking, fundraising, insurance, audit, and technology for ${fundType.name.toLowerCase()} funds.`
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: `https://fundops.com/funds/${fundType.slug}`,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: `https://fundops.com/funds/${fundType.slug}`,
+    },
+  }
+}

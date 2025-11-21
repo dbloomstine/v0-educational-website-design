@@ -8,10 +8,66 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Fund Operations Hub - Educational Resources for Investment Professionals",
+  metadataBase: new URL('https://fundops.com'),
+  title: {
+    default: "FundOps - Fund Operations Resources for Investment Professionals",
+    template: "%s | FundOps"
+  },
   description:
-    "A practical resource for fund operations, offering insights for CFOs, COOs, and operations professionals across all fund types.",
-  generator: "v0.app",
+    "Comprehensive fund operations resources for CFOs, COOs, and operations professionals across Private Equity, Private Credit, Venture Capital, Hedge Funds, Real Estate, Infrastructure, Secondaries, and GP-Stakes funds.",
+  keywords: [
+    "fund operations",
+    "private equity operations",
+    "fund administration",
+    "CFO",
+    "fund compliance",
+    "investor relations",
+    "fund accounting",
+    "venture capital operations",
+    "hedge fund operations",
+    "real estate fund operations"
+  ],
+  authors: [{ name: "FundOps" }],
+  creator: "FundOps",
+  publisher: "FundOps",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://fundops.com',
+    siteName: 'FundOps',
+    title: 'FundOps - Fund Operations Resources for Investment Professionals',
+    description: 'Comprehensive fund operations resources for CFOs, COOs, and operations professionals across all asset classes.',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'FundOps - Fund Operations Resources',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FundOps - Fund Operations Resources',
+    description: 'Comprehensive fund operations resources for investment professionals across all asset classes.',
+    images: ['/og-image.png'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   icons: {
     icon: [
       {
@@ -28,6 +84,11 @@ export const metadata: Metadata = {
       },
     ],
     apple: "/apple-icon.png",
+  },
+  verification: {
+    // Add your verification codes when available
+    // google: 'your-google-verification-code',
+    // yandex: 'your-yandex-verification-code',
   },
 }
 

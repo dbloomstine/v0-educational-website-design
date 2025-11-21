@@ -28,8 +28,72 @@ export default async function PillarPage({ params }: PillarPageProps) {
 
   const relatedArticles = getRelatedArticles(article)
 
+  // Structured data for article
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: article.title,
+    description: article.subtitle,
+    datePublished: new Date(article.publishedDate).toISOString(),
+    dateModified: new Date(article.publishedDate).toISOString(),
+    author: {
+      '@type': 'Organization',
+      name: 'FundOps',
+      url: 'https://fundops.com',
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'FundOps',
+      url: 'https://fundops.com',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://fundops.com/icon.svg',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://fundops.com/funds/${article.fundType}/${article.pillar}`,
+    },
+    articleSection: pillar.title,
+    keywords: `${fundType.name}, ${pillar.title}, fund operations, ${fundType.name.toLowerCase()} ${pillar.slug}`,
+  }
+
+  // Breadcrumb structured data
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Home',
+        item: 'https://fundops.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: fundType.name,
+        item: `https://fundops.com/funds/${fundType.slug}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: pillar.title,
+        item: `https://fundops.com/funds/${fundType.slug}/${pillar.slug}`,
+      },
+    ],
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <SiteHeader />
 
       <main className="flex-1">
@@ -106,21 +170,39 @@ export default async function PillarPage({ params }: PillarPageProps) {
 export async function generateMetadata({ params }: PillarPageProps) {
   const { fundType: fundTypeSlug, pillar: pillarSlug } = await params
   const article = getArticleByPillar(fundTypeSlug, pillarSlug)
+  const fundType = getFundType(fundTypeSlug)
+  const pillar = getPillar(pillarSlug)
 
-  if (!article) {
+  if (!article || !fundType || !pillar) {
     return {
       title: 'Article Not Found',
     }
   }
 
+  const url = `https://fundops.com/funds/${article.fundType}/${article.pillar}`
+
   return {
     title: article.metaTitle,
     description: article.metaDescription,
+    keywords: `${fundType.name}, ${pillar.title}, fund operations, ${fundType.name.toLowerCase()} operations, ${pillar.slug}`,
+    authors: [{ name: 'FundOps' }],
     openGraph: {
       title: article.metaTitle,
       description: article.metaDescription,
       type: 'article',
-      publishedTime: article.publishedDate,
+      publishedTime: new Date(article.publishedDate).toISOString(),
+      modifiedTime: new Date(article.publishedDate).toISOString(),
+      authors: ['FundOps'],
+      url,
+      siteName: 'FundOps',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: article.metaTitle,
+      description: article.metaDescription,
+    },
+    alternates: {
+      canonical: url,
     },
   }
 }
