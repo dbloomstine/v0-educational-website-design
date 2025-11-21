@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'GP-Stakes Tax Compliance: Management Fee Income and Carry Treatment',
   metaDescription: 'Guide to GP-stakes taxation covering management fee income, carried interest character, partnership structures, and multi-GP coordination.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

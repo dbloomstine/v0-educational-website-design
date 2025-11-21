@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'GP-Stakes Fund CFO: Management Company Valuation and Partnership Economics',
   metaDescription: 'Guide to GP-stakes CFO responsibilities covering management company valuation, fee stream analysis, partnership structuring, and AUM tracking.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

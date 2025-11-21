@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'GP-Stakes Fund Audits: Valuation Testing and Investment Verification',
   metaDescription: 'Guide to GP-stakes audits covering management company valuations, investment accounting, distribution verification, and assumption testing.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

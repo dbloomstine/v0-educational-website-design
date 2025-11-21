@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'GP-Stakes Treasury: Acquisition Financing and Distribution Management',
   metaDescription: 'Guide to GP-stakes treasury covering stake purchase financing, distribution processing, cash flow forecasting, and liquidity management.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

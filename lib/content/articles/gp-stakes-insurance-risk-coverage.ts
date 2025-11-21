@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'GP-Stakes Insurance: R&W Coverage, D&O Protection, and Relationship Risk',
   metaDescription: 'Guide to GP-stakes insurance covering representations and warranties, D&O liability, portfolio GP exposure, and risk management.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

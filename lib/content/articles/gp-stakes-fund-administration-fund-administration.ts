@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'GP-Stakes Fund Administration: Partnership Accounting and Fee Tracking',
   metaDescription: 'Guide to GP-stakes administration covering management company accounting, cash flow processing, business metrics reporting, and distributions.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

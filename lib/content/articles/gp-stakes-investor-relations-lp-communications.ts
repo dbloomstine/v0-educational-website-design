@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'GP-Stakes Investor Relations: Portfolio Reporting and Partnership Value',
   metaDescription: 'Guide to GP-stakes IR covering portfolio GP business updates, strategic partnership communications, and return attribution.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

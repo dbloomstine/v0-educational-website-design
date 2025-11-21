@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'GP-Stakes Cybersecurity: Data Protection and Portfolio GP Information Security',
   metaDescription: 'Guide to GP-stakes technology covering confidential information protection, portfolio tracking systems, and secure communications.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

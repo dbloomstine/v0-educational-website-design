@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'GP-Stakes Compliance: Affiliate Transactions and Information Barriers',
   metaDescription: 'Guide to GP-stakes compliance covering affiliated GP relationships, information barriers, cross-fund conflicts, and regulatory coordination.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article
