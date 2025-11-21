@@ -133,13 +133,13 @@ Your site already has Vercel Analytics installed. Consider adding:
 
 When ready, add these to `app/layout.tsx`:
 
-```typescript
+\`\`\`typescript
 verification: {
   google: 'your-google-verification-code',
   yandex: 'your-yandex-verification-code',
   bing: 'your-bing-verification-code',
 }
-```
+\`\`\`
 
 Get codes from:
 - Google Search Console → Settings → Ownership verification
