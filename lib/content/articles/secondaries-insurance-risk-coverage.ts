@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'Secondaries Insurance: R&W Coverage, D&O Protection, and Risk Management',
   metaDescription: 'Guide to secondaries insurance covering representations and warranties, D&O liability, and portfolio exposure management.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

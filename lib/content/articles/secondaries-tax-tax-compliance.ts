@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'Secondaries Fund Tax: Basis Allocation, Multi-Fund K-1s, and Reporting',
   metaDescription: 'Guide to secondaries tax covering purchase basis allocation, coordinating underlying fund K-1s, and investor tax reporting.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

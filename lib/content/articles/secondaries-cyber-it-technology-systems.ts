@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'Secondaries Cybersecurity: Data Protection and Secure Due Diligence',
   metaDescription: 'Guide to secondaries technology covering secure due diligence, portfolio tracking systems, and transaction data protection.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

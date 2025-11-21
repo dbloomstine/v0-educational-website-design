@@ -39,7 +39,7 @@ const article: Article = {
   metaTitle: 'Secondaries Fund CFO: Valuation, Due Diligence, and Transaction Execution',
   metaDescription: 'Guide to secondaries CFO responsibilities covering LP interest valuation, portfolio assessment, deal structuring, and position integration.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

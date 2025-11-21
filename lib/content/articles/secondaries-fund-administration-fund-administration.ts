@@ -39,7 +39,7 @@ const article: Article = {
   metaTitle: 'Secondaries Fund Administration: Acquisition Accounting and Multi-Fund Tracking',
   metaDescription: 'Guide to secondaries administration covering purchase accounting, position tracking, cash coordination, and performance calculation.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

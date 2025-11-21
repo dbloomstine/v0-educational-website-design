@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'Secondaries Fund Banking: Acquisition Finance and Multi-Fund Cash Management',
   metaDescription: 'Guide to secondaries treasury covering acquisition financing, multi-fund cash coordination, and unfunded commitment management.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

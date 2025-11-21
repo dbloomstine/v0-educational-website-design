@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'Secondaries Fund Compliance: Transfer Approvals and Multi-Fund Coordination',
   metaDescription: 'Guide to secondaries compliance covering LP transfer restrictions, regulatory requirements, GP consent processes, and multi-fund oversight.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article
