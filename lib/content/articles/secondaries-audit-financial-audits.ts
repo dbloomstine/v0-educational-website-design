@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'Secondaries Fund Audits: Valuation Testing and Multi-Fund Confirmations',
   metaDescription: 'Guide to secondaries audits covering LP interest valuations, purchase accounting, underlying fund confirmations, and basis verification.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 6,
 }
 
 export default article

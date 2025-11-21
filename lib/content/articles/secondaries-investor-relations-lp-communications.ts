@@ -35,7 +35,7 @@ const article: Article = {
   metaTitle: 'Secondaries Fund Investor Relations: Portfolio Transparency and Deal Selection',
   metaDescription: 'Guide to secondaries IR covering portfolio composition, transaction reporting, performance attribution, and deal flow transparency.',
   publishedDate: 'December 18, 2024',
-  readingTime: 3,
+  readingTime: 7,
 }
 
 export default article
