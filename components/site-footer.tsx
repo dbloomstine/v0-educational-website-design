@@ -55,9 +55,9 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Resources */}
+          {/* Fund Types */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Resources</h3>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Fund Types</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
@@ -94,17 +94,43 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Newsletter */}
+          {/* More Fund Types */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Newsletter</h3>
-            <p className="mb-4 text-sm text-muted-foreground leading-relaxed">
-              Get weekly insights delivered to your inbox.
-            </p>
-            <div className="flex gap-2">
-              <Input type="email" placeholder="Your email" className="bg-background" />
-              <Button size="sm">Subscribe</Button>
-            </div>
-            <p className="mt-3 text-xs text-muted-foreground">Powered by Beehiiv</p>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">More Resources</h3>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <Link
+                  href="/funds/real-estate"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Real Estate
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/funds/infrastructure"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Infrastructure
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/funds/secondaries"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  Secondaries
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/funds/gp-stakes"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  GP-Stakes
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
 

@@ -58,38 +58,38 @@ const fundTypes = [
 
 const recentInsights = [
   {
-    title: "Streamlining Quarterly Reporting for Private Credit Funds",
-    description: "A step-by-step guide to reducing reporting time by 40%",
-    category: "Private Credit",
-    date: "Dec 15, 2024",
-    href: "/articles/quarterly-reporting-private-credit",
+    title: "CFO Responsibilities in Private Equity Funds",
+    description: "Managing portfolio company oversight, value creation, and investor reporting",
+    category: "Private Equity",
+    date: "Dec 18, 2024",
+    href: "/funds/private-equity/cfo",
   },
   {
-    title: "Fund Administrator Selection: Key Considerations",
-    description: "What to look for when choosing or switching fund administrators",
-    category: "Fund Administration",
-    date: "Dec 12, 2024",
-    href: "/articles/fund-administrator-selection",
+    title: "Infrastructure Fund Banking & Treasury Management",
+    description: "Project finance structures, lender relationships, and long-term debt management",
+    category: "Infrastructure",
+    date: "Dec 18, 2024",
+    href: "/funds/infrastructure/banking",
   },
   {
-    title: "Cybersecurity Essentials for Fund Operations Teams",
-    description: "Practical steps to protect sensitive investor and portfolio data",
-    category: "Cyber/IT",
-    date: "Dec 8, 2024",
-    href: "/articles/cybersecurity-essentials",
+    title: "Secondaries Fundraising: Deal Sourcing and Track Record",
+    description: "Demonstrating competitive advantages through relationships and performance attribution",
+    category: "Secondaries",
+    date: "Dec 18, 2024",
+    href: "/funds/secondaries/fundraising",
   },
 ]
 
 const toolsResources = [
   {
-    title: "Due Diligence Checklist",
-    description: "Comprehensive checklist for operational due diligence",
-    href: "/tools/dd-checklist",
+    title: "Compliance Resources for Hedge Funds",
+    description: "Comprehensive compliance frameworks and regulatory requirements",
+    href: "/funds/hedge-funds/compliance",
   },
   {
-    title: "NAV Calculation Template",
-    description: "Excel template for monthly NAV calculations",
-    href: "/tools/nav-template",
+    title: "Fund Administration Best Practices",
+    description: "NAV calculations, capital accounts, and investor reporting",
+    href: "/funds/private-equity/fund-administration",
   },
 ]
 
@@ -157,8 +157,8 @@ export default function HomePage() {
                 <p className="text-muted-foreground">Latest articles and best practices from the field</p>
               </div>
               <Button variant="ghost" asChild>
-                <Link href="/blog">
-                  View All <ArrowRight className="ml-2 h-4 w-4" />
+                <Link href="/">
+                  View All Fund Types <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             </div>
@@ -192,8 +192,8 @@ export default function HomePage() {
                 <p className="text-muted-foreground">Practical templates and checklists for your operations</p>
               </div>
               <Button variant="ghost" asChild>
-                <Link href="/tools">
-                  View All <ArrowRight className="ml-2 h-4 w-4" />
+                <Link href="/">
+                  Explore Resources <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             </div>
@@ -227,15 +227,16 @@ export default function HomePage() {
                 Get weekly insights on fund operations delivered to your inbox. Practical content, no fluff.
               </p>
               <div className="rounded-lg border border-border bg-card p-8">
-                <p className="mb-4 text-sm text-muted-foreground">Newsletter signup powered by Beehiiv</p>
+                <p className="mb-4 text-sm text-muted-foreground">Newsletter signup coming soon - powered by Beehiiv</p>
                 <div className="flex flex-col gap-3 sm:flex-row">
                   <input
                     type="email"
                     placeholder="Enter your email"
+                    disabled
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                   />
-                  <Button size="lg" className="sm:w-auto">
-                    Subscribe
+                  <Button size="lg" className="sm:w-auto" disabled>
+                    Coming Soon
                   </Button>
                 </div>
               </div>
