@@ -97,7 +97,7 @@ const article: Article = {
   metaTitle: 'Infrastructure Fund Administration: Valuations, Cash Flows, and Long-Term Reporting',
   metaDescription: 'Guide to infrastructure fund administration covering DCF valuations, project finance debt, distribution management, and extended horizon reporting.',
   publishedDate: 'December 18, 2024',
-  readingTime: 4,
+  readingTime: 6,
 }
 
 export default article

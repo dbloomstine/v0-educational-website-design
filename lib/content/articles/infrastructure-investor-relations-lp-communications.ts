@@ -77,7 +77,7 @@ const article: Article = {
   metaTitle: 'Infrastructure Fund Investor Relations: Long-Term Reporting and Stakeholder Management',
   metaDescription: 'Guide to infrastructure IR covering operational reporting, regulatory updates, site visits, and managing extended investment horizon relationships.',
   publishedDate: 'December 18, 2024',
-  readingTime: 4,
+  readingTime: 7,
 }
 
 export default article

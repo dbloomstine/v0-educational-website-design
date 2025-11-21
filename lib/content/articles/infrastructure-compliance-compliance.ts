@@ -97,7 +97,7 @@ const article: Article = {
   metaTitle: 'Infrastructure Fund Compliance: Regulatory Frameworks and Safety Standards',
   metaDescription: 'Guide to infrastructure compliance covering sector regulation, environmental requirements, safety standards, government reporting, and critical infrastructure protection.',
   publishedDate: 'December 18, 2024',
-  readingTime: 4,
+  readingTime: 6,
 }
 
 export default article
