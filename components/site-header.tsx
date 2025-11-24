@@ -42,16 +42,16 @@ export function SiteHeader() {
             <NavigationMenuItem>
               <NavigationMenuTrigger className="bg-transparent">Fund Types</NavigationMenuTrigger>
               <NavigationMenuContent>
-                <div className="grid w-[600px] grid-cols-2 gap-3 p-4">
+                <div className="grid w-[600px] grid-cols-2 gap-3 p-4 bg-popover">
                   {fundTypes.map((fund) => (
                     <Link
                       key={fund.name}
                       href={fund.href}
-                      className="group block rounded-lg border border-border bg-card p-4 transition-all hover:border-accent hover:bg-accent/50"
+                      className="group block rounded-lg border border-border bg-card p-4 text-foreground transition-all hover:border-accent hover:bg-accent/50"
                     >
                       <div className="flex items-center gap-3">
                         <div className="h-2 w-2 rounded-full" style={{ backgroundColor: fund.color }} />
-                        <div className="font-medium text-sm text-foreground">{fund.name}</div>
+                        <div className="font-medium text-sm">{fund.name}</div>
                       </div>
                     </Link>
                   ))}
