@@ -182,9 +182,6 @@ export default function HomePage() {
               </p>
               <div className="rounded-lg border border-border bg-card p-8">
                 <div className="mb-6 space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    Newsletter launching soon! Want early access? Drop your email below:
-                  </p>
                   <Button variant="outline" asChild>
                     <Link href="/blog">
                       Read Recent Issues <ArrowRight className="ml-2 h-4 w-4" />
@@ -205,7 +202,7 @@ export default function HomePage() {
                     className="flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-all"
                   />
                   <Button type="submit" size="lg" className="sm:w-auto whitespace-nowrap">
-                    Get Early Access
+                    Subscribe
                   </Button>
                 </form>
                 <p className="mt-4 text-xs text-muted-foreground">
