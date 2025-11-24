@@ -71,7 +71,7 @@ const tools: Tool[] = [
     categories: ['Fund Formation'],
     personas: ['GP', 'CFO or Controller', 'COO or Operations'],
     complexity: 'Intermediate',
-    status: 'coming-soon',
+    status: 'active',
     icon: 'Building'
   },
   {

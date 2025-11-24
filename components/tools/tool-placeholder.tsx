@@ -7,6 +7,7 @@ import { Tool } from '@/lib/content/types'
 import { AlertCircle, Calculator } from 'lucide-react'
 import { FundFormationTimeline } from './fund-formation-timeline/fund-formation-timeline'
 import { ManagementFeeCalculator } from './management-fee-calculator/management-fee-calculator'
+import { ManagementCompanyBudget } from './management-company-budget/management-company-budget'
 
 interface ToolPlaceholderProps {
   tool: Tool
@@ -44,6 +45,19 @@ export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-7xl">
             <ManagementFeeCalculator />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // If this is the Management Company Budget tool, render the actual planner
+  if (tool.slug === 'management-company-budget') {
+    return (
+      <div className="py-12">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-7xl">
+            <ManagementCompanyBudget />
           </div>
         </div>
       </div>
