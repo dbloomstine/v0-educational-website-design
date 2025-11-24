@@ -6,6 +6,7 @@ import { ExportButtons } from './export-buttons'
 import { Tool } from '@/lib/content/types'
 import { AlertCircle, Calculator } from 'lucide-react'
 import { FundFormationTimeline } from './fund-formation-timeline/fund-formation-timeline'
+import { ManagementFeeCalculator } from './management-fee-calculator/management-fee-calculator'
 
 interface ToolPlaceholderProps {
   tool: Tool
@@ -30,6 +31,19 @@ export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-7xl">
             <FundFormationTimeline />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // If this is the Management Fee Calculator tool, render the actual calculator
+  if (tool.slug === 'management-fee-calculator') {
+    return (
+      <div className="py-12">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-7xl">
+            <ManagementFeeCalculator />
           </div>
         </div>
       </div>
