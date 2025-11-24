@@ -51,7 +51,7 @@ export function SiteHeader() {
                     >
                       <div className="flex items-center gap-3">
                         <div className="h-2 w-2 rounded-full" style={{ backgroundColor: fund.color }} />
-                        <div className="font-medium text-sm">{fund.name}</div>
+                        <div className="font-medium text-sm text-foreground">{fund.name}</div>
                       </div>
                     </Link>
                   ))}
@@ -107,7 +107,7 @@ export function SiteHeader() {
                     className="flex items-center gap-2 rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
                   >
                     <div className="h-2 w-2 rounded-full flex-shrink-0" style={{ backgroundColor: fund.color }} />
-                    <span className="font-medium">{fund.name}</span>
+                    <span className="font-medium text-foreground">{fund.name}</span>
                   </Link>
                 ))}
               </div>
