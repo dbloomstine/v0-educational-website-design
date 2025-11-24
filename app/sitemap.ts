@@ -28,9 +28,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Article pages
   Object.values(articles).forEach((article) => {
+    // Safely parse date with fallback to current date
+    const publishedDate = article.publishedDate ? new Date(article.publishedDate) : new Date()
+    const isValidDate = publishedDate instanceof Date && !isNaN(publishedDate.getTime())
+
     routes.push({
       url: `${baseUrl}/funds/${article.fundType}/${article.pillar}`,
-      lastModified: new Date(article.publishedDate),
+      lastModified: isValidDate ? publishedDate : new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     })
