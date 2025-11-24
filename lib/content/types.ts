@@ -36,7 +36,33 @@ export interface Tool {
   id: string
   title: string
   slug: string
-  description: string
-  category: string
+  shortDescription: string
+  fullDescription?: string
+  inputs: string[]
+  outputs: string[]
+  categories: ToolCategory[]
+  personas: ToolPersona[]
+  complexity: ToolComplexity
   status: 'active' | 'coming-soon'
+  icon?: string
 }
+
+export type ToolCategory =
+  | 'Fund Formation'
+  | 'Pricing and Costs'
+  | 'Fund Economics'
+  | 'Operations and Compliance'
+
+export type ToolPersona =
+  | 'GP'
+  | 'CFO or Controller'
+  | 'COO or Operations'
+  | 'Investor Relations'
+  | 'Compliance'
+  | 'Lawyer'
+  | 'LP'
+
+export type ToolComplexity =
+  | 'Beginner'
+  | 'Intermediate'
+  | 'Advanced'
