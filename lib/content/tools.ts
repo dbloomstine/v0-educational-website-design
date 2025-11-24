@@ -247,24 +247,25 @@ const tools: Tool[] = [
     id: 'fund-expense-allocation',
     title: 'Fund Expense Allocation Helper',
     slug: 'fund-expense-allocation',
-    shortDescription: 'Decide whether a given expense is typically fund-borne or GP/management company-borne, with a short explanation.',
+    shortDescription: 'Interactive tool to classify expenses as fund or management company expenses with detailed market practice guidance.',
     inputs: [
-      'Expense type',
-      'Fund type',
-      'Strategy',
-      'Stage',
-      'Frequency',
-      'Relevant facts (e.g., deal-specific vs firm-level)'
+      'Expense category (25+ predefined types)',
+      'Fund type (PE, VC, Credit, RE, FoF)',
+      'Fund stage',
+      'Primary beneficiary',
+      'Custom expense descriptions'
     ],
     outputs: [
-      'Recommended treatment (fund vs GP/management company)',
-      'Short explanation',
-      'Notes for disclosure'
+      'Classification (fund/management/case-by-case)',
+      'Detailed rationale and market practice',
+      'LP sensitivities and flags',
+      'Sample LPA language',
+      'Exportable PDF report'
     ],
     categories: ['Operations and Compliance'],
-    personas: ['CFO or Controller', 'Compliance', 'Lawyer'],
+    personas: ['CFO or Controller', 'Compliance', 'Lawyer', 'COO or Operations'],
     complexity: 'Intermediate',
-    status: 'coming-soon',
+    status: 'active',
     icon: 'Split'
   }
 ]

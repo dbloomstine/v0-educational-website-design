@@ -9,6 +9,7 @@ import { FundFormationTimeline } from './fund-formation-timeline/fund-formation-
 import { ManagementFeeCalculator } from './management-fee-calculator/management-fee-calculator'
 import { ManagementCompanyBudget } from './management-company-budget/management-company-budget'
 import { SideLetterObligations } from './side-letter-obligations/side-letter-obligations'
+import { FundExpenseAllocation } from './fund-expense-allocation/fund-expense-allocation'
 
 interface ToolPlaceholderProps {
   tool: Tool
@@ -72,6 +73,19 @@ export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-7xl">
             <SideLetterObligations />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // If this is the Fund Expense Allocation tool, render the actual tool
+  if (tool.slug === 'fund-expense-allocation') {
+    return (
+      <div className="py-12">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-7xl">
+            <FundExpenseAllocation />
           </div>
         </div>
       </div>
