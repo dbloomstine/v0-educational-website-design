@@ -3,7 +3,7 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ChevronRight, Calendar } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 
 export default function ArticlePage() {
   return (
@@ -33,10 +33,6 @@ export default function ArticlePage() {
                 <span className="rounded-full bg-[oklch(0.55_0.15_150)] px-3 py-1 font-medium text-[oklch(0.165_0.01_250)]">
                   Private Credit
                 </span>
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Calendar className="h-4 w-4" />
-                  <time>December 15, 2024</time>
-                </div>
               </div>
 
               <h1 className="mb-6 text-5xl font-bold leading-tight tracking-tight text-balance">

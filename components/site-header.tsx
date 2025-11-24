@@ -12,17 +12,13 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu"
 import { Menu, X } from "lucide-react"
+import { getAllFundTypes } from "@/lib/content/fund-types"
 
-const fundTypes = [
-  { name: "Private Equity", href: "/funds/private-equity", color: "oklch(0.65 0.19 275)" },
-  { name: "Private Credit", href: "/funds/private-credit", color: "oklch(0.55 0.15 150)" },
-  { name: "Venture Capital", href: "/funds/venture-capital", color: "oklch(0.65 0.22 30)" },
-  { name: "Hedge Funds", href: "/funds/hedge-funds", color: "oklch(0.62 0.18 220)" },
-  { name: "Real Estate", href: "/funds/real-estate", color: "oklch(0.58 0.14 90)" },
-  { name: "Infrastructure", href: "/funds/infrastructure", color: "oklch(0.6 0.16 180)" },
-  { name: "Secondaries", href: "/funds/secondaries", color: "oklch(0.64 0.20 320)" },
-  { name: "GP-Stakes", href: "/funds/gp-stakes", color: "oklch(0.66 0.18 50)" },
-]
+const fundTypes = getAllFundTypes().map((fundType) => ({
+  name: fundType.name,
+  href: `/funds/${fundType.slug}`,
+  color: fundType.color,
+}))
 
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -32,7 +28,7 @@ export function SiteHeader() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center space-x-2">
           <div className="text-xl font-semibold tracking-tight">
-            Fund<span className="text-muted-foreground">Ops</span>
+            Fund<span className="text-muted-foreground">OpsHQ</span>
           </div>
         </Link>
 
@@ -42,32 +38,39 @@ export function SiteHeader() {
             <NavigationMenuItem>
               <NavigationMenuTrigger className="bg-transparent">Fund Types</NavigationMenuTrigger>
               <NavigationMenuContent>
-                <div className="grid w-[600px] grid-cols-2 gap-3 p-4 bg-popover">
+                <ul className="grid w-[600px] grid-cols-2 gap-3 p-4">
                   {fundTypes.map((fund) => (
-                    <Link
-                      key={fund.name}
-                      href={fund.href}
-                      className="group block rounded-lg border border-border bg-card p-4 text-foreground transition-all hover:border-accent hover:bg-accent/50"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="h-2 w-2 rounded-full" style={{ backgroundColor: fund.color }} />
-                        <div className="font-medium text-sm">{fund.name}</div>
-                      </div>
-                    </Link>
+                    <li key={fund.name}>
+                      <Link
+                        href={fund.href}
+                        className="group block rounded-lg border border-border bg-card p-4 text-foreground transition-all hover:border-accent hover:bg-accent/50"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="h-2 w-2 rounded-full" style={{ backgroundColor: fund.color }} />
+                          <div className="font-medium text-sm">{fund.name}</div>
+                        </div>
+                      </Link>
+                    </li>
                   ))}
-                </div>
+                </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/" className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50">
-                Tools & Resources
+              <Link href="/blog" className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50">
+                Blog
               </Link>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/" className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50">
-                Blog
+              <Link href="/tools" className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50">
+                Tools
+              </Link>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <Link href="/about" className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50">
+                About
               </Link>
             </NavigationMenuItem>
           </NavigationMenuList>
@@ -84,7 +87,7 @@ export function SiteHeader() {
           </button>
 
           <Button asChild size="sm" className="hidden md:inline-flex">
-            <Link href="/contact">Get Help</Link>
+            <Link href="/contact">Let's Chat</Link>
           </Button>
         </div>
       </div>
@@ -116,18 +119,25 @@ export function SiteHeader() {
             {/* Other Links */}
             <div className="space-y-2 pt-4 border-t border-border">
               <Link
-                href="/"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-              >
-                Tools & Resources
-              </Link>
-              <Link
-                href="/"
+                href="/blog"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
               >
                 Blog
+              </Link>
+              <Link
+                href="/tools"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+              >
+                Tools
+              </Link>
+              <Link
+                href="/about"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+              >
+                About
               </Link>
             </div>
 
@@ -135,7 +145,7 @@ export function SiteHeader() {
             <div className="pt-4 border-t border-border">
               <Button asChild size="sm" className="w-full">
                 <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
-                  Get Help
+                  Let's Chat
                 </Link>
               </Button>
             </div>

@@ -4,57 +4,14 @@ import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowRight } from "lucide-react"
+import { getAllFundTypes } from "@/lib/content/fund-types"
 
-const fundTypes = [
-  {
-    name: "Private Equity",
-    description: "Operational excellence for PE funds and portfolio companies",
-    href: "/funds/private-equity",
-    color: "oklch(0.65 0.19 275)",
-  },
-  {
-    name: "Private Credit",
-    description: "Best practices for credit fund operations and monitoring",
-    href: "/funds/private-credit",
-    color: "oklch(0.55 0.15 150)",
-  },
-  {
-    name: "Venture Capital",
-    description: "Scaling operations for high-growth VC portfolios",
-    href: "/funds/venture-capital",
-    color: "oklch(0.65 0.22 30)",
-  },
-  {
-    name: "Hedge Funds",
-    description: "Compliance and operations for complex trading strategies",
-    href: "/funds/hedge-funds",
-    color: "oklch(0.62 0.18 220)",
-  },
-  {
-    name: "Real Estate",
-    description: "Property management and investment operations",
-    href: "/funds/real-estate",
-    color: "oklch(0.58 0.14 90)",
-  },
-  {
-    name: "Infrastructure",
-    description: "Long-term asset management and reporting",
-    href: "/funds/infrastructure",
-    color: "oklch(0.6 0.16 180)",
-  },
-  {
-    name: "Secondaries",
-    description: "Transfer processes and valuation operations",
-    href: "/funds/secondaries",
-    color: "oklch(0.64 0.20 320)",
-  },
-  {
-    name: "GP-Stakes",
-    description: "Governance and operations for GP investments",
-    href: "/funds/gp-stakes",
-    color: "oklch(0.66 0.18 50)",
-  },
-]
+const fundTypes = getAllFundTypes().map((fundType) => ({
+  name: fundType.name,
+  description: fundType.description,
+  href: `/funds/${fundType.slug}`,
+  color: fundType.color,
+}))
 
 const recentInsights = [
   {
@@ -170,8 +127,6 @@ export default function HomePage() {
                     <CardHeader>
                       <div className="mb-2 flex items-center gap-2 text-xs text-muted-foreground">
                         <span>{article.category}</span>
-                        <span>•</span>
-                        <span>{article.date}</span>
                       </div>
                       <CardTitle className="text-xl leading-snug text-balance">{article.title}</CardTitle>
                       <CardDescription className="leading-relaxed">{article.description}</CardDescription>
@@ -222,23 +177,34 @@ export default function HomePage() {
         <section className="border-t border-border bg-accent/20 py-20">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="mb-4 text-3xl font-bold">Stay Informed</h2>
+              <h2 className="mb-4 text-3xl font-bold">Weekly Fund Ops Insights</h2>
               <p className="mb-8 text-lg text-muted-foreground text-balance">
-                Get weekly insights on fund operations delivered to your inbox. Practical content, no fluff.
+                Practical tips, templates, and industry updates. One email per week, easy unsubscribe.
               </p>
               <div className="rounded-lg border border-border bg-card p-8">
-                <p className="mb-4 text-sm text-muted-foreground">Newsletter signup coming soon - powered by Beehiiv</p>
-                <div className="flex flex-col gap-3 sm:flex-row">
+                <p className="mb-6 text-sm text-muted-foreground">
+                  Newsletter launching soon! Want early access? Drop your email below:
+                </p>
+                <form
+                  action="https://app.beehiiv.com/subscribe"
+                  method="post"
+                  target="_blank"
+                  className="flex flex-col gap-3 sm:flex-row"
+                >
                   <input
                     type="email"
-                    placeholder="Enter your email"
-                    disabled
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                    name="email"
+                    placeholder="your.email@fund.com"
+                    required
+                    className="flex h-12 w-full rounded-md border border-input bg-background px-4 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary transition-all"
                   />
-                  <Button size="lg" className="sm:w-auto" disabled>
-                    Coming Soon
+                  <Button type="submit" size="lg" className="sm:w-auto whitespace-nowrap">
+                    Get Early Access
                   </Button>
-                </div>
+                </form>
+                <p className="mt-4 text-xs text-muted-foreground">
+                  No spam. Unsubscribe anytime.
+                </p>
               </div>
             </div>
           </div>

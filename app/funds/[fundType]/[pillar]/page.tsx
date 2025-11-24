@@ -38,12 +38,12 @@ export default async function PillarPage({ params }: PillarPageProps) {
     dateModified: new Date(article.publishedDate).toISOString(),
     author: {
       '@type': 'Organization',
-      name: 'FundOps',
+      name: 'FundOpsHQ',
       url: 'https://fundops.com',
     },
     publisher: {
       '@type': 'Organization',
-      name: 'FundOps',
+      name: 'FundOpsHQ',
       url: 'https://fundops.com',
       logo: {
         '@type': 'ImageObject',
@@ -124,8 +124,6 @@ export default async function PillarPage({ params }: PillarPageProps) {
                 )}
 
                 <div className="flex items-center gap-4 text-sm text-muted-foreground border-b border-border pb-6">
-                  <span>{article.publishedDate}</span>
-                  <span>•</span>
                   <span>{article.readingTime} min read</span>
                 </div>
               </div>
@@ -185,16 +183,16 @@ export async function generateMetadata({ params }: PillarPageProps) {
     title: article.metaTitle,
     description: article.metaDescription,
     keywords: `${fundType.name}, ${pillar.title}, fund operations, ${fundType.name.toLowerCase()} operations, ${pillar.slug}`,
-    authors: [{ name: 'FundOps' }],
+    authors: [{ name: 'FundOpsHQ' }],
     openGraph: {
       title: article.metaTitle,
       description: article.metaDescription,
       type: 'article',
       publishedTime: new Date(article.publishedDate).toISOString(),
       modifiedTime: new Date(article.publishedDate).toISOString(),
-      authors: ['FundOps'],
+      authors: ['FundOpsHQ'],
       url,
-      siteName: 'FundOps',
+      siteName: 'FundOpsHQ',
     },
     twitter: {
       card: 'summary_large_image',

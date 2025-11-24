@@ -40,11 +40,6 @@ export function PillarCard({ title, description, articleCount, href, color }: Pi
           </CardTitle>
           <CardDescription className="leading-relaxed">{description}</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="text-sm text-muted-foreground">
-            {articleCount > 0 ? `${articleCount} article${articleCount !== 1 ? 's' : ''}` : 'Coming soon'}
-          </div>
-        </CardContent>
       </Card>
     </Link>
   )

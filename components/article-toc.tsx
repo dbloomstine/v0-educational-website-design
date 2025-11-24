@@ -150,10 +150,11 @@ export function ArticleToc({ content }: ArticleTocProps) {
                   onClick={() => scrollToHeading(heading.id)}
                   className={cn(
                     "block w-full text-left text-sm transition-colors hover:text-foreground py-1.5",
-                    heading.level === 3 && "pl-4",
                     activeId === heading.id
-                      ? "text-foreground font-medium border-l-2 border-primary pl-3"
-                      : "text-muted-foreground border-l-2 border-transparent pl-3"
+                      ? "text-foreground font-medium border-l-2 border-primary"
+                      : "text-muted-foreground border-l-2 border-transparent",
+                    heading.level === 2 && "pl-3",
+                    heading.level === 3 && "pl-7"
                   )}
                 >
                   {heading.text}

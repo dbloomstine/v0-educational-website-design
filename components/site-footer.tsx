@@ -8,12 +8,12 @@ export function SiteFooter() {
       <div className="container mx-auto px-4 py-16">
         {/* CTA Section */}
         <div className="mb-16 rounded-lg border border-border bg-accent/30 p-8 text-center">
-          <h2 className="mb-3 text-2xl font-semibold text-balance">Looking for guidance? Let's talk</h2>
+          <h2 className="mb-3 text-2xl font-semibold text-balance">Questions About Fund Ops?</h2>
           <p className="mb-6 text-muted-foreground text-balance">
-            Get tailored support for your fund operations challenges
+            Book a time to chat about your operational challenges—no sales pitch, just helpful conversation
           </p>
           <Button size="lg" asChild>
-            <Link href="/contact">Schedule a Consultation</Link>
+            <Link href="/contact">Book a Conversation</Link>
           </Button>
         </div>
 
@@ -21,7 +21,7 @@ export function SiteFooter() {
           {/* Logo & About */}
           <div>
             <div className="mb-4 text-lg font-semibold">
-              Fund<span className="text-muted-foreground">Ops</span>
+              Fund<span className="text-muted-foreground">OpsHQ</span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               A practical resource for fund operations professionals across all asset classes.
@@ -30,21 +30,21 @@ export function SiteFooter() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Quick Links</h3>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Resources</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/about" className="text-muted-foreground hover:text-foreground transition-colors">
-                  About
-                </Link>
-              </li>
-              <li>
                 <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Blog
+                  Fund Watch Briefing
                 </Link>
               </li>
               <li>
                 <Link href="/tools" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Tools
+                  Tools & Templates
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="text-muted-foreground hover:text-foreground transition-colors">
+                  About
                 </Link>
               </li>
               <li>
@@ -55,7 +55,7 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Fund Types */}
+          {/* Fund Types - Column 1 */}
           <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Fund Types</h3>
             <ul className="space-y-2 text-sm">
@@ -94,9 +94,9 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* More Fund Types */}
+          {/* Fund Types - Column 2 */}
           <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">More Resources</h3>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider opacity-0">Fund Types</h3>
             <ul className="space-y-2 text-sm">
               <li>
                 <Link
@@ -134,8 +134,11 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-border pt-8 text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} FundOps. All rights reserved.</p>
+        <div className="mt-12 border-t border-border pt-8 text-center text-sm text-muted-foreground space-y-2">
+          <p>© {new Date().getFullYear()} FundOpsHQ. All rights reserved.</p>
+          <p>
+            Built by <a href="https://www.linkedin.com/in/danny-bloomstine/" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary underline">Danny Bloomstine</a>
+          </p>
         </div>
       </div>
     </footer>

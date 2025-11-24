@@ -2,20 +2,21 @@ import { Metadata } from 'next'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { BookOpen, Users, Target, TrendingUp } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'About FundOps - Our Mission and Vision',
-  description: 'Learn about FundOps mission to provide comprehensive, practical fund operations resources for investment professionals across all asset classes.',
+  title: 'About FundOpsHQ - Our Mission and Vision',
+  description: 'Learn about FundOpsHQ mission to provide comprehensive, practical fund operations resources for investment professionals across all asset classes.',
   openGraph: {
-    title: 'About FundOps - Our Mission and Vision',
+    title: 'About FundOpsHQ - Our Mission and Vision',
     description: 'Comprehensive fund operations resources for investment professionals across all asset classes.',
     type: 'website',
     url: 'https://fundops.com/about',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'About FundOps',
+    title: 'About FundOpsHQ',
     description: 'Comprehensive fund operations resources for investment professionals across all asset classes.',
   },
   alternates: {
@@ -34,10 +35,10 @@ export default function AboutPage() {
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl">
               <h1 className="mb-6 text-5xl font-bold tracking-tight text-balance">
-                About FundOps
+                About FundOpsHQ
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed text-balance">
-                FundOps is a comprehensive resource for fund operations professionals, providing practical insights
+                FundOpsHQ is a comprehensive resource for fund operations professionals, providing practical insights
                 and best practices across all investment fund types and operational functions.
               </p>
             </div>
@@ -163,7 +164,7 @@ export default function AboutPage() {
 
               <div className="prose prose-lg max-w-none">
                 <p className="text-muted-foreground leading-relaxed">
-                  FundOps content is built on the principle that fund operations knowledge should be accessible,
+                  FundOpsHQ content is built on the principle that fund operations knowledge should be accessible,
                   comprehensive, and immediately useful. We focus on the "how" as much as the "what"—not just
                   explaining what needs to be done, but providing practical guidance on implementation.
                 </p>
@@ -178,6 +179,42 @@ export default function AboutPage() {
                   Our goal is to be the resource you turn to when facing a new operational challenge, evaluating
                   process improvements, or onboarding team members to fund operations responsibilities.
                 </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Who Built This Section */}
+        <section className="border-t border-border bg-accent/20 py-20">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-3xl">
+              <h2 className="mb-8 text-center text-3xl font-bold">Who Built This</h2>
+
+              <div className="space-y-6">
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  FundOpsHQ is maintained by <a href="https://www.linkedin.com/in/danny-bloomstine/" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary underline">Danny Bloomstine</a>, Managing Director at IQ-EQ, where he provides outsourced fund administration, compliance, tax, and CFO services to investment managers.
+                </p>
+
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  Over the past decade, Danny has worked at the intersection of capital markets, technology, and fund operations—beginning at S&P Capital IQ, joining as an early employee at VTS, growing business development at Juniper Square, and now leading client solutions at IQ-EQ.
+                </p>
+
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  This resource was created to bridge the gap between high-level theory and day-to-day operational reality. Every article draws from hands-on experience managing the complexities of fund operations across multiple asset classes.
+                </p>
+
+                <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                  <Button asChild size="lg">
+                    <a href="https://www.linkedin.com/in/danny-bloomstine/" target="_blank" rel="noopener noreferrer">
+                      Connect on LinkedIn
+                    </a>
+                  </Button>
+                  <Button asChild size="lg" variant="outline">
+                    <a href="https://outlook.office.com/bookwithme/user/64e88c9063b2407fb03a67e5c3df844d@iqeq.com/meetingtype/2GfPzbwFuEiKymGSplU9ZQ2?anonymous&ismsaljsauthenabled&ep=mcard" target="_blank" rel="noopener noreferrer">
+                      Book a Conversation
+                    </a>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>

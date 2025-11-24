@@ -10,8 +10,8 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   metadataBase: new URL('https://fundops.com'),
   title: {
-    default: "FundOps - Fund Operations Resources for Investment Professionals",
-    template: "%s | FundOps"
+    default: "FundOpsHQ - Fund Operations Resources for Investment Professionals",
+    template: "%s | FundOpsHQ"
   },
   description:
     "Comprehensive fund operations resources for CFOs, COOs, and operations professionals across Private Equity, Private Credit, Venture Capital, Hedge Funds, Real Estate, Infrastructure, Secondaries, and GP-Stakes funds.",
@@ -27,9 +27,9 @@ export const metadata: Metadata = {
     "hedge fund operations",
     "real estate fund operations"
   ],
-  authors: [{ name: "FundOps" }],
-  creator: "FundOps",
-  publisher: "FundOps",
+  authors: [{ name: "FundOpsHQ" }],
+  creator: "FundOpsHQ",
+  publisher: "FundOpsHQ",
   formatDetection: {
     email: false,
     address: false,
@@ -39,21 +39,21 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     url: 'https://fundops.com',
-    siteName: 'FundOps',
-    title: 'FundOps - Fund Operations Resources for Investment Professionals',
+    siteName: 'FundOpsHQ',
+    title: 'FundOpsHQ - Fund Operations Resources for Investment Professionals',
     description: 'Comprehensive fund operations resources for CFOs, COOs, and operations professionals across all asset classes.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'FundOps - Fund Operations Resources',
+        alt: 'FundOpsHQ - Fund Operations Resources',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FundOps - Fund Operations Resources',
+    title: 'FundOpsHQ - Fund Operations Resources',
     description: 'Comprehensive fund operations resources for investment professionals across all asset classes.',
     images: ['/og-image.png'],
   },
