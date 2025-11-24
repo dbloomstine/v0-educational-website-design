@@ -5,7 +5,7 @@ export const fundTypes: Record<string, FundType> = {
     id: 'private-equity',
     name: 'Private Equity',
     slug: 'private-equity',
-    description: 'Operational excellence for PE funds and portfolio companies',
+    description: 'Operations guidance for CFOs, IR, compliance, and fund admin teams',
     color: 'oklch(0.65 0.19 275)',
     pillars: ['cfo', 'compliance', 'fund-administration', 'investor-relations', 'tax', 'banking', 'fundraising', 'insurance', 'audit', 'cyber-it']
   },
@@ -13,7 +13,7 @@ export const fundTypes: Record<string, FundType> = {
     id: 'private-credit',
     name: 'Private Credit',
     slug: 'private-credit',
-    description: 'Best practices for credit fund operations and monitoring',
+    description: 'Best practices for credit fund ops, compliance, and loan admin',
     color: 'oklch(0.55 0.15 150)',
     pillars: ['cfo', 'compliance', 'fund-administration', 'investor-relations', 'tax', 'banking', 'fundraising', 'insurance', 'audit', 'cyber-it', 'loan-administration']
   },
@@ -21,7 +21,7 @@ export const fundTypes: Record<string, FundType> = {
     id: 'venture-capital',
     name: 'Venture Capital',
     slug: 'venture-capital',
-    description: 'Scaling operations for high-growth VC portfolios',
+    description: 'Scaling operations for COOs, CFOs, and fund admin professionals',
     color: 'oklch(0.65 0.22 230)',
     pillars: ['cfo', 'compliance', 'fund-administration', 'investor-relations', 'tax', 'banking', 'fundraising', 'insurance', 'audit', 'cyber-it']
   },
@@ -29,7 +29,7 @@ export const fundTypes: Record<string, FundType> = {
     id: 'hedge-funds',
     name: 'Hedge Funds',
     slug: 'hedge-funds',
-    description: 'Compliance and operations for complex trading strategies',
+    description: 'Operations and compliance for middle office and prime brokerage',
     color: 'oklch(0.68 0.19 35)',
     pillars: ['cfo', 'compliance', 'fund-administration', 'investor-relations', 'tax', 'banking', 'fundraising', 'insurance', 'audit', 'cyber-it', 'middle-office', 'prime-brokerage']
   },
@@ -37,7 +37,7 @@ export const fundTypes: Record<string, FundType> = {
     id: 'real-estate',
     name: 'Real Estate',
     slug: 'real-estate',
-    description: 'Property management and investment operations',
+    description: 'Fund operations, tax structuring, and investor reporting guidance',
     color: 'oklch(0.62 0.15 25)',
     pillars: ['cfo', 'compliance', 'fund-administration', 'investor-relations', 'tax', 'banking', 'fundraising', 'insurance', 'audit', 'cyber-it']
   },
@@ -45,7 +45,7 @@ export const fundTypes: Record<string, FundType> = {
     id: 'infrastructure',
     name: 'Infrastructure',
     slug: 'infrastructure',
-    description: 'Long-term asset management and reporting',
+    description: 'Long-term asset ops, compliance, and LP reporting frameworks',
     color: 'oklch(0.6 0.16 210)',
     pillars: ['cfo', 'compliance', 'fund-administration', 'investor-relations', 'tax', 'banking', 'fundraising', 'insurance', 'audit', 'cyber-it']
   },
@@ -53,7 +53,7 @@ export const fundTypes: Record<string, FundType> = {
     id: 'secondaries',
     name: 'Secondaries',
     slug: 'secondaries',
-    description: 'Transfer processes and valuation operations',
+    description: 'Transfer operations, valuation, and fund administration guidance',
     color: 'oklch(0.64 0.20 350)',
     pillars: ['cfo', 'compliance', 'fund-administration', 'investor-relations', 'tax', 'banking', 'fundraising', 'insurance', 'audit', 'cyber-it']
   },
@@ -61,7 +61,7 @@ export const fundTypes: Record<string, FundType> = {
     id: 'gp-stakes',
     name: 'GP-Stakes',
     slug: 'gp-stakes',
-    description: 'Governance and operations for GP investments',
+    description: 'Governance, compliance, and operational frameworks for GP investments',
     color: 'oklch(0.66 0.18 50)',
     pillars: ['cfo', 'compliance', 'fund-administration', 'investor-relations', 'tax', 'banking', 'fundraising', 'insurance', 'audit', 'cyber-it']
   }

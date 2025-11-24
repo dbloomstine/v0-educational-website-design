@@ -4,7 +4,9 @@ import { SiteFooter } from '@/components/site-footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Mail, MessageSquare, HelpCircle } from 'lucide-react'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Mail, MessageSquare, HelpCircle, Lightbulb, FileText, AlertCircle } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Contact FundOpsHQ - Get Help with Fund Operations',
@@ -127,16 +129,115 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* Alternative Contact Section */}
+        {/* Feedback & Requests Section */}
         <section className="py-20">
           <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="mb-4 text-2xl font-bold">In the Meantime</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                While we set up our contact form, explore our comprehensive library of fund operations resources
-                organized by fund type and operational pillar. Each article provides detailed guidance on specific
-                operational challenges.
-              </p>
+            <div className="mx-auto max-w-4xl">
+              <div className="mb-12 text-center">
+                <h2 className="mb-4 text-3xl font-bold">Request Content, Tools, or Share Feedback</h2>
+                <p className="text-muted-foreground text-balance">
+                  Help us improve FundOpsHQ. Request new content topics, suggest tool ideas, submit corrections, or share insights from your experience.
+                </p>
+              </div>
+
+              <div className="grid gap-6 md:grid-cols-3 mb-12">
+                <Card>
+                  <CardHeader>
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent">
+                      <FileText className="h-5 w-5" />
+                    </div>
+                    <CardTitle className="text-base">Request Content</CardTitle>
+                    <CardDescription className="text-sm leading-relaxed">
+                      Missing a topic? Let us know what fund operations content you'd like to see.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent">
+                      <Lightbulb className="h-5 w-5" />
+                    </div>
+                    <CardTitle className="text-base">Suggest Tools</CardTitle>
+                    <CardDescription className="text-sm leading-relaxed">
+                      Need a specific template or tool? Share your ideas with us.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent">
+                      <AlertCircle className="h-5 w-5" />
+                    </div>
+                    <CardTitle className="text-base">Submit Corrections</CardTitle>
+                    <CardDescription className="text-sm leading-relaxed">
+                      Spot an error or have additional insights? Help us keep content accurate.
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </div>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Send Us Your Feedback</CardTitle>
+                  <CardDescription>
+                    Fill out the form below and we'll get back to you as soon as possible.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <form
+                    action="mailto:dbloomstine@gmail.com"
+                    method="post"
+                    encType="text/plain"
+                    className="space-y-6"
+                  >
+                    <div className="grid gap-6 sm:grid-cols-2">
+                      <div className="space-y-2">
+                        <Label htmlFor="name">Name</Label>
+                        <Input id="name" name="name" placeholder="Your name" required />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input id="email" name="email" type="email" placeholder="your.email@fund.com" required />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="type">Request Type</Label>
+                      <select
+                        id="type"
+                        name="type"
+                        required
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <option value="">Select a type...</option>
+                        <option value="Request Content">Request Content</option>
+                        <option value="Request Tool/Template">Request Tool/Template</option>
+                        <option value="Suggest Update">Suggest Update/Improvement</option>
+                        <option value="Submit Correction">Submit Correction/Insight</option>
+                        <option value="General Feedback">General Feedback</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="message">Message</Label>
+                      <Textarea
+                        id="message"
+                        name="message"
+                        placeholder="Tell us more about your request or feedback..."
+                        rows={6}
+                        required
+                      />
+                    </div>
+
+                    <Button type="submit" size="lg" className="w-full sm:w-auto">
+                      Send Feedback
+                    </Button>
+                  </form>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </section>

@@ -4,34 +4,13 @@ export const article: Article = {
   id: 'venture-capital-investor-relations-lp-communications',
   slug: 'lp-communications',
   title: 'Investor Relations Excellence: Building Trust Through Transparent LP Communications',
-  description: 'Master the art of LP communications in venture capital with strategies for portfolio reporting, valuation transparency, exit activity updates, and maintaining strong limited partner relationships.',
+  subtitle: 'Master the art of LP communications in venture capital with strategies for portfolio reporting, valuation transparency, exit activity updates, and maintaining strong limited partner relationships.',
   fundType: 'venture-capital',
   pillar: 'investor-relations',
-  featured: false,
-  readTime: 9,
-  publishDate: '2025-01-15',
-  author: {
-    name: 'Sarah Chen',
-    title: 'Head of Investor Relations',
-    bio: 'Former LP turned IR professional with 12 years of experience managing relationships for top-tier venture capital firms.',
-    avatar: '/images/authors/sarah-chen.jpg'
-  },
-  seo: {
-    metaTitle: 'VC Investor Relations: LP Communications Best Practices | Fund Management Guide',
-    metaDescription: 'Learn how to build strong LP relationships through transparent reporting, portfolio updates, valuation methodology, and effective communication strategies for venture capital funds.',
-    keywords: [
-      'LP communications',
-      'investor relations venture capital',
-      'LP reporting',
-      'portfolio company updates',
-      'valuation methodology',
-      'exit reporting',
-      'follow-on investments',
-      'dry powder management',
-      'limited partner relations',
-      'fund reporting'
-    ]
-  },
+  readingTime: 9,
+  publishedDate: '2025-01-15',
+  metaTitle: 'VC Investor Relations: LP Communications Best Practices | Fund Management Guide',
+  metaDescription: 'Learn how to build strong LP relationships through transparent reporting, portfolio updates, valuation methodology, and effective communication strategies for venture capital funds.',
   content: `
 # Investor Relations Excellence: Building Trust Through Transparent LP Communications
 
@@ -166,42 +145,7 @@ View investor relations not as administrative burden but as strategic priority. 
 Remember that every interaction with LPs shapes their perception of your fund and willingness to support future vehicles. By prioritizing transparency, consistency, and genuine engagement, you build the trust that underpins successful, long-term GP-LP partnerships.
 
 The best investor relations programs treat LPs as true partners in the investment journey, sharing both triumphs and challenges with honesty and respect. This approach not only fulfills fiduciary duties but creates the foundation for multi-decade relationships that transcend individual fund performance and become genuine competitive moats in the venture capital business.
-  `,
-  resources: [
-    {
-      title: 'ILPA Reporting Template',
-      description: 'Institutional Limited Partners Association standardized reporting framework',
-      url: 'https://ilpa.org/reporting-template/',
-      type: 'template'
-    },
-    {
-      title: 'ASC 820 Fair Value Measurement',
-      description: 'Accounting standards for fair value measurement and disclosure',
-      url: 'https://www.fasb.org/topic/820',
-      type: 'guide'
-    },
-    {
-      title: 'Investor Portal Best Practices',
-      description: 'Technology solutions for LP communication and reporting',
-      url: 'https://www.juniper.com/resources/investor-portal-guide',
-      type: 'tool'
-    }
-  ],
-  relatedArticles: [
-    'venture-capital-fundraising-lp-targeting',
-    'venture-capital-portfolio-management-value-creation',
-    'venture-capital-fund-administration-operations'
-  ],
-  tags: [
-    'investor-relations',
-    'LP-communications',
-    'reporting',
-    'transparency',
-    'portfolio-management',
-    'valuations',
-    'exits',
-    'fund-management'
-  ]
+  `
 };
 
 export default article;

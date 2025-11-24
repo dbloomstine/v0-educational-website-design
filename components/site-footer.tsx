@@ -34,7 +34,7 @@ export function SiteFooter() {
             <ul className="space-y-2 text-sm">
               <li>
                 <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Fund Watch Briefing
+                  FundWatch Briefing
                 </Link>
               </li>
               <li>
@@ -51,6 +51,11 @@ export function SiteFooter() {
                 <Link href="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
                   Contact
                 </Link>
+              </li>
+              <li>
+                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">
+                  Shop
+                </a>
               </li>
             </ul>
           </div>

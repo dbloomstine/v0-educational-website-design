@@ -8,18 +8,18 @@ import { Calendar, ArrowRight } from 'lucide-react'
 import { getAllBlogPosts } from '@/lib/blog'
 
 export const metadata: Metadata = {
-  title: 'Fund Watch Briefing - Weekly Fund Operations Insights | FundOpsHQ',
-  description: 'Weekly newsletter covering fund operations news, regulatory updates, industry trends, and practical insights for investment fund professionals.',
+  title: 'FundWatch Briefing - Weekly Private Fund Operations Newsletter | FundOpsHQ',
+  description: 'The weekly newsletter for private fund professionals. Get curated insights on operations, compliance, regulatory updates, and industry trends delivered to your inbox.',
   openGraph: {
-    title: 'Fund Watch Briefing - Weekly Fund Operations Insights',
-    description: 'Weekly newsletter for fund operations professionals',
+    title: 'FundWatch Briefing - Weekly Private Fund Operations Newsletter',
+    description: 'Curated insights for fund operations professionals across all asset classes',
     type: 'website',
     url: 'https://fundops.com/blog',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Fund Watch Briefing',
-    description: 'Weekly fund operations insights and industry news',
+    title: 'FundWatch Briefing',
+    description: 'Weekly private fund operations insights and industry news',
   },
   alternates: {
     canonical: 'https://fundops.com/blog',
@@ -39,10 +39,10 @@ export default async function BlogPage() {
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl text-center">
               <h1 className="mb-6 text-5xl font-bold tracking-tight text-balance">
-                Fund Watch Briefing
+                FundWatch Briefing
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed text-balance mb-8">
-                Weekly insights on fund operations, regulatory updates, and industry trends. Practical news you can actually use.
+                Your weekly dose of fund operations intel. Curated industry news, regulatory updates, and actionable insights for PE, VC, credit, hedge funds, and beyond.
               </p>
               <Button asChild size="lg">
                 <a href="https://fundwatch-briefing.beehiiv.com/" target="_blank" rel="noopener noreferrer">
@@ -60,7 +60,7 @@ export default async function BlogPage() {
               {posts.length === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-lg text-muted-foreground">
-                    No posts yet. Check back soon for the latest Fund Watch Briefing!
+                    No posts yet. Check back soon for the latest FundWatch Briefing!
                   </p>
                 </div>
               ) : (
@@ -108,9 +108,9 @@ export default async function BlogPage() {
         <section className="border-t border-border bg-accent/20 py-20">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="mb-4 text-3xl font-bold">Get the Briefing in Your Inbox</h2>
+              <h2 className="mb-4 text-3xl font-bold">Get FundWatch Briefing in Your Inbox</h2>
               <p className="mb-8 text-lg text-muted-foreground text-balance">
-                Don't miss the weekly Fund Watch Briefing. Subscribe to get fund operations news, regulatory updates, and practical insights delivered every week.
+                Join fund operations professionals across PE, VC, credit, and hedge funds. Get curated industry news, regulatory updates, and actionable insights delivered every week.
               </p>
               <Button asChild size="lg">
                 <a href="https://fundwatch-briefing.beehiiv.com/" target="_blank" rel="noopener noreferrer">

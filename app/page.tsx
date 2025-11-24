@@ -61,11 +61,10 @@ export default function HomePage() {
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl text-center">
               <h1 className="mb-6 text-5xl font-bold tracking-tight text-balance">
-                A practical resource for fund operations
+                The operations playbook for private fund professionals
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed text-balance">
-                Educational content and tools for CFOs, COOs, and operations professionals managing investment funds
-                across all asset classes.
+                Practical guidance for CFOs, COOs, IR, legal, compliance, operations, and banking teams across PE, VC, credit, hedge funds, real estate, infrastructure, and beyond.
               </p>
             </div>
           </div>
@@ -177,14 +176,21 @@ export default function HomePage() {
         <section className="border-t border-border bg-accent/20 py-20">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="mb-4 text-3xl font-bold">Weekly Fund Ops Insights</h2>
+              <h2 className="mb-4 text-3xl font-bold">FundWatch Briefing</h2>
               <p className="mb-8 text-lg text-muted-foreground text-balance">
-                Practical tips, templates, and industry updates. One email per week, easy unsubscribe.
+                Your weekly dose of fund operations intel. Curated industry news, regulatory updates, and actionable insights delivered every week.
               </p>
               <div className="rounded-lg border border-border bg-card p-8">
-                <p className="mb-6 text-sm text-muted-foreground">
-                  Newsletter launching soon! Want early access? Drop your email below:
-                </p>
+                <div className="mb-6 space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    Newsletter launching soon! Want early access? Drop your email below:
+                  </p>
+                  <Button variant="outline" asChild>
+                    <Link href="/blog">
+                      Read Recent Issues <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
                 <form
                   action="https://app.beehiiv.com/subscribe"
                   method="post"

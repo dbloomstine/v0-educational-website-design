@@ -78,7 +78,7 @@ export async function getAllBlogPosts(): Promise<BlogPostMetadata[]> {
         title: item.title || 'Untitled',
         date,
         summary,
-        category: 'Fund Watch Briefing',
+        category: 'FundWatch Briefing',
         link: item.link || '',
       }
     })
