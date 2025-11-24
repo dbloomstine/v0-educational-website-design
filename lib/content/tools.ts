@@ -93,7 +93,7 @@ const tools: Tool[] = [
     categories: ['Fund Formation', 'Operations and Compliance'],
     personas: ['GP', 'Lawyer', 'Compliance', 'COO or Operations'],
     complexity: 'Advanced',
-    status: 'coming-soon',
+    status: 'active',
     icon: 'FileText'
   },
 
