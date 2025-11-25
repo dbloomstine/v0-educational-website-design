@@ -49,19 +49,22 @@ export function PricingResults({ output, input }: PricingResultsProps) {
         </div>
 
         {/* Visual Range Indicator */}
-        <div className="relative mb-4 h-2 rounded-full bg-muted">
+        <div className="relative mb-4 h-3 rounded-full bg-gradient-to-r from-green-500/20 via-blue-500/20 to-amber-500/20">
+          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-green-500/40 via-primary/40 to-amber-500/40" />
+          {/* Low marker */}
           <div
-            className="absolute left-0 h-full rounded-full bg-gradient-to-r from-green-500 via-primary to-amber-500"
-            style={{
-              width: '100%'
-            }}
+            className="absolute top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-green-500"
+            style={{ left: '0%' }}
           />
+          {/* Medium marker */}
           <div
-            className="absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 border-primary bg-background shadow-lg"
-            style={{
-              left: '50%',
-              transform: 'translate(-50%, -50%)'
-            }}
+            className="absolute top-1/2 h-5 w-5 -translate-y-1/2 -translate-x-1/2 rounded-full border-2 border-primary bg-primary shadow-lg"
+            style={{ left: '50%' }}
+          />
+          {/* High marker */}
+          <div
+            className="absolute top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-amber-500"
+            style={{ right: '0%' }}
           />
         </div>
 
