@@ -92,7 +92,7 @@ export function SiteHeader() {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <a href="https://fundopshq-shop.myshopify.com/" className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50" target="_blank" rel="noopener noreferrer">
+              <a href="https://fundopshq-shop.myshopify.com/collections/all" className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50" target="_blank" rel="noopener noreferrer">
                 Shop
               </a>
             </NavigationMenuItem>
@@ -164,7 +164,7 @@ export function SiteHeader() {
                 About
               </Link>
               <a
-                href="https://fundopshq-shop.myshopify.com/"
+                href="https://fundopshq-shop.myshopify.com/collections/all"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
