@@ -277,6 +277,7 @@ export function calculateSubscriptionLineImpact(
   let cumulativeDistributedNoLine = 0
   let cumulativeCalledWithLine = 0
   let cumulativeDistributedWithLine = 0
+  let cumulativeInvestedCapital = 0 // Track actual invested capital (excluding fees)
 
   let lineBalance = 0
   let totalInterestPaid = 0
@@ -307,11 +308,14 @@ export function calculateSubscriptionLineImpact(
     if (input.managementFeeBasis === 'commitments') {
       managementFee = input.fundSize * input.managementFeeRate
     } else {
-      // Invested capital basis
-      const investedSoFar = cumulativeCalledNoLine + investmentAmount
+      // Invested capital basis (fees calculated on actual invested capital, not including prior fees)
+      const investedSoFar = cumulativeInvestedCapital + investmentAmount
       managementFee = investedSoFar * input.managementFeeRate
     }
     totalManagementFees += managementFee
+
+    // Update cumulative invested capital (excluding fees)
+    cumulativeInvestedCapital += investmentAmount
 
     // Scenario 1: No subscription line
     const capitalCallNoLine = investmentAmount + managementFee
@@ -340,9 +344,12 @@ export function calculateSubscriptionLineImpact(
 
       lineBalance += lineDraws
 
-      // Calculate interest on average balance for the year
+      // Calculate interest on average balance for the actual days outstanding
+      // Average balance = midpoint between beginning (before draw) and ending (after draw)
       const avgBalance = lineBalance - lineDraws / 2
-      const annualInterest = avgBalance * input.interestRate
+      // Prorate interest based on max days outstanding (line shouldn't be out longer)
+      const effectiveDays = Math.min(maxDaysOut, daysInYear)
+      const annualInterest = avgBalance * input.interestRate * (effectiveDays / daysInYear)
       interestPaid = annualInterest
       totalInterestPaid += interestPaid
 
