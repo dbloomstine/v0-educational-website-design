@@ -120,7 +120,7 @@ const tools: Tool[] = [
     categories: ['Pricing and Costs'],
     personas: ['GP', 'CFO or Controller', 'COO or Operations'],
     complexity: 'Intermediate',
-    status: 'coming-soon',
+    status: 'active',
     icon: 'Calculator'
   },
   {
