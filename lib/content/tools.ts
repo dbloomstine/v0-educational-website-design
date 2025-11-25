@@ -164,7 +164,7 @@ const tools: Tool[] = [
     categories: ['Pricing and Costs'],
     personas: ['GP', 'CFO or Controller'],
     complexity: 'Intermediate',
-    status: 'coming-soon',
+    status: 'active',
     icon: 'Receipt'
   },
   {
