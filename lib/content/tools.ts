@@ -213,7 +213,7 @@ const tools: Tool[] = [
     categories: ['Fund Economics'],
     personas: ['GP', 'CFO or Controller', 'LP', 'Lawyer'],
     complexity: 'Advanced',
-    status: 'coming-soon',
+    status: 'active',
     icon: 'TrendingUp'
   },
   {
