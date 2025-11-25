@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/navigation-menu"
 import { Menu, X } from "lucide-react"
 import { getAllFundTypes } from "@/lib/content/fund-types"
-import { getAllTools, getAllCategories } from "@/lib/content/tools"
+import { getAllTools } from "@/lib/content/tools"
 
 const fundTypes = getAllFundTypes().map((fundType) => ({
   name: fundType.name,
@@ -22,7 +22,6 @@ const fundTypes = getAllFundTypes().map((fundType) => ({
 }))
 
 const tools = getAllTools().filter(tool => tool.status === 'active')
-const toolCategories = getAllCategories()
 
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -67,43 +66,21 @@ export function SiteHeader() {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <NavigationMenuTrigger className="bg-transparent">Free Tools & Calculators</NavigationMenuTrigger>
+              <Link href="/tools" legacyBehavior passHref>
+                <NavigationMenuTrigger className="bg-transparent">Free Tools & Calculators</NavigationMenuTrigger>
+              </Link>
               <NavigationMenuContent>
-                <ul className="grid w-[800px] grid-cols-2 gap-3 p-4">
-                  {/* Group tools by category */}
-                  {toolCategories.map((category) => {
-                    const categoryTools = tools.filter(tool => tool.categories.includes(category))
-                    if (categoryTools.length === 0) return null
-
-                    return (
-                      <li key={category} className="col-span-2">
-                        <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                          {category}
-                        </div>
-                        <div className="grid gap-2">
-                          {categoryTools.map((tool) => (
-                            <Link
-                              key={tool.slug}
-                              href={`/tools/${tool.slug}`}
-                              className="block rounded-lg border border-border bg-card p-3 text-foreground transition-all hover:border-accent hover:bg-accent/50"
-                            >
-                              <div className="font-medium text-sm">{tool.title}</div>
-                              <div className="text-xs text-muted-foreground mt-1">{tool.shortDescription}</div>
-                            </Link>
-                          ))}
-                        </div>
-                      </li>
-                    )
-                  })}
-                  {/* View All Tools Link */}
-                  <li className="col-span-2 border-t border-border pt-3">
-                    <Link
-                      href="/tools"
-                      className="block rounded-lg bg-primary/10 p-3 text-center font-medium text-sm text-primary transition-all hover:bg-primary/20"
-                    >
-                      View All Tools →
-                    </Link>
-                  </li>
+                <ul className="grid w-[500px] grid-cols-2 gap-2 p-4">
+                  {tools.map((tool) => (
+                    <li key={tool.slug}>
+                      <Link
+                        href={`/tools/${tool.slug}`}
+                        className="block rounded-md p-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+                      >
+                        {tool.title}
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
@@ -162,45 +139,6 @@ export function SiteHeader() {
               </div>
             </div>
 
-            {/* Tools */}
-            <div>
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Free Tools & Calculators
-              </h3>
-              <div className="space-y-3">
-                {toolCategories.map((category) => {
-                  const categoryTools = tools.filter(tool => tool.categories.includes(category))
-                  if (categoryTools.length === 0) return null
-
-                  return (
-                    <div key={category}>
-                      <div className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground/70">
-                        {category}
-                      </div>
-                      <div className="space-y-1">
-                        {categoryTools.map((tool) => (
-                          <Link
-                            key={tool.slug}
-                            href={`/tools/${tool.slug}`}
-                            onClick={() => setMobileMenuOpen(false)}
-                            className="block rounded-md border border-border bg-card p-2 text-xs transition-all hover:border-accent hover:bg-accent/50"
-                          >
-                            <span className="font-medium text-foreground">{tool.title}</span>
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )
-                })}
-                <Link
-                  href="/tools"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md bg-primary/10 p-2 text-center text-xs font-medium text-primary transition-all hover:bg-primary/20"
-                >
-                  View All Tools →
-                </Link>
-              </div>
-            </div>
 
             {/* Other Links */}
             <div className="space-y-2 pt-4 border-t border-border">
@@ -210,6 +148,13 @@ export function SiteHeader() {
                 className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
               >
                 Newsletter
+              </Link>
+              <Link
+                href="/tools"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+              >
+                Free Tools & Calculators
               </Link>
               <Link
                 href="/about"
