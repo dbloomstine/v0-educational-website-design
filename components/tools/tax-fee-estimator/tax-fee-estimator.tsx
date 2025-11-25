@@ -4,10 +4,91 @@ import { useState } from 'react'
 import { TaxInput, PricingOutput, defaultInput, calculateTaxPricing } from './pricingData'
 import { InputForm } from './input-form'
 import { PricingResults } from './pricing-results'
+import { Button } from '@/components/ui/button'
+
+// Preset scenarios for users to try
+const presets: Record<string, { name: string; description: string; input: TaxInput }> = {
+  'emerging-vc': {
+    name: 'Emerging VC Fund',
+    description: '$75M fund, 20 investors, simple structure',
+    input: {
+      fundType: 'venture-capital',
+      fundSize: '50-100',
+      fundComplexity: 'simple',
+      taxYear: 'subsequent',
+      investorCount: '11-30',
+      investorComplexity: 'mostly-simple',
+      parallelFunds: 0,
+      aivCount: 2,
+      blockerCount: 0,
+      gpEntityCount: 1,
+      managementCo: true,
+      usStates: '2-3',
+      foreignJurisdictions: 'none',
+      pficReporting: false,
+      cfcReporting: false,
+      fatcaReporting: false,
+      quarterlyEstimates: true,
+      taxPlanning: 'basic',
+      stateComplexity: 'simple'
+    }
+  },
+  'mid-pe': {
+    name: 'Mid-Market PE Fund',
+    description: '$300M fund, 45 LPs, blockers & offshore',
+    input: {
+      fundType: 'pe-buyout',
+      fundSize: '250-500',
+      fundComplexity: 'moderate',
+      taxYear: 'subsequent',
+      investorCount: '31-75',
+      investorComplexity: 'mixed',
+      parallelFunds: 1,
+      aivCount: 5,
+      blockerCount: 2,
+      gpEntityCount: 2,
+      managementCo: true,
+      usStates: '4-6',
+      foreignJurisdictions: 'single',
+      pficReporting: false,
+      cfcReporting: true,
+      fatcaReporting: true,
+      quarterlyEstimates: true,
+      taxPlanning: 'detailed',
+      stateComplexity: 'moderate'
+    }
+  },
+  'large-credit': {
+    name: 'Large Credit Fund',
+    description: '$750M fund, 100+ LPs, complex multi-jurisdictional',
+    input: {
+      fundType: 'private-credit',
+      fundSize: '500-plus',
+      fundComplexity: 'complex',
+      taxYear: 'subsequent',
+      investorCount: '76-150',
+      investorComplexity: 'mostly-complex',
+      parallelFunds: 2,
+      aivCount: 8,
+      blockerCount: 4,
+      gpEntityCount: 3,
+      managementCo: true,
+      usStates: '10-plus',
+      foreignJurisdictions: 'multiple',
+      pficReporting: true,
+      cfcReporting: true,
+      fatcaReporting: true,
+      quarterlyEstimates: true,
+      taxPlanning: 'comprehensive',
+      stateComplexity: 'complex'
+    }
+  }
+}
 
 export function TaxFeeEstimator() {
+  // Initialize with calculated results
   const [input, setInput] = useState<TaxInput>(defaultInput)
-  const [output, setOutput] = useState<PricingOutput | null>(null)
+  const [output, setOutput] = useState<PricingOutput>(calculateTaxPricing(defaultInput))
 
   const handleInputChange = (newInput: TaxInput) => {
     setInput(newInput)
@@ -18,6 +99,14 @@ export function TaxFeeEstimator() {
   const handleCalculate = () => {
     const newOutput = calculateTaxPricing(input)
     setOutput(newOutput)
+  }
+
+  const loadPreset = (presetKey: string) => {
+    const preset = presets[presetKey]
+    if (preset) {
+      setInput(preset.input)
+      setOutput(calculateTaxPricing(preset.input))
+    }
   }
 
   return (
@@ -33,38 +122,8 @@ export function TaxFeeEstimator() {
         </p>
       </div>
 
-      {/* Main Content */}
-      <div className="grid gap-8 lg:grid-cols-2">
-        {/* Left Column - Input Form */}
-        <div>
-          <InputForm
-            input={input}
-            onChange={handleInputChange}
-            onCalculate={handleCalculate}
-          />
-        </div>
-
-        {/* Right Column - Results */}
-        <div>
-          {output ? (
-            <PricingResults output={output} input={input} />
-          ) : (
-            <div className="flex min-h-[400px] items-center justify-center rounded-lg border border-dashed border-border bg-muted/50 p-8">
-              <div className="text-center">
-                <p className="text-lg font-medium text-muted-foreground">
-                  Adjust the inputs on the left to see your estimate
-                </p>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  The calculator will update automatically as you make changes
-                </p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Educational Footer */}
-      <div className="mt-12 rounded-lg border border-border bg-muted/30 p-6">
+      {/* About This Estimator - Moved to top */}
+      <div className="rounded-lg border border-border bg-muted/30 p-6">
         <h3 className="mb-3 text-lg font-semibold text-foreground">About This Estimator</h3>
         <div className="space-y-2 text-sm text-muted-foreground">
           <p>
@@ -81,6 +140,43 @@ export function TaxFeeEstimator() {
             This is an educational tool only. Consult with qualified tax professionals for actual fee quotes
             and tax advice specific to your fund.
           </p>
+        </div>
+      </div>
+
+      {/* Preset Scenarios */}
+      <div className="rounded-lg border border-border bg-card p-6">
+        <h3 className="mb-3 text-lg font-semibold text-foreground">Try These Examples</h3>
+        <p className="mb-4 text-sm text-muted-foreground">
+          Click a preset to see typical tax costs for different fund profiles
+        </p>
+        <div className="grid gap-3 md:grid-cols-3">
+          {Object.entries(presets).map(([key, preset]) => (
+            <button
+              key={key}
+              onClick={() => loadPreset(key)}
+              className="rounded-lg border border-border bg-background p-4 text-left transition-colors hover:bg-accent hover:border-primary"
+            >
+              <div className="mb-1 font-semibold text-foreground">{preset.name}</div>
+              <div className="text-xs text-muted-foreground">{preset.description}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="grid gap-8 lg:grid-cols-2">
+        {/* Left Column - Input Form */}
+        <div>
+          <InputForm
+            input={input}
+            onChange={handleInputChange}
+            onCalculate={handleCalculate}
+          />
+        </div>
+
+        {/* Right Column - Results */}
+        <div>
+          <PricingResults output={output} input={input} />
         </div>
       </div>
     </div>
