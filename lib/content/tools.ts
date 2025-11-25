@@ -187,7 +187,7 @@ const tools: Tool[] = [
     categories: ['Pricing and Costs'],
     personas: ['COO or Operations', 'Compliance', 'CFO or Controller'],
     complexity: 'Intermediate',
-    status: 'coming-soon',
+    status: 'active',
     icon: 'UserCheck'
   },
 

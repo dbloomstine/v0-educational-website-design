@@ -13,6 +13,7 @@ import { FundExpenseAllocation } from './fund-expense-allocation/fund-expense-al
 import { FundAdminPricing } from './fund-admin-pricing/fund-admin-pricing'
 import { AuditFeeEstimator } from './audit-fee-estimator/audit-fee-estimator'
 import { TaxFeeEstimator } from './tax-fee-estimator/tax-fee-estimator'
+import { KYCAMLCostEstimator } from './kyc-aml-cost-estimator/kyc-aml-cost-estimator'
 
 interface ToolPlaceholderProps {
   tool: Tool
@@ -128,6 +129,19 @@ export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-7xl">
             <TaxFeeEstimator />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // If this is the KYC/AML Cost Estimator tool, render the actual tool
+  if (tool.slug === 'kyc-aml-cost-estimator') {
+    return (
+      <div className="py-12">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-7xl">
+            <KYCAMLCostEstimator />
           </div>
         </div>
       </div>
