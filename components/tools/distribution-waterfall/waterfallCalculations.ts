@@ -188,12 +188,14 @@ function calculateEuropeanWaterfall(input: WaterfallInput): WaterfallOutput {
   }
 
   // Tier 3: GP catch-up
-  // Calculate how much GP needs to "catch up" to reach their target carry percentage
-  // Target: GP should have (carry rate) of total profits after pref
-  const profitsAfterPref = input.grossProceeds - input.contributedCapital - prefAmount
-  const gpTargetShare = profitsAfterPref * input.carryRate
-  const gpCurrentShare = cumulativeGP - gpAsLP // Subtract their LP commitment
-  const gpCatchUpNeeded = Math.max(0, gpTargetShare - gpCurrentShare)
+  // Standard PE waterfall catch-up formula:
+  // GP catches up so their total carry equals X% of all profits (gross proceeds - capital)
+  // Formula: Catch-Up Amount = (Total Profits × CarryRate - GP Carry So Far) / CatchUpRate
+  // With 100% catch-up and 20% carry: Catch-Up = Pref × (0.20/0.80) = Pref × 0.25
+  const totalProfits = input.grossProceeds - input.contributedCapital
+  const gpTargetCarry = totalProfits * input.carryRate
+  const gpCarrySoFar = cumulativeGP - gpAsLP - (tier2ToGP) // Subtract LP returns (capital + pref)
+  const gpCatchUpNeeded = Math.max(0, gpTargetCarry - gpCarrySoFar)
 
   const tier3Amount = Math.min(remaining, gpCatchUpNeeded / input.catchUpRate)
   const tier3ToGP = tier3Amount * input.catchUpRate
