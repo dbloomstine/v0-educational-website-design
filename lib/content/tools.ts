@@ -142,7 +142,7 @@ const tools: Tool[] = [
     categories: ['Pricing and Costs'],
     personas: ['GP', 'CFO or Controller', 'LP'],
     complexity: 'Intermediate',
-    status: 'coming-soon',
+    status: 'active',
     icon: 'ClipboardCheck'
   },
   {
