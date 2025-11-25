@@ -381,16 +381,25 @@ export function calculateSubscriptionLineImpact(
       // After investment period or if not using line
       capitalCallWithLine = investmentAmount + managementFee
 
-      // Repay remaining line balance from distributions
-      if (lineBalance > 0 && distributionAmount > 0) {
-        lineRepayments = Math.min(lineBalance, distributionAmount)
-        lineBalance -= lineRepayments
-      }
-
-      // Calculate interest on remaining balance
+      // Handle any remaining line balance from investment period
       if (lineBalance > 0) {
-        interestPaid = lineBalance * input.interestRate
+        // Calculate interest on remaining balance (prorated like during investment period)
+        const effectiveDays = Math.min(maxDaysOut, daysInYear)
+        interestPaid = lineBalance * input.interestRate * (effectiveDays / daysInYear)
         totalInterestPaid += interestPaid
+
+        // Repay line balance (distributions first, then capital call if needed)
+        if (distributionAmount > 0) {
+          lineRepayments = Math.min(lineBalance, distributionAmount)
+          lineBalance -= lineRepayments
+        } else if (input.repaymentTrigger === 'automatic') {
+          // Even after investment period, line must be repaid to respect maxDaysOut
+          lineRepayments = lineBalance
+          capitalCallWithLine += lineRepayments
+          lineBalance = 0
+        }
+
+        // Add interest to capital call
         capitalCallWithLine += interestPaid
       }
     }
