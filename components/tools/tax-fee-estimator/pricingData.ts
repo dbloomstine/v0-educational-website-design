@@ -87,65 +87,69 @@ export const defaultInput: TaxInput = {
 }
 
 // Base fund return pricing (Form 1065)
-// Research: Small funds $8-15k, medium $15-30k, large $30-60k+
+// Research: Market data shows $800-1,500 for generic partnerships, but fund returns are 5-10x more complex
+// Mid-tier firms: Small funds $8-12k, medium $12-25k, large $25-50k+
+// Validated against: Dimov Tax CPA pricing, Anchin fund cost survey ($75-100k total admin+tax)
 const baseFundReturn: Record<string, Record<string, number>> = {
   'venture-capital': {
-    'under-50': 10000,
-    '50-150': 15000,
-    '150-500': 28000,
-    '500-plus': 45000
+    'under-50': 9000,      // Reduced from 10k
+    '50-150': 13000,       // Reduced from 15k
+    '150-500': 24000,      // Reduced from 28k
+    '500-plus': 40000      // Reduced from 45k
   },
   'pe-buyout': {
-    'under-50': 12000,
-    '50-150': 18000,
-    '150-500': 35000,
-    '500-plus': 55000
+    'under-50': 10000,     // Reduced from 12k
+    '50-150': 16000,       // Reduced from 18k
+    '150-500': 30000,      // Reduced from 35k
+    '500-plus': 48000      // Reduced from 55k
   },
   'private-credit': {
-    'under-50': 14000,
-    '50-150': 22000,
-    '150-500': 42000,
-    '500-plus': 65000
+    'under-50': 12000,     // Reduced from 14k
+    '50-150': 19000,       // Reduced from 22k
+    '150-500': 36000,      // Reduced from 42k
+    '500-plus': 56000      // Reduced from 65k
   },
   'hedge-fund': {
-    'under-50': 13000,
-    '50-150': 20000,
-    '150-500': 38000,
-    '500-plus': 60000
+    'under-50': 11000,     // Reduced from 13k
+    '50-150': 17000,       // Reduced from 20k
+    '150-500': 33000,      // Reduced from 38k
+    '500-plus': 52000      // Reduced from 60k
   },
   'real-estate': {
-    'under-50': 12000,
-    '50-150': 18000,
-    '150-500': 35000,
-    '500-plus': 55000
+    'under-50': 10000,     // Reduced from 12k
+    '50-150': 16000,       // Reduced from 18k
+    '150-500': 30000,      // Reduced from 35k
+    '500-plus': 48000      // Reduced from 55k
   },
   'fund-of-funds': {
-    'under-50': 15000,
-    '50-150': 25000,
-    '150-500': 45000,
-    '500-plus': 70000
+    'under-50': 13000,     // Reduced from 15k
+    '50-150': 22000,       // Reduced from 25k
+    '150-500': 39000,      // Reduced from 45k
+    '500-plus': 60000      // Reduced from 70k
   },
   'fund-of-one': {
-    'under-50': 8000,
-    '50-150': 12000,
-    '150-500': 22000,
-    '500-plus': 35000
+    'under-50': 7000,      // Reduced from 8k
+    '50-150': 10000,       // Reduced from 12k
+    '150-500': 19000,      // Reduced from 22k
+    '500-plus': 30000      // Reduced from 35k
   },
   'other': {
-    'under-50': 12000,
-    '50-150': 18000,
-    '150-500': 35000,
-    '500-plus': 55000
+    'under-50': 10000,     // Reduced from 12k
+    '50-150': 16000,       // Reduced from 18k
+    '150-500': 30000,      // Reduced from 35k
+    '500-plus': 48000      // Reduced from 55k
   }
 }
 
-// Per-investor K-1 costs (research: $100-$800 depending on complexity)
+// Per-investor K-1 costs
+// Market research: $150-$1,000 per K-1 depending on complexity
+// Volume discounts apply for larger investor bases
 const k1Costs: Record<string, { simple: number, moderate: number, complex: number }> = {
-  'under-10': { simple: 150, moderate: 250, complex: 500 },
-  '11-30': { simple: 120, moderate: 200, complex: 400 },
-  '31-75': { simple: 100, moderate: 180, complex: 350 },
-  '76-150': { simple: 90, moderate: 160, complex: 300 },
-  '150-plus': { simple: 80, moderate: 150, complex: 280 }
+  'under-10': { simple: 140, moderate: 230, complex: 450 },   // Slightly reduced
+  '11-30': { simple: 110, moderate: 185, complex: 370 },      // Slightly reduced
+  '31-75': { simple: 95, moderate: 165, complex: 320 },       // Slightly reduced
+  '76-150': { simple: 80, moderate: 145, complex: 280 },      // Reduced more for volume
+  '150-plus': { simple: 70, moderate: 130, complex: 250 }     // Reduced more for volume
 }
 
 // Provider tier multipliers
@@ -207,8 +211,10 @@ export function calculateTaxPricing(input: TaxInput): PricingOutput {
   }
 
   // 3. Blocker corporations
+  // Market data: C-corp returns $1,000-2,000 generic, but fund blockers are specialized
+  // Blocker corps require coordination with partnership and are more complex
   if (input.blockerCount > 0) {
-    const blockerFeeEach = input.strategyComplexity === 'complex' ? 5000 : input.strategyComplexity === 'moderate' ? 3500 : 2500
+    const blockerFeeEach = input.strategyComplexity === 'complex' ? 4500 : input.strategyComplexity === 'moderate' ? 3000 : 2000
     const totalBlockerFee = blockerFeeEach * input.blockerCount
     breakdown.push({
       category: 'Blocker Corporations',
@@ -226,7 +232,7 @@ export function calculateTaxPricing(input: TaxInput): PricingOutput {
 
   // 4. GP/Carry vehicles
   if (input.gpEntities > 0) {
-    const gpFeeEach = 3000
+    const gpFeeEach = 2500    // Reduced from 3000
     const totalGPFee = gpFeeEach * input.gpEntities
     breakdown.push({
       category: 'GP / Carry Vehicles',
@@ -239,7 +245,7 @@ export function calculateTaxPricing(input: TaxInput): PricingOutput {
 
   // 5. Management company (if in scope)
   if (input.managementCo) {
-    const mgmtCoFee = 3500
+    const mgmtCoFee = 3000    // Reduced from 3500
     breakdown.push({
       category: 'Management Company',
       description: 'Management company corporate return',
@@ -276,7 +282,7 @@ export function calculateTaxPricing(input: TaxInput): PricingOutput {
   // 7. State filings
   const stateCountMid = getStateCountMidpoint(input.stateCount)
   if (stateCountMid > 1) {
-    const stateFeeEach = 800
+    const stateFeeEach = 650    // Reduced from 800
     const totalStateFee = stateFeeEach * stateCountMid
     breakdown.push({
       category: 'State Tax Filings',
