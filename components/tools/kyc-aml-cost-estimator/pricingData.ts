@@ -85,12 +85,14 @@ export const defaultInput: KYCAMLInput = {
 }
 
 // Base per-investor costs
-// Research: $150-300 for individuals (simple), $400-700 (with EDD)
-// $300-600 for entities (simple), $600-1,200 (with EDD)
-// $800-1,500 for institutions (simple), $1,500-3,000 (with EDD)
+// Research (2024-2025 market data):
+// Individuals: $200-400 for standard CDD, $400-700 with EDD
+// Entities: $300-600 for standard CDD, $600-1,200 with EDD
+// Institutional: $800-1,500 for standard CDD, $1,500-3,000 with EDD
+// Sources: Fenergo 2024 survey, Corporate Compliance Insights, ComplyCube 2025
 const baseInvestorCosts = {
   individual: {
-    standard: { low: 150, medium: 225, high: 300 },
+    standard: { low: 200, medium: 300, high: 400 },
     enhanced: { low: 400, medium: 550, high: 700 }
   },
   entity: {
