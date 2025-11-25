@@ -15,6 +15,7 @@ import { AuditFeeEstimator } from './audit-fee-estimator/audit-fee-estimator'
 import { TaxFeeEstimator } from './tax-fee-estimator/tax-fee-estimator'
 import { KYCAMLCostEstimator } from './kyc-aml-cost-estimator/kyc-aml-cost-estimator'
 import { DistributionWaterfall } from './distribution-waterfall/distribution-waterfall'
+import { SubscriptionCreditLine } from './subscription-credit-line/subscription-credit-line'
 
 interface ToolPlaceholderProps {
   tool: Tool
@@ -156,6 +157,19 @@ export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-7xl">
             <DistributionWaterfall />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // If this is the Subscription Credit Line Impact Visualizer tool, render the actual tool
+  if (tool.slug === 'subscription-credit-line') {
+    return (
+      <div className="py-12">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-7xl">
+            <SubscriptionCreditLine />
           </div>
         </div>
       </div>

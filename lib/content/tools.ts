@@ -238,7 +238,7 @@ const tools: Tool[] = [
     categories: ['Fund Economics'],
     personas: ['GP', 'CFO or Controller', 'LP'],
     complexity: 'Advanced',
-    status: 'coming-soon',
+    status: 'active',
     icon: 'LineChart'
   },
 

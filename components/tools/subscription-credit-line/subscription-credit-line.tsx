@@ -1,0 +1,390 @@
+'use client'
+
+import { useState } from 'react'
+import {
+  SubscriptionLineInput,
+  SubscriptionLineOutput,
+  defaultInput,
+  calculateSubscriptionLineImpact
+} from './subscriptionLineCalculations'
+import { InputForm } from './input-form'
+import { ResultsView } from './results-view'
+import { exportSubscriptionLineAnalysis } from './export'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+
+// Preset scenarios based on market research
+const presets: Record<string, { name: string; description: string; input: SubscriptionLineInput }> = {
+  'conservative': {
+    name: 'Conservative Use',
+    description: '$100M fund, 15% facility, 90 days, 4% rate',
+    input: {
+      fundSize: 100000000,
+      investmentPeriodYears: 5,
+      fundTermYears: 10,
+      deploymentPaceType: 'front-loaded',
+      managementFeeRate: 0.02,
+      managementFeeBasis: 'commitments',
+      carryRate: 0.20,
+      prefRate: 0.08,
+      useLine: true,
+      facilitySize: 0.15, // ILPA lower bound
+      interestRate: 0.04, // Lower end of 3-6% range
+      maxDaysOutstanding: 90, // Traditional/conservative
+      repaymentTrigger: 'automatic',
+      grossMOIC: 2.5,
+      realizationScheduleType: 'j-curve'
+    }
+  },
+  'typical': {
+    name: 'Typical PE Fund',
+    description: '$200M fund, 20% facility, 180 days, 4.5% rate',
+    input: {
+      fundSize: 200000000,
+      investmentPeriodYears: 5,
+      fundTermYears: 10,
+      deploymentPaceType: 'front-loaded',
+      managementFeeRate: 0.02,
+      managementFeeBasis: 'commitments',
+      carryRate: 0.20,
+      prefRate: 0.08,
+      useLine: true,
+      facilitySize: 0.20, // Mid-range
+      interestRate: 0.045, // Mid-range of 3-6%
+      maxDaysOutstanding: 180, // ILPA recommended max
+      repaymentTrigger: 'automatic',
+      grossMOIC: 2.5,
+      realizationScheduleType: 'j-curve'
+    }
+  },
+  'aggressive': {
+    name: 'Aggressive Use',
+    description: '$300M fund, 25% facility, 360 days, 5.5% rate',
+    input: {
+      fundSize: 300000000,
+      investmentPeriodYears: 5,
+      fundTermYears: 10,
+      deploymentPaceType: 'front-loaded',
+      managementFeeRate: 0.02,
+      managementFeeBasis: 'commitments',
+      carryRate: 0.20,
+      prefRate: 0.08,
+      useLine: true,
+      facilitySize: 0.25, // ILPA upper bound
+      interestRate: 0.055, // Higher end
+      maxDaysOutstanding: 360, // Aggressive (exceeds ILPA guidance)
+      repaymentTrigger: 'distribution-funded',
+      grossMOIC: 2.5,
+      realizationScheduleType: 'j-curve'
+    }
+  },
+  'no-line': {
+    name: 'No Credit Facility',
+    description: '$150M fund, no subscription line',
+    input: {
+      fundSize: 150000000,
+      investmentPeriodYears: 5,
+      fundTermYears: 10,
+      deploymentPaceType: 'front-loaded',
+      managementFeeRate: 0.02,
+      managementFeeBasis: 'commitments',
+      carryRate: 0.20,
+      prefRate: 0.08,
+      useLine: false,
+      facilitySize: 0,
+      interestRate: 0,
+      maxDaysOutstanding: 0,
+      repaymentTrigger: 'automatic',
+      grossMOIC: 2.5,
+      realizationScheduleType: 'j-curve'
+    }
+  }
+}
+
+export function SubscriptionCreditLine() {
+  // Initialize with calculated results
+  const [input, setInput] = useState<SubscriptionLineInput>(defaultInput)
+  const [output, setOutput] = useState<SubscriptionLineOutput>(calculateSubscriptionLineImpact(defaultInput))
+  const [compareMode, setCompareMode] = useState(false)
+  const [compareInput, setCompareInput] = useState<SubscriptionLineInput | null>(null)
+  const [compareOutput, setCompareOutput] = useState<SubscriptionLineOutput | null>(null)
+
+  const handleInputChange = (newInput: SubscriptionLineInput) => {
+    setInput(newInput)
+    const newOutput = calculateSubscriptionLineImpact(newInput)
+    setOutput(newOutput)
+  }
+
+  const loadPreset = (presetKey: string) => {
+    const preset = presets[presetKey]
+    if (preset) {
+      setInput(preset.input)
+      setOutput(calculateSubscriptionLineImpact(preset.input))
+      setCompareMode(false)
+      setCompareInput(null)
+      setCompareOutput(null)
+    }
+  }
+
+  const handleExport = () => {
+    exportSubscriptionLineAnalysis(output)
+  }
+
+  const startComparison = () => {
+    setCompareMode(true)
+    setCompareInput({ ...input })
+    setCompareOutput({ ...output })
+  }
+
+  const updateCompareInput = (newInput: SubscriptionLineInput) => {
+    setCompareInput(newInput)
+    setCompareOutput(calculateSubscriptionLineImpact(newInput))
+  }
+
+  return (
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="text-center">
+        <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+          Subscription Credit Line Impact Visualizer
+        </h1>
+        <p className="mx-auto max-w-3xl text-lg text-muted-foreground">
+          Model how subscription lines of credit affect fund IRR, MOIC, J-curve, and fee drag.
+          Compare scenarios with and without credit facilities.
+        </p>
+      </div>
+
+      {/* About */}
+      <div className="rounded-lg border border-border bg-muted/30 p-6">
+        <h3 className="mb-3 text-lg font-semibold text-foreground">About This Tool</h3>
+        <div className="space-y-2 text-sm text-muted-foreground">
+          <p>
+            Subscription lines of credit (also called capital call facilities) allow funds to draw on LP commitments
+            before formally calling capital. This tool models the impact on key performance metrics including IRR boost,
+            MOIC drag, J-curve shape, and total costs.
+          </p>
+          <p>
+            Per ILPA guidance, funds should report both levered (with line) and unlevered (without line) returns
+            to provide transparency. ILPA recommends maximum facility size of 15-25% of commitments and
+            maximum 180 days outstanding.
+          </p>
+          <p className="font-medium text-foreground">
+            This is an educational tool only. Actual fund performance depends on specific investment timing,
+            facility terms, and many other factors. Consult legal and financial advisors for fund structuring.
+          </p>
+        </div>
+      </div>
+
+      {/* Preset Scenarios */}
+      <div className="rounded-lg border border-border bg-card p-6">
+        <h3 className="mb-3 text-lg font-semibold text-foreground">Try These Examples</h3>
+        <p className="mb-4 text-sm text-muted-foreground">
+          Click a preset to see how different subscription line structures affect fund performance
+        </p>
+        <div className="grid gap-3 md:grid-cols-4">
+          {Object.entries(presets).map(([key, preset]) => (
+            <button
+              key={key}
+              onClick={() => loadPreset(key)}
+              className="rounded-lg border border-border bg-background p-4 text-left transition-colors hover:bg-accent hover:border-primary"
+            >
+              <div className="mb-1 font-semibold text-foreground">{preset.name}</div>
+              <div className="text-xs text-muted-foreground">{preset.description}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Key Market Context */}
+      <Card className="border-primary/50 bg-primary/5 p-6">
+        <h3 className="mb-3 text-lg font-semibold text-foreground">Market Context (2024-2025)</h3>
+        <div className="grid gap-4 text-sm md:grid-cols-2">
+          <div>
+            <strong className="text-foreground">Typical Terms:</strong>
+            <ul className="mt-1 space-y-1 text-muted-foreground">
+              <li>• Facility size: 15-25% of commitments</li>
+              <li>• Interest rates: 3-6% annual</li>
+              <li>• Days outstanding: 90-180 days (ILPA max)</li>
+            </ul>
+          </div>
+          <div>
+            <strong className="text-foreground">Expected Impact:</strong>
+            <ul className="mt-1 space-y-1 text-muted-foreground">
+              <li>• IRR boost: +35 to +206 bps (year dependent)</li>
+              <li>• MOIC reduction: Interest expense drag</li>
+              <li>• Flatter J-curve in early years</li>
+            </ul>
+          </div>
+        </div>
+      </Card>
+
+      {/* Main Content */}
+      {compareMode ? (
+        <Tabs defaultValue="scenario-a" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="scenario-a">Scenario A</TabsTrigger>
+            <TabsTrigger value="scenario-b">Scenario B</TabsTrigger>
+            <TabsTrigger value="comparison">Side-by-Side</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="scenario-a" className="mt-6">
+            <div className="grid gap-8 lg:grid-cols-2">
+              <div>
+                <h3 className="mb-4 text-lg font-semibold">Scenario A Inputs</h3>
+                <InputForm input={input} onChange={handleInputChange} />
+              </div>
+              <div>
+                <h3 className="mb-4 text-lg font-semibold">Scenario A Results</h3>
+                <ResultsView output={output} onExport={handleExport} />
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="scenario-b" className="mt-6">
+            <div className="grid gap-8 lg:grid-cols-2">
+              <div>
+                <h3 className="mb-4 text-lg font-semibold">Scenario B Inputs</h3>
+                {compareInput && (
+                  <InputForm input={compareInput} onChange={updateCompareInput} />
+                )}
+              </div>
+              <div>
+                <h3 className="mb-4 text-lg font-semibold">Scenario B Results</h3>
+                {compareOutput && (
+                  <ResultsView output={compareOutput} onExport={() => exportSubscriptionLineAnalysis(compareOutput)} />
+                )}
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="comparison" className="mt-6">
+            {compareOutput && (
+              <Card className="p-6">
+                <h3 className="mb-4 text-xl font-semibold">Side-by-Side Comparison</h3>
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div>
+                    <h4 className="mb-3 text-lg font-medium text-primary">Scenario A</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Using Line:</span>
+                        <span className="font-medium">{output.input.useLine ? 'Yes' : 'No'}</span>
+                      </div>
+                      {output.input.useLine && (
+                        <>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Facility Size:</span>
+                            <span className="font-medium">{(output.input.facilitySize * 100).toFixed(0)}%</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Interest Rate:</span>
+                            <span className="font-medium">{(output.input.interestRate * 100).toFixed(2)}%</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Max Days Out:</span>
+                            <span className="font-medium">{output.input.maxDaysOutstanding} days</span>
+                          </div>
+                        </>
+                      )}
+                      <div className="flex justify-between text-sm font-semibold pt-2 border-t">
+                        <span>Net IRR:</span>
+                        <span>{(output.irrWithLine * 100).toFixed(2)}%</span>
+                      </div>
+                      <div className="flex justify-between text-sm font-semibold">
+                        <span>Net MOIC:</span>
+                        <span>{output.moicWithLine.toFixed(2)}x</span>
+                      </div>
+                      {output.input.useLine && (
+                        <>
+                          <div className="flex justify-between text-sm font-semibold text-primary">
+                            <span>IRR Boost:</span>
+                            <span>{output.irrBoost >= 0 ? '+' : ''}{output.irrBoost.toFixed(0)} bps</span>
+                          </div>
+                          <div className="flex justify-between text-sm font-semibold text-red-600">
+                            <span>MOIC Drag:</span>
+                            <span>-{output.moicDrag.toFixed(2)}%</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="mb-3 text-lg font-medium text-primary">Scenario B</h4>
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Using Line:</span>
+                        <span className="font-medium">{compareOutput.input.useLine ? 'Yes' : 'No'}</span>
+                      </div>
+                      {compareOutput.input.useLine && (
+                        <>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Facility Size:</span>
+                            <span className="font-medium">{(compareOutput.input.facilitySize * 100).toFixed(0)}%</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Interest Rate:</span>
+                            <span className="font-medium">{(compareOutput.input.interestRate * 100).toFixed(2)}%</span>
+                          </div>
+                          <div className="flex justify-between text-sm">
+                            <span className="text-muted-foreground">Max Days Out:</span>
+                            <span className="font-medium">{compareOutput.input.maxDaysOutstanding} days</span>
+                          </div>
+                        </>
+                      )}
+                      <div className="flex justify-between text-sm font-semibold pt-2 border-t">
+                        <span>Net IRR:</span>
+                        <span>{(compareOutput.irrWithLine * 100).toFixed(2)}%</span>
+                      </div>
+                      <div className="flex justify-between text-sm font-semibold">
+                        <span>Net MOIC:</span>
+                        <span>{compareOutput.moicWithLine.toFixed(2)}x</span>
+                      </div>
+                      {compareOutput.input.useLine && (
+                        <>
+                          <div className="flex justify-between text-sm font-semibold text-primary">
+                            <span>IRR Boost:</span>
+                            <span>{compareOutput.irrBoost >= 0 ? '+' : ''}{compareOutput.irrBoost.toFixed(0)} bps</span>
+                          </div>
+                          <div className="flex justify-between text-sm font-semibold text-red-600">
+                            <span>MOIC Drag:</span>
+                            <span>-{compareOutput.moicDrag.toFixed(2)}%</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-6">
+                  <Button onClick={() => setCompareMode(false)} variant="outline">
+                    Exit Comparison Mode
+                  </Button>
+                </div>
+              </Card>
+            )}
+          </TabsContent>
+        </Tabs>
+      ) : (
+        <>
+          <div className="grid gap-8 lg:grid-cols-2">
+            {/* Left Column - Input Form */}
+            <div>
+              <InputForm input={input} onChange={handleInputChange} />
+              <div className="mt-4">
+                <Button onClick={startComparison} variant="outline" className="w-full">
+                  Compare Two Scenarios
+                </Button>
+              </div>
+            </div>
+
+            {/* Right Column - Results */}
+            <div>
+              <ResultsView output={output} onExport={handleExport} />
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
