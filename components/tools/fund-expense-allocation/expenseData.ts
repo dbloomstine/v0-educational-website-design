@@ -40,7 +40,7 @@ export interface ClassificationResult {
   examples: string[];
   flags: string[];
   sampleLanguage?: string;
-  logicExplanation: string;
+  logicExplanation: string[];
 }
 
 // EXPENSE CATEGORIES DATABASE
@@ -529,6 +529,11 @@ export function classifyExpense(input: ClassificationInput): ClassificationResul
   let flags: string[] = [];
   let logicFactors: string[] = [];
 
+  // Add base logic factors that always apply
+  logicFactors.push(`Expense category: ${category.name} - default treatment is ${category.defaultClassification.replace('-', ' ')}`);
+  logicFactors.push(`Market practice: ${category.marketPractice.replace(/-/g, ' ')}`);
+  logicFactors.push(`Fund context: ${fundTypes[input.fundType].name}, ${fundStages[input.fundStage].name} stage`);
+
   // Apply contextual rules based on fund type, stage, and beneficiary
 
   // Rule 1: Fundraising stage affects certain expense treatment
@@ -613,9 +618,6 @@ export function classifyExpense(input: ClassificationInput): ClassificationResul
   // Generate rationale
   const rationale = generateRationale(classification, category, input, logicFactors);
 
-  // Generate logic explanation
-  const logicExplanation = generateLogicExplanation(input, logicFactors, category);
-
   return {
     classification,
     headline,
@@ -626,7 +628,7 @@ export function classifyExpense(input: ClassificationInput): ClassificationResul
     examples: category.examples,
     flags,
     sampleLanguage: category.sampleLanguage,
-    logicExplanation
+    logicExplanation: logicFactors
   };
 }
 
@@ -760,14 +762,12 @@ function generateCustomExpenseResult(input: ClassificationInput): Classification
 
   rationale += 'This is a preliminary assessment based on limited information. Please consult your fund documents and legal counsel for definitive guidance.';
 
-  const logicExplanation = `**Custom Expense Analysis:**\n\n` +
-    `Description: "${input.customDescription}"\n\n` +
-    `Context:\n` +
-    `- Fund type: ${fundTypes[input.fundType].name}\n` +
-    `- Fund stage: ${fundStages[input.fundStage].name}\n` +
-    `- Primary beneficiary: ${beneficiaries[input.primaryBeneficiary].name}\n\n` +
-    `Analysis factors:\n${logicFactors.map(f => `- ${f}`).join('\n')}\n\n` +
-    `This is a preliminary classification. For custom expenses not in our database, we recommend consulting your fund counsel and reviewing similar provisions in your LPA.`;
+  // Add base context to logicFactors for custom expenses
+  if (input.customDescription) {
+    logicFactors.unshift(`Custom expense: "${input.customDescription}"`);
+  }
+  logicFactors.unshift(`Fund context: ${fundTypes[input.fundType].name}, ${fundStages[input.fundStage].name} stage`);
+  logicFactors.unshift(`Primary beneficiary: ${beneficiaries[input.primaryBeneficiary].name}`);
 
   return {
     classification,
@@ -778,7 +778,7 @@ function generateCustomExpenseResult(input: ClassificationInput): Classification
     marketPractice: 'often-negotiated',
     examples: [],
     flags,
-    logicExplanation
+    logicExplanation: logicFactors
   };
 }
 

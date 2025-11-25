@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { AlertCircle, Info, Scale } from 'lucide-react'
+import { AlertCircle, Info } from 'lucide-react'
 import { classifyExpense, type ClassificationInput, type ClassificationResult as Result } from './expenseData'
 import { exportToPDF } from './exportPDF'
 import { ExpenseInputForm } from './expense-input-form'
@@ -42,8 +42,7 @@ export function FundExpenseAllocation() {
     <div className="space-y-8">
       {/* Header */}
       <div className="space-y-3">
-        <h2 className="text-3xl font-bold tracking-tight flex items-center gap-3">
-          <Scale className="h-8 w-8" />
+        <h2 className="text-3xl font-bold tracking-tight">
           Fund Expense Allocation Helper
         </h2>
         <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
@@ -58,6 +57,9 @@ export function FundExpenseAllocation() {
           </p>
         </div>
       </div>
+
+      {/* Sample Scenarios */}
+      <SampleScenariosSection onLoadSample={handleLoadSample} />
 
       {/* Onboarding */}
       {showOnboarding && (
@@ -133,7 +135,6 @@ export function FundExpenseAllocation() {
             <Card>
               <CardContent className="py-12">
                 <div className="text-center text-muted-foreground">
-                  <Scale className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <p>Select an expense category and fund context to see classification guidance</p>
                 </div>
               </CardContent>
@@ -141,9 +142,6 @@ export function FundExpenseAllocation() {
           )}
         </div>
       </div>
-
-      {/* Sample Scenarios */}
-      <SampleScenariosSection onLoadSample={handleLoadSample} />
     </div>
   )
 }

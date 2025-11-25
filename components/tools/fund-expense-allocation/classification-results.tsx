@@ -147,33 +147,35 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
       )}
 
       {/* Logic Explanation */}
-      <Card>
-        <Collapsible open={showLogic} onOpenChange={setShowLogic}>
-          <CollapsibleTrigger asChild>
-            <CardHeader className="cursor-pointer hover:bg-accent/50 transition-colors">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-base">Classification Logic</CardTitle>
-                {showLogic ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-              </div>
-            </CardHeader>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <CardContent className="border-t pt-4">
-              <p className="text-sm text-muted-foreground mb-4">
-                This classification was determined based on the following factors:
-              </p>
-              <ul className="space-y-2">
-                {result.logicExplanation.map((logic, idx) => (
-                  <li key={idx} className="text-sm text-muted-foreground leading-relaxed flex items-start">
-                    <span className="text-primary mr-2 flex-shrink-0">→</span>
-                    <span>{logic}</span>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </CollapsibleContent>
-        </Collapsible>
-      </Card>
+      {result.logicExplanation.length > 0 && (
+        <Card>
+          <Collapsible open={showLogic} onOpenChange={setShowLogic}>
+            <CollapsibleTrigger asChild>
+              <CardHeader className="cursor-pointer hover:bg-accent/50 transition-colors">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-base">Classification Logic</CardTitle>
+                  {showLogic ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
+                </div>
+              </CardHeader>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <CardContent className="border-t pt-4">
+                <p className="text-sm text-muted-foreground mb-4">
+                  This classification was determined based on the following factors:
+                </p>
+                <ul className="space-y-2">
+                  {result.logicExplanation.map((logic, idx) => (
+                    <li key={idx} className="text-sm text-muted-foreground leading-relaxed flex items-start">
+                      <span className="text-primary mr-2 flex-shrink-0">→</span>
+                      <span>{logic}</span>
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </CollapsibleContent>
+          </Collapsible>
+        </Card>
+      )}
 
       {/* Actions */}
       <Card>
