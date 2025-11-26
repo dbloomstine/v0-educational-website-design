@@ -32,7 +32,7 @@ export default async function FundTypePage({ params }: FundTypePageProps) {
         <section
           className="relative border-b border-border py-20"
           style={{
-            background: `linear-gradient(135deg, oklch(0.165 0.01 250) 0%, ${fundType.color}15 100%)`,
+            background: `linear-gradient(135deg, oklch(0.165 0.01 250) 0%, ${fundType.color.replace(/oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+)\)/, 'oklch(0.19 0.08 $3)')} 100%)`,
           }}
         >
           <div
