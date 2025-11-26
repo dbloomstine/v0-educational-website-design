@@ -8,7 +8,7 @@ import {
   Fund
 } from './types'
 
-const BENEFITS_RATE = 0.20 // 20% for benefits and payroll taxes
+const BENEFITS_RATE = 0.28 // 28% for benefits and payroll taxes (industry standard)
 
 export function calculateBudget(data: BudgetData, showCarry: boolean): CalculationResults {
   const years = data.planningHorizon.years
