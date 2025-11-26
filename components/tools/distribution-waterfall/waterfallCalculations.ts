@@ -189,15 +189,25 @@ function calculateEuropeanWaterfall(input: WaterfallInput): WaterfallOutput {
 
   // Tier 3: GP catch-up
   // Standard PE waterfall catch-up formula:
-  // GP catches up so their total carry equals X% of all profits (gross proceeds - capital)
-  // Formula: Catch-Up Amount = (Total Profits × CarryRate - GP Carry So Far) / CatchUpRate
-  // With 100% catch-up and 20% carry: Catch-Up = Pref × (0.20/0.80) = Pref × 0.25
+  // GP catches up so their total carry (from Tier 3 + Tier 4) equals X% of all profits
+  // Since GP will receive additional carry in Tier 4, we must account for that:
+  // Let C = catch-up amount, R = remaining after catch-up
+  // GP total carry = C * catchUpRate + R * carryRate = gpTargetCarry
+  // Also: C + R = remaining, so R = remaining - C
+  // Solving: C = (gpTargetCarry - remaining * carryRate) / (catchUpRate - carryRate)
+  // With 100% catch-up and 20% carry: C = (targetCarry - remaining * 0.20) / (1.0 - 0.20)
   const totalProfits = input.grossProceeds - input.contributedCapital
   const gpTargetCarry = totalProfits * input.carryRate
   const gpCarrySoFar = cumulativeGP - gpAsLP - (tier2ToGP) // Subtract LP returns (capital + pref)
   const gpCatchUpNeeded = Math.max(0, gpTargetCarry - gpCarrySoFar)
 
-  const tier3Amount = Math.min(remaining, gpCatchUpNeeded / input.catchUpRate)
+  // Calculate catch-up amount accounting for Tier 4 carry
+  const catchUpDenominator = input.catchUpRate - input.carryRate
+  const catchUpAmount = catchUpDenominator > 0
+    ? (gpCatchUpNeeded - remaining * input.carryRate) / catchUpDenominator
+    : gpCatchUpNeeded / input.catchUpRate
+
+  const tier3Amount = Math.min(remaining, Math.max(0, catchUpAmount))
   const tier3ToGP = tier3Amount * input.catchUpRate
   const tier3ToLPs = tier3Amount - tier3ToGP
 
