@@ -4,7 +4,7 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Calendar, ArrowRight } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { getAllBlogPosts } from '@/lib/blog'
 
 export const metadata: Metadata = {
@@ -69,22 +69,11 @@ export default async function BlogPage() {
                     <Link key={post.slug} href={`/blog/${post.slug}`} className="group block">
                       <Card className="transition-all hover:border-accent hover:shadow-lg">
                         <CardHeader>
-                          <div className="mb-3 flex items-center gap-3 text-sm text-muted-foreground">
-                            <Calendar className="h-4 w-4" />
-                            <time dateTime={post.date}>
-                              {new Date(post.date).toLocaleDateString('en-US', {
-                                year: 'numeric',
-                                month: 'long',
-                                day: 'numeric',
-                              })}
-                            </time>
-                            {post.category && (
-                              <>
-                                <span>•</span>
-                                <span className="font-medium">{post.category}</span>
-                              </>
-                            )}
-                          </div>
+                          {post.category && (
+                            <div className="mb-3 text-sm text-muted-foreground">
+                              <span className="font-medium">{post.category}</span>
+                            </div>
+                          )}
                           <CardTitle className="text-2xl group-hover:text-primary transition-colors">
                             {post.title}
                           </CardTitle>

@@ -60,9 +60,37 @@ export function SiteHeader() {
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/blog" className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50">
-                Newsletter
-              </Link>
+              <NavigationMenuTrigger className="bg-transparent">Newsletter</NavigationMenuTrigger>
+              <NavigationMenuContent>
+                <ul className="w-[320px] p-4 space-y-2">
+                  <li>
+                    <Link
+                      href="/newsletter/fundopshq-insights"
+                      className="block rounded-lg border border-border bg-card p-4 transition-all hover:border-accent hover:bg-accent/50"
+                    >
+                      <div className="font-medium text-sm text-foreground">FundOpsHQ Insights</div>
+                      <div className="text-xs text-muted-foreground mt-1">Danny Bloomstine</div>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/newsletter/fundwatch-briefing"
+                      className="block rounded-lg border border-border bg-card p-4 transition-all hover:border-accent hover:bg-accent/50"
+                    >
+                      <div className="font-medium text-sm text-foreground">Fund Watch Briefing</div>
+                      <div className="text-xs text-muted-foreground mt-1">Weekly fund operations intel</div>
+                    </Link>
+                  </li>
+                  <li className="pt-2 border-t border-border mt-2">
+                    <Link
+                      href="/newsletter"
+                      className="block rounded-md p-2 text-sm text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    >
+                      View All Newsletters
+                    </Link>
+                  </li>
+                </ul>
+              </NavigationMenuContent>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
@@ -140,15 +168,40 @@ export function SiteHeader() {
             </div>
 
 
+            {/* Newsletters */}
+            <div className="pt-4 border-t border-border">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Newsletters
+              </h3>
+              <div className="space-y-2">
+                <Link
+                  href="/newsletter/fundopshq-insights"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
+                >
+                  <span className="font-medium text-foreground">FundOpsHQ Insights</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">Danny Bloomstine</span>
+                </Link>
+                <Link
+                  href="/newsletter/fundwatch-briefing"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
+                >
+                  <span className="font-medium text-foreground">Fund Watch Briefing</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">Weekly fund operations intel</span>
+                </Link>
+                <Link
+                  href="/newsletter"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors text-center"
+                >
+                  View All Newsletters
+                </Link>
+              </div>
+            </div>
+
             {/* Other Links */}
             <div className="space-y-2 pt-4 border-t border-border">
-              <Link
-                href="/blog"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-              >
-                Newsletter
-              </Link>
               <Link
                 href="/tools"
                 onClick={() => setMobileMenuOpen(false)}

@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Button } from '@/components/ui/button'
-import { Calendar, ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { getBlogPost, getAllBlogSlugs } from '@/lib/blog'
 
 interface BlogPostPageProps {
@@ -79,22 +79,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
               {/* Post metadata */}
               <div className="mb-8">
-                <div className="mb-4 flex items-center gap-3 text-sm text-muted-foreground">
-                  <Calendar className="h-4 w-4" />
-                  <time dateTime={post.date}>
-                    {new Date(post.date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </time>
-                  {post.category && (
-                    <>
-                      <span>•</span>
-                      <span className="font-medium">{post.category}</span>
-                    </>
-                  )}
-                </div>
+                {post.category && (
+                  <div className="mb-4 text-sm text-muted-foreground">
+                    <span className="font-medium">{post.category}</span>
+                  </div>
+                )}
                 <h1 className="text-5xl font-bold tracking-tight leading-tight">{post.title}</h1>
               </div>
 

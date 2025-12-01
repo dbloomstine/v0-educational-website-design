@@ -36,12 +36,6 @@ const pillars = [
     href: "/funds/private-credit/tax",
   },
   {
-    title: "Middle Office",
-    description: "Trade reconciliation and portfolio monitoring",
-    articleCount: 14,
-    href: "/funds/private-credit/middle-office",
-  },
-  {
     title: "Banking",
     description: "Banking relationships and cash management",
     articleCount: 8,
@@ -103,10 +97,6 @@ export default function PrivateCreditPage() {
             {/* Breadcrumb */}
             <div className="mb-8 flex items-center gap-2 text-sm text-muted-foreground">
               <Link href="/" className="hover:text-foreground transition-colors">
-                Home
-              </Link>
-              <ChevronRight className="h-4 w-4" />
-              <Link href="/funds" className="hover:text-foreground transition-colors">
                 Fund Types
               </Link>
               <ChevronRight className="h-4 w-4" />
@@ -166,14 +156,14 @@ export default function PrivateCreditPage() {
                   <div className="mb-2 text-xs font-medium uppercase tracking-wider text-[oklch(0.55_0.15_150)]">
                     Getting Started
                   </div>
-                  <CardTitle className="text-2xl">Private Credit Operations 101</CardTitle>
+                  <CardTitle className="text-2xl">CFO Responsibilities in Private Credit</CardTitle>
                   <CardDescription className="leading-relaxed">
-                    A comprehensive guide to setting up operations for your private credit fund
+                    Financial oversight, reporting, and strategic decision-making for credit funds
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Link
-                    href="/articles/private-credit-101"
+                    href="/funds/private-credit/cfo"
                     className="inline-flex items-center text-sm font-medium text-[oklch(0.55_0.15_150)] hover:underline"
                   >
                     Read article <ArrowRight className="ml-2 h-4 w-4" />
@@ -186,17 +176,17 @@ export default function PrivateCreditPage() {
                   <div className="mb-2 text-xs font-medium uppercase tracking-wider text-[oklch(0.55_0.15_150)]">
                     Tool
                   </div>
-                  <CardTitle className="text-2xl">Loan Monitoring Checklist</CardTitle>
+                  <CardTitle className="text-2xl">Fund Expense Allocation Helper</CardTitle>
                   <CardDescription className="leading-relaxed">
-                    A detailed checklist for ongoing loan portfolio monitoring
+                    Interactive tool to classify expenses as fund or management company expenses
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Link
-                    href="/tools/loan-monitoring"
+                    href="/tools/fund-expense-allocation"
                     className="inline-flex items-center text-sm font-medium text-[oklch(0.55_0.15_150)] hover:underline"
                   >
-                    Download template <ArrowRight className="ml-2 h-4 w-4" />
+                    Use tool <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </CardContent>
               </Card>

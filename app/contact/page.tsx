@@ -3,9 +3,6 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Label } from '@/components/ui/label'
 import { Mail, MessageSquare, HelpCircle, Lightbulb, FileText, AlertCircle } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -182,60 +179,21 @@ export default function ContactPage() {
                 <CardHeader>
                   <CardTitle>Send Us Your Feedback</CardTitle>
                   <CardDescription>
-                    Fill out the form below and we'll get back to you as soon as possible.
+                    Have a request, suggestion, or feedback? Reach out directly via email.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form
-                    action="mailto:dbloomstine@gmail.com"
-                    method="post"
-                    encType="text/plain"
-                    className="space-y-6"
-                  >
-                    <div className="grid gap-6 sm:grid-cols-2">
-                      <div className="space-y-2">
-                        <Label htmlFor="name">Name</Label>
-                        <Input id="name" name="name" placeholder="Your name" required />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" name="email" type="email" placeholder="your.email@fund.com" required />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="type">Request Type</Label>
-                      <select
-                        id="type"
-                        name="type"
-                        required
-                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        <option value="">Select a type...</option>
-                        <option value="Request Content">Request Content</option>
-                        <option value="Request Tool/Template">Request Tool/Template</option>
-                        <option value="Suggest Update">Suggest Update/Improvement</option>
-                        <option value="Submit Correction">Submit Correction/Insight</option>
-                        <option value="General Feedback">General Feedback</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="message">Message</Label>
-                      <Textarea
-                        id="message"
-                        name="message"
-                        placeholder="Tell us more about your request or feedback..."
-                        rows={6}
-                        required
-                      />
-                    </div>
-
-                    <Button type="submit" size="lg" className="w-full sm:w-auto">
-                      Send Feedback
+                  <div className="text-center space-y-6">
+                    <p className="text-muted-foreground">
+                      Click below to send us an email with your content requests, tool suggestions, corrections, or general feedback.
+                    </p>
+                    <Button asChild size="lg" className="text-lg px-8">
+                      <a href="mailto:danny.bloomstine@iqeq.com?subject=FundOpsHQ Feedback">
+                        <Mail className="mr-2 h-5 w-5" />
+                        Send Feedback
+                      </a>
                     </Button>
-                  </form>
+                  </div>
                 </CardContent>
               </Card>
             </div>

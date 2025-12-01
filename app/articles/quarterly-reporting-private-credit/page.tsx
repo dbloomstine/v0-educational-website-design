@@ -127,29 +127,29 @@ export default function ArticlePage() {
               <div className="mt-20 border-t border-border pt-12">
                 <h2 className="mb-8 text-3xl font-bold">Related Articles</h2>
                 <div className="grid gap-6 md:grid-cols-2">
-                  <Link href="/articles/fund-administrator-selection">
+                  <Link href="/funds/private-credit/fund-administration">
                     <Card className="h-full transition-all hover:border-accent hover:shadow-lg">
                       <CardHeader>
                         <div className="mb-2 text-xs text-muted-foreground">Fund Administration</div>
                         <CardTitle className="text-xl leading-snug text-balance">
-                          Fund Administrator Selection: Key Considerations
+                          Fund Administration for Private Credit
                         </CardTitle>
                         <CardDescription>
-                          What to look for when choosing or switching fund administrators
+                          NAV calculations, investor reporting, and operational best practices
                         </CardDescription>
                       </CardHeader>
                     </Card>
                   </Link>
 
-                  <Link href="/articles/private-credit-101">
+                  <Link href="/funds/private-credit/cfo">
                     <Card className="h-full transition-all hover:border-accent hover:shadow-lg">
                       <CardHeader>
                         <div className="mb-2 text-xs text-muted-foreground">Private Credit</div>
                         <CardTitle className="text-xl leading-snug text-balance">
-                          Private Credit Operations 101
+                          CFO Responsibilities in Private Credit
                         </CardTitle>
                         <CardDescription>
-                          A comprehensive guide to setting up operations for your private credit fund
+                          Financial oversight, reporting, and strategic decision-making for credit funds
                         </CardDescription>
                       </CardHeader>
                     </Card>
