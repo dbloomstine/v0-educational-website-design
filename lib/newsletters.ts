@@ -13,8 +13,8 @@ export const NEWSLETTERS = {
   },
   'fundwatch-briefing': {
     id: 'fundwatch-briefing',
-    name: 'Fund Watch Briefing',
-    author: 'FundOpsHQ',
+    name: 'FundWatch Briefing',
+    author: 'Danny Bloomstine',
     description: 'Weekly fund operations intel. Curated industry news, regulatory updates, and actionable insights.',
     rssFeed: 'https://rss.beehiiv.com/feeds/RhLuK6Ql9l.xml',
     subscribeUrl: 'https://fundwatch-briefing.beehiiv.com/',

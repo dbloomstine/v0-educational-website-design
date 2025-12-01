@@ -77,7 +77,7 @@ export function SiteHeader() {
                       href="/newsletter/fundwatch-briefing"
                       className="block rounded-lg border border-border bg-card p-4 transition-all hover:border-accent hover:bg-accent/50"
                     >
-                      <div className="font-medium text-sm text-foreground">Fund Watch Briefing</div>
+                      <div className="font-medium text-sm text-foreground">FundWatch Briefing</div>
                       <div className="text-xs text-muted-foreground mt-1">Weekly fund operations intel</div>
                     </Link>
                   </li>
@@ -138,7 +138,9 @@ export function SiteHeader() {
           </button>
 
           <Button asChild size="sm" className="hidden md:inline-flex">
-            <Link href="/contact">Let's Chat</Link>
+            <a href="https://outlook.office.com/bookwithme/user/64e88c9063b2407fb03a67e5c3df844d@iqeq.com/meetingtype/2GfPzbwFuEiKymGSplU9ZQ2?anonymous&ismsaljsauthenabled&ep=mcard" target="_blank" rel="noopener noreferrer">
+              Book a Call
+            </a>
           </Button>
         </div>
       </div>
@@ -187,7 +189,7 @@ export function SiteHeader() {
                   onClick={() => setMobileMenuOpen(false)}
                   className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
                 >
-                  <span className="font-medium text-foreground">Fund Watch Briefing</span>
+                  <span className="font-medium text-foreground">FundWatch Briefing</span>
                   <span className="block text-xs text-muted-foreground mt-0.5">Weekly fund operations intel</span>
                 </Link>
                 <Link
@@ -229,9 +231,9 @@ export function SiteHeader() {
             {/* Mobile CTA */}
             <div className="pt-4 border-t border-border">
               <Button asChild size="sm" className="w-full">
-                <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
-                  Let's Chat
-                </Link>
+                <a href="https://outlook.office.com/bookwithme/user/64e88c9063b2407fb03a67e5c3df844d@iqeq.com/meetingtype/2GfPzbwFuEiKymGSplU9ZQ2?anonymous&ismsaljsauthenabled&ep=mcard" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>
+                  Book a Call
+                </a>
               </Button>
             </div>
           </div>

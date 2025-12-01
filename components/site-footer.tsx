@@ -8,12 +8,12 @@ export function SiteFooter() {
       <div className="container mx-auto px-4 py-16">
         {/* CTA Section */}
         <div className="mb-16 rounded-lg border border-border bg-accent/30 p-8 text-center">
-          <h2 className="mb-3 text-2xl font-semibold text-balance">Questions About Fund Ops?</h2>
+          <h2 className="mb-3 text-2xl font-semibold text-balance">Have a Question?</h2>
           <p className="mb-6 text-muted-foreground text-balance">
-            Book a time to chat about your operational challenges—no sales pitch, just helpful conversation
+            I'm happy to be a sounding board, talk through a challenge, or point you in the right direction. No sales pitch.
           </p>
           <Button size="lg" asChild>
-            <Link href="/contact">Book a Conversation</Link>
+            <Link href="/contact">Let's Talk</Link>
           </Button>
         </div>
 
@@ -33,8 +33,8 @@ export function SiteFooter() {
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Resources</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
-                  FundWatch Briefing
+                <Link href="/newsletter" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Newsletters
                 </Link>
               </li>
               <li>
@@ -53,7 +53,7 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">
+                <a href="https://fundopshq-shop.myshopify.com/collections/all" className="text-muted-foreground hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">
                   Shop
                 </a>
               </li>

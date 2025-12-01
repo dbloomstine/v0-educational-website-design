@@ -296,7 +296,7 @@ export default function HomePage() {
                     </Button>
                     <Button variant="outline" asChild size="lg" className="text-base">
                       <Link href="/newsletter/fundwatch-briefing">
-                        Fund Watch Briefing
+                        FundWatch Briefing
                       </Link>
                     </Button>
                   </div>
@@ -318,17 +318,17 @@ export default function HomePage() {
             <div className="mx-auto max-w-3xl text-center">
               <h2 className="mb-4 text-3xl font-bold tracking-tight">Built by fund ops professionals</h2>
               <p className="mb-8 text-lg text-muted-foreground text-balance leading-relaxed">
-                FundOpsHQ was created to share practical knowledge from years of experience across private equity, venture capital, credit, and alternative asset fund operations.
+                FundOpsHQ was created to share practical knowledge from years of experience across private equity, venture capital, credit, and alternative asset fund operations. Have a question or want to talk through a challenge? I'm happy to help.
               </p>
               <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
                 <Button variant="outline" asChild size="lg">
                   <Link href="/about">
-                    Learn More About Us
+                    About FundOpsHQ
                   </Link>
                 </Button>
                 <Button asChild size="lg">
                   <Link href="/contact">
-                    Get in Touch
+                    Let's Talk
                   </Link>
                 </Button>
               </div>

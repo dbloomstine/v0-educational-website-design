@@ -1,28 +1,52 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Mail, MessageSquare, HelpCircle, Lightbulb, FileText, AlertCircle } from 'lucide-react'
+import { Mail, Calendar, MessageCircle, Compass, Users, Lightbulb } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Contact FundOpsHQ - Get Help with Fund Operations',
-  description: 'Get in touch with FundOpsHQ for tailored guidance on your fund operations challenges. We provide expert consultation for CFOs, COOs, and operations professionals.',
+  title: 'Let\'s Talk | FundOpsHQ',
+  description: 'Have a question about fund operations? Want to think through a challenge? I\'m happy to chat, offer guidance, or point you in the right direction. No obligation, no pressure.',
   openGraph: {
-    title: 'Contact FundOpsHQ - Get Help with Fund Operations',
-    description: 'Get expert guidance on your fund operations challenges across all asset classes.',
+    title: 'Let\'s Talk | FundOpsHQ',
+    description: 'Have a question about fund operations? I\'m happy to chat and help however I can.',
     type: 'website',
     url: 'https://fundops.com/contact',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Contact FundOpsHQ',
-    description: 'Get expert guidance on your fund operations challenges.',
+    title: 'Let\'s Talk | FundOpsHQ',
+    description: 'Have a question about fund operations? I\'m happy to chat and help however I can.',
   },
   alternates: {
     canonical: 'https://fundops.com/contact',
   },
 }
+
+const topicsToDiscuss = [
+  {
+    icon: Compass,
+    title: "Fund operations questions",
+    description: "Thinking through a process, evaluating options, or just need a second opinion"
+  },
+  {
+    icon: Lightbulb,
+    title: "Launching a fund",
+    description: "Early-stage questions about standing up operations, choosing vendors, or getting organized"
+  },
+  {
+    icon: Users,
+    title: "Career & industry",
+    description: "Breaking into fund ops, growing in the field, or understanding the landscape"
+  },
+  {
+    icon: MessageCircle,
+    title: "Something else entirely",
+    description: "If you're not sure whether to reach out—go ahead. Happy to help or point you in the right direction"
+  },
+]
 
 export default function ContactPage() {
   return (
@@ -31,171 +55,150 @@ export default function ContactPage() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="border-b border-border bg-gradient-to-b from-background to-accent/20 py-20">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-3xl text-center">
-              <h1 className="mb-6 text-5xl font-bold tracking-tight text-balance">
-                Let's Talk Fund Operations
+        <section className="relative border-b border-border overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/20" />
+
+          <div className="container relative mx-auto px-4 py-24 lg:py-32">
+            <div className="mx-auto max-w-3xl">
+              <h1 className="mb-6 text-5xl font-bold tracking-tight text-balance lg:text-6xl">
+                Let's talk
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed text-balance">
-                Have questions about fund ops? Want to discuss a specific challenge? Book a time to chat—no sales pitch, just helpful conversation.
+                I'm Danny—the person behind FundOpsHQ. If you have a question, want to think through a challenge,
+                or just want to talk shop about fund operations, I'm happy to chat.
               </p>
             </div>
           </div>
         </section>
 
-        {/* How We Can Help Section */}
+        {/* Philosophy Section */}
         <section className="py-20">
           <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-4xl">
-              <h2 className="mb-12 text-center text-3xl font-bold">How We Can Help</h2>
-
-              <div className="grid gap-8 md:grid-cols-3">
-                <Card>
-                  <CardHeader>
-                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-accent">
-                      <HelpCircle className="h-6 w-6" />
-                    </div>
-                    <CardTitle className="text-lg">Operational Guidance</CardTitle>
-                    <CardDescription className="leading-relaxed">
-                      Expert advice on fund operations challenges across all functional areas including CFO,
-                      compliance, fund administration, and investor relations.
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-accent">
-                      <MessageSquare className="h-6 w-6" />
-                    </div>
-                    <CardTitle className="text-lg">Process Optimization</CardTitle>
-                    <CardDescription className="leading-relaxed">
-                      Recommendations for streamlining operations, improving efficiency, and implementing
-                      industry best practices.
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-accent">
-                      <Mail className="h-6 w-6" />
-                    </div>
-                    <CardTitle className="text-lg">Custom Consultation</CardTitle>
-                    <CardDescription className="leading-relaxed">
-                      Tailored support for your specific fund type, whether Private Equity, Hedge Funds,
-                      Real Estate, or other asset classes.
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
+            <div className="mx-auto max-w-3xl">
+              <div className="prose prose-lg max-w-none">
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  I built this site to share what I've learned from years of working in fund operations.
+                  But I know that sometimes you need more than an article—you need to talk something through
+                  with someone who gets it.
+                </p>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  That's what I'm here for. I'm genuinely happy to be a sounding board, offer guidance where I can,
+                  or just have a conversation. There's no sales pitch, no obligation, and no pressure.
+                  If I can help directly, great. If not, I'll do my best to point you toward the right resources
+                  or make an introduction to someone who can.
+                </p>
+                <p className="text-lg text-foreground leading-relaxed font-medium">
+                  You're welcome here. Reach out.
+                </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Booking Section */}
-        <section className="border-y border-border bg-accent/20 py-20">
+        {/* Topics Section */}
+        <section className="py-16 border-y border-border bg-card/30">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-4xl">
-              <div className="mb-8 text-center">
-                <h2 className="mb-4 text-3xl font-bold">Book a Time to Chat</h2>
-                <p className="text-muted-foreground text-balance">
-                  Pick a time that works for you. We can discuss your specific operational challenges, answer questions, or just talk shop about fund operations.
-                </p>
-              </div>
-
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="text-center space-y-6">
-                    <p className="text-lg text-muted-foreground">
-                      Click below to see available times and book directly on my calendar.
-                    </p>
-                    <Button asChild size="lg" className="text-lg px-8">
-                      <a href="https://outlook.office.com/bookwithme/user/64e88c9063b2407fb03a67e5c3df844d@iqeq.com/meetingtype/2GfPzbwFuEiKymGSplU9ZQ2?anonymous&ismsaljsauthenabled&ep=mcard" target="_blank" rel="noopener noreferrer">
-                        View Available Times
-                      </a>
-                    </Button>
-                    <p className="text-sm text-muted-foreground">
-                      Or connect with me on <a href="https://www.linkedin.com/in/danny-bloomstine/" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary underline">LinkedIn</a>
-                    </p>
+              <h2 className="mb-8 text-2xl font-bold">Things I'm happy to discuss</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {topicsToDiscuss.map((topic) => (
+                  <div
+                    key={topic.title}
+                    className="flex items-start gap-4 p-4 rounded-lg border border-border/60 bg-card"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent">
+                      <topic.icon className="h-5 w-5 text-foreground" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-foreground">{topic.title}</h3>
+                      <p className="text-sm text-muted-foreground mt-1">{topic.description}</p>
+                    </div>
                   </div>
-                </CardContent>
-              </Card>
+                ))}
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Feedback & Requests Section */}
+        {/* Contact Options */}
         <section className="py-20">
           <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-4xl">
-              <div className="mb-12 text-center">
-                <h2 className="mb-4 text-3xl font-bold">Request Content, Tools, or Share Feedback</h2>
-                <p className="text-muted-foreground text-balance">
-                  Help us improve FundOpsHQ. Request new content topics, suggest tool ideas, submit corrections, or share insights from your experience.
-                </p>
-              </div>
+            <div className="mx-auto max-w-3xl">
+              <h2 className="mb-4 text-3xl font-bold text-center">How to reach me</h2>
+              <p className="mb-12 text-center text-muted-foreground text-balance">
+                Pick whichever works best for you. I try to respond within a day or two.
+              </p>
 
-              <div className="grid gap-6 md:grid-cols-3 mb-12">
-                <Card>
-                  <CardHeader>
-                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent">
-                      <FileText className="h-5 w-5" />
+              <div className="grid gap-6 sm:grid-cols-2">
+                {/* Book a Conversation */}
+                <Card className="border-border/60">
+                  <CardContent className="pt-8 pb-8 text-center">
+                    <div className="mb-4 mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent">
+                      <Calendar className="h-7 w-7 text-foreground" />
                     </div>
-                    <CardTitle className="text-base">Request Content</CardTitle>
-                    <CardDescription className="text-sm leading-relaxed">
-                      Missing a topic? Let us know what fund operations content you'd like to see.
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent">
-                      <Lightbulb className="h-5 w-5" />
-                    </div>
-                    <CardTitle className="text-base">Suggest Tools</CardTitle>
-                    <CardDescription className="text-sm leading-relaxed">
-                      Need a specific template or tool? Share your ideas with us.
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent">
-                      <AlertCircle className="h-5 w-5" />
-                    </div>
-                    <CardTitle className="text-base">Submit Corrections</CardTitle>
-                    <CardDescription className="text-sm leading-relaxed">
-                      Spot an error or have additional insights? Help us keep content accurate.
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              </div>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Send Us Your Feedback</CardTitle>
-                  <CardDescription>
-                    Have a request, suggestion, or feedback? Reach out directly via email.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center space-y-6">
-                    <p className="text-muted-foreground">
-                      Click below to send us an email with your content requests, tool suggestions, corrections, or general feedback.
+                    <h3 className="mb-2 text-xl font-semibold">Book a conversation</h3>
+                    <p className="mb-6 text-muted-foreground text-sm">
+                      Grab a time on my calendar. Usually 20-30 minutes is plenty to talk through most things.
                     </p>
-                    <Button asChild size="lg" className="text-lg px-8">
-                      <a href="mailto:danny.bloomstine@iqeq.com?subject=FundOpsHQ Feedback">
-                        <Mail className="mr-2 h-5 w-5" />
-                        Send Feedback
+                    <Button asChild size="lg" className="w-full">
+                      <a
+                        href="https://outlook.office.com/bookwithme/user/64e88c9063b2407fb03a67e5c3df844d@iqeq.com/meetingtype/2GfPzbwFuEiKymGSplU9ZQ2?anonymous&ismsaljsauthenabled&ep=mcard"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Pick a Time
                       </a>
                     </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+
+                {/* Send an Email */}
+                <Card className="border-border/60">
+                  <CardContent className="pt-8 pb-8 text-center">
+                    <div className="mb-4 mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-accent">
+                      <Mail className="h-7 w-7 text-foreground" />
+                    </div>
+                    <h3 className="mb-2 text-xl font-semibold">Send me an email</h3>
+                    <p className="mb-6 text-muted-foreground text-sm">
+                      If you prefer to write it out or have something quick, email works great.
+                    </p>
+                    <Button asChild variant="outline" size="lg" className="w-full">
+                      <a href="mailto:danny.bloomstine@iqeq.com">
+                        Send Email
+                      </a>
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Brief context */}
+              <div className="mt-12 text-center">
+                <p className="text-sm text-muted-foreground">
+                  By day, I'm a Managing Director at{' '}
+                  <a
+                    href="https://iqeq.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-foreground hover:underline"
+                  >
+                    IQ-EQ
+                  </a>
+                  , where I work with fund managers on administration, compliance, and operations.
+                  But FundOpsHQ is a personal project—when you reach out here, you're talking to me, not a sales team.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Closing */}
+        <section className="py-16 border-t border-border bg-accent/10">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-2xl text-center">
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                Not sure if your question is "worth" reaching out about? It is.
+                I'd rather have a quick conversation than have you stuck on something.
+              </p>
             </div>
           </div>
         </section>
