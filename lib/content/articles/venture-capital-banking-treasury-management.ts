@@ -11,7 +11,11 @@ const article: Article = {
 
 <h2>Banking Relationship Selection for VC Velocity</h2>
 
+<h3>Selection Criteria Overview</h3>
+
 <p>Venture capital funds establish banking relationships with fundamentally different operational priorities than buyout or credit managers. Where buyout funds prioritize warehouse facility capacity and credit funds focus on loan servicing capabilities, VC funds select banking partners based on execution speed, subscription line flexibility, international wire capabilities, and relationship teams that understand the compressed timelines inherent to competitive venture deals.</p>
+
+<h3>Fund-Size Specific Needs</h3>
 
 <p>Early-stage VC funds managing $50 million to $250 million typically establish relationships with one or two banks that provide both operating accounts and subscription facilities. The primary selection criteria focus on the bank's willingness to process wires quickly, its experience with venture fund structures and capital call patterns, its ability to provide responsive support during deal closings that might happen outside standard business hours, and the competitiveness of its subscription facility pricing for smaller commitment bases. Emerging managers often find that specialized fund finance boutiques or regional banks offer more attentive service and competitive pricing than bulge bracket institutions that prioritize larger relationships.</p>
 
@@ -23,9 +27,13 @@ const article: Article = {
 
 <h2>Account Structure for High Transaction Velocity</h2>
 
+<h3>Operating Account Framework</h3>
+
 <p>Venture capital funds structure bank accounts to accommodate high transaction volumes while maintaining appropriate segregation and control. Unlike buyout funds that might execute a handful of large transactions quarterly, VC funds process dozens or hundreds of transactions monthly, including initial investments, follow-on financings, pro-rata participations, bridge notes, and SAFE conversions.</p>
 
 <p>The primary operating account serves as the central hub for all fund cash activity. Early-stage VC funds often maintain all operations through a single operating account, finding that additional account complexity creates more administrative burden than organizational benefit. This account receives capital call proceeds, disburses investment wires, pays fund expenses, and processes distributions to limited partners. Treasury teams establish detailed transaction coding systems that categorize each wire by portfolio company, investment round, and transaction type, enabling accurate accounting without requiring separate accounts for different activity types.</p>
+
+<h3>Specialized Account Types</h3>
 
 <p>Subscription facility accounts operate under controlled disbursement arrangements where the lender maintains security interests. When funds draw on subscription lines to fund investments, proceeds flow into designated accounts pledged to the facility lender. The control structure ensures that capital called to repay subscription borrowings actually reaches the lender. VC funds that maintain near-continuous subscription line utilization during active deployment periods establish efficient procedures for coordinating draws, investment execution, and capital call timing to minimize interest expense while maintaining necessary liquidity.</p>
 
@@ -35,7 +43,11 @@ const article: Article = {
 
 <h2>Subscription Lines for Rapid Deployment Cycles</h2>
 
+<h3>Facility Structure and Sizing</h3>
+
 <p>Subscription credit facilities serve critical functions in venture capital fund operations, providing the liquidity necessary to move quickly on competitive investments without requiring emergency capital calls that disrupt limited partner treasury planning. The structure and utilization of these facilities differs meaningfully from buyout fund applications due to the compressed timelines and staged deployment patterns characteristic of venture investing.</p>
+
+<h3>VC-Specific Features</h3>
 
 <p>VC funds structure subscription facilities as revolving credit agreements secured by unfunded limited partner commitments, similar to other fund types. However, several features distinguish venture applications. Facility sizing typically ranges from 15% to 25% of total commitments, providing sufficient capacity for several months of active deployment without requiring frequent capital calls. A $200 million seed fund might establish a $40 million facility (20% of commitments), allowing it to make ten to twenty seed investments before needing to call capital, while a $750 million growth fund might establish a $150 million facility (20% of commitments) supporting three to five large growth investments plus several follow-on participations.</p>
 
@@ -43,17 +55,25 @@ const article: Article = {
 
 <p>Subscription facility documentation for venture funds includes standard provisions around borrowing base calculations, LP eligibility criteria, and covenant requirements. However, venture facilities often include more flexibility around draw procedures, recognizing the need for quick access to capital when competitive situations arise. Some facilities permit same-day draws up to specified sublimits, allowing funds to wire investment proceeds on short notice without waiting for standard multi-day draw procedures. This flexibility proves invaluable when a hot Series A round is oversubscribed and the fund needs to wire its commitment within hours to secure allocation.</p>
 
+<h3>Covenants and Pricing</h3>
+
 <p>Covenant structures in venture subscription facilities focus heavily on LP credit quality and commitment coverage. Lenders establish borrowing bases that include only commitments from LPs meeting creditworthiness thresholds, often excluding family offices, high-net-worth individuals, or investors domiciled in jurisdictions with uncertain capital call enforcement. A facility might permit 100% borrowing against commitments from university endowments, public pension funds, and highly rated insurance companies, while limiting borrowing to 50% or 75% against commitments from other institutional investors and excluding individual investor commitments entirely.</p>
 
 <p>Pricing for venture fund subscription facilities generally aligns with broader fund finance market terms, with interest rates based on SOFR plus spreads ranging from 150 to 275 basis points. Established venture managers with institutional LP bases command tighter pricing, while emerging managers pay modestly higher spreads reflecting execution risk. The all-in cost of a subscription facility, including unused commitment fees and arrangement fees, typically ranges from 2.5% to 4.0% annually, creating meaningful expense for funds maintaining continuous utilization but remaining economically attractive relative to alternative liquidity sources.</p>
 
 <h2>Rapid Wire Execution for Competitive Deals</h2>
 
+<h3>Deal Timing Pressures</h3>
+
 <p>The competitive dynamics of venture investing create situations where funds must execute wire transfers on extremely compressed timelines—sometimes within hours of making an investment decision. This urgency demands banking relationships, internal procedures, and control frameworks specifically designed for rapid execution without sacrificing appropriate oversight.</p>
+
+<h3>Banking Execution Capabilities</h3>
 
 <p>Hot venture deals, particularly in competitive segments like artificial intelligence, fintech, or healthcare technology, often close within days of initial term sheets. When a promising Series B company receives multiple competing term sheets, the closing timeline might compress from the typical three to four weeks to seven to ten days, requiring participating investors to complete due diligence, negotiate documentation, and wire funds on extremely short notice. Funds that cannot execute quickly risk losing allocation in oversubscribed rounds or missing opportunities entirely when founders select investors based partly on execution certainty.</p>
 
 <p>Banking relationships that support rapid execution include several specific capabilities. Same-day wire processing proves essential, requiring banks to accept wire requests until late in the business day and process them before same-day cutoff times. Relationship bankers with authority to expedite large wires enable funds to execute seven-figure transfers without delays from standard institutional approval procedures. After-hours support, including mobile contact information for relationship teams, allows funds to coordinate weekend or evening wire execution when deals close outside standard business hours. International wire capabilities with efficient SWIFT processing enable funds to wire funds to foreign bank accounts without the multi-day delays that can occur with less sophisticated international banking platforms.</p>
+
+<h3>Internal Controls and Templates</h3>
 
 <p>Internal procedures for wire execution balance speed against fraud prevention and appropriate control. Most VC funds establish dual-control requirements for outgoing wires above specified thresholds, typically $2 million to $5 million, requiring two authorized signatories to approve and execute each wire. This control prevents fraud while still enabling rapid execution since most venture investments fall below these thresholds. For investments above the threshold, funds maintain clear escalation procedures that identify backup signatories available for evening or weekend approvals when necessary.</p>
 
@@ -63,7 +83,11 @@ const article: Article = {
 
 <h2>Signature Authority for Investment Pace</h2>
 
+<h3>Tiered Authority Frameworks</h3>
+
 <p>Venture capital funds establish signature authority frameworks that enable rapid investment decisions while maintaining appropriate controls and limiting operational risk. Unlike buyout funds where investment committees might meet monthly to approve large transactions, VC funds require flexible approval processes that accommodate weekly or even daily investment decisions during active periods.</p>
+
+<h3>Implementation and Succession</h3>
 
 <p>Most venture funds delegate signature authority to general partners or designated investment partners for investments below specified thresholds. A typical framework might grant any individual general partner authority to execute investments up to $1 million, require two general partners for investments between $1 million and $5 million, and require full investment committee approval for investments exceeding $5 million. This tiered structure balances execution speed against oversight, allowing small seed investments and follow-on participations to proceed quickly while ensuring that large initial investments receive fuller review.</p>
 
@@ -77,13 +101,19 @@ const article: Article = {
 
 <h2>Capital Call Cycles for VC Deployment Patterns</h2>
 
+<h3>Deployment Patterns</h3>
+
 <p>Venture capital funds execute capital calls with different rhythms and patterns than buyout or credit funds, reflecting the staged nature of venture deployment and the high volume of relatively smaller individual investments. Understanding optimal capital call timing and sizing requires balancing limited partner preferences for infrequent calls against the fund's need for continuous liquidity.</p>
+
+<h3>Call Frequency and Sizing</h3>
 
 <p>Typical VC deployment patterns involve making fifteen to thirty initial investments over a two to three year period, with each initial investment followed by two to five follow-on investments as companies raise subsequent financing rounds. A $200 million seed fund might make twenty-five initial $2 million to $4 million investments, then make fifty to one hundred follow-on investments ranging from $500,000 to $3 million as portfolio companies raise Series A, Series B, and later rounds. This deployment pattern creates nearly continuous investment activity throughout the fund's life, contrasting with buyout funds that make fewer, larger, more discrete investments.</p>
 
 <p>Capital call frequency balances fund liquidity needs against LP preferences. Most limited partners prefer quarterly or less frequent capital calls, finding that more frequent calls create administrative burden for their treasury operations. However, venture funds making numerous investments monthly cannot realistically limit calls to quarterly cycles without maintaining extremely large subscription line balances or cash reserves. Most funds establish quarterly capital call rhythms during active deployment, occasionally moving to monthly calls during particularly active periods or reverting to semi-annual calls as deployment slows later in fund life.</p>
 
 <p>Capital call sizing involves calculating the amount needed to repay outstanding subscription line balances, fund near-term anticipated investments, maintain appropriate cash reserves for follow-on participations, and cover several months of operating expenses. A typical quarterly capital call might repay $15 million to $25 million of subscription line borrowings, add $5 million to $10 million of cash for anticipated near-term investments, and provide $2 million to $3 million for operating expenses. The resulting call might total 15% to 25% of total commitments, though sizing varies significantly based on deployment pace and subscription line utilization.</p>
+
+<h3>Mechanics and Defaults</h3>
 
 <p>Notice periods for capital calls typically range from ten to fifteen business days, allowing limited partners sufficient time to arrange funding. Limited partnership agreements specify exact notice requirements, often permitting funds to call capital on shorter notice if critical opportunities arise but generally establishing ten-day minimum notices. Some funds provide advance notice of upcoming calls through quarterly letters to LPs, flagging that a capital call should be expected in the coming weeks, which helps LPs plan their own liquidity even before formal notices arrive.</p>
 
@@ -93,7 +123,11 @@ const article: Article = {
 
 <h2>Cash Management in High-Velocity Environments</h2>
 
+<h3>Balance Strategies</h3>
+
 <p>Venture capital funds maintain different cash management approaches than buyout or credit managers, reflecting their deployment patterns, transaction volumes, and limited partner base characteristics. Optimal cash management balances maintaining sufficient liquidity for rapid investment execution against maximizing returns on uninvested capital and limiting drag from unused commitments.</p>
+
+<h3>Cash Targets and Investment</h3>
 
 <p>Target cash balances vary based on deployment pace and pipeline visibility. Funds in active early deployment might maintain cash balances equal to 15% to 25% of total commitments, providing liquidity for several months of anticipated investments. A $300 million fund might maintain $45 million to $75 million in cash, sufficient for fifteen to twenty-five seed investments without requiring emergency capital calls. As deployment slows in later fund years, target balances decline to levels sufficient for follow-on participation and operating expenses, often 5% to 10% of commitments.</p>
 
@@ -105,7 +139,11 @@ const article: Article = {
 
 <h2>Treasury Technology and Automation</h2>
 
+<h3>Platform Selection</h3>
+
 <p>Venture capital fund treasury operations increasingly rely on technology platforms that automate routine processes, reduce manual errors, and provide real-time visibility into cash positions and facility utilization. The sophistication of technology deployment scales with fund size and transaction volumes, with smaller funds using basic online banking tools while larger platforms implement comprehensive treasury management systems.</p>
+
+<h3>Systems and Integration</h3>
 
 <p>Online banking platforms provided by fund banks offer basic treasury automation including wire templates for repeat recipients, scheduled payment capabilities, configurable approval workflows enforcing signature authority policies, and real-time balance visibility across accounts. Most VC funds operate effectively using these standard banking platforms supplemented by detailed Excel-based tracking systems for forecasting cash needs and planning capital calls.</p>
 
