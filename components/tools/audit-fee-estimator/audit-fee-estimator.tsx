@@ -7,7 +7,7 @@ import { AlertCircle, RotateCcw } from 'lucide-react'
 import { AuditInput, PricingOutput, calculateAuditPricing, defaultInput, getFundTypeName, getFundSizeName } from './pricingData'
 import { InputForm } from './input-form'
 import { PricingResults } from './pricing-results'
-import { exportAuditSummary } from './export'
+import { exportAuditCSV, exportAuditPDF } from './export'
 
 export function AuditFeeEstimator() {
   const [input, setInput] = useState<AuditInput>(defaultInput)
@@ -24,9 +24,15 @@ export function AuditFeeEstimator() {
     setResults(calculateAuditPricing(defaultInput))
   }
 
-  const handleExport = () => {
+  const handleExportCSV = () => {
     if (results) {
-      exportAuditSummary(input, results)
+      exportAuditCSV(input, results)
+    }
+  }
+
+  const handleExportPDF = () => {
+    if (results) {
+      exportAuditPDF(input, results)
     }
   }
 
@@ -87,7 +93,11 @@ export function AuditFeeEstimator() {
           {results ? (
             <>
               <h3 className="text-xl font-semibold mb-4">Your Audit Fee Estimate</h3>
-              <PricingResults results={results} onExport={handleExport} />
+              <PricingResults
+                results={results}
+                onExportCSV={handleExportCSV}
+                onExportPDF={handleExportPDF}
+              />
             </>
           ) : (
             <Card>

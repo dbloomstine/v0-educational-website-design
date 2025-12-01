@@ -138,9 +138,9 @@ export function SiteHeader() {
           </button>
 
           <Button asChild size="sm" className="hidden md:inline-flex">
-            <a href="https://outlook.office.com/bookwithme/user/64e88c9063b2407fb03a67e5c3df844d@iqeq.com/meetingtype/2GfPzbwFuEiKymGSplU9ZQ2?anonymous&ismsaljsauthenabled&ep=mcard" target="_blank" rel="noopener noreferrer">
-              Book a Call
-            </a>
+            <Link href="/contact">
+              Contact
+            </Link>
           </Button>
         </div>
       </div>
@@ -231,9 +231,9 @@ export function SiteHeader() {
             {/* Mobile CTA */}
             <div className="pt-4 border-t border-border">
               <Button asChild size="sm" className="w-full">
-                <a href="https://outlook.office.com/bookwithme/user/64e88c9063b2407fb03a67e5c3df844d@iqeq.com/meetingtype/2GfPzbwFuEiKymGSplU9ZQ2?anonymous&ismsaljsauthenabled&ep=mcard" target="_blank" rel="noopener noreferrer" onClick={() => setMobileMenuOpen(false)}>
-                  Book a Call
-                </a>
+                <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
+                  Contact
+                </Link>
               </Button>
             </div>
           </div>

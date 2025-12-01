@@ -8,7 +8,6 @@ import { AlertCircle, Calculator } from 'lucide-react'
 import { FundFormationTimeline } from './fund-formation-timeline/fund-formation-timeline'
 import { ManagementFeeCalculator } from './management-fee-calculator/management-fee-calculator'
 import { ManagementCompanyBudget } from './management-company-budget/management-company-budget'
-import { SideLetterObligations } from './side-letter-obligations/side-letter-obligations'
 import { FundExpenseAllocation } from './fund-expense-allocation/fund-expense-allocation'
 import { FundAdminPricing } from './fund-admin-pricing/fund-admin-pricing'
 import { AuditFeeEstimator } from './audit-fee-estimator/audit-fee-estimator'
@@ -66,19 +65,6 @@ export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-7xl">
             <ManagementCompanyBudget />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // If this is the Side Letter Obligations tool, render the actual tool
-  if (tool.slug === 'side-letter-obligations') {
-    return (
-      <div className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-7xl">
-            <SideLetterObligations />
           </div>
         </div>
       </div>

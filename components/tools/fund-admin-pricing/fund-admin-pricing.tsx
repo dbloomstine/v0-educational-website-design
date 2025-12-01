@@ -7,7 +7,7 @@ import { AlertCircle, RotateCcw } from 'lucide-react'
 import { FundAdminInput, PricingOutput, calculateAdminPricing, defaultInput, getFundTypeName, formatCurrency } from './pricingData'
 import { InputForm } from './input-form'
 import { PricingResults } from './pricing-results'
-import { exportPricingSummary } from './export'
+import { exportPricingCSV, exportPricingPDF } from './export'
 
 export function FundAdminPricing() {
   const [input, setInput] = useState<FundAdminInput>(defaultInput)
@@ -24,9 +24,15 @@ export function FundAdminPricing() {
     setResults(calculateAdminPricing(defaultInput))
   }
 
-  const handleExport = () => {
+  const handleExportCSV = () => {
     if (results) {
-      exportPricingSummary(input, results)
+      exportPricingCSV(input, results)
+    }
+  }
+
+  const handleExportPDF = () => {
+    if (results) {
+      exportPricingPDF(input, results)
     }
   }
 
@@ -85,7 +91,11 @@ export function FundAdminPricing() {
           {results ? (
             <>
               <h3 className="text-xl font-semibold mb-4">Pricing Estimate</h3>
-              <PricingResults results={results} onExport={handleExport} />
+              <PricingResults
+                results={results}
+                onExportCSV={handleExportCSV}
+                onExportPDF={handleExportPDF}
+              />
             </>
           ) : (
             <Card>

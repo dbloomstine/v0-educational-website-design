@@ -2,46 +2,42 @@
 
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { ChevronDown, ChevronUp, Download, AlertCircle, TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { ChevronDown, ChevronUp, AlertCircle, TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import { PricingOutput, formatCurrency } from './pricingData'
+import { includedServices, outOfScopeServices } from './export'
+import { ExportToolbar } from '@/components/tools/shared'
+import { DisclaimerBlock } from '@/components/tools/shared'
 
 interface PricingResultsProps {
   results: PricingOutput
-  onExport: () => void
+  onExportCSV: () => void
+  onExportPDF: () => void
 }
 
-export function PricingResults({ results, onExport }: PricingResultsProps) {
+export function PricingResults({ results, onExportCSV, onExportPDF }: PricingResultsProps) {
   const [showDrivers, setShowDrivers] = useState(true)
   const [showScope, setShowScope] = useState(false)
+  const [csvLoading, setCsvLoading] = useState(false)
+  const [pdfLoading, setPdfLoading] = useState(false)
 
   const { lowEstimate, mediumEstimate, highEstimate, drivers } = results
 
-  // Scope of services
-  const included = [
-    'Annual financial statement audit (balance sheet, income statement, cash flows, changes in partners\' capital)',
-    'Review of internal controls and key processes',
-    'Coordination with fund administrator (if applicable)',
-    'Review of valuation methodology and supporting evidence for portfolio investments',
-    'Partner/investor capital statements and capital activity verification',
-    'Audit of carried interest calculations (basic waterfall)',
-    'Audit opinion and signed financial statements',
-    'Management representation letter',
-    'Review of compliance with LPA economic terms'
-  ]
+  const handleCSVExport = () => {
+    setCsvLoading(true)
+    setTimeout(() => {
+      onExportCSV()
+      setCsvLoading(false)
+    }, 100)
+  }
 
-  const outOfScope = [
-    'Tax return preparation and filing (Form 1065, K-1s, state returns)',
-    'Complex tax structuring or tax planning advice',
-    'SOC 1 or SOC 2 reports (service organization controls)',
-    'Agreed-upon procedures (AUPs) for specific LP requests',
-    'Special regulatory reports (e.g., AIFMD, non-standard filings)',
-    'Interim reviews (quarterly or semi-annual)',
-    'Portfolio company audits or reviews',
-    'Forensic accounting or dispute resolution',
-    'Management company (GP) audit (separate engagement)'
-  ]
+  const handlePDFExport = () => {
+    setPdfLoading(true)
+    setTimeout(() => {
+      onExportPDF()
+      setPdfLoading(false)
+    }, 100)
+  }
 
   return (
     <div className="space-y-6">
@@ -174,12 +170,12 @@ export function PricingResults({ results, onExport }: PricingResultsProps) {
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
                   <h4 className="font-semibold text-sm mb-3 text-green-700 dark:text-green-400 flex items-center gap-2">
-                    <span className="text-lg">✓</span> Included in Base Audit
+                    <span className="text-lg">Included</span> in Base Audit
                   </h4>
                   <ul className="space-y-2">
-                    {included.map((item, idx) => (
+                    {includedServices.map((item, idx) => (
                       <li key={idx} className="text-xs text-muted-foreground leading-relaxed flex items-start gap-2">
-                        <span className="text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5">•</span>
+                        <span className="text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5">-</span>
                         <span>{item}</span>
                       </li>
                     ))}
@@ -187,12 +183,12 @@ export function PricingResults({ results, onExport }: PricingResultsProps) {
                 </div>
                 <div>
                   <h4 className="font-semibold text-sm mb-3 text-orange-700 dark:text-orange-400 flex items-center gap-2">
-                    <span className="text-lg">×</span> Usually Billed Separately
+                    <span className="text-lg">Usually</span> Billed Separately
                   </h4>
                   <ul className="space-y-2">
-                    {outOfScope.map((item, idx) => (
+                    {outOfScopeServices.map((item, idx) => (
                       <li key={idx} className="text-xs text-muted-foreground leading-relaxed flex items-start gap-2">
-                        <span className="text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5">•</span>
+                        <span className="text-orange-600 dark:text-orange-400 flex-shrink-0 mt-0.5">-</span>
                         <span>{item}</span>
                       </li>
                     ))}
@@ -209,23 +205,18 @@ export function PricingResults({ results, onExport }: PricingResultsProps) {
         </Collapsible>
       </Card>
 
-      {/* Export Button */}
-      <Card>
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div>
-              <h4 className="font-medium mb-1">Export Your Estimate</h4>
-              <p className="text-sm text-muted-foreground">
-                Download a summary to share with audit firms when requesting formal proposals
-              </p>
-            </div>
-            <Button onClick={onExport} size="lg">
-              <Download className="h-4 w-4 mr-2" />
-              Export Summary
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Export Toolbar */}
+      <ExportToolbar
+        onExportCSV={handleCSVExport}
+        onExportPDF={handlePDFExport}
+        csvLoading={csvLoading}
+        pdfLoading={pdfLoading}
+      />
+
+      {/* Disclaimer */}
+      <DisclaimerBlock
+        additionalDisclaimer="Always obtain formal proposals from qualified audit firms and consult with your legal and financial advisors before making decisions."
+      />
     </div>
   )
 }

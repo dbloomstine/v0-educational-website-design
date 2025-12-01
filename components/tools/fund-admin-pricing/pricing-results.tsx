@@ -2,22 +2,44 @@
 
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { ChevronDown, ChevronUp, Download, AlertCircle, CheckCircle2, XCircle } from 'lucide-react'
+import { ChevronDown, ChevronUp, AlertCircle, CheckCircle2, XCircle } from 'lucide-react'
 import { PricingOutput, formatCurrency } from './pricingData'
+import { ExportToolbar } from '@/components/tools/shared'
+import { DisclaimerBlock } from '@/components/tools/shared'
 
 interface PricingResultsProps {
   results: PricingOutput
-  onExport: () => void
+  onExportCSV: () => void
+  onExportPDF: () => void
 }
 
-export function PricingResults({ results, onExport }: PricingResultsProps) {
+export function PricingResults({ results, onExportCSV, onExportPDF }: PricingResultsProps) {
   const [showBreakdown, setShowBreakdown] = useState(false)
   const [showScope, setShowScope] = useState(false)
   const [showDrivers, setShowDrivers] = useState(false)
+  const [csvLoading, setCsvLoading] = useState(false)
+  const [pdfLoading, setPdfLoading] = useState(false)
 
   const { annualFees, onboardingFee, breakdown, drivers, scopeOfServices, outOfScope, currency } = results
+
+  const handleCSVExport = () => {
+    setCsvLoading(true)
+    // Small delay to show loading state
+    setTimeout(() => {
+      onExportCSV()
+      setCsvLoading(false)
+    }, 100)
+  }
+
+  const handlePDFExport = () => {
+    setPdfLoading(true)
+    // Small delay to show loading state
+    setTimeout(() => {
+      onExportPDF()
+      setPdfLoading(false)
+    }, 100)
+  }
 
   return (
     <div className="space-y-6">
@@ -195,7 +217,7 @@ export function PricingResults({ results, onExport }: PricingResultsProps) {
               <div className="space-y-4">
                 <div>
                   <h4 className="font-semibold text-sm mb-3 text-green-700 dark:text-green-400">
-                    ✓ Included in Pricing Estimate
+                    Included in Pricing Estimate
                   </h4>
                   <ul className="space-y-2">
                     {scopeOfServices.filter(s => s.included).map((item, idx) => (
@@ -213,7 +235,7 @@ export function PricingResults({ results, onExport }: PricingResultsProps) {
                 {scopeOfServices.some(s => !s.included) && (
                   <div>
                     <h4 className="font-semibold text-sm mb-3 text-red-700 dark:text-red-400">
-                      ✗ Not Included (would be priced separately)
+                      Not Included (would be priced separately)
                     </h4>
                     <ul className="space-y-2">
                       {scopeOfServices.filter(s => !s.included).map((item, idx) => (
@@ -231,7 +253,7 @@ export function PricingResults({ results, onExport }: PricingResultsProps) {
                   <ul className="space-y-1">
                     {outOfScope.map((item, idx) => (
                       <li key={idx} className="text-sm text-muted-foreground">
-                        • {item}
+                        {item}
                       </li>
                     ))}
                   </ul>
@@ -245,33 +267,18 @@ export function PricingResults({ results, onExport }: PricingResultsProps) {
         </Collapsible>
       </Card>
 
-      {/* Export and Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Export Pricing Summary</CardTitle>
-        </CardHeader>
-        <CardContent className="flex gap-3 flex-wrap">
-          <Button onClick={onExport} variant="default">
-            <Download className="h-4 w-4 mr-2" />
-            Download Summary
-          </Button>
-          <Button variant="outline" onClick={() => window.print()}>
-            Print Results
-          </Button>
-        </CardContent>
-      </Card>
+      {/* Export Toolbar */}
+      <ExportToolbar
+        onExportCSV={handleCSVExport}
+        onExportPDF={handlePDFExport}
+        csvLoading={csvLoading}
+        pdfLoading={pdfLoading}
+      />
 
       {/* Disclaimer */}
-      <Card className="bg-muted/50">
-        <CardContent className="pt-6">
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            <strong>Important Disclaimer:</strong> These estimates are for educational and planning purposes only.
-            Actual fees will vary by administrator, specific fund circumstances, negotiation, and scope changes.
-            This tool does not constitute a binding quote or recommendation. Always request formal proposals from
-            multiple qualified fund administrators and review detailed scope and pricing terms.
-          </p>
-        </CardContent>
-      </Card>
+      <DisclaimerBlock
+        additionalDisclaimer="Always request formal proposals from multiple qualified fund administrators and review detailed scope and pricing terms."
+      />
     </div>
   )
 }

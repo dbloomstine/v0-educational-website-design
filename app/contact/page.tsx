@@ -71,57 +71,8 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* Philosophy Section */}
-        <section className="py-20">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-3xl">
-              <div className="prose prose-lg max-w-none">
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  I built this site to share what I've learned from years of working in fund operations.
-                  But I know that sometimes you need more than an article—you need to talk something through
-                  with someone who gets it.
-                </p>
-                <p className="text-lg text-muted-foreground leading-relaxed">
-                  That's what I'm here for. I'm genuinely happy to be a sounding board, offer guidance where I can,
-                  or just have a conversation. There's no sales pitch, no obligation, and no pressure.
-                  If I can help directly, great. If not, I'll do my best to point you toward the right resources
-                  or make an introduction to someone who can.
-                </p>
-                <p className="text-lg text-foreground leading-relaxed font-medium">
-                  You're welcome here. Reach out.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Topics Section */}
-        <section className="py-16 border-y border-border bg-card/30">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-4xl">
-              <h2 className="mb-8 text-2xl font-bold">Things I'm happy to discuss</h2>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {topicsToDiscuss.map((topic) => (
-                  <div
-                    key={topic.title}
-                    className="flex items-start gap-4 p-4 rounded-lg border border-border/60 bg-card"
-                  >
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent">
-                      <topic.icon className="h-5 w-5 text-foreground" />
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-foreground">{topic.title}</h3>
-                      <p className="text-sm text-muted-foreground mt-1">{topic.description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Contact Options */}
-        <section className="py-20">
+        {/* Contact Options - Moved up */}
+        <section className="py-16">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl">
               <h2 className="mb-4 text-3xl font-bold text-center">How to reach me</h2>
@@ -191,8 +142,33 @@ export default function ContactPage() {
           </div>
         </section>
 
+        {/* Topics Section */}
+        <section className="py-16 border-t border-border bg-card/30">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-4xl">
+              <h2 className="mb-8 text-2xl font-bold text-center">Things I'm happy to discuss</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {topicsToDiscuss.map((topic) => (
+                  <div
+                    key={topic.title}
+                    className="flex items-start gap-4 p-4 rounded-lg border border-border/60 bg-card"
+                  >
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent">
+                      <topic.icon className="h-5 w-5 text-foreground" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium text-foreground">{topic.title}</h3>
+                      <p className="text-sm text-muted-foreground mt-1">{topic.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Closing */}
-        <section className="py-16 border-t border-border bg-accent/10">
+        <section className="py-12 border-t border-border bg-accent/10">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-2xl text-center">
               <p className="text-lg text-muted-foreground leading-relaxed">

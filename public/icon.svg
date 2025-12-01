@@ -1,6 +1,4 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="180" height="180" rx="32" fill="#1a1d24"/>
-  <path d="M32 40h50v14H48v26h30v14H48v46H32V40z" fill="#f0f2f5"/>
-  <path d="M98 40h16v46h34V40h16v100h-16V100h-34v40H98V40z" fill="#f0f2f5"/>
-  <rect x="32" y="150" width="116" height="6" rx="3" fill="#60a5fa"/>
+  <text x="90" y="128" font-family="system-ui, -apple-system, sans-serif" font-size="120" font-weight="700" fill="#f0f2f5" text-anchor="middle">F</text>
 </svg>

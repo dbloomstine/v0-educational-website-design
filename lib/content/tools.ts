@@ -1,6 +1,6 @@
 import { Tool } from './types'
 
-// All 12 tools for FundOpsHQ
+// All 10 active tools for FundOpsHQ
 const tools: Tool[] = [
   // A. Fund Formation
   {
@@ -74,29 +74,6 @@ const tools: Tool[] = [
     status: 'active',
     icon: 'Building'
   },
-  {
-    id: 'side-letter-obligations',
-    title: 'Side Letter Obligations Tool',
-    slug: 'side-letter-obligations',
-    shortDescription: 'Summarize and score side letter obligations so you can manage them operationally.',
-    inputs: [
-      'Side letter text (pasted or uploaded)',
-      'Fund type (PE, VC, credit, real estate)',
-      'LP type (pension, sovereign, family office, etc.)'
-    ],
-    outputs: [
-      'Obligations grouped by theme (MFN, reporting, fees, co-invest, liquidity, investment restrictions, excuse rights)',
-      'Operational actions',
-      'Owner (legal, operations, compliance)',
-      'Complexity score'
-    ],
-    categories: ['Fund Formation', 'Operations and Compliance'],
-    personas: ['GP', 'Lawyer', 'Compliance', 'COO or Operations'],
-    complexity: 'Advanced',
-    status: 'active',
-    icon: 'FileText'
-  },
-
   // B. Pricing and Costs
   {
     id: 'fund-admin-pricing',
