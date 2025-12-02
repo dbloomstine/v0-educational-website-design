@@ -461,7 +461,7 @@ const article: Article = {
 </ul></section></article>`,
   metaTitle: 'Tax Considerations for Private Equity Funds: K-1 Preparation & Structuring Guide',
   metaDescription: 'Comprehensive PE fund tax guide with specific examples: partnership taxation, K-1 reporting requirements, UBTI management, blocker structures, FIRPTA/1446 withholding, and state tax compliance.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 24, 2025',
   readingTime: 20,
 }
 

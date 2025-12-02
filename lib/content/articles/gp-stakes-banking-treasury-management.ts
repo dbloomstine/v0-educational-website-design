@@ -124,7 +124,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'GP-Stakes Treasury: Acquisition Financing, Distribution Management, and Cash Flow Forecasting',
   metaDescription: 'Comprehensive guide to GP-stakes banking covering subscription credit facilities, management fee processing, carried interest distributions, cash forecasting, liquidity management, and FX hedging.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 2, 2025',
   readingTime: 18,
 }
 

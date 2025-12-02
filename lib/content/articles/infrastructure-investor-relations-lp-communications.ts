@@ -190,7 +190,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Infrastructure Fund Investor Relations: Long-Term Reporting and Stakeholder Management',
   metaDescription: 'Comprehensive guide to infrastructure IR covering operational performance reporting with 30-50 KPIs, regulatory transparency across 15-25 annual proceedings, site visits building confidence, multi-decade relationship management through investor turnover, expectation management for 11-14% IRRs, government communications coordination, crisis response protocols, and technology platforms improving efficiency 50-60% with detailed metrics.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 2, 2025',
   readingTime: 20,
 }
 

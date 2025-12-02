@@ -298,7 +298,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Hedge Fund Investor Relations: Reporting and Communication Strategies',
   metaDescription: 'Comprehensive guide to hedge fund investor relations covering monthly reporting, difficult conversations, ODD management, redemption strategies, and crisis communications.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 19, 2025',
   readingTime: 20,
 }
 

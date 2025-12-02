@@ -167,7 +167,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Banking and Treasury Management for Venture Capital Funds',
   metaDescription: 'Comprehensive guide to VC fund treasury operations: subscription lines, rapid wire execution, signature authority, capital call cycles, and cash management for high-velocity investing.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 16, 2025',
   readingTime: 15,
 }
 

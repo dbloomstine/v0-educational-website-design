@@ -276,7 +276,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'CFO Responsibilities in Hedge Fund Operations and Management',
   metaDescription: 'Comprehensive guide to hedge fund CFO duties: daily P&L monitoring, margin management, prime broker relationships, OTC derivative accounting, and operational oversight.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 13, 2025',
   readingTime: 9,
 }
 

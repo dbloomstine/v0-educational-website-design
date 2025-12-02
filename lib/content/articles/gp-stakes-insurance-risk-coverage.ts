@@ -106,7 +106,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'GP-Stakes Insurance: D&O Coverage, R&W Protection, Board Liability, and Risk Management',
   metaDescription: 'Comprehensive guide to GP-stakes insurance covering D&O liability with board service, E&O for advisory activities, R&W for acquisitions, fiduciary duties, cyber risk, relationship risks, and insurance coordination.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 8, 2025',
   readingTime: 18,
 }
 

@@ -122,7 +122,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'GP-Stakes Investor Relations: Portfolio Metrics, Partnership Value, and Return Attribution',
   metaDescription: 'Comprehensive guide to GP-stakes IR covering portfolio GP business metrics, strategic partnership communications, performance attribution, quarterly reporting, annual meetings, distribution forecasting, and LP management.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 9, 2025',
   readingTime: 18,
 }
 

@@ -260,7 +260,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Infrastructure Fund Compliance: Regulatory Frameworks and Safety Standards',
   metaDescription: 'Comprehensive guide to infrastructure fund compliance covering investment adviser regulations, sector-specific operational requirements, environmental permitting, safety standards, government reporting, and critical infrastructure protection.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 27, 2025',
   readingTime: 22,
 }
 

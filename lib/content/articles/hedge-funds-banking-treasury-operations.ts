@@ -228,7 +228,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Hedge Fund Banking and Treasury: Cash Management and FX Operations',
   metaDescription: 'Complete guide to hedge fund treasury covering prime broker cash management, liquidity forecasting, multi-currency operations, margin financing, and payment controls.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 12, 2025',
   readingTime: 22,
 }
 

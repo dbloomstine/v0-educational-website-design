@@ -204,7 +204,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Secondaries Fundraising: Deal Sourcing, Pricing Discipline, Track Record & Market Positioning',
   metaDescription: 'Comprehensive guide to secondaries fundraising covering LP/GP relationships generating proprietary deal flow, pricing discipline demonstration, performance attribution analysis, market positioning strategy, and institutional investor evaluation criteria.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 11, 2025',
   readingTime: 18,
 }
 

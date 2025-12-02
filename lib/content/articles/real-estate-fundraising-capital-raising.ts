@@ -405,7 +405,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Real Estate Fund Fundraising: Institutional Targeting, Track Records, Terms, and Capital Raising',
   metaDescription: 'Comprehensive guide to real estate fundraising covering LP targeting, track record presentation, fund terms negotiation, management fees and carry structures, waterfall mechanics, DDQ coordination, placement agents, and emerging manager strategies.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 30, 2025',
   readingTime: 18,
 }
 

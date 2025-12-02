@@ -177,7 +177,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Fundraising for Venture Capital Funds: Building LP Bases and Track Records',
   metaDescription: 'Comprehensive guide to VC fundraising: LP targeting, track record presentation, emerging manager challenges, fund size progression, and institutional fundraising dynamics.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 21, 2025',
   readingTime: 16,
 }
 

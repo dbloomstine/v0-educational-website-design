@@ -244,7 +244,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Hedge Fund Fundraising: Capital Raising and Investor Strategies',
   metaDescription: 'Guide to hedge fund fundraising covering seed capital, institutional targeting, placement agents, capital introduction, terms negotiation, and capacity management.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 17, 2025',
   readingTime: 18,
 }
 

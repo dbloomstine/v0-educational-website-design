@@ -208,7 +208,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'GP-Stakes Tax: Management Fee Income, Section 1061, State Taxes & Partnership Allocations',
   metaDescription: 'Comprehensive guide to GP-stakes taxation covering management fee ordinary income, Section 1061 three-year holding requirements, multi-jurisdictional state taxation, basis tracking, K-1 consolidation, and blocker structures.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 10, 2025',
   readingTime: 18,
 }
 

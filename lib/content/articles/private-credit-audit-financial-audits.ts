@@ -256,7 +256,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Private Credit Fund Financial Audits: Complete Guide to CECL, Fair Value, and BDC Requirements',
   metaDescription: 'Comprehensive guide to private credit fund audits covering loan portfolio testing, CECL validation, fair value procedures, interest income verification, commitment accounting, and BDC/RIC audit requirements.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 4, 2025',
   readingTime: 18,
 }
 

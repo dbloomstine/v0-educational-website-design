@@ -563,7 +563,7 @@ const article: Article = {
 </ul></section></article>`,
   metaTitle: 'Cybersecurity and IT Infrastructure for Private Equity Funds: Complete Implementation Guide',
   metaDescription: 'Comprehensive PE fund cybersecurity guide with specific cost benchmarks: framework implementation, access controls, email security, vendor management, incident response, and technology stack recommendations.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 19, 2025',
   readingTime: 22,
 }
 

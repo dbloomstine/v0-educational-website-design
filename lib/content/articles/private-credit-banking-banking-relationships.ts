@@ -206,7 +206,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Banking Relationships for Private Credit Funds: Credit Facilities and Cash Management',
   metaDescription: 'Comprehensive guide to private credit fund banking: subscription lines, warehouse facilities, fund-level leverage, cash management, and credit facility operations.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 5, 2025',
   readingTime: 18,
 }
 

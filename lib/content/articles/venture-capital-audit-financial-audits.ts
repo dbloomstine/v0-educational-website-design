@@ -163,7 +163,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Financial Audits for Venture Capital Funds',
   metaDescription: 'Comprehensive guide to VC fund audits: fair value testing for early-stage companies, down round accounting, liquidation preference valuation, warrant and option accounting, and carried interest accruals.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 15, 2025',
   readingTime: 15,
 }
 

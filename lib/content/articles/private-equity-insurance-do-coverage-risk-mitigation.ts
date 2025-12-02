@@ -449,7 +449,7 @@ const article: Article = {
 </ul></section></article>`,
   metaTitle: 'Insurance for Private Equity Funds: D&O, E&O, Cyber & Risk Protection Guide',
   metaDescription: 'Comprehensive PE fund insurance guide with specific policy limits, premium benchmarks, and coverage requirements for D&O, E&O, cyber liability, crime, EPLI, and portfolio company oversight.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 22, 2025',
   readingTime: 18,
 }
 

@@ -206,7 +206,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Infrastructure Insurance: Property, Liability, and Operational Risk Coverage',
   metaDescription: 'Comprehensive guide to infrastructure insurance covering property damage, business interruption with 24-36 month indemnity periods, liability protection up to $500M, cyber risk, catastrophe modeling, sector-specific coverages, lender requirements, and captive insurance vehicles with detailed metrics and implementation guidance.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 1, 2025',
   readingTime: 20,
 }
 

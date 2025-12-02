@@ -212,7 +212,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Infrastructure Fund Audits: DCF Valuation, Regulatory Accounting, Debt Testing, and Covenant Verification',
   metaDescription: 'Comprehensive guide to infrastructure fund audits covering 20-40 year DCF projection testing, ASC 980 regulatory accounting review, project finance debt verification, hedge accounting validation, and revenue recognition for long-term contracts.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 24, 2025',
   readingTime: 18,
 }
 

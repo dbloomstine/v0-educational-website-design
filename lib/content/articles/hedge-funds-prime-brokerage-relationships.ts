@@ -276,7 +276,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Hedge Fund Prime Brokerage: Selection, Negotiation, and Management',
   metaDescription: 'Complete guide to prime brokerage covering broker selection, multi-prime strategies, fee negotiation, service management, and counterparty risk monitoring.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 20, 2025',
   readingTime: 18,
 }
 

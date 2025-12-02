@@ -162,7 +162,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Infrastructure Fund Tax: Depreciation, International Planning, and Investor Reporting',
   metaDescription: 'Comprehensive guide to infrastructure fund taxation covering MACRS depreciation generating $35M-$150M annual deductions, cost segregation accelerating 20-45% of costs, bonus depreciation providing 60% immediate expensing, partnership K-1 preparation for March 1-10 delivery, Section 754 basis adjustments, multi-state compliance with $12M-$85M taxes, GILTI minimum tax on foreign income, UBTI planning for tax-exempt investors, depreciation recapture creating $85M-$450M ordinary income, and renewable tax credit partnership flips.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 3, 2025',
   readingTime: 20,
 }
 

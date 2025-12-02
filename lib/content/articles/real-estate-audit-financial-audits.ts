@@ -193,7 +193,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Real Estate Fund Audits: Property Valuations, Revenue Testing, Debt Confirmations, and Audit Process',
   metaDescription: 'Comprehensive guide to real estate fund audits covering property inspection procedures, fair value testing, straight-line rent recognition, percentage rent, purchase price allocations, covenant testing, and audit coordination.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 25, 2025',
   readingTime: 18,
 }
 

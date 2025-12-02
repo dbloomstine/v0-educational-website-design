@@ -230,7 +230,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'GP-Stakes Fund CFO: Valuation, Due Diligence & Portfolio Management',
   metaDescription: 'Comprehensive guide to GP-stakes CFO responsibilities covering DCF valuation of management companies, fee stream analysis, partnership structuring, team assessment, and portfolio GP monitoring.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 3, 2025',
   readingTime: 18,
 }
 

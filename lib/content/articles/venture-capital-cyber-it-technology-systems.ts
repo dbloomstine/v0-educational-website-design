@@ -203,7 +203,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Technology Systems and Cybersecurity for Venture Capital Funds',
   metaDescription: 'Comprehensive guide to VC technology infrastructure: deal flow management with Affinity and Salesforce, portfolio tracking, document management, data room security, cap table tools, and cybersecurity.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 19, 2025',
   readingTime: 18,
 }
 

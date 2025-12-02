@@ -148,7 +148,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'GP-Stakes Cybersecurity: Portfolio GP Data Protection, Secure Board Communications, and Technology Infrastructure',
   metaDescription: 'Comprehensive guide to GP-stakes technology covering confidential information security, board portal implementation, business metrics tracking, cybersecurity governance, IAM, endpoint protection, disaster recovery, vendor risk management, and security training.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 5, 2025',
   readingTime: 18,
 }
 

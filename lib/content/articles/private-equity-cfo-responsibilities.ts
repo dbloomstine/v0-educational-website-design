@@ -156,7 +156,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'CFO Responsibilities in Private Equity Fund Operations',
   metaDescription: 'Comprehensive guide to PE fund CFO duties: financial planning, capital management, investor reporting, regulatory compliance, and operational best practices.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 17, 2025',
   readingTime: 18,
 }
 

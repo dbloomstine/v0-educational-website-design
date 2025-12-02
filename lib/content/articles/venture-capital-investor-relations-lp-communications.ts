@@ -8,7 +8,7 @@ export const article: Article = {
   fundType: 'venture-capital',
   pillar: 'investor-relations',
   readingTime: 18,
-  publishedDate: '2025-01-15',
+  publishedDate: 'November 23, 2025',
   metaTitle: 'VC Investor Relations: LP Communications Best Practices | Fund Management Guide',
   metaDescription: 'Learn how to build strong LP relationships through transparent reporting, portfolio updates, valuation methodology, and effective communication strategies for venture capital funds.',
   content: `<p>In venture capital, the relationship between General Partners (GPs) and Limited Partners (LPs) is built on trust, transparency, and consistent communication. While fundraising often takes center stage, maintaining strong investor relations throughout a fund's lifecycle is equally critical for long-term success. Excellent LP communications not only fulfill fiduciary responsibilities but also lay the groundwork for future fundraising, expanded relationships, and valuable network effects.</p>

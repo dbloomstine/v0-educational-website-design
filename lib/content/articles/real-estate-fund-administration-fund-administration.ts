@@ -293,7 +293,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Real Estate Fund Administration: NAV Calculations, Property Accounting, Capital Accounts, and Reporting',
   metaDescription: 'Comprehensive guide to real estate fund administration covering property consolidation, appraisal-based valuations, straight-line rent, capital calls, waterfall distributions, debt tracking, K-1 preparation, and investor servicing.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 29, 2025',
   readingTime: 20,
 }
 

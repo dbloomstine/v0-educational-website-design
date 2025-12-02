@@ -148,7 +148,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Secondaries Banking: Acquisition Financing, Multi-Fund Cash Flow & Treasury Management',
   metaDescription: 'Comprehensive guide to secondaries treasury covering subscription credit facilities, multi-fund cash coordination, unfunded commitment tracking, liquidity optimization, and banking relationship management.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 6, 2025',
   readingTime: 18,
 }
 

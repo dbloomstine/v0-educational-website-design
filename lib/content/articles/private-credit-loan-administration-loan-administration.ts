@@ -394,7 +394,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Loan Administration for Private Credit: Complete Operations Guide',
   metaDescription: 'Essential guide to private credit loan administration: payment processing, covenant monitoring, collateral management, servicing systems, and default procedures.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 13, 2025',
   readingTime: 21,
 }
 

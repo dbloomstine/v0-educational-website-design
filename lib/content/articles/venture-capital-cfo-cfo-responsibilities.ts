@@ -338,7 +338,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'CFO Responsibilities in Venture Capital Fund Operations',
   metaDescription: 'Complete guide to VC fund CFO duties: high-velocity deployment, fair value measurement for startups, portfolio company support, and rapid deployment cycle management.',
-  publishedDate: 'December 19, 2024',
+  publishedDate: 'November 17, 2025',
   readingTime: 10,
 }
 

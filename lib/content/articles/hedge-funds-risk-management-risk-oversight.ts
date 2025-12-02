@@ -290,7 +290,7 @@ const article: Article = {
 </ul>`,
   metaTitle: 'Hedge Fund Risk Management: Framework, Controls, and Oversight',
   metaDescription: 'Complete guide to hedge fund risk management covering market risk, counterparty exposure, operational controls, liquidity management, and independent risk functions.',
-  publishedDate: 'December 18, 2024',
+  publishedDate: 'November 21, 2025',
   readingTime: 18,
 }
 
