@@ -428,22 +428,35 @@ export function SiteHeader() {
               </div>
             </div>
 
-            {/* Other Links */}
-            <div className="space-y-2 pt-4 border-t border-border">
+            {/* About */}
+            <div className="pt-4 border-t border-border">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                About
+              </h3>
               <Link
                 href="/about"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
               >
-                About
+                <span className="font-medium text-foreground">About FundOpsHQ</span>
+                <span className="block text-xs text-muted-foreground mt-0.5">The person and mission behind the site</span>
               </Link>
+            </div>
+
+            {/* Shop */}
+            <div className="pt-4 border-t border-border">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Shop
+              </h3>
               <a
                 href="https://fundopshq-shop.myshopify.com/collections/all"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
               >
-                Shop
+                <span className="font-medium text-foreground">FundOpsHQ Merch</span>
+                <span className="block text-xs text-muted-foreground mt-0.5">Gear for fund operations professionals</span>
               </a>
             </div>
 
