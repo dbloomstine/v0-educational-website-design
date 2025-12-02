@@ -7,8 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Button } from '@/components/ui/button'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Info } from 'lucide-react'
+import { InfoPopover } from '@/components/ui/info-popover'
 import {
   expenseCategories,
   fundTypes,
@@ -113,16 +112,9 @@ export function ExpenseInputForm({ onClassify, initialValues }: ExpenseInputForm
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Label htmlFor="fund-type">Fund Type</Label>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Info className="h-3 w-3 text-muted-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>The investment strategy of your fund affects how certain expenses are typically treated</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <InfoPopover>
+                The investment strategy of your fund affects how certain expenses are typically treated. PE funds, VC funds, and credit funds each have different market norms.
+              </InfoPopover>
             </div>
             <Select value={fundType} onValueChange={(value) => setFundType(value as FundType)}>
               <SelectTrigger id="fund-type">
@@ -144,16 +136,9 @@ export function ExpenseInputForm({ onClassify, initialValues }: ExpenseInputForm
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Label htmlFor="fund-stage">Fund Stage</Label>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Info className="h-3 w-3 text-muted-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>Where your fund is in its lifecycle can affect expense treatment, especially for formation and fundraising costs</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <InfoPopover>
+                Where your fund is in its lifecycle can affect expense treatment, especially for formation and fundraising costs. Pre-close and post-close expenses may be treated differently.
+              </InfoPopover>
             </div>
             <Select value={fundStage} onValueChange={(value) => setFundStage(value as FundStage)}>
               <SelectTrigger id="fund-stage">
@@ -175,16 +160,9 @@ export function ExpenseInputForm({ onClassify, initialValues }: ExpenseInputForm
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Label htmlFor="beneficiary">Primary Beneficiary</Label>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Info className="h-3 w-3 text-muted-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>Who primarily benefits from this expense? This is often the key factor in determining proper allocation</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <InfoPopover>
+                Who primarily benefits from this expense? This is often the key factor in determining proper allocation. Fund expenses generally benefit LPs/the fund, while management expenses benefit the GP.
+              </InfoPopover>
             </div>
             <Select value={beneficiary} onValueChange={(value) => setBeneficiary(value as Beneficiary)}>
               <SelectTrigger id="beneficiary">
@@ -206,16 +184,9 @@ export function ExpenseInputForm({ onClassify, initialValues }: ExpenseInputForm
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <Label htmlFor="lpa-context">LPA Context (Optional)</Label>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Info className="h-3 w-3 text-muted-foreground" />
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>If your LPA has specific language about this type of expense, note it here for reference</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <InfoPopover>
+                If your LPA has specific language about this type of expense, note it here for reference. This helps provide more tailored guidance based on your governing documents.
+              </InfoPopover>
             </div>
             <Textarea
               id="lpa-context"

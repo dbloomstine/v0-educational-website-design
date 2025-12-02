@@ -34,6 +34,8 @@ import {
 import { TimelineView } from './timeline-view'
 import { MilestoneCardsView } from './milestone-cards-view'
 import { ExportPanel } from './export-panel'
+import { DisclaimerBlock } from '@/components/tools/shared'
+import { InfoPopover } from '@/components/ui/info-popover'
 
 interface FundFormationTimelineProps {
   className?: string
@@ -119,7 +121,12 @@ export function FundFormationTimeline({ className }: FundFormationTimelineProps)
           {/* Fund Details Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="strategy">Fund Strategy</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="strategy">Fund Strategy</Label>
+                <InfoPopover>
+                  Your fund's investment strategy affects regulatory requirements, typical timeline, and investor expectations. VC funds often have simpler structures, while PE/Credit may require more complex documentation.
+                </InfoPopover>
+              </div>
               <Select
                 value={inputs.strategy}
                 onValueChange={(value: FundStrategy) =>
@@ -141,7 +148,12 @@ export function FundFormationTimeline({ className }: FundFormationTimelineProps)
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="sizeBand">Target Fund Size</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="sizeBand">Target Fund Size</Label>
+                <InfoPopover>
+                  Larger funds typically require more robust infrastructure, longer fundraising periods, and more extensive legal documentation. Smaller emerging funds can often move faster with simpler structures.
+                </InfoPopover>
+              </div>
               <Select
                 value={inputs.sizeBand}
                 onValueChange={(value: FundSizeBand) =>
@@ -161,7 +173,16 @@ export function FundFormationTimeline({ className }: FundFormationTimelineProps)
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="jurisdiction">Jurisdiction</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="jurisdiction">Jurisdiction</Label>
+                <InfoPopover>
+                  <strong>US Onshore:</strong> Delaware LP/LLC, typically simpler and faster to form.
+                  <br /><br />
+                  <strong>Cayman Feeder:</strong> Parallel structure for tax-exempt and non-US investors. Adds 4-8 weeks and legal costs.
+                  <br /><br />
+                  <strong>EU AIF:</strong> AIFMD-compliant structure required for EU marketing. Requires regulatory approval.
+                </InfoPopover>
+              </div>
               <Select
                 value={inputs.jurisdiction}
                 onValueChange={(value: Jurisdiction) =>
@@ -183,7 +204,12 @@ export function FundFormationTimeline({ className }: FundFormationTimelineProps)
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="anchorStatus">Anchor Investor</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="anchorStatus">Anchor Investor</Label>
+                <InfoPopover>
+                  An anchor investor (typically 20-30% of fund) can significantly accelerate your timeline by validating your fund thesis and attracting other LPs. Without an anchor, expect longer fundraising periods.
+                </InfoPopover>
+              </div>
               <Select
                 value={inputs.anchorStatus}
                 onValueChange={(value: AnchorStatus) =>
@@ -202,7 +228,12 @@ export function FundFormationTimeline({ className }: FundFormationTimelineProps)
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="startingPoint">Starting Point</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="startingPoint">Starting Point</Label>
+                <InfoPopover>
+                  Your current preparation level affects how quickly you can move. "Starting from Scratch" means you need to develop all materials. Having draft materials ready can save 4-8 weeks.
+                </InfoPopover>
+              </div>
               <Select
                 value={inputs.startingPoint}
                 onValueChange={(value: StartingPoint) =>
@@ -227,7 +258,12 @@ export function FundFormationTimeline({ className }: FundFormationTimelineProps)
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="detailLevel">Detail Level</Label>
+              <div className="flex items-center gap-2">
+                <Label htmlFor="detailLevel">Detail Level</Label>
+                <InfoPopover>
+                  "Simple" shows key milestones only - ideal for high-level planning. "Detailed" includes all tasks and sub-milestones - useful for project management and tracking.
+                </InfoPopover>
+              </div>
               <Select
                 value={inputs.detailLevel}
                 onValueChange={(value: DetailLevel) =>
@@ -342,6 +378,11 @@ export function FundFormationTimeline({ className }: FundFormationTimelineProps)
           </Tabs>
         </CardContent>
       </Card>
+
+      {/* Disclaimer */}
+      <DisclaimerBlock
+        additionalDisclaimer="Fund formation timelines vary significantly based on your specific situation, service provider availability, and regulatory requirements. This tool provides general guidance - always work with qualified legal counsel and fund administrators."
+      />
     </div>
   )
 }

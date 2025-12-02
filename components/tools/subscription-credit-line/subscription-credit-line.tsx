@@ -9,7 +9,6 @@ import {
 } from './subscriptionLineCalculations'
 import { InputForm } from './input-form'
 import { ResultsView } from './results-view'
-import { exportSubscriptionLineAnalysis } from './export'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -127,9 +126,6 @@ export function SubscriptionCreditLine() {
     }
   }
 
-  const handleExport = () => {
-    exportSubscriptionLineAnalysis(output)
-  }
 
   const startComparison = () => {
     setCompareMode(true)
@@ -236,7 +232,7 @@ export function SubscriptionCreditLine() {
               </div>
               <div>
                 <h3 className="mb-4 text-lg font-semibold">Scenario A Results</h3>
-                <ResultsView output={output} onExport={handleExport} />
+                <ResultsView output={output} />
               </div>
             </div>
           </TabsContent>
@@ -252,7 +248,7 @@ export function SubscriptionCreditLine() {
               <div>
                 <h3 className="mb-4 text-lg font-semibold">Scenario B Results</h3>
                 {compareOutput && (
-                  <ResultsView output={compareOutput} onExport={() => exportSubscriptionLineAnalysis(compareOutput)} />
+                  <ResultsView output={compareOutput} />
                 )}
               </div>
             </div>
@@ -380,7 +376,7 @@ export function SubscriptionCreditLine() {
 
             {/* Right Column - Results */}
             <div>
-              <ResultsView output={output} onExport={handleExport} />
+              <ResultsView output={output} />
             </div>
           </div>
         </>

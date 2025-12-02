@@ -1,11 +1,11 @@
 "use client"
 
-import { PricingOutput, KYCAMLInput, formatCurrency } from './pricingData'
-import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
-import { Download, ChevronDown, ChevronUp, AlertCircle, Users, Building2, Building } from 'lucide-react'
 import { useState } from 'react'
-import { exportKYCAMLPricing } from './export'
+import { PricingOutput, KYCAMLInput, formatCurrency } from './pricingData'
+import { Card } from '@/components/ui/card'
+import { ChevronDown, ChevronUp, AlertCircle, Users, Building2, Building } from 'lucide-react'
+import { ExportToolbar, DisclaimerBlock } from '@/components/tools/shared'
+import { exportKYCAMLCSV, exportKYCAMLPDF } from './export'
 
 interface PricingResultsProps {
   output: PricingOutput
@@ -15,9 +15,23 @@ interface PricingResultsProps {
 export function PricingResults({ output, input }: PricingResultsProps) {
   const [showBreakdown, setShowBreakdown] = useState(true)
   const [showDrivers, setShowDrivers] = useState(true)
+  const [csvLoading, setCsvLoading] = useState(false)
+  const [pdfLoading, setPdfLoading] = useState(false)
 
-  const handleExport = () => {
-    exportKYCAMLPricing(output, input)
+  const handleExportCSV = () => {
+    setCsvLoading(true)
+    setTimeout(() => {
+      exportKYCAMLCSV(output, input)
+      setCsvLoading(false)
+    }, 100)
+  }
+
+  const handleExportPDF = () => {
+    setPdfLoading(true)
+    setTimeout(() => {
+      exportKYCAMLPDF(output, input)
+      setPdfLoading(false)
+    }, 100)
   }
 
   return (
@@ -109,17 +123,19 @@ export function PricingResults({ output, input }: PricingResultsProps) {
         <div className="flex items-start gap-2 rounded-lg bg-muted/50 p-4">
           <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">
-            These estimates reflect typical mid-tier KYC/AML service providers. Costs vary based on provider choice, 
-            technology platform, degree of automation, and specific compliance requirements. Bundling with a fund 
+            These estimates reflect typical mid-tier KYC/AML service providers. Costs vary based on provider choice,
+            technology platform, degree of automation, and specific compliance requirements. Bundling with a fund
             administrator may offer economies of scale.
           </p>
         </div>
 
-        <div className="mt-6 text-center">
-          <Button onClick={handleExport} className="gap-2">
-            <Download className="h-4 w-4" />
-            Export Summary
-          </Button>
+        <div className="mt-6">
+          <ExportToolbar
+            onExportCSV={handleExportCSV}
+            onExportPDF={handleExportPDF}
+            csvLoading={csvLoading}
+            pdfLoading={pdfLoading}
+          />
         </div>
       </Card>
 
@@ -276,6 +292,11 @@ export function PricingResults({ output, input }: PricingResultsProps) {
           )}
         </Card>
       )}
+
+      {/* Disclaimer */}
+      <DisclaimerBlock
+        additionalDisclaimer="Consult with qualified compliance professionals and KYC/AML vendors for actual pricing specific to your fund's requirements and jurisdictions."
+      />
     </div>
   )
 }

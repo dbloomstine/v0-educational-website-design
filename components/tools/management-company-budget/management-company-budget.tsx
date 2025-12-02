@@ -8,10 +8,11 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Switch } from '@/components/ui/switch'
-import { Info, AlertCircle, Plus, Trash2, Building2, DollarSign, TrendingUp, Calendar } from 'lucide-react'
+import { AlertCircle, Plus, Trash2, Building2, DollarSign, TrendingUp, Calendar } from 'lucide-react'
+import { InfoPopover } from '@/components/ui/info-popover'
+import { DisclaimerBlock } from '@/components/tools/shared'
 import { MetricsSummary } from './metrics-summary'
 import { BudgetCharts } from './budget-charts'
 import { FundsEditor } from './funds-editor'
@@ -119,6 +120,9 @@ export function ManagementCompanyBudget() {
             onCheckedChange={setShowCarry}
           />
           <Label htmlFor="show-carry" className="text-sm cursor-pointer">Show Carry Revenue</Label>
+          <InfoPopover iconSize="sm">
+            Include carried interest as a revenue source in projections. Carry is speculative and depends on fund performance - many managers exclude it for conservative planning.
+          </InfoPopover>
         </div>
         <div className="flex items-center gap-2">
           <Switch
@@ -127,6 +131,9 @@ export function ManagementCompanyBudget() {
             onCheckedChange={setAuditMode}
           />
           <Label htmlFor="audit-mode" className="text-sm cursor-pointer">Audit Mode</Label>
+          <InfoPopover iconSize="sm">
+            Shows detailed line-item breakdown with audit-ready formatting. Useful for review by accountants or during fundraising due diligence.
+          </InfoPopover>
         </div>
         <div className="flex-1" />
         <ExportButtons budgetData={budgetData} results={results} formatCurrency={formatCurrency} />
@@ -169,7 +176,12 @@ export function ManagementCompanyBudget() {
             <CardContent>
               <div className="grid md:grid-cols-3 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="asset-class">Asset Class</Label>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="asset-class">Asset Class</Label>
+                    <InfoPopover>
+                      Your primary investment strategy. This affects typical fee structures, expense ratios, and industry benchmarks. Multi-strategy firms should select their predominant asset class.
+                    </InfoPopover>
+                  </div>
                   <Select
                     value={budgetData.firmProfile.assetClass}
                     onValueChange={(value: any) => handleFirmProfileChange({ assetClass: value })}
@@ -189,7 +201,12 @@ export function ManagementCompanyBudget() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="geography">Geography</Label>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="geography">Geography</Label>
+                    <InfoPopover>
+                      Primary operating geography. This affects compensation benchmarks, office costs, and regulatory overhead. Global firms typically have higher operating costs.
+                    </InfoPopover>
+                  </div>
                   <Select
                     value={budgetData.firmProfile.geography}
                     onValueChange={(value: any) => handleFirmProfileChange({ geography: value })}
@@ -208,7 +225,12 @@ export function ManagementCompanyBudget() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="stage">Stage</Label>
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="stage">Stage</Label>
+                    <InfoPopover>
+                      Your firm's development stage. Emerging managers typically have higher expense ratios (as % of AUM) and may operate with negative margins in early years while building the platform.
+                    </InfoPopover>
+                  </div>
                   <Select
                     value={budgetData.firmProfile.stage}
                     onValueChange={(value: any) => handleFirmProfileChange({ stage: value })}
@@ -486,6 +508,11 @@ export function ManagementCompanyBudget() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Disclaimer */}
+      <DisclaimerBlock
+        additionalDisclaimer="Management company budgets involve complex accounting, tax, and legal considerations. This tool is for planning purposes only. Consult with your fund administrator, accountant, and legal counsel before finalizing budgets."
+      />
     </div>
   )
 }

@@ -2,13 +2,7 @@
 
 import { Phase, Milestone } from './types'
 import { format, differenceInDays } from 'date-fns'
-import { Info } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { InfoPopover } from '@/components/ui/info-popover'
 
 interface TimelineViewProps {
   phases: Phase[]
@@ -61,79 +55,70 @@ export function TimelineView({ phases, visibleCategories }: TimelineViewProps) {
 
       {/* Phases and Milestones */}
       <div className="space-y-6 overflow-x-auto pb-4">
-        <TooltipProvider>
-          {filteredPhases.map((phase) => (
-            <div key={phase.id} className="space-y-3">
-              {/* Phase Header */}
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-1 h-8 rounded"
-                  style={{ backgroundColor: phase.color }}
-                />
-                <div>
-                  <div className="font-semibold text-sm">{phase.name}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {format(phase.startDate, 'MMM d')} - {format(phase.endDate, 'MMM d, yyyy')}
-                  </div>
+        {filteredPhases.map((phase) => (
+          <div key={phase.id} className="space-y-3">
+            {/* Phase Header */}
+            <div className="flex items-center gap-3">
+              <div
+                className="w-1 h-8 rounded"
+                style={{ backgroundColor: phase.color }}
+              />
+              <div>
+                <div className="font-semibold text-sm">{phase.name}</div>
+                <div className="text-xs text-muted-foreground">
+                  {format(phase.startDate, 'MMM d')} - {format(phase.endDate, 'MMM d, yyyy')}
                 </div>
               </div>
+            </div>
 
-              {/* Phase Bar */}
-              <div className="relative h-8 bg-accent/20 rounded">
-                <div
-                  className="absolute h-full rounded transition-all"
-                  style={{
-                    ...getPositionAndWidth(phase.startDate, phase.endDate),
-                    backgroundColor: `${phase.color}33`
-                  }}
-                />
-              </div>
+            {/* Phase Bar */}
+            <div className="relative h-8 bg-accent/20 rounded">
+              <div
+                className="absolute h-full rounded transition-all"
+                style={{
+                  ...getPositionAndWidth(phase.startDate, phase.endDate),
+                  backgroundColor: `${phase.color}33`
+                }}
+              />
+            </div>
 
-              {/* Milestones */}
-              <div className="space-y-2 pl-4">
-                {phase.milestones.map((milestone) => (
-                  <div key={milestone.id} className="relative">
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
-                      <span className="flex-shrink-0">{milestone.name}</span>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <button className="flex-shrink-0">
-                            <Info className="h-3 w-3" />
-                          </button>
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-xs">
-                          <p className="text-xs font-semibold mb-1">{milestone.name}</p>
-                          <p className="text-xs mb-2">{milestone.description}</p>
-                          <p className="text-xs text-muted-foreground">
-                            Owner: {milestone.owner}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            Duration: {milestone.duration} days
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                    <div className="relative h-6 bg-muted/50 rounded">
-                      <div
-                        className="absolute h-full rounded flex items-center px-2 text-xs font-medium transition-all cursor-pointer hover:opacity-80"
-                        style={{
-                          ...getPositionAndWidth(milestone.startDate, milestone.endDate),
-                          backgroundColor: phase.color,
-                          color: 'white'
-                        }}
-                        title={`${format(milestone.startDate, 'MMM d')} - ${format(milestone.endDate, 'MMM d')}`}
-                      >
-                        <span className="truncate">
-                          {differenceInDays(milestone.endDate, milestone.startDate) + 1}d
-                        </span>
-                      </div>
+            {/* Milestones */}
+            <div className="space-y-2 pl-4">
+              {phase.milestones.map((milestone) => (
+                <div key={milestone.id} className="relative">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground mb-1">
+                    <span className="flex-shrink-0">{milestone.name}</span>
+                    <InfoPopover iconSize="sm">
+                      <p className="text-xs font-semibold mb-1">{milestone.name}</p>
+                      <p className="text-xs mb-2">{milestone.description}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Owner: {milestone.owner}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Duration: {milestone.duration} days
+                      </p>
+                    </InfoPopover>
+                  </div>
+                  <div className="relative h-6 bg-muted/50 rounded">
+                    <div
+                      className="absolute h-full rounded flex items-center px-2 text-xs font-medium transition-all cursor-pointer hover:opacity-80"
+                      style={{
+                        ...getPositionAndWidth(milestone.startDate, milestone.endDate),
+                        backgroundColor: phase.color,
+                        color: 'white'
+                      }}
+                      title={`${format(milestone.startDate, 'MMM d')} - ${format(milestone.endDate, 'MMM d')}`}
+                    >
+                      <span className="truncate">
+                        {differenceInDays(milestone.endDate, milestone.startDate) + 1}d
+                      </span>
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </TooltipProvider>
+          </div>
+        ))}
       </div>
 
       {/* Mobile scroll hint */}

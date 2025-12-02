@@ -4,7 +4,9 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { AlertCircle, ChevronDown, ChevronUp, Download, RotateCcw } from 'lucide-react'
+import { AlertCircle, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react'
+import { ExportToolbar, DisclaimerBlock } from '@/components/tools/shared'
+import { exportToPDF, exportToCSV } from './exportPDF'
 import type { ClassificationResult as Result, ClassificationInput } from './expenseData'
 
 interface ClassificationResultsProps {
@@ -18,6 +20,24 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
   const [showDetailed, setShowDetailed] = useState(false)
   const [showExamples, setShowExamples] = useState(false)
   const [showLogic, setShowLogic] = useState(false)
+  const [csvLoading, setCsvLoading] = useState(false)
+  const [pdfLoading, setPdfLoading] = useState(false)
+
+  const handleExportCSV = () => {
+    setCsvLoading(true)
+    setTimeout(() => {
+      exportToCSV(input, result)
+      setCsvLoading(false)
+    }, 100)
+  }
+
+  const handleExportPDF = () => {
+    setPdfLoading(true)
+    setTimeout(() => {
+      exportToPDF(input, result)
+      setPdfLoading(false)
+    }, 100)
+  }
 
   const getClassificationColor = (classification: string) => {
     switch (classification) {
@@ -182,12 +202,15 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
         <CardHeader>
           <CardTitle className="text-base">Export & Actions</CardTitle>
         </CardHeader>
-        <CardContent className="flex gap-3 flex-wrap">
-          <Button onClick={onExport} variant="default">
-            <Download className="h-4 w-4 mr-2" />
-            Export as PDF
-          </Button>
-          <Button onClick={onReset} variant="outline">
+        <CardContent className="space-y-4">
+          <ExportToolbar
+            onExportCSV={handleExportCSV}
+            onExportPDF={handleExportPDF}
+            csvLoading={csvLoading}
+            pdfLoading={pdfLoading}
+            compact
+          />
+          <Button onClick={onReset} variant="outline" className="w-full sm:w-auto">
             <RotateCcw className="h-4 w-4 mr-2" />
             Analyze Another Expense
           </Button>
@@ -195,15 +218,9 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
       </Card>
 
       {/* Disclaimer */}
-      <Card className="bg-muted/50">
-        <CardContent className="pt-6">
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            <strong>Disclaimer:</strong> This tool provides educational guidance based on common market practice.
-            It does not constitute legal, tax, or accounting advice. Actual expense treatment should be determined
-            in consultation with legal counsel, fund administrators, auditors, and as specified in your fund's governing documents.
-          </p>
-        </CardContent>
-      </Card>
+      <DisclaimerBlock
+        additionalDisclaimer="Actual expense treatment should be determined in consultation with legal counsel, fund administrators, auditors, and as specified in your fund's governing documents."
+      />
     </div>
   )
 }

@@ -7,13 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { Info, AlertCircle } from 'lucide-react'
+import { InfoPopover } from '@/components/ui/info-popover'
+import { AlertCircle } from 'lucide-react'
 import { FeePhaseEditor } from './fee-phase-editor'
 import { SummaryCards } from './summary-cards'
 import { ResultsChart } from './results-chart'
 import { ResultsTable } from './results-table'
 import { ExportSection } from './export-section'
+import { DisclaimerBlock } from '@/components/tools/shared'
 
 const fundTypeOptions: FundType[] = [
   'Private Equity',
@@ -25,12 +26,12 @@ const fundTypeOptions: FundType[] = [
 ]
 
 const fundTypeDescriptions: Record<FundType, string> = {
-  'Private Equity': 'Typically 10-12 year term with 3-5 year investment period',
-  'Venture Capital': 'Usually 10 year term with 3-4 year investment period',
-  'Private Credit': 'Varies widely, often perpetual or 5-7 years',
-  'Real Estate': 'Typically 7-10 year term with 2-3 year investment period',
-  'Hedge Fund': 'Usually perpetual with quarterly liquidity',
-  'Other': 'Custom fund structure'
+  'Private Equity': 'Typically 10-12 year term with 3-5 year investment period. Fees usually 2% on commitments during investment period, then 1.5-2% on invested capital.',
+  'Venture Capital': 'Usually 10 year term with 3-4 year investment period. Fees typically 2-2.5% on commitments, sometimes flat through the entire fund life.',
+  'Private Credit': 'Varies widely, often perpetual or 5-7 years. Fees range from 0.75-1.5% depending on strategy and leverage.',
+  'Real Estate': 'Typically 7-10 year term with 2-3 year investment period. Fees usually 1-1.5% on commitments or invested capital.',
+  'Hedge Fund': 'Usually perpetual with quarterly liquidity. Fees typically 1.5-2% on NAV annually.',
+  'Other': 'Custom fund structure - adjust fee phases to match your LPA terms.'
 }
 
 export function ManagementFeeCalculator() {
@@ -86,8 +87,9 @@ export function ManagementFeeCalculator() {
         <div className="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg">
           <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
           <p className="text-sm text-blue-900 dark:text-blue-100">
-            This is a simplified educational tool. It does not constitute legal, tax, or financial advice.
-            Always consult with legal counsel and fund administrators before finalizing fee structures.
+            This is a simplified educational tool for modeling management fees. Actual fee calculations
+            may be more complex depending on your LPA terms. Always consult with legal counsel and fund
+            administrators before finalizing fee structures.
           </p>
         </div>
       </div>
@@ -104,16 +106,9 @@ export function ManagementFeeCalculator() {
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Label htmlFor="fund-type" className="text-sm">Fund Type</Label>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="h-3 w-3 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>{fundTypeDescriptions[fundInputs.fundType]}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <InfoPopover>
+                    {fundTypeDescriptions[fundInputs.fundType]}
+                  </InfoPopover>
                 </div>
                 <Select
                   value={fundInputs.fundType}
@@ -133,16 +128,9 @@ export function ManagementFeeCalculator() {
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Label htmlFor="fund-size" className="text-sm">Target Fund Size ($ millions)</Label>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="h-3 w-3 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Total committed capital from all LPs and the GP</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <InfoPopover>
+                    Total committed capital from all LPs and the GP. This is the amount you are targeting to raise, not the amount called or invested. Emerging manager funds typically range from $10M to $100M.
+                  </InfoPopover>
                 </div>
                 <Input
                   id="fund-size"
@@ -157,16 +145,9 @@ export function ManagementFeeCalculator() {
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Label htmlFor="fund-term" className="text-sm">Fund Term (years)</Label>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="h-3 w-3 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Total life of the fund before final liquidation, including extensions</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <InfoPopover>
+                    Total life of the fund before final liquidation, including any extensions. Most PE/VC funds are 10 years with two 1-year extensions possible. Credit and real estate funds may be shorter.
+                  </InfoPopover>
                 </div>
                 <Input
                   id="fund-term"
@@ -181,16 +162,9 @@ export function ManagementFeeCalculator() {
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Label htmlFor="investment-period" className="text-sm">Investment Period (years)</Label>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="h-3 w-3 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Period during which the fund can make new investments. Fees are typically higher during this period.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <InfoPopover>
+                    The period during which the fund can make new investments. Typically 3-5 years for PE/VC. Management fees are often higher during this period and based on commitments, then may step down to a lower rate on invested capital.
+                  </InfoPopover>
                 </div>
                 <Input
                   id="investment-period"
@@ -205,16 +179,9 @@ export function ManagementFeeCalculator() {
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Label htmlFor="nav-growth" className="text-sm">Annual NAV Growth Rate (%) - Optional</Label>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="h-3 w-3 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>Assumed annual growth in portfolio value. Only affects NAV-based fee calculations. Leave at 0 for conservative estimates.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <InfoPopover>
+                    Assumed annual growth in portfolio value. Only affects NAV-based fee calculations. Leave at 0 for conservative estimates. Typical VC target IRRs are 20-30%, but realized NAV growth varies significantly by vintage and strategy.
+                  </InfoPopover>
                 </div>
                 <Input
                   id="nav-growth"
@@ -247,6 +214,9 @@ export function ManagementFeeCalculator() {
               <ResultsChart yearlyData={result.yearlyData} />
               <ResultsTable yearlyData={result.yearlyData} />
               <ExportSection fundInputs={fundInputs} result={result} feePhases={feePhases} />
+              <DisclaimerBlock
+                additionalDisclaimer="Always consult with legal counsel and fund administrators before finalizing your LPA fee terms."
+              />
             </>
           ) : (
             <Card>

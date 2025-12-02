@@ -1,234 +1,15 @@
 import { PricingOutput, KYCAMLInput, formatCurrency, getFundTypeName } from './pricingData'
-
-export function exportKYCAMLPricing(output: PricingOutput, input: KYCAMLInput) {
-  const timestamp = new Date().toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
-
-  const content = `
-KYC / AML COST ESTIMATE - INVESTOR ONBOARDING
-Generated: ${timestamp}
-Source: FundOpsHQ KYC/AML Cost Estimator
-
-═══════════════════════════════════════════════════════════════════════
-
-ESTIMATED COST RANGE
-═══════════════════════════════════════════════════════════════════════
-
-INITIAL ONBOARDING (One-Time)
-
-Low Estimate:        ${formatCurrency(output.initialOnboarding.low)}
-Most Likely:         ${formatCurrency(output.initialOnboarding.medium)}
-High Estimate:       ${formatCurrency(output.initialOnboarding.high)}
-
-${input.hasOngoingMonitoring ? `
-ONGOING ANNUAL MONITORING
-
-Low Estimate:        ${formatCurrency(output.annualOngoing.low)}
-Most Likely:         ${formatCurrency(output.annualOngoing.medium)}
-High Estimate:       ${formatCurrency(output.annualOngoing.high)}
-` : ''}
-
-AVERAGE PER INVESTOR
-
-Low:                 ${formatCurrency(output.averagePerInvestor.low)}
-Most Likely:         ${formatCurrency(output.averagePerInvestor.medium)}
-High:                ${formatCurrency(output.averagePerInvestor.high)}
-
-These estimates reflect typical mid-tier KYC/AML service providers for
-private investment fund investor onboarding and ongoing monitoring.
-
-═══════════════════════════════════════════════════════════════════════
-
-YOUR FUND PROFILE
-═══════════════════════════════════════════════════════════════════════
-
-Fund Type:           ${getFundTypeName(input.fundType)}
-Fund Domicile:       ${getDomicileName(input.domicile)}
-Investor Jurisdictions: ${getJurisdictionName(input.investorJurisdictions)}
-Risk Level:          ${input.riskLevel === 'higher-risk' ? 'Higher Risk (EDD Required)' : 'Standard Risk'}
-
-INVESTOR MIX
-
-Total Investors:     ${output.totalInvestors}
-  • Individual:      ${input.individualCount}
-  • Entity:          ${input.entityCount}
-  • Institutional:   ${input.institutionalCount}
-
-KYC/AML SCOPE
-
-Due Diligence Level: ${input.dueDiligenceLevel === 'enhanced' ? 'Enhanced Due Diligence (EDD)' : 'Standard CDD'}
-Monitoring Frequency: ${getMonitoringName(input.monitoringFrequency)}
-Operating Model:     ${getOperatingModelName(input.operatingModel)}
-
-Depth of Checks:
-${input.checksDepth.map(check => `  • ${getCheckName(check)}`).join('\n')}
-
-COMPLEXITY FACTORS
-
-Non-Resident Proportion: ${getNonResidentName(input.nonResidentProportion)}
-Complex Ownership:   ${input.complexOwnership ? 'Yes (Multi-layer UBO analysis required)' : 'No'}
-High-Risk Proportion: ${getHighRiskName(input.highRiskProportion)}
-
-═══════════════════════════════════════════════════════════════════════
-
-PER-INVESTOR COSTS BY TYPE
-═══════════════════════════════════════════════════════════════════════
-
-INDIVIDUAL INVESTORS (${input.individualCount})
-
-Low:                 ${formatCurrency(output.perInvestorCosts.individual.low)}
-Medium:              ${formatCurrency(output.perInvestorCosts.individual.medium)}
-High:                ${formatCurrency(output.perInvestorCosts.individual.high)}
-
-ENTITY INVESTORS (${input.entityCount})
-
-Low:                 ${formatCurrency(output.perInvestorCosts.entity.low)}
-Medium:              ${formatCurrency(output.perInvestorCosts.entity.medium)}
-High:                ${formatCurrency(output.perInvestorCosts.entity.high)}
-
-INSTITUTIONAL INVESTORS (${input.institutionalCount})
-
-Low:                 ${formatCurrency(output.perInvestorCosts.institutional.low)}
-Medium:              ${formatCurrency(output.perInvestorCosts.institutional.medium)}
-High:                ${formatCurrency(output.perInvestorCosts.institutional.high)}
-
-═══════════════════════════════════════════════════════════════════════
-
-DETAILED COST BREAKDOWN
-═══════════════════════════════════════════════════════════════════════
-
-${output.breakdown.map(item => {
-  const category = item.category.padEnd(45)
-  const range = `${formatCurrency(item.total.low)} - ${formatCurrency(item.total.high)}`
-  return `${category}\n${item.count ? `  ${item.count} investors @ ${formatCurrency(item.perUnit.low)} - ${formatCurrency(item.perUnit.high)} each\n` : ''}  Total: ${range}`
-}).join('\n\n')}
-
-───────────────────────────────────────────────────────────────────────
-INITIAL ONBOARDING TOTAL (Most Likely): ${formatCurrency(output.initialOnboarding.medium)}
-${input.hasOngoingMonitoring ? `ANNUAL ONGOING TOTAL (Most Likely):     ${formatCurrency(output.annualOngoing.medium)}` : ''}
-═══════════════════════════════════════════════════════════════════════
-
-${output.drivers.length > 0 ? `
-WHAT'S DRIVING YOUR KYC/AML COSTS
-═══════════════════════════════════════════════════════════════════════
-
-${output.drivers.map((driver, index) => `
-${index + 1}. ${driver.title}${driver.impact === 'positive' ? ' [Cost Reduction]' : driver.impact === 'negative' ? ' [Cost Driver]' : ''}
-   ${driver.description}
-`).join('\n')}
-` : ''}
-
-═══════════════════════════════════════════════════════════════════════
-
-WHAT'S TYPICALLY INCLUDED
-═══════════════════════════════════════════════════════════════════════
-
-STANDARD KYC/AML ONBOARDING:
-
-• Identity verification (government-issued ID, passport, etc.)
-• Address verification (utility bills, bank statements)
-• PEP (Politically Exposed Persons) screening
-• Sanctions list screening (OFAC, EU, UN)
-• Adverse media screening
-• Entity verification (articles of incorporation, registry extracts)
-• Beneficial ownership analysis
-• Source of funds documentation review
-• Risk assessment and classification
-• AML/CTF compliance documentation
-
-ENHANCED DUE DILIGENCE (EDD) ADDS:
-
-• Detailed source of wealth analysis
-• Enhanced background checks
-• Additional document verification
-• Ongoing transaction monitoring
-• Senior management review and approval
-• More frequent periodic reviews
-
-ONGOING MONITORING INCLUDES:
-
-• Periodic PEP and sanctions list rescreening
-• Adverse media monitoring
-• KYC document refresh and updates
-• Transaction monitoring (for ongoing activity)
-• Periodic risk reassessment
-
-═══════════════════════════════════════════════════════════════════════
-
-FACTORS THAT CAN INCREASE COSTS
-═══════════════════════════════════════════════════════════════════════
-
-• Investors from high-risk jurisdictions (FATF grey-list countries)
-• Complex multi-layered corporate structures requiring UBO analysis
-• Lack of standard documentation or incomplete records
-• High proportion of non-English documentation requiring translation
-• Investors flagged in initial screening requiring manual review
-• Changes in regulatory requirements or sanction lists
-• Rush processing or expedited onboarding requirements
-
-FACTORS THAT CAN REDUCE COSTS
-
-• Bundling KYC/AML with fund administrator services
-• High volume of investors enabling economies of scale
-• Automated digital onboarding workflows
-• Standardized documentation from investors
-• Mostly domestic investors from low-risk jurisdictions
-• Established relationships with reputable intermediaries
-
-═══════════════════════════════════════════════════════════════════════
-
-ABOUT THESE ESTIMATES
-═══════════════════════════════════════════════════════════════════════
-
-These estimates reflect typical mid-tier KYC/AML service providers. Costs
-vary significantly based on:
-
-• Provider choice (in-house, outsourced specialist, or bundled with
-  fund administrator)
-• Technology platform and degree of automation
-• Specific compliance requirements for your fund's jurisdictions
-• Volume discounts for larger investor bases
-• Complexity of your investor base and ownership structures
-
-HOW TO USE THIS ESTIMATE:
-
-Use this as a starting point for budgeting and vendor discussions.
-Request detailed proposals from multiple providers to compare:
-• Per-investor pricing by investor type
-• Platform/subscription fees
-• Setup and integration costs
-• Ongoing monitoring costs
-• SLAs for turnaround time
-• Technology capabilities and reporting
-
-Consider bundling with your fund administrator for potential cost savings
-and operational efficiency.
-
-═══════════════════════════════════════════════════════════════════════
-
-Generated by FundOpsHQ KYC/AML Cost Estimator
-https://fundopshq.com/tools/kyc-aml-cost-estimator
-
-This is an educational estimate only. Consult with qualified compliance
-professionals for actual pricing and AML/KYC compliance advice.
-
-═══════════════════════════════════════════════════════════════════════
-`.trim()
-
-  // Create and download the file
-  const blob = new Blob([content], { type: 'text/plain' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = `kyc-aml-estimate-${new Date().toISOString().split('T')[0]}.txt`
-  document.body.appendChild(a)
-  a.click()
-  document.body.removeChild(a)
-  URL.revokeObjectURL(url)
-}
+import {
+  downloadCSV,
+  createKeyValueSection,
+  createTableSection,
+  type CSVSection
+} from '@/lib/exports'
+import {
+  downloadPDF,
+  createPDFTableSection,
+  type PDFSection
+} from '@/lib/exports'
 
 // Helper functions for display names
 function getDomicileName(domicile: string): string {
@@ -298,4 +79,191 @@ function getHighRiskName(proportion: string): string {
     'high': 'High (>25%)'
   }
   return names[proportion] || proportion
+}
+
+export function exportKYCAMLCSV(output: PricingOutput, input: KYCAMLInput) {
+  const sections: CSVSection[] = [
+    // Cost Summary
+    createKeyValueSection('Cost Summary', {
+      'Total Investors': output.totalInvestors.toString(),
+      'Initial Onboarding (Low)': formatCurrency(output.initialOnboarding.low),
+      'Initial Onboarding (Most Likely)': formatCurrency(output.initialOnboarding.medium),
+      'Initial Onboarding (High)': formatCurrency(output.initialOnboarding.high),
+      ...(input.hasOngoingMonitoring ? {
+        'Annual Monitoring (Low)': formatCurrency(output.annualOngoing.low),
+        'Annual Monitoring (Most Likely)': formatCurrency(output.annualOngoing.medium),
+        'Annual Monitoring (High)': formatCurrency(output.annualOngoing.high)
+      } : {}),
+      'Average Per Investor (Low)': formatCurrency(output.averagePerInvestor.low),
+      'Average Per Investor (Most Likely)': formatCurrency(output.averagePerInvestor.medium),
+      'Average Per Investor (High)': formatCurrency(output.averagePerInvestor.high)
+    }),
+
+    // Fund Profile
+    createKeyValueSection('Fund Profile', {
+      'Fund Type': getFundTypeName(input.fundType),
+      'Fund Domicile': getDomicileName(input.domicile),
+      'Investor Jurisdictions': getJurisdictionName(input.investorJurisdictions),
+      'Risk Level': input.riskLevel === 'higher-risk' ? 'Higher Risk (EDD Required)' : 'Standard Risk'
+    }),
+
+    // Investor Mix
+    createKeyValueSection('Investor Mix', {
+      'Individual Investors': input.individualCount.toString(),
+      'Entity Investors': input.entityCount.toString(),
+      'Institutional Investors': input.institutionalCount.toString(),
+      'Total Investors': output.totalInvestors.toString()
+    }),
+
+    // KYC/AML Scope
+    createKeyValueSection('KYC/AML Scope', {
+      'Due Diligence Level': input.dueDiligenceLevel === 'enhanced' ? 'Enhanced Due Diligence (EDD)' : 'Standard CDD',
+      'Monitoring Frequency': getMonitoringName(input.monitoringFrequency),
+      'Operating Model': getOperatingModelName(input.operatingModel),
+      'Depth of Checks': input.checksDepth.map(getCheckName).join(', ')
+    }),
+
+    // Complexity Factors
+    createKeyValueSection('Complexity Factors', {
+      'Non-Resident Proportion': getNonResidentName(input.nonResidentProportion),
+      'Complex Ownership': input.complexOwnership ? 'Yes (Multi-layer UBO analysis)' : 'No',
+      'High-Risk Proportion': getHighRiskName(input.highRiskProportion)
+    }),
+
+    // Per-Investor Costs
+    createTableSection(
+      'Per-Investor Costs by Type',
+      ['Investor Type', 'Count', 'Low', 'Medium', 'High'],
+      [
+        ['Individual', input.individualCount.toString(), formatCurrency(output.perInvestorCosts.individual.low), formatCurrency(output.perInvestorCosts.individual.medium), formatCurrency(output.perInvestorCosts.individual.high)],
+        ['Entity', input.entityCount.toString(), formatCurrency(output.perInvestorCosts.entity.low), formatCurrency(output.perInvestorCosts.entity.medium), formatCurrency(output.perInvestorCosts.entity.high)],
+        ['Institutional', input.institutionalCount.toString(), formatCurrency(output.perInvestorCosts.institutional.low), formatCurrency(output.perInvestorCosts.institutional.medium), formatCurrency(output.perInvestorCosts.institutional.high)]
+      ]
+    ),
+
+    // Cost Breakdown
+    createTableSection(
+      'Detailed Cost Breakdown',
+      ['Category', 'Count', 'Per Unit (Low-High)', 'Total (Low-High)'],
+      output.breakdown.map(item => [
+        item.category,
+        item.count?.toString() || '-',
+        item.count ? `${formatCurrency(item.perUnit.low)} - ${formatCurrency(item.perUnit.high)}` : '-',
+        `${formatCurrency(item.total.low)} - ${formatCurrency(item.total.high)}`
+      ])
+    )
+  ]
+
+  // Add cost drivers if any
+  if (output.drivers.length > 0) {
+    sections.push(
+      createTableSection(
+        'Cost Drivers',
+        ['Factor', 'Impact', 'Description'],
+        output.drivers.map(driver => [
+          driver.title,
+          driver.impact === 'positive' ? 'Cost Reduction' : driver.impact === 'negative' ? 'Cost Driver' : 'Neutral',
+          driver.description
+        ])
+      )
+    )
+  }
+
+  downloadCSV({
+    filename: `kyc-aml-estimate-${new Date().toISOString().split('T')[0]}`,
+    toolName: 'KYC/AML Cost Estimator',
+    sections,
+    includeDisclaimer: true
+  })
+}
+
+export function exportKYCAMLPDF(output: PricingOutput, input: KYCAMLInput) {
+  const sections: PDFSection[] = [
+    // Cost Summary
+    { type: 'title', content: 'Estimated KYC/AML Costs' },
+    {
+      type: 'keyValue',
+      data: {
+        'Total Investors': output.totalInvestors.toString(),
+        'Initial Onboarding (Most Likely)': formatCurrency(output.initialOnboarding.medium),
+        'Initial Onboarding Range': `${formatCurrency(output.initialOnboarding.low)} - ${formatCurrency(output.initialOnboarding.high)}`,
+        ...(input.hasOngoingMonitoring ? {
+          'Annual Monitoring (Most Likely)': formatCurrency(output.annualOngoing.medium),
+          'Annual Monitoring Range': `${formatCurrency(output.annualOngoing.low)} - ${formatCurrency(output.annualOngoing.high)}`
+        } : {}),
+        'Average Per Investor': formatCurrency(output.averagePerInvestor.medium)
+      }
+    },
+
+    { type: 'spacer' },
+
+    // Fund Profile
+    { type: 'title', content: 'Fund Profile' },
+    {
+      type: 'keyValue',
+      data: {
+        'Fund Type': getFundTypeName(input.fundType),
+        'Fund Domicile': getDomicileName(input.domicile),
+        'Investor Jurisdictions': getJurisdictionName(input.investorJurisdictions),
+        'Risk Level': input.riskLevel === 'higher-risk' ? 'Higher Risk' : 'Standard'
+      }
+    },
+
+    { type: 'spacer' },
+
+    // Investor Mix
+    { type: 'title', content: 'Investor Mix' },
+    {
+      type: 'keyValue',
+      data: {
+        'Individual Investors': input.individualCount.toString(),
+        'Entity Investors': input.entityCount.toString(),
+        'Institutional Investors': input.institutionalCount.toString()
+      }
+    },
+
+    { type: 'spacer' },
+
+    // Per-Investor Costs Table
+    { type: 'title', content: 'Per-Investor Costs' },
+    createPDFTableSection(
+      ['Type', 'Count', 'Low', 'Medium', 'High'],
+      [
+        ['Individual', input.individualCount.toString(), formatCurrency(output.perInvestorCosts.individual.low), formatCurrency(output.perInvestorCosts.individual.medium), formatCurrency(output.perInvestorCosts.individual.high)],
+        ['Entity', input.entityCount.toString(), formatCurrency(output.perInvestorCosts.entity.low), formatCurrency(output.perInvestorCosts.entity.medium), formatCurrency(output.perInvestorCosts.entity.high)],
+        ['Institutional', input.institutionalCount.toString(), formatCurrency(output.perInvestorCosts.institutional.low), formatCurrency(output.perInvestorCosts.institutional.medium), formatCurrency(output.perInvestorCosts.institutional.high)]
+      ]
+    ),
+
+    { type: 'spacer' },
+
+    // KYC/AML Scope
+    { type: 'title', content: 'KYC/AML Configuration' },
+    {
+      type: 'keyValue',
+      data: {
+        'Due Diligence': input.dueDiligenceLevel === 'enhanced' ? 'Enhanced (EDD)' : 'Standard CDD',
+        'Monitoring': getMonitoringName(input.monitoringFrequency),
+        'Operating Model': getOperatingModelName(input.operatingModel)
+      }
+    }
+  ]
+
+  // Add cost drivers if any
+  if (output.drivers.length > 0) {
+    sections.push({ type: 'spacer' })
+    sections.push({ type: 'title', content: 'Key Cost Drivers' })
+    output.drivers.slice(0, 4).forEach(driver => {
+      const impact = driver.impact === 'positive' ? '[Savings]' : driver.impact === 'negative' ? '[Cost]' : ''
+      sections.push({ type: 'text', content: `${driver.title} ${impact}: ${driver.description.substring(0, 100)}${driver.description.length > 100 ? '...' : ''}` })
+    })
+  }
+
+  downloadPDF({
+    filename: `kyc-aml-estimate-${new Date().toISOString().split('T')[0]}`,
+    toolName: 'KYC/AML Cost Estimator',
+    description: `KYC/AML cost estimate for ${output.totalInvestors} investors`,
+    sections,
+    includeDisclaimer: true
+  })
 }

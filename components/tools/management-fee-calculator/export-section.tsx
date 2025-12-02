@@ -4,8 +4,23 @@ import { useState } from 'react'
 import { FundInputs, FeeCalculationResult, FeePhase } from './types'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Download, Copy, FileText, CheckCircle2 } from 'lucide-react'
+import { Copy, FileText, CheckCircle2 } from 'lucide-react'
 import { generateFeeSummary } from './fee-calculator'
+import { ExportToolbar } from '@/components/tools/shared'
+import {
+  downloadCSV,
+  createKeyValueSection,
+  createTableSection,
+  formatCurrency,
+  formatPercent,
+  type CSVSection
+} from '@/lib/exports'
+import {
+  downloadPDF,
+  createPDFKeyValueSection,
+  createPDFTableSection,
+  type PDFSection
+} from '@/lib/exports'
 
 interface ExportSectionProps {
   fundInputs: FundInputs
@@ -15,6 +30,8 @@ interface ExportSectionProps {
 
 export function ExportSection({ fundInputs, result, feePhases }: ExportSectionProps) {
   const [copied, setCopied] = useState(false)
+  const [csvLoading, setCsvLoading] = useState(false)
+  const [pdfLoading, setPdfLoading] = useState(false)
 
   const summary = generateFeeSummary(fundInputs, result)
 
@@ -29,25 +46,134 @@ export function ExportSection({ fundInputs, result, feePhases }: ExportSectionPr
   }
 
   const handleExportCSV = () => {
-    let csv = 'Year,Fee Base,Base Amount (M),Fee Rate (%),Fee Amount (M),Cumulative Fees (M),% of Commitments\n'
+    setCsvLoading(true)
+    setTimeout(() => {
+      const sections: CSVSection[] = [
+        // Fund Summary
+        createKeyValueSection('Fund Summary', {
+          'Fund Type': fundInputs.fundType,
+          'Target Fund Size': `$${fundInputs.fundSize}M`,
+          'Fund Term': `${fundInputs.fundTerm} years`,
+          'Investment Period': `${fundInputs.investmentPeriod} years`,
+          'NAV Growth Rate': `${fundInputs.navGrowthRate || 0}%`
+        }),
 
-    result.yearlyData.forEach(data => {
-      csv += `${data.year},"${data.feeBase}",${data.baseAmount.toFixed(2)},${data.feeRate.toFixed(2)},${data.feeAmount.toFixed(2)},${data.cumulativeFees.toFixed(2)},${data.feesAsPercentOfCommitments.toFixed(2)}\n`
-    })
+        // Total Fees
+        createKeyValueSection('Total Fee Summary', {
+          'Total Management Fees': `$${result.totalFees.toFixed(2)}M`,
+          'Average Annual Fee': formatPercent(result.averageAnnualFeePercent, 2),
+          'Total Fees as % of Commitments': formatPercent(result.feesAsPercentOfCommitments, 2),
+          'Fees in First Half': `$${result.firstHalfFees.toFixed(2)}M`,
+          'Fees in Second Half': `$${result.secondHalfFees.toFixed(2)}M`
+        }),
 
-    const blob = new Blob([csv], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `management-fee-schedule-${Date.now()}.csv`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    window.URL.revokeObjectURL(url)
+        // Fee Phases Table
+        createTableSection(
+          'Fee Schedule Phases',
+          ['Phase', 'Years', 'Fee Base', 'Annual Rate'],
+          feePhases.map((phase, idx) => [
+            `Phase ${idx + 1}`,
+            `${phase.startYear} - ${phase.endYear}`,
+            phase.feeBase,
+            `${phase.feeRate.toFixed(2)}%`
+          ])
+        ),
+
+        // Yearly Schedule Table
+        createTableSection(
+          'Yearly Fee Schedule',
+          ['Year', 'Fee Base', 'Base Amount (M)', 'Fee Rate (%)', 'Fee Amount (M)', 'Cumulative (M)', '% of Commitments'],
+          result.yearlyData.map(data => [
+            String(data.year),
+            data.feeBase,
+            `$${data.baseAmount.toFixed(2)}`,
+            `${data.feeRate.toFixed(2)}%`,
+            `$${data.feeAmount.toFixed(2)}`,
+            `$${data.cumulativeFees.toFixed(2)}`,
+            `${data.feesAsPercentOfCommitments.toFixed(2)}%`
+          ])
+        )
+      ]
+
+      downloadCSV({
+        filename: `management-fee-schedule-${new Date().toISOString().split('T')[0]}`,
+        toolName: 'Management Fee Calculator',
+        sections,
+        includeDisclaimer: true
+      })
+      setCsvLoading(false)
+    }, 100)
   }
 
-  const handlePrint = () => {
-    window.print()
+  const handleExportPDF = () => {
+    setPdfLoading(true)
+    setTimeout(() => {
+      const sections: PDFSection[] = [
+        // Fund Summary
+        { type: 'title', content: 'Fund Configuration' },
+        {
+          type: 'keyValue',
+          data: {
+            'Fund Type': fundInputs.fundType,
+            'Target Fund Size': `$${fundInputs.fundSize}M`,
+            'Fund Term': `${fundInputs.fundTerm} years`,
+            'Investment Period': `${fundInputs.investmentPeriod} years`
+          }
+        },
+
+        { type: 'spacer' },
+
+        // Total Fees (prominent)
+        { type: 'title', content: 'Total Fee Summary' },
+        {
+          type: 'keyValue',
+          data: {
+            'Total Management Fees': `$${result.totalFees.toFixed(2)}M`,
+            'As % of Commitments': `${result.feesAsPercentOfCommitments.toFixed(2)}%`,
+            'Average Annual Fee': `${result.averageAnnualFeePercent.toFixed(2)}%`,
+            'First Half of Term': `$${result.firstHalfFees.toFixed(2)}M`,
+            'Second Half of Term': `$${result.secondHalfFees.toFixed(2)}M`
+          }
+        },
+
+        { type: 'spacer' },
+
+        // Fee Phases
+        ...createPDFTableSection(
+          'Fee Schedule Phases',
+          ['Phase', 'Years', 'Fee Base', 'Rate'],
+          feePhases.map((phase, idx) => [
+            `Phase ${idx + 1}`,
+            `Yr ${phase.startYear}-${phase.endYear}`,
+            phase.feeBase.substring(0, 15),
+            `${phase.feeRate}%`
+          ])
+        ),
+
+        { type: 'spacer' },
+
+        // Yearly Schedule (first 10 years)
+        ...createPDFTableSection(
+          'Yearly Fee Schedule',
+          ['Year', 'Fee Base', 'Fee ($M)', 'Cumul.'],
+          result.yearlyData.slice(0, 10).map(data => [
+            `Yr ${data.year}`,
+            data.feeBase.substring(0, 12),
+            `$${data.feeAmount.toFixed(2)}`,
+            `$${data.cumulativeFees.toFixed(2)}`
+          ])
+        )
+      ]
+
+      downloadPDF({
+        filename: `management-fee-schedule-${new Date().toISOString().split('T')[0]}`,
+        toolName: 'Management Fee Calculator',
+        description: `Fee projection for a $${fundInputs.fundSize}M ${fundInputs.fundType} fund with a ${fundInputs.fundTerm}-year term.`,
+        sections,
+        includeDisclaimer: true
+      })
+      setPdfLoading(false)
+    }, 100)
   }
 
   return (
@@ -59,7 +185,7 @@ export function ExportSection({ fundInputs, result, feePhases }: ExportSectionPr
         <div className="space-y-2">
           <div className="flex items-center gap-2 mb-2">
             <FileText className="h-4 w-4 text-muted-foreground" />
-            <span className="text-sm font-medium">Summary</span>
+            <span className="text-sm font-medium">Quick Summary</span>
           </div>
           <div className="p-3 bg-accent/20 rounded-lg text-sm leading-relaxed">
             {summary}
@@ -87,32 +213,13 @@ export function ExportSection({ fundInputs, result, feePhases }: ExportSectionPr
         </div>
 
         <div className="border-t pt-4">
-          <div className="grid grid-cols-2 gap-2">
-            <Button
-              onClick={handleExportCSV}
-              variant="outline"
-              size="sm"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Export CSV
-            </Button>
-            <Button
-              onClick={handlePrint}
-              variant="outline"
-              size="sm"
-            >
-              <FileText className="h-4 w-4 mr-2" />
-              Print / PDF
-            </Button>
-          </div>
-        </div>
-
-        <div className="border-t pt-4">
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            <strong>Disclaimer:</strong> This calculator provides simplified estimates for educational purposes only.
-            It does not constitute legal, tax, or financial advice. Actual management fee calculations may be more
-            complex and should be reviewed with legal counsel and fund administrators before finalizing your LPA.
-          </p>
+          <ExportToolbar
+            onExportCSV={handleExportCSV}
+            onExportPDF={handleExportPDF}
+            csvLoading={csvLoading}
+            pdfLoading={pdfLoading}
+            compact
+          />
         </div>
       </CardContent>
     </Card>

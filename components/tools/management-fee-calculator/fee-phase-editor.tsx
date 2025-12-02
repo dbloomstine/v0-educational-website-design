@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Plus, Trash2, Info } from 'lucide-react'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Plus, Trash2 } from 'lucide-react'
+import { InfoPopover } from '@/components/ui/info-popover'
 
 interface FeePhaseEditorProps {
   phases: FeePhase[]
@@ -24,10 +24,10 @@ const feeBaseOptions: FeeBase[] = [
 ]
 
 const feeBaseDescriptions: Record<FeeBase, string> = {
-  'Committed Capital': 'The total amount LPs have committed to the fund, regardless of how much has been drawn',
-  'Invested Cost': 'The actual capital that has been invested in portfolio companies (drawn from LPs)',
-  'Net Asset Value (NAV)': 'The current fair market value of the fund\'s investments',
-  'Lower of Cost or Fair Value': 'The lower of invested cost or current NAV - a conservative approach'
+  'Committed Capital': 'The total amount LPs have committed to the fund, regardless of how much has been drawn. Most common during the investment period - provides predictable fee revenue.',
+  'Invested Cost': 'The actual capital that has been invested in portfolio companies (drawn from LPs). Often used post-investment period to align fees with actual deployment.',
+  'Net Asset Value (NAV)': 'The current fair market value of the fund\'s investments. Common for hedge funds and evergreen structures. Aligns fees with portfolio performance.',
+  'Lower of Cost or Fair Value': 'The lower of invested cost or current NAV - a conservative, LP-friendly approach that limits fees if portfolio value declines.'
 }
 
 export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }: FeePhaseEditorProps) {
@@ -64,16 +64,9 @@ export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h3 className="text-lg font-semibold">Fee Schedule Phases</h3>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Info className="h-4 w-4 text-muted-foreground" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                <p>Define different fee structures for different periods of your fund. Most funds have higher fees during the investment period and lower fees afterward.</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <InfoPopover>
+            Define different fee structures for different periods of your fund. Most funds have higher fees during the investment period (typically 2% on commitments) and lower fees afterward (often 1.5-2% on invested capital or NAV). Add multiple phases to model step-downs or changes in fee base.
+          </InfoPopover>
         </div>
         <Button onClick={handleAddPhase} size="sm" variant="outline">
           <Plus className="h-4 w-4 mr-2" />
@@ -143,16 +136,9 @@ export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <Label htmlFor={`${phase.id}-base`} className="text-xs">Fee Base</Label>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Info className="h-3 w-3 text-muted-foreground" />
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs">
-                        <p>{feeBaseDescriptions[phase.feeBase]}</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
+                  <InfoPopover>
+                    {feeBaseDescriptions[phase.feeBase]}
+                  </InfoPopover>
                 </div>
                 <Select
                   value={phase.feeBase}
@@ -172,7 +158,12 @@ export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor={`${phase.id}-rate`} className="text-xs">Annual Fee Rate (%)</Label>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor={`${phase.id}-rate`} className="text-xs">Annual Fee Rate (%)</Label>
+                  <InfoPopover>
+                    The annual management fee percentage charged on the fee base. Typical ranges: PE/VC 1.5-2.5%, Credit 0.75-1.5%, Real Estate 1-1.5%. Emerging managers often start at 2% and may negotiate down for larger LPs.
+                  </InfoPopover>
+                </div>
                 <Input
                   id={`${phase.id}-rate`}
                   type="number"

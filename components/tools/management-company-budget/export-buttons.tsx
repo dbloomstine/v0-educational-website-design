@@ -1,6 +1,19 @@
-import { Button } from '@/components/ui/button'
-import { Download, FileText } from 'lucide-react'
+"use client"
+
+import { useState } from 'react'
 import { BudgetData, CalculationResults } from './types'
+import { ExportToolbar } from '@/components/tools/shared'
+import {
+  downloadCSV,
+  createKeyValueSection,
+  createTableSection,
+  type CSVSection
+} from '@/lib/exports'
+import {
+  downloadPDF,
+  createPDFTableSection,
+  type PDFSection
+} from '@/lib/exports'
 
 interface ExportButtonsProps {
   budgetData: BudgetData
@@ -9,146 +22,188 @@ interface ExportButtonsProps {
 }
 
 export function ExportButtons({ budgetData, results, formatCurrency }: ExportButtonsProps) {
-  const exportToCSV = () => {
+  const [csvLoading, setCsvLoading] = useState(false)
+  const [pdfLoading, setPdfLoading] = useState(false)
+
+  const handleExportCSV = () => {
     if (!results) return
+    setCsvLoading(true)
 
-    const lines: string[][] = []
+    setTimeout(() => {
+      const firstYear = results.revenue[0]
+      const firstYearExpenses = results.expenses[0]
+      const firstYearCash = results.cashFlow[0]
+      const margin = firstYear.totalRevenue > 0 ? (firstYearCash.ebitda / firstYear.totalRevenue * 100) : 0
+      const coverage = firstYear.mgmtFees > 0 ? (firstYear.mgmtFees / firstYearExpenses.totalExpenses) : 0
 
-    // Header
-    lines.push(['Management Company Budget Plan - ' + new Date().toLocaleDateString()])
-    lines.push([])
+      const sections: CSVSection[] = [
+        // Firm Profile
+        createKeyValueSection('Firm Profile', {
+          'Asset Class': budgetData.firmProfile.assetClass,
+          'Geography': budgetData.firmProfile.geography,
+          'Stage': budgetData.firmProfile.stage,
+          'Active Funds': String(budgetData.funds.length)
+        }),
 
-    // Firm Profile
-    lines.push(['Firm Profile'])
-    lines.push(['Asset Class', budgetData.firmProfile.assetClass])
-    lines.push(['Geography', budgetData.firmProfile.geography])
-    lines.push(['Stage', budgetData.firmProfile.stage])
-    lines.push([])
+        // Key Metrics
+        createKeyValueSection('Key Metrics (Year 1)', {
+          'Total Revenue': formatCurrency(firstYear.totalRevenue),
+          'Total Expenses': formatCurrency(firstYearExpenses.totalExpenses),
+          'EBITDA': formatCurrency(firstYearCash.ebitda),
+          'EBITDA Margin': `${margin.toFixed(1)}%`,
+          'Management Fee Coverage': `${coverage.toFixed(2)}x`
+        }),
 
-    // Funds
-    lines.push(['Active Funds'])
-    lines.push(['Fund Name', 'Size ($M)', 'Fee Rate (%)', 'Fee Base'])
-    budgetData.funds.forEach(fund => {
-      lines.push([fund.name, fund.size.toString(), fund.feeRate.toString(), fund.feeBase])
-    })
-    lines.push([])
+        // Funds Table
+        createTableSection(
+          'Active Funds',
+          ['Fund Name', 'Size ($M)', 'Fee Rate (%)', 'Fee Base'],
+          budgetData.funds.map(fund => [
+            fund.name,
+            String(fund.size),
+            String(fund.feeRate),
+            fund.feeBase
+          ])
+        ),
 
-    // Revenue
-    lines.push(['Revenue Projection'])
-    lines.push(['Year', 'Management Fees', 'Additional Fees', 'Recurring Revenue', 'Carry', 'Total Revenue'])
-    results.revenue.forEach(r => {
-      lines.push([
-        r.year.toString(),
-        r.mgmtFees.toString(),
-        r.additionalFees.toString(),
-        r.recurringRevenue.toString(),
-        r.carryRevenue.toString(),
-        r.totalRevenue.toString()
-      ])
-    })
-    lines.push([])
+        // Revenue Projection
+        createTableSection(
+          'Revenue Projection',
+          ['Year', 'Mgmt Fees', 'Add\'l Fees', 'Recurring', 'Carry', 'Total'],
+          results.revenue.map(r => [
+            String(r.year),
+            formatCurrency(r.mgmtFees),
+            formatCurrency(r.additionalFees),
+            formatCurrency(r.recurringRevenue),
+            formatCurrency(r.carryRevenue),
+            formatCurrency(r.totalRevenue)
+          ])
+        ),
 
-    // Expenses
-    lines.push(['Expense Projection'])
-    lines.push(['Year', 'People', 'Services', 'Technology', 'Office', 'Marketing', 'Insurance', 'Total'])
-    results.expenses.forEach(e => {
-      lines.push([
-        e.year.toString(),
-        e.peopleCost.toString(),
-        e.servicesCost.toString(),
-        e.technologyCost.toString(),
-        e.officeCost.toString(),
-        e.marketingCost.toString(),
-        e.insuranceCost.toString(),
-        e.totalExpenses.toString()
-      ])
-    })
-    lines.push([])
+        // Expense Projection
+        createTableSection(
+          'Expense Projection',
+          ['Year', 'People', 'Services', 'Tech', 'Office', 'Marketing', 'Insurance', 'Total'],
+          results.expenses.map(e => [
+            String(e.year),
+            formatCurrency(e.peopleCost),
+            formatCurrency(e.servicesCost),
+            formatCurrency(e.technologyCost),
+            formatCurrency(e.officeCost),
+            formatCurrency(e.marketingCost),
+            formatCurrency(e.insuranceCost),
+            formatCurrency(e.totalExpenses)
+          ])
+        ),
 
-    // Cash Flow
-    lines.push(['Cash Flow'])
-    lines.push(['Year', 'EBITDA', 'Cash Balance'])
-    results.cashFlow.forEach(c => {
-      lines.push([c.year.toString(), c.ebitda.toString(), c.cashBalance.toString()])
-    })
+        // Cash Flow
+        createTableSection(
+          'Cash Flow',
+          ['Year', 'EBITDA', 'Cash Balance'],
+          results.cashFlow.map(c => [
+            String(c.year),
+            formatCurrency(c.ebitda),
+            formatCurrency(c.cashBalance)
+          ])
+        )
+      ]
 
-    const csv = lines.map(row => row.join(',')).join('\n')
-    const blob = new Blob([csv], { type: 'text/csv' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'management-company-budget.csv'
-    a.click()
-    URL.revokeObjectURL(url)
+      downloadCSV({
+        filename: `management-company-budget-${new Date().toISOString().split('T')[0]}`,
+        toolName: 'Management Company Budget Planner',
+        sections,
+        includeDisclaimer: true
+      })
+      setCsvLoading(false)
+    }, 100)
   }
 
-  const exportSummary = () => {
+  const handleExportPDF = () => {
     if (!results) return
+    setPdfLoading(true)
 
-    const firstYear = results.revenue[0]
-    const firstYearExpenses = results.expenses[0]
-    const firstYearCash = results.cashFlow[0]
-    const margin = firstYear.totalRevenue > 0 ? (firstYearCash.ebitda / firstYear.totalRevenue * 100) : 0
-    const coverage = firstYear.mgmtFees > 0 ? (firstYear.mgmtFees / firstYearExpenses.totalExpenses) : 0
+    setTimeout(() => {
+      const firstYear = results.revenue[0]
+      const firstYearExpenses = results.expenses[0]
+      const firstYearCash = results.cashFlow[0]
+      const margin = firstYear.totalRevenue > 0 ? (firstYearCash.ebitda / firstYear.totalRevenue * 100) : 0
+      const coverage = firstYear.mgmtFees > 0 ? (firstYear.mgmtFees / firstYearExpenses.totalExpenses) : 0
 
-    const summary = `MANAGEMENT COMPANY BUDGET SNAPSHOT
-Generated: ${new Date().toLocaleDateString()}
+      const sections: PDFSection[] = [
+        // Firm Profile
+        { type: 'title', content: 'Firm Profile' },
+        {
+          type: 'keyValue',
+          data: {
+            'Asset Class': budgetData.firmProfile.assetClass,
+            'Geography': budgetData.firmProfile.geography,
+            'Stage': budgetData.firmProfile.stage,
+            'Active Funds': String(budgetData.funds.length)
+          }
+        },
 
-FIRM PROFILE
-Asset Class: ${budgetData.firmProfile.assetClass}
-Geography: ${budgetData.firmProfile.geography}
-Stage: ${budgetData.firmProfile.stage}
-Active Funds: ${budgetData.funds.length}
+        { type: 'spacer' },
 
-KEY METRICS (Year 1)
-Total Revenue: ${formatCurrency(firstYear.totalRevenue)}
-Total Expenses: ${formatCurrency(firstYearExpenses.totalExpenses)}
-EBITDA: ${formatCurrency(firstYearCash.ebitda)}
-EBITDA Margin: ${margin.toFixed(1)}%
-Management Fee Coverage: ${coverage.toFixed(2)}x
+        // Key Metrics
+        { type: 'title', content: 'Key Metrics (Year 1)' },
+        {
+          type: 'keyValue',
+          data: {
+            'Total Revenue': formatCurrency(firstYear.totalRevenue),
+            'Total Expenses': formatCurrency(firstYearExpenses.totalExpenses),
+            'EBITDA': formatCurrency(firstYearCash.ebitda),
+            'EBITDA Margin': `${margin.toFixed(1)}%`,
+            'Fee Coverage': `${coverage.toFixed(2)}x`
+          }
+        },
 
-REVENUE BREAKDOWN (Year 1)
-Management Fees: ${formatCurrency(firstYear.mgmtFees)}
-Additional Fees: ${formatCurrency(firstYear.additionalFees)}
-Recurring Revenue: ${formatCurrency(firstYear.recurringRevenue)}
-Carry (Scenario): ${formatCurrency(firstYear.carryRevenue)}
+        { type: 'spacer' },
 
-EXPENSE BREAKDOWN (Year 1)
-People Costs: ${formatCurrency(firstYearExpenses.peopleCost)}
-Outsourced Services: ${formatCurrency(firstYearExpenses.servicesCost)}
-Technology: ${formatCurrency(firstYearExpenses.technologyCost)}
-Office & Overhead: ${formatCurrency(firstYearExpenses.officeCost)}
-Marketing & Travel: ${formatCurrency(firstYearExpenses.marketingCost)}
-Insurance: ${formatCurrency(firstYearExpenses.insuranceCost)}
+        // Revenue Projection (summary)
+        ...createPDFTableSection(
+          'Revenue Projection',
+          ['Year', 'Mgmt Fees', 'Other', 'Total'],
+          results.revenue.slice(0, 5).map(r => [
+            `Yr ${r.year}`,
+            formatCurrency(r.mgmtFees, true),
+            formatCurrency(r.additionalFees + r.recurringRevenue, true),
+            formatCurrency(r.totalRevenue, true)
+          ])
+        ),
 
-Generated with FundOpsHQ Management Company Budget Planner
-`
+        { type: 'spacer' },
 
-    // Copy to clipboard
-    navigator.clipboard.writeText(summary).then(() => {
-      alert('Summary copied to clipboard!')
-    })
+        // Cash Flow
+        ...createPDFTableSection(
+          'Cash Flow Summary',
+          ['Year', 'EBITDA', 'Cash'],
+          results.cashFlow.slice(0, 5).map(c => [
+            `Yr ${c.year}`,
+            formatCurrency(c.ebitda, true),
+            formatCurrency(c.cashBalance, true)
+          ])
+        )
+      ]
 
-    // Download as text file
-    const blob = new Blob([summary], { type: 'text/plain' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'budget-summary.txt'
-    a.click()
-    URL.revokeObjectURL(url)
+      downloadPDF({
+        filename: `management-company-budget-${new Date().toISOString().split('T')[0]}`,
+        toolName: 'Management Company Budget Planner',
+        description: `${budgetData.firmProfile.assetClass} firm budget with ${budgetData.funds.length} active fund(s).`,
+        sections,
+        includeDisclaimer: true
+      })
+      setPdfLoading(false)
+    }, 100)
   }
 
   return (
-    <>
-      <Button variant="outline" size="sm" onClick={exportToCSV} disabled={!results}>
-        <Download className="h-4 w-4 mr-2" />
-        Export to CSV
-      </Button>
-      <Button variant="outline" size="sm" onClick={exportSummary} disabled={!results}>
-        <FileText className="h-4 w-4 mr-2" />
-        Export Summary
-      </Button>
-    </>
+    <ExportToolbar
+      onExportCSV={handleExportCSV}
+      onExportPDF={handleExportPDF}
+      csvLoading={csvLoading}
+      pdfLoading={pdfLoading}
+      compact
+      disabled={!results}
+    />
   )
 }

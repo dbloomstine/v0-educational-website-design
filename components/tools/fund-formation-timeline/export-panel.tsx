@@ -2,9 +2,19 @@
 
 import { Phase, FundFormationInputs } from './types'
 import { format } from 'date-fns'
-import { Button } from '@/components/ui/button'
-import { FileText, FileSpreadsheet, Download, Copy, Check } from 'lucide-react'
 import { useState } from 'react'
+import { ExportToolbar } from '@/components/tools/shared'
+import {
+  downloadCSV,
+  createKeyValueSection,
+  createTableSection,
+  type CSVSection
+} from '@/lib/exports'
+import {
+  downloadPDF,
+  createPDFTableSection,
+  type PDFSection
+} from '@/lib/exports'
 
 interface ExportPanelProps {
   phases: Phase[]
@@ -12,84 +22,117 @@ interface ExportPanelProps {
 }
 
 export function ExportPanel({ phases, inputs }: ExportPanelProps) {
-  const [copied, setCopied] = useState(false)
+  const [csvLoading, setCsvLoading] = useState(false)
+  const [pdfLoading, setPdfLoading] = useState(false)
 
-  const generateTextSummary = (): string => {
-    let text = `FUND FORMATION TIMELINE\n`
-    text += `Generated on ${format(new Date(), 'MMMM d, yyyy')}\n\n`
+  const handleExportCSV = () => {
+    setCsvLoading(true)
+    setTimeout(() => {
+      const sections: CSVSection[] = [
+        // Fund Details
+        createKeyValueSection('Fund Details', {
+          'Strategy': inputs.strategy,
+          'Target Size': inputs.sizeBand,
+          'Jurisdiction': inputs.jurisdiction,
+          'Anchor Investor': inputs.anchorStatus,
+          'Starting Point': inputs.startingPoint,
+          'Target First Close': format(inputs.firstCloseDate, 'MMMM d, yyyy'),
+          'Target Final Close': format(inputs.finalCloseDate, 'MMMM d, yyyy')
+        }),
 
-    text += `FUND DETAILS:\n`
-    text += `Strategy: ${inputs.strategy}\n`
-    text += `Target Size: ${inputs.sizeBand}\n`
-    text += `Jurisdiction: ${inputs.jurisdiction}\n`
-    text += `Anchor Investor: ${inputs.anchorStatus}\n`
-    text += `Target First Close: ${format(inputs.firstCloseDate, 'MMMM d, yyyy')}\n`
-    text += `Target Final Close: ${format(inputs.finalCloseDate, 'MMMM d, yyyy')}\n\n`
+        // All Milestones
+        createTableSection(
+          'Timeline Milestones',
+          ['Phase', 'Milestone', 'Start Date', 'End Date', 'Duration', 'Owner', 'Categories'],
+          phases.flatMap(phase =>
+            phase.milestones.map(milestone => [
+              phase.name,
+              milestone.name,
+              format(milestone.startDate, 'yyyy-MM-dd'),
+              format(milestone.endDate, 'yyyy-MM-dd'),
+              `${milestone.duration} days`,
+              milestone.owner,
+              milestone.category.join(', ')
+            ])
+          )
+        )
+      ]
 
-    phases.forEach((phase) => {
-      text += `\n${'='.repeat(60)}\n`
-      text += `${phase.name.toUpperCase()}\n`
-      text += `${phase.description}\n`
-      text += `Timeline: ${format(phase.startDate, 'MMM d, yyyy')} - ${format(phase.endDate, 'MMM d, yyyy')}\n`
-      text += `${'='.repeat(60)}\n\n`
-
-      phase.milestones.forEach((milestone, index) => {
-        text += `${index + 1}. ${milestone.name}\n`
-        text += `   Description: ${milestone.description}\n`
-        text += `   Dates: ${format(milestone.startDate, 'MMM d, yyyy')} - ${format(milestone.endDate, 'MMM d, yyyy')}\n`
-        text += `   Duration: ${milestone.duration} days\n`
-        text += `   Owner: ${milestone.owner}\n`
-        text += `   Categories: ${milestone.category.join(', ')}\n\n`
+      downloadCSV({
+        filename: `fund-formation-timeline-${format(new Date(), 'yyyy-MM-dd')}`,
+        toolName: 'Fund Formation Timeline',
+        sections,
+        includeDisclaimer: true
       })
-    })
-
-    return text
+      setCsvLoading(false)
+    }, 100)
   }
 
-  const generateCSV = (): string => {
-    let csv = 'Phase,Milestone,Description,Start Date,End Date,Duration (days),Owner,Categories\n'
+  const handleExportPDF = () => {
+    setPdfLoading(true)
+    setTimeout(() => {
+      const sections: PDFSection[] = [
+        // Fund Details
+        { type: 'title', content: 'Fund Details' },
+        {
+          type: 'keyValue',
+          data: {
+            'Strategy': inputs.strategy,
+            'Target Size': inputs.sizeBand,
+            'Jurisdiction': inputs.jurisdiction,
+            'Anchor Investor': inputs.anchorStatus
+          }
+        },
+        {
+          type: 'keyValue',
+          data: {
+            'First Close': format(inputs.firstCloseDate, 'MMM d, yyyy'),
+            'Final Close': format(inputs.finalCloseDate, 'MMM d, yyyy')
+          }
+        },
 
-    phases.forEach((phase) => {
-      phase.milestones.forEach((milestone) => {
-        const row = [
-          phase.name,
-          milestone.name,
-          `"${milestone.description}"`,
-          format(milestone.startDate, 'yyyy-MM-dd'),
-          format(milestone.endDate, 'yyyy-MM-dd'),
-          milestone.duration.toString(),
-          milestone.owner,
-          `"${milestone.category.join(', ')}"`
-        ]
-        csv += row.join(',') + '\n'
+        { type: 'spacer' },
+
+        // Phase Summaries
+        { type: 'title', content: 'Timeline Phases' },
+        ...createPDFTableSection(
+          '',
+          ['Phase', 'Start', 'End', 'Tasks'],
+          phases.map(phase => [
+            phase.name.substring(0, 20),
+            format(phase.startDate, 'MMM d'),
+            format(phase.endDate, 'MMM d'),
+            String(phase.milestones.length)
+          ])
+        ),
+
+        { type: 'spacer' },
+
+        // Key Milestones (first 15)
+        { type: 'title', content: 'Key Milestones' },
+        ...createPDFTableSection(
+          '',
+          ['Milestone', 'Start', 'End', 'Owner'],
+          phases.flatMap(phase =>
+            phase.milestones.map(m => [
+              m.name.substring(0, 25),
+              format(m.startDate, 'MMM d'),
+              format(m.endDate, 'MMM d'),
+              m.owner.substring(0, 15)
+            ])
+          ).slice(0, 15)
+        )
+      ]
+
+      downloadPDF({
+        filename: `fund-formation-timeline-${format(new Date(), 'yyyy-MM-dd')}`,
+        toolName: 'Fund Formation Timeline',
+        description: `${inputs.strategy} fund timeline targeting ${inputs.sizeBand} with ${inputs.jurisdiction} structure.`,
+        sections,
+        includeDisclaimer: true
       })
-    })
-
-    return csv
-  }
-
-  const handleCopyText = async () => {
-    const text = generateTextSummary()
-    await navigator.clipboard.writeText(text)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
-
-  const handleDownloadCSV = () => {
-    const csv = generateCSV()
-    const blob = new Blob([csv], { type: 'text/csv' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `fund-formation-timeline-${format(new Date(), 'yyyy-MM-dd')}.csv`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    window.URL.revokeObjectURL(url)
-  }
-
-  const handlePrintPDF = () => {
-    window.print()
+      setPdfLoading(false)
+    }, 100)
   }
 
   return (
@@ -101,46 +144,17 @@ export function ExportPanel({ phases, inputs }: ExportPanelProps) {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleCopyText}
-          className="justify-start"
-        >
-          {copied ? (
-            <Check className="h-4 w-4 mr-2" />
-          ) : (
-            <Copy className="h-4 w-4 mr-2" />
-          )}
-          {copied ? 'Copied!' : 'Copy Text Summary'}
-        </Button>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleDownloadCSV}
-          className="justify-start"
-        >
-          <FileSpreadsheet className="h-4 w-4 mr-2" />
-          Download CSV
-        </Button>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handlePrintPDF}
-          className="justify-start"
-        >
-          <FileText className="h-4 w-4 mr-2" />
-          Print / Save PDF
-        </Button>
-      </div>
+      <ExportToolbar
+        onExportCSV={handleExportCSV}
+        onExportPDF={handleExportPDF}
+        csvLoading={csvLoading}
+        pdfLoading={pdfLoading}
+      />
 
       <div className="text-xs text-muted-foreground pt-2 border-t border-border">
         <p>
-          <strong>Tip:</strong> Use "Copy Text Summary" to paste into emails or memos.
-          CSV exports work great in Excel or Google Sheets.
+          <strong>Tip:</strong> CSV exports work great in Excel or Google Sheets for project management.
+          PDF provides a clean summary for stakeholder presentations.
         </p>
       </div>
     </div>

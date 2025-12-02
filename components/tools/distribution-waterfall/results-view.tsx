@@ -1,10 +1,11 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Download, ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronDown, ChevronUp } from 'lucide-react'
 import { useState } from 'react'
 import { WaterfallOutput, formatCurrency, formatPercent, formatMultiple } from './waterfallCalculations'
+import { ExportToolbar, DisclaimerBlock } from '@/components/tools/shared'
+import { exportWaterfallCSV, exportWaterfallPDF } from './export'
 
 interface ResultsViewProps {
   output: WaterfallOutput
@@ -13,6 +14,24 @@ interface ResultsViewProps {
 
 export function ResultsView({ output, onExport }: ResultsViewProps) {
   const [showTierDetails, setShowTierDetails] = useState(true)
+  const [csvLoading, setCsvLoading] = useState(false)
+  const [pdfLoading, setPdfLoading] = useState(false)
+
+  const handleExportCSV = () => {
+    setCsvLoading(true)
+    setTimeout(() => {
+      exportWaterfallCSV(output)
+      setCsvLoading(false)
+    }, 100)
+  }
+
+  const handleExportPDF = () => {
+    setPdfLoading(true)
+    setTimeout(() => {
+      exportWaterfallPDF(output)
+      setPdfLoading(false)
+    }, 100)
+  }
 
   return (
     <div className="space-y-6">
@@ -208,13 +227,21 @@ export function ResultsView({ output, onExport }: ResultsViewProps) {
         </div>
       </Card>
 
-      {/* Export Button */}
-      <div className="text-center">
-        <Button onClick={onExport} className="gap-2">
-          <Download className="h-4 w-4" />
-          Export Summary
-        </Button>
-      </div>
+      {/* Export Section */}
+      <Card className="border-border bg-card p-6">
+        <h3 className="mb-4 text-lg font-semibold text-foreground">Export Results</h3>
+        <ExportToolbar
+          onExportCSV={handleExportCSV}
+          onExportPDF={handleExportPDF}
+          csvLoading={csvLoading}
+          pdfLoading={pdfLoading}
+        />
+      </Card>
+
+      {/* Disclaimer */}
+      <DisclaimerBlock
+        additionalDisclaimer="Actual fund economics depend on specific LPA terms, timing of capital calls and distributions, fees, expenses, and other factors. Consult with legal and financial advisors for fund structuring."
+      />
     </div>
   )
 }

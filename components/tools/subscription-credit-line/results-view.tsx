@@ -1,8 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Download, TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { ExportToolbar, DisclaimerBlock } from '@/components/tools/shared'
+import { exportSubscriptionLineCSV, exportSubscriptionLinePDF } from './export'
 import {
   SubscriptionLineOutput,
   formatCurrency,
@@ -13,13 +15,31 @@ import {
 
 interface ResultsViewProps {
   output: SubscriptionLineOutput
-  onExport: () => void
 }
 
-export function ResultsView({ output, onExport }: ResultsViewProps) {
+export function ResultsView({ output }: ResultsViewProps) {
+  const [csvLoading, setCsvLoading] = useState(false)
+  const [pdfLoading, setPdfLoading] = useState(false)
+
   // Find peak negative NAV for J-curve
   const peakNegativeNoLine = Math.min(...output.jCurveDataNoLine.map(d => d.nav))
   const peakNegativeWithLine = Math.min(...output.jCurveDataWithLine.map(d => d.nav))
+
+  const handleExportCSV = () => {
+    setCsvLoading(true)
+    setTimeout(() => {
+      exportSubscriptionLineCSV(output)
+      setCsvLoading(false)
+    }, 100)
+  }
+
+  const handleExportPDF = () => {
+    setPdfLoading(true)
+    setTimeout(() => {
+      exportSubscriptionLinePDF(output)
+      setPdfLoading(false)
+    }, 100)
+  }
 
   return (
     <div className="space-y-6">
@@ -139,13 +159,13 @@ export function ResultsView({ output, onExport }: ResultsViewProps) {
               <h4 className="text-sm font-semibold mb-2">J-Curve Impact</h4>
               <div className="space-y-1 text-sm text-muted-foreground">
                 <p>
-                  • Peak negative NAV <strong>without line:</strong> {formatCurrency(peakNegativeNoLine)}
+                  Peak negative NAV <strong>without line:</strong> {formatCurrency(peakNegativeNoLine)}
                 </p>
                 <p>
-                  • Peak negative NAV <strong>with line:</strong> {formatCurrency(peakNegativeWithLine)}
+                  Peak negative NAV <strong>with line:</strong> {formatCurrency(peakNegativeWithLine)}
                 </p>
                 <p>
-                  • The subscription line {peakNegativeWithLine > peakNegativeNoLine ? 'reduces' : 'increases'} the depth of the J-curve by{' '}
+                  The subscription line {peakNegativeWithLine > peakNegativeNoLine ? 'reduces' : 'increases'} the depth of the J-curve by{' '}
                   {formatCurrency(Math.abs(peakNegativeWithLine - peakNegativeNoLine))}
                 </p>
               </div>
@@ -243,23 +263,31 @@ export function ResultsView({ output, onExport }: ResultsViewProps) {
         </CardContent>
       </Card>
 
-      {/* Export Button */}
+      {/* Export */}
       <Card>
         <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h4 className="font-medium mb-1">Export Analysis</h4>
               <p className="text-sm text-muted-foreground">
                 Download a comprehensive report with all metrics and explanations
               </p>
             </div>
-            <Button onClick={onExport}>
-              <Download className="mr-2 h-4 w-4" />
-              Export Report
-            </Button>
+            <ExportToolbar
+              onExportCSV={handleExportCSV}
+              onExportPDF={handleExportPDF}
+              csvLoading={csvLoading}
+              pdfLoading={pdfLoading}
+              compact
+            />
           </div>
         </CardContent>
       </Card>
+
+      {/* Disclaimer */}
+      <DisclaimerBlock
+        additionalDisclaimer="Actual fund economics depend on specific investment timing, performance, fee structures, facility terms, and many other factors. Per ILPA guidance, funds should report both levered and unlevered returns. Consult legal and financial advisors for fund structuring and analysis."
+      />
     </div>
   )
 }
