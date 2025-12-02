@@ -31,7 +31,7 @@ export const fundTypes: Record<string, FundType> = {
     slug: 'hedge-funds',
     description: 'Operations and compliance for middle office and prime brokerage',
     color: 'oklch(0.68 0.19 35)',
-    pillars: ['cfo', 'compliance', 'fund-administration', 'investor-relations', 'tax', 'banking', 'fundraising', 'insurance', 'audit', 'cyber-it', 'middle-office', 'prime-brokerage']
+    pillars: ['cfo', 'compliance', 'fund-administration', 'investor-relations', 'tax', 'banking', 'fundraising', 'insurance', 'audit', 'cyber-it', 'prime-brokerage']
   },
   'real-estate': {
     id: 'real-estate',
