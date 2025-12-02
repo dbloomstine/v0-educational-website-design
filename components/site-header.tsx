@@ -111,9 +111,9 @@ export function SiteHeader() {
             </ul>
           </Dropdown>
 
-          {/* Newsletter Dropdown */}
+          {/* Newsletters Dropdown */}
           <Dropdown
-            trigger="Newsletter"
+            trigger="Newsletters"
             isOpen={openDropdown === 'newsletter'}
             onOpenChange={handleDropdownOpen('newsletter')}
           >
