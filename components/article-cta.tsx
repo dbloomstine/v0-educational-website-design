@@ -13,7 +13,7 @@ export function ArticleCTA({ topic }: ArticleCTAProps) {
         Get expert support for your specific fund operations challenges
       </p>
       <Button size="lg" asChild>
-        <Link href="/contact">Contact</Link>
+        <Link href="/contact">Need Help?</Link>
       </Button>
     </div>
   )

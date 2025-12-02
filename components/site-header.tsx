@@ -186,6 +186,79 @@ export function SiteHeader() {
             </div>
           </Dropdown>
 
+          {/* How I Can Help Dropdown */}
+          <Dropdown
+            trigger="How I Can Help"
+            isOpen={openDropdown === 'help'}
+            onOpenChange={handleDropdownOpen('help')}
+          >
+            <div className="w-[480px] p-6">
+              <div className="space-y-3">
+                <Link
+                  href="/help/sec-exam-prep"
+                  onClick={() => setOpenDropdown(null)}
+                  className="block rounded-lg p-4 transition-all hover:bg-accent/50"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="font-semibold text-sm text-foreground">SEC Exam Preparation</div>
+                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Time-sensitive</span>
+                  </div>
+                  <div className="text-sm text-muted-foreground leading-relaxed">
+                    Got an exam notice? I can help you think through what to expect and how to prepare.
+                  </div>
+                </Link>
+                <Link
+                  href="/help/fund-admin-selection"
+                  onClick={() => setOpenDropdown(null)}
+                  className="block rounded-lg p-4 transition-all hover:bg-accent/50"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="font-semibold text-sm text-foreground">Fund Administrator Selection</div>
+                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Major decision</span>
+                  </div>
+                  <div className="text-sm text-muted-foreground leading-relaxed">
+                    Running an RFP or evaluating options? Happy to help you think through what matters.
+                  </div>
+                </Link>
+                <Link
+                  href="/help/launching-a-fund"
+                  onClick={() => setOpenDropdown(null)}
+                  className="block rounded-lg p-4 transition-all hover:bg-accent/50"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="font-semibold text-sm text-foreground">Launching a Fund</div>
+                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Getting started</span>
+                  </div>
+                  <div className="text-sm text-muted-foreground leading-relaxed">
+                    First-time manager? There's a lot to figure out operationally.
+                  </div>
+                </Link>
+                <Link
+                  href="/help/compliance-review"
+                  onClick={() => setOpenDropdown(null)}
+                  className="block rounded-lg p-4 transition-all hover:bg-accent/50"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="font-semibold text-sm text-foreground">Compliance Gut Check</div>
+                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Peace of mind</span>
+                  </div>
+                  <div className="text-sm text-muted-foreground leading-relaxed">
+                    Want a second opinion on your policies or approach?
+                  </div>
+                </Link>
+              </div>
+              <div className="pt-4 mt-4 border-t border-border">
+                <Link
+                  href="/help"
+                  onClick={() => setOpenDropdown(null)}
+                  className="block rounded-md p-2 text-sm text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                >
+                  View All Topics
+                </Link>
+              </div>
+            </div>
+          </Dropdown>
+
           {/* About Link */}
           <Link
             href="/about"
@@ -217,7 +290,7 @@ export function SiteHeader() {
 
           <Button asChild size="sm" className="hidden md:inline-flex">
             <Link href="/contact">
-              Contact
+              Need Help?
             </Link>
           </Button>
         </div>
@@ -280,6 +353,54 @@ export function SiteHeader() {
               </div>
             </div>
 
+            {/* How I Can Help */}
+            <div className="pt-4 border-t border-border">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                How I Can Help
+              </h3>
+              <div className="space-y-2">
+                <Link
+                  href="/help/sec-exam-prep"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
+                >
+                  <span className="font-medium text-foreground">SEC Exam Preparation</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">Got an exam notice?</span>
+                </Link>
+                <Link
+                  href="/help/fund-admin-selection"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
+                >
+                  <span className="font-medium text-foreground">Fund Admin Selection</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">Running an RFP?</span>
+                </Link>
+                <Link
+                  href="/help/launching-a-fund"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
+                >
+                  <span className="font-medium text-foreground">Launching a Fund</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">First-time manager?</span>
+                </Link>
+                <Link
+                  href="/help/compliance-review"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
+                >
+                  <span className="font-medium text-foreground">Compliance Gut Check</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">Need a second opinion?</span>
+                </Link>
+                <Link
+                  href="/help"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors text-center"
+                >
+                  View All Topics
+                </Link>
+              </div>
+            </div>
+
             {/* Other Links */}
             <div className="space-y-2 pt-4 border-t border-border">
               <Link
@@ -310,7 +431,7 @@ export function SiteHeader() {
             <div className="pt-4 border-t border-border">
               <Button asChild size="sm" className="w-full">
                 <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
-                  Contact
+                  Need Help?
                 </Link>
               </Button>
             </div>

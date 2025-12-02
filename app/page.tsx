@@ -326,7 +326,7 @@ export default function HomePage() {
                 </Button>
                 <Button asChild size="lg">
                   <Link href="/contact">
-                    Contact
+                    Need Help?
                   </Link>
                 </Button>
               </div>
