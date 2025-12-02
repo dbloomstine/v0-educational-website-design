@@ -110,6 +110,8 @@ export function InputForm({ input, onChange }: InputFormProps) {
                 <strong>European (Whole-Fund):</strong> GP only receives carry after entire fund returns capital + pref to LPs. More LP-friendly and common in buyout PE.
                 <br /><br />
                 <strong>American (Deal-by-Deal):</strong> GP can receive carry on individual deals before fund is fully returned. Typically includes clawback provisions. More common in VC.
+                <br /><br />
+                <em>Note: This tool shows fund-level results. True deal-by-deal analysis requires modeling each investment separately.</em>
               </InfoPopover>
             </div>
             <Select value={input.waterfallType} onValueChange={(value) => updateField('waterfallType', value as 'european' | 'american')}>

@@ -279,6 +279,11 @@ export function calculateSubscriptionLineImpact(
   let cumulativeDistributedWithLine = 0
   let cumulativeInvestedCapital = 0 // Track actual invested capital (excluding fees)
 
+  // Track total capital for MOIC calculation (investment + fees, excluding interest)
+  // This ensures MOIC reflects return on actual capital invested, not financing costs
+  let totalCapitalForMOIC_NoLine = 0
+  let totalCapitalForMOIC_WithLine = 0
+
   let lineBalance = 0
   let totalInterestPaid = 0
   let totalManagementFees = 0
@@ -323,6 +328,7 @@ export function calculateSubscriptionLineImpact(
 
     cumulativeCalledNoLine += capitalCallNoLine
     cumulativeDistributedNoLine += distributionNoLine
+    totalCapitalForMOIC_NoLine += investmentAmount + managementFee // Capital for MOIC excludes financing costs
 
     const netCashFlowNoLine = distributionNoLine - capitalCallNoLine
     cashFlowsNoLine.push(netCashFlowNoLine)
@@ -408,6 +414,9 @@ export function calculateSubscriptionLineImpact(
 
     cumulativeCalledWithLine += capitalCallWithLine
     cumulativeDistributedWithLine += distributionWithLine
+    // Capital for MOIC: investment + fees only, exclude interest and line repayments
+    // (line repayments aren't new capital, they're repaying borrowed amounts)
+    totalCapitalForMOIC_WithLine += investmentAmount + managementFee
 
     const netCashFlowWithLine = distributionWithLine - capitalCallWithLine
     cashFlowsWithLine.push(netCashFlowWithLine)
@@ -438,8 +447,11 @@ export function calculateSubscriptionLineImpact(
   const irrNoLine = calculateIRR(cashFlowsNoLine)
   const irrWithLine = calculateIRR(cashFlowsWithLine)
 
-  const moicNoLine = cumulativeDistributedNoLine / cumulativeCalledNoLine
-  const moicWithLine = cumulativeDistributedWithLine / cumulativeCalledWithLine
+  // MOIC calculation: distributions / (investment + fees), excluding interest
+  // This gives an accurate picture of return on invested capital
+  // Using totalCapitalForMOIC to exclude interest expense from denominator
+  const moicNoLine = cumulativeDistributedNoLine / totalCapitalForMOIC_NoLine
+  const moicWithLine = cumulativeDistributedWithLine / totalCapitalForMOIC_WithLine
 
   const tvpiNoLine = cumulativeDistributedNoLine / input.fundSize
   const tvpiWithLine = cumulativeDistributedWithLine / input.fundSize

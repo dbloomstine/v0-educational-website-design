@@ -301,18 +301,80 @@ export function calculateTaxPricing(input: TaxInput): PricingOutput {
   }
 
   // 8. Foreign investor reporting
+  // §1446 withholding complexity varies significantly by fund type:
+  // - VC/PE funds primarily generate capital gains → minimal §1446 (often $0 withholding)
+  // - Private credit/hedge funds generate ordinary income → significant §1446 obligations
+  // - Real estate funds have FIRPTA and §1446 complexity
   if (input.foreignInvestors) {
-    const foreignFee = input.withholding ? 6000 : 3000
+    // Base foreign investor compliance (Form 1042-S, W-8 tracking, treaty documentation)
+    let foreignFee = 3000
+    let description = 'Basic foreign investor compliance (Forms 1042/1042-S, W-8 tracking)'
+
+    if (input.withholding) {
+      // Withholding complexity varies by fund type
+      const withholdingByFundType: Record<string, { fee: number; note: string }> = {
+        'venture-capital': {
+          fee: 2000, // Minimal - mostly capital gains, limited §1446
+          note: 'Limited §1446 (capital gains basis)'
+        },
+        'pe-buyout': {
+          fee: 3500, // Moderate - mostly capital gains with some dividend income
+          note: 'Moderate §1446 (capital gains + dividend income)'
+        },
+        'private-credit': {
+          fee: 7000, // High - ordinary income triggers substantial §1446
+          note: 'Substantial §1446 (ordinary interest income)'
+        },
+        'hedge-fund': {
+          fee: 6500, // High - mixed income types, complex allocations
+          note: 'Complex §1446 (mixed income character)'
+        },
+        'real-estate': {
+          fee: 8000, // Highest - FIRPTA + §1446 + state withholding
+          note: 'FIRPTA + §1446 (real property gains + rental income)'
+        },
+        'fund-of-funds': {
+          fee: 5000, // Moderate-high - tracking underlying fund character
+          note: 'Multi-layer §1446 analysis'
+        },
+        'fund-of-one': {
+          fee: 4000, // Moderate - single investor but full compliance
+          note: 'Full §1446 compliance for single investor'
+        },
+        'other': {
+          fee: 5000, // Default moderate
+          note: '§1446 withholding analysis'
+        }
+      }
+
+      const withholdingData = withholdingByFundType[input.fundType] || withholdingByFundType['other']
+      foreignFee += withholdingData.fee
+      description = `Forms 1042/1042-S, ${withholdingData.note}, treaty analysis`
+    }
+
     breakdown.push({
       category: 'Foreign Investor Reporting',
-      description: input.withholding ? 'Forms 1042/1042-S, withholding calculations' : 'Basic foreign investor compliance',
+      description,
       low: Math.round(foreignFee * 0.85),
       medium: foreignFee,
       high: Math.round(foreignFee * 1.25)
     })
+
+    // Provide more specific driver information
+    let withholdingNote = ''
+    if (input.withholding) {
+      if (input.fundType === 'venture-capital' || input.fundType === 'pe-buyout') {
+        withholdingNote = ' Note: Capital gains-focused funds typically have limited §1446 withholding obligations since gains are often tax-exempt for treaty investors.'
+      } else if (input.fundType === 'private-credit' || input.fundType === 'hedge-fund') {
+        withholdingNote = ' Warning: Ordinary income-generating strategies trigger significant §1446 withholding (up to 37% on ECTI allocated to foreign partners).'
+      } else if (input.fundType === 'real-estate') {
+        withholdingNote = ' Warning: Real estate funds face both FIRPTA withholding (15% on dispositions) and §1446 on rental income—plan for substantial compliance costs.'
+      }
+    }
+
     drivers.push({
       title: 'Non-U.S. Investors',
-      description: `Foreign investors require Form 1042-S reporting${input.withholding ? ', withholding tax calculations (§1446), and potential treaty analysis' : ' and coordination'}, adding complexity and cost.`,
+      description: `Foreign investors require Form 1042-S reporting${input.withholding ? ', withholding tax calculations (§1446), and potential treaty analysis' : ' and coordination'}, adding complexity and cost.${withholdingNote}`,
       impact: 'negative'
     })
   }

@@ -326,10 +326,13 @@ export function calculateTimeline(inputs: FundFormationInputs): Phase[] {
     let duration = milestone.duration
 
     // Adjust for anchor investor
+    // Industry data suggests anchor investors accelerate fundraising by 10-20%, not 30%
+    // Anchors help with credibility and momentum but don't dramatically compress timelines
+    // Source: Preqin 2024 GP Survey, Cambridge Associates fundraising data
     if (milestone.affectedByAnchor && inputs.anchorStatus === 'Yes') {
-      duration = Math.floor(duration * 0.7) // 30% faster with anchor
+      duration = Math.floor(duration * 0.85) // 15% faster with anchor (more realistic)
     } else if (milestone.affectedByAnchor && inputs.anchorStatus === 'No') {
-      duration = Math.floor(duration * 1.3) // 30% slower without anchor
+      duration = Math.floor(duration * 1.15) // 15% slower without anchor
     }
 
     // Adjust for jurisdiction complexity

@@ -10,6 +10,21 @@ import {
 
 const BENEFITS_RATE = 0.28 // 28% for benefits and payroll taxes (industry standard)
 
+// Standard PE/VC deployment schedule
+// Based on typical investment period pacing: front-loaded deployment over 5 years
+function getDeploymentRate(year: number): number {
+  // Deployment curve: Year 1: 25%, Year 2: 50%, Year 3: 70%, Year 4: 80%, Year 5+: 85%
+  const deploymentSchedule: Record<number, number> = {
+    1: 0.25,
+    2: 0.50,
+    3: 0.70,
+    4: 0.80,
+    5: 0.85
+  }
+  // Cap at 85% for years 5+
+  return deploymentSchedule[year] || 0.85
+}
+
 export function calculateBudget(data: BudgetData, showCarry: boolean): CalculationResults {
   const years = data.planningHorizon.years
 
@@ -76,12 +91,14 @@ function calculateFundManagementFee(fund: Fund, year: number): number {
 
   // Adjust fee base based on type
   if (fund.feeBase === 'invested') {
-    // Assume deployment schedule: 70% by year 3, 85% by year 5
-    const deploymentRate = Math.min(0.85, year <= 3 ? (year * 0.23) : (0.7 + (year - 3) * 0.075))
+    // Deployment schedule: realistic PE/VC deployment curve
+    // Year 1: 25%, Year 2: 50%, Year 3: 70%, Year 4: 80%, Year 5+: 85% (fully deployed)
+    const deploymentRate = getDeploymentRate(year)
     feeBase = feeBase * deploymentRate
   } else if (fund.feeBase === 'nav') {
-    // Assume 5% annual appreciation on deployed capital
-    const deploymentRate = Math.min(0.85, year <= 3 ? (year * 0.23) : (0.7 + (year - 3) * 0.075))
+    // NAV-based fees: deployed capital with 5% annual appreciation assumption
+    // Note: 5% is a conservative assumption; actual returns vary significantly
+    const deploymentRate = getDeploymentRate(year)
     feeBase = feeBase * deploymentRate * Math.pow(1.05, year - 1)
   }
 

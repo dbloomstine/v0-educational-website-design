@@ -255,19 +255,35 @@ function calculateEuropeanWaterfall(input: WaterfallInput): WaterfallOutput {
 
 /**
  * Calculate American (deal-by-deal) waterfall
- * For simplicity, we model this as a single deal with the same tier structure,
- * but note that in practice, GP can take carry on individual deals
+ *
+ * IMPORTANT LIMITATION: True American (deal-by-deal) waterfalls calculate carry on each
+ * individual investment's proceeds, allowing GP to receive carry before the entire fund
+ * has returned capital + preferred return.
+ *
+ * This simplified model shows the fund-level aggregated result assuming all investments
+ * exit simultaneously. For a true deal-by-deal analysis, you would need to model each
+ * investment separately with its own capital call, hold period, and exit.
+ *
+ * Key differences in practice:
+ * - GP can take carry on profitable deals even if other deals have losses
+ * - Typically includes clawback provision to reconcile at fund end
+ * - Common in VC and some growth equity funds
+ * - IRR-sensitive because GP receives carry earlier
  */
 function calculateAmericanWaterfall(input: WaterfallInput): WaterfallOutput {
-  // For a single aggregated deal, American waterfall follows same tier structure
-  // The key difference in practice is that GP can take carry deal-by-deal
-  // without waiting for entire fund to return capital + pref
-
-  // We'll use the same calculation but add a note in the description
+  // Use same tier structure but note limitations
+  // The math is identical at fund level if all investments exit at once
   const result = calculateEuropeanWaterfall(input)
 
-  // Add note about American structure
-  result.tiers[0].description += ' (In American waterfall, this is calculated per-deal, not at fund level)'
+  // Update descriptions to reflect American waterfall context
+  result.tiers.forEach((tier, index) => {
+    if (index === 0) {
+      tier.description = 'Return of deal-level capital (In practice, calculated per-deal allowing earlier carry)'
+    }
+    if (tier.tier === 3) {
+      tier.description = `${(input.catchUpRate * 100).toFixed(0)}% to GP (In deal-by-deal, GP may receive carry sooner than whole-fund)`
+    }
+  })
 
   return result
 }
