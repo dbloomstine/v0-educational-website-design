@@ -13,7 +13,7 @@ export function SiteFooter() {
             I'm happy to be a sounding board, talk through a challenge, or point you in the right direction. No sales pitch.
           </p>
           <Button size="lg" asChild>
-            <Link href="/contact">Let's Talk</Link>
+            <Link href="/contact">Contact</Link>
           </Button>
         </div>
 

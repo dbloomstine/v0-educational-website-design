@@ -7,17 +7,17 @@ import { Button } from '@/components/ui/button'
 import { Mail, Calendar, MessageCircle, Compass, Users, Lightbulb } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Let\'s Talk | FundOpsHQ',
+  title: 'Contact | FundOpsHQ',
   description: 'Have a question about fund operations? Want to think through a challenge? I\'m happy to chat, offer guidance, or point you in the right direction. No obligation, no pressure.',
   openGraph: {
-    title: 'Let\'s Talk | FundOpsHQ',
+    title: 'Contact | FundOpsHQ',
     description: 'Have a question about fund operations? I\'m happy to chat and help however I can.',
     type: 'website',
     url: 'https://fundops.com/contact',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Let\'s Talk | FundOpsHQ',
+    title: 'Contact | FundOpsHQ',
     description: 'Have a question about fund operations? I\'m happy to chat and help however I can.',
   },
   alternates: {
@@ -61,7 +61,7 @@ export default function ContactPage() {
           <div className="container relative mx-auto px-4 py-24 lg:py-32">
             <div className="mx-auto max-w-3xl">
               <h1 className="mb-6 text-5xl font-bold tracking-tight text-balance lg:text-6xl">
-                Let's talk
+                Contact
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed text-balance">
                 I'm Danny—the person behind FundOpsHQ. If you have a question, want to think through a challenge,
