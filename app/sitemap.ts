@@ -23,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/tools', priority: 0.9 },
     { path: '/newsletter', priority: 0.8 },
     { path: '/help', priority: 0.8 },
+    { path: '/blog', priority: 0.8 },
   ]
 
   staticPages.forEach(({ path, priority }) => {

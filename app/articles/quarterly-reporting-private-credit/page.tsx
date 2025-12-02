@@ -10,7 +10,7 @@ export default function ArticlePage() {
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
 
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         {/* Article Header */}
         <article className="py-12">
           <div className="container mx-auto px-4">

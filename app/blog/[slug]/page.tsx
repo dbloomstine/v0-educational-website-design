@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
+import { Breadcrumb } from '@/components/breadcrumb'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft } from 'lucide-react'
 import { getBlogPost, getAllBlogSlugs } from '@/lib/blog'
 
 interface BlogPostPageProps {
@@ -59,23 +59,66 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     notFound()
   }
 
+  // Structured data for blog post
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.summary,
+    datePublished: new Date(post.date).toISOString(),
+    dateModified: new Date(post.date).toISOString(),
+    author: {
+      '@type': 'Person',
+      name: 'Danny Bloomstine',
+      url: 'https://www.linkedin.com/in/danny-bloomstine/',
+      jobTitle: 'Managing Director',
+      worksFor: {
+        '@type': 'Organization',
+        name: 'IQ-EQ',
+      },
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: 'FundOpsHQ',
+      url: 'https://fundops.com',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://fundops.com/icon.svg',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `https://fundops.com/blog/${slug}`,
+    },
+    isPartOf: {
+      '@type': 'Blog',
+      name: 'FundWatch Briefing',
+      url: 'https://fundops.com/blog',
+    },
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <SiteHeader />
 
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         {/* Article Header */}
         <article className="py-16">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-4xl">
-              {/* Back link */}
-              <Link
-                href="/blog"
-                className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to all briefings
-              </Link>
+              {/* Breadcrumb */}
+              <div className="mb-8">
+                <Breadcrumb
+                  items={[
+                    { label: 'FundWatch Briefing', href: '/blog' },
+                    { label: post.title },
+                  ]}
+                />
+              </div>
 
               {/* Post metadata */}
               <div className="mb-8">

@@ -4,7 +4,7 @@ import { SiteFooter } from '@/components/site-footer'
 import { ToolCard } from '@/components/tools/tool-card'
 import { Button } from '@/components/ui/button'
 import { getAllTools, getAllCategories } from '@/lib/content/tools'
-import { Tool } from '@/lib/content/types'
+import { Tool, ToolCategory } from '@/lib/content/types'
 
 export const metadata: Metadata = {
   title: 'Free Tools & Calculators | FundOpsHQ',
@@ -30,10 +30,10 @@ export default function ToolsPage() {
   const categories = getAllCategories()
 
   // Group tools by primary category for display
-  const toolsByCategory: Record<string, Tool[]> = {}
+  const toolsByCategory: Record<ToolCategory, Tool[]> = {} as Record<ToolCategory, Tool[]>
   categories.forEach((category) => {
     toolsByCategory[category] = tools.filter((tool) =>
-      tool.categories.includes(category as any)
+      tool.categories.includes(category)
     )
   })
 

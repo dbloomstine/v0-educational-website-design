@@ -1,4 +1,4 @@
-import { Tool } from './types'
+import { Tool, ToolCategory } from './types'
 
 // All 10 active tools for FundOpsHQ
 const tools: Tool[] = [
@@ -269,8 +269,8 @@ export function getToolsByComplexity(complexity: string): Tool[] {
 }
 
 // Get unique values for filters
-export function getAllCategories(): string[] {
-  const categories = new Set<string>()
+export function getAllCategories(): ToolCategory[] {
+  const categories = new Set<ToolCategory>()
   tools.forEach(tool => tool.categories.forEach(cat => categories.add(cat)))
   return Array.from(categories)
 }

@@ -33,7 +33,7 @@ export default async function BlogPage() {
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
 
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         {/* Hero Section */}
         <section className="border-b border-border bg-gradient-to-b from-background to-accent/20 py-20">
           <div className="container mx-auto px-4">

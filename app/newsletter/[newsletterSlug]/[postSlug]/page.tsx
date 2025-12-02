@@ -3,8 +3,9 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
+import { Breadcrumb } from '@/components/breadcrumb'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Mail } from 'lucide-react'
+import { Mail } from 'lucide-react'
 import { getNewsletter, getNewsletterPost, getAllNewsletterPostSlugs, NEWSLETTERS, type NewsletterSlug } from '@/lib/newsletters'
 
 interface PostPageProps {
@@ -69,19 +70,21 @@ export default async function NewsletterPostPage({ params }: PostPageProps) {
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
 
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         {/* Article */}
         <article className="py-16">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-4xl">
-              {/* Back link */}
-              <Link
-                href={`/newsletter/${newsletterSlug}`}
-                className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors mb-8"
-              >
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to {newsletter.name}
-              </Link>
+              {/* Breadcrumb */}
+              <div className="mb-8">
+                <Breadcrumb
+                  items={[
+                    { label: 'Newsletters', href: '/newsletter' },
+                    { label: newsletter.name, href: `/newsletter/${newsletterSlug}` },
+                    { label: post.title },
+                  ]}
+                />
+              </div>
 
               {/* Post header */}
               <div className="mb-12">

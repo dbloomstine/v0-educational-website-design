@@ -21,10 +21,12 @@ interface DropdownProps {
   children: React.ReactNode
   isOpen: boolean
   onOpenChange: (open: boolean) => void
+  id: string
 }
 
-function Dropdown({ trigger, children, isOpen, onOpenChange }: DropdownProps) {
+function Dropdown({ trigger, children, isOpen, onOpenChange, id }: DropdownProps) {
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -33,19 +35,34 @@ function Dropdown({ trigger, children, isOpen, onOpenChange }: DropdownProps) {
       }
     }
 
+    function handleEscapeKey(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        onOpenChange(false)
+        buttonRef.current?.focus()
+      }
+    }
+
     if (isOpen) {
       document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
+      document.addEventListener('keydown', handleEscapeKey)
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+        document.removeEventListener('keydown', handleEscapeKey)
+      }
     }
   }, [isOpen, onOpenChange])
 
   return (
     <div ref={dropdownRef} className="relative">
       <button
+        ref={buttonRef}
         onClick={() => onOpenChange(!isOpen)}
+        aria-expanded={isOpen}
+        aria-haspopup="true"
+        aria-controls={isOpen ? `${id}-menu` : undefined}
         className={cn(
           "group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors",
-          "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none",
+          "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           isOpen && "bg-accent/50"
         )}
       >
@@ -55,10 +72,14 @@ function Dropdown({ trigger, children, isOpen, onOpenChange }: DropdownProps) {
             "ml-1 h-3 w-3 transition-transform duration-200",
             isOpen && "rotate-180"
           )}
+          aria-hidden="true"
         />
       </button>
       {isOpen && (
         <div
+          id={`${id}-menu`}
+          role="menu"
+          aria-label={`${trigger} menu`}
           className="absolute top-full mt-2 z-50 rounded-lg border border-border bg-popover text-popover-foreground shadow-lg animate-in fade-in-0 zoom-in-95 duration-200 left-1/2 -translate-x-1/2"
         >
           {children}
@@ -79,7 +100,7 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="flex items-center space-x-2">
+        <Link href="/" className="flex items-center space-x-2" aria-label="FundOpsHQ - Home">
           <div className="text-xl font-semibold tracking-tight">
             Fund<span className="text-muted-foreground">OpsHQ</span>
           </div>
@@ -90,6 +111,7 @@ export function SiteHeader() {
           {/* Fund Types Dropdown */}
           <Dropdown
             trigger="Fund Types"
+            id="fund-types"
             isOpen={openDropdown === 'fund-types'}
             onOpenChange={handleDropdownOpen('fund-types')}
           >
@@ -114,6 +136,7 @@ export function SiteHeader() {
           {/* Newsletters Dropdown */}
           <Dropdown
             trigger="Newsletters"
+            id="newsletters"
             isOpen={openDropdown === 'newsletter'}
             onOpenChange={handleDropdownOpen('newsletter')}
           >
@@ -155,6 +178,7 @@ export function SiteHeader() {
           {/* Free Tools Dropdown */}
           <Dropdown
             trigger="Free Tools"
+            id="free-tools"
             isOpen={openDropdown === 'tools'}
             onOpenChange={handleDropdownOpen('tools')}
           >
@@ -189,6 +213,7 @@ export function SiteHeader() {
           {/* How I Can Help Dropdown */}
           <Dropdown
             trigger="How I Can Help"
+            id="help"
             isOpen={openDropdown === 'help'}
             onOpenChange={handleDropdownOpen('help')}
           >
@@ -283,9 +308,11 @@ export function SiteHeader() {
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-foreground hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent"
-            aria-label="Toggle mobile menu"
+            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-menu"
           >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {mobileMenuOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
           </button>
 
           <Button asChild size="sm" className="hidden md:inline-flex">
@@ -298,7 +325,12 @@ export function SiteHeader() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-border bg-background max-h-[calc(100vh-4rem)] overflow-y-auto">
+        <nav
+          id="mobile-menu"
+          role="navigation"
+          aria-label="Mobile navigation"
+          className="md:hidden border-t border-border bg-background max-h-[calc(100vh-4rem)] overflow-y-auto"
+        >
           <div className="container mx-auto px-4 py-4 space-y-4">
             {/* Fund Types */}
             <div>
@@ -469,7 +501,7 @@ export function SiteHeader() {
               </Button>
             </div>
           </div>
-        </div>
+        </nav>
       )}
     </header>
   )

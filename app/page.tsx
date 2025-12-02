@@ -47,9 +47,57 @@ const featuredArticles = [
   },
 ]
 
+// Organization structured data for homepage
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'FundOpsHQ',
+  url: 'https://fundops.com',
+  logo: 'https://fundops.com/icon.svg',
+  description: 'Educational resources and tools for fund operations professionals across Private Equity, Venture Capital, Hedge Funds, Private Credit, Real Estate, and Infrastructure.',
+  founder: {
+    '@type': 'Person',
+    name: 'Danny Bloomstine',
+    url: 'https://www.linkedin.com/in/danny-bloomstine/',
+    jobTitle: 'Managing Director',
+    worksFor: {
+      '@type': 'Organization',
+      name: 'IQ-EQ',
+    },
+  },
+  sameAs: [
+    'https://www.linkedin.com/in/danny-bloomstine/',
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer service',
+    url: 'https://fundops.com/contact',
+  },
+}
+
+const websiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'FundOpsHQ',
+  url: 'https://fundops.com',
+  description: 'Fund Operations Resources for Investment Professionals',
+  publisher: {
+    '@type': 'Organization',
+    name: 'FundOpsHQ',
+  },
+}
+
 export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+      />
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
