@@ -190,22 +190,25 @@ export function DistributionWaterfall() {
         <p className="mb-4 text-sm text-muted-foreground">
           See how different return multiples affect the waterfall
         </p>
-        <div className="flex gap-3">
+        <div className="flex flex-wrap gap-3">
           <Button
             onClick={() => handleScenarioChange('low')}
             variant={selectedScenario === 'low' ? 'default' : 'outline'}
+            className="flex-1 sm:flex-none"
           >
             1.5x Return
           </Button>
           <Button
             onClick={() => handleScenarioChange('medium')}
             variant={selectedScenario === 'medium' ? 'default' : 'outline'}
+            className="flex-1 sm:flex-none"
           >
             2.0x Return
           </Button>
           <Button
             onClick={() => handleScenarioChange('high')}
             variant={selectedScenario === 'high' ? 'default' : 'outline'}
+            className="flex-1 sm:flex-none"
           >
             3.0x Return
           </Button>

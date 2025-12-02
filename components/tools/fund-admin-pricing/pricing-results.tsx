@@ -52,20 +52,20 @@ export function PricingResults({ results, onExportCSV, onExportPDF }: PricingRes
           </p>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="text-center p-6 rounded-lg bg-muted/50">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="text-center p-4 sm:p-6 rounded-lg bg-muted/50">
               <p className="text-sm text-muted-foreground mb-2">Low Estimate</p>
-              <p className="text-3xl font-bold text-primary">{formatCurrency(annualFees.low, currency)}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-primary">{formatCurrency(annualFees.low, currency)}</p>
               <p className="text-xs text-muted-foreground mt-2">Conservative scenario</p>
             </div>
-            <div className="text-center p-6 rounded-lg bg-primary/10 border-2 border-primary">
+            <div className="text-center p-4 sm:p-6 rounded-lg bg-primary/10 border-2 border-primary order-first sm:order-none">
               <p className="text-sm font-semibold text-primary mb-2">Mid Estimate</p>
-              <p className="text-4xl font-bold">{formatCurrency(annualFees.medium, currency)}</p>
+              <p className="text-3xl sm:text-4xl font-bold">{formatCurrency(annualFees.medium, currency)}</p>
               <p className="text-xs text-muted-foreground mt-2">Most likely scenario</p>
             </div>
-            <div className="text-center p-6 rounded-lg bg-muted/50">
+            <div className="text-center p-4 sm:p-6 rounded-lg bg-muted/50">
               <p className="text-sm text-muted-foreground mb-2">High Estimate</p>
-              <p className="text-3xl font-bold text-primary">{formatCurrency(annualFees.high, currency)}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-primary">{formatCurrency(annualFees.high, currency)}</p>
               <p className="text-xs text-muted-foreground mt-2">Complex scenario</p>
             </div>
           </div>

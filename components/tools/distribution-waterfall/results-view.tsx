@@ -168,7 +168,7 @@ export function ResultsView({ output, onExport }: ResultsViewProps) {
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                   <div>
                     <div className="text-muted-foreground">To LPs</div>
                     <div className="font-medium">{formatCurrency(tier.toLPs)}</div>

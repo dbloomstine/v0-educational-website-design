@@ -48,18 +48,18 @@ export function PricingResults({ output, input }: PricingResultsProps) {
           </p>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-3 gap-4">
-            <div className="text-center p-6 rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="text-center p-4 sm:p-6 rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900">
               <p className="text-sm text-green-700 dark:text-green-400 mb-2 font-medium">Low Estimate</p>
-              <p className="text-2xl font-bold text-green-700 dark:text-green-400">{formatCurrency(output.lowEstimate)}</p>
+              <p className="text-xl sm:text-2xl font-bold text-green-700 dark:text-green-400">{formatCurrency(output.lowEstimate)}</p>
             </div>
-            <div className="text-center p-6 rounded-lg bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-500">
+            <div className="text-center p-4 sm:p-6 rounded-lg bg-blue-50 dark:bg-blue-950/20 border-2 border-blue-500 order-first sm:order-none">
               <p className="text-sm font-semibold text-blue-700 dark:text-blue-400 mb-2">Most Likely</p>
-              <p className="text-3xl font-bold text-blue-700 dark:text-blue-300">{formatCurrency(output.mediumEstimate)}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-300">{formatCurrency(output.mediumEstimate)}</p>
             </div>
-            <div className="text-center p-6 rounded-lg bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900">
+            <div className="text-center p-4 sm:p-6 rounded-lg bg-orange-50 dark:bg-orange-950/20 border border-orange-200 dark:border-orange-900">
               <p className="text-sm text-orange-700 dark:text-orange-400 mb-2 font-medium">High Estimate</p>
-              <p className="text-2xl font-bold text-orange-700 dark:text-orange-400">{formatCurrency(output.highEstimate)}</p>
+              <p className="text-xl sm:text-2xl font-bold text-orange-700 dark:text-orange-400">{formatCurrency(output.highEstimate)}</p>
             </div>
           </div>
 

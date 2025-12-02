@@ -37,7 +37,7 @@ export function PricingResults({ output, input }: PricingResultsProps) {
   return (
     <div className="space-y-6">
       {/* Summary Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
         <Card className="border-border bg-card p-4">
           <div className="mb-2 text-sm font-medium text-muted-foreground">Total Investors</div>
           <div className="text-3xl font-bold text-foreground">{output.totalInvestors}</div>
@@ -74,18 +74,18 @@ export function PricingResults({ output, input }: PricingResultsProps) {
           {/* Initial Onboarding */}
           <div>
             <div className="mb-3 text-sm font-medium text-muted-foreground">Initial Onboarding (One-Time)</div>
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
               <div className="rounded-lg border border-border bg-background p-4 text-center">
                 <div className="mb-1 text-sm font-medium text-muted-foreground">Low Estimate</div>
-                <div className="text-2xl font-bold text-foreground">{formatCurrency(output.initialOnboarding.low)}</div>
+                <div className="text-xl sm:text-2xl font-bold text-foreground">{formatCurrency(output.initialOnboarding.low)}</div>
               </div>
-              <div className="rounded-lg border-2 border-primary bg-primary/5 p-4 text-center">
+              <div className="rounded-lg border-2 border-primary bg-primary/5 p-4 text-center order-first sm:order-none">
                 <div className="mb-1 text-sm font-medium text-primary">Most Likely</div>
-                <div className="text-3xl font-bold text-primary">{formatCurrency(output.initialOnboarding.medium)}</div>
+                <div className="text-2xl sm:text-3xl font-bold text-primary">{formatCurrency(output.initialOnboarding.medium)}</div>
               </div>
               <div className="rounded-lg border border-border bg-background p-4 text-center">
                 <div className="mb-1 text-sm font-medium text-muted-foreground">High Estimate</div>
-                <div className="text-2xl font-bold text-foreground">{formatCurrency(output.initialOnboarding.high)}</div>
+                <div className="text-xl sm:text-2xl font-bold text-foreground">{formatCurrency(output.initialOnboarding.high)}</div>
               </div>
             </div>
           </div>
@@ -94,18 +94,18 @@ export function PricingResults({ output, input }: PricingResultsProps) {
           {input.hasOngoingMonitoring && (
             <div>
               <div className="mb-3 text-sm font-medium text-muted-foreground">Ongoing Annual Monitoring</div>
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
                 <div className="rounded-lg border border-border bg-background p-4 text-center">
                   <div className="mb-1 text-sm font-medium text-muted-foreground">Low Estimate</div>
-                  <div className="text-2xl font-bold text-foreground">{formatCurrency(output.annualOngoing.low)}</div>
+                  <div className="text-xl sm:text-2xl font-bold text-foreground">{formatCurrency(output.annualOngoing.low)}</div>
                 </div>
-                <div className="rounded-lg border-2 border-primary bg-primary/5 p-4 text-center">
+                <div className="rounded-lg border-2 border-primary bg-primary/5 p-4 text-center order-first sm:order-none">
                   <div className="mb-1 text-sm font-medium text-primary">Most Likely</div>
-                  <div className="text-3xl font-bold text-primary">{formatCurrency(output.annualOngoing.medium)}</div>
+                  <div className="text-2xl sm:text-3xl font-bold text-primary">{formatCurrency(output.annualOngoing.medium)}</div>
                 </div>
                 <div className="rounded-lg border border-border bg-background p-4 text-center">
                   <div className="mb-1 text-sm font-medium text-muted-foreground">High Estimate</div>
-                  <div className="text-2xl font-bold text-foreground">{formatCurrency(output.annualOngoing.high)}</div>
+                  <div className="text-xl sm:text-2xl font-bold text-foreground">{formatCurrency(output.annualOngoing.high)}</div>
                 </div>
               </div>
             </div>
@@ -142,7 +142,7 @@ export function PricingResults({ output, input }: PricingResultsProps) {
       {/* Per-Investor Cost Breakdown */}
       <Card className="border-border bg-card p-6">
         <h3 className="mb-4 text-lg font-semibold text-foreground">Per-Investor Costs by Type</h3>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
           <div className="rounded-lg border border-border bg-background p-4">
             <div className="mb-3 flex items-center gap-2 text-foreground">
               <Users className="h-5 w-5" />

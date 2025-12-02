@@ -15,8 +15,8 @@ export function ResultsTable({ yearlyData }: ResultsTableProps) {
         <CardTitle className="text-lg">Year-by-Year Fee Schedule</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="relative overflow-x-auto">
-          <Table>
+        <div className="relative overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0">
+          <Table className="min-w-[600px]">
             <TableHeader>
               <TableRow>
                 <TableHead className="w-16">Year</TableHead>

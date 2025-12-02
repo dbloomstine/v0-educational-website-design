@@ -111,7 +111,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
           <CardTitle className="text-lg">Structure & Entities</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Label htmlFor="mainFunds">Main Funds</Label>
@@ -132,7 +132,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Label htmlFor="aivCount">AIVs</Label>

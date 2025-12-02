@@ -51,7 +51,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
             </Select>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-1.5">
                 <Label htmlFor="aumAmount">Fund Size (AUM)</Label>
@@ -142,7 +142,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
           <CardTitle className="text-lg">Fund Structure & Entities</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-1.5">
                 <Label htmlFor="mainEntities">Main Fund Entities</Label>
@@ -236,7 +236,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
           <CardTitle className="text-lg">Investors & Reporting</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="flex items-center gap-1.5">
                 <Label htmlFor="investorCount">Number of Investors</Label>

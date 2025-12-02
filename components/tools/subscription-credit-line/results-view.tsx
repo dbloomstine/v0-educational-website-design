@@ -185,8 +185,8 @@ export function ResultsView({ output }: ResultsViewProps) {
         <CardContent>
           <div className="space-y-4">
             {/* Timeline visualization */}
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
+            <div className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0">
+              <table className="w-full text-sm min-w-[500px]">
                 <thead>
                   <tr className="border-b border-border">
                     <th className="text-left py-2 font-medium">Year</th>

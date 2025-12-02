@@ -113,13 +113,13 @@ export function ManagementCompanyBudget() {
         <Button variant="outline" onClick={clearAllData}>
           Clear All
         </Button>
-        <div className="flex items-center gap-2 ml-4">
+        <div className="flex items-center gap-2 sm:ml-4">
           <Switch
             id="show-carry"
             checked={showCarry}
             onCheckedChange={setShowCarry}
           />
-          <Label htmlFor="show-carry" className="text-sm cursor-pointer">Show Carry Revenue</Label>
+          <Label htmlFor="show-carry" className="text-sm cursor-pointer whitespace-nowrap">Show Carry Revenue</Label>
           <InfoPopover iconSize="sm">
             Include carried interest as a revenue source in projections. Carry is speculative and depends on fund performance - many managers exclude it for conservative planning.
           </InfoPopover>
@@ -130,7 +130,7 @@ export function ManagementCompanyBudget() {
             checked={auditMode}
             onCheckedChange={setAuditMode}
           />
-          <Label htmlFor="audit-mode" className="text-sm cursor-pointer">Audit Mode</Label>
+          <Label htmlFor="audit-mode" className="text-sm cursor-pointer whitespace-nowrap">Audit Mode</Label>
           <InfoPopover iconSize="sm">
             Shows detailed line-item breakdown with audit-ready formatting. Useful for review by accountants or during fundraising due diligence.
           </InfoPopover>
@@ -141,13 +141,15 @@ export function ManagementCompanyBudget() {
 
       {/* Main Content Tabs */}
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="firm">Firm & Funds</TabsTrigger>
-          <TabsTrigger value="revenue">Revenue</TabsTrigger>
-          <TabsTrigger value="expenses">Expenses</TabsTrigger>
-          <TabsTrigger value="scenarios">Scenarios</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <TabsList className="inline-flex w-auto min-w-full sm:grid sm:w-full sm:grid-cols-5">
+            <TabsTrigger value="overview" className="flex-1 sm:flex-none">Overview</TabsTrigger>
+            <TabsTrigger value="firm" className="flex-1 sm:flex-none whitespace-nowrap">Firm & Funds</TabsTrigger>
+            <TabsTrigger value="revenue" className="flex-1 sm:flex-none">Revenue</TabsTrigger>
+            <TabsTrigger value="expenses" className="flex-1 sm:flex-none">Expenses</TabsTrigger>
+            <TabsTrigger value="scenarios" className="flex-1 sm:flex-none">Scenarios</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">
@@ -454,7 +456,7 @@ export function ManagementCompanyBudget() {
                   Compare different hiring and growth scenarios side by side
                 </p>
 
-                <div className="grid md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   {(['base', 'lean', 'aggressive'] as const).map((scenarioType) => {
                     const scenario = results.scenarios[scenarioType]
                     const firstYear = scenario.revenue[0]
