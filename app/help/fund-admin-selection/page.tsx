@@ -25,6 +25,99 @@ export const metadata: Metadata = {
   },
 }
 
+// FAQ Schema for rich snippets
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'How do I choose a fund administrator for my private fund?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Choosing a fund administrator involves evaluating factors beyond pricing: technology capabilities, investor reporting flexibility, team depth, industry specialization, and cultural fit. Consider your fund type, AUM, complexity, and growth plans. Request references from similar funds and ask detailed questions about their operational processes.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What questions should I ask when evaluating fund administrators?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Key questions include: What is your client-to-staff ratio? How do you handle complex waterfall calculations? What investor portal capabilities do you offer? How do you manage regulatory reporting? What is your typical response time for ad-hoc requests? Can you provide references from funds similar to ours in size and strategy?',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is the typical cost of fund administration services?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Fund administration fees typically range from 3-15 basis points of AUM, with minimums ranging from $50,000 to $150,000+ annually depending on fund complexity. Costs are driven by number of entities, investor count, reporting frequency, jurisdiction, and service scope. Additional fees may apply for investor onboarding, tax support, and regulatory filings.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Should I use a large or boutique fund administrator?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The choice depends on your priorities. Large administrators offer global reach, established technology, and comprehensive services but may have less flexibility and higher minimums. Boutique administrators often provide more personalized service and flexibility but may have limitations in technology or geographic coverage. Consider your fund size, complexity, and growth trajectory.',
+      },
+    },
+  ],
+}
+
+// Breadcrumb Schema
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://fundops.com',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'How I Can Help',
+      item: 'https://fundops.com/help',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Fund Administrator Selection',
+      item: 'https://fundops.com/help/fund-admin-selection',
+    },
+  ],
+}
+
+// Author/Article Schema
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'How to Choose a Fund Administrator for Your Private Fund',
+  description: 'Guide to selecting the right fund administrator, including RFP best practices, evaluation criteria, and what to look for beyond pricing.',
+  author: {
+    '@type': 'Person',
+    name: 'Danny Bloomstine',
+    url: 'https://www.linkedin.com/in/danny-bloomstine/',
+    jobTitle: 'Managing Director',
+    worksFor: {
+      '@type': 'Organization',
+      name: 'IQ-EQ',
+    },
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'FundOpsHQ',
+    url: 'https://fundops.com',
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': 'https://fundops.com/help/fund-admin-selection',
+  },
+}
+
 const whatWeCanDiscuss = [
   'Understanding what questions to ask (and what the answers really mean)',
   'Structuring an RFP process that gets you useful responses',
@@ -37,6 +130,18 @@ const whatWeCanDiscuss = [
 export default function FundAdminSelectionPage() {
   return (
     <div className="flex min-h-screen flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <SiteHeader />
 
       <main id="main-content" className="flex-1">

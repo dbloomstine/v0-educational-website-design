@@ -25,6 +25,99 @@ export const metadata: Metadata = {
   },
 }
 
+// FAQ Schema for rich snippets
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What should be included in a private fund compliance manual?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'A compliance manual should include policies on fiduciary duty, code of ethics, personal trading, insider trading prevention, conflicts of interest, marketing and advertising, books and records, custody, valuation, business continuity, cybersecurity, and anti-money laundering. It should be tailored to your specific fund type, strategy, and regulatory requirements.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How often should I review my compliance program?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'The SEC requires registered investment advisers to conduct an annual compliance review (Rule 206(4)-7). This review should evaluate the adequacy of existing policies, identify any compliance issues that occurred during the year, and recommend changes. Many firms also conduct interim reviews when regulations change or after significant business changes.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What are common compliance deficiencies for private fund managers?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Common deficiencies include inadequate or outdated compliance policies, poor documentation of compliance reviews, code of ethics violations (late personal trading reports, unreported holdings), marketing violations, fee and expense disclosure issues, inadequate cybersecurity policies, and failure to address conflicts of interest. The SEC Division of Examinations publishes annual priorities highlighting focus areas.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Do I need a Chief Compliance Officer for my fund?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'SEC-registered investment advisers are required to designate a Chief Compliance Officer (CCO) responsible for administering the compliance program. The CCO can be an employee or outsourced, though there are regulatory considerations with outsourced CCO arrangements. The CCO should have sufficient authority, resources, and expertise to fulfill their responsibilities effectively.',
+      },
+    },
+  ],
+}
+
+// Breadcrumb Schema
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://fundops.com',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'How I Can Help',
+      item: 'https://fundops.com/help',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Compliance Review',
+      item: 'https://fundops.com/help/compliance-review',
+    },
+  ],
+}
+
+// Author/Article Schema
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Private Fund Compliance Review and Policy Guidance',
+  description: 'Guide to compliance program reviews, policy development, and regulatory best practices for private fund managers.',
+  author: {
+    '@type': 'Person',
+    name: 'Danny Bloomstine',
+    url: 'https://www.linkedin.com/in/danny-bloomstine/',
+    jobTitle: 'Managing Director',
+    worksFor: {
+      '@type': 'Organization',
+      name: 'IQ-EQ',
+    },
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'FundOpsHQ',
+    url: 'https://fundops.com',
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': 'https://fundops.com/help/compliance-review',
+  },
+}
+
 const whatWeCanDiscuss = [
   'Reviewing your compliance manual or specific policies',
   'Thinking through whether your procedures actually work in practice',
@@ -37,6 +130,18 @@ const whatWeCanDiscuss = [
 export default function ComplianceReviewPage() {
   return (
     <div className="flex min-h-screen flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <SiteHeader />
 
       <main id="main-content" className="flex-1">

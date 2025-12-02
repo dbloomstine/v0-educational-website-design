@@ -25,6 +25,99 @@ export const metadata: Metadata = {
   },
 }
 
+// FAQ Schema for rich snippets
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What do I need to launch a private equity or venture capital fund?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Launching a fund requires legal formation (fund documents, management company, GP entity), operational infrastructure (fund administrator, auditor, banking, compliance program), and investor onboarding processes. You will also need D&O insurance, cybersecurity policies, and typically 6-12 months of runway for operational costs before management fees start flowing.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How much does it cost to start a private fund?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Initial fund formation typically costs $75,000-$200,000+ in legal fees depending on complexity. Ongoing annual costs include fund administration ($50,000-$150,000+), audit ($30,000-$80,000+), insurance ($15,000-$50,000+), compliance ($25,000-$75,000+), and technology/office costs. First-year all-in costs often range from $300,000-$600,000+ before you reach first close.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What vendors do I need when launching a fund?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Essential vendors include: fund counsel (formation and ongoing), fund administrator (NAV, investor services, reporting), auditor (annual audit, tax coordination), bank (operating accounts, custody), and insurance broker (D&O, E&O, cyber). Optional but common: compliance consultant, IT/cybersecurity provider, and investor relations platform.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What do LPs look for in operational due diligence for emerging managers?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'LPs evaluate your operational infrastructure, including quality of service providers, compliance program robustness, cybersecurity practices, valuation policies, and internal controls. They review your fund documents, DDQ responses, background checks, and references. Having a credible fund administrator, clean compliance policies, and transparent fee structures helps emerging managers pass operational due diligence.',
+      },
+    },
+  ],
+}
+
+// Breadcrumb Schema
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://fundops.com',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'How I Can Help',
+      item: 'https://fundops.com/help',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'Launching a Fund',
+      item: 'https://fundops.com/help/launching-a-fund',
+    },
+  ],
+}
+
+// Author/Article Schema
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Operational Guide to Launching Your First Private Fund',
+  description: 'Comprehensive guide for first-time fund managers on operational setup, vendor selection, budgeting, and LP due diligence preparation.',
+  author: {
+    '@type': 'Person',
+    name: 'Danny Bloomstine',
+    url: 'https://www.linkedin.com/in/danny-bloomstine/',
+    jobTitle: 'Managing Director',
+    worksFor: {
+      '@type': 'Organization',
+      name: 'IQ-EQ',
+    },
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'FundOpsHQ',
+    url: 'https://fundops.com',
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': 'https://fundops.com/help/launching-a-fund',
+  },
+}
+
 const whatWeCanDiscuss = [
   'Building your operational checklist and timeline',
   'Understanding what vendors you actually need (and when)',
@@ -37,6 +130,18 @@ const whatWeCanDiscuss = [
 export default function LaunchingFundPage() {
   return (
     <div className="flex min-h-screen flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <SiteHeader />
 
       <main id="main-content" className="flex-1">

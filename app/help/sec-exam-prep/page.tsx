@@ -7,21 +7,114 @@ import { Button } from '@/components/ui/button'
 import { Mail, Calendar, ArrowLeft, Shield, CheckCircle2 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'SEC Exam Preparation | FundOpsHQ',
-  description: 'Got an SEC examination notice? Need help preparing? I can help you think through what to expect, how to organize, and what matters most.',
+  title: 'SEC Exam Preparation Guide | FundOpsHQ',
+  description: 'Got an SEC examination notice? Need help preparing? Learn what to expect, how to organize your documents, and prepare for examiner interviews.',
   openGraph: {
-    title: 'SEC Exam Preparation | FundOpsHQ',
-    description: 'Got an SEC examination notice? I can help you think through what to expect and how to prepare.',
+    title: 'SEC Exam Preparation Guide | FundOpsHQ',
+    description: 'Got an SEC examination notice? Learn what to expect and how to prepare for your fund examination.',
     type: 'website',
     url: 'https://fundops.com/help/sec-exam-prep',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SEC Exam Preparation | FundOpsHQ',
-    description: 'Got an SEC examination notice? I can help you think through what to expect and how to prepare.',
+    title: 'SEC Exam Preparation Guide | FundOpsHQ',
+    description: 'Got an SEC examination notice? Learn what to expect and how to prepare for your fund examination.',
   },
   alternates: {
     canonical: 'https://fundops.com/help/sec-exam-prep',
+  },
+}
+
+// FAQ Schema for rich snippets
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What should I expect during an SEC examination?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'SEC examinations typically involve document production requests, on-site or remote interviews with key personnel, and a review of your compliance policies and procedures. The examination process can take several weeks to months, and examiners will focus on areas like fee and expense calculations, off-channel communications, and cybersecurity practices.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do I prepare for an SEC fund examination?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Preparation involves organizing your documentation, understanding current SEC examination priorities, preparing your team for examiner interviews, reviewing your compliance policies for gaps, and identifying potential areas of focus. Working with experienced professionals can help you prepare systematically.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What are common SEC examination deficiencies for private funds?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Common deficiencies include inadequate compliance policies, fee and expense allocation issues, incomplete books and records, cybersecurity gaps, marketing and advertising violations, and off-channel communications. Addressing these proactively can help avoid enforcement actions.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'How long does an SEC examination take?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'SEC examinations vary in length but typically take 2-6 months from the initial document request to the examination closing letter. The timeline depends on the scope of the examination, firm size, and how quickly you can respond to document requests.',
+      },
+    },
+  ],
+}
+
+// Breadcrumb Schema
+const breadcrumbJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Home',
+      item: 'https://fundops.com',
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'How I Can Help',
+      item: 'https://fundops.com/help',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: 'SEC Exam Preparation',
+      item: 'https://fundops.com/help/sec-exam-prep',
+    },
+  ],
+}
+
+// Author/Article Schema
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'SEC Exam Preparation Guide for Private Fund Managers',
+  description: 'Comprehensive guide to preparing for SEC examinations, including document organization, interview preparation, and understanding examination priorities.',
+  author: {
+    '@type': 'Person',
+    name: 'Danny Bloomstine',
+    url: 'https://www.linkedin.com/in/danny-bloomstine/',
+    jobTitle: 'Managing Director',
+    worksFor: {
+      '@type': 'Organization',
+      name: 'IQ-EQ',
+    },
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'FundOpsHQ',
+    url: 'https://fundops.com',
+  },
+  mainEntityOfPage: {
+    '@type': 'WebPage',
+    '@id': 'https://fundops.com/help/sec-exam-prep',
   },
 }
 
@@ -37,6 +130,18 @@ const whatWeCanDiscuss = [
 export default function SECExamPrepPage() {
   return (
     <div className="flex min-h-screen flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
