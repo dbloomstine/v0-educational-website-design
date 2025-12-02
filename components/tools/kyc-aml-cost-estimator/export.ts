@@ -225,8 +225,8 @@ export function exportKYCAMLPDF(output: PricingOutput, input: KYCAMLInput) {
     { type: 'spacer' },
 
     // Per-Investor Costs Table
-    { type: 'title', content: 'Per-Investor Costs' },
-    createPDFTableSection(
+    ...createPDFTableSection(
+      'Per-Investor Costs',
       ['Type', 'Count', 'Low', 'Medium', 'High'],
       [
         ['Individual', input.individualCount.toString(), formatCurrency(output.perInvestorCosts.individual.low), formatCurrency(output.perInvestorCosts.individual.medium), formatCurrency(output.perInvestorCosts.individual.high)],

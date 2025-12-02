@@ -227,33 +227,100 @@ function generateRealizationSchedule(
 }
 
 /**
- * Calculate IRR using Newton's method
+ * Calculate IRR using Newton's method with improved convergence handling
+ *
+ * Newton's method can fail for certain cash flow patterns (multiple sign changes,
+ * extreme values). This implementation includes:
+ * - Multiple starting guesses if first attempt fails
+ * - Bounds checking to prevent divergence
+ * - NaN/Infinity protection
+ * - Fallback to bisection method if Newton fails
  */
 function calculateIRR(cashFlows: number[]): number {
-  // Initial guess
-  let irr = 0.1
   const maxIterations = 100
   const tolerance = 0.0001
 
-  for (let i = 0; i < maxIterations; i++) {
-    let npv = 0
-    let dnpv = 0
+  // Try multiple starting guesses in case one doesn't converge
+  const initialGuesses = [0.1, 0.2, 0.05, 0.3, -0.1]
 
-    for (let t = 0; t < cashFlows.length; t++) {
-      npv += cashFlows[t] / Math.pow(1 + irr, t)
-      dnpv -= t * cashFlows[t] / Math.pow(1 + irr, t + 1)
+  for (const initialGuess of initialGuesses) {
+    let irr = initialGuess
+
+    let converged = false
+    for (let i = 0; i < maxIterations; i++) {
+      let npv = 0
+      let dnpv = 0
+
+      for (let t = 0; t < cashFlows.length; t++) {
+        const denominator = Math.pow(1 + irr, t)
+        if (denominator === 0 || !isFinite(denominator)) break
+        npv += cashFlows[t] / denominator
+        dnpv -= t * cashFlows[t] / Math.pow(1 + irr, t + 1)
+      }
+
+      // Protect against division by zero or near-zero derivative
+      if (Math.abs(dnpv) < 1e-10) break
+
+      const newIRR = irr - npv / dnpv
+
+      // Protect against NaN or Infinity
+      if (!isFinite(newIRR)) break
+
+      // Bound the IRR to reasonable range (-0.99 to 10.0 = -99% to 1000%)
+      // Prevents divergence to extreme values
+      if (newIRR < -0.99 || newIRR > 10) break
+
+      if (Math.abs(newIRR - irr) < tolerance) {
+        // Verify this is a valid IRR by checking NPV is close to zero
+        let verifyNPV = 0
+        for (let t = 0; t < cashFlows.length; t++) {
+          verifyNPV += cashFlows[t] / Math.pow(1 + newIRR, t)
+        }
+        if (Math.abs(verifyNPV) < 1) {
+          converged = true
+          irr = newIRR
+          break
+        }
+      }
+
+      irr = newIRR
     }
 
-    const newIRR = irr - npv / dnpv
-
-    if (Math.abs(newIRR - irr) < tolerance) {
-      return newIRR
+    if (converged && isFinite(irr) && irr > -0.99 && irr < 10) {
+      return irr
     }
-
-    irr = newIRR
   }
 
-  return irr
+  // Fallback: Use bisection method for more robust (but slower) convergence
+  // This handles cases where Newton's method oscillates or diverges
+  let low = -0.5
+  let high = 1.0
+
+  // Expand bounds if needed
+  const npvAtLow = cashFlows.reduce((sum, cf, t) => sum + cf / Math.pow(1 + low, t), 0)
+  const npvAtHigh = cashFlows.reduce((sum, cf, t) => sum + cf / Math.pow(1 + high, t), 0)
+
+  if (npvAtLow * npvAtHigh > 0) {
+    // Same sign - no root in this range, return best estimate
+    return Math.abs(npvAtLow) < Math.abs(npvAtHigh) ? low : high
+  }
+
+  for (let i = 0; i < maxIterations; i++) {
+    const mid = (low + high) / 2
+    const npvAtMid = cashFlows.reduce((sum, cf, t) => sum + cf / Math.pow(1 + mid, t), 0)
+
+    if (Math.abs(npvAtMid) < tolerance || (high - low) / 2 < tolerance) {
+      return mid
+    }
+
+    if (npvAtMid * npvAtLow < 0) {
+      high = mid
+    } else {
+      low = mid
+    }
+  }
+
+  return (low + high) / 2
 }
 
 /**
@@ -482,9 +549,24 @@ export function calculateSubscriptionLineImpact(
     jCurveDataWithLine.push({ year: i + 1, nav: navWithLine })
   }
 
-  // Calculate capital efficiency
-  const avgDaysCapitalOutstanding = (cumulativeCalledWithLine / cumulativeCalledNoLine) * 365
-  const capitalEfficiency = (1 - cumulativeCalledWithLine / cumulativeCalledNoLine) * 100
+  // Calculate capital efficiency metrics
+  // avgDaysCapitalOutstanding: Weighted average days LP capital is outstanding
+  // This measures how the subscription line delays LP capital calls
+  // Formula: Sum of (capital called * days outstanding) / total capital called
+  // Simplified approximation: ratio of cumulative calls * investment period in days
+  const investmentPeriodDays = input.investmentPeriodYears * 365
+  const callRatio = cumulativeCalledNoLine > 0 ? cumulativeCalledWithLine / cumulativeCalledNoLine : 1
+
+  // Average days LP capital is deployed (lower is better for LP when using line)
+  // Without line: capital called early stays outstanding longer
+  // With line: capital called later, reducing average time outstanding
+  const avgDaysCapitalOutstanding = callRatio * investmentPeriodDays
+
+  // Capital efficiency: percentage reduction in LP capital calls due to line usage
+  // Positive value means less capital called from LPs (they benefit from line usage)
+  // Note: This can be negative if interest/repayments exceed line benefits (rare edge case)
+  const rawEfficiency = (1 - callRatio) * 100
+  const capitalEfficiency = Math.max(0, rawEfficiency) // Floor at 0% for display clarity
 
   return {
     input,

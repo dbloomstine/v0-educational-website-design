@@ -37,9 +37,7 @@ export interface FundAdminInput {
   kycAmlSupport: boolean;
   bankReconciliation: boolean;
   waterfallCalculations: boolean;
-  cfoCons
-
-ulting: 'none' | 'light' | 'heavy';
+  cfoConsulting: 'none' | 'light' | 'heavy';
 }
 
 export interface PricingOutput {

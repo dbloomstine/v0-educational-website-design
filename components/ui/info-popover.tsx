@@ -10,6 +10,7 @@ interface InfoPopoverProps {
   className?: string
   side?: "top" | "right" | "bottom" | "left"
   align?: "start" | "center" | "end"
+  iconSize?: string // e.g., "h-4 w-4" - defaults to "h-3.5 w-3.5"
 }
 
 /**
@@ -27,7 +28,8 @@ export function InfoPopover({
   children,
   className,
   side = "top",
-  align = "center"
+  align = "center",
+  iconSize = "h-3.5 w-3.5"
 }: InfoPopoverProps) {
   const [open, setOpen] = React.useState(false)
 
@@ -44,7 +46,7 @@ export function InfoPopover({
           )}
           aria-label="More information"
         >
-          <Info className="h-3.5 w-3.5" />
+          <Info className={iconSize} />
         </button>
       </PopoverPrimitive.Trigger>
       <PopoverPrimitive.Portal>

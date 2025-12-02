@@ -182,8 +182,8 @@ export function exportSubscriptionLinePDF(output: SubscriptionLineOutput) {
     { type: 'spacer' },
 
     // Cash Flow Summary (first 5 years)
-    { type: 'title', content: 'Cash Flow Summary (Years 1-5)' },
-    createPDFTableSection(
+    ...createPDFTableSection(
+      'Cash Flow Summary (Years 1-5)',
       ['Year', 'Calls (No Line)', 'Calls (Line)', 'Distributions', 'Interest'],
       output.cashFlows.slice(0, 5).map(cf => [
         cf.year.toString(),

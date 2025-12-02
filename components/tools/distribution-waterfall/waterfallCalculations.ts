@@ -189,23 +189,48 @@ function calculateEuropeanWaterfall(input: WaterfallInput): WaterfallOutput {
 
   // Tier 3: GP catch-up
   // Standard PE waterfall catch-up formula:
-  // GP catches up so their total carry (from Tier 3 + Tier 4) equals X% of all profits
-  // Since GP will receive additional carry in Tier 4, we must account for that:
-  // Let C = catch-up amount, R = remaining after catch-up
-  // GP total carry = C * catchUpRate + R * carryRate = gpTargetCarry
-  // Also: C + R = remaining, so R = remaining - C
-  // Solving: C = (gpTargetCarry - remaining * carryRate) / (catchUpRate - carryRate)
-  // With 100% catch-up and 20% carry: C = (targetCarry - remaining * 0.20) / (1.0 - 0.20)
+  // After LPs receive capital + pref, GP catches up so they receive X% of ALL profits.
+  //
+  // The correct approach: GP's target share of total profits = totalProfits * carryRate
+  // At this point, GP has only received returns on their LP commitment (capital + pref).
+  // GP has earned $0 carry so far - their distributions were from their LP position, not carry.
+  //
+  // With 100% catch-up: GP receives 100% of proceeds until they have carryRate of total profits.
+  // Catch-up amount = (totalProfits * carryRate) / catchUpRate
+  //
+  // With partial catch-up (e.g., 80%): GP receives catchUpRate% while LP receives (1-catchUpRate)%
+  // until GP reaches their target. The formula accounts for GP also getting carry in Tier 4.
+  //
+  // Math: Let C = catch-up tier total, R = remaining after catch-up
+  // GP gets: C * catchUpRate + R * carryRate = totalProfits * carryRate
+  // Where: C + R = remaining (proceeds after pref)
+  // Solving for C: C = totalProfits * carryRate / catchUpRate (simplified for 100% catch-up)
+  // Or with Tier 4 adjustment: C = (totalProfits * carryRate - remaining * carryRate) / (catchUpRate - carryRate)
+
   const totalProfits = input.grossProceeds - input.contributedCapital
   const gpTargetCarry = totalProfits * input.carryRate
-  const gpCarrySoFar = cumulativeGP - gpAsLP - (tier2ToGP) // Subtract LP returns (capital + pref)
-  const gpCatchUpNeeded = Math.max(0, gpTargetCarry - gpCarrySoFar)
+
+  // GP has NOT earned any carry yet - Tiers 1 & 2 were returns on their LP commitment
+  // The catch-up tier is where GP first earns carry
 
   // Calculate catch-up amount accounting for Tier 4 carry
+  // If 100% catch-up: GP gets all of tier 3 until they reach target
+  // If partial catch-up: GP gets catchUpRate%, and we must solve for when GP's total carry equals target
   const catchUpDenominator = input.catchUpRate - input.carryRate
-  const catchUpAmount = catchUpDenominator > 0
-    ? (gpCatchUpNeeded - remaining * input.carryRate) / catchUpDenominator
-    : gpCatchUpNeeded / input.catchUpRate
+  let catchUpAmount: number
+
+  if (catchUpDenominator > 0) {
+    // Partial catch-up: solve for when GP total carry (Tier 3 + Tier 4) = gpTargetCarry
+    // GP gets: C * catchUpRate + (remaining - C) * carryRate = gpTargetCarry
+    // C * catchUpRate + remaining * carryRate - C * carryRate = gpTargetCarry
+    // C * (catchUpRate - carryRate) = gpTargetCarry - remaining * carryRate
+    // C = (gpTargetCarry - remaining * carryRate) / (catchUpRate - carryRate)
+    catchUpAmount = (gpTargetCarry - remaining * input.carryRate) / catchUpDenominator
+  } else {
+    // 100% catch-up (catchUpRate equals 1.0)
+    // GP gets 100% until they reach their target carry
+    catchUpAmount = gpTargetCarry / input.catchUpRate
+  }
 
   const tier3Amount = Math.min(remaining, Math.max(0, catchUpAmount))
   const tier3ToGP = tier3Amount * input.catchUpRate

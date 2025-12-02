@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from 'react'
 import { Phase, Milestone } from './types'
 import { format, differenceInDays } from 'date-fns'
 import { InfoPopover } from '@/components/ui/info-popover'
@@ -130,7 +131,7 @@ export function TimelineView({ phases, visibleCategories }: TimelineViewProps) {
 }
 
 function generateMonthMarkers(minDate: Date, maxDate: Date, totalDays: number) {
-  const markers: JSX.Element[] = []
+  const markers: React.ReactElement[] = []
   const current = new Date(minDate)
   current.setDate(1) // Start of month
 

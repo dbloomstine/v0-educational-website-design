@@ -8,8 +8,8 @@
 export interface CSVSection {
   /** Section title (will be displayed as a header row) */
   title?: string
-  /** Column headers */
-  headers: string[]
+  /** Column headers (optional for simple list sections) */
+  headers?: string[]
   /** Row data - each row is an array of values */
   rows: (string | number | null | undefined)[][]
 }
@@ -99,8 +99,10 @@ export function generateCSV(options: CSVExportOptions): string {
       lines.push(section.title)
     }
 
-    // Headers
-    lines.push(section.headers.map(formatCSVValue).join(","))
+    // Headers (optional - some sections are simple lists without headers)
+    if (section.headers && section.headers.length > 0) {
+      lines.push(section.headers.map(formatCSVValue).join(","))
+    }
 
     // Data rows
     section.rows.forEach((row) => {
