@@ -62,54 +62,66 @@ export function SiteHeader() {
             <NavigationMenuItem>
               <NavigationMenuTrigger className="bg-transparent">Newsletter</NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="w-[320px] p-4 space-y-2">
-                  <li>
+                <div className="w-[480px] p-6">
+                  <div className="space-y-4">
                     <Link
                       href="/newsletter/fundopshq-insights"
-                      className="block rounded-lg border border-border bg-card p-4 transition-all hover:border-accent hover:bg-accent/50"
+                      className="block rounded-lg p-4 transition-all hover:bg-accent/50"
                     >
-                      <div className="font-medium text-sm text-foreground">FundOpsHQ Insights</div>
-                      <div className="text-xs text-muted-foreground mt-1">Danny Bloomstine</div>
+                      <div className="font-semibold text-sm text-foreground mb-1">FundOpsHQ Insights</div>
+                      <div className="text-sm text-muted-foreground leading-relaxed">
+                        Deep dives on fund operations topics, practical frameworks, and lessons learned from the field.
+                      </div>
                     </Link>
-                  </li>
-                  <li>
                     <Link
                       href="/newsletter/fundwatch-briefing"
-                      className="block rounded-lg border border-border bg-card p-4 transition-all hover:border-accent hover:bg-accent/50"
+                      className="block rounded-lg p-4 transition-all hover:bg-accent/50"
                     >
-                      <div className="font-medium text-sm text-foreground">FundWatch Briefing</div>
-                      <div className="text-xs text-muted-foreground mt-1">Weekly fund operations intel</div>
+                      <div className="font-semibold text-sm text-foreground mb-1">FundWatch Briefing</div>
+                      <div className="text-sm text-muted-foreground leading-relaxed">
+                        Weekly curated news, regulatory updates, and market intelligence for fund operations professionals.
+                      </div>
                     </Link>
-                  </li>
-                  <li className="pt-2 border-t border-border mt-2">
+                  </div>
+                  <div className="pt-4 mt-4 border-t border-border">
                     <Link
                       href="/newsletter"
                       className="block rounded-md p-2 text-sm text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                     >
                       View All Newsletters
                     </Link>
-                  </li>
-                </ul>
+                  </div>
+                </div>
               </NavigationMenuContent>
             </NavigationMenuItem>
 
             <NavigationMenuItem>
-              <Link href="/tools" legacyBehavior passHref>
-                <NavigationMenuTrigger className="bg-transparent">Free Tools & Calculators</NavigationMenuTrigger>
-              </Link>
+              <NavigationMenuTrigger className="bg-transparent">Free Tools</NavigationMenuTrigger>
               <NavigationMenuContent>
-                <ul className="grid w-[500px] grid-cols-2 gap-2 p-4">
-                  {tools.map((tool) => (
-                    <li key={tool.slug}>
+                <div className="w-[600px] p-6">
+                  <div className="grid grid-cols-2 gap-x-8 gap-y-1">
+                    {tools.slice(0, 6).map((tool) => (
                       <Link
+                        key={tool.slug}
                         href={`/tools/${tool.slug}`}
-                        className="block rounded-md p-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+                        className="block rounded-lg p-3 transition-all hover:bg-accent/50"
                       >
-                        {tool.title}
+                        <div className="font-semibold text-sm text-foreground mb-1">{tool.title}</div>
+                        <div className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                          {tool.shortDescription}
+                        </div>
                       </Link>
-                    </li>
-                  ))}
-                </ul>
+                    ))}
+                  </div>
+                  <div className="pt-4 mt-4 border-t border-border">
+                    <Link
+                      href="/tools"
+                      className="block rounded-md p-2 text-sm text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                    >
+                      View All Tools
+                    </Link>
+                  </div>
+                </div>
               </NavigationMenuContent>
             </NavigationMenuItem>
 
