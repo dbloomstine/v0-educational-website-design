@@ -21,10 +21,9 @@ interface DropdownProps {
   children: React.ReactNode
   isOpen: boolean
   onOpenChange: (open: boolean) => void
-  align?: 'left' | 'center'
 }
 
-function Dropdown({ trigger, children, isOpen, onOpenChange, align = 'left' }: DropdownProps) {
+function Dropdown({ trigger, children, isOpen, onOpenChange }: DropdownProps) {
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -60,12 +59,7 @@ function Dropdown({ trigger, children, isOpen, onOpenChange, align = 'left' }: D
       </button>
       {isOpen && (
         <div
-          className={cn(
-            "absolute top-full mt-2 z-50 rounded-lg border border-border bg-popover text-popover-foreground shadow-lg",
-            "animate-in fade-in-0 zoom-in-95 duration-200",
-            align === 'center' && "left-1/2 -translate-x-1/2",
-            align === 'left' && "left-0"
-          )}
+          className="absolute top-full mt-2 z-50 rounded-lg border border-border bg-popover text-popover-foreground shadow-lg animate-in fade-in-0 zoom-in-95 duration-200 left-1/2 -translate-x-1/2"
         >
           {children}
         </div>
