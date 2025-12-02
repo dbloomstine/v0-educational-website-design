@@ -5,6 +5,7 @@ import { Breadcrumb } from "@/components/breadcrumb"
 import { ArticleCTA } from "@/components/article-cta"
 import { RelatedArticles } from "@/components/related-articles"
 import { ArticleToc } from "@/components/article-toc"
+import { ShareButtons } from "@/components/share-buttons"
 import { getFundType } from "@/lib/content/fund-types"
 import { getPillar } from "@/lib/content/pillars"
 import { getArticleByPillar, getRelatedArticles } from "@/lib/content/articles"
@@ -28,18 +29,31 @@ export default async function PillarPage({ params }: PillarPageProps) {
 
   const relatedArticles = getRelatedArticles(article)
 
+  // Format date for display
+  const publishedDate = new Date(article.publishedDate)
+  const formattedDate = publishedDate.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
   // Structured data for article
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: article.title,
     description: article.subtitle,
-    datePublished: new Date(article.publishedDate).toISOString(),
-    dateModified: new Date(article.publishedDate).toISOString(),
+    datePublished: publishedDate.toISOString(),
+    dateModified: publishedDate.toISOString(),
     author: {
-      '@type': 'Organization',
-      name: 'FundOpsHQ',
-      url: 'https://fundops.com',
+      '@type': 'Person',
+      name: 'Danny Bloomstine',
+      url: 'https://www.linkedin.com/in/danny-bloomstine/',
+      jobTitle: 'Managing Director',
+      worksFor: {
+        '@type': 'Organization',
+        name: 'IQ-EQ',
+      },
     },
     publisher: {
       '@type': 'Organization',
@@ -96,7 +110,7 @@ export default async function PillarPage({ params }: PillarPageProps) {
       />
       <SiteHeader />
 
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         {/* Article Header */}
         <article className="py-16">
           <div className="container mx-auto px-4">
@@ -123,8 +137,17 @@ export default async function PillarPage({ params }: PillarPageProps) {
                   <p className="text-xl text-muted-foreground leading-relaxed mb-6">{article.subtitle}</p>
                 )}
 
-                <div className="flex items-center gap-4 text-sm text-muted-foreground border-b border-border pb-6">
-                  <span>{article.readingTime} min read</span>
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
+                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                    <span>{formattedDate}</span>
+                    <span className="text-border">|</span>
+                    <span>{article.readingTime} min read</span>
+                  </div>
+                  <ShareButtons
+                    url={`https://fundops.com/funds/${article.fundType}/${article.pillar}`}
+                    title={article.title}
+                    description={article.subtitle}
+                  />
                 </div>
               </div>
 

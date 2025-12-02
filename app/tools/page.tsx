@@ -1,9 +1,29 @@
+import { Metadata } from 'next'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { ToolCard } from '@/components/tools/tool-card'
 import { Button } from '@/components/ui/button'
 import { getAllTools, getAllCategories } from '@/lib/content/tools'
 import { Tool } from '@/lib/content/types'
+
+export const metadata: Metadata = {
+  title: 'Free Tools & Calculators | FundOpsHQ',
+  description: 'Free fund operations tools and calculators for fund formation, management fees, waterfall distributions, fund admin pricing, audit fees, and more.',
+  openGraph: {
+    title: 'Free Tools & Calculators | FundOpsHQ',
+    description: 'Free fund operations tools and calculators for fund formation, budgeting, economics, and operations.',
+    type: 'website',
+    url: 'https://fundops.com/tools',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Free Tools & Calculators | FundOpsHQ',
+    description: 'Free fund operations tools and calculators for fund formation, budgeting, economics, and operations.',
+  },
+  alternates: {
+    canonical: 'https://fundops.com/tools',
+  },
+}
 
 export default function ToolsPage() {
   const tools = getAllTools()
@@ -21,7 +41,7 @@ export default function ToolsPage() {
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
 
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
         {/* Hero Section */}
         <section className="border-b border-border bg-gradient-to-b from-background to-accent/20 py-20">
           <div className="container mx-auto px-4">
