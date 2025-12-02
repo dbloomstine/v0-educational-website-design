@@ -65,24 +65,22 @@ export default function HomePage() {
             }}
           />
 
-          <div className="container relative mx-auto px-4 py-28 lg:py-36">
-            <div className="mx-auto max-w-4xl">
+          <div className="container relative mx-auto px-4 py-20 sm:py-28 lg:py-36">
+            <div className="mx-auto max-w-4xl text-center">
               {/* Badge */}
-              <div className="mb-8 flex justify-center">
-                <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/50 px-4 py-2 text-sm text-muted-foreground backdrop-blur-sm">
-                  <BookOpen className="h-4 w-4" />
-                  <span>Free resources for fund operations professionals</span>
-                </div>
+              <div className="mb-6 sm:mb-8 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/50 px-3 sm:px-4 py-2 text-xs sm:text-sm text-muted-foreground backdrop-blur-sm">
+                <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+                <span>Free resources for fund operations professionals</span>
               </div>
 
-              <h1 className="mb-8 text-center text-5xl font-bold tracking-tight text-balance lg:text-6xl">
+              <h1 className="mb-6 sm:mb-8 text-4xl sm:text-5xl font-bold tracking-tight text-balance lg:text-6xl">
                 The operations playbook for{" "}
                 <span className="bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text">
                   private fund professionals
                 </span>
               </h1>
 
-              <p className="mx-auto mb-12 max-w-2xl text-center text-xl text-muted-foreground leading-relaxed text-balance">
+              <p className="mx-auto mb-8 sm:mb-12 max-w-2xl text-lg sm:text-xl text-muted-foreground leading-relaxed text-balance">
                 Practical guidance for CFOs, COOs, IR, compliance, and operations teams across PE, VC, credit, hedge funds, real estate, infrastructure, and beyond.
               </p>
 
