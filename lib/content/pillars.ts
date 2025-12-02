@@ -78,13 +78,6 @@ export const pillars: Record<string, Pillar> = {
     description: 'Loan servicing, documentation, and monitoring',
     fundTypes: ['private-credit']
   },
-  'middle-office': {
-    id: 'middle-office',
-    title: 'Middle Office',
-    slug: 'middle-office',
-    description: 'Trade reconciliation and portfolio monitoring',
-    fundTypes: ['hedge-funds']
-  },
   'prime-brokerage': {
     id: 'prime-brokerage',
     title: 'Prime Brokerage',
