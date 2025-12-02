@@ -401,15 +401,35 @@ export function SiteHeader() {
               </div>
             </div>
 
+            {/* Free Tools */}
+            <div className="pt-4 border-t border-border">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Free Tools
+              </h3>
+              <div className="space-y-2">
+                {tools.slice(0, 4).map((tool) => (
+                  <Link
+                    key={tool.slug}
+                    href={`/tools/${tool.slug}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
+                  >
+                    <span className="font-medium text-foreground">{tool.title}</span>
+                    <span className="block text-xs text-muted-foreground mt-0.5 line-clamp-1">{tool.shortDescription}</span>
+                  </Link>
+                ))}
+                <Link
+                  href="/tools"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors text-center"
+                >
+                  View All Tools
+                </Link>
+              </div>
+            </div>
+
             {/* Other Links */}
             <div className="space-y-2 pt-4 border-t border-border">
-              <Link
-                href="/tools"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md px-3 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-              >
-                Free Tools & Calculators
-              </Link>
               <Link
                 href="/about"
                 onClick={() => setMobileMenuOpen(false)}
