@@ -1,140 +1,112 @@
-export type AssetClass =
-  | 'Venture Capital'
-  | 'Private Equity Buyout'
-  | 'Growth Equity'
-  | 'Private Credit'
-  | 'Real Estate'
-  | 'Hedge Fund'
-
-export type Geography = 'US' | 'Europe' | 'Asia' | 'Global' | 'Other'
-
-export type Stage =
-  | 'Emerging Manager - Fund I'
-  | 'Emerging Manager - Fund II'
-  | 'Emerging Manager - Fund III+'
-  | 'Established Multi-Fund Platform'
-
-export type FeeBase = 'committed' | 'invested' | 'nav'
-
-export type ExpenseType = 'fixed' | 'variable'
-
-export interface FirmProfile {
-  assetClass: AssetClass
-  geography: Geography
-  stage: Stage
-}
+// Simplified types for Management Company Budget Planner
 
 export interface Fund {
   id: string
   name: string
   size: number // in millions
-  feeRate: number // percentage
-  feeBase: FeeBase
-  stepDown: {
-    enabled: boolean
-    year: number
-    newRate: number
-  }
-  gpCommitment: number // percentage
-  gpFundedByMgmtCo: boolean
-}
-
-export interface CapitalStructure {
-  startingCash: number
-  partnerCapital: number
-  creditLine: number
-}
-
-export interface PlanningHorizon {
-  years: number
-  granularity: 'annual' | 'quarterly'
-}
-
-export interface RevenueItem {
-  id: string
-  description: string
-  amount: number
-  type: 'recurring' | 'one-time'
-}
-
-export interface Revenue {
-  additionalFees: RevenueItem[]
-  recurringRevenue: RevenueItem[]
-  carryRevenue: number
-}
-
-export interface PeopleExpense {
-  id: string
-  role: string
-  fte: number
-  baseSalary: number
-  bonusPercent: number
+  feeRate: number // percentage (e.g., 2 for 2%)
+  firstCloseYear: number // year of first close (e.g., 2025)
 }
 
 export interface ExpenseItem {
   id: string
-  description: string
-  amount: number
-  type: ExpenseType
+  name: string
+  monthlyCost: number
+}
+
+export interface TeamMember {
+  id: string
+  role: string
+  monthlyCost: number // all-in cost (salary + bonus + benefits)
 }
 
 export interface Expenses {
-  people: PeopleExpense[]
-  services: ExpenseItem[]
-  technology: ExpenseItem[]
-  office: ExpenseItem[]
-  marketing: ExpenseItem[]
-  insurance: ExpenseItem[]
+  team: TeamMember[]
+  operations: ExpenseItem[] // fund admin, audit, legal, compliance, tax
+  overhead: ExpenseItem[] // office, insurance, technology, travel
 }
 
 export interface BudgetData {
-  firmProfile: FirmProfile
+  startingCash: number
   funds: Fund[]
-  capitalStructure: CapitalStructure
-  planningHorizon: PlanningHorizon
-  revenue: Revenue
   expenses: Expenses
 }
 
-export interface YearlyRevenue {
+export interface MonthlyProjection {
+  month: number
   year: number
-  mgmtFees: number
-  additionalFees: number
-  recurringRevenue: number
-  carryRevenue: number
-  totalRevenue: number
-}
-
-export interface YearlyExpenses {
-  year: number
-  peopleCost: number
-  servicesCost: number
-  technologyCost: number
-  officeCost: number
-  marketingCost: number
-  insuranceCost: number
-  totalExpenses: number
-}
-
-export interface YearlyCashFlow {
-  year: number
-  ebitda: number
+  label: string // e.g., "Jan 2025"
+  revenue: number
+  expenses: number
+  netCashFlow: number
   cashBalance: number
 }
 
-export interface ScenarioResults {
-  revenue: YearlyRevenue[]
-  expenses: YearlyExpenses[]
-  cashFlow: YearlyCashFlow[]
+export interface BudgetResults {
+  monthlyBurn: number
+  annualBudget: number
+  annualRevenue: number
+  breakEvenMonth: number | null // null if never breaks even in projection
+  runwayMonths: number | null // null if runway extends beyond projection
+  seedCapitalNeeded: number
+  projections: MonthlyProjection[]
 }
 
-export interface CalculationResults {
-  revenue: YearlyRevenue[]
-  expenses: YearlyExpenses[]
-  cashFlow: YearlyCashFlow[]
-  scenarios: {
-    base: ScenarioResults
-    lean: ScenarioResults
-    aggressive: ScenarioResults
-  }
+// Typical expense ranges for guidance
+export const TYPICAL_RANGES = {
+  team: {
+    'Managing Partner / CEO': { min: 15000, max: 40000, typical: 25000 },
+    'Partner': { min: 12000, max: 30000, typical: 20000 },
+    'Principal / VP': { min: 10000, max: 20000, typical: 15000 },
+    'Associate': { min: 6000, max: 12000, typical: 8000 },
+    'Analyst': { min: 4000, max: 8000, typical: 6000 },
+    'CFO / Controller': { min: 12000, max: 25000, typical: 18000 },
+    'Operations / Admin': { min: 5000, max: 12000, typical: 8000 },
+  },
+  operations: {
+    'Fund Administration': { min: 4000, max: 12500, typical: 7500, note: '$50-150K/year' },
+    'Audit': { min: 2500, max: 7000, typical: 4500, note: '$30-85K/year' },
+    'Legal (ongoing)': { min: 2000, max: 8000, typical: 4000, note: '$25-100K/year' },
+    'Compliance': { min: 2000, max: 6000, typical: 3500, note: '$25-75K/year' },
+    'Tax Preparation': { min: 2000, max: 6000, typical: 3500, note: '$25-75K/year' },
+  },
+  overhead: {
+    'Office / Coworking': { min: 500, max: 8000, typical: 2500, note: '$6-100K/year' },
+    'D&O / E&O Insurance': { min: 1500, max: 5000, typical: 2500, note: '$18-60K/year' },
+    'Technology / Software': { min: 500, max: 3000, typical: 1500, note: '$6-36K/year' },
+    'Travel & Entertainment': { min: 1000, max: 5000, typical: 2500, note: '$12-60K/year' },
+  },
+} as const
+
+// Default starting data for a typical emerging manager
+export const DEFAULT_BUDGET_DATA: BudgetData = {
+  startingCash: 500000,
+  funds: [
+    {
+      id: '1',
+      name: 'Fund I',
+      size: 50,
+      feeRate: 2,
+      firstCloseYear: new Date().getFullYear(),
+    },
+  ],
+  expenses: {
+    team: [
+      { id: '1', role: 'Managing Partner', monthlyCost: 20000 },
+      { id: '2', role: 'Associate', monthlyCost: 8000 },
+    ],
+    operations: [
+      { id: '1', name: 'Fund Administration', monthlyCost: 6000 },
+      { id: '2', name: 'Audit', monthlyCost: 4000 },
+      { id: '3', name: 'Legal (ongoing)', monthlyCost: 3000 },
+      { id: '4', name: 'Compliance', monthlyCost: 2500 },
+      { id: '5', name: 'Tax Preparation', monthlyCost: 3000 },
+    ],
+    overhead: [
+      { id: '1', name: 'Office / Coworking', monthlyCost: 2000 },
+      { id: '2', name: 'D&O / E&O Insurance', monthlyCost: 2500 },
+      { id: '3', name: 'Technology / Software', monthlyCost: 1200 },
+      { id: '4', name: 'Travel & Entertainment', monthlyCost: 2000 },
+    ],
+  },
 }

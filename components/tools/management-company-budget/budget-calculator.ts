@@ -1,338 +1,156 @@
-import {
-  BudgetData,
-  YearlyRevenue,
-  YearlyExpenses,
-  YearlyCashFlow,
-  CalculationResults,
-  ScenarioResults,
-  Fund
-} from './types'
+import { BudgetData, BudgetResults, MonthlyProjection, Fund } from './types'
 
-const BENEFITS_RATE = 0.28 // 28% for benefits and payroll taxes (industry standard)
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+const PROJECTION_MONTHS = 60 // 5 years
 
-// Standard PE/VC deployment schedule
-// Based on typical investment period pacing: front-loaded deployment over 5 years
-function getDeploymentRate(year: number): number {
-  // Deployment curve: Year 1: 25%, Year 2: 50%, Year 3: 70%, Year 4: 80%, Year 5+: 85%
-  const deploymentSchedule: Record<number, number> = {
-    1: 0.25,
-    2: 0.50,
-    3: 0.70,
-    4: 0.80,
-    5: 0.85
-  }
-  // Cap at 85% for years 5+
-  return deploymentSchedule[year] || 0.85
+/**
+ * Simple deployment curve for management fees
+ * Year 1: 70% of committed (assumes some fundraising runway)
+ * Year 2+: 100% of committed
+ */
+function getDeploymentFactor(monthsFromClose: number): number {
+  if (monthsFromClose < 12) return 0.7
+  return 1.0
 }
 
-export function calculateBudget(data: BudgetData, showCarry: boolean): CalculationResults {
-  const years = data.planningHorizon.years
+/**
+ * Calculate monthly management fee revenue from a fund
+ */
+function calculateMonthlyFundRevenue(fund: Fund, projectionMonth: number, startYear: number): number {
+  const projectionYear = startYear + Math.floor(projectionMonth / 12)
+  const monthsFromClose = (projectionYear - fund.firstCloseYear) * 12 + (projectionMonth % 12)
 
-  // Calculate revenue for each year
-  const revenue = calculateRevenue(data, years, showCarry)
+  // Fund hasn't closed yet
+  if (monthsFromClose < 0) return 0
 
-  // Calculate expenses for each year
-  const expenses = calculateExpenses(data, years)
-
-  // Calculate cash flow
-  const cashFlow = calculateCashFlow(data, revenue, expenses, years)
-
-  // Calculate scenarios
-  const scenarios = calculateScenarios(data, revenue, expenses, years, showCarry)
-
-  return {
-    revenue,
-    expenses,
-    cashFlow,
-    scenarios
-  }
+  const deploymentFactor = getDeploymentFactor(monthsFromClose)
+  const annualFee = fund.size * 1_000_000 * (fund.feeRate / 100) * deploymentFactor
+  return annualFee / 12
 }
 
-function calculateRevenue(data: BudgetData, years: number, showCarry: boolean): YearlyRevenue[] {
-  const revenue: YearlyRevenue[] = []
-
-  for (let year = 1; year <= years; year++) {
-    let mgmtFees = 0
-
-    // Calculate management fees from each fund
-    data.funds.forEach(fund => {
-      mgmtFees += calculateFundManagementFee(fund, year)
-    })
-
-    // Add other revenue sources
-    const additionalFees = data.revenue.additionalFees.reduce((sum, item) => sum + item.amount, 0)
-    const recurringRevenue = data.revenue.recurringRevenue.reduce((sum, item) => sum + item.amount, 0)
-    const carryRevenue = showCarry ? data.revenue.carryRevenue : 0
-
-    const totalRevenue = mgmtFees + additionalFees + recurringRevenue + carryRevenue
-
-    revenue.push({
-      year,
-      mgmtFees,
-      additionalFees,
-      recurringRevenue,
-      carryRevenue,
-      totalRevenue
-    })
-  }
-
-  return revenue
+/**
+ * Calculate total monthly expenses
+ */
+function calculateMonthlyExpenses(data: BudgetData): number {
+  const teamCost = data.expenses.team.reduce((sum, member) => sum + member.monthlyCost, 0)
+  const opsCost = data.expenses.operations.reduce((sum, item) => sum + item.monthlyCost, 0)
+  const overheadCost = data.expenses.overhead.reduce((sum, item) => sum + item.monthlyCost, 0)
+  return teamCost + opsCost + overheadCost
 }
 
-function calculateFundManagementFee(fund: Fund, year: number): number {
-  // Determine fee rate based on step-down
-  let feeRate = fund.feeRate
-  if (fund.stepDown.enabled && year >= fund.stepDown.year) {
-    feeRate = fund.stepDown.newRate
-  }
+/**
+ * Main calculation function - generates monthly projections and key metrics
+ */
+export function calculateBudget(data: BudgetData): BudgetResults {
+  const startYear = new Date().getFullYear()
+  const monthlyExpenses = calculateMonthlyExpenses(data)
+  const projections: MonthlyProjection[] = []
 
-  // Calculate fee base in dollars
-  let feeBase = fund.size * 1000000
+  let cashBalance = data.startingCash
+  let breakEvenMonth: number | null = null
+  let runwayMonths: number | null = null
+  let firstBreakEvenFound = false
 
-  // Adjust fee base based on type
-  if (fund.feeBase === 'invested') {
-    // Deployment schedule: realistic PE/VC deployment curve
-    // Year 1: 25%, Year 2: 50%, Year 3: 70%, Year 4: 80%, Year 5+: 85% (fully deployed)
-    const deploymentRate = getDeploymentRate(year)
-    feeBase = feeBase * deploymentRate
-  } else if (fund.feeBase === 'nav') {
-    // NAV-based fees: deployed capital with 5% annual appreciation assumption
-    // Note: 5% is a conservative assumption; actual returns vary significantly
-    const deploymentRate = getDeploymentRate(year)
-    feeBase = feeBase * deploymentRate * Math.pow(1.05, year - 1)
-  }
+  for (let month = 0; month < PROJECTION_MONTHS; month++) {
+    const year = startYear + Math.floor(month / 12)
+    const monthIndex = month % 12
 
-  return feeBase * (feeRate / 100)
-}
-
-function calculateExpenses(data: BudgetData, years: number): YearlyExpenses[] {
-  const expenses: YearlyExpenses[] = []
-
-  for (let year = 1; year <= years; year++) {
-    // People costs with benefits
-    const peopleCost = data.expenses.people.reduce((sum, person) => {
-      const totalComp = person.baseSalary * (1 + person.bonusPercent / 100)
-      const withBenefits = totalComp * (1 + BENEFITS_RATE)
-      return sum + (person.fte * withBenefits)
+    // Calculate revenue from all funds
+    const revenue = data.funds.reduce((sum, fund) => {
+      return sum + calculateMonthlyFundRevenue(fund, month, startYear)
     }, 0)
 
-    const servicesCost = data.expenses.services.reduce((sum, item) => sum + item.amount, 0)
-    const technologyCost = data.expenses.technology.reduce((sum, item) => sum + item.amount, 0)
-    const officeCost = data.expenses.office.reduce((sum, item) => sum + item.amount, 0)
-    const marketingCost = data.expenses.marketing.reduce((sum, item) => sum + item.amount, 0)
-    const insuranceCost = data.expenses.insurance.reduce((sum, item) => sum + item.amount, 0)
+    const netCashFlow = revenue - monthlyExpenses
+    cashBalance += netCashFlow
 
-    const totalExpenses = peopleCost + servicesCost + technologyCost + officeCost + marketingCost + insuranceCost
+    // Track break-even (first month where revenue >= expenses)
+    if (!firstBreakEvenFound && revenue >= monthlyExpenses) {
+      breakEvenMonth = month + 1
+      firstBreakEvenFound = true
+    }
 
-    expenses.push({
+    // Track runway (month when cash hits zero)
+    if (runwayMonths === null && cashBalance <= 0) {
+      runwayMonths = month
+    }
+
+    projections.push({
+      month: month + 1,
       year,
-      peopleCost,
-      servicesCost,
-      technologyCost,
-      officeCost,
-      marketingCost,
-      insuranceCost,
-      totalExpenses
+      label: `${MONTHS[monthIndex]} ${year}`,
+      revenue,
+      expenses: monthlyExpenses,
+      netCashFlow,
+      cashBalance: Math.max(0, cashBalance) // Don't show negative for display
     })
   }
 
-  return expenses
-}
-
-function calculateCashFlow(
-  data: BudgetData,
-  revenue: YearlyRevenue[],
-  expenses: YearlyExpenses[],
-  years: number
-): YearlyCashFlow[] {
-  const cashFlow: YearlyCashFlow[] = []
-  let cumulativeCash = data.capitalStructure.startingCash
-
-  for (let year = 1; year <= years; year++) {
-    const yearRevenue = revenue[year - 1].totalRevenue
-    const yearExpenses = expenses[year - 1].totalExpenses
-    const ebitda = yearRevenue - yearExpenses
-
-    cumulativeCash += ebitda
-
-    cashFlow.push({
-      year,
-      ebitda,
-      cashBalance: cumulativeCash
-    })
+  // If cash never ran out, runway extends beyond projection
+  if (runwayMonths === null) {
+    runwayMonths = null // Will display as "60+ months"
   }
 
-  return cashFlow
-}
+  // Calculate annual figures
+  const annualRevenue = data.funds.reduce((sum, fund) => {
+    return sum + (fund.size * 1_000_000 * (fund.feeRate / 100))
+  }, 0)
+  const annualBudget = monthlyExpenses * 12
 
-function calculateScenarios(
-  data: BudgetData,
-  baseRevenue: YearlyRevenue[],
-  baseExpenses: YearlyExpenses[],
-  years: number,
-  showCarry: boolean
-): { base: ScenarioResults; lean: ScenarioResults; aggressive: ScenarioResults } {
-  // Base scenario
-  const baseCashFlow = calculateCashFlowFromExpenses(data.capitalStructure.startingCash, baseRevenue, baseExpenses)
+  // Calculate seed capital needed to reach break-even
+  // This is the cumulative negative cash flow until break-even
+  let seedCapitalNeeded = 0
+  let cumulativeCash = data.startingCash
 
-  // Lean scenario: 70% headcount, 60% discretionary spend
-  const leanExpenses = baseExpenses.map(e => ({
-    ...e,
-    peopleCost: e.peopleCost * 0.7,
-    marketingCost: e.marketingCost * 0.6,
-    officeCost: e.officeCost * 0.7,
-    totalExpenses: e.peopleCost * 0.7 + e.servicesCost + e.technologyCost +
-                   e.officeCost * 0.7 + e.marketingCost * 0.6 + e.insuranceCost
-  }))
-  const leanCashFlow = calculateCashFlowFromExpenses(data.capitalStructure.startingCash, baseRevenue, leanExpenses)
-
-  // Aggressive scenario: 150% headcount, 120% discretionary spend
-  const aggressiveExpenses = baseExpenses.map(e => ({
-    ...e,
-    peopleCost: e.peopleCost * 1.5,
-    marketingCost: e.marketingCost * 1.2,
-    officeCost: e.officeCost * 1.1,
-    totalExpenses: e.peopleCost * 1.5 + e.servicesCost + e.technologyCost +
-                   e.officeCost * 1.1 + e.marketingCost * 1.2 + e.insuranceCost
-  }))
-  const aggressiveCashFlow = calculateCashFlowFromExpenses(data.capitalStructure.startingCash, baseRevenue, aggressiveExpenses)
-
-  return {
-    base: {
-      revenue: baseRevenue,
-      expenses: baseExpenses,
-      cashFlow: baseCashFlow
-    },
-    lean: {
-      revenue: baseRevenue,
-      expenses: leanExpenses,
-      cashFlow: leanCashFlow
-    },
-    aggressive: {
-      revenue: baseRevenue,
-      expenses: aggressiveExpenses,
-      cashFlow: aggressiveCashFlow
+  for (let i = 0; i < projections.length; i++) {
+    cumulativeCash += projections[i].netCashFlow
+    if (cumulativeCash < 0) {
+      seedCapitalNeeded = Math.max(seedCapitalNeeded, Math.abs(cumulativeCash) + data.startingCash)
+    }
+    if (projections[i].revenue >= projections[i].expenses) {
+      break
     }
   }
-}
 
-function calculateCashFlowFromExpenses(
-  startingCash: number,
-  revenue: YearlyRevenue[],
-  expenses: YearlyExpenses[]
-): YearlyCashFlow[] {
-  const cashFlow: YearlyCashFlow[] = []
-  let cumulativeCash = startingCash
-
-  for (let i = 0; i < revenue.length; i++) {
-    const ebitda = revenue[i].totalRevenue - expenses[i].totalExpenses
-    cumulativeCash += ebitda
-
-    cashFlow.push({
-      year: i + 1,
-      ebitda,
-      cashBalance: cumulativeCash
-    })
-  }
-
-  return cashFlow
-}
-
-export function calculateRunwayMonths(
-  startingCash: number,
-  firstYearRevenue: number,
-  firstYearExpenses: number
-): number {
-  let cash = startingCash
-  let months = 0
-  const monthlyBurn = firstYearExpenses / 12
-  const monthlyRevenue = firstYearRevenue / 12
-  const monthlyNet = monthlyRevenue - monthlyBurn
-
-  if (monthlyNet >= 0) return 120 // 10+ years
-
-  while (cash > 0 && months < 120) {
-    cash += monthlyNet
-    months++
-  }
-
-  return months
-}
-
-export function getSampleData(): BudgetData {
   return {
-    firmProfile: {
-      assetClass: 'Venture Capital',
-      geography: 'US',
-      stage: 'Emerging Manager - Fund I'
-    },
-    funds: [
-      {
-        id: '1',
-        name: 'Fund I',
-        size: 100,
-        feeRate: 2.0,
-        feeBase: 'committed',
-        stepDown: {
-          enabled: true,
-          year: 6,
-          newRate: 1.5
-        },
-        gpCommitment: 2.5,
-        gpFundedByMgmtCo: false
-      }
-    ],
-    capitalStructure: {
-      startingCash: 500000,
-      partnerCapital: 0,
-      creditLine: 0
-    },
-    planningHorizon: {
-      years: 5,
-      granularity: 'annual'
-    },
-    revenue: {
-      additionalFees: [
-        { id: '1', description: 'Portfolio Monitoring Fees', amount: 50000, type: 'recurring' }
-      ],
-      recurringRevenue: [],
-      carryRevenue: 0
-    },
-    expenses: {
-      people: [
-        { id: '1', role: 'Managing Partner', fte: 1, baseSalary: 300000, bonusPercent: 50 },
-        { id: '2', role: 'Partner', fte: 1, baseSalary: 250000, bonusPercent: 40 },
-        { id: '3', role: 'Principal', fte: 1, baseSalary: 200000, bonusPercent: 30 },
-        { id: '4', role: 'Associate', fte: 1, baseSalary: 150000, bonusPercent: 20 },
-        { id: '5', role: 'CFO / COO', fte: 0.5, baseSalary: 200000, bonusPercent: 25 },
-        { id: '6', role: 'Fund Controller', fte: 1, baseSalary: 120000, bonusPercent: 15 }
-      ],
-      services: [
-        { id: '1', description: 'Fund Administration', amount: 100000, type: 'fixed' },
-        { id: '2', description: 'Annual Audit & Tax', amount: 75000, type: 'fixed' },
-        { id: '3', description: 'Legal (Fund & GP)', amount: 50000, type: 'fixed' },
-        { id: '4', description: 'Compliance & Regulatory', amount: 40000, type: 'fixed' }
-      ],
-      technology: [
-        { id: '1', description: 'Fund Accounting System', amount: 30000, type: 'fixed' },
-        { id: '2', description: 'CRM & Deal Tracking', amount: 15000, type: 'fixed' },
-        { id: '3', description: 'Data Providers', amount: 25000, type: 'fixed' },
-        { id: '4', description: 'Document Management', amount: 10000, type: 'fixed' }
-      ],
-      office: [
-        { id: '1', description: 'Office Rent / Coworking', amount: 60000, type: 'fixed' },
-        { id: '2', description: 'Utilities & Supplies', amount: 12000, type: 'variable' }
-      ],
-      marketing: [
-        { id: '1', description: 'Travel & Entertainment', amount: 75000, type: 'variable' },
-        { id: '2', description: 'Conferences & Events', amount: 40000, type: 'variable' },
-        { id: '3', description: 'Website & Marketing', amount: 20000, type: 'variable' }
-      ],
-      insurance: [
-        { id: '1', description: 'D&O Insurance', amount: 50000, type: 'fixed' },
-        { id: '2', description: 'E&O Insurance', amount: 30000, type: 'fixed' },
-        { id: '3', description: 'Contingency Buffer', amount: 25000, type: 'variable' }
-      ]
-    }
+    monthlyBurn: monthlyExpenses,
+    annualBudget,
+    annualRevenue,
+    breakEvenMonth,
+    runwayMonths,
+    seedCapitalNeeded: Math.max(0, seedCapitalNeeded),
+    projections
   }
+}
+
+/**
+ * Format currency for display
+ */
+export function formatCurrency(amount: number, compact = false): string {
+  if (compact && Math.abs(amount) >= 1_000_000) {
+    return `$${(amount / 1_000_000).toFixed(1)}M`
+  }
+  if (compact && Math.abs(amount) >= 1_000) {
+    return `$${(amount / 1_000).toFixed(0)}K`
+  }
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  }).format(amount)
+}
+
+/**
+ * Format months as years/months string
+ */
+export function formatRunway(months: number | null): string {
+  if (months === null) return '60+ months'
+  if (months === 0) return '0 months'
+
+  const years = Math.floor(months / 12)
+  const remainingMonths = months % 12
+
+  if (years === 0) return `${months} months`
+  if (remainingMonths === 0) return `${years} year${years > 1 ? 's' : ''}`
+  return `${years}y ${remainingMonths}m`
 }

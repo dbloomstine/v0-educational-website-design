@@ -52,25 +52,25 @@ const tools: Tool[] = [
     id: 'management-company-budget',
     title: 'Management Company Budget Planner',
     slug: 'management-company-budget',
-    shortDescription: 'Plan your management company budget, burn, and runway.',
+    shortDescription: 'Calculate your burn rate, runway, and seed capital needs with a simple budget model.',
     inputs: [
-      'Team roles and salaries',
-      'Office and overhead',
-      'Legal costs',
-      'Admin costs',
-      'Travel budget',
-      'Software/tech stack',
-      'Other fixed costs'
+      'Starting cash',
+      'Fund size and fee rate',
+      'Team costs (all-in monthly)',
+      'Operations costs (admin, audit, legal)',
+      'Overhead costs (office, insurance, tech)'
     ],
     outputs: [
       'Monthly burn rate',
-      'Annual budget',
-      'Estimated runway',
-      'Suggested GP/seed capital needs'
+      'Annual budget vs revenue',
+      'Runway in months',
+      'Break-even timing',
+      'Seed capital needed',
+      'Cash runway chart'
     ],
     categories: ['Fund Formation'],
     personas: ['GP', 'CFO or Controller', 'COO or Operations'],
-    complexity: 'Intermediate',
+    complexity: 'Beginner',
     status: 'active',
     icon: 'Building'
   },
