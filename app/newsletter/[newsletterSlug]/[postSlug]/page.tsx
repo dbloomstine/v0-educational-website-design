@@ -15,6 +15,12 @@ interface PostPageProps {
   }
 }
 
+// Revalidate newsletter posts every 2 hours to pick up new content
+export const revalidate = 7200
+
+// Allow dynamic rendering for new posts not in generateStaticParams
+export const dynamicParams = true
+
 export async function generateStaticParams() {
   const params: { newsletterSlug: string; postSlug: string }[] = []
 

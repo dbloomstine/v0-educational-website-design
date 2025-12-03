@@ -7,6 +7,9 @@ import { Button } from '@/components/ui/button'
 import { ArrowRight, Mail, User } from 'lucide-react'
 import { getAllNewsletters, getNewsletterPosts } from '@/lib/newsletters'
 
+// Revalidate every 2 hours to pick up new newsletter posts
+export const revalidate = 7200
+
 export const metadata: Metadata = {
   title: 'Newsletters | FundOpsHQ',
   description: 'Subscribe to our newsletters for fund operations insights, industry news, and practical guidance delivered to your inbox.',

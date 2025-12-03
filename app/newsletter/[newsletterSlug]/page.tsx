@@ -14,6 +14,9 @@ interface NewsletterPageProps {
   }
 }
 
+// Revalidate newsletter pages every 2 hours to pick up new posts
+export const revalidate = 7200
+
 export async function generateStaticParams() {
   return Object.keys(NEWSLETTERS).map((slug) => ({
     newsletterSlug: slug,
