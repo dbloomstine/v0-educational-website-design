@@ -64,7 +64,8 @@ export function calculateBudget(data: BudgetData): BudgetResults {
     cashBalance += netCashFlow
 
     // Track break-even (first month where revenue >= expenses)
-    if (!firstBreakEvenFound && revenue >= monthlyExpenses) {
+    // Only count as break-even if there are actual expenses to cover
+    if (!firstBreakEvenFound && monthlyExpenses > 0 && revenue >= monthlyExpenses) {
       breakEvenMonth = month + 1
       firstBreakEvenFound = true
     }
@@ -97,19 +98,22 @@ export function calculateBudget(data: BudgetData): BudgetResults {
   const annualBudget = monthlyExpenses * 12
 
   // Calculate seed capital needed to reach break-even
-  // This is the cumulative negative cash flow until break-even
-  let seedCapitalNeeded = 0
+  // This is the total cash needed from day 1 to never go negative
+  let lowestCashPoint = data.startingCash
   let cumulativeCash = data.startingCash
 
   for (let i = 0; i < projections.length; i++) {
     cumulativeCash += projections[i].netCashFlow
-    if (cumulativeCash < 0) {
-      seedCapitalNeeded = Math.max(seedCapitalNeeded, Math.abs(cumulativeCash) + data.startingCash)
-    }
+    lowestCashPoint = Math.min(lowestCashPoint, cumulativeCash)
     if (projections[i].revenue >= projections[i].expenses) {
       break
     }
   }
+
+  // If lowest point is negative, we need more starting capital
+  const seedCapitalNeeded = lowestCashPoint < 0
+    ? data.startingCash + Math.abs(lowestCashPoint)
+    : data.startingCash
 
   return {
     monthlyBurn: monthlyExpenses,

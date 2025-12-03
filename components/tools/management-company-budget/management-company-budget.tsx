@@ -24,7 +24,8 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  ReferenceLine
+  ReferenceLine,
+  Legend
 } from 'recharts'
 
 export function ManagementCompanyBudget() {
@@ -235,6 +236,7 @@ export function ManagementCompanyBudget() {
                     borderRadius: '8px'
                   }}
                 />
+                <Legend verticalAlign="top" height={36} />
                 <ReferenceLine y={0} stroke="hsl(var(--destructive))" strokeDasharray="5 5" />
                 <Line
                   type="monotone"
@@ -243,6 +245,24 @@ export function ManagementCompanyBudget() {
                   strokeWidth={2}
                   dot={false}
                   name="Cash Balance"
+                />
+                <Line
+                  type="monotone"
+                  dataKey="revenue"
+                  stroke="hsl(142 76% 36%)"
+                  strokeWidth={1.5}
+                  strokeDasharray="4 4"
+                  dot={false}
+                  name="Monthly Revenue"
+                />
+                <Line
+                  type="monotone"
+                  dataKey="expenses"
+                  stroke="hsl(var(--destructive))"
+                  strokeWidth={1.5}
+                  strokeDasharray="4 4"
+                  dot={false}
+                  name="Monthly Expenses"
                 />
               </LineChart>
             </ResponsiveContainer>
