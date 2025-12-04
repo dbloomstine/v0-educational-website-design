@@ -1,0 +1,24 @@
+Portfolio Manager Notes - Q4 2024
+
+MARKET ENVIRONMENT:
+The fourth quarter presented a constructive environment for risk assets, with the S&P 500 advancing on expectations of continued Fed rate cuts and resilient corporate earnings. The AI infrastructure buildout remained a dominant theme, driving significant outperformance in semiconductor and cloud infrastructure names.
+
+KEY DECISIONS THIS QUARTER:
+- Increased position in NVIDIA ahead of earnings, thesis playing out on datacenter demand
+- Trimmed Apple position after significant run-up, reallocating to higher-conviction names
+- Initiated new position in Eli Lilly based on GLP-1 market expansion thesis
+- Exited Intel entirely after continued execution challenges and market share losses
+- Added to JPMorgan on attractive valuation and strong NII outlook
+
+RISK MANAGEMENT:
+Maintained net exposure between 85-95% throughout the quarter. Volatility remained contained despite election uncertainty. We implemented tactical hedges via index puts during October which were subsequently rolled off post-election.
+
+LOOKING AHEAD:
+We remain constructive on equities heading into 2025. Key themes we are positioned for:
+1. Continued AI infrastructure spending (NVIDIA, Microsoft, Amazon)
+2. Healthcare innovation particularly in obesity/diabetes treatments
+3. Financial sector benefiting from higher-for-longer rates and deregulation potential
+
+Primary risks we are monitoring include potential tariff escalation, inflation reacceleration, and stretched valuations in mega-cap tech.
+
+Our conviction remains high in the current portfolio positioning and we see multiple catalysts for continued alpha generation in the coming quarters.

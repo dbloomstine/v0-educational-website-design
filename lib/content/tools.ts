@@ -244,6 +244,35 @@ const tools: Tool[] = [
     complexity: 'Intermediate',
     status: 'active',
     icon: 'Split'
+  },
+
+  // E. Investor Relations
+  {
+    id: 'investor-report-generator',
+    title: 'Investor Report Narrative Generator',
+    slug: 'investor-report-generator',
+    shortDescription: 'AI-powered tool to generate professional quarterly investor letters from performance data and commentary.',
+    inputs: [
+      'Performance data (Excel/CSV)',
+      'Attribution data (contributors/detractors)',
+      'Manager commentary (DOCX/TXT/PDF)',
+      'Fund type (HF, PE, VC)',
+      'Tone preference (Conservative, Neutral, Optimistic)',
+      'Letter format (Executive Summary or Full Letter)'
+    ],
+    outputs: [
+      'Performance Overview section',
+      'Attribution Analysis section',
+      'Key Events summary',
+      'Forward-Looking Outlook',
+      'Exportable PDF letter',
+      'Copy to clipboard'
+    ],
+    categories: ['Investor Relations'],
+    personas: ['Investor Relations', 'GP', 'CFO or Controller'],
+    complexity: 'Intermediate',
+    status: 'active',
+    icon: 'FileText'
   }
 ]
 

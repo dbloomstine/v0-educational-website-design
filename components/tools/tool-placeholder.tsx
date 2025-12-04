@@ -15,6 +15,7 @@ import { TaxFeeEstimator } from './tax-fee-estimator/tax-fee-estimator'
 import { KYCAMLCostEstimator } from './kyc-aml-cost-estimator/kyc-aml-cost-estimator'
 import { DistributionWaterfall } from './distribution-waterfall/distribution-waterfall'
 import { SubscriptionCreditLine } from './subscription-credit-line/subscription-credit-line'
+import { InvestorReportGenerator } from './investor-report-generator/investor-report-generator'
 
 interface ToolPlaceholderProps {
   tool: Tool
@@ -25,7 +26,8 @@ const categoryColors: Record<string, string> = {
   'Fund Formation': 'oklch(0.65 0.19 275)', // Purple
   'Pricing and Costs': 'oklch(0.55 0.15 150)', // Teal
   'Fund Economics': 'oklch(0.65 0.22 230)', // Blue
-  'Operations and Compliance': 'oklch(0.68 0.19 35)' // Orange
+  'Operations and Compliance': 'oklch(0.68 0.19 35)', // Orange
+  'Investor Relations': 'oklch(0.60 0.18 180)' // Cyan
 }
 
 export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
@@ -156,6 +158,19 @@ export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-7xl">
             <SubscriptionCreditLine />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // If this is the Investor Report Generator tool, render the actual tool
+  if (tool.slug === 'investor-report-generator') {
+    return (
+      <div className="py-12">
+        <div className="container mx-auto px-4">
+          <div className="mx-auto max-w-7xl">
+            <InvestorReportGenerator />
           </div>
         </div>
       </div>

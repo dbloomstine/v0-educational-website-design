@@ -52,6 +52,7 @@ export type ToolCategory =
   | 'Pricing and Costs'
   | 'Fund Economics'
   | 'Operations and Compliance'
+  | 'Investor Relations'
 
 export type ToolPersona =
   | 'GP'

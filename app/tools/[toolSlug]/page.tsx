@@ -31,6 +31,7 @@ const toolSeoTitles: Record<string, string> = {
   'distribution-waterfall': 'Free Distribution Waterfall Calculator | PE/VC Carry Visualizer',
   'subscription-credit-line': 'Free Subscription Line Calculator | Credit Facility IRR Impact',
   'fund-expense-allocation': 'Free Fund Expense Allocation Tool | Expense Classification Helper',
+  'investor-report-generator': 'AI Investor Report Generator | Quarterly Letter Writing Tool',
 }
 
 export async function generateMetadata({ params }: ToolPageProps): Promise<Metadata> {
