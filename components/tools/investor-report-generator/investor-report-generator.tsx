@@ -10,6 +10,7 @@ import { NarrativeEditor } from './narrative-editor'
 import { ProgressStepper } from './progress-stepper'
 import { LoadingAnimation } from './loading-animation'
 import { SecurityPanel } from './security-panel'
+import { ContextInput } from './context-input'
 import { exportToPDF } from './export-pdf'
 import { exportToWord } from './export-docx'
 import {
@@ -500,8 +501,16 @@ export function InvestorReportGenerator() {
             }
           `}
         >
+          {/* Context Input - Above file upload */}
+          <div className="animate-in fade-in slide-in-from-left-4 duration-500">
+            <ContextInput
+              value={settings.userContext || ''}
+              onChange={(value) => setSettings(prev => ({ ...prev, userContext: value }))}
+            />
+          </div>
+
           {/* File Upload */}
-          <Card className="overflow-hidden animate-in fade-in slide-in-from-left-4 duration-500">
+          <Card className="overflow-hidden animate-in fade-in slide-in-from-left-4 duration-500" style={{ animationDelay: '50ms' }}>
             <CardContent className="p-6">
               <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-sm font-bold">1</span>

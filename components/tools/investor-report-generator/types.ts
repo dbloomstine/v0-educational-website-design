@@ -61,6 +61,7 @@ export interface GenerationSettings {
   reportingPeriod: string
   tone: ToneOption
   format: LetterFormat
+  userContext?: string // Optional context, notes, or instructions from the user
   sections: {
     performanceOverview: boolean
     attributionAnalysis: boolean

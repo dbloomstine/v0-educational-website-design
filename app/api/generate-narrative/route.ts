@@ -35,10 +35,11 @@ interface ParsedData {
 
 interface GenerationSettings {
   fundName: string
-  fundType: 'hedge-fund' | 'private-equity' | 'venture-capital'
+  fundType: string // Free-form fund type
   reportingPeriod: string
   tone: 'conservative' | 'neutral' | 'optimistic'
   format: 'executive-summary' | 'full-letter'
+  userContext?: string // Optional user-provided context, notes, or instructions
   sections: {
     performanceOverview: boolean
     attributionAnalysis: boolean
@@ -64,10 +65,29 @@ const FORMAT_INSTRUCTIONS = {
   'full-letter': 'Provide comprehensive coverage with 3-4 paragraphs per section. Include detailed analysis and context. Maintain a professional narrative flow.',
 }
 
-const FUND_TYPE_CONTEXT = {
-  'hedge-fund': 'This is a hedge fund investor letter. Focus on risk-adjusted returns, market exposure, volatility management, and alpha generation. Use terminology appropriate for sophisticated institutional investors.',
-  'private-equity': 'This is a private equity investor letter. Focus on portfolio company performance, value creation, exit opportunities, and deployment pace. Use terminology appropriate for LP communications.',
-  'venture-capital': 'This is a venture capital investor letter. Focus on portfolio company milestones, follow-on investments, graduation rates, and market opportunity. Use terminology appropriate for VC LP communications.',
+function getFundTypeContext(fundType: string): string {
+  const normalizedType = fundType.toLowerCase()
+
+  if (normalizedType.includes('hedge') || normalizedType.includes('long') || normalizedType.includes('short')) {
+    return 'This is a hedge fund investor letter. Focus on risk-adjusted returns, market exposure, volatility management, and alpha generation. Use terminology appropriate for sophisticated institutional investors.'
+  }
+  if (normalizedType.includes('private equity') || normalizedType.includes('buyout') || normalizedType.includes('pe ')) {
+    return 'This is a private equity investor letter. Focus on portfolio company performance, value creation, exit opportunities, and deployment pace. Use terminology appropriate for LP communications.'
+  }
+  if (normalizedType.includes('venture') || normalizedType.includes('vc ') || normalizedType.includes('seed') || normalizedType.includes('early stage')) {
+    return 'This is a venture capital investor letter. Focus on portfolio company milestones, follow-on investments, graduation rates, and market opportunity. Use terminology appropriate for VC LP communications.'
+  }
+  if (normalizedType.includes('real estate') || normalizedType.includes('reit') || normalizedType.includes('property')) {
+    return 'This is a real estate fund investor letter. Focus on property acquisitions, occupancy rates, NOI growth, cap rates, and market fundamentals. Use terminology appropriate for real estate LP communications.'
+  }
+  if (normalizedType.includes('credit') || normalizedType.includes('debt') || normalizedType.includes('lending')) {
+    return 'This is a private credit investor letter. Focus on yield, credit quality, portfolio diversification, default rates, and deal pipeline. Use terminology appropriate for credit fund LP communications.'
+  }
+  if (normalizedType.includes('infrastructure') || normalizedType.includes('infra')) {
+    return 'This is an infrastructure fund investor letter. Focus on asset performance, contracted cash flows, regulatory environment, and long-term value creation. Use terminology appropriate for infrastructure LP communications.'
+  }
+  // Default for any other fund type
+  return `This is a ${fundType || 'fund'} investor letter. Focus on performance, portfolio updates, and forward outlook. Use professional terminology appropriate for institutional LP communications.`
 }
 
 function buildPrompt(data: ParsedData[], settings: GenerationSettings, sectionToGenerate?: string): string {
@@ -84,13 +104,20 @@ function buildPrompt(data: ParsedData[], settings: GenerationSettings, sectionTo
 
 CONTEXT:
 - Fund Name: ${settings.fundName || 'The Fund'}
+- Fund Type: ${settings.fundType || 'Investment Fund'}
 - Reporting Period: ${settings.reportingPeriod || 'Current Quarter'}
-- ${FUND_TYPE_CONTEXT[settings.fundType]}
+- ${getFundTypeContext(settings.fundType)}
 
 TONE: ${TONE_INSTRUCTIONS[settings.tone]}
 
 FORMAT: ${FORMAT_INSTRUCTIONS[settings.format]}
-
+${settings.userContext ? `
+USER INSTRUCTIONS & CONTEXT:
+The user has provided the following additional context and instructions. Incorporate this guidance into the letter:
+---
+${settings.userContext}
+---
+` : ''}
 AVAILABLE DATA:
 `
 
