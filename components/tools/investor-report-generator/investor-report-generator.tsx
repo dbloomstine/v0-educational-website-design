@@ -361,12 +361,12 @@ export function InvestorReportGenerator() {
         </div>
       </div>
 
-      {/* Progress Stepper - Sticky on scroll */}
+      {/* Progress Stepper - Always sticky, compact when scrolled */}
       <div
         className={`
-          bg-card border border-border transition-all duration-300 z-40
+          sticky top-0 bg-card border border-border transition-all duration-300 z-40
           ${isScrolled
-            ? 'sticky top-0 rounded-none -mx-4 px-4 py-3 shadow-md border-x-0 border-t-0'
+            ? 'rounded-none -mx-4 px-4 py-3 shadow-md border-x-0 border-t-0'
             : 'rounded-xl p-6'
           }
         `}
