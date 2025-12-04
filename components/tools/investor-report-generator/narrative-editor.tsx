@@ -71,7 +71,7 @@ export function NarrativeEditor({
   useEffect(() => {
     if (narrative) {
       setShowSuccess(true)
-      const timer = setTimeout(() => setShowSuccess(false), 2000)
+      const timer = setTimeout(() => setShowSuccess(false), 4000)
       return () => clearTimeout(timer)
     }
   }, [narrative?.generatedAt])

@@ -274,6 +274,158 @@ export function FileUploadZone({
     return null
   }
 
+  const detectFundType = (
+    text: string,
+    fileName: string
+  ): { fundType: string; confidence: ConfidenceLevel; source: string } | null => {
+    const combinedText = (text + ' ' + fileName).toLowerCase()
+
+    // Fund type patterns with associated keywords
+    const fundTypePatterns: Array<{
+      type: string
+      keywords: RegExp[]
+      priority: number
+    }> = [
+      {
+        type: 'Venture Capital',
+        keywords: [
+          /venture\s*capital/i,
+          /\bvc\b/i,
+          /early[\s-]?stage/i,
+          /seed[\s-]?stage/i,
+          /series\s*[a-f]/i,
+          /startup/i,
+        ],
+        priority: 1,
+      },
+      {
+        type: 'Private Equity',
+        keywords: [
+          /private\s*equity/i,
+          /\bpe\b(?!\s*ratio)/i,
+          /buyout/i,
+          /leveraged\s*buyout/i,
+          /\blbo\b/i,
+          /growth\s*equity/i,
+        ],
+        priority: 1,
+      },
+      {
+        type: 'Real Estate',
+        keywords: [
+          /real\s*estate/i,
+          /\breit\b/i,
+          /property\s*fund/i,
+          /commercial\s*property/i,
+          /multifamily/i,
+          /real\s*assets/i,
+        ],
+        priority: 1,
+      },
+      {
+        type: 'Private Credit',
+        keywords: [
+          /private\s*credit/i,
+          /direct\s*lending/i,
+          /private\s*debt/i,
+          /mezzanine/i,
+          /senior\s*secured/i,
+          /credit\s*fund/i,
+        ],
+        priority: 1,
+      },
+      {
+        type: 'Hedge Fund',
+        keywords: [
+          /hedge\s*fund/i,
+          /long[\s\/]short/i,
+          /macro\s*fund/i,
+          /event[\s-]?driven/i,
+          /absolute\s*return/i,
+          /multi[\s-]?strategy/i,
+        ],
+        priority: 1,
+      },
+      {
+        type: 'Infrastructure',
+        keywords: [
+          /infrastructure/i,
+          /infra\s*fund/i,
+          /utilities/i,
+          /energy\s*infrastructure/i,
+          /transport/i,
+        ],
+        priority: 1,
+      },
+      {
+        type: 'Fund of Funds',
+        keywords: [
+          /fund\s*of\s*funds/i,
+          /\bfof\b/i,
+          /multi[\s-]?manager/i,
+        ],
+        priority: 2,
+      },
+      {
+        type: 'Secondaries',
+        keywords: [
+          /secondar(?:y|ies)/i,
+          /secondary\s*fund/i,
+          /\blp\s*secondar/i,
+        ],
+        priority: 1,
+      },
+      {
+        type: 'Co-Investment',
+        keywords: [
+          /co[\s-]?invest/i,
+          /co[\s-]?investment/i,
+          /direct\s*investment/i,
+        ],
+        priority: 2,
+      },
+    ]
+
+    // Check for explicit fund type declarations first
+    const explicitPattern = /(?:fund\s*type|strategy|investment\s*strategy)\s*[:\-]\s*([A-Za-z\s&,'-]+)/i
+    const explicitMatch = text.match(explicitPattern)
+    if (explicitMatch && explicitMatch[1]?.trim().length > 3) {
+      return {
+        fundType: explicitMatch[1].trim(),
+        confidence: 'high',
+        source: 'document content',
+      }
+    }
+
+    // Score each fund type based on keyword matches
+    let bestMatch: { type: string; score: number; priority: number } | null = null
+
+    for (const pattern of fundTypePatterns) {
+      let score = 0
+      for (const keyword of pattern.keywords) {
+        const matches = combinedText.match(new RegExp(keyword, 'gi'))
+        if (matches) {
+          score += matches.length
+        }
+      }
+
+      if (score > 0 && (!bestMatch || score > bestMatch.score ||
+          (score === bestMatch.score && pattern.priority < bestMatch.priority))) {
+        bestMatch = { type: pattern.type, score, priority: pattern.priority }
+      }
+    }
+
+    if (bestMatch) {
+      return {
+        fundType: bestMatch.type,
+        confidence: bestMatch.score >= 3 ? 'high' : bestMatch.score >= 2 ? 'medium' : 'low',
+        source: text.toLowerCase().includes(bestMatch.type.toLowerCase()) ? 'document content' : 'file name',
+      }
+    }
+
+    return null
+  }
+
   const processFile = async (file: File): Promise<ParsedData> => {
     const extension = file.name.split('.').pop()?.toLowerCase() || ''
 
@@ -298,6 +450,12 @@ export function FileUploadZone({
         extractedMetadata.reportingPeriod = periodResult.period
         extractedMetadata.reportingPeriodConfidence = periodResult.confidence
         extractedMetadata.reportingPeriodSource = periodResult.source
+      }
+      const fundTypeResult = detectFundType(text, file.name)
+      if (fundTypeResult) {
+        extractedMetadata.fundType = fundTypeResult.fundType
+        extractedMetadata.fundTypeConfidence = fundTypeResult.confidence
+        extractedMetadata.fundTypeSource = fundTypeResult.source
       }
 
       return {
@@ -338,6 +496,12 @@ export function FileUploadZone({
           extractedMetadata.reportingPeriodConfidence = periodResult.confidence
           extractedMetadata.reportingPeriodSource = periodResult.source
         }
+        const fundTypeResult = detectFundType(csvText, file.name)
+        if (fundTypeResult) {
+          extractedMetadata.fundType = fundTypeResult.fundType
+          extractedMetadata.fundTypeConfidence = fundTypeResult.confidence
+          extractedMetadata.fundTypeSource = fundTypeResult.source
+        }
 
         return {
           fileName: file.name,
@@ -375,6 +539,12 @@ export function FileUploadZone({
         extractedMetadata.reportingPeriodConfidence = periodResult.confidence
         extractedMetadata.reportingPeriodSource = periodResult.source
       }
+      const fundTypeResult = detectFundType(text, file.name)
+      if (fundTypeResult) {
+        extractedMetadata.fundType = fundTypeResult.fundType
+        extractedMetadata.fundTypeConfidence = fundTypeResult.confidence
+        extractedMetadata.fundTypeSource = fundTypeResult.source
+      }
 
       return {
         fileName: file.name,
@@ -401,6 +571,12 @@ export function FileUploadZone({
         extractedMetadata.reportingPeriod = periodResult.period
         extractedMetadata.reportingPeriodConfidence = periodResult.confidence
         extractedMetadata.reportingPeriodSource = periodResult.source
+      }
+      const fundTypeResult = detectFundType(text, file.name)
+      if (fundTypeResult) {
+        extractedMetadata.fundType = fundTypeResult.fundType
+        extractedMetadata.fundTypeConfidence = fundTypeResult.confidence
+        extractedMetadata.fundTypeSource = fundTypeResult.source
       }
 
       return {

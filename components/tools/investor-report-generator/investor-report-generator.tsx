@@ -74,6 +74,17 @@ function aggregateMetadata(files: ParsedData[]): ExtractedMetadata {
         result.reportingPeriodSource = meta.reportingPeriodSource
       }
     }
+
+    // Fund type - prefer higher confidence
+    if (meta.fundType) {
+      const currentConfidence = confidenceOrder[result.fundTypeConfidence || 'undefined']
+      const newConfidence = confidenceOrder[meta.fundTypeConfidence || 'undefined']
+      if (newConfidence > currentConfidence) {
+        result.fundType = meta.fundType
+        result.fundTypeConfidence = meta.fundTypeConfidence
+        result.fundTypeSource = meta.fundTypeSource
+      }
+    }
   }
 
   return result
@@ -95,6 +106,16 @@ export function InvestorReportGenerator() {
   const [isChatProcessing, setIsChatProcessing] = useState(false)
   const [brandSettings, setBrandSettings] = useState<BrandSettings>(DEFAULT_BRAND_SETTINGS)
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  // Scroll detection for sticky progress stepper
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 200)
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   // Aggregate metadata from all processed files
   const aggregatedMetadata = aggregateMetadata(processedFiles)
@@ -105,11 +126,12 @@ export function InvestorReportGenerator() {
 
       // Auto-populate settings from newly uploaded files
       const newMetadata = aggregateMetadata(files)
-      if (newMetadata.fundName || newMetadata.reportingPeriod) {
+      if (newMetadata.fundName || newMetadata.reportingPeriod || newMetadata.fundType) {
         setSettings(current => ({
           ...current,
           fundName: current.fundName || newMetadata.fundName || '',
           reportingPeriod: current.reportingPeriod || newMetadata.reportingPeriod || '',
+          fundType: current.fundType || newMetadata.fundType || '',
         }))
       }
 
@@ -339,12 +361,21 @@ export function InvestorReportGenerator() {
         </div>
       </div>
 
-      {/* Progress Stepper */}
-      <div className="bg-card rounded-xl border border-border p-6">
+      {/* Progress Stepper - Sticky on scroll */}
+      <div
+        className={`
+          bg-card border border-border transition-all duration-300 z-40
+          ${isScrolled
+            ? 'sticky top-0 rounded-none -mx-4 px-4 py-3 shadow-md border-x-0 border-t-0'
+            : 'rounded-xl p-6'
+          }
+        `}
+      >
         <ProgressStepper
           currentStep={narrative ? 'export' : processedFiles.length > 0 ? 'configure' : 'upload'}
           hasFiles={processedFiles.length > 0}
           hasGenerated={!!narrative}
+          compact={isScrolled}
         />
       </div>
 

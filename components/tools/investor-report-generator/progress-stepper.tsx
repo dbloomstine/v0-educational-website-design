@@ -8,6 +8,7 @@ interface ProgressStepperProps {
   currentStep: WorkflowStep
   hasFiles: boolean
   hasGenerated: boolean
+  compact?: boolean
 }
 
 const STEPS = [
@@ -18,7 +19,7 @@ const STEPS = [
   { id: 'export', label: 'Export', icon: FileDown, description: 'Download' },
 ] as const
 
-export function ProgressStepper({ currentStep, hasFiles, hasGenerated }: ProgressStepperProps) {
+export function ProgressStepper({ currentStep, hasFiles, hasGenerated, compact = false }: ProgressStepperProps) {
   const stepOrder: WorkflowStep[] = ['upload', 'configure', 'generate', 'refine', 'export']
 
   const getStepStatus = (stepId: WorkflowStep): 'completed' | 'current' | 'upcoming' => {
@@ -42,13 +43,13 @@ export function ProgressStepper({ currentStep, hasFiles, hasGenerated }: Progres
   return (
     <div className="w-full">
       {/* Desktop stepper */}
-      <div className="hidden md:flex items-center justify-between relative">
+      <div className={`hidden md:flex items-center justify-between relative transition-all duration-300 ${compact ? 'gap-2' : ''}`}>
         {/* Progress line background */}
-        <div className="absolute top-5 left-0 right-0 h-0.5 bg-border" />
+        <div className={`absolute left-0 right-0 h-0.5 bg-border transition-all duration-300 ${compact ? 'top-3' : 'top-5'}`} />
 
         {/* Progress line fill */}
         <div
-          className="absolute top-5 left-0 h-0.5 bg-primary transition-all duration-500 ease-out"
+          className={`absolute left-0 h-0.5 bg-primary transition-all duration-500 ease-out ${compact ? 'top-3' : 'top-5'}`}
           style={{
             width: actualStep === 'upload' ? '0%'
               : actualStep === 'configure' ? '25%'
@@ -65,39 +66,44 @@ export function ProgressStepper({ currentStep, hasFiles, hasGenerated }: Progres
           const Icon = step.icon
 
           return (
-            <div key={step.id} className="flex flex-col items-center relative z-10 flex-1">
+            <div key={step.id} className={`flex flex-col items-center relative z-10 flex-1 transition-all duration-300 ${compact ? 'py-0' : ''}`}>
               {/* Step circle */}
               <div
                 className={`
-                  w-10 h-10 rounded-full flex items-center justify-center
+                  rounded-full flex items-center justify-center
                   transition-all duration-300 ease-out
+                  ${compact ? 'w-6 h-6' : 'w-10 h-10'}
                   ${isPast
                     ? 'bg-primary text-primary-foreground scale-100'
                     : isActual
-                    ? 'bg-primary text-primary-foreground scale-110 ring-4 ring-primary/20'
+                    ? `bg-primary text-primary-foreground ${compact ? 'scale-100' : 'scale-110 ring-4 ring-primary/20'}`
                     : 'bg-muted text-muted-foreground'
                   }
                 `}
               >
                 {isPast ? (
-                  <Check className="w-5 h-5 animate-in zoom-in duration-200" />
+                  <Check className={`${compact ? 'w-3 h-3' : 'w-5 h-5'} animate-in zoom-in duration-200`} />
                 ) : (
-                  <Icon className={`w-5 h-5 ${isActual ? 'animate-pulse' : ''}`} />
+                  <Icon className={`${compact ? 'w-3 h-3' : 'w-5 h-5'} ${isActual && !compact ? 'animate-pulse' : ''}`} />
                 )}
               </div>
 
-              {/* Label */}
-              <span className={`
-                mt-3 text-sm font-medium transition-colors duration-200
-                ${isActual ? 'text-primary' : isPast ? 'text-foreground' : 'text-muted-foreground'}
-              `}>
-                {step.label}
-              </span>
+              {/* Label - hidden in compact mode */}
+              {!compact && (
+                <span className={`
+                  mt-3 text-sm font-medium transition-colors duration-200
+                  ${isActual ? 'text-primary' : isPast ? 'text-foreground' : 'text-muted-foreground'}
+                `}>
+                  {step.label}
+                </span>
+              )}
 
-              {/* Description */}
-              <span className="text-xs text-muted-foreground mt-0.5 hidden lg:block">
-                {step.description}
-              </span>
+              {/* Description - hidden in compact mode */}
+              {!compact && (
+                <span className="text-xs text-muted-foreground mt-0.5 hidden lg:block">
+                  {step.description}
+                </span>
+              )}
             </div>
           )
         })}

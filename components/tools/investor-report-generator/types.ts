@@ -37,6 +37,9 @@ export interface ExtractedMetadata {
   reportingPeriod?: string
   reportingPeriodConfidence?: ConfidenceLevel
   reportingPeriodSource?: string
+  fundType?: string
+  fundTypeConfidence?: ConfidenceLevel
+  fundTypeSource?: string
 }
 
 export interface ParsedData {

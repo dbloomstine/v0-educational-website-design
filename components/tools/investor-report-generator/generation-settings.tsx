@@ -74,6 +74,7 @@ export function GenerationSettingsPanel({
   // Determine if a field was auto-populated
   const isAutoFundName = extractedMetadata?.fundName && settings.fundName === extractedMetadata.fundName
   const isAutoPeriod = extractedMetadata?.reportingPeriod && settings.reportingPeriod === extractedMetadata.reportingPeriod
+  const isAutoFundType = extractedMetadata?.fundType && settings.fundType === extractedMetadata.fundType
 
   const toggleSection = (sectionId: keyof GenerationSettings['sections']) => {
     onSettingsChange({
@@ -151,14 +152,48 @@ export function GenerationSettingsPanel({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="fundType">Fund Type</Label>
-                <Input
-                  id="fundType"
-                  placeholder="e.g., Venture Capital, Real Estate, Private Credit"
-                  value={settings.fundType}
-                  onChange={(e) => updateSettings({ fundType: e.target.value })}
-                  className="h-11"
-                />
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="fundType">Fund Type</Label>
+                  {isAutoFundType && extractedMetadata && (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300">
+                            <Wand2 className="w-3 h-3" />
+                            Auto
+                          </span>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Detected from {extractedMetadata.fundTypeSource}</p>
+                          {extractedMetadata.fundTypeConfidence && (
+                            <p className="text-xs text-muted-foreground">
+                              Confidence: {extractedMetadata.fundTypeConfidence}
+                            </p>
+                          )}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  )}
+                </div>
+                <div className="relative">
+                  <Input
+                    id="fundType"
+                    placeholder="e.g., Venture Capital, Real Estate, Private Credit"
+                    value={settings.fundType}
+                    onChange={(e) => updateSettings({ fundType: e.target.value })}
+                    className={`h-11 ${isAutoFundType ? 'pr-10 border-amber-300 dark:border-amber-700' : ''}`}
+                  />
+                  {isAutoFundType && (
+                    <button
+                      type="button"
+                      onClick={() => updateSettings({ fundType: '' })}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      title="Clear auto-detected value"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-2">
