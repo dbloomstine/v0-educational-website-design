@@ -142,20 +142,22 @@ export function NarrativeEditor({
 
   if (!narrative) {
     return (
-      <Card className="min-h-[500px] flex items-center justify-center bg-gradient-to-br from-muted/30 to-muted/10">
-        <CardContent className="text-center py-16 px-8">
-          <div className="relative inline-block mb-6">
-            <div className="absolute inset-0 bg-primary/10 rounded-full blur-2xl scale-150" />
-            <div className="relative p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl border border-primary/20">
-              <Sparkles className="h-12 w-12 text-primary/60" />
+      <div className="sticky top-20">
+        <Card className="min-h-[400px] flex items-center justify-center bg-gradient-to-br from-muted/30 to-muted/10">
+          <CardContent className="text-center py-16 px-8">
+            <div className="relative inline-block mb-6">
+              <div className="absolute inset-0 bg-primary/10 rounded-full blur-2xl scale-150" />
+              <div className="relative p-6 bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl border border-primary/20">
+                <Sparkles className="h-12 w-12 text-primary/60" />
+              </div>
             </div>
-          </div>
-          <h3 className="text-xl font-semibold mb-2">Your Letter Will Appear Here</h3>
-          <p className="text-muted-foreground max-w-sm mx-auto">
-            Upload your files, configure your settings, and click Generate to create your professional investor letter.
-          </p>
-        </CardContent>
-      </Card>
+            <h3 className="text-xl font-semibold mb-2">Your Letter Will Appear Here</h3>
+            <p className="text-muted-foreground max-w-sm mx-auto">
+              Upload your files, configure your settings, and click Generate to create your professional investor letter.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 
