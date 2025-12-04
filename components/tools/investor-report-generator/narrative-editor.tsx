@@ -142,7 +142,7 @@ export function NarrativeEditor({
 
   if (!narrative) {
     return (
-      <div className="sticky top-20">
+      <div className="sticky top-36">
         <Card className="min-h-[400px] flex items-center justify-center bg-gradient-to-br from-muted/30 to-muted/10">
           <CardContent className="text-center py-16 px-8">
             <div className="relative inline-block mb-6">
