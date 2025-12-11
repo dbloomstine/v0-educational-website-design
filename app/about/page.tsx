@@ -7,18 +7,18 @@ import { Button } from '@/components/ui/button'
 import { BookOpen, Users, Target, TrendingUp, Linkedin, Calendar, Building2, ArrowRight, CheckCircle2 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'About FundOpsHQ - Our Mission and Vision',
-  description: 'Learn about FundOpsHQ mission to provide comprehensive, practical fund operations resources for investment professionals across all asset classes.',
+  title: 'About FundOpsHQ',
+  description: 'FundOpsHQ is a free resource to help you learn fund operations. Articles and tools covering PE, VC, hedge funds, and more.',
   openGraph: {
-    title: 'About FundOpsHQ - Our Mission and Vision',
-    description: 'Comprehensive fund operations resources for investment professionals across all asset classes.',
+    title: 'About FundOpsHQ',
+    description: 'Free resources to help you learn fund operations across all asset classes.',
     type: 'website',
     url: 'https://fundops.com/about',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'About FundOpsHQ',
-    description: 'Comprehensive fund operations resources for investment professionals across all asset classes.',
+    description: 'Free resources to help you learn fund operations.',
   },
   alternates: {
     canonical: 'https://fundops.com/about',
@@ -28,23 +28,23 @@ export const metadata: Metadata = {
 const values = [
   {
     icon: BookOpen,
-    title: "Comprehensive Coverage",
-    description: "All major fund types covered—PE, VC, Credit, Hedge Funds, Real Estate, Infrastructure, Secondaries, and GP-Stakes."
+    title: "Multiple Fund Types",
+    description: "Covering PE, VC, credit, hedge funds, real estate, infrastructure, secondaries, and GP-stakes."
   },
   {
     icon: Target,
-    title: "Practical Focus",
-    description: "Actionable insights and real-world applications you can implement immediately, not just theory."
+    title: "Practical & Useful",
+    description: "Real-world guidance you can actually use, not just theory."
   },
   {
     icon: Users,
-    title: "Built for Operators",
-    description: "Created specifically for CFOs, COOs, fund administrators, compliance officers, and operations teams."
+    title: "For Ops Teams",
+    description: "Whether you're a CFO, COO, fund admin, or just getting started in operations."
   },
   {
     icon: TrendingUp,
-    title: "Industry Standards",
-    description: "Synthesized best practices, regulatory requirements, and proven operational frameworks."
+    title: "Always Free",
+    description: "All articles and tools are free to use. No paywalls, no sign-up required."
   },
 ]
 
@@ -77,8 +77,8 @@ export default function AboutPage() {
                 About FundOpsHQ
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed text-balance">
-                A comprehensive resource for fund operations professionals, providing practical insights
-                and best practices across all investment fund types and operational functions.
+                A free resource to help you learn fund operations. Articles and tools covering
+                PE, VC, hedge funds, private credit, real estate, and more.
               </p>
             </div>
           </div>
@@ -93,11 +93,11 @@ export default function AboutPage() {
                   Our Mission
                 </div>
                 <h2 className="text-3xl font-bold tracking-tight mb-6 lg:text-4xl">
-                  Making fund operations knowledge accessible
+                  Here to help you learn
                 </h2>
                 <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-                  We believe fund operations knowledge should be accessible, comprehensive, and immediately useful.
-                  Our focus is on the "how" as much as the "what"—providing practical guidance you can implement today.
+                  Fund operations can be complex, and good resources are hard to find. This site is my way of sharing
+                  what I've learned over the years—practical, free, and hopefully useful.
                 </p>
               </div>
 

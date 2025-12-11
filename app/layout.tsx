@@ -1,20 +1,29 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Inter, DM_Sans } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
-// <CHANGE> Using Inter for institutional feel
-const inter = Inter({ subsets: ["latin"] })
+// FundOpsHQ Brand Fonts: DM Sans for headings, Inter for body
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter"
+})
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-dm-sans"
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://fundops.com'),
   title: {
-    default: "FundOpsHQ - Fund Operations Resources for Investment Professionals",
+    default: "FundOpsHQ - Free Fund Operations Resources",
     template: "%s | FundOpsHQ"
   },
   description:
-    "Comprehensive fund operations resources for CFOs, COOs, and operations professionals across Private Equity, Private Credit, Venture Capital, Hedge Funds, Real Estate, Infrastructure, Secondaries, and GP-Stakes funds.",
+    "Free articles and tools to help you learn fund operations. Covering PE, VC, hedge funds, private credit, real estate, infrastructure, and more.",
   keywords: [
     "fund operations",
     "private equity operations",
@@ -40,8 +49,8 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://fundops.com',
     siteName: 'FundOpsHQ',
-    title: 'FundOpsHQ - Fund Operations Resources for Investment Professionals',
-    description: 'Comprehensive fund operations resources for CFOs, COOs, and operations professionals across all asset classes.',
+    title: 'FundOpsHQ - Free Fund Operations Resources',
+    description: 'Free articles and tools to help you learn fund operations across all asset classes.',
     images: [
       {
         url: '/og-image.png',
@@ -53,8 +62,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FundOpsHQ - Fund Operations Resources',
-    description: 'Comprehensive fund operations resources for investment professionals across all asset classes.',
+    title: 'FundOpsHQ - Free Fund Operations Resources',
+    description: 'Free articles and tools to help you learn fund operations.',
     images: ['/og-image.png'],
   },
   robots: {
@@ -100,7 +109,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.className} font-sans antialiased`}>
+      <body className={`${inter.variable} ${dmSans.variable} font-sans antialiased`}>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-background focus:text-foreground focus:border focus:border-border focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring"

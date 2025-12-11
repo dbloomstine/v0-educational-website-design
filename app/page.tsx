@@ -29,21 +29,21 @@ const featuredArticles = [
     description: "Managing portfolio company oversight, value creation, and investor reporting",
     category: "Private Equity",
     href: "/funds/private-equity/cfo",
-    color: "oklch(0.55 0.15 250)",
+    color: "oklch(0.60 0.16 270)",  // Muted purple (matches PE fund type)
   },
   {
     title: "Infrastructure Fund Banking & Treasury",
     description: "Project finance structures, lender relationships, and long-term debt management",
     category: "Infrastructure",
     href: "/funds/infrastructure/banking",
-    color: "oklch(0.55 0.15 80)",
+    color: "oklch(0.60 0.14 200)",  // Slate blue (matches Infrastructure fund type)
   },
   {
     title: "Hedge Fund Compliance Frameworks",
     description: "Building robust compliance programs for multi-strategy funds",
     category: "Hedge Funds",
     href: "/funds/hedge-funds/compliance",
-    color: "oklch(0.55 0.15 180)",
+    color: "oklch(0.55 0.03 250)",  // Slate gray (monochrome)
   },
 ]
 
@@ -54,7 +54,7 @@ const organizationJsonLd = {
   name: 'FundOpsHQ',
   url: 'https://fundops.com',
   logo: 'https://fundops.com/icon.svg',
-  description: 'Educational resources and tools for fund operations professionals across Private Equity, Venture Capital, Hedge Funds, Private Credit, Real Estate, and Infrastructure.',
+  description: 'Free articles and tools to help you learn fund operations across Private Equity, Venture Capital, Hedge Funds, Private Credit, Real Estate, and Infrastructure.',
   founder: {
     '@type': 'Person',
     name: 'Danny Bloomstine',
@@ -80,7 +80,7 @@ const websiteJsonLd = {
   '@type': 'WebSite',
   name: 'FundOpsHQ',
   url: 'https://fundops.com',
-  description: 'Fund Operations Resources for Investment Professionals',
+  description: 'Free resources to help you learn fund operations',
   publisher: {
     '@type': 'Organization',
     name: 'FundOpsHQ',
@@ -122,14 +122,14 @@ export default function HomePage() {
               </div>
 
               <h1 className="mb-6 sm:mb-8 text-4xl sm:text-5xl font-bold tracking-tight text-balance lg:text-6xl">
-                The operations playbook for{" "}
+                Free resources to help you{" "}
                 <span className="bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text">
-                  private fund professionals
+                  navigate fund operations
                 </span>
               </h1>
 
               <p className="mx-auto mb-8 sm:mb-12 max-w-2xl text-lg sm:text-xl text-muted-foreground leading-relaxed text-balance">
-                Practical guidance for CFOs, COOs, IR, compliance, and operations teams across PE, VC, credit, hedge funds, real estate, infrastructure, and beyond.
+                Articles and tools to help CFOs, COOs, and operations teams learn and grow. Covering PE, VC, credit, hedge funds, real estate, infrastructure, and more.
               </p>
 
               <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
@@ -221,7 +221,7 @@ export default function HomePage() {
                 </div>
                 <h2 className="mb-4 text-3xl font-bold tracking-tight">Interactive Tools & Calculators</h2>
                 <p className="text-lg text-muted-foreground max-w-2xl">
-                  Practical calculators and planning tools built for fund operations professionals
+                  Helpful calculators and planning tools to make your day-to-day easier
                 </p>
               </div>
               <Button variant="outline" asChild className="sm:shrink-0">
@@ -362,9 +362,9 @@ export default function HomePage() {
         <section className="py-20 border-t border-border bg-accent/10">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl text-center">
-              <h2 className="mb-4 text-3xl font-bold tracking-tight">Built by fund ops professionals</h2>
+              <h2 className="mb-4 text-3xl font-bold tracking-tight">Here to help you learn</h2>
               <p className="mb-8 text-lg text-muted-foreground text-balance leading-relaxed">
-                FundOpsHQ was created to share practical knowledge from years of experience across private equity, venture capital, credit, and alternative asset fund operations. Have a question or want to talk through a challenge? I'm happy to help.
+                FundOpsHQ is a free resource built to share what I've learned from years in fund operations. Whether you're new to the field or looking to brush up on a topic, I hope you find something useful here. Have a question? I'm always happy to chat.
               </p>
               <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
                 <Button variant="outline" asChild size="lg">

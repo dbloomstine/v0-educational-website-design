@@ -21,13 +21,13 @@ interface ToolPlaceholderProps {
   tool: Tool
 }
 
-// Category color mapping
+// Category color mapping - harmonized with brand palette
 const categoryColors: Record<string, string> = {
-  'Fund Formation': 'oklch(0.65 0.19 275)', // Purple
-  'Pricing and Costs': 'oklch(0.55 0.15 150)', // Teal
-  'Fund Economics': 'oklch(0.65 0.22 230)', // Blue
-  'Operations and Compliance': 'oklch(0.68 0.19 35)', // Orange
-  'Investor Relations': 'oklch(0.60 0.18 180)' // Cyan
+  'Fund Formation': 'oklch(0.55 0.03 250)',      // Slate gray (monochrome)
+  'Pricing and Costs': 'oklch(0.58 0.14 160)',   // Muted teal
+  'Fund Economics': 'oklch(0.62 0.16 220)',      // Steel blue
+  'Operations and Compliance': 'oklch(0.60 0.16 270)', // Muted purple
+  'Investor Relations': 'oklch(0.60 0.14 200)'  // Slate blue
 }
 
 export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {

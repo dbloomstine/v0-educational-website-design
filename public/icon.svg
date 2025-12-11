@@ -1,4 +1,6 @@
 <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="180" height="180" rx="32" fill="#1a1d24"/>
-  <text x="90" y="128" font-family="system-ui, -apple-system, sans-serif" font-size="120" font-weight="700" fill="#f0f2f5" text-anchor="middle">F</text>
+  <!-- Deep Navy background -->
+  <rect width="180" height="180" rx="32" fill="#1E3A5F"/>
+  <!-- F in white - fully monochrome, no accent bar -->
+  <text x="90" y="128" font-family="DM Sans, system-ui, -apple-system, sans-serif" font-size="120" font-weight="700" fill="#FFFFFF" text-anchor="middle">F</text>
 </svg>

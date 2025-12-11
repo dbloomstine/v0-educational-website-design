@@ -30,7 +30,7 @@ export default function ArticlePage() {
             {/* Article Hero */}
             <div className="mx-auto max-w-4xl">
               <div className="mb-6 flex items-center gap-3 text-sm">
-                <span className="rounded-full bg-[oklch(0.55_0.15_150)] px-3 py-1 font-medium text-[oklch(0.165_0.01_250)]">
+                <span className="rounded-full bg-[oklch(0.58_0.14_160)] px-3 py-1 font-medium text-white">
                   Private Credit
                 </span>
               </div>

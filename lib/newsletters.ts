@@ -9,7 +9,7 @@ export const NEWSLETTERS = {
     description: 'Deep dives into fund operations strategy, best practices, and industry trends.',
     rssFeed: 'https://rss.beehiiv.com/feeds/4CoHL7mHHX.xml',
     subscribeUrl: 'https://dannybloomstine.beehiiv.com/',
-    color: 'oklch(0.55 0.15 250)',
+    color: 'oklch(0.55 0.03 250)',  // Slate gray (monochrome)
   },
   'fundwatch-briefing': {
     id: 'fundwatch-briefing',
@@ -18,7 +18,7 @@ export const NEWSLETTERS = {
     description: 'Weekly fund operations intel. Curated industry news, regulatory updates, and actionable insights.',
     rssFeed: 'https://rss.beehiiv.com/feeds/RhLuK6Ql9l.xml',
     subscribeUrl: 'https://fundwatch-briefing.beehiiv.com/',
-    color: 'oklch(0.55 0.15 180)',
+    color: 'oklch(0.55 0.03 250)',  // Slate gray (monochrome)
   },
 } as const
 

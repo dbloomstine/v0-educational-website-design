@@ -31,12 +31,12 @@ const iconMap: Record<string, any> = {
   Split
 }
 
-// Category color mapping
+// Category color mapping - updated for FundOpsHQ brand
 const categoryColors: Record<string, string> = {
-  'Fund Formation': 'oklch(0.65 0.19 275)', // Purple
-  'Pricing and Costs': 'oklch(0.55 0.15 150)', // Teal
-  'Fund Economics': 'oklch(0.65 0.22 230)', // Blue
-  'Operations and Compliance': 'oklch(0.68 0.19 35)' // Orange
+  'Fund Formation': 'oklch(0.55 0.03 250)',  // Slate gray (monochrome)
+  'Pricing and Costs': 'oklch(0.58 0.14 160)', // Muted teal
+  'Fund Economics': 'oklch(0.62 0.16 220)',   // Steel blue
+  'Operations and Compliance': 'oklch(0.60 0.16 270)' // Muted purple
 }
 
 interface ToolCardProps {
@@ -52,27 +52,27 @@ export function ToolCard({ tool }: ToolCardProps) {
     <Card className="flex flex-col h-full hover:border-accent transition-all">
       <CardHeader>
         <div
-          className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg"
+          className="mb-2 flex h-9 w-9 items-center justify-center rounded-lg"
           style={{ backgroundColor: `color-mix(in oklch, ${categoryColor} 20%, transparent)` }}
         >
-          <IconComponent className="h-6 w-6" style={{ color: categoryColor }} />
+          <IconComponent className="h-4 w-4" style={{ color: categoryColor }} />
         </div>
 
-        <CardTitle className="text-xl mb-2">{tool.title}</CardTitle>
-        <CardDescription className="leading-relaxed">
+        <CardTitle className="text-base mb-1">{tool.title}</CardTitle>
+        <CardDescription className="text-xs leading-relaxed line-clamp-2">
           {tool.shortDescription}
         </CardDescription>
       </CardHeader>
 
       <CardContent className="mt-auto">
         {tool.status === 'coming-soon' ? (
-          <Button className="w-full" variant="outline" disabled>
+          <Button className="w-full" variant="outline" size="sm" disabled>
             Coming Soon
           </Button>
         ) : (
-          <Button className="w-full" asChild>
+          <Button className="w-full" size="sm" asChild>
             <Link href={`/tools/${tool.slug}`}>
-              Launch Tool <ArrowRight className="ml-2 h-4 w-4" />
+              Launch <ArrowRight className="ml-1 h-3 w-3" />
             </Link>
           </Button>
         )}

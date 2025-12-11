@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Logo } from "@/components/logo"
+import { ExternalLink } from "lucide-react"
 
 export function SiteFooter() {
   return (
@@ -20,11 +21,11 @@ export function SiteFooter() {
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
           {/* Logo & About */}
           <div>
-            <div className="mb-4 text-lg font-semibold">
-              Fund<span className="text-muted-foreground">OpsHQ</span>
+            <div className="mb-4">
+              <Logo height={24} className="text-foreground" />
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              A practical resource for fund operations professionals across all asset classes.
+              Free guides, tools, and articles to help you learn fund operations.
             </p>
           </div>
 
@@ -53,8 +54,9 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <a href="https://fundopshq-shop.myshopify.com/collections/all" className="text-muted-foreground hover:text-foreground transition-colors" target="_blank" rel="noopener noreferrer">
+                <a href="https://fundopshq-shop.myshopify.com/collections/all" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1" target="_blank" rel="noopener noreferrer">
                   Shop
+                  <ExternalLink className="h-3 w-3" />
                 </a>
               </li>
             </ul>
@@ -132,8 +134,7 @@ export function SiteFooter() {
           </div>
 
           {/* Fund Types - Column 2 */}
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider opacity-0">Fund Types</h3>
+          <div className="lg:pt-8">
             <ul className="space-y-2 text-sm">
               <li>
                 <Link

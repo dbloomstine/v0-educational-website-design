@@ -65,13 +65,13 @@ export default async function NewsletterArchivePage({ params }: NewsletterPagePr
         <section
           className="relative border-b border-border py-20"
           style={{
-            background: `linear-gradient(135deg, oklch(0.165 0.01 250) 0%, ${newsletter.color.replace(/oklch\(([\d.]+)/, 'oklch(0.22')} 100%)`,
+            background: `linear-gradient(135deg, oklch(0.25 0.04 250) 0%, oklch(0.32 0.055 250) 100%)`,
           }}
         >
           <div
-            className="absolute inset-0 opacity-10"
+            className="absolute inset-0 opacity-5"
             style={{
-              backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, ${newsletter.color} 10px, ${newsletter.color} 11px)`,
+              backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 20px, oklch(0.55 0.03 250) 20px, oklch(0.55 0.03 250) 21px)`,
             }}
           />
 

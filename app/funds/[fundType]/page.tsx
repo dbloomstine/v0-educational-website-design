@@ -28,17 +28,17 @@ export default async function FundTypePage({ params }: FundTypePageProps) {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* Hero Section with accent treatment */}
+        {/* Hero Section with navy gradient and subtle accent */}
         <section
           className="relative border-b border-border py-20"
           style={{
-            background: `linear-gradient(135deg, oklch(0.165 0.01 250) 0%, ${fundType.color.replace(/oklch\(([\d.]+)\s+([\d.]+)\s+([\d.]+)\)/, 'oklch(0.19 0.08 $3)')} 100%)`,
+            background: `linear-gradient(135deg, oklch(0.25 0.04 250) 0%, oklch(0.32 0.055 250) 100%)`,
           }}
         >
           <div
-            className="absolute inset-0 opacity-10"
+            className="absolute inset-0 opacity-5"
             style={{
-              backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 10px, ${fundType.color} 10px, ${fundType.color} 11px)`,
+              backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 20px, oklch(0.55 0.03 250) 20px, oklch(0.55 0.03 250) 21px)`,
             }}
           />
 
@@ -51,12 +51,12 @@ export default async function FundTypePage({ params }: FundTypePageProps) {
             />
 
             <div className="flex items-center gap-4 mb-6 mt-8">
-              <div className="h-2 w-16 rounded-full" style={{ backgroundColor: fundType.color }} />
+              <div className="h-1 w-16 rounded-full" style={{ backgroundColor: fundType.color }} />
               <h1 className="text-5xl font-bold tracking-tight">{fundType.name}</h1>
             </div>
             <p className="max-w-3xl text-xl text-muted-foreground leading-relaxed">
-              Comprehensive resources for {fundType.name.toLowerCase()} fund operations, covering all
-              essential operational pillars from compliance to investor relations.
+              Free articles and guides to help you learn {fundType.name.toLowerCase()} fund operations,
+              from compliance and investor relations to fund administration and beyond.
             </p>
           </div>
         </section>

@@ -3,7 +3,8 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Menu, X, ChevronDown } from "lucide-react"
+import { Logo } from "@/components/logo"
+import { Menu, X, ChevronDown, ExternalLink } from "lucide-react"
 import { getAllFundTypes } from "@/lib/content/fund-types"
 import { getAllTools } from "@/lib/content/tools"
 import { cn } from "@/lib/utils"
@@ -100,10 +101,8 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="flex items-center space-x-2" aria-label="FundOpsHQ - Home">
-          <div className="text-xl font-semibold tracking-tight">
-            Fund<span className="text-muted-foreground">OpsHQ</span>
-          </div>
+        <Link href="/" className="flex items-center" aria-label="FundOpsHQ - Home">
+          <Logo height={28} className="text-foreground" />
         </Link>
 
         {/* Desktop Navigation */}
@@ -182,27 +181,24 @@ export function SiteHeader() {
             isOpen={openDropdown === 'tools'}
             onOpenChange={handleDropdownOpen('tools')}
           >
-            <div className="w-[600px] p-6">
-              <div className="grid grid-cols-2 gap-x-8 gap-y-1">
-                {tools.slice(0, 6).map((tool) => (
+            <div className="w-[520px] p-4">
+              <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
+                {tools.map((tool) => (
                   <Link
                     key={tool.slug}
                     href={`/tools/${tool.slug}`}
                     onClick={() => setOpenDropdown(null)}
-                    className="block rounded-lg p-3 transition-all hover:bg-accent/50"
+                    className="block rounded-md px-2 py-1.5 transition-all hover:bg-accent/50"
                   >
-                    <div className="font-semibold text-sm text-foreground mb-1">{tool.title}</div>
-                    <div className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                      {tool.shortDescription}
-                    </div>
+                    <div className="font-medium text-sm text-foreground">{tool.title}</div>
                   </Link>
                 ))}
               </div>
-              <div className="pt-4 mt-4 border-t border-border">
+              <div className="pt-3 mt-3 border-t border-border">
                 <Link
                   href="/tools"
                   onClick={() => setOpenDropdown(null)}
-                  className="block rounded-md p-2 text-sm text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                  className="block rounded-md p-1.5 text-sm text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 >
                   View All Tools
                 </Link>
@@ -297,9 +293,10 @@ export function SiteHeader() {
             href="https://fundopshq-shop.myshopify.com/collections/all"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+            className="inline-flex h-9 w-max items-center gap-1 justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
           >
             Shop
+            <ExternalLink className="h-3 w-3" />
           </a>
         </nav>
 
@@ -439,7 +436,7 @@ export function SiteHeader() {
                 Free Tools
               </h3>
               <div className="space-y-2">
-                {tools.slice(0, 4).map((tool) => (
+                {tools.slice(0, 6).map((tool) => (
                   <Link
                     key={tool.slug}
                     href={`/tools/${tool.slug}`}
@@ -453,9 +450,9 @@ export function SiteHeader() {
                 <Link
                   href="/tools"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors text-center"
+                  className="block rounded-md border border-dashed border-border px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent transition-colors text-center"
                 >
-                  View All Tools
+                  View All {tools.length} Tools →
                 </Link>
               </div>
             </div>
@@ -487,7 +484,10 @@ export function SiteHeader() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
               >
-                <span className="font-medium text-foreground">FundOpsHQ Merch</span>
+                <span className="font-medium text-foreground flex items-center gap-1">
+                  FundOpsHQ Merch
+                  <ExternalLink className="h-3 w-3" />
+                </span>
                 <span className="block text-xs text-muted-foreground mt-0.5">Gear for fund operations professionals</span>
               </a>
             </div>
