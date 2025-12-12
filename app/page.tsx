@@ -2,6 +2,9 @@ import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { AnimateOnScroll } from "@/components/animate-on-scroll"
+import { GradientMesh } from "@/components/gradient-mesh"
+import { AnimatedCounter } from "@/components/animated-counter"
+import { BackToTop } from "@/components/back-to-top"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowRight, Calculator, FileText, TrendingUp, Building, Calendar, DollarSign, Users, Shield, BookOpen } from "lucide-react"
@@ -138,18 +141,17 @@ export default function HomePage() {
 
               {/* Right visual - 5 columns */}
               <AnimateOnScroll delay={200} direction="left" className="hidden lg:block lg:col-span-5">
-                <div className="relative aspect-[4/3] rounded-sm bg-accent/40 border border-border/60 overflow-hidden">
-                  {/* Placeholder for future imagery - subtle pattern */}
-                  <div
-                    className="absolute inset-0 opacity-30"
-                    style={{
-                      backgroundImage: `linear-gradient(135deg, transparent 25%, oklch(0.5 0.02 250 / 0.1) 25%, oklch(0.5 0.02 250 / 0.1) 50%, transparent 50%, transparent 75%, oklch(0.5 0.02 250 / 0.1) 75%)`,
-                      backgroundSize: '20px 20px'
-                    }}
-                  />
+                <div className="relative aspect-[4/3] rounded-sm border border-border/40 overflow-hidden shadow-2xl shadow-black/20">
+                  <GradientMesh className="absolute inset-0" />
+                  {/* Decorative elements */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="text-center text-muted-foreground/60">
-                      <Building className="h-16 w-16 mx-auto mb-3 opacity-40" />
+                    <div className="relative">
+                      {/* Abstract data visualization hint */}
+                      <div className="absolute -inset-12 border border-dashed border-white/10 rounded-full animate-[spin_60s_linear_infinite]" />
+                      <div className="absolute -inset-20 border border-dashed border-white/5 rounded-full animate-[spin_90s_linear_infinite_reverse]" />
+                      <div className="h-20 w-20 rounded-sm bg-white/5 backdrop-blur-sm border border-white/10 flex items-center justify-center">
+                        <Building className="h-8 w-8 text-white/40" />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -320,22 +322,26 @@ export default function HomePage() {
         {/* Stats/Trust Section */}
         <section className="py-10 border-y border-border bg-card/30">
           <div className="container mx-auto px-4">
-            <AnimateOnScroll>
-              <div className="grid gap-8 sm:grid-cols-3 text-center">
-                <div>
-                  <div className="text-3xl font-bold text-foreground mb-1">80+</div>
-                  <div className="text-sm text-muted-foreground">In-depth articles</div>
+            <div className="grid gap-8 sm:grid-cols-3 text-center">
+              <div>
+                <div className="text-3xl font-bold text-foreground mb-1">
+                  <AnimatedCounter end={80} suffix="+" />
                 </div>
-                <div>
-                  <div className="text-3xl font-bold text-foreground mb-1">8</div>
-                  <div className="text-sm text-muted-foreground">Fund types covered</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-foreground mb-1">11</div>
-                  <div className="text-sm text-muted-foreground">Free interactive tools</div>
-                </div>
+                <div className="text-sm text-muted-foreground">In-depth articles</div>
               </div>
-            </AnimateOnScroll>
+              <div>
+                <div className="text-3xl font-bold text-foreground mb-1">
+                  <AnimatedCounter end={8} duration={1500} />
+                </div>
+                <div className="text-sm text-muted-foreground">Fund types covered</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-foreground mb-1">
+                  <AnimatedCounter end={11} duration={1500} />
+                </div>
+                <div className="text-sm text-muted-foreground">Free interactive tools</div>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -405,6 +411,7 @@ export default function HomePage() {
       </main>
 
       <SiteFooter />
+      <BackToTop />
     </div>
   )
 }
