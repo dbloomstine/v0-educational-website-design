@@ -1,6 +1,4 @@
 import Link from 'next/link'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import {
   Calendar,
   DollarSign,
@@ -48,35 +46,40 @@ export function ToolCard({ tool }: ToolCardProps) {
   const primaryCategory = tool.categories[0]
   const categoryColor = categoryColors[primaryCategory] || 'oklch(0.6 0.16 210)'
 
-  return (
-    <Card className="flex flex-col h-full hover:border-accent transition-all">
-      <CardHeader>
+  if (tool.status === 'coming-soon') {
+    return (
+      <div className="flex items-center gap-3 px-4 py-3 rounded-lg border border-border/40 bg-card/50 opacity-60">
         <div
-          className="mb-2 flex h-9 w-9 items-center justify-center rounded-lg"
-          style={{ backgroundColor: `color-mix(in oklch, ${categoryColor} 20%, transparent)` }}
+          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md"
+          style={{ backgroundColor: `color-mix(in oklch, ${categoryColor} 15%, transparent)` }}
         >
           <IconComponent className="h-4 w-4" style={{ color: categoryColor }} />
         </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-base font-medium text-foreground truncate">{tool.title}</div>
+          <div className="text-sm text-muted-foreground truncate">{tool.shortDescription}</div>
+        </div>
+        <span className="text-sm text-muted-foreground shrink-0">Soon</span>
+      </div>
+    )
+  }
 
-        <CardTitle className="text-base mb-1">{tool.title}</CardTitle>
-        <CardDescription className="text-xs leading-relaxed line-clamp-2">
-          {tool.shortDescription}
-        </CardDescription>
-      </CardHeader>
-
-      <CardContent className="mt-auto">
-        {tool.status === 'coming-soon' ? (
-          <Button className="w-full" variant="outline" size="sm" disabled>
-            Coming Soon
-          </Button>
-        ) : (
-          <Button className="w-full" size="sm" asChild>
-            <Link href={`/tools/${tool.slug}`}>
-              Launch <ArrowRight className="ml-1 h-3 w-3" />
-            </Link>
-          </Button>
-        )}
-      </CardContent>
-    </Card>
+  return (
+    <Link
+      href={`/tools/${tool.slug}`}
+      className="group flex items-center gap-3 px-4 py-3 rounded-lg border border-border/40 bg-card hover:border-accent/60 hover:bg-accent/10 transition-colors"
+    >
+      <div
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md"
+        style={{ backgroundColor: `color-mix(in oklch, ${categoryColor} 15%, transparent)` }}
+      >
+        <IconComponent className="h-4 w-4" style={{ color: categoryColor }} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="text-base font-medium text-foreground truncate">{tool.title}</div>
+        <div className="text-sm text-muted-foreground truncate">{tool.shortDescription}</div>
+      </div>
+      <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0 transition-colors" />
+    </Link>
   )
 }

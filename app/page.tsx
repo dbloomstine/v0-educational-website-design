@@ -113,33 +113,33 @@ export default function HomePage() {
             }}
           />
 
-          <div className="container relative mx-auto px-4 py-20 sm:py-28 lg:py-36">
+          <div className="container relative mx-auto px-4 py-14 sm:py-20 lg:py-24">
             <div className="mx-auto max-w-4xl text-center">
               {/* Badge */}
-              <div className="mb-6 sm:mb-8 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/50 px-3 sm:px-4 py-2 text-xs sm:text-sm text-muted-foreground backdrop-blur-sm">
-                <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4 flex-shrink-0" />
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/50 px-4 py-2 text-sm text-muted-foreground backdrop-blur-sm">
+                <BookOpen className="h-4 w-4 flex-shrink-0" />
                 <span>Free resources for fund operations professionals</span>
               </div>
 
-              <h1 className="mb-6 sm:mb-8 text-4xl sm:text-5xl font-bold tracking-tight text-balance lg:text-6xl">
+              <h1 className="mb-5 text-4xl sm:text-5xl font-bold tracking-tight text-balance lg:text-6xl">
                 Free resources to help you{" "}
                 <span className="bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text">
                   navigate fund operations
                 </span>
               </h1>
 
-              <p className="mx-auto mb-8 sm:mb-12 max-w-2xl text-lg sm:text-xl text-muted-foreground leading-relaxed text-balance">
+              <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground leading-relaxed text-balance">
                 Articles and tools to help CFOs, COOs, and operations teams learn and grow. Covering PE, VC, credit, hedge funds, real estate, infrastructure, and more.
               </p>
 
-              <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-                <Button asChild size="lg" className="text-base px-8">
+              <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+                <Button asChild size="lg" className="px-8">
                   <Link href="#fund-types">
                     Explore Resources
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                <Button variant="outline" asChild size="lg" className="text-base px-8">
+                <Button variant="outline" asChild size="lg" className="px-8">
                   <Link href="/tools">
                     Free Tools & Calculators
                   </Link>
@@ -153,9 +153,9 @@ export default function HomePage() {
         </section>
 
         {/* Operational Pillars - Quick Overview */}
-        <section className="py-16 border-b border-border bg-card/30">
+        <section className="py-10 border-b border-border bg-card/30">
           <div className="container mx-auto px-4">
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
               {operationalPillars.map((pillar, index) => (
                 <div
                   key={pillar.name}
@@ -176,31 +176,31 @@ export default function HomePage() {
         </section>
 
         {/* Fund Types Grid */}
-        <section id="fund-types" className="py-20 scroll-mt-20">
+        <section id="fund-types" className="py-14 scroll-mt-16">
           <div className="container mx-auto px-4">
-            <div className="mb-12">
-              <h2 className="mb-4 text-3xl font-bold tracking-tight">Explore by Fund Type</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl">
+            <div className="mb-8">
+              <h2 className="mb-3 text-3xl font-bold tracking-tight">Explore by Fund Type</h2>
+              <p className="text-muted-foreground max-w-2xl">
                 Find relevant resources tailored to your specific asset class and fund structure
               </p>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {fundTypes.map((fund) => (
                 <Link key={fund.name} href={fund.href} className="group">
-                  <Card className="h-full transition-all duration-300 hover:shadow-lg hover:shadow-accent/5 hover:-translate-y-0.5 border-border/60 hover:border-accent/60">
-                    <CardHeader className="pb-3">
+                  <Card className="h-full transition-all duration-200 hover:shadow-md hover:shadow-accent/5 hover:-translate-y-0.5 border-border/60 hover:border-accent/60">
+                    <CardHeader className="pb-2">
                       <div
-                        className="mb-4 h-1 w-10 rounded-full transition-all duration-300 group-hover:w-16"
+                        className="mb-3 h-1 w-10 rounded-full transition-all duration-200 group-hover:w-14"
                         style={{ backgroundColor: fund.color }}
                       />
-                      <CardTitle className="text-lg">{fund.name}</CardTitle>
+                      <CardTitle className="text-base font-semibold">{fund.name}</CardTitle>
                       <CardDescription className="leading-relaxed text-sm">{fund.description}</CardDescription>
                     </CardHeader>
                     <CardContent className="pt-0">
                       <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
                         Explore
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                       </div>
                     </CardContent>
                   </Card>
@@ -211,16 +211,16 @@ export default function HomePage() {
         </section>
 
         {/* Tools Section - Featured */}
-        <section className="py-20 border-y border-border bg-gradient-to-b from-accent/10 to-background">
+        <section className="py-14 border-y border-border bg-gradient-to-b from-accent/10 to-background">
           <div className="container mx-auto px-4">
-            <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
-                  <Calculator className="h-3 w-3" />
+                  <Calculator className="h-3.5 w-3.5" />
                   Free Tools
                 </div>
-                <h2 className="mb-4 text-3xl font-bold tracking-tight">Interactive Tools & Calculators</h2>
-                <p className="text-lg text-muted-foreground max-w-2xl">
+                <h2 className="mb-3 text-3xl font-bold tracking-tight">Interactive Tools & Calculators</h2>
+                <p className="text-muted-foreground max-w-2xl">
                   Helpful calculators and planning tools to make your day-to-day easier
                 </p>
               </div>
@@ -232,21 +232,21 @@ export default function HomePage() {
               </Button>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {tools.map((tool) => (
                 <Link key={tool.slug} href={`/tools/${tool.slug}`} className="group">
-                  <Card className="h-full transition-all duration-300 hover:shadow-lg hover:shadow-accent/5 hover:-translate-y-0.5 border-border/60 hover:border-accent/60">
+                  <Card className="h-full transition-all duration-200 hover:shadow-md hover:shadow-accent/5 hover:-translate-y-0.5 border-border/60 hover:border-accent/60">
                     <CardHeader>
-                      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent group-hover:bg-accent/80 transition-colors">
-                        <Calculator className="h-5 w-5 text-foreground" />
+                      <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-accent group-hover:bg-accent/80 transition-colors">
+                        <Calculator className="h-4 w-4 text-foreground" />
                       </div>
-                      <CardTitle className="text-lg leading-snug">{tool.title}</CardTitle>
-                      <CardDescription className="leading-relaxed">{tool.shortDescription}</CardDescription>
+                      <CardTitle className="text-base font-semibold leading-snug">{tool.title}</CardTitle>
+                      <CardDescription className="leading-relaxed text-sm">{tool.shortDescription}</CardDescription>
                     </CardHeader>
                     <CardContent className="pt-0">
                       <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
                         Use Tool
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                       </div>
                     </CardContent>
                   </Card>
@@ -257,23 +257,21 @@ export default function HomePage() {
         </section>
 
         {/* Featured Articles */}
-        <section className="py-20">
+        <section className="py-14">
           <div className="container mx-auto px-4">
-            <div className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 className="mb-4 text-3xl font-bold tracking-tight">Featured Resources</h2>
-                <p className="text-lg text-muted-foreground max-w-2xl">
-                  In-depth guides on critical fund operations topics
-                </p>
-              </div>
+            <div className="mb-8">
+              <h2 className="mb-3 text-3xl font-bold tracking-tight">Featured Resources</h2>
+              <p className="text-muted-foreground max-w-2xl">
+                In-depth guides on critical fund operations topics
+              </p>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-3">
+            <div className="grid gap-4 lg:grid-cols-3">
               {featuredArticles.map((article) => (
                 <Link key={article.title} href={article.href} className="group">
-                  <Card className="h-full transition-all duration-300 hover:shadow-lg hover:shadow-accent/5 hover:-translate-y-0.5 border-border/60">
+                  <Card className="h-full transition-all duration-200 hover:shadow-md hover:shadow-accent/5 hover:-translate-y-0.5 border-border/60">
                     <CardHeader>
-                      <div className="mb-3 flex items-center gap-2">
+                      <div className="mb-2 flex items-center gap-2">
                         <div
                           className="h-2 w-2 rounded-full"
                           style={{ backgroundColor: article.color }}
@@ -282,17 +280,17 @@ export default function HomePage() {
                           {article.category}
                         </span>
                       </div>
-                      <CardTitle className="text-xl leading-snug group-hover:text-primary transition-colors">
+                      <CardTitle className="text-lg font-semibold leading-snug group-hover:text-primary transition-colors">
                         {article.title}
                       </CardTitle>
-                      <CardDescription className="leading-relaxed text-base">
+                      <CardDescription className="leading-relaxed text-sm">
                         {article.description}
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="pt-0">
                       <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
                         Read Article
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                       </div>
                     </CardContent>
                   </Card>
@@ -303,51 +301,51 @@ export default function HomePage() {
         </section>
 
         {/* Stats/Trust Section */}
-        <section className="py-16 border-y border-border bg-card/30">
+        <section className="py-10 border-y border-border bg-card/30">
           <div className="container mx-auto px-4">
             <div className="grid gap-8 sm:grid-cols-3 text-center">
               <div>
-                <div className="text-4xl font-bold text-foreground mb-2">80+</div>
-                <div className="text-muted-foreground">In-depth articles</div>
+                <div className="text-3xl font-bold text-foreground mb-1">80+</div>
+                <div className="text-sm text-muted-foreground">In-depth articles</div>
               </div>
               <div>
-                <div className="text-4xl font-bold text-foreground mb-2">8</div>
-                <div className="text-muted-foreground">Fund types covered</div>
+                <div className="text-3xl font-bold text-foreground mb-1">8</div>
+                <div className="text-sm text-muted-foreground">Fund types covered</div>
               </div>
               <div>
-                <div className="text-4xl font-bold text-foreground mb-2">11</div>
-                <div className="text-muted-foreground">Free interactive tools</div>
+                <div className="text-3xl font-bold text-foreground mb-1">11</div>
+                <div className="text-sm text-muted-foreground">Free interactive tools</div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Newsletter Section - Enhanced */}
-        <section className="py-20">
+        <section className="py-14">
           <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-3xl">
-              <div className="rounded-2xl border border-border bg-gradient-to-br from-card to-accent/20 p-8 lg:p-12">
+            <div className="mx-auto max-w-2xl">
+              <div className="rounded-xl border border-border bg-gradient-to-br from-card to-accent/20 p-8 lg:p-10">
                 <div className="text-center">
-                  <h2 className="mb-4 text-3xl font-bold tracking-tight">Stay informed</h2>
-                  <p className="mb-8 text-lg text-muted-foreground text-balance">
+                  <h2 className="mb-3 text-2xl font-bold tracking-tight">Stay informed</h2>
+                  <p className="mb-6 text-muted-foreground text-balance">
                     Get curated fund operations insights, regulatory updates, and practical guidance delivered to your inbox.
                   </p>
 
-                  <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-                    <Button asChild size="lg" className="text-base">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+                    <Button asChild>
                       <Link href="/newsletter/fundopshq-insights">
                         FundOpsHQ Insights
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Link>
                     </Button>
-                    <Button variant="outline" asChild size="lg" className="text-base">
+                    <Button variant="outline" asChild>
                       <Link href="/newsletter/fundwatch-briefing">
                         FundWatch Briefing
                       </Link>
                     </Button>
                   </div>
 
-                  <p className="mt-6 text-sm text-muted-foreground">
+                  <p className="mt-5 text-sm text-muted-foreground">
                     <Link href="/newsletter" className="hover:text-foreground transition-colors underline">
                       View all newsletters
                     </Link>
@@ -359,20 +357,20 @@ export default function HomePage() {
         </section>
 
         {/* About/CTA Section */}
-        <section className="py-20 border-t border-border bg-accent/10">
+        <section className="py-14 border-t border-border bg-accent/10">
           <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-3xl text-center">
-              <h2 className="mb-4 text-3xl font-bold tracking-tight">Here to help you learn</h2>
-              <p className="mb-8 text-lg text-muted-foreground text-balance leading-relaxed">
-                FundOpsHQ is a free resource built to share what I've learned from years in fund operations. Whether you're new to the field or looking to brush up on a topic, I hope you find something useful here. Have a question? I'm always happy to chat.
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="mb-3 text-2xl font-bold tracking-tight">Here to help you learn</h2>
+              <p className="mb-6 text-muted-foreground text-balance leading-relaxed">
+                FundOpsHQ is a free resource built to share what I've learned from years in fund operations. Whether you're new to the field or looking to brush up on a topic, I hope you find something useful here.
               </p>
-              <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-                <Button variant="outline" asChild size="lg">
+              <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+                <Button variant="outline" asChild>
                   <Link href="/about">
                     About FundOpsHQ
                   </Link>
                 </Button>
-                <Button asChild size="lg">
+                <Button asChild>
                   <Link href="/contact">
                     Need Help?
                   </Link>

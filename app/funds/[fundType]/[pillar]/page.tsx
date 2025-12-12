@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation"
+import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Breadcrumb } from "@/components/breadcrumb"
@@ -9,6 +10,8 @@ import { ShareButtons } from "@/components/share-buttons"
 import { getFundType } from "@/lib/content/fund-types"
 import { getPillar } from "@/lib/content/pillars"
 import { getArticleByPillar, getRelatedArticles } from "@/lib/content/articles"
+import { getAllTools } from "@/lib/content/tools"
+import { ArrowRight, Calculator } from "lucide-react"
 
 interface PillarPageProps {
   params: {
@@ -28,6 +31,7 @@ export default async function PillarPage({ params }: PillarPageProps) {
   }
 
   const relatedArticles = getRelatedArticles(article)
+  const tools = getAllTools().filter(tool => tool.status === 'active').slice(0, 4)
 
   // Format date for display
   const publishedDate = new Date(article.publishedDate)
@@ -175,8 +179,37 @@ export default async function PillarPage({ params }: PillarPageProps) {
                   )}
                 </div>
 
-                {/* Table of Contents */}
-                <ArticleToc content={article.content} />
+                {/* Sidebar: TOC + Tools */}
+                <div className="space-y-6">
+                  <ArticleToc content={article.content} />
+
+                  {/* Related Tools */}
+                  <div className="sticky top-20">
+                    <div className="rounded-lg border border-border bg-card p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Calculator className="h-4 w-4 text-muted-foreground" />
+                        <h3 className="text-sm font-semibold">Related Tools</h3>
+                      </div>
+                      <div className="space-y-1.5">
+                        {tools.map((tool) => (
+                          <Link
+                            key={tool.slug}
+                            href={`/tools/${tool.slug}`}
+                            className="block rounded px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-accent/50 transition-colors"
+                          >
+                            {tool.title}
+                          </Link>
+                        ))}
+                      </div>
+                      <Link
+                        href="/tools"
+                        className="mt-3 flex items-center gap-1 text-[10px] font-medium text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        View All Tools <ArrowRight className="h-2.5 w-2.5" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

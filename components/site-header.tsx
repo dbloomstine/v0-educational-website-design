@@ -7,6 +7,7 @@ import { Logo } from "@/components/logo"
 import { Menu, X, ChevronDown, ExternalLink } from "lucide-react"
 import { getAllFundTypes } from "@/lib/content/fund-types"
 import { getAllTools } from "@/lib/content/tools"
+import { getAllRoles } from "@/lib/content/roles"
 import { cn } from "@/lib/utils"
 
 const fundTypes = getAllFundTypes().map((fundType) => ({
@@ -16,6 +17,12 @@ const fundTypes = getAllFundTypes().map((fundType) => ({
 }))
 
 const tools = getAllTools().filter(tool => tool.status === 'active')
+
+const roles = getAllRoles().map((role) => ({
+  name: role.shortTitle,
+  fullName: role.title,
+  href: `/roles/${role.slug}`,
+}))
 
 interface DropdownProps {
   trigger: React.ReactNode
@@ -114,18 +121,38 @@ export function SiteHeader() {
             isOpen={openDropdown === 'fund-types'}
             onOpenChange={handleDropdownOpen('fund-types')}
           >
-            <ul className="grid w-[600px] grid-cols-2 gap-3 p-4">
+            <ul className="grid w-[400px] grid-cols-2 gap-1 p-3">
               {fundTypes.map((fund) => (
                 <li key={fund.name}>
                   <Link
                     href={fund.href}
                     onClick={() => setOpenDropdown(null)}
-                    className="group block rounded-lg border border-border bg-card p-4 text-foreground transition-all hover:border-accent hover:bg-accent/50"
+                    className="group flex items-center gap-2.5 rounded-md px-3 py-2 text-foreground transition-colors hover:bg-accent/50"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: fund.color }} />
-                      <div className="font-medium text-sm">{fund.name}</div>
-                    </div>
+                    <div className="h-2 w-2 rounded-full" style={{ backgroundColor: fund.color }} />
+                    <span className="text-sm font-medium">{fund.name}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </Dropdown>
+
+          {/* Roles Dropdown */}
+          <Dropdown
+            trigger="Roles"
+            id="roles"
+            isOpen={openDropdown === 'roles'}
+            onOpenChange={handleDropdownOpen('roles')}
+          >
+            <ul className="w-[220px] p-3">
+              {roles.map((role) => (
+                <li key={role.name}>
+                  <Link
+                    href={role.href}
+                    onClick={() => setOpenDropdown(null)}
+                    className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
+                  >
+                    <span className="text-sm font-medium text-foreground">{role.fullName}</span>
                   </Link>
                 </li>
               ))}
@@ -139,36 +166,30 @@ export function SiteHeader() {
             isOpen={openDropdown === 'newsletter'}
             onOpenChange={handleDropdownOpen('newsletter')}
           >
-            <div className="w-[480px] p-6">
-              <div className="space-y-4">
-                <Link
-                  href="/newsletter/fundopshq-insights"
-                  onClick={() => setOpenDropdown(null)}
-                  className="block rounded-lg p-4 transition-all hover:bg-accent/50"
-                >
-                  <div className="font-semibold text-sm text-foreground mb-1">FundOpsHQ Insights</div>
-                  <div className="text-sm text-muted-foreground leading-relaxed">
-                    Deep dives on fund operations topics, practical frameworks, and lessons learned from the field.
-                  </div>
-                </Link>
-                <Link
-                  href="/newsletter/fundwatch-briefing"
-                  onClick={() => setOpenDropdown(null)}
-                  className="block rounded-lg p-4 transition-all hover:bg-accent/50"
-                >
-                  <div className="font-semibold text-sm text-foreground mb-1">FundWatch Briefing</div>
-                  <div className="text-sm text-muted-foreground leading-relaxed">
-                    Weekly curated news, regulatory updates, and market intelligence for fund operations professionals.
-                  </div>
-                </Link>
-              </div>
-              <div className="pt-4 mt-4 border-t border-border">
+            <div className="w-[280px] p-3">
+              <Link
+                href="/newsletter/fundopshq-insights"
+                onClick={() => setOpenDropdown(null)}
+                className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
+              >
+                <div className="text-sm font-medium text-foreground">FundOpsHQ Insights</div>
+                <div className="text-xs text-muted-foreground">Deep dives & frameworks</div>
+              </Link>
+              <Link
+                href="/newsletter/fundwatch-briefing"
+                onClick={() => setOpenDropdown(null)}
+                className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
+              >
+                <div className="text-sm font-medium text-foreground">FundWatch Briefing</div>
+                <div className="text-xs text-muted-foreground">Weekly news & updates</div>
+              </Link>
+              <div className="pt-2 mt-2 border-t border-border">
                 <Link
                   href="/newsletter"
                   onClick={() => setOpenDropdown(null)}
-                  className="block rounded-md p-2 text-sm text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                  className="block rounded-md px-3 py-1.5 text-xs text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 >
-                  View All Newsletters
+                  View All
                 </Link>
               </div>
             </div>
@@ -181,24 +202,24 @@ export function SiteHeader() {
             isOpen={openDropdown === 'tools'}
             onOpenChange={handleDropdownOpen('tools')}
           >
-            <div className="w-[520px] p-4">
-              <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
+            <div className="w-[480px] p-3">
+              <div className="grid grid-cols-2 gap-x-3 gap-y-1">
                 {tools.map((tool) => (
                   <Link
                     key={tool.slug}
                     href={`/tools/${tool.slug}`}
                     onClick={() => setOpenDropdown(null)}
-                    className="block rounded-md px-2 py-1.5 transition-all hover:bg-accent/50"
+                    className="block rounded-md px-3 py-1.5 transition-colors hover:bg-accent/50"
                   >
-                    <div className="font-medium text-sm text-foreground">{tool.title}</div>
+                    <div className="text-sm font-medium text-foreground truncate">{tool.title}</div>
                   </Link>
                 ))}
               </div>
-              <div className="pt-3 mt-3 border-t border-border">
+              <div className="pt-2 mt-2 border-t border-border">
                 <Link
                   href="/tools"
                   onClick={() => setOpenDropdown(null)}
-                  className="block rounded-md p-1.5 text-sm text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                  className="block rounded-md px-3 py-1.5 text-xs text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 >
                   View All Tools
                 </Link>
@@ -208,73 +229,47 @@ export function SiteHeader() {
 
           {/* How I Can Help Dropdown */}
           <Dropdown
-            trigger="How I Can Help"
+            trigger="Help"
             id="help"
             isOpen={openDropdown === 'help'}
             onOpenChange={handleDropdownOpen('help')}
           >
-            <div className="w-[480px] p-6">
-              <div className="space-y-3">
-                <Link
-                  href="/help/sec-exam-prep"
-                  onClick={() => setOpenDropdown(null)}
-                  className="block rounded-lg p-4 transition-all hover:bg-accent/50"
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="font-semibold text-sm text-foreground">SEC Exam Preparation</div>
-                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Time-sensitive</span>
-                  </div>
-                  <div className="text-sm text-muted-foreground leading-relaxed">
-                    Got an exam notice? I can help you think through what to expect and how to prepare.
-                  </div>
-                </Link>
-                <Link
-                  href="/help/fund-admin-selection"
-                  onClick={() => setOpenDropdown(null)}
-                  className="block rounded-lg p-4 transition-all hover:bg-accent/50"
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="font-semibold text-sm text-foreground">Fund Administrator Selection</div>
-                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Major decision</span>
-                  </div>
-                  <div className="text-sm text-muted-foreground leading-relaxed">
-                    Running an RFP or evaluating options? Happy to help you think through what matters.
-                  </div>
-                </Link>
-                <Link
-                  href="/help/launching-a-fund"
-                  onClick={() => setOpenDropdown(null)}
-                  className="block rounded-lg p-4 transition-all hover:bg-accent/50"
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="font-semibold text-sm text-foreground">Launching a Fund</div>
-                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Getting started</span>
-                  </div>
-                  <div className="text-sm text-muted-foreground leading-relaxed">
-                    First-time manager? There's a lot to figure out operationally.
-                  </div>
-                </Link>
-                <Link
-                  href="/help/compliance-review"
-                  onClick={() => setOpenDropdown(null)}
-                  className="block rounded-lg p-4 transition-all hover:bg-accent/50"
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="font-semibold text-sm text-foreground">Compliance Gut Check</div>
-                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">Peace of mind</span>
-                  </div>
-                  <div className="text-sm text-muted-foreground leading-relaxed">
-                    Want a second opinion on your policies or approach?
-                  </div>
-                </Link>
-              </div>
-              <div className="pt-4 mt-4 border-t border-border">
+            <div className="w-[240px] p-3">
+              <Link
+                href="/help/sec-exam-prep"
+                onClick={() => setOpenDropdown(null)}
+                className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
+              >
+                <div className="text-sm font-medium text-foreground">SEC Exam Prep</div>
+              </Link>
+              <Link
+                href="/help/fund-admin-selection"
+                onClick={() => setOpenDropdown(null)}
+                className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
+              >
+                <div className="text-sm font-medium text-foreground">Fund Admin Selection</div>
+              </Link>
+              <Link
+                href="/help/launching-a-fund"
+                onClick={() => setOpenDropdown(null)}
+                className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
+              >
+                <div className="text-sm font-medium text-foreground">Launching a Fund</div>
+              </Link>
+              <Link
+                href="/help/compliance-review"
+                onClick={() => setOpenDropdown(null)}
+                className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
+              >
+                <div className="text-sm font-medium text-foreground">Compliance Gut Check</div>
+              </Link>
+              <div className="pt-2 mt-2 border-t border-border">
                 <Link
                   href="/help"
                   onClick={() => setOpenDropdown(null)}
-                  className="block rounded-md p-2 text-sm text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                  className="block rounded-md px-3 py-1.5 text-xs text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 >
-                  View All Topics
+                  View All
                 </Link>
               </div>
             </div>
@@ -349,6 +344,25 @@ export function SiteHeader() {
               </div>
             </div>
 
+
+            {/* Roles */}
+            <div className="pt-4 border-t border-border">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                By Role
+              </h3>
+              <div className="grid grid-cols-2 gap-2">
+                {roles.map((role) => (
+                  <Link
+                    key={role.name}
+                    href={role.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block rounded-md border border-border bg-card p-2.5 text-sm transition-all hover:border-accent hover:bg-accent/50"
+                  >
+                    <span className="font-medium text-foreground text-xs">{role.fullName}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
 
             {/* Newsletters */}
             <div className="pt-4 border-t border-border">

@@ -42,34 +42,34 @@ export default function ToolsPage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* Hero Section - Compact */}
-        <section className="border-b border-border bg-gradient-to-b from-background to-accent/20 py-10">
+        {/* Hero Section */}
+        <section className="border-b border-border bg-gradient-to-b from-background to-accent/20 py-8">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl text-center">
-              <h1 className="mb-3 text-4xl font-bold tracking-tight text-balance">
+              <h1 className="mb-3 text-3xl font-bold tracking-tight text-balance">
                 Free Tools & Calculators
               </h1>
-              <p className="text-lg text-muted-foreground leading-relaxed text-balance">
-                Simple, practical tools for fund formation, budgeting, economics, and operations.
+              <p className="text-base text-muted-foreground leading-relaxed text-balance">
+                Practical tools for fund formation, budgeting, economics, and operations.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Tools Grid by Category - Compact */}
-        <section className="py-10">
+        {/* Tools Grid by Category */}
+        <section className="py-8">
           <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-7xl space-y-8">
+            <div className="mx-auto max-w-6xl space-y-8">
               {categories.map((category) => {
                 const categoryTools = toolsByCategory[category]
                 if (categoryTools.length === 0) return null
 
                 return (
                   <div key={category}>
-                    <h2 className="text-xl font-bold mb-4 pb-2 border-b border-border">
+                    <h2 className="text-base font-bold mb-3 pb-2 border-b border-border text-muted-foreground uppercase tracking-wide">
                       {category}
                     </h2>
-                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                       {categoryTools.map((tool) => (
                         <ToolCard key={tool.id} tool={tool} />
                       ))}
@@ -81,15 +81,15 @@ export default function ToolsPage() {
           </div>
         </section>
 
-        {/* Request Section - Compact */}
+        {/* Request Section */}
         <section className="border-t border-border bg-accent/20 py-10">
           <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-3xl text-center">
-              <h2 className="mb-3 text-2xl font-bold">Need a Specific Tool?</h2>
-              <p className="mb-6 text-base text-muted-foreground text-balance">
-                Have a calculator or tool that would make your operations easier? Let me know what would be most helpful.
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="mb-3 text-xl font-bold">Need a Specific Tool?</h2>
+              <p className="mb-5 text-base text-muted-foreground text-balance">
+                Have a calculator or tool that would make your operations easier?
               </p>
-              <Button asChild size="default">
+              <Button asChild>
                 <a href="/contact">Request a Tool</a>
               </Button>
             </div>

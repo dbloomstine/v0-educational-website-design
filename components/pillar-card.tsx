@@ -1,8 +1,6 @@
 'use client'
 
 import Link from "next/link"
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowRight } from "lucide-react"
 
 interface PillarCardProps {
@@ -14,33 +12,20 @@ interface PillarCardProps {
 }
 
 export function PillarCard({ title, description, articleCount, href, color }: PillarCardProps) {
-  const [isHovered, setIsHovered] = useState(false)
-
   return (
-    <Link href={href} className="group">
-      <Card
-        className="h-full transition-all hover:shadow-lg"
-        style={{
-          borderColor: isHovered ? color : undefined,
-          boxShadow: isHovered ? `0 10px 15px -3px ${color}10` : undefined,
-        }}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <CardHeader>
-          <CardTitle className="flex items-start justify-between text-xl">
-            <span>{title}</span>
-            <ArrowRight
-              className="h-5 w-5 transition-all group-hover:translate-x-1"
-              style={{
-                color: color,
-                opacity: isHovered ? 1 : 0,
-              }}
-            />
-          </CardTitle>
-          <CardDescription className="leading-relaxed">{description}</CardDescription>
-        </CardHeader>
-      </Card>
+    <Link
+      href={href}
+      className="group flex items-start gap-3 px-4 py-3.5 rounded-lg border border-border/40 bg-card hover:border-accent/60 hover:bg-accent/10 transition-colors"
+    >
+      <div
+        className="mt-1.5 h-2 w-2 rounded-full shrink-0"
+        style={{ backgroundColor: color }}
+      />
+      <div className="flex-1 min-w-0">
+        <div className="text-base font-semibold text-foreground mb-0.5">{title}</div>
+        <div className="text-sm text-muted-foreground leading-snug line-clamp-2">{description}</div>
+      </div>
+      <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground shrink-0 mt-1 transition-colors" />
     </Link>
   )
 }
