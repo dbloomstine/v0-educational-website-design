@@ -1,6 +1,7 @@
 import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { AnimateOnScroll } from "@/components/animate-on-scroll"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowRight, Calculator, FileText, TrendingUp, Building, Calendar, DollarSign, Users, Shield, BookOpen } from "lucide-react"
@@ -101,55 +102,60 @@ export default function HomePage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* Hero Section - Enhanced */}
-        <section className="relative border-b border-border overflow-hidden">
-          {/* Subtle gradient mesh background */}
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/30" />
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: `radial-gradient(circle at 25% 25%, oklch(0.6 0.15 250) 0%, transparent 50%),
-                               radial-gradient(circle at 75% 75%, oklch(0.6 0.15 180) 0%, transparent 50%)`,
-            }}
-          />
+        {/* Hero Section - Institutional */}
+        <section className="border-b border-border bg-background">
+          <div className="container mx-auto px-4 py-16 sm:py-20 lg:py-24">
+            <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
+              {/* Left content - 7 columns */}
+              <div className="lg:col-span-7">
+                <AnimateOnScroll delay={0}>
+                  <p className="mb-4 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+                    Fund Operations Resources
+                  </p>
+                </AnimateOnScroll>
 
-          <div className="container relative mx-auto px-4 py-14 sm:py-20 lg:py-24">
-            <div className="mx-auto max-w-4xl text-center">
-              {/* Badge */}
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/50 px-4 py-2 text-sm text-muted-foreground backdrop-blur-sm">
-                <BookOpen className="h-4 w-4 flex-shrink-0" />
-                <span>Free resources for fund operations professionals</span>
+                <AnimateOnScroll delay={100}>
+                  <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl" style={{ letterSpacing: '-0.02em' }}>
+                    Navigate fund operations with confidence
+                  </h1>
+                </AnimateOnScroll>
+
+                <AnimateOnScroll delay={200}>
+                  <p className="mb-8 max-w-xl text-lg text-muted-foreground leading-relaxed">
+                    Practical articles and tools for CFOs, COOs, and operations teams. Covering private equity, venture capital, credit, hedge funds, real estate, and infrastructure.
+                  </p>
+                </AnimateOnScroll>
+
+                <AnimateOnScroll delay={300}>
+                  <Button asChild size="lg" className="px-8">
+                    <Link href="#fund-types">
+                      Explore Resources
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </AnimateOnScroll>
               </div>
 
-              <h1 className="mb-5 text-4xl sm:text-5xl font-bold tracking-tight text-balance lg:text-6xl">
-                Free resources to help you{" "}
-                <span className="bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text">
-                  navigate fund operations
-                </span>
-              </h1>
-
-              <p className="mx-auto mb-8 max-w-2xl text-lg text-muted-foreground leading-relaxed text-balance">
-                Articles and tools to help CFOs, COOs, and operations teams learn and grow. Covering PE, VC, credit, hedge funds, real estate, infrastructure, and more.
-              </p>
-
-              <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-                <Button asChild size="lg" className="px-8">
-                  <Link href="#fund-types">
-                    Explore Resources
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild size="lg" className="px-8">
-                  <Link href="/tools">
-                    Free Tools & Calculators
-                  </Link>
-                </Button>
-              </div>
+              {/* Right visual - 5 columns */}
+              <AnimateOnScroll delay={200} direction="left" className="hidden lg:block lg:col-span-5">
+                <div className="relative aspect-[4/3] rounded-sm bg-accent/40 border border-border/60 overflow-hidden">
+                  {/* Placeholder for future imagery - subtle pattern */}
+                  <div
+                    className="absolute inset-0 opacity-30"
+                    style={{
+                      backgroundImage: `linear-gradient(135deg, transparent 25%, oklch(0.5 0.02 250 / 0.1) 25%, oklch(0.5 0.02 250 / 0.1) 50%, transparent 50%, transparent 75%, oklch(0.5 0.02 250 / 0.1) 75%)`,
+                      backgroundSize: '20px 20px'
+                    }}
+                  />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center text-muted-foreground/60">
+                      <Building className="h-16 w-16 mx-auto mb-3 opacity-40" />
+                    </div>
+                  </div>
+                </div>
+              </AnimateOnScroll>
             </div>
           </div>
-
-          {/* Decorative bottom border gradient */}
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
         </section>
 
         {/* Operational Pillars - Quick Overview */}
@@ -176,22 +182,27 @@ export default function HomePage() {
         </section>
 
         {/* Fund Types Grid */}
-        <section id="fund-types" className="py-14 scroll-mt-16">
+        <section id="fund-types" className="py-16 scroll-mt-16">
           <div className="container mx-auto px-4">
-            <div className="mb-8">
-              <h2 className="mb-3 text-3xl font-bold tracking-tight">Explore by Fund Type</h2>
-              <p className="text-muted-foreground max-w-2xl">
-                Find relevant resources tailored to your specific asset class and fund structure
-              </p>
-            </div>
+            <AnimateOnScroll>
+              <div className="mb-10">
+                <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+                  By Asset Class
+                </p>
+                <h2 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>Explore by Fund Type</h2>
+                <p className="text-muted-foreground max-w-2xl">
+                  Find relevant resources tailored to your specific asset class and fund structure
+                </p>
+              </div>
+            </AnimateOnScroll>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {fundTypes.map((fund) => (
                 <Link key={fund.name} href={fund.href} className="group">
-                  <Card className="h-full transition-all duration-200 hover:shadow-md hover:shadow-accent/5 hover:-translate-y-0.5 border-border/60 hover:border-accent/60">
+                  <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
                     <CardHeader className="pb-2">
                       <div
-                        className="mb-3 h-1 w-10 rounded-full transition-all duration-200 group-hover:w-14"
+                        className="mb-3 h-1 w-10 rounded-full"
                         style={{ backgroundColor: fund.color }}
                       />
                       <CardTitle className="text-base font-semibold">{fund.name}</CardTitle>
@@ -200,7 +211,7 @@ export default function HomePage() {
                     <CardContent className="pt-0">
                       <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
                         Explore
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </div>
                     </CardContent>
                   </Card>
@@ -211,33 +222,34 @@ export default function HomePage() {
         </section>
 
         {/* Tools Section - Featured */}
-        <section className="py-14 border-y border-border bg-gradient-to-b from-accent/10 to-background">
+        <section className="py-16 border-y border-border bg-accent/5">
           <div className="container mx-auto px-4">
-            <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground">
-                  <Calculator className="h-3.5 w-3.5" />
-                  Free Tools
+            <AnimateOnScroll>
+              <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+                    Resources
+                  </p>
+                  <h2 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>Tools & Calculators</h2>
+                  <p className="text-muted-foreground max-w-2xl">
+                    Practical calculators and planning tools for fund operations
+                  </p>
                 </div>
-                <h2 className="mb-3 text-3xl font-bold tracking-tight">Interactive Tools & Calculators</h2>
-                <p className="text-muted-foreground max-w-2xl">
-                  Helpful calculators and planning tools to make your day-to-day easier
-                </p>
+                <Button variant="outline" asChild className="sm:shrink-0">
+                  <Link href="/tools">
+                    View All Tools
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Link>
+                </Button>
               </div>
-              <Button variant="outline" asChild className="sm:shrink-0">
-                <Link href="/tools">
-                  View All Tools
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
+            </AnimateOnScroll>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {tools.map((tool) => (
                 <Link key={tool.slug} href={`/tools/${tool.slug}`} className="group">
-                  <Card className="h-full transition-all duration-200 hover:shadow-md hover:shadow-accent/5 hover:-translate-y-0.5 border-border/60 hover:border-accent/60">
+                  <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
                     <CardHeader>
-                      <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-lg bg-accent group-hover:bg-accent/80 transition-colors">
+                      <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-sm bg-accent/60">
                         <Calculator className="h-4 w-4 text-foreground" />
                       </div>
                       <CardTitle className="text-base font-semibold leading-snug">{tool.title}</CardTitle>
@@ -246,7 +258,7 @@ export default function HomePage() {
                     <CardContent className="pt-0">
                       <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
                         Use Tool
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </div>
                     </CardContent>
                   </Card>
@@ -257,19 +269,24 @@ export default function HomePage() {
         </section>
 
         {/* Featured Articles */}
-        <section className="py-14">
+        <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="mb-8">
-              <h2 className="mb-3 text-3xl font-bold tracking-tight">Featured Resources</h2>
-              <p className="text-muted-foreground max-w-2xl">
-                In-depth guides on critical fund operations topics
-              </p>
-            </div>
+            <AnimateOnScroll>
+              <div className="mb-10">
+                <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+                  Insights
+                </p>
+                <h2 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>Featured Resources</h2>
+                <p className="text-muted-foreground max-w-2xl">
+                  In-depth guides on critical fund operations topics
+                </p>
+              </div>
+            </AnimateOnScroll>
 
             <div className="grid gap-4 lg:grid-cols-3">
               {featuredArticles.map((article) => (
                 <Link key={article.title} href={article.href} className="group">
-                  <Card className="h-full transition-all duration-200 hover:shadow-md hover:shadow-accent/5 hover:-translate-y-0.5 border-border/60">
+                  <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
                     <CardHeader>
                       <div className="mb-2 flex items-center gap-2">
                         <div
@@ -280,7 +297,7 @@ export default function HomePage() {
                           {article.category}
                         </span>
                       </div>
-                      <CardTitle className="text-lg font-semibold leading-snug group-hover:text-primary transition-colors">
+                      <CardTitle className="text-lg font-semibold leading-snug group-hover:text-foreground transition-colors">
                         {article.title}
                       </CardTitle>
                       <CardDescription className="leading-relaxed text-sm">
@@ -290,7 +307,7 @@ export default function HomePage() {
                     <CardContent className="pt-0">
                       <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
                         Read Article
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                       </div>
                     </CardContent>
                   </Card>
@@ -303,64 +320,70 @@ export default function HomePage() {
         {/* Stats/Trust Section */}
         <section className="py-10 border-y border-border bg-card/30">
           <div className="container mx-auto px-4">
-            <div className="grid gap-8 sm:grid-cols-3 text-center">
-              <div>
-                <div className="text-3xl font-bold text-foreground mb-1">80+</div>
-                <div className="text-sm text-muted-foreground">In-depth articles</div>
+            <AnimateOnScroll>
+              <div className="grid gap-8 sm:grid-cols-3 text-center">
+                <div>
+                  <div className="text-3xl font-bold text-foreground mb-1">80+</div>
+                  <div className="text-sm text-muted-foreground">In-depth articles</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-foreground mb-1">8</div>
+                  <div className="text-sm text-muted-foreground">Fund types covered</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-foreground mb-1">11</div>
+                  <div className="text-sm text-muted-foreground">Free interactive tools</div>
+                </div>
               </div>
-              <div>
-                <div className="text-3xl font-bold text-foreground mb-1">8</div>
-                <div className="text-sm text-muted-foreground">Fund types covered</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-foreground mb-1">11</div>
-                <div className="text-sm text-muted-foreground">Free interactive tools</div>
-              </div>
-            </div>
+            </AnimateOnScroll>
           </div>
         </section>
 
-        {/* Newsletter Section - Enhanced */}
-        <section className="py-14">
+        {/* Newsletter Section */}
+        <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-2xl">
-              <div className="rounded-xl border border-border bg-gradient-to-br from-card to-accent/20 p-8 lg:p-10">
-                <div className="text-center">
-                  <h2 className="mb-3 text-2xl font-bold tracking-tight">Stay informed</h2>
-                  <p className="mb-6 text-muted-foreground text-balance">
-                    Get curated fund operations insights, regulatory updates, and practical guidance delivered to your inbox.
-                  </p>
+            <AnimateOnScroll className="mx-auto max-w-2xl">
+              <div className="rounded-sm border border-border bg-card p-8 lg:p-10">
+                <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground text-center">
+                  Newsletter
+                </p>
+                <h2 className="mb-3 text-2xl font-bold text-center" style={{ letterSpacing: '-0.01em' }}>Stay informed</h2>
+                <p className="mb-6 text-muted-foreground text-balance text-center">
+                  Fund operations insights, regulatory updates, and practical guidance delivered to your inbox.
+                </p>
 
-                  <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-                    <Button asChild>
-                      <Link href="/newsletter/fundopshq-insights">
-                        FundOpsHQ Insights
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                    <Button variant="outline" asChild>
-                      <Link href="/newsletter/fundwatch-briefing">
-                        FundWatch Briefing
-                      </Link>
-                    </Button>
-                  </div>
-
-                  <p className="mt-5 text-sm text-muted-foreground">
-                    <Link href="/newsletter" className="hover:text-foreground transition-colors underline">
-                      View all newsletters
+                <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
+                  <Button asChild>
+                    <Link href="/newsletter/fundopshq-insights">
+                      FundOpsHQ Insights
+                      <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
-                  </p>
+                  </Button>
+                  <Button variant="outline" asChild>
+                    <Link href="/newsletter/fundwatch-briefing">
+                      FundWatch Briefing
+                    </Link>
+                  </Button>
                 </div>
+
+                <p className="mt-5 text-sm text-muted-foreground text-center">
+                  <Link href="/newsletter" className="hover:text-foreground transition-colors underline underline-offset-4">
+                    View all newsletters
+                  </Link>
+                </p>
               </div>
-            </div>
+            </AnimateOnScroll>
           </div>
         </section>
 
         {/* About/CTA Section */}
-        <section className="py-14 border-t border-border bg-accent/10">
+        <section className="py-16 border-t border-border bg-accent/5">
           <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="mb-3 text-2xl font-bold tracking-tight">Here to help you learn</h2>
+            <AnimateOnScroll className="mx-auto max-w-2xl text-center">
+              <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+                About
+              </p>
+              <h2 className="mb-3 text-2xl font-bold" style={{ letterSpacing: '-0.01em' }}>Here to help you learn</h2>
               <p className="mb-6 text-muted-foreground text-balance leading-relaxed">
                 FundOpsHQ is a free resource built to share what I've learned from years in fund operations. Whether you're new to the field or looking to brush up on a topic, I hope you find something useful here.
               </p>
@@ -372,11 +395,11 @@ export default function HomePage() {
                 </Button>
                 <Button asChild>
                   <Link href="/contact">
-                    Need Help?
+                    Get in Touch
                   </Link>
                 </Button>
               </div>
-            </div>
+            </AnimateOnScroll>
           </div>
         </section>
       </main>

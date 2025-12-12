@@ -15,7 +15,7 @@ export function PillarCard({ title, description, articleCount, href, color }: Pi
   return (
     <Link
       href={href}
-      className="group flex items-start gap-3 px-4 py-3.5 rounded-lg border border-border/40 bg-card hover:border-accent/60 hover:bg-accent/10 transition-colors"
+      className="group flex items-start gap-3 px-4 py-3.5 rounded-sm border border-border/40 bg-card hover:border-foreground/20 transition-colors"
     >
       <div
         className="mt-1.5 h-2 w-2 rounded-full shrink-0"

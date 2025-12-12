@@ -48,7 +48,7 @@ export function ToolCard({ tool }: ToolCardProps) {
 
   if (tool.status === 'coming-soon') {
     return (
-      <div className="flex items-center gap-3 px-4 py-3 rounded-lg border border-border/40 bg-card/50 opacity-60">
+      <div className="flex items-center gap-3 px-4 py-3 rounded-sm border border-border/40 bg-card/50 opacity-60">
         <div
           className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md"
           style={{ backgroundColor: `color-mix(in oklch, ${categoryColor} 15%, transparent)` }}
@@ -67,7 +67,7 @@ export function ToolCard({ tool }: ToolCardProps) {
   return (
     <Link
       href={`/tools/${tool.slug}`}
-      className="group flex items-center gap-3 px-4 py-3 rounded-lg border border-border/40 bg-card hover:border-accent/60 hover:bg-accent/10 transition-colors"
+      className="group flex items-center gap-3 px-4 py-3 rounded-sm border border-border/40 bg-card hover:border-foreground/20 transition-colors"
     >
       <div
         className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md"

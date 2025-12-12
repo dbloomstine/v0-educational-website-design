@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { AnimateOnScroll } from "@/components/animate-on-scroll"
 import { Breadcrumb } from "@/components/breadcrumb"
 import { ToolCard } from "@/components/tools/tool-card"
 import { getRoleBySlug, getAllRoles, getToolsForRole } from "@/lib/content/roles"
@@ -36,8 +37,8 @@ export default async function RolePage({ params }: RolePageProps) {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* Hero Section - Compact */}
-        <section className="border-b border-border bg-gradient-to-b from-background to-accent/20 py-8">
+        {/* Hero Section */}
+        <section className="border-b border-border bg-background py-12">
           <div className="container mx-auto px-4">
             <Breadcrumb
               items={[
@@ -46,10 +47,15 @@ export default async function RolePage({ params }: RolePageProps) {
               ]}
             />
 
-            <h1 className="mt-4 mb-2 text-3xl font-bold tracking-tight">{role.title}</h1>
-            <p className="text-base text-muted-foreground max-w-2xl">
-              {role.description}
-            </p>
+            <AnimateOnScroll>
+              <p className="mt-6 mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+                Role
+              </p>
+              <h1 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>{role.title}</h1>
+              <p className="text-base text-muted-foreground max-w-2xl">
+                {role.description}
+              </p>
+            </AnimateOnScroll>
           </div>
         </section>
 
@@ -82,7 +88,7 @@ export default async function RolePage({ params }: RolePageProps) {
         )}
 
         {/* Relevant Articles by Fund Type */}
-        <section className="py-10 border-t border-border bg-accent/10">
+        <section className="py-12 border-t border-border bg-accent/5">
           <div className="container mx-auto px-4">
             <div className="mb-6">
               <h2 className="mb-1 text-xl font-bold">Articles by Fund Type</h2>

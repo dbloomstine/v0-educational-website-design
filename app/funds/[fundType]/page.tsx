@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { AnimateOnScroll } from "@/components/animate-on-scroll"
 import { Breadcrumb } from "@/components/breadcrumb"
 import { PillarCard } from "@/components/pillar-card"
 import { ToolCard } from "@/components/tools/tool-card"
@@ -33,21 +34,9 @@ export default async function FundTypePage({ params }: FundTypePageProps) {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* Hero Section - Compact */}
-        <section
-          className="relative border-b border-border py-10"
-          style={{
-            background: `linear-gradient(135deg, oklch(0.25 0.04 250) 0%, oklch(0.32 0.055 250) 100%)`,
-          }}
-        >
-          <div
-            className="absolute inset-0 opacity-5"
-            style={{
-              backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 20px, oklch(0.55 0.03 250) 20px, oklch(0.55 0.03 250) 21px)`,
-            }}
-          />
-
-          <div className="container relative mx-auto px-4">
+        {/* Hero Section */}
+        <section className="border-b border-border bg-background py-12">
+          <div className="container mx-auto px-4">
             <Breadcrumb
               items={[
                 { label: "Fund Types", href: "/" },
@@ -55,14 +44,18 @@ export default async function FundTypePage({ params }: FundTypePageProps) {
               ]}
             />
 
-            <div className="flex items-center gap-3 mb-3 mt-4">
-              <div className="h-0.5 w-10 rounded-full" style={{ backgroundColor: fundType.color }} />
-              <h1 className="text-3xl font-bold tracking-tight">{fundType.name}</h1>
-            </div>
-            <p className="max-w-2xl text-sm text-muted-foreground leading-relaxed">
-              Free articles and guides to help you learn {fundType.name.toLowerCase()} fund operations,
-              from compliance and investor relations to fund administration and beyond.
-            </p>
+            <AnimateOnScroll>
+              <div className="flex items-center gap-3 mb-3 mt-6">
+                <div className="h-1 w-10 rounded-full" style={{ backgroundColor: fundType.color }} />
+                <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground">
+                  Fund Type
+                </p>
+              </div>
+              <h1 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>{fundType.name}</h1>
+              <p className="max-w-2xl text-base text-muted-foreground leading-relaxed">
+                Articles and guides for {fundType.name.toLowerCase()} fund operations, covering compliance, investor relations, fund administration, and more.
+              </p>
+            </AnimateOnScroll>
           </div>
         </section>
 

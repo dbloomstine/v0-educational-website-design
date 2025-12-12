@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
+import { AnimateOnScroll } from '@/components/animate-on-scroll'
 import { ToolCard } from '@/components/tools/tool-card'
 import { Button } from '@/components/ui/button'
 import { getAllTools, getAllCategories } from '@/lib/content/tools'
@@ -43,16 +44,19 @@ export default function ToolsPage() {
 
       <main id="main-content" className="flex-1">
         {/* Hero Section */}
-        <section className="border-b border-border bg-gradient-to-b from-background to-accent/20 py-8">
+        <section className="border-b border-border bg-background py-12">
           <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-3xl text-center">
-              <h1 className="mb-3 text-3xl font-bold tracking-tight text-balance">
-                Free Tools & Calculators
+            <AnimateOnScroll className="max-w-3xl">
+              <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+                Resources
+              </p>
+              <h1 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>
+                Tools & Calculators
               </h1>
-              <p className="text-base text-muted-foreground leading-relaxed text-balance">
+              <p className="text-base text-muted-foreground leading-relaxed max-w-xl">
                 Practical tools for fund formation, budgeting, economics, and operations.
               </p>
-            </div>
+            </AnimateOnScroll>
           </div>
         </section>
 
@@ -82,10 +86,13 @@ export default function ToolsPage() {
         </section>
 
         {/* Request Section */}
-        <section className="border-t border-border bg-accent/20 py-10">
+        <section className="border-t border-border bg-accent/5 py-12">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-2xl text-center">
-              <h2 className="mb-3 text-xl font-bold">Need a Specific Tool?</h2>
+              <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+                Feedback
+              </p>
+              <h2 className="mb-3 text-xl font-bold" style={{ letterSpacing: '-0.01em' }}>Need a Specific Tool?</h2>
               <p className="mb-5 text-base text-muted-foreground text-balance">
                 Have a calculator or tool that would make your operations easier?
               </p>
