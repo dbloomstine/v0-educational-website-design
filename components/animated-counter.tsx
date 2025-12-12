@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 
 interface AnimatedCounterProps {
   end: number
@@ -16,32 +16,10 @@ export function AnimatedCounter({
   className = '',
 }: AnimatedCounterProps) {
   const [count, setCount] = useState(0)
-  const [hasAnimated, setHasAnimated] = useState(false)
+  const hasAnimatedRef = useRef(false)
   const ref = useRef<HTMLSpanElement>(null)
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated) {
-          setHasAnimated(true)
-          animateCount()
-        }
-      },
-      { threshold: 0.5 }
-    )
-
-    if (ref.current) {
-      observer.observe(ref.current)
-    }
-
-    return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current)
-      }
-    }
-  }, [hasAnimated])
-
-  const animateCount = () => {
+  const animateCount = useCallback(() => {
     const startTime = performance.now()
     const startValue = 0
 
@@ -61,7 +39,28 @@ export function AnimatedCounter({
     }
 
     requestAnimationFrame(animate)
-  }
+  }, [end, duration])
+
+  useEffect(() => {
+    const element = ref.current
+    if (!element) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimatedRef.current) {
+          hasAnimatedRef.current = true
+          animateCount()
+        }
+      },
+      { threshold: 0.5 }
+    )
+
+    observer.observe(element)
+
+    return () => {
+      observer.unobserve(element)
+    }
+  }, [animateCount])
 
   return (
     <span ref={ref} className={className}>

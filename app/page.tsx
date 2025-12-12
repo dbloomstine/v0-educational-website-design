@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowRight, Calculator, FileText, TrendingUp, Building, Calendar, DollarSign, Users, Shield, BookOpen } from "lucide-react"
 import { getAllFundTypes } from "@/lib/content/fund-types"
 import { getAllTools } from "@/lib/content/tools"
+import { getAllRoles } from "@/lib/content/roles"
 
 const fundTypes = getAllFundTypes().map((fundType) => ({
   name: fundType.name,
@@ -19,6 +20,8 @@ const fundTypes = getAllFundTypes().map((fundType) => ({
 }))
 
 const tools = getAllTools().filter(tool => tool.status === 'active').slice(0, 6)
+
+const roles = getAllRoles()
 
 const operationalPillars = [
   { name: "CFO & Finance", icon: DollarSign, description: "Budgeting, reporting, and financial oversight" },
@@ -113,19 +116,19 @@ export default function HomePage() {
               <div className="lg:col-span-7">
                 <AnimateOnScroll delay={0}>
                   <p className="mb-4 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                    Fund Operations Resources
+                    Free Resources
                   </p>
                 </AnimateOnScroll>
 
                 <AnimateOnScroll delay={100}>
                   <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl" style={{ letterSpacing: '-0.02em' }}>
-                    Navigate fund operations with confidence
+                    Learn fund operations, one topic at a time
                   </h1>
                 </AnimateOnScroll>
 
                 <AnimateOnScroll delay={200}>
                   <p className="mb-8 max-w-xl text-lg text-muted-foreground leading-relaxed">
-                    Practical articles and tools for CFOs, COOs, and operations teams. Covering private equity, venture capital, credit, hedge funds, real estate, and infrastructure.
+                    Articles and tools to help you understand fund ops - whether you're new to the field or brushing up on a topic. PE, VC, credit, hedge funds, real estate, and more.
                   </p>
                 </AnimateOnScroll>
 
@@ -139,23 +142,57 @@ export default function HomePage() {
                 </AnimateOnScroll>
               </div>
 
-              {/* Right visual - 5 columns */}
-              <AnimateOnScroll delay={200} direction="left" className="hidden lg:block lg:col-span-5">
-                <div className="relative aspect-[4/3] rounded-sm border border-border/40 overflow-hidden shadow-2xl shadow-black/20">
-                  <GradientMesh className="absolute inset-0" />
-                  {/* Decorative elements */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="relative">
-                      {/* Abstract data visualization hint */}
-                      <div className="absolute -inset-12 border border-dashed border-white/10 rounded-full animate-[spin_60s_linear_infinite]" />
-                      <div className="absolute -inset-20 border border-dashed border-white/5 rounded-full animate-[spin_90s_linear_infinite_reverse]" />
-                      <div className="h-20 w-20 rounded-sm bg-white/5 backdrop-blur-sm border border-white/10 flex items-center justify-center">
-                        <Building className="h-8 w-8 text-white/40" />
-                      </div>
-                    </div>
-                  </div>
+              {/* Right visual - 5 columns - Abstract gradient fade */}
+              <div className="hidden lg:block lg:col-span-5 relative">
+                {/* Floating gradient orbs that fade to the right */}
+                <div className="absolute inset-0 overflow-hidden">
+                  {/* Large primary orb */}
+                  <div
+                    className="absolute -right-20 top-1/4 w-96 h-96 rounded-full opacity-30"
+                    style={{
+                      background: 'radial-gradient(circle, hsla(210, 60%, 50%, 0.4) 0%, hsla(210, 50%, 40%, 0.1) 40%, transparent 70%)',
+                      filter: 'blur(40px)',
+                    }}
+                  />
+                  {/* Secondary accent orb */}
+                  <div
+                    className="absolute right-10 bottom-1/4 w-72 h-72 rounded-full opacity-25"
+                    style={{
+                      background: 'radial-gradient(circle, hsla(230, 50%, 45%, 0.35) 0%, hsla(225, 40%, 35%, 0.1) 50%, transparent 70%)',
+                      filter: 'blur(50px)',
+                    }}
+                  />
+                  {/* Subtle teal accent */}
+                  <div
+                    className="absolute right-1/3 top-1/3 w-48 h-48 rounded-full opacity-20"
+                    style={{
+                      background: 'radial-gradient(circle, hsla(195, 60%, 45%, 0.3) 0%, transparent 60%)',
+                      filter: 'blur(30px)',
+                    }}
+                  />
                 </div>
-              </AnimateOnScroll>
+
+                {/* Subtle dot grid pattern that fades out */}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage: 'radial-gradient(circle, hsla(215, 40%, 60%, 0.15) 1px, transparent 1px)',
+                    backgroundSize: '24px 24px',
+                    maskImage: 'linear-gradient(to right, transparent 0%, black 30%, black 60%, transparent 100%)',
+                    WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 30%, black 60%, transparent 100%)',
+                  }}
+                />
+
+                {/* Diagonal lines accent */}
+                <div
+                  className="absolute inset-0 opacity-[0.03]"
+                  style={{
+                    backgroundImage: 'repeating-linear-gradient(45deg, hsla(215, 40%, 70%, 1) 0px, hsla(215, 40%, 70%, 1) 1px, transparent 1px, transparent 20px)',
+                    maskImage: 'linear-gradient(to right, transparent 10%, black 40%, black 70%, transparent 95%)',
+                    WebkitMaskImage: 'linear-gradient(to right, transparent 10%, black 40%, black 70%, transparent 95%)',
+                  }}
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -223,8 +260,44 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Roles Grid */}
+        <section className="py-16 border-t border-border bg-accent/5">
+          <div className="container mx-auto px-4">
+            <AnimateOnScroll>
+              <div className="mb-10">
+                <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+                  By Role
+                </p>
+                <h2 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>Explore by Role</h2>
+                <p className="text-muted-foreground max-w-2xl">
+                  Find resources relevant to your function
+                </p>
+              </div>
+            </AnimateOnScroll>
+
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {roles.map((role) => (
+                <Link key={role.slug} href={`/roles/${role.slug}`} className="group">
+                  <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="text-base font-semibold">{role.title}</CardTitle>
+                      <CardDescription className="leading-relaxed text-sm">{role.description}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="pt-0">
+                      <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                        View Resources
+                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Tools Section - Featured */}
-        <section className="py-16 border-y border-border bg-accent/5">
+        <section className="py-16 border-y border-border">
           <div className="container mx-auto px-4">
             <AnimateOnScroll>
               <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
