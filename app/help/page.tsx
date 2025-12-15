@@ -4,7 +4,7 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Shield, Building2, Rocket, ClipboardCheck, ArrowRight } from 'lucide-react'
+import { Shield, Building2, Rocket, ClipboardCheck, ArrowRight, FileCheck, FileText, BarChart3, Calculator, Clock } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'How I Can Help | FundOpsHQ',
@@ -34,11 +34,46 @@ const helpTopics = [
     urgency: 'Time-sensitive'
   },
   {
+    slug: 'annual-audit-prep',
+    icon: FileCheck,
+    title: 'Annual Audit Preparation',
+    description: 'Audit season approaching? I can help you organize your PBC list, understand what auditors focus on, and avoid common findings.',
+    urgency: 'Year-end critical'
+  },
+  {
+    slug: 'k1-tax-season',
+    icon: FileText,
+    title: 'K-1 Tax Season',
+    description: 'Managing K-1 delivery timelines? I can help with investor communication, extension strategies, and coordinating the process.',
+    urgency: 'Tax deadline'
+  },
+  {
     slug: 'fund-admin-selection',
     icon: Building2,
     title: 'Fund Administrator Selection',
     description: 'Running an RFP or evaluating options? I can help you think through what matters for your situation.',
     urgency: 'Major decision'
+  },
+  {
+    slug: 'waterfall-calculations',
+    icon: Calculator,
+    title: 'Waterfall & Distribution Calculations',
+    description: 'Working through waterfall mechanics? I can help you understand structures, validate calculations, and avoid common errors.',
+    urgency: 'High stakes'
+  },
+  {
+    slug: 'investor-reporting',
+    icon: BarChart3,
+    title: 'Investor Reporting Setup',
+    description: 'Building or improving your reporting package? I can share what LPs actually want to see and how to deliver it efficiently.',
+    urgency: 'Ongoing operations'
+  },
+  {
+    slug: 'regulatory-filings',
+    icon: Clock,
+    title: 'Regulatory Filing Deadlines',
+    description: 'Form PF, Form ADV, state filings—there\'s a lot to track. I can help you build a calendar and stay compliant.',
+    urgency: 'Compliance critical'
   },
   {
     slug: 'launching-a-fund',
@@ -82,8 +117,8 @@ export default function HelpPage() {
         {/* Help Topics Grid */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-4xl">
-              <div className="grid gap-6 sm:grid-cols-2">
+            <div className="mx-auto max-w-6xl">
+              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {helpTopics.map((topic) => (
                   <Link key={topic.slug} href={`/help/${topic.slug}`} className="group">
                     <Card className="h-full border-border/60 transition-all hover:border-accent hover:shadow-md">
