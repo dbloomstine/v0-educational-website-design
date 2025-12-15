@@ -155,6 +155,11 @@ export default async function PillarPage({ params }: PillarPageProps) {
                 </div>
               </div>
 
+              {/* Mobile TOC - rendered outside the grid so it's always visible */}
+              <div className="xl:hidden">
+                <ArticleToc content={article.content} />
+              </div>
+
               {/* Article Content with TOC */}
               <div className="grid grid-cols-1 xl:grid-cols-[1fr_280px] gap-12 mt-12">
                 <div className="max-w-4xl">
