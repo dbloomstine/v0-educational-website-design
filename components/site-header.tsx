@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/logo"
-import { Menu, X, ChevronDown, ExternalLink } from "lucide-react"
+import { Menu, X, ChevronDown, ExternalLink, Calendar, DollarSign, Building, Calculator, ClipboardCheck, Receipt, UserCheck, TrendingUp, LineChart, Split, FileText } from "lucide-react"
 import { getAllFundTypes } from "@/lib/content/fund-types"
 import { getAllTools } from "@/lib/content/tools"
 import { getAllRoles } from "@/lib/content/roles"
@@ -88,7 +88,7 @@ function Dropdown({ trigger, children, isOpen, onOpenChange, id }: DropdownProps
           id={`${id}-menu`}
           role="menu"
           aria-label={`${trigger} menu`}
-          className="absolute top-full mt-2 z-50 rounded-lg border border-border bg-popover text-popover-foreground shadow-lg animate-in fade-in-0 zoom-in-95 duration-200 left-1/2 -translate-x-1/2"
+          className="absolute top-full mt-2 z-50 rounded-lg border border-border bg-popover text-popover-foreground shadow-lg animate-in fade-in-0 zoom-in-95 duration-300 left-1/2 -translate-x-1/2"
         >
           {children}
         </div>
@@ -202,26 +202,67 @@ export function SiteHeader() {
             isOpen={openDropdown === 'tools'}
             onOpenChange={handleDropdownOpen('tools')}
           >
-            <div className="w-[480px] p-3">
-              <div className="grid grid-cols-2 gap-x-3 gap-y-1">
-                {tools.map((tool) => (
-                  <Link
-                    key={tool.slug}
-                    href={`/tools/${tool.slug}`}
-                    onClick={() => setOpenDropdown(null)}
-                    className="block rounded-md px-3 py-1.5 transition-colors hover:bg-accent/50"
-                  >
-                    <div className="text-sm font-medium text-foreground truncate">{tool.title}</div>
-                  </Link>
-                ))}
+            <div className="w-[380px] p-4">
+              {/* Fund Formation Category */}
+              <div className="mb-3">
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 px-2">Fund Formation</div>
+                <div className="space-y-1">
+                  {tools.filter(t => t.categories.includes('Fund Formation')).map((tool) => (
+                    <Link
+                      key={tool.slug}
+                      href={`/tools/${tool.slug}`}
+                      onClick={() => setOpenDropdown(null)}
+                      className="flex items-start gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent/50"
+                    >
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent/60 mt-0.5">
+                        {tool.icon === 'Calendar' && <Calendar className="h-4 w-4 text-foreground" />}
+                        {tool.icon === 'DollarSign' && <DollarSign className="h-4 w-4 text-foreground" />}
+                        {tool.icon === 'Building' && <Building className="h-4 w-4 text-foreground" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-foreground">{tool.title.replace(' Generator', '').replace(' Planner', '')}</div>
+                        <div className="text-xs text-muted-foreground line-clamp-1">{tool.shortDescription}</div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
               </div>
-              <div className="pt-2 mt-2 border-t border-border">
+
+              {/* Pricing & Costs Category */}
+              <div className="mb-3 pt-2 border-t border-border">
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 px-2">Pricing & Costs</div>
+                <div className="space-y-1">
+                  {tools.filter(t => t.categories.includes('Pricing and Costs')).slice(0, 3).map((tool) => (
+                    <Link
+                      key={tool.slug}
+                      href={`/tools/${tool.slug}`}
+                      onClick={() => setOpenDropdown(null)}
+                      className="flex items-start gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent/50"
+                    >
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent/60 mt-0.5">
+                        {tool.icon === 'Calculator' && <Calculator className="h-4 w-4 text-foreground" />}
+                        {tool.icon === 'ClipboardCheck' && <ClipboardCheck className="h-4 w-4 text-foreground" />}
+                        {tool.icon === 'Receipt' && <Receipt className="h-4 w-4 text-foreground" />}
+                        {tool.icon === 'UserCheck' && <UserCheck className="h-4 w-4 text-foreground" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-foreground">{tool.title.replace(' Estimator', '')}</div>
+                        <div className="text-xs text-muted-foreground line-clamp-1">{tool.shortDescription}</div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* View All Link */}
+              <div className="pt-2 border-t border-border">
                 <Link
                   href="/tools"
                   onClick={() => setOpenDropdown(null)}
-                  className="block rounded-md px-3 py-1.5 text-xs text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                  className="flex items-center justify-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 >
-                  View All Tools
+                  View All {tools.length} Tools
+                  <span className="text-xs">→</span>
                 </Link>
               </div>
             </div>
@@ -274,6 +315,17 @@ export function SiteHeader() {
               </div>
             </div>
           </Dropdown>
+
+          {/* Videos Link */}
+          <Link
+            href="/interviews"
+            className="inline-flex h-9 w-max items-center gap-1.5 justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+          >
+            Videos
+            <span className="inline-flex items-center rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent-foreground">
+              Soon
+            </span>
+          </Link>
 
           {/* About Link */}
           <Link
@@ -469,6 +521,26 @@ export function SiteHeader() {
                   View All {tools.length} Tools →
                 </Link>
               </div>
+            </div>
+
+            {/* Videos */}
+            <div className="pt-4 border-t border-border">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Videos
+              </h3>
+              <Link
+                href="/interviews"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
+              >
+                <span className="font-medium text-foreground flex items-center gap-2">
+                  FundOpsHQ Interviews
+                  <span className="inline-flex items-center rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent-foreground">
+                    Soon
+                  </span>
+                </span>
+                <span className="block text-xs text-muted-foreground mt-0.5">Conversations with fund operations professionals</span>
+              </Link>
             </div>
 
             {/* About */}

@@ -179,12 +179,12 @@ export default async function PillarPage({ params }: PillarPageProps) {
                   )}
                 </div>
 
-                {/* Sidebar: TOC + Tools */}
-                <div className="space-y-6">
-                  <ArticleToc content={article.content} />
+                {/* Sidebar: TOC + Tools - Sticky container */}
+                <aside className="hidden xl:block">
+                  <div className="sticky top-20 space-y-6 max-h-[calc(100vh-6rem)] overflow-y-auto">
+                    <ArticleToc content={article.content} />
 
-                  {/* Related Tools */}
-                  <div className="sticky top-20">
+                    {/* Related Tools */}
                     <div className="rounded-lg border border-border bg-card p-4">
                       <div className="flex items-center gap-2 mb-3">
                         <Calculator className="h-4 w-4 text-muted-foreground" />
@@ -209,7 +209,7 @@ export default async function PillarPage({ params }: PillarPageProps) {
                       </Link>
                     </div>
                   </div>
-                </div>
+                </aside>
               </div>
             </div>
           </div>

@@ -2,6 +2,7 @@ import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { AnimateOnScroll } from "@/components/animate-on-scroll"
+import { StaggeredGrid } from "@/components/staggered-grid"
 import { GradientMesh } from "@/components/gradient-mesh"
 import { AnimatedCounter } from "@/components/animated-counter"
 import { BackToTop } from "@/components/back-to-top"
@@ -143,12 +144,12 @@ export default function HomePage() {
               </div>
 
               {/* Right visual - 5 columns - Abstract gradient fade */}
-              <div className="hidden lg:block lg:col-span-5 relative">
+              <div className="hidden md:block lg:col-span-5 relative min-h-[200px] lg:min-h-0">
                 {/* Floating gradient orbs that fade to the right */}
                 <div className="absolute inset-0 overflow-hidden">
                   {/* Large primary orb */}
                   <div
-                    className="absolute -right-20 top-1/4 w-96 h-96 rounded-full opacity-30"
+                    className="absolute -right-20 top-1/4 w-64 lg:w-96 h-64 lg:h-96 rounded-full opacity-30"
                     style={{
                       background: 'radial-gradient(circle, hsla(210, 60%, 50%, 0.4) 0%, hsla(210, 50%, 40%, 0.1) 40%, transparent 70%)',
                       filter: 'blur(40px)',
@@ -156,7 +157,7 @@ export default function HomePage() {
                   />
                   {/* Secondary accent orb */}
                   <div
-                    className="absolute right-10 bottom-1/4 w-72 h-72 rounded-full opacity-25"
+                    className="absolute right-10 bottom-1/4 w-48 lg:w-72 h-48 lg:h-72 rounded-full opacity-25"
                     style={{
                       background: 'radial-gradient(circle, hsla(230, 50%, 45%, 0.35) 0%, hsla(225, 40%, 35%, 0.1) 50%, transparent 70%)',
                       filter: 'blur(50px)',
@@ -164,7 +165,7 @@ export default function HomePage() {
                   />
                   {/* Subtle teal accent */}
                   <div
-                    className="absolute right-1/3 top-1/3 w-48 h-48 rounded-full opacity-20"
+                    className="absolute right-1/3 top-1/3 w-32 lg:w-48 h-32 lg:h-48 rounded-full opacity-20"
                     style={{
                       background: 'radial-gradient(circle, hsla(195, 60%, 45%, 0.3) 0%, transparent 60%)',
                       filter: 'blur(30px)',
@@ -235,9 +236,9 @@ export default function HomePage() {
               </div>
             </AnimateOnScroll>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <StaggeredGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" staggerDelay={75} duration={700}>
               {fundTypes.map((fund) => (
-                <Link key={fund.name} href={fund.href} className="group">
+                <Link key={fund.name} href={fund.href} className="group h-full">
                   <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
                     <CardHeader className="pb-2">
                       <div
@@ -256,7 +257,7 @@ export default function HomePage() {
                   </Card>
                 </Link>
               ))}
-            </div>
+            </StaggeredGrid>
           </div>
         </section>
 
@@ -275,9 +276,9 @@ export default function HomePage() {
               </div>
             </AnimateOnScroll>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <StaggeredGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" staggerDelay={100} duration={700}>
               {roles.map((role) => (
-                <Link key={role.slug} href={`/roles/${role.slug}`} className="group">
+                <Link key={role.slug} href={`/roles/${role.slug}`} className="group h-full">
                   <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
                     <CardHeader className="pb-2">
                       <CardTitle className="text-base font-semibold">{role.title}</CardTitle>
@@ -292,7 +293,7 @@ export default function HomePage() {
                   </Card>
                 </Link>
               ))}
-            </div>
+            </StaggeredGrid>
           </div>
         </section>
 
@@ -319,9 +320,9 @@ export default function HomePage() {
               </div>
             </AnimateOnScroll>
 
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <StaggeredGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" staggerDelay={100} duration={700}>
               {tools.map((tool) => (
-                <Link key={tool.slug} href={`/tools/${tool.slug}`} className="group">
+                <Link key={tool.slug} href={`/tools/${tool.slug}`} className="group h-full">
                   <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
                     <CardHeader>
                       <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-sm bg-accent/60">
@@ -339,7 +340,7 @@ export default function HomePage() {
                   </Card>
                 </Link>
               ))}
-            </div>
+            </StaggeredGrid>
           </div>
         </section>
 
@@ -358,9 +359,9 @@ export default function HomePage() {
               </div>
             </AnimateOnScroll>
 
-            <div className="grid gap-4 lg:grid-cols-3">
+            <StaggeredGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" staggerDelay={100} duration={700}>
               {featuredArticles.map((article) => (
-                <Link key={article.title} href={article.href} className="group">
+                <Link key={article.title} href={article.href} className="group h-full">
                   <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
                     <CardHeader>
                       <div className="mb-2 flex items-center gap-2">
@@ -388,7 +389,7 @@ export default function HomePage() {
                   </Card>
                 </Link>
               ))}
-            </div>
+            </StaggeredGrid>
           </div>
         </section>
 

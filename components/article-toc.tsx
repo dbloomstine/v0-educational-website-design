@@ -138,11 +138,10 @@ export function ArticleToc({ content }: ArticleTocProps) {
         />
       </div>
 
-      {/* Desktop TOC - Sidebar */}
+      {/* Desktop TOC - Sidebar (parent container handles sticky) */}
       <div className="hidden xl:block">
-        <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-y-auto">
-          <div className="space-y-1 pb-8">
-            <p className="text-sm font-semibold mb-4">On this page</p>
+        <div className="space-y-1 pb-4">
+          <p className="text-sm font-semibold mb-4">On this page</p>
             <nav className="space-y-1">
               {headings.map((heading) => (
                 <button
@@ -161,7 +160,6 @@ export function ArticleToc({ content }: ArticleTocProps) {
                 </button>
               ))}
             </nav>
-          </div>
         </div>
       </div>
 

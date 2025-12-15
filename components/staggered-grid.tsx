@@ -2,23 +2,21 @@
 
 import { useEffect, useRef, useState } from 'react'
 
-interface AnimateOnScrollProps {
-  children: React.ReactNode
+interface StaggeredGridProps {
+  children: React.ReactNode[]
   className?: string
-  delay?: number
-  direction?: 'up' | 'down' | 'left' | 'right' | 'none'
+  staggerDelay?: number
   duration?: number
-  once?: boolean
+  direction?: 'up' | 'down' | 'left' | 'right'
 }
 
-export function AnimateOnScroll({
+export function StaggeredGrid({
   children,
   className = '',
-  delay = 0,
+  staggerDelay = 75,
+  duration = 700,
   direction = 'up',
-  duration = 900,
-  once = true,
-}: AnimateOnScrollProps) {
+}: StaggeredGridProps) {
   const [isVisible, setIsVisible] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -27,11 +25,9 @@ export function AnimateOnScroll({
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true)
-          if (once && ref.current) {
+          if (ref.current) {
             observer.unobserve(ref.current)
           }
-        } else if (!once) {
-          setIsVisible(false)
         }
       },
       {
@@ -49,36 +45,37 @@ export function AnimateOnScroll({
         observer.unobserve(ref.current)
       }
     }
-  }, [once])
+  }, [])
 
   const getInitialTransform = () => {
     switch (direction) {
       case 'up':
-        return 'translateY(24px)'
+        return 'translateY(20px)'
       case 'down':
-        return 'translateY(-24px)'
+        return 'translateY(-20px)'
       case 'left':
-        return 'translateX(24px)'
+        return 'translateX(20px)'
       case 'right':
-        return 'translateX(-24px)'
-      case 'none':
-        return 'none'
+        return 'translateX(-20px)'
       default:
-        return 'translateY(24px)'
+        return 'translateY(20px)'
     }
   }
 
   return (
-    <div
-      ref={ref}
-      className={className}
-      style={{
-        opacity: isVisible ? 1 : 0,
-        transform: isVisible ? 'none' : getInitialTransform(),
-        transition: `opacity ${duration}ms ease-out ${delay}ms, transform ${duration}ms ease-out ${delay}ms`,
-      }}
-    >
-      {children}
+    <div ref={ref} className={className}>
+      {children.map((child, index) => (
+        <div
+          key={index}
+          style={{
+            opacity: isVisible ? 1 : 0,
+            transform: isVisible ? 'none' : getInitialTransform(),
+            transition: `opacity ${duration}ms ease-out ${index * staggerDelay}ms, transform ${duration}ms ease-out ${index * staggerDelay}ms`,
+          }}
+        >
+          {child}
+        </div>
+      ))}
     </div>
   )
 }
