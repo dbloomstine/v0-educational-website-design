@@ -34,7 +34,6 @@ export default async function NewsletterPage() {
       return {
         ...newsletter,
         recentPosts: posts.slice(0, 3),
-        totalPosts: posts.length,
       }
     })
   )
@@ -104,11 +103,6 @@ export default async function NewsletterPage() {
                           </a>
                         </Button>
                       </div>
-                      {newsletter.totalPosts > 0 && (
-                        <p className="mt-4 text-sm text-muted-foreground">
-                          {newsletter.totalPosts} issues published
-                        </p>
-                      )}
                     </CardContent>
                   </Card>
 
