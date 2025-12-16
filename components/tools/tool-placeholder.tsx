@@ -9,13 +9,8 @@ import { FundFormationTimeline } from './fund-formation-timeline/fund-formation-
 import { ManagementFeeCalculator } from './management-fee-calculator/management-fee-calculator'
 import { ManagementCompanyBudget } from './management-company-budget/management-company-budget'
 import { FundExpenseAllocation } from './fund-expense-allocation/fund-expense-allocation'
-import { FundAdminPricing } from './fund-admin-pricing/fund-admin-pricing'
-import { AuditFeeEstimator } from './audit-fee-estimator/audit-fee-estimator'
-import { TaxFeeEstimator } from './tax-fee-estimator/tax-fee-estimator'
-import { KYCAMLCostEstimator } from './kyc-aml-cost-estimator/kyc-aml-cost-estimator'
 import { DistributionWaterfall } from './distribution-waterfall/distribution-waterfall'
 import { SubscriptionCreditLine } from './subscription-credit-line/subscription-credit-line'
-import { InvestorReportGenerator } from './investor-report-generator/investor-report-generator'
 
 interface ToolPlaceholderProps {
   tool: Tool
@@ -86,58 +81,6 @@ export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
     )
   }
 
-  // If this is the Fund Admin Pricing tool, render the actual tool
-  if (tool.slug === 'fund-admin-pricing') {
-    return (
-      <div className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-7xl">
-            <FundAdminPricing />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // If this is the Audit Fee Estimator tool, render the actual tool
-  if (tool.slug === 'audit-fee-estimator') {
-    return (
-      <div className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-7xl">
-            <AuditFeeEstimator />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // If this is the Tax Fee Estimator tool, render the actual tool
-  if (tool.slug === 'tax-fee-estimator') {
-    return (
-      <div className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-7xl">
-            <TaxFeeEstimator />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // If this is the KYC/AML Cost Estimator tool, render the actual tool
-  if (tool.slug === 'kyc-aml-cost-estimator') {
-    return (
-      <div className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-7xl">
-            <KYCAMLCostEstimator />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   // If this is the Distribution Waterfall Visualizer tool, render the actual tool
   if (tool.slug === 'distribution-waterfall') {
     return (
@@ -158,19 +101,6 @@ export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-7xl">
             <SubscriptionCreditLine />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // If this is the Investor Report Generator tool, render the actual tool
-  if (tool.slug === 'investor-report-generator') {
-    return (
-      <div className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-7xl">
-            <InvestorReportGenerator />
           </div>
         </div>
       </div>

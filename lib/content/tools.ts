@@ -1,6 +1,6 @@
 import { Tool, ToolCategory } from './types'
 
-// All 10 active tools for FundOpsHQ
+// 6 high-trust tools for FundOpsHQ
 const tools: Tool[] = [
   // A. Fund Formation
   {
@@ -74,101 +74,8 @@ const tools: Tool[] = [
     status: 'active',
     icon: 'Building'
   },
-  // B. Pricing and Costs
-  {
-    id: 'fund-admin-pricing',
-    title: 'Fund Administration Pricing Estimator',
-    slug: 'fund-admin-pricing',
-    shortDescription: 'Estimate typical fund administration fee ranges and what drives cost.',
-    inputs: [
-      'Fund type',
-      'AUM',
-      'Number of entities',
-      'Investor count',
-      'Jurisdictions',
-      'Reporting frequency',
-      'Complexity'
-    ],
-    outputs: [
-      'Estimated fee band',
-      'Key cost drivers',
-      'Notes on scope assumptions'
-    ],
-    categories: ['Pricing and Costs'],
-    personas: ['GP', 'CFO or Controller', 'COO or Operations'],
-    complexity: 'Intermediate',
-    status: 'active',
-    icon: 'Calculator'
-  },
-  {
-    id: 'audit-fee-estimator',
-    title: 'Audit Fee Estimator',
-    slug: 'audit-fee-estimator',
-    shortDescription: 'Estimate audit fee ranges based on size and complexity.',
-    inputs: [
-      'Fund type',
-      'AUM',
-      'Number of portfolio companies or positions',
-      'Jurisdictions',
-      'Entity structure complexity'
-    ],
-    outputs: [
-      'Estimated audit fee range',
-      'What typically drives higher or lower cost'
-    ],
-    categories: ['Pricing and Costs'],
-    personas: ['GP', 'CFO or Controller', 'LP'],
-    complexity: 'Intermediate',
-    status: 'active',
-    icon: 'ClipboardCheck'
-  },
-  {
-    id: 'tax-fee-estimator',
-    title: 'Tax Fee Estimator',
-    slug: 'tax-fee-estimator',
-    shortDescription: 'Estimate tax preparation fees for funds, blockers, and GP entities.',
-    inputs: [
-      'Fund type',
-      'Number and type of entities (fund, feeders, blockers, GP, carry vehicle)',
-      'Jurisdictions',
-      'Portfolio complexity'
-    ],
-    outputs: [
-      'Estimated tax fee ranges',
-      'Typical drivers',
-      'Potential add-on costs'
-    ],
-    categories: ['Pricing and Costs'],
-    personas: ['GP', 'CFO or Controller'],
-    complexity: 'Intermediate',
-    status: 'active',
-    icon: 'Receipt'
-  },
-  {
-    id: 'kyc-aml-cost-estimator',
-    title: 'Investor Onboarding / KYC / AML Cost Estimator',
-    slug: 'kyc-aml-cost-estimator',
-    shortDescription: 'Estimate investor onboarding and KYC/AML costs per investor and in total.',
-    inputs: [
-      'Number of investors',
-      'Investor type mix (institutional, HNWI, retail, offshore)',
-      'Jurisdictions',
-      'Frequency of refresh',
-      'Whether third-party provider is used'
-    ],
-    outputs: [
-      'Per-investor cost bands',
-      'Total expected annual cost',
-      'Notes on what can drive costs up'
-    ],
-    categories: ['Pricing and Costs'],
-    personas: ['COO or Operations', 'Compliance', 'CFO or Controller'],
-    complexity: 'Intermediate',
-    status: 'active',
-    icon: 'UserCheck'
-  },
 
-  // C. Fund Economics
+  // B. Fund Economics
   {
     id: 'distribution-waterfall',
     title: 'Distribution Waterfall Visualizer',
@@ -219,7 +126,7 @@ const tools: Tool[] = [
     icon: 'LineChart'
   },
 
-  // D. Operations and Compliance
+  // C. Operations and Compliance
   {
     id: 'fund-expense-allocation',
     title: 'Fund Expense Allocation Helper',
@@ -244,35 +151,6 @@ const tools: Tool[] = [
     complexity: 'Intermediate',
     status: 'active',
     icon: 'Split'
-  },
-
-  // E. Investor Relations
-  {
-    id: 'investor-report-generator',
-    title: 'Investor Report Narrative Generator',
-    slug: 'investor-report-generator',
-    shortDescription: 'AI-powered tool to generate professional quarterly investor letters from performance data and commentary.',
-    inputs: [
-      'Performance data (Excel/CSV)',
-      'Attribution data (contributors/detractors)',
-      'Manager commentary (DOCX/TXT/PDF)',
-      'Fund type (HF, PE, VC)',
-      'Tone preference (Conservative, Neutral, Optimistic)',
-      'Letter format (Executive Summary or Full Letter)'
-    ],
-    outputs: [
-      'Performance Overview section',
-      'Attribution Analysis section',
-      'Key Events summary',
-      'Forward-Looking Outlook',
-      'Exportable PDF letter',
-      'Copy to clipboard'
-    ],
-    categories: ['Investor Relations'],
-    personas: ['Investor Relations', 'GP', 'CFO or Controller'],
-    complexity: 'Intermediate',
-    status: 'active',
-    icon: 'FileText'
   }
 ]
 
