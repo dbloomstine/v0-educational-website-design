@@ -39,6 +39,11 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/listen" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Listen (Audio)
+                </Link>
+              </li>
+              <li>
                 <Link href="/tools" className="text-muted-foreground hover:text-foreground transition-colors">
                   Tools & Templates
                 </Link>

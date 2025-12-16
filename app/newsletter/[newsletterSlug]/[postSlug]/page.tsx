@@ -5,8 +5,10 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Breadcrumb } from '@/components/breadcrumb'
 import { Button } from '@/components/ui/button'
+import { AudioCta } from '@/components/audio-cta'
 import { Mail } from 'lucide-react'
 import { getNewsletter, getNewsletterPost, getAllNewsletterPostSlugs, NEWSLETTERS, type NewsletterSlug } from '@/lib/newsletters'
+import { getAudioForArticle } from '@/lib/podcasts'
 
 interface PostPageProps {
   params: {
@@ -72,6 +74,11 @@ export default async function NewsletterPostPage({ params }: PostPageProps) {
     notFound()
   }
 
+  // Check for audio version (only for FundOpsHQ Insights)
+  const audioLinks = newsletterSlug === 'fundopshq-insights'
+    ? await getAudioForArticle(post.title)
+    : null
+
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
@@ -110,6 +117,11 @@ export default async function NewsletterPostPage({ params }: PostPageProps) {
                   {post.title}
                 </h1>
               </div>
+
+              {/* Audio CTA (if available) */}
+              {audioLinks && (
+                <AudioCta audioLinks={audioLinks} className="mb-8" />
+              )}
 
               {/* Post content */}
               <div
