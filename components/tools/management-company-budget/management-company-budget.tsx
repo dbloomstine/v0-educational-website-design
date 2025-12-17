@@ -6,12 +6,32 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { Plus, Trash2, DollarSign, TrendingUp, Clock, AlertCircle, Building2 } from 'lucide-react'
-import { DisclaimerBlock, ExportToolbar, PresetManager } from '@/components/tools/shared'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Plus,
+  Trash2,
+  DollarSign,
+  TrendingUp,
+  Clock,
+  AlertCircle,
+  Building2,
+  Sparkles,
+  BarChart3,
+  Settings2,
+  FileSpreadsheet,
+  FileText,
+  ChevronDown
+} from 'lucide-react'
+import { DisclaimerBlock, PresetManager } from '@/components/tools/shared'
 import { ShareButton } from '@/components/tools/share-button'
 import { InfoPopover } from '@/components/ui/info-popover'
 import { usePresets } from '@/lib/hooks/use-presets'
-import { exportBudgetCSV, exportBudgetPDF } from './export'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import {
   BudgetData,
   Fund,
@@ -21,22 +41,26 @@ import {
   TYPICAL_RANGES
 } from './types'
 import { calculateBudget, formatCurrency, formatRunway } from './budget-calculator'
+import { OnboardingWizard } from './onboarding-wizard'
+import { SensitivityAnalysis } from './sensitivity-analysis'
+import { Benchmarks } from './benchmarks'
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  ReferenceLine,
-  Legend
-} from 'recharts'
+  RunwayGauge,
+  ExpenseBreakdownChart,
+  EnhancedCashRunwayChart
+} from './enhanced-charts'
+import * as XLSX from 'xlsx'
+import jsPDF from 'jspdf'
+import autoTable from 'jspdf-autotable'
 
 export function ManagementCompanyBudget() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
+
+  // Track if user has completed wizard or skipped
+  const [showWizard, setShowWizard] = useState<boolean | null>(null)
+  const [activeTab, setActiveTab] = useState('overview')
 
   // Parse initial state from URL or use defaults
   const getInitialData = (): BudgetData => {
@@ -44,8 +68,6 @@ export function ManagementCompanyBudget() {
 
     const startingCash = parseFloat(searchParams.get('cash') || '') || DEFAULT_BUDGET_DATA.startingCash
 
-    // For simplicity, we'll store funds, team, and expenses as JSON in URL
-    // This is a simplified version - complex nested data is harder to URL-encode
     let funds = DEFAULT_BUDGET_DATA.funds
     let expenses = DEFAULT_BUDGET_DATA.expenses
 
@@ -62,8 +84,17 @@ export function ManagementCompanyBudget() {
   }
 
   const [data, setData] = useState<BudgetData>(getInitialData)
-  const [csvLoading, setCsvLoading] = useState(false)
-  const [pdfLoading, setPdfLoading] = useState(false)
+
+  // Check if this is a fresh visit or returning user
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const hasVisited = localStorage.getItem('budget-planner-visited')
+      const hasUrlParams = searchParams.has('cash') || searchParams.has('funds')
+
+      // Show wizard if first visit and no URL params
+      setShowWizard(!hasVisited && !hasUrlParams)
+    }
+  }, [searchParams])
 
   // Preset management
   const {
@@ -88,12 +119,11 @@ export function ManagementCompanyBudget() {
   // Calculate results whenever data changes
   const results = useMemo(() => calculateBudget(data), [data])
 
-  // Update URL when data changes (debounced) - simplified to just starting cash and funds
+  // Update URL when data changes (debounced)
   useEffect(() => {
     const timer = setTimeout(() => {
       const params = new URLSearchParams()
       params.set('cash', String(data.startingCash))
-      // Encode funds array - limit URL size
       if (data.funds.length > 0) {
         params.set('funds', encodeURIComponent(JSON.stringify(data.funds)))
       }
@@ -197,45 +227,254 @@ export function ManagementCompanyBudget() {
     }))
   }
 
-  // Reset to defaults
-  const resetToDefaults = () => {
-    setData(DEFAULT_BUDGET_DATA)
+  // Wizard handlers
+  const handleWizardComplete = (wizardData: BudgetData) => {
+    setData(wizardData)
+    setShowWizard(false)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('budget-planner-visited', 'true')
+    }
   }
 
-  // Chart data - show monthly for first 24 months, then quarterly
-  const chartData = results.projections
-    .filter((_, i) => i < 24 || i % 3 === 0)
-    .map(p => ({
-      label: p.label,
-      cashBalance: p.cashBalance,
-      revenue: p.revenue,
-      expenses: p.expenses
-    }))
+  const handleWizardSkip = () => {
+    setShowWizard(false)
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('budget-planner-visited', 'true')
+    }
+  }
+
+  const handleRestartWizard = () => {
+    setShowWizard(true)
+  }
+
+  // Export to Excel
+  const handleExportExcel = () => {
+    const wb = XLSX.utils.book_new()
+
+    // Summary sheet
+    const summaryData = [
+      ['Management Company Budget Analysis'],
+      ['Generated:', new Date().toLocaleDateString()],
+      [''],
+      ['Key Metrics'],
+      ['Starting Cash', formatCurrency(data.startingCash)],
+      ['Monthly Burn Rate', formatCurrency(results.monthlyBurn)],
+      ['Annual Budget', formatCurrency(results.annualBudget)],
+      ['Annual Revenue', formatCurrency(results.annualRevenue)],
+      ['Runway', formatRunway(results.runwayMonths)],
+      ['Break-Even Month', results.breakEvenMonth ? `Month ${results.breakEvenMonth}` : 'Not projected'],
+      ['Seed Capital Needed', formatCurrency(results.seedCapitalNeeded)],
+    ]
+    const summaryWs = XLSX.utils.aoa_to_sheet(summaryData)
+    XLSX.utils.book_append_sheet(wb, summaryWs, 'Summary')
+
+    // Funds sheet
+    const fundsData = [
+      ['Fund Revenue Sources'],
+      ['Fund Name', 'Size ($M)', 'Fee Rate (%)', 'First Close Year', 'Annual Fee'],
+      ...data.funds.map(f => [
+        f.name,
+        f.size,
+        f.feeRate,
+        f.firstCloseYear,
+        f.size * 1_000_000 * (f.feeRate / 100)
+      ])
+    ]
+    const fundsWs = XLSX.utils.aoa_to_sheet(fundsData)
+    XLSX.utils.book_append_sheet(wb, fundsWs, 'Funds')
+
+    // Team sheet
+    const teamData = [
+      ['Team Costs'],
+      ['Role', 'Monthly Cost', 'Annual Cost'],
+      ...data.expenses.team.map(t => [t.role, t.monthlyCost, t.monthlyCost * 12])
+    ]
+    const teamWs = XLSX.utils.aoa_to_sheet(teamData)
+    XLSX.utils.book_append_sheet(wb, teamWs, 'Team')
+
+    // Operations sheet
+    const opsData = [
+      ['Operations Costs'],
+      ['Expense', 'Monthly Cost', 'Annual Cost'],
+      ...data.expenses.operations.map(o => [o.name, o.monthlyCost, o.monthlyCost * 12])
+    ]
+    const opsWs = XLSX.utils.aoa_to_sheet(opsData)
+    XLSX.utils.book_append_sheet(wb, opsWs, 'Operations')
+
+    // Projections sheet
+    const projData = [
+      ['Monthly Cash Flow Projections'],
+      ['Month', 'Revenue', 'Expenses', 'Net Cash Flow', 'Cash Balance'],
+      ...results.projections.slice(0, 36).map(p => [
+        p.label,
+        p.revenue,
+        p.expenses,
+        p.netCashFlow,
+        p.cashBalance
+      ])
+    ]
+    const projWs = XLSX.utils.aoa_to_sheet(projData)
+    XLSX.utils.book_append_sheet(wb, projWs, 'Projections')
+
+    XLSX.writeFile(wb, `management-company-budget-${new Date().toISOString().split('T')[0]}.xlsx`)
+  }
+
+  // Export to PDF
+  const handleExportPdf = () => {
+    const doc = new jsPDF()
+    const pageWidth = doc.internal.pageSize.getWidth()
+
+    // Title
+    doc.setFontSize(18)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Management Company Budget Analysis', pageWidth / 2, 20, { align: 'center' })
+
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'normal')
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 28, { align: 'center' })
+
+    // Key Metrics
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Key Metrics', 14, 42)
+
+    autoTable(doc, {
+      startY: 46,
+      head: [['Metric', 'Value']],
+      body: [
+        ['Starting Cash', formatCurrency(data.startingCash)],
+        ['Monthly Burn Rate', formatCurrency(results.monthlyBurn)],
+        ['Annual Budget', formatCurrency(results.annualBudget)],
+        ['Annual Revenue', formatCurrency(results.annualRevenue)],
+        ['Runway', formatRunway(results.runwayMonths)],
+        ['Break-Even', results.breakEvenMonth ? `Month ${results.breakEvenMonth}` : 'Not projected'],
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [59, 130, 246] },
+      styles: { fontSize: 10 },
+    })
+
+    // Fund Revenue
+    const finalY1 = (doc as any).lastAutoTable.finalY + 10
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Fund Revenue Sources', 14, finalY1)
+
+    autoTable(doc, {
+      startY: finalY1 + 4,
+      head: [['Fund', 'Size', 'Fee Rate', 'Annual Fee']],
+      body: data.funds.map(f => [
+        f.name,
+        `$${f.size}M`,
+        `${f.feeRate}%`,
+        formatCurrency(f.size * 1_000_000 * (f.feeRate / 100))
+      ]),
+      theme: 'grid',
+      headStyles: { fillColor: [34, 197, 94] },
+      styles: { fontSize: 10 },
+    })
+
+    // Team Costs
+    const finalY2 = (doc as any).lastAutoTable.finalY + 10
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Team Costs', 14, finalY2)
+
+    autoTable(doc, {
+      startY: finalY2 + 4,
+      head: [['Role', 'Monthly', 'Annual']],
+      body: data.expenses.team.map(t => [
+        t.role,
+        formatCurrency(t.monthlyCost),
+        formatCurrency(t.monthlyCost * 12)
+      ]),
+      theme: 'grid',
+      headStyles: { fillColor: [99, 102, 241] },
+      styles: { fontSize: 10 },
+    })
+
+    // Disclaimer
+    const finalY3 = (doc as any).lastAutoTable.finalY + 15
+    doc.setFontSize(8)
+    doc.setFont('helvetica', 'italic')
+    doc.setTextColor(128, 128, 128)
+    const disclaimer = 'This analysis is for informational purposes only. Consult with your accountant and legal counsel before making financial decisions.'
+    const splitDisclaimer = doc.splitTextToSize(disclaimer, pageWidth - 28)
+    doc.text(splitDisclaimer, 14, finalY3)
+
+    doc.save(`management-company-budget-${new Date().toISOString().split('T')[0]}.pdf`)
+  }
+
+  // Show wizard if needed
+  if (showWizard === null) {
+    return null // Loading state
+  }
+
+  if (showWizard) {
+    return (
+      <div className="space-y-8">
+        <OnboardingWizard
+          onComplete={handleWizardComplete}
+          onSkip={handleWizardSkip}
+        />
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-8">
       {/* Header */}
       <div className="space-y-3">
-        <div className="flex items-start justify-between gap-4">
-          <h1 className="text-3xl font-bold tracking-tight">Management Company Budget Planner</h1>
-          <ShareButton getShareableUrl={getShareableUrl} />
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">Management Company Budget Planner</h1>
+            <p className="text-lg text-muted-foreground mt-2">
+              Plan your management company budget and runway. See how long your cash will last and when fees will cover expenses.
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <ShareButton getShareableUrl={getShareableUrl} />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm">
+                  <FileSpreadsheet className="h-4 w-4 mr-1.5" />
+                  Export
+                  <ChevronDown className="h-3 w-3 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleExportExcel}>
+                  <FileSpreadsheet className="h-4 w-4 mr-2" />
+                  Export to Excel
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleExportPdf}>
+                  <FileText className="h-4 w-4 mr-2" />
+                  Export to PDF
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
-        <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
-          Plan your management company budget and runway. See how long your cash will last and when fees will cover expenses.
-        </p>
-        {/* Preset Manager */}
-        <PresetManager
-          presets={presets}
-          isLoaded={presetsLoaded}
-          onSave={handleSavePreset}
-          onLoad={handleLoadPreset}
-          onDelete={deletePreset}
-          canSave={data.funds.length > 0}
-          compact
-        />
+
+        {/* Action bar */}
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <PresetManager
+            presets={presets}
+            isLoaded={presetsLoaded}
+            onSave={handleSavePreset}
+            onLoad={handleLoadPreset}
+            onDelete={deletePreset}
+            canSave={data.funds.length > 0}
+            compact
+          />
+          <Button variant="ghost" size="sm" onClick={handleRestartWizard}>
+            <Sparkles className="h-4 w-4 mr-1.5" />
+            Run Setup Wizard
+          </Button>
+        </div>
       </div>
 
-      {/* Key Metrics - Always Visible */}
+      {/* Key Metrics */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardContent className="pt-6">
@@ -301,370 +540,329 @@ export function ManagementCompanyBudget() {
         </div>
       )}
 
-      {/* Cash Runway Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Cash Runway Projection</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                <XAxis
-                  dataKey="label"
-                  tick={{ fontSize: 12 }}
-                  interval="preserveStartEnd"
-                  className="text-muted-foreground"
-                />
-                <YAxis
-                  tickFormatter={(v) => formatCurrency(v, true)}
-                  tick={{ fontSize: 12 }}
-                  className="text-muted-foreground"
-                />
-                <Tooltip
-                  formatter={(value: number) => formatCurrency(value)}
-                  labelClassName="font-medium"
-                  contentStyle={{
-                    backgroundColor: 'hsl(var(--card))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px'
-                  }}
-                />
-                <Legend verticalAlign="top" height={36} />
-                <ReferenceLine y={0} stroke="hsl(var(--destructive))" strokeDasharray="5 5" />
-                <Line
-                  type="monotone"
-                  dataKey="cashBalance"
-                  stroke="hsl(var(--primary))"
-                  strokeWidth={2}
-                  dot={false}
-                  name="Cash Balance"
-                />
-                <Line
-                  type="monotone"
-                  dataKey="revenue"
-                  stroke="hsl(142 76% 36%)"
-                  strokeWidth={1.5}
-                  strokeDasharray="4 4"
-                  dot={false}
-                  name="Monthly Revenue"
-                />
-                <Line
-                  type="monotone"
-                  dataKey="expenses"
-                  stroke="hsl(var(--destructive))"
-                  strokeWidth={1.5}
-                  strokeDasharray="4 4"
-                  dot={false}
-                  name="Monthly Expenses"
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Tabbed Content */}
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="overview" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="inputs" className="flex items-center gap-2">
+            <Settings2 className="h-4 w-4" />
+            Edit Budget
+          </TabsTrigger>
+          <TabsTrigger value="analysis" className="flex items-center gap-2">
+            <TrendingUp className="h-4 w-4" />
+            Analysis
+          </TabsTrigger>
+        </TabsList>
 
-      {/* Starting Cash */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <CardTitle>Starting Cash</CardTitle>
-            <InfoPopover>
-              Your initial capital to cover expenses before management fees start flowing. This is typically GP capital or seed funding from anchor LPs. Most emerging managers need 12-24 months of runway.
-            </InfoPopover>
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="space-y-6 mt-6">
+          {/* Charts Row */}
+          <div className="grid lg:grid-cols-2 gap-6">
+            <RunwayGauge data={data} results={results} />
+            <ExpenseBreakdownChart data={data} results={results} />
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="max-w-xs">
-            <Label htmlFor="starting-cash">How much cash do you have to start?</Label>
-            <div className="relative mt-2">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-              <Input
-                id="starting-cash"
-                type="number"
-                value={data.startingCash}
-                onChange={(e) => setData(prev => ({ ...prev, startingCash: parseFloat(e.target.value) || 0 }))}
-                className="pl-7"
-              />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
-      {/* Funds Section */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div className="flex items-center gap-2">
-            <CardTitle>Your Fund(s)</CardTitle>
-            <InfoPopover>
-              Add each fund you manage. Management fees are calculated based on fund size and fee rate. First Close Year determines when fee revenue begins (fees typically start at first close, not final close).
-            </InfoPopover>
-          </div>
-          <Button size="sm" onClick={addFund}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Fund
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
-            Add your funds to calculate expected management fee revenue.
-          </p>
+          {/* Main Chart */}
+          <EnhancedCashRunwayChart data={data} results={results} />
 
-          {data.funds.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">No funds added yet. Click &quot;Add Fund&quot; to get started.</p>
-          ) : (
-            <div className="space-y-4">
-              {data.funds.map((fund) => (
-                <div key={fund.id} className="p-4 border rounded-lg space-y-4">
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="col-span-2 md:col-span-1">
-                      <Label>Fund Name</Label>
-                      <Input
-                        value={fund.name}
-                        onChange={(e) => updateFund(fund.id, { name: e.target.value })}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label>Size ($M)</Label>
-                      <Input
-                        type="number"
-                        value={fund.size}
-                        onChange={(e) => updateFund(fund.id, { size: parseFloat(e.target.value) || 0 })}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label>Mgmt Fee (%)</Label>
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={fund.feeRate}
-                        onChange={(e) => updateFund(fund.id, { feeRate: parseFloat(e.target.value) || 0 })}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div className="col-span-2 md:col-span-1">
-                      <Label>First Close Year</Label>
-                      <Input
-                        type="number"
-                        value={fund.firstCloseYear}
-                        onChange={(e) => updateFund(fund.id, { firstCloseYear: parseInt(e.target.value) || new Date().getFullYear() })}
-                        className="mt-1"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">
-                      Expected annual fee: {formatCurrency(fund.size * 1_000_000 * (fund.feeRate / 100))}
-                    </span>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeFund(fund.id)}
-                      className="text-muted-foreground hover:text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4 mr-1" />
-                      Remove
-                    </Button>
-                  </div>
+          {/* Benchmarks */}
+          <Benchmarks data={data} results={results} />
+        </TabsContent>
+
+        {/* Edit Budget Tab */}
+        <TabsContent value="inputs" className="space-y-6 mt-6">
+          {/* Starting Cash */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <CardTitle>Starting Cash</CardTitle>
+                <InfoPopover>
+                  Your initial capital to cover expenses before management fees start flowing. This is typically GP capital or seed funding from anchor LPs.
+                </InfoPopover>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="max-w-xs">
+                <Label htmlFor="starting-cash">How much cash do you have to start?</Label>
+                <div className="relative mt-2">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                  <Input
+                    id="starting-cash"
+                    type="number"
+                    value={data.startingCash}
+                    onChange={(e) => setData(prev => ({ ...prev, startingCash: parseFloat(e.target.value) || 0 }))}
+                    className="pl-7"
+                  />
                 </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+              </div>
+            </CardContent>
+          </Card>
 
-      {/* Team Expenses */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <div className="flex items-center gap-2">
-            <CardTitle>Team</CardTitle>
-            <InfoPopover>
-              Enter the all-in monthly cost for each team member including salary, bonus, benefits, and payroll taxes. For emerging managers, team is typically the largest expense (60-70% of budget).
-            </InfoPopover>
-          </div>
-          <Button size="sm" onClick={addTeamMember}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Role
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
-            Add team members with their all-in monthly cost (salary + bonus + benefits).
-          </p>
-
-          {/* Typical ranges hint */}
-          <div className="text-xs text-muted-foreground mb-4 p-3 bg-muted/50 rounded-lg">
-            <span className="font-medium">Typical monthly ranges:</span>{' '}
-            Managing Partner $15-40K | Partner $12-30K | Associate $6-12K | Analyst $4-8K | CFO $12-25K
-          </div>
-
-          {data.expenses.team.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">No team members added yet.</p>
-          ) : (
-            <div className="space-y-4">
-              {data.expenses.team.map((member) => (
-                <div key={member.id} className="p-4 border rounded-lg space-y-3 md:space-y-0">
-                  <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto] gap-3 items-center">
-                    <Input
-                      placeholder="Role (e.g., Managing Partner)"
-                      value={member.role}
-                      onChange={(e) => updateTeamMember(member.id, { role: e.target.value })}
-                    />
-                    <div className="flex items-center gap-2">
-                      <div className="relative flex-1 md:w-36">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
-                        <Input
-                          type="number"
-                          placeholder="Monthly cost"
-                          value={member.monthlyCost || ''}
-                          onChange={(e) => updateTeamMember(member.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
-                          className="pl-7"
-                        />
+          {/* Funds Section */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CardTitle>Your Fund(s)</CardTitle>
+                <InfoPopover>
+                  Add each fund you manage. Management fees are calculated based on fund size and fee rate.
+                </InfoPopover>
+              </div>
+              <Button size="sm" onClick={addFund}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Fund
+              </Button>
+            </CardHeader>
+            <CardContent>
+              {data.funds.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">No funds added yet. Click &quot;Add Fund&quot; to get started.</p>
+              ) : (
+                <div className="space-y-4">
+                  {data.funds.map((fund) => (
+                    <div key={fund.id} className="p-4 border rounded-lg space-y-4">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div className="col-span-2 md:col-span-1">
+                          <Label>Fund Name</Label>
+                          <Input
+                            value={fund.name}
+                            onChange={(e) => updateFund(fund.id, { name: e.target.value })}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label>Size ($M)</Label>
+                          <Input
+                            type="number"
+                            value={fund.size}
+                            onChange={(e) => updateFund(fund.id, { size: parseFloat(e.target.value) || 0 })}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div>
+                          <Label>Mgmt Fee (%)</Label>
+                          <Input
+                            type="number"
+                            step="0.1"
+                            value={fund.feeRate}
+                            onChange={(e) => updateFund(fund.id, { feeRate: parseFloat(e.target.value) || 0 })}
+                            className="mt-1"
+                          />
+                        </div>
+                        <div className="col-span-2 md:col-span-1">
+                          <Label>First Close Year</Label>
+                          <Input
+                            type="number"
+                            value={fund.firstCloseYear}
+                            onChange={(e) => updateFund(fund.id, { firstCloseYear: parseInt(e.target.value) || new Date().getFullYear() })}
+                            className="mt-1"
+                          />
+                        </div>
                       </div>
-                      <span className="text-sm text-muted-foreground whitespace-nowrap">/month</span>
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-muted-foreground">
+                          Expected annual fee: {formatCurrency(fund.size * 1_000_000 * (fund.feeRate / 100))}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeFund(fund.id)}
+                          className="text-muted-foreground hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Remove
+                        </Button>
+                      </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => removeTeamMember(member.id)}
-                      className="text-muted-foreground hover:text-destructive justify-start md:justify-center"
-                    >
-                      <Trash2 className="h-4 w-4 mr-1 md:mr-0" />
-                      <span className="md:hidden">Remove</span>
-                    </Button>
-                  </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+              )}
+            </CardContent>
+          </Card>
 
-      {/* Operations Expenses */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <CardTitle>Operations</CardTitle>
-            <InfoPopover>
-              These are typically fund-level expenses passed through to LPs, but the management company often pays upfront and gets reimbursed. Budget for the cash flow impact even if ultimately charged to the fund.
-            </InfoPopover>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
-            Fund administration, audit, legal, compliance, and tax services.
-          </p>
+          {/* Team Expenses */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between">
+              <div className="flex items-center gap-2">
+                <CardTitle>Team</CardTitle>
+                <InfoPopover>
+                  Enter the all-in monthly cost for each team member including salary, bonus, benefits, and payroll taxes.
+                </InfoPopover>
+              </div>
+              <Button size="sm" onClick={addTeamMember}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Role
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <div className="text-xs text-muted-foreground mb-4 p-3 bg-muted/50 rounded-lg">
+                <span className="font-medium">Typical monthly ranges:</span>{' '}
+                Managing Partner $15-40K | Partner $12-30K | Associate $6-12K | Analyst $4-8K | CFO $12-25K
+              </div>
 
-          <div className="space-y-3">
-            {data.expenses.operations.map((item) => {
-              const range = TYPICAL_RANGES.operations[item.name as keyof typeof TYPICAL_RANGES.operations]
-              return (
-                <div key={item.id} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                  <div className="flex-1">
-                    <span className="font-medium">{item.name}</span>
-                    {range && <span className="text-xs text-muted-foreground ml-2">{range.note}</span>}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="relative flex-1 sm:w-36">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
-                      <Input
-                        type="number"
-                        value={item.monthlyCost || ''}
-                        onChange={(e) => updateOperation(item.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
-                        className="pl-7"
-                      />
+              {data.expenses.team.length === 0 ? (
+                <p className="text-muted-foreground text-center py-8">No team members added yet.</p>
+              ) : (
+                <div className="space-y-4">
+                  {data.expenses.team.map((member) => (
+                    <div key={member.id} className="p-4 border rounded-lg">
+                      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-3 items-center">
+                        <Input
+                          placeholder="Role (e.g., Managing Partner)"
+                          value={member.role}
+                          onChange={(e) => updateTeamMember(member.id, { role: e.target.value })}
+                        />
+                        <div className="flex items-center gap-2">
+                          <div className="relative w-36">
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
+                            <Input
+                              type="number"
+                              placeholder="Monthly"
+                              value={member.monthlyCost || ''}
+                              onChange={(e) => updateTeamMember(member.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
+                              className="pl-7"
+                            />
+                          </div>
+                          <span className="text-sm text-muted-foreground">/mo</span>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => removeTeamMember(member.id)}
+                          className="text-muted-foreground hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
-                    <span className="text-sm text-muted-foreground whitespace-nowrap">/month</span>
-                  </div>
+                  ))}
                 </div>
-              )
-            })}
-          </div>
-        </CardContent>
-      </Card>
+              )}
+            </CardContent>
+          </Card>
 
-      {/* Overhead Expenses */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center gap-2">
-            <CardTitle>Overhead</CardTitle>
-            <InfoPopover>
-              These are management company expenses paid from fee revenue. D&O/E&O insurance is critical for fund managers - don't skip it. Many emerging managers use coworking spaces to reduce office costs.
-            </InfoPopover>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-muted-foreground mb-4">
-            Office, insurance, technology, and travel expenses.
-          </p>
-
-          <div className="space-y-3">
-            {data.expenses.overhead.map((item) => {
-              const range = TYPICAL_RANGES.overhead[item.name as keyof typeof TYPICAL_RANGES.overhead]
-              return (
-                <div key={item.id} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
-                  <div className="flex-1">
-                    <span className="font-medium">{item.name}</span>
-                    {range && <span className="text-xs text-muted-foreground ml-2">{range.note}</span>}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="relative flex-1 sm:w-36">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
-                      <Input
-                        type="number"
-                        value={item.monthlyCost || ''}
-                        onChange={(e) => updateOverhead(item.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
-                        className="pl-7"
-                      />
+          {/* Operations Expenses */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <CardTitle>Operations</CardTitle>
+                <InfoPopover>
+                  These are typically fund-level expenses passed through to LPs, but the management company often pays upfront.
+                </InfoPopover>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {data.expenses.operations.map((item) => {
+                  const range = TYPICAL_RANGES.operations[item.name as keyof typeof TYPICAL_RANGES.operations]
+                  return (
+                    <div key={item.id} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                      <div className="flex-1">
+                        <span className="font-medium">{item.name}</span>
+                        {range && <span className="text-xs text-muted-foreground ml-2">{range.note}</span>}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="relative w-36">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
+                          <Input
+                            type="number"
+                            value={item.monthlyCost || ''}
+                            onChange={(e) => updateOperation(item.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
+                            className="pl-7"
+                          />
+                        </div>
+                        <span className="text-sm text-muted-foreground">/mo</span>
+                      </div>
                     </div>
-                    <span className="text-sm text-muted-foreground whitespace-nowrap">/month</span>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        </CardContent>
-      </Card>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
 
-      {/* Export Section */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Export Results</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            Download your budget analysis as CSV (for spreadsheets) or PDF (for presentations).
-          </p>
-          <ExportToolbar
-            onExportCSV={() => {
-              setCsvLoading(true)
-              setTimeout(() => {
-                exportBudgetCSV(data, results)
-                setCsvLoading(false)
-              }, 100)
-            }}
-            onExportPDF={() => {
-              setPdfLoading(true)
-              setTimeout(() => {
-                exportBudgetPDF(data, results)
-                setPdfLoading(false)
-              }, 100)
-            }}
-            csvLoading={csvLoading}
-            pdfLoading={pdfLoading}
-          />
-        </CardContent>
-      </Card>
+          {/* Overhead Expenses */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <CardTitle>Overhead</CardTitle>
+                <InfoPopover>
+                  These are management company expenses paid from fee revenue.
+                </InfoPopover>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {data.expenses.overhead.map((item) => {
+                  const range = TYPICAL_RANGES.overhead[item.name as keyof typeof TYPICAL_RANGES.overhead]
+                  return (
+                    <div key={item.id} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+                      <div className="flex-1">
+                        <span className="font-medium">{item.name}</span>
+                        {range && <span className="text-xs text-muted-foreground ml-2">{range.note}</span>}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="relative w-36">
+                          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
+                          <Input
+                            type="number"
+                            value={item.monthlyCost || ''}
+                            onChange={(e) => updateOverhead(item.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
+                            className="pl-7"
+                          />
+                        </div>
+                        <span className="text-sm text-muted-foreground">/mo</span>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-      {/* Reset Button */}
-      <div className="flex justify-center">
-        <Button variant="outline" onClick={resetToDefaults}>
-          Reset to Defaults
-        </Button>
-      </div>
+        {/* Analysis Tab */}
+        <TabsContent value="analysis" className="space-y-6 mt-6">
+          <SensitivityAnalysis baseData={data} baseResults={results} />
+
+          {/* Monthly Projection Table */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Monthly Projections (First 24 Months)</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left py-2 px-2">Month</th>
+                      <th className="text-right py-2 px-2">Revenue</th>
+                      <th className="text-right py-2 px-2">Expenses</th>
+                      <th className="text-right py-2 px-2">Net Flow</th>
+                      <th className="text-right py-2 px-2">Balance</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {results.projections.slice(0, 24).map((proj, i) => (
+                      <tr key={i} className="border-b hover:bg-muted/50">
+                        <td className="py-2 px-2 font-medium">{proj.label}</td>
+                        <td className="text-right py-2 px-2 text-emerald-600">{formatCurrency(proj.revenue, true)}</td>
+                        <td className="text-right py-2 px-2 text-red-600">{formatCurrency(proj.expenses, true)}</td>
+                        <td className={`text-right py-2 px-2 ${proj.netCashFlow >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                          {formatCurrency(proj.netCashFlow, true)}
+                        </td>
+                        <td className={`text-right py-2 px-2 font-medium ${proj.cashBalance < data.startingCash * 0.25 ? 'text-amber-600' : ''}`}>
+                          {formatCurrency(proj.cashBalance, true)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       {/* Disclaimer */}
       <DisclaimerBlock
