@@ -91,7 +91,7 @@ function ToolCard({ tool }: { tool: Tool }) {
   return (
     <Link
       href={`/tools/${tool.slug}`}
-      className={`group relative flex flex-col rounded-xl border border-border/50 bg-card overflow-hidden transition-all duration-300 hover:scale-[1.03] hover:border-border hover:shadow-2xl ${accent.glow}`}
+      className={`group relative flex flex-col rounded-xl border border-border/50 bg-card overflow-hidden transition-all duration-300 hover:border-border hover:shadow-2xl ${accent.glow}`}
     >
       {/* Gradient overlay */}
       <div className={`absolute inset-0 bg-gradient-to-br ${accent.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
@@ -100,7 +100,7 @@ function ToolCard({ tool }: { tool: Tool }) {
       <div className="relative p-6 flex flex-col flex-1">
         {/* Icon - larger and more prominent */}
         <div className="mb-5">
-          <div className={`inline-flex h-14 w-14 items-center justify-center rounded-xl bg-accent/50 transition-all duration-300 group-hover:scale-110 group-hover:bg-accent`}>
+          <div className={`inline-flex h-14 w-14 items-center justify-center rounded-xl bg-accent/50 transition-all duration-300 group-hover:bg-accent`}>
             <IconComponent className={`h-7 w-7 transition-colors duration-300 ${accent.icon}`} />
           </div>
         </div>
