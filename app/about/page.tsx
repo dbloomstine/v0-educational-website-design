@@ -200,13 +200,13 @@ export default function AboutPage() {
 
                   <div className="space-y-5 text-muted-foreground leading-relaxed">
                     <p>
-                      FundOpsHQ is maintained by Danny Bloomstine, Managing Director at IQ-EQ, where he provides
-                      outsourced fund administration, compliance, tax, and CFO services to investment managers.
+                      FundOpsHQ is maintained by Danny Bloomstine, Managing Director at IQ-EQ, where he helps
+                      investment managers evaluate and implement fund administration, compliance, tax, and CFO solutions.
                     </p>
                     <p>
                       Over the past decade, Danny has worked at the intersection of capital markets, technology,
                       and fund operations—beginning at S&P Capital IQ, joining as an early employee at VTS,
-                      growing business development at Juniper Square, and now leading client solutions at IQ-EQ.
+                      growing business development at Juniper Square, and now at IQ-EQ helping firms navigate operational decisions.
                     </p>
                     <p>
                       This resource was created to bridge the gap between high-level theory and day-to-day
