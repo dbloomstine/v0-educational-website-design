@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { ExportButtons } from './export-buttons'
 import { Tool } from '@/lib/content/types'
 import { AlertCircle, Calculator } from 'lucide-react'
-import { FundFormationTimeline } from './fund-formation-timeline/fund-formation-timeline'
 import { ManagementFeeCalculator } from './management-fee-calculator/management-fee-calculator'
 import { ManagementCompanyBudget } from './management-company-budget/management-company-budget'
 import { FundExpenseAllocation } from './fund-expense-allocation/fund-expense-allocation'
@@ -28,19 +27,6 @@ const categoryColors: Record<string, string> = {
 export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
   const primaryCategory = tool.categories[0]
   const categoryColor = categoryColors[primaryCategory] || 'oklch(0.6 0.16 210)'
-
-  // If this is the Fund Formation Timeline tool, render the actual calculator
-  if (tool.slug === 'fund-formation-timeline') {
-    return (
-      <div className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-7xl">
-            <FundFormationTimeline />
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   // If this is the Management Fee Calculator tool, render the actual calculator
   if (tool.slug === 'management-fee-calculator') {
