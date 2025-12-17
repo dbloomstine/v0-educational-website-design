@@ -4,26 +4,28 @@ import { Tool, ToolCategory } from './types'
 const tools: Tool[] = [
   // A. Fund Formation
   {
-    id: 'fund-formation-timeline',
-    title: 'Fund Formation Timeline Generator',
-    slug: 'fund-formation-timeline',
-    shortDescription: 'Generate a month-by-month roadmap for launching your fund from T-12 to T+12.',
+    id: 'fund-launch-guide',
+    title: 'Fund Launch Guide',
+    slug: 'fund-launch-guide',
+    shortDescription: 'Interactive checklist and guide for launching your fund. Track progress, customize for your strategy, and never miss a step.',
     inputs: [
-      'Fund type',
-      'First close date',
+      'Fund strategy (VC, PE, Credit, Hedge, RE, Infrastructure)',
       'Target fund size',
-      'Jurisdiction',
-      'Complexity level'
+      'Jurisdiction structure',
+      'Anchor investor status'
     ],
     outputs: [
-      'Timeline by month',
-      'Tasks grouped by legal, operations, compliance, fundraising, investor onboarding'
+      '40+ tasks across 8 launch phases',
+      'Progress tracking with localStorage',
+      'Shareable links and Excel/PDF export',
+      'Industry benchmarks and common pitfalls',
+      'Timeline, Board, and List views'
     ],
     categories: ['Fund Formation'],
-    personas: ['GP', 'COO or Operations', 'Lawyer'],
+    personas: ['GP', 'COO or Operations', 'Lawyer', 'CFO or Controller'],
     complexity: 'Intermediate',
     status: 'active',
-    icon: 'Calendar'
+    icon: 'Rocket'
   },
   {
     id: 'management-fee-calculator',

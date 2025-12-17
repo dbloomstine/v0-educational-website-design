@@ -14,7 +14,8 @@ import {
   LineChart,
   Split,
   Play,
-  Zap
+  Zap,
+  Rocket
 } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -38,10 +39,10 @@ export const metadata: Metadata = {
 
 // Tool-specific accent colors (more vibrant but still professional)
 const toolAccents: Record<string, { gradient: string; glow: string; icon: string }> = {
-  'fund-formation-timeline': {
-    gradient: 'from-blue-500/15 via-indigo-500/5 to-transparent',
-    glow: 'group-hover:shadow-blue-500/10',
-    icon: 'text-blue-500'
+  'fund-launch-guide': {
+    gradient: 'from-indigo-500/15 via-purple-500/5 to-transparent',
+    glow: 'group-hover:shadow-indigo-500/10',
+    icon: 'text-indigo-500'
   },
   'management-fee-calculator': {
     gradient: 'from-emerald-500/15 via-teal-500/5 to-transparent',
@@ -77,7 +78,8 @@ const toolIconMap: Record<string, any> = {
   Building,
   TrendingUp,
   LineChart,
-  Split
+  Split,
+  Rocket
 }
 
 function ToolCard({ tool }: { tool: Tool }) {
