@@ -11,7 +11,8 @@ import {
   Split,
   Play,
   ArrowRight,
-  Zap
+  Zap,
+  Rocket
 } from 'lucide-react'
 
 // Tool-specific accent colors
@@ -54,7 +55,8 @@ const toolIconMap: Record<string, any> = {
   Building,
   TrendingUp,
   LineChart,
-  Split
+  Split,
+  Rocket
 }
 
 interface RelatedToolCardProps {
