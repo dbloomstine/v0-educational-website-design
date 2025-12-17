@@ -1,4 +1,4 @@
-// Simplified types for Management Company Budget Planner
+// Types for Management Company Budget Planner
 
 export interface Fund {
   id: string
@@ -6,6 +6,16 @@ export interface Fund {
   size: number // in millions
   feeRate: number // percentage (e.g., 2 for 2%)
   firstCloseYear: number // year of first close (e.g., 2025)
+  // Advanced fields (optional for backwards compatibility)
+  feeBasis?: 'committed' | 'invested' // How fees are calculated
+  firstClosePercent?: number // % of fund raised at first close (default 50)
+  finalCloseMonth?: number // Months after first close for final close (default 12)
+  investmentPeriod?: number // Years for investment period (default 5)
+  fundLife?: number // Total fund life in years (default 10)
+  // Carry projections
+  targetReturn?: number // Target gross return multiple (e.g., 2.0x)
+  carryRate?: number // Carry percentage (default 20%)
+  preferredReturn?: number // Hurdle rate (default 8%)
 }
 
 export interface ExpenseItem {
@@ -26,10 +36,18 @@ export interface Expenses {
   overhead: ExpenseItem[] // office, insurance, technology, travel
 }
 
+export interface BudgetSettings {
+  inflationRate?: number // Annual expense growth rate (default 3%)
+  projectionYears?: number // How many years to project (default 5)
+  gpCommitmentPercent?: number // GP commitment as % of fund (default 2%)
+  gpFundedAmount?: number // Amount already funded toward GP commitment
+}
+
 export interface BudgetData {
   startingCash: number
   funds: Fund[]
   expenses: Expenses
+  settings?: BudgetSettings // Optional for backwards compatibility
 }
 
 export interface MonthlyProjection {
@@ -50,6 +68,13 @@ export interface BudgetResults {
   runwayMonths: number | null // null if runway extends beyond projection
   seedCapitalNeeded: number
   projections: MonthlyProjection[]
+  // Expense breakdown
+  teamCost: number
+  opsCost: number
+  overheadCost: number
+  // Carry projections (if enabled)
+  estimatedCarry?: number
+  carryTimeline?: { year: number; amount: number }[]
 }
 
 // Typical expense ranges for guidance

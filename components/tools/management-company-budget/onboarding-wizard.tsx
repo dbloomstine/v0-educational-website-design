@@ -301,12 +301,32 @@ interface WizardConfig {
   sizeTier: string
   startingCash: number
   firstCloseYear: number
+  teamMembers: TeamMember[]
+  customizedTeam: boolean
 }
 
 interface OnboardingWizardProps {
   onComplete: (data: BudgetData) => void
   onSkip: () => void
 }
+
+// Common roles available for team building
+const AVAILABLE_ROLES = [
+  { role: 'Managing Partner', cost: { emerging: 20000, established: 28000, institutional: 35000 } },
+  { role: 'Partner', cost: { emerging: 18000, established: 24000, institutional: 30000 } },
+  { role: 'Principal', cost: { emerging: 15000, established: 18000, institutional: 22000 } },
+  { role: 'VP', cost: { emerging: 12000, established: 16000, institutional: 20000 } },
+  { role: 'Director', cost: { emerging: 14000, established: 18000, institutional: 22000 } },
+  { role: 'Associate', cost: { emerging: 8000, established: 10000, institutional: 12000 } },
+  { role: 'Analyst', cost: { emerging: 6000, established: 8000, institutional: 10000 } },
+  { role: 'CFO / Controller', cost: { emerging: 15000, established: 18000, institutional: 22000 } },
+  { role: 'COO', cost: { emerging: 15000, established: 18000, institutional: 22000 } },
+  { role: 'IR / Marketing', cost: { emerging: 10000, established: 14000, institutional: 18000 } },
+  { role: 'Portfolio Manager', cost: { emerging: 25000, established: 35000, institutional: 45000 } },
+  { role: 'Trader', cost: { emerging: 12000, established: 16000, institutional: 20000 } },
+  { role: 'Credit Analyst', cost: { emerging: 10000, established: 14000, institutional: 18000 } },
+  { role: 'Asset Manager', cost: { emerging: 10000, established: 14000, institutional: 18000 } },
+]
 
 export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) {
   const [step, setStep] = useState(1)
@@ -316,10 +336,12 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
     feeRate: 2.0,
     sizeTier: 'emerging',
     startingCash: 500000,
-    firstCloseYear: new Date().getFullYear()
+    firstCloseYear: new Date().getFullYear(),
+    teamMembers: [],
+    customizedTeam: false
   })
 
-  const totalSteps = 4
+  const totalSteps = 5
 
   const selectedStrategy = FUND_STRATEGIES.find(s => s.id === config.strategy)
   const selectedTier = SIZE_TIERS.find(t => t.id === config.sizeTier)
@@ -334,27 +356,80 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
   const handleStrategySelect = (strategyId: string) => {
     const strategy = FUND_STRATEGIES.find(s => s.id === strategyId)
     if (strategy) {
+      const newSizeTier = determineSizeTier(strategy.typicalSize.default)
+      const defaultTeam = TEAM_TEMPLATES[strategyId]?.[newSizeTier] || []
       setConfig(prev => ({
         ...prev,
         strategy: strategyId,
         fundSize: strategy.typicalSize.default,
         feeRate: strategy.typicalFee,
-        sizeTier: determineSizeTier(strategy.typicalSize.default)
+        sizeTier: newSizeTier,
+        teamMembers: defaultTeam.map(t => ({ ...t, id: Math.random().toString(36).substr(2, 9) })),
+        customizedTeam: false
       }))
     }
   }
 
   const handleFundSizeChange = (size: number) => {
+    const newTier = determineSizeTier(size)
+    const shouldUpdateTeam = newTier !== config.sizeTier && !config.customizedTeam
+
     setConfig(prev => ({
       ...prev,
       fundSize: size,
-      sizeTier: determineSizeTier(size)
+      sizeTier: newTier,
+      // Update team if tier changes and user hasn't customized
+      ...(shouldUpdateTeam && config.strategy ? {
+        teamMembers: (TEAM_TEMPLATES[config.strategy]?.[newTier] || []).map(t => ({
+          ...t,
+          id: Math.random().toString(36).substr(2, 9)
+        }))
+      } : {})
     }))
   }
 
+  // Team management functions
+  const addTeamMember = (roleInfo: typeof AVAILABLE_ROLES[0]) => {
+    const tier = config.sizeTier as 'emerging' | 'established' | 'institutional'
+    const newMember: TeamMember = {
+      id: Math.random().toString(36).substr(2, 9),
+      role: roleInfo.role,
+      monthlyCost: roleInfo.cost[tier]
+    }
+    setConfig(prev => ({
+      ...prev,
+      teamMembers: [...prev.teamMembers, newMember],
+      customizedTeam: true
+    }))
+  }
+
+  const removeTeamMember = (id: string) => {
+    setConfig(prev => ({
+      ...prev,
+      teamMembers: prev.teamMembers.filter(m => m.id !== id),
+      customizedTeam: true
+    }))
+  }
+
+  const resetTeamToDefault = () => {
+    const defaultTeam = TEAM_TEMPLATES[config.strategy]?.[config.sizeTier] || []
+    setConfig(prev => ({
+      ...prev,
+      teamMembers: defaultTeam.map(t => ({ ...t, id: Math.random().toString(36).substr(2, 9) })),
+      customizedTeam: false
+    }))
+  }
+
+  // Calculate team costs
+  const teamMonthlyCost = config.teamMembers.reduce((sum, m) => sum + m.monthlyCost, 0)
+  const teamAnnualCost = teamMonthlyCost * 12
+
   const handleComplete = () => {
     // Generate full budget data from wizard config
-    const teamTemplate = TEAM_TEMPLATES[config.strategy]?.[config.sizeTier] || TEAM_TEMPLATES.vc.emerging
+    // Use user's customized team if they modified it, otherwise use template
+    const finalTeam = config.teamMembers.length > 0
+      ? config.teamMembers
+      : TEAM_TEMPLATES[config.strategy]?.[config.sizeTier] || TEAM_TEMPLATES.vc.emerging
     const opsTemplate = OPERATIONS_TEMPLATES[config.sizeTier] || OPERATIONS_TEMPLATES.emerging
     const overheadTemplate = OVERHEAD_TEMPLATES[config.sizeTier] || OVERHEAD_TEMPLATES.emerging
 
@@ -373,7 +448,7 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
         }
       ],
       expenses: {
-        team: teamTemplate.map(t => ({ ...t, id: genId() })),
+        team: finalTeam.map(t => ({ ...t, id: genId() })),
         operations: opsTemplate.map(o => ({ ...o, id: genId() })),
         overhead: overheadTemplate.map(o => ({ ...o, id: genId() }))
       }
@@ -386,8 +461,9 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
     switch (step) {
       case 1: return !!config.strategy
       case 2: return config.fundSize > 0 && config.feeRate > 0
-      case 3: return config.startingCash > 0
-      case 4: return true
+      case 3: return config.teamMembers.length > 0 // Team step
+      case 4: return config.startingCash > 0 // Starting capital
+      case 5: return true // Review
       default: return false
     }
   }
@@ -397,8 +473,9 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
   const teamTemplate = TEAM_TEMPLATES[config.strategy]?.[config.sizeTier] || []
   const opsTemplate = OPERATIONS_TEMPLATES[config.sizeTier] || []
   const overheadTemplate = OVERHEAD_TEMPLATES[config.sizeTier] || []
-  const previewMonthlyBurn = [
-    ...teamTemplate.map(t => t.monthlyCost),
+  // Use user's configured team if available, otherwise use template
+  const actualTeamCost = config.teamMembers.length > 0 ? teamMonthlyCost : teamTemplate.reduce((s, m) => s + m.monthlyCost, 0)
+  const previewMonthlyBurn = actualTeamCost + [
     ...opsTemplate.map(o => o.monthlyCost),
     ...overheadTemplate.map(o => o.monthlyCost)
   ].reduce((a, b) => a + b, 0)
@@ -559,8 +636,114 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
           </div>
         )}
 
-        {/* Step 3: Starting Capital */}
+        {/* Step 3: Team Building */}
         {step === 3 && (
+          <div className="space-y-6">
+            <div className="text-center mb-6">
+              <h3 className="text-lg font-semibold mb-1">Build your team</h3>
+              <p className="text-sm text-muted-foreground">
+                We&apos;ve suggested a starting team based on your fund type and size. Customize it to match your plans.
+              </p>
+            </div>
+
+            {/* Current team display */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-base flex items-center gap-2">
+                  <Users className="h-4 w-4" />
+                  Your Team ({config.teamMembers.length} {config.teamMembers.length === 1 ? 'person' : 'people'})
+                </Label>
+                {config.customizedTeam && (
+                  <Button variant="ghost" size="sm" onClick={resetTeamToDefault} className="text-xs h-7">
+                    Reset to suggested
+                  </Button>
+                )}
+              </div>
+
+              {config.teamMembers.length > 0 ? (
+                <div className="grid gap-2">
+                  {config.teamMembers.map((member) => (
+                    <div
+                      key={member.id}
+                      className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/30 transition-colors group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <Users className="h-4 w-4 text-primary" />
+                        </div>
+                        <div>
+                          <div className="font-medium text-sm">{member.role}</div>
+                          <div className="text-xs text-muted-foreground">{formatCurrency(member.monthlyCost)}/mo</div>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeTeamMember(member.id)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0 text-destructive hover:text-destructive"
+                      >
+                        <span className="sr-only">Remove</span>
+                        ×
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-6 border-2 border-dashed rounded-lg text-muted-foreground">
+                  <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">Add team members below</p>
+                </div>
+              )}
+            </div>
+
+            {/* Team cost summary */}
+            {config.teamMembers.length > 0 && (
+              <div className="flex items-center justify-between p-3 rounded-lg bg-primary/5 border border-primary/20">
+                <span className="text-sm font-medium">Team Cost</span>
+                <div className="text-right">
+                  <div className="font-bold">{formatCurrency(teamMonthlyCost)}/mo</div>
+                  <div className="text-xs text-muted-foreground">{formatCurrency(teamAnnualCost)}/year</div>
+                </div>
+              </div>
+            )}
+
+            {/* Add team members */}
+            <div className="space-y-2">
+              <Label className="text-sm text-muted-foreground">Add team members</Label>
+              <div className="flex flex-wrap gap-2">
+                {AVAILABLE_ROLES.map((roleInfo) => {
+                  const tier = config.sizeTier as 'emerging' | 'established' | 'institutional'
+                  const cost = roleInfo.cost[tier]
+                  return (
+                    <button
+                      key={roleInfo.role}
+                      onClick={() => addTeamMember(roleInfo)}
+                      className="px-3 py-2 text-xs rounded-lg border bg-card hover:bg-accent hover:border-primary/50 transition-all text-left group"
+                    >
+                      <div className="font-medium">{roleInfo.role}</div>
+                      <div className="text-muted-foreground group-hover:text-primary/70">+{formatCurrency(cost, true)}/mo</div>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Benchmark info */}
+            <div className="p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg border border-blue-200 dark:border-blue-800 text-sm">
+              <div className="font-medium text-blue-900 dark:text-blue-100 mb-1">
+                {selectedTier?.name} Benchmark
+              </div>
+              <div className="text-blue-800 dark:text-blue-200 text-xs">
+                Typical team size: {selectedTier?.teamSize.min}-{selectedTier?.teamSize.max} people
+                {' • '}
+                Team usually represents ~{selectedTier?.teamPercent}% of total budget
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 4: Starting Capital */}
+        {step === 4 && (
           <div className="space-y-6">
             <div className="text-center mb-6">
               <h3 className="text-lg font-semibold mb-1">How much starting capital do you have?</h3>
@@ -614,8 +797,8 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
           </div>
         )}
 
-        {/* Step 4: Review */}
-        {step === 4 && (
+        {/* Step 5: Review */}
+        {step === 5 && (
           <div className="space-y-6">
             <div className="text-center mb-6">
               <h3 className="text-lg font-semibold mb-1">Review Your Setup</h3>
@@ -653,17 +836,20 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
               <div className="p-4 rounded-lg border bg-card">
                 <div className="flex items-center gap-2 mb-3">
                   <Users className="h-4 w-4 text-primary" />
-                  <span className="font-medium">Team Template ({teamTemplate.length} roles)</span>
+                  <span className="font-medium">
+                    Your Team ({config.teamMembers.length} {config.teamMembers.length === 1 ? 'role' : 'roles'})
+                    {config.customizedTeam && <span className="text-xs text-muted-foreground ml-1">(customized)</span>}
+                  </span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {teamTemplate.map((member, i) => (
-                    <span key={i} className="px-2 py-1 bg-accent rounded text-xs">
+                  {config.teamMembers.map((member) => (
+                    <span key={member.id} className="px-2 py-1 bg-accent rounded text-xs">
                       {member.role}
                     </span>
                   ))}
                 </div>
                 <div className="text-xs text-muted-foreground mt-2">
-                  Total: {formatCurrency(teamTemplate.reduce((s, m) => s + m.monthlyCost, 0))}/month
+                  Total: {formatCurrency(teamMonthlyCost)}/month
                 </div>
               </div>
 

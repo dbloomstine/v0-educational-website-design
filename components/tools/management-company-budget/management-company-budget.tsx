@@ -20,7 +20,12 @@ import {
   Settings2,
   FileSpreadsheet,
   FileText,
-  ChevronDown
+  ChevronDown,
+  Undo2,
+  Redo2,
+  Upload,
+  Download,
+  Save
 } from 'lucide-react'
 import { DisclaimerBlock, PresetManager } from '@/components/tools/shared'
 import { ShareButton } from '@/components/tools/share-button'
@@ -31,6 +36,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu'
 import {
   BudgetData,
@@ -49,6 +55,14 @@ import {
   ExpenseBreakdownChart,
   EnhancedCashRunwayChart
 } from './enhanced-charts'
+import { GPCommitment } from './gp-commitment'
+import { ScenarioComparison } from './scenario-comparison'
+import { AdvancedSettings } from './advanced-settings'
+import { GoalSeeking } from './goal-seeking'
+import { ScenarioTemplates } from './scenario-templates'
+import { WaterfallChart } from './waterfall-chart'
+import { StackedExpenseChart } from './stacked-expense-chart'
+import { useBudgetState } from './use-budget-state'
 import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
@@ -60,7 +74,12 @@ export function ManagementCompanyBudget() {
 
   // Track if user has completed wizard or skipped
   const [showWizard, setShowWizard] = useState<boolean | null>(null)
+  const [wizardManuallyTriggered, setWizardManuallyTriggered] = useState(false)
   const [activeTab, setActiveTab] = useState('overview')
+
+  // GP Commitment tracking
+  const [gpCommitmentPercent, setGpCommitmentPercent] = useState(2) // 2% is typical
+  const [gpFundedAmount, setGpFundedAmount] = useState(0)
 
   // Parse initial state from URL or use defaults
   const getInitialData = (): BudgetData => {
@@ -83,18 +102,79 @@ export function ManagementCompanyBudget() {
     return { startingCash, funds, expenses }
   }
 
-  const [data, setData] = useState<BudgetData>(getInitialData)
+  // Use the enhanced budget state hook with undo/redo and auto-save
+  const {
+    data,
+    setData,
+    canUndo,
+    canRedo,
+    undo,
+    redo,
+    exportToJson,
+    importFromJson,
+    downloadJson,
+    resetToDefault,
+    isDirty,
+    lastSaved
+  } = useBudgetState({ initialData: getInitialData() })
 
-  // Check if this is a fresh visit or returning user
+  // File input ref for JSON import
+  const handleImportClick = () => {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = '.json'
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0]
+      if (file) {
+        const reader = new FileReader()
+        reader.onload = (ev) => {
+          const content = ev.target?.result as string
+          const success = importFromJson(content)
+          if (!success) {
+            alert('Invalid budget file. Please select a valid JSON export.')
+          }
+        }
+        reader.readAsText(file)
+      }
+    }
+    input.click()
+  }
+
+  // Keyboard shortcuts for undo/redo
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
+        if (e.shiftKey) {
+          e.preventDefault()
+          redo()
+        } else {
+          e.preventDefault()
+          undo()
+        }
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'y') {
+        e.preventDefault()
+        redo()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [undo, redo])
+
+  // Check if this is a fresh visit or returning user (only on initial mount)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && showWizard === null) {
+      // Check for ?wizard=1 to force wizard display (for testing)
+      const forceWizard = searchParams.get('wizard') === '1'
       const hasVisited = localStorage.getItem('budget-planner-visited')
       const hasUrlParams = searchParams.has('cash') || searchParams.has('funds')
 
-      // Show wizard if first visit and no URL params
-      setShowWizard(!hasVisited && !hasUrlParams)
+      // Show wizard if first visit, no URL params, or forced
+      const shouldShowWizard = forceWizard || (!hasVisited && !hasUrlParams)
+      setShowWizard(shouldShowWizard)
     }
-  }, [searchParams])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   // Preset management
   const {
@@ -231,6 +311,7 @@ export function ManagementCompanyBudget() {
   const handleWizardComplete = (wizardData: BudgetData) => {
     setData(wizardData)
     setShowWizard(false)
+    setWizardManuallyTriggered(false)
     if (typeof window !== 'undefined') {
       localStorage.setItem('budget-planner-visited', 'true')
     }
@@ -238,12 +319,14 @@ export function ManagementCompanyBudget() {
 
   const handleWizardSkip = () => {
     setShowWizard(false)
+    setWizardManuallyTriggered(false)
     if (typeof window !== 'undefined') {
       localStorage.setItem('budget-planner-visited', 'true')
     }
   }
 
   const handleRestartWizard = () => {
+    setWizardManuallyTriggered(true)
     setShowWizard(true)
   }
 
@@ -251,70 +334,151 @@ export function ManagementCompanyBudget() {
   const handleExportExcel = () => {
     const wb = XLSX.utils.book_new()
 
+    // Helper to set column widths
+    const setColWidths = (ws: XLSX.WorkSheet, widths: number[]) => {
+      ws['!cols'] = widths.map(w => ({ wch: w }))
+    }
+
     // Summary sheet
+    const totalFundSize = data.funds.reduce((sum, f) => sum + f.size * 1_000_000, 0)
+    const gpCommitment = totalFundSize * (gpCommitmentPercent / 100)
     const summaryData = [
       ['Management Company Budget Analysis'],
       ['Generated:', new Date().toLocaleDateString()],
       [''],
-      ['Key Metrics'],
-      ['Starting Cash', formatCurrency(data.startingCash)],
-      ['Monthly Burn Rate', formatCurrency(results.monthlyBurn)],
-      ['Annual Budget', formatCurrency(results.annualBudget)],
-      ['Annual Revenue', formatCurrency(results.annualRevenue)],
-      ['Runway', formatRunway(results.runwayMonths)],
-      ['Break-Even Month', results.breakEvenMonth ? `Month ${results.breakEvenMonth}` : 'Not projected'],
-      ['Seed Capital Needed', formatCurrency(results.seedCapitalNeeded)],
+      ['KEY METRICS'],
+      ['Metric', 'Value', 'Notes'],
+      ['Starting Cash', data.startingCash, ''],
+      ['Monthly Burn Rate', results.monthlyBurn, ''],
+      ['Annual Budget', results.annualBudget, ''],
+      ['Annual Revenue', results.annualRevenue, 'From management fees'],
+      ['Runway', results.runwayMonths ? `${results.runwayMonths} months` : 'Infinite', results.runwayMonths && results.runwayMonths < 18 ? 'Warning: Below 18 month target' : ''],
+      ['Break-Even Month', results.breakEvenMonth ? `Month ${results.breakEvenMonth}` : 'Not in projection period', ''],
+      ['Seed Capital Needed', results.seedCapitalNeeded, results.seedCapitalNeeded > data.startingCash ? 'Warning: Exceeds starting cash' : ''],
+      [''],
+      ['GP COMMITMENT'],
+      ['GP Commitment %', `${gpCommitmentPercent}%`, ''],
+      ['Total GP Commitment', gpCommitment, ''],
+      ['Amount Funded', gpFundedAmount, ''],
+      ['Unfunded Commitment', Math.max(0, gpCommitment - gpFundedAmount), ''],
+      [''],
+      ['EXPENSE BREAKDOWN'],
+      ['Category', 'Monthly', 'Annual', '% of Total'],
+      ['Team', results.teamCost, results.teamCost * 12, results.monthlyBurn > 0 ? `${((results.teamCost / results.monthlyBurn) * 100).toFixed(1)}%` : '0%'],
+      ['Operations', results.opsCost, results.opsCost * 12, results.monthlyBurn > 0 ? `${((results.opsCost / results.monthlyBurn) * 100).toFixed(1)}%` : '0%'],
+      ['Overhead', results.overheadCost, results.overheadCost * 12, results.monthlyBurn > 0 ? `${((results.overheadCost / results.monthlyBurn) * 100).toFixed(1)}%` : '0%'],
+      ['TOTAL', results.monthlyBurn, results.annualBudget, '100%'],
     ]
     const summaryWs = XLSX.utils.aoa_to_sheet(summaryData)
+    setColWidths(summaryWs, [25, 18, 30])
     XLSX.utils.book_append_sheet(wb, summaryWs, 'Summary')
 
     // Funds sheet
     const fundsData = [
       ['Fund Revenue Sources'],
-      ['Fund Name', 'Size ($M)', 'Fee Rate (%)', 'First Close Year', 'Annual Fee'],
+      [''],
+      ['Fund Name', 'Size ($M)', 'Fee Rate (%)', 'First Close Year', 'Annual Fee', 'Monthly Fee', 'GP Commitment'],
       ...data.funds.map(f => [
         f.name,
         f.size,
         f.feeRate,
         f.firstCloseYear,
-        f.size * 1_000_000 * (f.feeRate / 100)
-      ])
+        f.size * 1_000_000 * (f.feeRate / 100),
+        (f.size * 1_000_000 * (f.feeRate / 100)) / 12,
+        f.size * 1_000_000 * (gpCommitmentPercent / 100)
+      ]),
+      [''],
+      ['TOTAL', data.funds.reduce((s, f) => s + f.size, 0), '', '', results.annualRevenue, results.annualRevenue / 12, gpCommitment]
     ]
     const fundsWs = XLSX.utils.aoa_to_sheet(fundsData)
+    setColWidths(fundsWs, [15, 12, 12, 15, 15, 15, 15])
     XLSX.utils.book_append_sheet(wb, fundsWs, 'Funds')
 
     // Team sheet
     const teamData = [
       ['Team Costs'],
+      [''],
       ['Role', 'Monthly Cost', 'Annual Cost'],
-      ...data.expenses.team.map(t => [t.role, t.monthlyCost, t.monthlyCost * 12])
+      ...data.expenses.team.map(t => [t.role, t.monthlyCost, t.monthlyCost * 12]),
+      [''],
+      ['TOTAL', results.teamCost, results.teamCost * 12]
     ]
     const teamWs = XLSX.utils.aoa_to_sheet(teamData)
+    setColWidths(teamWs, [25, 15, 15])
     XLSX.utils.book_append_sheet(wb, teamWs, 'Team')
 
     // Operations sheet
     const opsData = [
       ['Operations Costs'],
+      [''],
       ['Expense', 'Monthly Cost', 'Annual Cost'],
-      ...data.expenses.operations.map(o => [o.name, o.monthlyCost, o.monthlyCost * 12])
+      ...data.expenses.operations.map(o => [o.name, o.monthlyCost, o.monthlyCost * 12]),
+      [''],
+      ['TOTAL', results.opsCost, results.opsCost * 12]
     ]
     const opsWs = XLSX.utils.aoa_to_sheet(opsData)
+    setColWidths(opsWs, [25, 15, 15])
     XLSX.utils.book_append_sheet(wb, opsWs, 'Operations')
 
-    // Projections sheet
+    // Overhead sheet
+    const overheadData = [
+      ['Overhead Costs'],
+      [''],
+      ['Expense', 'Monthly Cost', 'Annual Cost'],
+      ...data.expenses.overhead.map(o => [o.name, o.monthlyCost, o.monthlyCost * 12]),
+      [''],
+      ['TOTAL', results.overheadCost, results.overheadCost * 12]
+    ]
+    const overheadWs = XLSX.utils.aoa_to_sheet(overheadData)
+    setColWidths(overheadWs, [25, 15, 15])
+    XLSX.utils.book_append_sheet(wb, overheadWs, 'Overhead')
+
+    // Projections sheet (60 months / 5 years)
     const projData = [
-      ['Monthly Cash Flow Projections'],
-      ['Month', 'Revenue', 'Expenses', 'Net Cash Flow', 'Cash Balance'],
-      ...results.projections.slice(0, 36).map(p => [
-        p.label,
-        p.revenue,
-        p.expenses,
-        p.netCashFlow,
-        p.cashBalance
-      ])
+      ['Monthly Cash Flow Projections (5 Years)'],
+      [''],
+      ['Month', 'Revenue', 'Expenses', 'Net Cash Flow', 'Cash Balance', 'Cumulative Revenue', 'Cumulative Expenses'],
+      ...results.projections.map((p, i) => {
+        const cumRevenue = results.projections.slice(0, i + 1).reduce((s, pr) => s + pr.revenue, 0)
+        const cumExpenses = results.projections.slice(0, i + 1).reduce((s, pr) => s + pr.expenses, 0)
+        return [
+          p.label,
+          p.revenue,
+          p.expenses,
+          p.netCashFlow,
+          p.cashBalance,
+          cumRevenue,
+          cumExpenses
+        ]
+      })
     ]
     const projWs = XLSX.utils.aoa_to_sheet(projData)
+    setColWidths(projWs, [15, 15, 15, 15, 15, 18, 18])
     XLSX.utils.book_append_sheet(wb, projWs, 'Projections')
+
+    // Annual Summary sheet
+    const annualSummary: (string | number)[][] = [
+      ['Annual Summary'],
+      [''],
+      ['Year', 'Total Revenue', 'Total Expenses', 'Net Cash Flow', 'Year-End Balance']
+    ]
+    for (let year = 0; year < 5; year++) {
+      const yearProjs = results.projections.slice(year * 12, (year + 1) * 12)
+      if (yearProjs.length === 0) break
+      const yearRevenue = yearProjs.reduce((s, p) => s + p.revenue, 0)
+      const yearExpenses = yearProjs.reduce((s, p) => s + p.expenses, 0)
+      const yearEndBalance = yearProjs[yearProjs.length - 1]?.cashBalance ?? 0
+      annualSummary.push([
+        `Year ${year + 1}`,
+        yearRevenue,
+        yearExpenses,
+        yearRevenue - yearExpenses,
+        yearEndBalance
+      ])
+    }
+    const annualWs = XLSX.utils.aoa_to_sheet(annualSummary)
+    setColWidths(annualWs, [10, 15, 15, 15, 18])
+    XLSX.utils.book_append_sheet(wb, annualWs, 'Annual Summary')
 
     XLSX.writeFile(wb, `management-company-budget-${new Date().toISOString().split('T')[0]}.xlsx`)
   }
@@ -323,84 +487,275 @@ export function ManagementCompanyBudget() {
   const handleExportPdf = () => {
     const doc = new jsPDF()
     const pageWidth = doc.internal.pageSize.getWidth()
+    const pageHeight = doc.internal.pageSize.getHeight()
+
+    // Helper to add page number
+    const addPageNumber = (pageNum: number) => {
+      doc.setFontSize(8)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(128, 128, 128)
+      doc.text(`Page ${pageNum}`, pageWidth / 2, pageHeight - 10, { align: 'center' })
+      doc.setTextColor(0, 0, 0)
+    }
+
+    // Helper to check if we need a new page
+    const checkNewPage = (currentY: number, neededSpace: number): number => {
+      if (currentY + neededSpace > pageHeight - 30) {
+        doc.addPage()
+        return 20
+      }
+      return currentY
+    }
+
+    // Calculate GP commitment values
+    const totalFundSize = data.funds.reduce((sum, f) => sum + f.size * 1_000_000, 0)
+    const gpCommitment = totalFundSize * (gpCommitmentPercent / 100)
 
     // Title
-    doc.setFontSize(18)
+    doc.setFontSize(20)
     doc.setFont('helvetica', 'bold')
-    doc.text('Management Company Budget Analysis', pageWidth / 2, 20, { align: 'center' })
+    doc.text('Management Company', pageWidth / 2, 22, { align: 'center' })
+    doc.text('Budget Analysis', pageWidth / 2, 30, { align: 'center' })
 
     doc.setFontSize(10)
     doc.setFont('helvetica', 'normal')
-    doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 28, { align: 'center' })
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, pageWidth / 2, 40, { align: 'center' })
 
     // Key Metrics
     doc.setFontSize(14)
     doc.setFont('helvetica', 'bold')
-    doc.text('Key Metrics', 14, 42)
+    doc.text('Key Metrics', 14, 54)
 
     autoTable(doc, {
-      startY: 46,
-      head: [['Metric', 'Value']],
+      startY: 58,
+      head: [['Metric', 'Value', 'Status']],
       body: [
-        ['Starting Cash', formatCurrency(data.startingCash)],
-        ['Monthly Burn Rate', formatCurrency(results.monthlyBurn)],
-        ['Annual Budget', formatCurrency(results.annualBudget)],
-        ['Annual Revenue', formatCurrency(results.annualRevenue)],
-        ['Runway', formatRunway(results.runwayMonths)],
-        ['Break-Even', results.breakEvenMonth ? `Month ${results.breakEvenMonth}` : 'Not projected'],
+        ['Starting Cash', formatCurrency(data.startingCash), ''],
+        ['Monthly Burn Rate', formatCurrency(results.monthlyBurn), ''],
+        ['Annual Budget', formatCurrency(results.annualBudget), ''],
+        ['Annual Revenue', formatCurrency(results.annualRevenue), ''],
+        ['Runway', formatRunway(results.runwayMonths), results.runwayMonths !== null && results.runwayMonths < 18 ? 'Below 18mo target' : 'OK'],
+        ['Break-Even', results.breakEvenMonth ? `Month ${results.breakEvenMonth}` : 'Not in 5 years', ''],
+        ['Seed Capital Needed', formatCurrency(results.seedCapitalNeeded), results.seedCapitalNeeded > data.startingCash ? 'Shortfall' : 'Covered'],
       ],
       theme: 'grid',
       headStyles: { fillColor: [59, 130, 246] },
       styles: { fontSize: 10 },
+      columnStyles: { 2: { cellWidth: 30 } },
     })
 
-    // Fund Revenue
-    const finalY1 = (doc as any).lastAutoTable.finalY + 10
+    // GP Commitment Summary
+    let currentY = (doc as any).lastAutoTable.finalY + 12
+    currentY = checkNewPage(currentY, 50)
+
     doc.setFontSize(14)
     doc.setFont('helvetica', 'bold')
-    doc.text('Fund Revenue Sources', 14, finalY1)
+    doc.text('GP Commitment', 14, currentY)
 
     autoTable(doc, {
-      startY: finalY1 + 4,
-      head: [['Fund', 'Size', 'Fee Rate', 'Annual Fee']],
-      body: data.funds.map(f => [
-        f.name,
-        `$${f.size}M`,
-        `${f.feeRate}%`,
-        formatCurrency(f.size * 1_000_000 * (f.feeRate / 100))
-      ]),
+      startY: currentY + 4,
+      head: [['Metric', 'Value']],
+      body: [
+        ['GP Commitment %', `${gpCommitmentPercent}%`],
+        ['Total Commitment', formatCurrency(gpCommitment)],
+        ['Amount Funded', formatCurrency(gpFundedAmount)],
+        ['Unfunded Commitment', formatCurrency(Math.max(0, gpCommitment - gpFundedAmount))],
+      ],
       theme: 'grid',
-      headStyles: { fillColor: [34, 197, 94] },
+      headStyles: { fillColor: [147, 51, 234] },
       styles: { fontSize: 10 },
     })
 
-    // Team Costs
-    const finalY2 = (doc as any).lastAutoTable.finalY + 10
+    // Fund Revenue
+    currentY = (doc as any).lastAutoTable.finalY + 12
+    currentY = checkNewPage(currentY, 60)
+
     doc.setFontSize(14)
     doc.setFont('helvetica', 'bold')
-    doc.text('Team Costs', 14, finalY2)
+    doc.text('Fund Revenue Sources', 14, currentY)
 
     autoTable(doc, {
-      startY: finalY2 + 4,
+      startY: currentY + 4,
+      head: [['Fund', 'Size', 'Fee Rate', 'Annual Fee', 'GP Commitment']],
+      body: [
+        ...data.funds.map(f => [
+          f.name,
+          `$${f.size}M`,
+          `${f.feeRate}%`,
+          formatCurrency(f.size * 1_000_000 * (f.feeRate / 100)),
+          formatCurrency(f.size * 1_000_000 * (gpCommitmentPercent / 100))
+        ]),
+        ['TOTAL', `$${data.funds.reduce((s, f) => s + f.size, 0)}M`, '', formatCurrency(results.annualRevenue), formatCurrency(gpCommitment)]
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [34, 197, 94] },
+      styles: { fontSize: 9 },
+    })
+
+    // Expense Breakdown
+    currentY = (doc as any).lastAutoTable.finalY + 12
+    currentY = checkNewPage(currentY, 80)
+
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Expense Breakdown', 14, currentY)
+
+    autoTable(doc, {
+      startY: currentY + 4,
+      head: [['Category', 'Monthly', 'Annual', '% of Total']],
+      body: [
+        ['Team', formatCurrency(results.teamCost), formatCurrency(results.teamCost * 12), results.monthlyBurn > 0 ? `${((results.teamCost / results.monthlyBurn) * 100).toFixed(1)}%` : '0%'],
+        ['Operations', formatCurrency(results.opsCost), formatCurrency(results.opsCost * 12), results.monthlyBurn > 0 ? `${((results.opsCost / results.monthlyBurn) * 100).toFixed(1)}%` : '0%'],
+        ['Overhead', formatCurrency(results.overheadCost), formatCurrency(results.overheadCost * 12), results.monthlyBurn > 0 ? `${((results.overheadCost / results.monthlyBurn) * 100).toFixed(1)}%` : '0%'],
+        ['TOTAL', formatCurrency(results.monthlyBurn), formatCurrency(results.annualBudget), '100%']
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [239, 68, 68] },
+      styles: { fontSize: 10 },
+    })
+
+    // Team Details
+    currentY = (doc as any).lastAutoTable.finalY + 12
+    currentY = checkNewPage(currentY, 60)
+
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Team Costs', 14, currentY)
+
+    autoTable(doc, {
+      startY: currentY + 4,
       head: [['Role', 'Monthly', 'Annual']],
-      body: data.expenses.team.map(t => [
-        t.role,
-        formatCurrency(t.monthlyCost),
-        formatCurrency(t.monthlyCost * 12)
-      ]),
+      body: [
+        ...data.expenses.team.map(t => [
+          t.role,
+          formatCurrency(t.monthlyCost),
+          formatCurrency(t.monthlyCost * 12)
+        ]),
+        ['TOTAL', formatCurrency(results.teamCost), formatCurrency(results.teamCost * 12)]
+      ],
       theme: 'grid',
       headStyles: { fillColor: [99, 102, 241] },
       styles: { fontSize: 10 },
     })
 
+    // Operations Details
+    currentY = (doc as any).lastAutoTable.finalY + 12
+    currentY = checkNewPage(currentY, 60)
+
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Operations Costs', 14, currentY)
+
+    autoTable(doc, {
+      startY: currentY + 4,
+      head: [['Expense', 'Monthly', 'Annual']],
+      body: [
+        ...data.expenses.operations.map(o => [
+          o.name,
+          formatCurrency(o.monthlyCost),
+          formatCurrency(o.monthlyCost * 12)
+        ]),
+        ['TOTAL', formatCurrency(results.opsCost), formatCurrency(results.opsCost * 12)]
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [245, 158, 11] },
+      styles: { fontSize: 10 },
+    })
+
+    // Overhead Details
+    currentY = (doc as any).lastAutoTable.finalY + 12
+    currentY = checkNewPage(currentY, 60)
+
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.text('Overhead Costs', 14, currentY)
+
+    autoTable(doc, {
+      startY: currentY + 4,
+      head: [['Expense', 'Monthly', 'Annual']],
+      body: [
+        ...data.expenses.overhead.map(o => [
+          o.name,
+          formatCurrency(o.monthlyCost),
+          formatCurrency(o.monthlyCost * 12)
+        ]),
+        ['TOTAL', formatCurrency(results.overheadCost), formatCurrency(results.overheadCost * 12)]
+      ],
+      theme: 'grid',
+      headStyles: { fillColor: [20, 184, 166] },
+      styles: { fontSize: 10 },
+    })
+
+    // Annual Summary (new page)
+    doc.addPage()
+
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.text('5-Year Annual Summary', 14, 20)
+
+    const annualBody: string[][] = []
+    for (let year = 0; year < 5; year++) {
+      const yearProjs = results.projections.slice(year * 12, (year + 1) * 12)
+      if (yearProjs.length === 0) break
+      const yearRevenue = yearProjs.reduce((s, p) => s + p.revenue, 0)
+      const yearExpenses = yearProjs.reduce((s, p) => s + p.expenses, 0)
+      const yearEndBalance = yearProjs[yearProjs.length - 1]?.cashBalance ?? 0
+      annualBody.push([
+        `Year ${year + 1}`,
+        formatCurrency(yearRevenue),
+        formatCurrency(yearExpenses),
+        formatCurrency(yearRevenue - yearExpenses),
+        formatCurrency(yearEndBalance)
+      ])
+    }
+
+    autoTable(doc, {
+      startY: 24,
+      head: [['Year', 'Total Revenue', 'Total Expenses', 'Net Cash Flow', 'Year-End Balance']],
+      body: annualBody,
+      theme: 'grid',
+      headStyles: { fillColor: [59, 130, 246] },
+      styles: { fontSize: 10 },
+    })
+
+    // First 12 months projection
+    currentY = (doc as any).lastAutoTable.finalY + 12
+
+    doc.setFontSize(14)
+    doc.setFont('helvetica', 'bold')
+    doc.text('First 12 Months Cash Flow', 14, currentY)
+
+    autoTable(doc, {
+      startY: currentY + 4,
+      head: [['Month', 'Revenue', 'Expenses', 'Net Flow', 'Balance']],
+      body: results.projections.slice(0, 12).map(p => [
+        p.label,
+        formatCurrency(p.revenue, true),
+        formatCurrency(p.expenses, true),
+        formatCurrency(p.netCashFlow, true),
+        formatCurrency(p.cashBalance, true)
+      ]),
+      theme: 'grid',
+      headStyles: { fillColor: [34, 197, 94] },
+      styles: { fontSize: 9 },
+    })
+
     // Disclaimer
-    const finalY3 = (doc as any).lastAutoTable.finalY + 15
+    const totalPages = doc.getNumberOfPages()
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i)
+      addPageNumber(i)
+    }
+
+    // Add disclaimer on last page
+    doc.setPage(totalPages)
+    const disclaimerY = (doc as any).lastAutoTable?.finalY ? (doc as any).lastAutoTable.finalY + 20 : pageHeight - 40
     doc.setFontSize(8)
     doc.setFont('helvetica', 'italic')
     doc.setTextColor(128, 128, 128)
-    const disclaimer = 'This analysis is for informational purposes only. Consult with your accountant and legal counsel before making financial decisions.'
+    const disclaimer = 'This analysis is for informational purposes only. Management company budgets involve complex accounting, tax, and legal considerations. Consult with your fund administrator, accountant, and legal counsel before finalizing budgets or making financial decisions.'
     const splitDisclaimer = doc.splitTextToSize(disclaimer, pageWidth - 28)
-    doc.text(splitDisclaimer, 14, finalY3)
+    doc.text(splitDisclaimer, 14, disclaimerY)
 
     doc.save(`management-company-budget-${new Date().toISOString().split('T')[0]}.pdf`)
   }
@@ -433,7 +788,33 @@ export function ManagementCompanyBudget() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            {/* Undo/Redo buttons */}
+            <div className="flex items-center border rounded-md">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={undo}
+                disabled={!canUndo}
+                className="h-8 px-2 rounded-r-none border-r"
+                title="Undo (Ctrl+Z)"
+              >
+                <Undo2 className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={redo}
+                disabled={!canRedo}
+                className="h-8 px-2 rounded-l-none"
+                title="Redo (Ctrl+Shift+Z)"
+              >
+                <Redo2 className="h-4 w-4" />
+              </Button>
+            </div>
+
             <ShareButton getShareableUrl={getShareableUrl} />
+
+            {/* Export/Import dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -451,6 +832,15 @@ export function ManagementCompanyBudget() {
                   <FileText className="h-4 w-4 mr-2" />
                   Export to PDF
                 </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={downloadJson}>
+                  <Download className="h-4 w-4 mr-2" />
+                  Save as JSON
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleImportClick}>
+                  <Upload className="h-4 w-4 mr-2" />
+                  Load from JSON
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -458,15 +848,24 @@ export function ManagementCompanyBudget() {
 
         {/* Action bar */}
         <div className="flex items-center justify-between gap-4 flex-wrap">
-          <PresetManager
-            presets={presets}
-            isLoaded={presetsLoaded}
-            onSave={handleSavePreset}
-            onLoad={handleLoadPreset}
-            onDelete={deletePreset}
-            canSave={data.funds.length > 0}
-            compact
-          />
+          <div className="flex items-center gap-4">
+            <PresetManager
+              presets={presets}
+              isLoaded={presetsLoaded}
+              onSave={handleSavePreset}
+              onLoad={handleLoadPreset}
+              onDelete={deletePreset}
+              canSave={data.funds.length > 0}
+              compact
+            />
+            {/* Auto-save indicator */}
+            {lastSaved && (
+              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                <Save className="h-3 w-3" />
+                Saved {new Date(lastSaved).toLocaleTimeString()}
+              </span>
+            )}
+          </div>
           <Button variant="ghost" size="sm" onClick={handleRestartWizard}>
             <Sparkles className="h-4 w-4 mr-1.5" />
             Run Setup Wizard
@@ -567,6 +966,12 @@ export function ManagementCompanyBudget() {
 
           {/* Main Chart */}
           <EnhancedCashRunwayChart data={data} results={results} />
+
+          {/* Additional Charts */}
+          <div className="grid lg:grid-cols-2 gap-6">
+            <WaterfallChart data={data} results={results} />
+            <StackedExpenseChart data={data} results={results} />
+          </div>
 
           {/* Benchmarks */}
           <Benchmarks data={data} results={results} />
@@ -819,10 +1224,44 @@ export function ManagementCompanyBudget() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Advanced Settings */}
+          <AdvancedSettings data={data} onDataChange={setData} />
         </TabsContent>
 
         {/* Analysis Tab */}
         <TabsContent value="analysis" className="space-y-6 mt-6">
+          {/* Goal Seeking and Scenario Templates */}
+          <div className="grid lg:grid-cols-2 gap-6">
+            <GoalSeeking
+              data={data}
+              results={results}
+              onApply={(field, value) => {
+                if (field === 'fundSize' && data.funds.length > 0) {
+                  setData({
+                    ...data,
+                    funds: data.funds.map((f, i) => i === 0 ? { ...f, size: value } : f)
+                  })
+                } else if (field === 'startingCash') {
+                  setData({ ...data, startingCash: value })
+                }
+              }}
+            />
+            <ScenarioTemplates currentData={data} onApply={setData} />
+          </div>
+
+          {/* Scenario Comparison and GP Commitment */}
+          <div className="grid lg:grid-cols-2 gap-6">
+            <ScenarioComparison currentData={data} currentResults={results} />
+            <GPCommitment
+              data={data}
+              gpCommitmentPercent={gpCommitmentPercent}
+              onGpCommitmentChange={setGpCommitmentPercent}
+              fundedAmount={gpFundedAmount}
+              onFundedAmountChange={setGpFundedAmount}
+            />
+          </div>
+
           <SensitivityAnalysis baseData={data} baseResults={results} />
 
           {/* Monthly Projection Table */}
