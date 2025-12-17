@@ -5,6 +5,8 @@
  * CSV files can be opened directly in Excel or Google Sheets.
  */
 
+import { toast } from "sonner"
+
 export interface CSVSection {
   /** Section title (will be displayed as a header row) */
   title?: string
@@ -142,18 +144,29 @@ export function generateCSV(options: CSVExportOptions): string {
  * Download CSV file
  */
 export function downloadCSV(options: CSVExportOptions): void {
-  const csv = generateCSV(options)
-  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
-  const url = URL.createObjectURL(blob)
+  try {
+    const csv = generateCSV(options)
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
+    const url = URL.createObjectURL(blob)
 
-  const link = document.createElement("a")
-  link.href = url
-  link.download = `${options.filename}.csv`
-  link.style.display = "none"
-  document.body.appendChild(link)
-  link.click()
-  document.body.removeChild(link)
-  URL.revokeObjectURL(url)
+    const link = document.createElement("a")
+    link.href = url
+    link.download = `${options.filename}.csv`
+    link.style.display = "none"
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+
+    toast.success("CSV exported successfully", {
+      description: `${options.filename}.csv has been downloaded`
+    })
+  } catch (error) {
+    toast.error("Export failed", {
+      description: "There was an error exporting the CSV file"
+    })
+    console.error("CSV export error:", error)
+  }
 }
 
 /**

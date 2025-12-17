@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
-import { ExportToolbar, DisclaimerBlock } from '@/components/tools/shared'
+import { ExportToolbar, MobileExportBar, DisclaimerBlock } from '@/components/tools/shared'
 import { exportSubscriptionLineCSV, exportSubscriptionLinePDF } from './export'
 import {
   SubscriptionLineOutput,
@@ -25,20 +25,22 @@ export function ResultsView({ output }: ResultsViewProps) {
   const peakNegativeNoLine = Math.min(...output.jCurveDataNoLine.map(d => d.nav))
   const peakNegativeWithLine = Math.min(...output.jCurveDataWithLine.map(d => d.nav))
 
-  const handleExportCSV = () => {
+  const handleExportCSV = async () => {
     setCsvLoading(true)
-    setTimeout(() => {
+    try {
       exportSubscriptionLineCSV(output)
+    } finally {
       setCsvLoading(false)
-    }, 100)
+    }
   }
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     setPdfLoading(true)
-    setTimeout(() => {
+    try {
       exportSubscriptionLinePDF(output)
+    } finally {
       setPdfLoading(false)
-    }, 100)
+    }
   }
 
   return (
@@ -287,6 +289,14 @@ export function ResultsView({ output }: ResultsViewProps) {
       {/* Disclaimer */}
       <DisclaimerBlock
         additionalDisclaimer="Actual fund economics depend on specific investment timing, performance, fee structures, facility terms, and many other factors. Per ILPA guidance, funds should report both levered and unlevered returns. Consult legal and financial advisors for fund structuring and analysis."
+      />
+
+      {/* Mobile Export Bar */}
+      <MobileExportBar
+        onExportCSV={handleExportCSV}
+        onExportPDF={handleExportPDF}
+        csvLoading={csvLoading}
+        pdfLoading={pdfLoading}
       />
     </div>
   )

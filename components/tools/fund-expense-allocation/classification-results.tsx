@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { AlertCircle, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react'
-import { ExportToolbar, DisclaimerBlock } from '@/components/tools/shared'
+import { ExportToolbar, MobileExportBar, DisclaimerBlock } from '@/components/tools/shared'
 import { exportToPDF, exportToCSV } from './exportPDF'
 import type { ClassificationResult as Result, ClassificationInput } from './expenseData'
 
@@ -23,20 +23,22 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
   const [csvLoading, setCsvLoading] = useState(false)
   const [pdfLoading, setPdfLoading] = useState(false)
 
-  const handleExportCSV = () => {
+  const handleExportCSV = async () => {
     setCsvLoading(true)
-    setTimeout(() => {
+    try {
       exportToCSV(input, result)
+    } finally {
       setCsvLoading(false)
-    }, 100)
+    }
   }
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     setPdfLoading(true)
-    setTimeout(() => {
+    try {
       exportToPDF(input, result)
+    } finally {
       setPdfLoading(false)
-    }, 100)
+    }
   }
 
   const getClassificationColor = (classification: string) => {
@@ -220,6 +222,14 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
       {/* Disclaimer */}
       <DisclaimerBlock
         additionalDisclaimer="Actual expense treatment should be determined in consultation with legal counsel, fund administrators, auditors, and as specified in your fund's governing documents."
+      />
+
+      {/* Mobile Export Bar */}
+      <MobileExportBar
+        onExportCSV={handleExportCSV}
+        onExportPDF={handleExportPDF}
+        csvLoading={csvLoading}
+        pdfLoading={pdfLoading}
       />
     </div>
   )

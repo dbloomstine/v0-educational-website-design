@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter, DM_Sans } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
+import { Toaster } from "sonner"
 import "./globals.css"
 
 // FundOpsHQ Brand Fonts: DM Sans for headings, Inter for body
@@ -117,6 +118,17 @@ export default function RootLayout({
           Skip to main content
         </a>
         {children}
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            classNames: {
+              toast: 'bg-card border-border text-card-foreground',
+              title: 'text-foreground',
+              description: 'text-muted-foreground',
+              success: 'bg-green-950 border-green-800',
+            }
+          }}
+        />
         <Analytics />
       </body>
     </html>

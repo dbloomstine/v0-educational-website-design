@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -12,8 +13,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Calendar as CalendarIcon, LayoutGrid, List, Download, Sparkles } from 'lucide-react'
-import { format } from 'date-fns'
+import { Calendar as CalendarIcon, LayoutGrid, List, Download, Sparkles, RotateCcw } from 'lucide-react'
+import { format, parseISO } from 'date-fns'
 
 import {
   FundFormationInputs,
@@ -36,13 +37,45 @@ import { MilestoneCardsView } from './milestone-cards-view'
 import { ExportPanel } from './export-panel'
 import { DisclaimerBlock } from '@/components/tools/shared'
 import { InfoPopover } from '@/components/ui/info-popover'
+import { ShareButton } from '@/components/tools/share-button'
 
 interface FundFormationTimelineProps {
   className?: string
 }
 
 export function FundFormationTimeline({ className }: FundFormationTimelineProps) {
-  const [inputs, setInputs] = useState<FundFormationInputs>(getDefaultInputs())
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // Parse initial state from URL or use defaults
+  const getInitialInputs = (): FundFormationInputs => {
+    const defaults = getDefaultInputs()
+
+    if (typeof window === 'undefined') return defaults
+
+    const strategy = searchParams.get('strategy') as FundStrategy | null
+    const sizeBand = searchParams.get('size') as FundSizeBand | null
+    const jurisdiction = searchParams.get('jurisdiction') as Jurisdiction | null
+    const anchorStatus = searchParams.get('anchor') as AnchorStatus | null
+    const startingPoint = searchParams.get('start') as StartingPoint | null
+    const detailLevel = searchParams.get('detail') as DetailLevel | null
+    const firstCloseStr = searchParams.get('firstClose')
+    const finalCloseStr = searchParams.get('finalClose')
+
+    return {
+      strategy: strategy || defaults.strategy,
+      sizeBand: sizeBand || defaults.sizeBand,
+      jurisdiction: jurisdiction || defaults.jurisdiction,
+      anchorStatus: anchorStatus || defaults.anchorStatus,
+      startingPoint: startingPoint || defaults.startingPoint,
+      detailLevel: detailLevel || defaults.detailLevel,
+      firstCloseDate: firstCloseStr ? parseISO(firstCloseStr) : defaults.firstCloseDate,
+      finalCloseDate: finalCloseStr ? parseISO(finalCloseStr) : defaults.finalCloseDate
+    }
+  }
+
+  const [inputs, setInputs] = useState<FundFormationInputs>(getInitialInputs)
   const [phases, setPhases] = useState<Phase[]>([])
   const [viewMode, setViewMode] = useState<ViewMode>('timeline')
   const [showExport, setShowExport] = useState(false)
@@ -58,6 +91,41 @@ export function FundFormationTimeline({ className }: FundFormationTimelineProps)
     const newPhases = calculateTimeline(inputs)
     setPhases(newPhases)
   }, [inputs])
+
+  // Update URL when inputs change (debounced)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams()
+      params.set('strategy', inputs.strategy)
+      params.set('size', inputs.sizeBand)
+      params.set('jurisdiction', inputs.jurisdiction)
+      params.set('anchor', inputs.anchorStatus)
+      params.set('start', inputs.startingPoint)
+      params.set('detail', inputs.detailLevel)
+      params.set('firstClose', format(inputs.firstCloseDate, 'yyyy-MM-dd'))
+      params.set('finalClose', format(inputs.finalCloseDate, 'yyyy-MM-dd'))
+
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [inputs, pathname, router])
+
+  // Generate shareable URL
+  const getShareableUrl = useCallback(() => {
+    const params = new URLSearchParams()
+    params.set('strategy', inputs.strategy)
+    params.set('size', inputs.sizeBand)
+    params.set('jurisdiction', inputs.jurisdiction)
+    params.set('anchor', inputs.anchorStatus)
+    params.set('start', inputs.startingPoint)
+    params.set('detail', inputs.detailLevel)
+    params.set('firstClose', format(inputs.firstCloseDate, 'yyyy-MM-dd'))
+    params.set('finalClose', format(inputs.finalCloseDate, 'yyyy-MM-dd'))
+
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+    return `${baseUrl}${pathname}?${params.toString()}`
+  }, [inputs, pathname])
 
   const handleInputChange = <K extends keyof FundFormationInputs>(
     field: K,
@@ -82,8 +150,29 @@ export function FundFormationTimeline({ className }: FundFormationTimelineProps)
     setVisibleCategories(prev => ({ ...prev, [category]: !prev[category] }))
   }
 
+  const resetToDefaults = () => {
+    setInputs(getDefaultInputs())
+    setVisibleCategories({
+      legal: true,
+      regulatory: true,
+      'investor-relations': true,
+      operations: true
+    })
+  }
+
   return (
     <div className={className}>
+      {/* Header with Share Button */}
+      <div className="flex items-start justify-between gap-4 mb-8">
+        <div className="space-y-2">
+          <h2 className="text-3xl font-bold tracking-tight">Fund Formation Timeline</h2>
+          <p className="text-muted-foreground max-w-2xl">
+            Plan your fund launch timeline with customizable milestones and phases.
+          </p>
+        </div>
+        <ShareButton getShareableUrl={getShareableUrl} />
+      </div>
+
       {/* Input Panel */}
       <Card className="mb-8">
         <CardHeader>
@@ -378,6 +467,14 @@ export function FundFormationTimeline({ className }: FundFormationTimelineProps)
           </Tabs>
         </CardContent>
       </Card>
+
+      {/* Reset Button */}
+      <div className="flex justify-center">
+        <Button variant="outline" onClick={resetToDefaults}>
+          <RotateCcw className="h-4 w-4 mr-2" />
+          Reset to Defaults
+        </Button>
+      </div>
 
       {/* Disclaimer */}
       <DisclaimerBlock

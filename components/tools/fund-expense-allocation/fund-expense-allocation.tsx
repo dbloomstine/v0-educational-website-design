@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { AlertCircle, Info } from 'lucide-react'
@@ -9,11 +10,72 @@ import { exportToPDF } from './exportPDF'
 import { ExpenseInputForm } from './expense-input-form'
 import { ClassificationResults } from './classification-results'
 import { SampleScenariosSection } from './sample-scenarios'
+import { ShareButton } from '@/components/tools/share-button'
 
 export function FundExpenseAllocation() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
   const [result, setResult] = useState<Result | null>(null)
   const [currentInput, setCurrentInput] = useState<ClassificationInput | null>(null)
   const [showOnboarding, setShowOnboarding] = useState(true)
+
+  // Parse initial state from URL on mount
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const category = searchParams.get('category')
+    const fundType = searchParams.get('fundType')
+    const fundSize = searchParams.get('fundSize')
+    const vintage = searchParams.get('vintage')
+
+    if (category && fundType && fundSize && vintage) {
+      const input: ClassificationInput = {
+        expenseCategory: category,
+        fundType: fundType as ClassificationInput['fundType'],
+        fundSize: fundSize as ClassificationInput['fundSize'],
+        vintageYear: vintage as ClassificationInput['vintageYear']
+      }
+      const classification = classifyExpense(input)
+      setResult(classification)
+      setCurrentInput(input)
+      setShowOnboarding(false)
+    }
+  }, [searchParams])
+
+  // Update URL when input changes
+  useEffect(() => {
+    if (!currentInput) return
+
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams()
+      params.set('category', currentInput.expenseCategory)
+      params.set('fundType', currentInput.fundType)
+      params.set('fundSize', currentInput.fundSize)
+      params.set('vintage', currentInput.vintageYear)
+
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+    }, 300)
+
+    return () => clearTimeout(timer)
+  }, [currentInput, pathname, router])
+
+  // Generate shareable URL
+  const getShareableUrl = useCallback(() => {
+    if (!currentInput) {
+      return typeof window !== 'undefined' ? `${window.location.origin}${pathname}` : pathname
+    }
+
+    const params = new URLSearchParams()
+    params.set('category', currentInput.expenseCategory)
+    params.set('fundType', currentInput.fundType)
+    params.set('fundSize', currentInput.fundSize)
+    params.set('vintage', currentInput.vintageYear)
+
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+    return `${baseUrl}${pathname}?${params.toString()}`
+  }, [currentInput, pathname])
 
   const handleClassify = (input: ClassificationInput) => {
     const classification = classifyExpense(input)
@@ -42,9 +104,12 @@ export function FundExpenseAllocation() {
     <div className="space-y-8">
       {/* Header */}
       <div className="space-y-3">
-        <h2 className="text-3xl font-bold tracking-tight">
-          Fund Expense Allocation Helper
-        </h2>
+        <div className="flex items-start justify-between gap-4">
+          <h2 className="text-3xl font-bold tracking-tight">
+            Fund Expense Allocation Helper
+          </h2>
+          <ShareButton getShareableUrl={getShareableUrl} />
+        </div>
         <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
           Interactive tool to classify expenses as fund or management company expenses with detailed
           market practice guidance.

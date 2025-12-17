@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { useState } from 'react'
 import { WaterfallOutput, formatCurrency, formatPercent, formatMultiple } from './waterfallCalculations'
-import { ExportToolbar, DisclaimerBlock } from '@/components/tools/shared'
+import { ExportToolbar, MobileExportBar, DisclaimerBlock } from '@/components/tools/shared'
 import { exportWaterfallCSV, exportWaterfallPDF } from './export'
 
 interface ResultsViewProps {
@@ -17,20 +17,22 @@ export function ResultsView({ output, onExport }: ResultsViewProps) {
   const [csvLoading, setCsvLoading] = useState(false)
   const [pdfLoading, setPdfLoading] = useState(false)
 
-  const handleExportCSV = () => {
+  const handleExportCSV = async () => {
     setCsvLoading(true)
-    setTimeout(() => {
+    try {
       exportWaterfallCSV(output)
+    } finally {
       setCsvLoading(false)
-    }, 100)
+    }
   }
 
-  const handleExportPDF = () => {
+  const handleExportPDF = async () => {
     setPdfLoading(true)
-    setTimeout(() => {
+    try {
       exportWaterfallPDF(output)
+    } finally {
       setPdfLoading(false)
-    }, 100)
+    }
   }
 
   return (
@@ -241,6 +243,14 @@ export function ResultsView({ output, onExport }: ResultsViewProps) {
       {/* Disclaimer */}
       <DisclaimerBlock
         additionalDisclaimer="Actual fund economics depend on specific LPA terms, timing of capital calls and distributions, fees, expenses, and other factors. Consult with legal and financial advisors for fund structuring."
+      />
+
+      {/* Mobile Export Bar */}
+      <MobileExportBar
+        onExportCSV={handleExportCSV}
+        onExportPDF={handleExportPDF}
+        csvLoading={csvLoading}
+        pdfLoading={pdfLoading}
       />
     </div>
   )

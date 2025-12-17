@@ -4,12 +4,11 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { AnimateOnScroll } from "@/components/animate-on-scroll"
 import { Breadcrumb } from "@/components/breadcrumb"
-import { ToolCard } from "@/components/tools/tool-card"
+import { RelatedTools } from "@/components/tools/related-tools"
 import { getRoleBySlug, getAllRoles, getToolsForRole } from "@/lib/content/roles"
 import { getAllTools } from "@/lib/content/tools"
 import { getAllFundTypes } from "@/lib/content/fund-types"
 import { getPillarsByFundType } from "@/lib/content/pillars"
-import { ArrowRight } from "lucide-react"
 
 interface RolePageProps {
   params: {
@@ -61,28 +60,13 @@ export default async function RolePage({ params }: RolePageProps) {
 
         {/* Tools Section */}
         {roleTools.length > 0 && (
-          <section className="py-8">
+          <section className="py-12">
             <div className="container mx-auto px-4">
-              <div className="mb-6 flex items-end justify-between">
-                <div>
-                  <h2 className="mb-1 text-xl font-bold">Tools for {role.shortTitle}s</h2>
-                  <p className="text-sm text-muted-foreground">
-                    Relevant calculators and planning tools
-                  </p>
-                </div>
-                <Link
-                  href="/tools"
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground flex items-center gap-1.5 transition-colors"
-                >
-                  All Tools <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                {roleTools.map((tool) => (
-                  <ToolCard key={tool.id} tool={tool} />
-                ))}
-              </div>
+              <RelatedTools
+                tools={roleTools}
+                title={`Tools for ${role.shortTitle}s`}
+                subtitle="Interactive calculators and planning tools"
+              />
             </div>
           </section>
         )}

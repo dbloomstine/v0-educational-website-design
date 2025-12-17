@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { FundInputs, FeePhase, FeeCalculationResult, FundType } from './types'
 import { calculateManagementFees, validateFeePhases, generateDefaultFeePhases } from './fee-calculator'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -8,13 +9,15 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { InfoPopover } from '@/components/ui/info-popover'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, RotateCcw } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { FeePhaseEditor } from './fee-phase-editor'
 import { SummaryCards } from './summary-cards'
 import { ResultsChart } from './results-chart'
 import { ResultsTable } from './results-table'
 import { ExportSection } from './export-section'
 import { DisclaimerBlock } from '@/components/tools/shared'
+import { ShareButton } from '@/components/tools/share-button'
 
 const fundTypeOptions: FundType[] = [
   'Private Equity',
@@ -34,16 +37,37 @@ const fundTypeDescriptions: Record<FundType, string> = {
   'Other': 'Custom fund structure - adjust fee phases to match your LPA terms.'
 }
 
+// Default values for reset
+const DEFAULT_INPUTS: FundInputs = {
+  fundType: 'Venture Capital',
+  fundSize: 50,
+  fundTerm: 10,
+  investmentPeriod: 4,
+  gpCommitment: 2,
+  navGrowthRate: 0
+}
+
 export function ManagementFeeCalculator() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // Parse initial state from URL or use defaults
+  const getInitialInputs = (): FundInputs => {
+    if (typeof window === 'undefined') return DEFAULT_INPUTS
+
+    return {
+      fundType: (searchParams.get('type') as FundType) || DEFAULT_INPUTS.fundType,
+      fundSize: parseFloat(searchParams.get('size') || '') || DEFAULT_INPUTS.fundSize,
+      fundTerm: parseInt(searchParams.get('term') || '') || DEFAULT_INPUTS.fundTerm,
+      investmentPeriod: parseInt(searchParams.get('ip') || '') || DEFAULT_INPUTS.investmentPeriod,
+      gpCommitment: parseFloat(searchParams.get('gp') || '') || DEFAULT_INPUTS.gpCommitment,
+      navGrowthRate: parseFloat(searchParams.get('nav') || '') || DEFAULT_INPUTS.navGrowthRate
+    }
+  }
+
   // Fund inputs state
-  const [fundInputs, setFundInputs] = useState<FundInputs>({
-    fundType: 'Venture Capital',
-    fundSize: 50,
-    fundTerm: 10,
-    investmentPeriod: 4,
-    gpCommitment: 2,
-    navGrowthRate: 0
-  })
+  const [fundInputs, setFundInputs] = useState<FundInputs>(getInitialInputs)
 
   // Fee phases state
   const [feePhases, setFeePhases] = useState<FeePhase[]>([])
@@ -71,15 +95,53 @@ export function ManagementFeeCalculator() {
     }
   }, [fundInputs, feePhases])
 
+  // Update URL when inputs change (debounced)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams()
+      params.set('type', fundInputs.fundType)
+      params.set('size', String(fundInputs.fundSize))
+      params.set('term', String(fundInputs.fundTerm))
+      params.set('ip', String(fundInputs.investmentPeriod))
+      if (fundInputs.navGrowthRate) params.set('nav', String(fundInputs.navGrowthRate))
+
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [fundInputs, pathname, router])
+
+  // Generate shareable URL
+  const getShareableUrl = useCallback(() => {
+    const params = new URLSearchParams()
+    params.set('type', fundInputs.fundType)
+    params.set('size', String(fundInputs.fundSize))
+    params.set('term', String(fundInputs.fundTerm))
+    params.set('ip', String(fundInputs.investmentPeriod))
+    if (fundInputs.navGrowthRate) params.set('nav', String(fundInputs.navGrowthRate))
+
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+    return `${baseUrl}${pathname}?${params.toString()}`
+  }, [fundInputs, pathname])
+
   const handleFundInputChange = (updates: Partial<FundInputs>) => {
     setFundInputs(prev => ({ ...prev, ...updates }))
+  }
+
+  // Reset to defaults
+  const resetToDefaults = () => {
+    setFundInputs(DEFAULT_INPUTS)
+    setFeePhases(generateDefaultFeePhases(DEFAULT_INPUTS))
   }
 
   return (
     <div className="space-y-8">
       {/* Header */}
       <div className="space-y-3">
-        <h2 className="text-3xl font-bold tracking-tight">Management Fee Calculator</h2>
+        <div className="flex items-start justify-between gap-4">
+          <h2 className="text-3xl font-bold tracking-tight">Management Fee Calculator</h2>
+          <ShareButton getShareableUrl={getShareableUrl} />
+        </div>
         <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
           Model your fund-level management fees over the life of the fund. Built for emerging managers
           who want to stress test fee levels before finalizing their LPA.
@@ -204,6 +266,14 @@ export function ManagementFeeCalculator() {
             onPhasesChange={setFeePhases}
             errors={validationErrors}
           />
+
+          {/* Reset Button */}
+          <div className="flex justify-center">
+            <Button variant="outline" onClick={resetToDefaults}>
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Reset to Defaults
+            </Button>
+          </div>
         </div>
 
         {/* Right Column - Results */}

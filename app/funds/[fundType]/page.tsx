@@ -1,16 +1,14 @@
 import { notFound } from "next/navigation"
-import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { AnimateOnScroll } from "@/components/animate-on-scroll"
 import { Breadcrumb } from "@/components/breadcrumb"
 import { PillarCard } from "@/components/pillar-card"
-import { ToolCard } from "@/components/tools/tool-card"
+import { RelatedTools } from "@/components/tools/related-tools"
 import { getFundType } from "@/lib/content/fund-types"
 import { getPillarsByFundType } from "@/lib/content/pillars"
 import { getArticlesByPillar } from "@/lib/content/articles"
 import { getAllTools } from "@/lib/content/tools"
-import { ArrowRight } from "lucide-react"
 
 interface FundTypePageProps {
   params: {
@@ -88,28 +86,14 @@ export default async function FundTypePage({ params }: FundTypePageProps) {
         </section>
 
         {/* Tools Section */}
-        <section className="py-10 border-t border-border bg-accent/10">
+        <section className="py-12 border-t border-border bg-gradient-to-b from-accent/10 to-background">
           <div className="container mx-auto px-4">
-            <div className="mb-4 flex items-end justify-between">
-              <div>
-                <h2 className="mb-1 text-lg font-bold">Related Tools</h2>
-                <p className="text-xs text-muted-foreground">
-                  Free calculators and planning tools
-                </p>
-              </div>
-              <Link
-                href="/tools"
-                className="text-xs font-medium text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
-              >
-                All Tools <ArrowRight className="h-3 w-3" />
-              </Link>
-            </div>
-
-            <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-              {tools.slice(0, 6).map((tool) => (
-                <ToolCard key={tool.id} tool={tool} />
-              ))}
-            </div>
+            <RelatedTools
+              tools={tools}
+              title="Related Tools"
+              subtitle="Interactive calculators and planning tools"
+              maxTools={6}
+            />
           </div>
         </section>
       </main>

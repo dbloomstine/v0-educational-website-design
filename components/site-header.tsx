@@ -228,11 +228,11 @@ export function SiteHeader() {
                 </div>
               </div>
 
-              {/* Pricing & Costs Category */}
+              {/* Fund Economics Category */}
               <div className="mb-3 pt-2 border-t border-border">
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 px-2">Pricing & Costs</div>
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 px-2">Fund Economics</div>
                 <div className="space-y-1">
-                  {tools.filter(t => t.categories.includes('Pricing and Costs')).slice(0, 3).map((tool) => (
+                  {tools.filter(t => t.categories.includes('Fund Economics')).map((tool) => (
                     <Link
                       key={tool.slug}
                       href={`/tools/${tool.slug}`}
@@ -240,13 +240,34 @@ export function SiteHeader() {
                       className="flex items-start gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent/50"
                     >
                       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent/60 mt-0.5">
-                        {tool.icon === 'Calculator' && <Calculator className="h-4 w-4 text-foreground" />}
-                        {tool.icon === 'ClipboardCheck' && <ClipboardCheck className="h-4 w-4 text-foreground" />}
-                        {tool.icon === 'Receipt' && <Receipt className="h-4 w-4 text-foreground" />}
-                        {tool.icon === 'UserCheck' && <UserCheck className="h-4 w-4 text-foreground" />}
+                        {tool.icon === 'TrendingUp' && <TrendingUp className="h-4 w-4 text-foreground" />}
+                        {tool.icon === 'LineChart' && <LineChart className="h-4 w-4 text-foreground" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-foreground">{tool.title.replace(' Estimator', '')}</div>
+                        <div className="text-sm font-medium text-foreground">{tool.title.replace(' Visualizer', '')}</div>
+                        <div className="text-xs text-muted-foreground line-clamp-1">{tool.shortDescription}</div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Operations & Compliance Category */}
+              <div className="mb-3 pt-2 border-t border-border">
+                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 px-2">Operations</div>
+                <div className="space-y-1">
+                  {tools.filter(t => t.categories.includes('Operations and Compliance')).map((tool) => (
+                    <Link
+                      key={tool.slug}
+                      href={`/tools/${tool.slug}`}
+                      onClick={() => setOpenDropdown(null)}
+                      className="flex items-start gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent/50"
+                    >
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent/60 mt-0.5">
+                        {tool.icon === 'Split' && <Split className="h-4 w-4 text-foreground" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium text-foreground">{tool.title.replace(' Helper', '')}</div>
                         <div className="text-xs text-muted-foreground line-clamp-1">{tool.shortDescription}</div>
                       </div>
                     </Link>

@@ -221,3 +221,128 @@ export function exportWaterfallPDF(output: WaterfallOutput) {
     includeDisclaimer: true
   })
 }
+
+// Comparison CSV export
+export function exportComparisonCSV(outputA: WaterfallOutput, outputB: WaterfallOutput) {
+  const sections: CSVSection[] = [
+    // Scenario Comparison Summary
+    createTableSection(
+      'Scenario Comparison',
+      ['Metric', 'Scenario A', 'Scenario B', 'Difference'],
+      [
+        ['Fund Size', formatCurrency(outputA.input.fundSize), formatCurrency(outputB.input.fundSize), formatCurrency(outputB.input.fundSize - outputA.input.fundSize)],
+        ['Gross Proceeds', formatCurrency(outputA.input.grossProceeds), formatCurrency(outputB.input.grossProceeds), formatCurrency(outputB.input.grossProceeds - outputA.input.grossProceeds)],
+        ['Waterfall Type', outputA.input.waterfallType === 'european' ? 'European' : 'American', outputB.input.waterfallType === 'european' ? 'European' : 'American', '-'],
+        ['Preferred Return', `${(outputA.input.prefRate * 100).toFixed(1)}%`, `${(outputB.input.prefRate * 100).toFixed(1)}%`, `${((outputB.input.prefRate - outputA.input.prefRate) * 100).toFixed(1)}%`],
+        ['Carry Rate', `${(outputA.input.carryRate * 100).toFixed(0)}%`, `${(outputB.input.carryRate * 100).toFixed(0)}%`, `${((outputB.input.carryRate - outputA.input.carryRate) * 100).toFixed(0)}%`],
+        ['GP Catch-Up', outputA.input.hasCatchUp ? 'Yes' : 'No', outputB.input.hasCatchUp ? 'Yes' : 'No', '-']
+      ]
+    ),
+
+    // Distribution Results Comparison
+    createTableSection(
+      'Distribution Results',
+      ['Metric', 'Scenario A', 'Scenario B', 'Difference'],
+      [
+        ['Total Proceeds', formatCurrency(outputA.totalDistributed), formatCurrency(outputB.totalDistributed), formatCurrency(outputB.totalDistributed - outputA.totalDistributed)],
+        ['LP Distributions', formatCurrency(outputA.totalToLPs), formatCurrency(outputB.totalToLPs), formatCurrency(outputB.totalToLPs - outputA.totalToLPs)],
+        ['GP Distributions', formatCurrency(outputA.totalToGP), formatCurrency(outputB.totalToGP), formatCurrency(outputB.totalToGP - outputA.totalToGP)],
+        ['LP Multiple', formatMultiple(outputA.lpMultiple), formatMultiple(outputB.lpMultiple), `${(outputB.lpMultiple - outputA.lpMultiple).toFixed(2)}x`],
+        ['GP Multiple', formatMultiple(outputA.gpMultiple), formatMultiple(outputB.gpMultiple), `${(outputB.gpMultiple - outputA.gpMultiple).toFixed(2)}x`],
+        ['Effective Carry', `${(outputA.effectiveCarryRate * 100).toFixed(2)}%`, `${(outputB.effectiveCarryRate * 100).toFixed(2)}%`, `${((outputB.effectiveCarryRate - outputA.effectiveCarryRate) * 100).toFixed(2)}%`],
+        ['LP Profit', formatCurrency(outputA.lpProfit), formatCurrency(outputB.lpProfit), formatCurrency(outputB.lpProfit - outputA.lpProfit)],
+        ['GP Profit', formatCurrency(outputA.gpProfit), formatCurrency(outputB.gpProfit), formatCurrency(outputB.gpProfit - outputA.gpProfit)]
+      ]
+    ),
+
+    // Scenario A Tier Breakdown
+    createTableSection(
+      'Scenario A - Tier Breakdown',
+      ['Tier', 'Name', 'Amount', 'To LPs', 'To GP'],
+      outputA.tiers.map(tier => [
+        String(tier.tier),
+        tier.name,
+        formatCurrency(tier.total),
+        formatCurrency(tier.toLPs),
+        formatCurrency(tier.toGP)
+      ])
+    ),
+
+    // Scenario B Tier Breakdown
+    createTableSection(
+      'Scenario B - Tier Breakdown',
+      ['Tier', 'Name', 'Amount', 'To LPs', 'To GP'],
+      outputB.tiers.map(tier => [
+        String(tier.tier),
+        tier.name,
+        formatCurrency(tier.total),
+        formatCurrency(tier.toLPs),
+        formatCurrency(tier.toGP)
+      ])
+    )
+  ]
+
+  downloadCSV({
+    filename: `waterfall-comparison-${new Date().toISOString().split('T')[0]}`,
+    toolName: 'Distribution Waterfall Visualizer',
+    sections,
+    includeDisclaimer: true
+  })
+}
+
+// Comparison PDF export
+export function exportComparisonPDF(outputA: WaterfallOutput, outputB: WaterfallOutput) {
+  const sections: PDFSection[] = [
+    // Comparison Summary Header
+    { type: 'title', content: 'Scenario Comparison' },
+    ...createPDFTableSection(
+      '',
+      ['Metric', 'Scenario A', 'Scenario B'],
+      [
+        ['Fund Size', formatCurrency(outputA.input.fundSize), formatCurrency(outputB.input.fundSize)],
+        ['Proceeds', formatCurrency(outputA.input.grossProceeds), formatCurrency(outputB.input.grossProceeds)],
+        ['Structure', outputA.input.waterfallType === 'european' ? 'European' : 'American', outputB.input.waterfallType === 'european' ? 'European' : 'American'],
+        ['Pref Rate', `${(outputA.input.prefRate * 100).toFixed(1)}%`, `${(outputB.input.prefRate * 100).toFixed(1)}%`],
+        ['Carry', `${(outputA.input.carryRate * 100).toFixed(0)}%`, `${(outputB.input.carryRate * 100).toFixed(0)}%`]
+      ]
+    ),
+
+    { type: 'spacer' },
+
+    // Results Comparison
+    { type: 'title', content: 'Distribution Results' },
+    ...createPDFTableSection(
+      '',
+      ['Metric', 'Scenario A', 'Scenario B'],
+      [
+        ['LP Distributions', formatCurrency(outputA.totalToLPs), formatCurrency(outputB.totalToLPs)],
+        ['GP Distributions', formatCurrency(outputA.totalToGP), formatCurrency(outputB.totalToGP)],
+        ['LP Multiple', formatMultiple(outputA.lpMultiple), formatMultiple(outputB.lpMultiple)],
+        ['GP Multiple', formatMultiple(outputA.gpMultiple), formatMultiple(outputB.gpMultiple)],
+        ['Effective Carry', `${(outputA.effectiveCarryRate * 100).toFixed(2)}%`, `${(outputB.effectiveCarryRate * 100).toFixed(2)}%`]
+      ]
+    ),
+
+    { type: 'spacer' },
+
+    // Impact Analysis
+    { type: 'title', content: 'Impact Analysis (B vs A)' },
+    {
+      type: 'keyValue',
+      data: {
+        'LP Difference': formatCurrency(outputB.totalToLPs - outputA.totalToLPs),
+        'GP Difference': formatCurrency(outputB.totalToGP - outputA.totalToGP),
+        'Multiple Change': `${(outputB.lpMultiple - outputA.lpMultiple) >= 0 ? '+' : ''}${(outputB.lpMultiple - outputA.lpMultiple).toFixed(2)}x`,
+        'Carry Change': `${((outputB.effectiveCarryRate - outputA.effectiveCarryRate) * 100) >= 0 ? '+' : ''}${((outputB.effectiveCarryRate - outputA.effectiveCarryRate) * 100).toFixed(2)}%`
+      }
+    }
+  ]
+
+  downloadPDF({
+    filename: `waterfall-comparison-${new Date().toISOString().split('T')[0]}`,
+    toolName: 'Distribution Waterfall Visualizer',
+    description: 'Side-by-side comparison of two waterfall scenarios.',
+    sections,
+    includeDisclaimer: true
+  })
+}

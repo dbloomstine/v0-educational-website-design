@@ -211,3 +211,119 @@ export function exportSubscriptionLinePDF(output: SubscriptionLineOutput) {
     includeDisclaimer: true
   })
 }
+
+// Comparison CSV export
+export function exportSubscriptionLineComparisonCSV(outputA: SubscriptionLineOutput, outputB: SubscriptionLineOutput) {
+  const sections: CSVSection[] = [
+    // Fund Structure Comparison
+    createTableSection(
+      'Fund Structure Comparison',
+      ['Metric', 'Scenario A', 'Scenario B', 'Difference'],
+      [
+        ['Fund Size', formatCurrency(outputA.input.fundSize), formatCurrency(outputB.input.fundSize), formatCurrency(outputB.input.fundSize - outputA.input.fundSize)],
+        ['Investment Period', `${outputA.input.investmentPeriodYears} years`, `${outputB.input.investmentPeriodYears} years`, '-'],
+        ['Gross MOIC', formatMultiple(outputA.input.grossMOIC), formatMultiple(outputB.input.grossMOIC), `${(outputB.input.grossMOIC - outputA.input.grossMOIC).toFixed(2)}x`]
+      ]
+    ),
+
+    // Line Terms Comparison
+    createTableSection(
+      'Subscription Line Terms',
+      ['Metric', 'Scenario A', 'Scenario B', 'Difference'],
+      [
+        ['Using Line', outputA.input.useLine ? 'Yes' : 'No', outputB.input.useLine ? 'Yes' : 'No', '-'],
+        ['Facility Size', formatPercent(outputA.input.facilitySize, 0), formatPercent(outputB.input.facilitySize, 0), `${((outputB.input.facilitySize - outputA.input.facilitySize) * 100).toFixed(0)}%`],
+        ['Interest Rate', formatPercent(outputA.input.interestRate, 2), formatPercent(outputB.input.interestRate, 2), `${((outputB.input.interestRate - outputA.input.interestRate) * 100).toFixed(2)}%`],
+        ['Max Days Outstanding', `${outputA.input.maxDaysOutstanding} days`, `${outputB.input.maxDaysOutstanding} days`, `${outputB.input.maxDaysOutstanding - outputA.input.maxDaysOutstanding} days`]
+      ]
+    ),
+
+    // Performance Comparison
+    createTableSection(
+      'Performance Results',
+      ['Metric', 'Scenario A', 'Scenario B', 'Difference'],
+      [
+        ['Net IRR (With Line)', formatPercent(outputA.irrWithLine, 2), formatPercent(outputB.irrWithLine, 2), `${((outputB.irrWithLine - outputA.irrWithLine) * 100).toFixed(2)}%`],
+        ['Net IRR (No Line)', formatPercent(outputA.irrNoLine, 2), formatPercent(outputB.irrNoLine, 2), `${((outputB.irrNoLine - outputA.irrNoLine) * 100).toFixed(2)}%`],
+        ['IRR Boost', formatBasisPoints(outputA.irrBoost), formatBasisPoints(outputB.irrBoost), `${(outputB.irrBoost - outputA.irrBoost).toFixed(0)} bps`],
+        ['Net MOIC (With Line)', formatMultiple(outputA.moicWithLine), formatMultiple(outputB.moicWithLine), `${(outputB.moicWithLine - outputA.moicWithLine).toFixed(2)}x`],
+        ['Net MOIC (No Line)', formatMultiple(outputA.moicNoLine), formatMultiple(outputB.moicNoLine), `${(outputB.moicNoLine - outputA.moicNoLine).toFixed(2)}x`],
+        ['MOIC Drag', `${outputA.moicDrag.toFixed(2)}%`, `${outputB.moicDrag.toFixed(2)}%`, `${(outputB.moicDrag - outputA.moicDrag).toFixed(2)}%`]
+      ]
+    ),
+
+    // Cost Comparison
+    createTableSection(
+      'Cost Analysis',
+      ['Metric', 'Scenario A', 'Scenario B', 'Difference'],
+      [
+        ['Total Interest Paid', formatCurrency(outputA.totalInterestPaid), formatCurrency(outputB.totalInterestPaid), formatCurrency(outputB.totalInterestPaid - outputA.totalInterestPaid)],
+        ['Total Management Fees', formatCurrency(outputA.totalManagementFees), formatCurrency(outputB.totalManagementFees), formatCurrency(outputB.totalManagementFees - outputA.totalManagementFees)],
+        ['Combined Fee Drag', `${outputA.feeDrag.toFixed(2)}%`, `${outputB.feeDrag.toFixed(2)}%`, `${(outputB.feeDrag - outputA.feeDrag).toFixed(2)}%`]
+      ]
+    )
+  ]
+
+  downloadCSV({
+    filename: `subscription-line-comparison-${new Date().toISOString().split('T')[0]}`,
+    toolName: 'Subscription Credit Line Impact Visualizer',
+    sections,
+    includeDisclaimer: true
+  })
+}
+
+// Comparison PDF export
+export function exportSubscriptionLineComparisonPDF(outputA: SubscriptionLineOutput, outputB: SubscriptionLineOutput) {
+  const sections: PDFSection[] = [
+    // Scenario Inputs
+    { type: 'title', content: 'Scenario Comparison' },
+    ...createPDFTableSection(
+      '',
+      ['Input', 'Scenario A', 'Scenario B'],
+      [
+        ['Fund Size', formatCurrency(outputA.input.fundSize), formatCurrency(outputB.input.fundSize)],
+        ['Using Line', outputA.input.useLine ? 'Yes' : 'No', outputB.input.useLine ? 'Yes' : 'No'],
+        ['Facility Size', formatPercent(outputA.input.facilitySize, 0), formatPercent(outputB.input.facilitySize, 0)],
+        ['Interest Rate', formatPercent(outputA.input.interestRate, 2), formatPercent(outputB.input.interestRate, 2)],
+        ['Max Days Out', `${outputA.input.maxDaysOutstanding}`, `${outputB.input.maxDaysOutstanding}`]
+      ]
+    ),
+
+    { type: 'spacer' },
+
+    // Performance Results
+    { type: 'title', content: 'Performance Results' },
+    ...createPDFTableSection(
+      '',
+      ['Metric', 'Scenario A', 'Scenario B'],
+      [
+        ['Net IRR (With Line)', formatPercent(outputA.irrWithLine, 2), formatPercent(outputB.irrWithLine, 2)],
+        ['Net MOIC (With Line)', formatMultiple(outputA.moicWithLine), formatMultiple(outputB.moicWithLine)],
+        ['IRR Boost', formatBasisPoints(outputA.irrBoost), formatBasisPoints(outputB.irrBoost)],
+        ['MOIC Drag', `${outputA.moicDrag.toFixed(2)}%`, `${outputB.moicDrag.toFixed(2)}%`]
+      ]
+    ),
+
+    { type: 'spacer' },
+
+    // Impact Analysis
+    { type: 'title', content: 'Impact Analysis (B vs A)' },
+    {
+      type: 'keyValue',
+      data: {
+        'IRR Difference': `${((outputB.irrWithLine - outputA.irrWithLine) * 100) >= 0 ? '+' : ''}${((outputB.irrWithLine - outputA.irrWithLine) * 100).toFixed(2)}%`,
+        'MOIC Difference': `${(outputB.moicWithLine - outputA.moicWithLine) >= 0 ? '+' : ''}${(outputB.moicWithLine - outputA.moicWithLine).toFixed(2)}x`,
+        'IRR Boost Change': `${(outputB.irrBoost - outputA.irrBoost) >= 0 ? '+' : ''}${(outputB.irrBoost - outputA.irrBoost).toFixed(0)} bps`,
+        'Interest Cost Change': formatCurrency(outputB.totalInterestPaid - outputA.totalInterestPaid)
+      }
+    }
+  ]
+
+  downloadPDF({
+    filename: `subscription-line-comparison-${new Date().toISOString().split('T')[0]}`,
+    toolName: 'Subscription Credit Line Impact Visualizer',
+    description: 'Side-by-side comparison of two subscription line scenarios.',
+    sections,
+    includeDisclaimer: true
+  })
+}

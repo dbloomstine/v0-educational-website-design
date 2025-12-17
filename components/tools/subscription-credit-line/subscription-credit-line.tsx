@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import {
   SubscriptionLineInput,
   SubscriptionLineOutput,
@@ -12,6 +13,9 @@ import { ResultsView } from './results-view'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ShareButton } from '@/components/tools/share-button'
+import { ExportToolbar } from '@/components/tools/shared'
+import { exportSubscriptionLineComparisonCSV, exportSubscriptionLineComparisonPDF } from './export'
 
 // Preset scenarios based on market research
 const presets: Record<string, { name: string; description: string; input: SubscriptionLineInput }> = {
@@ -102,12 +106,88 @@ const presets: Record<string, { name: string; description: string; input: Subscr
 }
 
 export function SubscriptionCreditLine() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // Parse initial state from URL or use defaults
+  const getInitialInput = (): SubscriptionLineInput => {
+    if (typeof window === 'undefined') return defaultInput
+
+    return {
+      fundSize: parseFloat(searchParams.get('fundSize') || '') || defaultInput.fundSize,
+      investmentPeriodYears: parseInt(searchParams.get('investPeriod') || '') || defaultInput.investmentPeriodYears,
+      fundTermYears: parseInt(searchParams.get('fundTerm') || '') || defaultInput.fundTermYears,
+      deploymentPaceType: (searchParams.get('deployPace') as 'front-loaded' | 'even' | 'back-loaded') || defaultInput.deploymentPaceType,
+      managementFeeRate: parseFloat(searchParams.get('mgmtFee') || '') || defaultInput.managementFeeRate,
+      managementFeeBasis: (searchParams.get('feeBasis') as 'commitments' | 'invested') || defaultInput.managementFeeBasis,
+      carryRate: parseFloat(searchParams.get('carry') || '') || defaultInput.carryRate,
+      prefRate: parseFloat(searchParams.get('pref') || '') || defaultInput.prefRate,
+      useLine: searchParams.get('useLine') === 'true' || (searchParams.get('useLine') === null && defaultInput.useLine),
+      facilitySize: parseFloat(searchParams.get('facilitySize') || '') || defaultInput.facilitySize,
+      interestRate: parseFloat(searchParams.get('interestRate') || '') || defaultInput.interestRate,
+      maxDaysOutstanding: parseInt(searchParams.get('maxDays') || '') || defaultInput.maxDaysOutstanding,
+      repaymentTrigger: (searchParams.get('repayment') as 'automatic' | 'distribution-funded') || defaultInput.repaymentTrigger,
+      grossMOIC: parseFloat(searchParams.get('grossMOIC') || '') || defaultInput.grossMOIC,
+      realizationScheduleType: (searchParams.get('realization') as 'j-curve' | 'linear' | 'back-loaded') || defaultInput.realizationScheduleType
+    }
+  }
+
   // Initialize with calculated results
-  const [input, setInput] = useState<SubscriptionLineInput>(defaultInput)
-  const [output, setOutput] = useState<SubscriptionLineOutput>(calculateSubscriptionLineImpact(defaultInput))
+  const [input, setInput] = useState<SubscriptionLineInput>(getInitialInput)
+  const [output, setOutput] = useState<SubscriptionLineOutput>(calculateSubscriptionLineImpact(getInitialInput()))
   const [compareMode, setCompareMode] = useState(false)
   const [compareInput, setCompareInput] = useState<SubscriptionLineInput | null>(null)
   const [compareOutput, setCompareOutput] = useState<SubscriptionLineOutput | null>(null)
+
+  // Update URL when inputs change (debounced)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams()
+      params.set('fundSize', String(input.fundSize))
+      params.set('investPeriod', String(input.investmentPeriodYears))
+      params.set('fundTerm', String(input.fundTermYears))
+      params.set('deployPace', input.deploymentPaceType)
+      params.set('mgmtFee', String(input.managementFeeRate))
+      params.set('feeBasis', input.managementFeeBasis)
+      params.set('carry', String(input.carryRate))
+      params.set('pref', String(input.prefRate))
+      params.set('useLine', String(input.useLine))
+      params.set('facilitySize', String(input.facilitySize))
+      params.set('interestRate', String(input.interestRate))
+      params.set('maxDays', String(input.maxDaysOutstanding))
+      params.set('repayment', input.repaymentTrigger)
+      params.set('grossMOIC', String(input.grossMOIC))
+      params.set('realization', input.realizationScheduleType)
+
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [input, pathname, router])
+
+  // Generate shareable URL
+  const getShareableUrl = useCallback(() => {
+    const params = new URLSearchParams()
+    params.set('fundSize', String(input.fundSize))
+    params.set('investPeriod', String(input.investmentPeriodYears))
+    params.set('fundTerm', String(input.fundTermYears))
+    params.set('deployPace', input.deploymentPaceType)
+    params.set('mgmtFee', String(input.managementFeeRate))
+    params.set('feeBasis', input.managementFeeBasis)
+    params.set('carry', String(input.carryRate))
+    params.set('pref', String(input.prefRate))
+    params.set('useLine', String(input.useLine))
+    params.set('facilitySize', String(input.facilitySize))
+    params.set('interestRate', String(input.interestRate))
+    params.set('maxDays', String(input.maxDaysOutstanding))
+    params.set('repayment', input.repaymentTrigger)
+    params.set('grossMOIC', String(input.grossMOIC))
+    params.set('realization', input.realizationScheduleType)
+
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+    return `${baseUrl}${pathname}?${params.toString()}`
+  }, [input, pathname])
 
   const handleInputChange = (newInput: SubscriptionLineInput) => {
     setInput(newInput)
@@ -141,7 +221,10 @@ export function SubscriptionCreditLine() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="text-center">
+      <div className="text-center relative">
+        <div className="absolute right-0 top-0">
+          <ShareButton getShareableUrl={getShareableUrl} />
+        </div>
         <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
           Subscription Credit Line Impact Visualizer
         </h1>
@@ -257,7 +340,13 @@ export function SubscriptionCreditLine() {
           <TabsContent value="comparison" className="mt-6">
             {compareOutput && (
               <Card className="p-6">
-                <h3 className="mb-4 text-xl font-semibold">Side-by-Side Comparison</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold">Side-by-Side Comparison</h3>
+                  <ExportToolbar
+                    onExportCSV={() => exportSubscriptionLineComparisonCSV(output, compareOutput)}
+                    onExportPDF={() => exportSubscriptionLineComparisonPDF(output, compareOutput)}
+                  />
+                </div>
                 <div className="grid gap-6 md:grid-cols-2">
                   <div>
                     <h4 className="mb-3 text-lg font-medium text-primary">Scenario A</h4>

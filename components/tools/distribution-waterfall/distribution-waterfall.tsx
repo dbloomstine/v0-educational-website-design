@@ -1,13 +1,16 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { WaterfallInput, WaterfallOutput, defaultInput, calculateWaterfall, formatCurrency, formatMultiple } from './waterfallCalculations'
 import { InputForm } from './input-form'
 import { ResultsView } from './results-view'
-import { exportWaterfallSummary } from './export'
+import { exportWaterfallSummary, exportComparisonCSV, exportComparisonPDF } from './export'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ShareButton } from '@/components/tools/share-button'
+import { ExportToolbar } from '@/components/tools/shared'
 
 // Preset scenarios
 const presets: Record<string, { name: string; description: string; input: WaterfallInput }> = {
@@ -82,15 +85,79 @@ const presets: Record<string, { name: string; description: string; input: Waterf
 }
 
 export function DistributionWaterfall() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // Parse initial state from URL or use defaults
+  const getInitialInput = (): WaterfallInput => {
+    if (typeof window === 'undefined') return defaultInput
+
+    return {
+      fundSize: parseFloat(searchParams.get('fundSize') || '') || defaultInput.fundSize,
+      contributedCapital: parseFloat(searchParams.get('contributed') || '') || defaultInput.contributedCapital,
+      grossProceeds: parseFloat(searchParams.get('proceeds') || '') || defaultInput.grossProceeds,
+      waterfallType: (searchParams.get('type') as 'european' | 'american') || defaultInput.waterfallType,
+      prefRate: parseFloat(searchParams.get('pref') || '') || defaultInput.prefRate,
+      prefCompounding: (searchParams.get('compounding') as 'simple' | 'compound') || defaultInput.prefCompounding,
+      carryRate: parseFloat(searchParams.get('carry') || '') || defaultInput.carryRate,
+      catchUpRate: parseFloat(searchParams.get('catchUp') || '') || defaultInput.catchUpRate,
+      hasCatchUp: searchParams.get('hasCatchUp') === 'true' || (searchParams.get('hasCatchUp') === null && defaultInput.hasCatchUp),
+      yearsToExit: parseInt(searchParams.get('years') || '') || defaultInput.yearsToExit,
+      gpCommitmentPercent: parseFloat(searchParams.get('gpCommit') || '') || defaultInput.gpCommitmentPercent
+    }
+  }
+
   // Initialize with calculated results
-  const [input, setInput] = useState<WaterfallInput>(defaultInput)
-  const [output, setOutput] = useState<WaterfallOutput>(calculateWaterfall(defaultInput))
+  const [input, setInput] = useState<WaterfallInput>(getInitialInput)
+  const [output, setOutput] = useState<WaterfallOutput>(calculateWaterfall(getInitialInput()))
   const [compareMode, setCompareMode] = useState(false)
   const [compareInput, setCompareInput] = useState<WaterfallInput | null>(null)
   const [compareOutput, setCompareOutput] = useState<WaterfallOutput | null>(null)
 
   // Quick scenario buttons for different proceeds
   const [selectedScenario, setSelectedScenario] = useState<'low' | 'medium' | 'high'>('medium')
+
+  // Update URL when inputs change (debounced)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams()
+      params.set('fundSize', String(input.fundSize))
+      params.set('contributed', String(input.contributedCapital))
+      params.set('proceeds', String(input.grossProceeds))
+      params.set('type', input.waterfallType)
+      params.set('pref', String(input.prefRate))
+      params.set('compounding', input.prefCompounding)
+      params.set('carry', String(input.carryRate))
+      params.set('catchUp', String(input.catchUpRate))
+      params.set('hasCatchUp', String(input.hasCatchUp))
+      params.set('years', String(input.yearsToExit))
+      params.set('gpCommit', String(input.gpCommitmentPercent))
+
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [input, pathname, router])
+
+  // Generate shareable URL
+  const getShareableUrl = useCallback(() => {
+    const params = new URLSearchParams()
+    params.set('fundSize', String(input.fundSize))
+    params.set('contributed', String(input.contributedCapital))
+    params.set('proceeds', String(input.grossProceeds))
+    params.set('type', input.waterfallType)
+    params.set('pref', String(input.prefRate))
+    params.set('compounding', input.prefCompounding)
+    params.set('carry', String(input.carryRate))
+    params.set('catchUp', String(input.catchUpRate))
+    params.set('hasCatchUp', String(input.hasCatchUp))
+    params.set('years', String(input.yearsToExit))
+    params.set('gpCommit', String(input.gpCommitmentPercent))
+
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+    return `${baseUrl}${pathname}?${params.toString()}`
+  }, [input, pathname])
 
   const handleInputChange = (newInput: WaterfallInput) => {
     setInput(newInput)
@@ -134,7 +201,10 @@ export function DistributionWaterfall() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="text-center">
+      <div className="text-center relative">
+        <div className="absolute right-0 top-0">
+          <ShareButton getShareableUrl={getShareableUrl} />
+        </div>
         <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
           Distribution Waterfall Visualizer
         </h1>
@@ -257,7 +327,13 @@ export function DistributionWaterfall() {
           <TabsContent value="comparison" className="mt-6">
             {compareOutput && (
               <Card className="p-6">
-                <h3 className="mb-4 text-xl font-semibold">Side-by-Side Comparison</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-xl font-semibold">Side-by-Side Comparison</h3>
+                  <ExportToolbar
+                    onExportCSV={() => exportComparisonCSV(output, compareOutput)}
+                    onExportPDF={() => exportComparisonPDF(output, compareOutput)}
+                  />
+                </div>
                 <div className="grid gap-6 md:grid-cols-2">
                   <div>
                     <h4 className="mb-3 text-lg font-medium text-primary">Scenario A</h4>

@@ -1,12 +1,17 @@
 "use client"
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
+import { useSearchParams, useRouter, usePathname } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Plus, Trash2, DollarSign, TrendingUp, Clock, AlertCircle, Building2 } from 'lucide-react'
-import { DisclaimerBlock } from '@/components/tools/shared'
+import { DisclaimerBlock, ExportToolbar, PresetManager } from '@/components/tools/shared'
+import { ShareButton } from '@/components/tools/share-button'
+import { InfoPopover } from '@/components/ui/info-popover'
+import { usePresets } from '@/lib/hooks/use-presets'
+import { exportBudgetCSV, exportBudgetPDF } from './export'
 import {
   BudgetData,
   Fund,
@@ -29,10 +34,87 @@ import {
 } from 'recharts'
 
 export function ManagementCompanyBudget() {
-  const [data, setData] = useState<BudgetData>(DEFAULT_BUDGET_DATA)
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // Parse initial state from URL or use defaults
+  const getInitialData = (): BudgetData => {
+    if (typeof window === 'undefined') return DEFAULT_BUDGET_DATA
+
+    const startingCash = parseFloat(searchParams.get('cash') || '') || DEFAULT_BUDGET_DATA.startingCash
+
+    // For simplicity, we'll store funds, team, and expenses as JSON in URL
+    // This is a simplified version - complex nested data is harder to URL-encode
+    let funds = DEFAULT_BUDGET_DATA.funds
+    let expenses = DEFAULT_BUDGET_DATA.expenses
+
+    try {
+      const fundsParam = searchParams.get('funds')
+      if (fundsParam) {
+        funds = JSON.parse(decodeURIComponent(fundsParam))
+      }
+    } catch {
+      // Keep defaults
+    }
+
+    return { startingCash, funds, expenses }
+  }
+
+  const [data, setData] = useState<BudgetData>(getInitialData)
+  const [csvLoading, setCsvLoading] = useState(false)
+  const [pdfLoading, setPdfLoading] = useState(false)
+
+  // Preset management
+  const {
+    presets,
+    isLoaded: presetsLoaded,
+    savePreset,
+    loadPreset,
+    deletePreset
+  } = usePresets<BudgetData>({ storageKey: 'budget-planner-presets' })
+
+  const handleSavePreset = (name: string) => {
+    savePreset(name, data)
+  }
+
+  const handleLoadPreset = (presetId: string) => {
+    const presetData = loadPreset(presetId)
+    if (presetData) {
+      setData(presetData)
+    }
+  }
 
   // Calculate results whenever data changes
   const results = useMemo(() => calculateBudget(data), [data])
+
+  // Update URL when data changes (debounced) - simplified to just starting cash and funds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const params = new URLSearchParams()
+      params.set('cash', String(data.startingCash))
+      // Encode funds array - limit URL size
+      if (data.funds.length > 0) {
+        params.set('funds', encodeURIComponent(JSON.stringify(data.funds)))
+      }
+
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [data.startingCash, data.funds, pathname, router])
+
+  // Generate shareable URL
+  const getShareableUrl = useCallback(() => {
+    const params = new URLSearchParams()
+    params.set('cash', String(data.startingCash))
+    if (data.funds.length > 0) {
+      params.set('funds', encodeURIComponent(JSON.stringify(data.funds)))
+    }
+
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
+    return `${baseUrl}${pathname}?${params.toString()}`
+  }, [data.startingCash, data.funds, pathname])
 
   // Helper to generate unique IDs
   const genId = () => Math.random().toString(36).substr(2, 9)
@@ -134,10 +216,23 @@ export function ManagementCompanyBudget() {
     <div className="space-y-8">
       {/* Header */}
       <div className="space-y-3">
-        <h1 className="text-3xl font-bold tracking-tight">Management Company Budget Planner</h1>
+        <div className="flex items-start justify-between gap-4">
+          <h1 className="text-3xl font-bold tracking-tight">Management Company Budget Planner</h1>
+          <ShareButton getShareableUrl={getShareableUrl} />
+        </div>
         <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
           Plan your management company budget and runway. See how long your cash will last and when fees will cover expenses.
         </p>
+        {/* Preset Manager */}
+        <PresetManager
+          presets={presets}
+          isLoaded={presetsLoaded}
+          onSave={handleSavePreset}
+          onLoad={handleLoadPreset}
+          onDelete={deletePreset}
+          canSave={data.funds.length > 0}
+          compact
+        />
       </div>
 
       {/* Key Metrics - Always Visible */}
@@ -273,7 +368,12 @@ export function ManagementCompanyBudget() {
       {/* Starting Cash */}
       <Card>
         <CardHeader>
-          <CardTitle>Starting Cash</CardTitle>
+          <div className="flex items-center gap-2">
+            <CardTitle>Starting Cash</CardTitle>
+            <InfoPopover>
+              Your initial capital to cover expenses before management fees start flowing. This is typically GP capital or seed funding from anchor LPs. Most emerging managers need 12-24 months of runway.
+            </InfoPopover>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="max-w-xs">
@@ -295,7 +395,12 @@ export function ManagementCompanyBudget() {
       {/* Funds Section */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Your Fund(s)</CardTitle>
+          <div className="flex items-center gap-2">
+            <CardTitle>Your Fund(s)</CardTitle>
+            <InfoPopover>
+              Add each fund you manage. Management fees are calculated based on fund size and fee rate. First Close Year determines when fee revenue begins (fees typically start at first close, not final close).
+            </InfoPopover>
+          </div>
           <Button size="sm" onClick={addFund}>
             <Plus className="h-4 w-4 mr-2" />
             Add Fund
@@ -311,36 +416,36 @@ export function ManagementCompanyBudget() {
           ) : (
             <div className="space-y-4">
               {data.funds.map((fund) => (
-                <div key={fund.id} className="grid grid-cols-1 sm:grid-cols-4 gap-4 p-4 border rounded-lg">
-                  <div>
-                    <Label>Fund Name</Label>
-                    <Input
-                      value={fund.name}
-                      onChange={(e) => updateFund(fund.id, { name: e.target.value })}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label>Size ($M)</Label>
-                    <Input
-                      type="number"
-                      value={fund.size}
-                      onChange={(e) => updateFund(fund.id, { size: parseFloat(e.target.value) || 0 })}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label>Mgmt Fee (%)</Label>
-                    <Input
-                      type="number"
-                      step="0.1"
-                      value={fund.feeRate}
-                      onChange={(e) => updateFund(fund.id, { feeRate: parseFloat(e.target.value) || 0 })}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div className="flex items-end gap-2">
-                    <div className="flex-1">
+                <div key={fund.id} className="p-4 border rounded-lg space-y-4">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="col-span-2 md:col-span-1">
+                      <Label>Fund Name</Label>
+                      <Input
+                        value={fund.name}
+                        onChange={(e) => updateFund(fund.id, { name: e.target.value })}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label>Size ($M)</Label>
+                      <Input
+                        type="number"
+                        value={fund.size}
+                        onChange={(e) => updateFund(fund.id, { size: parseFloat(e.target.value) || 0 })}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label>Mgmt Fee (%)</Label>
+                      <Input
+                        type="number"
+                        step="0.1"
+                        value={fund.feeRate}
+                        onChange={(e) => updateFund(fund.id, { feeRate: parseFloat(e.target.value) || 0 })}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div className="col-span-2 md:col-span-1">
                       <Label>First Close Year</Label>
                       <Input
                         type="number"
@@ -349,17 +454,20 @@ export function ManagementCompanyBudget() {
                         className="mt-1"
                       />
                     </div>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">
+                      Expected annual fee: {formatCurrency(fund.size * 1_000_000 * (fund.feeRate / 100))}
+                    </span>
                     <Button
                       variant="ghost"
-                      size="icon"
+                      size="sm"
                       onClick={() => removeFund(fund.id)}
                       className="text-muted-foreground hover:text-destructive"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4 mr-1" />
+                      Remove
                     </Button>
-                  </div>
-                  <div className="sm:col-span-4 text-sm text-muted-foreground">
-                    Expected annual fee: {formatCurrency(fund.size * 1_000_000 * (fund.feeRate / 100))}
                   </div>
                 </div>
               ))}
@@ -371,7 +479,12 @@ export function ManagementCompanyBudget() {
       {/* Team Expenses */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Team</CardTitle>
+          <div className="flex items-center gap-2">
+            <CardTitle>Team</CardTitle>
+            <InfoPopover>
+              Enter the all-in monthly cost for each team member including salary, bonus, benefits, and payroll taxes. For emerging managers, team is typically the largest expense (60-70% of budget).
+            </InfoPopover>
+          </div>
           <Button size="sm" onClick={addTeamMember}>
             <Plus className="h-4 w-4 mr-2" />
             Add Role
@@ -391,34 +504,38 @@ export function ManagementCompanyBudget() {
           {data.expenses.team.length === 0 ? (
             <p className="text-muted-foreground text-center py-8">No team members added yet.</p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4">
               {data.expenses.team.map((member) => (
-                <div key={member.id} className="flex items-center gap-3">
-                  <Input
-                    placeholder="Role (e.g., Managing Partner)"
-                    value={member.role}
-                    onChange={(e) => updateTeamMember(member.id, { role: e.target.value })}
-                    className="flex-1"
-                  />
-                  <div className="relative w-36">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
+                <div key={member.id} className="p-4 border rounded-lg space-y-3 md:space-y-0">
+                  <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto_auto] gap-3 items-center">
                     <Input
-                      type="number"
-                      placeholder="Monthly"
-                      value={member.monthlyCost || ''}
-                      onChange={(e) => updateTeamMember(member.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
-                      className="pl-7"
+                      placeholder="Role (e.g., Managing Partner)"
+                      value={member.role}
+                      onChange={(e) => updateTeamMember(member.id, { role: e.target.value })}
                     />
+                    <div className="flex items-center gap-2">
+                      <div className="relative flex-1 md:w-36">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
+                        <Input
+                          type="number"
+                          placeholder="Monthly cost"
+                          value={member.monthlyCost || ''}
+                          onChange={(e) => updateTeamMember(member.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
+                          className="pl-7"
+                        />
+                      </div>
+                      <span className="text-sm text-muted-foreground whitespace-nowrap">/month</span>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeTeamMember(member.id)}
+                      className="text-muted-foreground hover:text-destructive justify-start md:justify-center"
+                    >
+                      <Trash2 className="h-4 w-4 mr-1 md:mr-0" />
+                      <span className="md:hidden">Remove</span>
+                    </Button>
                   </div>
-                  <span className="text-sm text-muted-foreground w-16">/month</span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeTeamMember(member.id)}
-                    className="text-muted-foreground hover:text-destructive"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
                 </div>
               ))}
             </div>
@@ -429,7 +546,12 @@ export function ManagementCompanyBudget() {
       {/* Operations Expenses */}
       <Card>
         <CardHeader>
-          <CardTitle>Operations</CardTitle>
+          <div className="flex items-center gap-2">
+            <CardTitle>Operations</CardTitle>
+            <InfoPopover>
+              These are typically fund-level expenses passed through to LPs, but the management company often pays upfront and gets reimbursed. Budget for the cash flow impact even if ultimately charged to the fund.
+            </InfoPopover>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-4">
@@ -440,21 +562,23 @@ export function ManagementCompanyBudget() {
             {data.expenses.operations.map((item) => {
               const range = TYPICAL_RANGES.operations[item.name as keyof typeof TYPICAL_RANGES.operations]
               return (
-                <div key={item.id} className="flex items-center gap-3">
+                <div key={item.id} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                   <div className="flex-1">
                     <span className="font-medium">{item.name}</span>
                     {range && <span className="text-xs text-muted-foreground ml-2">{range.note}</span>}
                   </div>
-                  <div className="relative w-36">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
-                    <Input
-                      type="number"
-                      value={item.monthlyCost || ''}
-                      onChange={(e) => updateOperation(item.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
-                      className="pl-7"
-                    />
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex-1 sm:w-36">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
+                      <Input
+                        type="number"
+                        value={item.monthlyCost || ''}
+                        onChange={(e) => updateOperation(item.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
+                        className="pl-7"
+                      />
+                    </div>
+                    <span className="text-sm text-muted-foreground whitespace-nowrap">/month</span>
                   </div>
-                  <span className="text-sm text-muted-foreground w-16">/month</span>
                 </div>
               )
             })}
@@ -465,7 +589,12 @@ export function ManagementCompanyBudget() {
       {/* Overhead Expenses */}
       <Card>
         <CardHeader>
-          <CardTitle>Overhead</CardTitle>
+          <div className="flex items-center gap-2">
+            <CardTitle>Overhead</CardTitle>
+            <InfoPopover>
+              These are management company expenses paid from fee revenue. D&O/E&O insurance is critical for fund managers - don't skip it. Many emerging managers use coworking spaces to reduce office costs.
+            </InfoPopover>
+          </div>
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-4">
@@ -476,25 +605,57 @@ export function ManagementCompanyBudget() {
             {data.expenses.overhead.map((item) => {
               const range = TYPICAL_RANGES.overhead[item.name as keyof typeof TYPICAL_RANGES.overhead]
               return (
-                <div key={item.id} className="flex items-center gap-3">
+                <div key={item.id} className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
                   <div className="flex-1">
                     <span className="font-medium">{item.name}</span>
                     {range && <span className="text-xs text-muted-foreground ml-2">{range.note}</span>}
                   </div>
-                  <div className="relative w-36">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
-                    <Input
-                      type="number"
-                      value={item.monthlyCost || ''}
-                      onChange={(e) => updateOverhead(item.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
-                      className="pl-7"
-                    />
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex-1 sm:w-36">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
+                      <Input
+                        type="number"
+                        value={item.monthlyCost || ''}
+                        onChange={(e) => updateOverhead(item.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
+                        className="pl-7"
+                      />
+                    </div>
+                    <span className="text-sm text-muted-foreground whitespace-nowrap">/month</span>
                   </div>
-                  <span className="text-sm text-muted-foreground w-16">/month</span>
                 </div>
               )
             })}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Export Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Export Results</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            Download your budget analysis as CSV (for spreadsheets) or PDF (for presentations).
+          </p>
+          <ExportToolbar
+            onExportCSV={() => {
+              setCsvLoading(true)
+              setTimeout(() => {
+                exportBudgetCSV(data, results)
+                setCsvLoading(false)
+              }, 100)
+            }}
+            onExportPDF={() => {
+              setPdfLoading(true)
+              setTimeout(() => {
+                exportBudgetPDF(data, results)
+                setPdfLoading(false)
+              }, 100)
+            }}
+            csvLoading={csvLoading}
+            pdfLoading={pdfLoading}
+          />
         </CardContent>
       </Card>
 
