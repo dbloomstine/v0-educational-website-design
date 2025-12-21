@@ -8,7 +8,6 @@ import { cn } from '@/lib/utils'
 import {
   ChevronRight,
   ChevronLeft,
-  ChevronDown,
   Rocket,
   Sparkles,
   Check,
@@ -16,14 +15,9 @@ import {
   Trophy,
   Target,
   Zap,
-  Star,
-  PartyPopper,
-  Building2,
-  Scale,
   Users,
   Globe,
   Briefcase,
-  TrendingUp,
   Home,
   Landmark,
   CreditCard,
@@ -31,10 +25,9 @@ import {
   Search,
   Plus,
   CheckCircle2,
-  Circle,
   Info,
 } from 'lucide-react'
-import { FundConfig, FundStrategy, FundSize, Jurisdiction } from './types'
+import { FundConfig } from './types'
 import confetti from 'canvas-confetti'
 
 // Service provider suggestions
