@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
+import dynamic from 'next/dynamic'
 import { cn } from '@/lib/utils'
 import {
   FundConfig,
@@ -11,8 +12,17 @@ import {
   DEFAULT_CONFIG,
 } from './types'
 import { PHASES, TASKS, getApplicableTasks, getTasksForPhase } from './data'
-import { JourneyMode } from './journey-mode'
 import { TaskCard } from './task-card'
+
+// Dynamic import to avoid SSR issues with framer-motion and canvas-confetti
+const JourneyMode = dynamic(() => import('./journey-mode').then(mod => mod.JourneyMode), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-pulse text-muted-foreground">Loading...</div>
+    </div>
+  ),
+})
 import { ProgressDashboard } from './progress-dashboard'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
