@@ -661,9 +661,9 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden flex flex-col">
       {/* Header */}
-      <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between z-10">
+      <div className="flex-shrink-0 p-4 flex items-center justify-between z-10 bg-gradient-to-b from-slate-900/90 to-transparent backdrop-blur-sm safe-area-top">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-full backdrop-blur-sm">
             <Sparkles className="h-4 w-4 text-amber-400" />
@@ -734,18 +734,19 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
       </div>
 
       {/* Main content */}
-      <div className="h-full flex items-center justify-center px-4 pt-16 pb-24">
-        <AnimatePresence mode="wait" custom={direction}>
-          <motion.div
-            key={step.id}
-            custom={direction}
-            variants={slideVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="w-full max-w-3xl"
-          >
+      <div className="flex-1 overflow-y-auto px-4 py-6 pb-24">
+        <div className="min-h-full flex items-center justify-center">
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key={step.id}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+              className="w-full max-w-3xl"
+            >
             {/* Welcome Step */}
             {step.type === 'welcome' && (
               <div className="text-center space-y-8">
@@ -1094,14 +1095,14 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                   </div>
 
                   {teamMembers.length > 0 ? (
-                    <div className="grid gap-2 max-h-48 overflow-y-auto">
+                    <div className="grid gap-2 max-h-40 sm:max-h-48 overflow-y-auto">
                       {teamMembers.map((member) => (
                         <div
                           key={member.id}
-                          className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10 group"
+                          className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center">
+                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0">
                               <Users className="h-4 w-4 text-white" />
                             </div>
                             <div>
@@ -1111,7 +1112,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                           </div>
                           <button
                             onClick={() => removeTeamMember(member.id)}
-                            className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg hover:bg-red-500/20 text-red-400 transition-all"
+                            className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all flex-shrink-0"
                           >
                             <Minus className="h-4 w-4" />
                           </button>
@@ -1140,7 +1141,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                 {/* Add team members */}
                 <div className="space-y-3">
                   <p className="text-sm text-white/50">Add team members</p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
                     {AVAILABLE_ROLES.slice(0, 8).map((roleInfo) => {
                       const tier = sizeTier as 'emerging' | 'established' | 'institutional'
                       const cost = roleInfo.cost[tier]
@@ -1148,13 +1149,13 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                         <button
                           key={roleInfo.role}
                           onClick={() => addTeamMember(roleInfo)}
-                          className="px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all text-left group"
+                          className="px-2 sm:px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all text-left group"
                         >
-                          <div className="flex items-center gap-2">
-                            <Plus className="h-3 w-3 text-white/40 group-hover:text-emerald-400" />
-                            <span className="text-sm font-medium text-white">{roleInfo.role}</span>
+                          <div className="flex items-center gap-1 sm:gap-2">
+                            <Plus className="h-3 w-3 text-white/40 group-hover:text-emerald-400 flex-shrink-0" />
+                            <span className="text-xs sm:text-sm font-medium text-white truncate">{roleInfo.role}</span>
                           </div>
-                          <p className="text-xs text-white/40 ml-5">{formatCurrency(cost, true)}/mo</p>
+                          <p className="text-xs text-white/40 ml-4 sm:ml-5">{formatCurrency(cost, true)}/mo</p>
                         </button>
                       )
                     })}
@@ -1377,10 +1378,11 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
             )}
           </motion.div>
         </AnimatePresence>
+        </div>
       </div>
 
       {/* Bottom navigation */}
-      <div className="absolute bottom-0 left-0 right-0 p-4 flex items-center justify-between">
+      <div className="flex-shrink-0 p-4 flex items-center justify-between bg-gradient-to-t from-slate-900/90 to-transparent safe-area-bottom">
         <div>
           {currentStepIndex > 0 && step.type !== 'celebration' && (
             <Button
