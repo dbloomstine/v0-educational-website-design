@@ -236,36 +236,69 @@ export function ProgressDashboard({
         </div>
       </div>
 
-      {/* Phase Progress Grid - 2 columns on mobile, 4 on tablet, 8 on desktop */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3">
-        {phaseProgress.map(({ phase, total, completed, percent }) => {
-          // Color progression: gray (0%) -> blue (in progress) -> amber (>50%) -> green (100%)
-          const getPhaseStyle = () => {
-            if (completed === total && total > 0) {
-              return "border-emerald-500/30 bg-emerald-500/5" // Complete - green
+      {/* Phase Progress - Horizontal scroll on mobile, grid on larger screens */}
+      <div className="sm:hidden overflow-x-auto -mx-4 px-4 scrollbar-hide">
+        <div className="flex gap-2 pb-2" style={{ width: 'max-content' }}>
+          {phaseProgress.map(({ phase, total, completed, percent }) => {
+            const getPhaseStyle = () => {
+              if (completed === total && total > 0) return "border-emerald-500/30 bg-emerald-500/5"
+              if (percent >= 50) return "border-amber-500/30 bg-amber-500/5"
+              if (completed > 0) return "border-primary/30 bg-primary/5"
+              return "border-border bg-card"
             }
-            if (percent >= 50) {
-              return "border-amber-500/30 bg-amber-500/5" // Good progress - amber
+            const getBarColor = () => {
+              if (completed === total && total > 0) return "bg-emerald-500"
+              if (percent >= 50) return "bg-amber-500"
+              if (completed > 0) return "bg-primary"
+              return "bg-muted-foreground/30"
             }
-            if (completed > 0) {
-              return "border-primary/30 bg-primary/5" // Started - blue
-            }
-            return "border-border bg-card" // Not started - default
-          }
+            return (
+              <button
+                key={phase.id}
+                onClick={() => onPhaseClick?.(phase.id)}
+                className={cn(
+                  "w-24 shrink-0 rounded-lg border p-3 transition-all text-left",
+                  "hover:ring-2 hover:ring-primary/50 active:scale-[0.98]",
+                  getPhaseStyle()
+                )}
+              >
+                <div className="text-xs font-medium truncate mb-1.5" title={phase.name}>
+                  {phase.shortName}
+                </div>
+                <div className="h-1.5 bg-accent rounded-full overflow-hidden">
+                  <div className={cn("h-full transition-all duration-500 rounded-full", getBarColor())} style={{ width: `${percent}%` }} />
+                </div>
+                <div className="text-xs text-muted-foreground mt-1">{completed}/{total}</div>
+              </button>
+            )
+          })}
+        </div>
+        <div className="text-center mt-1">
+          <span className="text-xs text-muted-foreground/50">← Swipe to see all phases →</span>
+        </div>
+      </div>
 
+      {/* Grid view for tablet and up */}
+      <div className="hidden sm:grid sm:grid-cols-4 lg:grid-cols-8 gap-3">
+        {phaseProgress.map(({ phase, total, completed, percent }) => {
+          const getPhaseStyle = () => {
+            if (completed === total && total > 0) return "border-emerald-500/30 bg-emerald-500/5"
+            if (percent >= 50) return "border-amber-500/30 bg-amber-500/5"
+            if (completed > 0) return "border-primary/30 bg-primary/5"
+            return "border-border bg-card"
+          }
           const getBarColor = () => {
             if (completed === total && total > 0) return "bg-emerald-500"
             if (percent >= 50) return "bg-amber-500"
             if (completed > 0) return "bg-primary"
             return "bg-muted-foreground/30"
           }
-
           return (
             <button
               key={phase.id}
               onClick={() => onPhaseClick?.(phase.id)}
               className={cn(
-                "rounded-lg border p-2.5 sm:p-3 transition-all text-left",
+                "rounded-lg border p-3 transition-all text-left",
                 "hover:ring-2 hover:ring-primary/50 active:scale-[0.98]",
                 getPhaseStyle()
               )}
@@ -274,17 +307,9 @@ export function ProgressDashboard({
                 {phase.shortName}
               </div>
               <div className="h-1.5 bg-accent rounded-full overflow-hidden">
-                <div
-                  className={cn(
-                    "h-full transition-all duration-500 rounded-full",
-                    getBarColor()
-                  )}
-                  style={{ width: `${percent}%` }}
-                />
+                <div className={cn("h-full transition-all duration-500 rounded-full", getBarColor())} style={{ width: `${percent}%` }} />
               </div>
-              <div className="text-xs text-muted-foreground mt-1">
-                {completed}/{total}
-              </div>
+              <div className="text-xs text-muted-foreground mt-1">{completed}/{total}</div>
             </button>
           )
         })}

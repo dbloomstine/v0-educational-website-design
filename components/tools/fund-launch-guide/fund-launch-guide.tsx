@@ -39,6 +39,10 @@ import {
   Download,
   FileText,
   FileSpreadsheet,
+  CheckCircle2,
+  Search,
+  Sparkles,
+  ArrowRight,
 } from 'lucide-react'
 import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
@@ -85,6 +89,7 @@ export function FundLaunchGuide() {
   const [showOnboarding, setShowOnboarding] = useState(true)
   const [hasLoaded, setHasLoaded] = useState(false)
   const [showCopied, setShowCopied] = useState(false)
+  const [showSaved, setShowSaved] = useState(false)
   const [filterCompleted, setFilterCompleted] = useState<'all' | 'incomplete' | 'completed'>('all')
   const [providers, setProviders] = useState<Record<string, string>>({})
 
@@ -187,7 +192,29 @@ export function FundLaunchGuide() {
       }
       return next
     })
+    // Show saved indicator
+    setShowSaved(true)
+    setTimeout(() => setShowSaved(false), 1500)
   }
+
+  // Find the recommended next task (highest priority incomplete task)
+  const getRecommendedNextTask = useMemo(() => {
+    const priorityOrder = { critical: 0, important: 1, optional: 2 }
+    const incompleteTasks = applicableTasks
+      .filter(t => !completedTasks.has(t.id))
+      .sort((a, b) => {
+        // First by priority
+        const priorityDiff = priorityOrder[a.priority] - priorityOrder[b.priority]
+        if (priorityDiff !== 0) return priorityDiff
+        // Then by phase order
+        const phaseA = PHASES.findIndex(p => p.id === a.phaseId)
+        const phaseB = PHASES.findIndex(p => p.id === b.phaseId)
+        if (phaseA !== phaseB) return phaseA - phaseB
+        // Then by task order
+        return a.order - b.order
+      })
+    return incompleteTasks[0] || null
+  }, [applicableTasks, completedTasks])
 
   const handleToggleTaskExpand = (taskId: string) => {
     setExpandedTasks(prev => {
@@ -505,6 +532,48 @@ export function FundLaunchGuide() {
         </div>
       )}
 
+      {/* Saved toast */}
+      {showSaved && (
+        <div className="fixed bottom-4 right-4 z-50 animate-in slide-in-from-bottom-4 fade-in-0 duration-300">
+          <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white shadow-lg">
+            <CheckCircle2 className="h-4 w-4" />
+            <span className="text-sm font-medium">Progress saved</span>
+          </div>
+        </div>
+      )}
+
+      {/* What's Next Suggestion */}
+      {getRecommendedNextTask && completedTasks.size > 0 && completedTasks.size < applicableTasks.length && (
+        <div className="flex items-center gap-3 p-4 rounded-xl border border-primary/20 bg-primary/5">
+          <div className="shrink-0 w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+            <Sparkles className="h-5 w-5 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="text-xs font-medium text-primary mb-0.5">Recommended Next</div>
+            <div className="text-sm font-medium truncate">{getRecommendedNextTask.title}</div>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              const phase = PHASES.find(p => p.id === getRecommendedNextTask.phaseId)
+              if (phase) {
+                setExpandedPhases(prev => new Set([...prev, phase.id]))
+                setExpandedTasks(prev => new Set([...prev, getRecommendedNextTask.id]))
+                setTimeout(() => {
+                  const element = document.getElementById(`phase-${phase.id}`)
+                  element?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                }, 100)
+              }
+            }}
+            className="shrink-0"
+          >
+            Go
+            <ArrowRight className="ml-1 h-4 w-4" />
+          </Button>
+        </div>
+      )}
+
       {/* View Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
@@ -564,6 +633,23 @@ export function FundLaunchGuide() {
       {/* Timeline View */}
       {viewMode === 'timeline' && (
         <div className="space-y-6">
+          {/* Empty state for filtered views */}
+          {filterCompleted !== 'all' && getFilteredTasks(applicableTasks).length === 0 && (
+            <div className="text-center py-12">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+                <Search className="h-8 w-8 text-muted-foreground/50" />
+              </div>
+              <h3 className="font-semibold mb-1">No tasks match your filter</h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                {filterCompleted === 'completed'
+                  ? "You haven't completed any tasks yet. Get started by checking off your first task!"
+                  : "You've completed all your tasks! Great job!"}
+              </p>
+              <Button variant="outline" size="sm" onClick={() => setFilterCompleted('all')}>
+                Show all tasks
+              </Button>
+            </div>
+          )}
           {PHASES.map((phase, phaseIndex) => {
             const tasks = getFilteredTasks(tasksByPhase.get(phase.id) || [])
             const allPhaseTasks = tasksByPhase.get(phase.id) || []
