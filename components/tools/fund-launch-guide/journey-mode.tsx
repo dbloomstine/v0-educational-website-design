@@ -65,6 +65,21 @@ const LAW_FIRMS = [
   'Lowenstein Sandler',
   'Akin Gump',
   'King & Spalding',
+  'Weil, Gotshal & Manges',
+  'Skadden, Arps',
+  'Sullivan & Cromwell',
+  'Cleary Gottlieb',
+  'Cravath, Swaine & Moore',
+  'Gibson, Dunn & Crutcher',
+  'White & Case',
+  'Jones Day',
+  'Milbank',
+  'O\'Melveny & Myers',
+  'Shearman & Sterling',
+  'Winston & Strawn',
+  'Orrick',
+  'Katten Muchin',
+  'K&L Gates',
 ]
 
 const FUND_ADMINISTRATORS = [
@@ -85,6 +100,20 @@ const FUND_ADMINISTRATORS = [
   'SEI Investments',
   'BNY Mellon',
   'MUFG Investor Services',
+  'IQ-EQ',
+  'Conifer Financial Services',
+  'Circle Partners',
+  'Formidium',
+  'Ultimus Fund Solutions',
+  'HedgeServ',
+  'NAV Fund Administration',
+  'Opus Fund Services',
+  'TMF Group',
+  'Vistra',
+  'Waystone',
+  'Mainstream Group',
+  'Custom House',
+  'Centaur Fund Services',
 ]
 
 const AUDITORS = [
@@ -105,6 +134,19 @@ const AUDITORS = [
   'Friedman LLP',
   'Crowe',
   'PKF O\'Connor Davies',
+  'Armanino',
+  'Berdon LLP',
+  'Mazars',
+  'Prager Metis',
+  'Kaufman Rossin',
+  'CBIZ',
+  'Plante Moran',
+  'Forvis',
+  'Cherry Bekaert',
+  'Katz, Sapper & Miller',
+  'Weaver',
+  'Grassi',
+  'Citrin Cooperman',
 ]
 
 const TAX_ADVISORS = [
@@ -123,6 +165,21 @@ const TAX_ADVISORS = [
   'Andersen Tax',
   'Cherry Bekaert',
   'Citrin Cooperman',
+  'Crowe',
+  'Moss Adams',
+  'Baker Tilly',
+  'Anchin',
+  'Friedman LLP',
+  'Armanino',
+  'Berdon LLP',
+  'Prager Metis',
+  'Kaufman Rossin',
+  'CBIZ',
+  'Plante Moran',
+  'Forvis',
+  'Grassi',
+  'PKF O\'Connor Davies',
+  'Mazars',
 ]
 
 const BANKS = [
@@ -141,6 +198,21 @@ const BANKS = [
   'U.S. Bank',
   'BMO Harris',
   'Customers Bank',
+  'Signature Bank',
+  'Fifth Third Bank',
+  'Capital One',
+  'TD Bank',
+  'KeyBank',
+  'Huntington Bank',
+  'Truist',
+  'M&T Bank',
+  'Regions Bank',
+  'Citizens Bank',
+  'First Republic',
+  'BNY Mellon',
+  'Deutsche Bank',
+  'Barclays',
+  'UBS',
 ]
 
 const INSURANCE_BROKERS = [
@@ -197,23 +269,6 @@ const COMPLIANCE_CONSULTANTS = [
   'Constellation Advisers',
 ]
 
-const IT_PROVIDERS = [
-  'Eze Castle Integration',
-  'Align',
-  'Options IT',
-  'Abacus Group',
-  'Opus Fund Services',
-  'Linedata',
-  'Advent (SS&C)',
-  'Backstop Solutions',
-  'Dynamo Software',
-  'Allvue Systems',
-  'Juniper Square',
-  'Carta',
-  'Visible',
-  'Affinity',
-  'iLevel (Ipreo)',
-]
 
 // ============================================
 // JOURNEY STEP TYPES
@@ -632,16 +687,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       title: 'Phase 6: Operations',
       subtitle: 'Set up your infrastructure',
       tip: 'Banking, systems, and processes',
-    },
-    {
-      id: 'it-provider',
-      type: 'provider',
-      phase: 6,
-      phaseName: 'Operations',
-      title: 'Technology provider?',
-      subtitle: 'Portfolio management system',
-      providerKey: 'itProvider',
-      providerOptions: IT_PROVIDERS,
     },
     {
       id: 'bank-accounts',

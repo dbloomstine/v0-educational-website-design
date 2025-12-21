@@ -79,7 +79,7 @@ export function FundLaunchGuide() {
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set())
   const [viewMode, setViewMode] = useState<ViewMode>('timeline')
   const [expandedTasks, setExpandedTasks] = useState<Set<string>>(new Set())
-  const [expandedPhases, setExpandedPhases] = useState<Set<string>>(new Set(PHASES.map(p => p.id)))
+  const [expandedPhases, setExpandedPhases] = useState<Set<string>>(new Set())
 
   // UI state
   const [showOnboarding, setShowOnboarding] = useState(true)
@@ -373,7 +373,7 @@ export function FundLaunchGuide() {
       // Phase header
       doc.setFontSize(12)
       doc.setFont('helvetica', 'bold')
-      doc.text(`${phase.name} (${phase.estimatedWeeks})`, 14, yPos)
+      doc.text(`${phase.name}`, 14, yPos)
       yPos += 6
 
       // Tasks table
@@ -478,6 +478,7 @@ export function FundLaunchGuide() {
         phases={PHASES}
         tasksByPhase={tasksByPhase}
         completedTasks={completedTasks}
+        providers={providers}
         onResetProgress={handleResetProgress}
         onReconfigure={handleReconfigure}
         onShare={handleShare}
@@ -596,12 +597,7 @@ export function FundLaunchGuide() {
                   </div>
 
                   <div className="flex-1 text-left">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-lg font-semibold">{phase.name}</h3>
-                      <span className="text-xs text-muted-foreground px-2 py-0.5 rounded bg-accent">
-                        {phase.estimatedWeeks}
-                      </span>
-                    </div>
+                    <h3 className="text-lg font-semibold">{phase.name}</h3>
                     <p className="text-sm text-muted-foreground mt-0.5">{phase.description}</p>
                   </div>
 

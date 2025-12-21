@@ -30,6 +30,7 @@ interface ProgressDashboardProps {
   phases: FundLaunchPhase[]
   tasksByPhase: Map<string, FundLaunchTask[]>
   completedTasks: Set<string>
+  providers?: Record<string, string>
   onResetProgress: () => void
   onReconfigure: () => void
   onShare: () => void
@@ -38,11 +39,23 @@ interface ProgressDashboardProps {
   onPhaseClick?: (phaseId: string) => void
 }
 
+const PROVIDER_LABELS: Record<string, string> = {
+  lawFirm: 'Law Firm',
+  fundAdmin: 'Fund Admin',
+  auditor: 'Auditor',
+  taxAdvisor: 'Tax Advisor',
+  bank: 'Bank',
+  insuranceBroker: 'Insurance',
+  primeBroker: 'Prime Broker',
+  complianceConsultant: 'Compliance',
+}
+
 export function ProgressDashboard({
   config,
   phases,
   tasksByPhase,
   completedTasks,
+  providers,
   onResetProgress,
   onReconfigure,
   onShare,
@@ -167,6 +180,21 @@ export function ProgressDashboard({
             <span className="font-medium">{config.jurisdiction}</span>
           </div>
         </div>
+
+        {/* Selected Service Providers */}
+        {providers && Object.keys(providers).length > 0 && (
+          <div className="mt-4 pt-4 border-t border-border">
+            <div className="text-xs text-muted-foreground mb-2">Your Team</div>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(providers).map(([key, value]) => (
+                <div key={key} className="flex-shrink-0 px-2.5 py-1 rounded-lg bg-primary/10 border border-primary/20 text-xs sm:text-sm">
+                  <span className="text-muted-foreground">{PROVIDER_LABELS[key] || key}:</span>{' '}
+                  <span className="font-medium text-primary">{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Actions - Compact on mobile */}
         <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-border">
