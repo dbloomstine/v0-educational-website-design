@@ -706,10 +706,10 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* Progress indicator */}
           <div className="flex items-center gap-2">
-            <div className="w-24 h-1.5 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-16 sm:w-24 h-1.5 bg-white/10 rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full"
                 initial={{ width: 0 }}
@@ -720,6 +720,27 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
             <span className="text-xs text-white/60">{progress}%</span>
           </div>
 
+          {/* Start Over button - show after first step */}
+          {currentStepIndex > 1 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                setCurrentStepIndex(0)
+                setStrategy('')
+                setFundSize(50)
+                setFeeRate(2.0)
+                setFirstCloseYear(new Date().getFullYear())
+                setTeamMembers([])
+                setStartingCash(500000)
+                setCustomizedTeam(false)
+              }}
+              className="text-white/60 hover:text-white hover:bg-white/10 hidden sm:flex"
+            >
+              Start Over
+            </Button>
+          )}
+
           {/* Skip button */}
           <Button
             variant="ghost"
@@ -727,8 +748,8 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
             onClick={onSkip}
             className="text-white/60 hover:text-white hover:bg-white/10"
           >
-            <X className="h-4 w-4 mr-1" />
-            Skip
+            <X className="h-4 w-4 sm:mr-1" />
+            <span className="hidden sm:inline">Skip</span>
           </Button>
         </div>
       </div>
