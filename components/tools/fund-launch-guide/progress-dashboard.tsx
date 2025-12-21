@@ -35,6 +35,7 @@ interface ProgressDashboardProps {
   onShare: () => void
   onExportExcel: () => void
   onExportPdf: () => void
+  onPhaseClick?: (phaseId: string) => void
 }
 
 export function ProgressDashboard({
@@ -47,6 +48,7 @@ export function ProgressDashboard({
   onShare,
   onExportExcel,
   onExportPdf,
+  onPhaseClick,
 }: ProgressDashboardProps) {
   // Calculate statistics
   const totalTasks = Array.from(tasksByPhase.values()).reduce(
@@ -205,10 +207,12 @@ export function ProgressDashboard({
       {/* Phase Progress Grid - 2 columns on mobile, 4 on tablet, 8 on desktop */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3">
         {phaseProgress.map(({ phase, total, completed, percent }) => (
-          <div
+          <button
             key={phase.id}
+            onClick={() => onPhaseClick?.(phase.id)}
             className={cn(
-              "rounded-lg border p-2.5 sm:p-3 transition-all",
+              "rounded-lg border p-2.5 sm:p-3 transition-all text-left",
+              "hover:ring-2 hover:ring-primary/50 active:scale-[0.98]",
               completed === total && total > 0
                 ? "border-emerald-500/30 bg-emerald-500/5"
                 : phase.id === currentPhase?.id
@@ -231,7 +235,7 @@ export function ProgressDashboard({
             <div className="text-xs text-muted-foreground mt-1">
               {completed}/{total}
             </div>
-          </div>
+          </button>
         ))}
       </div>
     </div>

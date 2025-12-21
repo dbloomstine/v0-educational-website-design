@@ -483,6 +483,14 @@ export function FundLaunchGuide() {
         onShare={handleShare}
         onExportExcel={handleExportExcel}
         onExportPdf={handleExportPdf}
+        onPhaseClick={(phaseId) => {
+          // Expand the phase and scroll to it
+          setExpandedPhases(prev => new Set([...prev, phaseId]))
+          setTimeout(() => {
+            const element = document.getElementById(`phase-${phaseId}`)
+            element?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          }, 100)
+        }}
       />
 
       {/* Copied toast */}
@@ -563,7 +571,7 @@ export function FundLaunchGuide() {
             if (tasks.length === 0 && filterCompleted !== 'all') return null
 
             return (
-              <div key={phase.id} className="relative">
+              <div key={phase.id} id={`phase-${phase.id}`} className="relative scroll-mt-4">
                 {/* Timeline connector */}
                 {phaseIndex < PHASES.length - 1 && (
                   <div className="absolute left-6 top-16 bottom-0 w-px bg-border" />
