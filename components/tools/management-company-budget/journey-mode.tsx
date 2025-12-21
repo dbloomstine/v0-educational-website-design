@@ -932,18 +932,6 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                       Typical for {selectedStrategy.name}: ${selectedStrategy.typicalSize.min}M - ${selectedStrategy.typicalSize.max}M
                     </p>
                   )}
-
-                  <div className="flex justify-center pt-4">
-                    <Button
-                      size="lg"
-                      onClick={goNext}
-                      disabled={fundSize <= 0}
-                      className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-8"
-                    >
-                      Continue
-                      <ChevronRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </div>
                 </div>
               </div>
             )}
@@ -999,18 +987,6 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                       </p>
                     </div>
                   </div>
-
-                  <div className="flex justify-center pt-4">
-                    <Button
-                      size="lg"
-                      onClick={goNext}
-                      disabled={feeRate <= 0}
-                      className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-8"
-                    >
-                      Continue
-                      <ChevronRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </div>
                 </div>
               </div>
             )}
@@ -1051,17 +1027,6 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                         </button>
                       )
                     })}
-                  </div>
-
-                  <div className="flex justify-center pt-4">
-                    <Button
-                      size="lg"
-                      onClick={goNext}
-                      className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-8"
-                    >
-                      Continue
-                      <ChevronRight className="ml-2 h-5 w-5" />
-                    </Button>
                   </div>
                 </div>
               </div>
@@ -1161,18 +1126,6 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                     })}
                   </div>
                 </div>
-
-                <div className="flex justify-center pt-4">
-                  <Button
-                    size="lg"
-                    onClick={goNext}
-                    disabled={teamMembers.length === 0}
-                    className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-8"
-                  >
-                    Continue
-                    <ChevronRight className="ml-2 h-5 w-5" />
-                  </Button>
-                </div>
               </div>
             )}
 
@@ -1249,18 +1202,6 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                         Most managers target 18-24 months of runway before first close fees arrive.
                       </p>
                     )}
-                  </div>
-
-                  <div className="flex justify-center pt-4">
-                    <Button
-                      size="lg"
-                      onClick={goNext}
-                      disabled={startingCash <= 0}
-                      className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-8"
-                    >
-                      Continue
-                      <ChevronRight className="ml-2 h-5 w-5" />
-                    </Button>
                   </div>
                 </div>
               </div>
@@ -1382,7 +1323,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
       </div>
 
       {/* Bottom navigation */}
-      <div className="flex-shrink-0 p-4 flex items-center justify-between bg-gradient-to-t from-slate-900/90 to-transparent safe-area-bottom">
+      <div className="flex-shrink-0 p-4 flex items-center justify-between bg-slate-900/95 backdrop-blur-sm border-t border-white/10 safe-area-bottom">
         <div>
           {currentStepIndex > 0 && step.type !== 'celebration' && (
             <Button
@@ -1396,9 +1337,27 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
           )}
         </div>
 
-        <div className="text-sm text-white/40">
+        <div className="text-sm text-white/40 hidden sm:block">
           {step.phaseName && step.phase > 0 && (
             <span>Phase {step.phase}: {step.phaseName}</span>
+          )}
+        </div>
+
+        <div>
+          {(step.type === 'team' || step.type === 'capital' || step.id === 'fund-size' || step.id === 'fee-rate' || step.id === 'first-close') && (
+            <Button
+              onClick={goNext}
+              disabled={
+                (step.type === 'team' && teamMembers.length === 0) ||
+                (step.id === 'fund-size' && fundSize <= 0) ||
+                (step.id === 'fee-rate' && feeRate <= 0) ||
+                (step.type === 'capital' && startingCash <= 0)
+              }
+              className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white"
+            >
+              Continue
+              <ChevronRight className="ml-1 h-4 w-4" />
+            </Button>
           )}
         </div>
       </div>
