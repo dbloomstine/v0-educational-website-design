@@ -2,15 +2,40 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
 import { WaterfallInput, WaterfallOutput, defaultInput, calculateWaterfall, formatCurrency, formatMultiple } from './waterfallCalculations'
 import { InputForm } from './input-form'
 import { ResultsView } from './results-view'
+import { JourneyMode } from './journey-mode'
+import { ResultsWalkthrough } from './results-walkthrough'
+import { Glossary } from './glossary'
+import { FAQSection } from './faq-section'
+import { SampleScenarios } from './sample-scenarios'
+import { CalculationBreakdown } from './calculation-breakdown'
+import { PeerComparison } from './peer-comparison'
+import { WhatIfSliders } from './what-if-sliders'
+import { SkipToContent, LiveRegion, ScrollToTop, AutoSaveIndicator, MobileResultsGrid } from './accessibility'
 import { exportWaterfallSummary, exportComparisonCSV, exportComparisonPDF } from './export'
-import { Card } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
 import { ShareButton } from '@/components/tools/share-button'
 import { ExportToolbar } from '@/components/tools/shared'
+import {
+  Sparkles,
+  BookOpen,
+  HelpCircle,
+  Calculator,
+  BarChart3,
+  SlidersHorizontal,
+  FileText,
+  ChevronDown,
+  ChevronUp,
+  RotateCcw,
+  Play,
+  X
+} from 'lucide-react'
 
 // Preset scenarios
 const presets: Record<string, { name: string; description: string; input: WaterfallInput }> = {
@@ -84,39 +109,103 @@ const presets: Record<string, { name: string; description: string; input: Waterf
   }
 }
 
+const LOCAL_STORAGE_KEY = 'waterfall-calculator-data'
+const JOURNEY_COMPLETED_KEY = 'waterfall-journey-completed'
+
 export function DistributionWaterfall() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
 
-  // Parse initial state from URL or use defaults
+  // Parse initial state from URL or localStorage or use defaults
   const getInitialInput = (): WaterfallInput => {
     if (typeof window === 'undefined') return defaultInput
 
-    return {
-      fundSize: parseFloat(searchParams.get('fundSize') || '') || defaultInput.fundSize,
-      contributedCapital: parseFloat(searchParams.get('contributed') || '') || defaultInput.contributedCapital,
-      grossProceeds: parseFloat(searchParams.get('proceeds') || '') || defaultInput.grossProceeds,
-      waterfallType: (searchParams.get('type') as 'european' | 'american') || defaultInput.waterfallType,
-      prefRate: parseFloat(searchParams.get('pref') || '') || defaultInput.prefRate,
-      prefCompounding: (searchParams.get('compounding') as 'simple' | 'compound') || defaultInput.prefCompounding,
-      carryRate: parseFloat(searchParams.get('carry') || '') || defaultInput.carryRate,
-      catchUpRate: parseFloat(searchParams.get('catchUp') || '') || defaultInput.catchUpRate,
-      hasCatchUp: searchParams.get('hasCatchUp') === 'true' || (searchParams.get('hasCatchUp') === null && defaultInput.hasCatchUp),
-      yearsToExit: parseInt(searchParams.get('years') || '') || defaultInput.yearsToExit,
-      gpCommitmentPercent: parseFloat(searchParams.get('gpCommit') || '') || defaultInput.gpCommitmentPercent
+    // Try URL params first
+    const hasUrlParams = searchParams.get('fundSize')
+    if (hasUrlParams) {
+      return {
+        fundSize: parseFloat(searchParams.get('fundSize') || '') || defaultInput.fundSize,
+        contributedCapital: parseFloat(searchParams.get('contributed') || '') || defaultInput.contributedCapital,
+        grossProceeds: parseFloat(searchParams.get('proceeds') || '') || defaultInput.grossProceeds,
+        waterfallType: (searchParams.get('type') as 'european' | 'american') || defaultInput.waterfallType,
+        prefRate: parseFloat(searchParams.get('pref') || '') || defaultInput.prefRate,
+        prefCompounding: (searchParams.get('compounding') as 'simple' | 'compound') || defaultInput.prefCompounding,
+        carryRate: parseFloat(searchParams.get('carry') || '') || defaultInput.carryRate,
+        catchUpRate: parseFloat(searchParams.get('catchUp') || '') || defaultInput.catchUpRate,
+        hasCatchUp: searchParams.get('hasCatchUp') === 'true' || (searchParams.get('hasCatchUp') === null && defaultInput.hasCatchUp),
+        yearsToExit: parseInt(searchParams.get('years') || '') || defaultInput.yearsToExit,
+        gpCommitmentPercent: parseFloat(searchParams.get('gpCommit') || '') || defaultInput.gpCommitmentPercent
+      }
     }
+
+    // Try localStorage
+    try {
+      const saved = localStorage.getItem(LOCAL_STORAGE_KEY)
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        if (parsed.input) return parsed.input
+      }
+    } catch {
+      // Ignore localStorage errors
+    }
+
+    return defaultInput
   }
 
-  // Initialize with calculated results
+  // State
   const [input, setInput] = useState<WaterfallInput>(getInitialInput)
   const [output, setOutput] = useState<WaterfallOutput>(calculateWaterfall(getInitialInput()))
   const [compareMode, setCompareMode] = useState(false)
   const [compareInput, setCompareInput] = useState<WaterfallInput | null>(null)
   const [compareOutput, setCompareOutput] = useState<WaterfallOutput | null>(null)
-
-  // Quick scenario buttons for different proceeds
   const [selectedScenario, setSelectedScenario] = useState<'low' | 'medium' | 'high'>('medium')
+  const [lastSaved, setLastSaved] = useState<Date | null>(null)
+
+  // Journey mode state
+  const [showJourney, setShowJourney] = useState(false)
+  const [showWalkthrough, setShowWalkthrough] = useState(false)
+  const [journeyCompleted, setJourneyCompleted] = useState(false)
+
+  // Expandable sections state
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    quickScenarios: true,
+    whatIf: false,
+    calculation: false,
+    peerComparison: false,
+    glossary: false,
+    faq: false,
+    scenarios: false
+  })
+
+  // Check if journey was previously completed
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const completed = localStorage.getItem(JOURNEY_COMPLETED_KEY)
+      setJourneyCompleted(completed === 'true')
+
+      // Show journey mode for first-time users
+      if (!completed && !searchParams.get('fundSize')) {
+        setShowJourney(true)
+      }
+    }
+  }, [searchParams])
+
+  // Auto-save to localStorage
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+
+    const timer = setTimeout(() => {
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ input, lastModified: new Date().toISOString() }))
+        setLastSaved(new Date())
+      } catch {
+        // Ignore localStorage errors
+      }
+    }, 1000)
+
+    return () => clearTimeout(timer)
+  }, [input])
 
   // Update URL when inputs change (debounced)
   useEffect(() => {
@@ -165,6 +254,18 @@ export function DistributionWaterfall() {
     setOutput(newOutput)
   }
 
+  const handleJourneyComplete = (journeyInput: WaterfallInput) => {
+    handleInputChange(journeyInput)
+    setShowJourney(false)
+    setShowWalkthrough(true)
+    localStorage.setItem(JOURNEY_COMPLETED_KEY, 'true')
+    setJourneyCompleted(true)
+  }
+
+  const handleWalkthroughComplete = () => {
+    setShowWalkthrough(false)
+  }
+
   const loadPreset = (presetKey: string) => {
     const preset = presets[presetKey]
     if (preset) {
@@ -198,11 +299,70 @@ export function DistributionWaterfall() {
     setCompareOutput(calculateWaterfall(newInput))
   }
 
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }))
+  }
+
+  const handleStartOver = () => {
+    setInput(defaultInput)
+    setOutput(calculateWaterfall(defaultInput))
+    setCompareMode(false)
+    setCompareInput(null)
+    setCompareOutput(null)
+    localStorage.removeItem(JOURNEY_COMPLETED_KEY)
+    setShowJourney(true)
+  }
+
+  const loadScenarioFromLibrary = (scenarioInput: WaterfallInput) => {
+    handleInputChange(scenarioInput)
+    setExpandedSections(prev => ({ ...prev, scenarios: false }))
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
+  // Show journey mode
+  if (showJourney) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-8">
+        <SkipToContent />
+        <JourneyMode
+          onComplete={handleJourneyComplete}
+          onSkip={() => {
+            setShowJourney(false)
+            localStorage.setItem(JOURNEY_COMPLETED_KEY, 'true')
+            setJourneyCompleted(true)
+          }}
+        />
+      </div>
+    )
+  }
+
+  // Show results walkthrough after journey
+  if (showWalkthrough) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-8">
+        <SkipToContent />
+        <ResultsWalkthrough
+          output={output}
+          onComplete={handleWalkthroughComplete}
+          onSkip={handleWalkthroughComplete}
+        />
+      </div>
+    )
+  }
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" id="waterfall-main-content">
+      <SkipToContent />
+      <LiveRegion output={output} isCalculating={false} />
+      <ScrollToTop />
+
       {/* Header */}
       <div className="text-center relative">
-        <div className="absolute right-0 top-0">
+        <div className="absolute right-0 top-0 flex items-center gap-2">
+          <AutoSaveIndicator lastSaved={lastSaved} />
           <ShareButton getShareableUrl={getShareableUrl} />
         </div>
         <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
@@ -212,6 +372,37 @@ export function DistributionWaterfall() {
           Model LP and GP economics across preferred return, catch-up, and carried interest tiers.
           Understand how different waterfall structures affect distributions.
         </p>
+
+        {/* Action buttons */}
+        <div className="flex flex-wrap justify-center gap-3 mt-6">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowJourney(true)}
+            className="gap-2"
+          >
+            <Play className="h-4 w-4" />
+            {journeyCompleted ? 'Restart Tutorial' : 'Start Tutorial'}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowWalkthrough(true)}
+            className="gap-2"
+          >
+            <Sparkles className="h-4 w-4" />
+            Explain Results
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleStartOver}
+            className="gap-2"
+          >
+            <RotateCcw className="h-4 w-4" />
+            Start Over
+          </Button>
+        </div>
       </div>
 
       {/* About */}
@@ -256,34 +447,53 @@ export function DistributionWaterfall() {
 
       {/* Quick Scenario Buttons */}
       <Card className="border-border bg-card p-6">
-        <h3 className="mb-3 text-lg font-semibold text-foreground">Quick Scenarios</h3>
-        <p className="mb-4 text-sm text-muted-foreground">
-          See how different return multiples affect the waterfall
-        </p>
-        <div className="flex flex-wrap gap-3">
-          <Button
-            onClick={() => handleScenarioChange('low')}
-            variant={selectedScenario === 'low' ? 'default' : 'outline'}
-            className="flex-1 sm:flex-none"
-          >
-            1.5x Return
-          </Button>
-          <Button
-            onClick={() => handleScenarioChange('medium')}
-            variant={selectedScenario === 'medium' ? 'default' : 'outline'}
-            className="flex-1 sm:flex-none"
-          >
-            2.0x Return
-          </Button>
-          <Button
-            onClick={() => handleScenarioChange('high')}
-            variant={selectedScenario === 'high' ? 'default' : 'outline'}
-            className="flex-1 sm:flex-none"
-          >
-            3.0x Return
-          </Button>
-        </div>
+        <button
+          onClick={() => toggleSection('quickScenarios')}
+          className="flex items-center justify-between w-full text-left"
+        >
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">Quick Scenarios</h3>
+            <p className="text-sm text-muted-foreground">
+              See how different return multiples affect the waterfall
+            </p>
+          </div>
+          {expandedSections.quickScenarios ? (
+            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+          )}
+        </button>
+        {expandedSections.quickScenarios && (
+          <div className="flex flex-wrap gap-3 mt-4">
+            <Button
+              onClick={() => handleScenarioChange('low')}
+              variant={selectedScenario === 'low' ? 'default' : 'outline'}
+              className="flex-1 sm:flex-none"
+            >
+              1.5x Return
+            </Button>
+            <Button
+              onClick={() => handleScenarioChange('medium')}
+              variant={selectedScenario === 'medium' ? 'default' : 'outline'}
+              className="flex-1 sm:flex-none"
+            >
+              2.0x Return
+            </Button>
+            <Button
+              onClick={() => handleScenarioChange('high')}
+              variant={selectedScenario === 'high' ? 'default' : 'outline'}
+              className="flex-1 sm:flex-none"
+            >
+              3.0x Return
+            </Button>
+          </div>
+        )}
       </Card>
+
+      {/* Mobile Results Summary */}
+      <div className="lg:hidden">
+        <MobileResultsGrid output={output} />
+      </div>
 
       {/* Main Content */}
       {compareMode ? (
@@ -441,6 +651,208 @@ export function DistributionWaterfall() {
           </div>
         </>
       )}
+
+      {/* What-If Sliders */}
+      <div className="space-y-2">
+        <button
+          onClick={() => toggleSection('whatIf')}
+          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <SlidersHorizontal className="h-5 w-5 text-primary" />
+            <div className="text-left">
+              <h3 className="font-semibold text-foreground">What-If Analysis</h3>
+              <p className="text-sm text-muted-foreground">Adjust parameters to see real-time impact</p>
+            </div>
+          </div>
+          {expandedSections.whatIf ? (
+            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+          )}
+        </button>
+        <AnimatePresence>
+          {expandedSections.whatIf && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <WhatIfSliders
+                input={input}
+                output={output}
+                onInputChange={handleInputChange}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Calculation Breakdown */}
+      <div className="space-y-2">
+        <button
+          onClick={() => toggleSection('calculation')}
+          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <Calculator className="h-5 w-5 text-primary" />
+            <div className="text-left">
+              <h3 className="font-semibold text-foreground">Step-by-Step Calculation</h3>
+              <p className="text-sm text-muted-foreground">See exactly how proceeds flow through each tier</p>
+            </div>
+          </div>
+          {expandedSections.calculation ? (
+            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+          )}
+        </button>
+        <AnimatePresence>
+          {expandedSections.calculation && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <CalculationBreakdown output={output} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Peer Comparison */}
+      <div className="space-y-2">
+        <button
+          onClick={() => toggleSection('peerComparison')}
+          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <BarChart3 className="h-5 w-5 text-primary" />
+            <div className="text-left">
+              <h3 className="font-semibold text-foreground">Market Comparison</h3>
+              <p className="text-sm text-muted-foreground">See how your terms compare to market standards</p>
+            </div>
+          </div>
+          {expandedSections.peerComparison ? (
+            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+          )}
+        </button>
+        <AnimatePresence>
+          {expandedSections.peerComparison && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <PeerComparison input={input} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Scenario Library */}
+      <div className="space-y-2">
+        <button
+          onClick={() => toggleSection('scenarios')}
+          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <FileText className="h-5 w-5 text-primary" />
+            <div className="text-left">
+              <h3 className="font-semibold text-foreground">Scenario Library</h3>
+              <p className="text-sm text-muted-foreground">Explore pre-built scenarios across fund types</p>
+            </div>
+          </div>
+          {expandedSections.scenarios ? (
+            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+          )}
+        </button>
+        <AnimatePresence>
+          {expandedSections.scenarios && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <SampleScenarios onSelectScenario={loadScenarioFromLibrary} />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Glossary */}
+      <div className="space-y-2">
+        <button
+          onClick={() => toggleSection('glossary')}
+          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <BookOpen className="h-5 w-5 text-primary" />
+            <div className="text-left">
+              <h3 className="font-semibold text-foreground">Waterfall Glossary</h3>
+              <p className="text-sm text-muted-foreground">Learn key terms and concepts</p>
+            </div>
+          </div>
+          {expandedSections.glossary ? (
+            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+          )}
+        </button>
+        <AnimatePresence>
+          {expandedSections.glossary && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Glossary />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* FAQ */}
+      <div className="space-y-2">
+        <button
+          onClick={() => toggleSection('faq')}
+          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <HelpCircle className="h-5 w-5 text-primary" />
+            <div className="text-left">
+              <h3 className="font-semibold text-foreground">Frequently Asked Questions</h3>
+              <p className="text-sm text-muted-foreground">Get answers to common questions</p>
+            </div>
+          </div>
+          {expandedSections.faq ? (
+            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+          )}
+        </button>
+        <AnimatePresence>
+          {expandedSections.faq && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <FAQSection />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }
