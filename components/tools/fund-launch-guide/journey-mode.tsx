@@ -328,7 +328,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Strategy & Planning',
       title: 'Phase 1: Strategy & Planning',
       subtitle: 'Define your fund strategy and structure',
-      tip: 'This foundation shapes everything that follows',
     },
     {
       id: 'strategy',
@@ -395,7 +394,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Strategy & Planning',
       title: 'Investment thesis defined?',
       subtitle: 'Have you articulated your investment thesis?',
-      tip: 'Your thesis explains what you invest in and why you\'re differentiated',
       taskId: 'strategy-thesis',
     },
     {
@@ -405,7 +403,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Strategy & Planning',
       title: 'Team structure finalized?',
       subtitle: 'Have you defined GP roles and economics?',
-      tip: 'Clarify who the GPs are and their ownership percentages',
       taskId: 'strategy-team',
     },
     {
@@ -415,7 +412,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Strategy & Planning',
       title: 'Fund economics set?',
       subtitle: 'Management fee and carried interest decided?',
-      tip: 'Standard is 2% management fee and 20% carry',
       taskId: 'strategy-economics',
     },
     {
@@ -436,7 +432,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Legal Formation',
       title: 'Phase 2: Legal Formation',
       subtitle: 'Establish your legal entities',
-      tip: 'You\'ll need a GP, Management Company, and Fund LP',
     },
     {
       id: 'law-firm',
@@ -445,7 +440,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Legal Formation',
       title: 'Fund counsel selected?',
       subtitle: 'Choose your law firm',
-      tip: 'One of your most important relationships',
       providerKey: 'lawFirm',
       providerOptions: LAW_FIRMS,
     },
@@ -456,7 +450,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Legal Formation',
       title: 'GP entity formed?',
       subtitle: 'Have you formed your General Partner entity?',
-      tip: 'Usually a Delaware LLC',
       taskId: 'legal-gp-entity',
     },
     {
@@ -466,7 +459,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Legal Formation',
       title: 'Management company formed?',
       subtitle: 'Have you formed your Management Company?',
-      tip: 'Receives management fees and employs staff',
       taskId: 'legal-mgmt-company',
     },
     {
@@ -476,7 +468,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Legal Formation',
       title: 'Fund LP formed?',
       subtitle: 'Have you formed your Fund LP entity?',
-      tip: 'The actual investment vehicle',
       taskId: 'legal-fund-lp',
     },
     {
@@ -497,7 +488,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Fund Documentation',
       title: 'Phase 3: Fund Documentation',
       subtitle: 'Draft your core fund documents',
-      tip: 'LPA, PPM, and subscription docs',
     },
     {
       id: 'lpa-drafted',
@@ -506,7 +496,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Fund Documentation',
       title: 'LPA drafted?',
       subtitle: 'Limited Partnership Agreement in progress?',
-      tip: 'The most important fund document',
       taskId: 'docs-lpa',
     },
     {
@@ -516,7 +505,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Fund Documentation',
       title: 'PPM drafted?',
       subtitle: 'Private Placement Memorandum in progress?',
-      tip: 'Your disclosure document for investors',
       taskId: 'docs-ppm',
     },
     {
@@ -526,7 +514,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Fund Documentation',
       title: 'Subscription docs ready?',
       subtitle: 'Investor subscription documents prepared?',
-      tip: 'How investors commit to the fund',
       taskId: 'docs-subscription',
     },
     {
@@ -547,7 +534,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Regulatory',
       title: 'Phase 4: Regulatory',
       subtitle: 'Navigate compliance requirements',
-      tip: 'SEC registration and compliance setup',
     },
     {
       id: 'compliance-consultant',
@@ -566,7 +552,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Regulatory',
       title: 'SEC exemption analyzed?',
       subtitle: 'Determined your registration status?',
-      tip: 'Most emerging managers are ERAs or exempt',
       taskId: 'reg-exemption-analysis',
     },
     {
@@ -605,7 +590,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Service Providers',
       title: 'Phase 5: Service Providers',
       subtitle: 'Build your operational team',
-      tip: 'Admin, auditor, tax, banking, insurance',
     },
     {
       id: 'fund-admin',
@@ -686,7 +670,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Operations',
       title: 'Phase 6: Operations',
       subtitle: 'Set up your infrastructure',
-      tip: 'Banking, systems, and processes',
     },
     {
       id: 'bank-accounts',
@@ -733,7 +716,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'Fundraising',
       title: 'Phase 7: Fundraising',
       subtitle: 'Raise capital from LPs',
-      tip: 'Pitch deck, data room, and LP outreach',
     },
     {
       id: 'pitch-deck',
@@ -789,7 +771,6 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       phaseName: 'First Close',
       title: 'Phase 8: First Close',
       subtitle: 'Execute your first close',
-      tip: 'Finalize docs, call capital, begin investing',
     },
     {
       id: 'docs-finalized',
