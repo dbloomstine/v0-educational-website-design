@@ -48,6 +48,7 @@ import {
 } from './types'
 import { calculateBudget, formatCurrency, formatRunway } from './budget-calculator'
 import { OnboardingWizard } from './onboarding-wizard'
+import { JourneyMode } from './journey-mode'
 import { SensitivityAnalysis } from './sensitivity-analysis'
 import { Benchmarks } from './benchmarks'
 import {
@@ -767,12 +768,10 @@ export function ManagementCompanyBudget() {
 
   if (showWizard) {
     return (
-      <div className="space-y-8">
-        <OnboardingWizard
-          onComplete={handleWizardComplete}
-          onSkip={handleWizardSkip}
-        />
-      </div>
+      <JourneyMode
+        onComplete={handleWizardComplete}
+        onSkip={handleWizardSkip}
+      />
     )
   }
 

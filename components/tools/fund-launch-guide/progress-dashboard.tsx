@@ -4,11 +4,6 @@ import { cn } from '@/lib/utils'
 import { FundLaunchPhase, FundLaunchTask, FundConfig } from './types'
 import { Button } from '@/components/ui/button'
 import {
-  CheckCircle2,
-  Circle,
-  Target,
-  TrendingUp,
-  Clock,
   Award,
   RotateCcw,
   Settings2,
@@ -90,20 +85,6 @@ export function ProgressDashboard({
     }
   })
 
-  // Milestones
-  const milestones = [
-    { threshold: 25, label: 'Getting Started', icon: Circle },
-    { threshold: 50, label: 'Halfway There', icon: TrendingUp },
-    { threshold: 75, label: 'Almost Done', icon: Target },
-    { threshold: 100, label: 'Complete!', icon: Award },
-  ]
-
-  const currentMilestone = milestones.reduce((prev, curr) =>
-    progressPercent >= curr.threshold ? curr : prev
-  , milestones[0])
-
-  const nextMilestone = milestones.find(m => m.threshold > progressPercent)
-
   return (
     <div className="space-y-4">
       {/* Main Progress Card */}
@@ -150,12 +131,6 @@ export function ProgressDashboard({
             <p className="text-sm text-muted-foreground mt-0.5">
               Currently in: <span className="font-medium text-foreground">{currentPhase?.shortName}</span>
             </p>
-            {nextMilestone && progressPercent < 100 && (
-              <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                <nextMilestone.icon className="h-3 w-3" />
-                {nextMilestone.threshold - progressPercent}% to "{nextMilestone.label}"
-              </p>
-            )}
             {progressPercent === 100 && (
               <div className="flex items-center gap-1.5 mt-1 text-emerald-600 dark:text-emerald-400">
                 <Award className="h-4 w-4" />
