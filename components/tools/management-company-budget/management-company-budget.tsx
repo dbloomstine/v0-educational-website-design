@@ -49,6 +49,7 @@ import {
 import { calculateBudget, formatCurrency, formatRunway } from './budget-calculator'
 import { OnboardingWizard } from './onboarding-wizard'
 import { JourneyMode } from './journey-mode'
+import { ResultsWalkthrough } from './results-walkthrough'
 import { SensitivityAnalysis } from './sensitivity-analysis'
 import { Benchmarks } from './benchmarks'
 import {
@@ -75,6 +76,7 @@ export function ManagementCompanyBudget() {
 
   // Track if user has completed wizard or skipped
   const [showWizard, setShowWizard] = useState<boolean | null>(null)
+  const [showResultsWalkthrough, setShowResultsWalkthrough] = useState(false)
   const [wizardManuallyTriggered, setWizardManuallyTriggered] = useState(false)
   const [activeTab, setActiveTab] = useState('overview')
 
@@ -312,6 +314,7 @@ export function ManagementCompanyBudget() {
   const handleWizardComplete = (wizardData: BudgetData) => {
     setData(wizardData)
     setShowWizard(false)
+    setShowResultsWalkthrough(true) // Show the results walkthrough after wizard
     setWizardManuallyTriggered(false)
     if (typeof window !== 'undefined') {
       localStorage.setItem('budget-planner-visited', 'true')
@@ -329,6 +332,14 @@ export function ManagementCompanyBudget() {
   const handleRestartWizard = () => {
     setWizardManuallyTriggered(true)
     setShowWizard(true)
+  }
+
+  const handleWalkthroughComplete = () => {
+    setShowResultsWalkthrough(false)
+  }
+
+  const handleWalkthroughSkip = () => {
+    setShowResultsWalkthrough(false)
   }
 
   // Export to Excel
@@ -771,6 +782,17 @@ export function ManagementCompanyBudget() {
       <JourneyMode
         onComplete={handleWizardComplete}
         onSkip={handleWizardSkip}
+      />
+    )
+  }
+
+  if (showResultsWalkthrough) {
+    return (
+      <ResultsWalkthrough
+        data={data}
+        results={results}
+        onComplete={handleWalkthroughComplete}
+        onSkip={handleWalkthroughSkip}
       />
     )
   }
