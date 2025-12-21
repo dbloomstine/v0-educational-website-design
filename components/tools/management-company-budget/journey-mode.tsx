@@ -28,7 +28,10 @@ import {
   Zap,
   Award,
   PartyPopper,
-  HelpCircle
+  HelpCircle,
+  User,
+  UserPlus,
+  Building
 } from 'lucide-react'
 import { BudgetData, TeamMember } from './types'
 import { formatCurrency } from './budget-calculator'
@@ -323,6 +326,69 @@ const CAPITAL_OPTIONS = [
   { amount: 2000000, label: '$2M+', description: 'Institutional-grade' },
 ]
 
+// Quick start templates for faster setup
+interface QuickStartTemplate {
+  id: string
+  name: string
+  description: string
+  icon: any
+  color: string
+  fundSize: number
+  feeRate: number
+  startingCash: number
+  team: TeamMember[]
+  sizeTier: 'emerging' | 'established' | 'institutional'
+}
+
+const QUICK_START_TEMPLATES: QuickStartTemplate[] = [
+  {
+    id: 'solo-gp',
+    name: 'Solo GP',
+    description: 'Just you, lean operations, $25-50M fund',
+    icon: User,
+    color: 'from-amber-500 to-orange-600',
+    fundSize: 35,
+    feeRate: 2.0,
+    startingCash: 300000,
+    sizeTier: 'emerging',
+    team: [
+      { id: '1', role: 'Managing Partner', monthlyCost: 15000 },
+    ],
+  },
+  {
+    id: 'small-team',
+    name: 'Small Team',
+    description: '2-3 person team, $50-100M fund',
+    icon: UserPlus,
+    color: 'from-emerald-500 to-teal-600',
+    fundSize: 75,
+    feeRate: 2.0,
+    startingCash: 500000,
+    sizeTier: 'emerging',
+    team: [
+      { id: '1', role: 'Managing Partner', monthlyCost: 22000 },
+      { id: '2', role: 'Associate', monthlyCost: 9000 },
+    ],
+  },
+  {
+    id: 'growth-firm',
+    name: 'Growth Firm',
+    description: 'Full team, $100M+ fund, scaling up',
+    icon: Building,
+    color: 'from-violet-500 to-purple-600',
+    fundSize: 150,
+    feeRate: 2.0,
+    startingCash: 750000,
+    sizeTier: 'established',
+    team: [
+      { id: '1', role: 'Managing Partner', monthlyCost: 28000 },
+      { id: '2', role: 'Partner', monthlyCost: 22000 },
+      { id: '3', role: 'Associate', monthlyCost: 10000 },
+      { id: '4', role: 'Analyst', monthlyCost: 7000 },
+    ],
+  },
+]
+
 // Journey phases
 const PHASES = [
   { id: 1, name: 'Strategy', icon: Target },
@@ -334,7 +400,7 @@ const PHASES = [
 
 interface JourneyStep {
   id: string
-  type: 'welcome' | 'select' | 'input' | 'team' | 'capital' | 'celebration' | 'review'
+  type: 'welcome' | 'quickstart' | 'select' | 'input' | 'team' | 'capital' | 'celebration' | 'review'
   phase: number
   phaseName: string
   title: string
@@ -351,6 +417,14 @@ const JOURNEY_STEPS: JourneyStep[] = [
     phaseName: 'Welcome',
     title: 'Build Your Budget',
     subtitle: 'Let\'s create a customized management company budget in just a few minutes.'
+  },
+  {
+    id: 'quickstart',
+    type: 'quickstart',
+    phase: 0,
+    phaseName: 'Quick Start',
+    title: 'Choose a starting point',
+    subtitle: 'Pick a template to get started faster, or customize from scratch.'
   },
   {
     id: 'strategy',
@@ -620,6 +694,21 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
       setCustomizedTeam(false)
       setTimeout(goNext, 300)
     }
+  }, [goNext])
+
+  // Quick start template handler
+  const handleQuickStart = useCallback((template: QuickStartTemplate) => {
+    setFundSize(template.fundSize)
+    setFeeRate(template.feeRate)
+    setStartingCash(template.startingCash)
+    setSizeTier(template.sizeTier)
+    setTeamMembers(template.team.map(t => ({
+      ...t,
+      id: Math.random().toString(36).substr(2, 9)
+    })))
+    setCustomizedTeam(true)
+    // Skip ahead to strategy step, then continue normally
+    setTimeout(goNext, 300)
   }, [goNext])
 
   // Team management
@@ -943,6 +1032,60 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                   <p className="text-xs text-white/40">
                     Press Enter or → to continue
                   </p>
+                </div>
+              </div>
+            )}
+
+            {/* Quick Start Templates Step */}
+            {step.type === 'quickstart' && (
+              <div className="space-y-8">
+                <div className="text-center space-y-2">
+                  <h2 className="text-3xl md:text-4xl font-bold text-white">{step.title}</h2>
+                  <p className="text-lg text-white/60">{step.subtitle}</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {QUICK_START_TEMPLATES.map((template, idx) => {
+                    const Icon = template.icon
+                    return (
+                      <motion.button
+                        key={template.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                        onClick={() => handleQuickStart(template)}
+                        className="relative p-6 rounded-2xl text-left transition-all group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20"
+                      >
+                        <div className={cn(
+                          "w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br mb-4",
+                          template.color
+                        )}>
+                          <Icon className="h-6 w-6 text-white" />
+                        </div>
+                        <h3 className="font-semibold text-white text-lg mb-1">{template.name}</h3>
+                        <p className="text-sm text-white/50 mb-4">{template.description}</p>
+                        <div className="space-y-1 text-xs text-white/40">
+                          <p>Fund: ${template.fundSize}M @ {template.feeRate}%</p>
+                          <p>Team: {template.team.length} {template.team.length === 1 ? 'person' : 'people'}</p>
+                          <p>Capital: {formatCurrency(template.startingCash, true)}</p>
+                        </div>
+                        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <ArrowRight className="h-5 w-5 text-white/60" />
+                        </div>
+                      </motion.button>
+                    )
+                  })}
+                </div>
+
+                <div className="text-center">
+                  <Button
+                    variant="ghost"
+                    onClick={goNext}
+                    className="text-white/60 hover:text-white hover:bg-white/10"
+                  >
+                    Or customize from scratch
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </Button>
                 </div>
               </div>
             )}

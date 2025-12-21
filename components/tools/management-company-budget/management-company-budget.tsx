@@ -64,6 +64,7 @@ import { GoalSeeking } from './goal-seeking'
 import { ScenarioTemplates } from './scenario-templates'
 import { WaterfallChart } from './waterfall-chart'
 import { StackedExpenseChart } from './stacked-expense-chart'
+import { WhatIfSliders } from './what-if-sliders'
 import { useBudgetState } from './use-budget-state'
 import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
@@ -1252,6 +1253,9 @@ export function ManagementCompanyBudget() {
 
         {/* Analysis Tab */}
         <TabsContent value="analysis" className="space-y-6 mt-6">
+          {/* What-If Sliders */}
+          <WhatIfSliders data={data} results={results} onApply={setData} />
+
           {/* Goal Seeking and Scenario Templates */}
           <div className="grid lg:grid-cols-2 gap-6">
             <GoalSeeking
