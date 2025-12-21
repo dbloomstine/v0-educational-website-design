@@ -90,127 +90,125 @@ export function ProgressDashboard({
   const nextMilestone = milestones.find(m => m.threshold > progressPercent)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Main Progress Card */}
-      <div className="rounded-xl border border-border bg-card p-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+      <div className="rounded-xl border border-border bg-card p-4 sm:p-6">
+        {/* Progress + Info Row */}
+        <div className="flex items-start gap-4">
           {/* Progress Circle */}
-          <div className="flex items-center gap-6">
+          <div className="flex-shrink-0">
             <div className="relative">
-              <svg className="w-24 h-24 -rotate-90">
+              <svg className="w-20 h-20 sm:w-24 sm:h-24 -rotate-90">
                 <circle
-                  cx="48"
-                  cy="48"
-                  r="42"
+                  cx="50%"
+                  cy="50%"
+                  r="38%"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="8"
                   className="text-accent"
                 />
                 <circle
-                  cx="48"
-                  cy="48"
-                  r="42"
+                  cx="50%"
+                  cy="50%"
+                  r="38%"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="8"
                   strokeLinecap="round"
-                  strokeDasharray={`${2 * Math.PI * 42}`}
-                  strokeDashoffset={`${2 * Math.PI * 42 * (1 - progressPercent / 100)}`}
+                  strokeDasharray={`${2 * Math.PI * 38}`}
+                  strokeDashoffset={`${2 * Math.PI * 38 * (1 - progressPercent / 100)}`}
                   className="text-primary transition-all duration-500"
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-2xl font-bold">{progressPercent}%</span>
+                <span className="text-xl sm:text-2xl font-bold">{progressPercent}%</span>
               </div>
             </div>
+          </div>
 
-            <div>
-              <h3 className="text-lg font-semibold">
-                {completedCount} of {totalTasks} tasks complete
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                Currently in: <span className="font-medium text-foreground">{currentPhase?.shortName}</span>
+          {/* Info */}
+          <div className="flex-1 min-w-0">
+            <h3 className="text-base sm:text-lg font-semibold">
+              {completedCount} of {totalTasks} tasks complete
+            </h3>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Currently in: <span className="font-medium text-foreground">{currentPhase?.shortName}</span>
+            </p>
+            {nextMilestone && progressPercent < 100 && (
+              <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                <nextMilestone.icon className="h-3 w-3" />
+                {nextMilestone.threshold - progressPercent}% to "{nextMilestone.label}"
               </p>
-              {nextMilestone && progressPercent < 100 && (
-                <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
-                  <nextMilestone.icon className="h-3 w-3" />
-                  {nextMilestone.threshold - progressPercent}% to "{nextMilestone.label}"
-                </p>
-              )}
-              {progressPercent === 100 && (
-                <div className="flex items-center gap-1.5 mt-2 text-emerald-600 dark:text-emerald-400">
-                  <Award className="h-4 w-4" />
-                  <span className="text-sm font-medium">All tasks complete!</span>
-                </div>
-              )}
-            </div>
+            )}
+            {progressPercent === 100 && (
+              <div className="flex items-center gap-1.5 mt-1 text-emerald-600 dark:text-emerald-400">
+                <Award className="h-4 w-4" />
+                <span className="text-sm font-medium">All tasks complete!</span>
+              </div>
+            )}
           </div>
+        </div>
 
-          {/* Config Summary */}
-          <div className="flex flex-wrap gap-2">
-            <div className="px-3 py-1.5 rounded-lg bg-accent text-sm">
-              <span className="text-muted-foreground">Strategy:</span>{' '}
-              <span className="font-medium">{config.strategy}</span>
-            </div>
-            <div className="px-3 py-1.5 rounded-lg bg-accent text-sm">
-              <span className="text-muted-foreground">Size:</span>{' '}
-              <span className="font-medium capitalize">{config.size}</span>
-            </div>
-            <div className="px-3 py-1.5 rounded-lg bg-accent text-sm">
-              <span className="text-muted-foreground">Structure:</span>{' '}
-              <span className="font-medium">{config.jurisdiction}</span>
-            </div>
+        {/* Config Tags - Horizontal scroll on mobile */}
+        <div className="flex gap-2 mt-4 overflow-x-auto pb-1 -mx-1 px-1 scrollbar-hide">
+          <div className="flex-shrink-0 px-2.5 py-1 rounded-lg bg-accent text-xs sm:text-sm">
+            <span className="text-muted-foreground">Strategy:</span>{' '}
+            <span className="font-medium">{config.strategy}</span>
           </div>
+          <div className="flex-shrink-0 px-2.5 py-1 rounded-lg bg-accent text-xs sm:text-sm">
+            <span className="text-muted-foreground">Size:</span>{' '}
+            <span className="font-medium capitalize">{config.size}</span>
+          </div>
+          <div className="flex-shrink-0 px-2.5 py-1 rounded-lg bg-accent text-xs sm:text-sm">
+            <span className="text-muted-foreground">Structure:</span>{' '}
+            <span className="font-medium">{config.jurisdiction}</span>
+          </div>
+        </div>
 
-          {/* Actions */}
-          <div className="flex items-center gap-2 lg:flex-col lg:items-end">
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={onShare}>
-                <Share2 className="h-4 w-4 mr-1.5" />
-                Share
+        {/* Actions - Compact on mobile */}
+        <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-border">
+          <Button variant="outline" size="sm" onClick={onShare} className="h-8 px-2.5 sm:px-3">
+            <Share2 className="h-4 w-4 sm:mr-1.5" />
+            <span className="hidden sm:inline">Share</span>
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-8 px-2.5 sm:px-3">
+                <Download className="h-4 w-4 sm:mr-1.5" />
+                <span className="hidden sm:inline">Export</span>
+                <ChevronDown className="h-3 w-3 ml-1" />
               </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-1.5" />
-                    Export
-                    <ChevronDown className="h-3 w-3 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={onExportExcel}>
-                    <FileSpreadsheet className="h-4 w-4 mr-2" />
-                    Export to Excel
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={onExportPdf}>
-                    <FileText className="h-4 w-4 mr-2" />
-                    Export to PDF
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-            <div className="flex gap-2">
-              <Button variant="ghost" size="sm" onClick={onReconfigure}>
-                <Settings2 className="h-4 w-4 mr-1.5" />
-                Reconfigure
-              </Button>
-              <Button variant="ghost" size="sm" onClick={onResetProgress} className="text-muted-foreground">
-                <RotateCcw className="h-4 w-4 mr-1.5" />
-                Reset
-              </Button>
-            </div>
-          </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start">
+              <DropdownMenuItem onClick={onExportExcel}>
+                <FileSpreadsheet className="h-4 w-4 mr-2" />
+                Export to Excel
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onExportPdf}>
+                <FileText className="h-4 w-4 mr-2" />
+                Export to PDF
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button variant="ghost" size="sm" onClick={onReconfigure} className="h-8 px-2.5 sm:px-3">
+            <Settings2 className="h-4 w-4 sm:mr-1.5" />
+            <span className="hidden sm:inline">Reconfigure</span>
+          </Button>
+          <Button variant="ghost" size="sm" onClick={onResetProgress} className="h-8 px-2.5 sm:px-3 text-muted-foreground ml-auto">
+            <RotateCcw className="h-4 w-4 sm:mr-1.5" />
+            <span className="hidden sm:inline">Reset</span>
+          </Button>
         </div>
       </div>
 
-      {/* Phase Progress Bars */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+      {/* Phase Progress Grid - 2 columns on mobile, 4 on tablet, 8 on desktop */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3">
         {phaseProgress.map(({ phase, total, completed, percent }) => (
           <div
             key={phase.id}
             className={cn(
-              "rounded-lg border p-3 transition-all",
+              "rounded-lg border p-2.5 sm:p-3 transition-all",
               completed === total && total > 0
                 ? "border-emerald-500/30 bg-emerald-500/5"
                 : phase.id === currentPhase?.id
@@ -218,7 +216,7 @@ export function ProgressDashboard({
                   : "border-border bg-card"
             )}
           >
-            <div className="text-xs font-medium truncate mb-2" title={phase.name}>
+            <div className="text-xs font-medium truncate mb-1.5" title={phase.name}>
               {phase.shortName}
             </div>
             <div className="h-1.5 bg-accent rounded-full overflow-hidden">
@@ -230,7 +228,7 @@ export function ProgressDashboard({
                 style={{ width: `${percent}%` }}
               />
             </div>
-            <div className="text-xs text-muted-foreground mt-1.5">
+            <div className="text-xs text-muted-foreground mt-1">
               {completed}/{total}
             </div>
           </div>

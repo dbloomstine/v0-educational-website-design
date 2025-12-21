@@ -161,11 +161,12 @@ export function FundLaunchGuide() {
   }, [filterCompleted, completedTasks])
 
   // Handlers
-  const handleOnboardingComplete = (newConfig: FundConfig, newProviders: Record<string, string>) => {
+  const handleOnboardingComplete = (newConfig: FundConfig, newProviders: Record<string, string>, journeyCompletedTasks?: string[]) => {
     setConfig(newConfig)
     setProviders(newProviders)
     setShowOnboarding(false)
-    setCompletedTasks(new Set())
+    // Preserve any tasks marked complete during the journey
+    setCompletedTasks(new Set(journeyCompletedTasks || []))
     setExpandedTasks(new Set())
     setExpandedPhases(new Set(PHASES.map(p => p.id)))
   }
