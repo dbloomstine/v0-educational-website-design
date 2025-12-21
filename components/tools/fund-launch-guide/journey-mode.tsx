@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -26,744 +26,1283 @@ import {
   Plus,
   CheckCircle2,
   Info,
+  SkipForward,
+  Building,
+  Shield,
+  FileText,
+  Settings,
+  TrendingUp,
+  Scale,
+  Banknote,
+  PiggyBank,
+  LineChart,
 } from 'lucide-react'
 import { FundConfig } from './types'
 import confetti from 'canvas-confetti'
 
-// Service provider suggestions
+// ============================================
+// SERVICE PROVIDER DATA (15+ each, no descriptions)
+// ============================================
+
 const LAW_FIRMS = [
-  { name: 'Kirkland & Ellis', description: 'Top PE/VC fund formation' },
-  { name: 'Sidley Austin', description: 'Full-service fund practice' },
-  { name: 'Simpson Thacher', description: 'Leading PE fund counsel' },
-  { name: 'Ropes & Gray', description: 'Strong in PE and credit' },
-  { name: 'Goodwin Procter', description: 'VC and growth equity focus' },
-  { name: 'Schulte Roth & Zabel', description: 'Hedge fund specialists' },
-  { name: 'Seward & Kissel', description: 'Hedge fund and VC' },
-  { name: 'Dechert', description: 'Global funds practice' },
-  { name: 'Proskauer Rose', description: 'Full-service fund formation' },
-  { name: 'Willkie Farr', description: 'PE and credit funds' },
+  'Kirkland & Ellis',
+  'Sidley Austin',
+  'Simpson Thacher & Bartlett',
+  'Ropes & Gray',
+  'Goodwin Procter',
+  'Schulte Roth & Zabel',
+  'Seward & Kissel',
+  'Dechert',
+  'Proskauer Rose',
+  'Willkie Farr & Gallagher',
+  'Latham & Watkins',
+  'Davis Polk & Wardwell',
+  'Debevoise & Plimpton',
+  'Paul Weiss',
+  'Fried Frank',
+  'Morgan Lewis',
+  'Cooley',
+  'Lowenstein Sandler',
+  'Akin Gump',
+  'King & Spalding',
 ]
 
-const FUND_ADMINS = [
-  { name: 'Citco', description: 'Largest independent admin' },
-  { name: 'SS&C', description: 'Technology-forward solutions' },
-  { name: 'Apex Group', description: 'Global fund services' },
-  { name: 'Gen II', description: 'PE and real assets focus' },
-  { name: 'Standish Management', description: 'Emerging manager friendly' },
-  { name: 'JTC', description: 'Full-service fund admin' },
-  { name: 'Alter Domus', description: 'PE and credit specialists' },
-  { name: 'CSC', description: 'Corporate and fund services' },
+const FUND_ADMINISTRATORS = [
+  'Citco Fund Services',
+  'SS&C Technologies',
+  'Apex Group',
+  'Gen II Fund Services',
+  'Standish Management',
+  'JTC Group',
+  'Alter Domus',
+  'CSC Global',
+  'Trident Trust',
+  'Maples Group',
+  'Intertrust Group',
+  'U.S. Bank Global Fund Services',
+  'State Street',
+  'Northern Trust',
+  'SEI Investments',
+  'BNY Mellon',
+  'MUFG Investor Services',
 ]
 
 const AUDITORS = [
-  { name: 'Deloitte', description: 'Big 4, full service' },
-  { name: 'PwC', description: 'Big 4, global reach' },
-  { name: 'EY', description: 'Big 4, strong fund practice' },
-  { name: 'KPMG', description: 'Big 4, audit excellence' },
-  { name: 'RSM', description: 'Great for emerging managers' },
-  { name: 'Grant Thornton', description: 'Mid-tier, fund focused' },
-  { name: 'EisnerAmper', description: 'Emerging manager specialists' },
-  { name: 'WithumSmith+Brown', description: 'PE and VC focused' },
+  'Deloitte',
+  'PwC',
+  'Ernst & Young (EY)',
+  'KPMG',
+  'RSM US',
+  'Grant Thornton',
+  'EisnerAmper',
+  'WithumSmith+Brown',
+  'BDO USA',
+  'Marcum LLP',
+  'CohnReznick',
+  'Moss Adams',
+  'Baker Tilly',
+  'Anchin',
+  'Friedman LLP',
+  'Crowe',
+  'PKF O\'Connor Davies',
 ]
+
+const TAX_ADVISORS = [
+  'Deloitte Tax',
+  'PwC Tax',
+  'Ernst & Young Tax',
+  'KPMG Tax',
+  'RSM US',
+  'Grant Thornton',
+  'EisnerAmper',
+  'WithumSmith+Brown',
+  'BDO USA',
+  'Marcum LLP',
+  'CohnReznick',
+  'Alvarez & Marsal',
+  'Andersen Tax',
+  'Cherry Bekaert',
+  'Citrin Cooperman',
+]
+
+const BANKS = [
+  'JPMorgan Chase',
+  'First Citizens (formerly SVB)',
+  'Bank of America',
+  'Citibank',
+  'Wells Fargo',
+  'HSBC',
+  'Goldman Sachs',
+  'Morgan Stanley',
+  'Northern Trust',
+  'State Street',
+  'Comerica',
+  'PNC Bank',
+  'U.S. Bank',
+  'BMO Harris',
+  'Customers Bank',
+]
+
+const INSURANCE_BROKERS = [
+  'Marsh',
+  'Aon',
+  'Willis Towers Watson',
+  'Lockton',
+  'Arthur J. Gallagher',
+  'Brown & Brown',
+  'Hub International',
+  'Alliant Insurance',
+  'Woodruff Sawyer',
+  'USI Insurance',
+  'Risk Strategies',
+  'Newfront',
+  'Founder Shield',
+  'Embroker',
+  'Vouch',
+]
+
+const PRIME_BROKERS = [
+  'Goldman Sachs',
+  'Morgan Stanley',
+  'JPMorgan',
+  'UBS',
+  'Barclays',
+  'Bank of America',
+  'Jefferies',
+  'Interactive Brokers',
+  'Cowen (TD Securities)',
+  'Pershing (BNY Mellon)',
+  'Wedbush Securities',
+  'Clear Street',
+  'Apex Clearing',
+  'StoneX',
+  'Marex',
+]
+
+const COMPLIANCE_CONSULTANTS = [
+  'ACA Group',
+  'Compliance Solutions Strategies (CSS)',
+  'Cipperman Compliance',
+  'NRS',
+  'Vigilant Compliance',
+  'RIA in a Box',
+  'Fairview Investment Services',
+  'Core Compliance',
+  'Greyline Solutions',
+  'Alaric Compliance',
+  'Compliance Science',
+  'IQ-EQ',
+  'Ultimus Fund Solutions',
+  'Foreside',
+  'Constellation Advisers',
+]
+
+const IT_PROVIDERS = [
+  'Eze Castle Integration',
+  'Align',
+  'Options IT',
+  'Abacus Group',
+  'Opus Fund Services',
+  'Linedata',
+  'Advent (SS&C)',
+  'Backstop Solutions',
+  'Dynamo Software',
+  'Allvue Systems',
+  'Juniper Square',
+  'Carta',
+  'Visible',
+  'Affinity',
+  'iLevel (Ipreo)',
+]
+
+// ============================================
+// JOURNEY STEP TYPES
+// ============================================
+
+type StepType =
+  | 'welcome'
+  | 'config'
+  | 'provider'
+  | 'yes-no'
+  | 'info'
+  | 'celebration'
+  | 'checklist'
+  | 'summary'
 
 interface JourneyStep {
   id: string
-  type: 'welcome' | 'single-select' | 'multi-select' | 'provider-select' | 'text-input' | 'info' | 'celebration' | 'summary'
-  category?: string
+  type: StepType
+  phase?: number
+  phaseName?: string
   title: string
   subtitle?: string
-  description?: string
   tip?: string
-  options?: any[]
+  // For config steps
   configKey?: keyof FundConfig
+  options?: { value: any; label: string; icon?: React.ReactNode }[]
+  // For provider steps
   providerKey?: string
-  icon?: React.ReactNode
+  providerOptions?: string[]
+  // For yes-no steps
+  taskId?: string
+  // For checklist steps
+  tasks?: { id: string; title: string }[]
+  // For celebrations
   celebration?: boolean
 }
 
-const JOURNEY_STEPS: JourneyStep[] = [
-  // Welcome
-  {
-    id: 'welcome',
-    type: 'welcome',
-    title: "Let's Launch Your Fund",
-    subtitle: "Your guided journey to fund formation",
-    description: "We'll walk you through every step of launching your fund. Answer a few questions, and we'll create your personalized roadmap.",
-    icon: <Rocket className="h-16 w-16" />,
-  },
+// ============================================
+// JOURNEY STEPS - COMPLETE LIFECYCLE
+// ============================================
 
-  // Phase 1: Strategy & Planning
-  {
-    id: 'phase-1-intro',
-    type: 'info',
-    category: 'Strategy & Planning',
-    title: 'Phase 1: Strategy & Planning',
-    subtitle: "First, let's define your fund strategy",
-    description: "This is where every successful fund starts. Your strategy decisions here will shape everything that follows.",
-    icon: <Target className="h-12 w-12" />,
-  },
-  {
-    id: 'strategy',
-    type: 'single-select',
-    category: 'Strategy & Planning',
-    title: 'What type of fund are you launching?',
-    subtitle: 'Choose the strategy that best describes your fund',
-    tip: 'This affects your regulatory requirements, typical LPs, and timeline',
-    configKey: 'strategy',
-    options: [
-      { value: 'VC', label: 'Venture Capital', description: 'Early-stage equity in startups', icon: <Zap className="h-6 w-6" /> },
-      { value: 'PE', label: 'Private Equity', description: 'Buyouts and growth equity', icon: <Briefcase className="h-6 w-6" /> },
-      { value: 'Private Credit', label: 'Private Credit', description: 'Direct lending strategies', icon: <CreditCard className="h-6 w-6" /> },
-      { value: 'Hedge Fund', label: 'Hedge Fund', description: 'Long/short, multi-strategy', icon: <BarChart3 className="h-6 w-6" /> },
-      { value: 'Real Estate', label: 'Real Estate', description: 'Property investments', icon: <Home className="h-6 w-6" /> },
-      { value: 'Infrastructure', label: 'Infrastructure', description: 'Infrastructure & energy', icon: <Landmark className="h-6 w-6" /> },
-    ],
-  },
-  {
-    id: 'size',
-    type: 'single-select',
-    category: 'Strategy & Planning',
-    title: "What's your target fund size?",
-    subtitle: 'This shapes your infrastructure and LP expectations',
-    tip: 'First-time VC funds average $75M; first-time PE funds average $150M',
-    configKey: 'size',
-    options: [
-      { value: 'emerging', label: 'Emerging', description: 'Under $100M', sublabel: 'Perfect for first-time managers' },
-      { value: 'mid', label: 'Mid-Size', description: '$100M - $500M', sublabel: 'Established but growing' },
-      { value: 'large', label: 'Large', description: 'Over $500M', sublabel: 'Institutional scale' },
-    ],
-  },
-  {
-    id: 'jurisdiction',
-    type: 'single-select',
-    category: 'Strategy & Planning',
-    title: 'Where will your fund be domiciled?',
-    subtitle: 'This determines your legal structure',
-    tip: '85% of first-time US managers use Delaware LP only',
-    configKey: 'jurisdiction',
-    options: [
-      { value: 'US Onshore', label: 'US Onshore Only', description: 'Delaware LP - simplest setup', icon: <Globe className="h-5 w-5" /> },
-      { value: 'US + Cayman', label: 'US + Offshore', description: 'Delaware + Cayman for non-US LPs', icon: <Globe className="h-5 w-5" /> },
-      { value: 'EU/AIFMD', label: 'EU/AIFMD', description: 'European regulatory framework', icon: <Globe className="h-5 w-5" /> },
-    ],
-  },
-  {
-    id: 'anchor',
-    type: 'single-select',
-    category: 'Strategy & Planning',
-    title: 'Do you have an anchor investor?',
-    subtitle: 'An anchor can accelerate your timeline significantly',
-    tip: 'Anchors typically commit 20-30% of the fund',
-    configKey: 'hasAnchor',
-    options: [
-      { value: true, label: 'Yes, I have an anchor', description: 'Faster fundraising timeline', icon: <Users className="h-5 w-5" /> },
-      { value: false, label: 'Not yet', description: 'Plan for 12-18+ months to raise', icon: <Search className="h-5 w-5" /> },
-    ],
-  },
-  {
-    id: 'phase-1-complete',
-    type: 'celebration',
-    category: 'Strategy & Planning',
-    title: 'Strategy Defined!',
-    subtitle: 'Phase 1 complete',
-    description: "Great start! You've laid the foundation for your fund.",
-    celebration: true,
-  },
+const createJourneySteps = (strategy?: string): JourneyStep[] => {
+  const steps: JourneyStep[] = [
+    // ========== WELCOME ==========
+    {
+      id: 'welcome',
+      type: 'welcome',
+      title: "Let's Launch Your Fund",
+      subtitle: "Your guided journey to fund formation",
+    },
 
-  // Phase 2: Service Providers
-  {
-    id: 'phase-2-intro',
-    type: 'info',
-    category: 'Service Providers',
-    title: 'Phase 2: Your Team',
-    subtitle: "Now let's build your support team",
-    description: "The right service providers make all the difference. Let's identify who you'll work with.",
-    icon: <Users className="h-12 w-12" />,
-  },
-  {
-    id: 'law-firm',
-    type: 'provider-select',
-    category: 'Service Providers',
-    title: 'Have you chosen a law firm?',
-    subtitle: 'Fund counsel is one of your most important relationships',
-    tip: 'Legal costs for first fund formation: $75-150K typical',
-    providerKey: 'lawFirm',
-    options: LAW_FIRMS,
-  },
-  {
-    id: 'fund-admin',
-    type: 'provider-select',
-    category: 'Service Providers',
-    title: 'Which fund administrator?',
-    subtitle: 'They handle NAV, investor reporting, capital calls, and more',
-    tip: 'Average admin fee for emerging managers: 5-15 bps of AUM',
-    providerKey: 'fundAdmin',
-    options: FUND_ADMINS,
-  },
-  {
-    id: 'auditor',
-    type: 'provider-select',
-    category: 'Service Providers',
-    title: 'Who will audit your fund?',
-    subtitle: 'Annual audits are typically required by your LPA',
-    tip: 'Audit fees for emerging managers: $30-75K annually',
-    providerKey: 'auditor',
-    options: AUDITORS,
-  },
-  {
-    id: 'phase-2-complete',
-    type: 'celebration',
-    category: 'Service Providers',
-    title: 'Team Assembled!',
-    subtitle: 'Phase 2 complete',
-    description: "Your key service providers are identified. Now let's see your roadmap!",
-    celebration: true,
-  },
+    // ========== PHASE 1: STRATEGY & PLANNING ==========
+    {
+      id: 'phase-1-intro',
+      type: 'info',
+      phase: 1,
+      phaseName: 'Strategy & Planning',
+      title: 'Phase 1: Strategy & Planning',
+      subtitle: 'Define your fund strategy and structure',
+      tip: 'This foundation shapes everything that follows',
+    },
+    {
+      id: 'strategy',
+      type: 'config',
+      phase: 1,
+      phaseName: 'Strategy & Planning',
+      title: 'What type of fund?',
+      subtitle: 'Select your primary investment strategy',
+      configKey: 'strategy',
+      options: [
+        { value: 'VC', label: 'Venture Capital', icon: <Zap className="h-5 w-5" /> },
+        { value: 'PE', label: 'Private Equity', icon: <Briefcase className="h-5 w-5" /> },
+        { value: 'Private Credit', label: 'Private Credit', icon: <CreditCard className="h-5 w-5" /> },
+        { value: 'Hedge Fund', label: 'Hedge Fund', icon: <LineChart className="h-5 w-5" /> },
+        { value: 'Real Estate', label: 'Real Estate', icon: <Home className="h-5 w-5" /> },
+        { value: 'Infrastructure', label: 'Infrastructure', icon: <Landmark className="h-5 w-5" /> },
+      ],
+    },
+    {
+      id: 'size',
+      type: 'config',
+      phase: 1,
+      phaseName: 'Strategy & Planning',
+      title: 'Target fund size?',
+      subtitle: 'This affects infrastructure and LP expectations',
+      configKey: 'size',
+      options: [
+        { value: 'emerging', label: 'Under $100M', icon: <PiggyBank className="h-5 w-5" /> },
+        { value: 'mid', label: '$100M - $500M', icon: <Banknote className="h-5 w-5" /> },
+        { value: 'large', label: 'Over $500M', icon: <Building className="h-5 w-5" /> },
+      ],
+    },
+    {
+      id: 'jurisdiction',
+      type: 'config',
+      phase: 1,
+      phaseName: 'Strategy & Planning',
+      title: 'Fund domicile?',
+      subtitle: 'Where will your fund be legally based?',
+      configKey: 'jurisdiction',
+      options: [
+        { value: 'US Onshore', label: 'US Onshore Only', icon: <Globe className="h-5 w-5" /> },
+        { value: 'US + Cayman', label: 'US + Offshore', icon: <Globe className="h-5 w-5" /> },
+        { value: 'EU/AIFMD', label: 'EU / AIFMD', icon: <Globe className="h-5 w-5" /> },
+      ],
+    },
+    {
+      id: 'anchor',
+      type: 'config',
+      phase: 1,
+      phaseName: 'Strategy & Planning',
+      title: 'Anchor investor?',
+      subtitle: 'Do you have a committed lead investor?',
+      configKey: 'hasAnchor',
+      options: [
+        { value: true, label: 'Yes', icon: <CheckCircle2 className="h-5 w-5" /> },
+        { value: false, label: 'Not yet', icon: <Search className="h-5 w-5" /> },
+      ],
+    },
+    {
+      id: 'investment-thesis',
+      type: 'yes-no',
+      phase: 1,
+      phaseName: 'Strategy & Planning',
+      title: 'Investment thesis defined?',
+      subtitle: 'Have you articulated your investment thesis?',
+      tip: 'Your thesis explains what you invest in and why you\'re differentiated',
+      taskId: 'strategy-thesis',
+    },
+    {
+      id: 'team-structure',
+      type: 'yes-no',
+      phase: 1,
+      phaseName: 'Strategy & Planning',
+      title: 'Team structure finalized?',
+      subtitle: 'Have you defined GP roles and economics?',
+      tip: 'Clarify who the GPs are and their ownership percentages',
+      taskId: 'strategy-team',
+    },
+    {
+      id: 'fund-economics',
+      type: 'yes-no',
+      phase: 1,
+      phaseName: 'Strategy & Planning',
+      title: 'Fund economics set?',
+      subtitle: 'Management fee and carried interest decided?',
+      tip: 'Standard is 2% management fee and 20% carry',
+      taskId: 'strategy-economics',
+    },
+    {
+      id: 'phase-1-complete',
+      type: 'celebration',
+      phase: 1,
+      phaseName: 'Strategy & Planning',
+      title: 'Strategy Complete!',
+      subtitle: 'Phase 1 of 8 done',
+      celebration: true,
+    },
 
-  // Summary
-  {
-    id: 'summary',
-    type: 'summary',
-    title: "Your Fund Launch Roadmap",
-    subtitle: "Here's your personalized plan",
-  },
-]
+    // ========== PHASE 2: LEGAL ENTITY FORMATION ==========
+    {
+      id: 'phase-2-intro',
+      type: 'info',
+      phase: 2,
+      phaseName: 'Legal Formation',
+      title: 'Phase 2: Legal Formation',
+      subtitle: 'Establish your legal entities',
+      tip: 'You\'ll need a GP, Management Company, and Fund LP',
+    },
+    {
+      id: 'law-firm',
+      type: 'provider',
+      phase: 2,
+      phaseName: 'Legal Formation',
+      title: 'Fund counsel selected?',
+      subtitle: 'Choose your law firm',
+      tip: 'One of your most important relationships',
+      providerKey: 'lawFirm',
+      providerOptions: LAW_FIRMS,
+    },
+    {
+      id: 'gp-entity',
+      type: 'yes-no',
+      phase: 2,
+      phaseName: 'Legal Formation',
+      title: 'GP entity formed?',
+      subtitle: 'Have you formed your General Partner entity?',
+      tip: 'Usually a Delaware LLC',
+      taskId: 'legal-gp-entity',
+    },
+    {
+      id: 'mgmt-company',
+      type: 'yes-no',
+      phase: 2,
+      phaseName: 'Legal Formation',
+      title: 'Management company formed?',
+      subtitle: 'Have you formed your Management Company?',
+      tip: 'Receives management fees and employs staff',
+      taskId: 'legal-mgmt-company',
+    },
+    {
+      id: 'fund-lp',
+      type: 'yes-no',
+      phase: 2,
+      phaseName: 'Legal Formation',
+      title: 'Fund LP formed?',
+      subtitle: 'Have you formed your Fund LP entity?',
+      tip: 'The actual investment vehicle',
+      taskId: 'legal-fund-lp',
+    },
+    {
+      id: 'phase-2-complete',
+      type: 'celebration',
+      phase: 2,
+      phaseName: 'Legal Formation',
+      title: 'Legal Entities Set!',
+      subtitle: 'Phase 2 of 8 done',
+      celebration: true,
+    },
+
+    // ========== PHASE 3: FUND DOCUMENTATION ==========
+    {
+      id: 'phase-3-intro',
+      type: 'info',
+      phase: 3,
+      phaseName: 'Fund Documentation',
+      title: 'Phase 3: Fund Documentation',
+      subtitle: 'Draft your core fund documents',
+      tip: 'LPA, PPM, and subscription docs',
+    },
+    {
+      id: 'lpa-drafted',
+      type: 'yes-no',
+      phase: 3,
+      phaseName: 'Fund Documentation',
+      title: 'LPA drafted?',
+      subtitle: 'Limited Partnership Agreement in progress?',
+      tip: 'The most important fund document',
+      taskId: 'docs-lpa',
+    },
+    {
+      id: 'ppm-drafted',
+      type: 'yes-no',
+      phase: 3,
+      phaseName: 'Fund Documentation',
+      title: 'PPM drafted?',
+      subtitle: 'Private Placement Memorandum in progress?',
+      tip: 'Your disclosure document for investors',
+      taskId: 'docs-ppm',
+    },
+    {
+      id: 'subscription-docs',
+      type: 'yes-no',
+      phase: 3,
+      phaseName: 'Fund Documentation',
+      title: 'Subscription docs ready?',
+      subtitle: 'Investor subscription documents prepared?',
+      tip: 'How investors commit to the fund',
+      taskId: 'docs-subscription',
+    },
+    {
+      id: 'phase-3-complete',
+      type: 'celebration',
+      phase: 3,
+      phaseName: 'Fund Documentation',
+      title: 'Documents Ready!',
+      subtitle: 'Phase 3 of 8 done',
+      celebration: true,
+    },
+
+    // ========== PHASE 4: REGULATORY & COMPLIANCE ==========
+    {
+      id: 'phase-4-intro',
+      type: 'info',
+      phase: 4,
+      phaseName: 'Regulatory',
+      title: 'Phase 4: Regulatory',
+      subtitle: 'Navigate compliance requirements',
+      tip: 'SEC registration and compliance setup',
+    },
+    {
+      id: 'compliance-consultant',
+      type: 'provider',
+      phase: 4,
+      phaseName: 'Regulatory',
+      title: 'Compliance consultant?',
+      subtitle: 'Select your compliance advisor',
+      providerKey: 'complianceConsultant',
+      providerOptions: COMPLIANCE_CONSULTANTS,
+    },
+    {
+      id: 'sec-exemption',
+      type: 'yes-no',
+      phase: 4,
+      phaseName: 'Regulatory',
+      title: 'SEC exemption analyzed?',
+      subtitle: 'Determined your registration status?',
+      tip: 'Most emerging managers are ERAs or exempt',
+      taskId: 'reg-exemption-analysis',
+    },
+    {
+      id: 'form-adv',
+      type: 'yes-no',
+      phase: 4,
+      phaseName: 'Regulatory',
+      title: 'Form ADV filed?',
+      subtitle: 'SEC registration/reporting filed?',
+      taskId: 'reg-form-adv',
+    },
+    {
+      id: 'compliance-manual',
+      type: 'yes-no',
+      phase: 4,
+      phaseName: 'Regulatory',
+      title: 'Compliance manual ready?',
+      subtitle: 'Policies and procedures documented?',
+      taskId: 'reg-compliance-manual',
+    },
+    {
+      id: 'phase-4-complete',
+      type: 'celebration',
+      phase: 4,
+      phaseName: 'Regulatory',
+      title: 'Compliance Ready!',
+      subtitle: 'Phase 4 of 8 done',
+      celebration: true,
+    },
+
+    // ========== PHASE 5: SERVICE PROVIDERS ==========
+    {
+      id: 'phase-5-intro',
+      type: 'info',
+      phase: 5,
+      phaseName: 'Service Providers',
+      title: 'Phase 5: Service Providers',
+      subtitle: 'Build your operational team',
+      tip: 'Admin, auditor, tax, banking, insurance',
+    },
+    {
+      id: 'fund-admin',
+      type: 'provider',
+      phase: 5,
+      phaseName: 'Service Providers',
+      title: 'Fund administrator?',
+      subtitle: 'Select your fund admin',
+      providerKey: 'fundAdmin',
+      providerOptions: FUND_ADMINISTRATORS,
+    },
+    {
+      id: 'auditor',
+      type: 'provider',
+      phase: 5,
+      phaseName: 'Service Providers',
+      title: 'Auditor selected?',
+      subtitle: 'Choose your audit firm',
+      providerKey: 'auditor',
+      providerOptions: AUDITORS,
+    },
+    {
+      id: 'tax-advisor',
+      type: 'provider',
+      phase: 5,
+      phaseName: 'Service Providers',
+      title: 'Tax advisor?',
+      subtitle: 'Select your tax preparer',
+      providerKey: 'taxAdvisor',
+      providerOptions: TAX_ADVISORS,
+    },
+    {
+      id: 'bank',
+      type: 'provider',
+      phase: 5,
+      phaseName: 'Service Providers',
+      title: 'Banking relationship?',
+      subtitle: 'Choose your bank',
+      providerKey: 'bank',
+      providerOptions: BANKS,
+    },
+    {
+      id: 'insurance',
+      type: 'provider',
+      phase: 5,
+      phaseName: 'Service Providers',
+      title: 'Insurance broker?',
+      subtitle: 'Select your insurance broker',
+      providerKey: 'insuranceBroker',
+      providerOptions: INSURANCE_BROKERS,
+    },
+    // Conditional: Prime broker for hedge funds
+    ...(strategy === 'Hedge Fund' ? [{
+      id: 'prime-broker',
+      type: 'provider' as StepType,
+      phase: 5,
+      phaseName: 'Service Providers',
+      title: 'Prime broker?',
+      subtitle: 'Select your prime broker',
+      providerKey: 'primeBroker',
+      providerOptions: PRIME_BROKERS,
+    }] : []),
+    {
+      id: 'phase-5-complete',
+      type: 'celebration',
+      phase: 5,
+      phaseName: 'Service Providers',
+      title: 'Team Assembled!',
+      subtitle: 'Phase 5 of 8 done',
+      celebration: true,
+    },
+
+    // ========== PHASE 6: OPERATIONS ==========
+    {
+      id: 'phase-6-intro',
+      type: 'info',
+      phase: 6,
+      phaseName: 'Operations',
+      title: 'Phase 6: Operations',
+      subtitle: 'Set up your infrastructure',
+      tip: 'Banking, systems, and processes',
+    },
+    {
+      id: 'it-provider',
+      type: 'provider',
+      phase: 6,
+      phaseName: 'Operations',
+      title: 'Technology provider?',
+      subtitle: 'Portfolio management system',
+      providerKey: 'itProvider',
+      providerOptions: IT_PROVIDERS,
+    },
+    {
+      id: 'bank-accounts',
+      type: 'yes-no',
+      phase: 6,
+      phaseName: 'Operations',
+      title: 'Bank accounts open?',
+      subtitle: 'Fund and management company accounts?',
+      taskId: 'ops-bank-accounts',
+    },
+    {
+      id: 'investor-portal',
+      type: 'yes-no',
+      phase: 6,
+      phaseName: 'Operations',
+      title: 'Investor portal set up?',
+      subtitle: 'LP reporting and document access?',
+      taskId: 'ops-investor-portal',
+    },
+    {
+      id: 'cybersecurity',
+      type: 'yes-no',
+      phase: 6,
+      phaseName: 'Operations',
+      title: 'Cybersecurity in place?',
+      subtitle: 'MFA, encryption, security policies?',
+      taskId: 'ops-cybersecurity',
+    },
+    {
+      id: 'phase-6-complete',
+      type: 'celebration',
+      phase: 6,
+      phaseName: 'Operations',
+      title: 'Operations Ready!',
+      subtitle: 'Phase 6 of 8 done',
+      celebration: true,
+    },
+
+    // ========== PHASE 7: FUNDRAISING ==========
+    {
+      id: 'phase-7-intro',
+      type: 'info',
+      phase: 7,
+      phaseName: 'Fundraising',
+      title: 'Phase 7: Fundraising',
+      subtitle: 'Raise capital from LPs',
+      tip: 'Pitch deck, data room, and LP outreach',
+    },
+    {
+      id: 'pitch-deck',
+      type: 'yes-no',
+      phase: 7,
+      phaseName: 'Fundraising',
+      title: 'Pitch deck ready?',
+      subtitle: 'Marketing presentation complete?',
+      taskId: 'fr-pitch-deck',
+    },
+    {
+      id: 'data-room',
+      type: 'yes-no',
+      phase: 7,
+      phaseName: 'Fundraising',
+      title: 'Data room built?',
+      subtitle: 'Due diligence materials organized?',
+      taskId: 'fr-data-room',
+    },
+    {
+      id: 'ddq',
+      type: 'yes-no',
+      phase: 7,
+      phaseName: 'Fundraising',
+      title: 'DDQ completed?',
+      subtitle: 'Due diligence questionnaire ready?',
+      taskId: 'fr-ddq',
+    },
+    {
+      id: 'lp-pipeline',
+      type: 'yes-no',
+      phase: 7,
+      phaseName: 'Fundraising',
+      title: 'LP pipeline built?',
+      subtitle: 'Target investors identified?',
+      taskId: 'fr-lp-pipeline',
+    },
+    {
+      id: 'phase-7-complete',
+      type: 'celebration',
+      phase: 7,
+      phaseName: 'Fundraising',
+      title: 'Ready to Raise!',
+      subtitle: 'Phase 7 of 8 done',
+      celebration: true,
+    },
+
+    // ========== PHASE 8: FIRST CLOSE ==========
+    {
+      id: 'phase-8-intro',
+      type: 'info',
+      phase: 8,
+      phaseName: 'First Close',
+      title: 'Phase 8: First Close',
+      subtitle: 'Execute your first close',
+      tip: 'Finalize docs, call capital, begin investing',
+    },
+    {
+      id: 'docs-finalized',
+      type: 'yes-no',
+      phase: 8,
+      phaseName: 'First Close',
+      title: 'Documents executed?',
+      subtitle: 'All fund documents signed?',
+      taskId: 'fc-finalize-docs',
+    },
+    {
+      id: 'capital-called',
+      type: 'yes-no',
+      phase: 8,
+      phaseName: 'First Close',
+      title: 'First capital call issued?',
+      subtitle: 'Initial capital call sent to LPs?',
+      taskId: 'fc-capital-call',
+    },
+    {
+      id: 'reporting-setup',
+      type: 'yes-no',
+      phase: 8,
+      phaseName: 'First Close',
+      title: 'Reporting cadence set?',
+      subtitle: 'LP reporting schedule established?',
+      taskId: 'fc-reporting-setup',
+    },
+    {
+      id: 'phase-8-complete',
+      type: 'celebration',
+      phase: 8,
+      phaseName: 'First Close',
+      title: 'Fund Launched!',
+      subtitle: 'All 8 phases complete',
+      celebration: true,
+    },
+
+    // ========== SUMMARY ==========
+    {
+      id: 'summary',
+      type: 'summary',
+      title: 'Your Fund Launch Roadmap',
+      subtitle: 'Review your progress',
+    },
+  ]
+
+  return steps
+}
+
+// ============================================
+// COMPONENT
+// ============================================
 
 interface JourneyModeProps {
-  onComplete: (config: FundConfig, providers: Record<string, string>) => void
+  onComplete: (config: FundConfig, providers: Record<string, string>, completedTasks: string[]) => void
   onSkip: () => void
 }
 
 export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
-  const [currentStep, setCurrentStep] = useState(0)
-  const [direction, setDirection] = useState(1) // 1 for forward, -1 for backward
+  const [currentStepIndex, setCurrentStepIndex] = useState(0)
   const [config, setConfig] = useState<Partial<FundConfig>>({})
   const [providers, setProviders] = useState<Record<string, string>>({})
-  const [customInputs, setCustomInputs] = useState<Record<string, string>>({})
-  const [showCustomInput, setShowCustomInput] = useState<Record<string, boolean>>({})
-  const [isAnimating, setIsAnimating] = useState(false)
+  const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set())
+  const [customInput, setCustomInput] = useState('')
+  const [showCustomInput, setShowCustomInput] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const scrollRef = useRef<HTMLDivElement>(null)
 
-  const step = JOURNEY_STEPS[currentStep]
-  const totalSteps = JOURNEY_STEPS.length
-  const progress = ((currentStep + 1) / totalSteps) * 100
+  // Generate steps based on strategy
+  const steps = createJourneySteps(config.strategy)
+  const step = steps[currentStepIndex]
+  const totalSteps = steps.length
+  const progress = ((currentStepIndex + 1) / totalSteps) * 100
 
-  // Calculate phase progress
-  const phases = ['Strategy & Planning', 'Service Providers']
-  const currentPhaseIndex = phases.indexOf(step.category || '')
-  const stepsInCurrentPhase = JOURNEY_STEPS.filter(s => s.category === step.category).length
-  const currentStepInPhase = JOURNEY_STEPS.filter(s => s.category === step.category).findIndex(s => s.id === step.id) + 1
+  // Current phase info
+  const currentPhase = step?.phase
+  const phaseName = step?.phaseName
 
-  const canProceed = useCallback(() => {
-    if (step.type === 'welcome' || step.type === 'info' || step.type === 'celebration' || step.type === 'summary') {
-      return true
+  // Reset scroll on step change
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = 0
     }
-    if (step.type === 'single-select' && step.configKey) {
-      return config[step.configKey] !== undefined
-    }
-    if (step.type === 'provider-select' && step.providerKey) {
-      return providers[step.providerKey] !== undefined || showCustomInput[step.id]
-    }
-    return true
-  }, [step, config, providers, showCustomInput])
+    setSearchQuery('')
+    setShowCustomInput(false)
+    setCustomInput('')
+  }, [currentStepIndex])
 
+  // Trigger celebration
   const triggerCelebration = useCallback(() => {
     confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ['#6366f1', '#8b5cf6', '#ec4899', '#f43f5e', '#22c55e'],
+      particleCount: 80,
+      spread: 60,
+      origin: { y: 0.7 },
+      colors: ['#6366f1', '#8b5cf6', '#ec4899', '#22c55e'],
     })
   }, [])
 
   useEffect(() => {
-    if (step.celebration) {
+    if (step?.celebration) {
       triggerCelebration()
     }
-  }, [step.celebration, triggerCelebration])
+  }, [step?.celebration, triggerCelebration])
 
-  const goToNext = () => {
-    if (currentStep < totalSteps - 1 && canProceed()) {
-      setDirection(1)
-      setIsAnimating(true)
-      setTimeout(() => {
-        setCurrentStep(prev => prev + 1)
-        setIsAnimating(false)
-      }, 200)
-    } else if (currentStep === totalSteps - 1) {
-      // Complete the journey
-      onComplete(config as FundConfig, providers)
+  // Navigation
+  const goNext = () => {
+    if (currentStepIndex < totalSteps - 1) {
+      setCurrentStepIndex(prev => prev + 1)
     }
   }
 
-  const goToPrev = () => {
-    if (currentStep > 0) {
-      setDirection(-1)
-      setIsAnimating(true)
-      setTimeout(() => {
-        setCurrentStep(prev => prev - 1)
-        setIsAnimating(false)
-      }, 200)
+  const goPrev = () => {
+    if (currentStepIndex > 0) {
+      setCurrentStepIndex(prev => prev - 1)
     }
   }
 
-  const handleSelect = (value: any) => {
-    if (step.configKey) {
-      setConfig(prev => ({ ...prev, [step.configKey!]: value }))
-      // Auto-advance after selection with a slight delay
-      setTimeout(() => goToNext(), 300)
-    }
+  const handleComplete = () => {
+    onComplete(config as FundConfig, providers, Array.from(completedTasks))
   }
 
-  const handleProviderSelect = (name: string) => {
-    if (step.providerKey) {
-      setProviders(prev => ({ ...prev, [step.providerKey!]: name }))
-      setShowCustomInput(prev => ({ ...prev, [step.id]: false }))
-      setTimeout(() => goToNext(), 300)
-    }
+  // Handlers
+  const handleConfigSelect = (key: keyof FundConfig, value: any) => {
+    setConfig(prev => ({ ...prev, [key]: value }))
+    setTimeout(goNext, 250)
+  }
+
+  const handleProviderSelect = (key: string, value: string) => {
+    setProviders(prev => ({ ...prev, [key]: value }))
+    setShowCustomInput(false)
+    setTimeout(goNext, 250)
   }
 
   const handleCustomProvider = () => {
-    if (step.providerKey && customInputs[step.id]) {
-      setProviders(prev => ({ ...prev, [step.providerKey!]: customInputs[step.id] }))
-      setTimeout(() => goToNext(), 300)
+    if (step?.providerKey && customInput.trim()) {
+      handleProviderSelect(step.providerKey, customInput.trim())
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && canProceed()) {
-      goToNext()
+  const handleYesNo = (taskId: string | undefined, completed: boolean) => {
+    if (taskId) {
+      setCompletedTasks(prev => {
+        const next = new Set(prev)
+        if (completed) {
+          next.add(taskId)
+        } else {
+          next.delete(taskId)
+        }
+        return next
+      })
     }
+    setTimeout(goNext, 250)
   }
 
-  // Animation variants
-  const containerVariants = {
-    enter: (direction: number) => ({
-      x: direction > 0 ? 100 : -100,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (direction: number) => ({
-      x: direction > 0 ? -100 : 100,
-      opacity: 0,
-    }),
+  // Filter providers by search
+  const filteredProviders = step?.providerOptions?.filter(p =>
+    p.toLowerCase().includes(searchQuery.toLowerCase())
+  ) || []
+
+  // Animation
+  const variants = {
+    enter: { opacity: 0, y: 20 },
+    center: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
   }
 
   return (
-    <div
-      className="fixed inset-0 z-50 bg-gradient-to-br from-background via-background to-accent/20 overflow-hidden"
-      onKeyDown={handleKeyDown}
-      tabIndex={0}
-    >
-      {/* Progress bar */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-muted">
-        <motion.div
-          className="h-full bg-gradient-to-r from-primary via-purple-500 to-pink-500"
-          initial={{ width: 0 }}
-          animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-        />
-      </div>
+    <div className="fixed inset-0 z-50 bg-background flex flex-col">
+      {/* Header */}
+      <div className="flex-shrink-0 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        {/* Progress bar */}
+        <div className="h-1 bg-muted">
+          <motion.div
+            className="h-full bg-gradient-to-r from-primary to-purple-500"
+            initial={{ width: 0 }}
+            animate={{ width: `${progress}%` }}
+            transition={{ duration: 0.3 }}
+          />
+        </div>
 
-      {/* Phase indicator */}
-      {step.category && (
-        <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-              {step.category}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              {currentStepInPhase}/{stepsInCurrentPhase}
-            </span>
+        {/* Phase indicator */}
+        <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-2 min-w-0">
+            {currentPhase && (
+              <>
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
+                  {currentPhase}
+                </span>
+                <span className="text-sm font-medium truncate">{phaseName}</span>
+              </>
+            )}
+            {!currentPhase && <span className="text-sm text-muted-foreground">Getting started</span>}
           </div>
           <Button
             variant="ghost"
             size="sm"
             onClick={onSkip}
-            className="text-muted-foreground hover:text-foreground"
+            className="flex-shrink-0 text-muted-foreground"
           >
-            Skip to checklist
+            Skip
+            <SkipForward className="ml-1 h-4 w-4" />
           </Button>
         </div>
-      )}
+      </div>
 
-      {/* Main content */}
-      <div className="flex flex-col items-center justify-center min-h-screen px-4 py-16">
-        <AnimatePresence mode="wait" custom={direction}>
-          <motion.div
-            key={step.id}
-            custom={direction}
-            variants={containerVariants}
-            initial="enter"
-            animate="center"
-            exit="exit"
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="w-full max-w-2xl mx-auto text-center"
-          >
-            {/* Welcome Step */}
-            {step.type === 'welcome' && (
-              <div className="space-y-8">
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.2, duration: 0.5 }}
-                  className="flex justify-center"
-                >
+      {/* Content */}
+      <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain">
+        <div className="min-h-full flex flex-col">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={step.id}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.2 }}
+              className="flex-1 flex flex-col px-4 py-6 max-w-lg mx-auto w-full"
+            >
+              {/* Welcome */}
+              {step.type === 'welcome' && (
+                <div className="flex-1 flex flex-col items-center justify-center text-center gap-8">
                   <div className="relative">
-                    <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
-                    <div className="relative bg-gradient-to-br from-primary to-purple-600 p-6 rounded-3xl text-white">
-                      {step.icon}
+                    <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150" />
+                    <div className="relative bg-gradient-to-br from-primary to-purple-600 p-5 rounded-2xl text-white">
+                      <Rocket className="h-12 w-12" />
                     </div>
                   </div>
-                </motion.div>
-
-                <div className="space-y-4">
-                  <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-                    {step.title}
-                  </h1>
-                  <p className="text-xl text-muted-foreground">
-                    {step.subtitle}
-                  </p>
-                  <p className="text-muted-foreground max-w-md mx-auto">
-                    {step.description}
-                  </p>
-                </div>
-
-                <div className="flex flex-col items-center gap-4 pt-4">
-                  <Button
-                    size="lg"
-                    onClick={goToNext}
-                    className="text-lg px-8 py-6 rounded-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90"
-                  >
-                    Start Your Journey
-                    <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                  <button
-                    onClick={onSkip}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    I've done this before - skip to checklist
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* Info Step */}
-            {step.type === 'info' && (
-              <div className="space-y-8">
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className="flex justify-center"
-                >
-                  <div className="bg-accent p-4 rounded-2xl text-primary">
-                    {step.icon}
+                  <div className="space-y-3">
+                    <h1 className="text-3xl font-bold">{step.title}</h1>
+                    <p className="text-muted-foreground">{step.subtitle}</p>
                   </div>
-                </motion.div>
-
-                <div className="space-y-4">
-                  <h2 className="text-3xl md:text-4xl font-bold">{step.title}</h2>
-                  <p className="text-xl text-muted-foreground">{step.subtitle}</p>
-                  <p className="text-muted-foreground max-w-md mx-auto">{step.description}</p>
+                  <div className="flex flex-col gap-3 w-full max-w-xs">
+                    <Button size="lg" onClick={goNext} className="w-full">
+                      Start Journey
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                    <Button variant="ghost" onClick={onSkip} className="w-full">
+                      Skip to checklist
+                    </Button>
+                  </div>
                 </div>
+              )}
 
-                <Button size="lg" onClick={goToNext} className="rounded-full px-8">
-                  Continue
-                  <ChevronRight className="ml-2 h-5 w-5" />
-                </Button>
-              </div>
-            )}
-
-            {/* Single Select Step */}
-            {step.type === 'single-select' && (
-              <div className="space-y-8">
-                <div className="space-y-3">
-                  <h2 className="text-3xl md:text-4xl font-bold">{step.title}</h2>
-                  <p className="text-lg text-muted-foreground">{step.subtitle}</p>
+              {/* Info */}
+              {step.type === 'info' && (
+                <div className="flex-1 flex flex-col items-center justify-center text-center gap-6">
+                  <div className="bg-accent p-4 rounded-2xl">
+                    {step.phase === 1 && <Target className="h-10 w-10 text-primary" />}
+                    {step.phase === 2 && <Scale className="h-10 w-10 text-primary" />}
+                    {step.phase === 3 && <FileText className="h-10 w-10 text-primary" />}
+                    {step.phase === 4 && <Shield className="h-10 w-10 text-primary" />}
+                    {step.phase === 5 && <Users className="h-10 w-10 text-primary" />}
+                    {step.phase === 6 && <Settings className="h-10 w-10 text-primary" />}
+                    {step.phase === 7 && <TrendingUp className="h-10 w-10 text-primary" />}
+                    {step.phase === 8 && <Rocket className="h-10 w-10 text-primary" />}
+                  </div>
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-bold">{step.title}</h2>
+                    <p className="text-muted-foreground">{step.subtitle}</p>
+                  </div>
+                  {step.tip && (
+                    <div className="flex items-start gap-2 text-sm text-muted-foreground bg-accent/50 rounded-xl p-3 text-left">
+                      <Info className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
+                      <span>{step.tip}</span>
+                    </div>
+                  )}
+                  <Button size="lg" onClick={goNext}>
+                    Continue
+                    <ChevronRight className="ml-1 h-5 w-5" />
+                  </Button>
                 </div>
+              )}
 
-                <div className="grid gap-3 max-w-xl mx-auto">
-                  {step.options?.map((option: any, index: number) => {
-                    const isSelected = config[step.configKey!] === option.value
-                    return (
-                      <motion.button
-                        key={option.value}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        onClick={() => handleSelect(option.value)}
-                        className={cn(
-                          "flex items-center gap-4 p-5 rounded-2xl border-2 text-left transition-all",
-                          isSelected
-                            ? "border-primary bg-primary/5 shadow-lg shadow-primary/10"
-                            : "border-border hover:border-primary/50 hover:bg-accent/50"
-                        )}
-                      >
-                        {option.icon && (
+              {/* Config selection */}
+              {step.type === 'config' && (
+                <div className="flex-1 flex flex-col gap-6">
+                  <div className="text-center space-y-2 pt-4">
+                    <h2 className="text-2xl font-bold">{step.title}</h2>
+                    <p className="text-muted-foreground text-sm">{step.subtitle}</p>
+                  </div>
+
+                  <div className="flex-1 flex flex-col gap-2">
+                    {step.options?.map((option) => {
+                      const isSelected = config[step.configKey!] === option.value
+                      return (
+                        <button
+                          key={String(option.value)}
+                          onClick={() => handleConfigSelect(step.configKey!, option.value)}
+                          className={cn(
+                            "flex items-center gap-4 p-4 rounded-xl border-2 text-left transition-all active:scale-[0.98]",
+                            isSelected
+                              ? "border-primary bg-primary/5"
+                              : "border-border hover:border-primary/50"
+                          )}
+                        >
                           <div className={cn(
-                            "p-3 rounded-xl",
+                            "p-2.5 rounded-lg shrink-0",
                             isSelected ? "bg-primary text-white" : "bg-accent"
                           )}>
                             {option.icon}
                           </div>
-                        )}
-                        <div className="flex-1">
-                          <div className="font-semibold text-lg">{option.label}</div>
-                          <div className="text-sm text-muted-foreground">{option.description}</div>
-                          {option.sublabel && (
-                            <div className="text-xs text-primary mt-1">{option.sublabel}</div>
-                          )}
-                        </div>
-                        {isSelected && (
-                          <Check className="h-6 w-6 text-primary" />
-                        )}
-                      </motion.button>
-                    )
-                  })}
-                </div>
-
-                {step.tip && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                    className="flex items-start gap-2 text-sm text-muted-foreground bg-accent/50 rounded-xl p-4 max-w-md mx-auto"
-                  >
-                    <Info className="h-4 w-4 mt-0.5 shrink-0" />
-                    <span>{step.tip}</span>
-                  </motion.div>
-                )}
-              </div>
-            )}
-
-            {/* Provider Select Step */}
-            {step.type === 'provider-select' && (
-              <div className="space-y-6">
-                <div className="space-y-3">
-                  <h2 className="text-3xl md:text-4xl font-bold">{step.title}</h2>
-                  <p className="text-lg text-muted-foreground">{step.subtitle}</p>
-                </div>
-
-                {!showCustomInput[step.id] ? (
-                  <>
-                    <div className="grid grid-cols-2 gap-3 max-w-xl mx-auto">
-                      {step.options?.slice(0, 6).map((option: any, index: number) => {
-                        const isSelected = providers[step.providerKey!] === option.name
-                        return (
-                          <motion.button
-                            key={option.name}
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: index * 0.05 }}
-                            onClick={() => handleProviderSelect(option.name)}
-                            className={cn(
-                              "p-4 rounded-xl border-2 text-left transition-all",
-                              isSelected
-                                ? "border-primary bg-primary/5"
-                                : "border-border hover:border-primary/50"
-                            )}
-                          >
-                            <div className="font-medium">{option.name}</div>
-                            <div className="text-xs text-muted-foreground mt-1">{option.description}</div>
-                          </motion.button>
-                        )
-                      })}
-                    </div>
-
-                    <div className="flex flex-col items-center gap-3">
-                      <button
-                        onClick={() => setShowCustomInput(prev => ({ ...prev, [step.id]: true }))}
-                        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        <Plus className="h-4 w-4" />
-                        Don't see yours? Add it
-                      </button>
-                      <button
-                        onClick={goToNext}
-                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        Skip for now
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <div className="max-w-md mx-auto space-y-4">
-                    <Input
-                      placeholder="Enter your provider name..."
-                      value={customInputs[step.id] || ''}
-                      onChange={(e) => setCustomInputs(prev => ({ ...prev, [step.id]: e.target.value }))}
-                      className="text-center text-lg py-6"
-                      autoFocus
-                    />
-                    <div className="flex gap-3 justify-center">
-                      <Button
-                        variant="outline"
-                        onClick={() => setShowCustomInput(prev => ({ ...prev, [step.id]: false }))}
-                      >
-                        Back to list
-                      </Button>
-                      <Button
-                        onClick={handleCustomProvider}
-                        disabled={!customInputs[step.id]}
-                      >
-                        Continue
-                        <ChevronRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    </div>
+                          <span className="font-medium flex-1">{option.label}</span>
+                          {isSelected && <Check className="h-5 w-5 text-primary shrink-0" />}
+                        </button>
+                      )
+                    })}
                   </div>
-                )}
 
-                {step.tip && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="flex items-start gap-2 text-sm text-muted-foreground bg-accent/50 rounded-xl p-4 max-w-md mx-auto"
-                  >
-                    <Info className="h-4 w-4 mt-0.5 shrink-0" />
-                    <span>{step.tip}</span>
-                  </motion.div>
-                )}
-              </div>
-            )}
-
-            {/* Celebration Step */}
-            {step.type === 'celebration' && (
-              <div className="space-y-8">
-                <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ type: "spring", duration: 0.8 }}
-                  className="flex justify-center"
-                >
-                  <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-6 rounded-3xl text-white">
-                    <Trophy className="h-16 w-16" />
-                  </div>
-                </motion.div>
-
-                <div className="space-y-4">
-                  <h2 className="text-3xl md:text-4xl font-bold">{step.title}</h2>
-                  <p className="text-xl text-primary font-medium">{step.subtitle}</p>
-                  <p className="text-muted-foreground max-w-md mx-auto">{step.description}</p>
+                  {step.tip && (
+                    <div className="flex items-start gap-2 text-sm text-muted-foreground bg-accent/50 rounded-xl p-3">
+                      <Info className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
+                      <span>{step.tip}</span>
+                    </div>
+                  )}
                 </div>
+              )}
 
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                >
-                  <Button size="lg" onClick={goToNext} className="rounded-full px-8">
-                    Continue Your Journey
+              {/* Provider selection */}
+              {step.type === 'provider' && (
+                <div className="flex-1 flex flex-col gap-4">
+                  <div className="text-center space-y-2 pt-2">
+                    <h2 className="text-2xl font-bold">{step.title}</h2>
+                    <p className="text-muted-foreground text-sm">{step.subtitle}</p>
+                  </div>
+
+                  {!showCustomInput ? (
+                    <>
+                      {/* Search */}
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="Search..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="pl-10"
+                        />
+                      </div>
+
+                      {/* Provider list */}
+                      <div className="flex-1 flex flex-col gap-1.5 overflow-y-auto -mx-1 px-1">
+                        {filteredProviders.map((name) => {
+                          const isSelected = providers[step.providerKey!] === name
+                          return (
+                            <button
+                              key={name}
+                              onClick={() => handleProviderSelect(step.providerKey!, name)}
+                              className={cn(
+                                "flex items-center justify-between p-3.5 rounded-xl border text-left transition-all active:scale-[0.98]",
+                                isSelected
+                                  ? "border-primary bg-primary/5"
+                                  : "border-border hover:border-primary/50"
+                              )}
+                            >
+                              <span className="font-medium">{name}</span>
+                              {isSelected && <Check className="h-5 w-5 text-primary shrink-0" />}
+                            </button>
+                          )
+                        })}
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex flex-col gap-2 pt-2">
+                        <button
+                          onClick={() => setShowCustomInput(true)}
+                          className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground py-2"
+                        >
+                          <Plus className="h-4 w-4" />
+                          Not listed? Add your own
+                        </button>
+                        <Button variant="ghost" onClick={goNext} className="w-full">
+                          Skip for now
+                        </Button>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex-1 flex flex-col gap-4 justify-center">
+                      <Input
+                        placeholder="Enter provider name..."
+                        value={customInput}
+                        onChange={(e) => setCustomInput(e.target.value)}
+                        autoFocus
+                        className="text-center"
+                      />
+                      <div className="flex gap-2">
+                        <Button variant="outline" onClick={() => setShowCustomInput(false)} className="flex-1">
+                          Back
+                        </Button>
+                        <Button onClick={handleCustomProvider} disabled={!customInput.trim()} className="flex-1">
+                          Continue
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {step.tip && !showCustomInput && (
+                    <div className="flex items-start gap-2 text-sm text-muted-foreground bg-accent/50 rounded-xl p-3">
+                      <Info className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
+                      <span>{step.tip}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Yes/No question */}
+              {step.type === 'yes-no' && (
+                <div className="flex-1 flex flex-col items-center justify-center gap-6">
+                  <div className="text-center space-y-2">
+                    <h2 className="text-2xl font-bold">{step.title}</h2>
+                    <p className="text-muted-foreground">{step.subtitle}</p>
+                  </div>
+
+                  <div className="flex flex-col gap-3 w-full max-w-xs">
+                    <Button
+                      size="lg"
+                      onClick={() => handleYesNo(step.taskId, true)}
+                      className="w-full"
+                    >
+                      <CheckCircle2 className="mr-2 h-5 w-5" />
+                      Yes, done
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="lg"
+                      onClick={() => handleYesNo(step.taskId, false)}
+                      className="w-full"
+                    >
+                      Not yet
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={goNext}
+                      className="w-full text-muted-foreground"
+                    >
+                      Skip
+                    </Button>
+                  </div>
+
+                  {step.tip && (
+                    <div className="flex items-start gap-2 text-sm text-muted-foreground bg-accent/50 rounded-xl p-3 text-left max-w-xs">
+                      <Info className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
+                      <span>{step.tip}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Celebration */}
+              {step.type === 'celebration' && (
+                <div className="flex-1 flex flex-col items-center justify-center text-center gap-6">
+                  <motion.div
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: "spring", duration: 0.6 }}
+                  >
+                    <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-5 rounded-2xl text-white">
+                      <Trophy className="h-12 w-12" />
+                    </div>
+                  </motion.div>
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-bold">{step.title}</h2>
+                    <p className="text-primary font-medium">{step.subtitle}</p>
+                  </div>
+                  <Button size="lg" onClick={goNext}>
+                    Continue
                     <Sparkles className="ml-2 h-5 w-5" />
                   </Button>
-                </motion.div>
-              </div>
-            )}
-
-            {/* Summary Step */}
-            {step.type === 'summary' && (
-              <div className="space-y-8">
-                <div className="space-y-3">
-                  <h2 className="text-3xl md:text-4xl font-bold">{step.title}</h2>
-                  <p className="text-lg text-muted-foreground">{step.subtitle}</p>
                 </div>
+              )}
 
-                <div className="grid grid-cols-2 gap-4 max-w-lg mx-auto text-left">
-                  <div className="p-4 rounded-xl bg-accent/50 border border-border">
-                    <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Strategy</div>
-                    <div className="font-semibold">{config.strategy || 'Not set'}</div>
+              {/* Summary */}
+              {step.type === 'summary' && (
+                <div className="flex-1 flex flex-col gap-6 py-4">
+                  <div className="text-center space-y-2">
+                    <h2 className="text-2xl font-bold">{step.title}</h2>
+                    <p className="text-muted-foreground">{step.subtitle}</p>
                   </div>
-                  <div className="p-4 rounded-xl bg-accent/50 border border-border">
-                    <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Target Size</div>
-                    <div className="font-semibold capitalize">{config.size || 'Not set'}</div>
+
+                  {/* Config summary */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 rounded-xl bg-accent/50 border border-border">
+                      <div className="text-xs text-muted-foreground mb-1">Strategy</div>
+                      <div className="font-semibold text-sm">{config.strategy || '—'}</div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-accent/50 border border-border">
+                      <div className="text-xs text-muted-foreground mb-1">Size</div>
+                      <div className="font-semibold text-sm capitalize">{config.size || '—'}</div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-accent/50 border border-border">
+                      <div className="text-xs text-muted-foreground mb-1">Jurisdiction</div>
+                      <div className="font-semibold text-sm">{config.jurisdiction || '—'}</div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-accent/50 border border-border">
+                      <div className="text-xs text-muted-foreground mb-1">Anchor</div>
+                      <div className="font-semibold text-sm">{config.hasAnchor ? 'Yes' : 'No'}</div>
+                    </div>
                   </div>
-                  <div className="p-4 rounded-xl bg-accent/50 border border-border">
-                    <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Jurisdiction</div>
-                    <div className="font-semibold">{config.jurisdiction || 'Not set'}</div>
+
+                  {/* Providers summary */}
+                  {Object.keys(providers).length > 0 && (
+                    <div className="space-y-2">
+                      <h3 className="font-semibold text-sm">Service Providers</h3>
+                      <div className="space-y-1.5">
+                        {Object.entries(providers).map(([key, value]) => (
+                          <div key={key} className="flex items-center justify-between p-2.5 rounded-lg bg-accent/30 text-sm">
+                            <span className="text-muted-foreground capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
+                            <span className="font-medium truncate ml-2">{value}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Progress */}
+                  <div className="flex items-center gap-3 p-4 rounded-xl bg-primary/5 border border-primary/20">
+                    <CheckCircle2 className="h-6 w-6 text-primary shrink-0" />
+                    <div>
+                      <div className="font-semibold text-sm">Ready to go!</div>
+                      <div className="text-xs text-muted-foreground">
+                        {completedTasks.size} tasks marked complete
+                      </div>
+                    </div>
                   </div>
-                  <div className="p-4 rounded-xl bg-accent/50 border border-border">
-                    <div className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Anchor</div>
-                    <div className="font-semibold">{config.hasAnchor ? 'Yes' : 'No'}</div>
-                  </div>
+
+                  <Button size="lg" onClick={handleComplete} className="w-full">
+                    View Full Checklist
+                    <Rocket className="ml-2 h-5 w-5" />
+                  </Button>
                 </div>
-
-                {Object.keys(providers).length > 0 && (
-                  <div className="max-w-lg mx-auto text-left space-y-3">
-                    <h3 className="font-semibold text-center">Your Team</h3>
-                    {providers.lawFirm && (
-                      <div className="flex items-center justify-between p-3 rounded-lg bg-accent/30">
-                        <span className="text-muted-foreground">Law Firm</span>
-                        <span className="font-medium">{providers.lawFirm}</span>
-                      </div>
-                    )}
-                    {providers.fundAdmin && (
-                      <div className="flex items-center justify-between p-3 rounded-lg bg-accent/30">
-                        <span className="text-muted-foreground">Fund Admin</span>
-                        <span className="font-medium">{providers.fundAdmin}</span>
-                      </div>
-                    )}
-                    {providers.auditor && (
-                      <div className="flex items-center justify-between p-3 rounded-lg bg-accent/30">
-                        <span className="text-muted-foreground">Auditor</span>
-                        <span className="font-medium">{providers.auditor}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <div className="flex items-center justify-center gap-3 p-4 rounded-xl bg-primary/5 border border-primary/20 max-w-md mx-auto">
-                  <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
-                  <span className="text-sm">
-                    <span className="font-medium">Your personalized checklist is ready!</span>
-                  </span>
-                </div>
-
-                <Button
-                  size="lg"
-                  onClick={() => onComplete(config as FundConfig, providers)}
-                  className="rounded-full px-8 bg-gradient-to-r from-primary to-purple-600"
-                >
-                  View My Roadmap
-                  <Rocket className="ml-2 h-5 w-5" />
-                </Button>
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
 
-      {/* Navigation */}
-      {currentStep > 0 && step.type !== 'summary' && (
-        <div className="fixed bottom-8 left-0 right-0 flex justify-center gap-4">
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={goToPrev}
-            className="rounded-full"
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </Button>
-
-          {(step.type === 'info' || step.type === 'celebration') && (
-            <Button
-              size="lg"
-              onClick={goToNext}
-              className="rounded-full px-6"
-            >
-              Continue
-              <ChevronRight className="ml-2 h-5 w-5" />
+      {/* Bottom navigation */}
+      {currentStepIndex > 0 && step.type !== 'summary' && step.type !== 'welcome' && (
+        <div className="flex-shrink-0 border-t border-border bg-background p-4">
+          <div className="flex items-center justify-between max-w-lg mx-auto">
+            <Button variant="ghost" size="sm" onClick={goPrev}>
+              <ChevronLeft className="h-5 w-5" />
+              Back
             </Button>
-          )}
+            <span className="text-xs text-muted-foreground">
+              {currentStepIndex + 1} / {totalSteps}
+            </span>
+            {(step.type === 'info' || step.type === 'celebration') && (
+              <Button variant="ghost" size="sm" onClick={goNext}>
+                Next
+                <ChevronRight className="h-5 w-5" />
+              </Button>
+            )}
+            {step.type !== 'info' && step.type !== 'celebration' && (
+              <div className="w-16" /> // Spacer
+            )}
+          </div>
         </div>
       )}
-
-      {/* Keyboard hint */}
-      <div className="fixed bottom-4 right-4 text-xs text-muted-foreground hidden md:block">
-        Press <kbd className="px-1.5 py-0.5 rounded bg-accent">Enter</kbd> to continue
-      </div>
     </div>
   )
 }
