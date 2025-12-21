@@ -214,7 +214,7 @@ export function FundLaunchGuide() {
   }
 
   const handleResetProgress = () => {
-    if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+    if (confirm('Reset all progress?\n\nThis will clear all completed tasks. Your fund configuration and selected service providers will be kept.\n\nThis cannot be undone.')) {
       setCompletedTasks(new Set())
       setExpandedTasks(new Set())
     }

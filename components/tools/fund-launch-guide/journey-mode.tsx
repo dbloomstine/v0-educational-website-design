@@ -1300,6 +1300,12 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                     View Full Checklist
                     <Rocket className="ml-2 h-5 w-5" />
                   </Button>
+
+                  {/* Final disclaimer */}
+                  <p className="text-xs text-muted-foreground/60 text-center leading-relaxed">
+                    This tool is for educational purposes only and does not constitute legal, tax, or investment advice.
+                    Consult qualified professionals before making decisions about your fund.
+                  </p>
                 </div>
               )}
             </motion.div>

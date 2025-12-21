@@ -182,9 +182,9 @@ export function ProgressDashboard({
         </div>
 
         {/* Selected Service Providers */}
-        {providers && Object.keys(providers).length > 0 && (
-          <div className="mt-4 pt-4 border-t border-border">
-            <div className="text-xs text-muted-foreground mb-2">Your Team</div>
+        <div className="mt-4 pt-4 border-t border-border">
+          <div className="text-xs text-muted-foreground mb-2">Your Team</div>
+          {providers && Object.keys(providers).length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {Object.entries(providers).map(([key, value]) => (
                 <div key={key} className="flex-shrink-0 px-2.5 py-1 rounded-lg bg-primary/10 border border-primary/20 text-xs sm:text-sm">
@@ -193,8 +193,12 @@ export function ProgressDashboard({
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <p className="text-xs text-muted-foreground/60 italic">
+              No service providers selected yet. You can add them by clicking Reconfigure.
+            </p>
+          )}
+        </div>
 
         {/* Actions - Compact on mobile */}
         <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-border">
@@ -284,6 +288,13 @@ export function ProgressDashboard({
             </button>
           )
         })}
+      </div>
+
+      {/* Last Updated */}
+      <div className="text-center">
+        <p className="text-xs text-muted-foreground/50">
+          Last updated: December 2024
+        </p>
       </div>
     </div>
   )
