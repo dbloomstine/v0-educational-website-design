@@ -293,7 +293,7 @@ export function ProgressDashboard({
       {/* Last Updated */}
       <div className="text-center">
         <p className="text-xs text-muted-foreground/50">
-          Last updated: December 2024
+          Last updated: December 2025
         </p>
       </div>
     </div>
