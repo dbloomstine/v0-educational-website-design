@@ -175,13 +175,19 @@ export function WaterfallChart({ data, results }: WaterfallChartProps) {
                 axisLine={{ stroke: '#e5e7eb' }}
               />
               <Tooltip
-                formatter={(value: number) => formatCurrency(value)}
-                labelFormatter={(label) => label}
-                contentStyle={{
-                  backgroundColor: 'hsl(var(--card))',
-                  border: '1px solid hsl(var(--border))',
-                  borderRadius: '6px',
-                  fontSize: '12px'
+                content={({ active, payload, label }) => {
+                  if (active && payload && payload.length) {
+                    const item = payload[0].payload
+                    return (
+                      <div className="bg-card border border-border rounded-md px-3 py-2 text-sm shadow-lg">
+                        <p className="font-medium">{label}</p>
+                        <p className={item.isPositive || (item.isTotal && item.cumulative >= 0) ? 'text-emerald-600' : 'text-red-600'}>
+                          {formatCurrency(item.displayValue)}
+                        </p>
+                      </div>
+                    )
+                  }
+                  return null
                 }}
               />
               <ReferenceLine y={0} stroke="#94a3b8" strokeDasharray="3 3" />
