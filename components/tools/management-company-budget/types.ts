@@ -6,6 +6,8 @@ export interface Fund {
   size: number // in millions
   feeRate: number // percentage (e.g., 2 for 2%)
   firstCloseYear: number // year of first close (e.g., 2025)
+  feeStartMonth?: number // months until management fees begin (for journey mode)
+  firstCloseAmount?: number // amount in millions at first close
   // Advanced fields (optional for backwards compatibility)
   feeBasis?: 'committed' | 'invested' // How fees are calculated
   firstClosePercent?: number // % of fund raised at first close (default 50)
@@ -22,12 +24,57 @@ export interface ExpenseItem {
   id: string
   name: string
   monthlyCost: number
+  isRecurring?: boolean
+  category?: string // e.g., 'administration', 'legal', 'office', 'technology', 'travel', 'insurance', 'marketing'
 }
 
 export interface TeamMember {
   id: string
   role: string
   monthlyCost: number // all-in cost (salary + bonus + benefits)
+  isPartner?: boolean
+}
+
+// Helper to generate unique IDs
+export const generateId = (): string => Math.random().toString(36).substr(2, 9)
+
+// Generic type for data that may be missing IDs
+interface PartialBudgetDataInput {
+  startingCash?: number
+  funds?: Array<Partial<Fund> & { name: string; size: number; feeRate: number }>
+  expenses?: {
+    team?: Array<Partial<TeamMember> & { role: string; monthlyCost: number }>
+    operations?: Array<Partial<ExpenseItem> & { name: string; monthlyCost: number }>
+    overhead?: Array<Partial<ExpenseItem> & { name: string; monthlyCost: number }>
+  }
+  settings?: BudgetSettings
+}
+
+// Helper to normalize data that may be missing IDs
+export const normalizeBudgetData = (data: PartialBudgetDataInput): BudgetData => {
+  return {
+    startingCash: data.startingCash ?? 500000,
+    funds: (data.funds ?? []).map(f => ({
+      ...f,
+      id: f.id ?? generateId(),
+      firstCloseYear: f.firstCloseYear ?? new Date().getFullYear(),
+    })) as Fund[],
+    expenses: {
+      team: (data.expenses?.team ?? []).map(t => ({
+        ...t,
+        id: t.id ?? generateId(),
+      })) as TeamMember[],
+      operations: (data.expenses?.operations ?? []).map(o => ({
+        ...o,
+        id: o.id ?? generateId(),
+      })) as ExpenseItem[],
+      overhead: (data.expenses?.overhead ?? []).map(o => ({
+        ...o,
+        id: o.id ?? generateId(),
+      })) as ExpenseItem[],
+    },
+    settings: data.settings,
+  }
 }
 
 export interface Expenses {
