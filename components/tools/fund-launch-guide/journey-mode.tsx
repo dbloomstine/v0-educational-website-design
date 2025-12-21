@@ -952,8 +952,8 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
       </div>
 
       {/* Content */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain">
-        <div className="min-h-full flex flex-col">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain bg-slate-950">
+        <div className="pb-safe">
           <AnimatePresence mode="wait">
             <motion.div
               key={step.id}
@@ -962,11 +962,11 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
               animate="center"
               exit="exit"
               transition={{ duration: 0.2 }}
-              className="flex-1 flex flex-col px-4 py-6 max-w-lg mx-auto w-full"
+              className="px-4 py-6 pb-20 max-w-lg mx-auto w-full"
             >
               {/* Welcome */}
               {step.type === 'welcome' && (
-                <div className="flex-1 flex flex-col items-center justify-center text-center gap-8">
+                <div className="min-h-[60vh] flex flex-col items-center justify-center text-center gap-8">
                   <div className="relative">
                     <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150" />
                     <div className="relative bg-gradient-to-br from-primary to-purple-600 p-5 rounded-2xl text-white">
@@ -991,7 +991,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
 
               {/* Info */}
               {step.type === 'info' && (
-                <div className="flex-1 flex flex-col items-center justify-center text-center gap-6">
+                <div className="min-h-[50vh] flex flex-col items-center justify-center text-center gap-6">
                   <div className="bg-accent p-4 rounded-2xl">
                     {step.phase === 1 && <Target className="h-10 w-10 text-primary" />}
                     {step.phase === 2 && <Scale className="h-10 w-10 text-primary" />}
@@ -1021,13 +1021,13 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
 
               {/* Config selection */}
               {step.type === 'config' && (
-                <div className="flex-1 flex flex-col gap-6">
-                  <div className="text-center space-y-2 pt-4">
+                <div className="space-y-6">
+                  <div className="text-center space-y-2">
                     <h2 className="text-2xl font-bold">{step.title}</h2>
                     <p className="text-muted-foreground text-sm">{step.subtitle}</p>
                   </div>
 
-                  <div className="flex-1 flex flex-col gap-2">
+                  <div className="space-y-2">
                     {step.options?.map((option) => {
                       const isSelected = config[step.configKey!] === option.value
                       return (
@@ -1065,7 +1065,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
 
               {/* Provider selection */}
               {step.type === 'provider' && (
-                <div className="flex-1 flex flex-col gap-4">
+                <div className="space-y-4">
                   <div className="text-center space-y-2 pt-2">
                     <h2 className="text-2xl font-bold">{step.title}</h2>
                     <p className="text-muted-foreground text-sm">{step.subtitle}</p>
@@ -1085,7 +1085,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                       </div>
 
                       {/* Provider list */}
-                      <div className="flex-1 flex flex-col gap-1.5 overflow-y-auto -mx-1 px-1">
+                      <div className="space-y-1.5">
                         {filteredProviders.map((name) => {
                           const isSelected = providers[step.providerKey!] === name
                           return (
@@ -1121,7 +1121,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                       </div>
                     </>
                   ) : (
-                    <div className="flex-1 flex flex-col gap-4 justify-center">
+                    <div className="min-h-[30vh] flex flex-col gap-4 justify-center">
                       <Input
                         placeholder="Enter provider name..."
                         value={customInput}
@@ -1151,7 +1151,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
 
               {/* Yes/No question */}
               {step.type === 'yes-no' && (
-                <div className="flex-1 flex flex-col items-center justify-center gap-6">
+                <div className="min-h-[50vh] flex flex-col items-center justify-center gap-6">
                   <div className="text-center space-y-2">
                     <h2 className="text-2xl font-bold">{step.title}</h2>
                     <p className="text-muted-foreground">{step.subtitle}</p>
@@ -1194,7 +1194,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
 
               {/* Celebration */}
               {step.type === 'celebration' && (
-                <div className="flex-1 flex flex-col items-center justify-center text-center gap-6">
+                <div className="min-h-[50vh] flex flex-col items-center justify-center text-center gap-6">
                   <motion.div
                     initial={{ scale: 0, rotate: -180 }}
                     animate={{ scale: 1, rotate: 0 }}
@@ -1217,7 +1217,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
 
               {/* Summary */}
               {step.type === 'summary' && (
-                <div className="flex-1 flex flex-col gap-6 py-4">
+                <div className="space-y-6">
                   <div className="text-center space-y-2">
                     <h2 className="text-2xl font-bold">{step.title}</h2>
                     <p className="text-muted-foreground">{step.subtitle}</p>
