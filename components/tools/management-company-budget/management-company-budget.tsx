@@ -65,6 +65,8 @@ import { ScenarioTemplates } from './scenario-templates'
 import { WaterfallChart } from './waterfall-chart'
 import { StackedExpenseChart } from './stacked-expense-chart'
 import { WhatIfSliders } from './what-if-sliders'
+import { ValidationWarnings } from './validation-warnings'
+import { MethodologyDisclosure } from './methodology-disclosure'
 import { useBudgetState } from './use-budget-state'
 import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
@@ -980,6 +982,9 @@ export function ManagementCompanyBudget() {
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6 mt-6">
+          {/* Budget Health Check */}
+          <ValidationWarnings data={data} results={results} />
+
           {/* Charts Row */}
           <div className="grid lg:grid-cols-2 gap-6">
             <RunwayGauge data={data} results={results} />
@@ -997,6 +1002,9 @@ export function ManagementCompanyBudget() {
 
           {/* Benchmarks */}
           <Benchmarks data={data} results={results} />
+
+          {/* Methodology & Transparency */}
+          <MethodologyDisclosure />
         </TabsContent>
 
         {/* Edit Budget Tab */}
