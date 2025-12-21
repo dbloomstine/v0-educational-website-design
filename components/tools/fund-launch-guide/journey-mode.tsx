@@ -913,11 +913,11 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col">
+    <div className="fixed inset-0 z-50 flex flex-col bg-slate-950">
       {/* Header */}
-      <div className="flex-shrink-0 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+      <div className="flex-shrink-0 border-b border-slate-800 bg-slate-950">
         {/* Progress bar */}
-        <div className="h-1 bg-muted">
+        <div className="h-1 bg-slate-800">
           <motion.div
             className="h-full bg-gradient-to-r from-primary to-purple-500"
             initial={{ width: 0 }}
@@ -1282,7 +1282,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
 
       {/* Bottom navigation */}
       {currentStepIndex > 0 && step.type !== 'summary' && step.type !== 'welcome' && (
-        <div className="flex-shrink-0 border-t border-border bg-background p-4">
+        <div className="flex-shrink-0 border-t border-slate-800 bg-slate-950 p-4">
           <div className="flex items-center justify-between max-w-lg mx-auto">
             <Button variant="ghost" size="sm" onClick={goPrev}>
               <ChevronLeft className="h-5 w-5" />
