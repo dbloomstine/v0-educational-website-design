@@ -30,11 +30,24 @@ interface ProgressDashboardProps {
   phases: FundLaunchPhase[]
   tasksByPhase: Map<string, FundLaunchTask[]>
   completedTasks: Set<string>
+  providers?: Record<string, string>
   onResetProgress: () => void
   onReconfigure: () => void
   onShare: () => void
   onExportExcel: () => void
   onExportPdf: () => void
+  onPhaseClick?: (phaseId: string) => void
+}
+
+const PROVIDER_LABELS: Record<string, string> = {
+  lawFirm: 'Law Firm',
+  fundAdmin: 'Fund Admin',
+  auditor: 'Auditor',
+  taxAdvisor: 'Tax Advisor',
+  bank: 'Bank',
+  insuranceBroker: 'Insurance',
+  primeBroker: 'Prime Broker',
+  complianceConsultant: 'Compliance',
 }
 
 export function ProgressDashboard({
@@ -42,11 +55,13 @@ export function ProgressDashboard({
   phases,
   tasksByPhase,
   completedTasks,
+  providers,
   onResetProgress,
   onReconfigure,
   onShare,
   onExportExcel,
   onExportPdf,
+  onPhaseClick,
 }: ProgressDashboardProps) {
   // Calculate statistics
   const totalTasks = Array.from(tasksByPhase.values()).reduce(
@@ -166,6 +181,21 @@ export function ProgressDashboard({
           </div>
         </div>
 
+        {/* Selected Service Providers */}
+        {providers && Object.keys(providers).length > 0 && (
+          <div className="mt-4 pt-4 border-t border-border">
+            <div className="text-xs text-muted-foreground mb-2">Your Team</div>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(providers).map(([key, value]) => (
+                <div key={key} className="flex-shrink-0 px-2.5 py-1 rounded-lg bg-primary/10 border border-primary/20 text-xs sm:text-sm">
+                  <span className="text-muted-foreground">{PROVIDER_LABELS[key] || key}:</span>{' '}
+                  <span className="font-medium text-primary">{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Actions - Compact on mobile */}
         <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-border">
           <Button variant="outline" size="sm" onClick={onShare} className="h-8 px-2.5 sm:px-3">
@@ -205,10 +235,12 @@ export function ProgressDashboard({
       {/* Phase Progress Grid - 2 columns on mobile, 4 on tablet, 8 on desktop */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3">
         {phaseProgress.map(({ phase, total, completed, percent }) => (
-          <div
+          <button
             key={phase.id}
+            onClick={() => onPhaseClick?.(phase.id)}
             className={cn(
-              "rounded-lg border p-2.5 sm:p-3 transition-all",
+              "rounded-lg border p-2.5 sm:p-3 transition-all text-left",
+              "hover:ring-2 hover:ring-primary/50 active:scale-[0.98]",
               completed === total && total > 0
                 ? "border-emerald-500/30 bg-emerald-500/5"
                 : phase.id === currentPhase?.id
@@ -231,7 +263,7 @@ export function ProgressDashboard({
             <div className="text-xs text-muted-foreground mt-1">
               {completed}/{total}
             </div>
-          </div>
+          </button>
         ))}
       </div>
     </div>
