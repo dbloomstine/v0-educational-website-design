@@ -27,7 +27,7 @@ import {
   ChevronRight,
   RefreshCw
 } from 'lucide-react'
-import { UserProgress } from './gamification'
+import { GamificationState } from './gamification'
 
 // Mission types and definitions
 export interface Mission {
@@ -186,7 +186,7 @@ export const MISSIONS: Mission[] = [
 ]
 
 // Hook to manage mission state
-export function useMissions(progress: UserProgress) {
+export function useMissions(progress: GamificationState) {
   const [missions, setMissions] = useState<UserMission[]>([])
 
   useEffect(() => {
@@ -279,16 +279,16 @@ export function useMissions(progress: UserProgress) {
 
       switch (m.requirement.type) {
         case 'streak_days':
-          newProgress = progress.streak
+          newProgress = progress.streakDays
           break
         case 'scenarios_run':
-          newProgress = progress.scenariosCompleted
+          newProgress = progress.scenariosExplored.length
           break
         case 'journey_steps':
-          newProgress = progress.journeyStepsCompleted
+          newProgress = progress.glossaryTermsRead.length // Use glossary as proxy for journey progress
           break
         case 'quiz_correct':
-          newProgress = progress.quizCorrectAnswers
+          newProgress = progress.quizAnswersCorrect
           break
       }
 
@@ -482,7 +482,7 @@ function MissionCard({
 
 // Main Missions Panel Component
 interface MissionsPanelProps {
-  progress: UserProgress
+  progress: GamificationState
   onXPEarned: (xp: number) => void
   compact?: boolean
 }
@@ -683,7 +683,7 @@ export function MissionsSummaryWidget({
   progress,
   onViewAll
 }: {
-  progress: UserProgress
+  progress: GamificationState
   onViewAll: () => void
 }) {
   const { missions } = useMissions(progress)

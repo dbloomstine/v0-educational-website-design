@@ -36,14 +36,14 @@ import {
   Award
 } from 'lucide-react'
 import { WaterfallInput, defaultInput } from './waterfallCalculations'
-import { UserProgress, LEVELS } from './gamification'
-import { QUIZ_QUESTIONS, QuizQuestion } from './quiz'
-import { ConfettiCelebration, SparkleEffect, FlyingNumber, ProgressRing, SuccessCheckmark } from './visual-effects'
+import { GamificationState, LEVELS } from './gamification'
+import { WATERFALL_QUIZ_QUESTIONS, QuizQuestion } from './quiz'
+import { Confetti, SparkleEffect, FlyingNumber, ProgressRing, SuccessCheckmark } from './visual-effects'
 
 interface EnhancedJourneyProps {
   onComplete: (input: WaterfallInput) => void
   onSkip: () => void
-  progress: UserProgress
+  progress: GamificationState
   onXPEarned: (xp: number, reason: string) => void
   onStepComplete: () => void
   onAchievementCheck: (type: string, value?: any) => void
@@ -184,7 +184,7 @@ function StepQuiz({
   const [correctCount, setCorrectCount] = useState(0)
 
   // Get 2 questions for this topic
-  const topicQuestions = QUIZ_QUESTIONS.filter(q => q.topic === topic).slice(0, 2)
+  const topicQuestions = WATERFALL_QUIZ_QUESTIONS.filter((q: QuizQuestion) => q.topic === topic).slice(0, 2)
 
   if (topicQuestions.length === 0) {
     // No questions for this topic, auto-complete
@@ -237,7 +237,7 @@ function StepQuiz({
       <p className="text-sm text-muted-foreground mb-4">{question.question}</p>
 
       <div className="space-y-2 mb-4">
-        {question.options.map((option, index) => (
+        {question.options.map((option: string, index: number) => (
           <motion.button
             key={index}
             onClick={() => !showResult && handleAnswer(index)}
@@ -334,7 +334,7 @@ function StepCelebration({ step, xp, onDismiss }: { step: JourneyStep; xp: numbe
       className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm"
       onClick={onDismiss}
     >
-      <ConfettiCelebration active />
+      <Confetti show={true} />
       <motion.div
         initial={{ scale: 0.5, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
@@ -368,7 +368,7 @@ function JourneyProgress({
 }: {
   currentStep: number
   totalSteps: number
-  progress: UserProgress
+  progress: GamificationState
   totalXPEarned: number
 }) {
   const currentLevel = LEVELS.find(

@@ -28,11 +28,11 @@ import {
   Crown,
   Gift
 } from 'lucide-react'
-import { UserProgress, LEVELS, ACHIEVEMENTS, Achievement, useGamification } from './gamification'
+import { GamificationState, LEVELS, DEFAULT_ACHIEVEMENTS, Achievement } from './gamification'
 import { ProgressRing } from './visual-effects'
 
 interface ProgressDashboardProps {
-  progress: UserProgress
+  progress: GamificationState
   onStartJourney: () => void
   onViewAchievements: () => void
   onStartQuiz: () => void
@@ -40,9 +40,9 @@ interface ProgressDashboardProps {
 }
 
 // Calculate stats from progress
-function calculateStats(progress: UserProgress) {
+function calculateStats(progress: GamificationState) {
   const unlockedAchievements = progress.achievements.filter(a => a.unlockedAt).length
-  const totalAchievements = ACHIEVEMENTS.length
+  const totalAchievements = DEFAULT_ACHIEVEMENTS.length
   const completionPercent = (unlockedAchievements / totalAchievements) * 100
 
   const currentLevel = LEVELS.find(
@@ -63,9 +63,9 @@ function calculateStats(progress: UserProgress) {
     special: { unlocked: 0, total: 0 }
   }
 
-  ACHIEVEMENTS.forEach(a => {
+  DEFAULT_ACHIEVEMENTS.forEach((a: Achievement) => {
     categoryStats[a.category].total++
-    if (progress.achievements.find(pa => pa.id === a.id && pa.unlockedAt)) {
+    if (progress.achievements.find((pa: Achievement) => pa.id === a.id && pa.unlockedAt)) {
       categoryStats[a.category].unlocked++
     }
   })
@@ -93,21 +93,21 @@ interface ActivityItem {
   xp?: number
 }
 
-function getRecentActivity(progress: UserProgress): ActivityItem[] {
+function getRecentActivity(progress: GamificationState): ActivityItem[] {
   const activities: ActivityItem[] = []
 
   // Add unlocked achievements
   progress.achievements
-    .filter(a => a.unlockedAt)
-    .forEach(a => {
-      const achievement = ACHIEVEMENTS.find(ach => ach.id === a.id)
+    .filter((a: Achievement) => a.unlockedAt)
+    .forEach((a: Achievement) => {
+      const achievement = DEFAULT_ACHIEVEMENTS.find((ach: Achievement) => ach.id === a.id)
       if (achievement) {
         activities.push({
           id: `achievement-${a.id}`,
           type: 'achievement',
-          title: achievement.title,
+          title: achievement.name,
           description: achievement.description,
-          timestamp: a.unlockedAt!,
+          timestamp: a.unlockedAt ? new Date(a.unlockedAt).getTime() : 0,
           icon: <Award className="h-4 w-4 text-yellow-500" />,
           xp: achievement.xp
         })
@@ -120,7 +120,7 @@ function getRecentActivity(progress: UserProgress): ActivityItem[] {
 
 // Compact progress card for sidebar/header
 export function CompactProgressCard({ progress, onViewDashboard }: {
-  progress: UserProgress
+  progress: GamificationState
   onViewDashboard: () => void
 }) {
   const stats = calculateStats(progress)
@@ -155,10 +155,10 @@ export function CompactProgressCard({ progress, onViewDashboard }: {
         </div>
       </div>
 
-      {progress.streak > 0 && (
+      {progress.streakDays > 0 && (
         <Badge variant="secondary" className="flex items-center gap-1 bg-orange-500/20 text-orange-600 dark:text-orange-400">
           <Flame className="h-3 w-3" />
-          {progress.streak}
+          {progress.streakDays}
         </Badge>
       )}
 
@@ -209,10 +209,10 @@ export function ProgressDashboard({
                   <Trophy className="h-3 w-3 text-amber-500" />
                   {stats.unlockedAchievements}/{stats.totalAchievements}
                 </span>
-                {progress.streak > 0 && (
+                {progress.streakDays > 0 && (
                   <span className="flex items-center gap-1">
                     <Flame className="h-3 w-3 text-orange-500" />
-                    {progress.streak} streak
+                    {progress.streakDays} streak
                   </span>
                 )}
               </div>
@@ -300,7 +300,7 @@ export function ProgressDashboard({
                 whileHover={{ scale: 1.02 }}
               >
                 <Flame className="h-5 w-5 text-orange-500 mx-auto mb-1" />
-                <p className="text-lg font-bold">{progress.streak}</p>
+                <p className="text-lg font-bold">{progress.streakDays}</p>
                 <p className="text-xs text-muted-foreground">Day Streak</p>
               </motion.div>
 
@@ -309,7 +309,7 @@ export function ProgressDashboard({
                 whileHover={{ scale: 1.02 }}
               >
                 <Calculator className="h-5 w-5 text-green-500 mx-auto mb-1" />
-                <p className="text-lg font-bold">{progress.scenariosCompleted}</p>
+                <p className="text-lg font-bold">{progress.scenariosExplored.length}</p>
                 <p className="text-xs text-muted-foreground">Scenarios</p>
               </motion.div>
             </div>
@@ -454,17 +454,17 @@ export function ProgressDashboard({
 }
 
 // Achievements gallery view
-export function AchievementsGallery({ progress }: { progress: UserProgress }) {
+export function AchievementsGallery({ progress }: { progress: GamificationState }) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
 
   const categories = ['all', 'learning', 'exploration', 'mastery', 'special']
 
-  const filteredAchievements = ACHIEVEMENTS.filter(a =>
+  const filteredAchievements = DEFAULT_ACHIEVEMENTS.filter((a: Achievement) =>
     selectedCategory === 'all' || a.category === selectedCategory
   )
 
   const isUnlocked = (id: string) =>
-    progress.achievements.some(a => a.id === id && a.unlockedAt)
+    progress.achievements.some((a: Achievement) => a.id === id && a.unlockedAt)
 
   return (
     <div className="space-y-6">
@@ -485,7 +485,7 @@ export function AchievementsGallery({ progress }: { progress: UserProgress }) {
 
       {/* Achievements Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filteredAchievements.map((achievement, index) => {
+        {filteredAchievements.map((achievement: Achievement, index: number) => {
           const unlocked = isUnlocked(achievement.id)
 
           return (
@@ -509,7 +509,7 @@ export function AchievementsGallery({ progress }: { progress: UserProgress }) {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-semibold text-sm">{achievement.title}</h4>
+                        <h4 className="font-semibold text-sm">{achievement.name}</h4>
                         {unlocked && <CheckCircle2 className="h-4 w-4 text-green-500" />}
                       </div>
                       <p className="text-xs text-muted-foreground mb-2">
@@ -531,7 +531,7 @@ export function AchievementsGallery({ progress }: { progress: UserProgress }) {
 }
 
 // Level roadmap showing progression
-export function LevelRoadmap({ progress }: { progress: UserProgress }) {
+export function LevelRoadmap({ progress }: { progress: GamificationState }) {
   const currentLevel = LEVELS.find(
     l => progress.xp >= l.minXP && progress.xp < l.maxXP
   ) || LEVELS[LEVELS.length - 1]
