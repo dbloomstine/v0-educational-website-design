@@ -168,7 +168,8 @@ export function FundLaunchGuide() {
     // Preserve any tasks marked complete during the journey
     setCompletedTasks(new Set(journeyCompletedTasks || []))
     setExpandedTasks(new Set())
-    setExpandedPhases(new Set(PHASES.map(p => p.id)))
+    // Keep phases collapsed - user can expand as needed
+    setExpandedPhases(new Set())
   }
 
   const handleOnboardingSkip = () => {
