@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -36,6 +36,13 @@ import {
   Banknote,
   PiggyBank,
   LineChart,
+  X,
+  Circle,
+  GitBranch,
+  Percent,
+  Building2,
+  Hammer,
+  Clock,
 } from 'lucide-react'
 import { FundConfig } from './types'
 import confetti from 'canvas-confetti'
@@ -306,6 +313,16 @@ interface JourneyStep {
 // ============================================
 
 const createJourneySteps = (strategy?: string): JourneyStep[] => {
+  // Calculate dynamic step count for time estimate
+  const baseSteps = 45 // Approximate base steps
+  const strategySteps = strategy === 'Hedge Fund' ? 2 :
+                        strategy === 'VC' ? 1 :
+                        strategy === 'PE' ? 1 :
+                        strategy === 'Private Credit' ? 1 :
+                        strategy === 'Real Estate' ? 1 : 0
+  const totalSteps = baseSteps + strategySteps
+  const estimatedMinutes = Math.ceil(totalSteps * 0.15) // ~9 seconds per step average
+
   const steps: JourneyStep[] = [
     // ========== WELCOME ==========
     {
@@ -313,6 +330,7 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       type: 'welcome',
       title: "Let's Launch Your Fund",
       subtitle: "Your guided journey to fund formation",
+      tip: `${estimatedMinutes} min`,
     },
 
     // ========== PHASE 1: STRATEGY & PLANNING ==========
@@ -409,6 +427,52 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       subtitle: 'Management fee and carried interest decided?',
       taskId: 'strategy-economics',
     },
+    // Strategy-specific questions
+    ...(strategy === 'VC' ? [{
+      id: 'vc-reserves',
+      type: 'yes-no' as StepType,
+      phase: 1,
+      phaseName: 'Strategy & Planning',
+      title: 'Follow-on reserve strategy defined?',
+      subtitle: 'How much will you reserve for pro-rata investments?',
+      taskId: 'vc-prorata-strategy',
+    }] : []),
+    ...(strategy === 'PE' ? [{
+      id: 'pe-carry-structure',
+      type: 'yes-no' as StepType,
+      phase: 1,
+      phaseName: 'Strategy & Planning',
+      title: 'Carry structure decided?',
+      subtitle: 'European (whole fund) vs American (deal-by-deal)?',
+      taskId: 'pe-carry-structure',
+    }] : []),
+    ...(strategy === 'Private Credit' ? [{
+      id: 'credit-underwriting',
+      type: 'yes-no' as StepType,
+      phase: 1,
+      phaseName: 'Strategy & Planning',
+      title: 'Underwriting standards defined?',
+      subtitle: 'Credit criteria and approval process established?',
+      taskId: 'credit-underwriting',
+    }] : []),
+    ...(strategy === 'Real Estate' ? [{
+      id: 're-property-strategy',
+      type: 'yes-no' as StepType,
+      phase: 1,
+      phaseName: 'Strategy & Planning',
+      title: 'Property management approach decided?',
+      subtitle: 'In-house, third-party, or hybrid model?',
+      taskId: 're-property-mgmt',
+    }] : []),
+    ...(strategy === 'Infrastructure' ? [{
+      id: 'infra-operator-strategy',
+      type: 'yes-no' as StepType,
+      phase: 1,
+      phaseName: 'Strategy & Planning',
+      title: 'Operator strategy defined?',
+      subtitle: 'Approach to operating partners and asset management?',
+      taskId: 'infra-operator',
+    }] : []),
     {
       id: 'phase-1-complete',
       type: 'celebration',
@@ -845,6 +909,19 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
   const currentPhase = step?.phase
   const phaseName = step?.phaseName
 
+  // Calculate completed phases
+  const getCompletedPhases = () => {
+    const phases = new Set<number>()
+    for (let i = 0; i < currentStepIndex; i++) {
+      const s = steps[i]
+      if (s?.celebration && s?.phase) {
+        phases.add(s.phase)
+      }
+    }
+    return phases
+  }
+  const completedPhases = getCompletedPhases()
+
   // Reset scroll on step change
   useEffect(() => {
     if (scrollRef.current) {
@@ -872,17 +949,17 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
   }, [step?.celebration, triggerCelebration])
 
   // Navigation
-  const goNext = () => {
+  const goNext = useCallback(() => {
     if (currentStepIndex < totalSteps - 1) {
       setCurrentStepIndex(prev => prev + 1)
     }
-  }
+  }, [currentStepIndex, totalSteps])
 
-  const goPrev = () => {
+  const goPrev = useCallback(() => {
     if (currentStepIndex > 0) {
       setCurrentStepIndex(prev => prev - 1)
     }
-  }
+  }, [currentStepIndex])
 
   const handleComplete = () => {
     onComplete(config as FundConfig, providers, Array.from(completedTasks))
@@ -906,7 +983,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
     }
   }
 
-  const handleYesNo = (taskId: string | undefined, completed: boolean) => {
+  const handleYesNo = useCallback((taskId: string | undefined, completed: boolean) => {
     if (taskId) {
       setCompletedTasks(prev => {
         const next = new Set(prev)
@@ -919,7 +996,64 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
       })
     }
     setTimeout(goNext, 250)
-  }
+  }, [goNext])
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Don't interfere with input fields
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) {
+        return
+      }
+
+      switch (e.key) {
+        case 'ArrowRight':
+        case 'Enter':
+          if (step.type === 'info' || step.type === 'celebration' || step.type === 'welcome') {
+            e.preventDefault()
+            goNext()
+          }
+          break
+        case 'ArrowLeft':
+        case 'Backspace':
+          if (currentStepIndex > 0 && step.type !== 'welcome') {
+            e.preventDefault()
+            goPrev()
+          }
+          break
+        case '1':
+        case 'y':
+        case 'Y':
+          if (step.type === 'yes-no') {
+            e.preventDefault()
+            handleYesNo(step.taskId, true)
+          }
+          break
+        case '2':
+        case 'n':
+        case 'N':
+          if (step.type === 'yes-no') {
+            e.preventDefault()
+            handleYesNo(step.taskId, false)
+          }
+          break
+        case 's':
+        case 'S':
+          if (step.type === 'yes-no' || step.type === 'provider') {
+            e.preventDefault()
+            goNext()
+          }
+          break
+        case 'Escape':
+          e.preventDefault()
+          onSkip()
+          break
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [step, currentStepIndex, goNext, goPrev, handleYesNo, onSkip])
 
   // Filter providers by search
   const filteredProviders = step?.providerOptions?.filter(p =>
@@ -970,6 +1104,25 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
             <SkipForward className="ml-1 h-4 w-4" />
           </Button>
         </div>
+
+        {/* Phase dots */}
+        {step.type !== 'welcome' && step.type !== 'summary' && (
+          <div className="flex items-center justify-center gap-1.5 pb-3">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((phase) => (
+              <div
+                key={phase}
+                className={cn(
+                  "w-2 h-2 rounded-full transition-all",
+                  completedPhases.has(phase)
+                    ? "bg-emerald-500"
+                    : phase === currentPhase
+                    ? "bg-primary w-4"
+                    : "bg-slate-700"
+                )}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -990,21 +1143,34 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                 <div className="min-h-[60vh] flex flex-col items-center justify-center text-center gap-8">
                   <div className="relative">
                     <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150" />
-                    <div className="relative bg-gradient-to-br from-primary to-purple-600 p-5 rounded-2xl text-white">
+                    <motion.div
+                      className="relative bg-gradient-to-br from-primary to-purple-600 p-5 rounded-2xl text-white"
+                      animate={{ y: [0, -8, 0] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    >
                       <Rocket className="h-12 w-12" />
-                    </div>
+                    </motion.div>
                   </div>
                   <div className="space-y-3">
                     <h1 className="text-3xl font-bold">{step.title}</h1>
                     <p className="text-muted-foreground">{step.subtitle}</p>
-                    <p className="text-xs text-muted-foreground/70">Takes about 5 minutes • Your progress is saved locally</p>
+                    <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground/70">
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        ~{step.tip || '5 min'}
+                      </span>
+                      <span>•</span>
+                      <span>8 phases</span>
+                      <span>•</span>
+                      <span>Saved locally</span>
+                    </div>
                   </div>
                   <div className="flex flex-col gap-3 w-full max-w-xs">
-                    <Button size="lg" onClick={goNext} className="w-full">
+                    <Button size="lg" onClick={goNext} className="w-full group">
                       Start Journey
-                      <ArrowRight className="ml-2 h-5 w-5" />
+                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                     </Button>
-                    <Button variant="ghost" onClick={onSkip} className="w-full">
+                    <Button variant="ghost" onClick={onSkip} className="w-full text-muted-foreground">
                       Skip to checklist
                     </Button>
                   </div>
@@ -1095,52 +1261,83 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
 
                   {!showCustomInput ? (
                     <>
-                      {/* Search */}
+                      {/* Search with clear button */}
                       <div className="relative">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
-                          placeholder="Search..."
+                          placeholder="Search providers..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
-                          className="pl-10"
+                          className="pl-10 pr-10"
                         />
+                        {searchQuery && (
+                          <button
+                            onClick={() => setSearchQuery('')}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <X className="h-4 w-4" />
+                          </button>
+                        )}
                       </div>
 
                       {/* Provider list */}
                       <div className="space-y-1.5">
-                        {filteredProviders.map((name) => {
-                          const isSelected = providers[step.providerKey!] === name
-                          return (
+                        {filteredProviders.length > 0 ? (
+                          filteredProviders.map((name) => {
+                            const isSelected = providers[step.providerKey!] === name
+                            return (
+                              <button
+                                key={name}
+                                onClick={() => handleProviderSelect(step.providerKey!, name)}
+                                className={cn(
+                                  "w-full flex items-center justify-between p-3.5 rounded-xl border text-left transition-all active:scale-[0.98]",
+                                  isSelected
+                                    ? "border-primary bg-primary/5"
+                                    : "border-border hover:border-primary/50"
+                                )}
+                              >
+                                <span className="font-medium">{name}</span>
+                                {isSelected && (
+                                  <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                                  >
+                                    <Check className="h-5 w-5 text-primary shrink-0" />
+                                  </motion.div>
+                                )}
+                              </button>
+                            )
+                          })
+                        ) : (
+                          <div className="text-center py-8">
+                            <Search className="h-8 w-8 text-muted-foreground/30 mx-auto mb-3" />
+                            <p className="text-sm text-muted-foreground">No providers match "{searchQuery}"</p>
                             <button
-                              key={name}
-                              onClick={() => handleProviderSelect(step.providerKey!, name)}
-                              className={cn(
-                                "flex items-center justify-between p-3.5 rounded-xl border text-left transition-all active:scale-[0.98]",
-                                isSelected
-                                  ? "border-primary bg-primary/5"
-                                  : "border-border hover:border-primary/50"
-                              )}
+                              onClick={() => setShowCustomInput(true)}
+                              className="text-sm text-primary hover:underline mt-2"
                             >
-                              <span className="font-medium">{name}</span>
-                              {isSelected && <Check className="h-5 w-5 text-primary shrink-0" />}
+                              Add "{searchQuery}" as custom provider
                             </button>
-                          )
-                        })}
+                          </div>
+                        )}
                       </div>
 
                       {/* Actions */}
-                      <div className="flex flex-col gap-2 pt-2">
-                        <button
-                          onClick={() => setShowCustomInput(true)}
-                          className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground py-2"
-                        >
-                          <Plus className="h-4 w-4" />
-                          Not listed? Add your own
-                        </button>
-                        <Button variant="ghost" onClick={goNext} className="w-full">
-                          Skip for now
-                        </Button>
-                      </div>
+                      {filteredProviders.length > 0 && (
+                        <div className="flex flex-col gap-2 pt-2">
+                          <button
+                            onClick={() => setShowCustomInput(true)}
+                            className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-foreground py-2 transition-colors"
+                          >
+                            <Plus className="h-4 w-4" />
+                            Not listed? Add your own
+                          </button>
+                          <Button variant="ghost" onClick={goNext} className="w-full">
+                            Skip for now
+                          </Button>
+                        </div>
+                      )}
 
                       {/* Disclaimer */}
                       <p className="text-xs text-muted-foreground/60 text-center pt-2">
@@ -1188,7 +1385,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                     <Button
                       size="lg"
                       onClick={() => handleYesNo(step.taskId, true)}
-                      className="w-full"
+                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20"
                     >
                       <CheckCircle2 className="mr-2 h-5 w-5" />
                       Yes, done
@@ -1197,16 +1394,17 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                       variant="outline"
                       size="lg"
                       onClick={() => handleYesNo(step.taskId, false)}
-                      className="w-full"
+                      className="w-full border-2"
                     >
+                      <Circle className="mr-2 h-5 w-5" />
                       Not yet
                     </Button>
                     <Button
                       variant="ghost"
                       onClick={goNext}
-                      className="w-full text-muted-foreground"
+                      className="w-full text-muted-foreground hover:text-muted-foreground/80"
                     >
-                      Skip
+                      Skip this question
                     </Button>
                   </div>
 
@@ -1315,23 +1513,31 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
 
       {/* Bottom navigation */}
       {currentStepIndex > 0 && step.type !== 'summary' && step.type !== 'welcome' && (
-        <div className="flex-shrink-0 border-t border-slate-800 bg-slate-950 p-4">
+        <div className="flex-shrink-0 border-t border-slate-800 bg-slate-950 p-4 safe-area-inset-bottom">
           <div className="flex items-center justify-between max-w-lg mx-auto">
-            <Button variant="ghost" size="sm" onClick={goPrev}>
-              <ChevronLeft className="h-5 w-5" />
+            <Button
+              variant="ghost"
+              onClick={goPrev}
+              className="h-11 px-4 min-w-[80px] touch-manipulation"
+            >
+              <ChevronLeft className="h-5 w-5 mr-1" />
               Back
             </Button>
             <span className="text-xs text-muted-foreground">
               {currentStepIndex + 1} / {totalSteps}
             </span>
             {(step.type === 'info' || step.type === 'celebration') && (
-              <Button variant="ghost" size="sm" onClick={goNext}>
+              <Button
+                variant="ghost"
+                onClick={goNext}
+                className="h-11 px-4 min-w-[80px] touch-manipulation"
+              >
                 Next
-                <ChevronRight className="h-5 w-5" />
+                <ChevronRight className="h-5 w-5 ml-1" />
               </Button>
             )}
             {step.type !== 'info' && step.type !== 'celebration' && (
-              <div className="w-16" /> // Spacer
+              <div className="w-20" /> // Spacer
             )}
           </div>
         </div>

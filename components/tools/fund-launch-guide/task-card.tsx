@@ -69,15 +69,25 @@ export function TaskCard({
 
   const isCompact = viewMode === 'board'
 
+  // Priority border colors
+  const priorityBorderColor = {
+    critical: 'border-l-red-500',
+    important: 'border-l-amber-500',
+    optional: 'border-l-transparent',
+  }
+
   return (
     <div
       className={cn(
         "group relative rounded-lg border transition-all duration-200",
         isCompleted
-          ? "bg-card/50 border-border/50"
+          ? "bg-card/30 border-border/50 opacity-70"
           : "bg-card border-border hover:border-primary/30 hover:shadow-sm",
         hasBlockingDependency && !isCompleted && "opacity-60",
-        isCompact ? "p-3" : "p-4"
+        isCompact ? "p-3" : "p-4",
+        // Add left border for priority indication
+        !isCompleted && task.priority !== 'optional' && "border-l-4",
+        !isCompleted && priorityBorderColor[task.priority]
       )}
     >
       {/* Completion celebration overlay */}
