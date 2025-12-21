@@ -49,6 +49,7 @@ import {
 import { calculateBudget, formatCurrency, formatRunway } from './budget-calculator'
 import { OnboardingWizard } from './onboarding-wizard'
 import { JourneyMode } from './journey-mode'
+import { ResultsWalkthrough } from './results-walkthrough'
 import { SensitivityAnalysis } from './sensitivity-analysis'
 import { Benchmarks } from './benchmarks'
 import {
@@ -63,6 +64,18 @@ import { GoalSeeking } from './goal-seeking'
 import { ScenarioTemplates } from './scenario-templates'
 import { WaterfallChart } from './waterfall-chart'
 import { StackedExpenseChart } from './stacked-expense-chart'
+import { WhatIfSliders } from './what-if-sliders'
+import { ValidationWarnings } from './validation-warnings'
+import { MethodologyDisclosure } from './methodology-disclosure'
+import { PeerComparison } from './peer-comparison'
+import { Glossary, GlossaryDialog } from './glossary'
+import { SampleScenarios } from './sample-scenarios'
+import { FAQSection } from './faq-section'
+import { PDFExport } from './pdf-export'
+import { AutoSaveIndicator } from './data-persistence'
+import { CalculationBreakdown } from './calculation-breakdown'
+import { ScrollToTop, useIsMobile } from './mobile-improvements'
+import { SkipLink, VisuallyHidden, useAnnounce, LiveRegion } from './accessibility'
 import { useBudgetState } from './use-budget-state'
 import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
@@ -75,12 +88,17 @@ export function ManagementCompanyBudget() {
 
   // Track if user has completed wizard or skipped
   const [showWizard, setShowWizard] = useState<boolean | null>(null)
+  const [showResultsWalkthrough, setShowResultsWalkthrough] = useState(false)
   const [wizardManuallyTriggered, setWizardManuallyTriggered] = useState(false)
   const [activeTab, setActiveTab] = useState('overview')
 
   // GP Commitment tracking
   const [gpCommitmentPercent, setGpCommitmentPercent] = useState(2) // 2% is typical
   const [gpFundedAmount, setGpFundedAmount] = useState(0)
+
+  // Mobile detection and accessibility
+  const isMobile = useIsMobile()
+  const { message: announceMessage, announce } = useAnnounce()
 
   // Parse initial state from URL or use defaults
   const getInitialData = (): BudgetData => {
@@ -312,6 +330,7 @@ export function ManagementCompanyBudget() {
   const handleWizardComplete = (wizardData: BudgetData) => {
     setData(wizardData)
     setShowWizard(false)
+    setShowResultsWalkthrough(true) // Show the results walkthrough after wizard
     setWizardManuallyTriggered(false)
     if (typeof window !== 'undefined') {
       localStorage.setItem('budget-planner-visited', 'true')
@@ -329,6 +348,14 @@ export function ManagementCompanyBudget() {
   const handleRestartWizard = () => {
     setWizardManuallyTriggered(true)
     setShowWizard(true)
+  }
+
+  const handleWalkthroughComplete = () => {
+    setShowResultsWalkthrough(false)
+  }
+
+  const handleWalkthroughSkip = () => {
+    setShowResultsWalkthrough(false)
   }
 
   // Export to Excel
@@ -775,10 +802,28 @@ export function ManagementCompanyBudget() {
     )
   }
 
+  if (showResultsWalkthrough) {
+    return (
+      <ResultsWalkthrough
+        data={data}
+        results={results}
+        onComplete={handleWalkthroughComplete}
+        onSkip={handleWalkthroughSkip}
+      />
+    )
+  }
+
   return (
     <div className="space-y-8">
+      {/* Accessibility: Skip link and live region */}
+      <SkipLink targetId="main-content" />
+      <LiveRegion message={announceMessage} />
+
+      {/* Mobile: Scroll to top button */}
+      <ScrollToTop />
+
       {/* Header */}
-      <div className="space-y-3">
+      <div className="space-y-3" id="main-content">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Management Company Budget Planner</h1>
@@ -813,6 +858,12 @@ export function ManagementCompanyBudget() {
 
             <ShareButton getShareableUrl={getShareableUrl} />
 
+            {/* Glossary Dialog */}
+            <GlossaryDialog />
+
+            {/* PDF Export (new enhanced version) */}
+            <PDFExport data={data} results={results} />
+
             {/* Export/Import dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -829,7 +880,7 @@ export function ManagementCompanyBudget() {
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleExportPdf}>
                   <FileText className="h-4 w-4 mr-2" />
-                  Export to PDF
+                  Export to PDF (Full)
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={downloadJson}>
@@ -857,13 +908,8 @@ export function ManagementCompanyBudget() {
               canSave={data.funds.length > 0}
               compact
             />
-            {/* Auto-save indicator */}
-            {lastSaved && (
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <Save className="h-3 w-3" />
-                Saved {new Date(lastSaved).toLocaleTimeString()}
-              </span>
-            )}
+            {/* Enhanced Auto-save indicator */}
+            <AutoSaveIndicator data={data} onRestore={setData} />
           </div>
           <Button variant="ghost" size="sm" onClick={handleRestartWizard}>
             <Sparkles className="h-4 w-4 mr-1.5" />
@@ -957,6 +1003,9 @@ export function ManagementCompanyBudget() {
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6 mt-6">
+          {/* Budget Health Check */}
+          <ValidationWarnings data={data} results={results} />
+
           {/* Charts Row */}
           <div className="grid lg:grid-cols-2 gap-6">
             <RunwayGauge data={data} results={results} />
@@ -972,8 +1021,23 @@ export function ManagementCompanyBudget() {
             <StackedExpenseChart data={data} results={results} />
           </div>
 
+          {/* Peer Comparison */}
+          <PeerComparison data={data} results={results} />
+
+          {/* Calculation Breakdown */}
+          <div className="grid lg:grid-cols-2 gap-6">
+            <CalculationBreakdown data={data} results={results} metric="monthlyBurn" />
+            <CalculationBreakdown data={data} results={results} metric="runway" />
+          </div>
+
           {/* Benchmarks */}
           <Benchmarks data={data} results={results} />
+
+          {/* Methodology & Transparency */}
+          <MethodologyDisclosure />
+
+          {/* FAQ Section (compact version) */}
+          <FAQSection compact />
         </TabsContent>
 
         {/* Edit Budget Tab */}
@@ -1230,6 +1294,12 @@ export function ManagementCompanyBudget() {
 
         {/* Analysis Tab */}
         <TabsContent value="analysis" className="space-y-6 mt-6">
+          {/* Sample Scenarios Library */}
+          <SampleScenarios onApply={setData} />
+
+          {/* What-If Sliders */}
+          <WhatIfSliders data={data} results={results} onApply={setData} />
+
           {/* Goal Seeking and Scenario Templates */}
           <div className="grid lg:grid-cols-2 gap-6">
             <GoalSeeking
@@ -1299,6 +1369,12 @@ export function ManagementCompanyBudget() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Full FAQ Section */}
+          <FAQSection />
+
+          {/* Full Glossary */}
+          <Glossary />
         </TabsContent>
       </Tabs>
 

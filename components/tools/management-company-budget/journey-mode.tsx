@@ -27,10 +27,39 @@ import {
   Minus,
   Zap,
   Award,
-  PartyPopper
+  PartyPopper,
+  HelpCircle,
+  User,
+  UserPlus,
+  Building
 } from 'lucide-react'
 import { BudgetData, TeamMember } from './types'
 import { formatCurrency } from './budget-calculator'
+
+// Help tooltip component
+function HelpTooltip({ content }: { content: string }) {
+  const [isOpen, setIsOpen] = useState(false)
+
+  return (
+    <div className="relative inline-block">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={() => setIsOpen(false)}
+        className="ml-1.5 text-white/40 hover:text-white/70 transition-colors"
+        type="button"
+      >
+        <HelpCircle className="h-4 w-4" />
+      </button>
+      {isOpen && (
+        <div className="absolute z-50 w-64 p-3 text-sm bg-slate-700 border border-white/10 rounded-lg shadow-xl left-0 top-full mt-1 text-white/80">
+          {content}
+          <div className="absolute -top-1.5 left-4 w-3 h-3 bg-slate-700 border-l border-t border-white/10 rotate-45" />
+        </div>
+      )}
+    </div>
+  )
+}
 
 // Fund strategy options
 const FUND_STRATEGIES = [
@@ -297,6 +326,69 @@ const CAPITAL_OPTIONS = [
   { amount: 2000000, label: '$2M+', description: 'Institutional-grade' },
 ]
 
+// Quick start templates for faster setup
+interface QuickStartTemplate {
+  id: string
+  name: string
+  description: string
+  icon: any
+  color: string
+  fundSize: number
+  feeRate: number
+  startingCash: number
+  team: TeamMember[]
+  sizeTier: 'emerging' | 'established' | 'institutional'
+}
+
+const QUICK_START_TEMPLATES: QuickStartTemplate[] = [
+  {
+    id: 'solo-gp',
+    name: 'Solo GP',
+    description: 'Just you, lean operations, $25-50M fund',
+    icon: User,
+    color: 'from-amber-500 to-orange-600',
+    fundSize: 35,
+    feeRate: 2.0,
+    startingCash: 300000,
+    sizeTier: 'emerging',
+    team: [
+      { id: '1', role: 'Managing Partner', monthlyCost: 15000 },
+    ],
+  },
+  {
+    id: 'small-team',
+    name: 'Small Team',
+    description: '2-3 person team, $50-100M fund',
+    icon: UserPlus,
+    color: 'from-emerald-500 to-teal-600',
+    fundSize: 75,
+    feeRate: 2.0,
+    startingCash: 500000,
+    sizeTier: 'emerging',
+    team: [
+      { id: '1', role: 'Managing Partner', monthlyCost: 22000 },
+      { id: '2', role: 'Associate', monthlyCost: 9000 },
+    ],
+  },
+  {
+    id: 'growth-firm',
+    name: 'Growth Firm',
+    description: 'Full team, $100M+ fund, scaling up',
+    icon: Building,
+    color: 'from-violet-500 to-purple-600',
+    fundSize: 150,
+    feeRate: 2.0,
+    startingCash: 750000,
+    sizeTier: 'established',
+    team: [
+      { id: '1', role: 'Managing Partner', monthlyCost: 28000 },
+      { id: '2', role: 'Partner', monthlyCost: 22000 },
+      { id: '3', role: 'Associate', monthlyCost: 10000 },
+      { id: '4', role: 'Analyst', monthlyCost: 7000 },
+    ],
+  },
+]
+
 // Journey phases
 const PHASES = [
   { id: 1, name: 'Strategy', icon: Target },
@@ -308,7 +400,7 @@ const PHASES = [
 
 interface JourneyStep {
   id: string
-  type: 'welcome' | 'select' | 'input' | 'team' | 'capital' | 'celebration' | 'review'
+  type: 'welcome' | 'quickstart' | 'select' | 'input' | 'team' | 'capital' | 'celebration' | 'review'
   phase: number
   phaseName: string
   title: string
@@ -325,6 +417,14 @@ const JOURNEY_STEPS: JourneyStep[] = [
     phaseName: 'Welcome',
     title: 'Build Your Budget',
     subtitle: 'Let\'s create a customized management company budget in just a few minutes.'
+  },
+  {
+    id: 'quickstart',
+    type: 'quickstart',
+    phase: 0,
+    phaseName: 'Quick Start',
+    title: 'Choose a starting point',
+    subtitle: 'Pick a template to get started faster, or customize from scratch.'
   },
   {
     id: 'strategy',
@@ -421,19 +521,79 @@ interface JourneyModeProps {
   onSkip: () => void
 }
 
+const STORAGE_KEY = 'mcb-journey-progress'
+
+interface SavedProgress {
+  currentStepIndex: number
+  strategy: string
+  fundSize: number
+  feeRate: number
+  firstCloseYear: number
+  sizeTier: string
+  teamMembers: TeamMember[]
+  startingCash: number
+  customizedTeam: boolean
+  savedAt: number
+}
+
 export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
-  const [currentStepIndex, setCurrentStepIndex] = useState(0)
+  // Load saved progress from localStorage
+  const getSavedProgress = (): SavedProgress | null => {
+    if (typeof window === 'undefined') return null
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY)
+      if (saved) {
+        const parsed = JSON.parse(saved) as SavedProgress
+        // Only use saved progress from last 24 hours
+        if (Date.now() - parsed.savedAt < 24 * 60 * 60 * 1000) {
+          return parsed
+        }
+      }
+    } catch {
+      // Ignore parse errors
+    }
+    return null
+  }
+
+  const savedProgress = getSavedProgress()
+
+  const [currentStepIndex, setCurrentStepIndex] = useState(savedProgress?.currentStepIndex || 0)
   const [direction, setDirection] = useState(1)
+  const [showResumePrompt, setShowResumePrompt] = useState(!!savedProgress && savedProgress.currentStepIndex > 0)
 
   // Budget configuration state
-  const [strategy, setStrategy] = useState('')
-  const [fundSize, setFundSize] = useState(50)
-  const [feeRate, setFeeRate] = useState(2.0)
-  const [firstCloseYear, setFirstCloseYear] = useState(new Date().getFullYear())
-  const [sizeTier, setSizeTier] = useState('emerging')
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
-  const [startingCash, setStartingCash] = useState(500000)
-  const [customizedTeam, setCustomizedTeam] = useState(false)
+  const [strategy, setStrategy] = useState(savedProgress?.strategy || '')
+  const [fundSize, setFundSize] = useState(savedProgress?.fundSize || 50)
+  const [feeRate, setFeeRate] = useState(savedProgress?.feeRate || 2.0)
+  const [firstCloseYear, setFirstCloseYear] = useState(savedProgress?.firstCloseYear || new Date().getFullYear())
+  const [sizeTier, setSizeTier] = useState(savedProgress?.sizeTier || 'emerging')
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(savedProgress?.teamMembers || [])
+  const [startingCash, setStartingCash] = useState(savedProgress?.startingCash || 500000)
+  const [customizedTeam, setCustomizedTeam] = useState(savedProgress?.customizedTeam || false)
+
+  // Save progress to localStorage
+  useEffect(() => {
+    if (currentStepIndex > 0) {
+      const progress: SavedProgress = {
+        currentStepIndex,
+        strategy,
+        fundSize,
+        feeRate,
+        firstCloseYear,
+        sizeTier,
+        teamMembers,
+        startingCash,
+        customizedTeam,
+        savedAt: Date.now()
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress))
+    }
+  }, [currentStepIndex, strategy, fundSize, feeRate, firstCloseYear, sizeTier, teamMembers, startingCash, customizedTeam])
+
+  // Clear saved progress on completion
+  const clearProgress = useCallback(() => {
+    localStorage.removeItem(STORAGE_KEY)
+  }, [])
 
   const step = JOURNEY_STEPS[currentStepIndex]
   const selectedStrategy = FUND_STRATEGIES.find(s => s.id === strategy)
@@ -536,6 +696,21 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
     }
   }, [goNext])
 
+  // Quick start template handler
+  const handleQuickStart = useCallback((template: QuickStartTemplate) => {
+    setFundSize(template.fundSize)
+    setFeeRate(template.feeRate)
+    setStartingCash(template.startingCash)
+    setSizeTier(template.sizeTier)
+    setTeamMembers(template.team.map(t => ({
+      ...t,
+      id: Math.random().toString(36).substr(2, 9)
+    })))
+    setCustomizedTeam(true)
+    // Skip ahead to strategy step, then continue normally
+    setTimeout(goNext, 300)
+  }, [goNext])
+
   // Team management
   const addTeamMember = useCallback((roleInfo: typeof AVAILABLE_ROLES[0]) => {
     const tier = sizeTier as 'emerging' | 'established' | 'institutional'
@@ -591,9 +766,24 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
       }
     }
 
+    clearProgress()
     triggerConfetti()
     setTimeout(() => onComplete(budgetData), 500)
-  }, [startingCash, fundSize, feeRate, firstCloseYear, teamMembers, sizeTier, onComplete, triggerConfetti])
+  }, [startingCash, fundSize, feeRate, firstCloseYear, teamMembers, sizeTier, onComplete, triggerConfetti, clearProgress])
+
+  // Reset all state and start over
+  const handleStartOver = useCallback(() => {
+    clearProgress()
+    setCurrentStepIndex(0)
+    setStrategy('')
+    setFundSize(50)
+    setFeeRate(2.0)
+    setFirstCloseYear(new Date().getFullYear())
+    setTeamMembers([])
+    setStartingCash(500000)
+    setCustomizedTeam(false)
+    setShowResumePrompt(false)
+  }, [clearProgress])
 
   // Keyboard navigation
   useEffect(() => {
@@ -706,10 +896,10 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           {/* Progress indicator */}
           <div className="flex items-center gap-2">
-            <div className="w-24 h-1.5 bg-white/10 rounded-full overflow-hidden">
+            <div className="w-16 sm:w-24 h-1.5 bg-white/10 rounded-full overflow-hidden">
               <motion.div
                 className="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full"
                 initial={{ width: 0 }}
@@ -720,6 +910,19 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
             <span className="text-xs text-white/60">{progress}%</span>
           </div>
 
+          {/* Start Over button - show after first step */}
+          {currentStepIndex > 1 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleStartOver}
+              className="text-white/60 hover:text-white hover:bg-white/10"
+            >
+              <X className="h-4 w-4 sm:mr-1" />
+              <span className="hidden sm:inline">Start Over</span>
+            </Button>
+          )}
+
           {/* Skip button */}
           <Button
             variant="ghost"
@@ -727,11 +930,48 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
             onClick={onSkip}
             className="text-white/60 hover:text-white hover:bg-white/10"
           >
-            <X className="h-4 w-4 mr-1" />
-            Skip
+            <X className="h-4 w-4 sm:mr-1" />
+            <span className="hidden sm:inline">Skip</span>
           </Button>
         </div>
       </div>
+
+      {/* Resume prompt */}
+      {showResumePrompt && (
+        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-slate-800 rounded-2xl p-6 max-w-md w-full border border-white/10 shadow-2xl"
+          >
+            <div className="text-center space-y-4">
+              <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center">
+                <Clock className="h-8 w-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-white">Welcome Back!</h3>
+              <p className="text-white/60">
+                You have a budget in progress. Would you like to continue where you left off?
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <Button
+                  variant="outline"
+                  className="flex-1 border-white/20 text-white hover:bg-white/10"
+                  onClick={handleStartOver}
+                >
+                  Start Fresh
+                </Button>
+                <Button
+                  className="flex-1 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white"
+                  onClick={() => setShowResumePrompt(false)}
+                >
+                  Continue
+                  <ChevronRight className="ml-1 h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       {/* Main content */}
       <div className="flex-1 overflow-y-auto px-4 py-6 pb-24">
@@ -792,6 +1032,60 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                   <p className="text-xs text-white/40">
                     Press Enter or → to continue
                   </p>
+                </div>
+              </div>
+            )}
+
+            {/* Quick Start Templates Step */}
+            {step.type === 'quickstart' && (
+              <div className="space-y-8">
+                <div className="text-center space-y-2">
+                  <h2 className="text-3xl md:text-4xl font-bold text-white">{step.title}</h2>
+                  <p className="text-lg text-white/60">{step.subtitle}</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {QUICK_START_TEMPLATES.map((template, idx) => {
+                    const Icon = template.icon
+                    return (
+                      <motion.button
+                        key={template.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.1 }}
+                        onClick={() => handleQuickStart(template)}
+                        className="relative p-6 rounded-2xl text-left transition-all group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20"
+                      >
+                        <div className={cn(
+                          "w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br mb-4",
+                          template.color
+                        )}>
+                          <Icon className="h-6 w-6 text-white" />
+                        </div>
+                        <h3 className="font-semibold text-white text-lg mb-1">{template.name}</h3>
+                        <p className="text-sm text-white/50 mb-4">{template.description}</p>
+                        <div className="space-y-1 text-xs text-white/40">
+                          <p>Fund: ${template.fundSize}M @ {template.feeRate}%</p>
+                          <p>Team: {template.team.length} {template.team.length === 1 ? 'person' : 'people'}</p>
+                          <p>Capital: {formatCurrency(template.startingCash, true)}</p>
+                        </div>
+                        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <ArrowRight className="h-5 w-5 text-white/60" />
+                        </div>
+                      </motion.button>
+                    )
+                  })}
+                </div>
+
+                <div className="text-center">
+                  <Button
+                    variant="ghost"
+                    onClick={goNext}
+                    className="text-white/60 hover:text-white hover:bg-white/10"
+                  >
+                    Or customize from scratch
+                    <ChevronRight className="ml-1 h-4 w-4" />
+                  </Button>
                 </div>
               </div>
             )}
@@ -940,7 +1234,10 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
             {step.id === 'fee-rate' && (
               <div className="space-y-8">
                 <div className="text-center space-y-2">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white">{step.title}</h2>
+                  <h2 className="text-3xl md:text-4xl font-bold text-white inline-flex items-center justify-center gap-1">
+                    {step.title}
+                    <HelpTooltip content="The management fee is typically 1.5-2.5% of committed capital, charged annually. This fee covers the GP's operating costs and is your primary revenue source." />
+                  </h2>
                   <p className="text-lg text-white/60">{step.subtitle}</p>
                 </div>
 
@@ -995,7 +1292,10 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
             {step.id === 'first-close' && (
               <div className="space-y-8">
                 <div className="text-center space-y-2">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white">{step.title}</h2>
+                  <h2 className="text-3xl md:text-4xl font-bold text-white inline-flex items-center justify-center gap-1">
+                    {step.title}
+                    <HelpTooltip content="First close is when you start collecting management fees. Typically 6-18 months after starting fundraising. Most funds hold multiple closes as more LPs commit." />
+                  </h2>
                   <p className="text-lg text-white/60">{step.subtitle}</p>
                 </div>
 
@@ -1036,7 +1336,10 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
             {step.type === 'team' && (
               <div className="space-y-6">
                 <div className="text-center space-y-2">
-                  <h2 className="text-3xl font-bold text-white">{step.title}</h2>
+                  <h2 className="text-3xl font-bold text-white inline-flex items-center justify-center gap-1">
+                    {step.title}
+                    <HelpTooltip content="Team costs typically represent 60-70% of management company expenses. Include fully-loaded costs (salary + bonus + benefits + payroll taxes)." />
+                  </h2>
                   <p className="text-lg text-white/60">{step.subtitle}</p>
                 </div>
 
@@ -1133,7 +1436,10 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
             {step.type === 'capital' && (
               <div className="space-y-8">
                 <div className="text-center space-y-2">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white">{step.title}</h2>
+                  <h2 className="text-3xl md:text-4xl font-bold text-white inline-flex items-center justify-center gap-1">
+                    {step.title}
+                    <HelpTooltip content="This is your seed capital from personal funds, anchor LP contributions, or GP capital calls. It must cover expenses until management fee revenue begins flowing." />
+                  </h2>
                   <p className="text-lg text-white/60">{step.subtitle}</p>
                 </div>
 
