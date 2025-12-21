@@ -182,9 +182,9 @@ export function ProgressDashboard({
         </div>
 
         {/* Selected Service Providers */}
-        {providers && Object.keys(providers).length > 0 && (
-          <div className="mt-4 pt-4 border-t border-border">
-            <div className="text-xs text-muted-foreground mb-2">Your Team</div>
+        <div className="mt-4 pt-4 border-t border-border">
+          <div className="text-xs text-muted-foreground mb-2">Your Team</div>
+          {providers && Object.keys(providers).length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {Object.entries(providers).map(([key, value]) => (
                 <div key={key} className="flex-shrink-0 px-2.5 py-1 rounded-lg bg-primary/10 border border-primary/20 text-xs sm:text-sm">
@@ -193,8 +193,12 @@ export function ProgressDashboard({
                 </div>
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <p className="text-xs text-muted-foreground/60 italic">
+              No service providers selected yet. You can add them by clicking Reconfigure.
+            </p>
+          )}
+        </div>
 
         {/* Actions - Compact on mobile */}
         <div className="flex flex-wrap items-center gap-2 mt-4 pt-4 border-t border-border">
@@ -234,37 +238,63 @@ export function ProgressDashboard({
 
       {/* Phase Progress Grid - 2 columns on mobile, 4 on tablet, 8 on desktop */}
       <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 sm:gap-3">
-        {phaseProgress.map(({ phase, total, completed, percent }) => (
-          <button
-            key={phase.id}
-            onClick={() => onPhaseClick?.(phase.id)}
-            className={cn(
-              "rounded-lg border p-2.5 sm:p-3 transition-all text-left",
-              "hover:ring-2 hover:ring-primary/50 active:scale-[0.98]",
-              completed === total && total > 0
-                ? "border-emerald-500/30 bg-emerald-500/5"
-                : phase.id === currentPhase?.id
-                  ? "border-primary/30 bg-primary/5"
-                  : "border-border bg-card"
-            )}
-          >
-            <div className="text-xs font-medium truncate mb-1.5" title={phase.name}>
-              {phase.shortName}
-            </div>
-            <div className="h-1.5 bg-accent rounded-full overflow-hidden">
-              <div
-                className={cn(
-                  "h-full transition-all duration-500 rounded-full",
-                  completed === total && total > 0 ? "bg-emerald-500" : "bg-primary"
-                )}
-                style={{ width: `${percent}%` }}
-              />
-            </div>
-            <div className="text-xs text-muted-foreground mt-1">
-              {completed}/{total}
-            </div>
-          </button>
-        ))}
+        {phaseProgress.map(({ phase, total, completed, percent }) => {
+          // Color progression: gray (0%) -> blue (in progress) -> amber (>50%) -> green (100%)
+          const getPhaseStyle = () => {
+            if (completed === total && total > 0) {
+              return "border-emerald-500/30 bg-emerald-500/5" // Complete - green
+            }
+            if (percent >= 50) {
+              return "border-amber-500/30 bg-amber-500/5" // Good progress - amber
+            }
+            if (completed > 0) {
+              return "border-primary/30 bg-primary/5" // Started - blue
+            }
+            return "border-border bg-card" // Not started - default
+          }
+
+          const getBarColor = () => {
+            if (completed === total && total > 0) return "bg-emerald-500"
+            if (percent >= 50) return "bg-amber-500"
+            if (completed > 0) return "bg-primary"
+            return "bg-muted-foreground/30"
+          }
+
+          return (
+            <button
+              key={phase.id}
+              onClick={() => onPhaseClick?.(phase.id)}
+              className={cn(
+                "rounded-lg border p-2.5 sm:p-3 transition-all text-left",
+                "hover:ring-2 hover:ring-primary/50 active:scale-[0.98]",
+                getPhaseStyle()
+              )}
+            >
+              <div className="text-xs font-medium truncate mb-1.5" title={phase.name}>
+                {phase.shortName}
+              </div>
+              <div className="h-1.5 bg-accent rounded-full overflow-hidden">
+                <div
+                  className={cn(
+                    "h-full transition-all duration-500 rounded-full",
+                    getBarColor()
+                  )}
+                  style={{ width: `${percent}%` }}
+                />
+              </div>
+              <div className="text-xs text-muted-foreground mt-1">
+                {completed}/{total}
+              </div>
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Last Updated */}
+      <div className="text-center">
+        <p className="text-xs text-muted-foreground/50">
+          Last updated: December 2025
+        </p>
       </div>
     </div>
   )
