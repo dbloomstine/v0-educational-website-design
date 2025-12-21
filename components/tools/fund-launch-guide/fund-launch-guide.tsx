@@ -11,7 +11,7 @@ import {
   DEFAULT_CONFIG,
 } from './types'
 import { PHASES, TASKS, getApplicableTasks, getTasksForPhase } from './data'
-import { OnboardingWizard } from './onboarding-wizard'
+import { JourneyMode } from './journey-mode'
 import { TaskCard } from './task-card'
 import { ProgressDashboard } from './progress-dashboard'
 import { Button } from '@/components/ui/button'
@@ -48,6 +48,7 @@ interface StoredState {
   viewMode: ViewMode
   expandedTasks: string[]
   hasCompletedOnboarding: boolean
+  providers?: Record<string, string>
 }
 
 // Icons for phases
@@ -75,6 +76,7 @@ export function FundLaunchGuide() {
   const [hasLoaded, setHasLoaded] = useState(false)
   const [showCopied, setShowCopied] = useState(false)
   const [filterCompleted, setFilterCompleted] = useState<'all' | 'incomplete' | 'completed'>('all')
+  const [providers, setProviders] = useState<Record<string, string>>({})
 
   // Load state from localStorage
   useEffect(() => {
@@ -87,6 +89,7 @@ export function FundLaunchGuide() {
         setViewMode(parsed.viewMode || 'timeline')
         setExpandedTasks(new Set(parsed.expandedTasks || []))
         setShowOnboarding(!parsed.hasCompletedOnboarding)
+        setProviders(parsed.providers || {})
       }
     } catch (e) {
       console.error('Failed to load saved state:', e)
@@ -104,9 +107,10 @@ export function FundLaunchGuide() {
       viewMode,
       expandedTasks: Array.from(expandedTasks),
       hasCompletedOnboarding: true,
+      providers,
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-  }, [config, completedTasks, viewMode, expandedTasks, hasLoaded])
+  }, [config, completedTasks, viewMode, expandedTasks, hasLoaded, providers])
 
   // Get applicable tasks for current config
   const applicableTasks = useMemo(() => {
@@ -147,8 +151,9 @@ export function FundLaunchGuide() {
   }, [filterCompleted, completedTasks])
 
   // Handlers
-  const handleOnboardingComplete = (newConfig: FundConfig) => {
+  const handleOnboardingComplete = (newConfig: FundConfig, newProviders: Record<string, string>) => {
     setConfig(newConfig)
+    setProviders(newProviders)
     setShowOnboarding(false)
     setCompletedTasks(new Set())
     setExpandedTasks(new Set())
@@ -439,10 +444,10 @@ export function FundLaunchGuide() {
     )
   }
 
-  // Onboarding
+  // Onboarding - Now uses the gamified Journey Mode
   if (showOnboarding) {
     return (
-      <OnboardingWizard
+      <JourneyMode
         onComplete={handleOnboardingComplete}
         onSkip={handleOnboardingSkip}
       />
