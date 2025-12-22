@@ -43,7 +43,16 @@ import {
   Search,
   Sparkles,
   ArrowRight,
+  Command,
+  Timer,
 } from 'lucide-react'
+import { Input } from '@/components/ui/input'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
@@ -93,6 +102,10 @@ export function FundLaunchGuide() {
   const [showSaved, setShowSaved] = useState(false)
   const [filterCompleted, setFilterCompleted] = useState<'all' | 'incomplete' | 'completed'>('all')
   const [providers, setProviders] = useState<Record<string, string>>({})
+
+  // Quick Jump Search state
+  const [showQuickJump, setShowQuickJump] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   // Load state from localStorage
   useEffect(() => {
@@ -165,6 +178,72 @@ export function FundLaunchGuide() {
     if (filterCompleted === 'incomplete') return tasks.filter(t => !completedTasks.has(t.id))
     return tasks.filter(t => completedTasks.has(t.id))
   }, [filterCompleted, completedTasks])
+
+  // Parse time estimate to hours
+  const parseTimeToHours = useCallback((timeStr: string): number => {
+    const match = timeStr.match(/(\d+(?:-\d+)?)\s*(hour|day|week|hr|wk)/i)
+    if (!match) return 0
+    const [, numPart, unit] = match
+    const nums = numPart.split('-').map(Number)
+    const avgNum = nums.reduce((a, b) => a + b, 0) / nums.length
+    if (unit.toLowerCase().startsWith('week') || unit.toLowerCase().startsWith('wk')) return avgNum * 40
+    if (unit.toLowerCase().startsWith('day')) return avgNum * 8
+    return avgNum // hours
+  }, [])
+
+  // Calculate total estimated time remaining
+  const totalTimeEstimate = useMemo(() => {
+    const incompleteTasks = applicableTasks.filter(t => !completedTasks.has(t.id))
+    const totalHours = incompleteTasks.reduce((sum, task) => sum + parseTimeToHours(task.timeEstimate), 0)
+    if (totalHours === 0) return 'All done!'
+    if (totalHours < 8) return `~${Math.ceil(totalHours)} hours`
+    if (totalHours < 40) return `~${Math.ceil(totalHours / 8)} days`
+    return `~${Math.ceil(totalHours / 40)} weeks`
+  }, [applicableTasks, completedTasks, parseTimeToHours])
+
+  // Search/filter tasks for Quick Jump
+  const searchResults = useMemo(() => {
+    if (!searchQuery.trim()) return []
+    const query = searchQuery.toLowerCase()
+    return applicableTasks
+      .filter(task =>
+        task.title.toLowerCase().includes(query) ||
+        task.quickTip.toLowerCase().includes(query) ||
+        task.category.toLowerCase().includes(query)
+      )
+      .slice(0, 8) // Limit to 8 results
+  }, [applicableTasks, searchQuery])
+
+  // Keyboard shortcut for Quick Jump (Cmd+K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setShowQuickJump(true)
+        setSearchQuery('')
+      }
+      if (e.key === 'Escape' && showQuickJump) {
+        setShowQuickJump(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [showQuickJump])
+
+  // Navigate to task from Quick Jump
+  const handleQuickJumpSelect = (task: FundLaunchTask) => {
+    setShowQuickJump(false)
+    setSearchQuery('')
+    const phase = PHASES.find(p => p.id === task.phaseId)
+    if (phase) {
+      setExpandedPhases(prev => new Set([...prev, phase.id]))
+      setExpandedTasks(prev => new Set([...prev, task.id]))
+      setTimeout(() => {
+        const element = document.getElementById(`phase-${phase.id}`)
+        element?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }, 100)
+    }
+  }
 
   // Handlers
   const handleOnboardingComplete = (newConfig: FundConfig, newProviders: Record<string, string>, journeyCompletedTasks?: string[]) => {
@@ -501,6 +580,104 @@ export function FundLaunchGuide() {
 
   return (
     <div className="space-y-8">
+      {/* Quick Jump Dialog */}
+      <Dialog open={showQuickJump} onOpenChange={setShowQuickJump}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Search className="h-4 w-4" />
+              Quick Jump to Task
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="relative">
+              <Input
+                placeholder="Search tasks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pr-16"
+                autoFocus
+              />
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1 text-xs text-muted-foreground">
+                <kbd className="px-1.5 py-0.5 rounded bg-muted border text-[10px]">
+                  {navigator.platform?.includes('Mac') ? '⌘' : 'Ctrl'}
+                </kbd>
+                <kbd className="px-1.5 py-0.5 rounded bg-muted border text-[10px]">K</kbd>
+              </div>
+            </div>
+            {searchQuery && searchResults.length === 0 && (
+              <p className="text-sm text-muted-foreground text-center py-4">
+                No tasks found matching "{searchQuery}"
+              </p>
+            )}
+            {searchResults.length > 0 && (
+              <div className="space-y-1 max-h-[300px] overflow-y-auto">
+                {searchResults.map((task) => {
+                  const phase = PHASES.find(p => p.id === task.phaseId)
+                  const isComplete = completedTasks.has(task.id)
+                  return (
+                    <button
+                      key={task.id}
+                      onClick={() => handleQuickJumpSelect(task)}
+                      className={cn(
+                        "w-full text-left px-3 py-2 rounded-lg transition-colors",
+                        "hover:bg-accent focus:bg-accent focus:outline-none",
+                        isComplete && "opacity-60"
+                      )}
+                    >
+                      <div className="flex items-center gap-2">
+                        {isComplete && <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />}
+                        <span className={cn("font-medium text-sm", isComplete && "line-through")}>
+                          {task.title}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 mt-0.5 text-xs text-muted-foreground">
+                        <span>{phase?.shortName}</span>
+                        <span>•</span>
+                        <span>{task.priority}</span>
+                        <span>•</span>
+                        <span>{task.timeEstimate}</span>
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+            {!searchQuery && (
+              <p className="text-sm text-muted-foreground text-center py-2">
+                Start typing to search tasks by name, category, or description
+              </p>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Time Estimate & Quick Jump Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border border-border bg-card">
+        <div className="flex items-center gap-3">
+          <div className="p-2 rounded-lg bg-primary/10">
+            <Timer className="h-5 w-5 text-primary" />
+          </div>
+          <div>
+            <div className="text-sm font-medium text-muted-foreground">Estimated time remaining</div>
+            <div className="text-lg font-semibold">{totalTimeEstimate}</div>
+          </div>
+        </div>
+        <Button
+          variant="outline"
+          size="lg"
+          onClick={() => setShowQuickJump(true)}
+          className="gap-2 min-h-[44px] focus:ring-2 focus:ring-primary"
+        >
+          <Search className="h-4 w-4" />
+          <span className="hidden sm:inline">Quick Jump</span>
+          <span className="sm:hidden">Search</span>
+          <kbd className="hidden sm:inline-flex items-center gap-0.5 ml-2 px-1.5 py-0.5 rounded bg-muted border text-[10px]">
+            <Command className="h-3 w-3" />K
+          </kbd>
+        </Button>
+      </div>
+
       {/* Progress Dashboard */}
       <ProgressDashboard
         config={config}
