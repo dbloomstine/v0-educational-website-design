@@ -335,7 +335,8 @@ export function SubscriptionCreditLine() {
             <button
               key={key}
               onClick={() => loadPreset(key)}
-              className="rounded-lg border border-border bg-background p-4 text-left transition-colors hover:bg-accent hover:border-primary"
+              aria-label={`Load ${preset.name} scenario: ${preset.description}`}
+              className="rounded-lg border border-border bg-background p-4 text-left transition-colors hover:bg-accent hover:border-primary min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               <div className="mb-1 font-semibold text-foreground">{preset.name}</div>
               <div className="text-xs text-muted-foreground">{preset.description}</div>
@@ -542,29 +543,35 @@ export function SubscriptionCreditLine() {
           <div className="space-y-2">
             <button
               onClick={() => toggleSection('whatIf')}
-              className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+              aria-expanded={expandedSections.whatIf}
+              aria-controls="what-if-content"
+              aria-label="Toggle sensitivity analysis section"
+              className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               <div className="flex items-center gap-3">
-                <SlidersHorizontal className="h-5 w-5 text-primary" />
+                <SlidersHorizontal className="h-5 w-5 text-primary" aria-hidden="true" />
                 <div className="text-left">
                   <h3 className="font-semibold text-foreground">Sensitivity Analysis</h3>
                   <p className="text-sm text-muted-foreground">Adjust credit facility parameters to see real-time impact</p>
                 </div>
               </div>
               {expandedSections.whatIf ? (
-                <ChevronUp className="h-5 w-5 text-muted-foreground" />
+                <ChevronUp className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
               ) : (
-                <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                <ChevronDown className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
               )}
             </button>
             <AnimatePresence>
               {expandedSections.whatIf && (
                 <motion.div
+                  id="what-if-content"
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.2 }}
                   className="overflow-hidden"
+                  role="region"
+                  aria-label="Sensitivity analysis controls"
                 >
                   <WhatIfSliders
                     input={input}

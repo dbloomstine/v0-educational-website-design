@@ -498,7 +498,8 @@ export function DistributionWaterfall() {
             <button
               key={key}
               onClick={() => loadPreset(key)}
-              className="rounded-lg border border-border bg-background p-4 text-left transition-colors hover:bg-accent hover:border-primary"
+              aria-label={`Load ${preset.name} scenario: ${preset.description}`}
+              className="rounded-lg border border-border bg-background p-4 text-left transition-colors hover:bg-accent hover:border-primary min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               <div className="mb-1 font-semibold text-foreground">{preset.name}</div>
               <div className="text-xs text-muted-foreground">{preset.description}</div>
@@ -768,28 +769,34 @@ export function DistributionWaterfall() {
       <div className="space-y-2">
         <button
           onClick={() => toggleSection('calculation')}
-          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+          aria-expanded={expandedSections.calculation}
+          aria-controls="calculation-content"
+          aria-label="Toggle step-by-step calculation section"
+          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           <div className="flex items-center gap-3">
-            <Calculator className="h-5 w-5 text-primary" />
+            <Calculator className="h-5 w-5 text-primary" aria-hidden="true" />
             <div className="text-left">
               <h3 className="font-semibold text-foreground">Step-by-Step Calculation</h3>
               <p className="text-sm text-muted-foreground">See exactly how proceeds flow through each tier</p>
             </div>
           </div>
           {expandedSections.calculation ? (
-            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+            <ChevronUp className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           ) : (
-            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+            <ChevronDown className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           )}
         </button>
         <AnimatePresence>
           {expandedSections.calculation && (
             <motion.div
+              id="calculation-content"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
+              role="region"
+              aria-label="Step-by-step calculation breakdown"
             >
               <CalculationBreakdown output={output} />
             </motion.div>
@@ -801,28 +808,34 @@ export function DistributionWaterfall() {
       <div className="space-y-2">
         <button
           onClick={() => toggleSection('peerComparison')}
-          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+          aria-expanded={expandedSections.peerComparison}
+          aria-controls="peer-comparison-content"
+          aria-label="Toggle market comparison section"
+          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           <div className="flex items-center gap-3">
-            <BarChart3 className="h-5 w-5 text-primary" />
+            <BarChart3 className="h-5 w-5 text-primary" aria-hidden="true" />
             <div className="text-left">
               <h3 className="font-semibold text-foreground">Market Comparison</h3>
               <p className="text-sm text-muted-foreground">See how your terms compare to market standards</p>
             </div>
           </div>
           {expandedSections.peerComparison ? (
-            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+            <ChevronUp className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           ) : (
-            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+            <ChevronDown className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           )}
         </button>
         <AnimatePresence>
           {expandedSections.peerComparison && (
             <motion.div
+              id="peer-comparison-content"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
+              role="region"
+              aria-label="Market comparison data"
             >
               <PeerComparison input={input} />
             </motion.div>
@@ -834,28 +847,34 @@ export function DistributionWaterfall() {
       <div className="space-y-2">
         <button
           onClick={() => toggleSection('scenarios')}
-          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+          aria-expanded={expandedSections.scenarios}
+          aria-controls="scenarios-content"
+          aria-label="Toggle scenario library section"
+          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           <div className="flex items-center gap-3">
-            <FileText className="h-5 w-5 text-primary" />
+            <FileText className="h-5 w-5 text-primary" aria-hidden="true" />
             <div className="text-left">
               <h3 className="font-semibold text-foreground">Scenario Library</h3>
               <p className="text-sm text-muted-foreground">Explore pre-built scenarios across fund types</p>
             </div>
           </div>
           {expandedSections.scenarios ? (
-            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+            <ChevronUp className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           ) : (
-            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+            <ChevronDown className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           )}
         </button>
         <AnimatePresence>
           {expandedSections.scenarios && (
             <motion.div
+              id="scenarios-content"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
+              role="region"
+              aria-label="Scenario library"
             >
               <SampleScenarios onSelectScenario={loadScenarioFromLibrary} />
             </motion.div>
@@ -867,28 +886,34 @@ export function DistributionWaterfall() {
       <div className="space-y-2">
         <button
           onClick={() => toggleSection('glossary')}
-          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+          aria-expanded={expandedSections.glossary}
+          aria-controls="glossary-content"
+          aria-label="Toggle glossary section"
+          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           <div className="flex items-center gap-3">
-            <BookOpen className="h-5 w-5 text-primary" />
+            <BookOpen className="h-5 w-5 text-primary" aria-hidden="true" />
             <div className="text-left">
               <h3 className="font-semibold text-foreground">Waterfall Glossary</h3>
               <p className="text-sm text-muted-foreground">Learn key terms and concepts</p>
             </div>
           </div>
           {expandedSections.glossary ? (
-            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+            <ChevronUp className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           ) : (
-            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+            <ChevronDown className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           )}
         </button>
         <AnimatePresence>
           {expandedSections.glossary && (
             <motion.div
+              id="glossary-content"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
+              role="region"
+              aria-label="Waterfall glossary terms"
             >
               <Glossary />
             </motion.div>
@@ -900,28 +925,34 @@ export function DistributionWaterfall() {
       <div className="space-y-2">
         <button
           onClick={() => toggleSection('faq')}
-          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+          aria-expanded={expandedSections.faq}
+          aria-controls="faq-content"
+          aria-label="Toggle frequently asked questions section"
+          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           <div className="flex items-center gap-3">
-            <HelpCircle className="h-5 w-5 text-primary" />
+            <HelpCircle className="h-5 w-5 text-primary" aria-hidden="true" />
             <div className="text-left">
               <h3 className="font-semibold text-foreground">Frequently Asked Questions</h3>
               <p className="text-sm text-muted-foreground">Get answers to common questions</p>
             </div>
           </div>
           {expandedSections.faq ? (
-            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+            <ChevronUp className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           ) : (
-            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+            <ChevronDown className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           )}
         </button>
         <AnimatePresence>
           {expandedSections.faq && (
             <motion.div
+              id="faq-content"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
+              role="region"
+              aria-label="Frequently asked questions"
             >
               <FAQSection />
             </motion.div>
@@ -933,28 +964,34 @@ export function DistributionWaterfall() {
       <div className="space-y-2">
         <button
           onClick={() => toggleSection('quiz')}
-          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+          aria-expanded={expandedSections.quiz}
+          aria-controls="quiz-content"
+          aria-label="Toggle knowledge quiz section"
+          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           <div className="flex items-center gap-3">
-            <Brain className="h-5 w-5 text-primary" />
+            <Brain className="h-5 w-5 text-primary" aria-hidden="true" />
             <div className="text-left">
               <h3 className="font-semibold text-foreground">Knowledge Quiz</h3>
               <p className="text-sm text-muted-foreground">Test your understanding of waterfall mechanics</p>
             </div>
           </div>
           {expandedSections.quiz ? (
-            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+            <ChevronUp className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           ) : (
-            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+            <ChevronDown className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           )}
         </button>
         <AnimatePresence>
           {expandedSections.quiz && (
             <motion.div
+              id="quiz-content"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
+              role="region"
+              aria-label="Knowledge quiz"
             >
               <QuizPanel
                 onCorrectAnswer={() => {}}
