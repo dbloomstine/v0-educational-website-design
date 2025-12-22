@@ -640,18 +640,18 @@ export function XPProgressBar({
     : 100
 
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between text-sm">
-        <div className="flex items-center gap-2">
-          <div className={`${currentLevel.color}`}>{currentLevel.icon}</div>
-          <span className="font-medium">{currentLevel.title}</span>
+    <div className="space-y-1.5 sm:space-y-2">
+      <div className="flex items-center justify-between text-xs sm:text-sm">
+        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+          <div className={`${currentLevel.color} flex-shrink-0`}>{currentLevel.icon}</div>
+          <span className="font-medium truncate">{currentLevel.title}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <Zap className="h-4 w-4 text-amber-500" />
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-amber-500" />
           <span className="font-bold text-amber-600 dark:text-amber-400">{xp} XP</span>
         </div>
       </div>
-      <div className="relative h-3 bg-muted rounded-full overflow-hidden">
+      <div className="relative h-2.5 sm:h-3 bg-muted rounded-full overflow-hidden">
         <motion.div
           initial={false}
           animate={{ width: `${progressPercent}%` }}
@@ -659,8 +659,8 @@ export function XPProgressBar({
         />
       </div>
       {nextLevel && (
-        <p className="text-xs text-muted-foreground text-right">
-          {nextLevel.minXP - xp} XP to Level {nextLevel.level}: {nextLevel.title}
+        <p className="text-[10px] sm:text-xs text-muted-foreground text-right">
+          {nextLevel.minXP - xp} XP to Lv.{nextLevel.level}: {nextLevel.title}
         </p>
       )}
     </div>
