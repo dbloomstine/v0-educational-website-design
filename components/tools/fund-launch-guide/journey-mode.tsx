@@ -510,6 +510,7 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       subtitle: 'Choose your law firm',
       providerKey: 'lawFirm',
       providerOptions: LAW_FIRMS,
+      taskId: 'legal-counsel',
     },
     {
       id: 'gp-entity',
@@ -668,6 +669,7 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       subtitle: 'Select your fund admin',
       providerKey: 'fundAdmin',
       providerOptions: FUND_ADMINISTRATORS,
+      taskId: 'sp-fund-admin',
     },
     {
       id: 'auditor',
@@ -678,6 +680,7 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       subtitle: 'Choose your audit firm',
       providerKey: 'auditor',
       providerOptions: AUDITORS,
+      taskId: 'sp-auditor',
     },
     {
       id: 'tax-advisor',
@@ -688,6 +691,7 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       subtitle: 'Select your tax preparer',
       providerKey: 'taxAdvisor',
       providerOptions: TAX_ADVISORS,
+      taskId: 'sp-tax-advisor',
     },
     {
       id: 'bank',
@@ -698,6 +702,7 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       subtitle: 'Choose your bank',
       providerKey: 'bank',
       providerOptions: BANKS,
+      taskId: 'sp-banking',
     },
     {
       id: 'insurance',
@@ -708,6 +713,7 @@ const createJourneySteps = (strategy?: string): JourneyStep[] => {
       subtitle: 'Select your insurance broker',
       providerKey: 'insuranceBroker',
       providerOptions: INSURANCE_BROKERS,
+      taskId: 'sp-insurance',
     },
     // Conditional: Prime broker for hedge funds
     ...(strategy === 'Hedge Fund' ? [{
@@ -983,6 +989,14 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
   const handleProviderSelect = (key: string, value: string) => {
     setProviders(prev => ({ ...prev, [key]: value }))
     setShowCustomInput(false)
+    // Mark the corresponding task as complete when a provider is selected
+    if (step?.taskId) {
+      setCompletedTasks(prev => {
+        const next = new Set(prev)
+        next.add(step.taskId!)
+        return next
+      })
+    }
     setTimeout(goNext, 250)
   }
 
