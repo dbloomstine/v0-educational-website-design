@@ -2,9 +2,30 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { AlertCircle, Info } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import {
+  AlertCircle,
+  Scale,
+  Trophy,
+  BookOpen,
+  HelpCircle,
+  Play,
+  Calculator,
+  Target,
+  Zap,
+  GraduationCap,
+  BarChart3,
+  Star,
+  ChevronRight,
+  RotateCcw,
+  Sparkles,
+  CheckCircle2,
+  X
+} from 'lucide-react'
 import { classifyExpense, type ClassificationInput, type ClassificationResult as Result } from './expenseData'
 import { exportToPDF } from './exportPDF'
 import { ExpenseInputForm } from './expense-input-form'
@@ -12,14 +33,37 @@ import { ClassificationResults } from './classification-results'
 import { SampleScenariosSection } from './sample-scenarios'
 import { ShareButton } from '@/components/tools/share-button'
 
+// Gamification imports
+import {
+  useGamification,
+  AchievementPopup,
+  LevelUpPopup,
+  XPProgressBar,
+  Confetti
+} from './gamification'
+import { InteractiveJourney } from './interactive-journey'
+import { Quiz, QuizResults, EXPENSE_QUIZ_QUESTIONS } from './quiz'
+
+type ViewMode = 'welcome' | 'journey' | 'calculator' | 'quiz' | 'results'
+
 export function FundExpenseAllocation() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
 
+  // View state
+  const [viewMode, setViewMode] = useState<ViewMode>('welcome')
+  const [showConfetti, setShowConfetti] = useState(false)
+  const [quizScore, setQuizScore] = useState<{ score: number; total: number } | null>(null)
+
+  // Results state
   const [result, setResult] = useState<Result | null>(null)
   const [currentInput, setCurrentInput] = useState<ClassificationInput | null>(null)
-  const [showOnboarding, setShowOnboarding] = useState(true)
+
+  // Gamification
+  const gamification = useGamification()
+  const currentLevel = gamification.getCurrentLevel()
+  const nextLevel = gamification.getNextLevel()
 
   // Parse initial state from URL on mount
   useEffect(() => {
@@ -27,20 +71,20 @@ export function FundExpenseAllocation() {
 
     const category = searchParams.get('category')
     const fundType = searchParams.get('fundType')
-    const fundSize = searchParams.get('fundSize')
-    const vintage = searchParams.get('vintage')
+    const fundStage = searchParams.get('fundStage')
+    const beneficiary = searchParams.get('beneficiary')
 
-    if (category && fundType && fundSize && vintage) {
+    if (category && fundType && fundStage && beneficiary) {
       const input: ClassificationInput = {
         expenseCategory: category,
         fundType: fundType as ClassificationInput['fundType'],
-        fundSize: fundSize as ClassificationInput['fundSize'],
-        vintageYear: vintage as ClassificationInput['vintageYear']
+        fundStage: fundStage as ClassificationInput['fundStage'],
+        primaryBeneficiary: beneficiary as ClassificationInput['primaryBeneficiary']
       }
       const classification = classifyExpense(input)
       setResult(classification)
       setCurrentInput(input)
-      setShowOnboarding(false)
+      setViewMode('results')
     }
   }, [searchParams])
 
@@ -52,8 +96,8 @@ export function FundExpenseAllocation() {
       const params = new URLSearchParams()
       params.set('category', currentInput.expenseCategory)
       params.set('fundType', currentInput.fundType)
-      params.set('fundSize', currentInput.fundSize)
-      params.set('vintage', currentInput.vintageYear)
+      params.set('fundStage', currentInput.fundStage)
+      params.set('beneficiary', currentInput.primaryBeneficiary)
 
       router.replace(`${pathname}?${params.toString()}`, { scroll: false })
     }, 300)
@@ -70,143 +114,474 @@ export function FundExpenseAllocation() {
     const params = new URLSearchParams()
     params.set('category', currentInput.expenseCategory)
     params.set('fundType', currentInput.fundType)
-    params.set('fundSize', currentInput.fundSize)
-    params.set('vintage', currentInput.vintageYear)
+    params.set('fundStage', currentInput.fundStage)
+    params.set('beneficiary', currentInput.primaryBeneficiary)
 
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : ''
     return `${baseUrl}${pathname}?${params.toString()}`
   }, [currentInput, pathname])
 
+  // Handle classification
   const handleClassify = (input: ClassificationInput) => {
     const classification = classifyExpense(input)
     setResult(classification)
     setCurrentInput(input)
-    setShowOnboarding(false)
+    setViewMode('results')
+
+    // Track for gamification
+    gamification.trackAnalysis(
+      input.fundType,
+      input.fundStage,
+      input.expenseCategory,
+      classification.classification
+    )
+
+    // Check achievements
+    if (gamification.state.analysesCompleted === 0) {
+      gamification.unlockAchievement('first-classification')
+    }
+    if (classification.classification === 'fund-expense') {
+      gamification.unlockAchievement('fund-expense-finder')
+    }
+    if (classification.classification === 'management-expense') {
+      gamification.unlockAchievement('management-identifier')
+    }
+    if (classification.classification === 'case-by-case') {
+      gamification.unlockAchievement('gray-area-navigator')
+    }
+
+    // Fund type achievements
+    if (input.fundType === 'pe') gamification.unlockAchievement('pe-explorer')
+    if (input.fundType === 'vc') gamification.unlockAchievement('vc-explorer')
+    if (input.fundType === 'private-credit') gamification.unlockAchievement('credit-explorer')
+    if (input.fundType === 'real-estate') gamification.unlockAchievement('real-estate-explorer')
+
+    // Check for fund type master
+    if (gamification.state.fundTypesExplored.length >= 5) {
+      gamification.unlockAchievement('fund-type-master')
+    }
+    if (gamification.state.fundStagesExplored.length >= 4) {
+      gamification.unlockAchievement('stage-explorer')
+    }
+    if (gamification.state.analysesCompleted >= 4) {
+      gamification.unlockAchievement('five-analyses')
+    }
+    if (gamification.state.analysesCompleted >= 9) {
+      gamification.unlockAchievement('ten-analyses')
+    }
+    if (gamification.state.categoriesExplored.length >= 10) {
+      gamification.unlockAchievement('category-explorer')
+    }
+
+    // Add XP for completing analysis
+    gamification.addXP(15)
   }
 
+  // Journey completion handler
+  const handleJourneyComplete = (input: ClassificationInput) => {
+    handleClassify(input)
+    setShowConfetti(true)
+    setTimeout(() => setShowConfetti(false), 3000)
+  }
+
+  // Sample scenario handler
   const handleLoadSample = (sample: ClassificationInput) => {
+    gamification.trackSampleExplored(sample.expenseCategory)
+    if (gamification.state.samplesExplored.length >= 4) {
+      gamification.unlockAchievement('sample-explorer')
+    }
     handleClassify(sample)
   }
 
+  // Quiz handlers
+  const handleQuizComplete = (score: number, total: number) => {
+    setQuizScore({ score, total })
+    gamification.trackQuizComplete(score === total)
+    gamification.unlockAchievement('quiz-starter')
+    if (score === total) {
+      gamification.unlockAchievement('quiz-master')
+      setShowConfetti(true)
+      setTimeout(() => setShowConfetti(false), 3000)
+    }
+    gamification.addXP(score * 5)
+  }
+
+  const handleQuizRetry = () => {
+    setQuizScore(null)
+  }
+
+  // Export handler
   const handleExport = () => {
     if (result && currentInput) {
       exportToPDF(currentInput, result)
+      gamification.addXP(5)
     }
   }
 
+  // Reset handler
   const handleReset = () => {
     setResult(null)
     setCurrentInput(null)
-    setShowOnboarding(true)
+    setViewMode('welcome')
   }
 
-  return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="space-y-3">
-        <div className="flex items-start justify-between gap-4">
-          <h2 className="text-3xl font-bold tracking-tight">
-            Fund Expense Allocation Helper
-          </h2>
-          <ShareButton getShareableUrl={getShareableUrl} />
-        </div>
-        <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
-          Interactive tool to classify expenses as fund or management company expenses with detailed
-          market practice guidance.
-        </p>
-        <div className="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg">
-          <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-blue-900 dark:text-blue-100">
-            This is an educational tool. It does not constitute legal, tax, or financial advice.
-            Always consult with legal counsel and fund administrators before making expense allocation decisions.
-          </p>
-        </div>
-      </div>
+  // Render welcome screen
+  const renderWelcome = () => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-4xl mx-auto px-4 sm:px-0"
+    >
+      <Card className="border-2 border-primary/20 bg-gradient-to-br from-background to-muted/30">
+        <CardContent className="p-4 sm:p-6 md:p-8 text-center space-y-4 sm:space-y-6">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', delay: 0.2 }}
+            className="inline-block rounded-full bg-primary/10 p-4 sm:p-6"
+          >
+            <Scale className="h-10 w-10 sm:h-14 sm:w-14 text-primary" />
+          </motion.div>
 
-      {/* Sample Scenarios */}
-      <SampleScenariosSection onLoadSample={handleLoadSample} />
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold mb-2">Fund Expense Allocation Helper</h2>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
+              Learn whether expenses should be borne by the fund or management company,
+              with detailed guidance and market practice insights.
+            </p>
+          </div>
 
-      {/* Onboarding */}
-      {showOnboarding && (
-        <Card className="border-primary/50 bg-primary/5">
-          <CardContent className="pt-6">
-            <div className="flex items-start gap-4">
-              <Info className="h-6 w-6 text-primary flex-shrink-0 mt-0.5" />
-              <div>
-                <h3 className="font-semibold text-lg mb-3">
-                  Welcome to the Fund Expense Allocation Helper
-                </h3>
-                <p className="text-muted-foreground mb-4 leading-relaxed">
-                  This interactive tool helps emerging and established fund managers quickly understand whether a
-                  specific expense should typically be treated as a <strong>fund expense</strong> or a{' '}
-                  <strong>management company expense</strong>, and why.
-                </p>
-                <div className="grid md:grid-cols-3 gap-4 mt-4">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-base">Who is this for?</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-sm text-muted-foreground">
-                      CFOs, COOs, controllers, emerging managers, and fund operations teams navigating expense
-                      allocation decisions
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-base">What it does</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-sm text-muted-foreground">
-                      Provides classification guidance, market practice insights, LP sensitivities, and sample LPA
-                      language for 25+ expense types
-                    </CardContent>
-                  </Card>
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-base">How to use it</CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-sm text-muted-foreground">
-                      Select or describe an expense, provide context about your fund, and get instant guidance with
-                      exportable analysis
-                    </CardContent>
-                  </Card>
+          {/* Trust indicators */}
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 py-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
+              <span className="text-xs sm:text-sm">25+ expense categories</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <BookOpen className="h-4 w-4 text-blue-500 flex-shrink-0" />
+              <span className="text-xs sm:text-sm">LP sensitivity analysis</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Target className="h-4 w-4 text-amber-500 flex-shrink-0" />
+              <span className="text-xs sm:text-sm">Sample LPA language</span>
+            </div>
+          </div>
+
+          <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 max-w-2xl mx-auto">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setViewMode('journey')}
+              className="p-4 sm:p-6 rounded-xl border-2 border-primary bg-primary/5 text-left hover:bg-primary/10 transition-all"
+            >
+              <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                <div className="rounded-full bg-primary/20 p-1.5 sm:p-2">
+                  <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                 </div>
-                <div className="mt-4">
-                  <Button onClick={() => setShowOnboarding(false)} size="sm">
-                    Got it, let&apos;s get started →
-                  </Button>
+                <Badge className="bg-green-100 text-green-700 text-xs">Recommended</Badge>
+              </div>
+              <h3 className="font-semibold text-base sm:text-lg mb-1">Guided Journey</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Step-by-step walkthrough that teaches expense allocation while you analyze.
+              </p>
+              <div className="flex items-center gap-1 mt-2 sm:mt-3 text-xs text-amber-600">
+                <Zap className="h-3 w-3" />
+                <span>Earn up to 60 XP</span>
+              </div>
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => setViewMode('calculator')}
+              className="p-4 sm:p-6 rounded-xl border-2 border-muted-foreground/30 text-left hover:border-primary/50 transition-all"
+            >
+              <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                <div className="rounded-full bg-muted p-1.5 sm:p-2">
+                  <Calculator className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
                 </div>
               </div>
+              <h3 className="font-semibold text-base sm:text-lg mb-1">Quick Analysis</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Jump straight to the form if you already know expense allocation basics.
+              </p>
+            </motion.button>
+          </div>
+
+          {/* Quick actions */}
+          <div className="pt-4 sm:pt-6 border-t">
+            <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">Or try something else:</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setViewMode('quiz')}
+                className="gap-1.5 sm:gap-2 text-xs sm:text-sm"
+              >
+                <Star className="h-3 w-3" />
+                Test Your Knowledge
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  // Load a sample scenario
+                  const sampleInput: ClassificationInput = {
+                    expenseCategory: 'broken-deal-costs',
+                    fundType: 'pe',
+                    fundStage: 'post-close',
+                    primaryBeneficiary: 'fund'
+                  }
+                  handleLoadSample(sampleInput)
+                }}
+                className="gap-1.5 sm:gap-2 text-xs sm:text-sm"
+              >
+                <Play className="h-3 w-3" />
+                See Example
+              </Button>
             </div>
-          </CardContent>
-        </Card>
-      )}
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  )
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* Left Column - Input Form */}
-        <div className="lg:col-span-1">
-          <ExpenseInputForm onClassify={handleClassify} />
-        </div>
-
-        {/* Right Column - Results */}
-        <div className="lg:col-span-2">
-          {result && currentInput ? (
-            <ClassificationResults
-              result={result}
-              input={currentInput}
-              onExport={handleExport}
-              onReset={handleReset}
-            />
-          ) : (
-            <Card>
-              <CardContent className="py-12">
-                <div className="text-center text-muted-foreground">
-                  <p>Select an expense category and fund context to see classification guidance</p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-        </div>
+  // Render navigation
+  const renderNavigation = () => (
+    <div className="mb-4 sm:mb-6 -mx-4 sm:mx-0 px-4 sm:px-0 overflow-x-auto">
+      <div className="flex items-center gap-1.5 sm:gap-2 min-w-max sm:flex-wrap pb-2 sm:pb-0">
+        <Button
+          variant={viewMode === 'calculator' || viewMode === 'results' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setViewMode(result ? 'results' : 'calculator')}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+        >
+          <Calculator className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <span className="hidden xs:inline">Analyzer</span>
+          <span className="xs:hidden">Tool</span>
+        </Button>
+        <Button
+          variant={viewMode === 'journey' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setViewMode('journey')}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+        >
+          <GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          Learn
+        </Button>
+        <Button
+          variant={viewMode === 'quiz' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => {
+            setViewMode('quiz')
+            setQuizScore(null)
+          }}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+        >
+          <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          Quiz
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleReset}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+        >
+          <RotateCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <span className="hidden sm:inline">Start Over</span>
+          <span className="sm:hidden">Reset</span>
+        </Button>
       </div>
+    </div>
+  )
+
+  // Render XP bar
+  const renderXPBar = () => (
+    <Card className="mb-4 sm:mb-6">
+      <CardContent className="p-3 sm:p-4">
+        <XPProgressBar
+          xp={gamification.state.xp}
+          currentLevel={currentLevel}
+          nextLevel={nextLevel}
+        />
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-3 text-sm">
+          <div className="flex items-center gap-2">
+            <Trophy className="h-4 w-4 text-amber-500 flex-shrink-0" />
+            <span className="text-xs sm:text-sm text-muted-foreground">
+              {gamification.state.achievements.filter(a => a.unlocked).length} / {gamification.state.achievements.length} achievements
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
+            <BarChart3 className="h-4 w-4" />
+            <span>{gamification.state.analysesCompleted} analyses completed</span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
+
+  return (
+    <div className="space-y-4 sm:space-y-6">
+      {/* Confetti effect */}
+      <Confetti show={showConfetti} />
+
+      {/* Achievement popup */}
+      <AchievementPopup
+        achievement={gamification.showAchievement}
+        onClose={() => gamification.setShowAchievement(null)}
+      />
+
+      {/* Level up popup */}
+      <LevelUpPopup
+        level={gamification.showLevelUp}
+        onClose={() => gamification.setShowLevelUp(null)}
+      />
+
+      {/* Header */}
+      <div className="text-center relative px-4 sm:px-0">
+        <div className="flex justify-center gap-2 mb-3 sm:absolute sm:right-0 sm:top-0 sm:mb-0">
+          <ShareButton getShareableUrl={getShareableUrl} />
+        </div>
+        <h1 className="mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
+          Fund Expense Allocation
+        </h1>
+        <p className="mx-auto max-w-3xl text-sm sm:text-base md:text-lg text-muted-foreground">
+          Learn whether expenses should be fund or management company expenses with detailed guidance.
+        </p>
+      </div>
+
+      {/* Welcome screen or main content */}
+      {viewMode === 'welcome' ? (
+        renderWelcome()
+      ) : (
+        <>
+          {/* XP Progress Bar */}
+          {renderXPBar()}
+
+          {/* Navigation */}
+          {renderNavigation()}
+
+          {/* Main content based on view mode */}
+          <AnimatePresence mode="wait">
+            {viewMode === 'journey' && (
+              <motion.div
+                key="journey"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <InteractiveJourney
+                  onComplete={handleJourneyComplete}
+                  onSkip={() => setViewMode('calculator')}
+                  onXPEarned={(xp) => gamification.addXP(xp)}
+                />
+              </motion.div>
+            )}
+
+            {viewMode === 'quiz' && (
+              <motion.div
+                key="quiz"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="max-w-2xl mx-auto"
+              >
+                {quizScore ? (
+                  <QuizResults
+                    score={quizScore.score}
+                    total={quizScore.total}
+                    onRetry={handleQuizRetry}
+                    onClose={() => setViewMode('calculator')}
+                  />
+                ) : (
+                  <Quiz
+                    questions={EXPENSE_QUIZ_QUESTIONS.slice(0, 5)}
+                    onComplete={handleQuizComplete}
+                    onCorrectAnswer={() => gamification.addXP(5)}
+                    onClose={() => setViewMode('calculator')}
+                  />
+                )}
+              </motion.div>
+            )}
+
+            {viewMode === 'calculator' && (
+              <motion.div
+                key="calculator"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                {/* Educational disclaimer */}
+                <div className="flex items-start gap-2 p-2.5 sm:p-3 mb-4 sm:mb-6 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg">
+                  <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs sm:text-sm text-blue-900 dark:text-blue-100">
+                    This is an educational tool. Always consult with legal counsel and fund administrators
+                    before making expense allocation decisions.
+                  </p>
+                </div>
+
+                {/* Sample Scenarios */}
+                <SampleScenariosSection onLoadSample={handleLoadSample} />
+
+                <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mt-6">
+                  {/* Left Column - Input Form */}
+                  <div className="lg:col-span-1">
+                    <ExpenseInputForm onClassify={handleClassify} />
+                  </div>
+
+                  {/* Right Column - Results placeholder */}
+                  <div className="lg:col-span-2">
+                    <Card>
+                      <CardContent className="py-8 sm:py-12">
+                        <div className="text-center text-muted-foreground">
+                          <Scale className="h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-3 sm:mb-4 opacity-50" />
+                          <p className="text-sm sm:text-base">Select an expense category and provide fund context to see classification guidance</p>
+                          <p className="text-xs sm:text-sm mt-2 text-primary">Or try the Guided Journey for a step-by-step experience</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {viewMode === 'results' && result && currentInput && (
+              <motion.div
+                key="results"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                {/* Educational disclaimer */}
+                <div className="flex items-start gap-2 p-2.5 sm:p-3 mb-4 sm:mb-6 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg">
+                  <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs sm:text-sm text-blue-900 dark:text-blue-100">
+                    This is an educational tool. Always consult with legal counsel and fund administrators
+                    before making expense allocation decisions.
+                  </p>
+                </div>
+
+                <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                  {/* Left Column - Input Form */}
+                  <div className="lg:col-span-1">
+                    <ExpenseInputForm onClassify={handleClassify} />
+                  </div>
+
+                  {/* Right Column - Results */}
+                  <div className="lg:col-span-2">
+                    <ClassificationResults
+                      result={result}
+                      input={currentInput}
+                      onExport={handleExport}
+                      onReset={handleReset}
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </>
+      )}
     </div>
   )
 }
