@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+import { motion, AnimatePresence } from 'framer-motion'
 import { FundInputs, FeePhase, FeeCalculationResult, FundType } from './types'
 import { calculateManagementFees, validateFeePhases, generateDefaultFeePhases } from './fee-calculator'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -9,7 +10,26 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { InfoPopover } from '@/components/ui/info-popover'
-import { AlertCircle, RotateCcw } from 'lucide-react'
+import { Progress } from '@/components/ui/progress'
+import { Badge } from '@/components/ui/badge'
+import {
+  AlertCircle,
+  RotateCcw,
+  Sparkles,
+  Trophy,
+  BookOpen,
+  HelpCircle,
+  Play,
+  Calculator,
+  Target,
+  Zap,
+  GraduationCap,
+  BarChart3,
+  ChevronRight,
+  Star,
+  CheckCircle2,
+  X
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { FeePhaseEditor } from './fee-phase-editor'
 import { SummaryCards } from './summary-cards'
@@ -18,6 +38,32 @@ import { ResultsTable } from './results-table'
 import { ExportSection } from './export-section'
 import { DisclaimerBlock } from '@/components/tools/shared'
 import { ShareButton } from '@/components/tools/share-button'
+
+// Gamification imports
+import {
+  useGamification,
+  AchievementPopup,
+  LevelUpPopup,
+  XPProgressBar,
+  LEVELS,
+  GamificationState
+} from './gamification'
+import { JourneyMode } from './journey-mode'
+import { Quiz, QuizResults, FEE_QUIZ_QUESTIONS } from './quiz'
+import { Confetti } from './visual-effects'
+import { Glossary } from './glossary'
+import { FAQSection } from './faq-section'
+import { ResultsWalkthrough } from './results-walkthrough'
+import { EnhancedScenarios } from './enhanced-scenarios'
+import {
+  TrustIndicators,
+  LearningOutcomes,
+  OperationalCostBreakdown,
+  LPImpactCalculator,
+  CaseStudies,
+  FundraisingTips,
+  IndustryEvolution
+} from './insights-content'
 
 const fundTypeOptions: FundType[] = [
   'Private Equity',
@@ -47,10 +93,24 @@ const DEFAULT_INPUTS: FundInputs = {
   navGrowthRate: 0
 }
 
+type ViewMode = 'calculator' | 'journey' | 'quiz' | 'glossary' | 'faq' | 'scenarios' | 'walkthrough'
+
 export function ManagementFeeCalculator() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
+
+  // View mode state
+  const [viewMode, setViewMode] = useState<ViewMode>('journey')
+  const [showConfetti, setShowConfetti] = useState(false)
+  const [quizScore, setQuizScore] = useState<{ score: number; total: number } | null>(null)
+  const [showWelcome, setShowWelcome] = useState(true)
+  const [lastSaved, setLastSaved] = useState<Date | null>(null)
+
+  // Gamification
+  const gamification = useGamification()
+  const currentLevel = gamification.getCurrentLevel()
+  const nextLevel = gamification.getNextLevel()
 
   // Parse initial state from URL or use defaults
   const getInitialInputs = (): FundInputs => {
@@ -76,11 +136,22 @@ export function ManagementFeeCalculator() {
   const [result, setResult] = useState<FeeCalculationResult | null>(null)
   const [validationErrors, setValidationErrors] = useState<string[]>([])
 
-  // Initialize with default phases
+  // Initialize with default phases and check for first visit
   useEffect(() => {
     const defaultPhases = generateDefaultFeePhases(fundInputs)
     setFeePhases(defaultPhases)
-  }, []) // Only run on mount
+
+    // Check for first visit achievement
+    if (!gamification.state.achievements.find(a => a.id === 'early-bird')?.unlocked) {
+      gamification.unlockAchievement('early-bird')
+    }
+
+    // Check if user completed journey before
+    if (gamification.state.tutorialCompleted) {
+      setViewMode('calculator')
+      setShowWelcome(false)
+    }
+  }, [])
 
   // Recalculate when inputs or phases change
   useEffect(() => {
@@ -90,10 +161,27 @@ export function ManagementFeeCalculator() {
     if (validation.valid && feePhases.length > 0) {
       const calculatedResult = calculateManagementFees(fundInputs, feePhases)
       setResult(calculatedResult)
+      setLastSaved(new Date())
+
+      // Check achievements
+      if (fundInputs.fundSize >= 100) {
+        gamification.unlockAchievement('big-fund')
+      }
+      if (calculatedResult.feesAsPercentOfCommitments < 15) {
+        gamification.unlockAchievement('fee-friendly')
+      }
+      if (feePhases.length >= 3) {
+        gamification.unlockAchievement('phase-tinkerer')
+      }
     } else {
       setResult(null)
     }
   }, [fundInputs, feePhases])
+
+  // Track fund type exploration
+  useEffect(() => {
+    gamification.trackFundTypeExplored(fundInputs.fundType)
+  }, [fundInputs.fundType])
 
   // Update URL when inputs change (debounced)
   useEffect(() => {
@@ -134,175 +222,621 @@ export function ManagementFeeCalculator() {
     setFeePhases(generateDefaultFeePhases(DEFAULT_INPUTS))
   }
 
-  return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div className="space-y-3">
-        <div className="flex items-start justify-between gap-4">
-          <h2 className="text-3xl font-bold tracking-tight">Management Fee Calculator</h2>
-          <ShareButton getShareableUrl={getShareableUrl} />
-        </div>
-        <p className="text-lg text-muted-foreground leading-relaxed max-w-3xl">
-          Model your fund-level management fees over the life of the fund. Built for emerging managers
-          who want to stress test fee levels before finalizing their LPA.
-        </p>
-        <div className="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg">
-          <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-blue-900 dark:text-blue-100">
-            This is a simplified educational tool for modeling management fees. Actual fee calculations
-            may be more complex depending on your LPA terms. Always consult with legal counsel and fund
-            administrators before finalizing fee structures.
-          </p>
-        </div>
-      </div>
+  // Journey mode handlers
+  const handleJourneyComplete = (inputs: FundInputs, phases: FeePhase[]) => {
+    setFundInputs(inputs)
+    setFeePhases(phases)
+    setViewMode('calculator')
+    gamification.completeTutorial()
+    setShowConfetti(true)
+    setTimeout(() => setShowConfetti(false), 3000)
+  }
 
-      <div className="grid lg:grid-cols-3 gap-8">
-        {/* Left Column - Inputs */}
-        <div className="lg:col-span-1 space-y-6">
-          {/* Fund Basics */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg">Fund Basics</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="fund-type" className="text-sm">Fund Type</Label>
-                  <InfoPopover>
-                    {fundTypeDescriptions[fundInputs.fundType]}
-                  </InfoPopover>
-                </div>
-                <Select
-                  value={fundInputs.fundType}
-                  onValueChange={(value) => handleFundInputChange({ fundType: value as FundType })}
-                >
-                  <SelectTrigger id="fund-type">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {fundTypeOptions.map(type => (
-                      <SelectItem key={type} value={type}>{type}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+  const handleJourneySkip = () => {
+    setViewMode('calculator')
+  }
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="fund-size" className="text-sm">Target Fund Size ($ millions)</Label>
-                  <InfoPopover>
-                    Total committed capital from all LPs and the GP. This is the amount you are targeting to raise, not the amount called or invested. Emerging manager funds typically range from $10M to $100M.
-                  </InfoPopover>
-                </div>
-                <Input
-                  id="fund-size"
-                  type="number"
-                  min={1}
-                  value={fundInputs.fundSize}
-                  onChange={(e) => handleFundInputChange({ fundSize: parseFloat(e.target.value) || 50 })}
-                />
-                <p className="text-xs text-muted-foreground">Typical emerging fund: $10M - $100M</p>
-              </div>
+  // Quiz handlers
+  const handleQuizComplete = (score: number, total: number) => {
+    setQuizScore({ score, total })
+    if (score === total) {
+      gamification.unlockAchievement('perfect-score')
+      setShowConfetti(true)
+      setTimeout(() => setShowConfetti(false), 3000)
+    }
+  }
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="fund-term" className="text-sm">Fund Term (years)</Label>
-                  <InfoPopover>
-                    Total life of the fund before final liquidation, including any extensions. Most PE/VC funds are 10 years with two 1-year extensions possible. Credit and real estate funds may be shorter.
-                  </InfoPopover>
-                </div>
-                <Input
-                  id="fund-term"
-                  type="number"
-                  min={1}
-                  max={20}
-                  value={fundInputs.fundTerm}
-                  onChange={(e) => handleFundInputChange({ fundTerm: parseInt(e.target.value) || 10 })}
-                />
-              </div>
+  const handleQuizRetry = () => {
+    setQuizScore(null)
+  }
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="investment-period" className="text-sm">Investment Period (years)</Label>
-                  <InfoPopover>
-                    The period during which the fund can make new investments. Typically 3-5 years for PE/VC. Management fees are often higher during this period and based on commitments, then may step down to a lower rate on invested capital.
-                  </InfoPopover>
-                </div>
-                <Input
-                  id="investment-period"
-                  type="number"
-                  min={1}
-                  max={fundInputs.fundTerm}
-                  value={fundInputs.investmentPeriod}
-                  onChange={(e) => handleFundInputChange({ investmentPeriod: parseInt(e.target.value) || 4 })}
-                />
-              </div>
+  // Scenario selection handler
+  const handleScenarioSelect = (inputs: FundInputs, phases: FeePhase[]) => {
+    setFundInputs(inputs)
+    setFeePhases(phases)
+    gamification.trackScenarioExplored(inputs.fundType + '-' + inputs.fundSize)
+    setViewMode('calculator')
+  }
 
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Label htmlFor="nav-growth" className="text-sm">Annual NAV Growth Rate (%) - Optional</Label>
-                  <InfoPopover>
-                    Assumed annual growth in portfolio value. Only affects NAV-based fee calculations. Leave at 0 for conservative estimates. Typical VC target IRRs are 20-30%, but realized NAV growth varies significantly by vintage and strategy.
-                  </InfoPopover>
-                </div>
-                <Input
-                  id="nav-growth"
-                  type="number"
-                  min={-20}
-                  max={50}
-                  step={1}
-                  value={fundInputs.navGrowthRate || 0}
-                  onChange={(e) => handleFundInputChange({ navGrowthRate: parseFloat(e.target.value) || 0 })}
-                />
-                <p className="text-xs text-muted-foreground">Use 0% for flat/conservative model</p>
-              </div>
-            </CardContent>
-          </Card>
+  // Render welcome/mode selection
+  const renderWelcome = () => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="max-w-4xl mx-auto px-4 sm:px-0"
+    >
+      <Card className="border-2 border-primary/20 bg-gradient-to-br from-background to-muted/30">
+        <CardContent className="p-4 sm:p-6 md:p-8 text-center space-y-4 sm:space-y-6">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', delay: 0.2 }}
+            className="inline-block rounded-full bg-primary/10 p-4 sm:p-6"
+          >
+            <Calculator className="h-8 w-8 sm:h-12 sm:w-12 text-primary" />
+          </motion.div>
 
-          {/* Fee Phase Editor */}
-          <FeePhaseEditor
-            phases={feePhases}
-            fundTerm={fundInputs.fundTerm}
-            onPhasesChange={setFeePhases}
-            errors={validationErrors}
-          />
-
-          {/* Reset Button */}
-          <div className="flex justify-center">
-            <Button variant="outline" onClick={resetToDefaults}>
-              <RotateCcw className="h-4 w-4 mr-2" />
-              Reset to Defaults
-            </Button>
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold mb-2">Management Fee Calculator</h2>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
+              Model your fund-level management fees and understand how different structures impact GP and LP economics.
+            </p>
           </div>
-        </div>
 
-        {/* Right Column - Results */}
-        <div className="lg:col-span-2 space-y-6">
-          {result ? (
-            <>
-              <SummaryCards result={result} fundSize={fundInputs.fundSize} />
-              <ResultsChart yearlyData={result.yearlyData} />
-              <ResultsTable yearlyData={result.yearlyData} />
-              <ExportSection fundInputs={fundInputs} result={result} feePhases={feePhases} />
-              <DisclaimerBlock
-                additionalDisclaimer="Always consult with legal counsel and fund administrators before finalizing your LPA fee terms."
-              />
-            </>
-          ) : (
-            <Card>
-              <CardContent className="py-12">
-                <div className="text-center text-muted-foreground">
-                  <AlertCircle className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Configure your fund basics and fee schedule to see results</p>
-                  {validationErrors.length > 0 && (
-                    <p className="mt-2 text-sm text-destructive">Please fix validation errors to continue</p>
-                  )}
+          {/* Trust indicators */}
+          <TrustIndicators />
+
+          <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 max-w-2xl mx-auto">
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => {
+                setShowWelcome(false)
+                setViewMode('journey')
+              }}
+              className="p-4 sm:p-6 rounded-xl border-2 border-primary bg-primary/5 text-left hover:bg-primary/10 transition-all"
+            >
+              <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                <div className="rounded-full bg-primary/20 p-1.5 sm:p-2">
+                  <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6 text-primary" />
                 </div>
-              </CardContent>
-            </Card>
+                <Badge className="bg-green-100 text-green-700 text-xs">Recommended</Badge>
+              </div>
+              <h3 className="font-semibold text-base sm:text-lg mb-1">Guided Journey</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Learn fee concepts step-by-step while building your model. Perfect for first-timers.
+              </p>
+              <div className="flex items-center gap-1 mt-2 sm:mt-3 text-xs text-amber-600">
+                <Zap className="h-3 w-3" />
+                <span>Earn up to 200 XP</span>
+              </div>
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => {
+                setShowWelcome(false)
+                setViewMode('calculator')
+              }}
+              className="p-4 sm:p-6 rounded-xl border-2 border-muted-foreground/30 text-left hover:border-primary/50 transition-all"
+            >
+              <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                <div className="rounded-full bg-muted p-1.5 sm:p-2">
+                  <Calculator className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
+                </div>
+              </div>
+              <h3 className="font-semibold text-base sm:text-lg mb-1">Jump to Calculator</h3>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Skip the tutorial and go straight to modeling. Best if you're already familiar with fee structures.
+              </p>
+            </motion.button>
+          </div>
+
+          {/* Learning outcomes */}
+          <div className="text-left">
+            <LearningOutcomes />
+          </div>
+
+          {/* Quick start scenarios */}
+          <div className="pt-4 sm:pt-6 border-t">
+            <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">Or explore a sample scenario:</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {['Emerging VC', 'PE Fund', 'Private Credit'].map((name) => (
+                <Button
+                  key={name}
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setShowWelcome(false)
+                    setViewMode('scenarios')
+                  }}
+                  className="gap-1.5 sm:gap-2 text-xs sm:text-sm"
+                >
+                  <Play className="h-3 w-3" />
+                  {name}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  )
+
+  // Render navigation tabs
+  const renderNavigation = () => (
+    <div className="mb-4 sm:mb-6 -mx-4 sm:mx-0 px-4 sm:px-0 overflow-x-auto">
+      <div className="flex items-center gap-1.5 sm:gap-2 min-w-max sm:flex-wrap pb-2 sm:pb-0">
+        <Button
+          variant={viewMode === 'calculator' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setViewMode('calculator')}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+        >
+          <Calculator className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <span className="hidden xs:inline">Calculator</span>
+          <span className="xs:hidden">Calc</span>
+        </Button>
+        <Button
+          variant={viewMode === 'journey' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setViewMode('journey')}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+        >
+          <GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          Learn
+        </Button>
+        <Button
+          variant={viewMode === 'scenarios' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setViewMode('scenarios')}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+        >
+          <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <span className="hidden xs:inline">Scenarios</span>
+          <span className="xs:hidden">Demo</span>
+        </Button>
+        <Button
+          variant={viewMode === 'quiz' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => {
+            setViewMode('quiz')
+            setQuizScore(null)
+          }}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+        >
+          <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          Quiz
+        </Button>
+        <Button
+          variant={viewMode === 'glossary' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setViewMode('glossary')}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+        >
+          <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <span className="hidden sm:inline">Glossary</span>
+          <span className="sm:hidden">Terms</span>
+        </Button>
+        <Button
+          variant={viewMode === 'faq' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setViewMode('faq')}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+        >
+          <HelpCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          FAQ
+        </Button>
+      </div>
+    </div>
+  )
+
+  // Render XP bar
+  const renderXPBar = () => (
+    <Card className="mb-4 sm:mb-6">
+      <CardContent className="p-3 sm:p-4">
+        <XPProgressBar
+          xp={gamification.state.xp}
+          currentLevel={currentLevel}
+          nextLevel={nextLevel}
+        />
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-3 text-sm">
+          <div className="flex items-center gap-2">
+            <Trophy className="h-4 w-4 text-amber-500 flex-shrink-0" />
+            <span className="text-xs sm:text-sm text-muted-foreground">
+              {gamification.state.achievements.filter(a => a.unlocked).length} / {gamification.state.achievements.length} achievements
+            </span>
+          </div>
+          {result && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setViewMode('walkthrough')}
+              className="gap-1.5 sm:gap-2 text-primary text-xs sm:text-sm h-8 px-2 sm:px-3 w-full sm:w-auto justify-center sm:justify-start"
+            >
+              <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              Understand Results
+            </Button>
           )}
         </div>
+      </CardContent>
+    </Card>
+  )
+
+  return (
+    <div className="space-y-6">
+      {/* Confetti effect */}
+      <Confetti show={showConfetti} />
+
+      {/* Achievement popup */}
+      <AchievementPopup
+        achievement={gamification.showAchievement}
+        onClose={() => gamification.setShowAchievement(null)}
+      />
+
+      {/* Level up popup */}
+      <LevelUpPopup
+        level={gamification.showLevelUp}
+        onClose={() => gamification.setShowLevelUp(null)}
+      />
+
+      {/* Header */}
+      <div className="text-center relative px-4 sm:px-0">
+        <div className="flex justify-center gap-2 mb-3 sm:absolute sm:right-0 sm:top-0 sm:mb-0">
+          <ShareButton getShareableUrl={getShareableUrl} />
+        </div>
+        <h1 className="mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
+          Management Fee Calculator
+        </h1>
+        <p className="mx-auto max-w-3xl text-sm sm:text-base md:text-lg text-muted-foreground">
+          Model fund-level management fees and understand how different structures impact economics.
+        </p>
       </div>
+
+      {/* Welcome screen or main content */}
+      {showWelcome ? (
+        renderWelcome()
+      ) : (
+        <>
+          {/* XP Progress Bar */}
+          {renderXPBar()}
+
+          {/* Navigation tabs */}
+          {renderNavigation()}
+
+          {/* Main content based on view mode */}
+          <AnimatePresence mode="wait">
+            {viewMode === 'journey' && (
+              <motion.div
+                key="journey"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <JourneyMode
+                  onComplete={handleJourneyComplete}
+                  onSkip={handleJourneySkip}
+                  onXPEarned={(xp) => gamification.addXP(xp)}
+                  onAchievementCheck={(type, value) => {
+                    if (type === 'journey_step') {
+                      if (value === 1) gamification.unlockAchievement('first-steps')
+                      if (value === 2) gamification.unlockAchievement('fee-fundamentals')
+                      if (value === 4) gamification.unlockAchievement('phase-master')
+                      if (value === 5) gamification.unlockAchievement('basis-believer')
+                    }
+                  }}
+                />
+              </motion.div>
+            )}
+
+            {viewMode === 'quiz' && (
+              <motion.div
+                key="quiz"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="max-w-2xl mx-auto"
+              >
+                {quizScore ? (
+                  <QuizResults
+                    score={quizScore.score}
+                    total={quizScore.total}
+                    onRetry={handleQuizRetry}
+                    onClose={() => setViewMode('calculator')}
+                  />
+                ) : (
+                  <Quiz
+                    questions={FEE_QUIZ_QUESTIONS.slice(0, 5)}
+                    onComplete={handleQuizComplete}
+                    onCorrectAnswer={() => gamification.trackQuizCorrect()}
+                    onClose={() => setViewMode('calculator')}
+                  />
+                )}
+              </motion.div>
+            )}
+
+            {viewMode === 'glossary' && (
+              <motion.div
+                key="glossary"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="max-w-3xl mx-auto"
+              >
+                <Glossary
+                  onTermRead={(termId) => gamification.trackGlossaryRead(termId)}
+                  onClose={() => setViewMode('calculator')}
+                />
+              </motion.div>
+            )}
+
+            {viewMode === 'faq' && (
+              <motion.div
+                key="faq"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="max-w-3xl mx-auto"
+              >
+                <FAQSection
+                  onFaqRead={(faqId) => gamification.trackFaqRead(faqId)}
+                  onClose={() => setViewMode('calculator')}
+                />
+              </motion.div>
+            )}
+
+            {viewMode === 'scenarios' && (
+              <motion.div
+                key="scenarios"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <EnhancedScenarios
+                  onSelectScenario={handleScenarioSelect}
+                  onClose={() => setViewMode('calculator')}
+                  onXPEarned={(xp) => gamification.addXP(xp)}
+                />
+              </motion.div>
+            )}
+
+            {viewMode === 'walkthrough' && result && (
+              <motion.div
+                key="walkthrough"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="max-w-3xl mx-auto"
+              >
+                <ResultsWalkthrough
+                  result={result}
+                  fundInputs={fundInputs}
+                  feePhases={feePhases}
+                  onClose={() => setViewMode('calculator')}
+                  onXPEarned={(xp) => gamification.addXP(xp)}
+                />
+              </motion.div>
+            )}
+
+            {viewMode === 'calculator' && (
+              <motion.div
+                key="calculator"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                {/* Educational disclaimer */}
+                <div className="flex items-start gap-2 p-2.5 sm:p-3 mb-4 sm:mb-6 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg">
+                  <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+                  <p className="text-xs sm:text-sm text-blue-900 dark:text-blue-100">
+                    This is an educational tool for modeling management fees. Actual fee calculations
+                    may be more complex depending on your LPA terms. Always consult with legal counsel.
+                  </p>
+                </div>
+
+                <div className="grid lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+                  {/* Left Column - Inputs */}
+                  <div className="lg:col-span-1 space-y-4 sm:space-y-6">
+                    {/* Fund Basics */}
+                    <Card>
+                      <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
+                        <CardTitle className="text-base sm:text-lg flex flex-wrap items-center gap-2">
+                          Fund Basics
+                          <Badge variant="secondary" className="text-xs">
+                            <Sparkles className="h-3 w-3 mr-1" />
+                            +5 XP
+                          </Badge>
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0 space-y-3 sm:space-y-4">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor="fund-type" className="text-sm">Fund Type</Label>
+                            <InfoPopover>
+                              {fundTypeDescriptions[fundInputs.fundType]}
+                            </InfoPopover>
+                          </div>
+                          <Select
+                            value={fundInputs.fundType}
+                            onValueChange={(value) => handleFundInputChange({ fundType: value as FundType })}
+                          >
+                            <SelectTrigger id="fund-type">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {fundTypeOptions.map(type => (
+                                <SelectItem key={type} value={type}>{type}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor="fund-size" className="text-sm">Target Fund Size ($ millions)</Label>
+                            <InfoPopover>
+                              Total committed capital from all LPs and the GP. Emerging manager funds typically range from $10M to $100M.
+                            </InfoPopover>
+                          </div>
+                          <Input
+                            id="fund-size"
+                            type="number"
+                            min={1}
+                            value={fundInputs.fundSize}
+                            onChange={(e) => handleFundInputChange({ fundSize: parseFloat(e.target.value) || 50 })}
+                          />
+                          <p className="text-xs text-muted-foreground">Typical emerging fund: $10M - $100M</p>
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor="fund-term" className="text-sm">Fund Term (years)</Label>
+                            <InfoPopover>
+                              Total life of the fund before final liquidation, including any extensions. Most PE/VC funds are 10 years.
+                            </InfoPopover>
+                          </div>
+                          <Input
+                            id="fund-term"
+                            type="number"
+                            min={1}
+                            max={20}
+                            value={fundInputs.fundTerm}
+                            onChange={(e) => handleFundInputChange({ fundTerm: parseInt(e.target.value) || 10 })}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor="investment-period" className="text-sm">Investment Period (years)</Label>
+                            <InfoPopover>
+                              The period during which the fund can make new investments. Typically 3-5 years for PE/VC.
+                            </InfoPopover>
+                          </div>
+                          <Input
+                            id="investment-period"
+                            type="number"
+                            min={1}
+                            max={fundInputs.fundTerm}
+                            value={fundInputs.investmentPeriod}
+                            onChange={(e) => handleFundInputChange({ investmentPeriod: parseInt(e.target.value) || 4 })}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <Label htmlFor="nav-growth" className="text-sm">Annual NAV Growth Rate (%) - Optional</Label>
+                            <InfoPopover>
+                              Assumed annual growth in portfolio value. Only affects NAV-based fee calculations. Leave at 0 for conservative estimates.
+                            </InfoPopover>
+                          </div>
+                          <Input
+                            id="nav-growth"
+                            type="number"
+                            min={-20}
+                            max={50}
+                            step={1}
+                            value={fundInputs.navGrowthRate || 0}
+                            onChange={(e) => handleFundInputChange({ navGrowthRate: parseFloat(e.target.value) || 0 })}
+                          />
+                          <p className="text-xs text-muted-foreground">Use 0% for flat/conservative model</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Fee Phase Editor */}
+                    <FeePhaseEditor
+                      phases={feePhases}
+                      fundTerm={fundInputs.fundTerm}
+                      onPhasesChange={setFeePhases}
+                      errors={validationErrors}
+                    />
+
+                    {/* Reset Button */}
+                    <div className="flex justify-center">
+                      <Button variant="outline" size="sm" onClick={resetToDefaults} className="text-xs sm:text-sm">
+                        <RotateCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                        Reset to Defaults
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Right Column - Results */}
+                  <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+                    {result ? (
+                      <>
+                        {/* Results summary with walkthrough button */}
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+                          <h3 className="text-base sm:text-lg font-semibold">Results</h3>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setViewMode('walkthrough')
+                              gamification.addXP(5)
+                            }}
+                            className="gap-1.5 sm:gap-2 text-xs sm:text-sm w-full sm:w-auto"
+                          >
+                            <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            Explain Results
+                          </Button>
+                        </div>
+
+                        <SummaryCards result={result} fundSize={fundInputs.fundSize} />
+                        <ResultsChart yearlyData={result.yearlyData} />
+                        <ResultsTable yearlyData={result.yearlyData} />
+
+                        {/* Operational Cost Reality Check */}
+                        <OperationalCostBreakdown
+                          fundSize={fundInputs.fundSize}
+                          feeRate={feePhases[0]?.feeRate || 2}
+                        />
+
+                        {/* LP Impact Calculator */}
+                        <LPImpactCalculator
+                          fundSize={fundInputs.fundSize}
+                          totalFees={result.totalFees}
+                          fundTerm={fundInputs.fundTerm}
+                        />
+
+                        {/* Fundraising Tips based on fee level */}
+                        <FundraisingTips feesAsPercent={result.feesAsPercentOfCommitments} />
+
+                        {/* Case Studies */}
+                        <CaseStudies />
+
+                        {/* Industry Evolution */}
+                        <Card>
+                          <CardContent className="p-4 sm:p-6">
+                            <IndustryEvolution />
+                          </CardContent>
+                        </Card>
+
+                        <ExportSection fundInputs={fundInputs} result={result} feePhases={feePhases} />
+                        <DisclaimerBlock
+                          additionalDisclaimer="Always consult with legal counsel and fund administrators before finalizing your LPA fee terms."
+                        />
+                      </>
+                    ) : (
+                      <Card>
+                        <CardContent className="py-8 sm:py-12">
+                          <div className="text-center text-muted-foreground">
+                            <AlertCircle className="h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-3 sm:mb-4 opacity-50" />
+                            <p className="text-sm sm:text-base">Configure your fund basics and fee schedule to see results</p>
+                            {validationErrors.length > 0 && (
+                              <p className="mt-2 text-xs sm:text-sm text-destructive">Please fix validation errors to continue</p>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </>
+      )}
     </div>
   )
 }
