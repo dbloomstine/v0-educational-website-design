@@ -212,6 +212,7 @@ export function SiteHeader() {
                     className="flex items-start gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent/50"
                   >
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent/60 mt-0.5">
+                      {tool.icon === 'Rocket' && <Rocket className="h-4 w-4 text-foreground" />}
                       {tool.icon === 'Calendar' && <Calendar className="h-4 w-4 text-foreground" />}
                       {tool.icon === 'DollarSign' && <DollarSign className="h-4 w-4 text-foreground" />}
                       {tool.icon === 'Building' && <Building className="h-4 w-4 text-foreground" />}
