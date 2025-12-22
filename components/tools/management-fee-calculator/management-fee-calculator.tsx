@@ -87,10 +87,10 @@ export function ManagementFeeCalculator() {
   const router = useRouter()
   const pathname = usePathname()
 
-  // View mode state
+  // View mode state - start directly in journey mode
   const [viewMode, setViewMode] = useState<ViewMode>('journey')
   const [quizScore, setQuizScore] = useState<{ score: number; total: number } | null>(null)
-  const [showWelcome, setShowWelcome] = useState(true)
+  const [showJourney, setShowJourney] = useState(true) // Full-screen journey on first load
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
 
   // Parse initial state from URL or use defaults
@@ -180,12 +180,17 @@ export function ManagementFeeCalculator() {
   const handleJourneyComplete = (inputs: FundInputs, phases: FeePhase[]) => {
     setFundInputs(inputs)
     setFeePhases(phases)
+    setShowJourney(false)
     setViewMode('calculator')
   }
 
   const handleJourneySkip = () => {
+    setShowJourney(false)
     setViewMode('calculator')
   }
+
+  // Check if user has existing data (returning user)
+  const hasExistingData = feePhases.length > 0 && result !== null
 
   // Quiz handlers
   const handleQuizComplete = (score: number, total: number) => {
@@ -389,6 +394,17 @@ export function ManagementFeeCalculator() {
   )
 
 
+  // Show full-screen journey mode first
+  if (showJourney) {
+    return (
+      <JourneyMode
+        onComplete={handleJourneyComplete}
+        onSkip={handleJourneySkip}
+        existingData={hasExistingData ? { inputs: fundInputs, phases: feePhases } : null}
+      />
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -404,31 +420,28 @@ export function ManagementFeeCalculator() {
         </p>
       </div>
 
-      {/* Welcome screen or main content */}
-      {showWelcome ? (
-        renderWelcome()
-      ) : (
-        <>
-          {/* Navigation tabs */}
-          {renderNavigation()}
+      {/* Navigation tabs */}
+      {renderNavigation()}
 
-          {/* Main content based on view mode */}
-          <AnimatePresence mode="wait">
-            {viewMode === 'journey' && (
-              <motion.div
-                key="journey"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-              >
-                <JourneyMode
-                  onComplete={handleJourneyComplete}
-                  onSkip={handleJourneySkip}
-                />
-              </motion.div>
-            )}
+      {/* Main content based on view mode */}
+      <AnimatePresence mode="wait">
+        {viewMode === 'journey' && (
+          <motion.div
+            key="journey"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <div className="text-center py-12">
+              <p className="text-muted-foreground mb-4">Want to go through the guided setup again?</p>
+              <Button onClick={() => setShowJourney(true)} size="lg">
+                Start Guided Journey
+              </Button>
+            </div>
+          </motion.div>
+        )}
 
-            {viewMode === 'quiz' && (
+        {viewMode === 'quiz' && (
               <motion.div
                 key="quiz"
                 initial={{ opacity: 0, y: 20 }}
@@ -788,8 +801,6 @@ export function ManagementFeeCalculator() {
               </motion.div>
             )}
           </AnimatePresence>
-        </>
-      )}
     </div>
   )
 }
