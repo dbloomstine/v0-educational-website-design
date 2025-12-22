@@ -21,6 +21,11 @@ import {
   createPDFTableSection,
   type PDFSection
 } from '@/lib/exports'
+import {
+  downloadExcel,
+  createExcelSection,
+  type ExcelSection
+} from '@/lib/exports'
 
 interface ExportSectionProps {
   fundInputs: FundInputs
@@ -31,6 +36,7 @@ interface ExportSectionProps {
 export function ExportSection({ fundInputs, result, feePhases }: ExportSectionProps) {
   const [copied, setCopied] = useState(false)
   const [csvLoading, setCsvLoading] = useState(false)
+  const [excelLoading, setExcelLoading] = useState(false)
   const [pdfLoading, setPdfLoading] = useState(false)
 
   const summary = generateFeeSummary(fundInputs, result)
@@ -52,19 +58,19 @@ export function ExportSection({ fundInputs, result, feePhases }: ExportSectionPr
         // Fund Summary
         createKeyValueSection('Fund Summary', {
           'Fund Type': fundInputs.fundType,
-          'Target Fund Size': `$${fundInputs.fundSize}M`,
+          'Target Fund Size': formatCurrency(fundInputs.fundSize, 2) + 'M',
           'Fund Term': `${fundInputs.fundTerm} years`,
           'Investment Period': `${fundInputs.investmentPeriod} years`,
-          'NAV Growth Rate': `${fundInputs.navGrowthRate || 0}%`
+          'NAV Growth Rate': formatPercent(fundInputs.navGrowthRate || 0, 1)
         }),
 
         // Total Fees
         createKeyValueSection('Total Fee Summary', {
-          'Total Management Fees': `$${result.totalFees.toFixed(2)}M`,
+          'Total Management Fees': formatCurrency(result.totalFees, 2) + 'M',
           'Average Annual Fee': formatPercent(result.averageAnnualFeePercent, 2),
           'Total Fees as % of Commitments': formatPercent(result.feesAsPercentOfCommitments, 2),
-          'Fees in First Half': `$${result.firstHalfFees.toFixed(2)}M`,
-          'Fees in Second Half': `$${result.secondHalfFees.toFixed(2)}M`
+          'Fees in First Half': formatCurrency(result.firstHalfFees, 2) + 'M',
+          'Fees in Second Half': formatCurrency(result.secondHalfFees, 2) + 'M'
         }),
 
         // Fee Phases Table
@@ -75,7 +81,7 @@ export function ExportSection({ fundInputs, result, feePhases }: ExportSectionPr
             `Phase ${idx + 1}`,
             `${phase.startYear} - ${phase.endYear}`,
             phase.feeBase,
-            `${phase.feeRate.toFixed(2)}%`
+            formatPercent(phase.feeRate, 2)
           ])
         ),
 
@@ -86,11 +92,11 @@ export function ExportSection({ fundInputs, result, feePhases }: ExportSectionPr
           result.yearlyData.map(data => [
             String(data.year),
             data.feeBase,
-            `$${data.baseAmount.toFixed(2)}`,
-            `${data.feeRate.toFixed(2)}%`,
-            `$${data.feeAmount.toFixed(2)}`,
-            `$${data.cumulativeFees.toFixed(2)}`,
-            `${data.feesAsPercentOfCommitments.toFixed(2)}%`
+            formatCurrency(data.baseAmount, 2),
+            formatPercent(data.feeRate, 2),
+            formatCurrency(data.feeAmount, 2),
+            formatCurrency(data.cumulativeFees, 2),
+            formatPercent(data.feesAsPercentOfCommitments, 2)
           ])
         )
       ]
@@ -105,6 +111,85 @@ export function ExportSection({ fundInputs, result, feePhases }: ExportSectionPr
     }, 100)
   }
 
+  const handleExportExcel = () => {
+    setExcelLoading(true)
+    setTimeout(() => {
+      const sections: ExcelSection[] = [
+        // Summary sheet
+        createExcelSection(
+          'Summary',
+          'Total Fee Summary',
+          ['Metric', 'Value'],
+          [
+            ['Total Management Fees', result.totalFees * 1000000],
+            ['As % of Commitments', `${(result.feesAsPercentOfCommitments * 100).toFixed(2)}%`],
+            ['Average Annual Fee %', `${(result.averageAnnualFeePercent * 100).toFixed(2)}%`],
+            ['Fees in First Half', result.firstHalfFees * 1000000],
+            ['Fees in Second Half', result.secondHalfFees * 1000000]
+          ],
+          [30, 25]
+        ),
+
+        // Fund Configuration sheet
+        createExcelSection(
+          'Fund Configuration',
+          'Fund Parameters',
+          ['Parameter', 'Value'],
+          [
+            ['Fund Type', fundInputs.fundType],
+            ['Target Fund Size', `$${fundInputs.fundSize.toFixed(2)}M`],
+            ['Fund Term', `${fundInputs.fundTerm} years`],
+            ['Investment Period', `${fundInputs.investmentPeriod} years`],
+            ['NAV Growth Rate', `${((fundInputs.navGrowthRate || 0) * 100).toFixed(1)}%`]
+          ],
+          [25, 25]
+        ),
+
+        // Fee Phases sheet
+        createExcelSection(
+          'Fee Phases',
+          'Fee Schedule Phases',
+          ['Phase', 'Start Year', 'End Year', 'Fee Base', 'Annual Rate'],
+          feePhases.map((phase, idx) => [
+            `Phase ${idx + 1}`,
+            phase.startYear,
+            phase.endYear,
+            phase.feeBase,
+            `${(phase.feeRate * 100).toFixed(2)}%`
+          ]),
+          [10, 12, 12, 25, 15]
+        ),
+
+        // Yearly Schedule sheet
+        createExcelSection(
+          'Yearly Schedule',
+          'Year-by-Year Fee Schedule',
+          ['Year', 'Fee Base', 'Base Amount ($M)', 'Fee Rate', 'Fee Amount ($M)', 'Cumulative ($M)', '% of Commitments'],
+          result.yearlyData.map(data => [
+            data.year,
+            data.feeBase,
+            data.baseAmount,
+            `${(data.feeRate * 100).toFixed(2)}%`,
+            data.feeAmount,
+            data.cumulativeFees,
+            `${(data.feesAsPercentOfCommitments * 100).toFixed(2)}%`
+          ]),
+          [8, 25, 18, 12, 18, 18, 18]
+        )
+      ]
+
+      downloadExcel({
+        filename: `management-fee-schedule-${new Date().toISOString().split('T')[0]}`,
+        toolName: 'Management Fee Calculator',
+        description: `Fee projection for a $${fundInputs.fundSize.toFixed(0)}M ${fundInputs.fundType} fund with a ${fundInputs.fundTerm}-year term.`,
+        sections,
+        includeTimestamp: true,
+        includeDisclaimer: true
+      })
+      setExcelLoading(false)
+    }, 100)
+  }
+
   const handleExportPDF = () => {
     setPdfLoading(true)
     setTimeout(() => {
@@ -115,9 +200,10 @@ export function ExportSection({ fundInputs, result, feePhases }: ExportSectionPr
           type: 'keyValue',
           data: {
             'Fund Type': fundInputs.fundType,
-            'Target Fund Size': `$${fundInputs.fundSize}M`,
+            'Target Fund Size': formatCurrency(fundInputs.fundSize, 2) + 'M',
             'Fund Term': `${fundInputs.fundTerm} years`,
-            'Investment Period': `${fundInputs.investmentPeriod} years`
+            'Investment Period': `${fundInputs.investmentPeriod} years`,
+            'NAV Growth Rate': formatPercent(fundInputs.navGrowthRate || 0, 1)
           }
         },
 
@@ -128,11 +214,11 @@ export function ExportSection({ fundInputs, result, feePhases }: ExportSectionPr
         {
           type: 'keyValue',
           data: {
-            'Total Management Fees': `$${result.totalFees.toFixed(2)}M`,
-            'As % of Commitments': `${result.feesAsPercentOfCommitments.toFixed(2)}%`,
-            'Average Annual Fee': `${result.averageAnnualFeePercent.toFixed(2)}%`,
-            'First Half of Term': `$${result.firstHalfFees.toFixed(2)}M`,
-            'Second Half of Term': `$${result.secondHalfFees.toFixed(2)}M`
+            'Total Management Fees': formatCurrency(result.totalFees, 2) + 'M',
+            'As % of Commitments': formatPercent(result.feesAsPercentOfCommitments, 2),
+            'Average Annual Fee': formatPercent(result.averageAnnualFeePercent, 2),
+            'First Half of Term': formatCurrency(result.firstHalfFees, 2) + 'M',
+            'Second Half of Term': formatCurrency(result.secondHalfFees, 2) + 'M'
           }
         },
 
@@ -146,7 +232,7 @@ export function ExportSection({ fundInputs, result, feePhases }: ExportSectionPr
             `Phase ${idx + 1}`,
             `Yr ${phase.startYear}-${phase.endYear}`,
             phase.feeBase.substring(0, 15),
-            `${phase.feeRate}%`
+            formatPercent(phase.feeRate, 2)
           ])
         ),
 
@@ -155,12 +241,12 @@ export function ExportSection({ fundInputs, result, feePhases }: ExportSectionPr
         // Yearly Schedule (first 10 years)
         ...createPDFTableSection(
           'Yearly Fee Schedule',
-          ['Year', 'Fee Base', 'Fee ($M)', 'Cumul.'],
+          ['Year', 'Fee Base', 'Fee ($M)', 'Cumul. ($M)'],
           result.yearlyData.slice(0, 10).map(data => [
             `Yr ${data.year}`,
             data.feeBase.substring(0, 12),
-            `$${data.feeAmount.toFixed(2)}`,
-            `$${data.cumulativeFees.toFixed(2)}`
+            formatCurrency(data.feeAmount, 2),
+            formatCurrency(data.cumulativeFees, 2)
           ])
         )
       ]
@@ -168,7 +254,7 @@ export function ExportSection({ fundInputs, result, feePhases }: ExportSectionPr
       downloadPDF({
         filename: `management-fee-schedule-${new Date().toISOString().split('T')[0]}`,
         toolName: 'Management Fee Calculator',
-        description: `Fee projection for a $${fundInputs.fundSize}M ${fundInputs.fundType} fund with a ${fundInputs.fundTerm}-year term.`,
+        description: `Fee projection for a ${formatCurrency(fundInputs.fundSize, 0)}M ${fundInputs.fundType} fund with a ${fundInputs.fundTerm}-year term.`,
         sections,
         includeDisclaimer: true
       })
@@ -215,8 +301,10 @@ export function ExportSection({ fundInputs, result, feePhases }: ExportSectionPr
         <div className="border-t pt-4">
           <ExportToolbar
             onExportCSV={handleExportCSV}
+            onExportExcel={handleExportExcel}
             onExportPDF={handleExportPDF}
             csvLoading={csvLoading}
+            excelLoading={excelLoading}
             pdfLoading={pdfLoading}
             compact
           />

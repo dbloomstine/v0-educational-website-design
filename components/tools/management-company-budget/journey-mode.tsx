@@ -1,1669 +1,766 @@
-"use client"
+'use client'
 
-import { useState, useCallback, useEffect, useMemo } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { cn } from '@/lib/utils'
-import confetti from 'canvas-confetti'
+import { Slider } from '@/components/ui/slider'
 import {
   ChevronRight,
   ChevronLeft,
   Building2,
-  Users,
   DollarSign,
-  Sparkles,
-  Check,
-  Briefcase,
+  Users,
   TrendingUp,
   Calculator,
-  X,
-  Rocket,
-  Target,
-  PiggyBank,
-  Clock,
   ArrowRight,
-  Plus,
-  Minus,
-  Zap,
-  Award,
-  PartyPopper,
-  HelpCircle,
-  User,
-  UserPlus,
-  Building
+  Check,
+  Briefcase,
+  MapPin,
+  Layers,
+  PiggyBank
 } from 'lucide-react'
-import { BudgetData, TeamMember } from './types'
-import { formatCurrency } from './budget-calculator'
-
-// Help tooltip component
-function HelpTooltip({ content }: { content: string }) {
-  const [isOpen, setIsOpen] = useState(false)
-
-  return (
-    <div className="relative inline-block">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        onMouseEnter={() => setIsOpen(true)}
-        onMouseLeave={() => setIsOpen(false)}
-        className="ml-1.5 text-white/40 hover:text-white/70 transition-colors"
-        type="button"
-      >
-        <HelpCircle className="h-4 w-4" />
-      </button>
-      {isOpen && (
-        <div className="absolute z-50 w-64 p-3 text-sm bg-slate-700 border border-white/10 rounded-lg shadow-xl left-0 top-full mt-1 text-white/80">
-          {content}
-          <div className="absolute -top-1.5 left-4 w-3 h-3 bg-slate-700 border-l border-t border-white/10 rotate-45" />
-        </div>
-      )}
-    </div>
-  )
-}
-
-// Fund strategy options
-const FUND_STRATEGIES = [
-  {
-    id: 'vc',
-    name: 'Venture Capital',
-    icon: TrendingUp,
-    description: 'Early to growth stage equity investments',
-    typicalSize: { min: 25, max: 150, default: 50 },
-    typicalFee: 2.0,
-    color: 'from-violet-500 to-purple-600'
-  },
-  {
-    id: 'pe',
-    name: 'Private Equity',
-    icon: Building2,
-    description: 'Buyouts and control investments',
-    typicalSize: { min: 100, max: 500, default: 150 },
-    typicalFee: 2.0,
-    color: 'from-blue-500 to-indigo-600'
-  },
-  {
-    id: 'credit',
-    name: 'Private Credit',
-    icon: DollarSign,
-    description: 'Direct lending and structured credit',
-    typicalSize: { min: 100, max: 500, default: 200 },
-    typicalFee: 1.5,
-    color: 'from-emerald-500 to-teal-600'
-  },
-  {
-    id: 'hedge',
-    name: 'Hedge Fund',
-    icon: Calculator,
-    description: 'Liquid strategies and trading',
-    typicalSize: { min: 50, max: 500, default: 100 },
-    typicalFee: 2.0,
-    color: 'from-amber-500 to-orange-600'
-  },
-  {
-    id: 're',
-    name: 'Real Estate',
-    icon: Building2,
-    description: 'Property and real assets',
-    typicalSize: { min: 75, max: 300, default: 100 },
-    typicalFee: 1.5,
-    color: 'from-rose-500 to-pink-600'
-  },
-  {
-    id: 'infra',
-    name: 'Infrastructure',
-    icon: Briefcase,
-    description: 'Infrastructure and essential services',
-    typicalSize: { min: 200, max: 1000, default: 300 },
-    typicalFee: 1.5,
-    color: 'from-cyan-500 to-blue-600'
-  }
-]
-
-// Size tier options
-const SIZE_TIERS = [
-  { id: 'emerging', name: 'Emerging Manager', range: '$25M - $100M', minSize: 25, maxSize: 100 },
-  { id: 'established', name: 'Established', range: '$100M - $300M', minSize: 100, maxSize: 300 },
-  { id: 'institutional', name: 'Institutional', range: '$300M+', minSize: 300, maxSize: 1000 }
-]
-
-// Team templates by strategy and size
-const TEAM_TEMPLATES: Record<string, Record<string, TeamMember[]>> = {
-  vc: {
-    emerging: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 20000 },
-      { id: '2', role: 'Associate', monthlyCost: 8000 },
-    ],
-    established: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 25000 },
-      { id: '2', role: 'Partner', monthlyCost: 20000 },
-      { id: '3', role: 'Associate', monthlyCost: 10000 },
-      { id: '4', role: 'Analyst', monthlyCost: 6000 },
-    ],
-    institutional: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 35000 },
-      { id: '2', role: 'Partner', monthlyCost: 25000 },
-      { id: '3', role: 'Partner', monthlyCost: 22000 },
-      { id: '4', role: 'Principal', monthlyCost: 15000 },
-      { id: '5', role: 'Associate', monthlyCost: 10000 },
-      { id: '6', role: 'CFO', monthlyCost: 20000 },
-    ],
-  },
-  pe: {
-    emerging: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 25000 },
-      { id: '2', role: 'VP', monthlyCost: 15000 },
-      { id: '3', role: 'Associate', monthlyCost: 10000 },
-    ],
-    established: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 30000 },
-      { id: '2', role: 'Partner', monthlyCost: 25000 },
-      { id: '3', role: 'VP', monthlyCost: 18000 },
-      { id: '4', role: 'Associate', monthlyCost: 12000 },
-      { id: '5', role: 'Analyst', monthlyCost: 7000 },
-    ],
-    institutional: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 40000 },
-      { id: '2', role: 'Partner', monthlyCost: 30000 },
-      { id: '3', role: 'Partner', monthlyCost: 28000 },
-      { id: '4', role: 'Principal', monthlyCost: 20000 },
-      { id: '5', role: 'VP', monthlyCost: 18000 },
-      { id: '6', role: 'Associate', monthlyCost: 12000 },
-      { id: '7', role: 'CFO', monthlyCost: 22000 },
-    ],
-  },
-  credit: {
-    emerging: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 22000 },
-      { id: '2', role: 'Credit Analyst', monthlyCost: 12000 },
-    ],
-    established: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 28000 },
-      { id: '2', role: 'Partner', monthlyCost: 22000 },
-      { id: '3', role: 'Credit Analyst', monthlyCost: 14000 },
-      { id: '4', role: 'Portfolio Analyst', monthlyCost: 10000 },
-    ],
-    institutional: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 35000 },
-      { id: '2', role: 'Partner', monthlyCost: 28000 },
-      { id: '3', role: 'Director', monthlyCost: 22000 },
-      { id: '4', role: 'Senior Analyst', monthlyCost: 16000 },
-      { id: '5', role: 'Credit Analyst', monthlyCost: 14000 },
-      { id: '6', role: 'CFO', monthlyCost: 20000 },
-    ],
-  },
-  hedge: {
-    emerging: [
-      { id: '1', role: 'Portfolio Manager', monthlyCost: 30000 },
-      { id: '2', role: 'Analyst', monthlyCost: 12000 },
-    ],
-    established: [
-      { id: '1', role: 'Portfolio Manager', monthlyCost: 40000 },
-      { id: '2', role: 'Senior Analyst', monthlyCost: 18000 },
-      { id: '3', role: 'Analyst', monthlyCost: 14000 },
-      { id: '4', role: 'Trader', monthlyCost: 15000 },
-    ],
-    institutional: [
-      { id: '1', role: 'CIO', monthlyCost: 50000 },
-      { id: '2', role: 'Portfolio Manager', monthlyCost: 40000 },
-      { id: '3', role: 'Senior Analyst', monthlyCost: 22000 },
-      { id: '4', role: 'Analyst', monthlyCost: 16000 },
-      { id: '5', role: 'Trader', monthlyCost: 18000 },
-      { id: '6', role: 'COO/CFO', monthlyCost: 25000 },
-    ],
-  },
-  re: {
-    emerging: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 22000 },
-      { id: '2', role: 'Acquisitions', monthlyCost: 12000 },
-    ],
-    established: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 28000 },
-      { id: '2', role: 'Partner', monthlyCost: 22000 },
-      { id: '3', role: 'Acquisitions Director', monthlyCost: 15000 },
-      { id: '4', role: 'Asset Manager', monthlyCost: 12000 },
-    ],
-    institutional: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 35000 },
-      { id: '2', role: 'Partner', monthlyCost: 28000 },
-      { id: '3', role: 'Acquisitions Director', monthlyCost: 18000 },
-      { id: '4', role: 'Asset Manager', monthlyCost: 15000 },
-      { id: '5', role: 'Analyst', monthlyCost: 10000 },
-      { id: '6', role: 'CFO', monthlyCost: 20000 },
-    ],
-  },
-  infra: {
-    emerging: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 25000 },
-      { id: '2', role: 'Director', monthlyCost: 18000 },
-    ],
-    established: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 32000 },
-      { id: '2', role: 'Partner', monthlyCost: 25000 },
-      { id: '3', role: 'Director', monthlyCost: 20000 },
-      { id: '4', role: 'Associate', monthlyCost: 12000 },
-    ],
-    institutional: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 40000 },
-      { id: '2', role: 'Partner', monthlyCost: 30000 },
-      { id: '3', role: 'Partner', monthlyCost: 28000 },
-      { id: '4', role: 'Director', monthlyCost: 22000 },
-      { id: '5', role: 'Associate', monthlyCost: 14000 },
-      { id: '6', role: 'CFO', monthlyCost: 22000 },
-    ],
-  },
-}
-
-// Operations expense templates by size tier
-const OPERATIONS_TEMPLATES: Record<string, { id: string; name: string; monthlyCost: number }[]> = {
-  emerging: [
-    { id: '1', name: 'Fund Administration', monthlyCost: 5000 },
-    { id: '2', name: 'Audit', monthlyCost: 3500 },
-    { id: '3', name: 'Legal (ongoing)', monthlyCost: 2500 },
-    { id: '4', name: 'Compliance', monthlyCost: 2000 },
-    { id: '5', name: 'Tax Preparation', monthlyCost: 2500 },
-  ],
-  established: [
-    { id: '1', name: 'Fund Administration', monthlyCost: 7500 },
-    { id: '2', name: 'Audit', monthlyCost: 5000 },
-    { id: '3', name: 'Legal (ongoing)', monthlyCost: 4000 },
-    { id: '4', name: 'Compliance', monthlyCost: 3500 },
-    { id: '5', name: 'Tax Preparation', monthlyCost: 4000 },
-  ],
-  institutional: [
-    { id: '1', name: 'Fund Administration', monthlyCost: 12000 },
-    { id: '2', name: 'Audit', monthlyCost: 7000 },
-    { id: '3', name: 'Legal (ongoing)', monthlyCost: 6500 },
-    { id: '4', name: 'Compliance', monthlyCost: 5000 },
-    { id: '5', name: 'Tax Preparation', monthlyCost: 5500 },
-  ],
-}
-
-// Overhead expense templates by size tier
-const OVERHEAD_TEMPLATES: Record<string, { id: string; name: string; monthlyCost: number }[]> = {
-  emerging: [
-    { id: '1', name: 'Office / Coworking', monthlyCost: 1500 },
-    { id: '2', name: 'D&O / E&O Insurance', monthlyCost: 2000 },
-    { id: '3', name: 'Technology / Software', monthlyCost: 1000 },
-    { id: '4', name: 'Travel & Entertainment', monthlyCost: 2000 },
-  ],
-  established: [
-    { id: '1', name: 'Office / Coworking', monthlyCost: 4000 },
-    { id: '2', name: 'D&O / E&O Insurance', monthlyCost: 3000 },
-    { id: '3', name: 'Technology / Software', monthlyCost: 2000 },
-    { id: '4', name: 'Travel & Entertainment', monthlyCost: 3500 },
-  ],
-  institutional: [
-    { id: '1', name: 'Office / Coworking', monthlyCost: 8000 },
-    { id: '2', name: 'D&O / E&O Insurance', monthlyCost: 4500 },
-    { id: '3', name: 'Technology / Software', monthlyCost: 3500 },
-    { id: '4', name: 'Travel & Entertainment', monthlyCost: 5000 },
-  ],
-}
-
-// Available roles for team building
-const AVAILABLE_ROLES = [
-  { role: 'Managing Partner', cost: { emerging: 20000, established: 28000, institutional: 35000 } },
-  { role: 'Partner', cost: { emerging: 18000, established: 24000, institutional: 30000 } },
-  { role: 'Principal', cost: { emerging: 15000, established: 18000, institutional: 22000 } },
-  { role: 'VP', cost: { emerging: 12000, established: 16000, institutional: 20000 } },
-  { role: 'Director', cost: { emerging: 14000, established: 18000, institutional: 22000 } },
-  { role: 'Associate', cost: { emerging: 8000, established: 10000, institutional: 12000 } },
-  { role: 'Analyst', cost: { emerging: 6000, established: 8000, institutional: 10000 } },
-  { role: 'CFO / Controller', cost: { emerging: 15000, established: 18000, institutional: 22000 } },
-  { role: 'COO', cost: { emerging: 15000, established: 18000, institutional: 22000 } },
-  { role: 'IR / Marketing', cost: { emerging: 10000, established: 14000, institutional: 18000 } },
-  { role: 'Portfolio Manager', cost: { emerging: 25000, established: 35000, institutional: 45000 } },
-  { role: 'Trader', cost: { emerging: 12000, established: 16000, institutional: 20000 } },
-]
-
-// Starting capital quick select options
-const CAPITAL_OPTIONS = [
-  { amount: 250000, label: '$250K', description: 'Lean start' },
-  { amount: 500000, label: '$500K', description: 'Typical seed' },
-  { amount: 750000, label: '$750K', description: 'Comfortable runway' },
-  { amount: 1000000, label: '$1M', description: 'Strong position' },
-  { amount: 1500000, label: '$1.5M', description: 'Well-capitalized' },
-  { amount: 2000000, label: '$2M+', description: 'Institutional-grade' },
-]
-
-// Quick start templates for faster setup
-interface QuickStartTemplate {
-  id: string
-  name: string
-  description: string
-  icon: any
-  color: string
-  fundSize: number
-  feeRate: number
-  startingCash: number
-  team: TeamMember[]
-  sizeTier: 'emerging' | 'established' | 'institutional'
-}
-
-const QUICK_START_TEMPLATES: QuickStartTemplate[] = [
-  {
-    id: 'solo-gp',
-    name: 'Solo GP',
-    description: 'Just you, lean operations, $25-50M fund',
-    icon: User,
-    color: 'from-amber-500 to-orange-600',
-    fundSize: 35,
-    feeRate: 2.0,
-    startingCash: 300000,
-    sizeTier: 'emerging',
-    team: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 15000 },
-    ],
-  },
-  {
-    id: 'small-team',
-    name: 'Small Team',
-    description: '2-3 person team, $50-100M fund',
-    icon: UserPlus,
-    color: 'from-emerald-500 to-teal-600',
-    fundSize: 75,
-    feeRate: 2.0,
-    startingCash: 500000,
-    sizeTier: 'emerging',
-    team: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 22000 },
-      { id: '2', role: 'Associate', monthlyCost: 9000 },
-    ],
-  },
-  {
-    id: 'growth-firm',
-    name: 'Growth Firm',
-    description: 'Full team, $100M+ fund, scaling up',
-    icon: Building,
-    color: 'from-violet-500 to-purple-600',
-    fundSize: 150,
-    feeRate: 2.0,
-    startingCash: 750000,
-    sizeTier: 'established',
-    team: [
-      { id: '1', role: 'Managing Partner', monthlyCost: 28000 },
-      { id: '2', role: 'Partner', monthlyCost: 22000 },
-      { id: '3', role: 'Associate', monthlyCost: 10000 },
-      { id: '4', role: 'Analyst', monthlyCost: 7000 },
-    ],
-  },
-]
-
-// Journey phases
-const PHASES = [
-  { id: 1, name: 'Strategy', icon: Target },
-  { id: 2, name: 'Fund Details', icon: Briefcase },
-  { id: 3, name: 'Team', icon: Users },
-  { id: 4, name: 'Capital', icon: PiggyBank },
-  { id: 5, name: 'Review', icon: Award },
-]
-
-interface JourneyStep {
-  id: string
-  type: 'welcome' | 'quickstart' | 'select' | 'input' | 'team' | 'capital' | 'celebration' | 'review'
-  phase: number
-  phaseName: string
-  title: string
-  subtitle?: string
-  options?: Array<{ id: string; label: string; description?: string; icon?: any; color?: string }>
-}
-
-// Define the journey steps
-const JOURNEY_STEPS: JourneyStep[] = [
-  {
-    id: 'welcome',
-    type: 'welcome',
-    phase: 0,
-    phaseName: 'Welcome',
-    title: 'Build Your Budget',
-    subtitle: 'Let\'s create a customized management company budget in just a few minutes.'
-  },
-  {
-    id: 'quickstart',
-    type: 'quickstart',
-    phase: 0,
-    phaseName: 'Quick Start',
-    title: 'Choose a starting point',
-    subtitle: 'Pick a template to get started faster, or customize from scratch.'
-  },
-  {
-    id: 'strategy',
-    type: 'select',
-    phase: 1,
-    phaseName: 'Strategy',
-    title: 'What type of fund?',
-    subtitle: 'This helps us set appropriate benchmarks for your budget.'
-  },
-  {
-    id: 'celebration-1',
-    type: 'celebration',
-    phase: 1,
-    phaseName: 'Strategy',
-    title: 'Great choice!',
-    subtitle: 'Now let\'s define your fund details.'
-  },
-  {
-    id: 'fund-size',
-    type: 'input',
-    phase: 2,
-    phaseName: 'Fund Details',
-    title: 'Target fund size?',
-    subtitle: 'Enter your target AUM in millions.'
-  },
-  {
-    id: 'fee-rate',
-    type: 'input',
-    phase: 2,
-    phaseName: 'Fund Details',
-    title: 'Management fee rate?',
-    subtitle: 'The annual percentage fee on committed capital.'
-  },
-  {
-    id: 'first-close',
-    type: 'input',
-    phase: 2,
-    phaseName: 'Fund Details',
-    title: 'Expected first close year?',
-    subtitle: 'When do you expect to have your first close?'
-  },
-  {
-    id: 'celebration-2',
-    type: 'celebration',
-    phase: 2,
-    phaseName: 'Fund Details',
-    title: 'Fund details locked in!',
-    subtitle: 'Time to build your team.'
-  },
-  {
-    id: 'team',
-    type: 'team',
-    phase: 3,
-    phaseName: 'Team',
-    title: 'Build your team',
-    subtitle: 'We\'ve suggested a starting team. Customize it to match your plans.'
-  },
-  {
-    id: 'celebration-3',
-    type: 'celebration',
-    phase: 3,
-    phaseName: 'Team',
-    title: 'Team assembled!',
-    subtitle: 'Now let\'s plan your starting capital.'
-  },
-  {
-    id: 'capital',
-    type: 'capital',
-    phase: 4,
-    phaseName: 'Capital',
-    title: 'Starting capital?',
-    subtitle: 'How much cash do you have to cover expenses before fees flow?'
-  },
-  {
-    id: 'celebration-4',
-    type: 'celebration',
-    phase: 4,
-    phaseName: 'Capital',
-    title: 'Almost there!',
-    subtitle: 'Let\'s review your budget setup.'
-  },
-  {
-    id: 'review',
-    type: 'review',
-    phase: 5,
-    phaseName: 'Review',
-    title: 'Your Budget Summary',
-    subtitle: 'Review and finalize your management company budget.'
-  }
-]
+import { BudgetData, Fund, TeamMember, ExpenseItem } from './types'
 
 interface JourneyModeProps {
   onComplete: (data: BudgetData) => void
   onSkip: () => void
+  existingData?: BudgetData | null
 }
 
-const STORAGE_KEY = 'mcb-journey-progress'
+const STEPS = [
+  { id: 'welcome', title: 'Welcome' },
+  { id: 'fund-strategy', title: 'Fund Strategy' },
+  { id: 'fund-size', title: 'Fund Size' },
+  { id: 'team-size', title: 'Team Size' },
+  { id: 'office-location', title: 'Office Location' },
+  { id: 'expenses-overview', title: 'Expense Categories' },
+  { id: 'review', title: 'Review' },
+] as const
 
-interface SavedProgress {
-  currentStepIndex: number
-  strategy: string
-  fundSize: number
-  feeRate: number
-  firstCloseYear: number
-  sizeTier: string
-  teamMembers: TeamMember[]
-  startingCash: number
-  customizedTeam: boolean
-  savedAt: number
-}
+type StepId = typeof STEPS[number]['id']
 
-export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
-  // Load saved progress from localStorage
-  const getSavedProgress = (): SavedProgress | null => {
-    if (typeof window === 'undefined') return null
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY)
-      if (saved) {
-        const parsed = JSON.parse(saved) as SavedProgress
-        // Only use saved progress from last 24 hours
-        if (Date.now() - parsed.savedAt < 24 * 60 * 60 * 1000) {
-          return parsed
-        }
-      }
-    } catch {
-      // Ignore parse errors
-    }
-    return null
-  }
+// Fund strategy options
+const fundStrategies = [
+  { id: 'vc', name: 'Venture Capital', icon: '🚀', description: 'Early to growth stage investments', typicalSize: 75, feeRate: 2.0, color: 'from-violet-500 to-purple-600' },
+  { id: 'pe', name: 'Private Equity', icon: '🏢', description: 'Buyouts and control investments', typicalSize: 150, feeRate: 2.0, color: 'from-blue-500 to-indigo-600' },
+  { id: 'credit', name: 'Private Credit', icon: '💳', description: 'Direct lending strategies', typicalSize: 200, feeRate: 1.5, color: 'from-emerald-500 to-teal-600' },
+  { id: 're', name: 'Real Estate', icon: '🏠', description: 'Property investments', typicalSize: 100, feeRate: 1.5, color: 'from-amber-500 to-orange-600' },
+  { id: 'hedge', name: 'Hedge Fund', icon: '📈', description: 'Liquid strategies', typicalSize: 100, feeRate: 1.5, color: 'from-rose-500 to-pink-600' },
+  { id: 'infra', name: 'Infrastructure', icon: '⚡', description: 'Essential services', typicalSize: 300, feeRate: 1.5, color: 'from-cyan-500 to-sky-600' },
+]
 
-  const savedProgress = getSavedProgress()
+// Team size presets
+const teamSizeOptions = [
+  { id: 'solo', name: 'Solo GP', count: 1, description: 'Just you running the show', monthlyCost: 15000 },
+  { id: 'small', name: 'Small Team', count: 3, description: '2-3 person team', monthlyCost: 40000 },
+  { id: 'mid', name: 'Mid-Size', count: 5, description: '4-6 person team', monthlyCost: 75000 },
+  { id: 'large', name: 'Large Team', count: 8, description: '7+ person team', monthlyCost: 120000 },
+]
 
-  const [currentStepIndex, setCurrentStepIndex] = useState(savedProgress?.currentStepIndex || 0)
+// Office location options
+const officeLocations = [
+  { id: 'tier1', name: 'Tier 1 City', description: 'NYC, SF, London', monthlyCost: 8000, emoji: '🌆' },
+  { id: 'tier2', name: 'Tier 2 City', description: 'Austin, Miami, Boston', monthlyCost: 4000, emoji: '🏙️' },
+  { id: 'remote', name: 'Remote/Coworking', description: 'Distributed team', monthlyCost: 1500, emoji: '💻' },
+]
+
+export function JourneyMode({ onComplete, onSkip, existingData }: JourneyModeProps) {
+  const [currentStep, setCurrentStep] = useState(0)
   const [direction, setDirection] = useState(1)
-  const [showResumePrompt, setShowResumePrompt] = useState(!!savedProgress && savedProgress.currentStepIndex > 0)
+  const [showWelcomeBack, setShowWelcomeBack] = useState(!!existingData)
 
-  // Budget configuration state
-  const [strategy, setStrategy] = useState(savedProgress?.strategy || '')
-  const [fundSize, setFundSize] = useState(savedProgress?.fundSize || 50)
-  const [feeRate, setFeeRate] = useState(savedProgress?.feeRate || 2.0)
-  const [firstCloseYear, setFirstCloseYear] = useState(savedProgress?.firstCloseYear || new Date().getFullYear())
-  const [sizeTier, setSizeTier] = useState(savedProgress?.sizeTier || 'emerging')
-  const [teamMembers, setTeamMembers] = useState<TeamMember[]>(savedProgress?.teamMembers || [])
-  const [startingCash, setStartingCash] = useState(savedProgress?.startingCash || 500000)
-  const [customizedTeam, setCustomizedTeam] = useState(savedProgress?.customizedTeam || false)
+  // Form state
+  const [fundStrategy, setFundStrategy] = useState<string>(existingData?.funds[0]?.name.includes('VC') ? 'vc' : 'pe')
+  const [fundSize, setFundSize] = useState(existingData?.funds[0]?.size || 75)
+  const [feeRate, setFeeRate] = useState(existingData?.funds[0]?.feeRate || 2.0)
+  const [teamSize, setTeamSize] = useState('small')
+  const [teamCost, setTeamCost] = useState(40000)
+  const [officeLocation, setOfficeLocation] = useState('tier2')
+  const [officeCost, setOfficeCost] = useState(4000)
+  const [startingCash, setStartingCash] = useState(existingData?.startingCash || 500000)
 
-  // Save progress to localStorage
-  useEffect(() => {
-    if (currentStepIndex > 0) {
-      const progress: SavedProgress = {
-        currentStepIndex,
-        strategy,
-        fundSize,
-        feeRate,
-        firstCloseYear,
-        sizeTier,
-        teamMembers,
-        startingCash,
-        customizedTeam,
-        savedAt: Date.now()
-      }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress))
-    }
-  }, [currentStepIndex, strategy, fundSize, feeRate, firstCloseYear, sizeTier, teamMembers, startingCash, customizedTeam])
-
-  // Clear saved progress on completion
-  const clearProgress = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEY)
-  }, [])
-
-  const step = JOURNEY_STEPS[currentStepIndex]
-  const selectedStrategy = FUND_STRATEGIES.find(s => s.id === strategy)
-
-  // Determine size tier based on fund size
-  const determineSizeTier = useCallback((size: number): string => {
-    if (size < 100) return 'emerging'
-    if (size < 300) return 'established'
-    return 'institutional'
-  }, [])
-
-  // Update team when strategy or size tier changes
-  useEffect(() => {
-    if (strategy && !customizedTeam) {
-      const tier = determineSizeTier(fundSize)
-      setSizeTier(tier)
-      const template = TEAM_TEMPLATES[strategy]?.[tier] || []
-      setTeamMembers(template.map(t => ({
-        ...t,
-        id: Math.random().toString(36).substr(2, 9)
-      })))
-    }
-  }, [strategy, fundSize, customizedTeam, determineSizeTier])
-
-  // Calculate monthly team cost
-  const teamMonthlyCost = useMemo(() =>
-    teamMembers.reduce((sum, m) => sum + m.monthlyCost, 0)
-  , [teamMembers])
-
-  // Calculate preview metrics
-  const previewMetrics = useMemo(() => {
-    const annualFees = fundSize * 1_000_000 * (feeRate / 100)
-    const opsTemplate = OPERATIONS_TEMPLATES[sizeTier] || OPERATIONS_TEMPLATES.emerging
-    const overheadTemplate = OVERHEAD_TEMPLATES[sizeTier] || OVERHEAD_TEMPLATES.emerging
-    const opsCost = opsTemplate.reduce((s, o) => s + o.monthlyCost, 0)
-    const overheadCost = overheadTemplate.reduce((s, o) => s + o.monthlyCost, 0)
-    const monthlyBurn = teamMonthlyCost + opsCost + overheadCost
-    const runwayMonths = monthlyBurn > 0 ? Math.floor(startingCash / monthlyBurn) : 0
-
-    return {
-      annualFees,
-      monthlyFees: annualFees / 12,
-      monthlyBurn,
-      runwayMonths,
-      opsCost,
-      overheadCost
-    }
-  }, [fundSize, feeRate, sizeTier, teamMonthlyCost, startingCash])
-
-  // Confetti celebration
-  const triggerConfetti = useCallback(() => {
-    const count = 200
-    const defaults = { origin: { y: 0.7 }, zIndex: 9999 }
-
-    function fire(particleRatio: number, opts: confetti.Options) {
-      confetti({
-        ...defaults,
-        ...opts,
-        particleCount: Math.floor(count * particleRatio)
-      })
-    }
-
-    fire(0.25, { spread: 26, startVelocity: 55 })
-    fire(0.2, { spread: 60 })
-    fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 })
-    fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 })
-    fire(0.1, { spread: 120, startVelocity: 45 })
-  }, [])
-
-  // Navigation handlers
-  const goNext = useCallback(() => {
-    if (currentStepIndex < JOURNEY_STEPS.length - 1) {
-      setDirection(1)
-      setCurrentStepIndex(prev => prev + 1)
-
-      // Trigger confetti on celebration steps
-      const nextStep = JOURNEY_STEPS[currentStepIndex + 1]
-      if (nextStep?.type === 'celebration') {
-        setTimeout(triggerConfetti, 300)
-      }
-    }
-  }, [currentStepIndex, triggerConfetti])
-
-  const goPrev = useCallback(() => {
-    if (currentStepIndex > 0) {
-      setDirection(-1)
-      setCurrentStepIndex(prev => prev - 1)
-    }
-  }, [currentStepIndex])
-
-  // Strategy selection handler
-  const handleStrategySelect = useCallback((strategyId: string) => {
-    const strat = FUND_STRATEGIES.find(s => s.id === strategyId)
-    if (strat) {
-      setStrategy(strategyId)
-      setFundSize(strat.typicalSize.default)
-      setFeeRate(strat.typicalFee)
-      setCustomizedTeam(false)
-      setTimeout(goNext, 300)
-    }
-  }, [goNext])
-
-  // Quick start template handler
-  const handleQuickStart = useCallback((template: QuickStartTemplate) => {
-    setFundSize(template.fundSize)
-    setFeeRate(template.feeRate)
-    setStartingCash(template.startingCash)
-    setSizeTier(template.sizeTier)
-    setTeamMembers(template.team.map(t => ({
-      ...t,
-      id: Math.random().toString(36).substr(2, 9)
-    })))
-    setCustomizedTeam(true)
-    // Skip ahead to strategy step, then continue normally
-    setTimeout(goNext, 300)
-  }, [goNext])
-
-  // Team management
-  const addTeamMember = useCallback((roleInfo: typeof AVAILABLE_ROLES[0]) => {
-    const tier = sizeTier as 'emerging' | 'established' | 'institutional'
-    const newMember: TeamMember = {
-      id: Math.random().toString(36).substr(2, 9),
-      role: roleInfo.role,
-      monthlyCost: roleInfo.cost[tier]
-    }
-    setTeamMembers(prev => [...prev, newMember])
-    setCustomizedTeam(true)
-  }, [sizeTier])
-
-  const removeTeamMember = useCallback((id: string) => {
-    setTeamMembers(prev => prev.filter(m => m.id !== id))
-    setCustomizedTeam(true)
-  }, [])
-
-  const resetTeamToDefault = useCallback(() => {
-    const template = TEAM_TEMPLATES[strategy]?.[sizeTier] || []
-    setTeamMembers(template.map(t => ({
-      ...t,
-      id: Math.random().toString(36).substr(2, 9)
-    })))
-    setCustomizedTeam(false)
-  }, [strategy, sizeTier])
-
-  // Capital selection handler
-  const handleCapitalSelect = useCallback((amount: number) => {
-    setStartingCash(amount)
-  }, [])
-
-  // Complete the journey
-  const handleComplete = useCallback(() => {
-    const genId = () => Math.random().toString(36).substr(2, 9)
-    const opsTemplate = OPERATIONS_TEMPLATES[sizeTier] || OPERATIONS_TEMPLATES.emerging
-    const overheadTemplate = OVERHEAD_TEMPLATES[sizeTier] || OVERHEAD_TEMPLATES.emerging
-
-    const budgetData: BudgetData = {
-      startingCash,
-      funds: [
-        {
-          id: genId(),
-          name: 'Fund I',
-          size: fundSize,
-          feeRate,
-          firstCloseYear
-        }
-      ],
-      expenses: {
-        team: teamMembers.map(t => ({ ...t, id: genId() })),
-        operations: opsTemplate.map(o => ({ ...o, id: genId() })),
-        overhead: overheadTemplate.map(o => ({ ...o, id: genId() }))
-      }
-    }
-
-    clearProgress()
-    triggerConfetti()
-    setTimeout(() => onComplete(budgetData), 500)
-  }, [startingCash, fundSize, feeRate, firstCloseYear, teamMembers, sizeTier, onComplete, triggerConfetti, clearProgress])
-
-  // Reset all state and start over
-  const handleStartOver = useCallback(() => {
-    clearProgress()
-    setCurrentStepIndex(0)
-    setStrategy('')
-    setFundSize(50)
-    setFeeRate(2.0)
-    setFirstCloseYear(new Date().getFullYear())
-    setTeamMembers([])
-    setStartingCash(500000)
-    setCustomizedTeam(false)
-    setShowResumePrompt(false)
-  }, [clearProgress])
+  const step = STEPS[currentStep]
+  const progress = ((currentStep) / (STEPS.length - 1)) * 100
+  const isFirstStep = currentStep === 0
+  const isLastStep = currentStep === STEPS.length - 1
 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.target instanceof HTMLInputElement) return
-
-      switch (e.key) {
-        case 'ArrowRight':
-        case 'Enter':
-          if (step.type === 'welcome' || step.type === 'celebration') {
-            e.preventDefault()
-            goNext()
-          }
-          break
-        case 'ArrowLeft':
-        case 'Backspace':
-          if (currentStepIndex > 0) {
-            e.preventDefault()
-            goPrev()
-          }
-          break
-        case 'Escape':
-          e.preventDefault()
-          onSkip()
-          break
-        case '1': case '2': case '3': case '4': case '5': case '6':
-          if (step.id === 'strategy') {
-            const idx = parseInt(e.key) - 1
-            if (FUND_STRATEGIES[idx]) {
-              handleStrategySelect(FUND_STRATEGIES[idx].id)
-            }
-          }
-          break
+      if (e.key === 'Enter' && !isLastStep) {
+        handleNext()
+      } else if (e.key === 'Escape' && !isFirstStep) {
+        handleBack()
       }
     }
-
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [step, currentStepIndex, goNext, goPrev, onSkip, handleStrategySelect])
+  }, [currentStep, isFirstStep, isLastStep])
 
-  // Progress calculation
-  const progress = useMemo(() => {
-    const totalSteps = JOURNEY_STEPS.filter(s => s.type !== 'celebration').length
-    const completedSteps = JOURNEY_STEPS.slice(0, currentStepIndex + 1).filter(s => s.type !== 'celebration').length
-    return Math.round((completedSteps / totalSteps) * 100)
-  }, [currentStepIndex])
+  const handleNext = useCallback(() => {
+    if (currentStep < STEPS.length - 1) {
+      setDirection(1)
+      setCurrentStep(prev => prev + 1)
+    } else {
+      // Complete the journey
+      const genId = () => Math.random().toString(36).substr(2, 9)
 
-  // Current phase for phase dots
-  const currentPhase = step.phase
+      // Create team members based on team size
+      const teamMembers: TeamMember[] = []
+      const teamConfig = teamSizeOptions.find(t => t.id === teamSize)
+
+      if (teamConfig) {
+        if (teamConfig.count >= 1) {
+          teamMembers.push({ id: genId(), role: 'Managing Partner', monthlyCost: teamConfig.count === 1 ? 15000 : 25000 })
+        }
+        if (teamConfig.count >= 2) {
+          teamMembers.push({ id: genId(), role: 'Partner', monthlyCost: 20000 })
+        }
+        if (teamConfig.count >= 3) {
+          teamMembers.push({ id: genId(), role: 'Associate', monthlyCost: 10000 })
+        }
+        if (teamConfig.count >= 4) {
+          teamMembers.push({ id: genId(), role: 'Analyst', monthlyCost: 7000 })
+        }
+        if (teamConfig.count >= 5) {
+          teamMembers.push({ id: genId(), role: 'CFO', monthlyCost: 18000 })
+        }
+        if (teamConfig.count >= 6) {
+          teamMembers.push({ id: genId(), role: 'VP', monthlyCost: 15000 })
+        }
+        if (teamConfig.count >= 7) {
+          teamMembers.push({ id: genId(), role: 'Principal', monthlyCost: 18000 })
+        }
+        if (teamConfig.count >= 8) {
+          teamMembers.push({ id: genId(), role: 'Senior Associate', monthlyCost: 12000 })
+        }
+      }
+
+      // Create operations expenses based on fund size
+      const operations: ExpenseItem[] = [
+        { id: genId(), name: 'Fund Administration', monthlyCost: fundSize < 100 ? 5000 : fundSize < 300 ? 7500 : 12000 },
+        { id: genId(), name: 'Audit', monthlyCost: fundSize < 100 ? 3500 : fundSize < 300 ? 5000 : 7000 },
+        { id: genId(), name: 'Legal (ongoing)', monthlyCost: fundSize < 100 ? 2500 : fundSize < 300 ? 4000 : 6500 },
+        { id: genId(), name: 'Compliance', monthlyCost: fundSize < 100 ? 2000 : fundSize < 300 ? 3500 : 5000 },
+        { id: genId(), name: 'Tax Preparation', monthlyCost: fundSize < 100 ? 2500 : fundSize < 300 ? 4000 : 5500 },
+      ]
+
+      // Create overhead expenses
+      const overhead: ExpenseItem[] = [
+        { id: genId(), name: 'Office / Coworking', monthlyCost: officeCost },
+        { id: genId(), name: 'D&O / E&O Insurance', monthlyCost: fundSize < 100 ? 2000 : fundSize < 300 ? 3000 : 4500 },
+        { id: genId(), name: 'Technology / Software', monthlyCost: fundSize < 100 ? 1000 : fundSize < 300 ? 2000 : 3500 },
+        { id: genId(), name: 'Travel & Entertainment', monthlyCost: fundSize < 100 ? 2000 : fundSize < 300 ? 3500 : 5000 },
+      ]
+
+      const budgetData: BudgetData = {
+        startingCash,
+        funds: [
+          {
+            id: genId(),
+            name: 'Fund I',
+            size: fundSize,
+            feeRate,
+            firstCloseYear: new Date().getFullYear()
+          }
+        ],
+        expenses: {
+          team: teamMembers,
+          operations,
+          overhead
+        }
+      }
+
+      onComplete(budgetData)
+    }
+  }, [currentStep, fundStrategy, fundSize, feeRate, teamSize, teamCost, officeLocation, officeCost, startingCash, onComplete])
+
+  const handleBack = useCallback(() => {
+    if (currentStep > 0) {
+      setDirection(-1)
+      setCurrentStep(prev => prev - 1)
+    }
+  }, [currentStep])
+
+  const handleStrategySelect = (strategyId: string) => {
+    const strategy = fundStrategies.find(s => s.id === strategyId)
+    if (strategy) {
+      setFundStrategy(strategyId)
+      setFundSize(strategy.typicalSize)
+      setFeeRate(strategy.feeRate)
+    }
+  }
+
+  const handleTeamSizeSelect = (sizeId: string) => {
+    const size = teamSizeOptions.find(s => s.id === sizeId)
+    if (size) {
+      setTeamSize(sizeId)
+      setTeamCost(size.monthlyCost)
+    }
+  }
+
+  const handleOfficeLocationSelect = (locationId: string) => {
+    const location = officeLocations.find(l => l.id === locationId)
+    if (location) {
+      setOfficeLocation(locationId)
+      setOfficeCost(location.monthlyCost)
+    }
+  }
+
+  const handleContinueExisting = () => {
+    if (existingData) {
+      onComplete(existingData)
+    }
+  }
+
+  const handleStartFresh = () => {
+    setShowWelcomeBack(false)
+    setCurrentStep(0)
+  }
+
+  // Calculate preview values
+  const annualRevenue = fundSize * 1_000_000 * (feeRate / 100)
+  const monthlyRevenue = annualRevenue / 12
+  const operationsCost = fundSize < 100 ? 15500 : fundSize < 300 ? 24000 : 36000
+  const overheadCost = officeCost + (fundSize < 100 ? 5000 : fundSize < 300 ? 8500 : 13000)
+  const monthlyBurn = teamCost + operationsCost + overheadCost
+  const runwayMonths = monthlyBurn > 0 ? Math.floor(startingCash / monthlyBurn) : 0
 
   // Animation variants
   const slideVariants = {
     enter: (direction: number) => ({
-      x: direction > 0 ? 300 : -300,
-      opacity: 0
+      y: direction > 0 ? 40 : -40,
+      opacity: 0,
     }),
     center: {
-      x: 0,
-      opacity: 1
+      y: 0,
+      opacity: 1,
     },
     exit: (direction: number) => ({
-      x: direction < 0 ? 300 : -300,
-      opacity: 0
-    })
+      y: direction > 0 ? -40 : 40,
+      opacity: 0,
+    }),
+  }
+
+  // Welcome back modal for returning users
+  if (showWelcomeBack) {
+    return (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0B1220]">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="w-full max-w-lg mx-4 p-8 rounded-2xl bg-gradient-to-b from-slate-800/80 to-slate-900/80 border border-slate-700/50 backdrop-blur-xl"
+        >
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center">
+              <Calculator className="h-8 w-8 text-white" />
+            </div>
+            <h2 className="text-2xl font-semibold text-white mb-2">Welcome back</h2>
+            <p className="text-slate-400">
+              You have a previous budget saved. Would you like to continue where you left off?
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            <button
+              onClick={handleContinueExisting}
+              className="w-full p-4 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-medium hover:from-blue-400 hover:to-cyan-400 transition-all"
+            >
+              Continue with saved budget
+            </button>
+            <button
+              onClick={handleStartFresh}
+              className="w-full p-4 rounded-xl bg-slate-800 text-slate-300 font-medium hover:bg-slate-700 hover:text-white transition-all border border-slate-700"
+            >
+              Start fresh
+            </button>
+          </div>
+        </motion.div>
+      </div>
+    )
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-hidden flex flex-col">
-      {/* Header */}
-      <div className="flex-shrink-0 p-4 flex items-center justify-between z-10 bg-gradient-to-b from-slate-900/90 to-transparent backdrop-blur-sm safe-area-top">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-full backdrop-blur-sm">
-            <Sparkles className="h-4 w-4 text-amber-400" />
-            <span className="text-sm font-medium text-white">Budget Builder</span>
-          </div>
+    <div className="fixed inset-0 z-[100] bg-[#0B1220] overflow-hidden">
+      {/* Subtle gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-[#0B1220] to-slate-900" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/10 via-transparent to-transparent" />
 
-          {/* Phase dots */}
-          <div className="hidden sm:flex items-center gap-1.5 ml-4">
-            {PHASES.map((phase) => {
-              const isCompleted = currentPhase > phase.id
-              const isCurrent = currentPhase === phase.id
-              const PhaseIcon = phase.icon
-
-              return (
-                <div
-                  key={phase.id}
-                  className={cn(
-                    "flex items-center gap-1 px-2 py-1 rounded-full transition-all",
-                    isCompleted && "bg-emerald-500/20",
-                    isCurrent && "bg-white/20",
-                    !isCompleted && !isCurrent && "bg-white/5"
-                  )}
-                  title={phase.name}
-                >
-                  <PhaseIcon className={cn(
-                    "h-3.5 w-3.5",
-                    isCompleted && "text-emerald-400",
-                    isCurrent && "text-white",
-                    !isCompleted && !isCurrent && "text-white/30"
-                  )} />
-                  {isCurrent && (
-                    <span className="text-xs font-medium text-white">{phase.name}</span>
-                  )}
-                  {isCompleted && (
-                    <Check className="h-3 w-3 text-emerald-400" />
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Progress indicator */}
-          <div className="flex items-center gap-2">
-            <div className="w-16 sm:w-24 h-1.5 bg-white/10 rounded-full overflow-hidden">
-              <motion.div
-                className="h-full bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
-            <span className="text-xs text-white/60">{progress}%</span>
-          </div>
-
-          {/* Start Over button - show after first step */}
-          {currentStepIndex > 1 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleStartOver}
-              className="text-white/60 hover:text-white hover:bg-white/10"
-            >
-              <X className="h-4 w-4 sm:mr-1" />
-              <span className="hidden sm:inline">Start Over</span>
-            </Button>
-          )}
-
-          {/* Skip button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onSkip}
-            className="text-white/60 hover:text-white hover:bg-white/10"
-          >
-            <X className="h-4 w-4 sm:mr-1" />
-            <span className="hidden sm:inline">Skip</span>
-          </Button>
-        </div>
+      {/* Progress bar */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-slate-800">
+        <motion.div
+          className="h-full bg-gradient-to-r from-blue-400 to-cyan-500"
+          initial={{ width: 0 }}
+          animate={{ width: `${progress}%` }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
+        />
       </div>
 
-      {/* Resume prompt */}
-      {showResumePrompt && (
-        <div className="fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-slate-800 rounded-2xl p-6 max-w-md w-full border border-white/10 shadow-2xl"
-          >
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center">
-                <Clock className="h-8 w-8 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-white">Welcome Back!</h3>
-              <p className="text-white/60">
-                You have a budget in progress. Would you like to continue where you left off?
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                <Button
-                  variant="outline"
-                  className="flex-1 border-white/20 text-white hover:bg-white/10"
-                  onClick={handleStartOver}
-                >
-                  Start Fresh
-                </Button>
-                <Button
-                  className="flex-1 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white"
-                  onClick={() => setShowResumePrompt(false)}
-                >
-                  Continue
-                  <ChevronRight className="ml-1 h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
+      {/* Skip button */}
+      {currentStep > 0 && (
+        <motion.button
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          onClick={onSkip}
+          className="absolute top-6 right-6 text-slate-500 hover:text-slate-300 text-sm font-medium transition-colors flex items-center gap-1"
+        >
+          Skip to calculator
+          <ArrowRight className="h-4 w-4" />
+        </motion.button>
       )}
 
-      {/* Main content */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 pb-24">
-        <div className="min-h-full flex items-center justify-center">
-          <AnimatePresence mode="wait" custom={direction}>
-            <motion.div
-              key={step.id}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              className="w-full max-w-3xl"
-            >
+      {/* Back button */}
+      {currentStep > 0 && (
+        <motion.button
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          onClick={handleBack}
+          className="absolute top-6 left-6 text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-2"
+        >
+          <ChevronLeft className="h-5 w-5" />
+          <span className="text-sm font-medium">Back</span>
+        </motion.button>
+      )}
+
+      {/* Step indicators */}
+      <div className="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-2">
+        {STEPS.map((s, i) => (
+          <div
+            key={s.id}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              i === currentStep
+                ? 'w-6 bg-blue-400'
+                : i < currentStep
+                ? 'bg-blue-400/60'
+                : 'bg-slate-700'
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* Main content area */}
+      <div className="relative h-full flex flex-col items-center justify-center px-6 py-20">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={step.id}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="w-full max-w-2xl"
+          >
             {/* Welcome Step */}
-            {step.type === 'welcome' && (
-              <div className="text-center space-y-8">
+            {step.id === 'welcome' && (
+              <div className="text-center">
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, type: 'spring' }}
-                  className="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                  className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/20"
                 >
-                  <Calculator className="h-12 w-12 text-white" />
+                  <Calculator className="h-10 w-10 text-white" />
                 </motion.div>
 
-                <div className="space-y-4">
-                  <h1 className="text-4xl md:text-5xl font-bold text-white">
-                    {step.title}
-                  </h1>
-                  <p className="text-xl text-white/70 max-w-lg mx-auto">
-                    {step.subtitle}
-                  </p>
-                </div>
+                <motion.h1
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-4xl sm:text-5xl font-bold text-white mb-4 tracking-tight"
+                >
+                  Budget Planner
+                </motion.h1>
 
-                <div className="flex flex-col items-center gap-4 pt-4">
-                  <div className="flex items-center gap-6 text-white/50 text-sm">
-                    <div className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
-                      <span>~3 minutes</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Target className="h-4 w-4" />
-                      <span>5 steps</span>
-                    </div>
+                <motion.p
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-lg text-slate-400 mb-12 max-w-md mx-auto leading-relaxed"
+                >
+                  Build your management company budget in minutes. Understand your runway, expenses, and when you'll reach break-even.
+                </motion.p>
+
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.4 }}
+                  className="grid grid-cols-3 gap-4 max-w-lg mx-auto mb-8"
+                >
+                  <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
+                    <div className="text-2xl font-bold text-blue-400 mb-1">2 min</div>
+                    <div className="text-xs text-slate-500">to complete</div>
                   </div>
-
-                  <Button
-                    size="lg"
-                    onClick={goNext}
-                    className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-8"
-                  >
-                    Let's Begin
-                    <Rocket className="ml-2 h-5 w-5" />
-                  </Button>
-
-                  <p className="text-xs text-white/40">
-                    Press Enter or → to continue
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {/* Quick Start Templates Step */}
-            {step.type === 'quickstart' && (
-              <div className="space-y-8">
-                <div className="text-center space-y-2">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white">{step.title}</h2>
-                  <p className="text-lg text-white/60">{step.subtitle}</p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {QUICK_START_TEMPLATES.map((template, idx) => {
-                    const Icon = template.icon
-                    return (
-                      <motion.button
-                        key={template.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.1 }}
-                        onClick={() => handleQuickStart(template)}
-                        className="relative p-6 rounded-2xl text-left transition-all group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20"
-                      >
-                        <div className={cn(
-                          "w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br mb-4",
-                          template.color
-                        )}>
-                          <Icon className="h-6 w-6 text-white" />
-                        </div>
-                        <h3 className="font-semibold text-white text-lg mb-1">{template.name}</h3>
-                        <p className="text-sm text-white/50 mb-4">{template.description}</p>
-                        <div className="space-y-1 text-xs text-white/40">
-                          <p>Fund: ${template.fundSize}M @ {template.feeRate}%</p>
-                          <p>Team: {template.team.length} {template.team.length === 1 ? 'person' : 'people'}</p>
-                          <p>Capital: {formatCurrency(template.startingCash, true)}</p>
-                        </div>
-                        <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <ArrowRight className="h-5 w-5 text-white/60" />
-                        </div>
-                      </motion.button>
-                    )
-                  })}
-                </div>
-
-                <div className="text-center">
-                  <Button
-                    variant="ghost"
-                    onClick={goNext}
-                    className="text-white/60 hover:text-white hover:bg-white/10"
-                  >
-                    Or customize from scratch
-                    <ChevronRight className="ml-1 h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            )}
-
-            {/* Strategy Selection Step */}
-            {step.id === 'strategy' && (
-              <div className="space-y-8">
-                <div className="text-center space-y-2">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white">{step.title}</h2>
-                  <p className="text-lg text-white/60">{step.subtitle}</p>
-                </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {FUND_STRATEGIES.map((strat, idx) => {
-                    const Icon = strat.icon
-                    const isSelected = strategy === strat.id
-
-                    return (
-                      <motion.button
-                        key={strat.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.1 }}
-                        onClick={() => handleStrategySelect(strat.id)}
-                        className={cn(
-                          "relative p-5 rounded-2xl text-left transition-all group",
-                          "bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20",
-                          isSelected && "ring-2 ring-emerald-400 bg-emerald-500/10 border-emerald-500/30"
-                        )}
-                      >
-                        <div className="flex items-center gap-3 mb-3">
-                          <div className={cn(
-                            "w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-br",
-                            strat.color
-                          )}>
-                            <Icon className="h-5 w-5 text-white" />
-                          </div>
-                          <span className="text-xs text-white/40 font-mono">{idx + 1}</span>
-                        </div>
-                        <h3 className="font-semibold text-white mb-1">{strat.name}</h3>
-                        <p className="text-sm text-white/50">{strat.description}</p>
-
-                        {isSelected && (
-                          <div className="absolute top-3 right-3">
-                            <Check className="h-5 w-5 text-emerald-400" />
-                          </div>
-                        )}
-                      </motion.button>
-                    )
-                  })}
-                </div>
-
-                <p className="text-center text-sm text-white/40">
-                  Press 1-6 to select, or click an option
-                </p>
-              </div>
-            )}
-
-            {/* Celebration Steps */}
-            {step.type === 'celebration' && (
-              <div className="text-center space-y-8">
-                <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  transition={{ type: 'spring', stiffness: 200 }}
-                  className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center"
-                >
-                  <PartyPopper className="h-10 w-10 text-white" />
+                  <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
+                    <div className="text-2xl font-bold text-blue-400 mb-1">6</div>
+                    <div className="text-xs text-slate-500">questions</div>
+                  </div>
+                  <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
+                    <div className="text-2xl font-bold text-blue-400 mb-1">Free</div>
+                    <div className="text-xs text-slate-500">forever</div>
+                  </div>
                 </motion.div>
-
-                <div className="space-y-3">
-                  <h2 className="text-3xl font-bold text-white">{step.title}</h2>
-                  <p className="text-lg text-white/60">{step.subtitle}</p>
-                </div>
-
-                <Button
-                  size="lg"
-                  onClick={goNext}
-                  className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white"
-                >
-                  Continue
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
               </div>
             )}
 
-            {/* Fund Size Input */}
-            {step.id === 'fund-size' && (
-              <div className="space-y-8">
-                <div className="text-center space-y-2">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white">{step.title}</h2>
-                  <p className="text-lg text-white/60">{step.subtitle}</p>
+            {/* Fund Strategy Step */}
+            {step.id === 'fund-strategy' && (
+              <div>
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-slate-800 mb-4">
+                    <Briefcase className="h-6 w-6 text-blue-400" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-white mb-2">What type of fund?</h2>
+                  <p className="text-slate-400">This helps us tailor your budget to industry norms</p>
                 </div>
 
-                <div className="max-w-md mx-auto space-y-6">
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl text-white/60">$</span>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {fundStrategies.map((strategy) => (
+                    <motion.button
+                      key={strategy.id}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleStrategySelect(strategy.id)}
+                      className={`p-4 rounded-xl text-left transition-all ${
+                        fundStrategy === strategy.id
+                          ? 'bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border-2 border-blue-400/50'
+                          : 'bg-slate-800/50 border-2 border-slate-700/50 hover:border-slate-600'
+                      }`}
+                    >
+                      <div className="text-2xl mb-2">{strategy.icon}</div>
+                      <div className="font-semibold text-white text-sm mb-1">{strategy.name}</div>
+                      <div className="text-xs text-slate-500 mb-2 line-clamp-2">{strategy.description}</div>
+                      <div className="text-xs font-medium text-blue-400">${strategy.typicalSize}M typical</div>
+                    </motion.button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Fund Size Step */}
+            {step.id === 'fund-size' && (
+              <div>
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-slate-800 mb-4">
+                    <DollarSign className="h-6 w-6 text-blue-400" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-white mb-2">Expected AUM?</h2>
+                  <p className="text-slate-400">Total capital you're planning to raise</p>
+                </div>
+
+                <div className="max-w-md mx-auto">
+                  <div className="relative mb-6">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-xl">$</span>
                     <Input
                       type="number"
                       value={fundSize}
-                      onChange={(e) => {
-                        const value = parseFloat(e.target.value) || 0
-                        setFundSize(value)
-                        setSizeTier(determineSizeTier(value))
-                      }}
-                      className="pl-10 pr-16 h-16 text-3xl text-center bg-white/10 border-white/20 text-white placeholder:text-white/30"
-                      placeholder="50"
+                      onChange={(e) => setFundSize(parseFloat(e.target.value) || 50)}
+                      className="pl-10 pr-16 h-16 text-3xl font-bold text-center bg-slate-800/50 border-slate-700 text-white focus:border-blue-400 focus:ring-blue-400/20"
                     />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-white/60">M</span>
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">million</span>
                   </div>
 
-                  {/* Size tier badges */}
-                  <div className="flex justify-center gap-2">
-                    {SIZE_TIERS.map((tier) => {
-                      const isActive = sizeTier === tier.id
-                      return (
-                        <button
-                          key={tier.id}
-                          onClick={() => {
-                            setSizeTier(tier.id)
-                            setFundSize(tier.minSize)
-                          }}
-                          className={cn(
-                            "px-4 py-2 rounded-full text-sm transition-all",
-                            isActive
-                              ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                              : "bg-white/5 text-white/60 border border-white/10 hover:bg-white/10"
-                          )}
-                        >
-                          {tier.name}
-                        </button>
-                      )
-                    })}
-                  </div>
-
-                  {selectedStrategy && (
-                    <p className="text-center text-sm text-white/40">
-                      Typical for {selectedStrategy.name}: ${selectedStrategy.typicalSize.min}M - ${selectedStrategy.typicalSize.max}M
-                    </p>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {/* Fee Rate Input */}
-            {step.id === 'fee-rate' && (
-              <div className="space-y-8">
-                <div className="text-center space-y-2">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white inline-flex items-center justify-center gap-1">
-                    {step.title}
-                    <HelpTooltip content="The management fee is typically 1.5-2.5% of committed capital, charged annually. This fee covers the GP's operating costs and is your primary revenue source." />
-                  </h2>
-                  <p className="text-lg text-white/60">{step.subtitle}</p>
-                </div>
-
-                <div className="max-w-md mx-auto space-y-6">
-                  <div className="relative">
-                    <Input
-                      type="number"
-                      step="0.1"
-                      value={feeRate}
-                      onChange={(e) => setFeeRate(parseFloat(e.target.value) || 0)}
-                      className="pr-10 h-16 text-3xl text-center bg-white/10 border-white/20 text-white placeholder:text-white/30"
-                      placeholder="2.0"
-                    />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-white/60">%</span>
-                  </div>
-
-                  {/* Quick select */}
-                  <div className="flex justify-center gap-2">
-                    {[1.0, 1.5, 2.0, 2.5].map((rate) => (
+                  <div className="flex flex-wrap justify-center gap-2 mb-6">
+                    {[25, 50, 75, 100, 150, 200, 300, 500].map((size) => (
                       <button
-                        key={rate}
-                        onClick={() => setFeeRate(rate)}
-                        className={cn(
-                          "px-4 py-2 rounded-full text-sm transition-all",
-                          feeRate === rate
-                            ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                            : "bg-white/5 text-white/60 border border-white/10 hover:bg-white/10"
-                        )}
+                        key={size}
+                        onClick={() => setFundSize(size)}
+                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                          fundSize === size
+                            ? 'bg-blue-400 text-slate-900'
+                            : 'bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white'
+                        }`}
                       >
-                        {rate}%
+                        ${size}M
                       </button>
                     ))}
                   </div>
 
-                  {/* Preview calculation */}
-                  <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                    <div className="text-center">
-                      <p className="text-sm text-emerald-400 mb-1">Annual Fee Revenue</p>
-                      <p className="text-2xl font-bold text-white">
-                        {formatCurrency(fundSize * 1_000_000 * (feeRate / 100))}
-                      </p>
-                      <p className="text-sm text-white/50">
-                        {formatCurrency((fundSize * 1_000_000 * (feeRate / 100)) / 12)}/month
-                      </p>
+                  {/* Management fee rate */}
+                  <div className="mb-6">
+                    <label className="block text-white font-medium mb-2 text-center">Management Fee Rate</label>
+                    <div className="relative">
+                      <Input
+                        type="number"
+                        step="0.1"
+                        value={feeRate}
+                        onChange={(e) => setFeeRate(parseFloat(e.target.value) || 2.0)}
+                        className="pr-10 h-12 text-xl text-center bg-slate-800/50 border-slate-700 text-white focus:border-blue-400"
+                      />
+                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">%</span>
                     </div>
                   </div>
+
+                  <p className="text-center text-sm text-slate-500 mt-6">
+                    Expected annual revenue: <span className="text-blue-400 font-semibold">${(fundSize * feeRate / 100).toFixed(1)}M</span>
+                  </p>
                 </div>
               </div>
             )}
 
-            {/* First Close Year Input */}
-            {step.id === 'first-close' && (
-              <div className="space-y-8">
-                <div className="text-center space-y-2">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white inline-flex items-center justify-center gap-1">
-                    {step.title}
-                    <HelpTooltip content="First close is when you start collecting management fees. Typically 6-18 months after starting fundraising. Most funds hold multiple closes as more LPs commit." />
-                  </h2>
-                  <p className="text-lg text-white/60">{step.subtitle}</p>
-                </div>
-
-                <div className="max-w-md mx-auto space-y-6">
-                  <Input
-                    type="number"
-                    value={firstCloseYear}
-                    onChange={(e) => setFirstCloseYear(parseInt(e.target.value) || new Date().getFullYear())}
-                    className="h-16 text-3xl text-center bg-white/10 border-white/20 text-white placeholder:text-white/30"
-                    placeholder={new Date().getFullYear().toString()}
-                  />
-
-                  {/* Quick select */}
-                  <div className="flex justify-center gap-2">
-                    {[0, 1, 2].map((offset) => {
-                      const year = new Date().getFullYear() + offset
-                      return (
-                        <button
-                          key={year}
-                          onClick={() => setFirstCloseYear(year)}
-                          className={cn(
-                            "px-4 py-2 rounded-full text-sm transition-all",
-                            firstCloseYear === year
-                              ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                              : "bg-white/5 text-white/60 border border-white/10 hover:bg-white/10"
-                          )}
-                        >
-                          {year}
-                        </button>
-                      )
-                    })}
+            {/* Team Size Step */}
+            {step.id === 'team-size' && (
+              <div>
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-slate-800 mb-4">
+                    <Users className="h-6 w-6 text-blue-400" />
                   </div>
-                </div>
-              </div>
-            )}
-
-            {/* Team Building Step */}
-            {step.type === 'team' && (
-              <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h2 className="text-3xl font-bold text-white inline-flex items-center justify-center gap-1">
-                    {step.title}
-                    <HelpTooltip content="Team costs typically represent 60-70% of management company expenses. Include fully-loaded costs (salary + bonus + benefits + payroll taxes)." />
-                  </h2>
-                  <p className="text-lg text-white/60">{step.subtitle}</p>
+                  <h2 className="text-3xl font-bold text-white mb-2">How big is your team?</h2>
+                  <p className="text-slate-400">We'll estimate your personnel costs</p>
                 </div>
 
-                {/* Current team */}
-                <div className="bg-white/5 rounded-2xl p-4 border border-white/10">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <Users className="h-5 w-5 text-white/60" />
-                      <span className="font-medium text-white">
-                        Your Team ({teamMembers.length})
-                      </span>
-                    </div>
-                    {customizedTeam && (
-                      <button
-                        onClick={resetTeamToDefault}
-                        className="text-xs text-white/50 hover:text-white"
-                      >
-                        Reset to suggested
-                      </button>
-                    )}
-                  </div>
-
-                  {teamMembers.length > 0 ? (
-                    <div className="grid gap-2 max-h-40 sm:max-h-48 overflow-y-auto">
-                      {teamMembers.map((member) => (
-                        <div
-                          key={member.id}
-                          className="flex items-center justify-between p-3 rounded-xl bg-white/5 border border-white/10"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center flex-shrink-0">
-                              <Users className="h-4 w-4 text-white" />
-                            </div>
-                            <div>
-                              <p className="font-medium text-white text-sm">{member.role}</p>
-                              <p className="text-xs text-white/50">{formatCurrency(member.monthlyCost)}/mo</p>
-                            </div>
-                          </div>
-                          <button
-                            onClick={() => removeTeamMember(member.id)}
-                            className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-all flex-shrink-0"
-                          >
-                            <Minus className="h-4 w-4" />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-6 text-white/40">
-                      <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                      <p className="text-sm">Add team members below</p>
-                    </div>
-                  )}
-
-                  {/* Team cost summary */}
-                  {teamMembers.length > 0 && (
-                    <div className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between">
-                      <span className="text-sm text-white/60">Team Cost</span>
-                      <div className="text-right">
-                        <p className="font-bold text-white">{formatCurrency(teamMonthlyCost)}/mo</p>
-                        <p className="text-xs text-white/50">{formatCurrency(teamMonthlyCost * 12)}/year</p>
+                <div className="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
+                  {teamSizeOptions.map((option) => (
+                    <motion.button
+                      key={option.id}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleTeamSizeSelect(option.id)}
+                      className={`p-5 rounded-xl text-left transition-all ${
+                        teamSize === option.id
+                          ? 'bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border-2 border-blue-400/50'
+                          : 'bg-slate-800/50 border-2 border-slate-700/50 hover:border-slate-600'
+                      }`}
+                    >
+                      <div className="font-semibold text-white text-lg mb-1">{option.name}</div>
+                      <div className="text-sm text-slate-400 mb-3">{option.description}</div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-slate-500">{option.count} {option.count === 1 ? 'person' : 'people'}</span>
+                        <span className="text-sm font-medium text-blue-400">${(option.monthlyCost / 1000).toFixed(0)}K/mo</span>
                       </div>
-                    </div>
-                  )}
+                    </motion.button>
+                  ))}
                 </div>
 
-                {/* Add team members */}
-                <div className="space-y-3">
-                  <p className="text-sm text-white/50">Add team members</p>
-                  <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
-                    {AVAILABLE_ROLES.slice(0, 8).map((roleInfo) => {
-                      const tier = sizeTier as 'emerging' | 'established' | 'institutional'
-                      const cost = roleInfo.cost[tier]
-                      return (
-                        <button
-                          key={roleInfo.role}
-                          onClick={() => addTeamMember(roleInfo)}
-                          className="px-2 sm:px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all text-left group"
-                        >
-                          <div className="flex items-center gap-1 sm:gap-2">
-                            <Plus className="h-3 w-3 text-white/40 group-hover:text-emerald-400 flex-shrink-0" />
-                            <span className="text-xs sm:text-sm font-medium text-white truncate">{roleInfo.role}</span>
-                          </div>
-                          <p className="text-xs text-white/40 ml-4 sm:ml-5">{formatCurrency(cost, true)}/mo</p>
-                        </button>
-                      )
-                    })}
+                <p className="text-center text-sm text-slate-500 mt-6">
+                  You can customize individual roles after setup
+                </p>
+              </div>
+            )}
+
+            {/* Office Location Step */}
+            {step.id === 'office-location' && (
+              <div>
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-slate-800 mb-4">
+                    <Building2 className="h-6 w-6 text-blue-400" />
                   </div>
+                  <h2 className="text-3xl font-bold text-white mb-2">Where are you based?</h2>
+                  <p className="text-slate-400">Office costs vary significantly by location</p>
+                </div>
+
+                <div className="grid gap-4 max-w-xl mx-auto">
+                  {officeLocations.map((location) => (
+                    <motion.button
+                      key={location.id}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleOfficeLocationSelect(location.id)}
+                      className={`p-5 rounded-xl text-left transition-all ${
+                        officeLocation === location.id
+                          ? 'bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border-2 border-blue-400/50'
+                          : 'bg-slate-800/50 border-2 border-slate-700/50 hover:border-slate-600'
+                      }`}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="text-2xl">{location.emoji}</div>
+                          <div>
+                            <div className="font-semibold text-white">{location.name}</div>
+                            <div className="text-sm text-slate-400">{location.description}</div>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-lg font-bold text-blue-400">${(location.monthlyCost / 1000).toFixed(1)}K</div>
+                          <div className="text-xs text-slate-500">per month</div>
+                        </div>
+                      </div>
+                    </motion.button>
+                  ))}
                 </div>
               </div>
             )}
 
-            {/* Capital Selection Step */}
-            {step.type === 'capital' && (
-              <div className="space-y-8">
-                <div className="text-center space-y-2">
-                  <h2 className="text-3xl md:text-4xl font-bold text-white inline-flex items-center justify-center gap-1">
-                    {step.title}
-                    <HelpTooltip content="This is your seed capital from personal funds, anchor LP contributions, or GP capital calls. It must cover expenses until management fee revenue begins flowing." />
-                  </h2>
-                  <p className="text-lg text-white/60">{step.subtitle}</p>
+            {/* Expenses Overview Step */}
+            {step.id === 'expenses-overview' && (
+              <div>
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-slate-800 mb-4">
+                    <Layers className="h-6 w-6 text-blue-400" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-white mb-2">Budget breakdown preview</h2>
+                  <p className="text-slate-400">Here's how your expenses will be structured</p>
                 </div>
 
-                <div className="max-w-2xl mx-auto space-y-6">
-                  {/* Quick select cards */}
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {CAPITAL_OPTIONS.map((option) => {
-                      const isSelected = startingCash === option.amount
-                      return (
-                        <button
-                          key={option.amount}
-                          onClick={() => handleCapitalSelect(option.amount)}
-                          className={cn(
-                            "p-4 rounded-xl text-left transition-all border",
-                            isSelected
-                              ? "bg-emerald-500/20 border-emerald-500/30"
-                              : "bg-white/5 border-white/10 hover:bg-white/10"
-                          )}
-                        >
-                          <p className="text-xl font-bold text-white">{option.label}</p>
-                          <p className="text-sm text-white/50">{option.description}</p>
-                          {isSelected && (
-                            <Check className="h-4 w-4 text-emerald-400 mt-2" />
-                          )}
-                        </button>
-                      )
-                    })}
+                <div className="space-y-4 max-w-lg mx-auto">
+                  {/* Team */}
+                  <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-5 w-5 text-blue-400" />
+                        <span className="font-medium text-white">Team</span>
+                      </div>
+                      <span className="text-lg font-bold text-white">${(teamCost / 1000).toFixed(0)}K/mo</span>
+                    </div>
+                    <p className="text-sm text-slate-400">Salaries, bonuses, benefits</p>
                   </div>
 
-                  {/* Custom amount */}
-                  <div className="relative max-w-xs mx-auto">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg text-white/60">$</span>
+                  {/* Operations */}
+                  <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="h-5 w-5 text-emerald-400" />
+                        <span className="font-medium text-white">Operations</span>
+                      </div>
+                      <span className="text-lg font-bold text-white">${(operationsCost / 1000).toFixed(0)}K/mo</span>
+                    </div>
+                    <p className="text-sm text-slate-400">Admin, audit, legal, compliance</p>
+                  </div>
+
+                  {/* Overhead */}
+                  <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2">
+                        <Building2 className="h-5 w-5 text-amber-400" />
+                        <span className="font-medium text-white">Overhead</span>
+                      </div>
+                      <span className="text-lg font-bold text-white">${(overheadCost / 1000).toFixed(0)}K/mo</span>
+                    </div>
+                    <p className="text-sm text-slate-400">Office, insurance, tech, travel</p>
+                  </div>
+
+                  {/* Total */}
+                  <div className="p-5 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-400/30">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-semibold text-white">Total Monthly Burn</span>
+                      <span className="text-2xl font-bold text-white">${(monthlyBurn / 1000).toFixed(0)}K</span>
+                    </div>
+                    <div className="text-sm text-blue-400">${(monthlyBurn * 12 / 1000).toFixed(0)}K annual budget</div>
+                  </div>
+                </div>
+
+                {/* Starting capital input */}
+                <div className="max-w-md mx-auto mt-8">
+                  <label className="block text-white font-medium mb-3 text-center">Starting Capital</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">$</span>
                     <Input
                       type="number"
                       value={startingCash}
-                      onChange={(e) => setStartingCash(parseFloat(e.target.value) || 0)}
-                      className="pl-8 h-12 text-lg text-center bg-white/10 border-white/20 text-white"
-                      placeholder="Custom amount"
+                      onChange={(e) => setStartingCash(parseFloat(e.target.value) || 500000)}
+                      className="pl-10 h-14 text-2xl text-center bg-slate-800/50 border-slate-700 text-white focus:border-blue-400"
                     />
                   </div>
-
-                  {/* Runway preview */}
-                  <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                    <div className="grid grid-cols-3 gap-4 text-center">
-                      <div>
-                        <p className="text-xs text-white/50 mb-1">Monthly Burn</p>
-                        <p className="text-lg font-bold text-white">{formatCurrency(previewMetrics.monthlyBurn, true)}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-white/50 mb-1">Est. Runway</p>
-                        <p className={cn(
-                          "text-lg font-bold",
-                          previewMetrics.runwayMonths < 18 ? "text-amber-400" : "text-emerald-400"
-                        )}>
-                          {previewMetrics.runwayMonths} months
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-white/50 mb-1">Monthly Fees</p>
-                        <p className="text-lg font-bold text-white">{formatCurrency(previewMetrics.monthlyFees, true)}</p>
-                      </div>
-                    </div>
-
-                    {previewMetrics.runwayMonths < 18 && (
-                      <p className="text-xs text-amber-400 text-center mt-3">
-                        Most managers target 18-24 months of runway before first close fees arrive.
-                      </p>
-                    )}
+                  <div className="flex justify-center gap-2 mt-3">
+                    {[250000, 500000, 750000, 1000000].map((amount) => (
+                      <button
+                        key={amount}
+                        onClick={() => setStartingCash(amount)}
+                        className={`px-3 py-1 rounded-full text-xs font-medium transition-all ${
+                          startingCash === amount
+                            ? 'bg-blue-400 text-slate-900'
+                            : 'bg-slate-800 text-slate-400 hover:bg-slate-700'
+                        }`}
+                      >
+                        ${amount / 1000}K
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>
             )}
 
             {/* Review Step */}
-            {step.type === 'review' && (
-              <div className="space-y-6">
-                <div className="text-center space-y-2">
-                  <h2 className="text-3xl font-bold text-white">{step.title}</h2>
-                  <p className="text-lg text-white/60">{step.subtitle}</p>
+            {step.id === 'review' && (
+              <div>
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-400 to-cyan-500 mb-4">
+                    <Check className="h-6 w-6 text-white" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-white mb-2">Ready to build</h2>
+                  <p className="text-slate-400">Review your setup and create your budget</p>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-4">
-                  {/* Fund Summary */}
-                  <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Briefcase className="h-5 w-5 text-violet-400" />
-                      <span className="font-medium text-white">Fund Details</span>
+                <div className="max-w-md mx-auto">
+                  <div className="space-y-3 mb-8">
+                    <div className="flex justify-between items-center p-4 rounded-xl bg-slate-800/50">
+                      <span className="text-slate-400">Fund Strategy</span>
+                      <span className="text-white font-semibold">{fundStrategies.find(s => s.id === fundStrategy)?.name}</span>
                     </div>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-white/60">Strategy</span>
-                        <span className="text-white">{selectedStrategy?.name}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-white/60">Target Size</span>
-                        <span className="text-white">${fundSize}M</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-white/60">Mgmt Fee</span>
-                        <span className="text-white">{feeRate}%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-white/60">First Close</span>
-                        <span className="text-white">{firstCloseYear}</span>
-                      </div>
+                    <div className="flex justify-between items-center p-4 rounded-xl bg-slate-800/50">
+                      <span className="text-slate-400">Fund Size</span>
+                      <span className="text-white font-semibold">${fundSize}M @ {feeRate}%</span>
+                    </div>
+                    <div className="flex justify-between items-center p-4 rounded-xl bg-slate-800/50">
+                      <span className="text-slate-400">Team Size</span>
+                      <span className="text-white font-semibold">{teamSizeOptions.find(t => t.id === teamSize)?.name}</span>
+                    </div>
+                    <div className="flex justify-between items-center p-4 rounded-xl bg-slate-800/50">
+                      <span className="text-slate-400">Office</span>
+                      <span className="text-white font-semibold">{officeLocations.find(l => l.id === officeLocation)?.name}</span>
+                    </div>
+                    <div className="flex justify-between items-center p-4 rounded-xl bg-slate-800/50">
+                      <span className="text-slate-400">Starting Capital</span>
+                      <span className="text-white font-semibold">${(startingCash / 1000).toFixed(0)}K</span>
                     </div>
                   </div>
 
-                  {/* Team Summary */}
-                  <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-                    <div className="flex items-center gap-2 mb-3">
-                      <Users className="h-5 w-5 text-cyan-400" />
-                      <span className="font-medium text-white">Your Team ({teamMembers.length})</span>
+                  <div className="p-6 rounded-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border border-blue-400/30">
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div>
+                        <p className="text-slate-300 text-sm mb-1">Monthly Revenue</p>
+                        <p className="text-2xl font-bold text-white">${(monthlyRevenue / 1000).toFixed(0)}K</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-300 text-sm mb-1">Monthly Burn</p>
+                        <p className="text-2xl font-bold text-white">${(monthlyBurn / 1000).toFixed(0)}K</p>
+                      </div>
                     </div>
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {teamMembers.map((m) => (
-                        <span key={m.id} className="px-2 py-0.5 rounded bg-white/10 text-xs text-white">
-                          {m.role}
-                        </span>
-                      ))}
-                    </div>
-                    <p className="text-sm text-white/60">
-                      Total: {formatCurrency(teamMonthlyCost)}/month
-                    </p>
-                  </div>
-
-                  {/* Financial Overview */}
-                  <div className="p-4 rounded-xl bg-white/5 border border-white/10 md:col-span-2">
-                    <div className="flex items-center gap-2 mb-3">
-                      <DollarSign className="h-5 w-5 text-emerald-400" />
-                      <span className="font-medium text-white">Financial Overview</span>
-                    </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                      <div>
-                        <p className="text-white/60">Starting Cash</p>
-                        <p className="text-lg font-bold text-white">{formatCurrency(startingCash)}</p>
-                      </div>
-                      <div>
-                        <p className="text-white/60">Annual Revenue</p>
-                        <p className="text-lg font-bold text-emerald-400">{formatCurrency(previewMetrics.annualFees)}</p>
-                      </div>
-                      <div>
-                        <p className="text-white/60">Monthly Burn</p>
-                        <p className="text-lg font-bold text-white">{formatCurrency(previewMetrics.monthlyBurn)}</p>
-                      </div>
-                      <div>
-                        <p className="text-white/60">Est. Runway</p>
-                        <p className={cn(
-                          "text-lg font-bold",
-                          previewMetrics.runwayMonths < 18 ? "text-amber-400" : "text-emerald-400"
-                        )}>
-                          {previewMetrics.runwayMonths} months
-                        </p>
-                      </div>
+                    <div className="pt-4 border-t border-blue-400/20">
+                      <p className="text-blue-400 text-sm mb-1">Estimated Runway</p>
+                      <p className="text-3xl font-bold text-white">{runwayMonths} months</p>
                     </div>
                   </div>
                 </div>
-
-                <div className="flex justify-center gap-4 pt-4">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    onClick={goPrev}
-                    className="border-white/20 text-white hover:bg-white/10"
-                  >
-                    <ChevronLeft className="mr-2 h-5 w-5" />
-                    Go Back
-                  </Button>
-                  <Button
-                    size="lg"
-                    onClick={handleComplete}
-                    className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white px-8"
-                  >
-                    <Zap className="mr-2 h-5 w-5" />
-                    Create My Budget
-                  </Button>
-                </div>
-
-                <p className="text-center text-sm text-white/40">
-                  You can customize all values after setup
-                </p>
               </div>
             )}
           </motion.div>
         </AnimatePresence>
-        </div>
-      </div>
 
-      {/* Bottom navigation */}
-      <div className="flex-shrink-0 p-4 flex items-center justify-between bg-slate-900/95 backdrop-blur-sm border-t border-white/10 safe-area-bottom">
-        <div>
-          {currentStepIndex > 0 && step.type !== 'celebration' && (
-            <Button
-              variant="ghost"
-              onClick={goPrev}
-              className="text-white/60 hover:text-white hover:bg-white/10"
-            >
-              <ChevronLeft className="h-5 w-5 mr-1" />
-              Back
-            </Button>
-          )}
-        </div>
+        {/* Continue button */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="absolute bottom-8 left-0 right-0 flex justify-center px-6"
+        >
+          <Button
+            onClick={handleNext}
+            size="lg"
+            className="h-14 px-8 text-lg font-semibold bg-gradient-to-r from-blue-400 to-cyan-500 hover:from-blue-300 hover:to-cyan-400 text-slate-900 rounded-full shadow-lg shadow-blue-500/25"
+          >
+            {isLastStep ? (
+              <>
+                Create Budget
+                <Check className="ml-2 h-5 w-5" />
+              </>
+            ) : (
+              <>
+                Continue
+                <ChevronRight className="ml-1 h-5 w-5" />
+              </>
+            )}
+          </Button>
+        </motion.div>
 
-        <div className="text-sm text-white/40 hidden sm:block">
-          {step.phaseName && step.phase > 0 && (
-            <span>Phase {step.phase}: {step.phaseName}</span>
-          )}
-        </div>
-
-        <div>
-          {(step.type === 'team' || step.type === 'capital' || step.id === 'fund-size' || step.id === 'fee-rate' || step.id === 'first-close') && (
-            <Button
-              onClick={goNext}
-              disabled={
-                (step.type === 'team' && teamMembers.length === 0) ||
-                (step.id === 'fund-size' && fundSize <= 0) ||
-                (step.id === 'fee-rate' && feeRate <= 0) ||
-                (step.type === 'capital' && startingCash <= 0)
-              }
-              className="bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-600 hover:to-cyan-600 text-white"
-            >
-              Continue
-              <ChevronRight className="ml-1 h-4 w-4" />
-            </Button>
+        {/* Keyboard hint */}
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-xs text-slate-600">
+          Press <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 mx-1">Enter</kbd> to continue
+          {!isFirstStep && (
+            <>
+              {' '}or <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 mx-1">Esc</kbd> to go back
+            </>
           )}
         </div>
       </div>

@@ -348,38 +348,42 @@ export function PDFExport({ data, results, className }: PDFExportProps) {
           }
           body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            font-size: 12px;
-            line-height: 1.5;
+            font-size: 11pt;
+            line-height: 1.6;
             color: #1a1a1a;
             padding: 40px;
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
           }
           h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
+            font-size: 26px;
+            margin-bottom: 10px;
             color: #111;
+            font-weight: 700;
           }
           h2 {
-            font-size: 18px;
-            margin-bottom: 16px;
-            padding-bottom: 8px;
+            font-size: 20px;
+            margin-bottom: 18px;
+            padding-bottom: 10px;
             border-bottom: 2px solid #e5e5e5;
-            color: #333;
+            color: #222;
+            font-weight: 600;
           }
           h3 {
-            font-size: 14px;
-            margin: 20px 0 12px;
-            color: #555;
+            font-size: 16px;
+            margin: 24px 0 14px;
+            color: #444;
+            font-weight: 600;
           }
           .header {
-            margin-bottom: 32px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid #e5e5e5;
+            margin-bottom: 36px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e5e5e5;
           }
           .header-meta {
-            font-size: 11px;
+            font-size: 12px;
             color: #666;
+            margin-top: 8px;
           }
           .section {
             margin-bottom: 32px;
@@ -390,26 +394,28 @@ export function PDFExport({ data, results, className }: PDFExportProps) {
           .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 20px;
+            gap: 20px;
+            margin-bottom: 24px;
           }
           .metric {
-            padding: 16px;
+            padding: 18px;
             background: #f9f9f9;
             border-radius: 8px;
             text-align: center;
+            border: 1px solid #e5e5e5;
           }
           .metric-label {
-            font-size: 11px;
+            font-size: 12px;
             color: #666;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            font-weight: 500;
           }
           .metric-value {
-            font-size: 20px;
-            font-weight: 600;
+            font-size: 22px;
+            font-weight: 700;
             color: #111;
-            margin-top: 4px;
+            margin-top: 6px;
           }
           .highlight-box {
             padding: 12px 16px;
@@ -427,20 +433,21 @@ export function PDFExport({ data, results, className }: PDFExportProps) {
           table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 16px;
-            font-size: 11px;
+            margin-bottom: 20px;
+            font-size: 11pt;
           }
           th, td {
-            padding: 10px 12px;
+            padding: 12px 14px;
             text-align: left;
             border-bottom: 1px solid #e5e5e5;
           }
           th {
-            background: #f5f5f5;
+            background: #1a1d24;
+            color: white;
             font-weight: 600;
             text-transform: uppercase;
-            font-size: 10px;
-            letter-spacing: 0.5px;
+            font-size: 11px;
+            letter-spacing: 0.6px;
           }
           .total-row {
             background: #f9f9f9;
@@ -559,9 +566,9 @@ export function PDFExport({ data, results, className }: PDFExportProps) {
       </head>
       <body>
         <div class="header">
-          <h1>Management Company Budget</h1>
+          <h1>FundOpsHQ - Management Company Budget</h1>
           <div class="header-meta">
-            ${fund?.name || 'Fund'} | Generated ${new Date().toLocaleDateString()} | For Planning Purposes Only
+            ${fund?.name || 'Fund'} | Generated ${new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })} | For Planning Purposes Only
           </div>
         </div>
         ${sections.join('')}
@@ -598,7 +605,7 @@ export function PDFExport({ data, results, className }: PDFExportProps) {
         setExportStatus('idle')
         setDialogOpen(false)
       }, 2000)
-    } catch {
+    } catch (error) {
       // Export failed
       setExportStatus('error')
     } finally {
@@ -608,9 +615,11 @@ export function PDFExport({ data, results, className }: PDFExportProps) {
 
   // Quick CSV export for spreadsheet users
   const handleCSVExport = () => {
+    const formatNumberForCSV = (num: number) => num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+
     const rows = [
-      ['Management Company Budget Export'],
-      ['Generated', new Date().toISOString()],
+      ['FundOpsHQ - Management Company Budget Export'],
+      ['Generated', new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })],
       [],
       ['Summary'],
       ['Fund Size', `$${data.funds[0]?.size || 0}M`],
@@ -622,23 +631,32 @@ export function PDFExport({ data, results, className }: PDFExportProps) {
       [],
       ['Team Expenses'],
       ['Role', 'Monthly Cost', 'Annual Cost', 'Is Partner'],
-      ...data.expenses.team.map(m => [m.role, m.monthlyCost, m.monthlyCost * 12, m.isPartner ? 'Yes' : 'No']),
+      ...data.expenses.team.map(m => [m.role, formatNumberForCSV(m.monthlyCost), formatNumberForCSV(m.monthlyCost * 12), m.isPartner ? 'Yes' : 'No']),
       [],
       ['Operations Expenses'],
       ['Name', 'Monthly Cost', 'Annual Cost', 'Category'],
-      ...data.expenses.operations.map(o => [o.name, o.monthlyCost, o.monthlyCost * 12, o.category || '']),
+      ...data.expenses.operations.map(o => [o.name, formatNumberForCSV(o.monthlyCost), formatNumberForCSV(o.monthlyCost * 12), o.category || '']),
       [],
       ['Overhead Expenses'],
       ['Name', 'Monthly Cost', 'Annual Cost', 'Category'],
-      ...data.expenses.overhead.map(o => [o.name, o.monthlyCost, o.monthlyCost * 12, o.category || ''])
+      ...data.expenses.overhead.map(o => [o.name, formatNumberForCSV(o.monthlyCost), formatNumberForCSV(o.monthlyCost * 12), o.category || '']),
+      [],
+      ['DISCLAIMER'],
+      ['This tool provides educational estimates only and should not be considered financial, legal, or tax advice.'],
+      ['Actual costs and outcomes depend on your specific situation, service providers, and market conditions.'],
+      ['FundOpsHQ is an educational resource and does not provide professional services.']
     ]
 
-    const csv = rows.map(row => row.join(',')).join('\n')
+    const csv = rows.map(row => row.map(cell => {
+      const str = String(cell)
+      return str.includes(',') || str.includes('"') || str.includes('\n') ? `"${str.replace(/"/g, '""')}"` : str
+    }).join(',')).join('\n')
+
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `budget-${new Date().toISOString().split('T')[0]}.csv`
+    a.download = `fundopshq-budget-${new Date().toISOString().split('T')[0]}.csv`
     a.click()
     URL.revokeObjectURL(url)
   }

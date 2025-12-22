@@ -797,6 +797,7 @@ export function ManagementCompanyBudget() {
       <JourneyMode
         onComplete={handleWizardComplete}
         onSkip={handleWizardSkip}
+        existingData={data.funds.length > 0 ? data : null}
       />
     )
   }

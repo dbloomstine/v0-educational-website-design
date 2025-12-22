@@ -165,7 +165,7 @@ export function downloadCSV(options: CSVExportOptions): void {
     toast.error("Export failed", {
       description: "There was an error exporting the CSV file"
     })
-    console.error("CSV export error:", error)
+    // Error already displayed to user via toast
   }
 }
 

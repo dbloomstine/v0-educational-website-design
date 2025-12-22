@@ -15,7 +15,7 @@ import { CalculationBreakdown } from './calculation-breakdown'
 import { PeerComparison } from './peer-comparison'
 import { WhatIfSliders } from './what-if-sliders'
 import { SkipToContent, LiveRegion, ScrollToTop, AutoSaveIndicator, MobileResultsGrid } from './accessibility'
-import { exportWaterfallSummary, exportComparisonCSV, exportComparisonPDF } from './export'
+import { exportWaterfallSummary, exportComparisonCSV, exportComparisonPDF, exportComparisonExcel } from './export'
 import { Confetti, WaterfallFlowAnimation } from './visual-effects'
 import { Quiz as QuizPanel, WATERFALL_QUIZ_QUESTIONS } from './quiz'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -335,19 +335,30 @@ export function DistributionWaterfall() {
 
   // Show journey mode
   if (showJourney) {
-    return (
-      <div className="max-w-4xl mx-auto space-y-8">
-        <SkipToContent />
+    // Check if there's existing data in localStorage for welcome back modal
+    let savedInput: WaterfallInput | null = null
+    if (typeof window !== 'undefined' && journeyCompleted) {
+      try {
+        const saved = localStorage.getItem(LOCAL_STORAGE_KEY)
+        if (saved) {
+          const parsed = JSON.parse(saved)
+          if (parsed.input) savedInput = parsed.input
+        }
+      } catch {
+        // Ignore localStorage errors
+      }
+    }
 
-        <JourneyMode
-          onComplete={handleJourneyComplete}
-          onSkip={() => {
-            setShowJourney(false)
-            localStorage.setItem(JOURNEY_COMPLETED_KEY, 'true')
-            setJourneyCompleted(true)
-          }}
-        />
-      </div>
+    return (
+      <JourneyMode
+        onComplete={handleJourneyComplete}
+        onSkip={() => {
+          setShowJourney(false)
+          localStorage.setItem(JOURNEY_COMPLETED_KEY, 'true')
+          setJourneyCompleted(true)
+        }}
+        existingData={savedInput}
+      />
     )
   }
 
@@ -611,6 +622,7 @@ export function DistributionWaterfall() {
                   <h3 className="text-xl font-semibold">Side-by-Side Comparison</h3>
                   <ExportToolbar
                     onExportCSV={() => exportComparisonCSV(output, compareOutput)}
+                    onExportExcel={() => exportComparisonExcel(output, compareOutput)}
                     onExportPDF={() => exportComparisonPDF(output, compareOutput)}
                   />
                 </div>

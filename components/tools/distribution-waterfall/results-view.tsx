@@ -5,7 +5,7 @@ import { ChevronDown, ChevronUp, Info, Copy, Check } from 'lucide-react'
 import { useState } from 'react'
 import { WaterfallOutput, formatCurrency, formatPercent, formatMultiple } from './waterfallCalculations'
 import { ExportToolbar, MobileExportBar, DisclaimerBlock, MethodologyBlock, RelatedToolsSection } from '@/components/tools/shared'
-import { exportWaterfallCSV, exportWaterfallPDF } from './export'
+import { exportWaterfallCSV, exportWaterfallPDF, exportWaterfallExcel } from './export'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Button } from '@/components/ui/button'
 
@@ -18,6 +18,7 @@ interface ResultsViewProps {
 export function ResultsView({ output, onExport, onCopyScenario }: ResultsViewProps) {
   const [showTierDetails, setShowTierDetails] = useState(true)
   const [csvLoading, setCsvLoading] = useState(false)
+  const [excelLoading, setExcelLoading] = useState(false)
   const [pdfLoading, setPdfLoading] = useState(false)
   const [copied, setCopied] = useState(false)
 
@@ -27,6 +28,15 @@ export function ResultsView({ output, onExport, onCopyScenario }: ResultsViewPro
       exportWaterfallCSV(output)
     } finally {
       setCsvLoading(false)
+    }
+  }
+
+  const handleExportExcel = async () => {
+    setExcelLoading(true)
+    try {
+      exportWaterfallExcel(output)
+    } finally {
+      setExcelLoading(false)
     }
   }
 
@@ -334,8 +344,10 @@ export function ResultsView({ output, onExport, onCopyScenario }: ResultsViewPro
         <h3 className="mb-4 text-lg font-semibold text-foreground">Export Results</h3>
         <ExportToolbar
           onExportCSV={handleExportCSV}
+          onExportExcel={handleExportExcel}
           onExportPDF={handleExportPDF}
           csvLoading={csvLoading}
+          excelLoading={excelLoading}
           pdfLoading={pdfLoading}
         />
       </Card>

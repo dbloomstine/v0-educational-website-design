@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import { ExportToolbar, MobileExportBar, DisclaimerBlock, MethodologyBlock, RelatedToolsSection } from '@/components/tools/shared'
-import { exportSubscriptionLineCSV, exportSubscriptionLinePDF } from './export'
+import { exportSubscriptionLineCSV, exportSubscriptionLinePDF, exportSubscriptionLineExcel } from './export'
 import {
   SubscriptionLineOutput,
   formatCurrency,
@@ -19,6 +19,7 @@ interface ResultsViewProps {
 
 export function ResultsView({ output }: ResultsViewProps) {
   const [csvLoading, setCsvLoading] = useState(false)
+  const [excelLoading, setExcelLoading] = useState(false)
   const [pdfLoading, setPdfLoading] = useState(false)
 
   // Find peak negative NAV for J-curve
@@ -31,6 +32,15 @@ export function ResultsView({ output }: ResultsViewProps) {
       exportSubscriptionLineCSV(output)
     } finally {
       setCsvLoading(false)
+    }
+  }
+
+  const handleExportExcel = async () => {
+    setExcelLoading(true)
+    try {
+      exportSubscriptionLineExcel(output)
+    } finally {
+      setExcelLoading(false)
     }
   }
 
@@ -339,8 +349,10 @@ export function ResultsView({ output }: ResultsViewProps) {
             </div>
             <ExportToolbar
               onExportCSV={handleExportCSV}
+              onExportExcel={handleExportExcel}
               onExportPDF={handleExportPDF}
               csvLoading={csvLoading}
+              excelLoading={excelLoading}
               pdfLoading={pdfLoading}
               compact
             />
@@ -415,8 +427,10 @@ export function ResultsView({ output }: ResultsViewProps) {
       {/* Mobile Export Bar */}
       <MobileExportBar
         onExportCSV={handleExportCSV}
+        onExportExcel={handleExportExcel}
         onExportPDF={handleExportPDF}
         csvLoading={csvLoading}
+        excelLoading={excelLoading}
         pdfLoading={pdfLoading}
       />
     </div>

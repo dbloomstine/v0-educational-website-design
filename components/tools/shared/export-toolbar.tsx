@@ -8,12 +8,16 @@ import { cn } from "@/lib/utils"
 interface ExportToolbarProps {
   /** Handler for CSV export */
   onExportCSV?: () => void
+  /** Handler for Excel export */
+  onExportExcel?: () => void
   /** Handler for PDF export */
   onExportPDF?: () => void
   /** Whether exports are disabled (e.g., no data yet) */
   disabled?: boolean
   /** Loading state for CSV export */
   csvLoading?: boolean
+  /** Loading state for Excel export */
+  excelLoading?: boolean
   /** Loading state for PDF export */
   pdfLoading?: boolean
   /** Custom className */
@@ -30,17 +34,20 @@ interface ExportToolbarProps {
  */
 export function ExportToolbar({
   onExportCSV,
+  onExportExcel,
   onExportPDF,
   disabled = false,
   csvLoading = false,
+  excelLoading = false,
   pdfLoading = false,
   className,
   compact = false
 }: ExportToolbarProps) {
   const hasCSV = !!onExportCSV
+  const hasExcel = !!onExportExcel
   const hasPDF = !!onExportPDF
 
-  if (!hasCSV && !hasPDF) {
+  if (!hasCSV && !hasExcel && !hasPDF) {
     return null
   }
 
@@ -60,6 +67,21 @@ export function ExportToolbar({
               <FileSpreadsheet className="h-4 w-4" />
             )}
             <span className="ml-1.5">CSV</span>
+          </Button>
+        )}
+        {hasExcel && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onExportExcel}
+            disabled={disabled || excelLoading}
+          >
+            {excelLoading ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <FileSpreadsheet className="h-4 w-4" />
+            )}
+            <span className="ml-1.5">Excel</span>
           </Button>
         )}
         {hasPDF && (
@@ -115,6 +137,22 @@ export function ExportToolbar({
             Export CSV
           </Button>
         )}
+        {hasExcel && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onExportExcel}
+            disabled={disabled || excelLoading}
+            className="flex-1 sm:flex-none"
+          >
+            {excelLoading ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <FileSpreadsheet className="h-4 w-4 mr-2" />
+            )}
+            Export Excel
+          </Button>
+        )}
         {hasPDF && (
           <Button
             variant="outline"
@@ -147,15 +185,18 @@ interface MobileExportBarProps extends ExportToolbarProps {
 export function MobileExportBar({
   show = true,
   onExportCSV,
+  onExportExcel,
   onExportPDF,
   disabled = false,
   csvLoading = false,
+  excelLoading = false,
   pdfLoading = false
 }: MobileExportBarProps) {
   const hasCSV = !!onExportCSV
+  const hasExcel = !!onExportExcel
   const hasPDF = !!onExportPDF
 
-  if (!show || (!hasCSV && !hasPDF)) {
+  if (!show || (!hasCSV && !hasExcel && !hasPDF)) {
     return null
   }
 
@@ -176,6 +217,22 @@ export function MobileExportBar({
               <FileSpreadsheet className="h-4 w-4 mr-2" />
             )}
             CSV
+          </Button>
+        )}
+        {hasExcel && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onExportExcel}
+            disabled={disabled || excelLoading}
+            className="flex-1"
+          >
+            {excelLoading ? (
+              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            ) : (
+              <FileSpreadsheet className="h-4 w-4 mr-2" />
+            )}
+            Excel
           </Button>
         )}
         {hasPDF && (

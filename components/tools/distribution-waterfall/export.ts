@@ -10,17 +10,24 @@ import {
   createPDFTableSection,
   type PDFSection
 } from '@/lib/exports'
+import {
+  downloadExcel,
+  createExcelSection,
+  type ExcelSection
+} from '@/lib/exports'
 
 // Text export for detailed summary
 export function exportWaterfallSummary(output: WaterfallOutput) {
   const timestamp = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
   })
 
   const content = `
-DISTRIBUTION WATERFALL ANALYSIS
+FundOpsHQ - DISTRIBUTION WATERFALL ANALYSIS
 Generated: ${timestamp}
 Source: FundOpsHQ Distribution Waterfall Visualizer
 
@@ -98,7 +105,7 @@ other factors. Consult with legal and financial advisors for fund structuring.
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `waterfall-analysis-${new Date().toISOString().split('T')[0]}.txt`
+  a.download = `fundopshq-waterfall-analysis-${new Date().toISOString().split('T')[0]}.txt`
   document.body.appendChild(a)
   a.click()
   document.body.removeChild(a)
@@ -150,7 +157,7 @@ export function exportWaterfallCSV(output: WaterfallOutput) {
   ]
 
   downloadCSV({
-    filename: `waterfall-analysis-${new Date().toISOString().split('T')[0]}`,
+    filename: `fundopshq-waterfall-analysis-${new Date().toISOString().split('T')[0]}`,
     toolName: 'Distribution Waterfall Visualizer',
     sections,
     includeDisclaimer: true
@@ -214,7 +221,7 @@ export function exportWaterfallPDF(output: WaterfallOutput) {
   ]
 
   downloadPDF({
-    filename: `waterfall-analysis-${new Date().toISOString().split('T')[0]}`,
+    filename: `fundopshq-waterfall-analysis-${new Date().toISOString().split('T')[0]}`,
     toolName: 'Distribution Waterfall Visualizer',
     description: `Waterfall analysis for ${formatCurrency(output.input.grossProceeds)} in proceeds from a ${formatCurrency(output.input.fundSize)} fund.`,
     sections,
@@ -283,7 +290,7 @@ export function exportComparisonCSV(outputA: WaterfallOutput, outputB: Waterfall
   ]
 
   downloadCSV({
-    filename: `waterfall-comparison-${new Date().toISOString().split('T')[0]}`,
+    filename: `fundopshq-waterfall-comparison-${new Date().toISOString().split('T')[0]}`,
     toolName: 'Distribution Waterfall Visualizer',
     sections,
     includeDisclaimer: true
@@ -339,10 +346,169 @@ export function exportComparisonPDF(outputA: WaterfallOutput, outputB: Waterfall
   ]
 
   downloadPDF({
-    filename: `waterfall-comparison-${new Date().toISOString().split('T')[0]}`,
+    filename: `fundopshq-waterfall-comparison-${new Date().toISOString().split('T')[0]}`,
     toolName: 'Distribution Waterfall Visualizer',
     description: 'Side-by-side comparison of two waterfall scenarios.',
     sections,
+    includeDisclaimer: true
+  })
+}
+
+// Excel export
+export function exportWaterfallExcel(output: WaterfallOutput) {
+  const sections: ExcelSection[] = [
+    // Summary sheet
+    createExcelSection(
+      'Summary',
+      'Distribution Summary',
+      ['Metric', 'Value'],
+      [
+        ['Total Proceeds', output.totalDistributed],
+        ['LP Distributions', output.totalToLPs],
+        ['LP Multiple (MOIC)', output.lpMultiple],
+        ['LP Share of Total', `${((output.totalToLPs / output.totalDistributed) * 100).toFixed(1)}%`],
+        ['GP Distributions', output.totalToGP],
+        ['GP Multiple (MOIC)', output.gpMultiple],
+        ['GP Share of Total', `${((output.totalToGP / output.totalDistributed) * 100).toFixed(1)}%`],
+        ['Total Profit', output.totalProfit],
+        ['LP Profit', output.lpProfit],
+        ['GP Profit', output.gpProfit],
+        ['Effective Carry Rate', `${(output.effectiveCarryRate * 100).toFixed(2)}%`]
+      ],
+      [30, 25]
+    ),
+
+    // Key Inputs sheet
+    createExcelSection(
+      'Inputs',
+      'Fund Parameters',
+      ['Parameter', 'Value'],
+      [
+        ['Fund Size', output.input.fundSize],
+        ['Contributed Capital', output.input.contributedCapital],
+        ['Gross Proceeds', output.input.grossProceeds],
+        ['Years to Exit', `${output.input.yearsToExit} years`],
+        ['Waterfall Type', output.input.waterfallType === 'european' ? 'European (Whole-Fund)' : 'American (Deal-by-Deal)'],
+        ['Preferred Return', `${(output.input.prefRate * 100).toFixed(1)}% (${output.input.prefCompounding})`],
+        ['Carried Interest', `${(output.input.carryRate * 100).toFixed(0)}%`],
+        ['GP Catch-Up', output.input.hasCatchUp ? `Yes (${(output.input.catchUpRate * 100).toFixed(0)}% to GP)` : 'No'],
+        ['GP Commitment', `${(output.input.gpCommitmentPercent * 100).toFixed(2)}%`]
+      ],
+      [30, 35]
+    ),
+
+    // Tier Breakdown sheet
+    createExcelSection(
+      'Tier Breakdown',
+      'Waterfall Tier Analysis',
+      ['Tier', 'Name', 'Description', 'Amount', 'To LPs', 'To GP', '% of Total'],
+      output.tiers.map(tier => [
+        tier.tier,
+        tier.name,
+        tier.description.substring(0, 50),
+        tier.total,
+        tier.toLPs,
+        tier.toGP,
+        `${((tier.total / output.totalDistributed) * 100).toFixed(1)}%`
+      ]),
+      [6, 20, 50, 18, 18, 18, 12]
+    ),
+
+    // Cumulative Flow sheet
+    createExcelSection(
+      'Cumulative Flow',
+      'Cumulative Distributions by Tier',
+      ['Tier', 'Name', 'Cumulative to LPs', 'Cumulative to GP', 'Cumulative Total'],
+      output.tiers.map(tier => [
+        tier.tier,
+        tier.name,
+        tier.cumulativeLPs,
+        tier.cumulativeGP,
+        tier.cumulativeTotal
+      ]),
+      [6, 20, 22, 22, 22]
+    )
+  ]
+
+  downloadExcel({
+    filename: `fundopshq-waterfall-analysis-${new Date().toISOString().split('T')[0]}`,
+    toolName: 'Distribution Waterfall Visualizer',
+    description: `Waterfall analysis for ${formatCurrency(output.input.grossProceeds)} in proceeds from a ${formatCurrency(output.input.fundSize)} fund.`,
+    sections,
+    includeTimestamp: true,
+    includeDisclaimer: true
+  })
+}
+
+// Comparison Excel export
+export function exportComparisonExcel(outputA: WaterfallOutput, outputB: WaterfallOutput) {
+  const sections: ExcelSection[] = [
+    // Scenario Comparison sheet
+    createExcelSection(
+      'Comparison',
+      'Scenario Comparison',
+      ['Metric', 'Scenario A', 'Scenario B', 'Difference'],
+      [
+        // Structure
+        ['STRUCTURE', '', '', ''],
+        ['Fund Size', formatCurrency(outputA.input.fundSize), formatCurrency(outputB.input.fundSize), formatCurrency(outputB.input.fundSize - outputA.input.fundSize)],
+        ['Gross Proceeds', formatCurrency(outputA.input.grossProceeds), formatCurrency(outputB.input.grossProceeds), formatCurrency(outputB.input.grossProceeds - outputA.input.grossProceeds)],
+        ['Waterfall Type', outputA.input.waterfallType === 'european' ? 'European' : 'American', outputB.input.waterfallType === 'european' ? 'European' : 'American', '-'],
+        ['Preferred Return', `${(outputA.input.prefRate * 100).toFixed(1)}%`, `${(outputB.input.prefRate * 100).toFixed(1)}%`, `${((outputB.input.prefRate - outputA.input.prefRate) * 100).toFixed(1)}%`],
+        ['Carry Rate', `${(outputA.input.carryRate * 100).toFixed(0)}%`, `${(outputB.input.carryRate * 100).toFixed(0)}%`, `${((outputB.input.carryRate - outputA.input.carryRate) * 100).toFixed(0)}%`],
+        ['GP Catch-Up', outputA.input.hasCatchUp ? 'Yes' : 'No', outputB.input.hasCatchUp ? 'Yes' : 'No', '-'],
+        ['', '', '', ''],
+        // Results
+        ['RESULTS', '', '', ''],
+        ['Total Proceeds', formatCurrency(outputA.totalDistributed), formatCurrency(outputB.totalDistributed), formatCurrency(outputB.totalDistributed - outputA.totalDistributed)],
+        ['LP Distributions', formatCurrency(outputA.totalToLPs), formatCurrency(outputB.totalToLPs), formatCurrency(outputB.totalToLPs - outputA.totalToLPs)],
+        ['GP Distributions', formatCurrency(outputA.totalToGP), formatCurrency(outputB.totalToGP), formatCurrency(outputB.totalToGP - outputA.totalToGP)],
+        ['LP Multiple', formatMultiple(outputA.lpMultiple), formatMultiple(outputB.lpMultiple), `${(outputB.lpMultiple - outputA.lpMultiple).toFixed(2)}x`],
+        ['GP Multiple', formatMultiple(outputA.gpMultiple), formatMultiple(outputB.gpMultiple), `${(outputB.gpMultiple - outputA.gpMultiple).toFixed(2)}x`],
+        ['Effective Carry', `${(outputA.effectiveCarryRate * 100).toFixed(2)}%`, `${(outputB.effectiveCarryRate * 100).toFixed(2)}%`, `${((outputB.effectiveCarryRate - outputA.effectiveCarryRate) * 100).toFixed(2)}%`],
+        ['LP Profit', formatCurrency(outputA.lpProfit), formatCurrency(outputB.lpProfit), formatCurrency(outputB.lpProfit - outputA.lpProfit)],
+        ['GP Profit', formatCurrency(outputA.gpProfit), formatCurrency(outputB.gpProfit), formatCurrency(outputB.gpProfit - outputA.gpProfit)]
+      ],
+      [25, 20, 20, 20]
+    ),
+
+    // Scenario A Tiers
+    createExcelSection(
+      'Scenario A Tiers',
+      'Scenario A - Tier Breakdown',
+      ['Tier', 'Name', 'Amount', 'To LPs', 'To GP'],
+      outputA.tiers.map(tier => [
+        tier.tier,
+        tier.name,
+        tier.total,
+        tier.toLPs,
+        tier.toGP
+      ]),
+      [6, 25, 18, 18, 18]
+    ),
+
+    // Scenario B Tiers
+    createExcelSection(
+      'Scenario B Tiers',
+      'Scenario B - Tier Breakdown',
+      ['Tier', 'Name', 'Amount', 'To LPs', 'To GP'],
+      outputB.tiers.map(tier => [
+        tier.tier,
+        tier.name,
+        tier.total,
+        tier.toLPs,
+        tier.toGP
+      ]),
+      [6, 25, 18, 18, 18]
+    )
+  ]
+
+  downloadExcel({
+    filename: `fundopshq-waterfall-comparison-${new Date().toISOString().split('T')[0]}`,
+    toolName: 'Distribution Waterfall Visualizer',
+    description: 'Side-by-side comparison of two waterfall scenarios.',
+    sections,
+    includeTimestamp: true,
     includeDisclaimer: true
   })
 }

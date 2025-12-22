@@ -86,7 +86,7 @@ export function exportBudgetCSV(data: BudgetData, results: BudgetResults) {
   ]
 
   downloadCSV({
-    filename: `management-company-budget-${new Date().toISOString().split('T')[0]}`,
+    filename: `fundopshq-management-company-budget-${new Date().toISOString().split('T')[0]}`,
     toolName: 'Management Company Budget Planner',
     sections,
     includeDisclaimer: true
@@ -177,7 +177,7 @@ export function exportBudgetPDF(data: BudgetData, results: BudgetResults) {
   ]
 
   downloadPDF({
-    filename: `management-company-budget-${new Date().toISOString().split('T')[0]}`,
+    filename: `fundopshq-management-company-budget-${new Date().toISOString().split('T')[0]}`,
     toolName: 'Management Company Budget Planner',
     description: `Budget projection with ${formatCurrency(data.startingCash)} starting cash and ${formatRunway(results.runwayMonths)} runway.`,
     sections,

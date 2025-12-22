@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { AlertCircle, ChevronDown, ChevronUp, RotateCcw, TrendingUp } from 'lucide-react'
 import { ExportToolbar, MobileExportBar, DisclaimerBlock, RelatedToolsSection } from '@/components/tools/shared'
-import { exportToPDF, exportToCSV } from './exportPDF'
+import { exportToPDF, exportToCSV, exportToExcel } from './exportPDF'
 import type { ClassificationResult as Result, ClassificationInput } from './expenseData'
 
 interface ClassificationResultsProps {
@@ -22,6 +22,7 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
   const [showExamples, setShowExamples] = useState(false)
   const [showLogic, setShowLogic] = useState(false)
   const [csvLoading, setCsvLoading] = useState(false)
+  const [excelLoading, setExcelLoading] = useState(false)
   const [pdfLoading, setPdfLoading] = useState(false)
 
   const handleExportCSV = async () => {
@@ -30,6 +31,15 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
       exportToCSV(input, result)
     } finally {
       setCsvLoading(false)
+    }
+  }
+
+  const handleExportExcel = async () => {
+    setExcelLoading(true)
+    try {
+      exportToExcel(input, result)
+    } finally {
+      setExcelLoading(false)
     }
   }
 
@@ -294,8 +304,10 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
         <CardContent className="space-y-4">
           <ExportToolbar
             onExportCSV={handleExportCSV}
+            onExportExcel={handleExportExcel}
             onExportPDF={handleExportPDF}
             csvLoading={csvLoading}
+            excelLoading={excelLoading}
             pdfLoading={pdfLoading}
             compact
           />
@@ -334,8 +346,10 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
       {/* Mobile Export Bar */}
       <MobileExportBar
         onExportCSV={handleExportCSV}
+        onExportExcel={handleExportExcel}
         onExportPDF={handleExportPDF}
         csvLoading={csvLoading}
+        excelLoading={excelLoading}
         pdfLoading={pdfLoading}
       />
     </div>

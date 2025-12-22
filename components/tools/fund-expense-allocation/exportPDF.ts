@@ -10,6 +10,11 @@ import {
   downloadPDF,
   type PDFSection
 } from '@/lib/exports'
+import {
+  downloadExcel,
+  createExcelSection,
+  type ExcelSection
+} from '@/lib/exports'
 
 export function exportToPDF(input: ClassificationInput, result: ClassificationResult) {
   const categoryName = expenseCategories.find(c => c.id === input.expenseCategory)?.name || 'Custom Expense'
@@ -47,13 +52,14 @@ export function exportToPDF(input: ClassificationInput, result: ClassificationRe
     // Rationale
     { type: 'title', content: 'Rationale' },
     { type: 'text', content: result.headline },
-    { type: 'text', content: result.rationale.substring(0, 500) + (result.rationale.length > 500 ? '...' : '') },
+    { type: 'spacer' },
+    { type: 'text', content: result.rationale },
 
     { type: 'spacer' },
 
     // LP Sensitivities
     { type: 'title', content: 'LP Sensitivities' },
-    { type: 'text', content: result.lpSensitivities.substring(0, 400) + (result.lpSensitivities.length > 400 ? '...' : '') }
+    { type: 'text', content: result.lpSensitivities }
   ]
 
   // Add flags if any
@@ -132,6 +138,105 @@ export function exportToCSV(input: ClassificationInput, result: ClassificationRe
     filename: `expense-allocation-analysis-${new Date().toISOString().split('T')[0]}`,
     toolName: 'Fund Expense Allocation Helper',
     sections,
+    includeDisclaimer: true
+  })
+}
+
+// Excel export function
+export function exportToExcel(input: ClassificationInput, result: ClassificationResult) {
+  const categoryName = expenseCategories.find(c => c.id === input.expenseCategory)?.name || 'Custom Expense'
+  const classificationLabel = result.classification === 'fund-expense' ? 'Fund Expense' :
+                              result.classification === 'management-expense' ? 'Management Expense' :
+                              'Case-by-Case'
+
+  const sections: ExcelSection[] = [
+    // Summary sheet
+    createExcelSection(
+      'Summary',
+      'Expense Classification Analysis',
+      ['Parameter', 'Value'],
+      [
+        ['Classification Result', classificationLabel],
+        ['Market Practice', result.marketPractice.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())],
+        ['Expense Category', categoryName],
+        ['', ''],
+        ['Fund Type', fundTypes[input.fundType].name],
+        ['Fund Stage', fundStages[input.fundStage].name],
+        ['Primary Beneficiary', beneficiaries[input.primaryBeneficiary].name],
+        ['', ''],
+        ['Headline', result.headline]
+      ],
+      [30, 60]
+    ),
+
+    // Input Context sheet
+    createExcelSection(
+      'Input Context',
+      'Detailed Input Parameters',
+      ['Parameter', 'Value'],
+      [
+        ['Expense Category', categoryName],
+        ['Custom Description', input.customDescription || 'N/A'],
+        ['Fund Type', fundTypes[input.fundType].name],
+        ['Fund Stage', fundStages[input.fundStage].name],
+        ['Primary Beneficiary', beneficiaries[input.primaryBeneficiary].name],
+        ['LPA Context', input.lpaContext || 'N/A']
+      ],
+      [30, 60]
+    ),
+
+    // Analysis sheet
+    createExcelSection(
+      'Analysis',
+      'Detailed Analysis and Rationale',
+      ['Section', 'Content'],
+      [
+        ['Classification', classificationLabel],
+        ['Market Practice', result.marketPractice],
+        ['Headline', result.headline],
+        ['', ''],
+        ['Rationale', result.rationale],
+        ['', ''],
+        ['Detailed Explanation', result.detailedExplanation],
+        ['', ''],
+        ['LP Sensitivities', result.lpSensitivities]
+      ],
+      [25, 90]
+    )
+  ]
+
+  // Add flags sheet if any
+  if (result.flags.length > 0) {
+    sections.push(
+      createExcelSection(
+        'Important Notes',
+        'Important Considerations and Flags',
+        ['Flag'],
+        result.flags.map(flag => [flag]),
+        [100]
+      )
+    )
+  }
+
+  // Add examples sheet if any
+  if (result.examples.length > 0) {
+    sections.push(
+      createExcelSection(
+        'Examples',
+        'Practical Examples',
+        ['Example'],
+        result.examples.map(example => [example]),
+        [100]
+      )
+    )
+  }
+
+  downloadExcel({
+    filename: `expense-allocation-analysis-${new Date().toISOString().split('T')[0]}`,
+    toolName: 'Fund Expense Allocation Helper',
+    description: `Expense classification analysis for: ${categoryName}`,
+    sections,
+    includeTimestamp: true,
     includeDisclaimer: true
   })
 }

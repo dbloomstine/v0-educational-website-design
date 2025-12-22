@@ -73,31 +73,34 @@ export function downloadPDF(options: PDFExportOptions): void {
       return false
     }
 
-    // Header
+    // Header - Professional FundOpsHQ branding
     doc.setFillColor(...COLORS.primary)
-    doc.rect(0, 0, pageWidth, 35, "F")
+    doc.rect(0, 0, pageWidth, 40, "F")
 
     doc.setTextColor(255, 255, 255)
-    doc.setFontSize(10)
-    doc.text("FundOpsHQ", margin, 12)
-
-    doc.setFontSize(18)
+    doc.setFontSize(11)
     doc.setFont("helvetica", "bold")
-    doc.text(toolName, margin, 24)
+    doc.text("FundOpsHQ", margin, 14)
 
-    y = 45
+    doc.setFontSize(20)
+    doc.setFont("helvetica", "bold")
+    doc.text(toolName, margin, 28)
 
-    // Timestamp
+    y = 50
+
+    // Timestamp with time
     doc.setTextColor(...COLORS.muted)
-    doc.setFontSize(9)
+    doc.setFontSize(10)
     doc.setFont("helvetica", "normal")
     const timestamp = new Date().toLocaleDateString("en-US", {
       year: "numeric",
       month: "long",
-      day: "numeric"
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
     })
     doc.text(`Generated: ${timestamp}`, margin, y)
-    y += 8
+    y += 10
 
     // Description
     if (description) {
@@ -114,19 +117,19 @@ export function downloadPDF(options: PDFExportOptions): void {
         case "title":
           checkNewPage(15)
           doc.setTextColor(...COLORS.text)
-          doc.setFontSize(14)
+          doc.setFontSize(16)
           doc.setFont("helvetica", "bold")
           doc.text(section.content || "", margin, y)
-          y += 8
+          y += 10
           break
 
         case "subtitle":
           checkNewPage(12)
-          doc.setTextColor(...COLORS.muted)
-          doc.setFontSize(11)
+          doc.setTextColor(...COLORS.text)
+          doc.setFontSize(12)
           doc.setFont("helvetica", "bold")
           doc.text(section.content || "", margin, y)
-          y += 6
+          y += 8
           break
 
         case "text":
@@ -142,28 +145,29 @@ export function downloadPDF(options: PDFExportOptions): void {
         case "keyValue":
           if (section.data && typeof section.data === "object" && !Array.isArray(section.data)) {
             const entries = Object.entries(section.data)
-            const rowHeight = 7
-            checkNewPage(entries.length * rowHeight + 5)
+            const rowHeight = 8
+            checkNewPage(entries.length * rowHeight + 8)
 
             entries.forEach(([key, value], index) => {
               const isEven = index % 2 === 0
               if (isEven) {
                 doc.setFillColor(...COLORS.headerBg)
-                doc.rect(margin, y - 4, contentWidth, rowHeight, "F")
+                doc.rect(margin, y - 5, contentWidth, rowHeight, "F")
               }
 
               doc.setTextColor(...COLORS.muted)
-              doc.setFontSize(9)
+              doc.setFontSize(10)
               doc.setFont("helvetica", "normal")
-              doc.text(key, margin + 2, y)
+              doc.text(key, margin + 3, y)
 
               doc.setTextColor(...COLORS.text)
+              doc.setFontSize(10)
               doc.setFont("helvetica", "bold")
               doc.text(String(value), margin + contentWidth / 2, y)
 
               y += rowHeight
             })
-            y += 5
+            y += 8
           }
           break
 
@@ -172,40 +176,41 @@ export function downloadPDF(options: PDFExportOptions): void {
             const headers = section.headers
             const rows = section.data as string[][]
             const colWidth = contentWidth / headers.length
-            const rowHeight = 7
+            const rowHeight = 8
 
-            checkNewPage((rows.length + 1) * rowHeight + 10)
+            checkNewPage((rows.length + 1) * rowHeight + 12)
 
             // Table header
             doc.setFillColor(...COLORS.primary)
-            doc.rect(margin, y - 4, contentWidth, rowHeight, "F")
+            doc.rect(margin, y - 5, contentWidth, rowHeight, "F")
             doc.setTextColor(255, 255, 255)
-            doc.setFontSize(9)
+            doc.setFontSize(10)
             doc.setFont("helvetica", "bold")
 
             headers.forEach((header, i) => {
-              doc.text(header, margin + i * colWidth + 2, y)
+              doc.text(header, margin + i * colWidth + 3, y)
             })
             y += rowHeight
 
-            // Table rows
+            // Table rows with proper font size
             doc.setTextColor(...COLORS.text)
+            doc.setFontSize(10)
             doc.setFont("helvetica", "normal")
 
             rows.forEach((row, rowIndex) => {
               if (rowIndex % 2 === 0) {
                 doc.setFillColor(...COLORS.headerBg)
-                doc.rect(margin, y - 4, contentWidth, rowHeight, "F")
+                doc.rect(margin, y - 5, contentWidth, rowHeight, "F")
               }
 
               row.forEach((cell, i) => {
                 const text = String(cell || "")
                 const truncated = text.length > 25 ? text.substring(0, 22) + "..." : text
-                doc.text(truncated, margin + i * colWidth + 2, y)
+                doc.text(truncated, margin + i * colWidth + 3, y)
               })
               y += rowHeight
             })
-            y += 5
+            y += 8
           }
           break
 
@@ -269,7 +274,7 @@ export function downloadPDF(options: PDFExportOptions): void {
     toast.error("Export failed", {
       description: "There was an error exporting the PDF file"
     })
-    console.error("PDF export error:", error)
+    // Error already displayed to user via toast
   }
 }
 

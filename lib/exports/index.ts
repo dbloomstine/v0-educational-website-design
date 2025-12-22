@@ -18,3 +18,10 @@ export {
   type PDFSection,
   type PDFExportOptions
 } from "./pdf-export"
+
+export {
+  downloadExcel,
+  createExcelSection,
+  type ExcelSection,
+  type ExcelExportOptions
+} from "./excel-export"
