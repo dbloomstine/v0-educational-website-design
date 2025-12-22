@@ -23,7 +23,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { ShareButton } from '@/components/tools/share-button'
-import { ExportToolbar } from '@/components/tools/shared'
+import { ExportToolbar, MethodologyBlock, RelatedToolsSection, LastUpdated, DisclaimerBlock } from '@/components/tools/shared'
 import {
   Sparkles,
   BookOpen,
@@ -1001,6 +1001,74 @@ export function DistributionWaterfall() {
             </motion.div>
           )}
         </AnimatePresence>
+      </div>
+
+      {/* Methodology */}
+      <MethodologyBlock
+        title="How we calculate waterfall distributions"
+        sources={[
+          { text: "ILPA Private Equity Principles 3.0", link: "https://ilpa.org/ilpa-principles/" },
+          { text: "Market practice from 500+ PE/VC fund structures" },
+          { text: "Industry-standard waterfall mechanics and terminology" }
+        ]}
+      >
+        <p className="font-medium text-foreground mb-2">Our Calculation Approach:</p>
+        <ul className="space-y-1.5 ml-4 list-disc">
+          <li>
+            <strong>Return of Capital:</strong> LPs receive 100% of distributions until their contributed capital is returned.
+            This is the foundational tier of all waterfall structures.
+          </li>
+          <li>
+            <strong>Preferred Return:</strong> After return of capital, LPs receive their preferred return (typically 8%)
+            on contributed capital. We support both simple and compound interest calculations.
+          </li>
+          <li>
+            <strong>GP Catch-Up:</strong> If enabled, the GP receives 100% (or specified %) of distributions until they
+            have received their proportionate share (typically 20/80) of all profits distributed to that point.
+          </li>
+          <li>
+            <strong>Carried Interest Split:</strong> Remaining profits are split according to the carry rate
+            (typically 80% LP / 20% GP).
+          </li>
+          <li>
+            <strong>European vs American:</strong> European waterfalls calculate on whole-fund basis; American waterfalls
+            calculate deal-by-deal (not fully modeled in this simplified tool).
+          </li>
+        </ul>
+      </MethodologyBlock>
+
+      {/* Related Tools */}
+      <RelatedToolsSection
+        currentToolSlug="distribution-waterfall"
+        relatedTools={[
+          {
+            slug: 'management-fee-calculator',
+            title: 'Management Fee Calculator',
+            description: 'Model fund-level management fees and understand how different structures impact economics.',
+            reason: 'Understand the other major component of GP compensation alongside carried interest'
+          },
+          {
+            slug: 'subscription-credit-line',
+            title: 'Subscription Credit Line Impact Visualizer',
+            description: 'Model how subscription lines affect fund IRR, MOIC, and J-curve shape.',
+            reason: 'See how credit facilities can boost reported IRR while affecting true economics'
+          }
+        ]}
+        learningPath="Master fund economics: Waterfall → Fee Calculator → Credit Line Impact"
+      />
+
+      {/* Disclaimer */}
+      <DisclaimerBlock
+        additionalDisclaimer="Actual waterfall calculations depend on specific LPA terms, timing of distributions, fees, and other factors. This tool uses simplified assumptions. Always consult with legal and financial advisors."
+      />
+
+      {/* Last Updated */}
+      <div className="flex justify-center">
+        <LastUpdated
+          date="December 2024"
+          version="2.1"
+          changelogNote="Added what-if analysis"
+        />
       </div>
     </div>
   )

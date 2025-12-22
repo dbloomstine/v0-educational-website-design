@@ -16,7 +16,7 @@ import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ShareButton } from '@/components/tools/share-button'
-import { ExportToolbar } from '@/components/tools/shared'
+import { ExportToolbar, MethodologyBlock, RelatedToolsSection, LastUpdated, DisclaimerBlock } from '@/components/tools/shared'
 import { exportSubscriptionLineComparisonCSV, exportSubscriptionLineComparisonPDF } from './export'
 import { Rocket, Calculator, SlidersHorizontal, ChevronDown, ChevronUp } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -584,6 +584,73 @@ export function SubscriptionCreditLine() {
           </div>
         </>
       )}
+
+      {/* Methodology */}
+      <MethodologyBlock
+        title="How we calculate subscription line impact"
+        sources={[
+          { text: "ILPA Subscription Line Guidance", link: "https://ilpa.org/ilpa-guidance-subscription-lines-of-credit/" },
+          { text: "Preqin research on subscription facility market trends" },
+          { text: "Industry-standard IRR and MOIC calculation methodologies" }
+        ]}
+      >
+        <p className="font-medium text-foreground mb-2">Our Calculation Approach:</p>
+        <ul className="space-y-1.5 ml-4 list-disc">
+          <li>
+            <strong>IRR Boost:</strong> We model how delaying capital calls compresses the time LPs have capital
+            deployed, which increases the internal rate of return. The boost depends on facility size, duration,
+            and interest rate.
+          </li>
+          <li>
+            <strong>MOIC Drag:</strong> Interest expense on the credit line reduces total returns to LPs.
+            We calculate this as a percentage reduction to the gross MOIC based on average drawn amounts
+            and interest rates.
+          </li>
+          <li>
+            <strong>J-Curve Effect:</strong> Subscription lines flatten the J-curve by avoiding early negative
+            returns from capital calls before investments appreciate. We model quarterly cash flows to show
+            this effect visually.
+          </li>
+          <li>
+            <strong>ILPA Compliance:</strong> We flag scenarios that exceed ILPA guidance (15-25% facility size,
+            180 days maximum outstanding) to help GPs stay within industry best practices.
+          </li>
+        </ul>
+      </MethodologyBlock>
+
+      {/* Related Tools */}
+      <RelatedToolsSection
+        currentToolSlug="subscription-credit-line"
+        relatedTools={[
+          {
+            slug: 'distribution-waterfall',
+            title: 'Distribution Waterfall Visualizer',
+            description: 'Model LP and GP economics across preferred return, catch-up, and carry tiers.',
+            reason: 'Understand how credit line IRR boost interacts with waterfall distributions'
+          },
+          {
+            slug: 'management-fee-calculator',
+            title: 'Management Fee Calculator',
+            description: 'Model fund-level management fees and understand how different structures impact economics.',
+            reason: 'Compare credit line costs against management fee economics'
+          }
+        ]}
+        learningPath="Master fund economics: Credit Line → Waterfall → Fee Calculator"
+      />
+
+      {/* Disclaimer */}
+      <DisclaimerBlock
+        additionalDisclaimer="This tool uses simplified assumptions about capital call timing, interest accrual, and return calculations. Actual subscription line impact depends on specific facility terms, market conditions, and investment performance. Always consult with lenders and fund counsel."
+      />
+
+      {/* Last Updated */}
+      <div className="flex justify-center">
+        <LastUpdated
+          date="December 2024"
+          version="2.0"
+          changelogNote="Added sensitivity analysis"
+        />
+      </div>
     </div>
   )
 }
