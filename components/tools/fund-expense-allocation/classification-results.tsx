@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { AlertCircle, ChevronDown, ChevronUp, RotateCcw, TrendingUp } from 'lucide-react'
-import { ExportToolbar, MobileExportBar, DisclaimerBlock } from '@/components/tools/shared'
+import { ExportToolbar, MobileExportBar, DisclaimerBlock, RelatedToolsSection } from '@/components/tools/shared'
 import { exportToPDF, exportToCSV } from './exportPDF'
 import type { ClassificationResult as Result, ClassificationInput } from './expenseData'
 
@@ -305,6 +305,26 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
           </Button>
         </CardContent>
       </Card>
+
+      {/* Related Tools */}
+      <RelatedToolsSection
+        currentToolSlug="fund-expense-allocation"
+        relatedTools={[
+          {
+            slug: 'management-company-budget',
+            title: 'Management Company Budget Planner',
+            description: 'Calculate your burn rate, runway, and seed capital needs with a simple budget model.',
+            reason: 'Use your expense classifications to build an accurate management company budget'
+          },
+          {
+            slug: 'fund-launch-guide',
+            title: 'Fund Launch Guide',
+            description: 'Interactive checklist and guide for launching your fund.',
+            reason: 'Track your fund formation progress and ensure proper expense policies are in place'
+          }
+        ]}
+        learningPath="Build compliant operations: Expense Allocation → Budget Planner → Fund Launch Guide"
+      />
 
       {/* Disclaimer */}
       <DisclaimerBlock

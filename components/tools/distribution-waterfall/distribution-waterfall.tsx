@@ -389,29 +389,32 @@ export function DistributionWaterfall() {
         <div className="flex flex-wrap justify-center gap-3 mt-4">
           <Button
             variant="outline"
-            size="sm"
+            size="lg"
             onClick={() => setShowJourney(true)}
-            className="gap-2"
+            aria-label={journeyCompleted ? 'Restart guided tutorial' : 'Start guided tutorial'}
+            className="gap-2 min-h-[44px] focus:ring-2 focus:ring-primary"
           >
-            <Play className="h-4 w-4" />
+            <Play className="h-4 w-4" aria-hidden="true" />
             {journeyCompleted ? 'Restart Tutorial' : 'Start Tutorial'}
           </Button>
           <Button
             variant="outline"
-            size="sm"
+            size="lg"
             onClick={() => setShowWalkthrough(true)}
-            className="gap-2"
+            aria-label="Open results explanation"
+            className="gap-2 min-h-[44px] focus:ring-2 focus:ring-primary"
           >
-            <Sparkles className="h-4 w-4" />
+            <Sparkles className="h-4 w-4" aria-hidden="true" />
             Explain Results
           </Button>
           <Button
             variant="ghost"
-            size="sm"
+            size="lg"
             onClick={handleStartOver}
-            className="gap-2"
+            aria-label="Start over with new inputs"
+            className="gap-2 min-h-[44px] focus:ring-2 focus:ring-primary"
           >
-            <RotateCcw className="h-4 w-4" />
+            <RotateCcw className="h-4 w-4" aria-hidden="true" />
             Start Over
           </Button>
         </div>
@@ -421,10 +424,13 @@ export function DistributionWaterfall() {
           <div className="space-y-2">
             <button
               onClick={() => toggleSection('waterflowAnimation')}
-              className="flex items-center justify-between w-full p-4 rounded-lg border border-primary/20 bg-gradient-to-r from-primary/5 to-purple-500/5 hover:from-primary/10 hover:to-purple-500/10 transition-colors"
+              aria-expanded={expandedSections.waterflowAnimation}
+              aria-controls="waterflow-animation-content"
+              aria-label="Toggle waterfall flow animation section"
+              className="flex items-center justify-between w-full p-4 rounded-lg border border-primary/20 bg-gradient-to-r from-primary/5 to-purple-500/5 hover:from-primary/10 hover:to-purple-500/10 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
             >
               <div className="flex items-center gap-3">
-                <Sparkles className="h-5 w-5 text-primary" />
+                <Sparkles className="h-5 w-5 text-primary" aria-hidden="true" />
                 <div className="text-left">
                   <h3 className="font-semibold text-foreground">Waterfall Flow Animation</h3>
                   <p className="text-sm text-muted-foreground">Watch how money flows through each tier</p>
@@ -434,19 +440,22 @@ export function DistributionWaterfall() {
                 Interactive
               </Badge>
               {expandedSections.waterflowAnimation ? (
-                <ChevronUp className="h-5 w-5 text-muted-foreground" />
+                <ChevronUp className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
               ) : (
-                <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                <ChevronDown className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
               )}
             </button>
             <AnimatePresence>
               {expandedSections.waterflowAnimation && (
                 <motion.div
+                  id="waterflow-animation-content"
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.2 }}
                   className="overflow-hidden"
+                  role="region"
+                  aria-label="Waterfall flow animation"
                 >
                   <Card className="border-primary/20">
                     <CardContent className="p-6">
@@ -517,7 +526,9 @@ export function DistributionWaterfall() {
               onClick={() => handleScenarioChange('low')}
               variant={selectedScenario === 'low' ? 'default' : 'outline'}
               size="lg"
-              className="flex-1 sm:flex-none min-w-[140px]"
+              aria-label="Model 1.5x return scenario"
+              aria-pressed={selectedScenario === 'low'}
+              className="flex-1 sm:flex-none min-w-[140px] min-h-[44px] focus:ring-2 focus:ring-primary"
             >
               1.5x Return
             </Button>
@@ -525,7 +536,9 @@ export function DistributionWaterfall() {
               onClick={() => handleScenarioChange('medium')}
               variant={selectedScenario === 'medium' ? 'default' : 'outline'}
               size="lg"
-              className="flex-1 sm:flex-none min-w-[140px]"
+              aria-label="Model 2.0x return scenario"
+              aria-pressed={selectedScenario === 'medium'}
+              className="flex-1 sm:flex-none min-w-[140px] min-h-[44px] focus:ring-2 focus:ring-primary"
             >
               2.0x Return
             </Button>
@@ -533,7 +546,9 @@ export function DistributionWaterfall() {
               onClick={() => handleScenarioChange('high')}
               variant={selectedScenario === 'high' ? 'default' : 'outline'}
               size="lg"
-              className="flex-1 sm:flex-none min-w-[140px]"
+              aria-label="Model 3.0x return scenario"
+              aria-pressed={selectedScenario === 'high'}
+              className="flex-1 sm:flex-none min-w-[140px] min-h-[44px] focus:ring-2 focus:ring-primary"
             >
               3.0x Return
             </Button>
@@ -710,28 +725,34 @@ export function DistributionWaterfall() {
       <div className="space-y-2">
         <button
           onClick={() => toggleSection('whatIf')}
-          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+          aria-expanded={expandedSections.whatIf}
+          aria-controls="what-if-content"
+          aria-label="Toggle what-if analysis section"
+          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           <div className="flex items-center gap-3">
-            <SlidersHorizontal className="h-5 w-5 text-primary" />
+            <SlidersHorizontal className="h-5 w-5 text-primary" aria-hidden="true" />
             <div className="text-left">
               <h3 className="font-semibold text-foreground">What-If Analysis</h3>
               <p className="text-sm text-muted-foreground">Adjust parameters to see real-time impact</p>
             </div>
           </div>
           {expandedSections.whatIf ? (
-            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+            <ChevronUp className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           ) : (
-            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+            <ChevronDown className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           )}
         </button>
         <AnimatePresence>
           {expandedSections.whatIf && (
             <motion.div
+              id="what-if-content"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
+              role="region"
+              aria-label="What-if analysis controls"
             >
               <WhatIfSliders
                 input={input}

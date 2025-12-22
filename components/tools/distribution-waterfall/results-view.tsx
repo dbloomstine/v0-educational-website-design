@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { ChevronDown, ChevronUp, Info, Copy, Check } from 'lucide-react'
 import { useState } from 'react'
 import { WaterfallOutput, formatCurrency, formatPercent, formatMultiple } from './waterfallCalculations'
-import { ExportToolbar, MobileExportBar, DisclaimerBlock, MethodologyBlock } from '@/components/tools/shared'
+import { ExportToolbar, MobileExportBar, DisclaimerBlock, MethodologyBlock, RelatedToolsSection } from '@/components/tools/shared'
 import { exportWaterfallCSV, exportWaterfallPDF } from './export'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Button } from '@/components/ui/button'
@@ -372,6 +372,26 @@ export function ResultsView({ output, onExport, onCopyScenario }: ResultsViewPro
           </li>
         </ul>
       </MethodologyBlock>
+
+      {/* Related Tools */}
+      <RelatedToolsSection
+        currentToolSlug="distribution-waterfall"
+        relatedTools={[
+          {
+            slug: 'management-fee-calculator',
+            title: 'Management Fee Calculator',
+            description: 'Model management fee schedules across fund life, commitment period, and step-downs.',
+            reason: 'Understand how management fees impact your fund economics alongside the waterfall'
+          },
+          {
+            slug: 'subscription-credit-line',
+            title: 'Subscription Credit Line Impact Visualizer',
+            description: 'Show how a subscription line of credit affects IRR, MOIC, and fee drag.',
+            reason: 'See how credit lines interact with your waterfall structure to boost returns'
+          }
+        ]}
+        learningPath="Master fund economics: Fee Calculator → Waterfall → Credit Line"
+      />
 
       {/* Disclaimer */}
       <DisclaimerBlock

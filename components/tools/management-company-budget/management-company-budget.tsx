@@ -27,7 +27,7 @@ import {
   Download,
   Save
 } from 'lucide-react'
-import { DisclaimerBlock, PresetManager, MethodologyBlock } from '@/components/tools/shared'
+import { DisclaimerBlock, PresetManager, MethodologyBlock, RelatedToolsSection } from '@/components/tools/shared'
 import { ShareButton } from '@/components/tools/share-button'
 import { InfoPopover } from '@/components/ui/info-popover'
 import { usePresets } from '@/lib/hooks/use-presets'
@@ -835,23 +835,27 @@ export function ManagementCompanyBudget() {
             <div className="flex items-center border rounded-md">
               <Button
                 variant="ghost"
-                size="sm"
+                size="lg"
                 onClick={undo}
                 disabled={!canUndo}
-                className="h-8 px-2 rounded-r-none border-r"
+                aria-label="Undo last change (Ctrl+Z)"
+                className="h-11 px-3 rounded-r-none border-r focus:ring-2 focus:ring-primary"
                 title="Undo (Ctrl+Z)"
               >
                 <Undo2 className="h-4 w-4" />
+                <span className="sr-only">Undo</span>
               </Button>
               <Button
                 variant="ghost"
-                size="sm"
+                size="lg"
                 onClick={redo}
                 disabled={!canRedo}
-                className="h-8 px-2 rounded-l-none"
+                aria-label="Redo last change (Ctrl+Shift+Z)"
+                className="h-11 px-3 rounded-l-none focus:ring-2 focus:ring-primary"
                 title="Redo (Ctrl+Shift+Z)"
               >
                 <Redo2 className="h-4 w-4" />
+                <span className="sr-only">Redo</span>
               </Button>
             </div>
 
@@ -1082,8 +1086,8 @@ export function ManagementCompanyBudget() {
                   Add each fund you manage. Management fees are calculated based on fund size and fee rate.
                 </InfoPopover>
               </div>
-              <Button size="sm" onClick={addFund}>
-                <Plus className="h-4 w-4 mr-2" />
+              <Button size="lg" onClick={addFund} aria-label="Add new fund" className="min-h-[44px] focus:ring-2 focus:ring-primary">
+                <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
                 Add Fund
               </Button>
             </CardHeader>
@@ -1173,8 +1177,8 @@ export function ManagementCompanyBudget() {
                   Enter the all-in monthly cost for each team member including salary, bonus, benefits, and payroll taxes.
                 </InfoPopover>
               </div>
-              <Button size="sm" onClick={addTeamMember}>
-                <Plus className="h-4 w-4 mr-2" />
+              <Button size="lg" onClick={addTeamMember} aria-label="Add team member" className="min-h-[44px] focus:ring-2 focus:ring-primary">
+                <Plus className="h-4 w-4 mr-2" aria-hidden="true" />
                 Add Role
               </Button>
             </CardHeader>
@@ -1440,6 +1444,26 @@ export function ManagementCompanyBudget() {
           </li>
         </ul>
       </MethodologyBlock>
+
+      {/* Related Tools */}
+      <RelatedToolsSection
+        currentToolSlug="management-company-budget"
+        relatedTools={[
+          {
+            slug: 'management-fee-calculator',
+            title: 'Management Fee Calculator',
+            description: 'Model management fee schedules across fund life, commitment period, and step-downs.',
+            reason: 'Build detailed fee projections to power your budget revenue assumptions'
+          },
+          {
+            slug: 'fund-launch-guide',
+            title: 'Fund Launch Guide',
+            description: 'Interactive checklist and guide for launching your fund.',
+            reason: 'Track all launch tasks and milestones alongside your budget planning'
+          }
+        ]}
+        learningPath="Plan your fund: Budget Planner → Fee Calculator → Fund Launch Guide"
+      />
 
       {/* Disclaimer */}
       <DisclaimerBlock

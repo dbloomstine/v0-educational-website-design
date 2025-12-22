@@ -55,6 +55,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu'
+import { RelatedToolsSection } from '@/components/tools/shared'
 
 interface StoredState {
   config: FundConfig
@@ -554,7 +555,7 @@ export function FundLaunchGuide() {
           </div>
           <Button
             variant="ghost"
-            size="sm"
+            size="lg"
             onClick={() => {
               const phase = PHASES.find(p => p.id === getRecommendedNextTask.phaseId)
               if (phase) {
@@ -566,10 +567,11 @@ export function FundLaunchGuide() {
                 }, 100)
               }
             }}
-            className="shrink-0"
+            aria-label={`Go to recommended task: ${getRecommendedNextTask.title}`}
+            className="shrink-0 min-h-[44px] focus:ring-2 focus:ring-primary"
           >
             Go
-            <ArrowRight className="ml-1 h-4 w-4" />
+            <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
       )}
@@ -577,17 +579,30 @@ export function FundLaunchGuide() {
       {/* View Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
-          <TabsList>
-            <TabsTrigger value="timeline" className="gap-1.5">
-              <Clock className="h-4 w-4" />
+          <TabsList role="tablist" aria-label="View mode selection">
+            <TabsTrigger
+              value="timeline"
+              className="gap-1.5 min-h-[44px] focus:ring-2 focus:ring-primary"
+              aria-label="Timeline view"
+            >
+              <Clock className="h-4 w-4" aria-hidden="true" />
               <span className="hidden sm:inline">Timeline</span>
+              <span className="sm:hidden">Time</span>
             </TabsTrigger>
-            <TabsTrigger value="board" className="gap-1.5">
-              <Columns3 className="h-4 w-4" />
+            <TabsTrigger
+              value="board"
+              className="gap-1.5 min-h-[44px] focus:ring-2 focus:ring-primary"
+              aria-label="Board view"
+            >
+              <Columns3 className="h-4 w-4" aria-hidden="true" />
               <span className="hidden sm:inline">Board</span>
             </TabsTrigger>
-            <TabsTrigger value="list" className="gap-1.5">
-              <LayoutList className="h-4 w-4" />
+            <TabsTrigger
+              value="list"
+              className="gap-1.5 min-h-[44px] focus:ring-2 focus:ring-primary"
+              aria-label="List view"
+            >
+              <LayoutList className="h-4 w-4" aria-hidden="true" />
               <span className="hidden sm:inline">List</span>
             </TabsTrigger>
           </TabsList>
@@ -596,11 +611,17 @@ export function FundLaunchGuide() {
         <div className="flex items-center gap-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <Filter className="h-4 w-4 mr-1.5" />
+              <Button
+                variant="outline"
+                size="lg"
+                aria-label="Filter tasks"
+                aria-haspopup="menu"
+                className="min-h-[44px] focus:ring-2 focus:ring-primary"
+              >
+                <Filter className="h-4 w-4 mr-1.5" aria-hidden="true" />
                 Filter
                 {filterCompleted !== 'all' && (
-                  <span className="ml-1.5 px-1.5 py-0.5 rounded bg-primary text-primary-foreground text-xs">
+                  <span className="ml-1.5 px-1.5 py-0.5 rounded bg-primary text-primary-foreground text-xs" aria-label="1 filter active">
                     1
                   </span>
                 )}
@@ -668,7 +689,10 @@ export function FundLaunchGuide() {
                 {/* Phase header */}
                 <button
                   onClick={() => handleTogglePhaseExpand(phase.id)}
-                  className="w-full flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors"
+                  aria-expanded={isExpanded}
+                  aria-controls={`phase-tasks-${phase.id}`}
+                  aria-label={`${phase.name}: ${phaseCompleted} of ${allPhaseTasks.length} tasks completed`}
+                  className="w-full flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:bg-accent/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
                 >
                   <div className="relative z-10">
                     <div
@@ -678,6 +702,7 @@ export function FundLaunchGuide() {
                           ? "bg-emerald-500/20 ring-2 ring-emerald-500"
                           : "bg-accent"
                       )}
+                      aria-hidden="true"
                     >
                       {phaseIcons[phase.id] || '📋'}
                     </div>
@@ -696,16 +721,21 @@ export function FundLaunchGuide() {
                       <div className="text-xs text-muted-foreground">tasks</div>
                     </div>
                     {isExpanded ? (
-                      <ChevronDown className="h-5 w-5 text-muted-foreground" />
+                      <ChevronDown className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                     ) : (
-                      <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                      <ChevronRight className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                     )}
                   </div>
                 </button>
 
                 {/* Phase tasks */}
                 {isExpanded && tasks.length > 0 && (
-                  <div className="ml-6 pl-10 border-l border-border mt-4 space-y-3 animate-in slide-in-from-top-2 fade-in-0 duration-200">
+                  <div
+                    id={`phase-tasks-${phase.id}`}
+                    role="region"
+                    aria-label={`${phase.name} tasks`}
+                    className="ml-6 pl-10 border-l border-border mt-4 space-y-3 animate-in slide-in-from-top-2 fade-in-0 duration-200"
+                  >
                     {tasks.map((task) => (
                       <TaskCard
                         key={task.id}
@@ -900,6 +930,26 @@ export function FundLaunchGuide() {
           </div>
         </div>
       )}
+
+      {/* Related Tools */}
+      <RelatedToolsSection
+        currentToolSlug="fund-launch-guide"
+        relatedTools={[
+          {
+            slug: 'management-company-budget',
+            title: 'Management Company Budget Planner',
+            description: 'Calculate your burn rate, runway, and seed capital needs with a simple budget model.',
+            reason: 'Build your budget while tracking your launch milestones and expenses'
+          },
+          {
+            slug: 'fund-expense-allocation',
+            title: 'Fund Expense Allocation Helper',
+            description: 'Interactive tool to classify expenses as fund or management company expenses.',
+            reason: 'Learn proper expense allocation policies as you set up your fund operations'
+          }
+        ]}
+        learningPath="Complete your launch: Fund Launch Guide → Budget Planner → Expense Allocation"
+      />
     </div>
   )
 }

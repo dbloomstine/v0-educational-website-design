@@ -11,13 +11,15 @@ import {
 import { InputForm } from './input-form'
 import { ResultsView } from './results-view'
 import { JourneyMode } from './journey-mode'
+import { WhatIfSliders } from './what-if-sliders'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ShareButton } from '@/components/tools/share-button'
 import { ExportToolbar } from '@/components/tools/shared'
 import { exportSubscriptionLineComparisonCSV, exportSubscriptionLineComparisonPDF } from './export'
-import { Rocket, Calculator } from 'lucide-react'
+import { Rocket, Calculator, SlidersHorizontal, ChevronDown, ChevronUp } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 // Preset scenarios based on market research
 const presets: Record<string, { name: string; description: string; input: SubscriptionLineInput }> = {
@@ -146,6 +148,11 @@ export function SubscriptionCreditLine() {
   const [compareInput, setCompareInput] = useState<SubscriptionLineInput | null>(null)
   const [compareOutput, setCompareOutput] = useState<SubscriptionLineOutput | null>(null)
 
+  // Expandable sections state
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    whatIf: false
+  })
+
   // Handle journey mode completion
   const handleJourneyComplete = (journeyInput: SubscriptionLineInput) => {
     setInput(journeyInput)
@@ -232,6 +239,13 @@ export function SubscriptionCreditLine() {
     setCompareOutput(calculateSubscriptionLineImpact(newInput))
   }
 
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }))
+  }
+
   // Show journey mode if requested
   if (showJourneyMode) {
     return (
@@ -277,8 +291,13 @@ export function SubscriptionCreditLine() {
               </p>
             </div>
           </div>
-          <Button onClick={() => setShowJourneyMode(true)} className="flex-shrink-0 w-full md:w-auto">
-            <Rocket className="mr-2 h-4 w-4" />
+          <Button
+            onClick={() => setShowJourneyMode(true)}
+            aria-label={hasCompletedJourney ? 'Restart guided journey' : 'Start guided journey'}
+            size="lg"
+            className="flex-shrink-0 w-full md:w-auto min-h-[44px] focus:ring-2 focus:ring-primary"
+          >
+            <Rocket className="mr-2 h-4 w-4" aria-hidden="true" />
             {hasCompletedJourney ? 'Restart Journey' : 'Start Guided Journey'}
           </Button>
         </div>
@@ -517,6 +536,44 @@ export function SubscriptionCreditLine() {
             <div>
               <ResultsView output={output} />
             </div>
+          </div>
+
+          {/* What-If Sliders Section */}
+          <div className="space-y-2">
+            <button
+              onClick={() => toggleSection('whatIf')}
+              className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <SlidersHorizontal className="h-5 w-5 text-primary" />
+                <div className="text-left">
+                  <h3 className="font-semibold text-foreground">Sensitivity Analysis</h3>
+                  <p className="text-sm text-muted-foreground">Adjust credit facility parameters to see real-time impact</p>
+                </div>
+              </div>
+              {expandedSections.whatIf ? (
+                <ChevronUp className="h-5 w-5 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-muted-foreground" />
+              )}
+            </button>
+            <AnimatePresence>
+              {expandedSections.whatIf && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <WhatIfSliders
+                    input={input}
+                    output={output}
+                    onInputChange={handleInputChange}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </>
       )}

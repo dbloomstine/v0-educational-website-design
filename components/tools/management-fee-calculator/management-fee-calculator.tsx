@@ -32,7 +32,7 @@ import { SummaryCards } from './summary-cards'
 import { ResultsChart } from './results-chart'
 import { ResultsTable } from './results-table'
 import { ExportSection } from './export-section'
-import { DisclaimerBlock, MethodologyBlock } from '@/components/tools/shared'
+import { DisclaimerBlock, MethodologyBlock, RelatedToolsSection } from '@/components/tools/shared'
 import { ShareButton } from '@/components/tools/share-button'
 
 // Educational imports
@@ -239,7 +239,8 @@ export function ManagementFeeCalculator() {
                 setShowWelcome(false)
                 setViewMode('journey')
               }}
-              className="p-4 sm:p-6 rounded-xl border-2 border-primary bg-primary/5 text-left hover:bg-primary/10 transition-all"
+              aria-label="Start guided journey to learn fee concepts"
+              className="p-4 sm:p-6 rounded-xl border-2 border-primary bg-primary/5 text-left hover:bg-primary/10 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 min-h-[44px]"
             >
               <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
                 <div className="rounded-full bg-primary/20 p-1.5 sm:p-2">
@@ -260,7 +261,8 @@ export function ManagementFeeCalculator() {
                 setShowWelcome(false)
                 setViewMode('calculator')
               }}
-              className="p-4 sm:p-6 rounded-xl border-2 border-muted-foreground/30 text-left hover:border-primary/50 transition-all"
+              aria-label="Jump directly to calculator"
+              className="p-4 sm:p-6 rounded-xl border-2 border-muted-foreground/30 text-left hover:border-primary/50 transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 min-h-[44px]"
             >
               <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
                 <div className="rounded-full bg-muted p-1.5 sm:p-2">
@@ -287,14 +289,15 @@ export function ManagementFeeCalculator() {
                 <Button
                   key={name}
                   variant="outline"
-                  size="sm"
+                  size="lg"
                   onClick={() => {
                     setShowWelcome(false)
                     setViewMode('scenarios')
                   }}
-                  className="gap-1.5 sm:gap-2 text-xs sm:text-sm"
+                  aria-label={`Explore ${name} scenario`}
+                  className="gap-1.5 sm:gap-2 text-xs sm:text-sm min-h-[44px] focus:ring-2 focus:ring-primary"
                 >
-                  <Play className="h-3 w-3" />
+                  <Play className="h-3 w-3" aria-hidden="true" />
                   {name}
                 </Button>
               ))}
@@ -307,70 +310,82 @@ export function ManagementFeeCalculator() {
 
   // Render navigation tabs
   const renderNavigation = () => (
-    <div className="mb-4 sm:mb-6 -mx-4 sm:mx-0 px-4 sm:px-0 overflow-x-auto">
-      <div className="flex items-center gap-1.5 sm:gap-2 min-w-max sm:flex-wrap pb-2 sm:pb-0">
+    <nav className="mb-4 sm:mb-6 -mx-4 sm:mx-0 px-4 sm:px-0 overflow-x-auto" aria-label="Tool navigation">
+      <div className="flex items-center gap-2 min-w-max sm:flex-wrap pb-2 sm:pb-0">
         <Button
           variant={viewMode === 'calculator' ? 'default' : 'outline'}
-          size="sm"
+          size="lg"
           onClick={() => setViewMode('calculator')}
-          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+          aria-label="Calculator mode"
+          aria-current={viewMode === 'calculator' ? 'page' : undefined}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 min-h-[44px] focus:ring-2 focus:ring-primary"
         >
-          <Calculator className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <Calculator className="h-4 w-4" aria-hidden="true" />
           <span className="hidden xs:inline">Calculator</span>
           <span className="xs:hidden">Calc</span>
         </Button>
         <Button
           variant={viewMode === 'journey' ? 'default' : 'outline'}
-          size="sm"
+          size="lg"
           onClick={() => setViewMode('journey')}
-          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+          aria-label="Guided learning journey"
+          aria-current={viewMode === 'journey' ? 'page' : undefined}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 min-h-[44px] focus:ring-2 focus:ring-primary"
         >
-          <GraduationCap className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <GraduationCap className="h-4 w-4" aria-hidden="true" />
           Learn
         </Button>
         <Button
           variant={viewMode === 'scenarios' ? 'default' : 'outline'}
-          size="sm"
+          size="lg"
           onClick={() => setViewMode('scenarios')}
-          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+          aria-label="Sample scenarios"
+          aria-current={viewMode === 'scenarios' ? 'page' : undefined}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 min-h-[44px] focus:ring-2 focus:ring-primary"
         >
-          <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <Target className="h-4 w-4" aria-hidden="true" />
           <span className="hidden xs:inline">Scenarios</span>
           <span className="xs:hidden">Demo</span>
         </Button>
         <Button
           variant={viewMode === 'quiz' ? 'default' : 'outline'}
-          size="sm"
+          size="lg"
           onClick={() => {
             setViewMode('quiz')
             setQuizScore(null)
           }}
-          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+          aria-label="Knowledge quiz"
+          aria-current={viewMode === 'quiz' ? 'page' : undefined}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 min-h-[44px] focus:ring-2 focus:ring-primary"
         >
-          <Star className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <Star className="h-4 w-4" aria-hidden="true" />
           Quiz
         </Button>
         <Button
           variant={viewMode === 'glossary' ? 'default' : 'outline'}
-          size="sm"
+          size="lg"
           onClick={() => setViewMode('glossary')}
-          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+          aria-label="Glossary of terms"
+          aria-current={viewMode === 'glossary' ? 'page' : undefined}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 min-h-[44px] focus:ring-2 focus:ring-primary"
         >
-          <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <BookOpen className="h-4 w-4" aria-hidden="true" />
           <span className="hidden sm:inline">Glossary</span>
           <span className="sm:hidden">Terms</span>
         </Button>
         <Button
           variant={viewMode === 'faq' ? 'default' : 'outline'}
-          size="sm"
+          size="lg"
           onClick={() => setViewMode('faq')}
-          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-2.5 sm:px-3 h-8 sm:h-9"
+          aria-label="Frequently asked questions"
+          aria-current={viewMode === 'faq' ? 'page' : undefined}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 min-h-[44px] focus:ring-2 focus:ring-primary"
         >
-          <HelpCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          <HelpCircle className="h-4 w-4" aria-hidden="true" />
           FAQ
         </Button>
       </div>
-    </div>
+    </nav>
   )
 
 
@@ -637,8 +652,14 @@ export function ManagementFeeCalculator() {
 
                     {/* Reset Button */}
                     <div className="flex justify-center">
-                      <Button variant="outline" size="sm" onClick={resetToDefaults} className="text-xs sm:text-sm">
-                        <RotateCcw className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
+                      <Button
+                        variant="outline"
+                        size="lg"
+                        onClick={resetToDefaults}
+                        aria-label="Reset all values to defaults"
+                        className="text-xs sm:text-sm min-h-[44px] focus:ring-2 focus:ring-primary"
+                      >
+                        <RotateCcw className="h-4 w-4 mr-2" aria-hidden="true" />
                         Reset to Defaults
                       </Button>
                     </div>
@@ -653,11 +674,12 @@ export function ManagementFeeCalculator() {
                           <h3 className="text-base sm:text-lg font-semibold">Results</h3>
                           <Button
                             variant="outline"
-                            size="sm"
+                            size="lg"
                             onClick={() => setViewMode('walkthrough')}
-                            className="gap-1.5 sm:gap-2 text-xs sm:text-sm w-full sm:w-auto"
+                            aria-label="Open results explanation walkthrough"
+                            className="gap-2 text-xs sm:text-sm w-full sm:w-auto min-h-[44px] focus:ring-2 focus:ring-primary"
                           >
-                            <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
                             Explain Results
                           </Button>
                         </div>
@@ -693,6 +715,26 @@ export function ManagementFeeCalculator() {
                         </Card>
 
                         <ExportSection fundInputs={fundInputs} result={result} feePhases={feePhases} />
+
+                        {/* Related Tools */}
+                        <RelatedToolsSection
+                          currentToolSlug="management-fee-calculator"
+                          relatedTools={[
+                            {
+                              slug: 'distribution-waterfall',
+                              title: 'Distribution Waterfall Visualizer',
+                              description: 'Visualize LP and GP economics across preferred return, catch-up, and carry tiers.',
+                              reason: 'After modeling your management fees, understand how profits flow through the waterfall'
+                            },
+                            {
+                              slug: 'management-company-budget',
+                              title: 'Management Company Budget Planner',
+                              description: 'Calculate your burn rate, runway, and seed capital needs with a simple budget model.',
+                              reason: 'Use your fee projections to build a realistic management company budget'
+                            }
+                          ]}
+                          learningPath="Master fund economics: Fee Calculator → Waterfall → Credit Line"
+                        />
 
                         {/* Methodology */}
                         <MethodologyBlock

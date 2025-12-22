@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
-import { ExportToolbar, MobileExportBar, DisclaimerBlock, MethodologyBlock } from '@/components/tools/shared'
+import { ExportToolbar, MobileExportBar, DisclaimerBlock, MethodologyBlock, RelatedToolsSection } from '@/components/tools/shared'
 import { exportSubscriptionLineCSV, exportSubscriptionLinePDF } from './export'
 import {
   SubscriptionLineOutput,
@@ -386,6 +386,26 @@ export function ResultsView({ output }: ResultsViewProps) {
           </li>
         </ul>
       </MethodologyBlock>
+
+      {/* Related Tools */}
+      <RelatedToolsSection
+        currentToolSlug="subscription-credit-line"
+        relatedTools={[
+          {
+            slug: 'distribution-waterfall',
+            title: 'Distribution Waterfall Visualizer',
+            description: 'Visualize LP and GP economics across preferred return, catch-up, and carry tiers.',
+            reason: 'See how credit line benefits flow through the waterfall to LPs and GP'
+          },
+          {
+            slug: 'management-fee-calculator',
+            title: 'Management Fee Calculator',
+            description: 'Model management fee schedules across fund life, commitment period, and step-downs.',
+            reason: 'Understand total fund costs including both fees and credit line interest'
+          }
+        ]}
+        learningPath="Master fund economics: Fee Calculator → Waterfall → Credit Line"
+      />
 
       {/* Disclaimer */}
       <DisclaimerBlock
