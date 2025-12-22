@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 import { InfoPopover } from '@/components/ui/info-popover'
+import { Badge } from '@/components/ui/badge'
 import { SubscriptionLineInput } from './subscriptionLineCalculations'
 
 interface InputFormProps {
@@ -17,6 +18,11 @@ export function InputForm({ input, onChange }: InputFormProps) {
   const handleChange = (field: keyof SubscriptionLineInput, value: any) => {
     onChange({ ...input, [field]: value })
   }
+
+  // ILPA compliance checks - QUICK WIN #2
+  const facilitySizePct = input.facilitySize * 100
+  const isFacilitySizeCompliant = facilitySizePct >= 15 && facilitySizePct <= 25
+  const isDaysCompliant = input.maxDaysOutstanding <= 180
 
   return (
     <div className="space-y-6">
@@ -261,18 +267,32 @@ export function InputForm({ input, onChange }: InputFormProps) {
             <>
               {/* Facility Size */}
               <div className="space-y-2">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <Label htmlFor="facilitySize">Facility Size (% of Commitments)</Label>
                   <InfoPopover>
                     Size of credit facility as % of total commitments. ILPA recommends maximum 15-25%. Typical is 20%.
                   </InfoPopover>
+                  {input.useLine && (
+                    <Badge
+                      variant={isFacilitySizeCompliant ? "default" : "secondary"}
+                      className={isFacilitySizeCompliant ? "bg-green-600 hover:bg-green-700" : "bg-amber-600 hover:bg-amber-700"}
+                    >
+                      {isFacilitySizeCompliant ? "Within ILPA guidance" : "Exceeds ILPA guidance"}
+                    </Badge>
+                  )}
                 </div>
                 <Input
                   id="facilitySize"
                   type="number"
+                  min={0}
+                  max={100}
                   step="1"
                   value={input.facilitySize * 100}
-                  onChange={(e) => handleChange('facilitySize', (parseFloat(e.target.value) || 0) / 100)}
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value) || 0
+                    const clamped = Math.max(0, Math.min(100, value))
+                    handleChange('facilitySize', clamped / 100)
+                  }}
                   placeholder="20"
                   className="h-12 text-base"
                 />
@@ -292,9 +312,15 @@ export function InputForm({ input, onChange }: InputFormProps) {
                 <Input
                   id="interestRate"
                   type="number"
+                  min={0}
+                  max={20}
                   step="0.1"
                   value={input.interestRate * 100}
-                  onChange={(e) => handleChange('interestRate', (parseFloat(e.target.value) || 0) / 100)}
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value) || 0
+                    const clamped = Math.max(0, Math.min(20, value))
+                    handleChange('interestRate', clamped / 100)
+                  }}
                   placeholder="4.5"
                   className="h-12 text-base"
                 />
@@ -302,17 +328,31 @@ export function InputForm({ input, onChange }: InputFormProps) {
 
               {/* Max Days Outstanding */}
               <div className="space-y-2">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <Label htmlFor="maxDays">Maximum Days Outstanding</Label>
                   <InfoPopover>
                     How long draws can remain outstanding before repayment. Historically 90 days, trending to 180-360 days. ILPA recommends maximum 180 days.
                   </InfoPopover>
+                  {input.useLine && (
+                    <Badge
+                      variant={isDaysCompliant ? "default" : "secondary"}
+                      className={isDaysCompliant ? "bg-green-600 hover:bg-green-700" : "bg-amber-600 hover:bg-amber-700"}
+                    >
+                      {isDaysCompliant ? "Within ILPA guidance" : "Exceeds ILPA guidance"}
+                    </Badge>
+                  )}
                 </div>
                 <Input
                   id="maxDays"
                   type="number"
+                  min={0}
+                  max={365}
                   value={input.maxDaysOutstanding}
-                  onChange={(e) => handleChange('maxDaysOutstanding', parseInt(e.target.value) || 0)}
+                  onChange={(e) => {
+                    const value = parseInt(e.target.value) || 0
+                    const clamped = Math.max(0, Math.min(365, value))
+                    handleChange('maxDaysOutstanding', clamped)
+                  }}
                   placeholder="180"
                   className="h-12 text-base"
                 />

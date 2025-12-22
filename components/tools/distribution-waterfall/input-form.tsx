@@ -144,10 +144,14 @@ export function InputForm({ input, onChange }: InputFormProps) {
               id="prefRate"
               type="number"
               min={0}
-              max={20}
+              max={50}
               step={0.1}
               value={input.prefRate * 100}
-              onChange={(e) => updateField('prefRate', (parseFloat(e.target.value) || 0) / 100)}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value) || 0
+                const clamped = Math.max(0, Math.min(50, value))
+                updateField('prefRate', clamped / 100)
+              }}
             />
           </div>
 
@@ -185,7 +189,11 @@ export function InputForm({ input, onChange }: InputFormProps) {
               max={50}
               step={1}
               value={input.carryRate * 100}
-              onChange={(e) => updateField('carryRate', (parseFloat(e.target.value) || 0) / 100)}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value) || 0
+                const clamped = Math.max(0, Math.min(50, value))
+                updateField('carryRate', clamped / 100)
+              }}
             />
           </div>
 
@@ -242,10 +250,14 @@ export function InputForm({ input, onChange }: InputFormProps) {
               id="gpCommitmentPercent"
               type="number"
               min={0}
-              max={10}
+              max={100}
               step={0.1}
               value={input.gpCommitmentPercent * 100}
-              onChange={(e) => updateField('gpCommitmentPercent', (parseFloat(e.target.value) || 0) / 100)}
+              onChange={(e) => {
+                const value = parseFloat(e.target.value) || 0
+                const clamped = Math.max(0, Math.min(100, value))
+                updateField('gpCommitmentPercent', clamped / 100)
+              }}
             />
           </div>
         </CardContent>

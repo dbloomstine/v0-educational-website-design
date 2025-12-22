@@ -19,6 +19,9 @@ export interface ExpenseCategory {
   lpSensitivities: string;
   examples: string[];
   sampleLanguage?: string;
+  confidenceLevel: 'high' | 'moderate' | 'depends-on-lpa';
+  lpSensitivityLevel: 'high' | 'standard';
+  similarExpenseIds: string[];
 }
 
 export interface ClassificationInput {
@@ -41,6 +44,9 @@ export interface ClassificationResult {
   flags: string[];
   sampleLanguage?: string;
   logicExplanation: string[];
+  confidenceLevel: 'high' | 'moderate' | 'depends-on-lpa';
+  lpSensitivityLevel: 'high' | 'standard';
+  similarExpenses: string[];
 }
 
 // EXPENSE CATEGORIES DATABASE
@@ -61,7 +67,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Legal review of side letters',
       'Blue sky and regulatory filing fees'
     ],
-    sampleLanguage: '"Organizational expenses incurred in connection with the formation of the Fund, including legal and filing fees, shall be borne by the Fund up to [0.5%] of aggregate Capital Commitments."'
+    sampleLanguage: '"Organizational expenses incurred in connection with the formation of the Fund, including legal and filing fees, shall be borne by the Fund up to [0.5%] of aggregate Capital Commitments."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'high',
+    similarExpenseIds: ['organization-offering-costs', 'ongoing-fund-legal', 'regulatory-compliance-fund-specific']
   },
   {
     id: 'broken-deal-costs',
@@ -78,7 +87,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Financing commitment fees for a deal that did not close',
       'Travel to visit a target company for potential investment'
     ],
-    sampleLanguage: '"Costs and expenses related to potential investments that do not close (broken deal costs) shall be Fund expenses, provided such costs relate to bona fide investment opportunities and are reasonable in amount."'
+    sampleLanguage: '"Costs and expenses related to potential investments that do not close (broken deal costs) shall be Fund expenses, provided such costs relate to bona fide investment opportunities and are reasonable in amount."',
+    confidenceLevel: 'moderate',
+    lpSensitivityLevel: 'high',
+    similarExpenseIds: ['transaction-fees-acquisitions', 'travel-deal-diligence', 'portfolio-company-consulting']
   },
   {
     id: 'placement-agent-fees',
@@ -95,7 +107,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Marketing materials and roadshow costs for capital raising',
       'Database subscriptions for LP targeting (e.g., Preqin, PitchBook for fundraising)'
     ],
-    sampleLanguage: '"All costs associated with fundraising for the Fund, including placement agent fees, shall be borne by the General Partner and not charged to the Fund."'
+    sampleLanguage: '"All costs associated with fundraising for the Fund, including placement agent fees, shall be borne by the General Partner and not charged to the Fund."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'high',
+    similarExpenseIds: ['travel-lp-fundraising', 'marketing-pr-platform', 'organization-offering-costs']
   },
   {
     id: 'ongoing-fund-legal',
@@ -112,7 +127,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Outside counsel review of a potential key person event',
       'Legal fees for resolving disputes among fund investors'
     ],
-    sampleLanguage: '"Legal and other professional fees incurred for matters relating specifically to the Fund shall be borne by the Fund."'
+    sampleLanguage: '"Legal and other professional fees incurred for matters relating specifically to the Fund shall be borne by the Fund."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'standard',
+    similarExpenseIds: ['fund-formation-legal', 'regulatory-compliance-fund-specific', 'ongoing-management-legal']
   },
   {
     id: 'ongoing-management-legal',
@@ -129,7 +147,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Trademark registration for the management company',
       'Legal fees for general corporate matters not specific to any fund'
     ],
-    sampleLanguage: '"Legal and compliance costs relating to the operation of the General Partner entity and not specifically related to Fund matters shall not be charged to the Fund."'
+    sampleLanguage: '"Legal and compliance costs relating to the operation of the General Partner entity and not specifically related to Fund matters shall not be charged to the Fund."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'standard',
+    similarExpenseIds: ['ongoing-fund-legal', 'regulatory-compliance-firm', 'management-company-formation']
   },
   {
     id: 'audit-tax-admin',
@@ -146,7 +167,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Fund administrator fees for capital calls, distributions, and NAV calculation',
       'Regulatory filings (Form D, Form ADV updates specific to the fund)'
     ],
-    sampleLanguage: '"The Fund shall bear the costs of its annual audit, tax preparation, fund administration, and regulatory compliance."'
+    sampleLanguage: '"The Fund shall bear the costs of its annual audit, tax preparation, fund administration, and regulatory compliance."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'standard',
+    similarExpenseIds: ['ongoing-fund-legal', 'regulatory-compliance-fund-specific', 'financing-fees']
   },
   {
     id: 'portfolio-monitoring-tools',
@@ -163,7 +187,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Fund-specific portfolio monitoring consultant (fund expense)',
       'Data room and document management for portfolio companies (typically fund)'
     ],
-    sampleLanguage: '"Costs of third-party valuation services and portfolio monitoring directly related to Fund investments shall be Fund expenses. Platform-wide technology shall be borne by the General Partner or allocated pro-rata across benefiting funds."'
+    sampleLanguage: '"Costs of third-party valuation services and portfolio monitoring directly related to Fund investments shall be Fund expenses. Platform-wide technology shall be borne by the General Partner or allocated pro-rata across benefiting funds."',
+    confidenceLevel: 'depends-on-lpa',
+    lpSensitivityLevel: 'high',
+    similarExpenseIds: ['technology-fund-specific', 'technology-platform-wide', 'portfolio-company-consulting']
   },
   {
     id: 'travel-lp-fundraising',
@@ -180,7 +207,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Meals with prospective investors during fundraising',
       'Rental of presentation venues for capital introduction events'
     ],
-    sampleLanguage: '"Travel and other costs related to fundraising activities shall be borne by the General Partner."'
+    sampleLanguage: '"Travel and other costs related to fundraising activities shall be borne by the General Partner."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'high',
+    similarExpenseIds: ['placement-agent-fees', 'marketing-pr-platform', 'travel-existing-lp-relations']
   },
   {
     id: 'travel-existing-lp-relations',
@@ -197,7 +227,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Travel to meet with LPs for quarterly updates',
       'Venue rental for in-person annual meeting'
     ],
-    sampleLanguage: '"Reasonable costs of meetings with Limited Partners, including annual meetings and advisory committee meetings, shall be Fund expenses."'
+    sampleLanguage: '"Reasonable costs of meetings with Limited Partners, including annual meetings and advisory committee meetings, shall be Fund expenses."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'standard',
+    similarExpenseIds: ['travel-lp-fundraising', 'travel-deal-diligence', 'ongoing-fund-legal']
   },
   {
     id: 'travel-deal-diligence',
@@ -214,7 +247,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Factory visits for industrial investments',
       'Portfolio company board meeting attendance by fund representatives'
     ],
-    sampleLanguage: '"Travel costs directly related to the evaluation and monitoring of Fund investments shall be borne by the Fund."'
+    sampleLanguage: '"Travel costs directly related to the evaluation and monitoring of Fund investments shall be borne by the Fund."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'standard',
+    similarExpenseIds: ['broken-deal-costs', 'transaction-fees-acquisitions', 'travel-existing-lp-relations']
   },
   {
     id: 'travel-conferences-general',
@@ -231,7 +267,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Attendance at trade shows for deal sourcing',
       'Networking dinners and receptions at conferences'
     ],
-    sampleLanguage: '"Costs of attending industry conferences and networking events shall be borne by the General Partner unless directly related to a specific Fund investment opportunity."'
+    sampleLanguage: '"Costs of attending industry conferences and networking events shall be borne by the General Partner unless directly related to a specific Fund investment opportunity."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'standard',
+    similarExpenseIds: ['marketing-pr-platform', 'travel-deal-diligence', 'office-rent-general']
   },
   {
     id: 'insurance-do-eo',
@@ -248,7 +287,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Fiduciary liability coverage for the GP entity (management expense)',
       'Fund-specific side coverage (fund expense)'
     ],
-    sampleLanguage: '"The Fund shall bear its pro-rata share of D&O and E&O insurance premiums based on the portion of coverage attributable to Fund activities, as reasonably determined by the General Partner."'
+    sampleLanguage: '"The Fund shall bear its pro-rata share of D&O and E&O insurance premiums based on the portion of coverage attributable to Fund activities, as reasonably determined by the General Partner."',
+    confidenceLevel: 'depends-on-lpa',
+    lpSensitivityLevel: 'high',
+    similarExpenseIds: ['insurance-key-person', 'ongoing-fund-legal', 'audit-tax-admin']
   },
   {
     id: 'insurance-key-person',
@@ -265,7 +307,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Disability insurance for investment team (management expense)',
       'Key person coverage across multiple funds (allocated or management expense)'
     ],
-    sampleLanguage: '"Key person life insurance shall be a Fund expense only if the Fund is the sole beneficiary and the coverage is solely for the benefit of Fund investors."'
+    sampleLanguage: '"Key person life insurance shall be a Fund expense only if the Fund is the sole beneficiary and the coverage is solely for the benefit of Fund investors."',
+    confidenceLevel: 'depends-on-lpa',
+    lpSensitivityLevel: 'standard',
+    similarExpenseIds: ['insurance-do-eo', 'ongoing-management-legal', 'management-company-formation']
   },
   {
     id: 'technology-fund-specific',
@@ -282,7 +327,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Sector-specific database for a specialized fund (e.g., biotech data for a healthcare fund)',
       'Fund-specific accounting or portfolio management module'
     ],
-    sampleLanguage: '"Technology and data costs incurred solely for the benefit of the Fund shall be Fund expenses."'
+    sampleLanguage: '"Technology and data costs incurred solely for the benefit of the Fund shall be Fund expenses."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'standard',
+    similarExpenseIds: ['portfolio-monitoring-tools', 'audit-tax-admin', 'technology-platform-wide']
   },
   {
     id: 'technology-platform-wide',
@@ -299,7 +347,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Slack, Zoom, or collaboration platforms',
       'Accounting software for the management company'
     ],
-    sampleLanguage: '"Platform-wide technology infrastructure costs shall be borne by the General Partner as overhead."'
+    sampleLanguage: '"Platform-wide technology infrastructure costs shall be borne by the General Partner as overhead."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'standard',
+    similarExpenseIds: ['technology-fund-specific', 'office-rent-general', 'regulatory-compliance-firm']
   },
   {
     id: 'office-rent-dedicated',
@@ -316,7 +367,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Temporary project office for a specific investment',
       'Data center or specialized facility for fund operations'
     ],
-    sampleLanguage: '"Costs of dedicated office space used exclusively for Fund operations may be charged to the Fund with LPAC approval."'
+    sampleLanguage: '"Costs of dedicated office space used exclusively for Fund operations may be charged to the Fund with LPAC approval."',
+    confidenceLevel: 'depends-on-lpa',
+    lpSensitivityLevel: 'high',
+    similarExpenseIds: ['office-rent-general', 'portfolio-company-consulting', 'technology-fund-specific']
   },
   {
     id: 'office-rent-general',
@@ -333,7 +387,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Office furniture and equipment',
       'Reception, security, and general office services'
     ],
-    sampleLanguage: '"Office rent, utilities, and general overhead shall be borne by the General Partner and not charged to the Fund."'
+    sampleLanguage: '"Office rent, utilities, and general overhead shall be borne by the General Partner and not charged to the Fund."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'standard',
+    similarExpenseIds: ['office-rent-dedicated', 'technology-platform-wide', 'management-company-formation']
   },
   {
     id: 'marketing-pr-platform',
@@ -350,7 +407,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Marketing collateral and pitch decks',
       'Sponsorships and advertising'
     ],
-    sampleLanguage: '"Marketing, public relations, and branding costs shall be borne by the General Partner."'
+    sampleLanguage: '"Marketing, public relations, and branding costs shall be borne by the General Partner."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'high',
+    similarExpenseIds: ['placement-agent-fees', 'travel-lp-fundraising', 'travel-conferences-general']
   },
   {
     id: 'transaction-fees-acquisitions',
@@ -367,7 +427,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Technical or IT diligence consultants',
       'Environmental consultants for real estate or industrial acquisitions'
     ],
-    sampleLanguage: '"Legal, consulting, and other transaction costs for completed investments shall be Fund expenses, subject to offsets as described in Section X [Transaction Fees and Offsets]."'
+    sampleLanguage: '"Legal, consulting, and other transaction costs for completed investments shall be Fund expenses, subject to offsets as described in Section X [Transaction Fees and Offsets]."',
+    confidenceLevel: 'moderate',
+    lpSensitivityLevel: 'high',
+    similarExpenseIds: ['broken-deal-costs', 'travel-deal-diligence', 'portfolio-company-consulting']
   },
   {
     id: 'financing-fees',
@@ -384,7 +447,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Legal fees for credit facility documentation',
       'Amendment fees for modifying credit facilities'
     ],
-    sampleLanguage: '"Costs and expenses related to Fund-level financing facilities, including arrangement fees, commitment fees, interest, and related legal expenses, shall be borne by the Fund."'
+    sampleLanguage: '"Costs and expenses related to Fund-level financing facilities, including arrangement fees, commitment fees, interest, and related legal expenses, shall be borne by the Fund."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'standard',
+    similarExpenseIds: ['audit-tax-admin', 'ongoing-fund-legal', 'organization-offering-costs']
   },
   {
     id: 'organization-offering-costs',
@@ -401,7 +467,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Blue sky filings and regulatory costs',
       'Initial subscription document and data room setup'
     ],
-    sampleLanguage: '"Organization and offering expenses shall be borne by the Fund, capped at 0.5% of aggregate Capital Commitments, with any excess borne by the General Partner."'
+    sampleLanguage: '"Organization and offering expenses shall be borne by the Fund, capped at 0.5% of aggregate Capital Commitments, with any excess borne by the General Partner."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'high',
+    similarExpenseIds: ['fund-formation-legal', 'placement-agent-fees', 'financing-fees']
   },
   {
     id: 'portfolio-company-consulting',
@@ -418,7 +487,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Operating partner shared across multiple portfolio companies (allocated or management)',
       'One-off strategic consultant for a single portfolio issue (negotiate case-by-case)'
     ],
-    sampleLanguage: '"Consulting and advisory services for portfolio companies shall generally be borne by the portfolio companies. The Fund may bear such costs if the portfolio company is unable to do so and the services are necessary to protect or enhance the Fund\'s investment, subject to LPAC approval for amounts exceeding $[X]."'
+    sampleLanguage: '"Consulting and advisory services for portfolio companies shall generally be borne by the portfolio companies. The Fund may bear such costs if the portfolio company is unable to do so and the services are necessary to protect or enhance the Fund\'s investment, subject to LPAC approval for amounts exceeding $[X]."',
+    confidenceLevel: 'depends-on-lpa',
+    lpSensitivityLevel: 'high',
+    similarExpenseIds: ['broken-deal-costs', 'portfolio-monitoring-tools', 'transaction-fees-acquisitions']
   },
   {
     id: 'management-company-formation',
@@ -435,7 +507,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Operating agreement for the GP entity',
       'Entity-level franchise taxes and fees'
     ],
-    sampleLanguage: '"Costs of forming and operating the General Partner entity shall be borne by the General Partner and not charged to the Fund."'
+    sampleLanguage: '"Costs of forming and operating the General Partner entity shall be borne by the General Partner and not charged to the Fund."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'standard',
+    similarExpenseIds: ['ongoing-management-legal', 'regulatory-compliance-firm', 'office-rent-general']
   },
   {
     id: 'regulatory-compliance-firm',
@@ -452,7 +527,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Compliance software and monitoring systems',
       'Annual compliance consultant or audit for the firm'
     ],
-    sampleLanguage: '"Costs of firm-wide regulatory compliance, including registration, chief compliance officer, and platform compliance programs, shall be borne by the General Partner."'
+    sampleLanguage: '"Costs of firm-wide regulatory compliance, including registration, chief compliance officer, and platform compliance programs, shall be borne by the General Partner."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'standard',
+    similarExpenseIds: ['regulatory-compliance-fund-specific', 'ongoing-management-legal', 'management-company-formation']
   },
   {
     id: 'regulatory-compliance-fund-specific',
@@ -469,7 +547,10 @@ export const expenseCategories: ExpenseCategory[] = [
       'Costs of responding to investor protection inquiries about the fund',
       'Legal defense of fund-specific regulatory action'
     ],
-    sampleLanguage: '"Legal and consulting costs related to regulatory examinations or inquiries focused specifically on the Fund shall be Fund expenses, unless arising from General Partner misconduct."'
+    sampleLanguage: '"Legal and consulting costs related to regulatory examinations or inquiries focused specifically on the Fund shall be Fund expenses, unless arising from General Partner misconduct."',
+    confidenceLevel: 'high',
+    lpSensitivityLevel: 'standard',
+    similarExpenseIds: ['ongoing-fund-legal', 'audit-tax-admin', 'regulatory-compliance-firm']
   }
 ];
 
@@ -618,6 +699,12 @@ export function classifyExpense(input: ClassificationInput): ClassificationResul
   // Generate rationale
   const rationale = generateRationale(classification, category, input, logicFactors);
 
+  // Generate similar expenses list
+  const similarExpenses = category.similarExpenseIds
+    .map(id => expenseCategories.find(cat => cat.id === id))
+    .filter((cat): cat is ExpenseCategory => cat !== undefined)
+    .map(cat => cat.name);
+
   return {
     classification,
     headline,
@@ -628,7 +715,10 @@ export function classifyExpense(input: ClassificationInput): ClassificationResul
     examples: category.examples,
     flags,
     sampleLanguage: category.sampleLanguage,
-    logicExplanation: logicFactors
+    logicExplanation: logicFactors,
+    confidenceLevel: category.confidenceLevel,
+    lpSensitivityLevel: category.lpSensitivityLevel,
+    similarExpenses
   };
 }
 
@@ -778,7 +868,10 @@ function generateCustomExpenseResult(input: ClassificationInput): Classification
     marketPractice: 'often-negotiated',
     examples: [],
     flags,
-    logicExplanation: logicFactors
+    logicExplanation: logicFactors,
+    confidenceLevel: 'depends-on-lpa',
+    lpSensitivityLevel: 'high',
+    similarExpenses: []
   };
 }
 

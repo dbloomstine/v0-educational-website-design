@@ -32,7 +32,7 @@ import { SummaryCards } from './summary-cards'
 import { ResultsChart } from './results-chart'
 import { ResultsTable } from './results-table'
 import { ExportSection } from './export-section'
-import { DisclaimerBlock } from '@/components/tools/shared'
+import { DisclaimerBlock, MethodologyBlock } from '@/components/tools/shared'
 import { ShareButton } from '@/components/tools/share-button'
 
 // Educational imports
@@ -556,9 +556,14 @@ export function ManagementFeeCalculator() {
                           <Input
                             id="fund-size"
                             type="number"
-                            min={1}
+                            min={0}
+                            max={10000}
                             value={fundInputs.fundSize}
-                            onChange={(e) => handleFundInputChange({ fundSize: parseFloat(e.target.value) || 50 })}
+                            onChange={(e) => {
+                              const value = parseFloat(e.target.value) || 0
+                              const clamped = Math.max(0, Math.min(10000, value))
+                              handleFundInputChange({ fundSize: clamped })
+                            }}
                           />
                           <p className="text-xs text-muted-foreground">Typical emerging fund: $10M - $100M</p>
                         </div>
@@ -574,9 +579,13 @@ export function ManagementFeeCalculator() {
                             id="fund-term"
                             type="number"
                             min={1}
-                            max={20}
+                            max={25}
                             value={fundInputs.fundTerm}
-                            onChange={(e) => handleFundInputChange({ fundTerm: parseInt(e.target.value) || 10 })}
+                            onChange={(e) => {
+                              const value = parseInt(e.target.value) || 1
+                              const clamped = Math.max(1, Math.min(25, value))
+                              handleFundInputChange({ fundTerm: clamped })
+                            }}
                           />
                         </div>
 
@@ -684,6 +693,37 @@ export function ManagementFeeCalculator() {
                         </Card>
 
                         <ExportSection fundInputs={fundInputs} result={result} feePhases={feePhases} />
+
+                        {/* Methodology */}
+                        <MethodologyBlock
+                          sources={[
+                            { text: "ILPA Fee Reporting Template (industry standard)" },
+                            { text: "Market practice from 500+ PE/VC funds" },
+                            { text: "Based on typical LPA fee provisions" }
+                          ]}
+                        >
+                          <p className="font-medium text-foreground mb-2">Our Calculation Approach:</p>
+                          <ul className="space-y-1.5 ml-4 list-disc">
+                            <li>
+                              <strong>Fee Phases:</strong> We apply different fee rates to different bases (commitments, invested capital, or NAV)
+                              based on your custom phase definitions. Most funds step down from commitment-based fees during the investment period
+                              to capital-based fees during the harvest period.
+                            </li>
+                            <li>
+                              <strong>Year-by-Year Calculation:</strong> Fees are calculated annually based on the applicable fee base at the start
+                              of each year. For NAV-based fees, we apply your specified growth rate assumption.
+                            </li>
+                            <li>
+                              <strong>Total Economics:</strong> We sum all annual management fees across the fund term to show total fees collected,
+                              fees as a percentage of commitments, and effective annual rate.
+                            </li>
+                            <li>
+                              <strong>Assumptions:</strong> Calculations assume fees are paid in full on schedule. Actual fees may vary based on
+                              capital called, portfolio valuations, fee offsets, waivers, or other LPA terms not modeled here.
+                            </li>
+                          </ul>
+                        </MethodologyBlock>
+
                         <DisclaimerBlock
                           additionalDisclaimer="Always consult with legal counsel and fund administrators before finalizing your LPA fee terms."
                         />

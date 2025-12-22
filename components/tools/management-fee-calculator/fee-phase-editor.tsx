@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
 import { Plus, Trash2 } from 'lucide-react'
 import { InfoPopover } from '@/components/ui/info-popover'
 
@@ -28,6 +29,33 @@ const feeBaseDescriptions: Record<FeeBase, string> = {
   'Invested Cost': 'The actual capital that has been invested in portfolio companies (drawn from LPs). Often used post-investment period to align fees with actual deployment.',
   'Net Asset Value (NAV)': 'The current fair market value of the fund\'s investments. Common for hedge funds and evergreen structures. Aligns fees with portfolio performance.',
   'Lower of Cost or Fair Value': 'The lower of invested cost or current NAV - a conservative, LP-friendly approach that limits fees if portfolio value declines.'
+}
+
+// Market comparison helper
+function getMarketComparison(feeRate: number): { text: string; isAboveMarket: boolean; isTypical: boolean } {
+  // PE/VC typical range: 1.5% - 2%
+  const typicalLow = 1.5
+  const typicalHigh = 2.0
+
+  if (feeRate < typicalLow) {
+    return {
+      text: 'PE typical: 1.5-2%',
+      isAboveMarket: false,
+      isTypical: false
+    }
+  } else if (feeRate >= typicalLow && feeRate <= typicalHigh) {
+    return {
+      text: 'PE typical: 1.5-2%',
+      isAboveMarket: false,
+      isTypical: true
+    }
+  } else {
+    return {
+      text: 'PE typical: 1.5-2%',
+      isAboveMarket: true,
+      isTypical: false
+    }
+  }
 }
 
 export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }: FeePhaseEditorProps) {
@@ -59,6 +87,78 @@ export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }
     onPhasesChange(phases.filter(phase => phase.id !== id))
   }
 
+  // Rate preset handlers
+  const applyFlatPreset = () => {
+    onPhasesChange([{
+      id: 'phase-1',
+      startYear: 1,
+      endYear: fundTerm,
+      feeBase: 'Committed Capital',
+      feeRate: 2.0
+    }])
+  }
+
+  const applyTieredPreset = () => {
+    const investmentPeriod = Math.min(4, Math.floor(fundTerm / 2))
+    onPhasesChange([
+      {
+        id: 'phase-1',
+        startYear: 1,
+        endYear: investmentPeriod,
+        feeBase: 'Committed Capital',
+        feeRate: 2.0
+      },
+      {
+        id: 'phase-2',
+        startYear: investmentPeriod + 1,
+        endYear: fundTerm,
+        feeBase: 'Invested Cost',
+        feeRate: 1.5
+      }
+    ])
+  }
+
+  const applyDecliningPreset = () => {
+    const thirdPeriod = Math.floor(fundTerm / 3)
+    const phases: FeePhase[] = []
+
+    phases.push({
+      id: 'phase-1',
+      startYear: 1,
+      endYear: thirdPeriod,
+      feeBase: 'Committed Capital',
+      feeRate: 2.0
+    })
+
+    if (thirdPeriod * 2 < fundTerm) {
+      phases.push({
+        id: 'phase-2',
+        startYear: thirdPeriod + 1,
+        endYear: thirdPeriod * 2,
+        feeBase: 'Committed Capital',
+        feeRate: 1.75
+      })
+
+      phases.push({
+        id: 'phase-3',
+        startYear: thirdPeriod * 2 + 1,
+        endYear: fundTerm,
+        feeBase: 'Invested Cost',
+        feeRate: 1.5
+      })
+    } else {
+      phases.push({
+        id: 'phase-2',
+        startYear: thirdPeriod + 1,
+        endYear: fundTerm,
+        feeBase: 'Invested Cost',
+        feeRate: 1.5
+      })
+    }
+
+    onPhasesChange(phases)
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -73,6 +173,44 @@ export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }
           Add Phase
         </Button>
       </div>
+
+      {/* Rate Presets */}
+      <Card className="bg-muted/30">
+        <CardContent className="p-4">
+          <div className="space-y-3">
+            <p className="text-sm font-medium text-muted-foreground">Quick Presets</p>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                onClick={applyFlatPreset}
+                size="sm"
+                variant="outline"
+                className="text-xs"
+              >
+                2% Flat
+              </Button>
+              <Button
+                onClick={applyTieredPreset}
+                size="sm"
+                variant="outline"
+                className="text-xs"
+              >
+                2%/1.5% Tiered
+              </Button>
+              <Button
+                onClick={applyDecliningPreset}
+                size="sm"
+                variant="outline"
+                className="text-xs"
+              >
+                Declining
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Apply common fee structures as starting points
+            </p>
+          </div>
+        </CardContent>
+      </Card>
 
       {errors.length > 0 && (
         <div className="p-3 bg-destructive/10 border border-destructive/30 rounded-lg">
@@ -171,12 +309,33 @@ export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }
                   max={10}
                   step={0.1}
                   value={phase.feeRate}
-                  onChange={(e) => handleUpdatePhase(phase.id, { feeRate: parseFloat(e.target.value) || 0 })}
+                  onChange={(e) => {
+                    const value = parseFloat(e.target.value) || 0
+                    const clamped = Math.max(0, Math.min(10, value))
+                    handleUpdatePhase(phase.id, { feeRate: clamped })
+                  }}
                   className="h-9"
                 />
-                <p className="text-xs text-muted-foreground">
-                  Typical range: 1.0% - 2.5% for emerging managers
-                </p>
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs text-muted-foreground">
+                    {getMarketComparison(phase.feeRate).text}
+                  </p>
+                  {getMarketComparison(phase.feeRate).isTypical && (
+                    <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                      Market rate
+                    </Badge>
+                  )}
+                  {getMarketComparison(phase.feeRate).isAboveMarket && (
+                    <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">
+                      Above market
+                    </Badge>
+                  )}
+                  {!getMarketComparison(phase.feeRate).isTypical && !getMarketComparison(phase.feeRate).isAboveMarket && (
+                    <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                      Below market
+                    </Badge>
+                  )}
+                </div>
               </div>
             </CardContent>
           </Card>

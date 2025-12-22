@@ -27,7 +27,7 @@ import {
   Download,
   Save
 } from 'lucide-react'
-import { DisclaimerBlock, PresetManager } from '@/components/tools/shared'
+import { DisclaimerBlock, PresetManager, MethodologyBlock } from '@/components/tools/shared'
 import { ShareButton } from '@/components/tools/share-button'
 import { InfoPopover } from '@/components/ui/info-popover'
 import { usePresets } from '@/lib/hooks/use-presets'
@@ -1059,8 +1059,13 @@ export function ManagementCompanyBudget() {
                   <Input
                     id="starting-cash"
                     type="number"
+                    min={0}
                     value={data.startingCash}
-                    onChange={(e) => setData(prev => ({ ...prev, startingCash: parseFloat(e.target.value) || 0 }))}
+                    onChange={(e) => {
+                      const value = parseFloat(e.target.value) || 0
+                      const clamped = Math.max(0, value)
+                      setData(prev => ({ ...prev, startingCash: clamped }))
+                    }}
                     className="pl-7"
                   />
                 </div>
@@ -1102,8 +1107,13 @@ export function ManagementCompanyBudget() {
                           <Label>Size ($M)</Label>
                           <Input
                             type="number"
+                            min={0}
                             value={fund.size}
-                            onChange={(e) => updateFund(fund.id, { size: parseFloat(e.target.value) || 0 })}
+                            onChange={(e) => {
+                              const value = parseFloat(e.target.value) || 0
+                              const clamped = Math.max(0, value)
+                              updateFund(fund.id, { size: clamped })
+                            }}
                             className="mt-1"
                           />
                         </div>
@@ -1111,9 +1121,15 @@ export function ManagementCompanyBudget() {
                           <Label>Mgmt Fee (%)</Label>
                           <Input
                             type="number"
+                            min={0}
+                            max={100}
                             step="0.1"
                             value={fund.feeRate}
-                            onChange={(e) => updateFund(fund.id, { feeRate: parseFloat(e.target.value) || 0 })}
+                            onChange={(e) => {
+                              const value = parseFloat(e.target.value) || 0
+                              const clamped = Math.max(0, Math.min(100, value))
+                              updateFund(fund.id, { feeRate: clamped })
+                            }}
                             className="mt-1"
                           />
                         </div>
@@ -1185,9 +1201,14 @@ export function ManagementCompanyBudget() {
                             <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
                             <Input
                               type="number"
+                              min={0}
                               placeholder="Monthly"
                               value={member.monthlyCost || ''}
-                              onChange={(e) => updateTeamMember(member.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
+                              onChange={(e) => {
+                                const value = parseFloat(e.target.value) || 0
+                                const clamped = Math.max(0, value)
+                                updateTeamMember(member.id, { monthlyCost: clamped })
+                              }}
                               className="pl-7"
                             />
                           </div>
@@ -1234,8 +1255,13 @@ export function ManagementCompanyBudget() {
                           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
                           <Input
                             type="number"
+                            min={0}
                             value={item.monthlyCost || ''}
-                            onChange={(e) => updateOperation(item.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
+                            onChange={(e) => {
+                              const value = parseFloat(e.target.value) || 0
+                              const clamped = Math.max(0, value)
+                              updateOperation(item.id, { monthlyCost: clamped })
+                            }}
                             className="pl-7"
                           />
                         </div>
@@ -1273,8 +1299,13 @@ export function ManagementCompanyBudget() {
                           <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
                           <Input
                             type="number"
+                            min={0}
                             value={item.monthlyCost || ''}
-                            onChange={(e) => updateOverhead(item.id, { monthlyCost: parseFloat(e.target.value) || 0 })}
+                            onChange={(e) => {
+                              const value = parseFloat(e.target.value) || 0
+                              const clamped = Math.max(0, value)
+                              updateOverhead(item.id, { monthlyCost: clamped })
+                            }}
                             className="pl-7"
                           />
                         </div>
@@ -1376,6 +1407,39 @@ export function ManagementCompanyBudget() {
           <Glossary />
         </TabsContent>
       </Tabs>
+
+      {/* Methodology */}
+      <MethodologyBlock
+        sources={[
+          { text: "Based on ILPA Fund Expense Guidance" },
+          { text: "Industry benchmarks from emerging manager surveys" },
+          { text: "Standard management company operating models" }
+        ]}
+      >
+        <p className="font-medium text-foreground mb-2">Our Calculation Approach:</p>
+        <ul className="space-y-1.5 ml-4 list-disc">
+          <li>
+            <strong>Cash Runway:</strong> Starting cash plus cumulative management fees minus cumulative expenses.
+            Runway calculated as months until cash balance reaches zero at current burn rate.
+          </li>
+          <li>
+            <strong>Management Fees:</strong> Based on your fund structures and fee schedules. Typically calculated as
+            percentage of commitments during investment period, then on invested capital or NAV.
+          </li>
+          <li>
+            <strong>Expense Categories:</strong> Team compensation, office/operations, fund expenses, and other costs.
+            Benchmarks based on fund size and team size from industry surveys.
+          </li>
+          <li>
+            <strong>GP Commitment:</strong> Your capital contribution as GP (typically 1-3% of fund size). Can be
+            funded upfront or over time. Affects available operating cash.
+          </li>
+          <li>
+            <strong>Scenario Analysis:</strong> Model different expense levels and revenue assumptions to stress-test
+            your budget and identify key sensitivities.
+          </li>
+        </ul>
+      </MethodologyBlock>
 
       {/* Disclaimer */}
       <DisclaimerBlock

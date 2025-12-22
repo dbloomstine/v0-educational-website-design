@@ -73,6 +73,10 @@ export function DisclaimerBlock({
             <p className="text-xs pt-2 text-muted-foreground/80">
               FundOpsHQ is an educational resource and does not provide professional services.
             </p>
+
+            <p className="text-xs pt-3 border-t border-border/30 text-muted-foreground/70 font-medium">
+              Content last reviewed: December 2024
+            </p>
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
-import { ExportToolbar, MobileExportBar, DisclaimerBlock } from '@/components/tools/shared'
+import { ExportToolbar, MobileExportBar, DisclaimerBlock, MethodologyBlock } from '@/components/tools/shared'
 import { exportSubscriptionLineCSV, exportSubscriptionLinePDF } from './export'
 import {
   SubscriptionLineOutput,
@@ -43,8 +43,62 @@ export function ResultsView({ output }: ResultsViewProps) {
     }
   }
 
+  // Calculate annual interest cost
+  const annualInterestCost = output.totalInterestPaid / output.input.fundTermYears
+
+  // Calculate cost as % of management fees
+  const costAsPctOfFees = output.totalManagementFees > 0
+    ? (output.totalInterestPaid / output.totalManagementFees) * 100
+    : 0
+
   return (
     <div className="space-y-6">
+      {/* Impact Summary Card - QUICK WIN #1 */}
+      {output.input.useLine && (
+        <Card className="border-primary/50 bg-gradient-to-br from-primary/10 to-primary/5">
+          <CardHeader>
+            <CardTitle className="text-xl">Impact Summary</CardTitle>
+            <CardDescription>Key metrics at a glance</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-6 md:grid-cols-3">
+              {/* IRR Boost */}
+              <div className="space-y-2">
+                <div className="text-sm text-muted-foreground font-medium">IRR Boost</div>
+                <div className={`text-4xl font-bold ${output.irrBoost > 0 ? 'text-green-600' : output.irrBoost < 0 ? 'text-red-600' : 'text-muted-foreground'}`}>
+                  {output.irrBoost >= 0 ? '+' : ''}{output.irrBoost.toFixed(0)} bps
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  From {formatPercent(output.irrNoLine, 2)} to {formatPercent(output.irrWithLine, 2)}
+                </div>
+              </div>
+
+              {/* MOIC Impact */}
+              <div className="space-y-2">
+                <div className="text-sm text-muted-foreground font-medium">MOIC Impact</div>
+                <div className={`text-4xl font-bold ${output.moicDrag > 0 ? 'text-amber-600' : 'text-green-600'}`}>
+                  -{output.moicDrag.toFixed(2)}%
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  From {formatMultiple(output.moicNoLine)} to {formatMultiple(output.moicWithLine)}
+                </div>
+              </div>
+
+              {/* Annual Interest Cost */}
+              <div className="space-y-2">
+                <div className="text-sm text-muted-foreground font-medium">Annual Interest Cost</div>
+                <div className="text-4xl font-bold text-foreground">
+                  ${(annualInterestCost / 1000000).toFixed(1)}M
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {costAsPctOfFees.toFixed(0)}% of management fees
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Summary Metrics */}
       <Card>
         <CardHeader>
@@ -103,7 +157,7 @@ export function ResultsView({ output }: ResultsViewProps) {
             </div>
           </div>
 
-          {/* Cost Breakdown */}
+          {/* Cost Breakdown - QUICK WIN #3 */}
           <div className="rounded-lg border border-border bg-card p-4">
             <h4 className="text-sm font-semibold mb-3">Cost Analysis</h4>
             <div className="space-y-2 text-sm">
@@ -112,10 +166,18 @@ export function ResultsView({ output }: ResultsViewProps) {
                 <span className="font-medium">{formatCurrency(output.totalInterestPaid)}</span>
               </div>
               <div className="flex justify-between">
+                <span className="text-muted-foreground">Annual Interest Cost:</span>
+                <span className="font-medium">{formatCurrency(annualInterestCost)}</span>
+              </div>
+              <div className="flex justify-between">
                 <span className="text-muted-foreground">Total Management Fees:</span>
                 <span className="font-medium">{formatCurrency(output.totalManagementFees)}</span>
               </div>
               <div className="flex justify-between pt-2 border-t">
+                <span className="text-muted-foreground">Cost as % of Mgmt Fees:</span>
+                <span className="font-medium">{costAsPctOfFees.toFixed(1)}%</span>
+              </div>
+              <div className="flex justify-between">
                 <span className="text-muted-foreground">Combined Fee Drag:</span>
                 <span className="font-medium">{output.feeDrag.toFixed(2)}%</span>
               </div>
@@ -285,6 +347,45 @@ export function ResultsView({ output }: ResultsViewProps) {
           </div>
         </CardContent>
       </Card>
+
+      {/* Methodology */}
+      <MethodologyBlock
+        sources={[
+          { text: "Based on ILPA Subscription Line Guidance (15-25% limit)" },
+          { text: "SEC regulations on subscription line disclosure" },
+          { text: "Industry practice from major fund administrators" }
+        ]}
+      >
+        <p className="font-medium text-foreground mb-2">Our Calculation Approach:</p>
+        <ul className="space-y-1.5 ml-4 list-disc">
+          <li>
+            <strong>Deployment Schedule:</strong> We model capital deployment based on your selected pace
+            ({output.input.deploymentPaceType}). Front-loaded assumes faster deployment in early years, even is linear,
+            and back-loaded assumes slower early deployment.
+          </li>
+          <li>
+            <strong>Credit Line Usage:</strong> Facility is drawn based on your settings (max {(output.input.facilitySize * 100).toFixed(0)}%
+            of fund size, {output.input.maxDaysOutstanding} days outstanding). Line pays down when capital is called
+            from LPs or distributions are received.
+          </li>
+          <li>
+            <strong>Interest Calculation:</strong> Simple interest at {(output.input.interestRate * 100).toFixed(2)}%
+            annual rate on daily outstanding balance. Total interest reduces net returns to LPs.
+          </li>
+          <li>
+            <strong>IRR Impact:</strong> We calculate IRR with and without the credit line, showing the "timing arbitrage"
+            benefit from delaying capital calls. IRR boost measured in basis points.
+          </li>
+          <li>
+            <strong>MOIC Impact:</strong> Interest costs reduce total proceeds, creating MOIC drag. We show this as
+            percentage reduction in LP multiple vs. unlevered case.
+          </li>
+          <li>
+            <strong>DPI Comparison:</strong> Distributions to Paid-In capital (DPI) measures cash returned to LPs.
+            Subscription lines improve DPI by deferring capital calls.
+          </li>
+        </ul>
+      </MethodologyBlock>
 
       {/* Disclaimer */}
       <DisclaimerBlock

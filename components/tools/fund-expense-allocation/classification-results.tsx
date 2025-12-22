@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { AlertCircle, ChevronDown, ChevronUp, RotateCcw } from 'lucide-react'
+import { AlertCircle, ChevronDown, ChevronUp, RotateCcw, TrendingUp } from 'lucide-react'
 import { ExportToolbar, MobileExportBar, DisclaimerBlock } from '@/components/tools/shared'
 import { exportToPDF, exportToCSV } from './exportPDF'
 import type { ClassificationResult as Result, ClassificationInput } from './expenseData'
@@ -70,6 +71,52 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
     )
   }
 
+  const getConfidenceBadge = (confidence: 'high' | 'moderate' | 'depends-on-lpa') => {
+    const badges = {
+      'high': {
+        label: 'High Confidence',
+        color: 'bg-green-50 text-green-700 border-green-200 dark:bg-green-950/30 dark:text-green-400 dark:border-green-800'
+      },
+      'moderate': {
+        label: 'Moderate Confidence',
+        color: 'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-800'
+      },
+      'depends-on-lpa': {
+        label: 'Depends on LPA Terms',
+        color: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800'
+      }
+    }
+
+    const badge = badges[confidence]
+    return (
+      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${badge.color}`}>
+        {badge.label}
+      </span>
+    )
+  }
+
+  const getLpSensitivityBadge = (sensitivity: 'high' | 'standard') => {
+    const badges = {
+      'high': {
+        label: 'High LP Focus',
+        color: 'bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/30 dark:text-orange-400 dark:border-orange-800',
+        description: 'LPs typically scrutinize this expense type closely'
+      },
+      'standard': {
+        label: 'Standard',
+        color: 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-950/30 dark:text-slate-400 dark:border-slate-800',
+        description: 'Normal operating expense with standard LP expectations'
+      }
+    }
+
+    const badge = badges[sensitivity]
+    return (
+      <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${badge.color}`} title={badge.description}>
+        {badge.label}
+      </span>
+    )
+  }
+
   return (
     <div className="space-y-4" id="results">
       {/* Headline Classification */}
@@ -80,8 +127,20 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
             {getMarketPracticeBadge(result.marketPractice)}
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
           <p className="leading-relaxed">{result.rationale}</p>
+
+          {/* Quick Win Indicators */}
+          <div className="pt-3 border-t space-y-3">
+            <div>
+              <h5 className="text-sm font-semibold mb-2">Confidence Level</h5>
+              {getConfidenceBadge(result.confidenceLevel)}
+            </div>
+            <div>
+              <h5 className="text-sm font-semibold mb-2">LP Sensitivity</h5>
+              {getLpSensitivityBadge(result.lpSensitivityLevel)}
+            </div>
+          </div>
         </CardContent>
       </Card>
 
@@ -196,6 +255,34 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
               </CardContent>
             </CollapsibleContent>
           </Collapsible>
+        </Card>
+      )}
+
+      {/* Similar Expenses */}
+      {result.similarExpenses.length > 0 && (
+        <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-950/10 dark:border-blue-900">
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              You Might Also Want to Check
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-3">
+              Similar expenses that are commonly reviewed together:
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {result.similarExpenses.map((expense, idx) => (
+                <Badge
+                  key={idx}
+                  variant="outline"
+                  className="bg-white dark:bg-slate-800 border-blue-300 dark:border-blue-800 text-blue-700 dark:text-blue-300"
+                >
+                  {expense}
+                </Badge>
+              ))}
+            </div>
+          </CardContent>
         </Card>
       )}
 

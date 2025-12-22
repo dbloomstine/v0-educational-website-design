@@ -299,6 +299,12 @@ export function DistributionWaterfall() {
     setCompareOutput({ ...output })
   }
 
+  const copyScenarioToCompare = () => {
+    setCompareMode(true)
+    setCompareInput({ ...input })
+    setCompareOutput({ ...output })
+  }
+
   const updateCompareInput = (newInput: WaterfallInput) => {
     setCompareInput(newInput)
     setCompareOutput(calculateWaterfall(newInput))
@@ -492,49 +498,50 @@ export function DistributionWaterfall() {
         </div>
       </div>
 
-      {/* Quick Scenario Buttons */}
-      <Card className="border-border bg-card p-6">
-        <button
-          onClick={() => toggleSection('quickScenarios')}
-          className="flex items-center justify-between w-full text-left"
-        >
-          <div>
-            <h3 className="text-lg font-semibold text-foreground">Quick Scenarios</h3>
-            <p className="text-sm text-muted-foreground">
-              See how different return multiples affect the waterfall
-            </p>
+      {/* Quick Scenario Buttons - More Prominent */}
+      <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-purple-500/5">
+        <CardHeader>
+          <div className="flex items-center gap-3">
+            <Calculator className="h-5 w-5 text-primary" />
+            <div>
+              <CardTitle className="text-lg">Quick Return Scenarios</CardTitle>
+              <p className="text-sm text-muted-foreground">
+                One-click to model different return multiples
+              </p>
+            </div>
           </div>
-          {expandedSections.quickScenarios ? (
-            <ChevronUp className="h-5 w-5 text-muted-foreground" />
-          ) : (
-            <ChevronDown className="h-5 w-5 text-muted-foreground" />
-          )}
-        </button>
-        {expandedSections.quickScenarios && (
-          <div className="flex flex-wrap gap-3 mt-4">
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-wrap gap-3">
             <Button
               onClick={() => handleScenarioChange('low')}
               variant={selectedScenario === 'low' ? 'default' : 'outline'}
-              className="flex-1 sm:flex-none"
+              size="lg"
+              className="flex-1 sm:flex-none min-w-[140px]"
             >
               1.5x Return
             </Button>
             <Button
               onClick={() => handleScenarioChange('medium')}
               variant={selectedScenario === 'medium' ? 'default' : 'outline'}
-              className="flex-1 sm:flex-none"
+              size="lg"
+              className="flex-1 sm:flex-none min-w-[140px]"
             >
               2.0x Return
             </Button>
             <Button
               onClick={() => handleScenarioChange('high')}
               variant={selectedScenario === 'high' ? 'default' : 'outline'}
-              className="flex-1 sm:flex-none"
+              size="lg"
+              className="flex-1 sm:flex-none min-w-[140px]"
             >
               3.0x Return
             </Button>
           </div>
-        )}
+          <div className="mt-3 text-xs text-muted-foreground">
+            Current proceeds: {formatCurrency(input.grossProceeds)} ({formatMultiple(input.grossProceeds / input.contributedCapital)} on {formatCurrency(input.contributedCapital)})
+          </div>
+        </CardContent>
       </Card>
 
       {/* Mobile Results Summary */}
@@ -559,7 +566,7 @@ export function DistributionWaterfall() {
               </div>
               <div>
                 <h3 className="mb-4 text-lg font-semibold">Scenario A Results</h3>
-                <ResultsView output={output} onExport={handleExport} />
+                <ResultsView output={output} onExport={handleExport} onCopyScenario={copyScenarioToCompare} />
               </div>
             </div>
           </TabsContent>
@@ -693,7 +700,7 @@ export function DistributionWaterfall() {
 
             {/* Right Column - Results */}
             <div>
-              <ResultsView output={output} onExport={handleExport} />
+              <ResultsView output={output} onExport={handleExport} onCopyScenario={copyScenarioToCompare} />
             </div>
           </div>
         </>
