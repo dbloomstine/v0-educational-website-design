@@ -45,6 +45,7 @@ import {
   ArrowRight,
   Command,
   Timer,
+  RotateCcw,
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import {
@@ -652,6 +653,34 @@ export function FundLaunchGuide() {
         </DialogContent>
       </Dialog>
 
+      {/* Welcome Back / Start Fresh Card - shown to returning users */}
+      <div className="rounded-xl border border-primary/30 bg-gradient-to-r from-primary/5 to-primary/10 p-4 sm:p-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-lg bg-primary/20 shrink-0">
+              <Sparkles className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground">Welcome back!</h3>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                Your progress is saved. Continue where you left off, or start fresh with a new configuration.
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-2 sm:shrink-0">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={handleReconfigure}
+              className="flex-1 sm:flex-none min-h-[44px] bg-background hover:bg-primary hover:text-primary-foreground transition-colors"
+            >
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Start Fresh
+            </Button>
+          </div>
+        </div>
+      </div>
+
       {/* Time Estimate & Quick Jump Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border border-border bg-card">
         <div className="flex items-center gap-3">
@@ -857,7 +886,7 @@ export function FundLaunchGuide() {
             if (tasks.length === 0 && filterCompleted !== 'all') return null
 
             return (
-              <div key={phase.id} id={`phase-${phase.id}`} className="relative scroll-mt-4">
+              <div key={phase.id} id={`phase-${phase.id}`} className="relative scroll-mt-24">
                 {/* Timeline connector */}
                 {phaseIndex < PHASES.length - 1 && (
                   <div className="absolute left-6 top-16 bottom-0 w-px bg-border" />
