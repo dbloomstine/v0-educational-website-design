@@ -11,7 +11,6 @@ import {
   ChevronRight,
   ChevronLeft,
   HelpCircle,
-  Zap,
   CheckCircle2,
   Briefcase,
   Building2,
@@ -25,8 +24,6 @@ import {
   Target,
   Clock,
   Lightbulb,
-  ArrowRight,
-  RotateCcw,
   Sparkles,
   FileText,
   Banknote,
@@ -72,17 +69,16 @@ interface Step {
   id: StepId
   title: string
   subtitle: string
-  xpReward: number
 }
 
 const STEPS: Step[] = [
-  { id: 'welcome', title: 'Welcome', subtitle: 'Learn about expense allocation', xpReward: 0 },
-  { id: 'expense', title: 'Select Expense', subtitle: 'What expense are you analyzing?', xpReward: 10 },
-  { id: 'fund-type', title: 'Fund Type', subtitle: 'What type of fund is this?', xpReward: 10 },
-  { id: 'fund-stage', title: 'Fund Stage', subtitle: 'Where is the fund in its lifecycle?', xpReward: 10 },
-  { id: 'beneficiary', title: 'Beneficiary', subtitle: 'Who primarily benefits?', xpReward: 10 },
-  { id: 'context', title: 'Additional Context', subtitle: 'Any specific LPA terms? (Optional)', xpReward: 5 },
-  { id: 'review', title: 'Review', subtitle: 'Confirm your selections', xpReward: 0 }
+  { id: 'welcome', title: 'Welcome', subtitle: 'Learn about expense allocation' },
+  { id: 'expense', title: 'Select Expense', subtitle: 'What expense are you analyzing?' },
+  { id: 'fund-type', title: 'Fund Type', subtitle: 'What type of fund is this?' },
+  { id: 'fund-stage', title: 'Fund Stage', subtitle: 'Where is the fund in its lifecycle?' },
+  { id: 'beneficiary', title: 'Beneficiary', subtitle: 'Who primarily benefits?' },
+  { id: 'context', title: 'Additional Context', subtitle: 'Any specific LPA terms? (Optional)' },
+  { id: 'review', title: 'Review', subtitle: 'Confirm your selections' }
 ]
 
 // Icons for expense categories
@@ -162,14 +158,12 @@ const groupedCategories = {
 interface InteractiveJourneyProps {
   onComplete: (input: ClassificationInput) => void
   onSkip: () => void
-  onXPEarned: (xp: number) => void
   initialInput?: Partial<ClassificationInput>
 }
 
 export function InteractiveJourney({
   onComplete,
   onSkip,
-  onXPEarned,
   initialInput
 }: InteractiveJourneyProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
@@ -182,22 +176,12 @@ export function InteractiveJourney({
     lpaContext: initialInput?.lpaContext || ''
   })
   const [showLearnMore, setShowLearnMore] = useState<string | null>(null)
-  const [earnedStepXP, setEarnedStepXP] = useState<Set<number>>(new Set())
 
   const currentStep = STEPS[currentStepIndex]
   const progress = (currentStepIndex / (STEPS.length - 1)) * 100
 
-  // Handle step completion XP
-  const handleStepXP = (stepIndex: number) => {
-    if (!earnedStepXP.has(stepIndex) && STEPS[stepIndex].xpReward > 0) {
-      onXPEarned(STEPS[stepIndex].xpReward)
-      setEarnedStepXP(prev => new Set([...prev, stepIndex]))
-    }
-  }
-
   const goToNext = () => {
     if (currentStepIndex < STEPS.length - 1) {
-      handleStepXP(currentStepIndex)
       setCurrentStepIndex(prev => prev + 1)
     }
   }
@@ -279,10 +263,6 @@ export function InteractiveJourney({
               </div>
             </div>
 
-            <div className="flex items-center justify-center gap-1 text-xs sm:text-sm text-amber-600">
-              <Zap className="h-4 w-4" />
-              <span>Earn up to 45 XP by completing this analysis</span>
-            </div>
           </motion.div>
         )
 
@@ -819,13 +799,6 @@ export function InteractiveJourney({
           </div>
 
           <div className="flex items-center gap-2">
-            {currentStep.xpReward > 0 && !earnedStepXP.has(currentStepIndex) && (
-              <Badge variant="secondary" className="text-xs">
-                <Zap className="h-3 w-3 mr-1" />
-                +{currentStep.xpReward} XP
-              </Badge>
-            )}
-
             {currentStepIndex === STEPS.length - 1 ? (
               <Button onClick={handleComplete} disabled={!canProceed()} className="gap-1.5 text-sm">
                 <Sparkles className="h-4 w-4" />

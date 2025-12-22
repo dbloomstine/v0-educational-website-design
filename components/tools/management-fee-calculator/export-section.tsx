@@ -40,8 +40,8 @@ export function ExportSection({ fundInputs, result, feePhases }: ExportSectionPr
       await navigator.clipboard.writeText(summary)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
-      console.error('Failed to copy:', err)
+    } catch {
+      // Silent fail - clipboard may be unavailable
     }
   }
 

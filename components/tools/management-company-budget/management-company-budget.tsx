@@ -47,7 +47,6 @@ import {
   TYPICAL_RANGES
 } from './types'
 import { calculateBudget, formatCurrency, formatRunway } from './budget-calculator'
-import { OnboardingWizard } from './onboarding-wizard'
 import { JourneyMode } from './journey-mode'
 import { ResultsWalkthrough } from './results-walkthrough'
 import { SensitivityAnalysis } from './sensitivity-analysis'

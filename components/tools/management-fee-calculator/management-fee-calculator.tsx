@@ -15,19 +15,15 @@ import { Badge } from '@/components/ui/badge'
 import {
   AlertCircle,
   RotateCcw,
-  Sparkles,
-  Trophy,
   BookOpen,
   HelpCircle,
   Play,
   Calculator,
   Target,
-  Zap,
   GraduationCap,
   BarChart3,
-  ChevronRight,
-  Star,
   CheckCircle2,
+  Star,
   X
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -39,18 +35,9 @@ import { ExportSection } from './export-section'
 import { DisclaimerBlock } from '@/components/tools/shared'
 import { ShareButton } from '@/components/tools/share-button'
 
-// Gamification imports
-import {
-  useGamification,
-  AchievementPopup,
-  LevelUpPopup,
-  XPProgressBar,
-  LEVELS,
-  GamificationState
-} from './gamification'
+// Educational imports
 import { JourneyMode } from './journey-mode'
 import { Quiz, QuizResults, FEE_QUIZ_QUESTIONS } from './quiz'
-import { Confetti } from './visual-effects'
 import { Glossary } from './glossary'
 import { FAQSection } from './faq-section'
 import { ResultsWalkthrough } from './results-walkthrough'
@@ -102,15 +89,9 @@ export function ManagementFeeCalculator() {
 
   // View mode state
   const [viewMode, setViewMode] = useState<ViewMode>('journey')
-  const [showConfetti, setShowConfetti] = useState(false)
   const [quizScore, setQuizScore] = useState<{ score: number; total: number } | null>(null)
   const [showWelcome, setShowWelcome] = useState(true)
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
-
-  // Gamification
-  const gamification = useGamification()
-  const currentLevel = gamification.getCurrentLevel()
-  const nextLevel = gamification.getNextLevel()
 
   // Parse initial state from URL or use defaults
   const getInitialInputs = (): FundInputs => {
@@ -136,21 +117,10 @@ export function ManagementFeeCalculator() {
   const [result, setResult] = useState<FeeCalculationResult | null>(null)
   const [validationErrors, setValidationErrors] = useState<string[]>([])
 
-  // Initialize with default phases and check for first visit
+  // Initialize with default phases
   useEffect(() => {
     const defaultPhases = generateDefaultFeePhases(fundInputs)
     setFeePhases(defaultPhases)
-
-    // Check for first visit achievement
-    if (!gamification.state.achievements.find(a => a.id === 'early-bird')?.unlocked) {
-      gamification.unlockAchievement('early-bird')
-    }
-
-    // Check if user completed journey before
-    if (gamification.state.tutorialCompleted) {
-      setViewMode('calculator')
-      setShowWelcome(false)
-    }
   }, [])
 
   // Recalculate when inputs or phases change
@@ -162,26 +132,10 @@ export function ManagementFeeCalculator() {
       const calculatedResult = calculateManagementFees(fundInputs, feePhases)
       setResult(calculatedResult)
       setLastSaved(new Date())
-
-      // Check achievements
-      if (fundInputs.fundSize >= 100) {
-        gamification.unlockAchievement('big-fund')
-      }
-      if (calculatedResult.feesAsPercentOfCommitments < 15) {
-        gamification.unlockAchievement('fee-friendly')
-      }
-      if (feePhases.length >= 3) {
-        gamification.unlockAchievement('phase-tinkerer')
-      }
     } else {
       setResult(null)
     }
   }, [fundInputs, feePhases])
-
-  // Track fund type exploration
-  useEffect(() => {
-    gamification.trackFundTypeExplored(fundInputs.fundType)
-  }, [fundInputs.fundType])
 
   // Update URL when inputs change (debounced)
   useEffect(() => {
@@ -227,9 +181,6 @@ export function ManagementFeeCalculator() {
     setFundInputs(inputs)
     setFeePhases(phases)
     setViewMode('calculator')
-    gamification.completeTutorial()
-    setShowConfetti(true)
-    setTimeout(() => setShowConfetti(false), 3000)
   }
 
   const handleJourneySkip = () => {
@@ -239,11 +190,6 @@ export function ManagementFeeCalculator() {
   // Quiz handlers
   const handleQuizComplete = (score: number, total: number) => {
     setQuizScore({ score, total })
-    if (score === total) {
-      gamification.unlockAchievement('perfect-score')
-      setShowConfetti(true)
-      setTimeout(() => setShowConfetti(false), 3000)
-    }
   }
 
   const handleQuizRetry = () => {
@@ -254,7 +200,6 @@ export function ManagementFeeCalculator() {
   const handleScenarioSelect = (inputs: FundInputs, phases: FeePhase[]) => {
     setFundInputs(inputs)
     setFeePhases(phases)
-    gamification.trackScenarioExplored(inputs.fundType + '-' + inputs.fundSize)
     setViewMode('calculator')
   }
 
@@ -306,10 +251,6 @@ export function ManagementFeeCalculator() {
               <p className="text-xs sm:text-sm text-muted-foreground">
                 Learn fee concepts step-by-step while building your model. Perfect for first-timers.
               </p>
-              <div className="flex items-center gap-1 mt-2 sm:mt-3 text-xs text-amber-600">
-                <Zap className="h-3 w-3" />
-                <span>Earn up to 200 XP</span>
-              </div>
             </motion.button>
 
             <motion.button
@@ -432,55 +373,9 @@ export function ManagementFeeCalculator() {
     </div>
   )
 
-  // Render XP bar
-  const renderXPBar = () => (
-    <Card className="mb-4 sm:mb-6">
-      <CardContent className="p-3 sm:p-4">
-        <XPProgressBar
-          xp={gamification.state.xp}
-          currentLevel={currentLevel}
-          nextLevel={nextLevel}
-        />
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-3 text-sm">
-          <div className="flex items-center gap-2">
-            <Trophy className="h-4 w-4 text-amber-500 flex-shrink-0" />
-            <span className="text-xs sm:text-sm text-muted-foreground">
-              {gamification.state.achievements.filter(a => a.unlocked).length} / {gamification.state.achievements.length} achievements
-            </span>
-          </div>
-          {result && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setViewMode('walkthrough')}
-              className="gap-1.5 sm:gap-2 text-primary text-xs sm:text-sm h-8 px-2 sm:px-3 w-full sm:w-auto justify-center sm:justify-start"
-            >
-              <BarChart3 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              Understand Results
-            </Button>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  )
 
   return (
     <div className="space-y-6">
-      {/* Confetti effect */}
-      <Confetti show={showConfetti} />
-
-      {/* Achievement popup */}
-      <AchievementPopup
-        achievement={gamification.showAchievement}
-        onClose={() => gamification.setShowAchievement(null)}
-      />
-
-      {/* Level up popup */}
-      <LevelUpPopup
-        level={gamification.showLevelUp}
-        onClose={() => gamification.setShowLevelUp(null)}
-      />
-
       {/* Header */}
       <div className="text-center relative px-4 sm:px-0">
         <div className="flex justify-center gap-2 mb-3 sm:absolute sm:right-0 sm:top-0 sm:mb-0">
@@ -499,9 +394,6 @@ export function ManagementFeeCalculator() {
         renderWelcome()
       ) : (
         <>
-          {/* XP Progress Bar */}
-          {renderXPBar()}
-
           {/* Navigation tabs */}
           {renderNavigation()}
 
@@ -517,15 +409,6 @@ export function ManagementFeeCalculator() {
                 <JourneyMode
                   onComplete={handleJourneyComplete}
                   onSkip={handleJourneySkip}
-                  onXPEarned={(xp) => gamification.addXP(xp)}
-                  onAchievementCheck={(type, value) => {
-                    if (type === 'journey_step') {
-                      if (value === 1) gamification.unlockAchievement('first-steps')
-                      if (value === 2) gamification.unlockAchievement('fee-fundamentals')
-                      if (value === 4) gamification.unlockAchievement('phase-master')
-                      if (value === 5) gamification.unlockAchievement('basis-believer')
-                    }
-                  }}
                 />
               </motion.div>
             )}
@@ -549,7 +432,6 @@ export function ManagementFeeCalculator() {
                   <Quiz
                     questions={FEE_QUIZ_QUESTIONS.slice(0, 5)}
                     onComplete={handleQuizComplete}
-                    onCorrectAnswer={() => gamification.trackQuizCorrect()}
                     onClose={() => setViewMode('calculator')}
                   />
                 )}
@@ -565,7 +447,6 @@ export function ManagementFeeCalculator() {
                 className="max-w-3xl mx-auto"
               >
                 <Glossary
-                  onTermRead={(termId) => gamification.trackGlossaryRead(termId)}
                   onClose={() => setViewMode('calculator')}
                 />
               </motion.div>
@@ -580,7 +461,6 @@ export function ManagementFeeCalculator() {
                 className="max-w-3xl mx-auto"
               >
                 <FAQSection
-                  onFaqRead={(faqId) => gamification.trackFaqRead(faqId)}
                   onClose={() => setViewMode('calculator')}
                 />
               </motion.div>
@@ -596,7 +476,6 @@ export function ManagementFeeCalculator() {
                 <EnhancedScenarios
                   onSelectScenario={handleScenarioSelect}
                   onClose={() => setViewMode('calculator')}
-                  onXPEarned={(xp) => gamification.addXP(xp)}
                 />
               </motion.div>
             )}
@@ -614,7 +493,6 @@ export function ManagementFeeCalculator() {
                   fundInputs={fundInputs}
                   feePhases={feePhases}
                   onClose={() => setViewMode('calculator')}
-                  onXPEarned={(xp) => gamification.addXP(xp)}
                 />
               </motion.div>
             )}
@@ -641,12 +519,8 @@ export function ManagementFeeCalculator() {
                     {/* Fund Basics */}
                     <Card>
                       <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-4">
-                        <CardTitle className="text-base sm:text-lg flex flex-wrap items-center gap-2">
+                        <CardTitle className="text-base sm:text-lg">
                           Fund Basics
-                          <Badge variant="secondary" className="text-xs">
-                            <Sparkles className="h-3 w-3 mr-1" />
-                            +5 XP
-                          </Badge>
                         </CardTitle>
                       </CardHeader>
                       <CardContent className="p-4 sm:p-6 pt-0 sm:pt-0 space-y-3 sm:space-y-4">
@@ -771,10 +645,7 @@ export function ManagementFeeCalculator() {
                           <Button
                             variant="outline"
                             size="sm"
-                            onClick={() => {
-                              setViewMode('walkthrough')
-                              gamification.addXP(5)
-                            }}
+                            onClick={() => setViewMode('walkthrough')}
                             className="gap-1.5 sm:gap-2 text-xs sm:text-sm w-full sm:w-auto"
                           >
                             <CheckCircle2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />

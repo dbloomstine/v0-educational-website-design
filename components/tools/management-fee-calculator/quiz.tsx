@@ -193,14 +193,12 @@ export const FEE_QUIZ_QUESTIONS: QuizQuestion[] = [
 interface QuizProps {
   questions?: QuizQuestion[]
   onComplete: (score: number, total: number) => void
-  onCorrectAnswer: () => void
   onClose: () => void
 }
 
 export function Quiz({
   questions = FEE_QUIZ_QUESTIONS.slice(0, 5),
   onComplete,
-  onCorrectAnswer,
   onClose
 }: QuizProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -223,7 +221,6 @@ export function Quiz({
     if (index === question.correctIndex) {
       setScore(prev => prev + 1)
       setStreak(prev => prev + 1)
-      onCorrectAnswer()
 
       // Show streak bonus for 3+ correct in a row
       if (streak >= 2) {
@@ -305,7 +302,7 @@ export function Quiz({
             >
               <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-full font-bold text-lg shadow-lg flex items-center gap-2">
                 <Zap className="h-5 w-5" />
-                {streak} in a row! +Bonus XP
+                {streak} in a row!
                 <Sparkles className="h-5 w-5" />
               </div>
             </motion.div>

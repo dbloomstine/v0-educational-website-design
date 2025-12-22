@@ -101,8 +101,8 @@ export function AutoSaveIndicator({ data, onRestore, className }: AutoSaveIndica
 
         setLastSaved(new Date())
         setSaveStatus('saved')
-      } catch (error) {
-        console.error('Failed to save:', error)
+      } catch {
+        // Silent fail - localStorage may be unavailable
         setSaveStatus('unsaved')
       }
     }, 1000)
@@ -255,8 +255,8 @@ export function useAutoSave(data: BudgetData) {
           savedAt: Date.now()
         }))
         setLastSaved(new Date())
-      } catch (e) {
-        console.error('Auto-save failed:', e)
+      } catch {
+        // Silent fail - auto-save unavailable
       }
       setIsSaving(false)
     }, 1000)

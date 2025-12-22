@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   XCircle,
   HelpCircle,
-  Zap,
   Trophy,
   RotateCcw,
   ChevronRight,
@@ -161,14 +160,12 @@ export const EXPENSE_QUIZ_QUESTIONS: QuizQuestion[] = [
 interface QuizProps {
   questions?: QuizQuestion[]
   onComplete: (score: number, total: number) => void
-  onCorrectAnswer: () => void
   onClose: () => void
 }
 
 export function Quiz({
   questions = EXPENSE_QUIZ_QUESTIONS.slice(0, 5),
   onComplete,
-  onCorrectAnswer,
   onClose
 }: QuizProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -176,7 +173,6 @@ export function Quiz({
   const [showExplanation, setShowExplanation] = useState(false)
   const [score, setScore] = useState(0)
   const [answers, setAnswers] = useState<Record<string, boolean>>({})
-  const [streak, setStreak] = useState(0)
 
   const currentQuestion = questions[currentIndex]
   const progress = ((currentIndex + 1) / questions.length) * 100
@@ -196,10 +192,6 @@ export function Quiz({
 
     if (isCorrect) {
       setScore(prev => prev + 1)
-      setStreak(prev => prev + 1)
-      onCorrectAnswer()
-    } else {
-      setStreak(0)
     }
   }
 
@@ -247,17 +239,9 @@ export function Quiz({
       <CardContent className="space-y-4 sm:space-y-6">
         {/* Stats bar */}
         <div className="flex items-center justify-between text-xs sm:text-sm">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="flex items-center gap-1">
-              <CheckCircle2 className="h-4 w-4 text-green-500" />
-              <span>{score} correct</span>
-            </div>
-            {streak > 1 && (
-              <div className="flex items-center gap-1 text-amber-600">
-                <Zap className="h-4 w-4" />
-                <span>{streak} streak!</span>
-              </div>
-            )}
+          <div className="flex items-center gap-1">
+            <CheckCircle2 className="h-4 w-4 text-green-500" />
+            <span>{score} correct</span>
           </div>
           <Badge className={getDifficultyColor(currentQuestion.difficulty)}>
             {currentQuestion.difficulty}

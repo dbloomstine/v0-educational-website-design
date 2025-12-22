@@ -12,9 +12,7 @@ import {
   Lightbulb,
   Trophy,
   ChevronRight,
-  Sparkles,
-  Star,
-  Zap
+  Star
 } from 'lucide-react'
 
 export interface QuizQuestion {
@@ -208,8 +206,6 @@ export function Quiz({
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null)
   const [showResult, setShowResult] = useState(false)
   const [score, setScore] = useState(0)
-  const [streak, setStreak] = useState(0)
-  const [showStreakBonus, setShowStreakBonus] = useState(false)
 
   const question = questions[currentIndex]
   const isCorrect = selectedAnswer === question.correctIndex
@@ -223,16 +219,7 @@ export function Quiz({
 
     if (index === question.correctIndex) {
       setScore(prev => prev + 1)
-      setStreak(prev => prev + 1)
       onCorrectAnswer()
-
-      // Show streak bonus for 3+ correct in a row
-      if (streak >= 2) {
-        setShowStreakBonus(true)
-        setTimeout(() => setShowStreakBonus(false), 2000)
-      }
-    } else {
-      setStreak(0)
     }
   }
 
@@ -273,16 +260,6 @@ export function Quiz({
               <Star className="h-4 w-4 text-amber-500" />
               <span className="font-medium">{score}/{questions.length}</span>
             </div>
-            {streak >= 2 && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                className="flex items-center gap-1 text-sm text-orange-500"
-              >
-                <Zap className="h-4 w-4" />
-                <span className="font-medium">{streak} streak!</span>
-              </motion.div>
-            )}
           </div>
         </div>
         <Progress value={progress} className="h-2" />
@@ -292,24 +269,6 @@ export function Quiz({
       </div>
 
       <CardContent className="p-6 space-y-6">
-        {/* Streak Bonus Animation */}
-        <AnimatePresence>
-          {showStreakBonus && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.5, y: -20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.5, y: -20 }}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10"
-            >
-              <div className="bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-full font-bold text-lg shadow-lg flex items-center gap-2">
-                <Zap className="h-5 w-5" />
-                {streak} in a row! +Bonus XP
-                <Sparkles className="h-5 w-5" />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Question */}
         <div>
           <div className="flex items-center gap-2 mb-3">
@@ -402,7 +361,6 @@ export function Quiz({
                 <div>
                   <p className={`font-semibold ${isCorrect ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}`}>
                     {isCorrect ? 'Correct!' : 'Not quite!'}
-                    {isCorrect && streak >= 3 && ' 🔥'}
                   </p>
                 </div>
               </div>

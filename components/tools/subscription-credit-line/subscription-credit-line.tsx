@@ -10,12 +10,14 @@ import {
 } from './subscriptionLineCalculations'
 import { InputForm } from './input-form'
 import { ResultsView } from './results-view'
+import { JourneyMode } from './journey-mode'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ShareButton } from '@/components/tools/share-button'
 import { ExportToolbar } from '@/components/tools/shared'
 import { exportSubscriptionLineComparisonCSV, exportSubscriptionLineComparisonPDF } from './export'
+import { Rocket, Calculator } from 'lucide-react'
 
 // Preset scenarios based on market research
 const presets: Record<string, { name: string; description: string; input: SubscriptionLineInput }> = {
@@ -110,6 +112,10 @@ export function SubscriptionCreditLine() {
   const router = useRouter()
   const pathname = usePathname()
 
+  // Journey mode state
+  const [showJourneyMode, setShowJourneyMode] = useState(false)
+  const [hasCompletedJourney, setHasCompletedJourney] = useState(false)
+
   // Parse initial state from URL or use defaults
   const getInitialInput = (): SubscriptionLineInput => {
     if (typeof window === 'undefined') return defaultInput
@@ -139,6 +145,14 @@ export function SubscriptionCreditLine() {
   const [compareMode, setCompareMode] = useState(false)
   const [compareInput, setCompareInput] = useState<SubscriptionLineInput | null>(null)
   const [compareOutput, setCompareOutput] = useState<SubscriptionLineOutput | null>(null)
+
+  // Handle journey mode completion
+  const handleJourneyComplete = (journeyInput: SubscriptionLineInput) => {
+    setInput(journeyInput)
+    setOutput(calculateSubscriptionLineImpact(journeyInput))
+    setShowJourneyMode(false)
+    setHasCompletedJourney(true)
+  }
 
   // Update URL when inputs change (debounced)
   useEffect(() => {
@@ -218,6 +232,16 @@ export function SubscriptionCreditLine() {
     setCompareOutput(calculateSubscriptionLineImpact(newInput))
   }
 
+  // Show journey mode if requested
+  if (showJourneyMode) {
+    return (
+      <JourneyMode
+        onComplete={handleJourneyComplete}
+        onSkip={() => setShowJourneyMode(false)}
+      />
+    )
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -232,6 +256,32 @@ export function SubscriptionCreditLine() {
           Model how subscription lines of credit affect fund IRR, MOIC, J-curve, and fee drag.
           Compare scenarios with and without credit facilities.
         </p>
+      </div>
+
+      {/* Journey Mode Toggle */}
+      <div className="rounded-lg border border-primary/50 bg-primary/5 p-4 md:p-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-start gap-3 flex-1">
+            <div className="p-2 rounded-lg bg-primary/10 flex-shrink-0">
+              <Rocket className="h-5 w-5 text-primary" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground mb-1">
+                {hasCompletedJourney ? 'Want to start over?' : 'New to Subscription Credit Lines?'}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {hasCompletedJourney
+                  ? 'Restart the guided journey to learn more or try different scenarios'
+                  : 'Take a 3-5 minute guided journey to learn the basics and set up your first analysis'
+                }
+              </p>
+            </div>
+          </div>
+          <Button onClick={() => setShowJourneyMode(true)} className="flex-shrink-0 w-full md:w-auto">
+            <Rocket className="mr-2 h-4 w-4" />
+            {hasCompletedJourney ? 'Restart Journey' : 'Start Guided Journey'}
+          </Button>
+        </div>
       </div>
 
       {/* About */}

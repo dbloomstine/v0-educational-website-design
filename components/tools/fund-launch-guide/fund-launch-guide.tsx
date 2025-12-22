@@ -106,8 +106,8 @@ export function FundLaunchGuide() {
         setShowOnboarding(!parsed.hasCompletedOnboarding)
         setProviders(parsed.providers || {})
       }
-    } catch (e) {
-      console.error('Failed to load saved state:', e)
+    } catch {
+      // Silent fail - localStorage may be unavailable
     }
     setHasLoaded(true)
   }, [])
@@ -468,8 +468,8 @@ export function FundLaunchGuide() {
         }
         // Clear URL param
         window.history.replaceState({}, '', window.location.pathname)
-      } catch (e) {
-        console.error('Failed to parse URL state:', e)
+      } catch {
+        // Silent fail - invalid URL state
       }
     }
   }, [hasLoaded])

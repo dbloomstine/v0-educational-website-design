@@ -16,7 +16,6 @@ import { PeerComparison } from './peer-comparison'
 import { WhatIfSliders } from './what-if-sliders'
 import { SkipToContent, LiveRegion, ScrollToTop, AutoSaveIndicator, MobileResultsGrid } from './accessibility'
 import { exportWaterfallSummary, exportComparisonCSV, exportComparisonPDF } from './export'
-import { useGamification, AchievementPopup, LevelUpPopup, LEVELS, DEFAULT_ACHIEVEMENTS, GamificationState } from './gamification'
 import { Confetti, WaterfallFlowAnimation } from './visual-effects'
 import { Quiz as QuizPanel, WATERFALL_QUIZ_QUESTIONS } from './quiz'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -38,14 +37,7 @@ import {
   RotateCcw,
   Play,
   X,
-  Trophy,
-  Zap,
-  Target,
-  Brain,
-  Gift,
-  Flame,
-  Award,
-  Star
+  Brain
 } from 'lucide-react'
 
 // Preset scenarios
@@ -122,7 +114,6 @@ const presets: Record<string, { name: string; description: string; input: Waterf
 
 const LOCAL_STORAGE_KEY = 'waterfall-calculator-data'
 const JOURNEY_COMPLETED_KEY = 'waterfall-journey-completed'
-const GAMIFICATION_KEY = 'waterfall-gamification'
 
 export function DistributionWaterfall() {
   const searchParams = useSearchParams()
@@ -179,25 +170,6 @@ export function DistributionWaterfall() {
   const [showWalkthrough, setShowWalkthrough] = useState(false)
   const [journeyCompleted, setJourneyCompleted] = useState(false)
 
-  // Gamification state
-  const gamification = useGamification()
-  const {
-    state: gamificationState,
-    addXP,
-    unlockAchievement,
-    trackScenarioExplored,
-    trackQuizCorrect,
-    showAchievement,
-    setShowAchievement,
-    showLevelUp,
-    setShowLevelUp,
-    getCurrentLevel
-  } = gamification
-
-  // View mode state
-  const [activeView, setActiveView] = useState<'calculator' | 'dashboard' | 'achievements' | 'missions' | 'quiz'>('calculator')
-  const [showConfetti, setShowConfetti] = useState(false)
-
   // Expandable sections state
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     quickScenarios: true,
@@ -207,7 +179,8 @@ export function DistributionWaterfall() {
     glossary: false,
     faq: false,
     scenarios: false,
-    waterflowAnimation: false
+    waterflowAnimation: false,
+    quiz: false
   })
 
   // Check if journey was previously completed
@@ -292,53 +265,10 @@ export function DistributionWaterfall() {
     setShowWalkthrough(true)
     localStorage.setItem(JOURNEY_COMPLETED_KEY, 'true')
     setJourneyCompleted(true)
-
-    // Award XP for completing journey
-    addXP(200)
-    unlockAchievement('first_journey')
-    setShowConfetti(true)
-    setTimeout(() => setShowConfetti(false), 3000)
   }
 
   const handleWalkthroughComplete = () => {
     setShowWalkthrough(false)
-  }
-
-  // Gamification handlers
-  const handleXPEarned = (xp: number, reason: string) => {
-    addXP(xp)
-  }
-
-  const handleStepComplete = () => {
-    // Track journey progress
-  }
-
-  const handleAchievementCheck = (type: string, value?: any) => {
-    switch (type) {
-      case 'journey_step':
-        if (value >= 5) unlockAchievement('waterfall-101')
-        if (value >= 10) unlockAchievement('journey-complete')
-        break
-      case 'journey_complete':
-        unlockAchievement('journey-complete')
-        break
-      case 'scenario_run':
-        trackScenarioExplored(value)
-        break
-      case 'quiz_correct':
-        trackQuizCorrect()
-        break
-    }
-  }
-
-  const handleScenarioRun = () => {
-    trackScenarioExplored('scenario-' + Date.now())
-    addXP(25)
-
-    // Check achievements
-    if (gamificationState.scenariosExplored.length === 0) {
-      unlockAchievement('first-steps')
-    }
   }
 
   const loadPreset = (presetKey: string) => {
@@ -403,24 +333,6 @@ export function DistributionWaterfall() {
       <div className="max-w-4xl mx-auto space-y-8">
         <SkipToContent />
 
-        {/* Gamification popups */}
-        <AnimatePresence>
-          {showAchievement && (
-            <AchievementPopup
-              achievement={showAchievement}
-              onClose={() => setShowAchievement(null)}
-            />
-          )}
-        </AnimatePresence>
-        <AnimatePresence>
-          {showLevelUp && (
-            <LevelUpPopup
-              level={showLevelUp}
-              onClose={() => setShowLevelUp(null)}
-            />
-          )}
-        </AnimatePresence>
-
         <JourneyMode
           onComplete={handleJourneyComplete}
           onSkip={() => {
@@ -447,35 +359,11 @@ export function DistributionWaterfall() {
     )
   }
 
-  // Get current level
-  const currentLevel = getCurrentLevel()
-
   return (
     <div className="space-y-8" id="waterfall-main-content">
       <SkipToContent />
       <LiveRegion output={output} isCalculating={false} />
       <ScrollToTop />
-
-      {/* Confetti celebration */}
-      <Confetti show={showConfetti} />
-
-      {/* Gamification popups */}
-      <AnimatePresence>
-        {showAchievement && (
-          <AchievementPopup
-            achievement={showAchievement}
-            onClose={() => setShowAchievement(null)}
-          />
-        )}
-      </AnimatePresence>
-      <AnimatePresence>
-        {showLevelUp && (
-          <LevelUpPopup
-            level={showLevelUp}
-            onClose={() => setShowLevelUp(null)}
-          />
-        )}
-      </AnimatePresence>
 
       {/* Header */}
       <div className="text-center relative">
@@ -490,86 +378,6 @@ export function DistributionWaterfall() {
           Model LP and GP economics across preferred return, catch-up, and carried interest tiers.
           Understand how different waterfall structures affect distributions.
         </p>
-
-        {/* Gamification progress bar */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mt-6 max-w-md mx-auto"
-        >
-          <div className="flex items-center gap-3 p-3 rounded-lg bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/20">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                <span className="font-bold text-primary">{currentLevel.level}</span>
-              </div>
-              <div>
-                <p className="text-sm font-medium">{currentLevel.title}</p>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Zap className="h-3 w-3 text-yellow-500" />
-                  {gamificationState.xp} XP
-                </p>
-              </div>
-            </div>
-            <div className="ml-auto flex items-center gap-2">
-              <Badge variant="secondary" className="bg-amber-500/20 text-amber-600 dark:text-amber-400">
-                <Trophy className="h-3 w-3 mr-1" />
-                {gamificationState.achievements.filter(a => a.unlocked).length}
-              </Badge>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Navigation tabs for gamified views */}
-        <div className="flex flex-wrap justify-center gap-2 mt-6">
-          <Button
-            variant={activeView === 'calculator' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setActiveView('calculator')}
-            className="gap-2"
-          >
-            <Calculator className="h-4 w-4" />
-            Calculator
-          </Button>
-          <Button
-            variant={activeView === 'dashboard' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setActiveView('dashboard')}
-            className="gap-2"
-          >
-            <BarChart3 className="h-4 w-4" />
-            Progress
-          </Button>
-          <Button
-            variant={activeView === 'achievements' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setActiveView('achievements')}
-            className="gap-2"
-          >
-            <Trophy className="h-4 w-4" />
-            Achievements
-            <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs bg-yellow-500/20 text-yellow-600 dark:text-yellow-400">
-              {gamificationState.achievements.filter(a => a.unlocked).length}
-            </Badge>
-          </Button>
-          <Button
-            variant={activeView === 'missions' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setActiveView('missions')}
-            className="gap-2"
-          >
-            <Target className="h-4 w-4" />
-            Missions
-          </Button>
-          <Button
-            variant={activeView === 'quiz' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setActiveView('quiz')}
-            className="gap-2"
-          >
-            <Brain className="h-4 w-4" />
-            Quiz
-          </Button>
-        </div>
 
         {/* Action buttons */}
         <div className="flex flex-wrap justify-center gap-3 mt-4">
@@ -603,165 +411,6 @@ export function DistributionWaterfall() {
         </div>
       </div>
 
-      {/* Show different views based on active view */}
-      {activeView === 'dashboard' && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <Card className="max-w-2xl mx-auto">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="h-6 w-6 text-primary" />
-                Your Progress
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="p-4 rounded-lg bg-primary/10 text-center">
-                  <p className="text-3xl font-bold text-primary">{currentLevel.level}</p>
-                  <p className="text-sm text-muted-foreground">Level</p>
-                </div>
-                <div className="p-4 rounded-lg bg-yellow-500/10 text-center">
-                  <p className="text-3xl font-bold text-yellow-600">{gamificationState.xp}</p>
-                  <p className="text-sm text-muted-foreground">XP Earned</p>
-                </div>
-                <div className="p-4 rounded-lg bg-amber-500/10 text-center">
-                  <p className="text-3xl font-bold text-amber-600">{gamificationState.achievements.filter(a => a.unlocked).length}</p>
-                  <p className="text-sm text-muted-foreground">Achievements</p>
-                </div>
-                <div className="p-4 rounded-lg bg-green-500/10 text-center">
-                  <p className="text-3xl font-bold text-green-600">{gamificationState.scenariosExplored.length}</p>
-                  <p className="text-sm text-muted-foreground">Scenarios</p>
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-2 justify-center">
-                <Button onClick={() => { setActiveView('calculator'); setShowJourney(true); }}>
-                  <Play className="h-4 w-4 mr-2" />
-                  Start Learning Journey
-                </Button>
-                <Button variant="outline" onClick={() => setActiveView('achievements')}>
-                  <Trophy className="h-4 w-4 mr-2" />
-                  View Achievements
-                </Button>
-                <Button variant="outline" onClick={() => setActiveView('quiz')}>
-                  <Brain className="h-4 w-4 mr-2" />
-                  Take Quiz
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {activeView === 'achievements' && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="space-y-8"
-        >
-          <div className="text-center">
-            <h2 className="text-2xl font-bold mb-2 flex items-center justify-center gap-2">
-              <Trophy className="h-6 w-6 text-yellow-500" />
-              Achievements
-            </h2>
-            <p className="text-muted-foreground">
-              Unlock achievements by exploring the waterfall calculator
-            </p>
-          </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto">
-            {gamificationState.achievements.map((achievement) => (
-              <Card key={achievement.id} className={`transition-all ${achievement.unlocked ? 'border-yellow-500/30 bg-yellow-500/5' : 'opacity-60'}`}>
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-3">
-                    <div className={`p-2 rounded-full text-2xl ${achievement.unlocked ? 'bg-yellow-500/20' : 'bg-muted'}`}>
-                      {achievement.icon}
-                    </div>
-                    <div>
-                      <h4 className="font-semibold">{achievement.name}</h4>
-                      <p className="text-sm text-muted-foreground">{achievement.description}</p>
-                      <Badge variant="secondary" className="mt-2">{achievement.xp} XP</Badge>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </motion.div>
-      )}
-
-      {activeView === 'missions' && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <Card className="max-w-2xl mx-auto">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="h-6 w-6 text-primary" />
-                Daily Missions
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-muted-foreground text-center py-8">
-                Complete activities to earn bonus XP!
-              </p>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 rounded-lg border">
-                  <Brain className="h-5 w-5 text-primary" />
-                  <div className="flex-1">
-                    <p className="font-medium">Complete the tutorial</p>
-                    <p className="text-sm text-muted-foreground">Finish all 10 steps</p>
-                  </div>
-                  <Badge>+200 XP</Badge>
-                </div>
-                <div className="flex items-center gap-3 p-3 rounded-lg border">
-                  <Calculator className="h-5 w-5 text-primary" />
-                  <div className="flex-1">
-                    <p className="font-medium">Run 5 scenarios</p>
-                    <p className="text-sm text-muted-foreground">{Math.min(gamificationState.scenariosExplored.length, 5)}/5 complete</p>
-                  </div>
-                  <Badge>+100 XP</Badge>
-                </div>
-                <div className="flex items-center gap-3 p-3 rounded-lg border">
-                  <Brain className="h-5 w-5 text-primary" />
-                  <div className="flex-1">
-                    <p className="font-medium">Answer 3 quiz questions</p>
-                    <p className="text-sm text-muted-foreground">{Math.min(gamificationState.quizAnswersCorrect, 3)}/3 correct</p>
-                  </div>
-                  <Badge>+75 XP</Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      )}
-
-      {activeView === 'quiz' && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <QuizPanel
-            onCorrectAnswer={() => {
-              trackQuizCorrect()
-              addXP(25)
-            }}
-            onComplete={(score, total) => {
-              if (score === total) {
-                unlockAchievement('quiz-ace')
-                setShowConfetti(true)
-                setTimeout(() => setShowConfetti(false), 2000)
-              }
-              addXP(score * 10) // Bonus XP for completion
-            }}
-            onClose={() => setActiveView('calculator')}
-          />
-        </motion.div>
-      )}
-
-      {activeView === 'calculator' && (
-        <>
           {/* Waterfall Flow Animation Section */}
           <div className="space-y-2">
             <button
@@ -1251,8 +900,43 @@ export function DistributionWaterfall() {
           )}
         </AnimatePresence>
       </div>
-        </>
-      )}
+
+      {/* Quiz */}
+      <div className="space-y-2">
+        <button
+          onClick={() => toggleSection('quiz')}
+          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <Brain className="h-5 w-5 text-primary" />
+            <div className="text-left">
+              <h3 className="font-semibold text-foreground">Knowledge Quiz</h3>
+              <p className="text-sm text-muted-foreground">Test your understanding of waterfall mechanics</p>
+            </div>
+          </div>
+          {expandedSections.quiz ? (
+            <ChevronUp className="h-5 w-5 text-muted-foreground" />
+          ) : (
+            <ChevronDown className="h-5 w-5 text-muted-foreground" />
+          )}
+        </button>
+        <AnimatePresence>
+          {expandedSections.quiz && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <QuizPanel
+                onCorrectAnswer={() => {}}
+                onComplete={(score, total) => {}}
+                onClose={() => toggleSection('quiz')}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   )
 }

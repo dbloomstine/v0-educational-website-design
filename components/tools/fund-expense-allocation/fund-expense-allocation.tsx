@@ -10,21 +10,14 @@ import { Progress } from '@/components/ui/progress'
 import {
   AlertCircle,
   Scale,
-  Trophy,
   BookOpen,
-  HelpCircle,
   Play,
   Calculator,
   Target,
-  Zap,
   GraduationCap,
-  BarChart3,
   Star,
-  ChevronRight,
   RotateCcw,
-  Sparkles,
-  CheckCircle2,
-  X
+  CheckCircle2
 } from 'lucide-react'
 import { classifyExpense, type ClassificationInput, type ClassificationResult as Result } from './expenseData'
 import { exportToPDF } from './exportPDF'
@@ -33,14 +26,6 @@ import { ClassificationResults } from './classification-results'
 import { SampleScenariosSection } from './sample-scenarios'
 import { ShareButton } from '@/components/tools/share-button'
 
-// Gamification imports
-import {
-  useGamification,
-  AchievementPopup,
-  LevelUpPopup,
-  XPProgressBar,
-  Confetti
-} from './gamification'
 import { InteractiveJourney } from './interactive-journey'
 import { Quiz, QuizResults, EXPENSE_QUIZ_QUESTIONS } from './quiz'
 
@@ -53,17 +38,11 @@ export function FundExpenseAllocation() {
 
   // View state
   const [viewMode, setViewMode] = useState<ViewMode>('welcome')
-  const [showConfetti, setShowConfetti] = useState(false)
   const [quizScore, setQuizScore] = useState<{ score: number; total: number } | null>(null)
 
   // Results state
   const [result, setResult] = useState<Result | null>(null)
   const [currentInput, setCurrentInput] = useState<ClassificationInput | null>(null)
-
-  // Gamification
-  const gamification = useGamification()
-  const currentLevel = gamification.getCurrentLevel()
-  const nextLevel = gamification.getNextLevel()
 
   // Parse initial state from URL on mount
   useEffect(() => {
@@ -127,83 +106,21 @@ export function FundExpenseAllocation() {
     setResult(classification)
     setCurrentInput(input)
     setViewMode('results')
-
-    // Track for gamification
-    gamification.trackAnalysis(
-      input.fundType,
-      input.fundStage,
-      input.expenseCategory,
-      classification.classification
-    )
-
-    // Check achievements
-    if (gamification.state.analysesCompleted === 0) {
-      gamification.unlockAchievement('first-classification')
-    }
-    if (classification.classification === 'fund-expense') {
-      gamification.unlockAchievement('fund-expense-finder')
-    }
-    if (classification.classification === 'management-expense') {
-      gamification.unlockAchievement('management-identifier')
-    }
-    if (classification.classification === 'case-by-case') {
-      gamification.unlockAchievement('gray-area-navigator')
-    }
-
-    // Fund type achievements
-    if (input.fundType === 'pe') gamification.unlockAchievement('pe-explorer')
-    if (input.fundType === 'vc') gamification.unlockAchievement('vc-explorer')
-    if (input.fundType === 'private-credit') gamification.unlockAchievement('credit-explorer')
-    if (input.fundType === 'real-estate') gamification.unlockAchievement('real-estate-explorer')
-
-    // Check for fund type master
-    if (gamification.state.fundTypesExplored.length >= 5) {
-      gamification.unlockAchievement('fund-type-master')
-    }
-    if (gamification.state.fundStagesExplored.length >= 4) {
-      gamification.unlockAchievement('stage-explorer')
-    }
-    if (gamification.state.analysesCompleted >= 4) {
-      gamification.unlockAchievement('five-analyses')
-    }
-    if (gamification.state.analysesCompleted >= 9) {
-      gamification.unlockAchievement('ten-analyses')
-    }
-    if (gamification.state.categoriesExplored.length >= 10) {
-      gamification.unlockAchievement('category-explorer')
-    }
-
-    // Add XP for completing analysis
-    gamification.addXP(15)
   }
 
   // Journey completion handler
   const handleJourneyComplete = (input: ClassificationInput) => {
     handleClassify(input)
-    setShowConfetti(true)
-    setTimeout(() => setShowConfetti(false), 3000)
   }
 
   // Sample scenario handler
   const handleLoadSample = (sample: ClassificationInput) => {
-    gamification.trackSampleExplored(sample.expenseCategory)
-    if (gamification.state.samplesExplored.length >= 4) {
-      gamification.unlockAchievement('sample-explorer')
-    }
     handleClassify(sample)
   }
 
   // Quiz handlers
   const handleQuizComplete = (score: number, total: number) => {
     setQuizScore({ score, total })
-    gamification.trackQuizComplete(score === total)
-    gamification.unlockAchievement('quiz-starter')
-    if (score === total) {
-      gamification.unlockAchievement('quiz-master')
-      setShowConfetti(true)
-      setTimeout(() => setShowConfetti(false), 3000)
-    }
-    gamification.addXP(score * 5)
   }
 
   const handleQuizRetry = () => {
@@ -214,7 +131,6 @@ export function FundExpenseAllocation() {
   const handleExport = () => {
     if (result && currentInput) {
       exportToPDF(currentInput, result)
-      gamification.addXP(5)
     }
   }
 
@@ -284,10 +200,6 @@ export function FundExpenseAllocation() {
               <p className="text-xs sm:text-sm text-muted-foreground">
                 Step-by-step walkthrough that teaches expense allocation while you analyze.
               </p>
-              <div className="flex items-center gap-1 mt-2 sm:mt-3 text-xs text-amber-600">
-                <Zap className="h-3 w-3" />
-                <span>Earn up to 60 XP</span>
-              </div>
             </motion.button>
 
             <motion.button
@@ -395,48 +307,9 @@ export function FundExpenseAllocation() {
     </div>
   )
 
-  // Render XP bar
-  const renderXPBar = () => (
-    <Card className="mb-4 sm:mb-6">
-      <CardContent className="p-3 sm:p-4">
-        <XPProgressBar
-          xp={gamification.state.xp}
-          currentLevel={currentLevel}
-          nextLevel={nextLevel}
-        />
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mt-3 text-sm">
-          <div className="flex items-center gap-2">
-            <Trophy className="h-4 w-4 text-amber-500 flex-shrink-0" />
-            <span className="text-xs sm:text-sm text-muted-foreground">
-              {gamification.state.achievements.filter(a => a.unlocked).length} / {gamification.state.achievements.length} achievements
-            </span>
-          </div>
-          <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground">
-            <BarChart3 className="h-4 w-4" />
-            <span>{gamification.state.analysesCompleted} analyses completed</span>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  )
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Confetti effect */}
-      <Confetti show={showConfetti} />
-
-      {/* Achievement popup */}
-      <AchievementPopup
-        achievement={gamification.showAchievement}
-        onClose={() => gamification.setShowAchievement(null)}
-      />
-
-      {/* Level up popup */}
-      <LevelUpPopup
-        level={gamification.showLevelUp}
-        onClose={() => gamification.setShowLevelUp(null)}
-      />
-
       {/* Header */}
       <div className="text-center relative px-4 sm:px-0">
         <div className="flex justify-center gap-2 mb-3 sm:absolute sm:right-0 sm:top-0 sm:mb-0">
@@ -455,9 +328,6 @@ export function FundExpenseAllocation() {
         renderWelcome()
       ) : (
         <>
-          {/* XP Progress Bar */}
-          {renderXPBar()}
-
           {/* Navigation */}
           {renderNavigation()}
 
@@ -473,7 +343,6 @@ export function FundExpenseAllocation() {
                 <InteractiveJourney
                   onComplete={handleJourneyComplete}
                   onSkip={() => setViewMode('calculator')}
-                  onXPEarned={(xp) => gamification.addXP(xp)}
                 />
               </motion.div>
             )}
@@ -497,7 +366,6 @@ export function FundExpenseAllocation() {
                   <Quiz
                     questions={EXPENSE_QUIZ_QUESTIONS.slice(0, 5)}
                     onComplete={handleQuizComplete}
-                    onCorrectAnswer={() => gamification.addXP(5)}
                     onClose={() => setViewMode('calculator')}
                   />
                 )}

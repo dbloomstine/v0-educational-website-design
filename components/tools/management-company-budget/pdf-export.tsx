@@ -598,8 +598,8 @@ export function PDFExport({ data, results, className }: PDFExportProps) {
         setExportStatus('idle')
         setDialogOpen(false)
       }, 2000)
-    } catch (error) {
-      console.error('Export failed:', error)
+    } catch {
+      // Export failed
       setExportStatus('error')
     } finally {
       setIsExporting(false)
