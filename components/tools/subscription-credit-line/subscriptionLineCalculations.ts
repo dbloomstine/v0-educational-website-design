@@ -272,11 +272,14 @@ function calculateIRR(cashFlows: number[]): number {
 
       if (Math.abs(newIRR - irr) < tolerance) {
         // Verify this is a valid IRR by checking NPV is close to zero
+        // Use relative tolerance based on initial cash flow magnitude for accuracy with large funds
         let verifyNPV = 0
         for (let t = 0; t < cashFlows.length; t++) {
           verifyNPV += cashFlows[t] / Math.pow(1 + newIRR, t)
         }
-        if (Math.abs(verifyNPV) < 1) {
+        const initialMagnitude = Math.abs(cashFlows[0]) || Math.abs(cashFlows[1]) || 1
+        const relativeTolerance = initialMagnitude * 0.0001 // 0.01% of initial cash flow
+        if (Math.abs(verifyNPV) < Math.max(relativeTolerance, 1)) {
           converged = true
           irr = newIRR
           break
@@ -346,11 +349,6 @@ export function calculateSubscriptionLineImpact(
   let cumulativeDistributedWithLine = 0
   let cumulativeInvestedCapital = 0 // Track actual invested capital (excluding fees)
 
-  // Track total capital for MOIC calculation (investment + fees, excluding interest)
-  // This ensures MOIC reflects return on actual capital invested, not financing costs
-  let totalCapitalForMOIC_NoLine = 0
-  let totalCapitalForMOIC_WithLine = 0
-
   let lineBalance = 0
   let totalInterestPaid = 0
   let totalManagementFees = 0
@@ -395,7 +393,6 @@ export function calculateSubscriptionLineImpact(
 
     cumulativeCalledNoLine += capitalCallNoLine
     cumulativeDistributedNoLine += distributionNoLine
-    totalCapitalForMOIC_NoLine += investmentAmount + managementFee // Capital for MOIC excludes financing costs
 
     const netCashFlowNoLine = distributionNoLine - capitalCallNoLine
     cashFlowsNoLine.push(netCashFlowNoLine)
@@ -481,9 +478,6 @@ export function calculateSubscriptionLineImpact(
 
     cumulativeCalledWithLine += capitalCallWithLine
     cumulativeDistributedWithLine += distributionWithLine
-    // Capital for MOIC: investment + fees only, exclude interest and line repayments
-    // (line repayments aren't new capital, they're repaying borrowed amounts)
-    totalCapitalForMOIC_WithLine += investmentAmount + managementFee
 
     const netCashFlowWithLine = distributionWithLine - capitalCallWithLine
     cashFlowsWithLine.push(netCashFlowWithLine)
@@ -514,11 +508,12 @@ export function calculateSubscriptionLineImpact(
   const irrNoLine = calculateIRR(cashFlowsNoLine)
   const irrWithLine = calculateIRR(cashFlowsWithLine)
 
-  // MOIC calculation: distributions / (investment + fees), excluding interest
-  // This gives an accurate picture of return on invested capital
-  // Using totalCapitalForMOIC to exclude interest expense from denominator
-  const moicNoLine = cumulativeDistributedNoLine / totalCapitalForMOIC_NoLine
-  const moicWithLine = cumulativeDistributedWithLine / totalCapitalForMOIC_WithLine
+  // MOIC calculation: distributions / total capital called by LPs
+  // This includes ALL cash LPs had to contribute: investments, fees, interest, and line repayments
+  // This gives an accurate picture of LP return on their actual cash outlay
+  // Note: Some practitioners exclude interest, but including it is more conservative and accurate
+  const moicNoLine = cumulativeCalledNoLine > 0 ? cumulativeDistributedNoLine / cumulativeCalledNoLine : 0
+  const moicWithLine = cumulativeCalledWithLine > 0 ? cumulativeDistributedWithLine / cumulativeCalledWithLine : 0
 
   const tvpiNoLine = cumulativeDistributedNoLine / input.fundSize
   const tvpiWithLine = cumulativeDistributedWithLine / input.fundSize
