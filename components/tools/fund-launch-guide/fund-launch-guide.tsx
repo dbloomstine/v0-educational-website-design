@@ -88,6 +88,17 @@ const phaseIcons: Record<string, string> = {
   'first-close': '🚀',
 }
 
+// Mapping of provider keys to task IDs for auto-completion
+const PROVIDER_TASK_MAP: Record<string, string> = {
+  lawFirm: 'legal-counsel',
+  fundAdmin: 'sp-fund-admin',
+  auditor: 'sp-auditor',
+  taxAdvisor: 'sp-tax-advisor',
+  bank: 'sp-banking',
+  insuranceBroker: 'sp-insurance',
+  primeBroker: 'hf-prime-broker',
+}
+
 export function FundLaunchGuide() {
   // Core state
   const [config, setConfig] = useState<FundConfig | null>(null)
@@ -141,6 +152,47 @@ export function FundLaunchGuide() {
     }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
   }, [config, completedTasks, viewMode, expandedTasks, hasLoaded, providers])
+
+  // Sync provider selections with task completions
+  useEffect(() => {
+    if (!hasLoaded) return
+
+    // Get task IDs that should be completed based on selected providers
+    const providerTaskIds = new Set(
+      Object.keys(providers)
+        .map(key => PROVIDER_TASK_MAP[key])
+        .filter(Boolean)
+    )
+
+    // Check if we need to update completed tasks
+    let needsUpdate = false
+    const newCompletedTasks = new Set(completedTasks)
+
+    // Auto-complete tasks for selected providers
+    providerTaskIds.forEach(taskId => {
+      if (!newCompletedTasks.has(taskId)) {
+        newCompletedTasks.add(taskId)
+        needsUpdate = true
+      }
+    })
+
+    // Remove completion for tasks where provider was removed
+    Object.values(PROVIDER_TASK_MAP).forEach(taskId => {
+      if (newCompletedTasks.has(taskId) && !providerTaskIds.has(taskId)) {
+        // Only remove if this was auto-completed (provider removed)
+        // Check if the provider for this task is missing
+        const providerKey = Object.entries(PROVIDER_TASK_MAP).find(([, tid]) => tid === taskId)?.[0]
+        if (providerKey && !providers[providerKey]) {
+          newCompletedTasks.delete(taskId)
+          needsUpdate = true
+        }
+      }
+    })
+
+    if (needsUpdate) {
+      setCompletedTasks(newCompletedTasks)
+    }
+  }, [providers, hasLoaded]) // Only depend on providers and hasLoaded to avoid loops
 
   // Get applicable tasks for current config
   const applicableTasks = useMemo(() => {
@@ -322,14 +374,23 @@ export function FundLaunchGuide() {
   }
 
   const handleResetProgress = () => {
-    if (confirm('Reset all progress?\n\nThis will clear all completed tasks. Your fund configuration and selected service providers will be kept.\n\nThis cannot be undone.')) {
+    if (confirm('Reset all progress?\n\nThis will clear all completed tasks and selected service providers. Your fund configuration will be kept.\n\nThis cannot be undone.')) {
       setCompletedTasks(new Set())
       setExpandedTasks(new Set())
+      setProviders({})
     }
   }
 
   const handleReconfigure = () => {
     setShowOnboarding(true)
+  }
+
+  const handleRemoveProvider = (key: string) => {
+    setProviders(prev => {
+      const next = { ...prev }
+      delete next[key]
+      return next
+    })
   }
 
   const handleShare = async () => {
@@ -795,6 +856,7 @@ export function FundLaunchGuide() {
         onShare={handleShare}
         onExportExcel={handleExportExcel}
         onExportPdf={handleExportPdf}
+        onRemoveProvider={handleRemoveProvider}
         onPhaseClick={(phaseId) => {
           // Expand the phase and scroll to it
           setExpandedPhases(prev => new Set([...prev, phaseId]))

@@ -11,7 +11,8 @@ import {
   Download,
   FileSpreadsheet,
   FileText,
-  ChevronDown
+  ChevronDown,
+  X
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -32,6 +33,7 @@ interface ProgressDashboardProps {
   onExportExcel: () => void
   onExportPdf: () => void
   onPhaseClick?: (phaseId: string) => void
+  onRemoveProvider?: (key: string) => void
 }
 
 const PROVIDER_LABELS: Record<string, string> = {
@@ -57,6 +59,7 @@ export function ProgressDashboard({
   onExportExcel,
   onExportPdf,
   onPhaseClick,
+  onRemoveProvider,
 }: ProgressDashboardProps) {
   // Calculate statistics
   const totalTasks = Array.from(tasksByPhase.values()).reduce(
@@ -162,9 +165,19 @@ export function ProgressDashboard({
           {providers && Object.keys(providers).length > 0 ? (
             <div className="flex flex-wrap gap-2">
               {Object.entries(providers).map(([key, value]) => (
-                <div key={key} className="flex-shrink-0 px-2.5 py-1 rounded-lg bg-primary/10 border border-primary/20 text-xs sm:text-sm">
+                <div key={key} className="flex-shrink-0 flex items-center gap-1.5 pl-2.5 pr-1 py-1 rounded-lg bg-primary/10 border border-primary/20 text-xs sm:text-sm group">
                   <span className="text-muted-foreground">{PROVIDER_LABELS[key] || key}:</span>{' '}
                   <span className="font-medium text-primary">{value}</span>
+                  {onRemoveProvider && (
+                    <button
+                      onClick={() => onRemoveProvider(key)}
+                      className="p-0.5 rounded hover:bg-primary/20 text-muted-foreground hover:text-foreground transition-colors"
+                      title={`Remove ${PROVIDER_LABELS[key] || key}`}
+                      aria-label={`Remove ${value}`}
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
