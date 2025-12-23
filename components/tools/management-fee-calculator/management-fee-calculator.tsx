@@ -666,6 +666,7 @@ export function ManagementFeeCalculator() {
                         size="lg"
                         onClick={resetToDefaults}
                         aria-label="Reset all values to defaults"
+                        title="Clear all inputs and restore default values"
                         className="text-xs sm:text-sm min-h-[44px] focus:ring-2 focus:ring-primary"
                       >
                         <RotateCcw className="h-4 w-4 mr-2" aria-hidden="true" />

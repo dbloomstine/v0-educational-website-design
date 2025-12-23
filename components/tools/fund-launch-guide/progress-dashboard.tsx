@@ -217,9 +217,9 @@ export function ProgressDashboard({
             <Settings2 className="h-4 w-4 sm:mr-1.5" />
             <span className="hidden sm:inline">Reconfigure</span>
           </Button>
-          <Button variant="ghost" size="sm" onClick={onResetProgress} className="h-8 px-2.5 sm:px-3 text-muted-foreground ml-auto">
-            <RotateCcw className="h-4 w-4 sm:mr-1.5" />
-            <span className="hidden sm:inline">Reset</span>
+          <Button variant="ghost" size="sm" onClick={onResetProgress} className="h-8 px-2.5 text-muted-foreground ml-auto" title="Reset all progress and start fresh">
+            <RotateCcw className="h-4 w-4 mr-1.5" />
+            <span>Reset</span>
           </Button>
         </div>
       </div>

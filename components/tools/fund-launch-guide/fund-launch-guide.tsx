@@ -809,6 +809,7 @@ export function FundLaunchGuide() {
               variant="outline"
               size="lg"
               onClick={handleReconfigure}
+              title="Go back to configuration and start a new checklist"
               className="flex-1 sm:flex-none min-h-[44px] bg-background hover:bg-primary hover:text-primary-foreground transition-colors"
             >
               <RotateCcw className="h-4 w-4 mr-2" />

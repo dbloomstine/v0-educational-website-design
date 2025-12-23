@@ -311,7 +311,7 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
             pdfLoading={pdfLoading}
             compact
           />
-          <Button onClick={onReset} variant="outline" className="w-full sm:w-auto">
+          <Button onClick={onReset} variant="outline" className="w-full sm:w-auto" title="Clear results and analyze a different expense">
             <RotateCcw className="h-4 w-4 mr-2" />
             Analyze Another Expense
           </Button>

@@ -421,6 +421,7 @@ export function DistributionWaterfall() {
             size="lg"
             onClick={handleStartOver}
             aria-label="Start over with new inputs"
+            title="Clear results and enter new deal terms"
             className="gap-2 min-h-[44px] focus:ring-2 focus:ring-primary"
           >
             <RotateCcw className="h-4 w-4" aria-hidden="true" />
@@ -671,13 +672,15 @@ export function DistributionWaterfall() {
           aria-expanded={expandedSections.whatIf}
           aria-controls="what-if-content"
           aria-label="Toggle what-if analysis section"
-          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className={`flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${expandedSections.whatIf ? 'sticky top-0 z-10 shadow-sm' : ''}`}
         >
           <div className="flex items-center gap-3">
             <SlidersHorizontal className="h-5 w-5 text-primary" aria-hidden="true" />
             <div className="text-left">
               <h3 className="font-semibold text-foreground">What-If Analysis</h3>
-              <p className="text-sm text-muted-foreground">Adjust parameters to see real-time impact</p>
+              <p className="text-sm text-muted-foreground">
+                {expandedSections.whatIf ? 'Click here to collapse' : 'Adjust parameters to see real-time impact'}
+              </p>
             </div>
           </div>
           {expandedSections.whatIf ? (
@@ -714,13 +717,15 @@ export function DistributionWaterfall() {
           aria-expanded={expandedSections.calculation}
           aria-controls="calculation-content"
           aria-label="Toggle step-by-step calculation section"
-          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className={`flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${expandedSections.calculation ? 'sticky top-0 z-10 shadow-sm' : ''}`}
         >
           <div className="flex items-center gap-3">
             <Calculator className="h-5 w-5 text-primary" aria-hidden="true" />
             <div className="text-left">
               <h3 className="font-semibold text-foreground">Step-by-Step Calculation</h3>
-              <p className="text-sm text-muted-foreground">See exactly how proceeds flow through each tier</p>
+              <p className="text-sm text-muted-foreground">
+                {expandedSections.calculation ? 'Click here to collapse' : 'See exactly how proceeds flow through each tier'}
+              </p>
             </div>
           </div>
           {expandedSections.calculation ? (
@@ -753,13 +758,15 @@ export function DistributionWaterfall() {
           aria-expanded={expandedSections.peerComparison}
           aria-controls="peer-comparison-content"
           aria-label="Toggle market comparison section"
-          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className={`flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${expandedSections.peerComparison ? 'sticky top-0 z-10 shadow-sm' : ''}`}
         >
           <div className="flex items-center gap-3">
             <BarChart3 className="h-5 w-5 text-primary" aria-hidden="true" />
             <div className="text-left">
               <h3 className="font-semibold text-foreground">Market Comparison</h3>
-              <p className="text-sm text-muted-foreground">See how your terms compare to market standards</p>
+              <p className="text-sm text-muted-foreground">
+                {expandedSections.peerComparison ? 'Click here to collapse' : 'See how your terms compare to market standards'}
+              </p>
             </div>
           </div>
           {expandedSections.peerComparison ? (
@@ -792,13 +799,15 @@ export function DistributionWaterfall() {
           aria-expanded={expandedSections.scenarios}
           aria-controls="scenarios-content"
           aria-label="Toggle scenario library section"
-          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className={`flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${expandedSections.scenarios ? 'sticky top-0 z-10 shadow-sm' : ''}`}
         >
           <div className="flex items-center gap-3">
             <FileText className="h-5 w-5 text-primary" aria-hidden="true" />
             <div className="text-left">
               <h3 className="font-semibold text-foreground">Scenario Library</h3>
-              <p className="text-sm text-muted-foreground">Explore pre-built scenarios across fund types</p>
+              <p className="text-sm text-muted-foreground">
+                {expandedSections.scenarios ? 'Click here to collapse' : 'Explore pre-built scenarios across fund types'}
+              </p>
             </div>
           </div>
           {expandedSections.scenarios ? (
@@ -831,13 +840,15 @@ export function DistributionWaterfall() {
           aria-expanded={expandedSections.glossary}
           aria-controls="glossary-content"
           aria-label="Toggle glossary section"
-          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className={`flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${expandedSections.glossary ? 'sticky top-0 z-10 shadow-sm' : ''}`}
         >
           <div className="flex items-center gap-3">
             <BookOpen className="h-5 w-5 text-primary" aria-hidden="true" />
             <div className="text-left">
               <h3 className="font-semibold text-foreground">Waterfall Glossary</h3>
-              <p className="text-sm text-muted-foreground">Learn key terms and concepts</p>
+              <p className="text-sm text-muted-foreground">
+                {expandedSections.glossary ? 'Click here to collapse' : 'Learn key terms and concepts'}
+              </p>
             </div>
           </div>
           {expandedSections.glossary ? (
@@ -870,13 +881,15 @@ export function DistributionWaterfall() {
           aria-expanded={expandedSections.faq}
           aria-controls="faq-content"
           aria-label="Toggle frequently asked questions section"
-          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className={`flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${expandedSections.faq ? 'sticky top-0 z-10 shadow-sm' : ''}`}
         >
           <div className="flex items-center gap-3">
             <HelpCircle className="h-5 w-5 text-primary" aria-hidden="true" />
             <div className="text-left">
               <h3 className="font-semibold text-foreground">Frequently Asked Questions</h3>
-              <p className="text-sm text-muted-foreground">Get answers to common questions</p>
+              <p className="text-sm text-muted-foreground">
+                {expandedSections.faq ? 'Click here to collapse' : 'Get answers to common questions'}
+              </p>
             </div>
           </div>
           {expandedSections.faq ? (
@@ -909,13 +922,15 @@ export function DistributionWaterfall() {
           aria-expanded={expandedSections.quiz}
           aria-controls="quiz-content"
           aria-label="Toggle knowledge quiz section"
-          className="flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+          className={`flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${expandedSections.quiz ? 'sticky top-0 z-10 shadow-sm' : ''}`}
         >
           <div className="flex items-center gap-3">
             <Brain className="h-5 w-5 text-primary" aria-hidden="true" />
             <div className="text-left">
               <h3 className="font-semibold text-foreground">Knowledge Quiz</h3>
-              <p className="text-sm text-muted-foreground">Test your understanding of waterfall mechanics</p>
+              <p className="text-sm text-muted-foreground">
+                {expandedSections.quiz ? 'Click here to collapse' : 'Test your understanding of waterfall mechanics'}
+              </p>
             </div>
           </div>
           {expandedSections.quiz ? (

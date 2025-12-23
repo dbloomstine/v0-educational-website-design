@@ -408,7 +408,7 @@ export function QuizResults({ score, total, onRetry, onClose }: QuizResultsProps
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button variant="outline" onClick={onRetry} className="gap-2">
+            <Button variant="outline" onClick={onRetry} className="gap-2" title="Restart the quiz with new questions">
               <RotateCcw className="h-4 w-4" />
               Try Again
             </Button>

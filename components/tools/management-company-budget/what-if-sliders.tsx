@@ -194,8 +194,9 @@ export function WhatIfSliders({ data, results, onApply }: WhatIfSlidersProps) {
               size="sm"
               onClick={handleReset}
               className="text-muted-foreground"
+              title="Reset all sliders to original values"
             >
-              <RotateCcw className="h-4 w-4 mr-1" />
+              <RotateCcw className="h-4 w-4 mr-1.5" />
               Reset
             </Button>
           )}

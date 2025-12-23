@@ -142,8 +142,8 @@ export function WhatIfSliders({ input, output, onInputChange, compact = false }:
               <CardTitle className="text-lg">Quick Sensitivity</CardTitle>
             </div>
             {isModified && (
-              <Button variant="ghost" size="sm" onClick={resetToBaseline}>
-                <RotateCcw className="h-3 w-3 mr-1" />
+              <Button variant="ghost" size="sm" onClick={resetToBaseline} title="Reset to original values">
+                <RotateCcw className="h-3 w-3 mr-1.5" />
                 Reset
               </Button>
             )}
@@ -196,11 +196,11 @@ export function WhatIfSliders({ input, output, onInputChange, compact = false }:
           <div className="flex items-center gap-2">
             {isModified && (
               <>
-                <Button variant="outline" size="sm" onClick={resetToBaseline}>
-                  <RotateCcw className="h-3 w-3 mr-1" />
+                <Button variant="outline" size="sm" onClick={resetToBaseline} title="Reset to original values">
+                  <RotateCcw className="h-3 w-3 mr-1.5" />
                   Reset
                 </Button>
-                <Button variant="default" size="sm" onClick={setNewBaseline}>
+                <Button variant="default" size="sm" onClick={setNewBaseline} title="Use current values as the new baseline">
                   Set as Baseline
                 </Button>
               </>

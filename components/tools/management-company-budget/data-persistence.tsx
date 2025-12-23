@@ -198,8 +198,9 @@ export function AutoSaveIndicator({ data, onRestore, className }: AutoSaveIndica
       {/* Actions Menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" size="sm" className="h-7 px-2">
+          <Button variant="ghost" size="sm" className="h-7 px-2 gap-1">
             <History className="h-3.5 w-3.5" />
+            <span className="text-xs">History</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">

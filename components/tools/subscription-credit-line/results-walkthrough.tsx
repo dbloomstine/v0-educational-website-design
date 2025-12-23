@@ -184,8 +184,8 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
               <p className="text-xs text-white/80">Facility Size</p>
             </div>
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
-              <p className="text-xl font-bold text-white">{Math.round(avgDaysCapitalOutstanding)} days</p>
-              <p className="text-xs text-white/80">Avg. Outstanding</p>
+              <p className="text-xl font-bold text-white">{input.maxDaysOutstanding} days</p>
+              <p className="text-xs text-white/80">Max Line Duration</p>
             </div>
           </div>
 

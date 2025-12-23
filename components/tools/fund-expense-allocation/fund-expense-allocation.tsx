@@ -11,20 +11,22 @@ import {
   Calculator,
   GraduationCap,
   Star,
-  RotateCcw
+  RotateCcw,
+  Search
 } from 'lucide-react'
-import { classifyExpense, type ClassificationInput, type ClassificationResult as Result } from './expenseData'
+import { classifyExpense, type ClassificationInput, type ClassificationResult as Result, type ExpenseCategory, type FundType } from './expenseData'
 import { exportToPDF } from './exportPDF'
 import { ExpenseInputForm } from './expense-input-form'
 import { ClassificationResults } from './classification-results'
 import { SampleScenariosSection } from './sample-scenarios'
 import { ShareButton } from '@/components/tools/share-button'
 
+import { ExpenseLookup } from './expense-lookup'
 import { InteractiveJourney } from './interactive-journey'
 import { ResultsWalkthrough } from './results-walkthrough'
 import { Quiz, QuizResults, EXPENSE_QUIZ_QUESTIONS } from './quiz'
 
-type ViewMode = 'calculator' | 'quiz' | 'results'
+type ViewMode = 'lookup' | 'advanced' | 'quiz' | 'results'
 
 const STORAGE_KEY = 'fundExpenseAllocation_lastInput'
 
@@ -33,37 +35,16 @@ export function FundExpenseAllocation() {
   const router = useRouter()
   const pathname = usePathname()
 
-  // Show journey mode first (full-screen immersive)
-  const [showJourney, setShowJourney] = useState(true)
+  // Default to the new lookup mode (simplified experience)
+  const [viewMode, setViewMode] = useState<ViewMode>('lookup')
   const [showWalkthrough, setShowWalkthrough] = useState(false)
-  const [hasExistingData, setHasExistingData] = useState<ClassificationInput | null>(null)
-
-  // View state (for non-journey mode)
-  const [viewMode, setViewMode] = useState<ViewMode>('calculator')
   const [quizScore, setQuizScore] = useState<{ score: number; total: number } | null>(null)
 
-  // Results state
+  // Results state (for advanced mode)
   const [result, setResult] = useState<Result | null>(null)
   const [currentInput, setCurrentInput] = useState<ClassificationInput | null>(null)
 
-  // Check for existing data on mount
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY)
-      if (saved) {
-        const parsed = JSON.parse(saved)
-        if (parsed.expenseCategory && parsed.fundType && parsed.fundStage && parsed.primaryBeneficiary) {
-          setHasExistingData(parsed)
-        }
-      }
-    } catch {
-      // Ignore localStorage errors
-    }
-  }, [])
-
-  // Parse initial state from URL on mount
+  // Parse initial state from URL on mount (for advanced mode sharing)
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -82,7 +63,6 @@ export function FundExpenseAllocation() {
       const classification = classifyExpense(input)
       setResult(classification)
       setCurrentInput(input)
-      setShowJourney(false)
       setViewMode('results')
     }
   }, [searchParams])
@@ -120,48 +100,18 @@ export function FundExpenseAllocation() {
     return `${baseUrl}${pathname}?${params.toString()}`
   }, [currentInput, pathname])
 
-  // Handle classification
+  // Handle classification (for advanced mode)
   const handleClassify = (input: ClassificationInput) => {
     const classification = classifyExpense(input)
     setResult(classification)
     setCurrentInput(input)
     setViewMode('results')
-
-    // Save to localStorage for returning users
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(input))
-    } catch {
-      // Ignore localStorage errors
-    }
-  }
-
-  // Journey completion handler
-  const handleJourneyComplete = (input: ClassificationInput) => {
-    const classification = classifyExpense(input)
-    setResult(classification)
-    setCurrentInput(input)
-    setShowJourney(false)
-    // Show walkthrough after journey to explain the results
-    setShowWalkthrough(true)
-
-    // Save to localStorage for returning users
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(input))
-    } catch {
-      // Ignore localStorage errors
-    }
   }
 
   // Walkthrough completion handler
   const handleWalkthroughComplete = () => {
     setShowWalkthrough(false)
     setViewMode('results')
-  }
-
-  // Journey skip handler
-  const handleJourneySkip = () => {
-    setShowJourney(false)
-    setViewMode('calculator')
   }
 
   // Sample scenario handler
@@ -185,26 +135,11 @@ export function FundExpenseAllocation() {
     }
   }
 
-  // Reset handler
+  // Reset handler - go back to lookup mode
   const handleReset = () => {
     setResult(null)
     setCurrentInput(null)
-    setShowJourney(true)
-    setViewMode('calculator')
-  }
-
-  // Start fresh (clear localStorage and reset)
-  const handleStartFresh = () => {
-    try {
-      localStorage.removeItem(STORAGE_KEY)
-    } catch {
-      // Ignore localStorage errors
-    }
-    setHasExistingData(null)
-    setResult(null)
-    setCurrentInput(null)
-    setShowJourney(true)
-    setViewMode('calculator')
+    setViewMode('lookup')
   }
 
   // Render navigation
@@ -212,26 +147,28 @@ export function FundExpenseAllocation() {
     <nav className="mb-4 sm:mb-6 -mx-4 sm:mx-0 px-4 sm:px-0 overflow-x-auto" aria-label="Tool navigation">
       <div className="flex items-center gap-2 min-w-max sm:flex-wrap pb-2 sm:pb-0">
         <Button
-          variant={viewMode === 'calculator' || viewMode === 'results' ? 'default' : 'outline'}
+          variant={viewMode === 'lookup' ? 'default' : 'outline'}
           size="lg"
-          onClick={() => setViewMode(result ? 'results' : 'calculator')}
-          aria-label="Expense analyzer"
-          aria-current={viewMode === 'calculator' || viewMode === 'results' ? 'page' : undefined}
+          onClick={() => setViewMode('lookup')}
+          aria-label="Expense lookup"
+          aria-current={viewMode === 'lookup' ? 'page' : undefined}
+          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 min-h-[44px] focus:ring-2 focus:ring-primary"
+        >
+          <Search className="h-4 w-4" aria-hidden="true" />
+          <span className="hidden xs:inline">Lookup</span>
+          <span className="xs:hidden">Search</span>
+        </Button>
+        <Button
+          variant={viewMode === 'advanced' || viewMode === 'results' ? 'default' : 'outline'}
+          size="lg"
+          onClick={() => setViewMode(result ? 'results' : 'advanced')}
+          aria-label="Advanced analyzer with custom options"
+          aria-current={viewMode === 'advanced' || viewMode === 'results' ? 'page' : undefined}
           className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 min-h-[44px] focus:ring-2 focus:ring-primary"
         >
           <Calculator className="h-4 w-4" aria-hidden="true" />
-          <span className="hidden xs:inline">Analyzer</span>
-          <span className="xs:hidden">Tool</span>
-        </Button>
-        <Button
-          variant="outline"
-          size="lg"
-          onClick={() => setShowJourney(true)}
-          aria-label="Start guided learning journey"
-          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 min-h-[44px] focus:ring-2 focus:ring-primary"
-        >
-          <GraduationCap className="h-4 w-4" aria-hidden="true" />
-          Journey
+          <span className="hidden xs:inline">Advanced</span>
+          <span className="xs:hidden">More</span>
         </Button>
         <Button
           variant={viewMode === 'quiz' ? 'default' : 'outline'}
@@ -247,34 +184,12 @@ export function FundExpenseAllocation() {
           <Star className="h-4 w-4" aria-hidden="true" />
           Quiz
         </Button>
-        <Button
-          variant="outline"
-          size="lg"
-          onClick={handleReset}
-          aria-label="Start over with new inputs"
-          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 min-h-[44px] focus:ring-2 focus:ring-primary"
-        >
-          <RotateCcw className="h-4 w-4" aria-hidden="true" />
-          <span className="hidden sm:inline">Start Over</span>
-          <span className="sm:hidden">Reset</span>
-        </Button>
       </div>
     </nav>
   )
 
 
-  // Show full-screen immersive journey first
-  if (showJourney) {
-    return (
-      <InteractiveJourney
-        onComplete={handleJourneyComplete}
-        onSkip={handleJourneySkip}
-        existingData={hasExistingData}
-      />
-    )
-  }
-
-  // Show results walkthrough after journey completes
+  // Show results walkthrough (if triggered from advanced mode)
   if (showWalkthrough && result && currentInput) {
     return (
       <ResultsWalkthrough
@@ -287,26 +202,24 @@ export function FundExpenseAllocation() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* Header */}
-      <div className="text-center relative px-4 sm:px-0">
-        <div className="flex justify-center gap-2 mb-3 sm:absolute sm:right-0 sm:top-0 sm:mb-0">
-          <ShareButton getShareableUrl={getShareableUrl} />
-        </div>
-        <h1 className="mb-3 sm:mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground">
-          Fund Expense Allocation
-        </h1>
-        <p className="mx-auto max-w-3xl text-sm sm:text-base md:text-lg text-muted-foreground">
-          Learn whether expenses should be fund or management company expenses with detailed guidance.
-        </p>
-      </div>
-
-      {/* Navigation and main content */}
+      {/* Navigation */}
       {renderNavigation()}
 
       {/* Main content based on view mode */}
       <AnimatePresence mode="wait">
+        {/* New Simplified Lookup Mode */}
+        {viewMode === 'lookup' && (
+          <motion.div
+            key="lookup"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <ExpenseLookup />
+          </motion.div>
+        )}
 
-            {viewMode === 'quiz' && (
+        {viewMode === 'quiz' && (
               <motion.div
                 key="quiz"
                 initial={{ opacity: 0, y: 20 }}
@@ -319,25 +232,33 @@ export function FundExpenseAllocation() {
                     score={quizScore.score}
                     total={quizScore.total}
                     onRetry={handleQuizRetry}
-                    onClose={() => setViewMode('calculator')}
+                    onClose={() => setViewMode('lookup')}
                   />
                 ) : (
                   <Quiz
                     questions={EXPENSE_QUIZ_QUESTIONS.slice(0, 5)}
                     onComplete={handleQuizComplete}
-                    onClose={() => setViewMode('calculator')}
+                    onClose={() => setViewMode('lookup')}
                   />
                 )}
               </motion.div>
             )}
 
-            {viewMode === 'calculator' && (
+            {viewMode === 'advanced' && (
               <motion.div
-                key="calculator"
+                key="advanced"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
               >
+                {/* Header for advanced mode */}
+                <div className="text-center mb-6">
+                  <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-2">Advanced Classification</h2>
+                  <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
+                    For complex scenarios, provide detailed context about your fund stage and who benefits from the expense.
+                  </p>
+                </div>
+
                 {/* Educational disclaimer */}
                 <div className="flex items-start gap-2 p-2.5 sm:p-3 mb-4 sm:mb-6 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg">
                   <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
@@ -362,8 +283,8 @@ export function FundExpenseAllocation() {
                       <CardContent className="py-8 sm:py-12">
                         <div className="text-center text-muted-foreground">
                           <Scale className="h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-3 sm:mb-4 opacity-50" />
-                          <p className="text-sm sm:text-base">Select an expense category and provide fund context to see classification guidance</p>
-                          <p className="text-xs sm:text-sm mt-2 text-primary">Or try the Guided Journey for a step-by-step experience</p>
+                          <p className="text-sm sm:text-base">Complete the form on the left to see classification guidance</p>
+                          <p className="text-xs sm:text-sm mt-2 text-primary">Or use the Lookup tab for quick answers</p>
                         </div>
                       </CardContent>
                     </Card>
