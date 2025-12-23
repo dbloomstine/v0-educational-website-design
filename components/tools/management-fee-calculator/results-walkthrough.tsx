@@ -1,14 +1,6 @@
 'use client'
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
-import { Badge } from '@/components/ui/badge'
 import {
-  ChevronLeft,
-  ChevronRight,
   DollarSign,
   Percent,
   TrendingUp,
@@ -18,10 +10,14 @@ import {
   Lightbulb,
   BarChart3,
   Target,
-  ArrowRight,
-  X
+  Sparkles,
 } from 'lucide-react'
 import { FeeCalculationResult, FundInputs, FeePhase } from './types'
+import {
+  ResultsWalkthroughBase,
+  WalkthroughStep,
+  WalkthroughTipBox,
+} from '../shared/results-walkthrough-base'
 
 interface ResultsWalkthroughProps {
   result: FeeCalculationResult
@@ -31,13 +27,6 @@ interface ResultsWalkthroughProps {
   onXPEarned?: (xp: number) => void
 }
 
-interface WalkthroughStep {
-  id: string
-  title: string
-  icon: React.ReactNode
-  content: (result: FeeCalculationResult, inputs: FundInputs, phases: FeePhase[]) => React.ReactNode
-}
-
 export function ResultsWalkthrough({
   result,
   fundInputs,
@@ -45,171 +34,193 @@ export function ResultsWalkthrough({
   onClose,
   onXPEarned
 }: ResultsWalkthroughProps) {
-  const [currentStep, setCurrentStep] = useState(0)
+  // Calculate derived values
+  const avgAnnualFee = result.totalFees / fundInputs.fundTerm
+  const hasStepDown = feePhases.length >= 2 && feePhases[0].feeRate > feePhases[1].feeRate
+  const usesInvestedCost = feePhases.some(p => p.feeBase === 'Invested Cost')
+
+  // Market benchmarks
+  const benchmarks = { low: 12, mid: 17, high: 22 }
+  const feePercent = result.feesAsPercentOfCommitments
+  let comparison: 'low' | 'mid' | 'high' = 'mid'
+  if (feePercent < benchmarks.low + 2) comparison = 'low'
+  else if (feePercent > benchmarks.high - 2) comparison = 'high'
+
+  // Takeaways
+  const takeaways: { type: 'success' | 'warning' | 'info'; text: string }[] = []
+  if (avgAnnualFee < 0.8) {
+    takeaways.push({
+      type: 'warning',
+      text: `Average annual fees of $${avgAnnualFee.toFixed(2)}M may be tight for operational costs.`
+    })
+  } else if (avgAnnualFee > 2) {
+    takeaways.push({
+      type: 'success',
+      text: `Strong annual fee income of $${avgAnnualFee.toFixed(2)}M provides solid operational runway.`
+    })
+  }
+  if (hasStepDown) {
+    takeaways.push({
+      type: 'success',
+      text: 'Your fee step-down after the investment period is LP-friendly and industry-standard.'
+    })
+  } else if (feePhases.length === 1) {
+    takeaways.push({
+      type: 'info',
+      text: 'Consider adding a post-investment period phase with lower fees to improve LP appeal.'
+    })
+  }
+  if (usesInvestedCost) {
+    takeaways.push({
+      type: 'success',
+      text: 'Using invested cost as a fee base aligns your economics with actual deployment.'
+    })
+  }
+  if (result.feesAsPercentOfCommitments <= 18) {
+    takeaways.push({
+      type: 'success',
+      text: `Total fee load of ${result.feesAsPercentOfCommitments.toFixed(1)}% is competitive.`
+    })
+  }
+
+  const handleComplete = () => {
+    onXPEarned?.(25)
+    onClose()
+  }
 
   const steps: WalkthroughStep[] = [
     {
       id: 'overview',
       title: 'Your Fee Summary',
-      icon: <DollarSign className="h-6 w-6" />,
-      content: (result, inputs) => (
-        <div className="space-y-4">
-          <p className="text-muted-foreground">
-            Based on your ${inputs.fundSize}M {inputs.fundType} fund with a {inputs.fundTerm}-year term, here's what your fee structure generates:
-          </p>
-
+      subtitle: `${fundInputs.fundType} fund - ${fundInputs.fundTerm} year term`,
+      icon: Sparkles,
+      iconColor: 'from-amber-400 to-orange-500',
+      content: (
+        <div className="space-y-6">
           <div className="grid grid-cols-2 gap-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="p-4 rounded-lg bg-primary/10 border border-primary/20"
-            >
-              <p className="text-sm text-muted-foreground">Total Fees</p>
-              <p className="text-2xl font-bold text-primary">${result.totalFees.toFixed(2)}M</p>
-              <p className="text-xs text-muted-foreground">Over {inputs.fundTerm} years</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="p-4 rounded-lg bg-muted/50"
-            >
-              <p className="text-sm text-muted-foreground">% of Commitments</p>
-              <p className="text-2xl font-bold">{result.feesAsPercentOfCommitments.toFixed(1)}%</p>
-              <p className="text-xs text-muted-foreground">Total fee load</p>
-            </motion.div>
-          </div>
-
-          <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
-            <div className="flex items-start gap-2">
-              <Lightbulb className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-blue-700 dark:text-blue-300">
-                <strong>What this means:</strong> For every $1 your LPs commit, approximately ${(result.feesAsPercentOfCommitments / 100).toFixed(2)} goes toward management fees over the life of the fund.
-              </p>
+            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-center">
+              <p className="text-2xl font-bold text-amber-400">${result.totalFees.toFixed(2)}M</p>
+              <p className="text-sm text-white/60">Total Fees</p>
+              <p className="text-xs text-white/40">Over {fundInputs.fundTerm} years</p>
+            </div>
+            <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+              <p className="text-2xl font-bold text-white">{result.feesAsPercentOfCommitments.toFixed(1)}%</p>
+              <p className="text-sm text-white/60">% of Commitments</p>
+              <p className="text-xs text-white/40">Total fee load</p>
             </div>
           </div>
+
+          <WalkthroughTipBox icon={Lightbulb} title="What this means">
+            For every $1 your LPs commit, approximately ${(result.feesAsPercentOfCommitments / 100).toFixed(2)} goes toward management fees over the life of the fund.
+          </WalkthroughTipBox>
         </div>
       )
     },
     {
       id: 'annual-breakdown',
       title: 'Annual Fee Pattern',
-      icon: <BarChart3 className="h-6 w-6" />,
-      content: (result, inputs) => (
-        <div className="space-y-4">
-          <p className="text-muted-foreground">
-            Here's how your fees are distributed over the {inputs.fundTerm}-year fund life:
-          </p>
-
+      subtitle: `Distribution over ${fundInputs.fundTerm} years`,
+      icon: BarChart3,
+      iconColor: 'from-blue-400 to-cyan-500',
+      content: (
+        <div className="space-y-6">
           {/* Mini chart */}
-          <div className="h-32 flex items-end gap-1 p-4 bg-muted/30 rounded-lg">
+          <div className="h-32 flex items-end gap-1 p-4 bg-white/5 rounded-xl border border-white/10">
             {result.yearlyData.map((year, i) => {
               const maxFee = Math.max(...result.yearlyData.map(y => y.feeAmount))
               const height = (year.feeAmount / maxFee) * 100
               return (
-                <motion.div
+                <div
                   key={year.year}
-                  className="flex-1 bg-primary rounded-t min-h-[4px]"
-                  initial={{ height: 0 }}
-                  animate={{ height: `${height}%` }}
-                  transition={{ delay: i * 0.05 }}
+                  className="flex-1 bg-gradient-to-t from-blue-500 to-cyan-400 rounded-t min-h-[4px] transition-all"
+                  style={{ height: `${height}%` }}
                   title={`Year ${year.year}: $${year.feeAmount.toFixed(2)}M`}
                 />
               )
             })}
           </div>
-          <div className="flex justify-between text-xs text-muted-foreground">
+          <div className="flex justify-between text-xs text-white/40">
             <span>Year 1</span>
-            <span>Year {inputs.fundTerm}</span>
+            <span>Year {fundInputs.fundTerm}</span>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="p-3 rounded-lg bg-muted/50">
-              <p className="text-xs text-muted-foreground">First Half Fees</p>
-              <p className="font-bold">${result.firstHalfFees.toFixed(2)}M</p>
-              <p className="text-xs text-muted-foreground">Years 1-{Math.floor(inputs.fundTerm / 2)}</p>
+            <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+              <p className="text-xl font-bold text-white">${result.firstHalfFees.toFixed(2)}M</p>
+              <p className="text-sm text-white/60">First Half Fees</p>
+              <p className="text-xs text-white/40">Years 1-{Math.floor(fundInputs.fundTerm / 2)}</p>
             </div>
-            <div className="p-3 rounded-lg bg-muted/50">
-              <p className="text-xs text-muted-foreground">Second Half Fees</p>
-              <p className="font-bold">${result.secondHalfFees.toFixed(2)}M</p>
-              <p className="text-xs text-muted-foreground">Years {Math.floor(inputs.fundTerm / 2) + 1}-{inputs.fundTerm}</p>
+            <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
+              <p className="text-xl font-bold text-white">${result.secondHalfFees.toFixed(2)}M</p>
+              <p className="text-sm text-white/60">Second Half Fees</p>
+              <p className="text-xs text-white/40">Years {Math.floor(fundInputs.fundTerm / 2) + 1}-{fundInputs.fundTerm}</p>
             </div>
           </div>
 
           {result.firstHalfFees > result.secondHalfFees && (
-            <div className="p-3 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
-              <div className="flex items-start gap-2">
-                <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-green-700 dark:text-green-300">
-                  <strong>Good sign:</strong> Your fees decrease over time, which is LP-friendly and reflects the typical step-down structure.
-                </p>
-              </div>
-            </div>
+            <WalkthroughTipBox icon={CheckCircle2} variant="success" title="Good sign">
+              Your fees decrease over time, which is LP-friendly and reflects the typical step-down structure.
+            </WalkthroughTipBox>
           )}
         </div>
       )
     },
     {
       id: 'phase-analysis',
-      title: 'Phase-by-Phase',
-      icon: <Target className="h-6 w-6" />,
-      content: (result, inputs, phases) => (
+      title: 'Phase-by-Phase Breakdown',
+      subtitle: `${feePhases.length} fee phase${feePhases.length > 1 ? 's' : ''} configured`,
+      icon: Target,
+      iconColor: 'from-violet-400 to-purple-500',
+      content: (
         <div className="space-y-4">
-          <p className="text-muted-foreground">
-            Your fee structure has {phases.length} phase{phases.length > 1 ? 's' : ''}:
-          </p>
-
-          {phases.map((phase, index) => {
+          {feePhases.map((phase, index) => {
             const phaseFees = result.yearlyData
               .filter(y => y.year >= phase.startYear && y.year <= phase.endYear)
               .reduce((sum, y) => sum + y.feeAmount, 0)
-            const phaseYears = phase.endYear - phase.startYear + 1
 
             return (
-              <motion.div
+              <div
                 key={phase.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className={`p-4 rounded-lg border-2 ${
+                className={`p-4 rounded-xl border-2 ${
                   index === 0
-                    ? 'border-primary/30 bg-primary/5'
-                    : 'border-muted-foreground/20 bg-muted/30'
+                    ? 'border-violet-400/50 bg-violet-500/10'
+                    : 'border-white/10 bg-white/5'
                 }`}
               >
-                <div className="flex items-center justify-between mb-2">
-                  <Badge className={index === 0 ? 'bg-primary' : 'bg-muted-foreground'}>
+                <div className="flex items-center justify-between mb-3">
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                    index === 0 ? 'bg-violet-400 text-slate-900' : 'bg-white/20 text-white'
+                  }`}>
                     Phase {index + 1}
-                  </Badge>
-                  <span className="text-sm text-muted-foreground">
+                  </span>
+                  <span className="text-sm text-white/60">
                     Years {phase.startYear}-{phase.endYear}
                   </span>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 text-sm">
+                <div className="grid grid-cols-3 gap-3 text-sm">
                   <div>
-                    <p className="text-muted-foreground">Rate</p>
-                    <p className="font-semibold">{phase.feeRate}%</p>
+                    <p className="text-white/40">Rate</p>
+                    <p className="font-semibold text-white">{phase.feeRate}%</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Basis</p>
-                    <p className="font-semibold text-xs">{phase.feeBase}</p>
+                    <p className="text-white/40">Basis</p>
+                    <p className="font-semibold text-white text-xs">{phase.feeBase}</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">Total</p>
-                    <p className="font-semibold">${phaseFees.toFixed(2)}M</p>
+                    <p className="text-white/40">Total</p>
+                    <p className="font-semibold text-violet-400">${phaseFees.toFixed(2)}M</p>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )
           })}
 
-          {phases.length >= 2 && phases[0].feeRate > phases[1].feeRate && (
-            <div className="flex items-center gap-2 p-3 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
-              <TrendingUp className="h-5 w-5 text-amber-500" />
-              <p className="text-sm text-amber-700 dark:text-amber-300">
-                Fee step-down: {((1 - phases[1].feeRate / phases[0].feeRate) * 100).toFixed(0)}% reduction in Phase 2
+          {hasStepDown && (
+            <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30">
+              <TrendingUp className="h-5 w-5 text-amber-400" />
+              <p className="text-sm text-white/80">
+                Fee step-down: {((1 - feePhases[1].feeRate / feePhases[0].feeRate) * 100).toFixed(0)}% reduction in Phase 2
               </p>
             </div>
           )}
@@ -219,274 +230,130 @@ export function ResultsWalkthrough({
     {
       id: 'benchmark',
       title: 'Market Comparison',
-      icon: <TrendingUp className="h-6 w-6" />,
-      content: (result, inputs) => {
-        // Market benchmarks (simplified)
-        const benchmarks = {
-          low: 12,  // LP-friendly
-          mid: 17,  // Market standard
-          high: 22  // GP-friendly
-        }
+      subtitle: 'How do your fees compare?',
+      icon: TrendingUp,
+      iconColor: comparison === 'low' ? 'from-emerald-400 to-green-500' :
+                 comparison === 'high' ? 'from-amber-400 to-orange-500' : 'from-blue-400 to-cyan-500',
+      content: (
+        <div className="space-y-6">
+          {/* Benchmark visualization */}
+          <div className="relative pt-12 pb-6">
+            <div className="h-4 bg-gradient-to-r from-emerald-500 via-amber-400 to-rose-500 rounded-full" />
 
-        const feePercent = result.feesAsPercentOfCommitments
-        let comparison: 'low' | 'mid' | 'high' = 'mid'
-        if (feePercent < benchmarks.low + 2) comparison = 'low'
-        else if (feePercent > benchmarks.high - 2) comparison = 'high'
-
-        return (
-          <div className="space-y-4">
-            <p className="text-muted-foreground">
-              How does your {result.feesAsPercentOfCommitments.toFixed(1)}% total fee load compare to market standards?
-            </p>
-
-            {/* Benchmark visualization */}
-            <div className="relative pt-8 pb-4">
-              <div className="h-4 bg-gradient-to-r from-green-400 via-amber-400 to-red-400 rounded-full" />
-
-              {/* Markers */}
-              <div className="absolute top-0 left-[15%] transform -translate-x-1/2 text-center">
-                <span className="text-xs text-muted-foreground">LP-Friendly</span>
-                <div className="text-xs font-medium">&lt;{benchmarks.low}%</div>
-              </div>
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 text-center">
-                <span className="text-xs text-muted-foreground">Standard</span>
-                <div className="text-xs font-medium">{benchmarks.low}-{benchmarks.high}%</div>
-              </div>
-              <div className="absolute top-0 left-[85%] transform -translate-x-1/2 text-center">
-                <span className="text-xs text-muted-foreground">GP-Friendly</span>
-                <div className="text-xs font-medium">&gt;{benchmarks.high}%</div>
-              </div>
-
-              {/* Your position */}
-              <motion.div
-                className="absolute top-6"
-                initial={{ left: '0%' }}
-                animate={{
-                  left: `${Math.min(Math.max((feePercent / 30) * 100, 5), 95)}%`
-                }}
-                transition={{ delay: 0.3, type: 'spring' }}
-              >
-                <div className="transform -translate-x-1/2">
-                  <div className="w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-primary" />
-                  <Badge className="mt-1">{feePercent.toFixed(1)}%</Badge>
-                </div>
-              </motion.div>
+            {/* Markers */}
+            <div className="absolute top-0 left-[15%] transform -translate-x-1/2 text-center">
+              <span className="text-xs text-white/40">LP-Friendly</span>
+              <div className="text-xs font-medium text-white/60">&lt;{benchmarks.low}%</div>
+            </div>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 text-center">
+              <span className="text-xs text-white/40">Standard</span>
+              <div className="text-xs font-medium text-white/60">{benchmarks.low}-{benchmarks.high}%</div>
+            </div>
+            <div className="absolute top-0 left-[85%] transform -translate-x-1/2 text-center">
+              <span className="text-xs text-white/40">GP-Friendly</span>
+              <div className="text-xs font-medium text-white/60">&gt;{benchmarks.high}%</div>
             </div>
 
-            <div className={`p-4 rounded-lg ${
-              comparison === 'low'
-                ? 'bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800'
-                : comparison === 'high'
-                ? 'bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800'
-                : 'bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800'
-            }`}>
-              {comparison === 'low' && (
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-green-700 dark:text-green-300">Below Market Average</p>
-                    <p className="text-sm text-green-600 dark:text-green-400">
-                      Your fee structure is competitive and LP-friendly. This can help with fundraising, especially from institutional investors who benchmark fees carefully.
-                    </p>
-                  </div>
-                </div>
-              )}
-              {comparison === 'mid' && (
-                <div className="flex items-start gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-blue-700 dark:text-blue-300">Within Market Range</p>
-                    <p className="text-sm text-blue-600 dark:text-blue-400">
-                      Your fees are in line with industry standards. This is acceptable for most LPs and provides adequate GP economics.
-                    </p>
-                  </div>
-                </div>
-              )}
-              {comparison === 'high' && (
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="font-medium text-amber-700 dark:text-amber-300">Above Market Average</p>
-                    <p className="text-sm text-amber-600 dark:text-amber-400">
-                      Your fees are on the higher end. Consider if this is justified by your strategy, or if step-downs would improve LP appeal.
-                    </p>
-                  </div>
-                </div>
-              )}
+            {/* Your position */}
+            <div
+              className="absolute top-8 transform -translate-x-1/2"
+              style={{ left: `${Math.min(Math.max((feePercent / 30) * 100, 5), 95)}%` }}
+            >
+              <div className="w-0 h-0 border-l-8 border-r-8 border-b-8 border-l-transparent border-r-transparent border-b-white" />
+              <div className="mt-1 px-2 py-1 rounded-full bg-white text-slate-900 text-xs font-bold">
+                {feePercent.toFixed(1)}%
+              </div>
             </div>
           </div>
-        )
-      }
+
+          <div className={`p-4 rounded-xl ${
+            comparison === 'low'
+              ? 'bg-emerald-500/10 border border-emerald-500/30'
+              : comparison === 'high'
+              ? 'bg-amber-500/10 border border-amber-500/30'
+              : 'bg-blue-500/10 border border-blue-500/30'
+          }`}>
+            {comparison === 'low' && (
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5" />
+                <div>
+                  <p className="font-medium text-white">Below Market Average</p>
+                  <p className="text-sm text-white/60">
+                    Competitive and LP-friendly. Great for fundraising from institutional investors.
+                  </p>
+                </div>
+              </div>
+            )}
+            {comparison === 'mid' && (
+              <div className="flex items-start gap-3">
+                <CheckCircle2 className="h-5 w-5 text-blue-400 mt-0.5" />
+                <div>
+                  <p className="font-medium text-white">Within Market Range</p>
+                  <p className="text-sm text-white/60">
+                    In line with industry standards. Acceptable for most LPs with adequate GP economics.
+                  </p>
+                </div>
+              </div>
+            )}
+            {comparison === 'high' && (
+              <div className="flex items-start gap-3">
+                <AlertCircle className="h-5 w-5 text-amber-400 mt-0.5" />
+                <div>
+                  <p className="font-medium text-white">Above Market Average</p>
+                  <p className="text-sm text-white/60">
+                    On the higher end. Consider if justified by strategy, or add step-downs.
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )
     },
     {
       id: 'takeaway',
       title: 'Key Takeaways',
-      icon: <Calculator className="h-6 w-6" />,
-      content: (result, inputs, phases) => {
-        const takeaways = []
+      subtitle: 'Summary of your fee structure',
+      icon: Calculator,
+      iconColor: 'from-emerald-400 to-teal-500',
+      content: (
+        <div className="space-y-4">
+          {takeaways.map((takeaway, index) => (
+            <div
+              key={index}
+              className={`flex items-start gap-3 p-3 rounded-xl ${
+                takeaway.type === 'success'
+                  ? 'bg-emerald-500/10 border border-emerald-500/30'
+                  : takeaway.type === 'warning'
+                  ? 'bg-amber-500/10 border border-amber-500/30'
+                  : 'bg-blue-500/10 border border-blue-500/30'
+              }`}
+            >
+              {takeaway.type === 'success' && <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5" />}
+              {takeaway.type === 'warning' && <AlertCircle className="h-5 w-5 text-amber-400 mt-0.5" />}
+              {takeaway.type === 'info' && <Lightbulb className="h-5 w-5 text-blue-400 mt-0.5" />}
+              <p className="text-sm text-white/80">{takeaway.text}</p>
+            </div>
+          ))}
 
-        // Annual fee coverage
-        const avgAnnualFee = result.totalFees / inputs.fundTerm
-        if (avgAnnualFee < 0.8) {
-          takeaways.push({
-            type: 'warning',
-            text: `Average annual fees of $${(avgAnnualFee).toFixed(2)}M may be tight for operational costs. Consider if this covers salaries, office, legal, and compliance.`
-          })
-        } else if (avgAnnualFee > 2) {
-          takeaways.push({
-            type: 'success',
-            text: `Strong annual fee income of $${(avgAnnualFee).toFixed(2)}M provides solid operational runway.`
-          })
-        }
-
-        // Step-down
-        if (phases.length >= 2 && phases[0].feeRate > phases[1].feeRate) {
-          takeaways.push({
-            type: 'success',
-            text: 'Your fee step-down after the investment period is LP-friendly and industry-standard.'
-          })
-        } else if (phases.length === 1) {
-          takeaways.push({
-            type: 'info',
-            text: 'Consider adding a post-investment period phase with lower fees to improve LP appeal.'
-          })
-        }
-
-        // Fee basis
-        const usesInvestedCost = phases.some(p => p.feeBase === 'Invested Cost')
-        if (usesInvestedCost) {
-          takeaways.push({
-            type: 'success',
-            text: 'Using invested cost as a fee base (at least partially) aligns your economics with actual deployment.'
-          })
-        }
-
-        // Overall assessment
-        if (result.feesAsPercentOfCommitments <= 18) {
-          takeaways.push({
-            type: 'success',
-            text: `Total fee load of ${result.feesAsPercentOfCommitments.toFixed(1)}% is competitive and should be well-received by LPs.`
-          })
-        }
-
-        return (
-          <div className="space-y-4">
-            <p className="text-muted-foreground">
-              Based on your fee structure, here are the key points to remember:
+          <div className="p-4 rounded-xl bg-white/5 border border-white/10 mt-6">
+            <p className="text-sm text-white/60">
+              <strong className="text-white">Remember:</strong> This is an educational model. Actual fee structures should be reviewed by legal counsel and discussed with potential LPs.
             </p>
-
-            <div className="space-y-3">
-              {takeaways.map((takeaway, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className={`flex items-start gap-3 p-3 rounded-lg ${
-                    takeaway.type === 'success'
-                      ? 'bg-green-50 dark:bg-green-950/30'
-                      : takeaway.type === 'warning'
-                      ? 'bg-amber-50 dark:bg-amber-950/30'
-                      : 'bg-blue-50 dark:bg-blue-950/30'
-                  }`}
-                >
-                  {takeaway.type === 'success' && <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />}
-                  {takeaway.type === 'warning' && <AlertCircle className="h-5 w-5 text-amber-500 flex-shrink-0" />}
-                  {takeaway.type === 'info' && <Lightbulb className="h-5 w-5 text-blue-500 flex-shrink-0" />}
-                  <p className="text-sm">{takeaway.text}</p>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
-              <p className="text-sm">
-                <strong>Remember:</strong> This is an educational model. Actual fee structures should be reviewed by legal counsel and discussed with potential LPs. Market conditions, your track record, and LP expectations all influence acceptable fee levels.
-              </p>
-            </div>
           </div>
-        )
-      }
+        </div>
+      )
     }
   ]
 
-  const step = steps[currentStep]
-  const progress = ((currentStep + 1) / steps.length) * 100
-
-  const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(prev => prev + 1)
-      onXPEarned?.(10)
-    } else {
-      onXPEarned?.(25) // Bonus for completing
-      onClose()
-    }
-  }
-
-  const handleBack = () => {
-    if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1)
-    }
-  }
-
   return (
-    <Card className="border-2 border-primary/20">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="rounded-full bg-primary/10 p-2 text-primary">
-              {step.icon}
-            </div>
-            <div>
-              <CardTitle className="text-lg">{step.title}</CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Understanding your results
-              </p>
-            </div>
-          </div>
-          <Button variant="ghost" size="sm" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
-        <Progress value={progress} className="h-2 mt-4" />
-        <p className="text-xs text-muted-foreground mt-1">
-          Step {currentStep + 1} of {steps.length}
-        </p>
-      </CardHeader>
-
-      <CardContent className="space-y-6">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={step.id}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-          >
-            {step.content(result, fundInputs, feePhases)}
-          </motion.div>
-        </AnimatePresence>
-
-        <div className="flex justify-between pt-4 border-t">
-          <Button
-            variant="outline"
-            onClick={handleBack}
-            disabled={currentStep === 0}
-            className="gap-2"
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Back
-          </Button>
-          <Button onClick={handleNext} className="gap-2">
-            {currentStep === steps.length - 1 ? (
-              'Done'
-            ) : (
-              <>
-                Next
-                <ChevronRight className="h-4 w-4" />
-              </>
-            )}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+    <ResultsWalkthroughBase
+      steps={steps}
+      onComplete={handleComplete}
+      onSkip={onClose}
+      badgeLabel="Fee Guide"
+      completeButtonText="View Full Results"
+      primaryColor="amber"
+    />
   )
 }

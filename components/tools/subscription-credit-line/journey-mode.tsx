@@ -27,10 +27,20 @@ import {
   CreditCard,
   CircleDollarSign,
   Sparkles,
-  X
+  BookOpen,
+  Settings,
+  ClipboardCheck,
 } from 'lucide-react'
 import { SubscriptionLineInput } from './subscriptionLineCalculations'
 import confetti from 'canvas-confetti'
+
+// Define phases for display
+const PHASES = [
+  { id: 1, name: 'Learn', icon: BookOpen },
+  { id: 2, name: 'Fund Setup', icon: Building2 },
+  { id: 3, name: 'Facility', icon: Settings },
+  { id: 4, name: 'Review', icon: ClipboardCheck },
+]
 
 // Journey step types
 type StepType = 'welcome' | 'info' | 'input' | 'select' | 'review' | 'celebration'
@@ -44,6 +54,7 @@ interface JourneyStep {
   subtitle?: string
   tip?: string
   educationalContent?: React.ReactNode
+  isCelebration?: boolean
 }
 
 // Fund strategy options for context
@@ -132,12 +143,12 @@ const JOURNEY_STEPS: JourneyStep[] = [
     subtitle: 'Also called capital call facilities or sub lines',
     educationalContent: (
       <div className="space-y-4 text-left">
-        <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
-          <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
-            <Info className="h-5 w-5 text-primary" />
+        <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20">
+          <h4 className="font-semibold text-white mb-2 flex items-center gap-2">
+            <Info className="h-5 w-5 text-indigo-400" />
             The Basics
           </h4>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-300">
             A subscription line is a revolving credit facility secured by LP capital commitments.
             Instead of calling capital from LPs immediately when making investments, the fund can
             borrow from the line and delay the capital call.
@@ -145,12 +156,12 @@ const JOURNEY_STEPS: JourneyStep[] = [
         </div>
 
         <div className="grid gap-3 md:grid-cols-2">
-          <div className="p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/20">
+          <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
             <div className="flex items-center gap-2 mb-2">
-              <TrendingUp className="h-4 w-4 text-emerald-600" />
-              <span className="font-medium text-sm">Benefits</span>
+              <TrendingUp className="h-4 w-4 text-emerald-400" />
+              <span className="font-medium text-sm text-white">Benefits</span>
             </div>
-            <ul className="text-xs text-muted-foreground space-y-1">
+            <ul className="text-xs text-slate-400 space-y-1">
               <li>• Boosts reported IRR by delaying capital calls</li>
               <li>• Provides operational flexibility</li>
               <li>• Smooths timing of capital calls</li>
@@ -158,12 +169,12 @@ const JOURNEY_STEPS: JourneyStep[] = [
             </ul>
           </div>
 
-          <div className="p-3 rounded-lg bg-amber-500/5 border border-amber-500/20">
+          <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20">
             <div className="flex items-center gap-2 mb-2">
-              <AlertCircle className="h-4 w-4 text-amber-600" />
-              <span className="font-medium text-sm">Trade-offs</span>
+              <AlertCircle className="h-4 w-4 text-amber-400" />
+              <span className="font-medium text-sm text-white">Trade-offs</span>
             </div>
-            <ul className="text-xs text-muted-foreground space-y-1">
+            <ul className="text-xs text-slate-400 space-y-1">
               <li>• Interest expense reduces net returns</li>
               <li>• Can artificially inflate IRR</li>
               <li>• ILPA requires disclosure</li>
@@ -172,12 +183,12 @@ const JOURNEY_STEPS: JourneyStep[] = [
           </div>
         </div>
 
-        <div className="p-3 rounded-lg bg-blue-500/5 border border-blue-500/20">
+        <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
           <div className="flex items-center gap-2 mb-2">
-            <Activity className="h-4 w-4 text-blue-600" />
-            <span className="font-medium text-sm">ILPA Best Practices (2017 & 2020)</span>
+            <Activity className="h-4 w-4 text-blue-400" />
+            <span className="font-medium text-sm text-white">ILPA Best Practices (2017 & 2020)</span>
           </div>
-          <ul className="text-xs text-muted-foreground space-y-1">
+          <ul className="text-xs text-slate-400 space-y-1">
             <li>• Maximum facility size: 15-25% of commitments</li>
             <li>• Maximum days outstanding: 180 days</li>
             <li>• Must report both levered and unlevered returns</li>
@@ -218,14 +229,15 @@ const JOURNEY_STEPS: JourneyStep[] = [
     type: 'celebration',
     phase: 2,
     phaseName: 'Fund Setup',
-    title: 'Fund configured!',
-    subtitle: 'Now let\'s set up the credit facility parameters'
+    title: 'Fund Configured!',
+    subtitle: "Now let's set up the credit facility parameters",
+    isCelebration: true
   },
   {
     id: 'facility-size',
     type: 'select',
     phase: 3,
-    phaseName: 'Line Parameters',
+    phaseName: 'Facility',
     title: 'How large should the facility be?',
     subtitle: 'As a percentage of total commitments',
     tip: 'ILPA recommends 15-25%. Market standard is 20%. Larger facilities provide more flexibility but higher costs.'
@@ -234,7 +246,7 @@ const JOURNEY_STEPS: JourneyStep[] = [
     id: 'interest-rate',
     type: 'select',
     phase: 3,
-    phaseName: 'Line Parameters',
+    phaseName: 'Facility',
     title: 'What interest rate?',
     subtitle: 'Annual rate on drawn amounts',
     tip: 'Current market (2024-2025): 3.5-5.5%. Rates vary based on fund size, track record, and market conditions.'
@@ -243,7 +255,7 @@ const JOURNEY_STEPS: JourneyStep[] = [
     id: 'days-outstanding',
     type: 'select',
     phase: 3,
-    phaseName: 'Line Parameters',
+    phaseName: 'Facility',
     title: 'Maximum days outstanding?',
     subtitle: 'How long can draws remain unpaid?',
     tip: 'Traditional: 90 days. ILPA maximum: 180 days. Some funds use 270-360 days to maximize IRR boost.'
@@ -252,9 +264,10 @@ const JOURNEY_STEPS: JourneyStep[] = [
     id: 'celebration-2',
     type: 'celebration',
     phase: 3,
-    phaseName: 'Line Parameters',
-    title: 'Line parameters set!',
-    subtitle: 'Ready to see the impact analysis'
+    phaseName: 'Facility',
+    title: 'Line Parameters Set!',
+    subtitle: 'Ready to see the impact analysis',
+    isCelebration: true
   },
   {
     id: 'review',
@@ -273,6 +286,7 @@ interface JourneyModeProps {
 
 export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
   const [currentStepIndex, setCurrentStepIndex] = useState(0)
+  const [direction, setDirection] = useState(1)
   const scrollRef = useRef<HTMLDivElement>(null)
 
   // Journey state
@@ -286,10 +300,11 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
   const step = JOURNEY_STEPS[currentStepIndex]
   const totalSteps = JOURNEY_STEPS.length
   const progress = ((currentStepIndex + 1) / totalSteps) * 100
+  const isFirstStep = currentStepIndex === 0
+  const isLastStep = currentStepIndex === totalSteps - 1
 
   // Current phase info
-  const currentPhase = step?.phase
-  const phaseName = step?.phaseName
+  const currentPhase = PHASES.find(p => p.id === step?.phase) || PHASES[0]
 
   // Reset scroll on step change
   useEffect(() => {
@@ -301,29 +316,52 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
   // Trigger celebration
   const triggerCelebration = useCallback(() => {
     confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
+      particleCount: 80,
+      spread: 60,
+      origin: { y: 0.7 },
       colors: ['#6366f1', '#8b5cf6', '#ec4899', '#22c55e'],
     })
   }, [])
 
+  // Auto-advance helper (250ms delay for selections)
+  const autoAdvance = useCallback(() => {
+    setTimeout(() => {
+      if (currentStepIndex < totalSteps - 1) {
+        setDirection(1)
+        setCurrentStepIndex(prev => prev + 1)
+      }
+    }, 250)
+  }, [currentStepIndex, totalSteps])
+
+  // Trigger celebration on celebration steps and auto-advance
   useEffect(() => {
     if (step?.type === 'celebration') {
       triggerCelebration()
+      const timer = setTimeout(() => {
+        setDirection(1)
+        setCurrentStepIndex(prev => prev + 1)
+      }, 1500)
+      return () => clearTimeout(timer)
     }
-  }, [step?.type, triggerCelebration])
+  }, [currentStepIndex, step?.type, triggerCelebration])
 
   // Navigation
   const goNext = useCallback(() => {
     if (currentStepIndex < totalSteps - 1) {
+      setDirection(1)
       setCurrentStepIndex(prev => prev + 1)
     }
   }, [currentStepIndex, totalSteps])
 
-  const goPrev = useCallback(() => {
+  const goBack = useCallback(() => {
     if (currentStepIndex > 0) {
-      setCurrentStepIndex(prev => prev - 1)
+      setDirection(-1)
+      // Skip celebration steps when going back
+      let prevStep = currentStepIndex - 1
+      while (prevStep > 0 && JOURNEY_STEPS[prevStep].isCelebration) {
+        prevStep--
+      }
+      setCurrentStepIndex(prevStep)
     }
   }, [currentStepIndex])
 
@@ -357,8 +395,23 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
       setSelectedStrategy(strategyId)
       setFundSize(strategy.typicalSize)
       setFacilitySize(strategy.typicalFacility)
-      setTimeout(goNext, 300)
+      autoAdvance()
     }
+  }
+
+  const handleFacilitySelect = (value: number) => {
+    setFacilitySize(value)
+    autoAdvance()
+  }
+
+  const handleRateSelect = (value: number) => {
+    setInterestRate(value)
+    autoAdvance()
+  }
+
+  const handleDaysSelect = (value: number) => {
+    setMaxDaysOutstanding(value)
+    autoAdvance()
   }
 
   // Keyboard navigation
@@ -369,586 +422,749 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
       switch (e.key) {
         case 'ArrowRight':
         case 'Enter':
-          if (step.type === 'welcome' || step.type === 'celebration' || step.type === 'info') {
+          if (step.type === 'welcome' || step.type === 'info') {
             e.preventDefault()
             goNext()
           }
           break
         case 'ArrowLeft':
-        case 'Backspace':
+        case 'Escape':
           if (currentStepIndex > 0) {
             e.preventDefault()
-            goPrev()
+            goBack()
           }
           break
-        case 'Escape':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
           e.preventDefault()
-          onSkip()
+          const index = parseInt(e.key) - 1
+          if (step.id === 'fund-basics' && index < FUND_STRATEGIES.length) {
+            handleStrategySelect(FUND_STRATEGIES[index].id)
+          } else if (step.id === 'facility-size' && index < FACILITY_OPTIONS.length) {
+            handleFacilitySelect(FACILITY_OPTIONS[index].value)
+          } else if (step.id === 'interest-rate' && index < RATE_OPTIONS.length) {
+            handleRateSelect(RATE_OPTIONS[index].value)
+          } else if (step.id === 'days-outstanding' && index < DAYS_OPTIONS.length) {
+            handleDaysSelect(DAYS_OPTIONS[index].value)
+          }
           break
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [step, currentStepIndex, goNext, goPrev, onSkip])
+  }, [step, currentStepIndex, goNext, goBack])
 
   // Animation
-  const variants = {
-    enter: { opacity: 0, y: 20 },
-    center: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 },
+  const slideVariants = {
+    enter: (direction: number) => ({
+      y: direction > 0 ? 40 : -40,
+      opacity: 0,
+    }),
+    center: {
+      y: 0,
+      opacity: 1,
+    },
+    exit: (direction: number) => ({
+      y: direction > 0 ? -40 : 40,
+      opacity: 0,
+    }),
   }
 
   const selectedStrategyData = FUND_STRATEGIES.find(s => s.id === selectedStrategy)
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-slate-950">
+    <div className="fixed inset-0 z-[100] flex flex-col bg-[#0B1220] pb-safe">
+      {/* Subtle gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-[#0B1220] to-slate-900" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/10 via-transparent to-transparent" />
+
       {/* Header */}
-      <div className="flex-shrink-0 border-b border-slate-800 bg-slate-950">
+      <div className="relative z-10 flex-shrink-0">
         {/* Progress bar */}
         <div className="h-1 bg-slate-800">
           <motion.div
-            className="h-full bg-gradient-to-r from-primary to-purple-500"
+            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500"
             initial={{ width: 0 }}
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.3 }}
           />
         </div>
 
-        {/* Phase indicator */}
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-2 min-w-0">
-            {currentPhase > 0 && (
-              <>
-                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center">
-                  {currentPhase}
-                </span>
-                <span className="text-sm font-medium truncate">{phaseName}</span>
-              </>
-            )}
-            {currentPhase === 0 && <span className="text-sm text-muted-foreground">Getting started</span>}
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onSkip}
-            className="flex-shrink-0 text-muted-foreground"
-          >
-            Skip
-            <SkipForward className="ml-1 h-4 w-4" />
-          </Button>
-        </div>
+        {/* Navigation header */}
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4">
+          {/* Back button */}
+          {currentStepIndex > 0 && !step.isCelebration ? (
+            <motion.button
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              onClick={goBack}
+              className="text-slate-500 hover:text-slate-300 transition-colors flex items-center gap-2"
+            >
+              <ChevronLeft className="h-5 w-5" />
+              <span className="text-sm font-medium hidden sm:inline">Back</span>
+            </motion.button>
+          ) : (
+            <div className="w-16" />
+          )}
 
-        {/* Phase dots */}
-        {step.type !== 'welcome' && (
-          <div className="flex items-center justify-center gap-1.5 pb-3">
-            {[1, 2, 3, 4].map((phase) => (
-              <div
-                key={phase}
-                className={cn(
-                  "w-2 h-2 rounded-full transition-all",
-                  currentPhase > phase
-                    ? "bg-emerald-500"
-                    : phase === currentPhase
-                    ? "bg-primary w-4"
-                    : "bg-slate-700"
-                )}
-              />
-            ))}
-          </div>
-        )}
+          {/* Phase dots indicator */}
+          {step.phase > 0 && (
+            <div className="flex items-center gap-3">
+              {PHASES.map((phase, i) => {
+                const isActive = phase.id === currentPhase.id
+                const isCompleted = phase.id < (step.phase || 1)
+                return (
+                  <div key={phase.id} className="flex items-center gap-3">
+                    <div className="flex flex-col items-center gap-1">
+                      <div
+                        className={cn(
+                          "w-3 h-3 rounded-full transition-all duration-300",
+                          isActive
+                            ? "bg-indigo-400 ring-4 ring-indigo-400/20"
+                            : isCompleted
+                            ? "bg-indigo-400"
+                            : "bg-slate-700"
+                        )}
+                      />
+                      <span
+                        className={cn(
+                          "text-[10px] font-medium transition-colors hidden sm:block",
+                          isActive ? "text-indigo-400" : isCompleted ? "text-slate-400" : "text-slate-600"
+                        )}
+                      >
+                        {phase.name}
+                      </span>
+                    </div>
+                    {i < PHASES.length - 1 && (
+                      <div
+                        className={cn(
+                          "w-8 sm:w-12 h-0.5 sm:-mt-4 -mt-0",
+                          isCompleted ? "bg-indigo-400" : "bg-slate-700"
+                        )}
+                      />
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          )}
+
+          {/* Skip button */}
+          {currentStepIndex > 0 && !step.isCelebration ? (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              onClick={onSkip}
+              className="text-slate-500 hover:text-slate-300 text-sm font-medium transition-colors flex items-center gap-1"
+            >
+              <span className="hidden sm:inline">Skip</span>
+              <ArrowRight className="h-4 w-4" />
+            </motion.button>
+          ) : (
+            <div className="w-16" />
+          )}
+        </div>
       </div>
 
       {/* Content */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto overscroll-contain bg-slate-950">
-        <div className="pb-safe">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={step.id}
-              variants={variants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{ duration: 0.2 }}
-              className="px-4 py-6 pb-20 max-w-2xl mx-auto w-full"
-            >
-              {/* Welcome */}
-              {step.type === 'welcome' && (
-                <div className="min-h-[60vh] flex flex-col items-center justify-center text-center gap-8">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full scale-150" />
-                    <motion.div
-                      className="relative bg-gradient-to-br from-primary to-purple-600 p-5 rounded-2xl text-white"
-                      animate={{ y: [0, -8, 0] }}
-                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                    >
-                      <CreditCard className="h-12 w-12" />
-                    </motion.div>
+      <div ref={scrollRef} className="relative z-10 flex-1 overflow-y-auto overscroll-contain">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={step.id}
+            custom={direction}
+            variants={slideVariants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            className="px-4 sm:px-6 py-6 pb-24 max-w-2xl mx-auto w-full"
+          >
+            {/* Welcome */}
+            {step.type === 'welcome' && (
+              <div className="min-h-[60vh] flex flex-col items-center justify-center text-center gap-8">
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.1 }}
+                  className="relative w-20 h-20"
+                >
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                    <CreditCard className="h-10 w-10 text-white" />
                   </div>
-                  <div className="space-y-3">
-                    <h1 className="text-3xl font-bold">{step.title}</h1>
-                    <p className="text-muted-foreground">{step.subtitle}</p>
-                    <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground/70">
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        3-5 minutes
-                      </span>
-                      <span>•</span>
-                      <span>4 phases</span>
-                      <span>•</span>
-                      <span>Interactive learning</span>
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-3 w-full max-w-xs">
-                    <Button size="lg" onClick={goNext} className="w-full group">
-                      Start Learning
-                      <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-                    </Button>
-                    <Button variant="ghost" onClick={onSkip} className="w-full text-muted-foreground">
-                      Skip to calculator
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {/* Info screens */}
-              {step.type === 'info' && (
-                <div className="min-h-[50vh] flex flex-col gap-6">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-bold">{step.title}</h2>
-                    <p className="text-muted-foreground">{step.subtitle}</p>
-                  </div>
-
-                  {step.educationalContent}
-
-                  <div className="flex justify-center pt-4">
-                    <Button size="lg" onClick={goNext}>
-                      Continue
-                      <ChevronRight className="ml-1 h-5 w-5" />
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {/* Strategy Selection */}
-              {step.id === 'fund-basics' && (
-                <div className="space-y-6">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-bold">{step.title}</h2>
-                    <p className="text-muted-foreground">{step.subtitle}</p>
-                  </div>
-
-                  <div className="grid gap-3 md:grid-cols-2">
-                    {FUND_STRATEGIES.map((strategy) => {
-                      const Icon = strategy.icon
-                      const isSelected = selectedStrategy === strategy.id
-
-                      return (
-                        <button
-                          key={strategy.id}
-                          onClick={() => handleStrategySelect(strategy.id)}
-                          className={cn(
-                            "flex flex-col gap-3 p-5 rounded-xl border-2 text-left transition-all active:scale-[0.98]",
-                            isSelected
-                              ? "border-primary bg-primary/5"
-                              : "border-border hover:border-primary/50"
-                          )}
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className={cn(
-                              "p-2.5 rounded-lg shrink-0 bg-gradient-to-br",
-                              strategy.color
-                            )}>
-                              <Icon className="h-5 w-5 text-white" />
-                            </div>
-                            <div className="flex-1">
-                              <div className="font-semibold">{strategy.name}</div>
-                              <div className="text-xs text-muted-foreground">{strategy.description}</div>
-                            </div>
-                            {isSelected && <Check className="h-5 w-5 text-primary shrink-0" />}
-                          </div>
-                        </button>
-                      )
-                    })}
-                  </div>
-
-                  {step.tip && (
-                    <div className="flex items-start gap-2 text-sm text-muted-foreground bg-accent/50 rounded-xl p-3">
-                      <Info className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                      <span>{step.tip}</span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Fund Size Input */}
-              {step.id === 'fund-size' && (
-                <div className="space-y-8">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-bold">{step.title}</h2>
-                    <p className="text-muted-foreground">{step.subtitle}</p>
-                  </div>
-
-                  <div className="max-w-md mx-auto space-y-6">
-                    <div className="relative">
-                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl text-white/60">$</span>
-                      <Input
-                        type="number"
-                        value={fundSize}
-                        onChange={(e) => setFundSize(parseFloat(e.target.value) || 0)}
-                        className="pl-10 pr-16 h-16 text-3xl text-center bg-white/10 border-white/20 text-white placeholder:text-white/30"
-                        placeholder="200"
-                      />
-                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-white/60">M</span>
-                    </div>
-
-                    {/* Quick select */}
-                    <div className="flex justify-center gap-2 flex-wrap">
-                      {[50, 100, 150, 200, 300, 500].map((size) => (
-                        <button
-                          key={size}
-                          onClick={() => setFundSize(size)}
-                          className={cn(
-                            "px-4 py-2 rounded-full text-sm transition-all",
-                            fundSize === size
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-accent text-foreground hover:bg-accent/80"
-                          )}
-                        >
-                          ${size}M
-                        </button>
-                      ))}
-                    </div>
-
-                    {step.tip && (
-                      <div className="flex items-start gap-2 text-sm text-muted-foreground bg-accent/50 rounded-xl p-3">
-                        <Info className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                        <span>{step.tip}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Gross MOIC Input */}
-              {step.id === 'performance' && (
-                <div className="space-y-8">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-bold">{step.title}</h2>
-                    <p className="text-muted-foreground">{step.subtitle}</p>
-                  </div>
-
-                  <div className="max-w-md mx-auto space-y-6">
-                    <div className="relative">
-                      <Input
-                        type="number"
-                        step="0.1"
-                        value={grossMOIC}
-                        onChange={(e) => setGrossMOIC(parseFloat(e.target.value) || 0)}
-                        className="pr-10 h-16 text-3xl text-center bg-white/10 border-white/20 text-white placeholder:text-white/30"
-                        placeholder="2.5"
-                      />
-                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-white/60">x</span>
-                    </div>
-
-                    {/* Quick select */}
-                    <div className="flex justify-center gap-2">
-                      {[1.5, 2.0, 2.5, 3.0, 3.5].map((moic) => (
-                        <button
-                          key={moic}
-                          onClick={() => setGrossMOIC(moic)}
-                          className={cn(
-                            "px-4 py-2 rounded-full text-sm transition-all",
-                            grossMOIC === moic
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-accent text-foreground hover:bg-accent/80"
-                          )}
-                        >
-                          {moic}x
-                        </button>
-                      ))}
-                    </div>
-
-                    {step.tip && (
-                      <div className="flex items-start gap-2 text-sm text-muted-foreground bg-accent/50 rounded-xl p-3">
-                        <Info className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                        <span>{step.tip}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Facility Size Selection */}
-              {step.id === 'facility-size' && (
-                <div className="space-y-6">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-bold">{step.title}</h2>
-                    <p className="text-muted-foreground">{step.subtitle}</p>
-                  </div>
-
-                  <div className="space-y-2">
-                    {FACILITY_OPTIONS.map((option) => {
-                      const isSelected = facilitySize === option.value
-
-                      return (
-                        <button
-                          key={option.value}
-                          onClick={() => {
-                            setFacilitySize(option.value)
-                            setTimeout(goNext, 300)
-                          }}
-                          className={cn(
-                            "w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all active:scale-[0.98]",
-                            isSelected
-                              ? "border-primary bg-primary/5"
-                              : "border-border hover:border-primary/50"
-                          )}
-                        >
-                          <div className="flex items-center gap-3">
-                            <Percent className="h-5 w-5 text-muted-foreground" />
-                            <div className="text-left">
-                              <div className="font-semibold">{option.label}</div>
-                              <div className="text-xs text-muted-foreground">{option.description}</div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {option.ilpa && (
-                              <span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 text-xs font-medium">
-                                ILPA
-                              </span>
-                            )}
-                            {isSelected && <Check className="h-5 w-5 text-primary" />}
-                          </div>
-                        </button>
-                      )
-                    })}
-                  </div>
-
-                  {step.tip && (
-                    <div className="flex items-start gap-2 text-sm text-muted-foreground bg-accent/50 rounded-xl p-3">
-                      <Info className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                      <span>{step.tip}</span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Interest Rate Selection */}
-              {step.id === 'interest-rate' && (
-                <div className="space-y-6">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-bold">{step.title}</h2>
-                    <p className="text-muted-foreground">{step.subtitle}</p>
-                  </div>
-
-                  <div className="space-y-2">
-                    {RATE_OPTIONS.map((option) => {
-                      const isSelected = interestRate === option.value
-
-                      return (
-                        <button
-                          key={option.value}
-                          onClick={() => {
-                            setInterestRate(option.value)
-                            setTimeout(goNext, 300)
-                          }}
-                          className={cn(
-                            "w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all active:scale-[0.98]",
-                            isSelected
-                              ? "border-primary bg-primary/5"
-                              : "border-border hover:border-primary/50"
-                          )}
-                        >
-                          <div className="flex items-center gap-3">
-                            <DollarSign className="h-5 w-5 text-muted-foreground" />
-                            <div className="text-left">
-                              <div className="font-semibold">{option.label}</div>
-                              <div className="text-xs text-muted-foreground">{option.description}</div>
-                            </div>
-                          </div>
-                          {isSelected && <Check className="h-5 w-5 text-primary" />}
-                        </button>
-                      )
-                    })}
-                  </div>
-
-                  {step.tip && (
-                    <div className="flex items-start gap-2 text-sm text-muted-foreground bg-accent/50 rounded-xl p-3">
-                      <Info className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                      <span>{step.tip}</span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Days Outstanding Selection */}
-              {step.id === 'days-outstanding' && (
-                <div className="space-y-6">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-bold">{step.title}</h2>
-                    <p className="text-muted-foreground">{step.subtitle}</p>
-                  </div>
-
-                  <div className="space-y-2">
-                    {DAYS_OPTIONS.map((option) => {
-                      const isSelected = maxDaysOutstanding === option.value
-                      const isILPA = option.value <= 180
-
-                      return (
-                        <button
-                          key={option.value}
-                          onClick={() => {
-                            setMaxDaysOutstanding(option.value)
-                            setTimeout(goNext, 300)
-                          }}
-                          className={cn(
-                            "w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all active:scale-[0.98]",
-                            isSelected
-                              ? "border-primary bg-primary/5"
-                              : "border-border hover:border-primary/50"
-                          )}
-                        >
-                          <div className="flex items-center gap-3">
-                            <Calendar className="h-5 w-5 text-muted-foreground" />
-                            <div className="text-left">
-                              <div className="font-semibold">{option.label}</div>
-                              <div className="text-xs text-muted-foreground">{option.description}</div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            {isILPA && (
-                              <span className="px-2 py-0.5 rounded-full bg-green-500/10 text-green-600 text-xs font-medium">
-                                ILPA
-                              </span>
-                            )}
-                            {isSelected && <Check className="h-5 w-5 text-primary" />}
-                          </div>
-                        </button>
-                      )
-                    })}
-                  </div>
-
-                  {step.tip && (
-                    <div className="flex items-start gap-2 text-sm text-muted-foreground bg-accent/50 rounded-xl p-3">
-                      <Info className="h-4 w-4 mt-0.5 shrink-0 text-primary" />
-                      <span>{step.tip}</span>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Celebration */}
-              {step.type === 'celebration' && (
-                <div className="min-h-[50vh] flex flex-col items-center justify-center text-center gap-6">
+                  {/* Floating icons */}
                   <motion.div
-                    initial={{ scale: 0, rotate: -180 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: "spring", duration: 0.6 }}
+                    animate={{ y: [-5, 5, -5] }}
+                    transition={{ repeat: Infinity, duration: 3, ease: 'easeInOut' }}
+                    className="absolute -top-4 -right-4 w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center"
                   >
-                    <div className="bg-gradient-to-br from-green-500 to-emerald-600 p-5 rounded-2xl text-white">
-                      <Award className="h-12 w-12" />
-                    </div>
+                    <TrendingUp className="h-4 w-4 text-emerald-400" />
                   </motion.div>
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-bold">{step.title}</h2>
-                    <p className="text-primary font-medium">{step.subtitle}</p>
-                  </div>
-                  <Button size="lg" onClick={goNext}>
-                    Continue
-                    <Sparkles className="ml-2 h-5 w-5" />
+                  <motion.div
+                    animate={{ y: [5, -5, 5] }}
+                    transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
+                    className="absolute -bottom-3 -left-4 w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center"
+                  >
+                    <DollarSign className="h-4 w-4 text-amber-400" />
+                  </motion.div>
+                </motion.div>
+
+                <div className="space-y-3">
+                  <motion.h1
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-3xl sm:text-4xl font-bold text-white"
+                  >
+                    {step.title}
+                  </motion.h1>
+                  <motion.p
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="text-slate-400"
+                  >
+                    {step.subtitle}
+                  </motion.p>
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                    className="flex items-center justify-center gap-4 text-xs text-slate-500"
+                  >
+                    <span className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      3-5 minutes
+                    </span>
+                    <span>•</span>
+                    <span>4 phases</span>
+                    <span>•</span>
+                    <span>Interactive</span>
+                  </motion.div>
+                </div>
+
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="flex flex-col gap-3 w-full max-w-xs"
+                >
+                  <Button
+                    size="lg"
+                    onClick={goNext}
+                    className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white rounded-full shadow-lg shadow-indigo-500/25"
+                  >
+                    Start Learning
+                    <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
+                  <Button
+                    variant="ghost"
+                    onClick={onSkip}
+                    className="w-full text-slate-500 hover:text-slate-300"
+                  >
+                    Skip to calculator
+                  </Button>
+                </motion.div>
+              </div>
+            )}
+
+            {/* Info screens */}
+            {step.type === 'info' && (
+              <div className="min-h-[50vh] flex flex-col gap-6">
+                <div className="text-center space-y-2">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-slate-800 mb-4">
+                    <BookOpen className="h-6 w-6 text-indigo-400" />
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white">{step.title}</h2>
+                  <p className="text-slate-400">{step.subtitle}</p>
                 </div>
-              )}
 
-              {/* Review */}
-              {step.type === 'review' && (
-                <div className="space-y-6">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-2xl font-bold">{step.title}</h2>
-                    <p className="text-muted-foreground">{step.subtitle}</p>
+                {step.educationalContent}
+              </div>
+            )}
+
+            {/* Strategy Selection */}
+            {step.id === 'fund-basics' && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-slate-800 mb-4">
+                    <Building2 className="h-6 w-6 text-indigo-400" />
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white">{step.title}</h2>
+                  <p className="text-slate-400">{step.subtitle}</p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {FUND_STRATEGIES.map((strategy, index) => {
+                    const Icon = strategy.icon
+                    const isSelected = selectedStrategy === strategy.id
+
+                    return (
+                      <motion.button
+                        key={strategy.id}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => handleStrategySelect(strategy.id)}
+                        className={cn(
+                          "relative flex flex-col gap-3 p-5 rounded-xl border-2 text-left transition-all active:scale-[0.98]",
+                          isSelected
+                            ? "border-indigo-400/50 bg-indigo-500/10"
+                            : "border-slate-700/50 bg-slate-800/50 hover:border-slate-600"
+                        )}
+                      >
+                        {isSelected && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="absolute top-3 right-3 w-5 h-5 rounded-full bg-indigo-400 flex items-center justify-center"
+                          >
+                            <Check className="h-3 w-3 text-slate-900" />
+                          </motion.div>
+                        )}
+                        <div className="flex items-center gap-3">
+                          <div className={cn(
+                            "p-2.5 rounded-lg shrink-0 bg-gradient-to-br",
+                            strategy.color
+                          )}>
+                            <Icon className="h-5 w-5 text-white" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="font-semibold text-white">{strategy.name}</div>
+                            <div className="text-xs text-slate-400">{strategy.description}</div>
+                          </div>
+                        </div>
+                        <div className="absolute bottom-2 left-2 text-[10px] text-slate-600">
+                          Press {index + 1}
+                        </div>
+                      </motion.button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Fund Size Input */}
+            {step.id === 'fund-size' && (
+              <div className="space-y-8">
+                <div className="text-center space-y-2">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-slate-800 mb-4">
+                    <DollarSign className="h-6 w-6 text-indigo-400" />
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white">{step.title}</h2>
+                  <p className="text-slate-400">{step.subtitle}</p>
+                </div>
+
+                <div className="max-w-md mx-auto space-y-6">
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl text-slate-400">$</span>
+                    <Input
+                      type="number"
+                      value={fundSize}
+                      onChange={(e) => setFundSize(parseFloat(e.target.value) || 0)}
+                      className="pl-10 pr-16 h-16 text-3xl text-center bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus:border-indigo-400 focus:ring-indigo-400/20"
+                      placeholder="200"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">M</span>
                   </div>
 
-                  <div className="space-y-3">
-                    <div className="p-4 rounded-xl bg-accent/50 border border-border">
-                      <div className="text-xs text-muted-foreground mb-2">Fund Type</div>
-                      <div className="font-semibold">{selectedStrategyData?.name || 'Not selected'}</div>
-                    </div>
+                  {/* Quick select */}
+                  <div className="flex justify-center gap-2 flex-wrap">
+                    {[50, 100, 150, 200, 300, 500].map((size) => (
+                      <button
+                        key={size}
+                        onClick={() => setFundSize(size)}
+                        className={cn(
+                          "px-4 py-2 rounded-full text-sm font-medium transition-all",
+                          fundSize === size
+                            ? "bg-indigo-500 text-white"
+                            : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white"
+                        )}
+                      >
+                        ${size}M
+                      </button>
+                    ))}
+                  </div>
 
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="p-4 rounded-xl bg-accent/50 border border-border">
-                        <div className="text-xs text-muted-foreground mb-2">Fund Size</div>
-                        <div className="font-semibold">${fundSize}M</div>
-                      </div>
-                      <div className="p-4 rounded-xl bg-accent/50 border border-border">
-                        <div className="text-xs text-muted-foreground mb-2">Gross MOIC</div>
-                        <div className="font-semibold">{grossMOIC}x</div>
-                      </div>
+                  {step.tip && (
+                    <div className="flex items-start gap-2 text-sm text-slate-400 bg-slate-800/50 rounded-xl p-3 border border-slate-700/50">
+                      <Info className="h-4 w-4 mt-0.5 shrink-0 text-indigo-400" />
+                      <span>{step.tip}</span>
                     </div>
+                  )}
+                </div>
+              </div>
+            )}
 
-                    <div className="p-4 rounded-xl bg-primary/5 border border-primary/20">
-                      <div className="text-xs text-primary mb-3 font-medium">Credit Facility Parameters</div>
-                      <div className="grid grid-cols-3 gap-3 text-sm">
-                        <div>
-                          <div className="text-xs text-muted-foreground mb-1">Facility Size</div>
-                          <div className="font-semibold">{(facilitySize * 100).toFixed(0)}%</div>
+            {/* Gross MOIC Input */}
+            {step.id === 'performance' && (
+              <div className="space-y-8">
+                <div className="text-center space-y-2">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-slate-800 mb-4">
+                    <TrendingUp className="h-6 w-6 text-indigo-400" />
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white">{step.title}</h2>
+                  <p className="text-slate-400">{step.subtitle}</p>
+                </div>
+
+                <div className="max-w-md mx-auto space-y-6">
+                  <div className="relative">
+                    <Input
+                      type="number"
+                      step="0.1"
+                      value={grossMOIC}
+                      onChange={(e) => setGrossMOIC(parseFloat(e.target.value) || 0)}
+                      className="pr-10 h-16 text-3xl text-center bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus:border-indigo-400 focus:ring-indigo-400/20"
+                      placeholder="2.5"
+                    />
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-slate-400">x</span>
+                  </div>
+
+                  {/* Quick select */}
+                  <div className="flex justify-center gap-2">
+                    {[1.5, 2.0, 2.5, 3.0, 3.5].map((moic) => (
+                      <button
+                        key={moic}
+                        onClick={() => setGrossMOIC(moic)}
+                        className={cn(
+                          "px-4 py-2 rounded-full text-sm font-medium transition-all",
+                          grossMOIC === moic
+                            ? "bg-indigo-500 text-white"
+                            : "bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white"
+                        )}
+                      >
+                        {moic}x
+                      </button>
+                    ))}
+                  </div>
+
+                  {step.tip && (
+                    <div className="flex items-start gap-2 text-sm text-slate-400 bg-slate-800/50 rounded-xl p-3 border border-slate-700/50">
+                      <Info className="h-4 w-4 mt-0.5 shrink-0 text-indigo-400" />
+                      <span>{step.tip}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Facility Size Selection */}
+            {step.id === 'facility-size' && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-slate-800 mb-4">
+                    <Percent className="h-6 w-6 text-indigo-400" />
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white">{step.title}</h2>
+                  <p className="text-slate-400">{step.subtitle}</p>
+                </div>
+
+                <div className="space-y-2">
+                  {FACILITY_OPTIONS.map((option, index) => {
+                    const isSelected = facilitySize === option.value
+
+                    return (
+                      <motion.button
+                        key={option.value}
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        onClick={() => handleFacilitySelect(option.value)}
+                        className={cn(
+                          "relative w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all active:scale-[0.98]",
+                          isSelected
+                            ? "border-indigo-400/50 bg-indigo-500/10"
+                            : "border-slate-700/50 bg-slate-800/50 hover:border-slate-600"
+                        )}
+                      >
+                        <div className="flex items-center gap-3">
+                          <Percent className="h-5 w-5 text-slate-500" />
+                          <div className="text-left">
+                            <div className="font-semibold text-white">{option.label}</div>
+                            <div className="text-xs text-slate-400">{option.description}</div>
+                          </div>
                         </div>
-                        <div>
-                          <div className="text-xs text-muted-foreground mb-1">Interest Rate</div>
-                          <div className="font-semibold">{(interestRate * 100).toFixed(1)}%</div>
+                        <div className="flex items-center gap-2">
+                          {option.ilpa && (
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-medium">
+                              ILPA
+                            </span>
+                          )}
+                          {isSelected && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="w-5 h-5 rounded-full bg-indigo-400 flex items-center justify-center"
+                            >
+                              <Check className="h-3 w-3 text-slate-900" />
+                            </motion.div>
+                          )}
                         </div>
-                        <div>
-                          <div className="text-xs text-muted-foreground mb-1">Max Days</div>
-                          <div className="font-semibold">{maxDaysOutstanding}</div>
+                        <div className="absolute bottom-1 left-2 text-[10px] text-slate-600">
+                          Press {index + 1}
                         </div>
-                      </div>
+                      </motion.button>
+                    )
+                  })}
+                </div>
+
+                {step.tip && (
+                  <div className="flex items-start gap-2 text-sm text-slate-400 bg-slate-800/50 rounded-xl p-3 border border-slate-700/50">
+                    <Info className="h-4 w-4 mt-0.5 shrink-0 text-indigo-400" />
+                    <span>{step.tip}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Interest Rate Selection */}
+            {step.id === 'interest-rate' && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-slate-800 mb-4">
+                    <DollarSign className="h-6 w-6 text-indigo-400" />
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white">{step.title}</h2>
+                  <p className="text-slate-400">{step.subtitle}</p>
+                </div>
+
+                <div className="space-y-2">
+                  {RATE_OPTIONS.map((option, index) => {
+                    const isSelected = interestRate === option.value
+
+                    return (
+                      <motion.button
+                        key={option.value}
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        onClick={() => handleRateSelect(option.value)}
+                        className={cn(
+                          "relative w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all active:scale-[0.98]",
+                          isSelected
+                            ? "border-indigo-400/50 bg-indigo-500/10"
+                            : "border-slate-700/50 bg-slate-800/50 hover:border-slate-600"
+                        )}
+                      >
+                        <div className="flex items-center gap-3">
+                          <DollarSign className="h-5 w-5 text-slate-500" />
+                          <div className="text-left">
+                            <div className="font-semibold text-white">{option.label}</div>
+                            <div className="text-xs text-slate-400">{option.description}</div>
+                          </div>
+                        </div>
+                        {isSelected && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="w-5 h-5 rounded-full bg-indigo-400 flex items-center justify-center"
+                          >
+                            <Check className="h-3 w-3 text-slate-900" />
+                          </motion.div>
+                        )}
+                        <div className="absolute bottom-1 left-2 text-[10px] text-slate-600">
+                          Press {index + 1}
+                        </div>
+                      </motion.button>
+                    )
+                  })}
+                </div>
+
+                {step.tip && (
+                  <div className="flex items-start gap-2 text-sm text-slate-400 bg-slate-800/50 rounded-xl p-3 border border-slate-700/50">
+                    <Info className="h-4 w-4 mt-0.5 shrink-0 text-indigo-400" />
+                    <span>{step.tip}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Days Outstanding Selection */}
+            {step.id === 'days-outstanding' && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-slate-800 mb-4">
+                    <Calendar className="h-6 w-6 text-indigo-400" />
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white">{step.title}</h2>
+                  <p className="text-slate-400">{step.subtitle}</p>
+                </div>
+
+                <div className="space-y-2">
+                  {DAYS_OPTIONS.map((option, index) => {
+                    const isSelected = maxDaysOutstanding === option.value
+                    const isILPA = option.value <= 180
+
+                    return (
+                      <motion.button
+                        key={option.value}
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        onClick={() => handleDaysSelect(option.value)}
+                        className={cn(
+                          "relative w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all active:scale-[0.98]",
+                          isSelected
+                            ? "border-indigo-400/50 bg-indigo-500/10"
+                            : "border-slate-700/50 bg-slate-800/50 hover:border-slate-600"
+                        )}
+                      >
+                        <div className="flex items-center gap-3">
+                          <Calendar className="h-5 w-5 text-slate-500" />
+                          <div className="text-left">
+                            <div className="font-semibold text-white">{option.label}</div>
+                            <div className="text-xs text-slate-400">{option.description}</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {isILPA && (
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-medium">
+                              ILPA
+                            </span>
+                          )}
+                          {isSelected && (
+                            <motion.div
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="w-5 h-5 rounded-full bg-indigo-400 flex items-center justify-center"
+                            >
+                              <Check className="h-3 w-3 text-slate-900" />
+                            </motion.div>
+                          )}
+                        </div>
+                        <div className="absolute bottom-1 left-2 text-[10px] text-slate-600">
+                          Press {index + 1}
+                        </div>
+                      </motion.button>
+                    )
+                  })}
+                </div>
+
+                {step.tip && (
+                  <div className="flex items-start gap-2 text-sm text-slate-400 bg-slate-800/50 rounded-xl p-3 border border-slate-700/50">
+                    <Info className="h-4 w-4 mt-0.5 shrink-0 text-indigo-400" />
+                    <span>{step.tip}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Celebration */}
+            {step.type === 'celebration' && (
+              <div className="min-h-[50vh] flex flex-col items-center justify-center text-center gap-6">
+                <motion.div
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+                  className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/30"
+                >
+                  <Sparkles className="h-10 w-10 text-white" />
+                </motion.div>
+                <motion.h2
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-2xl sm:text-3xl font-bold text-white"
+                >
+                  {step.title}
+                </motion.h2>
+                <motion.p
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.3 }}
+                  className="text-indigo-400 font-medium"
+                >
+                  {step.subtitle}
+                </motion.p>
+              </div>
+            )}
+
+            {/* Review */}
+            {step.type === 'review' && (
+              <div className="space-y-6">
+                <div className="text-center space-y-2">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 mb-4">
+                    <Check className="h-6 w-6 text-white" />
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white">{step.title}</h2>
+                  <p className="text-slate-400">{step.subtitle}</p>
+                </div>
+
+                <div className="space-y-3">
+                  <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
+                    <div className="text-xs text-slate-500 mb-2">Fund Type</div>
+                    <div className="font-semibold text-white">{selectedStrategyData?.name || 'Not selected'}</div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
+                      <div className="text-xs text-slate-500 mb-2">Fund Size</div>
+                      <div className="font-semibold text-white">${fundSize}M</div>
+                    </div>
+                    <div className="p-4 rounded-xl bg-slate-800/50 border border-slate-700/50">
+                      <div className="text-xs text-slate-500 mb-2">Gross MOIC</div>
+                      <div className="font-semibold text-white">{grossMOIC}x</div>
                     </div>
                   </div>
 
-                  <div className="flex flex-col gap-3 pt-4">
-                    <Button size="lg" onClick={handleComplete} className="w-full">
-                      <Zap className="mr-2 h-5 w-5" />
-                      See Impact Analysis
-                    </Button>
-                    <p className="text-xs text-muted-foreground text-center">
-                      You'll be able to adjust all parameters in the calculator
-                    </p>
+                  <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-400/20">
+                    <div className="text-xs text-indigo-400 mb-3 font-medium">Credit Facility Parameters</div>
+                    <div className="grid grid-cols-3 gap-3 text-sm">
+                      <div>
+                        <div className="text-xs text-slate-500 mb-1">Facility Size</div>
+                        <div className="font-semibold text-white">{(facilitySize * 100).toFixed(0)}%</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-slate-500 mb-1">Interest Rate</div>
+                        <div className="font-semibold text-white">{(interestRate * 100).toFixed(1)}%</div>
+                      </div>
+                      <div>
+                        <div className="text-xs text-slate-500 mb-1">Max Days</div>
+                        <div className="font-semibold text-white">{maxDaysOutstanding}</div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+
+                <div className="flex flex-col gap-3 pt-4">
+                  <Button
+                    size="lg"
+                    onClick={handleComplete}
+                    className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white rounded-full shadow-lg shadow-indigo-500/25"
+                  >
+                    <Zap className="mr-2 h-5 w-5" />
+                    See Impact Analysis
+                  </Button>
+                  <p className="text-xs text-slate-500 text-center">
+                    You'll be able to adjust all parameters in the calculator
+                  </p>
+                </div>
+              </div>
+            )}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
-      {/* Bottom navigation */}
-      {currentStepIndex > 0 && step.type !== 'celebration' && (
-        <div className="flex-shrink-0 border-t border-slate-800 bg-slate-950 p-4 safe-area-inset-bottom">
-          <div className="flex items-center justify-between max-w-2xl mx-auto">
-            <Button
-              variant="ghost"
-              onClick={goPrev}
-              className="h-11 px-4 min-w-[80px] touch-manipulation"
-            >
-              <ChevronLeft className="h-5 w-5 mr-1" />
-              Back
-            </Button>
-            <span className="text-xs text-muted-foreground">
-              {currentStepIndex + 1} / {totalSteps}
-            </span>
-            {(step.type === 'info') && (
+      {/* Bottom navigation - only show on non-celebration, non-review steps */}
+      {currentStepIndex > 0 && !step.isCelebration && step.type !== 'review' && (
+        <div className="relative z-10 flex-shrink-0 border-t border-slate-800 bg-[#0B1220] p-4">
+          <div className="flex flex-col items-center gap-3 max-w-2xl mx-auto">
+            {(step.type === 'info' || step.type === 'input') && (
               <Button
-                variant="ghost"
                 onClick={goNext}
-                className="h-11 px-4 min-w-[80px] touch-manipulation"
+                size="lg"
+                className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg font-semibold bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-400 hover:to-purple-500 text-white rounded-full shadow-lg shadow-indigo-500/25"
               >
-                Next
-                <ChevronRight className="h-5 w-5 ml-1" />
+                Continue
+                <ChevronRight className="ml-1 h-5 w-5" />
               </Button>
             )}
-            {step.type !== 'info' && (
-              <div className="w-20" />
-            )}
+
+            {/* Keyboard hint */}
+            <div className="text-xs text-slate-600 hidden sm:block">
+              Press <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 mx-1">Enter</kbd> or{' '}
+              <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 mx-1">→</kbd> to continue
+              • <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 mx-1">←</kbd> to go back
+            </div>
           </div>
         </div>
       )}
