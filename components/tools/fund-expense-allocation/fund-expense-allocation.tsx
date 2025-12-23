@@ -21,6 +21,7 @@ import { SampleScenariosSection } from './sample-scenarios'
 import { ShareButton } from '@/components/tools/share-button'
 
 import { InteractiveJourney } from './interactive-journey'
+import { ResultsWalkthrough } from './results-walkthrough'
 import { Quiz, QuizResults, EXPENSE_QUIZ_QUESTIONS } from './quiz'
 
 type ViewMode = 'calculator' | 'quiz' | 'results'
@@ -34,6 +35,7 @@ export function FundExpenseAllocation() {
 
   // Show journey mode first (full-screen immersive)
   const [showJourney, setShowJourney] = useState(true)
+  const [showWalkthrough, setShowWalkthrough] = useState(false)
   const [hasExistingData, setHasExistingData] = useState<ClassificationInput | null>(null)
 
   // View state (for non-journey mode)
@@ -135,8 +137,25 @@ export function FundExpenseAllocation() {
 
   // Journey completion handler
   const handleJourneyComplete = (input: ClassificationInput) => {
+    const classification = classifyExpense(input)
+    setResult(classification)
+    setCurrentInput(input)
     setShowJourney(false)
-    handleClassify(input)
+    // Show walkthrough after journey to explain the results
+    setShowWalkthrough(true)
+
+    // Save to localStorage for returning users
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(input))
+    } catch {
+      // Ignore localStorage errors
+    }
+  }
+
+  // Walkthrough completion handler
+  const handleWalkthroughComplete = () => {
+    setShowWalkthrough(false)
+    setViewMode('results')
   }
 
   // Journey skip handler
@@ -251,6 +270,17 @@ export function FundExpenseAllocation() {
         onComplete={handleJourneyComplete}
         onSkip={handleJourneySkip}
         existingData={hasExistingData}
+      />
+    )
+  }
+
+  // Show results walkthrough after journey completes
+  if (showWalkthrough && result && currentInput) {
+    return (
+      <ResultsWalkthrough
+        result={result}
+        input={currentInput}
+        onClose={handleWalkthroughComplete}
       />
     )
   }
