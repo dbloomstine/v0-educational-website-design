@@ -572,7 +572,7 @@ export function InteractiveJourney({
                       <span className="w-2 h-2 rounded-full bg-emerald-400" />
                       Typically Fund Expenses
                     </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                       {groupedCategories.fundExpenses.map((category) => (
                         <motion.button
                           key={category.id}
@@ -594,9 +594,9 @@ export function InteractiveJourney({
                               <Check className="h-2.5 w-2.5 text-slate-900" />
                             </motion.div>
                           )}
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-emerald-400">{getCategoryIcon(category.id)}</span>
-                            <span className="font-medium text-white text-sm truncate">{category.name}</span>
+                          <div className="flex items-start gap-2">
+                            <span className="text-emerald-400 flex-shrink-0 mt-0.5">{getCategoryIcon(category.id)}</span>
+                            <span className="font-medium text-white text-sm leading-tight">{category.name}</span>
                           </div>
                         </motion.button>
                       ))}
@@ -609,7 +609,7 @@ export function InteractiveJourney({
                       <span className="w-2 h-2 rounded-full bg-amber-400" />
                       Case-by-Case (LPA Dependent)
                     </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                       {groupedCategories.caseByCase.map((category) => (
                         <motion.button
                           key={category.id}
@@ -631,9 +631,9 @@ export function InteractiveJourney({
                               <Check className="h-2.5 w-2.5 text-slate-900" />
                             </motion.div>
                           )}
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-amber-400">{getCategoryIcon(category.id)}</span>
-                            <span className="font-medium text-white text-sm truncate">{category.name}</span>
+                          <div className="flex items-start gap-2">
+                            <span className="text-amber-400 flex-shrink-0 mt-0.5">{getCategoryIcon(category.id)}</span>
+                            <span className="font-medium text-white text-sm leading-tight">{category.name}</span>
                           </div>
                         </motion.button>
                       ))}
@@ -646,7 +646,7 @@ export function InteractiveJourney({
                       <span className="w-2 h-2 rounded-full bg-slate-400" />
                       Typically Management Company Expenses
                     </h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                       {groupedCategories.managementExpenses.map((category) => (
                         <motion.button
                           key={category.id}
@@ -668,9 +668,9 @@ export function InteractiveJourney({
                               <Check className="h-2.5 w-2.5 text-slate-900" />
                             </motion.div>
                           )}
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="text-slate-400">{getCategoryIcon(category.id)}</span>
-                            <span className="font-medium text-white text-sm truncate">{category.name}</span>
+                          <div className="flex items-start gap-2">
+                            <span className="text-slate-400 flex-shrink-0 mt-0.5">{getCategoryIcon(category.id)}</span>
+                            <span className="font-medium text-white text-sm leading-tight">{category.name}</span>
                           </div>
                         </motion.button>
                       ))}
