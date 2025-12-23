@@ -22,28 +22,56 @@ function calculateBaseAmount(
       return fundSize
 
     case 'Net Asset Value (NAV)':
-      // Simple NAV calculation: starts at invested cost, grows by navGrowthRate
+      // NAV calculation that properly accounts for staggered deployment
+      // Each year's deployment grows from the year it was invested
+      const growthFactor = 1 + navGrowthRate / 100
+      const annualDeployment = fundSize / investmentPeriod
+
       if (year <= investmentPeriod) {
-        const invested = fundSize * (year / investmentPeriod)
-        const yearsGrowing = Math.max(0, year - 1)
-        return invested * Math.pow(1 + navGrowthRate / 100, yearsGrowing)
+        // During investment period: sum up each year's deployment with its growth
+        // Year 1 capital has grown for (year - 1) years
+        // Year 2 capital has grown for (year - 2) years, etc.
+        let nav = 0
+        for (let deployYear = 1; deployYear <= year; deployYear++) {
+          const yearsGrowing = year - deployYear
+          nav += annualDeployment * Math.pow(growthFactor, yearsGrowing)
+        }
+        return nav
       } else {
-        // After investment period, NAV grows from fully invested amount
-        const yearsGrowing = year - 1
-        return fundSize * Math.pow(1 + navGrowthRate / 100, yearsGrowing)
+        // After investment period: all capital is deployed, continues to grow
+        // Each vintage of capital has its own growth trajectory
+        let nav = 0
+        for (let deployYear = 1; deployYear <= investmentPeriod; deployYear++) {
+          const yearsGrowing = year - deployYear
+          nav += annualDeployment * Math.pow(growthFactor, yearsGrowing)
+        }
+        return nav
       }
 
     case 'Lower of Cost or Fair Value':
-      // Conservative approach: use invested cost as floor
-      const investedCost = year <= investmentPeriod
+      // Conservative approach: use invested cost as floor, fair value with proper growth
+      const investedCostLCFV = year <= investmentPeriod
         ? fundSize * (year / investmentPeriod)
         : fundSize
 
-      const fairValue = year <= investmentPeriod
-        ? investedCost * Math.pow(1 + navGrowthRate / 100, Math.max(0, year - 1))
-        : fundSize * Math.pow(1 + navGrowthRate / 100, year - 1)
+      // Calculate fair value using proper staggered deployment growth
+      const growthFactorLCFV = 1 + navGrowthRate / 100
+      const annualDeploymentLCFV = fundSize / investmentPeriod
+      let fairValueLCFV = 0
 
-      return Math.min(investedCost, fairValue)
+      if (year <= investmentPeriod) {
+        for (let deployYear = 1; deployYear <= year; deployYear++) {
+          const yearsGrowing = year - deployYear
+          fairValueLCFV += annualDeploymentLCFV * Math.pow(growthFactorLCFV, yearsGrowing)
+        }
+      } else {
+        for (let deployYear = 1; deployYear <= investmentPeriod; deployYear++) {
+          const yearsGrowing = year - deployYear
+          fairValueLCFV += annualDeploymentLCFV * Math.pow(growthFactorLCFV, yearsGrowing)
+        }
+      }
+
+      return Math.min(investedCostLCFV, fairValueLCFV)
 
     default:
       return fundSize

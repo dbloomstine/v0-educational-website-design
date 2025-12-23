@@ -93,13 +93,34 @@ function calculatePrefReturn(
 }
 
 /**
+ * Validate waterfall input and return sanitized values
+ */
+function validateAndSanitizeInput(input: WaterfallInput): WaterfallInput {
+  return {
+    ...input,
+    // Ensure positive values for key inputs
+    fundSize: Math.max(0, input.fundSize),
+    contributedCapital: Math.max(0, input.contributedCapital),
+    grossProceeds: Math.max(0, input.grossProceeds),
+    prefRate: Math.max(0, input.prefRate),
+    carryRate: Math.max(0, Math.min(1, input.carryRate)), // Clamp to 0-100%
+    catchUpRate: Math.max(0, Math.min(1, input.catchUpRate)), // Clamp to 0-100%
+    yearsToExit: Math.max(0, input.yearsToExit),
+    gpCommitmentPercent: Math.max(0, Math.min(1, input.gpCommitmentPercent)) // Clamp to 0-100%
+  }
+}
+
+/**
  * Calculate European (whole-fund) waterfall
  * Tier 1: Return of capital to LPs
  * Tier 2: Preferred return to LPs
  * Tier 3: GP catch-up (if applicable)
  * Tier 4: Ongoing split (LP/GP at carry rate)
  */
-function calculateEuropeanWaterfall(input: WaterfallInput): WaterfallOutput {
+function calculateEuropeanWaterfall(rawInput: WaterfallInput): WaterfallOutput {
+  // Validate and sanitize input to prevent edge case errors
+  const input = validateAndSanitizeInput(rawInput)
+
   const tiers: TierResult[] = []
   let remaining = input.grossProceeds
   let cumulativeLPs = 0
@@ -109,10 +130,18 @@ function calculateEuropeanWaterfall(input: WaterfallInput): WaterfallOutput {
   const gpAsLP = input.contributedCapital * input.gpCommitmentPercent
   const lpOnlyCapital = input.contributedCapital - gpAsLP
 
+  // Safe division helper - returns 0 if denominator is 0
+  const safeDivide = (numerator: number, denominator: number): number =>
+    denominator === 0 ? 0 : numerator / denominator
+
+  // LP/GP split ratio for capital return tiers
+  const lpRatio = safeDivide(lpOnlyCapital, input.contributedCapital)
+  const gpRatio = safeDivide(gpAsLP, input.contributedCapital)
+
   // Tier 1: Return of capital to LPs (including GP as LP)
   const tier1Amount = Math.min(remaining, input.contributedCapital)
-  const tier1ToLPs = tier1Amount * (lpOnlyCapital / input.contributedCapital)
-  const tier1ToGP = tier1Amount * (gpAsLP / input.contributedCapital)
+  const tier1ToLPs = tier1Amount * lpRatio
+  const tier1ToGP = tier1Amount * gpRatio
 
   cumulativeLPs += tier1ToLPs
   cumulativeGP += tier1ToGP
@@ -143,8 +172,8 @@ function calculateEuropeanWaterfall(input: WaterfallInput): WaterfallOutput {
   )
 
   const tier2Amount = Math.min(remaining, prefAmount)
-  const tier2ToLPs = tier2Amount * (lpOnlyCapital / input.contributedCapital)
-  const tier2ToGP = tier2Amount * (gpAsLP / input.contributedCapital)
+  const tier2ToLPs = tier2Amount * lpRatio
+  const tier2ToGP = tier2Amount * gpRatio
 
   cumulativeLPs += tier2ToLPs
   cumulativeGP += tier2ToGP
@@ -219,17 +248,20 @@ function calculateEuropeanWaterfall(input: WaterfallInput): WaterfallOutput {
   const catchUpDenominator = input.catchUpRate - input.carryRate
   let catchUpAmount: number
 
-  if (catchUpDenominator > 0) {
+  if (catchUpDenominator > 0.0001) {
     // Partial catch-up: solve for when GP total carry (Tier 3 + Tier 4) = gpTargetCarry
     // GP gets: C * catchUpRate + (remaining - C) * carryRate = gpTargetCarry
     // C * catchUpRate + remaining * carryRate - C * carryRate = gpTargetCarry
     // C * (catchUpRate - carryRate) = gpTargetCarry - remaining * carryRate
     // C = (gpTargetCarry - remaining * carryRate) / (catchUpRate - carryRate)
     catchUpAmount = (gpTargetCarry - remaining * input.carryRate) / catchUpDenominator
-  } else {
-    // 100% catch-up (catchUpRate equals 1.0)
+  } else if (input.catchUpRate > 0.0001) {
+    // 100% catch-up (catchUpRate equals or very close to 1.0)
     // GP gets 100% until they reach their target carry
     catchUpAmount = gpTargetCarry / input.catchUpRate
+  } else {
+    // Edge case: catchUpRate is 0 or near-zero - skip catch-up tier entirely
+    catchUpAmount = 0
   }
 
   const tier3Amount = Math.min(remaining, Math.max(0, catchUpAmount))
