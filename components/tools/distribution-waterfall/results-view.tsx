@@ -91,7 +91,7 @@ export function ResultsView({ output, onExport, onCopyScenario }: ResultsViewPro
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
               <div className="space-y-2">
                 <div className="text-sm font-medium text-muted-foreground">LP Receives</div>
                 <div className="text-4xl font-bold text-foreground">

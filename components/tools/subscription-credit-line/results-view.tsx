@@ -71,7 +71,7 @@ export function ResultsView({ output }: ResultsViewProps) {
             <CardDescription>Key metrics at a glance</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-6 md:grid-cols-3">
+            <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
               {/* IRR Boost */}
               <div className="space-y-2">
                 <div className="text-sm text-muted-foreground font-medium">IRR Boost</div>

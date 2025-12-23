@@ -7,6 +7,7 @@ import { Slider } from '@/components/ui/slider'
 import { Badge } from '@/components/ui/badge'
 import { SlidersHorizontal, RotateCcw, TrendingUp, TrendingDown, Minus, DollarSign } from 'lucide-react'
 import { WaterfallInput, WaterfallOutput, calculateWaterfall, formatCurrency, formatPercent, formatMultiple } from './waterfallCalculations'
+import { statusStyles } from '@/components/tools/shared'
 
 interface WhatIfSlidersProps {
   input: WaterfallInput
@@ -212,7 +213,7 @@ export function WhatIfSliders({ input, output, onInputChange, compact = false }:
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Sliders */}
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 sm:grid-cols-2">
           {sliders.map((slider) => (
             <div key={slider.id} className="space-y-3">
               <div className="flex items-center justify-between">
@@ -253,55 +254,55 @@ export function WhatIfSliders({ input, output, onInputChange, compact = false }:
           <h4 className="font-medium mb-4">
             {isModified ? 'Impact vs Baseline' : 'Current Results'}
           </h4>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <div className="p-4 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className={`p-4 rounded-lg border ${statusStyles.success.card}`}>
               <div className="flex items-center justify-between mb-1">
-                <p className="text-sm text-green-600 dark:text-green-400">LP Distributions</p>
+                <p className={`text-sm ${statusStyles.success.label}`}>LP Distributions</p>
                 {isModified && <ComparisonBadge diff={lpDiff} />}
               </div>
-              <p className="text-xl font-bold text-green-900 dark:text-green-100">
+              <p className={`text-xl font-bold ${statusStyles.success.value}`}>
                 {formatCurrency(output.totalToLPs)}
               </p>
-              <p className="text-xs text-green-600 dark:text-green-400">
+              <p className={`text-xs ${statusStyles.success.label}`}>
                 {formatMultiple(output.lpMultiple)} multiple
               </p>
             </div>
 
-            <div className="p-4 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800">
+            <div className={`p-4 rounded-lg border ${statusStyles.purple.card}`}>
               <div className="flex items-center justify-between mb-1">
-                <p className="text-sm text-purple-600 dark:text-purple-400">GP Distributions</p>
+                <p className={`text-sm ${statusStyles.purple.label}`}>GP Distributions</p>
                 {isModified && <ComparisonBadge diff={gpDiff} />}
               </div>
-              <p className="text-xl font-bold text-purple-900 dark:text-purple-100">
+              <p className={`text-xl font-bold ${statusStyles.purple.value}`}>
                 {formatCurrency(output.totalToGP)}
               </p>
-              <p className="text-xs text-purple-600 dark:text-purple-400">
+              <p className={`text-xs ${statusStyles.purple.label}`}>
                 {formatMultiple(output.gpMultiple)} multiple
               </p>
             </div>
 
-            <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
+            <div className={`p-4 rounded-lg border ${statusStyles.info.card}`}>
               <div className="flex items-center justify-between mb-1">
-                <p className="text-sm text-blue-600 dark:text-blue-400">LP Multiple</p>
+                <p className={`text-sm ${statusStyles.info.label}`}>LP Multiple</p>
                 {isModified && <ComparisonBadge diff={lpMultipleDiff} isCurrency={false} />}
               </div>
-              <p className="text-xl font-bold text-blue-900 dark:text-blue-100">
+              <p className={`text-xl font-bold ${statusStyles.info.value}`}>
                 {formatMultiple(output.lpMultiple)}
               </p>
-              <p className="text-xs text-blue-600 dark:text-blue-400">
+              <p className={`text-xs ${statusStyles.info.label}`}>
                 MOIC
               </p>
             </div>
 
-            <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+            <div className={`p-4 rounded-lg border ${statusStyles.warning.card}`}>
               <div className="flex items-center justify-between mb-1">
-                <p className="text-sm text-amber-600 dark:text-amber-400">Effective Carry</p>
+                <p className={`text-sm ${statusStyles.warning.label}`}>Effective Carry</p>
                 {isModified && <ComparisonBadge diff={effectiveCarryDiff} isCurrency={false} />}
               </div>
-              <p className="text-xl font-bold text-amber-900 dark:text-amber-100">
+              <p className={`text-xl font-bold ${statusStyles.warning.value}`}>
                 {formatPercent(output.effectiveCarryRate)}
               </p>
-              <p className="text-xs text-amber-600 dark:text-amber-400">
+              <p className={`text-xs ${statusStyles.warning.label}`}>
                 of profits to GP
               </p>
             </div>

@@ -49,6 +49,9 @@ export function ExpenseInputForm({ onClassify, initialValues }: ExpenseInputForm
   }
 
   const isFormValid = inputMode === 'custom' ? customDescription.trim().length > 0 : selectedCategory !== ''
+  const disabledReason = !isFormValid
+    ? (inputMode === 'custom' ? 'Enter a description of the expense' : 'Select an expense category')
+    : undefined
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
@@ -199,7 +202,13 @@ export function ExpenseInputForm({ onClassify, initialValues }: ExpenseInputForm
         </CardContent>
       </Card>
 
-      <Button type="submit" disabled={!isFormValid} className="w-full" size="lg">
+      <Button
+        type="submit"
+        disabled={!isFormValid}
+        title={disabledReason}
+        className="w-full"
+        size="lg"
+      >
         Get Classification Guidance
       </Button>
     </form>

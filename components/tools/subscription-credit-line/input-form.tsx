@@ -46,7 +46,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
               value={input.fundSize}
               onChange={(e) => handleChange('fundSize', parseFloat(e.target.value) || 0)}
               placeholder="100000000"
-              className="h-12 text-base"
+              className="h-11 text-base"
             />
             <p className="text-xs text-muted-foreground">
               ${(input.fundSize / 1000000).toFixed(0)}M
@@ -68,7 +68,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
               onChange={(e) => handleChange('investmentPeriodYears', parseInt(e.target.value) || 0)}
               min="1"
               max="10"
-              className="h-12 text-base"
+              className="h-11 text-base"
             />
           </div>
 
@@ -87,7 +87,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
               onChange={(e) => handleChange('fundTermYears', parseInt(e.target.value) || 0)}
               min="5"
               max="15"
-              className="h-12 text-base"
+              className="h-11 text-base"
             />
           </div>
 
@@ -152,7 +152,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
               value={input.grossMOIC}
               onChange={(e) => handleChange('grossMOIC', parseFloat(e.target.value) || 0)}
               placeholder="2.5"
-              className="h-12 text-base"
+              className="h-11 text-base"
             />
           </div>
         </CardContent>
@@ -179,7 +179,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
               value={input.managementFeeRate * 100}
               onChange={(e) => handleChange('managementFeeRate', (parseFloat(e.target.value) || 0) / 100)}
               placeholder="2.0"
-              className="h-12 text-base"
+              className="h-11 text-base"
             />
           </div>
 
@@ -220,7 +220,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
               value={input.carryRate * 100}
               onChange={(e) => handleChange('carryRate', (parseFloat(e.target.value) || 0) / 100)}
               placeholder="20"
-              className="h-12 text-base"
+              className="h-11 text-base"
             />
           </div>
 
@@ -239,7 +239,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
               value={input.prefRate * 100}
               onChange={(e) => handleChange('prefRate', (parseFloat(e.target.value) || 0) / 100)}
               placeholder="8"
-              className="h-12 text-base"
+              className="h-11 text-base"
             />
           </div>
         </CardContent>
@@ -294,7 +294,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
                     handleChange('facilitySize', clamped / 100)
                   }}
                   placeholder="20"
-                  className="h-12 text-base"
+                  className="h-11 text-base"
                 />
                 <p className="text-xs text-muted-foreground">
                   {formatCurrency(input.fundSize * input.facilitySize)} facility
@@ -322,7 +322,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
                     handleChange('interestRate', clamped / 100)
                   }}
                   placeholder="4.5"
-                  className="h-12 text-base"
+                  className="h-11 text-base"
                 />
               </div>
 
@@ -354,7 +354,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
                     handleChange('maxDaysOutstanding', clamped)
                   }}
                   placeholder="180"
-                  className="h-12 text-base"
+                  className="h-11 text-base"
                 />
               </div>
 

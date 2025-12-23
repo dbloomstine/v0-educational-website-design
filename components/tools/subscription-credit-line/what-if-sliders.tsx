@@ -14,6 +14,7 @@ import {
   formatBasisPoints,
   formatPercent
 } from './subscriptionLineCalculations'
+import { statusStyles } from '@/components/tools/shared'
 
 interface WhatIfSlidersProps {
   input: SubscriptionLineInput
@@ -206,7 +207,7 @@ export function WhatIfSliders({ input, output, onInputChange, compact = false }:
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Sliders */}
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
           {sliders.map((slider) => (
             <div key={slider.id} className="space-y-3">
               <div className="flex items-center justify-between">
@@ -250,54 +251,54 @@ export function WhatIfSliders({ input, output, onInputChange, compact = false }:
           <h4 className="font-medium mb-4">
             {isModified ? 'Impact vs Baseline' : 'Current Results'}
           </h4>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            <div className="p-4 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className={`p-4 rounded-lg border ${statusStyles.info.card}`}>
               <div className="flex items-center justify-between mb-1">
-                <p className="text-sm text-blue-600 dark:text-blue-400">IRR Boost</p>
+                <p className={`text-sm ${statusStyles.info.label}`}>IRR Boost</p>
                 {isModified && <ComparisonBadge diff={irrBoostDiff} isBps />}
               </div>
-              <p className="text-xl font-bold text-blue-900 dark:text-blue-100">
+              <p className={`text-xl font-bold ${statusStyles.info.value}`}>
                 {formatBasisPoints(output.irrBoost)}
               </p>
-              <p className="text-xs text-blue-600 dark:text-blue-400">
+              <p className={`text-xs ${statusStyles.info.label}`}>
                 {output.irrWithLine > 0 ? `${formatPercent(output.irrWithLine)} IRR` : 'N/A'}
               </p>
             </div>
 
-            <div className="p-4 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800">
+            <div className={`p-4 rounded-lg border ${statusStyles.purple.card}`}>
               <div className="flex items-center justify-between mb-1">
-                <p className="text-sm text-purple-600 dark:text-purple-400">Net MOIC</p>
+                <p className={`text-sm ${statusStyles.purple.label}`}>Net MOIC</p>
                 {isModified && <ComparisonBadge diff={moicDiff} />}
               </div>
-              <p className="text-xl font-bold text-purple-900 dark:text-purple-100">
+              <p className={`text-xl font-bold ${statusStyles.purple.value}`}>
                 {output.moicWithLine.toFixed(2)}x
               </p>
-              <p className="text-xs text-purple-600 dark:text-purple-400">
+              <p className={`text-xs ${statusStyles.purple.label}`}>
                 vs {output.moicNoLine.toFixed(2)}x baseline
               </p>
             </div>
 
-            <div className="p-4 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800">
+            <div className={`p-4 rounded-lg border ${statusStyles.error.card}`}>
               <div className="flex items-center justify-between mb-1">
-                <p className="text-sm text-red-600 dark:text-red-400">Interest Cost</p>
+                <p className={`text-sm ${statusStyles.error.label}`}>Interest Cost</p>
                 {isModified && <ComparisonBadge diff={interestDiff} isCurrency />}
               </div>
-              <p className="text-xl font-bold text-red-900 dark:text-red-100">
+              <p className={`text-xl font-bold ${statusStyles.error.value}`}>
                 {formatCurrency(output.totalInterestPaid)}
               </p>
-              <p className="text-xs text-red-600 dark:text-red-400">
+              <p className={`text-xs ${statusStyles.error.label}`}>
                 {formatPercent(output.moicDrag)} MOIC drag
               </p>
             </div>
 
-            <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800">
+            <div className={`p-4 rounded-lg border ${statusStyles.warning.card}`}>
               <div className="flex items-center justify-between mb-1">
-                <p className="text-sm text-amber-600 dark:text-amber-400">Total Fees</p>
+                <p className={`text-sm ${statusStyles.warning.label}`}>Total Fees</p>
               </div>
-              <p className="text-xl font-bold text-amber-900 dark:text-amber-100">
+              <p className={`text-xl font-bold ${statusStyles.warning.value}`}>
                 {formatCurrency(output.totalManagementFees + output.totalInterestPaid)}
               </p>
-              <p className="text-xs text-amber-600 dark:text-amber-400">
+              <p className={`text-xs ${statusStyles.warning.label}`}>
                 {formatPercent(output.feeDrag / 100)} fee drag
               </p>
             </div>

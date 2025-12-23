@@ -40,6 +40,8 @@ export function InputForm({ input, onChange }: InputFormProps) {
               step={1000000}
               value={input.fundSize}
               onChange={(e) => updateField('fundSize', parseFloat(e.target.value) || 0)}
+              placeholder="100000000"
+              className="h-11 text-base"
             />
           </div>
 
@@ -57,6 +59,8 @@ export function InputForm({ input, onChange }: InputFormProps) {
               step={1000000}
               value={input.contributedCapital}
               onChange={(e) => updateField('contributedCapital', parseFloat(e.target.value) || 0)}
+              placeholder="100000000"
+              className="h-11 text-base"
             />
           </div>
 
@@ -74,6 +78,8 @@ export function InputForm({ input, onChange }: InputFormProps) {
               step={1000000}
               value={input.grossProceeds}
               onChange={(e) => updateField('grossProceeds', parseFloat(e.target.value) || 0)}
+              placeholder="200000000"
+              className="h-11 text-base"
             />
           </div>
 
@@ -92,6 +98,8 @@ export function InputForm({ input, onChange }: InputFormProps) {
               step={0.5}
               value={input.yearsToExit}
               onChange={(e) => updateField('yearsToExit', parseFloat(e.target.value) || 0)}
+              placeholder="5"
+              className="h-11 text-base"
             />
           </div>
         </CardContent>
@@ -152,6 +160,8 @@ export function InputForm({ input, onChange }: InputFormProps) {
                 const clamped = Math.max(0, Math.min(50, value))
                 updateField('prefRate', clamped / 100)
               }}
+              placeholder="8"
+              className="h-11 text-base"
             />
           </div>
 
@@ -194,6 +204,8 @@ export function InputForm({ input, onChange }: InputFormProps) {
                 const clamped = Math.max(0, Math.min(50, value))
                 updateField('carryRate', clamped / 100)
               }}
+              placeholder="20"
+              className="h-11 text-base"
             />
           </div>
 
@@ -233,6 +245,8 @@ export function InputForm({ input, onChange }: InputFormProps) {
                 step={10}
                 value={input.catchUpRate * 100}
                 onChange={(e) => updateField('catchUpRate', (parseFloat(e.target.value) || 0) / 100)}
+                placeholder="100"
+                className="h-11 text-base"
               />
             </div>
           )}
@@ -258,6 +272,8 @@ export function InputForm({ input, onChange }: InputFormProps) {
                 const clamped = Math.max(0, Math.min(100, value))
                 updateField('gpCommitmentPercent', clamped / 100)
               }}
+              placeholder="1"
+              className="h-11 text-base"
             />
           </div>
         </CardContent>

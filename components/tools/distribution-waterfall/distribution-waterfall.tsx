@@ -556,7 +556,7 @@ export function DistributionWaterfall() {
                     onExportPDF={() => exportComparisonPDF(output, compareOutput)}
                   />
                 </div>
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 sm:grid-cols-2">
                   <div>
                     <h4 className="mb-3 text-lg font-medium text-primary">Scenario A</h4>
                     <div className="space-y-2">

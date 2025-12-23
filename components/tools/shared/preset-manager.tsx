@@ -115,7 +115,13 @@ export function PresetManager<T>({
         {/* Save Dialog */}
         <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" size="sm" disabled={!canSave} className="h-8">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!canSave}
+              title={!canSave ? 'Complete form inputs before saving' : undefined}
+              className="h-8"
+            >
               <Save className="h-3.5 w-3.5 mr-1.5" />
               Save
             </Button>
@@ -143,7 +149,11 @@ export function PresetManager<T>({
               <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleSave} disabled={!presetName.trim()}>
+              <Button
+                onClick={handleSave}
+                disabled={!presetName.trim()}
+                title={!presetName.trim() ? 'Enter a name for your preset' : undefined}
+              >
                 Save Preset
               </Button>
             </DialogFooter>
@@ -212,7 +222,13 @@ export function PresetManager<T>({
       {/* Save Dialog */}
       <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
         <DialogTrigger asChild>
-          <Button variant="outline" size="sm" disabled={!canSave} className="w-full">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={!canSave}
+            title={!canSave ? 'Complete form inputs before saving' : undefined}
+            className="w-full"
+          >
             <Save className="h-4 w-4 mr-2" />
             Save Current Scenario
           </Button>
@@ -245,7 +261,11 @@ export function PresetManager<T>({
             <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSave} disabled={!presetName.trim()}>
+            <Button
+              onClick={handleSave}
+              disabled={!presetName.trim()}
+              title={!presetName.trim() ? 'Enter a name for your preset' : undefined}
+            >
               Save Preset
             </Button>
           </DialogFooter>

@@ -58,6 +58,61 @@ function getMarketComparison(feeRate: number): { text: string; isAboveMarket: bo
   }
 }
 
+// Helper to identify which phase/field has an error
+function getPhaseErrors(
+  errors: string[],
+  phaseIndex: number,
+  phases: FeePhase[]
+): {
+  startYear?: string
+  endYear?: string
+  feeRate?: string
+  general?: string
+} {
+  const phaseNum = phaseIndex + 1
+  const result: { startYear?: string; endYear?: string; feeRate?: string; general?: string } = {}
+
+  errors.forEach(error => {
+    // Check if error mentions this phase
+    if (error.includes(`Phase ${phaseNum}:`)) {
+      if (error.includes('Start year') || error.includes('start at year')) {
+        result.startYear = error.replace(`Phase ${phaseNum}: `, '')
+      } else if (error.includes('end year') || error.includes('End year')) {
+        result.endYear = error.replace(`Phase ${phaseNum}: `, '')
+      } else if (error.includes('Fee rate')) {
+        result.feeRate = error.replace(`Phase ${phaseNum}: `, '')
+      } else if (error.includes('Years must be')) {
+        result.startYear = error.replace(`Phase ${phaseNum}: `, '')
+        result.endYear = error.replace(`Phase ${phaseNum}: `, '')
+      } else if (error.includes('Overlaps')) {
+        result.startYear = error.replace(`Phase ${phaseNum}: `, '')
+      } else {
+        result.general = error.replace(`Phase ${phaseNum}: `, '')
+      }
+    }
+    // Check for gap errors (mentions phase index)
+    if (error.includes(`phase ${phaseNum}`) && error.includes('Gap')) {
+      result.startYear = 'Gap with previous phase'
+    }
+  })
+
+  // Special case: first phase must start at year 1
+  if (phaseIndex === 0 && errors.some(e => e.includes('First phase must start'))) {
+    result.startYear = 'Must start at year 1'
+  }
+
+  // Special case: last phase must end at fundTerm
+  const sortedPhases = [...phases].sort((a, b) => a.startYear - b.startYear)
+  const currentPhase = phases[phaseIndex]
+  if (sortedPhases.length > 0 && currentPhase && sortedPhases[sortedPhases.length - 1].id === currentPhase.id) {
+    if (errors.some(e => e.includes('Last phase must end'))) {
+      result.endYear = `Must end at fund term`
+    }
+  }
+
+  return result
+}
+
 export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }: FeePhaseEditorProps) {
   const handleAddPhase = () => {
     // Find the last phase to determine where new phase should start
@@ -224,8 +279,12 @@ export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }
       )}
 
       <div className="space-y-3">
-        {phases.sort((a, b) => a.startYear - b.startYear).map((phase, index) => (
-          <Card key={phase.id} className="relative">
+        {phases.sort((a, b) => a.startYear - b.startYear).map((phase, index) => {
+          const phaseErrors = getPhaseErrors(errors, index, phases)
+          const hasAnyError = phaseErrors.startYear || phaseErrors.endYear || phaseErrors.feeRate || phaseErrors.general
+
+          return (
+          <Card key={phase.id} className={`relative ${hasAnyError ? 'border-destructive/50' : ''}`}>
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium">
@@ -246,7 +305,7 @@ export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label htmlFor={`${phase.id}-start`} className="text-xs">Start Year</Label>
+                  <Label htmlFor={`${phase.id}-start`} className={`text-xs ${phaseErrors.startYear ? 'text-destructive' : ''}`}>Start Year</Label>
                   <Input
                     id={`${phase.id}-start`}
                     type="number"
@@ -254,11 +313,16 @@ export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }
                     max={fundTerm}
                     value={phase.startYear}
                     onChange={(e) => handleUpdatePhase(phase.id, { startYear: parseInt(e.target.value) || 1 })}
-                    className="h-9"
+                    placeholder="1"
+                    aria-invalid={!!phaseErrors.startYear}
+                    className={`h-11 text-base ${phaseErrors.startYear ? 'border-destructive focus-visible:ring-destructive/30' : ''}`}
                   />
+                  {phaseErrors.startYear && (
+                    <p className="text-xs text-destructive">{phaseErrors.startYear}</p>
+                  )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor={`${phase.id}-end`} className="text-xs">End Year</Label>
+                  <Label htmlFor={`${phase.id}-end`} className={`text-xs ${phaseErrors.endYear ? 'text-destructive' : ''}`}>End Year</Label>
                   <Input
                     id={`${phase.id}-end`}
                     type="number"
@@ -266,8 +330,13 @@ export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }
                     max={fundTerm}
                     value={phase.endYear}
                     onChange={(e) => handleUpdatePhase(phase.id, { endYear: parseInt(e.target.value) || fundTerm })}
-                    className="h-9"
+                    placeholder="10"
+                    aria-invalid={!!phaseErrors.endYear}
+                    className={`h-11 text-base ${phaseErrors.endYear ? 'border-destructive focus-visible:ring-destructive/30' : ''}`}
                   />
+                  {phaseErrors.endYear && (
+                    <p className="text-xs text-destructive">{phaseErrors.endYear}</p>
+                  )}
                 </div>
               </div>
 
@@ -282,7 +351,7 @@ export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }
                   value={phase.feeBase}
                   onValueChange={(value) => handleUpdatePhase(phase.id, { feeBase: value as FeeBase })}
                 >
-                  <SelectTrigger id={`${phase.id}-base`} className="h-9">
+                  <SelectTrigger id={`${phase.id}-base`} className="h-11 text-base">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -297,7 +366,7 @@ export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }
 
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Label htmlFor={`${phase.id}-rate`} className="text-xs">Annual Fee Rate (%)</Label>
+                  <Label htmlFor={`${phase.id}-rate`} className={`text-xs ${phaseErrors.feeRate ? 'text-destructive' : ''}`}>Annual Fee Rate (%)</Label>
                   <InfoPopover>
                     The annual management fee percentage charged on the fee base. Typical ranges: PE/VC 1.5-2.5%, Credit 0.75-1.5%, Real Estate 1-1.5%. Emerging managers often start at 2% and may negotiate down for larger LPs.
                   </InfoPopover>
@@ -314,24 +383,29 @@ export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }
                     const clamped = Math.max(0, Math.min(10, value))
                     handleUpdatePhase(phase.id, { feeRate: clamped })
                   }}
-                  className="h-9"
+                  placeholder="2.0"
+                  aria-invalid={!!phaseErrors.feeRate}
+                  className={`h-11 text-base ${phaseErrors.feeRate ? 'border-destructive focus-visible:ring-destructive/30' : ''}`}
                 />
+                {phaseErrors.feeRate && (
+                  <p className="text-xs text-destructive">{phaseErrors.feeRate}</p>
+                )}
                 <div className="flex items-center justify-between gap-2">
                   <p className="text-xs text-muted-foreground">
                     {getMarketComparison(phase.feeRate).text}
                   </p>
                   {getMarketComparison(phase.feeRate).isTypical && (
-                    <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                    <Badge variant="success" className="text-xs">
                       Market rate
                     </Badge>
                   )}
                   {getMarketComparison(phase.feeRate).isAboveMarket && (
-                    <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">
+                    <Badge variant="warning" className="text-xs">
                       Above market
                     </Badge>
                   )}
                   {!getMarketComparison(phase.feeRate).isTypical && !getMarketComparison(phase.feeRate).isAboveMarket && (
-                    <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                    <Badge variant="info" className="text-xs">
                       Below market
                     </Badge>
                   )}
@@ -339,7 +413,8 @@ export function FeePhaseEditor({ phases, fundTerm, onPhasesChange, errors = [] }
               </div>
             </CardContent>
           </Card>
-        ))}
+        )
+        })}
       </div>
     </div>
   )

@@ -12,3 +12,16 @@ export {
   InputColumn,
   OutputColumn
 } from "./tool-page-layout"
+
+// Status colors and styling utilities
+export {
+  statusCardColors,
+  statusTextColors,
+  statusStyles,
+  badgeColors,
+  trendColors,
+  tableRowColors,
+  getTrendColor,
+  type StatusType,
+  type TrendType,
+} from "./status-colors"

@@ -57,7 +57,7 @@ export function SummaryCards({ result, fundSize }: SummaryCardsProps) {
                 Fund Life Overview
               </Badge>
             </div>
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
               <div>
                 <p className="text-sm text-muted-foreground mb-1">Total fees over fund life</p>
                 <p className="text-2xl font-bold text-primary">${result.totalFees.toFixed(2)}M</p>
@@ -76,7 +76,7 @@ export function SummaryCards({ result, fundSize }: SummaryCardsProps) {
       </Card>
 
       {/* Existing metrics grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {metrics.map((metric, index) => {
           const IconComponent = metric.icon
           return (

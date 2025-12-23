@@ -368,7 +368,7 @@ export function SubscriptionCreditLine() {
       {/* Key Market Context */}
       <Card className="border-primary/50 bg-primary/5 p-6">
         <h3 className="mb-3 text-lg font-semibold text-foreground">Market Context (2024-2025)</h3>
-        <div className="grid gap-4 text-sm md:grid-cols-2">
+        <div className="grid gap-4 text-sm sm:grid-cols-2">
           <div>
             <strong className="text-foreground">Typical Terms:</strong>
             <ul className="mt-1 space-y-1 text-muted-foreground">
@@ -437,7 +437,7 @@ export function SubscriptionCreditLine() {
                     onExportPDF={() => exportSubscriptionLineComparisonPDF(output, compareOutput)}
                   />
                 </div>
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="grid gap-6 sm:grid-cols-2">
                   <div>
                     <h4 className="mb-3 text-lg font-medium text-primary">Scenario A</h4>
                     <div className="space-y-2">
