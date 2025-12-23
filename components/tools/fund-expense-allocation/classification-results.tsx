@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { AlertCircle, ChevronDown, ChevronUp, RotateCcw, TrendingUp } from 'lucide-react'
-import { ExportToolbar, MobileExportBar, DisclaimerBlock, RelatedToolsSection } from '@/components/tools/shared'
+import { ExportToolbar, MobileExportBar, DisclaimerBlock, RelatedToolsSection, MethodologyBlock } from '@/components/tools/shared'
 import { exportToPDF, exportToCSV, exportToExcel } from './exportPDF'
 import type { ClassificationResult as Result, ClassificationInput } from './expenseData'
 
@@ -338,9 +338,44 @@ export function ClassificationResults({ result, input, onExport, onReset }: Clas
         learningPath="Build compliant operations: Expense Allocation → Budget Planner → Fund Launch Guide"
       />
 
+      {/* Methodology */}
+      <MethodologyBlock
+        title="How we classify fund expenses"
+        sources={[
+          { text: "ILPA Fund Expenses Guidance (2016)", link: "https://ilpa.org/best-practices/fund-expenses/" },
+          { text: "SEC Observations on Expense Allocation (Investment Adviser Examinations)" },
+          { text: "Industry practice from major fund administrators and law firms" }
+        ]}
+      >
+        <p className="font-medium text-foreground mb-2">Our Classification Approach:</p>
+        <ul className="space-y-1.5 ml-4 list-disc">
+          <li>
+            <strong>Primary Beneficiary Test:</strong> We analyze who primarily benefits from the expense.
+            Expenses benefiting the fund/investors are typically fund expenses; expenses benefiting the GP
+            are typically management company expenses.
+          </li>
+          <li>
+            <strong>ILPA Guidance Alignment:</strong> Classifications follow the ILPA Fund Expenses framework
+            which categorizes expenses as fund, management company, or subject to negotiation.
+          </li>
+          <li>
+            <strong>Market Practice:</strong> We incorporate common market practices from LPA reviews and
+            fund administrator guidance to reflect typical LP expectations.
+          </li>
+          <li>
+            <strong>Fund Stage Considerations:</strong> Some expenses are treated differently for emerging
+            managers vs. established funds (e.g., placement agent fees, organizational expenses).
+          </li>
+          <li>
+            <strong>LPA Specificity:</strong> Where expense treatment varies by fund, we indicate this and
+            provide sample LPA language as reference.
+          </li>
+        </ul>
+      </MethodologyBlock>
+
       {/* Disclaimer */}
       <DisclaimerBlock
-        additionalDisclaimer="Actual expense treatment should be determined in consultation with legal counsel, fund administrators, auditors, and as specified in your fund's governing documents."
+        additionalDisclaimer="This tool provides educational guidance only. Actual expense allocation must comply with your fund's Limited Partnership Agreement (LPA), side letter provisions, and applicable regulations. Always consult with legal counsel and fund administrators before making expense allocation decisions."
       />
 
       {/* Mobile Export Bar */}

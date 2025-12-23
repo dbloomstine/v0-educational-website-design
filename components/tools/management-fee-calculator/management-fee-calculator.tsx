@@ -44,12 +44,7 @@ import { ResultsWalkthrough } from './results-walkthrough'
 import { EnhancedScenarios } from './enhanced-scenarios'
 import {
   TrustIndicators,
-  LearningOutcomes,
-  OperationalCostBreakdown,
-  LPImpactCalculator,
-  CaseStudies,
-  FundraisingTips,
-  IndustryEvolution
+  LearningOutcomes
 } from './insights-content'
 
 const fundTypeOptions: FundType[] = [
@@ -701,32 +696,6 @@ export function ManagementFeeCalculator() {
                         <SummaryCards result={result} fundSize={fundInputs.fundSize} />
                         <ResultsChart yearlyData={result.yearlyData} />
                         <ResultsTable yearlyData={result.yearlyData} />
-
-                        {/* Operational Cost Reality Check */}
-                        <OperationalCostBreakdown
-                          fundSize={fundInputs.fundSize}
-                          feeRate={feePhases[0]?.feeRate || 2}
-                        />
-
-                        {/* LP Impact Calculator */}
-                        <LPImpactCalculator
-                          fundSize={fundInputs.fundSize}
-                          totalFees={result.totalFees}
-                          fundTerm={fundInputs.fundTerm}
-                        />
-
-                        {/* Fundraising Tips based on fee level */}
-                        <FundraisingTips feesAsPercent={result.feesAsPercentOfCommitments} />
-
-                        {/* Case Studies */}
-                        <CaseStudies />
-
-                        {/* Industry Evolution */}
-                        <Card>
-                          <CardContent className="p-4 sm:p-6">
-                            <IndustryEvolution />
-                          </CardContent>
-                        </Card>
 
                         <ExportSection fundInputs={fundInputs} result={result} feePhases={feePhases} />
 

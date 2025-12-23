@@ -16,12 +16,11 @@ import { PeerComparison } from './peer-comparison'
 import { WhatIfSliders } from './what-if-sliders'
 import { SkipToContent, LiveRegion, ScrollToTop, AutoSaveIndicator, MobileResultsGrid } from './accessibility'
 import { exportWaterfallSummary, exportComparisonCSV, exportComparisonPDF, exportComparisonExcel } from './export'
-import { Confetti, WaterfallFlowAnimation } from './visual-effects'
+import { Confetti } from './visual-effects'
 import { Quiz as QuizPanel, WATERFALL_QUIZ_QUESTIONS } from './quiz'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge } from '@/components/ui/badge'
 import { ShareButton } from '@/components/tools/share-button'
 import { ExportToolbar, MethodologyBlock, RelatedToolsSection, LastUpdated, DisclaimerBlock } from '@/components/tools/shared'
 import {
@@ -179,7 +178,6 @@ export function DistributionWaterfall() {
     glossary: false,
     faq: false,
     scenarios: false,
-    waterflowAnimation: false,
     quiz: false
   })
 
@@ -431,53 +429,6 @@ export function DistributionWaterfall() {
         </div>
       </div>
 
-          {/* Waterfall Flow Animation Section */}
-          <div className="space-y-2">
-            <button
-              onClick={() => toggleSection('waterflowAnimation')}
-              aria-expanded={expandedSections.waterflowAnimation}
-              aria-controls="waterflow-animation-content"
-              aria-label="Toggle waterfall flow animation section"
-              className="flex items-center justify-between w-full p-4 rounded-lg border border-primary/20 bg-gradient-to-r from-primary/5 to-purple-500/5 hover:from-primary/10 hover:to-purple-500/10 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            >
-              <div className="flex items-center gap-3">
-                <Sparkles className="h-5 w-5 text-primary" aria-hidden="true" />
-                <div className="text-left">
-                  <h3 className="font-semibold text-foreground">Waterfall Flow Animation</h3>
-                  <p className="text-sm text-muted-foreground">Watch how money flows through each tier</p>
-                </div>
-              </div>
-              <Badge variant="secondary" className="bg-primary/20 text-primary mr-2">
-                Interactive
-              </Badge>
-              {expandedSections.waterflowAnimation ? (
-                <ChevronUp className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-              ) : (
-                <ChevronDown className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-              )}
-            </button>
-            <AnimatePresence>
-              {expandedSections.waterflowAnimation && (
-                <motion.div
-                  id="waterflow-animation-content"
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="overflow-hidden"
-                  role="region"
-                  aria-label="Waterfall flow animation"
-                >
-                  <Card className="border-primary/20">
-                    <CardContent className="p-6">
-                      <WaterfallFlowAnimation output={output} />
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
       {/* About */}
       <div className="rounded-lg border border-border bg-muted/30 p-6">
         <h3 className="mb-3 text-lg font-semibold text-foreground">About This Tool</h3>
@@ -498,28 +449,7 @@ export function DistributionWaterfall() {
         </div>
       </div>
 
-      {/* Preset Scenarios */}
-      <div className="rounded-lg border border-border bg-card p-6">
-        <h3 className="mb-3 text-lg font-semibold text-foreground">Try These Examples</h3>
-        <p className="mb-4 text-sm text-muted-foreground">
-          Click a preset to see typical waterfall structures for different fund types
-        </p>
-        <div className="grid gap-3 md:grid-cols-4">
-          {Object.entries(presets).map(([key, preset]) => (
-            <button
-              key={key}
-              onClick={() => loadPreset(key)}
-              aria-label={`Load ${preset.name} scenario: ${preset.description}`}
-              className="rounded-lg border border-border bg-background p-4 text-left transition-colors hover:bg-accent hover:border-primary min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-            >
-              <div className="mb-1 font-semibold text-foreground">{preset.name}</div>
-              <div className="text-xs text-muted-foreground">{preset.description}</div>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Quick Scenario Buttons - More Prominent */}
+      {/* Quick Scenario Buttons */}
       <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-purple-500/5">
         <CardHeader>
           <div className="flex items-center gap-3">

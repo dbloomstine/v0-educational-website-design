@@ -67,7 +67,7 @@ import { WhatIfSliders } from './what-if-sliders'
 import { ValidationWarnings } from './validation-warnings'
 import { MethodologyDisclosure } from './methodology-disclosure'
 import { PeerComparison } from './peer-comparison'
-import { Glossary, GlossaryDialog } from './glossary'
+import { GlossaryDialog } from './glossary'
 import { SampleScenarios } from './sample-scenarios'
 import { FAQSection } from './faq-section'
 import { PDFExport } from './pdf-export'
@@ -1405,11 +1405,6 @@ export function ManagementCompanyBudget() {
             </CardContent>
           </Card>
 
-          {/* Full FAQ Section */}
-          <FAQSection />
-
-          {/* Full Glossary */}
-          <Glossary />
         </TabsContent>
       </Tabs>
 

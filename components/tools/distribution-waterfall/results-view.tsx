@@ -147,31 +147,6 @@ export function ResultsView({ output, onExport, onCopyScenario }: ResultsViewPro
           </CardContent>
         </Card>
 
-        {/* Summary Cards */}
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card className="border-border bg-card p-4">
-            <div className="mb-2 text-sm font-medium text-muted-foreground">Total to LPs</div>
-            <div className="text-2xl font-bold text-foreground">{formatCurrency(output.totalToLPs)}</div>
-            <div className="mt-1 text-xs text-muted-foreground">
-              {formatMultiple(output.lpMultiple)} multiple
-            </div>
-          </Card>
-          <Card className="border-border bg-card p-4">
-            <div className="mb-2 text-sm font-medium text-muted-foreground">Total to GP</div>
-            <div className="text-2xl font-bold text-primary">{formatCurrency(output.totalToGP)}</div>
-            <div className="mt-1 text-xs text-muted-foreground">
-              {formatMultiple(output.gpMultiple)} multiple
-            </div>
-          </Card>
-          <Card className="border-border bg-card p-4">
-            <div className="mb-2 text-sm font-medium text-muted-foreground">Effective Carry</div>
-            <div className="text-2xl font-bold text-foreground">{formatPercent(output.effectiveCarryRate, 1)}</div>
-            <div className="mt-1 text-xs text-muted-foreground">
-              GP share of profits
-            </div>
-          </Card>
-        </div>
-
       {/* Waterfall Visualization */}
       <Card className="border-border bg-card p-6">
         <div className="mb-6">

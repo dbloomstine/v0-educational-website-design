@@ -166,33 +166,6 @@ export function ResultsView({ output }: ResultsViewProps) {
               </div>
             </div>
           </div>
-
-          {/* Cost Breakdown - QUICK WIN #3 */}
-          <div className="rounded-lg border border-border bg-card p-4">
-            <h4 className="text-sm font-semibold mb-3">Cost Analysis</h4>
-            <div className="space-y-2 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Total Interest Paid:</span>
-                <span className="font-medium">{formatCurrency(output.totalInterestPaid)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Annual Interest Cost:</span>
-                <span className="font-medium">{formatCurrency(annualInterestCost)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Total Management Fees:</span>
-                <span className="font-medium">{formatCurrency(output.totalManagementFees)}</span>
-              </div>
-              <div className="flex justify-between pt-2 border-t">
-                <span className="text-muted-foreground">Cost as % of Mgmt Fees:</span>
-                <span className="font-medium">{costAsPctOfFees.toFixed(1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Combined Fee Drag:</span>
-                <span className="font-medium">{output.feeDrag.toFixed(2)}%</span>
-              </div>
-            </div>
-          </div>
         </CardContent>
       </Card>
 

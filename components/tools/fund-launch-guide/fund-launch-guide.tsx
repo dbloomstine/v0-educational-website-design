@@ -65,7 +65,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu'
-import { RelatedToolsSection } from '@/components/tools/shared'
+import { RelatedToolsSection, DisclaimerBlock } from '@/components/tools/shared'
 
 interface StoredState {
   config: FundConfig
@@ -713,6 +713,22 @@ export function FundLaunchGuide() {
         </DialogContent>
       </Dialog>
 
+      {/* Regulatory Disclaimer Banner */}
+      <div className="flex items-start gap-3 p-4 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+        <div className="shrink-0 mt-0.5">
+          <svg className="h-5 w-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm text-amber-900 dark:text-amber-100">
+            <strong>Important:</strong> This is an educational planning tool only. Fund formation requires consultation with{' '}
+            <strong>qualified legal counsel</strong> for SEC/state registration, LPA drafting, and regulatory compliance.
+            Requirements vary by jurisdiction and fund structure.
+          </p>
+        </div>
+      </div>
+
       {/* Welcome Back / Start Fresh Card - shown to returning users */}
       <div className="rounded-xl border border-primary/30 bg-gradient-to-r from-primary/5 to-primary/10 p-4 sm:p-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1215,6 +1231,11 @@ export function FundLaunchGuide() {
           }
         ]}
         learningPath="Complete your launch: Fund Launch Guide → Budget Planner → Expense Allocation"
+      />
+
+      {/* Disclaimer */}
+      <DisclaimerBlock
+        additionalDisclaimer="Fund formation involves complex legal, regulatory, tax, and compliance requirements that vary by jurisdiction. This guide provides educational information only and is not a substitute for professional advice. SEC/state registration, Advisers Act compliance, LPA drafting, and other regulatory matters require consultation with qualified fund formation attorneys and compliance professionals. Actual timelines and requirements depend on your specific fund structure, strategy, investor base, and jurisdiction."
       />
     </div>
   )
