@@ -47,28 +47,28 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
               <p className="text-2xl font-bold text-white">{formatMultiple(output.input.grossProceeds / output.input.contributedCapital)}</p>
-              <p className="text-sm text-white/60">Gross Multiple</p>
+              <p className="text-white/80">Gross Multiple</p>
             </div>
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
               <p className="text-2xl font-bold text-emerald-400">{formatCurrency(output.totalProfit)}</p>
-              <p className="text-sm text-white/60">Total Profit</p>
+              <p className="text-white/80">Total Profit</p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center">
               <p className="text-xl font-bold text-emerald-400">{formatCurrency(output.totalToLPs)}</p>
-              <p className="text-sm text-white/60">LP Distributions</p>
+              <p className="text-white/80">LP Distributions</p>
               <p className="text-xs text-emerald-400 mt-1">{formatMultiple(output.lpMultiple)} net</p>
             </div>
             <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/30 text-center">
               <p className="text-xl font-bold text-violet-400">{formatCurrency(output.totalToGP)}</p>
-              <p className="text-sm text-white/60">GP Distributions</p>
+              <p className="text-white/80">GP Distributions</p>
               <p className="text-xs text-violet-400 mt-1">{formatPercent(output.effectiveCarryRate)} carry</p>
             </div>
           </div>
 
-          <p className="text-white/70 text-center">
+          <p className="text-white/90 text-center">
             From {formatCurrency(output.input.contributedCapital)} invested, your fund generated {formatCurrency(output.totalProfit)} in profit.
           </p>
         </div>
@@ -86,19 +86,19 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
             <p className="text-3xl font-bold text-blue-400 text-center mb-2">
               {formatCurrency(tier1.total)}
             </p>
-            <p className="text-white/60 text-center text-sm">
+            <p className="text-white/80 text-center text-sm">
               {formatPercent(tier1.total / output.totalDistributed)} of total distributions
             </p>
           </div>
 
-          <p className="text-white/70">
+          <p className="text-white/90">
             Before any profits are distributed, all contributed capital must be returned to investors.
             This tier protects LP principal.
           </p>
 
           <div className="p-4 rounded-xl bg-white/5 border border-white/10">
             <div className="flex justify-between items-center">
-              <span className="text-white/60">Remaining After Tier 1</span>
+              <span className="text-white/80">Remaining After Tier 1</span>
               <span className="font-semibold text-white">
                 {formatCurrency(output.input.grossProceeds - tier1.total)}
               </span>
@@ -129,12 +129,12 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
             <p className="text-3xl font-bold text-emerald-400 text-center mb-2">
               {formatCurrency(tier2.total)}
             </p>
-            <p className="text-white/60 text-center text-sm">
+            <p className="text-white/80 text-center text-sm">
               {formatPercent(output.input.prefRate)} annual ({output.input.prefCompounding}) over {output.input.yearsToExit} years
             </p>
           </div>
 
-          <p className="text-white/70">
+          <p className="text-white/90">
             After capital is returned, LPs receive their preferred return. This hurdle must be
             cleared before the GP receives any carry.
           </p>
@@ -143,7 +143,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
             <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5" />
             <div>
               <p className="font-medium text-white">Hurdle Cleared</p>
-              <p className="text-sm text-white/60">
+              <p className="text-white/80">
                 LPs received {formatCurrency((tier1?.total ?? 0) + tier2.total)} (capital + pref).
                 GP can now earn carry.
               </p>
@@ -154,7 +154,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
         <div className="space-y-4">
           <div className="p-5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-center">
             <p className="text-xl font-bold text-amber-400 mb-2">No Preferred Return</p>
-            <p className="text-white/60">0% hurdle - profits go directly to split</p>
+            <p className="text-white/80">0% hurdle - profits go directly to split</p>
           </div>
           <WalkthroughTipBox icon={AlertTriangle} variant="warning" title="Note">
             No pref is common in VC but unusual in PE/credit. GP earns carry on all profits.
@@ -179,12 +179,12 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
             <p className="text-3xl font-bold text-violet-400 text-center mb-2">
               {formatCurrency(tier3.total)}
             </p>
-            <p className="text-white/60 text-center text-sm">
+            <p className="text-white/80 text-center text-sm">
               {formatPercent(output.input.catchUpRate)} catch-up rate
             </p>
           </div>
 
-          <p className="text-white/70">
+          <p className="text-white/90">
             During catch-up, GP receives {formatPercent(output.input.catchUpRate)} of distributions
             until they've earned {formatPercent(output.input.carryRate)} of <em>all</em> profits.
           </p>
@@ -192,11 +192,11 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
               <p className="text-xl font-bold text-white">{formatCurrency(tier3.toLPs)}</p>
-              <p className="text-xs text-white/60">To LPs</p>
+              <p className="text-xs text-white/80">To LPs</p>
             </div>
             <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/30 text-center">
               <p className="text-xl font-bold text-violet-400">{formatCurrency(tier3.toGP)}</p>
-              <p className="text-xs text-white/60">To GP</p>
+              <p className="text-xs text-white/80">To GP</p>
             </div>
           </div>
 
@@ -209,7 +209,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
         <div className="space-y-4">
           <div className="p-5 rounded-xl bg-slate-500/10 border border-slate-500/30 text-center">
             <p className="text-xl font-bold text-slate-400 mb-2">No Catch-Up</p>
-            <p className="text-white/60">
+            <p className="text-white/80">
               {!output.input.hasCatchUp
                 ? 'Not included - proceeds go directly to 80/20 split'
                 : 'Not reached (insufficient proceeds after pref)'}
@@ -235,12 +235,12 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
             <p className="text-3xl font-bold text-amber-400 text-center mb-2">
               {formatCurrency(tier4.total)}
             </p>
-            <p className="text-white/60 text-center text-sm">
+            <p className="text-white/80 text-center text-sm">
               {formatPercent(1 - output.input.carryRate)} LP / {formatPercent(output.input.carryRate)} GP
             </p>
           </div>
 
-          <p className="text-white/70">
+          <p className="text-white/90">
             After catch-up (if any), remaining profits split between LPs and GP.
             This is the "steady state" profit sharing.
           </p>
@@ -248,11 +248,11 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center">
               <p className="text-xl font-bold text-emerald-400">{formatCurrency(tier4.toLPs)}</p>
-              <p className="text-xs text-white/60">To LPs ({formatPercent(1 - output.input.carryRate)})</p>
+              <p className="text-xs text-white/80">To LPs ({formatPercent(1 - output.input.carryRate)})</p>
             </div>
             <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/30 text-center">
               <p className="text-xl font-bold text-violet-400">{formatCurrency(tier4.toGP)}</p>
-              <p className="text-xs text-white/60">To GP ({formatPercent(output.input.carryRate)})</p>
+              <p className="text-xs text-white/80">To GP ({formatPercent(output.input.carryRate)})</p>
             </div>
           </div>
 
@@ -294,7 +294,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
             <div className="flex items-start justify-between">
               <div>
                 <p className="font-medium text-white">LP Outcome</p>
-                <p className="text-sm text-white/60 mt-1">
+                <p className="text-white/80 mt-1">
                   {formatCurrency(output.input.contributedCapital - output.input.contributedCapital * output.input.gpCommitmentPercent)} invested
                   {' '}{'\u2192'}{' '}
                   {formatCurrency(output.totalToLPs)} returned
@@ -314,7 +314,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
             <div className="flex items-start justify-between">
               <div>
                 <p className="font-medium text-white">GP Carry Earned</p>
-                <p className="text-sm text-white/60 mt-1">
+                <p className="text-white/80 mt-1">
                   {formatPercent(output.effectiveCarryRate)} of {formatCurrency(output.totalProfit)} profit
                 </p>
               </div>
@@ -335,7 +335,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
           {/* Structure Summary */}
           <div className="p-4 rounded-xl bg-white/5 border border-white/10">
             <p className="font-medium text-white mb-2">Waterfall Structure</p>
-            <ul className="text-sm text-white/60 space-y-1">
+            <ul className="text-white/80 space-y-1">
               <li>• {output.input.waterfallType.charAt(0).toUpperCase() + output.input.waterfallType.slice(1)} waterfall</li>
               <li>• {formatPercent(output.input.prefRate)} pref ({output.input.prefCompounding})</li>
               <li>• {formatPercent(output.input.carryRate)} carry {output.input.hasCatchUp ? `with ${formatPercent(output.input.catchUpRate)} catch-up` : '(no catch-up)'}</li>

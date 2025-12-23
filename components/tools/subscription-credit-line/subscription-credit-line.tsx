@@ -11,6 +11,7 @@ import {
 import { InputForm } from './input-form'
 import { ResultsView } from './results-view'
 import { JourneyMode } from './journey-mode'
+import { ResultsWalkthrough } from './results-walkthrough'
 import { WhatIfSliders } from './what-if-sliders'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -117,6 +118,7 @@ export function SubscriptionCreditLine() {
   // Journey mode state
   const [showJourneyMode, setShowJourneyMode] = useState(false)
   const [hasCompletedJourney, setHasCompletedJourney] = useState(false)
+  const [showWalkthrough, setShowWalkthrough] = useState(false)
 
   // Parse initial state from URL or use defaults
   const getInitialInput = (): SubscriptionLineInput => {
@@ -159,6 +161,13 @@ export function SubscriptionCreditLine() {
     setOutput(calculateSubscriptionLineImpact(journeyInput))
     setShowJourneyMode(false)
     setHasCompletedJourney(true)
+    // Show results walkthrough to explain the analysis
+    setShowWalkthrough(true)
+  }
+
+  // Handle walkthrough completion
+  const handleWalkthroughComplete = () => {
+    setShowWalkthrough(false)
   }
 
   // Update URL when inputs change (debounced)
@@ -252,6 +261,17 @@ export function SubscriptionCreditLine() {
       <JourneyMode
         onComplete={handleJourneyComplete}
         onSkip={() => setShowJourneyMode(false)}
+      />
+    )
+  }
+
+  // Show results walkthrough after journey completion
+  if (showWalkthrough) {
+    return (
+      <ResultsWalkthrough
+        output={output}
+        onComplete={handleWalkthroughComplete}
+        onSkip={handleWalkthroughComplete}
       />
     )
   }

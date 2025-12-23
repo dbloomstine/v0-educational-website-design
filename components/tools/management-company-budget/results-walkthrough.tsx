@@ -65,14 +65,14 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
               <p className="text-2xl font-bold text-white">{formatCurrency(results.monthlyBurn, true)}</p>
-              <p className="text-sm text-white/60">Monthly Burn</p>
+              <p className="text-white/80">Monthly Burn</p>
             </div>
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
               <p className="text-2xl font-bold text-emerald-400">{formatCurrency(results.annualRevenue, true)}</p>
-              <p className="text-sm text-white/60">Annual Revenue</p>
+              <p className="text-white/80">Annual Revenue</p>
             </div>
           </div>
-          <p className="text-white/70 text-center">
+          <p className="text-white/90 text-center">
             We've created a comprehensive 5-year projection based on your inputs. Let's explore the key insights.
           </p>
         </div>
@@ -102,7 +102,7 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
             )}>
               {results.runwayMonths ?? '24+'} months
             </p>
-            <p className="text-white/60">estimated runway before management fees</p>
+            <p className="text-white/80">estimated runway before management fees</p>
           </div>
 
           <div className="space-y-3">
@@ -137,7 +137,7 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
               <Lightbulb className="h-4 w-4 text-amber-400" />
               <span className="text-sm font-medium text-white">Pro Tip</span>
             </div>
-            <p className="text-sm text-white/60">
+            <p className="text-white/80">
               The "Cash Flow Projection" chart below shows your runway visually. Look for where your balance goes negative.
             </p>
           </div>
@@ -157,12 +157,12 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
             <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center">
               <TrendingUp className="h-6 w-6 text-emerald-400 mx-auto mb-2" />
               <p className="text-xl font-bold text-emerald-400">{formatCurrency(results.annualRevenue)}</p>
-              <p className="text-xs text-white/60">Annual Fee Revenue</p>
+              <p className="text-xs text-white/80">Annual Fee Revenue</p>
             </div>
             <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-center">
               <DollarSign className="h-6 w-6 text-red-400 mx-auto mb-2" />
               <p className="text-xl font-bold text-red-400">{formatCurrency(results.annualBudget)}</p>
-              <p className="text-xs text-white/60">Annual Expenses</p>
+              <p className="text-xs text-white/80">Annual Expenses</p>
             </div>
           </div>
 
@@ -176,10 +176,10 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
             )}>
               {cashFlowStatus === 'positive' ? '+' : ''}{formatCurrency(results.annualRevenue - results.annualBudget)}
             </p>
-            <p className="text-sm text-white/60">Net Annual Cash Flow</p>
+            <p className="text-white/80">Net Annual Cash Flow</p>
           </div>
 
-          <p className="text-white/70 text-center">
+          <p className="text-white/90 text-center">
             {cashFlowStatus === 'positive'
               ? "Your fee revenue exceeds expenses - a sustainable financial model."
               : "Expenses exceed fee revenue. You'll need to reduce costs or increase fund size/fees."}
@@ -217,7 +217,7 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
                     style={{ width: `${teamPercent}%` }}
                   />
                 </div>
-                <p className="text-xs text-white/50">{teamPercent}% of total budget</p>
+                <p className="text-xs text-white/70">{teamPercent}% of total budget</p>
               </div>
 
               {/* Operations */}
@@ -235,7 +235,7 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
                     style={{ width: `${opsPercent}%` }}
                   />
                 </div>
-                <p className="text-xs text-white/50">{opsPercent}% of total budget (admin, audit, legal, compliance, tax)</p>
+                <p className="text-xs text-white/70">{opsPercent}% of total budget (admin, audit, legal, compliance, tax)</p>
               </div>
 
               {/* Overhead */}
@@ -253,7 +253,7 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
                     style={{ width: `${overheadPercent}%` }}
                   />
                 </div>
-                <p className="text-xs text-white/50">{overheadPercent}% of total budget (office, insurance, tech, travel)</p>
+                <p className="text-xs text-white/70">{overheadPercent}% of total budget (office, insurance, tech, travel)</p>
               </div>
             </div>
 
@@ -262,7 +262,7 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
                 <Lightbulb className="h-4 w-4 text-amber-400" />
                 <span className="text-sm font-medium text-white">Industry Insight</span>
               </div>
-              <p className="text-sm text-white/60">
+              <p className="text-white/80">
                 Team costs typically represent 60-70% of a management company budget. Operations and overhead split the remainder.
               </p>
             </div>
@@ -283,28 +283,28 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
               <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5" />
               <div>
                 <p className="font-medium text-white">Adjust Team & Expenses</p>
-                <p className="text-sm text-white/60">Click any expense item to modify. Add or remove team members as plans change.</p>
+                <p className="text-white/80">Click any expense item to modify. Add or remove team members as plans change.</p>
               </div>
             </div>
             <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
               <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5" />
               <div>
                 <p className="font-medium text-white">Add Multiple Funds</p>
-                <p className="text-sm text-white/60">Planning Fund II? Add it to see combined fee revenue projections.</p>
+                <p className="text-white/80">Planning Fund II? Add it to see combined fee revenue projections.</p>
               </div>
             </div>
             <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
               <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5" />
               <div>
                 <p className="font-medium text-white">Track Cash Flow</p>
-                <p className="text-sm text-white/60">The monthly projection chart shows when you'll reach break-even.</p>
+                <p className="text-white/80">The monthly projection chart shows when you'll reach break-even.</p>
               </div>
             </div>
             <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
               <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5" />
               <div>
                 <p className="font-medium text-white">Export & Share</p>
-                <p className="text-sm text-white/60">Download your budget or bookmark to share with partners.</p>
+                <p className="text-white/80">Download your budget or bookmark to share with partners.</p>
               </div>
             </div>
           </div>
@@ -323,7 +323,7 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
             <p className="text-lg text-white/80">
               Your management company budget is now set up and ready to use.
             </p>
-            <p className="text-white/60">
+            <p className="text-white/80">
               Feel free to adjust any values - all projections will update automatically.
             </p>
           </div>
@@ -421,14 +421,14 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
                 transition={{ duration: 0.5 }}
               />
             </div>
-            <span className="text-xs text-white/60">{currentStep + 1}/{steps.length}</span>
+            <span className="text-xs text-white/80">{currentStep + 1}/{steps.length}</span>
           </div>
 
           <Button
             variant="ghost"
             size="sm"
             onClick={onSkip}
-            className="text-white/60 hover:text-white hover:bg-white/10"
+            className="text-white/80 hover:text-white hover:bg-white/10"
           >
             <X className="h-4 w-4 sm:mr-1" />
             <span className="hidden sm:inline">Skip</span>
@@ -467,7 +467,7 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
                 {/* Title */}
                 <div className="text-center space-y-2">
                   <h2 className="text-2xl md:text-3xl font-bold text-white">{step.title}</h2>
-                  <p className="text-white/60">{step.subtitle}</p>
+                  <p className="text-white/80">{step.subtitle}</p>
                 </div>
 
                 {/* Content */}
@@ -487,7 +487,7 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
             <Button
               variant="ghost"
               onClick={goPrev}
-              className="text-white/60 hover:text-white hover:bg-white/10"
+              className="text-white/80 hover:text-white hover:bg-white/10"
             >
               <ChevronLeft className="h-5 w-5 mr-1" />
               Back

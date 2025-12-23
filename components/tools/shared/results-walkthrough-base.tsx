@@ -280,7 +280,7 @@ export function ResultsWalkthroughBase({
                 {/* Title */}
                 <div className="text-center space-y-2">
                   <h2 className="text-2xl md:text-3xl font-bold text-white">{step.title}</h2>
-                  <p className="text-white/60">{step.subtitle}</p>
+                  <p className="text-white/80 text-lg">{step.subtitle}</p>
                 </div>
 
                 {/* Content */}
@@ -380,7 +380,7 @@ export function WalkthroughStatCard({ label, value, icon: Icon, iconColor = 'tex
     <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
       {Icon && <Icon className={cn("h-6 w-6 mx-auto mb-2", iconColor)} />}
       <p className={cn("text-2xl font-bold", valueColor)}>{value}</p>
-      <p className="text-sm text-white/60">{label}</p>
+      <p className="text-white/80">{label}</p>
     </div>
   )
 }
@@ -413,10 +413,10 @@ export function WalkthroughTipBox({ title = 'Pro Tip', children, variant = 'defa
   return (
     <div className={cn("p-4 rounded-xl border", variants[variant])}>
       <div className="flex items-center gap-2 mb-2">
-        {Icon && <Icon className={cn("h-4 w-4", iconColors[variant])} />}
-        <span className="text-sm font-medium text-white">{title}</span>
+        {Icon && <Icon className={cn("h-5 w-5", iconColors[variant])} />}
+        <span className="font-semibold text-white">{title}</span>
       </div>
-      <div className="text-sm text-white/60">
+      <div className="text-white/90 leading-relaxed">
         {children}
       </div>
     </div>
@@ -435,11 +435,11 @@ interface FeatureListItemProps {
 
 export function WalkthroughFeatureItem({ icon: Icon, iconColor = 'text-emerald-400', title, description }: FeatureListItemProps) {
   return (
-    <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
+    <div className="flex items-start gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
       {Icon && <Icon className={cn("h-5 w-5 mt-0.5", iconColor)} />}
       <div>
-        <p className="font-medium text-white">{title}</p>
-        <p className="text-sm text-white/60">{description}</p>
+        <p className="font-semibold text-white">{title}</p>
+        <p className="text-white/80 leading-relaxed">{description}</p>
       </div>
     </div>
   )

@@ -181,7 +181,8 @@ export function ManagementFeeCalculator() {
     setFundInputs(inputs)
     setFeePhases(phases)
     setShowJourney(false)
-    setViewMode('calculator')
+    // Show results walkthrough after journey to explain the results
+    setViewMode('walkthrough')
   }
 
   const handleJourneySkip = () => {

@@ -141,7 +141,7 @@ export function ResultsWalkthrough({
             }`}>
               {classInfo.label}
             </p>
-            <p className="text-sm text-white/60">{result.headline}</p>
+            <p className="text-white/80">{result.headline}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -149,13 +149,13 @@ export function ResultsWalkthrough({
               <p className="text-lg font-semibold text-white capitalize">
                 {result.confidenceLevel.replace(/-/g, ' ')}
               </p>
-              <p className="text-sm text-white/60">Confidence</p>
+              <p className="text-white/80">Confidence</p>
             </div>
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
               <p className="text-lg font-semibold text-white capitalize">
                 {result.lpSensitivityLevel}
               </p>
-              <p className="text-sm text-white/60">LP Sensitivity</p>
+              <p className="text-white/80">LP Sensitivity</p>
             </div>
           </div>
 
@@ -180,7 +180,7 @@ export function ResultsWalkthrough({
               </span>
             </div>
             <p className="text-xl font-semibold text-white">{fundTypeInfo.name}</p>
-            <p className="text-sm text-white/60">{fundTypeInfo.description}</p>
+            <p className="text-white/80">{fundTypeInfo.description}</p>
           </div>
 
           <div className="p-4 rounded-xl bg-white/5 border border-white/10">
@@ -190,7 +190,7 @@ export function ResultsWalkthrough({
               </span>
             </div>
             <p className="text-xl font-semibold text-white">{fundStageInfo.name}</p>
-            <p className="text-sm text-white/60">{fundStageInfo.description}</p>
+            <p className="text-white/80">{fundStageInfo.description}</p>
           </div>
 
           <div className="p-4 rounded-xl bg-white/5 border border-white/10">
@@ -200,7 +200,7 @@ export function ResultsWalkthrough({
               </span>
             </div>
             <p className="text-xl font-semibold text-white">{beneficiaryInfo.name}</p>
-            <p className="text-sm text-white/60">{beneficiaryInfo.description}</p>
+            <p className="text-white/80">{beneficiaryInfo.description}</p>
           </div>
 
           {input.lpaContext && (
@@ -234,7 +234,7 @@ export function ResultsWalkthrough({
                 <p className="font-medium text-white mb-2">
                   {result.lpSensitivityLevel === 'high' ? 'High LP Scrutiny' : 'Standard LP Expectations'}
                 </p>
-                <p className="text-sm text-white/70">
+                <p className="text-sm text-white/90">
                   {result.lpSensitivities}
                 </p>
               </div>
@@ -243,7 +243,7 @@ export function ResultsWalkthrough({
 
           {/* Market Practice Badge */}
           <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-            <p className="text-sm text-white/40 mb-2">Market Practice</p>
+            <p className="text-sm text-white/70 mb-2">Market Practice</p>
             <p className={`text-lg font-semibold ${
               result.marketPractice === 'common-fund' ? 'text-emerald-400' :
               result.marketPractice === 'common-mgmt' ? 'text-blue-400' :
@@ -259,11 +259,11 @@ export function ResultsWalkthrough({
 
           {result.flags.length > 0 && (
             <div className="space-y-2">
-              <p className="text-sm text-white/60">Important Considerations:</p>
+              <p className="text-white/80">Important Considerations:</p>
               {result.flags.slice(0, 3).map((flag, idx) => (
                 <div key={idx} className="flex items-start gap-2 p-3 rounded-lg bg-amber-500/10 border border-amber-500/30">
                   <span className="text-amber-400">!</span>
-                  <p className="text-sm text-white/80">{flag}</p>
+                  <p className="text-white/80">{flag}</p>
                 </div>
               ))}
             </div>
@@ -294,7 +294,7 @@ export function ResultsWalkthrough({
                 }`}>
                   {idx + 1}
                 </span>
-                <p className="text-sm text-white/80">{logic}</p>
+                <p className="text-white/80">{logic}</p>
               </div>
             </div>
           ))}
@@ -317,7 +317,7 @@ export function ResultsWalkthrough({
         <div className="space-y-6">
           {result.similarExpenses.length > 0 && (
             <div className="space-y-3">
-              <p className="text-sm text-white/60">Commonly reviewed together:</p>
+              <p className="text-white/80">Commonly reviewed together:</p>
               <div className="flex flex-wrap gap-2">
                 {result.similarExpenses.map((expense, idx) => (
                   <span
@@ -333,8 +333,8 @@ export function ResultsWalkthrough({
 
           {result.sampleLanguage && (
             <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-              <p className="text-sm text-white/60 mb-3">Sample LPA Language</p>
-              <p className="text-sm text-white/80 font-mono leading-relaxed italic">
+              <p className="text-white/80 mb-3">Sample LPA Language</p>
+              <p className="text-white/80 font-mono leading-relaxed italic">
                 "{result.sampleLanguage}"
               </p>
             </div>
@@ -342,10 +342,10 @@ export function ResultsWalkthrough({
 
           {result.examples.length > 0 && (
             <div className="p-4 rounded-xl bg-white/5 border border-white/10">
-              <p className="text-sm text-white/60 mb-3">Common Examples</p>
+              <p className="text-white/80 mb-3">Common Examples</p>
               <ul className="space-y-2">
                 {result.examples.slice(0, 3).map((example, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-sm text-white/80">
+                  <li key={idx} className="flex items-start gap-2 text-white/80">
                     <span className="text-indigo-400">-</span>
                     <span>{example}</span>
                   </li>
@@ -378,12 +378,12 @@ export function ResultsWalkthrough({
               {takeaway.type === 'success' && <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5" />}
               {takeaway.type === 'warning' && <AlertTriangle className="h-5 w-5 text-amber-400 mt-0.5" />}
               {takeaway.type === 'info' && <Lightbulb className="h-5 w-5 text-blue-400 mt-0.5" />}
-              <p className="text-sm text-white/80">{takeaway.text}</p>
+              <p className="text-white/80">{takeaway.text}</p>
             </div>
           ))}
 
           <div className="p-4 rounded-xl bg-white/5 border border-white/10 mt-6">
-            <p className="text-sm text-white/60">
+            <p className="text-white/80">
               <strong className="text-white">Important:</strong> This classification is educational guidance only. Your fund's governing documents (LPA, side letters) and legal counsel's advice take precedence over general market practice.
             </p>
           </div>

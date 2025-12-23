@@ -100,13 +100,13 @@ export function ResultsWalkthrough({
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-center">
               <p className="text-2xl font-bold text-amber-400">${result.totalFees.toFixed(2)}M</p>
-              <p className="text-sm text-white/60">Total Fees</p>
-              <p className="text-xs text-white/40">Over {fundInputs.fundTerm} years</p>
+              <p className="text-white/80">Total Fees</p>
+              <p className="text-xs text-white/70">Over {fundInputs.fundTerm} years</p>
             </div>
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
               <p className="text-2xl font-bold text-white">{result.feesAsPercentOfCommitments.toFixed(1)}%</p>
-              <p className="text-sm text-white/60">% of Commitments</p>
-              <p className="text-xs text-white/40">Total fee load</p>
+              <p className="text-white/80">% of Commitments</p>
+              <p className="text-xs text-white/70">Total fee load</p>
             </div>
           </div>
 
@@ -139,7 +139,7 @@ export function ResultsWalkthrough({
               )
             })}
           </div>
-          <div className="flex justify-between text-xs text-white/40">
+          <div className="flex justify-between text-xs text-white/70">
             <span>Year 1</span>
             <span>Year {fundInputs.fundTerm}</span>
           </div>
@@ -147,13 +147,13 @@ export function ResultsWalkthrough({
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
               <p className="text-xl font-bold text-white">${result.firstHalfFees.toFixed(2)}M</p>
-              <p className="text-sm text-white/60">First Half Fees</p>
-              <p className="text-xs text-white/40">Years 1-{Math.floor(fundInputs.fundTerm / 2)}</p>
+              <p className="text-white/80">First Half Fees</p>
+              <p className="text-xs text-white/70">Years 1-{Math.floor(fundInputs.fundTerm / 2)}</p>
             </div>
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
               <p className="text-xl font-bold text-white">${result.secondHalfFees.toFixed(2)}M</p>
-              <p className="text-sm text-white/60">Second Half Fees</p>
-              <p className="text-xs text-white/40">Years {Math.floor(fundInputs.fundTerm / 2) + 1}-{fundInputs.fundTerm}</p>
+              <p className="text-white/80">Second Half Fees</p>
+              <p className="text-xs text-white/70">Years {Math.floor(fundInputs.fundTerm / 2) + 1}-{fundInputs.fundTerm}</p>
             </div>
           </div>
 
@@ -193,22 +193,22 @@ export function ResultsWalkthrough({
                   }`}>
                     Phase {index + 1}
                   </span>
-                  <span className="text-sm text-white/60">
+                  <span className="text-white/80">
                     Years {phase.startYear}-{phase.endYear}
                   </span>
                 </div>
 
                 <div className="grid grid-cols-3 gap-3 text-sm">
                   <div>
-                    <p className="text-white/40">Rate</p>
+                    <p className="text-white/70">Rate</p>
                     <p className="font-semibold text-white">{phase.feeRate}%</p>
                   </div>
                   <div>
-                    <p className="text-white/40">Basis</p>
+                    <p className="text-white/70">Basis</p>
                     <p className="font-semibold text-white text-xs">{phase.feeBase}</p>
                   </div>
                   <div>
-                    <p className="text-white/40">Total</p>
+                    <p className="text-white/70">Total</p>
                     <p className="font-semibold text-violet-400">${phaseFees.toFixed(2)}M</p>
                   </div>
                 </div>
@@ -219,7 +219,7 @@ export function ResultsWalkthrough({
           {hasStepDown && (
             <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30">
               <TrendingUp className="h-5 w-5 text-amber-400" />
-              <p className="text-sm text-white/80">
+              <p className="text-white/80">
                 Fee step-down: {((1 - feePhases[1].feeRate / feePhases[0].feeRate) * 100).toFixed(0)}% reduction in Phase 2
               </p>
             </div>
@@ -242,16 +242,16 @@ export function ResultsWalkthrough({
 
             {/* Markers */}
             <div className="absolute top-0 left-[15%] transform -translate-x-1/2 text-center">
-              <span className="text-xs text-white/40">LP-Friendly</span>
-              <div className="text-xs font-medium text-white/60">&lt;{benchmarks.low}%</div>
+              <span className="text-xs text-white/70">LP-Friendly</span>
+              <div className="text-xs font-medium text-white/80">&lt;{benchmarks.low}%</div>
             </div>
             <div className="absolute top-0 left-1/2 transform -translate-x-1/2 text-center">
-              <span className="text-xs text-white/40">Standard</span>
-              <div className="text-xs font-medium text-white/60">{benchmarks.low}-{benchmarks.high}%</div>
+              <span className="text-xs text-white/70">Standard</span>
+              <div className="text-xs font-medium text-white/80">{benchmarks.low}-{benchmarks.high}%</div>
             </div>
             <div className="absolute top-0 left-[85%] transform -translate-x-1/2 text-center">
-              <span className="text-xs text-white/40">GP-Friendly</span>
-              <div className="text-xs font-medium text-white/60">&gt;{benchmarks.high}%</div>
+              <span className="text-xs text-white/70">GP-Friendly</span>
+              <div className="text-xs font-medium text-white/80">&gt;{benchmarks.high}%</div>
             </div>
 
             {/* Your position */}
@@ -278,7 +278,7 @@ export function ResultsWalkthrough({
                 <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5" />
                 <div>
                   <p className="font-medium text-white">Below Market Average</p>
-                  <p className="text-sm text-white/60">
+                  <p className="text-white/80">
                     Competitive and LP-friendly. Great for fundraising from institutional investors.
                   </p>
                 </div>
@@ -289,7 +289,7 @@ export function ResultsWalkthrough({
                 <CheckCircle2 className="h-5 w-5 text-blue-400 mt-0.5" />
                 <div>
                   <p className="font-medium text-white">Within Market Range</p>
-                  <p className="text-sm text-white/60">
+                  <p className="text-white/80">
                     In line with industry standards. Acceptable for most LPs with adequate GP economics.
                   </p>
                 </div>
@@ -300,7 +300,7 @@ export function ResultsWalkthrough({
                 <AlertCircle className="h-5 w-5 text-amber-400 mt-0.5" />
                 <div>
                   <p className="font-medium text-white">Above Market Average</p>
-                  <p className="text-sm text-white/60">
+                  <p className="text-white/80">
                     On the higher end. Consider if justified by strategy, or add step-downs.
                   </p>
                 </div>
@@ -332,12 +332,12 @@ export function ResultsWalkthrough({
               {takeaway.type === 'success' && <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5" />}
               {takeaway.type === 'warning' && <AlertCircle className="h-5 w-5 text-amber-400 mt-0.5" />}
               {takeaway.type === 'info' && <Lightbulb className="h-5 w-5 text-blue-400 mt-0.5" />}
-              <p className="text-sm text-white/80">{takeaway.text}</p>
+              <p className="text-white/80">{takeaway.text}</p>
             </div>
           ))}
 
           <div className="p-4 rounded-xl bg-white/5 border border-white/10 mt-6">
-            <p className="text-sm text-white/60">
+            <p className="text-white/80">
               <strong className="text-white">Remember:</strong> This is an educational model. Actual fee structures should be reviewed by legal counsel and discussed with potential LPs.
             </p>
           </div>

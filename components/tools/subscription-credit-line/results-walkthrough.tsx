@@ -53,24 +53,24 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
       iconColor: 'from-indigo-400 to-purple-500',
       content: (
         <div className="space-y-6">
-          <p className="text-white/70 text-center">
+          <p className="text-white/90 text-center">
             We've modeled a ${(input.fundSize / 1000000).toFixed(0)}M fund with a {formatPercent(input.facilitySize)} facility over {input.fundTermYears} years.
           </p>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
               <p className="text-2xl font-bold text-white">{formatPercent(irrNoLine)}</p>
-              <p className="text-sm text-white/60">IRR Without Line</p>
+              <p className="text-white/80">IRR Without Line</p>
             </div>
             <div className="p-4 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-center">
               <p className="text-2xl font-bold text-indigo-400">{formatPercent(irrWithLine)}</p>
-              <p className="text-sm text-white/60">IRR With Line</p>
+              <p className="text-white/80">IRR With Line</p>
             </div>
           </div>
 
           <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-500/10 to-indigo-500/10 border border-emerald-500/20">
             <div className="flex items-center justify-between">
-              <span className="text-white/60">IRR Boost</span>
+              <span className="text-white/80">IRR Boost</span>
               <span className="text-2xl font-bold text-emerald-400">+{formatBps(irrBoost)}</span>
             </div>
           </div>
@@ -87,10 +87,10 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
         <div className="space-y-6">
           <div className="p-5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center">
             <p className="text-3xl font-bold text-emerald-400 mb-1">+{formatBps(irrBoost)}</p>
-            <p className="text-white/60">IRR improvement</p>
+            <p className="text-white/80">IRR improvement</p>
           </div>
 
-          <p className="text-white/70">
+          <p className="text-white/90">
             By delaying capital calls, the subscription line reduces the <em>time</em> LPs have money
             at work. Since IRR is time-weighted, shorter exposure means higher IRR.
           </p>
@@ -98,7 +98,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
           <div className="space-y-3">
             <div className="p-4 rounded-xl bg-white/5 border border-white/10">
               <div className="flex justify-between items-center">
-                <span className="text-white/60">Without Line</span>
+                <span className="text-white/80">Without Line</span>
                 <span className="font-semibold text-white">{formatPercent(irrNoLine)} IRR</span>
               </div>
             </div>
@@ -107,7 +107,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
             </div>
             <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30">
               <div className="flex justify-between items-center">
-                <span className="text-white/60">With Line</span>
+                <span className="text-white/80">With Line</span>
                 <span className="font-semibold text-emerald-400">{formatPercent(irrWithLine)} IRR</span>
               </div>
             </div>
@@ -132,10 +132,10 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
             <p className={`text-3xl font-bold ${significantMOICDrag ? 'text-amber-400' : 'text-blue-400'} mb-1`}>
               -{(moicDrag * 100).toFixed(2)}%
             </p>
-            <p className="text-white/60">MOIC reduction</p>
+            <p className="text-white/80">MOIC reduction</p>
           </div>
 
-          <p className="text-white/70">
+          <p className="text-white/90">
             Interest expense on the line reduces net proceeds, which slightly lowers the multiple.
             This is the cost of using the facility.
           </p>
@@ -143,17 +143,17 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
               <p className="text-xl font-bold text-white">{moicNoLine.toFixed(2)}x</p>
-              <p className="text-xs text-white/60">MOIC Without Line</p>
+              <p className="text-xs text-white/80">MOIC Without Line</p>
             </div>
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
               <p className="text-xl font-bold text-white">{moicWithLine.toFixed(2)}x</p>
-              <p className="text-xs text-white/60">MOIC With Line</p>
+              <p className="text-xs text-white/80">MOIC With Line</p>
             </div>
           </div>
 
           <div className="p-4 rounded-xl bg-white/5 border border-white/10">
             <div className="flex justify-between items-center">
-              <span className="text-white/60">Total Interest Paid</span>
+              <span className="text-white/80">Total Interest Paid</span>
               <span className="font-semibold text-white">{formatCurrency(totalInterestPaid)}</span>
             </div>
           </div>
@@ -181,30 +181,30 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/30 text-center">
               <p className="text-xl font-bold text-violet-400">{formatPercent(input.facilitySize)}</p>
-              <p className="text-xs text-white/60">Facility Size</p>
+              <p className="text-xs text-white/80">Facility Size</p>
             </div>
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
               <p className="text-xl font-bold text-white">{Math.round(avgDaysCapitalOutstanding)} days</p>
-              <p className="text-xs text-white/60">Avg. Outstanding</p>
+              <p className="text-xs text-white/80">Avg. Outstanding</p>
             </div>
           </div>
 
           <div className="space-y-3">
             <div className="p-4 rounded-xl bg-white/5 border border-white/10">
               <div className="flex justify-between items-center">
-                <span className="text-white/60">Facility Amount</span>
+                <span className="text-white/80">Facility Amount</span>
                 <span className="font-semibold text-white">{formatCurrency(input.fundSize * input.facilitySize)}</span>
               </div>
             </div>
             <div className="p-4 rounded-xl bg-white/5 border border-white/10">
               <div className="flex justify-between items-center">
-                <span className="text-white/60">Interest Rate</span>
+                <span className="text-white/80">Interest Rate</span>
                 <span className="font-semibold text-white">{formatPercent(input.interestRate)}</span>
               </div>
             </div>
             <div className="p-4 rounded-xl bg-white/5 border border-white/10">
               <div className="flex justify-between items-center">
-                <span className="text-white/60">Max Days Outstanding</span>
+                <span className="text-white/80">Max Days Outstanding</span>
                 <span className="font-semibold text-white">{input.maxDaysOutstanding} days</span>
               </div>
             </div>
@@ -229,13 +229,13 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
               <>
                 <CheckCircle2 className="h-10 w-10 text-emerald-400 mx-auto mb-2" />
                 <p className="text-lg font-bold text-emerald-400">ILPA Compliant</p>
-                <p className="text-sm text-white/60">Within recommended parameters</p>
+                <p className="text-white/80">Within recommended parameters</p>
               </>
             ) : (
               <>
                 <AlertTriangle className="h-10 w-10 text-amber-400 mx-auto mb-2" />
                 <p className="text-lg font-bold text-amber-400">Exceeds ILPA Guidelines</p>
-                <p className="text-sm text-white/60">Review terms with LPs</p>
+                <p className="text-white/80">Review terms with LPs</p>
               </>
             )}
           </div>
@@ -249,7 +249,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
               <div className="flex justify-between items-center">
                 <div>
                   <span className="text-white">Facility Size</span>
-                  <p className="text-xs text-white/40">ILPA max: 25%</p>
+                  <p className="text-xs text-white/70">ILPA max: 25%</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className={`font-semibold ${input.facilitySize <= 0.25 ? 'text-emerald-400' : 'text-amber-400'}`}>
@@ -272,7 +272,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
               <div className="flex justify-between items-center">
                 <div>
                   <span className="text-white">Days Outstanding</span>
-                  <p className="text-xs text-white/40">ILPA max: 180 days</p>
+                  <p className="text-xs text-white/70">ILPA max: 180 days</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className={`font-semibold ${input.maxDaysOutstanding <= 180 ? 'text-emerald-400' : 'text-amber-400'}`}>
@@ -308,7 +308,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
               <TrendingUp className="h-5 w-5 text-emerald-400 mt-0.5" />
               <div>
                 <p className="font-medium text-white">Strong IRR Boost</p>
-                <p className="text-sm text-white/60">+{formatBps(irrBoost)} improvement is meaningful for LP reporting.</p>
+                <p className="text-white/80">+{formatBps(irrBoost)} improvement is meaningful for LP reporting.</p>
               </div>
             </div>
           )}
@@ -318,7 +318,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
               <DollarSign className="h-5 w-5 text-amber-400 mt-0.5" />
               <div>
                 <p className="font-medium text-white">Monitor Interest Costs</p>
-                <p className="text-sm text-white/60">{formatCurrency(totalInterestPaid)} in interest is notable. Review facility terms.</p>
+                <p className="text-white/80">{formatCurrency(totalInterestPaid)} in interest is notable. Review facility terms.</p>
               </div>
             </div>
           )}
@@ -328,7 +328,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
               <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5" />
               <div>
                 <p className="font-medium text-white">ILPA Aligned</p>
-                <p className="text-sm text-white/60">Your terms align with industry best practices.</p>
+                <p className="text-white/80">Your terms align with industry best practices.</p>
               </div>
             </div>
           ) : (
@@ -336,14 +336,14 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
               <AlertTriangle className="h-5 w-5 text-amber-400 mt-0.5" />
               <div>
                 <p className="font-medium text-white">Disclose to LPs</p>
-                <p className="text-sm text-white/60">Terms exceed ILPA guidelines. Ensure LP awareness and approval.</p>
+                <p className="text-white/80">Terms exceed ILPA guidelines. Ensure LP awareness and approval.</p>
               </div>
             </div>
           )}
 
           <div className="p-4 rounded-xl bg-white/5 border border-white/10 mt-6">
             <p className="font-medium text-white mb-2">Bottom Line</p>
-            <p className="text-sm text-white/60">
+            <p className="text-white/80">
               Subscription lines are a valuable tool when used appropriately. The IRR boost is real
               but should be disclosed alongside unlevered returns. Focus on operational benefits
               like execution speed and capital call smoothing.
