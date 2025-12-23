@@ -452,7 +452,7 @@ export function JourneyMode({ onComplete, onSkip, existingData }: JourneyModePro
       </div>
 
       {/* Main content area */}
-      <div className="relative h-full flex flex-col items-center justify-center px-4 sm:px-6 py-24">
+      <div className="relative h-full flex flex-col items-center justify-start px-4 sm:px-6 pt-8 pb-24 overflow-y-auto">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={step.id}
@@ -462,7 +462,7 @@ export function JourneyMode({ onComplete, onSkip, existingData }: JourneyModePro
             animate="center"
             exit="exit"
             transition={{ duration: 0.3, ease: 'easeOut' }}
-            className="w-full max-w-2xl"
+            className="w-full max-w-2xl pb-32"
           >
             {/* Welcome Step */}
             {step.id === 'welcome' && (
