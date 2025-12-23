@@ -241,7 +241,7 @@ export function ManagementFeeCalculator() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => {
-                setShowWelcome(false)
+                setShowJourney(true)
                 setViewMode('journey')
               }}
               aria-label="Start guided journey to learn fee concepts"
@@ -263,7 +263,7 @@ export function ManagementFeeCalculator() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => {
-                setShowWelcome(false)
+                setShowJourney(false)
                 setViewMode('calculator')
               }}
               aria-label="Jump directly to calculator"
@@ -296,7 +296,7 @@ export function ManagementFeeCalculator() {
                   variant="outline"
                   size="lg"
                   onClick={() => {
-                    setShowWelcome(false)
+                    setShowJourney(false)
                     setViewMode('scenarios')
                   }}
                   aria-label={`Explore ${name} scenario`}

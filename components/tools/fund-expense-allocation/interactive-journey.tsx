@@ -596,7 +596,7 @@ export function InteractiveJourney({
                           )}
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-emerald-400">{getCategoryIcon(category.id)}</span>
-                            <span className="font-medium text-white text-sm truncate">{category.label}</span>
+                            <span className="font-medium text-white text-sm truncate">{category.name}</span>
                           </div>
                         </motion.button>
                       ))}
@@ -633,7 +633,7 @@ export function InteractiveJourney({
                           )}
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-amber-400">{getCategoryIcon(category.id)}</span>
-                            <span className="font-medium text-white text-sm truncate">{category.label}</span>
+                            <span className="font-medium text-white text-sm truncate">{category.name}</span>
                           </div>
                         </motion.button>
                       ))}
@@ -670,7 +670,7 @@ export function InteractiveJourney({
                           )}
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-slate-400">{getCategoryIcon(category.id)}</span>
-                            <span className="font-medium text-white text-sm truncate">{category.label}</span>
+                            <span className="font-medium text-white text-sm truncate">{category.name}</span>
                           </div>
                         </motion.button>
                       ))}
@@ -685,7 +685,7 @@ export function InteractiveJourney({
                     className="mt-4 p-3 rounded-lg bg-slate-800/50 border border-slate-700"
                   >
                     <p className="text-sm text-slate-300">
-                      <span className="font-medium">{selectedCategory?.label}:</span>{' '}
+                      <span className="font-medium">{selectedCategory?.name}:</span>{' '}
                       <span className="text-slate-400">{selectedCategory?.description}</span>
                     </p>
                   </motion.div>
@@ -903,7 +903,7 @@ export function InteractiveJourney({
                   <div className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
                     <div className="flex justify-between items-center p-3 sm:p-4 rounded-xl bg-slate-800/50">
                       <span className="text-slate-400">Expense Type</span>
-                      <span className="text-white font-semibold">{selectedCategory?.label || '-'}</span>
+                      <span className="text-white font-semibold">{selectedCategory?.name || '-'}</span>
                     </div>
                     <div className="flex justify-between items-center p-3 sm:p-4 rounded-xl bg-slate-800/50">
                       <span className="text-slate-400">Fund Type</span>

@@ -34,7 +34,14 @@ const PHASES = [
   { id: 3, name: 'Budget', icon: Calculator },
 ]
 
-const STEPS = [
+interface JourneyStep {
+  id: string
+  title: string
+  phase: number
+  isCelebration?: boolean
+}
+
+const STEPS: JourneyStep[] = [
   { id: 'welcome', title: 'Welcome', phase: 1 },
   { id: 'fund-strategy', title: 'Fund Strategy', phase: 1 },
   { id: 'fund-size', title: 'Fund Size', phase: 1 },
@@ -44,9 +51,9 @@ const STEPS = [
   { id: 'celebration-2', title: 'Phase Complete', phase: 2, isCelebration: true },
   { id: 'expenses-overview', title: 'Expense Categories', phase: 3 },
   { id: 'review', title: 'Review', phase: 3 },
-] as const
+]
 
-type StepId = typeof STEPS[number]['id']
+type StepId = string
 
 // Fund strategy options
 const fundStrategies = [

@@ -50,19 +50,19 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
               <p className="text-sm text-white/60">Gross Multiple</p>
             </div>
             <div className="p-4 rounded-xl bg-white/5 border border-white/10 text-center">
-              <p className="text-2xl font-bold text-emerald-400">{formatCurrency(output.totalProfit, true)}</p>
+              <p className="text-2xl font-bold text-emerald-400">{formatCurrency(output.totalProfit)}</p>
               <p className="text-sm text-white/60">Total Profit</p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center">
-              <p className="text-xl font-bold text-emerald-400">{formatCurrency(output.totalToLPs, true)}</p>
+              <p className="text-xl font-bold text-emerald-400">{formatCurrency(output.totalToLPs)}</p>
               <p className="text-sm text-white/60">LP Distributions</p>
               <p className="text-xs text-emerald-400 mt-1">{formatMultiple(output.lpMultiple)} net</p>
             </div>
             <div className="p-4 rounded-xl bg-violet-500/10 border border-violet-500/30 text-center">
-              <p className="text-xl font-bold text-violet-400">{formatCurrency(output.totalToGP, true)}</p>
+              <p className="text-xl font-bold text-violet-400">{formatCurrency(output.totalToGP)}</p>
               <p className="text-sm text-white/60">GP Distributions</p>
               <p className="text-xs text-violet-400 mt-1">{formatPercent(output.effectiveCarryRate)} carry</p>
             </div>
