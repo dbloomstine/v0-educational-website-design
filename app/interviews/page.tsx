@@ -1,4 +1,3 @@
-import { Metadata } from 'next'
 import Link from 'next/link'
 import Image from 'next/image'
 import { SiteHeader } from '@/components/site-header'
@@ -7,25 +6,15 @@ import { AnimateOnScroll } from '@/components/animate-on-scroll'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Mic2, Users, Lightbulb, ArrowRight } from 'lucide-react'
+import { SectionCTA } from '@/components/layout'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: 'FundOpsHQ Interviews | Coming Soon',
   description: 'Conversations with fund operations professionals, CFOs, COOs, and industry experts. Coming soon to FundOpsHQ.',
-  openGraph: {
-    title: 'FundOpsHQ Interviews | Coming Soon',
-    description: 'Conversations with fund operations professionals, CFOs, COOs, and industry experts.',
-    type: 'website',
-    url: 'https://fundops.com/interviews',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'FundOpsHQ Interviews | Coming Soon',
-    description: 'Conversations with fund operations professionals, CFOs, COOs, and industry experts.',
-  },
-  alternates: {
-    canonical: 'https://fundops.com/interviews',
-  },
-}
+  path: '/interviews',
+  ogDescription: 'Conversations with fund operations professionals, CFOs, COOs, and industry experts.',
+})
 
 const highlights = [
   {
@@ -187,28 +176,17 @@ export default function InterviewsPage() {
           </div>
         </section>
 
-        {/* CTA Section */}
-        <section className="py-16 border-t border-border">
-          <div className="container mx-auto px-4">
-            <AnimateOnScroll>
-              <div className="mx-auto max-w-2xl text-center">
-                <h2 className="text-2xl font-bold tracking-tight mb-4">
-                  Know someone with a great story?
-                </h2>
-                <p className="text-muted-foreground mb-8 leading-relaxed">
-                  If you or someone you know has interesting experiences in fund operations
-                  and would like to share them, I'd love to hear from you.
-                </p>
-                <Button asChild size="lg">
-                  <Link href="/contact">
-                    Get in Touch
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </AnimateOnScroll>
-          </div>
-        </section>
+        <SectionCTA
+          title="Know someone with a great story?"
+          description="If you or someone you know has interesting experiences in fund operations and would like to share them, I'd love to hear from you."
+        >
+          <Button asChild size="lg">
+            <Link href="/contact">
+              Get in Touch
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </SectionCTA>
 
         {/* Explore Other Content */}
         <section className="py-12 border-t border-border bg-card/30">

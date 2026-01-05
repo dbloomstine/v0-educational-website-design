@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Mail, User } from 'lucide-react'
 import { getAllNewsletters, getNewsletterPosts } from '@/lib/newsletters'
+import { PageHero, SectionCTA } from '@/components/layout'
 
 // Revalidate every 2 hours to pick up new newsletter posts
 export const revalidate = 7200
@@ -43,25 +44,11 @@ export default async function NewsletterPage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* Hero Section */}
-        <section className="relative border-b border-border overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/20" />
-
-          <div className="container relative mx-auto px-4 py-24 lg:py-32">
-            <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-foreground">
-                <Mail className="h-4 w-4" />
-                Newsletters
-              </div>
-              <h1 className="mb-6 text-5xl font-bold tracking-tight text-balance">
-                Stay informed on fund operations
-              </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed text-balance">
-                Get curated insights, regulatory updates, and practical guidance delivered directly to your inbox.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          title="Stay informed on fund operations"
+          subtitle="Get curated insights, regulatory updates, and practical guidance delivered directly to your inbox."
+          badge={{ icon: Mail, text: 'Newsletters' }}
+        />
 
         {/* Newsletters Grid */}
         <section className="py-20">
@@ -135,20 +122,12 @@ export default async function NewsletterPage() {
           </div>
         </section>
 
-        {/* Subscribe CTA */}
-        <section className="py-16 border-t border-border bg-accent/10">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-2xl font-bold tracking-tight mb-4">Never miss an issue</h2>
-              <p className="text-muted-foreground mb-6">
-                Subscribe to one or both newsletters to stay current on fund operations trends and best practices.
-              </p>
-              <p className="text-sm text-muted-foreground">
-                No spam. Unsubscribe anytime.
-              </p>
-            </div>
-          </div>
-        </section>
+        <SectionCTA
+          title="Never miss an issue"
+          description="Subscribe to one or both newsletters to stay current on fund operations trends and best practices."
+          note="No spam. Unsubscribe anytime."
+          background="accent"
+        />
       </main>
 
       <SiteFooter />

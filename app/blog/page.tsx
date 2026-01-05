@@ -1,4 +1,3 @@
-import { Metadata } from 'next'
 import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
@@ -6,25 +5,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { ArrowRight } from 'lucide-react'
 import { getAllBlogPosts } from '@/lib/blog'
+import { PageHero, SectionCTA } from '@/components/layout'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: 'FundWatch Briefing - Weekly Private Fund Operations Newsletter | FundOpsHQ',
   description: 'The weekly newsletter for private fund professionals. Get curated insights on operations, compliance, regulatory updates, and industry trends delivered to your inbox.',
-  openGraph: {
-    title: 'FundWatch Briefing - Weekly Private Fund Operations Newsletter',
-    description: 'Curated insights for fund operations professionals across all asset classes',
-    type: 'website',
-    url: 'https://fundops.com/blog',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'FundWatch Briefing',
-    description: 'Weekly private fund operations insights and industry news',
-  },
-  alternates: {
-    canonical: 'https://fundops.com/blog',
-  },
-}
+  path: '/blog',
+  ogTitle: 'FundWatch Briefing - Weekly Private Fund Operations Newsletter',
+  ogDescription: 'Curated insights for fund operations professionals across all asset classes',
+  twitterTitle: 'FundWatch Briefing',
+  twitterDescription: 'Weekly private fund operations insights and industry news',
+})
 
 export default async function BlogPage() {
   const posts = await getAllBlogPosts()
@@ -34,24 +26,17 @@ export default async function BlogPage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* Hero Section */}
-        <section className="border-b border-border bg-gradient-to-b from-background to-accent/20 py-20">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-3xl text-center">
-              <h1 className="mb-6 text-5xl font-bold tracking-tight text-balance">
-                FundWatch Briefing
-              </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed text-balance mb-8">
-                Your weekly dose of fund operations intel. Curated industry news, regulatory updates, and actionable insights for PE, VC, credit, hedge funds, and beyond.
-              </p>
-              <Button asChild size="lg">
-                <a href="https://fundwatch-briefing.beehiiv.com/" target="_blank" rel="noopener noreferrer">
-                  Subscribe to Newsletter
-                </a>
-              </Button>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          title="FundWatch Briefing"
+          subtitle="Your weekly dose of fund operations intel. Curated industry news, regulatory updates, and actionable insights for PE, VC, credit, hedge funds, and beyond."
+          background="gradient-b"
+        >
+          <Button asChild size="lg">
+            <a href="https://fundwatch-briefing.beehiiv.com/" target="_blank" rel="noopener noreferrer">
+              Subscribe to Newsletter
+            </a>
+          </Button>
+        </PageHero>
 
         {/* Blog Posts List */}
         <section className="py-20">
@@ -93,22 +78,19 @@ export default async function BlogPage() {
           </div>
         </section>
 
-        {/* Newsletter CTA */}
-        <section className="border-t border-border bg-accent/20 py-20">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-3xl text-center">
-              <h2 className="mb-4 text-3xl font-bold">Get FundWatch Briefing in Your Inbox</h2>
-              <p className="mb-8 text-lg text-muted-foreground text-balance">
-                Join fund operations professionals across PE, VC, credit, and hedge funds. Get curated industry news, regulatory updates, and actionable insights delivered every week.
-              </p>
-              <Button asChild size="lg">
-                <a href="https://fundwatch-briefing.beehiiv.com/" target="_blank" rel="noopener noreferrer">
-                  Subscribe to Newsletter
-                </a>
-              </Button>
-            </div>
-          </div>
-        </section>
+        <SectionCTA
+          title="Get FundWatch Briefing in Your Inbox"
+          description="Join fund operations professionals across PE, VC, credit, and hedge funds. Get curated industry news, regulatory updates, and actionable insights delivered every week."
+          background="accent"
+          maxWidth="lg"
+          className="py-20"
+        >
+          <Button asChild size="lg">
+            <a href="https://fundwatch-briefing.beehiiv.com/" target="_blank" rel="noopener noreferrer">
+              Subscribe to Newsletter
+            </a>
+          </Button>
+        </SectionCTA>
       </main>
 
       <SiteFooter />

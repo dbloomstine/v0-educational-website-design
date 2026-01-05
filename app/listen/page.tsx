@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Headphones, ExternalLink, ArrowRight, Mic, Clock, Sparkles } from 'lucide-react'
 import { PODCAST_PLATFORMS, getPodcastEpisodes } from '@/lib/podcasts'
+import { PageHero, SectionCTA } from '@/components/layout'
 
 export const metadata: Metadata = {
   title: 'Listen to FundOpsHQ',
@@ -85,26 +86,12 @@ export default async function ListenPage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* Hero Section */}
-        <section className="relative border-b border-border overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/20" />
-
-          <div className="container relative mx-auto px-4 py-24 lg:py-32">
-            <div className="mx-auto max-w-3xl text-center">
-              <div className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-foreground mb-6">
-                <Headphones className="h-4 w-4" />
-                Audio Versions Available
-              </div>
-              <h1 className="mb-6 text-5xl font-bold tracking-tight text-balance lg:text-6xl">
-                Listen to FundOpsHQ
-              </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed text-balance">
-                All FundOpsHQ Insights articles are available as audio podcasts.
-                Listen on your favorite platform while commuting, exercising, or working.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          title="Listen to FundOpsHQ"
+          subtitle="All FundOpsHQ Insights articles are available as audio podcasts. Listen on your favorite platform while commuting, exercising, or working."
+          badge={{ icon: Headphones, text: 'Audio Versions Available' }}
+          titleSize="large"
+        />
 
         {/* Platform Cards */}
         <section className="py-20">
@@ -243,32 +230,23 @@ export default async function ListenPage() {
           </section>
         )}
 
-        {/* CTA Section */}
-        <section className="py-16 border-t border-border bg-gradient-to-b from-accent/10 to-background">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-2xl font-bold tracking-tight mb-4">
-                Prefer Reading?
-              </h2>
-              <p className="text-muted-foreground mb-8">
-                All audio content is also available as written articles in our newsletter archive.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild size="lg">
-                  <Link href="/newsletter/fundopshq-insights">
-                    Read FundOpsHQ Insights
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild size="lg">
-                  <Link href="/newsletter">
-                    All Newsletters
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
+        <SectionCTA
+          title="Prefer Reading?"
+          description="All audio content is also available as written articles in our newsletter archive."
+          background="gradient"
+        >
+          <Button asChild size="lg">
+            <Link href="/newsletter/fundopshq-insights">
+              Read FundOpsHQ Insights
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+          <Button variant="outline" asChild size="lg">
+            <Link href="/newsletter">
+              All Newsletters
+            </Link>
+          </Button>
+        </SectionCTA>
       </main>
 
       <SiteFooter />

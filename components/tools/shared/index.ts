@@ -42,6 +42,19 @@ export {
   type QuizBaseProps,
   type QuizResultsProps
 } from "./quiz-base"
+export {
+  JourneyModeBase,
+  JourneyWelcome,
+  JourneyCelebration,
+  JourneyWelcomeBack,
+  JOURNEY_THEMES,
+  type JourneyTheme,
+  type JourneyModeBaseProps,
+  type JourneyRenderHelpers,
+  type JourneyWelcomeProps,
+  type JourneyCelebrationProps,
+  type JourneyWelcomeBackProps,
+} from "./journey-mode-base"
 
 // Status colors and styling utilities
 export {

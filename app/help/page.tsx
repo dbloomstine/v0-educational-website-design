@@ -1,29 +1,18 @@
-import { Metadata } from 'next'
 import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Shield, Building2, Rocket, ClipboardCheck, ArrowRight, FileCheck, FileText, BarChart3, Calculator, Clock } from 'lucide-react'
+import { PageHero, SectionCTA } from '@/components/layout'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: 'How I Can Help | FundOpsHQ',
   description: 'Facing a specific fund operations challenge? Whether it\'s SEC exam prep, vendor selection, or launching your first fund, I\'m happy to talk through it.',
-  openGraph: {
-    title: 'How I Can Help | FundOpsHQ',
-    description: 'Facing a specific fund operations challenge? I\'m happy to talk through it.',
-    type: 'website',
-    url: 'https://fundops.com/help',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'How I Can Help | FundOpsHQ',
-    description: 'Facing a specific fund operations challenge? I\'m happy to talk through it.',
-  },
-  alternates: {
-    canonical: 'https://fundops.com/help',
-  },
-}
+  path: '/help',
+  ogDescription: 'Facing a specific fund operations challenge? I\'m happy to talk through it.',
+})
 
 const helpTopics = [
   {
@@ -97,22 +86,12 @@ export default function HelpPage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* Hero Section */}
-        <section className="relative border-b border-border overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/20" />
-
-          <div className="container relative mx-auto px-4 py-24 lg:py-32">
-            <div className="mx-auto max-w-3xl">
-              <h1 className="mb-6 text-5xl font-bold tracking-tight text-balance lg:text-6xl">
-                How I Can Help
-              </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed text-balance">
-                Fund operations challenges rarely come one at a time. If you're dealing with something specific,
-                I'm happy to talk through it—no pitch, just a conversation.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          title="How I Can Help"
+          subtitle="Fund operations challenges rarely come one at a time. If you're dealing with something specific, I'm happy to talk through it—no pitch, just a conversation."
+          titleSize="large"
+          align="left"
+        />
 
         {/* Help Topics Grid */}
         <section className="py-16">
@@ -154,23 +133,17 @@ export default function HelpPage() {
           </div>
         </section>
 
-        {/* Something Else Section */}
-        <section className="py-16 border-t border-border bg-card/30">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="mb-4 text-2xl font-bold">Something else on your mind?</h2>
-              <p className="mb-8 text-muted-foreground leading-relaxed">
-                These aren't the only things I can help with. If you're working through an operations challenge
-                that doesn't fit neatly into one of these categories, reach out anyway. I'm happy to chat.
-              </p>
-              <Button asChild size="lg">
-                <Link href="/contact">
-                  Get in Touch
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </section>
+        <SectionCTA
+          title="Something else on your mind?"
+          description="These aren't the only things I can help with. If you're working through an operations challenge that doesn't fit neatly into one of these categories, reach out anyway. I'm happy to chat."
+          className="bg-card/30"
+        >
+          <Button asChild size="lg">
+            <Link href="/contact">
+              Get in Touch
+            </Link>
+          </Button>
+        </SectionCTA>
 
         {/* Context Section */}
         <section className="py-12 border-t border-border bg-accent/10">

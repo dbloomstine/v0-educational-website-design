@@ -1,29 +1,18 @@
-import { Metadata } from 'next'
 import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Mail, Calendar, MessageCircle, Compass, Users, Lightbulb } from 'lucide-react'
+import { PageHero } from '@/components/layout'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: 'Contact | FundOpsHQ',
   description: 'Have a question about fund operations? Want to think through a challenge? I\'m happy to chat, offer guidance, or point you in the right direction. No obligation, no pressure.',
-  openGraph: {
-    title: 'Contact | FundOpsHQ',
-    description: 'Have a question about fund operations? I\'m happy to chat and help however I can.',
-    type: 'website',
-    url: 'https://fundops.com/contact',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'Contact | FundOpsHQ',
-    description: 'Have a question about fund operations? I\'m happy to chat and help however I can.',
-  },
-  alternates: {
-    canonical: 'https://fundops.com/contact',
-  },
-}
+  path: '/contact',
+  ogDescription: 'Have a question about fund operations? I\'m happy to chat and help however I can.',
+})
 
 const topicsToDiscuss = [
   {
@@ -54,22 +43,12 @@ export default function ContactPage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* Hero Section */}
-        <section className="relative border-b border-border overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/20" />
-
-          <div className="container relative mx-auto px-4 py-24 lg:py-32">
-            <div className="mx-auto max-w-3xl">
-              <h1 className="mb-6 text-5xl font-bold tracking-tight text-balance lg:text-6xl">
-                Contact
-              </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed text-balance">
-                I'm Danny—the person behind FundOpsHQ. If you have a question, want to think through a challenge,
-                or just want to talk shop about fund operations, I'm happy to chat.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          title="Contact"
+          subtitle="I'm Danny—the person behind FundOpsHQ. If you have a question, want to think through a challenge, or just want to talk shop about fund operations, I'm happy to chat."
+          titleSize="large"
+          align="left"
+        />
 
         {/* Contact Options - Moved up */}
         <section className="py-16">

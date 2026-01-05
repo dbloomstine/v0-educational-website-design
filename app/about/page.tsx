@@ -5,6 +5,7 @@ import { SiteFooter } from '@/components/site-footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { BookOpen, Users, Target, TrendingUp, Linkedin, Calendar, Building2, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { PageHero, SectionCTA } from '@/components/layout'
 
 export const metadata: Metadata = {
   title: 'About FundOpsHQ',
@@ -67,22 +68,11 @@ export default function AboutPage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* Hero Section */}
-        <section className="relative border-b border-border overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-background via-background to-accent/20" />
-
-          <div className="container relative mx-auto px-4 py-24 lg:py-32">
-            <div className="mx-auto max-w-3xl text-center">
-              <h1 className="mb-6 text-5xl font-bold tracking-tight text-balance lg:text-6xl">
-                About FundOpsHQ
-              </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed text-balance">
-                A free resource to help you learn fund operations. Articles and tools covering
-                PE, VC, hedge funds, private credit, real estate, and more.
-              </p>
-            </div>
-          </div>
-        </section>
+        <PageHero
+          title="About FundOpsHQ"
+          subtitle="A free resource to help you learn fund operations. Articles and tools covering PE, VC, hedge funds, private credit, real estate, and more."
+          titleSize="large"
+        />
 
         {/* Mission Statement */}
         <section className="py-20">
@@ -259,30 +249,22 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Final CTA */}
-        <section className="py-16 border-t border-border">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-2xl text-center">
-              <h2 className="text-2xl font-bold tracking-tight mb-4">Ready to dive in?</h2>
-              <p className="text-muted-foreground mb-8">
-                Explore our resources by fund type or check out our free tools and calculators.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button asChild size="lg">
-                  <Link href="/#fund-types">
-                    Explore Resources
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild size="lg">
-                  <Link href="/tools">
-                    Free Tools
-                  </Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </section>
+        <SectionCTA
+          title="Ready to dive in?"
+          description="Explore our resources by fund type or check out our free tools and calculators."
+        >
+          <Button asChild size="lg">
+            <Link href="/#fund-types">
+              Explore Resources
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+          <Button variant="outline" asChild size="lg">
+            <Link href="/tools">
+              Free Tools
+            </Link>
+          </Button>
+        </SectionCTA>
       </main>
 
       <SiteFooter />
