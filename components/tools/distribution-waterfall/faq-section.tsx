@@ -1,25 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger
-} from '@/components/ui/accordion'
-import { Search, HelpCircle, MessageCircle } from 'lucide-react'
+import { FAQBase, type FAQItem, type FAQCategoryConfig } from '@/components/tools/shared'
 
-interface FAQItem {
-  id: string
-  question: string
-  answer: string
-  category: 'basics' | 'structure' | 'economics' | 'negotiation' | 'advanced'
-}
-
-const faqItems: FAQItem[] = [
+/**
+ * FAQ data for Distribution Waterfall Calculator
+ */
+export const WATERFALL_FAQS: FAQItem[] = [
   // Basics
   {
     id: 'what-is-waterfall',
@@ -151,7 +137,10 @@ const faqItems: FAQItem[] = [
   }
 ]
 
-const categoryLabels: Record<string, { label: string; description: string }> = {
+/**
+ * Category configuration for Waterfall FAQs
+ */
+export const WATERFALL_FAQ_CATEGORIES: Record<string, FAQCategoryConfig> = {
   basics: { label: 'Getting Started', description: 'Fundamental concepts' },
   structure: { label: 'Waterfall Structure', description: 'European vs American' },
   economics: { label: 'Economic Terms', description: 'Pref, carry, catch-up' },
@@ -164,128 +153,26 @@ interface FAQSectionProps {
 }
 
 export function FAQSection({ compact = false }: FAQSectionProps) {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-
-  const filteredFAQs = faqItems.filter(item => {
-    const matchesSearch =
-      item.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.answer.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = !selectedCategory || item.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
-
-  const categories = Object.keys(categoryLabels)
-
   if (compact) {
     return (
-      <Card className="border-border">
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-2">
-            <HelpCircle className="h-5 w-5 text-primary" />
-            <CardTitle className="text-lg">Common Questions</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <Accordion type="single" collapsible className="space-y-2">
-            {faqItems.slice(0, 5).map((item) => (
-              <AccordionItem key={item.id} value={item.id} className="border rounded-lg px-4">
-                <AccordionTrigger className="text-sm text-left hover:no-underline">
-                  {item.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-sm text-muted-foreground">
-                  {item.answer}
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </CardContent>
-      </Card>
+      <FAQBase
+        items={WATERFALL_FAQS}
+        compact
+        compactLimit={5}
+        accordionMode
+      />
     )
   }
 
   return (
-    <Card className="border-border">
-      <CardHeader>
-        <div className="flex items-center gap-2 mb-2">
-          <MessageCircle className="h-6 w-6 text-primary" />
-          <CardTitle>Frequently Asked Questions</CardTitle>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          Everything you need to know about distribution waterfalls
-        </p>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search questions..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9"
-          />
-        </div>
-
-        {/* Category filters */}
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant={selectedCategory === null ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setSelectedCategory(null)}
-          >
-            All
-          </Button>
-          {categories.map((cat) => (
-            <Button
-              key={cat}
-              variant={selectedCategory === cat ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {categoryLabels[cat].label}
-            </Button>
-          ))}
-        </div>
-
-        {/* FAQ List */}
-        {filteredFAQs.length === 0 ? (
-          <p className="text-center text-muted-foreground py-8">
-            No questions found matching "{searchTerm}"
-          </p>
-        ) : (
-          <Accordion type="single" collapsible className="space-y-2">
-            {filteredFAQs.map((item) => (
-              <AccordionItem
-                key={item.id}
-                value={item.id}
-                className="border rounded-lg px-4 bg-background"
-              >
-                <AccordionTrigger className="text-left hover:no-underline">
-                  <div className="flex-1 pr-4">
-                    <p className="font-medium text-foreground">{item.question}</p>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {categoryLabels[item.category].label}
-                    </p>
-                  </div>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    {item.answer}
-                  </p>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        )}
-
-        {/* Stats */}
-        <div className="pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground text-center">
-            Showing {filteredFAQs.length} of {faqItems.length} questions
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+    <FAQBase
+      items={WATERFALL_FAQS}
+      title="Frequently Asked Questions"
+      subtitle="Everything you need to know about distribution waterfalls"
+      categoryLabels={WATERFALL_FAQ_CATEGORIES}
+      showSearch
+      showCategoryFilter
+      accordionMode
+    />
   )
 }

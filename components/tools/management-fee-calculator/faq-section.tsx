@@ -1,26 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import {
-  HelpCircle,
-  ChevronDown,
-  ChevronRight,
-  Sparkles,
-  X,
-  MessageCircle
-} from 'lucide-react'
+import { FAQBase, type FAQItem, type FAQCategoryConfig } from '@/components/tools/shared'
 
-interface FAQ {
-  id: string
-  question: string
-  answer: string
-  category: 'basics' | 'calculation' | 'negotiation' | 'strategy'
-}
-
-export const FAQS: FAQ[] = [
+/**
+ * FAQ data for Management Fee Calculator
+ */
+export const MANAGEMENT_FEE_FAQS: FAQItem[] = [
   // Basics
   {
     id: 'faq-1',
@@ -102,11 +87,14 @@ export const FAQS: FAQ[] = [
   }
 ]
 
-const categoryLabels: Record<string, string> = {
-  'basics': 'Getting Started',
-  'calculation': 'Fee Calculations',
-  'negotiation': 'LP Negotiations',
-  'strategy': 'GP Strategy'
+/**
+ * Category configuration for Management Fee Calculator FAQs
+ */
+export const MANAGEMENT_FEE_FAQ_CATEGORIES: Record<string, FAQCategoryConfig> = {
+  basics: { label: 'Getting Started' },
+  calculation: { label: 'Fee Calculations' },
+  negotiation: { label: 'LP Negotiations' },
+  strategy: { label: 'GP Strategy' }
 }
 
 interface FAQSectionProps {
@@ -115,108 +103,16 @@ interface FAQSectionProps {
 }
 
 export function FAQSection({ onFaqRead, onClose }: FAQSectionProps) {
-  const [expandedFaq, setExpandedFaq] = useState<string | null>(null)
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-
-  const filteredFaqs = selectedCategory
-    ? FAQS.filter(faq => faq.category === selectedCategory)
-    : FAQS
-
-  const categories = Array.from(new Set(FAQS.map(f => f.category)))
-
-  const handleFaqClick = (faqId: string) => {
-    setExpandedFaq(expandedFaq === faqId ? null : faqId)
-    if (expandedFaq !== faqId) {
-      onFaqRead?.(faqId)
-    }
-  }
-
   return (
-    <Card className="border-2 border-primary/20">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <HelpCircle className="h-5 w-5 text-primary" />
-            <CardTitle>Frequently Asked Questions</CardTitle>
-          </div>
-          {onClose && (
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-
-        {/* Category filters */}
-        <div className="flex flex-wrap gap-2 mt-4">
-          <Button
-            variant={selectedCategory === null ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setSelectedCategory(null)}
-          >
-            All Questions
-          </Button>
-          {categories.map(category => (
-            <Button
-              key={category}
-              variant={selectedCategory === category ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSelectedCategory(selectedCategory === category ? null : category)}
-            >
-              {categoryLabels[category]}
-            </Button>
-          ))}
-        </div>
-      </CardHeader>
-
-      <CardContent className="max-h-[500px] overflow-y-auto space-y-2">
-        {filteredFaqs.map((faq) => (
-          <motion.div
-            key={faq.id}
-            layout
-            className="border rounded-lg overflow-hidden"
-          >
-            <button
-              onClick={() => handleFaqClick(faq.id)}
-              className="w-full p-4 flex items-start justify-between hover:bg-muted/50 transition-colors text-left"
-            >
-              <div className="flex items-start gap-3 flex-1">
-                <MessageCircle className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-                <span className="font-medium">{faq.question}</span>
-              </div>
-              <div className="flex-shrink-0 ml-2">
-                {expandedFaq === faq.id ? (
-                  <ChevronDown className="h-5 w-5 text-muted-foreground" />
-                ) : (
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                )}
-              </div>
-            </button>
-
-            <AnimatePresence>
-              {expandedFaq === faq.id && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="px-4 pb-4"
-                >
-                  <div className="pl-8">
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {faq.answer}
-                    </p>
-
-                    {/* XP indicator */}
-                    <div className="flex items-center gap-1 mt-3 text-xs text-amber-600 dark:text-amber-400">
-                      <Sparkles className="h-3 w-3" />
-                      <span>+10 XP for reading this answer!</span>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
-        ))}
-      </CardContent>
-    </Card>
+    <FAQBase
+      items={MANAGEMENT_FEE_FAQS}
+      title="Frequently Asked Questions"
+      categoryLabels={MANAGEMENT_FEE_FAQ_CATEGORIES}
+      showCategoryFilter
+      showXpIndicator
+      xpAmount={10}
+      onFaqRead={onFaqRead}
+      onClose={onClose}
+    />
   )
 }
