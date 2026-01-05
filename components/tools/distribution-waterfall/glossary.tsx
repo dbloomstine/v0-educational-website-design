@@ -1,21 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Search, BookOpen, ChevronDown, ChevronUp, ExternalLink } from 'lucide-react'
+import { GlossaryBase, type GlossaryTerm, type GlossaryCategoryConfig, findGlossaryTerm } from '@/components/tools/shared'
 
-interface GlossaryTerm {
-  term: string
-  definition: string
-  example?: string
-  related?: string[]
-  category: 'structure' | 'economics' | 'tiers' | 'metrics' | 'provisions'
-}
-
-const glossaryTerms: GlossaryTerm[] = [
+/**
+ * Glossary terms for Distribution Waterfall Calculator
+ */
+export const glossaryTerms: GlossaryTerm[] = [
   // Structure terms
   {
     term: 'Distribution Waterfall',
@@ -201,7 +191,10 @@ const glossaryTerms: GlossaryTerm[] = [
   }
 ]
 
-const categoryLabels: Record<string, { label: string; color: string }> = {
+/**
+ * Category configuration for Waterfall Glossary
+ */
+export const WATERFALL_GLOSSARY_CATEGORIES: Record<string, GlossaryCategoryConfig> = {
   structure: { label: 'Structure', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' },
   economics: { label: 'Economics', color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' },
   tiers: { label: 'Tiers', color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' },
@@ -215,212 +208,33 @@ interface GlossaryProps {
 }
 
 export function Glossary({ compact = false, initialSearchTerm = '' }: GlossaryProps) {
-  const [searchTerm, setSearchTerm] = useState(initialSearchTerm)
-  const [expandedTerms, setExpandedTerms] = useState<Set<string>>(new Set())
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-
-  const filteredTerms = glossaryTerms.filter(item => {
-    const matchesSearch =
-      item.term.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.definition.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = !selectedCategory || item.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
-
-  const toggleTerm = (term: string) => {
-    setExpandedTerms(prev => {
-      const next = new Set(prev)
-      if (next.has(term)) {
-        next.delete(term)
-      } else {
-        next.add(term)
-      }
-      return next
-    })
-  }
-
-  const categories = Object.keys(categoryLabels)
-
   if (compact) {
     return (
-      <Card className="border-border">
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-primary" />
-            <CardTitle className="text-lg">Quick Reference</CardTitle>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="relative mb-4">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search terms..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9"
-            />
-          </div>
-          <div className="space-y-2 max-h-[300px] overflow-y-auto">
-            {filteredTerms.slice(0, 8).map((item) => (
-              <button
-                key={item.term}
-                onClick={() => toggleTerm(item.term)}
-                className="w-full text-left p-2 rounded-lg hover:bg-muted/50 transition-colors"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-medium text-sm">{item.term}</span>
-                  {expandedTerms.has(item.term) ? (
-                    <ChevronUp className="h-4 w-4 text-muted-foreground" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                  )}
-                </div>
-                {expandedTerms.has(item.term) && (
-                  <p className="text-xs text-muted-foreground mt-1">{item.definition}</p>
-                )}
-              </button>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <GlossaryBase
+        terms={glossaryTerms}
+        compact
+        showSearch
+        compactLimit={8}
+      />
     )
   }
 
   return (
-    <Card className="border-border">
-      <CardHeader>
-        <div className="flex items-center gap-2 mb-2">
-          <BookOpen className="h-6 w-6 text-primary" />
-          <CardTitle>Waterfall Glossary</CardTitle>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          Essential terms for understanding distribution waterfall mechanics
-        </p>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Search */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search glossary..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-9"
-          />
-        </div>
-
-        {/* Category filters */}
-        <div className="flex flex-wrap gap-2">
-          <Button
-            variant={selectedCategory === null ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setSelectedCategory(null)}
-          >
-            All ({glossaryTerms.length})
-          </Button>
-          {categories.map((cat) => (
-            <Button
-              key={cat}
-              variant={selectedCategory === cat ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {categoryLabels[cat].label} ({glossaryTerms.filter(t => t.category === cat).length})
-            </Button>
-          ))}
-        </div>
-
-        {/* Terms list */}
-        <div className="space-y-3">
-          {filteredTerms.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">
-              No terms found matching "{searchTerm}"
-            </p>
-          ) : (
-            filteredTerms.map((item) => (
-              <div
-                key={item.term}
-                className="rounded-lg border border-border bg-background overflow-hidden"
-              >
-                <button
-                  onClick={() => toggleTerm(item.term)}
-                  className="w-full text-left p-4 hover:bg-muted/30 transition-colors"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h4 className="font-semibold text-foreground">{item.term}</h4>
-                        <Badge variant="secondary" className={categoryLabels[item.category].color}>
-                          {categoryLabels[item.category].label}
-                        </Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
-                        {item.definition}
-                      </p>
-                    </div>
-                    {expandedTerms.has(item.term) ? (
-                      <ChevronUp className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                    ) : (
-                      <ChevronDown className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-                    )}
-                  </div>
-                </button>
-
-                {expandedTerms.has(item.term) && (
-                  <div className="px-4 pb-4 space-y-3 border-t border-border pt-3">
-                    <p className="text-sm text-foreground">{item.definition}</p>
-
-                    {item.example && (
-                      <div className="p-3 rounded-lg bg-muted/50">
-                        <p className="text-xs font-medium text-muted-foreground mb-1">Example:</p>
-                        <p className="text-sm text-foreground">{item.example}</p>
-                      </div>
-                    )}
-
-                    {item.related && item.related.length > 0 && (
-                      <div>
-                        <p className="text-xs font-medium text-muted-foreground mb-2">Related terms:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {item.related.map((related) => (
-                            <button
-                              key={related}
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                setSearchTerm(related)
-                                setExpandedTerms(new Set([related]))
-                              }}
-                              className="text-xs px-2 py-1 rounded bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-                            >
-                              {related}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Stats */}
-        <div className="pt-4 border-t border-border">
-          <p className="text-xs text-muted-foreground text-center">
-            Showing {filteredTerms.length} of {glossaryTerms.length} terms
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+    <GlossaryBase
+      terms={glossaryTerms}
+      title="Waterfall Glossary"
+      subtitle="Essential terms for understanding distribution waterfall mechanics"
+      categoryLabels={WATERFALL_GLOSSARY_CATEGORIES}
+      showSearch
+      showCategoryFilter
+      enableRelatedLinks
+    />
   )
 }
 
-// Export individual term lookup for use in InfoPopovers
-export function getGlossaryTerm(termName: string): GlossaryTerm | undefined {
-  return glossaryTerms.find(t =>
-    t.term.toLowerCase() === termName.toLowerCase() ||
-    t.term.toLowerCase().includes(termName.toLowerCase())
-  )
+/**
+ * Export individual term lookup for use in InfoPopovers
+ */
+export function getGlossaryTerm(termName: string) {
+  return findGlossaryTerm(glossaryTerms, termName)
 }
-
-export { glossaryTerms }

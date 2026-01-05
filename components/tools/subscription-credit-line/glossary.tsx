@@ -1,11 +1,11 @@
-"use client"
+'use client'
 
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { ChevronDown, ChevronUp, BookOpen } from 'lucide-react'
+import { GlossaryBase, type GlossaryTerm } from '@/components/tools/shared'
 
-const glossaryTerms = [
+/**
+ * Glossary terms for Subscription Credit Line Calculator
+ */
+export const SUBSCRIPTION_LINE_GLOSSARY_TERMS: GlossaryTerm[] = [
   {
     term: 'Subscription Credit Line (SCL)',
     definition: 'A revolving credit facility secured by the uncalled capital commitments of limited partners. Also known as a capital call facility or subscription line facility.'
@@ -73,38 +73,15 @@ const glossaryTerms = [
 ]
 
 export function GlossarySection() {
-  const [isOpen, setIsOpen] = useState(false)
-
   return (
-    <Card className="border-muted">
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger asChild>
-          <CardHeader className="cursor-pointer hover:bg-accent/50 transition-colors">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <BookOpen className="h-5 w-5 text-primary" />
-                <CardTitle className="text-base">Glossary</CardTitle>
-              </div>
-              {isOpen ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-            </div>
-          </CardHeader>
-        </CollapsibleTrigger>
-        <CollapsibleContent>
-          <CardContent className="border-t pt-4">
-            <p className="text-sm text-muted-foreground mb-4">
-              Key terms for understanding subscription credit lines and their impact on fund performance.
-            </p>
-            <div className="space-y-4">
-              {glossaryTerms.map(({ term, definition }) => (
-                <div key={term} className="pb-4 border-b border-border last:border-0 last:pb-0">
-                  <dt className="font-semibold text-sm text-foreground mb-1">{term}</dt>
-                  <dd className="text-sm text-muted-foreground leading-relaxed">{definition}</dd>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </CollapsibleContent>
-      </Collapsible>
-    </Card>
+    <GlossaryBase
+      terms={SUBSCRIPTION_LINE_GLOSSARY_TERMS}
+      title="Glossary"
+      subtitle="Key terms for understanding subscription credit lines and their impact on fund performance."
+      collapsible
+      defaultCollapsed
+      sortAlphabetically={false}
+      showSearch={false}
+    />
   )
 }
