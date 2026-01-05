@@ -17,7 +17,7 @@ import {
   WalkthroughStep,
   WalkthroughTipBox,
   WalkthroughStatCard,
-} from '../shared/results-walkthrough-base'
+} from '@/components/tools/shared'
 
 interface ResultsWalkthroughProps {
   output: WaterfallOutput

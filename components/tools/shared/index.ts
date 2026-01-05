@@ -55,6 +55,14 @@ export {
   type JourneyCelebrationProps,
   type JourneyWelcomeBackProps,
 } from "./journey-mode-base"
+export {
+  ResultsWalkthroughBase,
+  WalkthroughContentSection,
+  WalkthroughStatCard,
+  WalkthroughTipBox,
+  WalkthroughFeatureItem,
+  type WalkthroughStep,
+} from "./results-walkthrough-base"
 
 // Status colors and styling utilities
 export {

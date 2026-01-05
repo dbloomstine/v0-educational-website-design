@@ -21,7 +21,7 @@ import { formatCurrency } from './budget-calculator'
 import {
   ResultsWalkthroughBase,
   WalkthroughStep,
-} from '../shared/results-walkthrough-base'
+} from '@/components/tools/shared'
 
 interface ResultsWalkthroughProps {
   data: BudgetData

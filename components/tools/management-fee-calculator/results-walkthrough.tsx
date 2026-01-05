@@ -17,7 +17,7 @@ import {
   ResultsWalkthroughBase,
   WalkthroughStep,
   WalkthroughTipBox,
-} from '../shared/results-walkthrough-base'
+} from '@/components/tools/shared'
 
 interface ResultsWalkthroughProps {
   result: FeeCalculationResult
