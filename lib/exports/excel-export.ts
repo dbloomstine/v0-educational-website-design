@@ -7,6 +7,7 @@
 
 import * as XLSX from 'xlsx'
 import { toast } from 'sonner'
+import { formatNumber, formatCurrency } from "@/lib/utils/format"
 
 export interface ExcelSection {
   /** Sheet name (max 31 characters) */
@@ -34,23 +35,6 @@ export interface ExcelExportOptions {
   includeTimestamp?: boolean
   /** Include disclaimer sheet */
   includeDisclaimer?: boolean
-}
-
-/**
- * Format a number for Excel display
- */
-function formatNumber(value: number, decimals: number = 0): string {
-  return value.toLocaleString('en-US', {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals
-  })
-}
-
-/**
- * Format a currency value for Excel
- */
-function formatCurrency(value: number, decimals: number = 0): string {
-  return '$' + formatNumber(value, decimals)
 }
 
 /**

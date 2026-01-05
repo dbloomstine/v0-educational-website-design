@@ -12,6 +12,36 @@ export {
   InputColumn,
   OutputColumn
 } from "./tool-page-layout"
+export {
+  ExpandableSection,
+  ExpandableSectionGroup,
+  type ExpandableSectionProps,
+  type ExpandableSectionGroupProps
+} from "./expandable-section"
+export {
+  FAQBase,
+  type FAQItem,
+  type FAQCategoryConfig,
+  type FAQBaseProps
+} from "./faq-base"
+export {
+  GlossaryBase,
+  findGlossaryTerm,
+  type GlossaryTerm,
+  type GlossaryCategoryConfig,
+  type GlossaryBaseProps
+} from "./glossary-base"
+export {
+  QuizBase,
+  QuizResults,
+  shuffleQuestions,
+  getQuestionsByDifficulty,
+  getBalancedQuestionSet,
+  type QuizQuestion,
+  type QuizResultMessages,
+  type QuizBaseProps,
+  type QuizResultsProps
+} from "./quiz-base"
 
 // Status colors and styling utilities
 export {

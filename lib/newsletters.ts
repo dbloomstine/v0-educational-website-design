@@ -1,4 +1,6 @@
 import Parser from 'rss-parser'
+import { createSlugFromTitleAndDate } from '@/lib/utils/content-slug'
+import { cleanBeehiivContent, extractBeehiivSummary } from '@/lib/utils/content-clean'
 
 // Newsletter configurations
 export const NEWSLETTERS = {
@@ -43,37 +45,6 @@ export interface NewsletterPostMetadata {
   newsletterSlug: NewsletterSlug
 }
 
-// Helper function to create slug from title and date
-function createSlug(title: string, date: string): string {
-  const dateStr = new Date(date).toISOString().split('T')[0]
-  const titleSlug = title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '')
-  return `${titleSlug}-${dateStr}`
-}
-
-// Helper function to clean Beehiiv content
-function cleanContent(content: string): string {
-  let cleaned = content.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-  cleaned = cleaned.replace(/<div class=['"]beehiiv['"]>/gi, '')
-  cleaned = cleaned.replace(/<\/div>\s*$/gi, '')
-  cleaned = cleaned.trim()
-  return cleaned
-}
-
-// Helper function to extract summary from content
-function extractSummary(content: string): string {
-  const cleaned = cleanContent(content)
-  const textContent = cleaned.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
-  const summary = textContent.substring(0, 200)
-  const lastPeriod = summary.lastIndexOf('.')
-  if (lastPeriod > 100) {
-    return summary.substring(0, lastPeriod + 1)
-  }
-  return summary + '...'
-}
-
 export function getNewsletter(slug: string) {
   return NEWSLETTERS[slug as NewsletterSlug] || null
 }
@@ -96,8 +67,8 @@ export async function getNewsletterPosts(newsletterSlug: NewsletterSlug): Promis
 
     const posts = feed.items.map((item: any) => {
       const date = item.isoDate || item.pubDate || new Date().toISOString()
-      const slug = createSlug(item.title || 'untitled', date)
-      const summary = item.contentSnippet || extractSummary(item.contentEncoded || item.content || '')
+      const slug = createSlugFromTitleAndDate(item.title || 'untitled', date)
+      const summary = item.contentSnippet || extractBeehiivSummary(item.contentEncoded || item.content || '')
 
       return {
         slug,
@@ -130,7 +101,7 @@ export async function getNewsletterPost(newsletterSlug: NewsletterSlug, postSlug
 
     const item = feed.items.find((item: any) => {
       const date = item.isoDate || item.pubDate || new Date().toISOString()
-      const itemSlug = createSlug(item.title || 'untitled', date)
+      const itemSlug = createSlugFromTitleAndDate(item.title || 'untitled', date)
       return itemSlug === postSlug
     })
 
@@ -138,14 +109,14 @@ export async function getNewsletterPost(newsletterSlug: NewsletterSlug, postSlug
 
     const date = item.isoDate || item.pubDate || new Date().toISOString()
     const rawContent = item.contentEncoded || item.content || ''
-    const summary = item.contentSnippet || extractSummary(rawContent)
+    const summary = item.contentSnippet || extractBeehiivSummary(rawContent)
 
     return {
       slug: postSlug,
       title: item.title || 'Untitled',
       date,
       summary,
-      content: cleanContent(rawContent),
+      content: cleanBeehiivContent(rawContent),
       link: item.link || '',
       newsletterSlug,
     }

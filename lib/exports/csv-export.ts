@@ -6,6 +6,10 @@
  */
 
 import { toast } from "sonner"
+import { formatNumber, formatCurrency, formatPercent } from "@/lib/utils/format"
+
+// Re-export format utilities for backwards compatibility
+export { formatNumber, formatCurrency, formatPercent }
 
 export interface CSVSection {
   /** Section title (will be displayed as a header row) */
@@ -42,30 +46,6 @@ function formatCSVValue(value: string | number | null | undefined): string {
     return `"${str.replace(/"/g, '""')}"`
   }
   return str
-}
-
-/**
- * Format a number for display (with commas for thousands)
- */
-export function formatNumber(value: number, decimals: number = 0): string {
-  return value.toLocaleString("en-US", {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals
-  })
-}
-
-/**
- * Format a currency value
- */
-export function formatCurrency(value: number, decimals: number = 0): string {
-  return "$" + formatNumber(value, decimals)
-}
-
-/**
- * Format a percentage value
- */
-export function formatPercent(value: number, decimals: number = 1): string {
-  return formatNumber(value, decimals) + "%"
 }
 
 /**

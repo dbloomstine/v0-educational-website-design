@@ -193,3 +193,46 @@ export function getAllPersonas(): string[] {
 export function getAllComplexities(): string[] {
   return ['Beginner', 'Intermediate', 'Advanced']
 }
+
+// Get active tools with optional limit
+export function getActiveTools(limit?: number): Tool[] {
+  const activeTools = tools.filter(tool => tool.status === 'active')
+  return limit ? activeTools.slice(0, limit) : activeTools
+}
+
+// Get tool count by category
+export function getToolCountByCategory(): Record<string, number> {
+  const counts: Record<string, number> = {}
+  tools.forEach(tool => {
+    tool.categories.forEach(cat => {
+      counts[cat] = (counts[cat] || 0) + 1
+    })
+  })
+  return counts
+}
+
+// Get SEO-friendly title for a tool
+export function getToolSeoTitle(tool: Tool): string {
+  return `${tool.title} | Free Fund Operations Tool | FundOpsHQ`
+}
+
+// Get structured data for a tool (JSON-LD)
+export function getToolStructuredData(tool: Tool) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: tool.title,
+    description: tool.shortDescription,
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'Web Browser',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD'
+    },
+    author: {
+      '@type': 'Person',
+      name: 'Danny Bloomstine'
+    }
+  }
+}
