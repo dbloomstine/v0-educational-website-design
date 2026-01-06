@@ -88,7 +88,7 @@ export default function HelpPage() {
       <main id="main-content" className="flex-1">
         <PageHero
           title="How I Can Help"
-          subtitle="Fund operations challenges rarely come one at a time. If you're dealing with something specific, I'm happy to talk through it—no pitch, just a conversation."
+          subtitle="Fund operations challenges rarely come one at a time. If you&apos;re dealing with something specific, I&apos;m happy to talk through it—no pitch, just a conversation."
           titleSize="large"
           align="left"
         />
@@ -135,7 +135,7 @@ export default function HelpPage() {
 
         <SectionCTA
           title="Something else on your mind?"
-          description="These aren't the only things I can help with. If you're working through an operations challenge that doesn't fit neatly into one of these categories, reach out anyway. I'm happy to chat."
+          description="These aren&apos;t the only things I can help with. If you&apos;re working through an operations challenge that doesn&apos;t fit neatly into one of these categories, reach out anyway. I&apos;m happy to chat."
           className="bg-card/30"
         >
           <Button asChild size="lg">
@@ -150,7 +150,7 @@ export default function HelpPage() {
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-2xl text-center">
               <p className="text-sm text-muted-foreground leading-relaxed">
-                By day, I'm a Managing Director at{' '}
+                By day, I&apos;m a Managing Director at{' '}
                 <a
                   href="https://iqeq.com"
                   target="_blank"

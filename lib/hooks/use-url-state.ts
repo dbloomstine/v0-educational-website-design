@@ -7,6 +7,7 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation'
  * Hook for syncing state with URL search params
  * Allows users to share/bookmark tool configurations
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Generic hook accepts any record type; callers provide specific types
 export function useUrlState<T extends Record<string, any>>(
   state: T,
   setState: (state: T) => void,
@@ -65,7 +66,8 @@ export function useUrlState<T extends Record<string, any>>(
     }
 
     isInitialized.current = true
-  }, []) // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Intentionally only run once on mount to parse initial URL params
+  }, [])
 
   // Update URL when state changes (debounced)
   const updateUrl = useCallback((newState: T) => {

@@ -9,26 +9,22 @@ import {
   AlertCircle,
   Scale,
   Calculator,
-  GraduationCap,
   Star,
-  RotateCcw,
   Search
 } from 'lucide-react'
-import { classifyExpense, type ClassificationInput, type ClassificationResult as Result, type ExpenseCategory, type FundType } from './expenseData'
+import { classifyExpense, type ClassificationInput, type ClassificationResult as Result } from './expenseData'
 import { exportToPDF } from './exportPDF'
 import { ExpenseInputForm } from './expense-input-form'
 import { ClassificationResults } from './classification-results'
 import { SampleScenariosSection } from './sample-scenarios'
-import { ShareButton } from '@/components/tools/share-button'
 
 import { ExpenseLookup } from './expense-lookup'
-import { InteractiveJourney } from './interactive-journey'
 import { ResultsWalkthrough } from './results-walkthrough'
 import { Quiz, QuizResults, EXPENSE_QUIZ_QUESTIONS } from './quiz'
 
 type ViewMode = 'lookup' | 'advanced' | 'quiz' | 'results'
 
-const STORAGE_KEY = 'fundExpenseAllocation_lastInput'
+const _STORAGE_KEY = 'fundExpenseAllocation_lastInput'
 
 export function FundExpenseAllocation() {
   const searchParams = useSearchParams()
@@ -85,7 +81,7 @@ export function FundExpenseAllocation() {
   }, [currentInput, pathname, router])
 
   // Generate shareable URL
-  const getShareableUrl = useCallback(() => {
+  const _getShareableUrl = useCallback(() => {
     if (!currentInput) {
       return typeof window !== 'undefined' ? `${window.location.origin}${pathname}` : pathname
     }

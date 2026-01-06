@@ -11,7 +11,7 @@ interface PillarCardProps {
   color: string
 }
 
-export function PillarCard({ title, description, articleCount, href, color }: PillarCardProps) {
+export function PillarCard({ title, description, href, color }: PillarCardProps) {
   return (
     <Link
       href={href}

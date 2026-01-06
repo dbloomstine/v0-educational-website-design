@@ -187,7 +187,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
             <div className="flex items-center gap-2">
               <Label htmlFor="carryRate">Carried Interest (%)</Label>
               <InfoPopover>
-                GP's share of profits after pref is paid. This is the primary economic incentive for fund managers and typically the largest component of GP compensation.
+                GP&apos;s share of profits after pref is paid. This is the primary economic incentive for fund managers and typically the largest component of GP compensation.
                 <br /><br />
                 <strong>Typical rates:</strong> Buyout PE 15-20%, Growth Equity 20%, VC 20-30%, Real Estate 15-20%
               </InfoPopover>
@@ -218,7 +218,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
             <label htmlFor="hasCatchUp" className="text-sm cursor-pointer flex items-center gap-2">
               Enable GP Catch-Up
               <InfoPopover>
-                After pref is paid, GP receives a larger share (catch-up rate) until they've "caught up" to their target carry percentage of total profits. This ensures GP receives their full carry percentage, not just carry on profits after pref.
+                After pref is paid, GP receives a larger share (catch-up rate) until they&apos;ve &quot;caught up&quot; to their target carry percentage of total profits. This ensures GP receives their full carry percentage, not just carry on profits after pref.
               </InfoPopover>
             </label>
           </div>
@@ -228,13 +228,13 @@ export function InputForm({ input, onChange }: InputFormProps) {
               <div className="flex items-center gap-2">
                 <Label htmlFor="catchUpRate">Catch-Up Rate (%)</Label>
                 <InfoPopover>
-                  GP's share during catch-up phase.
+                  GP&apos;s share during catch-up phase.
                   <br /><br />
                   <strong>100% (Full):</strong> GP gets 100% until caught up - most common.
                   <br />
                   <strong>80%:</strong> GP gets 80%, LP gets 20% during catch-up.
                   <br />
-                  <strong>50%:</strong> "Shared catch-up" - 50/50 split during catch-up.
+                  <strong>50%:</strong> &quot;Shared catch-up&quot; - 50/50 split during catch-up.
                 </InfoPopover>
               </div>
               <Input
@@ -255,7 +255,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
             <div className="flex items-center gap-2">
               <Label htmlFor="gpCommitmentPercent">GP Commitment (%)</Label>
               <InfoPopover>
-                GP's own capital commitment as % of total fund. GPs invest alongside LPs to align interests. This commitment is subject to the same waterfall as LP capital.
+                GP&apos;s own capital commitment as % of total fund. GPs invest alongside LPs to align interests. This commitment is subject to the same waterfall as LP capital.
                 <br /><br />
                 <strong>Typical range:</strong> PE 1-3%, VC 1-5%. Larger commitments signal GP conviction.
               </InfoPopover>

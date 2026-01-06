@@ -16,8 +16,7 @@ import { PeerComparison } from './peer-comparison'
 import { WhatIfSliders } from './what-if-sliders'
 import { SkipToContent, LiveRegion, ScrollToTop, AutoSaveIndicator, MobileResultsGrid } from './accessibility'
 import { exportWaterfallSummary, exportComparisonCSV, exportComparisonPDF, exportComparisonExcel } from './export'
-import { Confetti } from './visual-effects'
-import { Quiz as QuizPanel, WATERFALL_QUIZ_QUESTIONS } from './quiz'
+import { Quiz as QuizPanel } from './quiz'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -35,7 +34,6 @@ import {
   ChevronUp,
   RotateCcw,
   Play,
-  X,
   Brain
 } from 'lucide-react'
 
@@ -269,7 +267,7 @@ export function DistributionWaterfall() {
     setShowWalkthrough(false)
   }
 
-  const loadPreset = (presetKey: string) => {
+  const _loadPreset = (presetKey: string) => {
     const preset = presets[presetKey]
     if (preset) {
       setInput(preset.input)
@@ -952,7 +950,7 @@ export function DistributionWaterfall() {
             >
               <QuizPanel
                 onCorrectAnswer={() => {}}
-                onComplete={(score, total) => {}}
+                onComplete={(_score, _total) => {}}
                 onClose={() => toggleSection('quiz')}
               />
             </motion.div>

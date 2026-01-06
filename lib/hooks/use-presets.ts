@@ -9,7 +9,7 @@ export interface Preset<T> {
   createdAt: number
 }
 
-interface UsePresetsOptions<T> {
+interface UsePresetsOptions<_T> {
   /** Unique storage key for this tool's presets */
   storageKey: string
   /** Maximum number of presets to store */

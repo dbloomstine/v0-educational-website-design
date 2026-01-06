@@ -27,8 +27,8 @@ export function SensitivityAnalysis({ baseData, baseResults }: SensitivityAnalys
       type: 'base' | 'better' | 'worse' | 'critical'
     }> = []
 
-    const baseFundSize = baseData.funds.reduce((s, f) => s + f.size, 0)
-    const baseMonthlyBurn = baseResults.monthlyBurn
+    const _baseFundSize = baseData.funds.reduce((s, f) => s + f.size, 0)
+    const _baseMonthlyBurn = baseResults.monthlyBurn
 
     // Scenarios to test
     const testCases = [

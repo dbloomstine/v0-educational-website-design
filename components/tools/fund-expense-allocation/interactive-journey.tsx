@@ -228,6 +228,45 @@ export function InteractiveJourney({
     }
   }, [currentStepIndex])
 
+  const canProceed = useCallback(() => {
+    switch (currentStep.id) {
+      case 'welcome':
+        return true
+      case 'expense':
+        return !!selections.expenseCategory && (selections.expenseCategory !== 'custom' || !!selections.customDescription)
+      case 'fund-type':
+        return !!selections.fundType
+      case 'fund-stage':
+        return !!selections.fundStage
+      case 'beneficiary':
+        return !!selections.primaryBeneficiary
+      case 'review':
+        return true
+      default:
+        return true
+    }
+  }, [currentStep.id, selections.expenseCategory, selections.customDescription, selections.fundType, selections.fundStage, selections.primaryBeneficiary])
+
+  const handleExpenseSelect = useCallback((categoryId: string) => {
+    setSelections(prev => ({ ...prev, expenseCategory: categoryId }))
+    autoAdvance()
+  }, [autoAdvance])
+
+  const handleFundTypeSelect = useCallback((fundType: FundType) => {
+    setSelections(prev => ({ ...prev, fundType }))
+    autoAdvance()
+  }, [autoAdvance])
+
+  const handleStageSelect = useCallback((stage: FundStage) => {
+    setSelections(prev => ({ ...prev, fundStage: stage }))
+    autoAdvance()
+  }, [autoAdvance])
+
+  const handleBeneficiarySelect = useCallback((beneficiary: Beneficiary) => {
+    setSelections(prev => ({ ...prev, primaryBeneficiary: beneficiary }))
+    autoAdvance()
+  }, [autoAdvance])
+
   // Trigger celebration on celebration steps and auto-advance
   useEffect(() => {
     if (currentStep.isCelebration) {
@@ -269,26 +308,7 @@ export function InteractiveJourney({
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [currentStepIndex, selections, isFirstStep, isLastStep, currentStep])
-
-  const canProceed = () => {
-    switch (currentStep.id) {
-      case 'welcome':
-        return true
-      case 'expense':
-        return !!selections.expenseCategory && (selections.expenseCategory !== 'custom' || !!selections.customDescription)
-      case 'fund-type':
-        return !!selections.fundType
-      case 'fund-stage':
-        return !!selections.fundStage
-      case 'beneficiary':
-        return !!selections.primaryBeneficiary
-      case 'review':
-        return true
-      default:
-        return true
-    }
-  }
+  }, [canProceed, currentStep.isCelebration, currentStep.id, isLastStep, isFirstStep, goNext, goBack, handleFundTypeSelect, handleStageSelect, handleBeneficiarySelect])
 
   const handleContinueExisting = () => {
     if (existingData) {
@@ -299,26 +319,6 @@ export function InteractiveJourney({
   const handleStartFresh = () => {
     setShowWelcomeBack(false)
     setCurrentStepIndex(0)
-  }
-
-  const handleExpenseSelect = (categoryId: string) => {
-    setSelections(prev => ({ ...prev, expenseCategory: categoryId }))
-    autoAdvance()
-  }
-
-  const handleFundTypeSelect = (fundType: FundType) => {
-    setSelections(prev => ({ ...prev, fundType }))
-    autoAdvance()
-  }
-
-  const handleStageSelect = (stage: FundStage) => {
-    setSelections(prev => ({ ...prev, fundStage: stage }))
-    autoAdvance()
-  }
-
-  const handleBeneficiarySelect = (beneficiary: Beneficiary) => {
-    setSelections(prev => ({ ...prev, primaryBeneficiary: beneficiary }))
-    autoAdvance()
   }
 
   const selectedCategory = EXPENSE_CATEGORIES.find(c => c.id === selections.expenseCategory)
@@ -718,7 +718,7 @@ export function InteractiveJourney({
                   transition={{ delay: 0.3 }}
                   className="text-slate-400"
                 >
-                  Now let's add context about your fund...
+                  Now let&apos;s add context about your fund...
                 </motion.p>
               </div>
             )}

@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Card, CardContent } from '@/components/ui/card'
@@ -33,7 +32,7 @@ const topicsToDiscuss = [
   {
     icon: MessageCircle,
     title: "Something else entirely",
-    description: "If you're not sure whether to reach out—go ahead. Happy to help or point you in the right direction"
+    description: "If you&apos;re not sure whether to reach out—go ahead. Happy to help or point you in the right direction"
   },
 ]
 
@@ -45,7 +44,7 @@ export default function ContactPage() {
       <main id="main-content" className="flex-1">
         <PageHero
           title="Contact"
-          subtitle="I'm Danny—the person behind FundOpsHQ. If you have a question, want to think through a challenge, or just want to talk shop about fund operations, I'm happy to chat."
+          subtitle="I&apos;m Danny—the person behind FundOpsHQ. If you have a question, want to think through a challenge, or just want to talk shop about fund operations, I&apos;m happy to chat."
           titleSize="large"
           align="left"
         />
@@ -104,7 +103,7 @@ export default function ContactPage() {
               {/* Brief context */}
               <div className="mt-12 text-center">
                 <p className="text-sm text-muted-foreground">
-                  By day, I'm a Managing Director at{' '}
+                  By day, I&apos;m a Managing Director at{' '}
                   <a
                     href="https://iqeq.com"
                     target="_blank"
@@ -114,7 +113,7 @@ export default function ContactPage() {
                     IQ-EQ
                   </a>
                   , where I work with fund managers on administration, compliance, and operations.
-                  But FundOpsHQ is a personal project—when you reach out here, you're talking to me, not a sales team.
+                  But FundOpsHQ is a personal project—when you reach out here, you&apos;re talking to me, not a sales team.
                 </p>
               </div>
             </div>
@@ -125,7 +124,7 @@ export default function ContactPage() {
         <section className="py-16 border-t border-border bg-card/30">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-4xl">
-              <h2 className="mb-8 text-2xl font-bold text-center">Things I'm happy to discuss</h2>
+              <h2 className="mb-8 text-2xl font-bold text-center">Things I&apos;m happy to discuss</h2>
               <div className="grid gap-4 sm:grid-cols-2">
                 {topicsToDiscuss.map((topic) => (
                   <div
@@ -151,8 +150,8 @@ export default function ContactPage() {
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-2xl text-center">
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Not sure if your question is "worth" reaching out about? It is.
-                I'd rather have a quick conversation than have you stuck on something.
+                Not sure if your question is &quot;worth&quot; reaching out about? It is.
+                I&apos;d rather have a quick conversation than have you stuck on something.
               </p>
             </div>
           </div>

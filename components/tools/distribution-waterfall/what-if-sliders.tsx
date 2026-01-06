@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Slider } from '@/components/ui/slider'
 import { Badge } from '@/components/ui/badge'
-import { SlidersHorizontal, RotateCcw, TrendingUp, TrendingDown, Minus, DollarSign } from 'lucide-react'
+import { SlidersHorizontal, RotateCcw, TrendingUp, TrendingDown, Minus } from 'lucide-react'
 import { WaterfallInput, WaterfallOutput, calculateWaterfall, formatCurrency, formatPercent, formatMultiple } from './waterfallCalculations'
 import { statusStyles } from '@/components/tools/shared'
 

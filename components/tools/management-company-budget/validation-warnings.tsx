@@ -6,7 +6,6 @@ import { cn } from '@/lib/utils'
 import {
   AlertTriangle,
   CheckCircle2,
-  Info,
   AlertCircle,
   TrendingUp,
   TrendingDown,
@@ -14,7 +13,7 @@ import {
   DollarSign,
   Clock
 } from 'lucide-react'
-import { BudgetData, BudgetResults, TYPICAL_RANGES } from './types'
+import { BudgetData, BudgetResults } from './types'
 import { formatCurrency } from './budget-calculator'
 
 interface ValidationWarningsProps {

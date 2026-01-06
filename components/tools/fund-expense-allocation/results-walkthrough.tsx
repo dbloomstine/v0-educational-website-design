@@ -335,7 +335,7 @@ export function ResultsWalkthrough({
             <div className="p-4 rounded-xl bg-white/5 border border-white/10">
               <p className="text-white/80 mb-3">Sample LPA Language</p>
               <p className="text-white/80 font-mono leading-relaxed italic">
-                "{result.sampleLanguage}"
+                &quot;{result.sampleLanguage}&quot;
               </p>
             </div>
           )}
@@ -384,7 +384,7 @@ export function ResultsWalkthrough({
 
           <div className="p-4 rounded-xl bg-white/5 border border-white/10 mt-6">
             <p className="text-white/80">
-              <strong className="text-white">Important:</strong> This classification is educational guidance only. Your fund's governing documents (LPA, side letters) and legal counsel's advice take precedence over general market practice.
+              <strong className="text-white">Important:</strong> This classification is educational guidance only. Your fund&apos;s governing documents (LPA, side letters) and legal counsel&apos;s advice take precedence over general market practice.
             </p>
           </div>
 

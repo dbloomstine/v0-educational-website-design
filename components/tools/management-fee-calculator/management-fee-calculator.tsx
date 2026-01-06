@@ -10,7 +10,6 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { InfoPopover } from '@/components/ui/info-popover'
-import { Progress } from '@/components/ui/progress'
 import { Badge } from '@/components/ui/badge'
 import {
   AlertCircle,
@@ -21,10 +20,8 @@ import {
   Calculator,
   Target,
   GraduationCap,
-  BarChart3,
   CheckCircle2,
-  Star,
-  X
+  Star
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { FeePhaseEditor } from './fee-phase-editor'
@@ -86,7 +83,7 @@ export function ManagementFeeCalculator() {
   const [viewMode, setViewMode] = useState<ViewMode>('journey')
   const [quizScore, setQuizScore] = useState<{ score: number; total: number } | null>(null)
   const [showJourney, setShowJourney] = useState(true) // Full-screen journey on first load
-  const [lastSaved, setLastSaved] = useState<Date | null>(null)
+  const [_lastSaved, setLastSaved] = useState<Date | null>(null)
 
   // Parse initial state from URL or use defaults
   const getInitialInputs = (): FundInputs => {
@@ -112,10 +109,11 @@ export function ManagementFeeCalculator() {
   const [result, setResult] = useState<FeeCalculationResult | null>(null)
   const [validationErrors, setValidationErrors] = useState<string[]>([])
 
-  // Initialize with default phases
+  // Initialize with default phases on mount only
   useEffect(() => {
     const defaultPhases = generateDefaultFeePhases(fundInputs)
     setFeePhases(defaultPhases)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Intentionally only run once on mount; fundInputs is read but we don't want to reset phases on every input change
   }, [])
 
   // Recalculate when inputs or phases change
@@ -205,7 +203,7 @@ export function ManagementFeeCalculator() {
   }
 
   // Render welcome/mode selection
-  const renderWelcome = () => (
+  const _renderWelcome = () => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -272,7 +270,7 @@ export function ManagementFeeCalculator() {
               </div>
               <h3 className="font-semibold text-base sm:text-lg mb-1">Jump to Calculator</h3>
               <p className="text-xs sm:text-sm text-muted-foreground">
-                Skip the tutorial and go straight to modeling. Best if you're already familiar with fee structures.
+                Skip the tutorial and go straight to modeling. Best if you&apos;re already familiar with fee structures.
               </p>
             </motion.button>
           </div>

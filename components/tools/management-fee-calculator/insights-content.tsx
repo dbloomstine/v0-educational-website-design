@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import {
-  Building2,
   Users,
   TrendingUp,
   DollarSign,
@@ -19,7 +18,6 @@ import {
   ChevronDown,
   Briefcase,
   PiggyBank,
-  Scale,
   Clock,
   Award,
   BookOpen,
@@ -60,7 +58,7 @@ export function LearningOutcomes() {
     <div className="p-4 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800">
       <h4 className="font-medium text-green-800 dark:text-green-200 mb-3 flex items-center gap-2">
         <BookOpen className="h-4 w-4" />
-        What You'll Learn
+        What You&apos;ll Learn
       </h4>
       <ul className="space-y-2">
         {outcomes.map((outcome, i) => (
@@ -153,7 +151,7 @@ export function OperationalCostBreakdown({ fundSize, feeRate, onClose }: Operati
 
   const costs = getScaledCosts()
   const totalCosts = Object.values(costs).reduce((sum, cat) => sum + cat.total, 0)
-  const surplus = (annualFees * 1000) - totalCosts
+  const _surplus = (annualFees * 1000) - totalCosts
   const coverageRatio = (annualFees * 1000) / totalCosts
 
   return (
@@ -350,7 +348,7 @@ export function LPImpactCalculator({ fundSize, totalFees, fundTerm }: LPImpactCa
         <div className="p-4 rounded-lg bg-purple-50 dark:bg-purple-950/30">
           <div className="grid grid-cols-2 gap-4 text-center">
             <div>
-              <p className="text-sm text-muted-foreground">LP's Share of Fees</p>
+              <p className="text-sm text-muted-foreground">LP&apos;s Share of Fees</p>
               <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
                 ${lpFees.toFixed(2)}M
               </p>

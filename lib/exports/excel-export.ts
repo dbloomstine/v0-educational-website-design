@@ -7,7 +7,6 @@
 
 import * as XLSX from 'xlsx'
 import { toast } from 'sonner'
-import { formatNumber, formatCurrency } from "@/lib/utils/format"
 
 export interface ExcelSection {
   /** Sheet name (max 31 characters) */
@@ -157,7 +156,7 @@ export function downloadExcel(options: ExcelExportOptions): void {
     toast.success('Excel file exported successfully', {
       description: `${filename}.xlsx has been downloaded`
     })
-  } catch (error) {
+  } catch {
     toast.error('Export failed', {
       description: 'There was an error exporting the Excel file'
     })

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -21,7 +21,6 @@ import {
   Home,
   Landmark,
   CreditCard,
-  BarChart3,
   Search,
   Plus,
   CheckCircle2,
@@ -38,10 +37,6 @@ import {
   LineChart,
   X,
   Circle,
-  GitBranch,
-  Percent,
-  Building2,
-  Hammer,
   Clock,
 } from 'lucide-react'
 import { FundConfig } from './types'
@@ -81,7 +76,7 @@ interface JourneyStep {
   tip?: string
   // For config steps
   configKey?: keyof FundConfig
-  options?: { value: any; label: string; icon?: React.ReactNode }[]
+  options?: { value: string | boolean; label: string; icon?: React.ReactNode }[]
   // For provider steps
   providerKey?: string
   providerOptions?: readonly string[]
@@ -766,7 +761,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
   }
 
   // Handlers
-  const handleConfigSelect = (key: keyof FundConfig, value: any) => {
+  const handleConfigSelect = (key: keyof FundConfig, value: FundConfig[keyof FundConfig]) => {
     setConfig(prev => ({ ...prev, [key]: value }))
     setTimeout(goNext, 250)
   }
@@ -1120,12 +1115,12 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                         ) : (
                           <div className="text-center py-8">
                             <Search className="h-8 w-8 text-muted-foreground/30 mx-auto mb-3" />
-                            <p className="text-sm text-muted-foreground">No providers match "{searchQuery}"</p>
+                            <p className="text-sm text-muted-foreground">No providers match &quot;{searchQuery}&quot;</p>
                             <button
                               onClick={() => setShowCustomInput(true)}
                               className="text-sm text-primary hover:underline mt-2"
                             >
-                              Add "{searchQuery}" as custom provider
+                              Add &quot;{searchQuery}&quot; as custom provider
                             </button>
                           </div>
                         )}

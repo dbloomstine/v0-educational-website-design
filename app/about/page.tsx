@@ -87,7 +87,7 @@ export default function AboutPage() {
                 </h2>
                 <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
                   Fund operations can be complex, and good resources are hard to find. This site is my way of sharing
-                  what I've learned over the years—practical, free, and hopefully useful.
+                  what I&apos;ve learned over the years—practical, free, and hopefully useful.
                 </p>
               </div>
 
@@ -120,10 +120,10 @@ export default function AboutPage() {
                   <div className="space-y-6 text-muted-foreground">
                     <p className="leading-relaxed">
                       Our content spans the full spectrum of fund operations, organized by operational function
-                      and tailored to each fund type's unique requirements.
+                      and tailored to each fund type&apos;s unique requirements.
                     </p>
                     <p className="leading-relaxed">
-                      Whether you're a seasoned CFO optimizing processes, a compliance officer navigating new regulations,
+                      Whether you&apos;re a seasoned CFO optimizing processes, a compliance officer navigating new regulations,
                       or an operations professional expanding into new fund types—we have resources for you.
                     </p>
                   </div>
@@ -212,7 +212,7 @@ export default function AboutPage() {
                     <CardHeader>
                       <CardTitle className="text-lg">Want to chat?</CardTitle>
                       <CardDescription>
-                        I'm happy to be a sounding board, answer questions, or just talk shop. No sales pitch.
+                        I&apos;m happy to be a sounding board, answer questions, or just talk shop. No sales pitch.
                       </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-3">

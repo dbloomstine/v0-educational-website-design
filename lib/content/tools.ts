@@ -1,4 +1,4 @@
-import { Tool, ToolCategory } from './types'
+import { Tool, ToolCategory, ToolPersona } from './types'
 
 // 6 high-trust tools for FundOpsHQ
 const tools: Tool[] = [
@@ -166,11 +166,11 @@ export function getToolBySlug(slug: string): Tool | undefined {
 }
 
 export function getToolsByCategory(category: string): Tool[] {
-  return tools.filter(tool => tool.categories.includes(category as any))
+  return tools.filter(tool => tool.categories.includes(category as ToolCategory))
 }
 
 export function getToolsByPersona(persona: string): Tool[] {
-  return tools.filter(tool => tool.personas.includes(persona as any))
+  return tools.filter(tool => tool.personas.includes(persona as ToolPersona))
 }
 
 export function getToolsByComplexity(complexity: string): Tool[] {

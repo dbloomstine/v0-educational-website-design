@@ -12,7 +12,6 @@ import {
   BookOpen,
   ChevronDown,
   ChevronUp,
-  ChevronRight,
   Sparkles,
   X
 } from 'lucide-react'

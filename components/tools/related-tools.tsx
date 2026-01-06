@@ -12,7 +12,8 @@ import {
   Play,
   ArrowRight,
   Zap,
-  Rocket
+  Rocket,
+  LucideIcon
 } from 'lucide-react'
 
 // Tool-specific accent colors
@@ -49,7 +50,7 @@ const toolAccents: Record<string, { gradient: string; glow: string; icon: string
   }
 }
 
-const toolIconMap: Record<string, any> = {
+const toolIconMap: Record<string, LucideIcon> = {
   Calendar,
   DollarSign,
   Building,

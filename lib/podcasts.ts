@@ -1,5 +1,17 @@
 import Parser from 'rss-parser'
 
+// Type for RSS podcast items with custom fields
+interface PodcastRSSItem {
+  title?: string
+  link?: string
+  pubDate?: string
+  isoDate?: string
+  contentSnippet?: string
+  description?: string
+  duration?: string
+  enclosure?: { url?: string }
+}
+
 // Podcast platform configurations
 export const PODCAST_PLATFORMS = {
   apple: {
@@ -78,7 +90,7 @@ export async function getPodcastEpisodes(): Promise<PodcastEpisode[]> {
 
     const feed = await parser.parseURL(PODCAST_RSS_FEED)
 
-    const episodes = feed.items.map((item: any) => ({
+    const episodes = feed.items.map((item: PodcastRSSItem) => ({
       title: item.title || 'Untitled',
       date: item.isoDate || item.pubDate || new Date().toISOString(),
       duration: item.duration || undefined,

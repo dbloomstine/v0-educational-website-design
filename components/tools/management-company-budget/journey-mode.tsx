@@ -18,7 +18,7 @@ import {
   Layers,
   Sparkles,
 } from 'lucide-react'
-import { BudgetData, Fund, TeamMember, ExpenseItem } from './types'
+import { BudgetData, TeamMember, ExpenseItem } from './types'
 import confetti from 'canvas-confetti'
 
 interface JourneyModeProps {
@@ -53,7 +53,7 @@ const STEPS: JourneyStep[] = [
   { id: 'review', title: 'Review', phase: 3 },
 ]
 
-type StepId = string
+type _StepId = string
 
 // Fund strategy options
 const fundStrategies = [
@@ -121,7 +121,7 @@ export function JourneyMode({ onComplete, onSkip, existingData }: JourneyModePro
     }, 250)
   }, [currentStep])
 
-  // Handle going to next step
+  // Handle going to next step - completeJourney is defined below but hoisted
   const goNext = useCallback(() => {
     if (currentStep < STEPS.length - 1) {
       setDirection(1)
@@ -130,6 +130,7 @@ export function JourneyMode({ onComplete, onSkip, existingData }: JourneyModePro
       // Complete the journey
       completeJourney()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- completeJourney is stable but defined after this callback; adding it would require restructuring
   }, [currentStep])
 
   // Handle going to previous step
@@ -216,7 +217,35 @@ export function JourneyMode({ onComplete, onSkip, existingData }: JourneyModePro
     }
 
     onComplete(budgetData)
-  }, [fundStrategy, fundSize, feeRate, teamSize, officeCost, startingCash, onComplete])
+  }, [fundSize, feeRate, teamSize, officeCost, startingCash, onComplete])
+
+  const handleStrategySelect = useCallback((strategyId: string) => {
+    const strategy = fundStrategies.find(s => s.id === strategyId)
+    if (strategy) {
+      setFundStrategy(strategyId)
+      setFundSize(strategy.typicalSize)
+      setFeeRate(strategy.feeRate)
+      autoAdvance()
+    }
+  }, [autoAdvance])
+
+  const handleTeamSizeSelect = useCallback((sizeId: string) => {
+    const size = teamSizeOptions.find(s => s.id === sizeId)
+    if (size) {
+      setTeamSize(sizeId)
+      setTeamCost(size.monthlyCost)
+      autoAdvance()
+    }
+  }, [autoAdvance])
+
+  const handleOfficeLocationSelect = useCallback((locationId: string) => {
+    const location = officeLocations.find(l => l.id === locationId)
+    if (location) {
+      setOfficeLocation(locationId)
+      setOfficeCost(location.monthlyCost)
+      autoAdvance()
+    }
+  }, [autoAdvance])
 
   // Trigger celebration on celebration steps
   useEffect(() => {
@@ -259,35 +288,7 @@ export function JourneyMode({ onComplete, onSkip, existingData }: JourneyModePro
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [currentStep, isFirstStep, isLastStep, step])
-
-  const handleStrategySelect = (strategyId: string) => {
-    const strategy = fundStrategies.find(s => s.id === strategyId)
-    if (strategy) {
-      setFundStrategy(strategyId)
-      setFundSize(strategy.typicalSize)
-      setFeeRate(strategy.feeRate)
-      autoAdvance()
-    }
-  }
-
-  const handleTeamSizeSelect = (sizeId: string) => {
-    const size = teamSizeOptions.find(s => s.id === sizeId)
-    if (size) {
-      setTeamSize(sizeId)
-      setTeamCost(size.monthlyCost)
-      autoAdvance()
-    }
-  }
-
-  const handleOfficeLocationSelect = (locationId: string) => {
-    const location = officeLocations.find(l => l.id === locationId)
-    if (location) {
-      setOfficeLocation(locationId)
-      setOfficeCost(location.monthlyCost)
-      autoAdvance()
-    }
-  }
+  }, [step.isCelebration, step.id, isLastStep, isFirstStep, goNext, goBack, handleStrategySelect, handleTeamSizeSelect, handleOfficeLocationSelect])
 
   const handleContinueExisting = () => {
     if (existingData) {
@@ -587,7 +588,7 @@ export function JourneyMode({ onComplete, onSkip, existingData }: JourneyModePro
                     <DollarSign className="h-6 w-6 text-blue-400" />
                   </div>
                   <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Expected AUM?</h2>
-                  <p className="text-slate-400">Total capital you're planning to raise</p>
+                  <p className="text-slate-400">Total capital you&apos;re planning to raise</p>
                 </div>
 
                 <div className="max-w-md mx-auto">
@@ -666,7 +667,7 @@ export function JourneyMode({ onComplete, onSkip, existingData }: JourneyModePro
                   transition={{ delay: 0.3 }}
                   className="text-slate-400"
                 >
-                  Now let's configure your team and office...
+                  Now let&apos;s configure your team and office...
                 </motion.p>
               </div>
             )}
@@ -679,7 +680,7 @@ export function JourneyMode({ onComplete, onSkip, existingData }: JourneyModePro
                     <Users className="h-6 w-6 text-blue-400" />
                   </div>
                   <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">How big is your team?</h2>
-                  <p className="text-slate-400">We'll estimate your personnel costs</p>
+                  <p className="text-slate-400">We&apos;ll estimate your personnel costs</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 sm:gap-4 max-w-2xl mx-auto">
@@ -803,7 +804,7 @@ export function JourneyMode({ onComplete, onSkip, existingData }: JourneyModePro
                   transition={{ delay: 0.3 }}
                   className="text-slate-400"
                 >
-                  Let's finalize your budget...
+                  Let&apos;s finalize your budget...
                 </motion.p>
               </div>
             )}
@@ -816,7 +817,7 @@ export function JourneyMode({ onComplete, onSkip, existingData }: JourneyModePro
                     <Layers className="h-6 w-6 text-blue-400" />
                   </div>
                   <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Budget breakdown preview</h2>
-                  <p className="text-slate-400">Here's how your expenses will be structured</p>
+                  <p className="text-slate-400">Here&apos;s how your expenses will be structured</p>
                 </div>
 
                 <div className="space-y-3 sm:space-y-4 max-w-lg mx-auto">

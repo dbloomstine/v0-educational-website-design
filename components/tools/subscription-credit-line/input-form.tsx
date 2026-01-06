@@ -15,7 +15,7 @@ interface InputFormProps {
 }
 
 export function InputForm({ input, onChange }: InputFormProps) {
-  const handleChange = (field: keyof SubscriptionLineInput, value: any) => {
+  const handleChange = <K extends keyof SubscriptionLineInput>(field: K, value: SubscriptionLineInput[K]) => {
     onChange({ ...input, [field]: value })
   }
 
@@ -101,7 +101,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
             </div>
             <Select
               value={input.deploymentPaceType}
-              onValueChange={(value: any) => handleChange('deploymentPaceType', value)}
+              onValueChange={(value) => handleChange('deploymentPaceType', value as SubscriptionLineInput['deploymentPaceType'])}
             >
               <SelectTrigger id="deploymentPace">
                 <SelectValue />
@@ -124,7 +124,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
             </div>
             <Select
               value={input.realizationScheduleType}
-              onValueChange={(value: any) => handleChange('realizationScheduleType', value)}
+              onValueChange={(value) => handleChange('realizationScheduleType', value as SubscriptionLineInput['realizationScheduleType'])}
             >
               <SelectTrigger id="realizationSchedule">
                 <SelectValue />
@@ -193,7 +193,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
             </div>
             <Select
               value={input.managementFeeBasis}
-              onValueChange={(value: any) => handleChange('managementFeeBasis', value)}
+              onValueChange={(value) => handleChange('managementFeeBasis', value as SubscriptionLineInput['managementFeeBasis'])}
             >
               <SelectTrigger id="feeBasis">
                 <SelectValue />
@@ -210,7 +210,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
             <div className="flex items-center gap-2">
               <Label htmlFor="carryRate">Carried Interest (%)</Label>
               <InfoPopover>
-                GP's share of profits above preferred return, typically 20% for PE and VC funds.
+                GP&apos;s share of profits above preferred return, typically 20% for PE and VC funds.
               </InfoPopover>
             </div>
             <Input
@@ -256,7 +256,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
             <Checkbox
               id="useLine"
               checked={input.useLine}
-              onCheckedChange={(checked) => handleChange('useLine', checked)}
+              onCheckedChange={(checked) => handleChange('useLine', checked === true)}
             />
             <Label htmlFor="useLine" className="text-sm font-normal cursor-pointer">
               Use subscription line of credit
@@ -368,7 +368,7 @@ export function InputForm({ input, onChange }: InputFormProps) {
                 </div>
                 <Select
                   value={input.repaymentTrigger}
-                  onValueChange={(value: any) => handleChange('repaymentTrigger', value)}
+                  onValueChange={(value) => handleChange('repaymentTrigger', value as SubscriptionLineInput['repaymentTrigger'])}
                 >
                   <SelectTrigger id="repaymentTrigger">
                     <SelectValue />

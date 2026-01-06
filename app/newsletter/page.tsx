@@ -5,7 +5,7 @@ import { SiteFooter } from '@/components/site-footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Mail, User } from 'lucide-react'
-import { getAllNewsletters, getNewsletterPosts } from '@/lib/newsletters'
+import { getAllNewsletters, getNewsletterPosts, NewsletterSlug } from '@/lib/newsletters'
 import { PageHero, SectionCTA } from '@/components/layout'
 
 // Revalidate every 2 hours to pick up new newsletter posts
@@ -31,7 +31,7 @@ export default async function NewsletterPage() {
   // Get recent posts for each newsletter
   const newsletterData = await Promise.all(
     newsletters.map(async (newsletter) => {
-      const posts = await getNewsletterPosts(newsletter.id as any)
+      const posts = await getNewsletterPosts(newsletter.id as NewsletterSlug)
       return {
         ...newsletter,
         recentPosts: posts.slice(0, 3),

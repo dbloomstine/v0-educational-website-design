@@ -4,6 +4,17 @@ import { cleanBeehiivContent, extractBeehiivSummary } from '@/lib/utils/content-
 
 const BEEHIIV_RSS_FEED = 'https://rss.beehiiv.com/feeds/RhLuK6Ql9l.xml'
 
+// Type for RSS feed items with custom fields
+interface RSSItem {
+  title?: string
+  link?: string
+  pubDate?: string
+  isoDate?: string
+  contentSnippet?: string
+  content?: string
+  contentEncoded?: string
+}
+
 export interface BlogPost {
   slug: string
   title: string
@@ -32,7 +43,7 @@ export async function getAllBlogPosts(): Promise<BlogPostMetadata[]> {
     })
     const feed = await parser.parseURL(BEEHIIV_RSS_FEED)
 
-    const posts = feed.items.map((item: any) => {
+    const posts = feed.items.map((item: RSSItem) => {
       const date = item.isoDate || item.pubDate || new Date().toISOString()
       const slug = createSlugFromTitleAndDate(item.title || 'untitled', date)
       const summary = item.contentSnippet || extractBeehiivSummary(item.contentEncoded || item.content || '')
@@ -64,7 +75,7 @@ export async function getBlogPost(slug: string): Promise<BlogPost | null> {
     })
     const feed = await parser.parseURL(BEEHIIV_RSS_FEED)
 
-    const item = feed.items.find((item: any) => {
+    const item = feed.items.find((item: RSSItem) => {
       const date = item.isoDate || item.pubDate || new Date().toISOString()
       const itemSlug = createSlugFromTitleAndDate(item.title || 'untitled', date)
       return itemSlug === slug

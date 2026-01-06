@@ -1,8 +1,6 @@
 "use client"
 
 import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import {
   Calculator,
@@ -11,9 +9,7 @@ import {
   DollarSign,
   TrendingUp,
   Clock,
-  Users,
-  Building2,
-  Briefcase
+  LucideIcon
 } from 'lucide-react'
 import { BudgetData, BudgetResults } from './types'
 import { formatCurrency } from './budget-calculator'
@@ -36,7 +32,7 @@ interface CalculationStep {
 export function CalculationBreakdown({ data, results, metric }: CalculationBreakdownProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const getSteps = (): { title: string; icon: any; steps: CalculationStep[] } => {
+  const getSteps = (): { title: string; icon: LucideIcon; steps: CalculationStep[] } => {
     switch (metric) {
       case 'monthlyBurn':
         const teamCost = data.expenses.team.reduce((s, t) => s + t.monthlyCost, 0)

@@ -248,7 +248,7 @@ export default async function HelpTopicPage({ params }: PageProps) {
         <section className="py-16 border-t border-border">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl">
-              <h2 className="mb-4 text-2xl font-bold text-center">Let's talk through it</h2>
+              <h2 className="mb-4 text-2xl font-bold text-center">Let&apos;s talk through it</h2>
               <p className="mb-8 text-center text-muted-foreground text-balance">
                 {topic.ctaDescription}
               </p>
@@ -284,7 +284,7 @@ export default async function HelpTopicPage({ params }: PageProps) {
                     </div>
                     <h3 className="mb-2 text-xl font-semibold">Send me an email</h3>
                     <p className="mb-6 text-muted-foreground text-sm">
-                      If you'd prefer to outline your situation first, email works great.
+                      If you&apos;d prefer to outline your situation first, email works great.
                     </p>
                     <Button asChild variant="outline" size="lg" className="w-full">
                       <a href={`mailto:danny.bloomstine@iqeq.com?subject=${topic.emailSubject}`}>
@@ -304,7 +304,7 @@ export default async function HelpTopicPage({ params }: PageProps) {
             <div className="mx-auto max-w-2xl text-center">
               <h3 className="mb-4 text-lg font-semibold">Related Resources</h3>
               <p className="text-sm text-muted-foreground mb-4">
-                While you're here, these resources might be helpful:
+                While you&apos;re here, these resources might be helpful:
               </p>
               <div className="flex flex-wrap justify-center gap-3">
                 {topic.relatedLinks.map((link, index) => (

@@ -11,7 +11,7 @@ export function SiteFooter() {
         <div className="mb-16 rounded-lg border border-border bg-accent/30 p-8 text-center">
           <h2 className="mb-3 text-2xl font-semibold text-balance">Have a Question?</h2>
           <p className="mb-6 text-muted-foreground text-balance">
-            I'm happy to be a sounding board, talk through a challenge, or point you in the right direction. No sales pitch.
+            I&apos;m happy to be a sounding board, talk through a challenge, or point you in the right direction. No sales pitch.
           </p>
           <Button size="lg" asChild>
             <Link href="/contact">Need Help?</Link>

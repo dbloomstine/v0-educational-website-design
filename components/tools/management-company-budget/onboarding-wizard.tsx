@@ -18,7 +18,7 @@ import {
   TrendingUp,
   Calculator
 } from 'lucide-react'
-import { BudgetData, Fund, TeamMember, ExpenseItem, TYPICAL_RANGES } from './types'
+import { BudgetData, TeamMember, ExpenseItem } from './types'
 import { formatCurrency } from './budget-calculator'
 
 // Fund strategy options with typical benchmarks

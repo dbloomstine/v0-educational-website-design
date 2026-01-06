@@ -15,7 +15,8 @@ import {
   Split,
   Play,
   Zap,
-  Rocket
+  Rocket,
+  LucideIcon
 } from 'lucide-react'
 
 export const metadata: Metadata = {
@@ -72,7 +73,7 @@ const toolAccents: Record<string, { gradient: string; glow: string; icon: string
 }
 
 // Tool icon mapping
-const toolIconMap: Record<string, any> = {
+const toolIconMap: Record<string, LucideIcon> = {
   Calendar,
   DollarSign,
   Building,
@@ -179,7 +180,7 @@ export default function ToolsPage() {
             <div className="mx-auto max-w-2xl text-center">
               <h2 className="mb-3 text-2xl font-bold">Have an idea for a tool?</h2>
               <p className="mb-6 text-muted-foreground text-balance">
-                I'm always building new tools based on what fund ops professionals actually need.
+                I&apos;m always building new tools based on what fund ops professionals actually need.
               </p>
               <Button asChild size="lg">
                 <Link href="/contact">Suggest a Tool</Link>

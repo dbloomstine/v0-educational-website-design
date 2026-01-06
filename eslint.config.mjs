@@ -3,6 +3,7 @@ import tseslint from 'typescript-eslint'
 import pluginReact from 'eslint-plugin-react'
 import pluginReactHooks from 'eslint-plugin-react-hooks'
 import pluginJsxA11y from 'eslint-plugin-jsx-a11y'
+import unusedImports from 'eslint-plugin-unused-imports'
 
 export default tseslint.config(
   // Ignore patterns
@@ -30,6 +31,7 @@ export default tseslint.config(
       react: pluginReact,
       'react-hooks': pluginReactHooks,
       'jsx-a11y': pluginJsxA11y,
+      'unused-imports': unusedImports,
     },
     languageOptions: {
       parserOptions: {
@@ -74,7 +76,14 @@ export default tseslint.config(
       'jsx-a11y/tabindex-no-positive': 'warn',
 
       // TypeScript rules - relaxed for existing codebase
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': 'off', // Replaced by unused-imports plugin
+      'unused-imports/no-unused-imports': 'error',
+      'unused-imports/no-unused-vars': ['warn', {
+        vars: 'all',
+        varsIgnorePattern: '^_',
+        args: 'after-used',
+        argsIgnorePattern: '^_'
+      }],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-empty-object-type': 'off',
 

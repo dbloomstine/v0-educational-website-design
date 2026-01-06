@@ -270,7 +270,7 @@ export function downloadPDF(options: PDFExportOptions): void {
     toast.success("PDF exported successfully", {
       description: `${filename}.pdf has been downloaded`
     })
-  } catch (error) {
+  } catch {
     toast.error("Export failed", {
       description: "There was an error exporting the PDF file"
     })

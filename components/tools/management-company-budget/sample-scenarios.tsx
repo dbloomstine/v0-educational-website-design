@@ -15,7 +15,7 @@ import {
   TrendingUp,
   ChevronRight,
   Check,
-  Info
+  LucideIcon
 } from 'lucide-react'
 import { BudgetData, normalizeBudgetData } from './types'
 import { calculateBudget, formatCurrency, formatRunway } from './budget-calculator'
@@ -65,7 +65,7 @@ interface ScenarioTemplate {
   id: string
   name: string
   description: string
-  icon: any
+  icon: LucideIcon
   category: 'size' | 'strategy' | 'stage'
   data: ScenarioData
   highlights: string[]

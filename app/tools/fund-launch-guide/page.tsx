@@ -43,7 +43,7 @@ export default function FundLaunchGuidePage() {
               </h1>
               <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
                 A comprehensive, interactive checklist for launching your fund. Customize for your
-                strategy, track your progress, and make sure you don't miss anything critical.
+                strategy, track your progress, and make sure you don&apos;t miss anything critical.
               </p>
             </div>
           </div>

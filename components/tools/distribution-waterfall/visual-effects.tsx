@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState } from 'react'
 import { motion, AnimatePresence, useSpring, useTransform } from 'framer-motion'
 import { WaterfallOutput, formatCurrency } from './waterfallCalculations'
 
@@ -98,7 +98,7 @@ export function WaterfallFlowAnimation({
   isPlaying?: boolean
 }) {
   const [currentTier, setCurrentTier] = useState(0)
-  const [flowAmount, setFlowAmount] = useState(0)
+  const [_flowAmount, setFlowAmount] = useState(0)
 
   const tierColors = [
     { bg: 'from-blue-400 to-blue-500', water: 'bg-blue-400' },

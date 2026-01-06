@@ -1,8 +1,6 @@
 'use client'
 
 import {
-  DollarSign,
-  Percent,
   TrendingUp,
   Calculator,
   AlertCircle,
@@ -126,7 +124,7 @@ export function ResultsWalkthrough({
         <div className="space-y-6">
           {/* Mini chart */}
           <div className="h-32 flex items-end gap-1 p-4 bg-white/5 rounded-xl border border-white/10">
-            {result.yearlyData.map((year, i) => {
+            {result.yearlyData.map((year) => {
               const maxFee = Math.max(...result.yearlyData.map(y => y.feeAmount))
               const height = (year.feeAmount / maxFee) * 100
               return (

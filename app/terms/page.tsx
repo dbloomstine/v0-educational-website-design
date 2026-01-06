@@ -47,8 +47,8 @@ export default function TermsPage() {
                   <h2 className="text-2xl font-bold tracking-tight mb-4">1. Acceptance of Terms</h2>
                   <div className="space-y-4 text-muted-foreground leading-relaxed">
                     <p>
-                      By accessing or using FundOpsHQ (the "Site"), you agree to be bound by these Terms of Service
-                      ("Terms"). If you do not agree to all of these Terms, you may not access or use the Site.
+                      By accessing or using FundOpsHQ (the &quot;Site&quot;), you agree to be bound by these Terms of Service
+                      (&quot;Terms&quot;). If you do not agree to all of these Terms, you may not access or use the Site.
                     </p>
                     <p>
                       Your continued use of the Site following any changes to these Terms constitutes your acceptance
@@ -91,7 +91,7 @@ export default function TermsPage() {
                   <h2 className="text-2xl font-bold tracking-tight mb-4">3. Use of Interactive Tools</h2>
                   <div className="space-y-4 text-muted-foreground leading-relaxed">
                     <p>
-                      FundOpsHQ provides various interactive tools, calculators, and visualizers (collectively, "Tools")
+                      FundOpsHQ provides various interactive tools, calculators, and visualizers (collectively, &quot;Tools&quot;)
                       for educational and illustrative purposes only. These Tools are designed to help you understand
                       concepts related to fund operations and are not intended to provide precise calculations for
                       actual business decisions.
@@ -198,8 +198,8 @@ export default function TermsPage() {
                   <h2 className="text-2xl font-bold tracking-tight mb-4">7. Disclaimer of Warranties</h2>
                   <div className="space-y-4 text-muted-foreground leading-relaxed">
                     <p>
-                      THE SITE AND ALL CONTENT, TOOLS, AND SERVICES PROVIDED THEREON ARE PROVIDED "AS IS" AND "AS
-                      AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+                      THE SITE AND ALL CONTENT, TOOLS, AND SERVICES PROVIDED THEREON ARE PROVIDED &quot;AS IS&quot; AND &quot;AS
+                      AVAILABLE&quot; WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED.
                     </p>
                     <p>
                       TO THE FULLEST EXTENT PERMITTED BY LAW, FUNDOPSHQ DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED,
@@ -227,7 +227,7 @@ export default function TermsPage() {
                       You agree to indemnify, defend, and hold harmless FundOpsHQ and its owner, operator, affiliates,
                       and their respective officers, directors, employees, agents, licensors, and suppliers from and
                       against any claims, liabilities, damages, judgments, awards, losses, costs, expenses, or fees
-                      (including reasonable attorneys' fees) arising out of or relating to:
+                      (including reasonable attorneys&apos; fees) arising out of or relating to:
                     </p>
                     <ul className="list-disc pl-6 space-y-2">
                       <li>Your violation of these Terms</li>
@@ -260,7 +260,7 @@ export default function TermsPage() {
                   <div className="space-y-4 text-muted-foreground leading-relaxed">
                     <p>
                       FundOpsHQ reserves the right to modify or replace these Terms at any time at our sole discretion.
-                      If we make material changes to these Terms, we will update the "Last Updated" date at the top
+                      If we make material changes to these Terms, we will update the &quot;Last Updated&quot; date at the top
                       of this page.
                     </p>
                     <p>

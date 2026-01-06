@@ -144,7 +144,7 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
               <p className="text-muted-foreground leading-relaxed">
                 Launching a fund involves many moving pieces—legal, regulatory, operational, and more.
                 This interactive guide will help you understand each step, track your progress, and
-                make sure you don't miss anything critical.
+                make sure you don&apos;t miss anything critical.
               </p>
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div className="p-4 rounded-lg bg-accent/50">

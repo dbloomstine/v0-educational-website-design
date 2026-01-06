@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
-import { Target, Calculator, DollarSign, Building2, TrendingUp, ArrowRight } from 'lucide-react'
+import { Target, DollarSign, Building2, ArrowRight } from 'lucide-react'
 import { BudgetData, BudgetResults } from './types'
 import { findFundSizeForRunway, findCashForRunway, formatCurrency } from './budget-calculator'
 
@@ -19,9 +19,9 @@ interface GoalSeekingProps {
 type GoalType = 'runway' | 'breakeven' | 'custom'
 
 export function GoalSeeking({ data, results, onApply }: GoalSeekingProps) {
-  const [goalType, setGoalType] = useState<GoalType>('runway')
+  const [_goalType, _setGoalType] = useState<GoalType>('runway')
   const [targetMonths, setTargetMonths] = useState(24)
-  const [calculating, setCalculating] = useState(false)
+  const [_calculating, _setCalculating] = useState(false)
 
   // Quick goal presets
   const presets = [

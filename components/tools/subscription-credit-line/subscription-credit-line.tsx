@@ -19,7 +19,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ShareButton } from '@/components/tools/share-button'
 import { ExportToolbar, MethodologyBlock, RelatedToolsSection, LastUpdated, DisclaimerBlock } from '@/components/tools/shared'
 import { exportSubscriptionLineComparisonCSV, exportSubscriptionLineComparisonPDF } from './export'
-import { Rocket, Calculator, SlidersHorizontal, ChevronDown, ChevronUp } from 'lucide-react'
+import { Rocket, SlidersHorizontal, ChevronDown, ChevronUp } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 // Preset scenarios based on market research

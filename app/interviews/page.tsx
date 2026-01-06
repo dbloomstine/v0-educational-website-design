@@ -145,7 +145,7 @@ export default function InterviewsPage() {
             <div className="mx-auto max-w-3xl">
               <AnimateOnScroll>
                 <div className="text-center mb-10">
-                  <h2 className="text-2xl font-bold tracking-tight mb-4">Topics We'll Cover</h2>
+                  <h2 className="text-2xl font-bold tracking-tight mb-4">Topics We&apos;ll Cover</h2>
                 </div>
               </AnimateOnScroll>
 
@@ -178,7 +178,7 @@ export default function InterviewsPage() {
 
         <SectionCTA
           title="Know someone with a great story?"
-          description="If you or someone you know has interesting experiences in fund operations and would like to share them, I'd love to hear from you."
+          description="If you or someone you know has interesting experiences in fund operations and would like to share them, I&apos;d love to hear from you."
         >
           <Button asChild size="lg">
             <Link href="/contact">

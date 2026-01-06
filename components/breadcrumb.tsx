@@ -22,7 +22,6 @@ export function Breadcrumb({ items }: BreadcrumbProps) {
         <span className="sr-only md:not-sr-only">Home</span>
       </Link>
       {items.map((item, index) => {
-        const isLast = index === items.length - 1
         return (
           <div key={index} className="flex items-center gap-2">
             <ChevronRight className="h-4 w-4 text-muted-foreground/50" />

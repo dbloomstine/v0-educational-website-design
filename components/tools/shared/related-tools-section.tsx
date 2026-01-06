@@ -27,7 +27,6 @@ interface RelatedToolsSectionProps {
  * plus an optional learning path suggestion.
  */
 export function RelatedToolsSection({
-  currentToolSlug,
   relatedTools,
   learningPath,
   className
@@ -62,7 +61,7 @@ export function RelatedToolsSection({
                     {tool.description}
                   </p>
                   <p className="text-xs text-primary/80 italic">
-                    Why it's useful: {tool.reason}
+                    Why it&apos;s useful: {tool.reason}
                   </p>
                 </div>
                 <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all shrink-0 mt-1" />

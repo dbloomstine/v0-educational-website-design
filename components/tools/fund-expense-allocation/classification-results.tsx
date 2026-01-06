@@ -17,7 +17,7 @@ interface ClassificationResultsProps {
   onReset: () => void
 }
 
-export function ClassificationResults({ result, input, onExport, onReset }: ClassificationResultsProps) {
+export function ClassificationResults({ result, input, onReset }: ClassificationResultsProps) {
   const [showDetailed, setShowDetailed] = useState(false)
   const [showExamples, setShowExamples] = useState(false)
   const [showLogic, setShowLogic] = useState(false)

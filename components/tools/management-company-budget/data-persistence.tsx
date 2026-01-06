@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import {
@@ -9,8 +9,6 @@ import {
   CloudOff,
   Download,
   Upload,
-  CheckCircle2,
-  AlertCircle,
   Clock,
   History,
   RotateCcw

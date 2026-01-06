@@ -207,7 +207,7 @@ interface GlossaryProps {
   initialSearchTerm?: string
 }
 
-export function Glossary({ compact = false, initialSearchTerm = '' }: GlossaryProps) {
+export function Glossary({ compact = false }: GlossaryProps) {
   if (compact) {
     return (
       <GlossaryBase

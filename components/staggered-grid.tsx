@@ -21,12 +21,13 @@ export function StaggeredGrid({
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
+    const currentRef = ref.current
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true)
-          if (ref.current) {
-            observer.unobserve(ref.current)
+          if (currentRef) {
+            observer.unobserve(currentRef)
           }
         }
       },
@@ -36,13 +37,13 @@ export function StaggeredGrid({
       }
     )
 
-    if (ref.current) {
-      observer.observe(ref.current)
+    if (currentRef) {
+      observer.observe(currentRef)
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current)
+      if (currentRef) {
+        observer.unobserve(currentRef)
       }
     }
   }, [])

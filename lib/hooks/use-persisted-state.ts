@@ -22,6 +22,7 @@ export interface UsePersistedStateOptions<T> {
  *
  * Used by tool components like Distribution Waterfall, Fund Launch Guide, etc.
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Generic hook accepts any record type; callers provide specific types
 export function usePersistedState<T extends Record<string, any>>(
   defaultState: T,
   options: UsePersistedStateOptions<T>
@@ -102,6 +103,7 @@ export function usePersistedState<T extends Record<string, any>>(
     if (isInitialized.current) return
     setState(getInitialState())
     isInitialized.current = true
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Intentionally only run once on mount; getInitialState reads initial URL/storage values
   }, [])
 
   // Auto-save to localStorage when state changes

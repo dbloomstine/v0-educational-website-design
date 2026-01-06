@@ -15,7 +15,6 @@ import {
   Tooltip,
   ResponsiveContainer,
   ReferenceLine,
-  ReferenceArea,
   Legend,
   PieChart,
   Pie,
@@ -30,7 +29,7 @@ interface EnhancedChartsProps {
   results: BudgetResults
 }
 
-export function RunwayGauge({ data, results }: EnhancedChartsProps) {
+export function RunwayGauge({ results }: EnhancedChartsProps) {
   const runwayMonths = results.runwayMonths ?? 60
   const maxMonths = 60
 
@@ -131,7 +130,7 @@ export function RunwayGauge({ data, results }: EnhancedChartsProps) {
   )
 }
 
-export function ExpenseBreakdownChart({ data, results }: EnhancedChartsProps) {
+export function ExpenseBreakdownChart({ data }: EnhancedChartsProps) {
   const chartData = useMemo(() => {
     const teamCost = data.expenses.team.reduce((s, t) => s + t.monthlyCost, 0)
     const opsCost = data.expenses.operations.reduce((s, o) => s + o.monthlyCost, 0)
@@ -394,7 +393,7 @@ export function EnhancedCashRunwayChart({ data, results }: EnhancedChartsProps) 
   }, [results, data.startingCash, data.funds])
 
   // Find first close and runway zones for reference areas
-  const zones = useMemo(() => {
+  const _zones = useMemo(() => {
     const result = {
       dangerZoneStart: -1,
       warningZoneStart: -1,

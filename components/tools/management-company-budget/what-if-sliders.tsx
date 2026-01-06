@@ -13,7 +13,8 @@ import {
   Users,
   PiggyBank,
   RotateCcw,
-  Check
+  Check,
+  LucideIcon
 } from 'lucide-react'
 import { BudgetData, BudgetResults } from './types'
 import { calculateBudget, formatCurrency, formatRunway } from './budget-calculator'
@@ -27,7 +28,7 @@ interface WhatIfSlidersProps {
 interface SliderConfig {
   id: string
   label: string
-  icon: any
+  icon: LucideIcon
   min: number
   max: number
   step: number

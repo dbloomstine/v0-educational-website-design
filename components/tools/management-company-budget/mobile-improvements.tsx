@@ -5,15 +5,10 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import {
   Menu,
-  X,
   ChevronUp,
   Maximize2,
   Minimize2,
-  Home,
-  BarChart3,
-  Settings,
-  HelpCircle,
-  Calculator
+  Home
 } from 'lucide-react'
 import {
   Sheet,

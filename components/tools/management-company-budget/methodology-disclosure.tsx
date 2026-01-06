@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
 import {
   BookOpen,
   ChevronDown,
@@ -12,7 +11,6 @@ import {
   Calendar,
   DollarSign,
   BarChart3,
-  ExternalLink,
   Info,
   FileText
 } from 'lucide-react'
@@ -135,7 +133,7 @@ export function MethodologyDisclosure({ className }: MethodologyDisclosureProps)
             </p>
             <div className="flex items-center gap-2 text-xs">
               <Info className="h-3.5 w-3.5" />
-              <span>Click "View Details" to see full methodology and data sources</span>
+              <span>Click &quot;View Details&quot; to see full methodology and data sources</span>
             </div>
           </div>
         ) : (

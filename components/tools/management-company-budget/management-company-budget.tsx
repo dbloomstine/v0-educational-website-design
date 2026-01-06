@@ -24,8 +24,7 @@ import {
   Undo2,
   Redo2,
   Upload,
-  Download,
-  Save
+  Download
 } from 'lucide-react'
 import { DisclaimerBlock, PresetManager, MethodologyBlock, RelatedToolsSection } from '@/components/tools/shared'
 import { ShareButton } from '@/components/tools/share-button'
@@ -74,7 +73,7 @@ import { PDFExport } from './pdf-export'
 import { AutoSaveIndicator } from './data-persistence'
 import { CalculationBreakdown } from './calculation-breakdown'
 import { ScrollToTop, useIsMobile } from './mobile-improvements'
-import { SkipLink, VisuallyHidden, useAnnounce, LiveRegion } from './accessibility'
+import { SkipLink, useAnnounce, LiveRegion } from './accessibility'
 import { useBudgetState } from './use-budget-state'
 import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
@@ -88,7 +87,7 @@ export function ManagementCompanyBudget() {
   // Track if user has completed wizard or skipped
   const [showWizard, setShowWizard] = useState<boolean | null>(null)
   const [showResultsWalkthrough, setShowResultsWalkthrough] = useState(false)
-  const [wizardManuallyTriggered, setWizardManuallyTriggered] = useState(false)
+  const [_wizardManuallyTriggered, setWizardManuallyTriggered] = useState(false)
   const [activeTab, setActiveTab] = useState('overview')
 
   // GP Commitment tracking
@@ -96,8 +95,8 @@ export function ManagementCompanyBudget() {
   const [gpFundedAmount, setGpFundedAmount] = useState(0)
 
   // Mobile detection and accessibility
-  const isMobile = useIsMobile()
-  const { message: announceMessage, announce } = useAnnounce()
+  const _isMobile = useIsMobile()
+  const { message: announceMessage, announce: _announce } = useAnnounce()
 
   // Parse initial state from URL or use defaults
   const getInitialData = (): BudgetData => {
@@ -128,12 +127,12 @@ export function ManagementCompanyBudget() {
     canRedo,
     undo,
     redo,
-    exportToJson,
+    exportToJson: _exportToJson,
     importFromJson,
     downloadJson,
-    resetToDefault,
-    isDirty,
-    lastSaved
+    resetToDefault: _resetToDefault,
+    isDirty: _isDirty,
+    lastSaved: _lastSaved
   } = useBudgetState({ initialData: getInitialData() })
 
   // File input ref for JSON import
@@ -572,6 +571,7 @@ export function ManagementCompanyBudget() {
     })
 
     // GP Commitment Summary
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- jspdf-autotable adds lastAutoTable property to doc
     let currentY = (doc as any).lastAutoTable.finalY + 12
     currentY = checkNewPage(currentY, 50)
 
@@ -594,6 +594,7 @@ export function ManagementCompanyBudget() {
     })
 
     // Fund Revenue
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- jspdf-autotable adds lastAutoTable property to doc
     currentY = (doc as any).lastAutoTable.finalY + 12
     currentY = checkNewPage(currentY, 60)
 
@@ -620,6 +621,7 @@ export function ManagementCompanyBudget() {
     })
 
     // Expense Breakdown
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- jspdf-autotable adds lastAutoTable property to doc
     currentY = (doc as any).lastAutoTable.finalY + 12
     currentY = checkNewPage(currentY, 80)
 
@@ -642,6 +644,7 @@ export function ManagementCompanyBudget() {
     })
 
     // Team Details
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- jspdf-autotable adds lastAutoTable property to doc
     currentY = (doc as any).lastAutoTable.finalY + 12
     currentY = checkNewPage(currentY, 60)
 
@@ -666,6 +669,7 @@ export function ManagementCompanyBudget() {
     })
 
     // Operations Details
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- jspdf-autotable adds lastAutoTable property to doc
     currentY = (doc as any).lastAutoTable.finalY + 12
     currentY = checkNewPage(currentY, 60)
 
@@ -690,6 +694,7 @@ export function ManagementCompanyBudget() {
     })
 
     // Overhead Details
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- jspdf-autotable adds lastAutoTable property to doc
     currentY = (doc as any).lastAutoTable.finalY + 12
     currentY = checkNewPage(currentY, 60)
 
@@ -746,6 +751,7 @@ export function ManagementCompanyBudget() {
     })
 
     // First 12 months projection
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- jspdf-autotable adds lastAutoTable property to doc
     currentY = (doc as any).lastAutoTable.finalY + 12
 
     doc.setFontSize(14)
@@ -776,6 +782,7 @@ export function ManagementCompanyBudget() {
 
     // Add disclaimer on last page
     doc.setPage(totalPages)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- jspdf-autotable adds lastAutoTable property to doc
     const disclaimerY = (doc as any).lastAutoTable?.finalY ? (doc as any).lastAutoTable.finalY + 20 : pageHeight - 40
     doc.setFontSize(8)
     doc.setFont('helvetica', 'italic')

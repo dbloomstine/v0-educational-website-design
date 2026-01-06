@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
   Search,
@@ -15,7 +14,6 @@ import {
   Scale,
   Building2,
   Users,
-  Info,
   FileText,
   AlertCircle,
   Lightbulb,
@@ -195,7 +193,7 @@ export function ExpenseLookup({ onSelectExpense }: ExpenseLookupProps) {
           Fund Expense Allocation Guide
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Select an expense to see how it's typically classified and why.
+          Select an expense to see how it&apos;s typically classified and why.
           No confusing questions - just pick an expense and get your answer.
         </p>
       </div>
@@ -204,7 +202,7 @@ export function ExpenseLookup({ onSelectExpense }: ExpenseLookupProps) {
       <div className="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 rounded-lg">
         <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
         <p className="text-sm text-blue-900 dark:text-blue-100">
-          This is educational guidance based on industry practices. Always consult your fund's LPA and legal counsel for definitive answers.
+          This is educational guidance based on industry practices. Always consult your fund&apos;s LPA and legal counsel for definitive answers.
         </p>
       </div>
 

@@ -16,7 +16,7 @@ import {
   X,
   Play
 } from 'lucide-react'
-import { FundInputs, FeePhase, FundType } from './types'
+import { FundInputs, FeePhase } from './types'
 
 interface Scenario {
   id: string

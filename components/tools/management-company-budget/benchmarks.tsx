@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { BarChart3, CheckCircle2, AlertCircle, Info } from 'lucide-react'
 import { BudgetData, BudgetResults } from './types'
-import { formatCurrency } from './budget-calculator'
 
 // Industry benchmarks by fund size tier
 const BENCHMARKS = {

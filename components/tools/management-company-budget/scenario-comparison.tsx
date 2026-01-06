@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import {
   GitCompare,
-  Save,
   Trash2,
   ArrowUp,
   ArrowDown,
@@ -16,7 +15,7 @@ import {
   Check
 } from 'lucide-react'
 import { BudgetData, BudgetResults } from './types'
-import { calculateBudget, formatCurrency, formatRunway } from './budget-calculator'
+import { formatCurrency, formatRunway } from './budget-calculator'
 
 interface SavedScenario {
   id: string
@@ -210,7 +209,7 @@ export function ScenarioComparison({ currentData, currentResults }: ScenarioComp
                   <tr key={metric.key} className="border-b last:border-0">
                     <td className="py-3 pr-4 text-muted-foreground">{metric.label}</td>
                     <td className="py-3 px-2 text-right font-medium">
-                      {metric.format(currentResults[metric.key] as any)}
+                      {metric.format(currentResults[metric.key] as number)}
                     </td>
                     {scenarios.map((scenario) => {
                       const currentVal = currentResults[metric.key]
@@ -229,7 +228,7 @@ export function ScenarioComparison({ currentData, currentResults }: ScenarioComp
                       return (
                         <td key={scenario.id} className="py-3 px-2 text-right">
                           <div className="flex items-center justify-end gap-1">
-                            <span>{metric.format(savedVal as any)}</span>
+                            <span>{metric.format(savedVal as number)}</span>
                             <indicator.icon className={cn("h-3.5 w-3.5", indicator.color)} />
                           </div>
                           {percentChange && (

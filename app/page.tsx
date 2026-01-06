@@ -4,12 +4,11 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { AnimateOnScroll } from "@/components/animate-on-scroll"
 import { StaggeredGrid } from "@/components/staggered-grid"
-import { GradientMesh } from "@/components/gradient-mesh"
 import { AnimatedCounter } from "@/components/animated-counter"
 import { BackToTop } from "@/components/back-to-top"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight, Calculator, FileText, TrendingUp, Building, Calendar, DollarSign, Users, Shield, BookOpen } from "lucide-react"
+import { ArrowRight, Calculator, Building, DollarSign, Users, Shield } from "lucide-react"
 import { getAllFundTypes } from "@/lib/content/fund-types"
 import { getAllTools } from "@/lib/content/tools"
 import { getAllRoles } from "@/lib/content/roles"
@@ -149,7 +148,7 @@ export default function HomePage() {
 
                 <AnimateOnScroll delay={200}>
                   <p className="mb-8 max-w-xl text-lg text-muted-foreground leading-relaxed">
-                    Articles and tools to help you understand fund ops - whether you're new to the field or brushing up on a topic. PE, VC, credit, hedge funds, real estate, and more.
+                    Articles and tools to help you understand fund ops - whether you&apos;re new to the field or brushing up on a topic. PE, VC, credit, hedge funds, real estate, and more.
                   </p>
                 </AnimateOnScroll>
 
@@ -485,7 +484,7 @@ export default function HomePage() {
               </p>
               <h2 className="mb-3 text-2xl font-bold" style={{ letterSpacing: '-0.01em' }}>Here to help you learn</h2>
               <p className="mb-6 text-muted-foreground text-balance leading-relaxed">
-                FundOpsHQ is a free resource built to share what I've learned from years in fund operations. Whether you're new to the field or looking to brush up on a topic, I hope you find something useful here.
+                FundOpsHQ is a free resource built to share what I&apos;ve learned from years in fund operations. Whether you&apos;re new to the field or looking to brush up on a topic, I hope you find something useful here.
               </p>
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
                 <Button variant="outline" asChild>

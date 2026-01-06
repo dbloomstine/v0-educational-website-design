@@ -30,7 +30,7 @@ interface ResultsWalkthroughProps {
   onSkip: () => void
 }
 
-export function ResultsWalkthrough({ data, results, onComplete, onSkip }: ResultsWalkthroughProps) {
+export function ResultsWalkthrough({ results, onComplete, onSkip }: ResultsWalkthroughProps) {
   const runwayStatus = results.runwayMonths !== null && results.runwayMonths >= 18 ? 'good' :
                        results.runwayMonths !== null && results.runwayMonths >= 12 ? 'warning' : 'critical'
 
@@ -61,7 +61,7 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
             </div>
           </div>
           <p className="text-white/90 text-center">
-            We've created a comprehensive 5-year projection based on your inputs. Let's explore the key insights.
+            We&apos;ve created a comprehensive 5-year projection based on your inputs. Let&apos;s explore the key insights.
           </p>
         </div>
       )
@@ -125,7 +125,7 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
               <span className="text-sm font-medium text-white">Pro Tip</span>
             </div>
             <p className="text-white/80">
-              The "Cash Flow Projection" chart below shows your runway visually. Look for where your balance goes negative.
+              The &quot;Cash Flow Projection&quot; chart below shows your runway visually. Look for where your balance goes negative.
             </p>
           </div>
         </div>
@@ -276,7 +276,7 @@ export function ResultsWalkthrough({ data, results, onComplete, onSkip }: Result
               <CheckCircle2 className="h-5 w-5 text-emerald-400 mt-0.5" />
               <div>
                 <p className="font-medium text-white">Track Cash Flow</p>
-                <p className="text-white/80">The monthly projection chart shows when you'll reach break-even.</p>
+                <p className="text-white/80">The monthly projection chart shows when you&apos;ll reach break-even.</p>
               </div>
             </div>
             <div className="flex items-start gap-3 p-3 rounded-xl bg-white/5 border border-white/10">

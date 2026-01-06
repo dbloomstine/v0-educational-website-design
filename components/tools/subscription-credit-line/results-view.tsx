@@ -358,7 +358,7 @@ export function ResultsView({ output }: ResultsViewProps) {
             annual rate on daily outstanding balance. Total interest reduces net returns to LPs.
           </li>
           <li>
-            <strong>IRR Impact:</strong> We calculate IRR with and without the credit line, showing the "timing arbitrage"
+            <strong>IRR Impact:</strong> We calculate IRR with and without the credit line, showing the &quot;timing arbitrage&quot;
             benefit from delaying capital calls. IRR boost measured in basis points.
           </li>
           <li>

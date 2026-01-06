@@ -2,6 +2,17 @@ import Parser from 'rss-parser'
 import { createSlugFromTitleAndDate } from '@/lib/utils/content-slug'
 import { cleanBeehiivContent, extractBeehiivSummary } from '@/lib/utils/content-clean'
 
+// Type for RSS feed items with custom fields
+interface RSSItem {
+  title?: string
+  link?: string
+  pubDate?: string
+  isoDate?: string
+  contentSnippet?: string
+  content?: string
+  contentEncoded?: string
+}
+
 // Newsletter configurations
 export const NEWSLETTERS = {
   'fundopshq-insights': {
@@ -65,7 +76,7 @@ export async function getNewsletterPosts(newsletterSlug: NewsletterSlug): Promis
     })
     const feed = await parser.parseURL(newsletter.rssFeed)
 
-    const posts = feed.items.map((item: any) => {
+    const posts = feed.items.map((item: RSSItem) => {
       const date = item.isoDate || item.pubDate || new Date().toISOString()
       const slug = createSlugFromTitleAndDate(item.title || 'untitled', date)
       const summary = item.contentSnippet || extractBeehiivSummary(item.contentEncoded || item.content || '')
@@ -99,7 +110,7 @@ export async function getNewsletterPost(newsletterSlug: NewsletterSlug, postSlug
     })
     const feed = await parser.parseURL(newsletter.rssFeed)
 
-    const item = feed.items.find((item: any) => {
+    const item = feed.items.find((item: RSSItem) => {
       const date = item.isoDate || item.pubDate || new Date().toISOString()
       const itemSlug = createSlugFromTitleAndDate(item.title || 'untitled', date)
       return itemSlug === postSlug

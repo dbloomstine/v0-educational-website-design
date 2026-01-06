@@ -775,7 +775,7 @@ function generateRationale(
   return rationale;
 }
 
-function generateLogicExplanation(
+function _generateLogicExplanation(
   input: ClassificationInput,
   logicFactors: string[],
   category: ExpenseCategory

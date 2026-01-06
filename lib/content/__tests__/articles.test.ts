@@ -1,9 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   articles,
-  getArticle,
   getArticlesByFundType,
-  getArticlesByPillar,
   getArticleByPillar,
   getRelatedArticles,
 } from '../articles'

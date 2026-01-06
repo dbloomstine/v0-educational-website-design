@@ -31,7 +31,7 @@ export default function Error({
         </h1>
 
         <p className="mb-8 text-muted-foreground">
-          We encountered an unexpected error. This has been logged and we'll look into it.
+          We encountered an unexpected error. This has been logged and we&apos;ll look into it.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">

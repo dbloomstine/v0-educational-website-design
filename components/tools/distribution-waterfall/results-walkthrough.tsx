@@ -16,7 +16,6 @@ import {
   ResultsWalkthroughBase,
   WalkthroughStep,
   WalkthroughTipBox,
-  WalkthroughStatCard,
 } from '@/components/tools/shared'
 
 interface ResultsWalkthroughProps {
@@ -106,7 +105,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
           </div>
 
           <WalkthroughTipBox icon={Lightbulb}>
-            The GP's {formatPercent(output.input.gpCommitmentPercent)} co-investment ({formatCurrency(output.input.contributedCapital * output.input.gpCommitmentPercent)})
+            The GP&apos;s {formatPercent(output.input.gpCommitmentPercent)} co-investment ({formatCurrency(output.input.contributedCapital * output.input.gpCommitmentPercent)})
             is treated as LP capital and receives its share here.
           </WalkthroughTipBox>
         </div>
@@ -186,7 +185,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
 
           <p className="text-white/90">
             During catch-up, GP receives {formatPercent(output.input.catchUpRate)} of distributions
-            until they've earned {formatPercent(output.input.carryRate)} of <em>all</em> profits.
+            until they&apos;ve earned {formatPercent(output.input.carryRate)} of <em>all</em> profits.
           </p>
 
           <div className="grid grid-cols-2 gap-4">
@@ -217,7 +216,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
           </div>
           {!output.input.hasCatchUp && (
             <WalkthroughTipBox icon={AlertTriangle} variant="warning" title="Impact">
-              Without catch-up, GP's effective carry rate will be lower than {formatPercent(output.input.carryRate)}.
+              Without catch-up, GP&apos;s effective carry rate will be lower than {formatPercent(output.input.carryRate)}.
             </WalkthroughTipBox>
           )}
         </div>
@@ -242,7 +241,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
 
           <p className="text-white/90">
             After catch-up (if any), remaining profits split between LPs and GP.
-            This is the "steady state" profit sharing.
+            This is the &quot;steady state&quot; profit sharing.
           </p>
 
           <div className="grid grid-cols-2 gap-4">

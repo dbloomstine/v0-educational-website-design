@@ -15,7 +15,8 @@ export function ShareButtons({ url, title, description }: ShareButtonsProps) {
 
   const encodedUrl = encodeURIComponent(url)
   const encodedTitle = encodeURIComponent(title)
-  const encodedDescription = encodeURIComponent(description || '')
+  // description reserved for future use in share links
+  void description
 
   const shareLinks = {
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,

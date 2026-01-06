@@ -1,3 +1,5 @@
+import { Tool } from './types'
+
 export interface Role {
   id: string
   title: string
@@ -67,8 +69,8 @@ export function getRoleBySlug(slug: string): Role | undefined {
   return roles.find(role => role.slug === slug)
 }
 
-export function getToolsForRole(role: Role, allTools: any[]): any[] {
+export function getToolsForRole(role: Role, allTools: Tool[]): Tool[] {
   return allTools.filter(tool =>
-    tool.personas.some((p: string) => role.toolPersonas.includes(p))
+    tool.personas.some((p) => role.toolPersonas.includes(p))
   )
 }

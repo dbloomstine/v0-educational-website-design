@@ -10,7 +10,7 @@ interface SummaryCardsProps {
   fundSize: number
 }
 
-export function SummaryCards({ result, fundSize }: SummaryCardsProps) {
+export function SummaryCards({ result }: SummaryCardsProps) {
   const metrics = [
     {
       icon: DollarSign,

@@ -10,7 +10,6 @@ import {
   ChevronRight,
   ChevronLeft,
   Sparkles,
-  DollarSign,
   TrendingUp,
   Building2,
   Layers,
@@ -24,10 +23,9 @@ import {
   Calculator,
   Trophy,
   Zap,
-  BarChart3,
-  Info
+  BarChart3
 } from 'lucide-react'
-import { WaterfallInput, defaultInput } from './waterfallCalculations'
+import { WaterfallInput } from './waterfallCalculations'
 import confetti from 'canvas-confetti'
 
 interface JourneyModeProps {

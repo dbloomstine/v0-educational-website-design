@@ -15,12 +15,9 @@ import {
   TrendingUp,
   Clock,
   Building2,
-  Target,
   Zap,
   AlertCircle,
   Info,
-  SkipForward,
-  Award,
   Activity,
   Percent,
   Calendar,
@@ -300,8 +297,8 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
   const step = JOURNEY_STEPS[currentStepIndex]
   const totalSteps = JOURNEY_STEPS.length
   const progress = ((currentStepIndex + 1) / totalSteps) * 100
-  const isFirstStep = currentStepIndex === 0
-  const isLastStep = currentStepIndex === totalSteps - 1
+  const _isFirstStep = currentStepIndex === 0
+  const _isLastStep = currentStepIndex === totalSteps - 1
 
   // Current phase info
   const currentPhase = PHASES.find(p => p.id === step?.phase) || PHASES[0]
@@ -388,8 +385,8 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
     setTimeout(() => onComplete(input), 500)
   }
 
-  // Handlers
-  const handleStrategySelect = (strategyId: string) => {
+  // Handlers - defined before keyboard effect that uses them
+  const handleStrategySelect = useCallback((strategyId: string) => {
     const strategy = FUND_STRATEGIES.find(s => s.id === strategyId)
     if (strategy) {
       setSelectedStrategy(strategyId)
@@ -397,22 +394,22 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
       setFacilitySize(strategy.typicalFacility)
       autoAdvance()
     }
-  }
+  }, [autoAdvance])
 
-  const handleFacilitySelect = (value: number) => {
+  const handleFacilitySelect = useCallback((value: number) => {
     setFacilitySize(value)
     autoAdvance()
-  }
+  }, [autoAdvance])
 
-  const handleRateSelect = (value: number) => {
+  const handleRateSelect = useCallback((value: number) => {
     setInterestRate(value)
     autoAdvance()
-  }
+  }, [autoAdvance])
 
-  const handleDaysSelect = (value: number) => {
+  const handleDaysSelect = useCallback((value: number) => {
     setMaxDaysOutstanding(value)
     autoAdvance()
-  }
+  }, [autoAdvance])
 
   // Keyboard navigation
   useEffect(() => {
@@ -438,7 +435,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
         case '2':
         case '3':
         case '4':
-        case '5':
+        case '5': {
           e.preventDefault()
           const index = parseInt(e.key) - 1
           if (step.id === 'fund-basics' && index < FUND_STRATEGIES.length) {
@@ -451,12 +448,13 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
             handleDaysSelect(DAYS_OPTIONS[index].value)
           }
           break
+        }
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [step, currentStepIndex, goNext, goBack])
+  }, [step, currentStepIndex, goNext, goBack, handleStrategySelect, handleFacilitySelect, handleRateSelect, handleDaysSelect])
 
   // Animation
   const slideVariants = {
@@ -1135,7 +1133,7 @@ export function JourneyMode({ onComplete, onSkip }: JourneyModeProps) {
                     See Impact Analysis
                   </Button>
                   <p className="text-xs text-slate-500 text-center">
-                    You'll be able to adjust all parameters in the calculator
+                    You&apos;ll be able to adjust all parameters in the calculator
                   </p>
                 </div>
               </div>

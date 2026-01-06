@@ -2,10 +2,8 @@
 
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
 import {
   Select,
   SelectContent,
@@ -25,12 +23,10 @@ import {
   TrendingUp,
   Percent,
   Calendar,
-  DollarSign,
   Calculator,
   Info
 } from 'lucide-react'
 import { BudgetData, Fund, BudgetSettings } from './types'
-import { formatCurrency } from './budget-calculator'
 
 interface AdvancedSettingsProps {
   data: BudgetData
@@ -131,7 +127,7 @@ export function AdvancedSettings({ data, onDataChange }: AdvancedSettingsProps) 
             </div>
 
             {/* Per-Fund Advanced Settings */}
-            {data.funds.map((fund, idx) => (
+            {data.funds.map((fund) => (
               <div key={fund.id} className="space-y-4 pt-4 border-t">
                 <h4 className="font-medium text-sm">{fund.name} - Advanced Options</h4>
 

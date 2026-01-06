@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 import { DollarSign, Users, TrendingUp, AlertCircle, CheckCircle2, Percent } from 'lucide-react'
-import { BudgetData, Fund } from './types'
+import { BudgetData } from './types'
 import { formatCurrency } from './budget-calculator'
 
 interface GPCommitmentProps {

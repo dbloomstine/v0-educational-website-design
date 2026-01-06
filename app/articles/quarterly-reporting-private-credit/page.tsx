@@ -94,14 +94,14 @@ export default function ArticlePage() {
 
                 <h2 className="mb-4 mt-12 text-3xl font-bold">Implementation Timeline</h2>
                 <p className="mb-6 leading-relaxed text-muted-foreground">
-                  These changes don't need to happen all at once. Start with data standardization in your next reporting
+                  These changes don&apos;t need to happen all at once. Start with data standardization in your next reporting
                   cycle, then layer in automation and templates over the following quarters. Most teams see meaningful
                   time savings within 6 months.
                 </p>
 
                 <h2 className="mb-4 mt-12 text-3xl font-bold">Conclusion</h2>
                 <p className="mb-6 leading-relaxed text-muted-foreground">
-                  Streamlining quarterly reporting isn't about cutting corners—it's about eliminating inefficiencies so
+                  Streamlining quarterly reporting isn&apos;t about cutting corners—it&apos;s about eliminating inefficiencies so
                   your team can focus on analysis and insights rather than data wrangling. The time savings compound
                   over each quarter, giving your operations team capacity for more strategic work.
                 </p>
@@ -112,13 +112,13 @@ export default function ArticlePage() {
                 <CardHeader>
                   <CardTitle className="text-2xl">Need tailored guidance?</CardTitle>
                   <CardDescription className="text-base leading-relaxed">
-                    We help fund operations teams implement these strategies and more. Let's discuss your specific
+                    We help fund operations teams implement these strategies and more. Let&apos;s discuss your specific
                     challenges.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Button size="lg" asChild>
-                    <Link href="/contact">We're here to help</Link>
+                    <Link href="/contact">We&apos;re here to help</Link>
                   </Button>
                 </CardContent>
               </Card>

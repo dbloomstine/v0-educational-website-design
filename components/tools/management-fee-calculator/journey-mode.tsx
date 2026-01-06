@@ -16,9 +16,7 @@ import {
   Calculator,
   ArrowRight,
   Check,
-  Trophy,
-  Sparkles,
-  BarChart3
+  Trophy
 } from 'lucide-react'
 import { FundInputs, FeePhase, FundType } from './types'
 import confetti from 'canvas-confetti'

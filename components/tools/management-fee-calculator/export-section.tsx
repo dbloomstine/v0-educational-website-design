@@ -17,7 +17,6 @@ import {
 } from '@/lib/exports'
 import {
   downloadPDF,
-  createPDFKeyValueSection,
   createPDFTableSection,
   type PDFSection
 } from '@/lib/exports'

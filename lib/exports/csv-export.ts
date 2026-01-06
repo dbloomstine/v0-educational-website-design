@@ -141,7 +141,7 @@ export function downloadCSV(options: CSVExportOptions): void {
     toast.success("CSV exported successfully", {
       description: `${options.filename}.csv has been downloaded`
     })
-  } catch (error) {
+  } catch {
     toast.error("Export failed", {
       description: "There was an error exporting the CSV file"
     })

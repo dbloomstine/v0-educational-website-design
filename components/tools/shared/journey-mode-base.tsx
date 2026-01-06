@@ -7,7 +7,6 @@ import {
   ChevronLeft,
   ChevronRight,
   SkipForward,
-  X,
   Sparkles,
   Keyboard,
 } from 'lucide-react'
@@ -16,7 +15,6 @@ import {
   useJourneyMode,
   journeySlideVariants,
   type JourneyStepBase,
-  type UseJourneyModeOptions,
 } from '@/lib/hooks'
 
 /**

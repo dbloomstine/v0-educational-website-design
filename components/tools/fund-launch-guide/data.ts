@@ -1,6 +1,6 @@
 // Fund Launch Guide v2 - Comprehensive Task Database
 
-import { FundLaunchPhase, FundLaunchTask } from './types'
+import { FundLaunchPhase, FundLaunchTask, FundStrategy, FundSize, Jurisdiction } from './types'
 
 export const PHASES: FundLaunchPhase[] = [
   {
@@ -1303,11 +1303,11 @@ export function getTasksForPhase(phaseId: string): FundLaunchTask[] {
 export function getApplicableTasks(config: { strategy: string; size: string; jurisdiction: string }): FundLaunchTask[] {
   return TASKS.filter(task => {
     const strategyMatch = task.applicableTo.strategies === 'all' ||
-      task.applicableTo.strategies.includes(config.strategy as any)
+      task.applicableTo.strategies.includes(config.strategy as FundStrategy)
     const sizeMatch = task.applicableTo.sizes === 'all' ||
-      task.applicableTo.sizes.includes(config.size as any)
+      task.applicableTo.sizes.includes(config.size as FundSize)
     const jurisdictionMatch = task.applicableTo.jurisdictions === 'all' ||
-      task.applicableTo.jurisdictions.includes(config.jurisdiction as any)
+      task.applicableTo.jurisdictions.includes(config.jurisdiction as Jurisdiction)
     return strategyMatch && sizeMatch && jurisdictionMatch
   })
 }

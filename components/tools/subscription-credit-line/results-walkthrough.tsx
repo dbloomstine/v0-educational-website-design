@@ -9,8 +9,6 @@ import {
   AlertTriangle,
   CheckCircle2,
   Lightbulb,
-  BarChart3,
-  Clock,
   Target,
   Activity,
 } from 'lucide-react'
@@ -28,7 +26,7 @@ interface ResultsWalkthroughProps {
 }
 
 export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkthroughProps) {
-  const { input, irrNoLine, irrWithLine, moicNoLine, moicWithLine, irrBoost, moicDrag, totalInterestPaid, avgDaysCapitalOutstanding } = output
+  const { input, irrNoLine, irrWithLine, moicNoLine, moicWithLine, irrBoost, moicDrag, totalInterestPaid, avgDaysCapitalOutstanding: _avgDaysCapitalOutstanding } = output
 
   // Analyze results
   const isILPACompliant = input.facilitySize <= 0.25 && input.maxDaysOutstanding <= 180
@@ -54,7 +52,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
       content: (
         <div className="space-y-6">
           <p className="text-white/90 text-center">
-            We've modeled a ${(input.fundSize / 1000000).toFixed(0)}M fund with a {formatPercent(input.facilitySize)} facility over {input.fundTermYears} years.
+            We&apos;ve modeled a ${(input.fundSize / 1000000).toFixed(0)}M fund with a {formatPercent(input.facilitySize)} facility over {input.fundTermYears} years.
           </p>
 
           <div className="grid grid-cols-2 gap-4">
@@ -115,7 +113,7 @@ export function ResultsWalkthrough({ output, onComplete, onSkip }: ResultsWalkth
 
           <WalkthroughTipBox icon={Lightbulb} title="Key Insight">
             This is why ILPA requires GPs to report both levered and unlevered returns. The IRR boost
-            is real but doesn't reflect better investment performance.
+            is real but doesn&apos;t reflect better investment performance.
           </WalkthroughTipBox>
         </div>
       )

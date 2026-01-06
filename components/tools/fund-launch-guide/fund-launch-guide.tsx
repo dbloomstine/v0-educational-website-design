@@ -6,12 +6,11 @@ import { cn } from '@/lib/utils'
 import {
   FundConfig,
   FundLaunchTask,
-  FundLaunchPhase,
   ViewMode,
   STORAGE_KEY,
   DEFAULT_CONFIG,
 } from './types'
-import { PHASES, TASKS, getApplicableTasks, getTasksForPhase } from './data'
+import { PHASES, getApplicableTasks } from './data'
 import { TaskCard } from './task-card'
 
 // Dynamic import to avoid SSR issues with framer-motion and canvas-confetti
@@ -33,12 +32,7 @@ import {
   ChevronDown,
   ChevronRight,
   Filter,
-  X,
   Check,
-  Copy,
-  Download,
-  FileText,
-  FileSpreadsheet,
   CheckCircle2,
   Search,
   Sparkles,
@@ -60,9 +54,7 @@ import autoTable from 'jspdf-autotable'
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
   DropdownMenuCheckboxItem,
 } from '@/components/ui/dropdown-menu'
 import { RelatedToolsSection, DisclaimerBlock } from '@/components/tools/shared'
@@ -192,7 +184,8 @@ export function FundLaunchGuide() {
     if (needsUpdate) {
       setCompletedTasks(newCompletedTasks)
     }
-  }, [providers, hasLoaded]) // Only depend on providers and hasLoaded to avoid loops
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- Intentionally omitting completedTasks to avoid infinite loops; we read and write it conditionally
+  }, [providers, hasLoaded])
 
   // Get applicable tasks for current config
   const applicableTasks = useMemo(() => {
@@ -426,7 +419,7 @@ export function FundLaunchGuide() {
     const wb = XLSX.utils.book_new()
 
     // Sheet 1: Checklist
-    const checklistData: any[][] = [
+    const checklistData: (string | number)[][] = [
       ['FundOpsHQ - Fund Launch Checklist'],
       [`Generated: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`],
       [''],
@@ -470,7 +463,7 @@ export function FundLaunchGuide() {
     XLSX.utils.book_append_sheet(wb, wsChecklist, 'Checklist')
 
     // Sheet 2: Summary
-    const summaryData: any[][] = [
+    const summaryData: (string | number)[][] = [
       ['FundOpsHQ - Fund Launch Checklist Summary'],
       [`Generated: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`],
       [''],
@@ -629,7 +622,7 @@ export function FundLaunchGuide() {
         margin: { left: 14, right: 14 },
       })
 
-      yPos = (doc as any).lastAutoTable.finalY + 12
+      yPos = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 12
     })
 
     // Footer on all pages
@@ -729,7 +722,7 @@ export function FundLaunchGuide() {
             </div>
             {searchQuery && searchResults.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-4">
-                No tasks found matching "{searchQuery}"
+                No tasks found matching &quot;{searchQuery}&quot;
               </p>
             )}
             {searchResults.length > 0 && (

@@ -11,11 +11,12 @@ import {
   TrendingUp,
   LineChart,
   Split,
-  ArrowRight
+  ArrowRight,
+  LucideIcon
 } from 'lucide-react'
 import { Tool } from '@/lib/content/types'
 
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, LucideIcon> = {
   Calendar,
   DollarSign,
   Building,

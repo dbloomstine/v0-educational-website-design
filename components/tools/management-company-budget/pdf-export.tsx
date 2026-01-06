@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import {
@@ -605,7 +605,7 @@ export function PDFExport({ data, results, className }: PDFExportProps) {
         setExportStatus('idle')
         setDialogOpen(false)
       }, 2000)
-    } catch (error) {
+    } catch {
       // Export failed
       setExportStatus('error')
     } finally {
@@ -753,7 +753,7 @@ export function PDFExport({ data, results, className }: PDFExportProps) {
           </div>
 
           <p className="text-xs text-muted-foreground text-center">
-            PDF export opens a print dialog. Choose "Save as PDF" in your browser's print options.
+            PDF export opens a print dialog. Choose &quot;Save as PDF&quot; in your browser&apos;s print options.
           </p>
         </div>
       </DialogContent>

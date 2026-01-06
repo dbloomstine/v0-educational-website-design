@@ -95,7 +95,8 @@ export function WaterfallChart({ data, results }: WaterfallChartProps) {
   }, [data, results])
 
   // Custom shape for waterfall bars
-  const WaterfallBar = (props: any) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Recharts bar props are dynamically typed
+  const _WaterfallBar = (props: any) => {
     const { x, y, width, height, payload } = props
 
     if (payload.isTotal) {
@@ -112,7 +113,7 @@ export function WaterfallChart({ data, results }: WaterfallChartProps) {
     }
 
     // For incremental bars, we need to position them correctly
-    const prevCumulative = payload.isPositive
+    const _prevCumulative = payload.isPositive
       ? payload.cumulative - payload.value
       : payload.cumulative + Math.abs(payload.value)
 

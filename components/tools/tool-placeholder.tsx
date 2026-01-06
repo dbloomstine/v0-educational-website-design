@@ -26,7 +26,7 @@ const categoryColors: Record<string, string> = {
 
 export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
   const primaryCategory = tool.categories[0]
-  const categoryColor = categoryColors[primaryCategory] || 'oklch(0.6 0.16 210)'
+  const _categoryColor = categoryColors[primaryCategory] || 'oklch(0.6 0.16 210)'
 
   // If this is the Management Fee Calculator tool, render the actual calculator
   if (tool.slug === 'management-fee-calculator') {
@@ -224,7 +224,7 @@ export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
                 </h3>
                 <p className="text-muted-foreground mb-6">
                   Want to discuss your specific use case or get a customized version of this tool?
-                  Let's chat about your needs.
+                  Let&apos;s chat about your needs.
                 </p>
                 <Button asChild size="lg">
                   <a href="/contact">Schedule a Conversation</a>

@@ -1,8 +1,7 @@
 "use client"
 
-import { useState } from 'react'
 import { cn } from '@/lib/utils'
-import { FundLaunchTask, FundLaunchPhase, TaskDependency } from './types'
+import { FundLaunchTask, FundLaunchPhase } from './types'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -14,7 +13,6 @@ import {
   ExternalLink,
   Link as LinkIcon,
   CheckCircle2,
-  Circle,
   AlertCircle
 } from 'lucide-react'
 
@@ -49,7 +47,6 @@ const priorityConfig: Record<string, { label: string; color: string }> = {
 
 export function TaskCard({
   task,
-  phase,
   isCompleted,
   isExpanded,
   onToggleComplete,

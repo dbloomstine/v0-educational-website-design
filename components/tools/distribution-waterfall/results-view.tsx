@@ -1,6 +1,6 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChevronDown, ChevronUp, Info, Copy, Check } from 'lucide-react'
 import { useState } from 'react'
 import { WaterfallOutput, formatCurrency, formatPercent, formatMultiple } from './waterfallCalculations'
@@ -15,7 +15,7 @@ interface ResultsViewProps {
   onCopyScenario?: () => void
 }
 
-export function ResultsView({ output, onExport, onCopyScenario }: ResultsViewProps) {
+export function ResultsView({ output, onCopyScenario }: ResultsViewProps) {
   const [showTierDetails, setShowTierDetails] = useState(true)
   const [csvLoading, setCsvLoading] = useState(false)
   const [excelLoading, setExcelLoading] = useState(false)
@@ -128,7 +128,7 @@ export function ResultsView({ output, onExport, onCopyScenario }: ResultsViewPro
                     <TooltipContent className="max-w-xs">
                       <p className="text-sm">
                         Actual carry received may differ from stated rate due to preferred return and catch-up mechanics.
-                        This represents the GP's profit share beyond their LP commitment.
+                        This represents the GP&apos;s profit share beyond their LP commitment.
                       </p>
                     </TooltipContent>
                   </Tooltip>

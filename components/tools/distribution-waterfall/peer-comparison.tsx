@@ -2,8 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { BarChart3, TrendingUp, TrendingDown, Minus, Info, CheckCircle2, AlertTriangle } from 'lucide-react'
+import { BarChart3, Minus, Info, CheckCircle2, AlertTriangle } from 'lucide-react'
 import { WaterfallInput, formatPercent } from './waterfallCalculations'
 
 interface PeerComparisonProps {
@@ -80,7 +79,6 @@ export function PeerComparison({ input, compact = false }: PeerComparisonProps) 
   }
 
   const getComparison = (b: Benchmark): { status: 'favorable' | 'neutral' | 'unfavorable'; icon: React.ReactNode } => {
-    const pos = getPositionPercent(b)
 
     // For LP-friendly = higher metrics
     if (b.lpFriendlyDirection === 'higher') {

@@ -9,8 +9,7 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
-  ReferenceLine,
-  ReferenceDot
+  ReferenceLine
 } from 'recharts'
 import { BudgetData, BudgetResults } from './types'
 import { formatCurrency } from './budget-calculator'
@@ -109,7 +108,7 @@ export function StackedExpenseChart({ data, results }: StackedExpenseChartProps)
   }, [data, results])
 
   // Custom tooltip
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: Array<{ color: string; name: string; value: number }>; label?: string }) => {
     if (!active || !payload?.length) return null
 
     const milestone = milestones.find(m => chartData[m.month - 1]?.label === label)
@@ -127,7 +126,7 @@ export function StackedExpenseChart({ data, results }: StackedExpenseChartProps)
           </div>
         )}
         <div className="space-y-1">
-          {payload.map((entry: any, index: number) => (
+          {payload.map((entry, index: number) => (
             <div key={index} className="flex items-center justify-between gap-4">
               <span className="flex items-center gap-1.5">
                 <div className="w-2.5 h-2.5 rounded" style={{ backgroundColor: entry.color }} />

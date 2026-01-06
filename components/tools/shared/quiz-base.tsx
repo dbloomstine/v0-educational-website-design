@@ -90,7 +90,6 @@ export function QuizBase({
   onCorrectAnswer,
   showStreak = true,
   showCloseButton = true,
-  resultMessages = DEFAULT_RESULT_MESSAGES,
   className
 }: QuizBaseProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
