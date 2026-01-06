@@ -38,7 +38,7 @@ export function usePersistedState<T extends Record<string, any>>(
   const router = useRouter()
   const pathname = usePathname()
   const isInitialized = useRef(false)
-  const debounceTimer = useRef<NodeJS.Timeout>()
+  const debounceTimer = useRef<NodeJS.Timeout | undefined>(undefined)
 
   /**
    * Load initial state from URL or localStorage

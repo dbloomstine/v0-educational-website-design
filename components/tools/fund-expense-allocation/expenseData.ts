@@ -607,8 +607,8 @@ export function classifyExpense(input: ClassificationInput): ClassificationResul
 
   // Start with default classification
   let classification = category.defaultClassification;
-  let flags: string[] = [];
-  let logicFactors: string[] = [];
+  const flags: string[] = [];
+  const logicFactors: string[] = [];
 
   // Add base logic factors that always apply
   logicFactors.push(`Expense category: ${category.name} - default treatment is ${category.defaultClassification.replace('-', ' ')}`);
@@ -808,7 +808,7 @@ function generateCustomExpenseResult(input: ClassificationInput): Classification
   // Analyze custom description for keywords
   const description = (input.customDescription || '').toLowerCase();
   let classification: Classification = 'case-by-case';
-  let headline = 'Custom expense - requires specific analysis';
+  const headline = 'Custom expense - requires specific analysis';
   let rationale = 'For this custom expense, ';
   const flags: string[] = ['Custom expense description - this guidance is preliminary. Consult fund documents and counsel.'];
   const logicFactors: string[] = [];

@@ -41,11 +41,11 @@ const platformIcons = {
 
 export function AudioCta({ audioLinks, className = '' }: AudioCtaProps) {
   const availablePlatforms = Object.entries(audioLinks)
-    .filter(([_, url]) => url)
-    .map(([key, url]) => ({
+    .filter(([_, linkUrl]) => linkUrl)
+    .map(([key, linkUrl]) => ({
       key: key as keyof typeof PODCAST_PLATFORMS,
-      url: url as string,
       ...PODCAST_PLATFORMS[key as keyof typeof PODCAST_PLATFORMS],
+      url: linkUrl as string,
     }))
 
   if (availablePlatforms.length === 0) {
@@ -92,11 +92,11 @@ export function AudioCta({ audioLinks, className = '' }: AudioCtaProps) {
 // Compact inline version for smaller spaces
 export function AudioCtaInline({ audioLinks, className = '' }: AudioCtaProps) {
   const availablePlatforms = Object.entries(audioLinks)
-    .filter(([_, url]) => url)
-    .map(([key, url]) => ({
+    .filter(([_, linkUrl]) => linkUrl)
+    .map(([key, linkUrl]) => ({
       key: key as keyof typeof PODCAST_PLATFORMS,
-      url: url as string,
       ...PODCAST_PLATFORMS[key as keyof typeof PODCAST_PLATFORMS],
+      url: linkUrl as string,
     }))
 
   if (availablePlatforms.length === 0) {

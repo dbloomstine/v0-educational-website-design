@@ -19,7 +19,7 @@ export function useUrlState<T extends Record<string, any>>(
   const router = useRouter()
   const pathname = usePathname()
   const isInitialized = useRef(false)
-  const debounceTimer = useRef<NodeJS.Timeout>()
+  const debounceTimer = useRef<NodeJS.Timeout | undefined>(undefined)
 
   const debounceMs = options?.debounceMs ?? 500
   const paramPrefix = options?.paramPrefix ?? ''

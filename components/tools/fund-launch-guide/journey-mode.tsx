@@ -84,7 +84,7 @@ interface JourneyStep {
   options?: { value: any; label: string; icon?: React.ReactNode }[]
   // For provider steps
   providerKey?: string
-  providerOptions?: string[]
+  providerOptions?: readonly string[]
   // For yes-no steps
   taskId?: string
   // For checklist steps

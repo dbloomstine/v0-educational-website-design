@@ -106,7 +106,7 @@ export function ManagementCompanyBudget() {
     const startingCash = parseFloat(searchParams.get('cash') || '') || DEFAULT_BUDGET_DATA.startingCash
 
     let funds = DEFAULT_BUDGET_DATA.funds
-    let expenses = DEFAULT_BUDGET_DATA.expenses
+    const expenses = DEFAULT_BUDGET_DATA.expenses
 
     try {
       const fundsParam = searchParams.get('funds')

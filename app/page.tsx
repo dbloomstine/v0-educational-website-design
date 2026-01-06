@@ -1,3 +1,4 @@
+import { Metadata } from 'next'
 import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
@@ -12,6 +13,25 @@ import { ArrowRight, Calculator, FileText, TrendingUp, Building, Calendar, Dolla
 import { getAllFundTypes } from "@/lib/content/fund-types"
 import { getAllTools } from "@/lib/content/tools"
 import { getAllRoles } from "@/lib/content/roles"
+
+export const metadata: Metadata = {
+  title: 'FundOpsHQ | Learn Fund Operations for PE, VC, Credit & More',
+  description: 'Free educational resources for fund operations professionals. Articles, tools, and guides covering Private Equity, Venture Capital, Hedge Funds, Private Credit, Real Estate, and Infrastructure fund operations.',
+  openGraph: {
+    title: 'FundOpsHQ | Learn Fund Operations for PE, VC, Credit & More',
+    description: 'Free educational resources for fund operations professionals. Articles, tools, and guides across all alternative asset classes.',
+    type: 'website',
+    url: 'https://fundops.com',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'FundOpsHQ | Learn Fund Operations',
+    description: 'Free educational resources for fund operations professionals across all alternative asset classes.',
+  },
+  alternates: {
+    canonical: 'https://fundops.com',
+  },
+}
 
 const fundTypes = getAllFundTypes().map((fundType) => ({
   name: fundType.name,
