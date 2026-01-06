@@ -692,10 +692,15 @@ export function PDFExport({ data, results, className }: PDFExportProps) {
                     isSelected ? "border-primary bg-primary/5" : "hover:bg-muted/50"
                   )}
                   onClick={() => toggleSection(section.id)}
+                  onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && toggleSection(section.id)}
+                  role="checkbox"
+                  aria-checked={isSelected}
+                  tabIndex={0}
                 >
                   <Checkbox
                     checked={isSelected}
                     onCheckedChange={() => toggleSection(section.id)}
+                    tabIndex={-1}
                   />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">

@@ -195,6 +195,10 @@ export function ArticleToc({ content }: ArticleTocProps) {
           <div
             className="xl:hidden fixed inset-0 bg-background/80 backdrop-blur-sm z-40"
             onClick={() => setMobileMenuOpen(false)}
+            onKeyDown={(e) => e.key === 'Escape' && setMobileMenuOpen(false)}
+            role="button"
+            tabIndex={0}
+            aria-label="Close table of contents"
           />
 
           {/* Drawer */}

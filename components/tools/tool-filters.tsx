@@ -107,9 +107,9 @@ export function ToolFilters({ categories, personas, complexities }: ToolFiltersP
       </div>
 
       {/* Category Filters */}
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Category</label>
-        <div className="flex flex-wrap gap-2">
+      <fieldset className="space-y-2 border-0 p-0 m-0">
+        <legend className="text-sm font-medium">Category</legend>
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Category filters">
           {categories.map((category) => (
             <Button
               key={category}
@@ -117,17 +117,18 @@ export function ToolFilters({ categories, personas, complexities }: ToolFiltersP
               size="sm"
               onClick={() => toggleCategory(category)}
               className="text-xs"
+              aria-pressed={selectedCategories.includes(category)}
             >
               {category}
             </Button>
           ))}
         </div>
-      </div>
+      </fieldset>
 
       {/* Persona Filters */}
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Persona</label>
-        <div className="flex flex-wrap gap-2">
+      <fieldset className="space-y-2 border-0 p-0 m-0">
+        <legend className="text-sm font-medium">Persona</legend>
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Persona filters">
           {personas.map((persona) => (
             <Button
               key={persona}
@@ -135,17 +136,18 @@ export function ToolFilters({ categories, personas, complexities }: ToolFiltersP
               size="sm"
               onClick={() => togglePersona(persona)}
               className="text-xs"
+              aria-pressed={selectedPersonas.includes(persona)}
             >
               {persona}
             </Button>
           ))}
         </div>
-      </div>
+      </fieldset>
 
       {/* Complexity Filters */}
-      <div className="space-y-2">
-        <label className="text-sm font-medium">Complexity</label>
-        <div className="flex flex-wrap gap-2">
+      <fieldset className="space-y-2 border-0 p-0 m-0">
+        <legend className="text-sm font-medium">Complexity</legend>
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Complexity filters">
           {complexities.map((complexity) => (
             <Button
               key={complexity}
@@ -153,12 +155,13 @@ export function ToolFilters({ categories, personas, complexities }: ToolFiltersP
               size="sm"
               onClick={() => toggleComplexity(complexity)}
               className="text-xs"
+              aria-pressed={selectedComplexities.includes(complexity)}
             >
               {complexity}
             </Button>
           ))}
         </div>
-      </div>
+      </fieldset>
 
       {/* Active filter count */}
       {hasActiveFilters && (

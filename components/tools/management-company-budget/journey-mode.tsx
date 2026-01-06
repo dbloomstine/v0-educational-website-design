@@ -620,9 +620,10 @@ export function JourneyMode({ onComplete, onSkip, existingData }: JourneyModePro
 
                   {/* Management fee rate */}
                   <div className="mb-6">
-                    <label className="block text-white font-medium mb-2 text-center">Management Fee Rate</label>
+                    <label htmlFor="management-fee-rate" className="block text-white font-medium mb-2 text-center">Management Fee Rate</label>
                     <div className="relative">
                       <Input
+                        id="management-fee-rate"
                         type="number"
                         step="0.1"
                         value={feeRate}
@@ -867,10 +868,11 @@ export function JourneyMode({ onComplete, onSkip, existingData }: JourneyModePro
 
                 {/* Starting capital input */}
                 <div className="max-w-md mx-auto mt-6 sm:mt-8">
-                  <label className="block text-white font-medium mb-3 text-center">Starting Capital</label>
+                  <label htmlFor="starting-capital" className="block text-white font-medium mb-3 text-center">Starting Capital</label>
                   <div className="relative">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg">$</span>
                     <Input
+                      id="starting-capital"
                       type="number"
                       value={startingCash}
                       onChange={(e) => setStartingCash(parseFloat(e.target.value) || 500000)}
