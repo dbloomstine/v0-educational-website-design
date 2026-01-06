@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Understanding VC fund adviser exemption requirements, Form ADV/PF obligations, investment restrictions, QSBS considerations, pay-to-play rules, and NVCA model documents',
   fundType: 'venture-capital',
   pillar: 'compliance',
-  content: `<p>Venture capital fund managers occupy a unique position in the investment adviser regulatory landscape. While Dodd-Frank eliminated the private adviser exemption that most fund managers previously relied upon, Congress created a new exemption specifically for venture capital fund advisers. This exemption recognizes the distinctive characteristics of VC investing and the lower systemic risk profile compared to hedge funds, allowing qualifying advisers to avoid SEC registration regardless of assets under management.</p>
+  content: `<p>Venture capital fund managers occupy a unique position in the investment adviser regulatory landscape. While Dodd-Frank eliminated the private adviser exemption that most fund managers previously relied upon, Congress created a new exemption specifically for venture capital fund advisers. This exemption recognizes the distinctive characteristics of VC investing and the lower systemic risk profile compared to hedge funds, allowing qualifying advisers to avoid <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> registration regardless of assets under management.</p>
 
 <p>The exemption provides substantial regulatory relief, but qualifying requires careful attention to the statutory definition of a venture capital fund. Advisers must ensure funds limit investments to qualifying portfolio companies, avoid leverage beyond short-term amounts, refrain from offering redemption rights, and conduct business consistently with the VC model. Even exempt advisers face certain obligations including Form ADV Part 1A reporting, books and records maintenance, and potential SEC examination.</p>
 
@@ -29,7 +29,7 @@ const article: Article = {
 
 <h3>Leverage and Redemption Limitations</h3>
 
-<p>VC funds may not incur leverage exceeding 15 percent of committed capital for more than 120 calendar days. This provides flexibility for bridge financing while preventing leverage as a permanent funding strategy. Short-term cash management borrowings receive special treatment—not subject to the 15 percent limitation if used solely for cash management and repaid within 60 days.</p>
+<p>VC funds may not incur leverage exceeding 15 percent of committed capital for more than 120 calendar days. This provides flexibility for bridge financing while preventing leverage as a permanent funding strategy. Short-term cash management borrowings receive special treatment—not subject to the 15 percent limitation if used solely for cash management and repaid within 60 days. The <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a> helps model facility utilization against these regulatory thresholds.</p>
 
 <p>Funds may not offer redemption rights except in extraordinary circumstances such as regulatory compliance, SEC or CFTC requests, ERISA benefit plan investor exceptions, or transfers upon death, divorce, or incapacity. Most VC fund agreements do not provide redemption rights but include provisions for permitted transfers among affiliated entities or family members.</p>
 
@@ -61,7 +61,7 @@ const article: Article = {
 
 <h3>Form ADV Part 2</h3>
 
-<p>Part 2 serves as the disclosure brochure. Item 4 describes the adviser's business including VC focus, typical strategies, target company stages, and sector specializations. Item 5 addresses fees and compensation—management fees commonly 1.5-2.5% of committed capital during the investment period, transitioning to invested capital after. Carried interest typically provides the GP with 20-30% of profits after returning capital and preferred returns.</p>
+<p>Part 2 serves as the disclosure brochure. Item 4 describes the adviser's business including VC focus, typical strategies, target company stages, and sector specializations. Item 5 addresses fees and compensation—management fees commonly 1.5-2.5% of committed capital during the investment period, transitioning to invested capital after. Carried interest typically provides the GP with 20-30% of profits after returning capital and preferred returns. Fund managers can model these structures using the <a href="/tools/management-fee-calculator">Management Fee Calculator</a> and <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a>.</p>
 
 <p>Items 10-12 address conflicts of interest including allocation of opportunities among funds, co-investment rights, investments by adviser personnel in portfolio companies, and service provider relationships. Item 11 addresses code of ethics and personal trading requirements.</p>
 
@@ -111,7 +111,7 @@ const article: Article = {
 
 <h3>Qualified Small Business Stock Exclusion</h3>
 
-<p>Section 1202 of the IRC allows non-corporate taxpayers to exclude from gross income a portion of gain from sale of QSBS held more than five years. For stock acquired after September 27, 2010, the exclusion is 100 percent of gain up to the greater of $10 million or ten times adjusted basis.</p>
+<p><a href="https://www.irs.gov" target="_blank" rel="noopener noreferrer">Section 1202 of the IRC</a> allows non-corporate taxpayers to exclude from gross income a portion of gain from sale of QSBS held more than five years. For stock acquired after September 27, 2010, the exclusion is 100 percent of gain up to the greater of $10 million or ten times adjusted basis.</p>
 
 <p>To qualify, stock must be acquired at original issuance from a qualified small business in exchange for money, property, or services. The issuing corporation must be a C corporation with aggregate gross assets not exceeding $50 million, using at least 80 percent of assets in active conduct of qualified trades or businesses. Most VC funds are structured as partnerships specifically to preserve QSBS benefits for investors.</p>
 
@@ -123,7 +123,7 @@ const article: Article = {
 
 <h2>NVCA Model Documents</h2>
 
-<p>The National Venture Capital Association publishes model legal documents widely used in VC financings including term sheets, stock purchase agreements, certificates of incorporation, voting agreements, and investor rights agreements.</p>
+<p>The <a href="https://nvca.org" target="_blank" rel="noopener noreferrer">National Venture Capital Association (NVCA)</a> publishes model legal documents widely used in VC financings including term sheets, stock purchase agreements, certificates of incorporation, voting agreements, and investor rights agreements.</p>
 
 <p>The model term sheet addresses economic terms (valuation, liquidation preferences), governance terms (board composition, protective provisions), and exit-related terms (drag-along provisions, registration rights). Most financings use 1x non-participating preferences. Protective provisions grant preferred stockholders consent rights over major corporate actions.</p>
 
@@ -132,7 +132,7 @@ const article: Article = {
 <h2>Key Takeaways</h2>
 
 <ul>
-<li><strong>The VC fund adviser exemption provides significant regulatory relief:</strong> Advisers solely advising VC funds avoid SEC registration regardless of AUM, but must ensure all funds meet the regulatory definition through qualifying investments, limited leverage, no redemption rights, and holding out as pursuing VC strategies.</li>
+<li><strong>The VC fund adviser exemption provides significant regulatory relief:</strong> Advisers solely advising VC funds avoid <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> registration regardless of AUM, but must ensure all funds meet the regulatory definition through qualifying investments, limited leverage, no redemption rights, and holding out as pursuing VC strategies. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> helps emerging managers navigate these requirements.</li>
 
 <li><strong>Qualifying investment requirements demand careful structuring:</strong> At least 80 percent of capital must be invested in equity of controlled, non-public portfolio companies that don't incur leverage in connection with the investment. The 20 percent basket requires monitoring to avoid breaches.</li>
 
@@ -146,7 +146,7 @@ const article: Article = {
 
 <li><strong>QSBS treatment provides powerful tax benefits when preserved:</strong> Section 1202 exclusion requires partnership fund structures, original issuance acquisitions, five-year holding periods, and portfolio companies meeting $50 million asset tests and active business requirements.</li>
 
-<li><strong>NVCA model documents establish industry standards:</strong> Model term sheets, stock purchase agreements, charters, voting agreements, and investor rights agreements reduce transaction costs while allowing customization.</li>
+<li><strong>NVCA model documents establish industry standards:</strong> <a href="https://nvca.org" target="_blank" rel="noopener noreferrer">NVCA</a> model term sheets, stock purchase agreements, charters, voting agreements, and investor rights agreements reduce transaction costs while allowing customization. <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> provides complementary LP-focused guidelines for fund governance.</li>
 </ul>`,
   metaTitle: 'VC Fund Compliance: Adviser Exemption, Form ADV/PF & QSBS Guide',
   metaDescription: 'Comprehensive compliance guide for venture capital funds covering VC adviser exemption requirements, Form ADV/PF obligations, investment restrictions, QSBS structuring, pay-to-play rules, and NVCA standards.',

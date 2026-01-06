@@ -15,7 +15,7 @@ const article: Article = {
 
 <p>Most new funds launch with $25-100 million, though launches under $10 million or over $200 million occur depending on manager reputation. Launch capital typically combines several sources: portfolio manager personal capital demonstrating alignment, commitments from former colleagues familiar with the manager's capabilities, and family offices willing to conduct less extensive due diligence than institutions require.</p>
 
-<p>Pre-launch preparation extends beyond capital raising. Building operational infrastructure—fund administration, custody, prime brokerage, legal documentation, compliance systems, accounting—requires significant time and expense. These requirements create barriers favoring experienced managers with industry relationships and personal capital to fund startup costs.</p>
+<p>Pre-launch preparation extends beyond capital raising. Building operational infrastructure—fund administration, custody, prime brokerage, legal documentation, compliance systems, accounting—requires significant time and expense. These requirements create barriers favoring experienced managers with industry relationships and personal capital to fund startup costs. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> provides a comprehensive checklist for navigating these pre-launch requirements.</p>
 
 <h3>Seed Capital Arrangements</h3>
 
@@ -155,7 +155,7 @@ const article: Article = {
 
 <h3>Standard Terms Evolution</h3>
 
-<p>Traditional hedge fund terms of "2 and 20" (2 percent management fees and 20 percent performance fees) with quarterly liquidity and minimal investor rights have evolved toward more investor-friendly structures. Current market standards often include 1.5 percent management fees for liquid strategies, performance fees of 15-20 percent with longer high-water mark provisions, monthly or quarterly liquidity with 30-90 day notice, and enhanced transparency and reporting. Strong performers and differentiated strategies command premium terms, while emerging managers or commoditized strategies face pressure toward investor-favorable terms.</p>
+<p>Traditional hedge fund terms of "2 and 20" (2 percent management fees and 20 percent performance fees) with quarterly liquidity and minimal investor rights have evolved toward more investor-friendly structures. Current market standards often include 1.5 percent management fees for liquid strategies, performance fees of 15-20 percent with longer high-water mark provisions, monthly or quarterly liquidity with 30-90 day notice, and enhanced transparency and reporting. Strong performers and differentiated strategies command premium terms, while emerging managers or commoditized strategies face pressure toward investor-favorable terms. The <a href="/tools/management-fee-calculator">Management Fee Calculator</a> can help model how different fee structures affect economics.</p>
 
 <p>Management fee levels reflect strategy complexity, operational costs, and competitive positioning. Highly liquid strategies trading exchange-traded securities typically command 1.0-1.5 percent management fees, as investors view these strategies as more commoditized and question why high fees are justified. Complex strategies including global macro, emerging markets, or credit investing where research intensity and operational costs run higher may justify 1.5-2.0 percent management fees. Emerging managers sometimes launch with reduced management fees to attract initial capital, planning to increase fees as track records develop and demand grows.</p>
 
@@ -210,7 +210,7 @@ const article: Article = {
 
 <li><strong>Seed capital provides critical launch support with economic trade-offs:</strong> Seed investors offer scale, credibility, and patient capital but extract significant fee discounts and revenue sharing arrangements.</li>
 
-<li><strong>Institutional fundraising requires extended sales cycles and sophisticated infrastructure:</strong> Allocation processes spanning 6-12 months demand patient relationship development, comprehensive due diligence responses, and professional operational capabilities.</li>
+<li><strong>Institutional fundraising requires extended sales cycles and sophisticated infrastructure:</strong> Allocation processes spanning 6-12 months demand patient relationship development, comprehensive due diligence responses, and professional operational capabilities. The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> regulates marketing and investor communications for registered investment advisers.</li>
 
 <li><strong>High-net-worth channels provide faster capital with smaller individual allocations:</strong> Personal networks, financial advisors, and family offices offer alternatives to institutional capital with different access strategies and communication approaches.</li>
 
@@ -218,7 +218,7 @@ const article: Article = {
 
 <li><strong>Prime broker capital introduction offers fee-free investor access:</strong> Capital introduction conferences and targeted introductions provide valuable networking opportunities when pursued actively.</li>
 
-<li><strong>Terms reflect competitive positioning and negotiating leverage:</strong> Market standards have shifted toward investor-friendly terms, with differentiated strategies commanding premium economics while commoditized approaches face pressure.</li>
+<li><strong>Terms reflect competitive positioning and negotiating leverage:</strong> Market standards have shifted toward investor-friendly terms, with differentiated strategies commanding premium economics while commoditized approaches face pressure. The <a href="/tools/management-company-budget">Management Company Budget Planner</a> can help assess how fee terms impact management company viability.</li>
 
 <li><strong>Capacity management protects performance and existing investors:</strong> Soft closes and hard closes preserve strategy effectiveness but require careful communication balancing stakeholder interests.</li>
 </ul>`,

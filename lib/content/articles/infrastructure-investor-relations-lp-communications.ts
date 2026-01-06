@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Managing multi-decade investor relationships, operational performance reporting, and government stakeholder communications',
   fundType: 'infrastructure',
   pillar: 'investor-relations',
-  content: `<p>Infrastructure investor relations operates under fundamentally different dynamics than traditional private equity. While buyout funds typically hold portfolio companies for 5-7 years, infrastructure funds manage assets across 12-15 year fund lives, with individual asset hold periods often extending decades. This temporal difference requires IR approaches emphasizing sustained engagement, institutional knowledge preservation, and relationship continuity through multiple economic cycles.</p>
+  content: `<p>Infrastructure investor relations operates under fundamentally different dynamics than traditional private equity. While buyout funds typically hold portfolio companies for 5-7 years, infrastructure funds manage assets across 12-15 year fund lives, with individual asset hold periods often extending decades. This temporal difference requires IR approaches emphasizing sustained engagement, institutional knowledge preservation, and relationship continuity through multiple economic cycles. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> helps emerging managers establish investor relations frameworks from inception.</p>
 
 <p>The regulated nature of infrastructure adds complexity absent from typical PE investments. Utility rate cases occurring every 2-4 years can impact allowed returns by 40-80 basis points, creating $8-25 million annual EBITDA impact for a $2 billion portfolio. Government relationships require stakeholder coordination between investors (50-80 LPs per fund), lenders, regulators, and operating teams managing 8-15 assets simultaneously.</p>
 
@@ -33,7 +33,7 @@ const article: Article = {
 <li><strong>Benchmark comparisons:</strong> Against infrastructure indices and peer funds</li>
 </ul>
 
-<p>Distribution waterfall analysis shows when LPs receive capital return, when preferred returns begin, and when carried interest commences. Forward-looking projections using probability-weighted scenarios provide sophisticated perspective.</p>
+<p>Distribution waterfall analysis shows when LPs receive capital return, when preferred returns begin, and when carried interest commences. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps model these complex distribution mechanics for LP presentations. Forward-looking projections using probability-weighted scenarios provide sophisticated perspective.</p>
 
 <h3>Operational Performance Metrics</h3>
 

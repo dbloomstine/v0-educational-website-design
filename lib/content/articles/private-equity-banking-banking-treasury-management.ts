@@ -9,7 +9,7 @@ const article: Article = {
   pillar: 'banking',
   content: `<article><section><h2>Introduction to PE Fund Banking and Treasury Operations</h2>
 
-<p>For a typical $750 million buyout fund, treasury operations involve managing 40-60 capital call events totaling $600-700 million over the fund's life, processing 30-50 distribution events ranging from $10 million to $200 million each, maintaining average cash balances of $15-50 million during active deployment, and managing a $150-225 million subscription credit facility (20-30% of commitments) with average utilization of $50-100 million. Annual banking costs for such a fund typically range from $400,000-750,000: subscription facility fees ($250,000-450,000), wire transfer and account maintenance ($75,000-150,000), and foreign exchange conversion costs ($75,000-150,000) for funds with international investments.</p></section>
+<p>For a typical $750 million buyout fund, treasury operations involve managing 40-60 capital call events totaling $600-700 million over the fund's life, processing 30-50 distribution events ranging from $10 million to $200 million each, maintaining average cash balances of $15-50 million during active deployment, and managing a $150-225 million <a href="/tools/subscription-credit-line">subscription credit facility</a> (20-30% of commitments) with average utilization of $50-100 million. Annual banking costs for such a fund typically range from $400,000-750,000: subscription facility fees ($250,000-450,000), wire transfer and account maintenance ($75,000-150,000), and foreign exchange conversion costs ($75,000-150,000) for funds with international investments.</p></section>
 
 <section><h2>Banking Relationship Establishment and Selection</h2>
 
@@ -107,7 +107,7 @@ const article: Article = {
 <tr><td>Capital Call Batching</td><td>Reduce call frequency by accumulating smaller needs</td><td>30-90 days</td><td>LP convenience; minimal IRR effect</td></tr>
 <tr><td>Management Fee Funding</td><td>Bridge quarterly fees pending capital call</td><td>45-90 days</td><td>Minimal; operational convenience</td></tr>
 <tr><td>Working Capital</td><td>Fund organizational expenses, broken deal costs</td><td>30-180 days</td><td>Operational necessity</td></tr>
-<tr><td>IRR Enhancement</td><td>Extend capital deployment timing to reduce J-curve</td><td>90-365 days</td><td>+1.0-3.0% IRR (controversial)</td></tr>
+<tr><td>IRR Enhancement</td><td>Extend capital deployment timing to reduce J-curve (see <a href="/tools/subscription-credit-line">IRR impact calculator</a>)</td><td>90-365 days</td><td>+1.0-3.0% IRR (controversial)</td></tr>
 </tbody>
 </table>
 
@@ -196,7 +196,7 @@ const article: Article = {
 
 <h3>Distribution Calculation Workflow</h3>
 
-<p>For significant realizations ($50M+ distributions), the process spans 5-10 business days from preliminary calculation to wire execution:</p>
+<p>For significant realizations ($50M+ distributions), the process spans 5-10 business days from preliminary calculation to wire execution. Use the <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> to model LP/GP economics:</p>
 
 <table>
 <thead>
@@ -221,7 +221,7 @@ const article: Article = {
 <h3>Tax Withholding on Distributions</h3>
 
 <ul>
-<li><strong>Section 1446 withholding (foreign partners):</strong> 37% (individuals) or 21% (corporations) on effectively connected income</li>
+<li><strong>Section 1446 withholding (foreign partners):</strong> 37% (individuals) or 21% (corporations) on effectively connected income per <a href="https://www.irs.gov" target="_blank" rel="noopener noreferrer">IRS</a> requirements</li>
 <li><strong>State withholding:</strong> California 7%, New York 8.82% on state-source income for nonresident partners</li>
 <li><strong>Example:</strong> Foreign corporate LP receiving $5M gross with $1M ECI: withholding = $1M x 21% = $210,000; net = $4,790,000</li>
 </ul></section>
@@ -368,13 +368,13 @@ const article: Article = {
 <ul>
 <li><strong>Bank selection should prioritize fund finance expertise:</strong> Target banks with 50+ PE fund clients and $5B+ annual subscription facility origination. Fund finance specialists provide better service, pricing, and operational capabilities than generalist commercial banks.</li>
 
-<li><strong>Subscription facility sizing of 20-30% of commitments is typical:</strong> Conservative funds targeting transaction bridging need 15-20%; aggressive extended utilization strategies may require 25-35%. Facility costs average 350-450bp annually on utilized balances including interest and fees.</li>
+<li><strong>Subscription facility sizing of 20-30% of commitments is typical:</strong> Conservative funds targeting transaction bridging need 15-20%; aggressive extended utilization strategies may require 25-35%. Facility costs average 350-450bp annually on utilized balances including interest and fees. Model the IRR impact using the <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a>.</li>
 
 <li><strong>Cash management optimization can add 20-25bp to fund returns:</strong> Active sweep management into money market funds (yielding 4.5-5.5% vs. 0.25% operating accounts) on average balances of $25M generates $1.1M+ annually for a $500M fund.</li>
 
 <li><strong>Capital call processing requires 10-14 day notice periods:</strong> ILPA best practices recommend minimum 10 business days; emergency provisions allowing 5-7 days should be used sparingly. Establish clear procedures with administrator for consistent execution.</li>
 
-<li><strong>Distribution processing involves complex waterfall calculations and tax withholding:</strong> Section 1446 withholding (21-37% on ECI) for foreign partners and state withholding requirements must be calculated accurately. Allow 5-10 business days from closing to wire execution.</li>
+<li><strong>Distribution processing involves complex waterfall calculations and tax withholding:</strong> Section 1446 withholding (21-37% on ECI) for foreign partners and state withholding requirements must be calculated accurately per <a href="https://www.irs.gov" target="_blank" rel="noopener noreferrer">IRS</a> guidelines. Allow 5-10 business days from closing to wire execution.</li>
 
 <li><strong>FX conversions benefit from competitive quote processes:</strong> Single-bank execution costs 50-100bp spread versus 15-30bp with competitive quotes from 2-3 banks. For funds with $50M+ annual conversions, competitive processes save $100,000-350,000 annually.</li>
 
@@ -384,7 +384,7 @@ const article: Article = {
 
 <li><strong>Borrowing base monitoring is essential for facility compliance:</strong> Track eligible LP commitments and concentration limits monthly; as capital is deployed, borrowing base availability declines and may constrain facility access in later fund years.</li>
 
-<li><strong>Establish clear subscription line utilization policies:</strong> Document intended use (bridging vs. extended utilization) in offering materials; LP scrutiny of IRR enhancement through extended facility usage has increased significantly since 2020.</li>
+<li><strong>Establish clear subscription line utilization policies:</strong> Document intended use (bridging vs. extended utilization) in offering materials; LP scrutiny of IRR enhancement through extended facility usage has increased significantly since 2020. <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> has published guidance on subscription line disclosure.</li>
 </ul></section></article>`,
   metaTitle: 'Banking and Treasury Management for Private Equity Funds: Complete Guide',
   metaDescription: 'Comprehensive PE fund banking guide with quantitative benchmarks: subscription credit facilities, cash management optimization, capital call processing, distribution execution, and bank relationship management.',

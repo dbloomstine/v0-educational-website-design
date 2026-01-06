@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Managing trading technology, cybersecurity controls, business continuity, and regulatory compliance for hedge fund operations',
   fundType: 'hedge-funds',
   pillar: 'cyber-it',
-  content: `<p>Technology infrastructure and cybersecurity enable trading execution, risk management, performance reporting, and investor servicing while protecting valuable intellectual property and sensitive data. Real-time trading demands high-performance, low-latency systems processing thousands of orders per second. Trading strategies and positions attract cyber attacks from nation-state actors to organized cybercrime groups. Integration with prime brokers, market data vendors, and trading venues creates complex vendor ecosystems requiring security coordination across organizational boundaries.</p>
+  content: `<p>Technology infrastructure and cybersecurity enable trading execution, risk management, performance reporting, and investor servicing while protecting valuable intellectual property and sensitive data. Real-time trading demands high-performance, low-latency systems processing thousands of orders per second. Trading strategies and positions attract cyber attacks from nation-state actors to organized cybercrime groups. Integration with prime brokers, market data vendors, and trading venues creates complex vendor ecosystems requiring security coordination across organizational boundaries. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> covers technology infrastructure considerations for emerging managers.</p>
 
 <p>The 2016 breach of a mid-sized hedge fund's trading systems resulted in unauthorized access to proprietary algorithms, leading to estimated losses exceeding $10 million when competing traders reverse-engineered the strategies. Modern hedge funds allocate 15-25% of operating budgets to technology and cybersecurity, with larger multi-strategy firms maintaining IT teams exceeding 50 professionals.</p>
 
@@ -115,7 +115,7 @@ const article: Article = {
 
 <h3>SEC Cybersecurity Rules</h3>
 
-<p>SEC regulations require investment advisers to adopt written policies and procedures addressing cybersecurity risks as part of Advisers Act Rule 206(4)-7 requiring policies reasonably designed to prevent violations. The SEC's 2023 cybersecurity rules for registered investment advisers mandate specific risk assessment identifying cybersecurity threats to information systems and data, security controls implementing protections appropriate to identified risks, incident response planning establishing procedures for detecting and responding to security incidents, and oversight reporting to senior management and boards regarding cybersecurity risks and incidents.</p>
+<p><a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> regulations require investment advisers to adopt written policies and procedures addressing cybersecurity risks as part of Advisers Act Rule 206(4)-7 requiring policies reasonably designed to prevent violations. The SEC's 2023 cybersecurity rules for registered investment advisers mandate specific risk assessment identifying cybersecurity threats to information systems and data, security controls implementing protections appropriate to identified risks, incident response planning establishing procedures for detecting and responding to security incidents, and oversight reporting to senior management and boards regarding cybersecurity risks and incidents.</p>
 
 <p>Advisers must maintain documented cybersecurity programs demonstrating reasonable protections for investor information and operational systems. Reasonableness considers firm size, complexity, activities, and risk profile, with larger firms managing sensitive data expecting more comprehensive programs than smaller firms with limited operations. However, all advisers regardless of size must document their risk assessment process, implemented controls, incident response procedures, and oversight activities. The CFO or COO typically owns cybersecurity program implementation and compliance demonstration, coordinating with legal counsel on policy documentation and regulatory reporting.</p>
 
@@ -232,7 +232,7 @@ const article: Article = {
 <h2>Key Takeaways</h2>
 
 <ul>
-<li><strong>Technology infrastructure deserves board-level attention and investment:</strong> Modern hedge funds allocate 15-25% of operating budgets to technology, recognizing that cybersecurity incidents can trigger investor redemptions, regulatory investigations, and significant financial losses beyond immediate operational disruption.</li>
+<li><strong>Technology infrastructure deserves board-level attention and investment:</strong> Modern hedge funds allocate 15-25% of operating budgets to technology, recognizing that cybersecurity incidents can trigger investor redemptions, regulatory investigations, and significant financial losses beyond immediate operational disruption. The <a href="/tools/management-company-budget">Management Company Budget Planner</a> can help forecast technology spending.</li>
 
 <li><strong>Core trading systems form an interconnected ecosystem:</strong> OMS, PMS, and risk management platforms must integrate seamlessly with data flowing from market feeds through execution and accounting systems. System failures or data quality issues cascade throughout this ecosystem, requiring dedicated operations personnel for maintenance and oversight.</li>
 
@@ -246,7 +246,7 @@ const article: Article = {
 
 <li><strong>Multi-factor authentication effectiveness depends on implementation method:</strong> Hardware security keys provide strongest phishing resistance through cryptographic protocols, while SMS text messages offer minimal protection against sophisticated attackers. MFA should protect all system access, particularly single sign-on platforms that create single points of compromise.</li>
 
-<li><strong>Regulatory compliance requires genuine operational programs beyond documentation:</strong> SEC examinations test actual control implementation rather than just reviewing policies. Common findings include policies not reflecting practices, inadequate vendor diligence, and insufficient incident response preparedness requiring operational improvements beyond paperwork updates.</li>
+<li><strong>Regulatory compliance requires genuine operational programs beyond documentation:</strong> <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> examinations test actual control implementation rather than just reviewing policies. Common findings include policies not reflecting practices, inadequate vendor diligence, and insufficient incident response preparedness requiring operational improvements beyond paperwork updates.</li>
 
 <li><strong>GDPR and data protection compliance extends beyond investor data:</strong> Many funds underestimate scope by focusing on investor information while overlooking employee data, marketing contacts, and vendor databases. Comprehensive compliance requires data mapping exercises inventorying all personal data and documenting processing purposes.</li>
 
@@ -258,7 +258,7 @@ const article: Article = {
 
 <li><strong>Vendor risk management requires risk-based assessment prioritization:</strong> Cloud providers hosting trading systems deserve comprehensive diligence including SOC 2 review and potentially on-site visits, while commodity vendors require minimal assessment. Ongoing monitoring detects vendor security degradation requiring enhanced controls or replacement.</li>
 
-<li><strong>Fourth-party risk creates indirect exposures requiring contractual controls:</strong> Vendors depend on subcontractors and service providers creating risk chains beyond direct visibility. Contractual flow-down of security requirements to subcontractors provides defense in depth despite limited practical visibility into fourth-party relationships.</li>
+<li><strong>Fourth-party risk creates indirect exposures requiring contractual controls:</strong> Vendors depend on subcontractors and service providers creating risk chains beyond direct visibility. Contractual flow-down of security requirements to subcontractors provides defense in depth despite limited practical visibility into fourth-party relationships. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> can assist in tracking technology-related expenses.</li>
 </ul>`,
   metaTitle: 'Hedge Fund Cybersecurity and IT: Technology Infrastructure and Protection',
   metaDescription: 'Complete guide to hedge fund technology covering trading systems, cybersecurity controls, regulatory compliance, incident response, and business continuity.',

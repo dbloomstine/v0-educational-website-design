@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Comprehensive guide to managing GP-stakes fund operations including DCF valuation methodologies, fee stream analysis, partnership structuring, and portfolio GP monitoring',
   fundType: 'gp-stakes',
   pillar: 'cfo',
-  content: `<p>GP-stakes funds purchase minority equity interests (typically 10-30%) in private capital management companies—the general partners themselves. The CFO's responsibilities center on valuing businesses built on intellectual capital and relationships, analyzing fee streams and performance economics, structuring partnerships that align interests while providing liquidity, and monitoring business development metrics rather than operating company KPIs.</p>
+  content: `<p>GP-stakes funds purchase minority equity interests (typically 10-30%) in private capital management companies—the general partners themselves. The CFO's responsibilities center on valuing businesses built on intellectual capital and relationships, analyzing fee streams and performance economics, structuring partnerships that align interests while providing liquidity, and monitoring business development metrics rather than operating company KPIs. The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> requires registered investment advisers to maintain accurate books and records, making CFO oversight of valuation and financial reporting essential for compliance.</p>
 
 <p>The market has grown to over $100 billion in dedicated capital since Dyal Capital pioneered the strategy in 2010. Major players include Blue Owl, StepStone, Blackstone Strategic Capital Partners, Goldman Sachs Petershill, and Investcorp. Transactions range from $50 million investments in emerging managers to billion-dollar stakes in established platforms.</p>
 
@@ -21,9 +21,9 @@ const article: Article = {
 
 <h3>Sources of Return</h3>
 
-<p><strong>Management fee distributions</strong> represent 60-80% of near-term distributions. A $5 billion AUM manager earning 1.8% fees generates $90 million annual revenue. At 50% margins, this produces $45 million distributable profits. A 20% GP-stakes investor receives $9 million annually.</p>
+<p><strong>Management fee distributions</strong> represent 60-80% of near-term distributions. A $5 billion AUM manager earning 1.8% fees generates $90 million annual revenue. At 50% margins, this produces $45 million distributable profits. A 20% GP-stakes investor receives $9 million annually. Use our <a href="/tools/management-fee-calculator">Management Fee Calculator</a> to model fee revenue across different AUM levels and fee structures.</p>
 
-<p><strong>Carried interest distributions</strong> represent 20-40% of total value creation, arriving in lumpy patterns as funds realize investments over 7-12 year lifecycles. A GP generating 2.5x MOIC across $5 billion cumulative deployment creates $1.5 billion profit and $300 million lifetime carry. A 20% stake's share: $60 million realized over many years.</p>
+<p><strong>Carried interest distributions</strong> represent 20-40% of total value creation, arriving in lumpy patterns as funds realize investments over 7-12 year lifecycles. A GP generating 2.5x MOIC across $5 billion cumulative deployment creates $1.5 billion profit and $300 million lifetime carry. A 20% stake's share: $60 million realized over many years. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps model how carried interest flows through waterfall structures.</p>
 
 <h3>Key Differences from Traditional Private Equity</h3>
 
@@ -49,7 +49,7 @@ const article: Article = {
 
 <p>Management fee revenue doesn't translate dollar-for-dollar into distributable cash flow. The CFO must model operating expenses as a percentage of revenue, recognizing that margins typically improve as firms scale but face pressure from team expansion and infrastructure investments. Early-stage managers with sub-$1B AUM often operate at 30-40% margins as they build infrastructure and maintain lean teams. Established managers with $5B+ AUM achieve 50-60% margins through operating leverage, though some reinvest heavily in team expansion limiting near-term margins to preserve long-term growth.</p>
 
-<p>The CFO analyzes current expense structure by category: investment team compensation (typically 40-50% of expenses), operating team compensation (15-25%), office and overhead (10-15%), professional services (5-10%), and marketing and travel (5-10%). Understanding these components enables margin projections as AUM grows. Will the GP need to add more investment professionals as AUM scales (limiting margin expansion), or can the existing team manage larger funds (enabling strong margin growth)? Does the GP plan to expand into new strategies requiring new hires, or deepen existing strategies with current teams?</p>
+<p>The CFO analyzes current expense structure by category: investment team compensation (typically 40-50% of expenses), operating team compensation (15-25%), office and overhead (10-15%), professional services (5-10%), and marketing and travel (5-10%). The <a href="/tools/management-company-budget">Management Company Budget Planner</a> helps model these expense categories and project margin evolution. Understanding these components enables margin projections as AUM grows. Will the GP need to add more investment professionals as AUM scales (limiting margin expansion), or can the existing team manage larger funds (enabling strong margin growth)? Does the GP plan to expand into new strategies requiring new hires, or deepen existing strategies with current teams?</p>
 
 <h3>Carried Interest Modeling</h3>
 
@@ -111,13 +111,13 @@ const article: Article = {
 
 <h3>Management Company Financial Analysis</h3>
 
-<p>The CFO reviews 3-5 years of management company financial statements, analyzing revenue by fund, expense trends, margin evolution, cash distribution history, and any debt or off-balance-sheet obligations. Key questions include: How stable are fee streams? Have any major LPs redeemed or reduced commitments? What expenses are growing faster than revenue? Are margins expanding as AUM grows or facing pressure from team additions?</p>
+<p>The CFO reviews 3-5 years of management company financial statements, analyzing revenue by fund, expense trends, margin evolution, cash distribution history, and any debt or off-balance-sheet obligations. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> assists in analyzing expense categorization and identifying allocation patterns. Key questions include: How stable are fee streams? Have any major LPs redeemed or reduced commitments? What expenses are growing faster than revenue? Are margins expanding as AUM grows or facing pressure from team additions?</p>
 
 <p>Particular attention focuses on related party transactions. Does the management company pay above-market rent to a GP-owned property? Do consulting or vendor relationships with GP affiliates inflate costs? Are personal expenses inappropriately charged to the management company? These issues aren't necessarily disqualifying but require understanding and adjustment in financial projections.</p>
 
 <h3>Fund Performance Verification</h3>
 
-<p>The CFO validates reported fund performance through multiple approaches. Third-party performance reports from fund administrators and auditors provide independent verification of IRRs and MOICs. Burgiss, Preqin, or Cambridge Associates databases allow peer benchmarking. Reference calls with existing LPs provide qualitative perspectives on GP capabilities and performance quality. The CFO also reviews underlying portfolio company valuations in recent fund financials, assessing whether marks appear conservative or aggressive relative to comparable companies and transactions.</p>
+<p>The CFO validates reported fund performance through multiple approaches. Third-party performance reports from fund administrators and auditors provide independent verification of IRRs and MOICs. Burgiss, Preqin, or Cambridge Associates databases allow peer benchmarking. <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> standards provide guidance on performance reporting and fee transparency that LPs expect. Reference calls with existing LPs provide qualitative perspectives on GP capabilities and performance quality. The CFO also reviews underlying portfolio company valuations in recent fund financials, assessing whether marks appear conservative or aggressive relative to comparable companies and transactions.</p>
 
 <p>Beyond historical returns, the CFO analyzes performance consistency and attribution. Do strong returns come from 1-2 home runs or broad portfolio success? Has the GP demonstrated ability to generate strong returns across market cycles? How does performance trend as fund size increases—do larger funds maintain or show declining returns? These patterns inform expectations about future performance sustainability.</p>
 
@@ -163,7 +163,7 @@ const article: Article = {
 
 <h3>IPO Preparation and Execution</h3>
 
-<p>Larger, mature management companies may pursue IPOs, providing GP-stakes investors with public market liquidity. The CFO supports IPO preparation by ensuring clean financial reporting and governance, assisting with S-1 preparation and SEC review, advising on valuation and deal sizing, and coordinating lock-up agreements and post-IPO sell-down plans.</p>
+<p>Larger, mature management companies may pursue IPOs, providing GP-stakes investors with public market liquidity. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> helps establish IPO-ready governance and reporting frameworks. The CFO supports IPO preparation by ensuring clean financial reporting and governance, assisting with S-1 preparation and SEC review, advising on valuation and deal sizing, and coordinating lock-up agreements and post-IPO sell-down plans.</p>
 
 <p>Recent IPOs like Blue Owl, Bridgepoint, and TPG provide templates, though public market reception varies significantly based on market conditions, the GP's scale and diversification, and growth narratives. The CFO evaluates whether IPO represents optimal exit timing or if continuing as private company provides better long-term value.</p>
 
@@ -183,7 +183,7 @@ const article: Article = {
 
 <h3>Tax Structuring and Efficiency</h3>
 
-<p>GP-stakes investments typically structure through partnerships to preserve pass-through taxation of carried interest and management fees. The CFO reviews partnership tax allocations ensuring proper treatment of ordinary income (management fees), capital gains (carried interest on successful investments), and potential IRC Section 1061 considerations for carried interest holding periods. Offshore structures may be necessary for non-US investors or to accommodate tax-exempt investors avoiding UBTI.</p>
+<p>GP-stakes investments typically structure through partnerships to preserve pass-through taxation of carried interest and management fees. The <a href="https://www.irs.gov" target="_blank" rel="noopener noreferrer">IRS</a> provides guidance on partnership taxation, and Section 1061 specifically addresses carried interest holding period requirements. The CFO reviews partnership tax allocations ensuring proper treatment of ordinary income (management fees), capital gains (carried interest on successful investments), and potential IRC Section 1061 considerations for carried interest holding periods. Offshore structures may be necessary for non-US investors or to accommodate tax-exempt investors avoiding UBTI.</p>
 
 <h2>Market Trends and Strategic Considerations</h2>
 
@@ -195,7 +195,7 @@ const article: Article = {
 
 <h3>Expansion Beyond Traditional PE</h3>
 
-<p>While GP-stakes investing originated in buyout fund managers, the strategy now extends to credit managers, real estate platforms, infrastructure funds, and even venture capital firms. Each strategy presents different characteristics: credit managers offer higher current yield but less carried interest upside, real estate GPs may have different margin profiles and return drivers, venture GPs show more volatile performance but higher growth potential.</p>
+<p>While GP-stakes investing originated in buyout fund managers, the strategy now extends to credit managers, real estate platforms, infrastructure funds, and even venture capital firms. Each strategy presents different characteristics: credit managers offer higher current yield but less carried interest upside, real estate GPs may have different margin profiles and return drivers, venture GPs show more volatile performance but higher growth potential. Use the <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a> to model how different strategies affect capital call patterns and financing needs.</p>
 
 <h2>Key Takeaways</h2>
 

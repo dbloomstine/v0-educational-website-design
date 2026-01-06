@@ -53,7 +53,7 @@ const article: Article = {
 <p>PPMs typically span 80-150 pages:</p>
 
 <ul>
-<li><strong>Executive Summary (5-10 pages):</strong> Strategy overview, target returns (2.0-2.5x gross MOIC, 18-25% gross IRR for buyout), terms, team highlights</li>
+<li><strong>Executive Summary (5-10 pages):</strong> Strategy overview, target returns (2.0-2.5x gross MOIC, 18-25% gross IRR for buyout), terms (use our <a href="/tools/management-fee-calculator">Management Fee Calculator</a> to model economics), team highlights</li>
 <li><strong>Investment Strategy (15-25 pages):</strong> TAM/SAM sizing, investment criteria, value creation methodology, competitive positioning vs. 10-15 comparable funds</li>
 <li><strong>Track Record (20-40 pages):</strong> Attribution-adjusted performance, deal-by-deal summaries (15-30 investments), value creation bridges, loss ratio analysis</li>
 <li><strong>Team Biographies (10-15 pages):</strong> Senior members with $1B+ transaction experience, sector expertise, prior fund performance</li>
@@ -73,7 +73,7 @@ const article: Article = {
 <tr><td>Management Fee (Investment Period)</td><td>1.50-1.75% on committed</td><td>1.75-2.00% on committed</td><td>1.50-2.00%</td></tr>
 <tr><td>Management Fee (Post-Investment)</td><td>1.25-1.50% on invested</td><td>1.50-1.75% on invested/NAV</td><td>Step-down encouraged</td></tr>
 <tr><td>Carried Interest</td><td>20% (sometimes 15% to first close)</td><td>20% (25-30% for top performers)</td><td>20% standard</td></tr>
-<tr><td>Preferred Return</td><td>8% compounded annually</td><td>8% (some at 7%)</td><td>8% minimum</td></tr>
+<tr><td>Preferred Return</td><td>8% compounded annually (model with <a href="/tools/distribution-waterfall">Distribution Waterfall</a>)</td><td>8% (some at 7%)</td><td>8% minimum</td></tr>
 <tr><td>GP Commitment</td><td>3-5% of fund size</td><td>1-3% of fund size</td><td>Meaningful alignment</td></tr>
 <tr><td>Clawback</td><td>100% GP guarantee, joint and several</td><td>100% GP guarantee, several only</td><td>Full clawback required</td></tr>
 <tr><td>Key Person Provisions</td><td>2-3 named individuals, 50%+ time</td><td>2-4 named individuals, majority time</td><td>Clear triggers and remedies</td></tr>
@@ -124,8 +124,8 @@ const article: Article = {
 <p>ODD questionnaires cover 150-300 topics:</p>
 
 <ul>
-<li><strong>Compliance (40-60 questions):</strong> SEC registration, Form ADV, compliance manual, personal trading policies, examination history</li>
-<li><strong>Valuation (25-40 questions):</strong> Methodology, valuation committee (quarterly), third-party valuation (100% of Level 3 assets annually)</li>
+<li><strong>Compliance (40-60 questions):</strong> <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> registration, Form ADV, compliance manual, personal trading policies, examination history</li>
+<li><strong>Valuation (25-40 questions):</strong> Methodology per <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a> ASC 820, valuation committee (quarterly), third-party valuation (100% of Level 3 assets annually)</li>
 <li><strong>Cybersecurity (30-50 questions):</strong> Security policies, incident response, penetration testing (annually), SOC 2 status, GDPR compliance</li>
 <li><strong>ESG (20-40 questions):</strong> Policy documentation, integration process, portfolio monitoring, UNPRI status, climate risk assessment</li>
 <li><strong>Business Continuity (15-25 questions):</strong> Disaster recovery, key person insurance, succession planning</li>
@@ -307,7 +307,7 @@ const article: Article = {
 <p>Proactive risk mitigation includes:</p>
 
 <ul>
-<li><strong>Pre-fundraising operational audit:</strong> Engage third-party ODD consultant ($25,000-50,000) to identify and remediate gaps 6 months before launch</li>
+<li><strong>Pre-fundraising operational audit:</strong> Engage third-party ODD consultant ($25,000-50,000) to identify and remediate gaps 6 months before launch. See the <a href="/tools/fund-launch-guide">Fund Launch Guide</a> for a comprehensive checklist.</li>
 <li><strong>Reference preparation:</strong> Brief all potential references, confirm willingness, and provide context on key messages; identify backup references for each category</li>
 <li><strong>Message testing:</strong> Conduct mock DDQ sessions with placement agents or advisors to identify inconsistencies</li>
 <li><strong>Anchor investor cultivation:</strong> Begin anchor discussions 12+ months before launch; have 2-3 potential anchors to avoid single-point dependency</li>
@@ -327,7 +327,7 @@ const article: Article = {
 
 <li><strong>Operational due diligence failures cause 35-45% of first-time fundraising delays:</strong> Proactive investment of $75,000-200,000 in compliance infrastructure before launch prevents 3-6 month delays and expands the addressable LP universe.</li>
 
-<li><strong>Placement agent economics require careful analysis:</strong> Total costs of 1.5-2.5% of fund size must be weighed against internal team costs of $400,000-800,000 annually plus senior partner opportunity cost. Hybrid approaches can reduce costs by 40-60%.</li>
+<li><strong>Placement agent economics require careful analysis:</strong> Total costs of 1.5-2.5% of fund size must be weighed against internal team costs of $400,000-800,000 annually plus senior partner opportunity cost. Model these costs with the <a href="/tools/management-company-budget">Management Company Budget Planner</a>. Hybrid approaches can reduce costs by 40-60%.</li>
 
 <li><strong>Re-up rates from existing investors determine successor fund success:</strong> Top-quartile performers achieve 70-85% re-up rates, providing 60-70% of target from known sources. Below 50% re-up rates signal performance or relationship issues requiring remediation.</li>
 

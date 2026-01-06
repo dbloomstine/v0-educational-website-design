@@ -9,7 +9,7 @@ const article: Article = {
   pillar: 'cyber-it',
   content: `<article><section><h2>Introduction</h2>
 
-<p>PE funds manage highly sensitive information: deal pipelines, financial models, investor capital accounts, and portfolio company data. According to <a href="https://www.ibm.com/reports/data-breach" target="_blank" rel="noopener noreferrer">IBM's 2023 Cost of a Data Breach Report</a>, financial services firms experienced average breach costs of $5.9 million, with identification and containment averaging 258 days. Beyond direct breach costs, PE funds face SEC penalties ($1.5-5 million for cybersecurity deficiencies), investor relationship damage, and competitive intelligence loss.</p>
+<p>PE funds manage highly sensitive information: deal pipelines, financial models, investor capital accounts, and portfolio company data. According to <a href="https://www.ibm.com/reports/data-breach" target="_blank" rel="noopener noreferrer">IBM's 2023 Cost of a Data Breach Report</a>, financial services firms experienced average breach costs of $5.9 million, with identification and containment averaging 258 days. Beyond direct breach costs, PE funds face <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> penalties ($1.5-5 million for cybersecurity deficiencies), investor relationship damage, and competitive intelligence loss.</p>
 
 <p>The SEC's 2023 Cybersecurity Risk Management Rules require written cybersecurity policies, periodic risk assessments, and incident reporting within 48 hours. For mid-market PE funds, annual cybersecurity spending ranges from $150,000-400,000 (0.8-2.0% of management fee revenue). For related topics, see our guides on <a href="/articles/private-equity/insurance/do-coverage-risk-mitigation">Insurance for Private Equity Funds</a> and <a href="/articles/private-equity/compliance/compliance">Compliance for Private Equity Funds</a>.</p></section>
 
@@ -448,7 +448,7 @@ const article: Article = {
 </thead>
 <tbody>
 <tr><td>Level 1: Initial</td><td>Ad hoc security; reactive to incidents</td><td>First-time funds; &lt;$100M</td><td>$50,000-100,000</td></tr>
-<tr><td>Level 2: Developing</td><td>Basic controls; some documentation</td><td>Emerging managers; $100-500M</td><td>$75,000-150,000</td></tr>
+<tr><td>Level 2: Developing</td><td>Basic controls; some documentation</td><td>Emerging managers (see <a href="/tools/fund-launch-guide">Fund Launch Guide</a>); $100-500M</td><td>$75,000-150,000</td></tr>
 <tr><td>Level 3: Defined</td><td>Comprehensive program; consistent implementation</td><td>Established funds; $500M-2B</td><td>$100,000-200,000</td></tr>
 <tr><td>Level 4: Managed</td><td>Measured and controlled; continuous improvement</td><td>Large platforms; $2B+</td><td>$150,000-300,000</td></tr>
 <tr><td>Level 5: Optimized</td><td>Best-in-class; proactive threat management</td><td>Largest managers; $5B+</td><td>$250,000+</td></tr>
@@ -458,7 +458,7 @@ const article: Article = {
 <section><h2>Key Takeaways</h2>
 
 <ul>
-<li><strong>Cybersecurity investment of 1-2% of management fees is the current benchmark:</strong> For a $750M fund generating $15M in annual management fees, this translates to $150,000-300,000 annually covering technology, personnel, training, and assessments.</li>
+<li><strong>Cybersecurity investment of 1-2% of management fees is the current benchmark:</strong> For a $750M fund generating $15M in annual management fees (model your fee revenue with the <a href="/tools/management-fee-calculator">Management Fee Calculator</a>), this translates to $150,000-300,000 annually covering technology, personnel, training, and assessments.</li>
 
 <li><strong>MFA is non-negotiable and must be universal:</strong> Multi-factor authentication for all users, all systems, no exceptions. This single control prevents the majority of credential-based attacks and is required by cyber insurance underwriters.</li>
 

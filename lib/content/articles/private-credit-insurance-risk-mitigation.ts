@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Essential insurance coverage for credit fund managers including D&O, E&O, R&W insurance, lender liability, and collateral protection',
   fundType: 'private-credit',
   pillar: 'insurance',
-  content: `<p>Private credit funds face a distinctive risk landscape demanding comprehensive insurance protection tailored to lending activities. Unlike private equity funds acquiring ownership stakes, credit funds operate as lenders, creating exposure to borrower defaults, lender liability claims, regulatory scrutiny, and operational risks inherent in loan origination and servicing. With global private credit assets surpassing $1.6 trillion, LP scrutiny of risk mitigation frameworks has intensified.</p>
+  content: `<p>Private credit funds face a distinctive risk landscape demanding comprehensive insurance protection tailored to lending activities. Unlike private equity funds acquiring ownership stakes, credit funds operate as lenders, creating exposure to borrower defaults, lender liability claims, regulatory scrutiny, and operational risks inherent in loan origination and servicing. With global private credit assets surpassing $1.6 trillion, LP scrutiny of risk mitigation frameworks has intensified. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> addresses insurance considerations during fund formation.</p>
 
 <p>Understanding the boundary between credit risk and operational risk forms the foundation for insurance program design. Credit risk—the possibility that borrowers default—represents fundamental lending risk managed through diversification, disciplined underwriting, and risk-adjusted pricing. Operational risk—losses from inadequate processes, system failures, or human errors—creates the primary insurance opportunity. Well-structured programs protect against operational failures while preserving exposure to credit risks that drive returns.</p>
 
@@ -31,7 +31,7 @@ const article: Article = {
 
 <p>Pollution and environmental exclusions should be narrowed to preserve coverage for claims against fund managers arising from lending decisions rather than blanket exclusions. The "professional services" exclusion should be negotiated so lending decisions are covered under D&O rather than relegated exclusively to E&O coverage.</p>
 
-<p>Regulatory investigation coverage addresses intensifying scrutiny from the CFPB, state regulators, and attorneys general around fair lending practices, truth-in-lending compliance, and usury limitations. D&O policies should provide coverage for regulatory investigations including defense costs, civil fines (where insurable), and costs of responding to subpoenas. Sublimits commonly range from $2 million to $10 million.</p>
+<p>Regulatory investigation coverage addresses intensifying scrutiny from the CFPB, state regulators, and attorneys general around fair lending practices, truth-in-lending compliance, and usury limitations. The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> also examines registered advisers. D&O policies should provide coverage for regulatory investigations including defense costs, civil fines (where insurable), and costs of responding to subpoenas. Sublimits commonly range from $2 million to $10 million.</p>
 
 <h2>Errors and Omissions Coverage</h2>
 
@@ -91,7 +91,7 @@ const article: Article = {
 
 <h2>Cyber Liability and Data Security</h2>
 
-<p>Credit funds maintain extensive confidential information: limited partner data, borrower financial statements, proprietary credit models, and sensitive deal flow. A data breach can result in substantial direct costs, regulatory penalties, litigation, and reputational damage.</p>
+<p>Credit funds maintain extensive confidential information: limited partner data, borrower financial statements, proprietary credit models, and sensitive deal flow. A data breach can result in substantial direct costs, regulatory penalties, litigation, and reputational damage. The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a>'s cybersecurity rules impose specific incident reporting and disclosure requirements.</p>
 
 <h3>Coverage Components</h3>
 
@@ -118,7 +118,7 @@ const article: Article = {
 <h2>Key Takeaways</h2>
 
 <ul>
-<li><strong>D&O insurance serves as cornerstone protection:</strong> Coverage protecting fund managers and individuals from management liability claims, with particular attention to lending-specific exposures including lender liability, creditor committee service, and control allegations. Limits typically range from $10-150 million depending on fund size.</li>
+<li><strong>D&O insurance serves as cornerstone protection:</strong> Coverage protecting fund managers and individuals from management liability claims, with particular attention to lending-specific exposures including lender liability, creditor committee service, and control allegations. Limits typically range from $10-150 million depending on fund size. Budget for these costs using the <a href="/tools/management-company-budget">Management Company Budget Planner</a>.</li>
 
 <li><strong>E&O insurance addresses professional liability:</strong> Coverage for operational aspects of lending including underwriting errors, documentation failures, servicing mistakes, and advisory services. Coordinate carefully with D&O to avoid gaps.</li>
 
@@ -132,7 +132,7 @@ const article: Article = {
 
 <li><strong>Crime insurance guards against theft and fraud:</strong> Employee dishonesty, forgery, funds transfer fraud, and third-party crime coverage with limits typically $2-10 million.</li>
 
-<li><strong>Credit risk remains uninsured:</strong> The fundamental distinction between credit risk (managed through underwriting and diversification) and operational risk (transferred through insurance) defines appropriate program scope.</li>
+<li><strong>Credit risk remains uninsured:</strong> The fundamental distinction between credit risk (managed through underwriting and diversification) and operational risk (transferred through insurance) defines appropriate program scope. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> clarifies how insurance costs should be allocated.</li>
 </ul>`,
   metaTitle: 'Insurance for Private Credit Funds: D&O, E&O & Risk Mitigation',
   metaDescription: 'Comprehensive insurance guide for private credit funds covering D&O liability, E&O coverage, R&W insurance, lender liability protection, credit vs operational risk, and collateral insurance requirements.',

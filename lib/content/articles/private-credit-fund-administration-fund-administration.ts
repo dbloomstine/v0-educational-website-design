@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Specialized approaches to credit portfolio accounting, fair value measurement, and investor reporting for private debt funds',
   fundType: 'private-credit',
   pillar: 'fund-administration',
-  content: `<p>Fund administration for private credit presents distinct challenges from both private equity and hedge fund administration. While PE administrators focus on equity valuations and capital account waterfalls, and hedge fund administrators emphasize daily NAV and liquid securities pricing, credit administrators must navigate debt instrument accounting, sophisticated interest accrual methodologies, credit risk assessment, and fair value measurement for illiquid loan portfolios lacking observable market prices.</p>
+  content: `<p>Fund administration for private credit presents distinct challenges from both private equity and hedge fund administration. While PE administrators focus on equity valuations and capital account waterfalls, and hedge fund administrators emphasize daily NAV and liquid securities pricing, credit administrators must navigate debt instrument accounting, sophisticated interest accrual methodologies, credit risk assessment, and fair value measurement for illiquid loan portfolios lacking observable market prices. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> covers administrator selection as a key fund formation milestone.</p>
 
 <p>With private credit AUM exceeding $1.5 trillion globally, specialized administration capabilities are essential. Administrators must understand loan-specific technical considerations including OID amortization, PIK interest compounding, default and recovery modeling, borrowing base calculations, and CECL impairment assessment.</p>
 
@@ -53,7 +53,7 @@ const article: Article = {
 
 <h3>Fair Value Hierarchy</h3>
 
-<p>ASC 820 establishes three levels based on input observability:</p>
+<p><a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a> ASC 820 establishes three levels based on input observability:</p>
 
 <ul>
 <li><strong>Level 1:</strong> Quoted prices in active markets. Rare for private credit except certain syndicated loans with active secondary trading.</li>
@@ -81,7 +81,7 @@ const article: Article = {
 
 <h2>Credit Marks and Valuation Adjustments</h2>
 
-<p>Credit marks directly impact NAV, fund performance, and capital account values. The mark process involves inherent tensions between objectivity and judgment, timeliness and accuracy.</p>
+<p>Credit marks directly impact NAV, fund performance, and capital account values. The mark process involves inherent tensions between objectivity and judgment, timeliness and accuracy. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> shows how valuation changes flow through to LP/GP economics.</p>
 
 <h3>Credit Mark Triggers</h3>
 
@@ -175,7 +175,7 @@ const article: Article = {
 
 <h3>Expense Allocation</h3>
 
-<p>Managers operating multiple vehicles must allocate shared expenses appropriately:</p>
+<p>Managers operating multiple vehicles must allocate shared expenses appropriately. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> clarifies fund vs. GP expense classification:</p>
 <ul>
 <li><strong>Pro-rata by NAV:</strong> Simple and widely used</li>
 <li><strong>Pro-rata by commitments:</strong> Appropriate during deployment when NAV isn't yet reflective</li>
@@ -193,7 +193,7 @@ const article: Article = {
 
 <h3>Evaluation Criteria</h3>
 
-<p><strong>Credit experience:</strong> Request references from credit fund clients with similar strategies. Probe specific experiences with marks, non-accruals, and workout scenarios.</p>
+<p><strong>Credit experience:</strong> Request references from credit fund clients with similar strategies. Probe specific experiences with marks, non-accruals, and workout scenarios. The <a href="https://www.aicpa.org" target="_blank" rel="noopener noreferrer">AICPA</a> provides guidance on fund accounting standards.</p>
 
 <p><strong>Loan system capabilities:</strong> Request demonstrations of revolver tracking, PIK compounding, amortizing loans, floating rates with SOFR resets, and OID amortization.</p>
 
@@ -218,7 +218,7 @@ const article: Article = {
 <ul>
 <li><strong>Credit administration requires specialized capabilities:</strong> Loan accounting, interest accrual methodologies, credit mark determination, and covenant tracking demand administrators with credit-specific expertise and purpose-built technology.</li>
 
-<li><strong>NAV involves unique components:</strong> Beyond funded loans at fair value, track unfunded commitments, accrued interest, OID amortization, PIK interest, and equity warrants—each requiring specific accounting treatment.</li>
+<li><strong>NAV involves unique components:</strong> Beyond funded loans at fair value, track unfunded commitments, accrued interest, OID amortization, PIK interest, and equity warrants—each requiring specific accounting treatment per <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a> standards.</li>
 
 <li><strong>Fair value relies heavily on Level 3 inputs:</strong> Most private credit lacks observable prices, requiring judgment-based valuation using cost basis, market comparables, DCF, or recovery analysis. Robust documentation and valuation committee governance are essential.</li>
 
@@ -228,11 +228,11 @@ const article: Article = {
 
 <li><strong>Credit fund reporting extends beyond standard statements:</strong> Investors expect industry concentration, credit quality distribution, performing/non-performing breakdown, yield analysis, default rates, and covenant compliance status.</li>
 
-<li><strong>Commitment tracking operates on two levels:</strong> LP commitments and borrower commitments require simultaneous tracking for liquidity management and contingent liability reporting.</li>
+<li><strong>Commitment tracking operates on two levels:</strong> LP commitments and borrower commitments require simultaneous tracking for liquidity management and contingent liability reporting. Model subscription facility impacts using the <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a>.</li>
 
 <li><strong>Non-accrual determinations require judgment:</strong> Typically applied at 90 days past due, but may be earlier based on circumstances. Clear policies ensure consistent application.</li>
 
-<li><strong>Expense allocation must be documented and consistent:</strong> Methodologies based on NAV, commitments, specific attribution, or activity levels require documentation and consistent application.</li>
+<li><strong>Expense allocation must be documented and consistent:</strong> Methodologies based on NAV, commitments, specific attribution, or activity levels require documentation and consistent application. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> assists with expense classification decisions.</li>
 
 <li><strong>Technology platform capabilities significantly affect efficiency:</strong> Purpose-built loan systems handle accruals, floating rates, and commitments more efficiently than adapted equity platforms.</li>
 </ul>`,

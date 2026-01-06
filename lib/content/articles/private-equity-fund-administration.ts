@@ -21,17 +21,17 @@ const article: Article = {
 
 <h3>Regulatory Context</h3>
 
-<p>The SEC has emphasized independent fund administration through examination findings and enforcement actions. SEC-registered advisers must implement controls around valuation, expense allocation, and fee calculations. While outsourcing does not eliminate compliance obligations, it provides an independent check on fund accounting.</p>
+<p>The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> has emphasized independent fund administration through examination findings and enforcement actions. SEC-registered advisers must implement controls around valuation, expense allocation (use the <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> for guidance), and fee calculations. While outsourcing does not eliminate compliance obligations, it provides an independent check on fund accounting.</p>
 
 <h2>Core Administrator Services</h2>
 
 <h3>Capital Call Processing</h3>
 
-<p>The administrator prepares capital call notices calculating each investor's pro-rata share based on unfunded commitment, including call amount, funding deadline, and wire instructions. Notices typically follow ILPA templates. The administrator tracks the notice date, due date, purpose, and funding status for each investor. When investors fail to fund, the administrator coordinates with the GP to implement LPA remedies such as default interest.</p>
+<p>The administrator prepares capital call notices calculating each investor's pro-rata share based on unfunded commitment, including call amount, funding deadline, and wire instructions. Notices typically follow <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> templates. The administrator tracks the notice date, due date, purpose, and funding status for each investor. When investors fail to fund, the administrator coordinates with the GP to implement LPA remedies such as default interest.</p>
 
 <h3>Distribution Processing</h3>
 
-<p>The administrator calculates distributions by applying the fund's waterfall, which specifies allocation of proceeds among LPs and the GP's carried interest. Simple structures return capital followed by preferred return then profit sharing. Complex structures include catch-up provisions, clawback protections, multiple tiers, or deal-by-deal carry. Distribution notices include amount, payment date, source of proceeds (return of capital, gains, dividends), and updated capital account information.</p>
+<p>The administrator calculates distributions by applying the fund's waterfall (use the <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> to model these structures), which specifies allocation of proceeds among LPs and the GP's carried interest. Simple structures return capital followed by preferred return then profit sharing. Complex structures include catch-up provisions, clawback protections, multiple tiers, or deal-by-deal carry. Distribution notices include amount, payment date, source of proceeds (return of capital, gains, dividends), and updated capital account information.</p>
 
 <h3>NAV Calculation</h3>
 
@@ -47,7 +47,7 @@ const article: Article = {
 
 <h3>Financial Statement Preparation</h3>
 
-<p>Administrators prepare quarterly (unaudited) and annual (audited) financial statements following ASC Topic 946 for Investment Companies or liquidation basis for funds nearing liquidation. Quarterly statements include statement of assets and liabilities, statement of operations, statement of changes in net assets, and supporting schedules for portfolio investments, capital activity, and expenses. The administrator coordinates with external auditors, provides documentation, and incorporates audit adjustments.</p>
+<p>Administrators prepare quarterly (unaudited) and annual (audited) financial statements following <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">ASC Topic 946</a> for Investment Companies or liquidation basis for funds nearing liquidation. Quarterly statements include statement of assets and liabilities, statement of operations, statement of changes in net assets, and supporting schedules for portfolio investments, capital activity, and expenses. The administrator coordinates with external auditors, provides documentation, and incorporates audit adjustments.</p>
 
 <h3>Investor Reporting</h3>
 
@@ -55,7 +55,7 @@ const article: Article = {
 
 <h3>Tax Reporting</h3>
 
-<p>The administrator coordinates with the fund's tax firm to prepare Schedule K-1 packages, classifying income and gains by tax character and calculating each partner's distributive share for Form 1065. For international investors, this includes withholding under IRC Section 1446 and Form 8804 reporting.</p>
+<p>The administrator coordinates with the fund's tax firm to prepare <a href="https://www.irs.gov" target="_blank" rel="noopener noreferrer">Schedule K-1</a> packages, classifying income and gains by tax character and calculating each partner's distributive share for Form 1065. For international investors, this includes withholding under IRC Section 1446 and Form 8804 reporting.</p>
 
 <h2>NAV Calculation for Private Equity Funds</h2>
 
@@ -180,7 +180,7 @@ const article: Article = {
 
 <p><strong>References:</strong> Speaking with other general partners who use the administrator provides valuable insight into service quality, responsiveness, technical capabilities, and how the administrator handles challenges.</p>
 
-<p><strong>Pricing Structure:</strong> Administrator fees must fit within the fund's management fee budget. Proposals should detail all fee components including base fees, transaction fees, portfolio company fees, and any additional charges.</p>
+<p><strong>Pricing Structure:</strong> Administrator fees must fit within the fund's <a href="/tools/management-company-budget">management fee budget</a>. Proposals should detail all fee components including base fees, transaction fees, portfolio company fees, and any additional charges.</p>
 
 <p><strong>Transition Support:</strong> For funds switching administrators, transition capabilities matter significantly. The administrator should demonstrate experience with fund conversions and provide a detailed transition plan.</p>
 
@@ -207,7 +207,7 @@ const article: Article = {
 <ul>
 <li>Technology platform demonstrations showing capital account maintenance, waterfall calculations, reporting capabilities, and investor portal functionality</li>
 <li>Reference calls with current clients of similar size and strategy</li>
-<li>Review of SOC 1 reports (if available) providing assurance about internal controls</li>
+<li>Review of <a href="https://www.aicpa.org" target="_blank" rel="noopener noreferrer">SOC 1</a> reports (if available) providing assurance about internal controls</li>
 <li>Discussion of service level agreements and performance metrics</li>
 <li>Review of error and omissions insurance coverage</li>
 <li>Assessment of business continuity and disaster recovery capabilities</li>

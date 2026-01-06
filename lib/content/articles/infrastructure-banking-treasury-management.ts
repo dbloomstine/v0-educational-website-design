@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Managing infrastructure debt financing, institutional lenders, interest rate hedging, and multi-decade cash flow planning',
   fundType: 'infrastructure',
   pillar: 'banking',
-  content: `<p>Infrastructure treasury management operates at the intersection of project finance, institutional lending, and multi-decade risk management. Unlike traditional fund treasury managing capital calls over 4-6 year investment periods, infrastructure treasury manages debt relationships extending 20-30 years into the future. The infrastructure CFO negotiates financing that will outlast most corporate bank facilities by a factor of three or four, maintains lender relationships through economic cycles, and makes financing decisions whose consequences reverberate across decades.</p>
+  content: `<p>Infrastructure treasury management operates at the intersection of project finance, institutional lending, and multi-decade risk management. Unlike traditional fund treasury managing capital calls over 4-6 year investment periods, infrastructure treasury manages debt relationships extending 20-30 years into the future. The infrastructure CFO negotiates financing that will outlast most corporate bank facilities by a factor of three or four, maintains lender relationships through economic cycles, and makes financing decisions whose consequences reverberate across decades. The <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a> helps model the impact of facility sizing on fund-level returns.</p>
 
 <p>A covenant negotiation that achieves a 1.15x excess cash trap threshold instead of 1.25x might enable $3-5 million annually in additional distributions, compounding to $75-125 million over the asset's life. This can shift equity IRRs by 150-250 basis points, potentially determining first versus second quartile peer performance.</p>
 
@@ -33,7 +33,7 @@ const article: Article = {
 
 <p>Complex financings employ multiple debt tranches. <strong>Senior secured debt</strong> receives first-priority liens with lowest interest rates (SOFR plus 150-250 basis points for bank facilities, 4.5-6.5% fixed for bonds), achieving 60-75% loan-to-value ratios. <strong>Mezzanine debt</strong> accepts junior positions for higher pricing (SOFR plus 450-750 basis points or 7-10% fixed), filling financing gaps enabling 75-85% combined leverage.</p>
 
-<p>Payment waterfalls specify distribution priority: (1) operating expenses, (2) senior debt service, (3) reserve account fundings, (4) mezzanine debt service, (5) maintenance capex, (6) excess cash traps if coverage falls below 1.15-1.25x thresholds, (7) tax distributions, and (8) equity distributions.</p>
+<p>Payment waterfalls specify distribution priority: (1) operating expenses, (2) senior debt service, (3) reserve account fundings, (4) mezzanine debt service, (5) maintenance capex, (6) excess cash traps if coverage falls below 1.15-1.25x thresholds, (7) tax distributions, and (8) equity distributions. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps model these complex priority sequences and their impact on LP and GP economics.</p>
 
 <h3>Construction to Permanent Financing</h3>
 
@@ -41,7 +41,7 @@ const article: Article = {
 
 <h3>Credit Enhancement and Reserve Structures</h3>
 
-<p><strong>Debt service reserve accounts</strong> hold 6-12 months of debt service ($15-40M typical for $300-400M facilities) providing liquidity buffers. DSRA funding allows either cash deposits or letters of credit (100-150 basis points annual fees). <strong>Sponsor completion guarantees</strong> provide credit support during construction, typically releasing upon substantial completion and achievement of 6-12 consecutive months of DSCR exceeding 1.20-1.30x.</p>
+<p><strong>Debt service reserve accounts</strong> hold 6-12 months of debt service ($15-40M typical for $300-400M facilities) providing liquidity buffers. DSRA funding allows either cash deposits or letters of credit (100-150 basis points annual fees). <strong>Sponsor completion guarantees</strong> provide credit support during construction, typically releasing upon substantial completion and achievement of 6-12 consecutive months of DSCR exceeding 1.20-1.30x. The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> provides regulatory guidance on disclosure requirements for fund-level credit facilities and guarantee structures.</p>
 
 <h2>Lender Relationship Management</h2>
 
@@ -89,7 +89,7 @@ const article: Article = {
 
 <p>Cash management systems establish account structures routing revenues to collection accounts, implementing payment waterfalls, and releasing excess cash for distributions. Blocked account provisions prevent equity withdrawals until all senior obligations satisfy their priority claims.</p>
 
-<p>The CFO models waterfall operations under various scenarios: base case projections, downside sensitivities reducing revenues by 10-20%, and stress cases (30-40% revenue declines) evaluating debt service protection and distribution capacity.</p>
+<p>The CFO models waterfall operations under various scenarios: base case projections, downside sensitivities reducing revenues by 10-20%, and stress cases (30-40% revenue declines) evaluating debt service protection and distribution capacity. The <a href="/tools/management-company-budget">Management Company Budget Planner</a> assists with modeling operational cash flow requirements and burn rate analysis.</p>
 
 <h2>Refinancing Strategies</h2>
 
@@ -103,7 +103,7 @@ const article: Article = {
 
 <h3>Cash-Out Refinancing</h3>
 
-<p>Asset performance improvements after 3-5 years of operational history often support increased leverage. An asset initially financed at 65% leverage might refinance at 71-75% leverage after value appreciation, distributing $50-100M incremental proceeds to equity investors. This effectively monetizes asset appreciation and operational improvements without requiring asset sales, improving IRRs by 150-300 basis points through return acceleration.</p>
+<p>Asset performance improvements after 3-5 years of operational history often support increased leverage. An asset initially financed at 65% leverage might refinance at 71-75% leverage after value appreciation, distributing $50-100M incremental proceeds to equity investors. This effectively monetizes asset appreciation and operational improvements without requiring asset sales, improving IRRs by 150-300 basis points through return acceleration. Fund managers can model these refinancing scenarios using the <a href="/tools/management-fee-calculator">Management Fee Calculator</a> to understand fee impacts on investor returns.</p>
 
 <h2>Working Capital and Liquidity Management</h2>
 
@@ -139,7 +139,9 @@ const article: Article = {
 <li><strong>Payment waterfall design determines distribution capacity:</strong> Priority-based sequences ensure debt service and reserve fundings before equity distributions, with excess cash trap provisions triggering sweeps if DSCR falls below 1.15-1.25x thresholds.</li>
 
 <li><strong>Reserve accounts balance lender protection with capital efficiency:</strong> DSRAs holding 6-12 months debt service, major maintenance reserves, and insurance reserves protect lenders but tie up capital earning below equity return targets.</li>
-</ul>`,
+</ul>
+
+<p>For comprehensive fund launch planning including banking relationships, see the <a href="/tools/fund-launch-guide">Fund Launch Guide</a>. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> assists with categorizing banking-related costs across fund and portfolio company levels. For industry standards on LP reporting of treasury activities, refer to <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> guidelines. The <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a> provides authoritative guidance on debt accounting and hedge accounting standards.</p>`,
   metaTitle: 'Infrastructure Banking: Project Finance, Debt Management, and Treasury Operations',
   metaDescription: 'Comprehensive guide to infrastructure treasury covering project finance structures, lender relationships, interest rate hedging, cash management, and refinancing strategies.',
   publishedDate: 'November 25, 2025',

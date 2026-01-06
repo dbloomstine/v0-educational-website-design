@@ -17,7 +17,7 @@ const article: Article = {
 
 <h3>Management Fee Budget Development</h3>
 
-<p>Most funds operate on management fees calculated as 1.5-2.5% of committed capital during the investment period (5-6 years) and invested capital or NAV thereafter. Larger funds ($2 billion+) often charge 1.5-1.75%, while smaller funds ($250-750 million) charge 2.0-2.25%. The CFO allocates fees across personnel costs (45-65% of fees), office expenses (8-15%), professional services (10-18%), portfolio support (5-12%), technology (3-7%), travel and business development (4-9%), and insurance (2-4%).</p>
+<p>Most funds operate on management fees calculated as 1.5-2.5% of committed capital during the investment period (5-6 years) and invested capital or NAV thereafter. Use the <a href="/tools/management-fee-calculator">Management Fee Calculator</a> to model fee structures. Larger funds ($2 billion+) often charge 1.5-1.75%, while smaller funds ($250-750 million) charge 2.0-2.25%. The CFO allocates fees across personnel costs (45-65% of fees), office expenses (8-15%), professional services (10-18%), portfolio support (5-12%), technology (3-7%), travel and business development (4-9%), and insurance (2-4%).</p>
 
 <p>For a $1 billion fund charging 2% during the investment period, annual fee revenue totals $20 million. Larger funds maintain detailed multi-year budgets with quarterly forecasting, tracking variances of 5-10% or less. The budget serves as both operational planning tool and compliance document, as some LPAs include provisions limiting specific expense categories or requiring investor consent for budget overruns exceeding 10-15% annually.</p>
 
@@ -25,9 +25,9 @@ const article: Article = {
 
 <h3>Fund-Level Expense Allocation</h3>
 
-<p>CFOs ensure proper allocation between management company operations and fund-level costs. Management fees typically cover personnel, office rent, core technology, insurance, and routine services. Transaction-related costs may be charged to the fund or portfolio companies depending on LPA provisions. Organizational expenses are typically charged to the fund subject to caps (commonly 0.5-1.0% of commitments).</p>
+<p>CFOs ensure proper allocation between management company operations and fund-level costs. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> assists in classifying expenses correctly. Management fees typically cover personnel, office rent, core technology, insurance, and routine services. Transaction-related costs may be charged to the fund or portfolio companies depending on LPA provisions. Organizational expenses are typically charged to the fund subject to caps (commonly 0.5-1.0% of commitments).</p>
 
-<p>The CFO establishes policies for expense classification and maintains documentation supporting treatment decisions. For managers operating multiple funds simultaneously, allocation methodologies for shared costs require careful documentation. The SEC has identified expense allocation as a key examination priority, scrutinizing whether broken deal expenses are allocated appropriately among funds.</p>
+<p>The CFO establishes policies for expense classification and maintains documentation supporting treatment decisions. For managers operating multiple funds simultaneously, allocation methodologies for shared costs require careful documentation. The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> has identified expense allocation as a key examination priority, scrutinizing whether broken deal expenses are allocated appropriately among funds.</p>
 
 <h2>Fund Accounting Oversight and Administrator Management</h2>
 
@@ -43,7 +43,7 @@ const article: Article = {
 
 <p>Private equity accounting centers on maintaining accurate capital accounts for each partner, tracking their share of contributions, distributions, income, expenses, gains, and losses. The CFO ensures capital account structure reflects LPA economic terms including preferred returns (typically 8%), management fee offsets, carry catch-up provisions, and clawback holdbacks.</p>
 
-<p>Distribution waterfall calculations present particular complexity with European-style (deal-by-deal) carry structures. Each investment's proceeds distribute through the waterfall independently. The CFO must track deal-level calculations across 15-30 portfolio company realizations, maintain clawback escrows, and prepare final true-up adjustments at liquidation.</p>
+<p>Distribution waterfall calculations present particular complexity with European-style (deal-by-deal) carry structures. Model these allocations with the <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a>. Each investment's proceeds distribute through the waterfall independently. The CFO must track deal-level calculations across 15-30 portfolio company realizations, maintain clawback escrows, and prepare final true-up adjustments at liquidation.</p>
 
 <h3>Financial Statement Review</h3>
 
@@ -73,7 +73,7 @@ const article: Article = {
 
 <h2>Subscription Credit Facilities and Leverage Management</h2>
 
-<p>Most funds establish subscription credit facilities providing short-term financing against the right to call capital. Facilities typically range from 15-25% of commitments ($150-250 million for a $1 billion fund), carry interest rates of SOFR + 150-250 basis points, include commitment fees of 25-50 basis points on undrawn portions, and contain borrowing base calculations limiting draws to 50-70% of eligible unfunded commitments.</p>
+<p>Most funds establish subscription credit facilities providing short-term financing against the right to call capital. Use the <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a> to model IRR impact. Facilities typically range from 15-25% of commitments ($150-250 million for a $1 billion fund), carry interest rates of SOFR + 150-250 basis points, include commitment fees of 25-50 basis points on undrawn portions, and contain borrowing base calculations limiting draws to 50-70% of eligible unfunded commitments.</p>
 
 <p>The CFO manages facilities throughout the lifecycle, ensuring covenant compliance, optimizing utilization, and coordinating renewals. For a $1 billion fund with $200 million facility, the CFO monitors daily utilization averaging $85-145 million during deployment periods, ensures borrowing base compliance, tracks interest expense, coordinates repayments from capital call receipts, and manages facility reporting requirements.</p>
 
@@ -81,7 +81,7 @@ const article: Article = {
 
 <h2>Investor Reporting and LP Communications</h2>
 
-<p>Limited partners expect regular, transparent reporting on fund performance, portfolio composition, and capital activity. The CFO typically owns or coordinates preparation of investor reports, working with investment teams for portfolio updates, coordinating with administrators for financial data, overseeing performance metrics preparation, and ensuring delivery within LPA timeframes (typically 45-60 days for quarterly reports, 120 days for audited annual financials, 90 days for K-1 tax packages).</p>
+<p>Limited partners expect regular, transparent reporting on fund performance, portfolio composition, and capital activity. The CFO typically owns or coordinates preparation of investor reports per <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> reporting templates, working with investment teams for portfolio updates, coordinating with administrators for financial data, overseeing performance metrics preparation, and ensuring delivery within LPA timeframes (typically 45-60 days for quarterly reports, 120 days for audited annual financials, 90 days for K-1 tax packages).</p>
 
 <h3>Quarterly Reporting Production</h3>
 
@@ -91,7 +91,7 @@ const article: Article = {
 
 <h3>Annual Reporting and Tax Compliance</h3>
 
-<p>Annual deliverables include audited financial statements, Schedule K-1 tax reporting packages for U.S. investors showing distributive share of income and gains, and annual summary reports with detailed portfolio company summaries and value creation analysis.</p>
+<p>Annual deliverables include audited financial statements, <a href="https://www.irs.gov" target="_blank" rel="noopener noreferrer">Schedule K-1</a> tax reporting packages for U.S. investors showing distributive share of income and gains, and annual summary reports with detailed portfolio company summaries and value creation analysis.</p>
 
 <p>For a fund with 58 limited partners across multiple share classes, K-1 preparation might cost $45,000-75,000 in professional fees, require 80-120 hours of coordination, and involve managing detailed data requests for partnership items including ordinary income, capital gains, deductions, Section 199A qualified business income, state tax liabilities, and withholding under Section 1446 for foreign partners.</p>
 
@@ -110,7 +110,7 @@ const article: Article = {
 
 <li><strong>Capital management follows a distinct rhythm requiring detailed forecasting:</strong> Private equity capital is called as needed (40-70 calls over 10-12 years) and distributed when realizations occur (30-60 distributions). Rolling 12-18 month forecasts enable LP liquidity planning.</li>
 
-<li><strong>Waterfall calculations determine $50-200M in carried interest over fund life:</strong> Distribution waterfalls allocating proceeds across return of capital, preferred return, catch-up, and profit splits require detailed tracking across 15-30 portfolio company exits.</li>
+<li><strong>Waterfall calculations determine $50-200M in carried interest over fund life:</strong> Distribution waterfalls allocating proceeds across return of capital, preferred return, catch-up, and profit splits require detailed tracking across 15-30 portfolio company exits. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps model these complex allocations.</li>
 
 <li><strong>Subscription facilities provide $150-300M in bridge financing requiring active management:</strong> Facilities enable transaction closings without immediate capital calls but require compliance with borrowing base covenants, quarterly lender reporting, and strategic utilization decisions.</li>
 

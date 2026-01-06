@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Establishing banking partnerships, structuring subscription lines, and managing fund-level financing for credit portfolios',
   fundType: 'private-credit',
   pillar: 'banking',
-  content: `<p>Private credit funds require sophisticated banking relationships supporting both traditional fund operations and credit-specific financing needs. Unlike private equity funds with episodic transactions, credit funds originate and service loan portfolios continuously, creating unique requirements around warehouse facilities, subscription lines, leverage optimization, and cash management systems handling continuous transaction flows.</p>
+  content: `<p>Private credit funds require sophisticated banking relationships supporting both traditional fund operations and credit-specific financing needs. Unlike private equity funds with episodic transactions, credit funds originate and service loan portfolios continuously, creating unique requirements around warehouse facilities, subscription lines, leverage optimization, and cash management systems handling continuous transaction flows. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> outlines key banking considerations during fund formation.</p>
 
 <p>A well-structured banking framework enables a $1 billion fund to potentially support a $1.5-2 billion loan portfolio through prudent warehouse financing. Inadequate relationships constrain origination capacity, increase financing costs, and create operational friction.</p>
 
@@ -39,13 +39,13 @@ const article: Article = {
 
 <h2>Subscription Credit Facilities</h2>
 
-<p>Subscription lines bridge timing gaps between loan originations and capital calls. A fund identifying an attractive opportunity can draw immediately, then issue a capital call within 30-90 days to repay and reset availability.</p>
+<p>Subscription lines bridge timing gaps between loan originations and capital calls. A fund identifying an attractive opportunity can draw immediately, then issue a capital call within 30-90 days to repay and reset availability. Use the <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a> to model how credit facilities impact IRR and MOIC.</p>
 
 <h3>Facility Sizing</h3>
 
 <p>Credit fund sizing typically ranges from 10-20% of LP commitments (more conservative than PE's 15-30%) due to continuous rather than discrete deployment. A $1B fund might establish a $150M facility (15% of commitments).</p>
 
-<p>Credit funds maintain continuous, moderate borrowing ($30-50M during active deployment) rather than PE's lumpy pattern of large draws followed by full repayment. This requires attention to all-in costs: for a $150M facility at SOFR+200bps with 50bps unused fee, 40% average utilization costs ~$4.65M annually ($4.2M interest + $450K unused fees).</p>
+<p>Credit funds maintain continuous, moderate borrowing ($30-50M during active deployment) rather than PE's lumpy pattern of large draws followed by full repayment. This requires attention to all-in costs: for a $150M facility at SOFR+200bps with 50bps unused fee, 40% average utilization costs ~$4.65M annually ($4.2M interest + $450K unused fees). The <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a> helps quantify these cost impacts.</p>
 
 <h3>Pricing</h3>
 <ul>
@@ -78,11 +78,11 @@ const article: Article = {
 
 <h3>Economic Impact</h3>
 
-<p>A fund earning 10% gross returns might enhance equity returns to 14-16% with 1.5x leverage, but leverage amplifies losses during stress. LPAs typically cap leverage at 1.5-2.0x NAV. Maintain 15-25% cushion above covenant thresholds to accommodate normal fluctuations without triggering margin calls.</p>
+<p>A fund earning 10% gross returns might enhance equity returns to 14-16% with 1.5x leverage, but leverage amplifies losses during stress. LPAs typically cap leverage at 1.5-2.0x NAV. Maintain 15-25% cushion above covenant thresholds to accommodate normal fluctuations without triggering margin calls. Model these scenarios using the <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> to understand impacts on LP/GP economics.</p>
 
 <h2>Cash Management</h2>
 
-<p>Credit funds receive continuous inflows from quarterly interest payments, principal amortization, and prepayments while managing outflows for originations, expenses, and distributions. This requires sophisticated tracking and forecasting systems.</p>
+<p>Credit funds receive continuous inflows from quarterly interest payments, principal amortization, and prepayments while managing outflows for originations, expenses, and distributions. This requires sophisticated tracking and forecasting systems. The <a href="/tools/management-company-budget">Management Company Budget Planner</a> helps project operational cash needs alongside fund-level liquidity planning.</p>
 
 <p>Target cash balances equal to 30-90 days of expenses plus a buffer for near-term commitments. Excess cash dilutes returns; inadequate reserves may cause missed opportunities. LPAs typically restrict uninvested cash to bank deposits, money market funds, Treasuries, and investment-grade commercial paper with 90-180 day maturities.</p>
 
@@ -111,7 +111,7 @@ const article: Article = {
 
 <h2>KYC/AML Requirements</h2>
 
-<p>Credit funds face intensive KYC requirements due to continuous transaction activity. Account opening requires LPA documentation, organizational charts, authorized signatories, beneficial ownership information (25%+ owners), and details on investment strategy and expected transaction patterns.</p>
+<p>Credit funds face intensive KYC requirements due to continuous transaction activity. Account opening requires LPA documentation, organizational charts, authorized signatories, beneficial ownership information (25%+ owners), and details on investment strategy and expected transaction patterns. These requirements align with <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> and FinCEN anti-money laundering regulations.</p>
 
 <p>Banks conduct periodic reviews requesting updated documentation when transaction patterns deviate from expectations. Credit funds trigger more frequent inquiries than PE funds due to higher volumes. Maintain detailed transaction support and establish clear communication channels with bank compliance teams.</p>
 
@@ -142,7 +142,7 @@ const article: Article = {
 <ul>
 <li><strong>Complex banking ecosystem:</strong> Credit funds maintain 3-5 institutions (operating bank, subscription line providers, warehouse lenders) scaling to 10+ lenders for large syndicated facilities.</li>
 
-<li><strong>Subscription facilities (10-20% of commitments):</strong> Continuous moderate utilization rather than PE's episodic draws. Monitor all-in costs including unused commitment fees of 35-75bps.</li>
+<li><strong>Subscription facilities (10-20% of commitments):</strong> Continuous moderate utilization rather than PE's episodic draws. Monitor all-in costs including unused commitment fees of 35-75bps. Use the <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a> to model IRR impact.</li>
 
 <li><strong>Warehouse facilities (1.25-2.0x leverage):</strong> 60-75% advance rates on senior secured loans with monthly borrowing base certificates. Maintain 15-25% cushion above covenant thresholds.</li>
 

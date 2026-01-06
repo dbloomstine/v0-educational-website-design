@@ -11,7 +11,7 @@ const article: Article = {
 
 <p>According to <a href="https://www.aon.com/" target="_blank" rel="noopener noreferrer">Aon's annual insurance market report</a>, claims against PE fund managers have increased 35% since 2019, with average defense costs exceeding $1.2 million per claim even when allegations prove unfounded.</p>
 
-<p>For a $750 million mid-market PE fund, annual insurance costs range from $250,000-450,000 across all coverage lines (1-2% of management fee revenue). A single SEC enforcement action can result in $5-25 million in penalties and legal fees; investor litigation following a failed investment may generate $10-50 million in damages claims. Properly structured insurance transforms catastrophic exposures into budgeted expenses.</p></section>
+<p>For a $750 million mid-market PE fund, annual insurance costs range from $250,000-450,000 across all coverage lines (1-2% of <a href="/tools/management-fee-calculator">management fee</a> revenue). A single SEC enforcement action can result in $5-25 million in penalties and legal fees; investor litigation following a failed investment may generate $10-50 million in damages claims. Properly structured insurance transforms catastrophic exposures into budgeted expenses.</p></section>
 
 <section><h2>Directors and Officers (D&O) Liability Insurance</h2>
 
@@ -62,7 +62,7 @@ const article: Article = {
 
 <ul>
 <li><strong>Outside directorship liability:</strong> Coverage for portfolio company board service (confirm adequate limits separate from fund D&O)</li>
-<li><strong>Regulatory investigation coverage:</strong> SEC examinations, DOJ inquiries, state AG investigations (subpoena response alone costs $100,000-500,000)</li>
+<li><strong>Regulatory investigation coverage:</strong> <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> examinations, DOJ inquiries, state AG investigations (subpoena response alone costs $100,000-500,000)</li>
 <li><strong>Advancement of defense costs:</strong> Insurer pays as incurred, not after claim resolution</li>
 <li><strong>Broad definition of claim:</strong> Formal and informal regulatory proceedings, grand jury subpoenas, target letters</li>
 <li><strong>Non-rescindable coverage:</strong> Insurer cannot rescind based on application misstatements by other insureds</li>
@@ -148,7 +148,7 @@ const article: Article = {
 <li><strong>Regulatory coverage:</strong> Verify coverage for SEC, FINRA, and state proceedings including document production costs</li>
 <li><strong>Fund entity coverage:</strong> Ensure coverage for fund, GP, and management company—not just individuals</li>
 <li><strong>Outsourced functions:</strong> Administrator or auditor errors may implicate fund's oversight responsibilities</li>
-<li><strong>Performance fee disputes:</strong> Carried interest calculation errors can generate significant claims; confirm coverage applies</li>
+<li><strong>Performance fee disputes:</strong> <a href="/tools/distribution-waterfall">Carried interest</a> calculation errors can generate significant claims; confirm coverage applies</li>
 </ul></section>
 
 <section><h2>Cyber Liability Insurance</h2>
@@ -431,7 +431,7 @@ const article: Article = {
 
 <li><strong>Specialized broker selection significantly impacts program quality:</strong> Target brokers with 50+ PE fund clients, dedicated financial institutions practices, and claims advocacy capabilities. Premium savings from inexperienced brokers often result in coverage gaps discovered at claim time.</li>
 
-<li><strong>Total insurance cost for mid-market funds runs $250,000-450,000 annually:</strong> This investment protects against claim scenarios that could otherwise consume $5-50 million or more. Properly structured insurance transforms catastrophic risk into budgeted expense.</li>
+<li><strong>Total insurance cost for mid-market funds runs $250,000-450,000 annually:</strong> This investment protects against claim scenarios that could otherwise consume $5-50 million or more. Properly structured insurance transforms catastrophic risk into budgeted expense. Model this in your <a href="/tools/management-company-budget">Management Company Budget</a>.</li>
 
 <li><strong>Annual program reviews ensure coverage evolves with fund growth:</strong> As AUM increases, portfolio companies are added, and strategies evolve, insurance programs must be updated. Review at least 90 days before renewal to allow adequate marketing time.</li>
 

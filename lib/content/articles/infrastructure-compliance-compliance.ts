@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Managing sector-specific regulations, environmental compliance, safety requirements, and government entity oversight',
   fundType: 'infrastructure',
   pillar: 'compliance',
-  content: `<p>Infrastructure fund compliance encompasses traditional investment adviser regulations alongside sector-specific operational requirements affecting regulated utilities, transportation assets, and social infrastructure serving millions of customers. This dual mandate distinguishes infrastructure compliance from other alternative asset classes. When an electric utility experiences a compliance failure, consequences extend beyond penalties to service disruptions affecting hundreds of thousands of customers. Environmental exceedances trigger penalties of $10,000-$50,000 per day with mandatory remediation costing millions.</p>
+  content: `<p>Infrastructure fund compliance encompasses traditional investment adviser regulations alongside sector-specific operational requirements affecting regulated utilities, transportation assets, and social infrastructure serving millions of customers. This dual mandate distinguishes infrastructure compliance from other alternative asset classes. When an electric utility experiences a compliance failure, consequences extend beyond penalties to service disruptions affecting hundreds of thousands of customers. Environmental exceedances trigger penalties of $10,000-$50,000 per day with mandatory remediation costing millions. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> helps emerging managers establish compliance infrastructure from the outset.</p>
 
 <p>Extended hold periods of 7-15+ years create additional complexity as funds navigate regulatory cycles spanning rate cases every 3-5 years, environmental permit renewals on 5-10 year cycles, and evolving requirements including emerging cybersecurity mandates and climate disclosure rules. Infrastructure fund CCOs must anticipate regulatory evolution, participate in rulemakings, and coordinate with asset management teams to evaluate how changes affect capital budgets and exit valuations.</p>
 
@@ -17,13 +17,13 @@ const article: Article = {
 
 <h3>Investment Adviser Compliance</h3>
 
-<p>Infrastructure fund managers register with the SEC under the Investment Advisers Act for managers with at least $150 million in regulatory AUM. SEC examinations occur every 3-5 years, focusing on compliance program adequacy, conflicts of interest, valuation practices for illiquid assets, fee calculation accuracy, and custody rule adherence.</p>
+<p>Infrastructure fund managers register with the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> under the Investment Advisers Act for managers with at least $150 million in regulatory AUM. SEC examinations occur every 3-5 years, focusing on compliance program adequacy, conflicts of interest, valuation practices for illiquid assets, fee calculation accuracy, and custody rule adherence.</p>
 
 <p><strong>Form ADV Disclosure:</strong> Part 1 collects standardized operational data while Part 2 provides narrative disclosure serving as the adviser's brochure. Infrastructure-specific disclosures address hold period expectations (7-15 years versus 4-6 for buyout funds), leverage approaches (60-80% project-level debt versus 40-60% for corporate buyouts), and conflicts including co-investment allocation and affiliate transactions. Annual amendments must be filed within 90 days of fiscal year-end.</p>
 
 <p><strong>Code of Ethics:</strong> Codes typically restrict personal investments in infrastructure sector securities without compliance approval. Pre-clearance requirements block trades creating conflicts with fund activities. Access persons file quarterly transaction reports and annual holdings certifications. Sanctions for violations range from warnings to profit disgorgement ($5,000-$50,000+) and termination for serious violations.</p>
 
-<p><strong>Custody Rule:</strong> Infrastructure funds satisfy custody requirements through annual audits by PCAOB-registered accountants with statements distributed within 120 days (180 days for fund-of-funds). Missing deadlines violates the rule and triggers more burdensome surprise examination requirements.</p>
+<p><strong>Custody Rule:</strong> Infrastructure funds satisfy custody requirements through annual audits by PCAOB-registered accountants with statements distributed within 120 days (180 days for fund-of-funds). Missing deadlines violates the rule and triggers more burdensome surprise examination requirements. The <a href="https://www.aicpa.org" target="_blank" rel="noopener noreferrer">AICPA</a> provides professional standards governing these audit requirements.</p>
 
 <p><strong>Marketing Rule:</strong> Advertisements must present both gross and net performance for required time periods. Extracted performance showing subsets of investments requires offering total portfolio performance. Predecessor performance from team members' prior firms requires prominent disclosure of continuity and strategy similarity. Books and records requirements mandate maintaining all advertisements with supporting performance calculations for five years.</p>
 
@@ -49,7 +49,7 @@ const article: Article = {
 
 <h3>Energy Infrastructure</h3>
 
-<p>FERC regulates wholesale electricity markets, interstate pipelines, and transmission networks. Violations carry penalties up to $1M per day. Renewable energy compliance includes production tax credit qualification requiring equipment specifications, ownership structures, and operational requirements maintaining eligibility worth $15-30 per MWh for wind or 26-30% of capital costs for solar. Non-compliance risks credit recapture of $1-20M+.</p>
+<p>FERC regulates wholesale electricity markets, interstate pipelines, and transmission networks. Violations carry penalties up to $1M per day. Renewable energy compliance includes production tax credit qualification requiring equipment specifications, ownership structures, and operational requirements maintaining eligibility worth $15-30 per MWh for wind or 26-30% of capital costs for solar. Non-compliance risks credit recapture of $1-20M+. The <a href="https://www.irs.gov" target="_blank" rel="noopener noreferrer">IRS</a> provides detailed guidance on tax credit qualification requirements.</p>
 
 <p>Renewable portfolio standards in various states require utilities to obtain 15-50% of electricity from renewable sources by 2030, creating markets for renewable energy credits at $5-50 per REC depending on state markets.</p>
 
@@ -61,7 +61,7 @@ const article: Article = {
 
 <h2>Environmental Compliance</h2>
 
-<p>Infrastructure assets face stringent environmental regulation with violations triggering penalties of $5-50K per day, mandatory corrective action costing $1-20M+, and operational restrictions.</p>
+<p>Infrastructure assets face stringent environmental regulation with violations triggering penalties of $5-50K per day, mandatory corrective action costing $1-20M+, and operational restrictions. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> assists with properly categorizing environmental compliance costs across fund and portfolio company levels.</p>
 
 <h3>Air Quality</h3>
 
@@ -113,7 +113,7 @@ const article: Article = {
 
 <h2>Anti-Corruption Compliance</h2>
 
-<p>FCPA prohibits corrupt payments to foreign officials to obtain business advantages. Infrastructure projects obtaining government concessions, licenses, or permits create FCPA risks. Compliance programs implement due diligence on partners and agents, prohibit facilitation payments, require approval for gifts involving officials, and train personnel. DOJ and SEC enforcement creates penalties of $2M+ per violation for companies plus potential imprisonment for individuals.</p>
+<p>FCPA prohibits corrupt payments to foreign officials to obtain business advantages. Infrastructure projects obtaining government concessions, licenses, or permits create FCPA risks. Compliance programs implement due diligence on partners and agents, prohibit facilitation payments, require approval for gifts involving officials, and train personnel. DOJ and <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> enforcement creates penalties of $2M+ per violation for companies plus potential imprisonment for individuals.</p>
 
 <h2>Key Takeaways</h2>
 
@@ -133,7 +133,9 @@ const article: Article = {
 <li><strong>Government transparency reflects public partnership structures:</strong> PPP agreements require quarterly reporting within 45 days and annual audited financials within 120 days. Some assets face public records laws requiring document disclosure.</li>
 
 <li><strong>Regulatory relationships affect investment outcomes:</strong> Constructive relationships with utility commissions, environmental agencies, and transportation authorities support favorable rate decisions and operational flexibility. Compliance failures damage these critical relationships.</li>
-</ul>`,
+</ul>
+
+<p>For modeling management fee structures within compliance constraints, use the <a href="/tools/management-fee-calculator">Management Fee Calculator</a>. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps ensure waterfall calculations comply with LP agreement terms. Industry best practices for LP reporting and transparency are available from <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a>. The <a href="/tools/management-company-budget">Management Company Budget Planner</a> assists with allocating compliance costs across the fund's operating budget.</p>`,
   metaTitle: 'Infrastructure Fund Compliance: Regulatory Frameworks and Safety Standards',
   metaDescription: 'Comprehensive guide to infrastructure fund compliance covering investment adviser regulations, sector-specific operational requirements, environmental permitting, safety standards, government reporting, and critical infrastructure protection.',
   publishedDate: 'November 27, 2025',

@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Managing infrastructure fund accounting, DCF valuations, capital accounts, and extended hold period reporting',
   fundType: 'infrastructure',
   pillar: 'fund-administration',
-  content: `<p>Infrastructure fund administration differs fundamentally from traditional private equity or hedge fund operations. While hedge funds calculate daily NAV based on liquid prices and PE funds value companies quarterly using EBITDA multiples, infrastructure funds must value long-lived assets generating cash flows over 20-40 year operating periods. These characteristics create distinctive challenges requiring specialized expertise in discounted cash flow modeling, project finance debt structures, regulatory accounting frameworks, and extended investment horizons.</p>
+  content: `<p>Infrastructure fund administration differs fundamentally from traditional private equity or hedge fund operations. While hedge funds calculate daily NAV based on liquid prices and PE funds value companies quarterly using EBITDA multiples, infrastructure funds must value long-lived assets generating cash flows over 20-40 year operating periods. These characteristics create distinctive challenges requiring specialized expertise in discounted cash flow modeling, project finance debt structures, regulatory accounting frameworks, and extended investment horizons. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> helps emerging managers establish administration frameworks from inception.</p>
 
 <p>Infrastructure investments typically involve regulated utilities earning approved returns, toll roads operating under multi-decade concessions, renewable energy projects with 15-25 year contracts, or digital infrastructure with long-term customer agreements. These assets generate predictable cash flows distributed quarterly rather than being reinvested for growth. Fund structures accommodate these characteristics through extended terms of 12-15 years, open-end evergreen vehicles, or secondary market mechanisms.</p>
 
@@ -38,7 +38,7 @@ const article: Article = {
 
 <p>Quarterly updates require careful analysis: when revenues come in 2% below projections, administrators investigate whether weather patterns, economic conditions, or regulatory decisions caused the variance. Market condition changes affect discount rates significantly—a 60 basis point increase in risk-free rates can reduce enterprise value by 12%.</p>
 
-<p>Sensitivity analyses quantify assumption impacts: each 50 basis point WACC change affects enterprise value by 11-13%; each 25 basis point growth rate change affects terminal value by 18-22%. Comprehensive documentation in 25-35 page quarterly memoranda supports audit trails and investor due diligence.</p>
+<p>Sensitivity analyses quantify assumption impacts: each 50 basis point WACC change affects enterprise value by 11-13%; each 25 basis point growth rate change affects terminal value by 18-22%. Comprehensive documentation in 25-35 page quarterly memoranda supports audit trails and investor due diligence. The <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a> fair value measurement standards (ASC 820) provide authoritative guidance on these valuation methodologies.</p>
 
 <h3>Regulatory Asset Base Valuation</h3>
 
@@ -80,7 +80,7 @@ const article: Article = {
 
 <h3>Quarterly Distribution Calculations</h3>
 
-<p>Calculations show operating cash flow less debt service, reserve funding, and maintenance capex, equaling available cash for distribution. Fund-level distributions follow waterfall provisions: first to return capital, then to preferred returns, then GP catch-up, then profit splits.</p>
+<p>Calculations show operating cash flow less debt service, reserve funding, and maintenance capex, equaling available cash for distribution. Fund-level distributions follow waterfall provisions: first to return capital, then to preferred returns, then GP catch-up, then profit splits. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps model these complex distribution mechanics and their impact on LP and GP economics.</p>
 
 <p>Ongoing distributions during hold periods create different waterfall dynamics than exit-concentrated PE. Administrators maintain capital account sub-ledgers tracking cumulative progress through Tier 1 capital return, Tier 2 preferred return, Tier 3 GP catch-up, and Tier 4 carry split. Quarterly reports include distribution yield, capital return progress, and projected timing to reach carry split under base, accelerated, and conservative scenarios.</p>
 
@@ -106,13 +106,13 @@ const article: Article = {
 
 <h2>Regulatory Accounting and Reporting</h2>
 
-<p>Regulated utilities follow regulatory accounting standards differing from GAAP, requiring dual records. Regulatory accounting defers certain costs as regulatory assets recoverable in future rates. Storm costs of $18M, for example, might be capitalized under regulatory accounting (if approved for deferral) while expensed immediately under GAAP.</p>
+<p>Regulated utilities follow regulatory accounting standards differing from GAAP, requiring dual records. Regulatory accounting defers certain costs as regulatory assets recoverable in future rates. Storm costs of $18M, for example, might be capitalized under regulatory accounting (if approved for deferral) while expensed immediately under GAAP. The <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a> codification (ASC 980) provides authoritative guidance on regulated operations accounting.</p>
 
 <p>Administrators track regulatory deferrals showing authorization, recovery periods, annual recovery amounts, carrying costs, and current balances. Disclosure follows ASC 980 requirements including balance sheet presentation and footnote descriptions.</p>
 
 <h2>Investor Reporting for Long-Hold Assets</h2>
 
-<p>Infrastructure reporting serves different purposes than hedge fund or PE reporting. Investors commit based on expectations of stable cash flows over 10-15+ years. Quarterly reports (typically 80-120 pages) must demonstrate operational health, distribution sustainability, and long-term value preservation.</p>
+<p>Infrastructure reporting serves different purposes than hedge fund or PE reporting. Investors commit based on expectations of stable cash flows over 10-15+ years. Quarterly reports (typically 80-120 pages) must demonstrate operational health, distribution sustainability, and long-term value preservation. The <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> provides best practice guidance on LP reporting standards and fee transparency requirements.</p>
 
 <h3>Operational Metrics Reporting</h3>
 
@@ -145,7 +145,7 @@ const article: Article = {
 
 <h2>Audit and Controls</h2>
 
-<p>Annual audits focus on valuation methodologies, project finance debt accounting, and regulatory accounting treatments. Big Four fees for $2B funds range $280,000-$420,000. Audit scope covers investment valuation testing (60-80% of portfolio value), DCF model recalculations, discount rate component testing, and terminal value assumption assessment.</p>
+<p>Annual audits focus on valuation methodologies, project finance debt accounting, and regulatory accounting treatments. Big Four fees for $2B funds range $280,000-$420,000. Audit scope covers investment valuation testing (60-80% of portfolio value), DCF model recalculations, discount rate component testing, and terminal value assumption assessment. The <a href="https://www.aicpa.org" target="_blank" rel="noopener noreferrer">AICPA</a> provides professional standards governing these audit procedures.</p>
 
 <h3>Internal Controls for Distribution Processing</h3>
 
@@ -171,7 +171,9 @@ const article: Article = {
 <li><strong>Long-term projections update quarterly:</strong> Reports include base/upside/downside scenarios with probability-weighted expected returns.</li>
 
 <li><strong>Annual audits focus on valuations:</strong> Big Four fees of $280,000-$420,000 for $2B funds cover detailed DCF recalculations and discount rate testing.</li>
-</ul>`,
+</ul>
+
+<p>For modeling management fee structures across different fund sizes, use the <a href="/tools/management-fee-calculator">Management Fee Calculator</a>. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> assists with categorizing administrative costs across fund, management company, and portfolio company levels. The <a href="/tools/management-company-budget">Management Company Budget Planner</a> helps allocate fund administration costs within overall operating budgets. For regulatory guidance on custody and reporting requirements, see the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> investment adviser resources.</p>`,
   metaTitle: 'Infrastructure Fund Administration: Valuations, Cash Flows, and Long-Term Reporting',
   metaDescription: 'Comprehensive guide to infrastructure fund administration covering DCF valuations, project finance debt tracking, distribution waterfall management, regulatory accounting, and extended horizon reporting with detailed metrics and implementation guidance.',
   publishedDate: 'November 29, 2025',

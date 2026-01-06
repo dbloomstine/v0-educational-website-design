@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Managing liability exposures through directors and officers coverage, errors and omissions insurance, board observer versus director risks, and portfolio company insurance guidance',
   fundType: 'venture-capital',
   pillar: 'insurance',
-  content: `<p>Venture capital funds face distinctive liability exposures requiring carefully structured insurance programs. Board seats at dozens of high-growth companies expose partners to director liability, advisory relationships create errors and omissions risks, and fiduciary duties to LPs demand robust coverage. VC fund insurance needs extend well beyond basic commercial policies.</p>
+  content: `<p>Venture capital funds face distinctive liability exposures requiring carefully structured insurance programs. Board seats at dozens of high-growth companies expose partners to director liability, advisory relationships create errors and omissions risks, and fiduciary duties to LPs demand robust coverage. VC fund insurance needs extend well beyond basic commercial policies. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> includes insurance requirements for emerging managers establishing fund operations.</p>
 
 <h2>Directors and Officers Insurance Fundamentals</h2>
 
@@ -39,7 +39,7 @@ const article: Article = {
 
 <h2>Errors and Omissions Coverage</h2>
 
-<p>E&O coverage (professional liability insurance) protects against claims alleging negligent advice, breach of fiduciary duty to LPs, failure to follow investment guidelines, or conflicts of interest. Violations expose funds to LP claims, SEC investigations with potential fines, and reputational damage affecting fundraising.</p>
+<p>E&O coverage (professional liability insurance) protects against claims alleging negligent advice, breach of fiduciary duty to LPs, failure to follow investment guidelines, or conflicts of interest. Violations expose funds to LP claims, <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> investigations with potential fines, and reputational damage affecting fundraising.</p>
 
 <p>Coverage scope includes: defense costs for regulatory investigations; settlements from LP claims; liability from fund operations; coverage for employee and service provider errors; protection against breach of fiduciary duty claims. Exclusions typically eliminate coverage for intentional misconduct, prior known acts, employment practices claims (covered under EPLI), and activities outside registered scope.</p>
 
@@ -63,7 +63,7 @@ const article: Article = {
 
 <p>Policy scope checklist: coverage applies to observers who might face liability; executives receive coverage separate from employment matters; policies cover foreign jurisdiction liability; exclusions do not eliminate startup-specific risks like employment practices or regulatory investigations.</p>
 
-<p>D&O premiums for early-stage companies range from $15,000-$75,000 annually. Insurers offer premium financing for quarterly/monthly payments. Some funds include premiums in approved budgets or advance funds for insurance purchases.</p>
+<p>D&O premiums for early-stage companies range from $15,000-$75,000 annually. Insurers offer premium financing for quarterly/monthly payments. Some funds include premiums in approved budgets or advance funds for insurance purchases. <a href="https://nvca.org" target="_blank" rel="noopener noreferrer">NVCA</a> provides guidance on insurance requirements in standard investment documents.</p>
 
 <h2>Cyber Liability Coverage</h2>
 
@@ -83,7 +83,7 @@ const article: Article = {
 
 <h2>Fiduciary Liability (ERISA Plans)</h2>
 
-<p>Larger platforms with 20+ employees maintaining 401(k) or qualified retirement plans trigger ERISA fiduciary obligations. ERISA requires plan sponsors to act solely in participants' interests, exercise prudence in selecting investments and providers, diversify to minimize large loss risk, and follow plan documents.</p>
+<p>Larger platforms with 20+ employees maintaining 401(k) or qualified retirement plans trigger ERISA fiduciary obligations. ERISA requires plan sponsors to act solely in participants' interests, exercise prudence in selecting investments and providers, diversify to minimize large loss risk, and follow plan documents. The <a href="/tools/management-company-budget">Management Company Budget Planner</a> helps allocate costs for employee benefits including retirement plans.</p>
 
 <p>Violations expose funds to participant lawsuits, DOL investigations with penalties, and personal liability to restore plan losses. Coverage includes defense costs and settlements from claims alleging imprudent investments, excessive fees, or conflicts of interest. Limits typically range from $1-5 million, with premiums of $5,000-$25,000 annually.</p>
 
@@ -105,7 +105,7 @@ const article: Article = {
 
 <p>Crime insurance protects against employee theft, forgery, fraud, and criminal acts. Covered losses include: employee theft of money/securities/property; forgery of checks or wire instructions; computer fraud involving unauthorized transfers; social engineering fraud. Coverage limits range from $1-5 million, with premiums of $5,000-$20,000 annually.</p>
 
-<p>Wire transfer fraud represents the most significant crime exposure. Attackers compromise email accounts, monitor communications, then send spoofed requests. A $5 million acquisition wire request might direct funds to a fraudulent account. Crime policies cover these losses subject to sublimits and reasonable control requirements.</p>
+<p>Wire transfer fraud represents the most significant crime exposure. Attackers compromise email accounts, monitor communications, then send spoofed requests. A $5 million acquisition wire request might direct funds to a fraudulent account. Crime policies cover these losses subject to sublimits and reasonable control requirements. The <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a> helps model the capital flows that require wire transfer security protocols.</p>
 
 <h3>Control Requirements</h3>
 
@@ -114,7 +114,7 @@ const article: Article = {
 <h2>Key Takeaways</h2>
 
 <ul>
-<li>Directors and officers insurance serves as the most critical coverage for venture funds, with Side A, Side B, and Side C protection providing comprehensive liability coverage for fund managers and individual investment professionals across board service and management decisions, with limits typically ranging from $15 million to $50 million depending on fund size and board seat count</li>
+<li>Directors and officers insurance serves as the most critical coverage for venture funds, with Side A, Side B, and Side C protection providing comprehensive liability coverage for fund managers and individual investment professionals across board service and management decisions, with limits typically ranging from $15 million to $50 million depending on fund size and board seat count. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> can assist with proper classification of insurance costs</li>
 <li>Board observer positions carry more limited but still meaningful liability exposure compared to formal director seats, with practical liability separation proving less clear than many assume as observers providing active strategic guidance may face de facto director liability, making careful policy language review essential</li>
 <li>Errors and omissions coverage protects against professional liability claims alleging breach of fiduciary duty to limited partners, failure to follow investment guidelines, or negligent advice, with claims-made policy structures requiring continuous coverage to avoid gaps that could eliminate protection for latent claims</li>
 <li>Portfolio company D&O insurance guidance represents important value creation work as venture funds help portfolio companies understand coverage needs, structure adequate policies, and avoid gaps that expose directors to personal liability, with recommended limits typically equaling one to two times annual revenue or 10% to 20% of company valuation</li>
@@ -122,6 +122,7 @@ const article: Article = {
 <li>Fiduciary liability insurance covers ERISA obligations for funds operating employee retirement plans, protecting against participant lawsuits and Department of Labor investigations, with documented investment selection processes and fee benchmarking supporting risk management and favorable underwriting</li>
 <li>Employment practices liability insurance provides defense and indemnity coverage for wrongful termination, discrimination, harassment, and retaliation claims, with risk management including written handbooks, regular training, documentation of performance issues, and clear investigation protocols</li>
 <li>Crime insurance protects against employee theft, wire transfer fraud, and social engineering attacks, with coverage requiring funds to maintain reasonable controls including dual controls for large wires, multi-factor authentication, and verification procedures for unusual wire requests</li>
+<li><a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> guidelines address insurance disclosure expectations, and the <a href="/tools/management-fee-calculator">Management Fee Calculator</a> helps model how insurance premiums affect fund economics</li>
 </ul>`,
   metaTitle: 'Insurance and Risk Coverage for Venture Capital Funds',
   metaDescription: 'Comprehensive guide to VC fund insurance: D&O coverage, board observer vs director liability, E&O protection, portfolio company insurance guidance, cyber liability, and crime coverage.',

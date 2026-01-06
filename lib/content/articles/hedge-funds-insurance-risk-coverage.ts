@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Managing liability exposures through directors and officers coverage, errors and omissions policies, cyber insurance, and crime protection',
   fundType: 'hedge-funds',
   pillar: 'insurance',
-  content: `<p>Hedge funds face liability exposures from fiduciary obligations, operational errors affecting valuations, cyber incidents, trading mistakes, regulatory investigations, and employment disputes. Insurance transfers these risks to insurers while demonstrating risk management sophistication to investors. Programs typically include D&O liability, E&O professional liability, cyber liability, and crime coverage, with composition varying by fund size, strategy complexity, and claims history.</p>
+  content: `<p>Hedge funds face liability exposures from fiduciary obligations, operational errors affecting valuations, cyber incidents, trading mistakes, regulatory investigations, and employment disputes. Insurance transfers these risks to insurers while demonstrating risk management sophistication to investors. Programs typically include D&O liability, E&O professional liability, cyber liability, and crime coverage, with composition varying by fund size, strategy complexity, and claims history. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> covers insurance considerations as part of fund formation.</p>
 
 <h2>Directors and Officers Liability Insurance</h2>
 
@@ -29,7 +29,7 @@ const article: Article = {
 
 <h3>Regulatory Investigation Coverage</h3>
 
-<p>SEC, CFTC, and state regulator investigations create substantial defense costs even without enforcement actions. D&O policies commonly cover investigation defense costs, though terms vary—some require formal proceedings while others cover informal inquiries. Secure broad investigation coverage language addressing the full spectrum of regulatory contact.</p>
+<p><a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a>, <a href="https://www.cftc.gov" target="_blank" rel="noopener noreferrer">CFTC</a>, and state regulator investigations create substantial defense costs even without enforcement actions. D&O policies commonly cover investigation defense costs, though terms vary—some require formal proceedings while others cover informal inquiries. Secure broad investigation coverage language addressing the full spectrum of regulatory contact.</p>
 
 <h2>Errors and Omissions Insurance</h2>
 
@@ -193,7 +193,7 @@ const article: Article = {
 
 <h2>Cost Management and Insurance Budgeting</h2>
 
-<p>Insurance represents a significant operational expense for hedge funds, with total program costs commonly ranging from 5 to 20 basis points of assets under management depending on coverage scope, limits, fund strategy, and claims history. Effective cost management involves evaluating coverage needs, optimizing program structure, and managing renewal processes strategically.</p>
+<p>Insurance represents a significant operational expense for hedge funds, with total program costs commonly ranging from 5 to 20 basis points of assets under management depending on coverage scope, limits, fund strategy, and claims history. Effective cost management involves evaluating coverage needs, optimizing program structure, and managing renewal processes strategically. The <a href="/tools/management-company-budget">Management Company Budget Planner</a> can help forecast insurance costs alongside other operational expenses.</p>
 
 <h3>Premium Benchmarking and Market Comparison</h3>
 
@@ -282,7 +282,7 @@ const article: Article = {
 
 <li><strong>Specialized insurance brokers provide market access, placement expertise, and claims advocacy for hedge fund insurance programs:</strong> Broker selection criteria should include demonstrated hedge fund experience, carrier relationships, claims management capabilities, and fee transparency. Annual broker reviews maintain accountability and identify whether changes might benefit program quality or costs.</li>
 
-<li><strong>Insurance programs require annual renewal planning beginning 90+ days before expiration to allow adequate market time and competitive placement:</strong> Renewal processes typically involve preparing updated underwriting submissions, reviewing program adequacy, obtaining competitive quotes from multiple markets, and negotiating terms with insurers. Last-minute renewals may compromise coverage quality or pricing, making proactive planning essential for optimal program results. Consulting with insurance brokers and legal counsel throughout renewal processes ensures comprehensive coverage at competitive terms.</li>
+<li><strong>Insurance programs require annual renewal planning beginning 90+ days before expiration to allow adequate market time and competitive placement:</strong> Renewal processes typically involve preparing updated underwriting submissions, reviewing program adequacy, obtaining competitive quotes from multiple markets, and negotiating terms with insurers. Last-minute renewals may compromise coverage quality or pricing, making proactive planning essential for optimal program results. Consulting with insurance brokers and legal counsel throughout renewal processes ensures comprehensive coverage at competitive terms. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> can assist in categorizing insurance expenses appropriately.</li>
 </ul>`,
   metaTitle: 'Hedge Fund Insurance: D&O, E&O, Cyber, and Crime Coverage',
   metaDescription: 'Complete guide to hedge fund insurance covering directors and officers liability, errors and omissions, cyber protection, crime coverage, and risk management.',

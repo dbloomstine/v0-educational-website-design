@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Managing daily net asset value calculations, capital account operations, performance fees, and administrator relationships in hedge fund operations',
   fundType: 'hedge-funds',
   pillar: 'fund-administration',
-  content: `<p>Fund administration encompasses daily NAV calculation, investor capital account maintenance, subscription and redemption processing, performance fee computation, and investor reporting. Unlike private equity funds that value portfolios quarterly, hedge funds calculate NAV daily and typically allow monthly liquidity, creating continuous operational demands requiring sophisticated processes and technology.</p>
+  content: `<p>Fund administration encompasses daily NAV calculation, investor capital account maintenance, subscription and redemption processing, performance fee computation, and investor reporting. Unlike private equity funds that value portfolios quarterly, hedge funds calculate NAV daily and typically allow monthly liquidity, creating continuous operational demands requiring sophisticated processes and technology. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> covers administrator selection as a critical early decision in fund formation.</p>
 
 <p>Most hedge funds outsource to third-party administrators including SS&C Technologies, Citco, and Apex Group. Regardless of whether administration is outsourced or in-house, fund managers retain ultimate responsibility for accuracy of financial records. Fund managers must implement controls over administrator activities, validate NAV calculations, and ensure investor reporting accuracy.</p>
 
@@ -25,7 +25,7 @@ const article: Article = {
 
 <p>Service level commitments typically include preliminary NAV delivery by 8:00 AM the following business day, final NAV certification by 5:00 PM, and investor statement production within five business days of month end.</p>
 
-<p>Fee structures vary based on assets, transaction volume, and complexity. Administrators charge 3-10 basis points annually, with tiered pricing for larger funds. For example: 8 basis points on the first $100 million, 6 basis points on $100-500 million, and 4 basis points above $500 million. Additional charges apply for investor transactions, side pocket administration, and audit support.</p>
+<p>Fee structures vary based on assets, transaction volume, and complexity. Administrators charge 3-10 basis points annually, with tiered pricing for larger funds. For example: 8 basis points on the first $100 million, 6 basis points on $100-500 million, and 4 basis points above $500 million. Additional charges apply for investor transactions, side pocket administration, and audit support. The <a href="/tools/management-company-budget">Management Company Budget Planner</a> can help forecast administrator costs alongside other operational expenses.</p>
 
 <p>Institutional investors examine administrator SOC 1 reports documenting internal controls over fund accounting processes with independent auditor attestation.</p>
 
@@ -105,7 +105,7 @@ const article: Article = {
 
 <p>The administrator serves as transfer agent, maintaining the official registry of fund investors and their ownership interests. Transfer agent responsibilities include issuing shares or units to new investors, maintaining investor registration details including legal names and contact information, processing investor updates to registration information or wire instructions, and providing official ownership records to the fund manager and auditors.</p>
 
-<p>Accurate transfer agency records are essential for distributions, tax reporting, and regulatory compliance. The administrator ensures investor information remains current, following up on returned correspondence and coordinating with investors to update information. Regulatory requirements such as AML and sanctions screening apply to transfer agency operations, requiring administrators to screen new investors against sanctions lists and maintain screening documentation.</p>
+<p>Accurate transfer agency records are essential for distributions, tax reporting, and regulatory compliance. The administrator ensures investor information remains current, following up on returned correspondence and coordinating with investors to update information. Regulatory requirements such as AML and sanctions screening apply to transfer agency operations, requiring administrators to screen new investors against sanctions lists and maintain screening documentation. The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> and <a href="https://www.finra.org" target="_blank" rel="noopener noreferrer">FINRA</a> establish investor protection requirements that administrators must comply with.</p>
 
 <h2>Performance Fee Calculations</h2>
 
@@ -222,7 +222,7 @@ const article: Article = {
 
 <li><strong>Trade reconciliation represents a critical daily control:</strong> Positions reflected in NAV calculations must reconcile to prime broker and custodian records, with material breaks investigated and resolved before certifying final NAV.</li>
 
-<li><strong>Performance fee calculations require sophisticated capital account tracking:</strong> High-water marks must be maintained individually for each investor account, with equalization mechanisms preventing fee dilution and side pocket fees calculated separately on illiquid positions.</li>
+<li><strong>Performance fee calculations require sophisticated capital account tracking:</strong> High-water marks must be maintained individually for each investor account, with equalization mechanisms preventing fee dilution and side pocket fees calculated separately on illiquid positions. The <a href="/tools/management-fee-calculator">Management Fee Calculator</a> can model various fee structures for planning purposes.</li>
 
 <li><strong>Third-party administration provides independent oversight and operational expertise:</strong> Outsourcing administration to specialized providers offers scalability, technology infrastructure, and separation of duties satisfying investor due diligence requirements.</li>
 
@@ -234,7 +234,7 @@ const article: Article = {
 
 <li><strong>Technology advancement is enhancing administration capabilities:</strong> Blockchain applications, AI-powered analytics, and automated workflows are improving transparency, efficiency, and control effectiveness in fund administration operations.</li>
 
-<li><strong>Audited financial statements require administrator coordination with auditors:</strong> Annual audits test NAV calculations, pricing, expenses, and capital accounts, requiring the administrator to provide comprehensive documentation supporting financial statement assertions.</li>
+<li><strong>Audited financial statements require administrator coordination with auditors:</strong> Annual audits test NAV calculations, pricing, expenses, and capital accounts, requiring the administrator to provide comprehensive documentation supporting financial statement assertions. The <a href="https://www.aicpa.org" target="_blank" rel="noopener noreferrer">AICPA</a> establishes auditing standards that guide these engagements, and the <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a> sets accounting standards for financial statement preparation.</li>
 </ul>`,
   metaTitle: 'Hedge Fund Administration: NAV Calculation and Investor Servicing',
   metaDescription: 'Complete guide to hedge fund administration covering daily NAV calculation, trade reconciliation, performance fees, capital accounts, and administrator oversight.',

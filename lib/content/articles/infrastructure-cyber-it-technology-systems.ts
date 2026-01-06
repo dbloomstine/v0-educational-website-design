@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Managing infrastructure cybersecurity including operational technology protection, SCADA security, and critical infrastructure requirements',
   fundType: 'infrastructure',
   pillar: 'cyber-it',
-  content: `<p>Cybersecurity for infrastructure funds presents fundamentally different challenges than traditional enterprise security programs. While corporate IT security focuses on protecting data confidentiality, infrastructure cybersecurity must protect operational technology systems where cyberattacks create direct physical consequences affecting public safety and critical services. The convergence of IT systems managing business functions with operational technology controlling physical infrastructure has transformed cybersecurity into a core operational risk requiring board-level oversight and substantial capital investment.</p>
+  content: `<p>Cybersecurity for infrastructure funds presents fundamentally different challenges than traditional enterprise security programs. While corporate IT security focuses on protecting data confidentiality, infrastructure cybersecurity must protect operational technology systems where cyberattacks create direct physical consequences affecting public safety and critical services. The convergence of IT systems managing business functions with operational technology controlling physical infrastructure has transformed cybersecurity into a core operational risk requiring board-level oversight and substantial capital investment. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> includes cybersecurity checklist items for emerging managers establishing technology infrastructure.</p>
 
 <p>Infrastructure assets operate dual technology environments: traditional IT systems supporting corporate functions, and operational technology controlling physical infrastructure—SCADA systems managing electric grids and pipelines, industrial control systems operating water treatment plants, PLCs automating equipment across distributed field sites, building management systems, and specialized equipment controls. This creates unique security challenges requiring expertise in both enterprise IT and industrial control system protection.</p>
 
@@ -63,7 +63,7 @@ const article: Article = {
 
 <h2>Critical Infrastructure Protection Regulations</h2>
 
-<p>Infrastructure assets often qualify as critical infrastructure under Presidential Policy Directive 21 identifying 16 sectors whose incapacity would have debilitating impact on national security. CISA within DHS coordinates federal critical infrastructure protection, while sector-specific agencies administer regulatory requirements.</p>
+<p>Infrastructure assets often qualify as critical infrastructure under Presidential Policy Directive 21 identifying 16 sectors whose incapacity would have debilitating impact on national security. CISA within DHS coordinates federal critical infrastructure protection, while sector-specific agencies administer regulatory requirements. The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> has increasingly focused on cybersecurity disclosure requirements for investment advisers and public companies.</p>
 
 <h3>NERC CIP Standards for Bulk Electric System</h3>
 
@@ -95,7 +95,7 @@ const article: Article = {
 
 <h2>Security Operations and Incident Response</h2>
 
-<p>Continuous security monitoring detects cybersecurity incidents enabling rapid response. Security Operations Centers provide 24/7/365 monitoring of security alerts from firewalls, intrusion detection systems, endpoint protection, and SIEM platforms. Infrastructure assets either establish in-house SOCs costing $2-5M+ annually or contract managed security service providers at $200K-1.5M annually.</p>
+<p>Continuous security monitoring detects cybersecurity incidents enabling rapid response. Security Operations Centers provide 24/7/365 monitoring of security alerts from firewalls, intrusion detection systems, endpoint protection, and SIEM platforms. Infrastructure assets either establish in-house SOCs costing $2-5M+ annually or contract managed security service providers at $200K-1.5M annually. The <a href="/tools/management-company-budget">Management Company Budget Planner</a> helps allocate cybersecurity expenditures across fund operations.</p>
 
 <p>OT-specific monitoring implements industrial protocol analysis for unauthorized commands, asset behavior monitoring detecting anomalies, configuration integrity monitoring, and passive network monitoring. OT monitoring solutions cost $100-500K annually for platforms covering 500-5,000 devices.</p>
 
@@ -109,7 +109,7 @@ const article: Article = {
 
 <h2>Cyber Insurance and Risk Transfer</h2>
 
-<p>Cyber insurance transfers financial risks providing coverage for incident response costs ($200-800K for comprehensive investigations), business interruption losses ($500K-5M+ for major disruptions), liability from data breaches ($1-20M+ depending on scope), and regulatory fines.</p>
+<p>Cyber insurance transfers financial risks providing coverage for incident response costs ($200-800K for comprehensive investigations), business interruption losses ($500K-5M+ for major disruptions), liability from data breaches ($1-20M+ depending on scope), and regulatory fines. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> assists with categorizing cyber insurance premiums across fund and portfolio company levels.</p>
 
 <p>Infrastructure policies typically provide $10-50M coverage at premiums of 1-3% of limits ($100K-1.5M+ annually). Policies increasingly require security control validation through detailed questionnaires or assessments. Inadequate controls result in coverage exclusions, sublimits, or declinations.</p>
 
@@ -137,7 +137,9 @@ const article: Article = {
 <li><strong>Board oversight increasingly expected:</strong> Quarterly cybersecurity reporting, annual reviews, and tabletop exercise participation demonstrate governance, driven by regulatory expectations and investor demands.</li>
 
 <li><strong>Comprehensive programs require substantial ongoing investment:</strong> Infrastructure cybersecurity budgets totaling $2-8M+ per major asset combine regulatory compliance, security operations, tools, specialized personnel, assessments, insurance, and incident response retainers.</li>
-</ul>`,
+</ul>
+
+<p>For modeling management fees that reflect cybersecurity cost requirements, use the <a href="/tools/management-fee-calculator">Management Fee Calculator</a>. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps model how cybersecurity investments affect fund returns. Industry standards for LP reporting on operational risks including cybersecurity are available from <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a>. The <a href="https://www.aicpa.org" target="_blank" rel="noopener noreferrer">AICPA</a> provides guidance on SOC 2 reporting requirements for service organizations and technology controls.</p>`,
   metaTitle: 'Infrastructure Cybersecurity: OT Protection, SCADA Security, and Compliance',
   metaDescription: 'Comprehensive guide to infrastructure cybersecurity covering operational technology security, critical infrastructure requirements, incident response, and vendor risk management.',
   publishedDate: 'November 28, 2025',

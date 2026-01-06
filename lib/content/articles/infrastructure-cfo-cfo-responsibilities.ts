@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Comprehensive guide to infrastructure CFO responsibilities covering project finance structuring, regulatory rate-making, multi-decade capital planning, debt covenant management, ESG leadership, and institutional investor reporting',
   fundType: 'infrastructure',
   pillar: 'cfo',
-  content: `<p>The Chief Financial Officer of an infrastructure fund operates in a fundamentally different environment from traditional private equity. Where PE CFOs manage compressed 5-7 year investment cycles focused on rapid EBITDA growth, infrastructure CFOs steward assets with 15-50 year horizons, navigating complex regulatory frameworks, managing multi-decade project finance structures, and balancing the demands of institutional investors seeking stable returns with community stakeholders expecting reliable public services.</p>
+  content: `<p>The Chief Financial Officer of an infrastructure fund operates in a fundamentally different environment from traditional private equity. Where PE CFOs manage compressed 5-7 year investment cycles focused on rapid EBITDA growth, infrastructure CFOs steward assets with 15-50 year horizons, navigating complex regulatory frameworks, managing multi-decade project finance structures, and balancing the demands of institutional investors seeking stable returns with community stakeholders expecting reliable public services. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> provides comprehensive checklists for establishing CFO infrastructure from inception.</p>
 
 <p>Infrastructure investments encompass essential public services: transportation networks (toll roads, airports, ports), regulated utilities (water, electric, gas), social infrastructure (hospitals, schools, government buildings), communications assets (cell towers, fiber, data centers), and energy systems (renewables, pipelines, storage). These assets share common characteristics: essentiality to economic activity, monopolistic market positions, capital intensity, stable cash flows, and long economic lives spanning 30-100+ years.</p>
 
@@ -41,7 +41,7 @@ const article: Article = {
 
 <h2>Project Finance Structuring</h2>
 
-<p>Project finance enables high leverage through non-recourse debt secured solely by project assets and cash flows. A typical brownfield acquisition might be financed with $650 million senior debt (65%), $100 million junior debt (10%), and $250 million equity (25%), enabling equity returns of 15-18% despite 9% unlevered asset returns.</p>
+<p>Project finance enables high leverage through non-recourse debt secured solely by project assets and cash flows. A typical brownfield acquisition might be financed with $650 million senior debt (65%), $100 million junior debt (10%), and $250 million equity (25%), enabling equity returns of 15-18% despite 9% unlevered asset returns. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps model how these leveraged structures affect LP and GP economics.</p>
 
 <h3>Debt Sizing and Coverage</h3>
 
@@ -61,7 +61,7 @@ const article: Article = {
 
 <h2>Debt Covenant Management</h2>
 
-<p>Financial covenants establish performance thresholds: minimum DSCR (1.10-1.25x), maximum leverage (5-8x net debt/EBITDA), minimum liquidity (3-6 months expenses), and restricted payment tests preventing distributions unless DSCR exceeds 1.20-1.30x.</p>
+<p>Financial covenants establish performance thresholds: minimum DSCR (1.10-1.25x), maximum leverage (5-8x net debt/EBITDA), minimum liquidity (3-6 months expenses), and restricted payment tests preventing distributions unless DSCR exceeds 1.20-1.30x. The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> provides regulatory guidance on disclosure requirements for material debt covenants.</p>
 
 <p>Covenant monitoring requires detailed quarterly reporting and 12-18 month forecasting identifying potential violations in advance. Amendment requests present comprehensive analysis explaining circumstances, proposed modifications, and compensating adjustments, with costs including fees (10-50 basis points), pricing increases (25-50 basis points), and potentially tightened future covenants.</p>
 
@@ -81,7 +81,7 @@ const article: Article = {
 
 <h2>Multi-Decade Capital Planning</h2>
 
-<p>Capital expenditure categories include: maintenance capex (1-3% of asset value annually), lifecycle replacements (pavement rehabilitation 15-20 year cycles, equipment 30-40 years), growth capex expanding capacity, regulatory compliance capex, and technology upgrades. Long-range planning develops 20-30 year projections informing investment decisions and regulatory proceedings.</p>
+<p>Capital expenditure categories include: maintenance capex (1-3% of asset value annually), lifecycle replacements (pavement rehabilitation 15-20 year cycles, equipment 30-40 years), growth capex expanding capacity, regulatory compliance capex, and technology upgrades. Long-range planning develops 20-30 year projections informing investment decisions and regulatory proceedings. The <a href="/tools/management-company-budget">Management Company Budget Planner</a> helps model operating costs and runway scenarios for fund-level capital planning.</p>
 
 <p>Capital project execution requires detailed engineering before construction, competitive procurement, fixed-price contracts with performance bonds, project controls tracking costs weekly, and 10-20% contingency reserves. Disciplined controls limit overruns to 5-10% on large programs. Regulatory capital program approval for utilities requires demonstrating need, cost-effectiveness, prudency, and ratepayer benefits.</p>
 
@@ -97,9 +97,9 @@ const article: Article = {
 
 <h2>Institutional Investor Reporting</h2>
 
-<p>Quarterly reporting packages (30-60 pages) include financial statements with 12-18 month projections, operational metrics (transportation traffic and availability, utility reliability SAIDI/SAIFI, social infrastructure availability 98-99.5%), regulatory updates, capital program progress, debt covenant compliance, and market commentary.</p>
+<p>Quarterly reporting packages (30-60 pages) include financial statements with 12-18 month projections, operational metrics (transportation traffic and availability, utility reliability SAIDI/SAIFI, social infrastructure availability 98-99.5%), regulatory updates, capital program progress, debt covenant compliance, and market commentary. The <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> provides best practice guidance on LP reporting standards and fee transparency.</p>
 
-<p>Valuation reporting provides mark-to-market estimates using DCF methodologies (6-9% real unlevered discount rates), transaction comparables (10-20x EBITDA multiples), or independent appraisals. Annual meetings and asset tours build investor confidence through comprehensive reviews, strategic discussions, and site visits validating operational quality.</p>
+<p>Valuation reporting provides mark-to-market estimates using DCF methodologies (6-9% real unlevered discount rates), transaction comparables (10-20x EBITDA multiples), or independent appraisals. The <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a> fair value measurement standards (ASC 820) govern these valuation approaches. Annual meetings and asset tours build investor confidence through comprehensive reviews, strategic discussions, and site visits validating operational quality.</p>
 
 <h2>Exit Strategy Development</h2>
 
@@ -125,7 +125,9 @@ const article: Article = {
 <li><strong>ESG leadership maintains social license:</strong> Community stakeholder programs ($200K-2M annually), safety culture, and climate transition planning. Institutional investors require TCFD climate disclosures.</li>
 
 <li><strong>Institutional investor reporting emphasizes operational KPIs:</strong> 30-60 page quarterly packages with financial projections, operational metrics, regulatory updates, and capital program progress. Annual meetings and site visits build confidence.</li>
-</ul>`,
+</ul>
+
+<p>CFOs modeling management fees across different fund structures can use the <a href="/tools/management-fee-calculator">Management Fee Calculator</a> to evaluate fee economics. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> assists with categorizing expenses across fund, management company, and portfolio company levels. For regulatory guidance on investment adviser obligations, see the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> investment adviser resources. The <a href="https://www.aicpa.org" target="_blank" rel="noopener noreferrer">AICPA</a> provides professional standards for financial reporting and audit procedures.</p>`,
   metaTitle: 'Infrastructure Fund CFO: Project Finance, Regulation, Capital Planning, and Stakeholder Management',
   metaDescription: 'Comprehensive guide to infrastructure CFO responsibilities covering project finance structuring, utility rate-making, concession compliance, multi-decade capital planning, ESG leadership, and institutional investor reporting.',
   publishedDate: 'November 26, 2025',

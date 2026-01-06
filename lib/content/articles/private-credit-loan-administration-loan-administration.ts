@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Essential loan servicing functions, covenant tracking, payment processing, and technology systems for private credit portfolios',
   fundType: 'private-credit',
   pillar: 'loan-administration',
-  content: `<p>Loan administration represents the operational backbone of private credit funds, encompassing servicing, monitoring, and reporting from origination through repayment or resolution. Loan administrators execute payment processing, covenant monitoring, collateral tracking, documentation management, and borrower communications that ensure loans perform according to contractual terms and credit deterioration is identified early.</p>
+  content: `<p>Loan administration represents the operational backbone of private credit funds, encompassing servicing, monitoring, and reporting from origination through repayment or resolution. Loan administrators execute payment processing, covenant monitoring, collateral tracking, documentation management, and borrower communications that ensure loans perform according to contractual terms and credit deterioration is identified early. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> covers loan administration setup during fund formation.</p>
 
 <p>Modern private credit portfolios may encompass hundreds of loans spanning diverse borrower industries, structures ranging from senior secured term loans to unitranche facilities and subordinated notes, and collateral arrangements including first-lien asset-based lending and second-lien enterprise value loans. Each loan carries unique terms, creating heterogeneous portfolios that demand flexible servicing capabilities.</p>
 
@@ -73,7 +73,7 @@ const article: Article = {
 
 <p>Fee income can add 50-200 basis points to all-in lender returns.</p>
 
-<p><strong>Commitment Fees:</strong> 0.25%-0.75% per annum on average daily undrawn commitment, calculated quarterly. Example: $50 million revolver with 50 bps fee and $30 million average utilization generates ~$25,000 quarterly (($50M - $30M) x 0.50% x 0.25 years).</p>
+<p><strong>Commitment Fees:</strong> 0.25%-0.75% per annum on average daily undrawn commitment, calculated quarterly. Example: $50 million revolver with 50 bps fee and $30 million average utilization generates ~$25,000 quarterly (($50M - $30M) x 0.50% x 0.25 years). The <a href="/tools/management-fee-calculator">Management Fee Calculator</a> can model similar fee calculations.</p>
 
 <p><strong>Letter of Credit Fees:</strong> 1.00%-3.00% per annum on outstanding LC face amount. Issuing banks charge separate fronting fees of 0.125%-0.25% per annum.</p>
 
@@ -338,13 +338,13 @@ const article: Article = {
 <h2>Key Takeaways</h2>
 
 <ul>
-<li><strong>Loan administration provides operational infrastructure for private credit portfolios:</strong> Payment processing, covenant monitoring, collateral management, and documentation tracking form the foundation of effective portfolio management. Robust administration ensures loans are serviced accurately and credit issues are identified promptly.</li>
+<li><strong>Loan administration provides operational infrastructure for private credit portfolios:</strong> Payment processing, covenant monitoring, collateral management, and documentation tracking form the foundation of effective portfolio management. Robust administration ensures loans are serviced accurately and credit issues are identified promptly. Budget for administration using the <a href="/tools/management-company-budget">Management Company Budget Planner</a>.</li>
 
 <li><strong>The in-house versus outsource decision depends on scale and capabilities:</strong> Funds with portfolios exceeding $500 million to $1 billion often build in-house capabilities for control and integration benefits, while smaller funds or emerging managers may prefer third-party servicers for their expertise and established processes.</li>
 
 <li><strong>Payment processing requires systematic matching and reconciliation:</strong> Accurate processing of principal, interest, fees, and prepayments demands organized workflows, clear payment application rules, and daily reconciliation to ensure all receipts are recorded correctly.</li>
 
-<li><strong>Covenant monitoring provides early warning of credit deterioration:</strong> Systematic tracking of financial and non-financial covenants, timely review of compliance certificates, and prompt identification of violations help portfolio managers address credit issues before they escalate.</li>
+<li><strong>Covenant monitoring provides early warning of credit deterioration:</strong> Systematic tracking of financial and non-financial covenants, timely review of compliance certificates, and prompt identification of violations help portfolio managers address credit issues before they escalate. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> clarifies how monitoring costs should be allocated.</li>
 
 <li><strong>Technology systems are essential at portfolio scale:</strong> Purpose-built loan servicing platforms automate routine processes, maintain accurate loan records, support covenant tracking, and generate portfolio reports required for investment management and investor communication.</li>
 

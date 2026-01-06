@@ -7,11 +7,11 @@ const article: Article = {
   subtitle: 'VC fund audit requirements, fair value testing for early-stage companies, down round accounting, liquidation preferences, and warrant and option valuation',
   fundType: 'venture-capital',
   pillar: 'audit',
-  content: `<p>Venture capital fund audits center on fair value measurement of portfolio investments in private companies that lack observable market prices, have limited operating histories, maintain complex capital structures with liquidation preferences, and face highly uncertain outcomes where most companies fail while a few generate extraordinary returns. VC fund audits require specialized expertise in valuation methodologies, probability-weighted scenario analysis, and complex securities accounting.</p>
+  content: `<p>Venture capital fund audits center on fair value measurement of portfolio investments in private companies that lack observable market prices, have limited operating histories, maintain complex capital structures with liquidation preferences, and face highly uncertain outcomes where most companies fail while a few generate extraordinary returns. VC fund audits require specialized expertise in valuation methodologies, probability-weighted scenario analysis, and complex securities accounting. Fund CFOs can use the <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> to properly classify audit-related expenses.</p>
 
 <h2>VC Fund Audit Requirements and Timing</h2>
 
-<p>LPAs typically require annual audited financial statements under GAAP. SEC-registered investment advisers managing funds exceeding $150 million must submit audited financial statements as part of annual Form ADV filing obligations. Many institutional LPs including university endowments, public pension funds, and foundations require audited financials before making commitments.</p>
+<p>LPAs typically require annual audited financial statements under GAAP. <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a>-registered investment advisers managing funds exceeding $150 million must submit audited financial statements as part of annual Form ADV filing obligations. Many institutional LPs including university endowments, public pension funds, and foundations require audited financials before making commitments.</p>
 
 <h3>Timing and Scope</h3>
 
@@ -27,7 +27,7 @@ const article: Article = {
 
 <h2>Fair Value Measurement Framework</h2>
 
-<p>ASC 820 (Fair Value Measurement) defines fair value as the price received to sell an asset in an orderly transaction between market participants. For VC funds, this requires estimating exit values adjusted for lack of marketability and position-specific factors.</p>
+<p><a href="https://fasb.org" target="_blank" rel="noopener noreferrer">ASC 820</a> (Fair Value Measurement) defines fair value as the price received to sell an asset in an orderly transaction between market participants. For VC funds, this requires estimating exit values adjusted for lack of marketability and position-specific factors.</p>
 
 <h3>Fair Value Hierarchy</h3>
 
@@ -99,7 +99,7 @@ const article: Article = {
 
 <h3>Valuation Methodology</h3>
 
-<p>Probability-weighted scenario analysis models proceeds distribution at different exit values. Example scenarios:
+<p>Probability-weighted scenario analysis models proceeds distribution at different exit values. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps illustrate how exit proceeds flow through preference structures. Example scenarios:
 <ul>
 <li>30% probability: $40 million exit—liquidation preferences consume most proceeds, common receives minimal value</li>
 <li>50% probability: $100 million exit—common receives meaningful but limited value after preferences</li>
@@ -135,7 +135,7 @@ Higher volatility assumptions materially increase option values.</p>
 
 <h2>Capital Account Calculations and Carried Interest Accruals</h2>
 
-<p>Audits test LP capital accounts and GP carried interest accruals for proper reflection of contributions, distributions, income/expense allocations, and carried interest provisions. Complexity arises from multiple closings, side letters, and carry structures with hurdle rates and clawbacks.</p>
+<p>Audits test LP capital accounts and GP carried interest accruals for proper reflection of contributions, distributions, income/expense allocations, and carried interest provisions. Complexity arises from multiple closings, side letters, and carry structures with hurdle rates and clawbacks. Fund managers can model these economics using the <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> and <a href="/tools/management-fee-calculator">Management Fee Calculator</a>.</p>
 
 <h3>Capital Account Tracking</h3>
 
@@ -147,7 +147,7 @@ Higher volatility assumptions materially increase option values.</p>
 
 <h3>Carried Interest Accrual</h3>
 
-<p>Under ASC 946, funds recognize carried interest when performance conditions become probable and amounts reasonably estimable. For funds with unrealized gains, this means accruing carry (typically 20%) once returns exceed hurdle rates, even before investments realize.</p>
+<p>Under ASC 946, funds recognize carried interest when performance conditions become probable and amounts reasonably estimable. For funds with unrealized gains, this means accruing carry (typically 20%) once returns exceed hurdle rates, even before investments realize. <a href="https://www.aicpa.org" target="_blank" rel="noopener noreferrer">AICPA</a> guidance and <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> standards provide frameworks for these calculations.</p>
 
 <p>Calculation steps:
 <ul>
@@ -163,7 +163,7 @@ Clawback provisions complicate calculations—carry may be returned if later los
 <h2>Key Takeaways</h2>
 
 <ul>
-<li>Venture capital fund audits focus heavily on fair value measurement of portfolio investments in private companies lacking observable market prices, with this testing typically consuming 50% to 70% of audit effort and representing the area of greatest complexity and professional judgment</li>
+<li>Venture capital fund audits focus heavily on fair value measurement of portfolio investments in private companies lacking observable market prices, with this testing typically consuming 50% to 70% of audit effort and representing the area of greatest complexity and professional judgment. Emerging managers should reference the <a href="/tools/fund-launch-guide">Fund Launch Guide</a> for audit preparation best practices</li>
 <li>Fair value measurement under ASC 820 requires estimating exit values that hypothetical market participants would pay, using Level 3 unobservable inputs for most VC portfolio companies and applying market approach, income approach, or recent transaction methodologies that each involve substantial estimation and judgment</li>
 <li>Auditor testing of early-stage company valuations evaluates reasonableness of management's valuation judgments through procedures including verifying recent financing rounds were arm's-length, testing comparable company and multiple selections, reviewing probability-weighted scenario analyses, and back-testing prior valuations against subsequent outcomes</li>
 <li>Down round documentation and accounting requires careful analysis of how below-prior-round financings impact existing security values, whether anti-dilution provisions adjust conversion terms, and how to reflect these changes appropriately in fund financial statements, with potential derivative accounting implications under ASC 815</li>

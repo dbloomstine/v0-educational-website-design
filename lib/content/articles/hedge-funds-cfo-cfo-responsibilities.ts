@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Managing P&L monitoring, margin requirements, prime broker relationships, and derivative accounting in hedge fund operations',
   fundType: 'hedge-funds',
   pillar: 'cfo',
-  content: `<p>Hedge fund CFOs operate in continuous market exposure with daily valuation requirements and real-time risk monitoring. The complexity stems from liquid portfolios, extensive derivative and leverage use, multiple prime brokerage relationships, and regulatory scrutiny of actively traded portfolios.</p>
+  content: `<p>Hedge fund CFOs operate in continuous market exposure with daily valuation requirements and real-time risk monitoring. The complexity stems from liquid portfolios, extensive derivative and leverage use, multiple prime brokerage relationships, and regulatory scrutiny of actively traded portfolios. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> outlines the foundational CFO responsibilities during fund formation.</p>
 
 <p>Different strategies create distinct operational demands. Long/short equity requires sophisticated equity financing and short borrow optimization. Global macro demands multi-currency treasury operations and derivatives accounting across asset classes. Relative value emphasizes financing cost management and basis risk monitoring. All hedge fund CFOs share core responsibilities: daily P&L oversight, margin management, prime broker relationships, regulatory compliance, and investor reporting.</p>
 
@@ -139,7 +139,7 @@ const article: Article = {
 
 <h3>Investment Adviser Registration and Form ADV</h3>
 
-<p>Investment advisers managing hedge funds with $150 million or more in assets under management typically must register with the Securities and Exchange Commission under the Investment Advisers Act of 1940. Registered advisers file Form ADV annually, providing detailed information about business operations, assets under management, fee structures, disciplinary history, and conflicts of interest.</p>
+<p>Investment advisers managing hedge funds with $150 million or more in assets under management typically must register with the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">Securities and Exchange Commission (SEC)</a> under the Investment Advisers Act of 1940. Registered advisers file Form ADV annually, providing detailed information about business operations, assets under management, fee structures, disciplinary history, and conflicts of interest.</p>
 
 <p>The CFO coordinates financial information required for Form ADV, including accurate calculation of regulatory assets under management, disclosure of fee schedules and performance compensation arrangements, and description of expense allocation methodologies. Form ADV must be filed within 90 days after fiscal year end through the Investment Adviser Registration Depository system, with amendments filed promptly when information becomes materially inaccurate.</p>
 
@@ -169,7 +169,7 @@ const article: Article = {
 
 <h3>Performance Fee Calculations</h3>
 
-<p>Most hedge funds charge performance fees, typically 20 percent of investment profits subject to high-water marks. Performance fee calculations involve determining whether each investor account has achieved net gains above its high-water mark, calculating the performance fee on excess gains, crystallizing performance fees at measurement dates (typically annually), and updating high-water marks to reflect the post-fee NAV. The fund administrator performs these calculations, but the CFO reviews methodology and results for accuracy.</p>
+<p>Most hedge funds charge performance fees, typically 20 percent of investment profits subject to high-water marks. Performance fee calculations involve determining whether each investor account has achieved net gains above its high-water mark, calculating the performance fee on excess gains, crystallizing performance fees at measurement dates (typically annually), and updating high-water marks to reflect the post-fee NAV. The fund administrator performs these calculations, but the CFO reviews methodology and results for accuracy. The <a href="/tools/management-fee-calculator">Management Fee Calculator</a> can help model how different fee structures impact economics.</p>
 
 <p>Performance fees create complexities for funds with multiple investor classes or side pockets. Different investor classes may have different fee terms, requiring separate performance fee calculations. Side pockets segregating illiquid investments require tracking each investor's side pocket capital and computing performance fees separately on side pocket and main fund performance. Equalization mechanisms ensure investors with similar capital are treated equivalently despite subscribing at different times. The CFO ensures the administrator properly implements fee calculations consistent with fund offering documents and that investors receive clear reporting explaining performance fee assessments.</p>
 
@@ -185,9 +185,9 @@ const article: Article = {
 
 <h3>Operating Expense Categories</h3>
 
-<p>Typical hedge fund expenses include management company personnel costs (portfolio managers, traders, analysts, operations staff), technology and data expenses (portfolio management systems, market data, risk analytics), prime brokerage fees (financing charges, custody fees, execution costs), professional services (legal, audit, tax, compliance), fund administration fees, office space and overhead, and marketing and investor relations expenses. The CFO forecasts each category and monitors actual expenses against budget throughout the year.</p>
+<p>Typical hedge fund expenses include management company personnel costs (portfolio managers, traders, analysts, operations staff), technology and data expenses (portfolio management systems, market data, risk analytics), prime brokerage fees (financing charges, custody fees, execution costs), professional services (legal, audit, tax, compliance), fund administration fees, office space and overhead, and marketing and investor relations expenses. The CFO forecasts each category and monitors actual expenses against budget throughout the year. The <a href="/tools/management-company-budget">Management Company Budget Planner</a> provides a framework for expense forecasting and runway analysis.</p>
 
-<p>Expense allocation between the management company and fund determines which expenses reduce investor returns. Most hedge fund structures pay management fees to the management company, which uses fee revenues to cover management company operations. Certain expenses may be charged directly to funds, typically including fund-level professional fees, administrator fees, and custodian charges. The CFO ensures expense allocations comply with fund offering documents and that fund-level expenses are properly disclosed to investors.</p>
+<p>Expense allocation between the management company and fund determines which expenses reduce investor returns. Most hedge fund structures pay management fees to the management company, which uses fee revenues to cover management company operations. Certain expenses may be charged directly to funds, typically including fund-level professional fees, administrator fees, and custodian charges. The CFO ensures expense allocations comply with fund offering documents and that fund-level expenses are properly disclosed to investors. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> assists in categorizing and allocating expenses appropriately.</p>
 
 <h2>Treasury Operations and Cash Management</h2>
 
@@ -262,7 +262,7 @@ const article: Article = {
 
 <li><strong>Technology infrastructure enables operational scalability:</strong> Portfolio management systems, risk platforms, and data integration determine operational efficiency and control effectiveness, with infrastructure requirements scaling with fund complexity.</li>
 
-<li><strong>Regulatory reporting obligations are substantial:</strong> Form ADV, Form PF, and Volcker Rule compliance create ongoing reporting and documentation requirements that the CFO coordinates across multiple regulatory frameworks.</li>
+<li><strong>Regulatory reporting obligations are substantial:</strong> <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> Form ADV, Form PF, and Volcker Rule compliance create ongoing reporting and documentation requirements that the CFO coordinates across multiple regulatory frameworks.</li>
 
 <li><strong>Administrator relationships require daily coordination:</strong> Fund administrators depend on timely, accurate position and pricing data from the CFO to calculate NAV and process investor transactions, making daily coordination essential.</li>
 

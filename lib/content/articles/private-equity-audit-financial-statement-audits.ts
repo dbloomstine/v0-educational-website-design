@@ -9,7 +9,7 @@ const article: Article = {
   pillar: 'audit',
   content: `<h2>The Regulatory Foundation of PE Fund Audits</h2>
 
-<p>Private equity fund audits represent a critical compliance requirement embedded in most Limited Partnership Agreements. These agreements typically mandate that the general partner arrange for an annual audit by a PCAOB-registered accounting firm, with delivery to limited partners within 120 days of fiscal year-end. For a $750 million fund, the audit process consumes 300-500 hours of combined effort, costs $185,000-$350,000 in fees, and produces audited financial statements providing independent validation of portfolio valuations and capital account balances.</p>
+<p>Private equity fund audits represent a critical compliance requirement embedded in most Limited Partnership Agreements. These agreements typically mandate that the general partner arrange for an annual audit by a <a href="https://pcaobus.org" target="_blank" rel="noopener noreferrer">PCAOB</a>-registered accounting firm, with delivery to limited partners within 120 days of fiscal year-end. For a $750 million fund, the audit process consumes 300-500 hours of combined effort, costs $185,000-$350,000 in fees, and produces audited financial statements providing independent validation of portfolio valuations and capital account balances.</p>
 
 <p>The audit serves multiple stakeholders: limited partners receive independent verification of fund performance and capital accounts, regulatory bodies gain transparency through examinations that increasingly scrutinize audit quality, and general partners obtain third-party validation reducing potential disputes. The audit also serves as a control mechanism detecting errors in capital account calculations, expense allocation issues, conflicts of interest, and validating that valuations reflect supportable fair value estimates.</p>
 
@@ -19,7 +19,7 @@ const article: Article = {
 
 <p>PCAOB registration is non-negotiable for institutional investors, subjecting firms to oversight and periodic inspection. Large institutional investors typically require PCAOB-registered auditors as a condition of investment.</p>
 
-<p>PE fund expertise is essential for efficient audits. PE-specific challenges include fair value measurements under ASC 820, complex capital account waterfalls, invested capital accounting across 15-30 portfolio companies over 10-12 year lifecycles, and partnership tax considerations. Firms with dedicated alternative investment practices complete field work in 4-6 weeks versus 8-12 weeks for generalist firms.</p>
+<p>PE fund expertise is essential for efficient audits. PE-specific challenges include fair value measurements under <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a> ASC 820, complex capital account waterfalls, invested capital accounting across 15-30 portfolio companies over 10-12 year lifecycles, and partnership tax considerations. Firms with dedicated alternative investment practices complete field work in 4-6 weeks versus 8-12 weeks for generalist firms.</p>
 
 <h3>Fee Structures</h3>
 
@@ -31,7 +31,7 @@ const article: Article = {
 <li><strong>Regional/boutique firms:</strong> $85,000-$225,000 for smaller funds ($50-500M), though larger institutions may question resources for complex platforms</li>
 </ul>
 
-<p>When evaluating proposals, assess the team's experience, valuation testing approach, availability during peak season, technology platforms, and references from similar funds. Advisory board approval demonstrates appropriate governance.</p>
+<p>When evaluating proposals, assess the team's experience, valuation testing approach, availability during peak season, technology platforms, and references from similar funds. Advisory board approval demonstrates appropriate governance. The <a href="https://www.aicpa.org" target="_blank" rel="noopener noreferrer">AICPA</a> provides professional standards that guide auditor conduct and quality.</p>
 
 <h2>Audit Planning and Scoping</h2>
 
@@ -47,7 +47,7 @@ const article: Article = {
 <li><strong>Investment valuations:</strong> 75-90% of total assets involving substantial management judgment</li>
 <li><strong>Capital accounts:</strong> Tracking contributions, distributions, and allocated profits across 35-65 limited partners</li>
 <li><strong>Management fees and expenses:</strong> Verifying correct calculation per LPA provisions</li>
-<li><strong>Carried interest calculations:</strong> Complex waterfall tiers and clawback mechanisms</li>
+<li><strong>Carried interest calculations:</strong> Complex <a href="/tools/distribution-waterfall">waterfall tiers</a> and clawback mechanisms</li>
 <li><strong>Related party transactions:</strong> Portfolio company fees, co-investment arrangements, and affiliated relationships</li>
 </ul>
 
@@ -98,7 +98,7 @@ const article: Article = {
 
 <h3>Control Environment</h3>
 
-<p>Assessment focuses on controls over investment valuation, capital account calculations, expense allocations, fee calculations, distribution waterfall calculations, and financial statement preparation.</p>
+<p>Assessment focuses on controls over investment valuation, capital account calculations, <a href="/tools/fund-expense-allocation">expense allocations</a>, <a href="/tools/management-fee-calculator">fee calculations</a>, <a href="/tools/distribution-waterfall">distribution waterfall calculations</a>, and financial statement preparation.</p>
 
 <p>For smaller funds ($100-500M) with limited personnel, control environments may be informal. Auditors adapt by performing more substantive testing (80-100% of material balances versus 50-70% with strong controls) and focusing on detective controls like management review. Even smaller funds benefit from documented valuation policies, expense allocation policies, conflicts of interest policies, and authorization protocols.</p>
 
@@ -122,7 +122,7 @@ const article: Article = {
 
 <h3>Waterfall Calculations</h3>
 
-<p>Waterfall calculations receive particular scrutiny when distributing carried interest. The typical waterfall includes:</p>
+<p>Waterfall calculations receive particular scrutiny when distributing carried interest. Use the <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> to model these calculations. The typical waterfall includes:</p>
 
 <ol>
 <li>Tier 1: Return of contributed capital to LPs</li>
@@ -178,7 +178,7 @@ const article: Article = {
 <ul>
 <li><strong>Annual audits consume 300-500 hours and cost $185,000-$650,000:</strong> The process spans 3-4 months requiring coordination among fund management, administrator, and auditors. Fees range from 2.5-8.0 basis points with Big Four commanding 20-35% premiums.</li>
 
-<li><strong>PCAOB registration and PE expertise are essential:</strong> Institutional investors require PCAOB-registered auditors. PE-specific expertise enables efficient audits completing fieldwork in 4-6 weeks versus 8-12 weeks for generalist firms.</li>
+<li><strong>PCAOB registration and PE expertise are essential:</strong> Institutional investors require <a href="https://pcaobus.org" target="_blank" rel="noopener noreferrer">PCAOB</a>-registered auditors. PE-specific expertise enables efficient audits completing fieldwork in 4-6 weeks versus 8-12 weeks for generalist firms.</li>
 
 <li><strong>Valuation testing consumes 40-60% of audit hours:</strong> Auditors test 60-80% of portfolio value through methodology review, assumption assessment, comparable analysis, and specialist engagement for complex situations.</li>
 

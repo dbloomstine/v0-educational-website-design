@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Managing rapid capital call cycles, wire execution for competitive deals, and treasury operations for high-velocity investment environments',
   fundType: 'venture-capital',
   pillar: 'banking',
-  content: `<p>Venture capital funds operate where investment decisions move from term sheet to closing in weeks, and competitive dynamics demand wiring millions on short notice. VC fund treasury operations must balance speed, security, and scalability as portfolios grow across multiple stages and geographies.</p>
+  content: `<p>Venture capital funds operate where investment decisions move from term sheet to closing in weeks, and competitive dynamics demand wiring millions on short notice. VC fund treasury operations must balance speed, security, and scalability as portfolios grow across multiple stages and geographies. Fund managers should model their capital needs using the <a href="/tools/management-company-budget">Management Company Budget Planner</a> to ensure adequate liquidity.</p>
 
 <h2>Banking Relationship Selection</h2>
 
@@ -31,11 +31,11 @@ const article: Article = {
 
 <h2>Subscription Lines for Rapid Deployment</h2>
 
-<p>Subscription facilities provide liquidity to move quickly on competitive investments without emergency capital calls. Facility sizing typically ranges from 15-25% of total commitments. A $200M seed fund might establish a $40M facility (20%), enabling 10-20 seed investments before calling capital. A $750M growth fund might establish $150M (20%) supporting 3-5 large investments plus follow-ons.</p>
+<p>Subscription facilities provide liquidity to move quickly on competitive investments without emergency capital calls. Facility sizing typically ranges from 15-25% of total commitments. A $200M seed fund might establish a $40M facility (20%), enabling 10-20 seed investments before calling capital. A $750M growth fund might establish $150M (20%) supporting 3-5 large investments plus follow-ons. The <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a> helps model facility sizing and its impact on fund returns.</p>
 
 <p>VC funds maintain more continuous, moderate utilization versus lumpy buyout borrowing. A fund might keep $15M-$30M drawn continuously, calling capital quarterly to repay and reset capacity. Venture facilities often include same-day draw sublimits for competitive situations where funds must wire within hours.</p>
 
-<p>Borrowing bases include only commitments from LPs meeting creditworthiness thresholds: 100% borrowing against endowments, public pensions, and highly rated insurers; 50-75% against other institutionals; often excluding individual commitments entirely.</p>
+<p>Borrowing bases include only commitments from LPs meeting creditworthiness thresholds: 100% borrowing against endowments, public pensions, and highly rated insurers; 50-75% against other institutionals; often excluding individual commitments entirely. <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> provides guidance on subscription facility disclosure best practices.</p>
 
 <p>Pricing runs SOFR plus 150-275 basis points, with established managers commanding tighter spreads. All-in annual cost including unused commitment and arrangement fees: 2.5-4.0%.</p>
 
@@ -70,7 +70,7 @@ const article: Article = {
 
 <h2>Capital Call Cycles</h2>
 
-<p>Typical deployment: 15-30 initial investments over 2-3 years, each followed by 2-5 follow-ons. A $200M seed fund might make 25 initial investments at $2M-$4M, then 50-100 follow-ons at $500K-$3M as companies raise subsequent rounds.</p>
+<p>Typical deployment: 15-30 initial investments over 2-3 years, each followed by 2-5 follow-ons. A $200M seed fund might make 25 initial investments at $2M-$4M, then 50-100 follow-ons at $500K-$3M as companies raise subsequent rounds. Emerging managers can use the <a href="/tools/fund-launch-guide">Fund Launch Guide</a> to plan their capital call strategy from inception.</p>
 
 <p>Most funds call capital quarterly during active deployment, moving to monthly during peak activity or semi-annually as deployment slows. A typical quarterly call:</p>
 <ul>
@@ -86,7 +86,7 @@ const article: Article = {
 
 <h2>Cash Management</h2>
 
-<p>Target cash during active deployment: 15-25% of commitments. A $300M fund might hold $45M-$75M, sufficient for 15-25 seed investments. Later in fund life, targets decline to 5-10% for follow-ons and expenses.</p>
+<p>Target cash during active deployment: 15-25% of commitments. A $300M fund might hold $45M-$75M, sufficient for 15-25 seed investments. Later in fund life, targets decline to 5-10% for follow-ons and expenses. The <a href="/tools/management-fee-calculator">Management Fee Calculator</a> helps project fee income against operational cash needs.</p>
 
 <p>Alternative approach: maintain $10M cash plus $40M subscription line availability, providing $50M liquidity without calling capital early.</p>
 
@@ -96,7 +96,7 @@ const article: Article = {
 
 <h2>Treasury Technology</h2>
 
-<p>Most VC funds use standard online banking platforms (wire templates, configurable approval workflows, real-time balance visibility) supplemented by Excel for forecasting. Larger platforms implement specialized treasury management systems with automated reconciliation, integrated capital call processing, cash flow forecasting, and multi-bank consolidated views.</p>
+<p>Most VC funds use standard online banking platforms (wire templates, configurable approval workflows, real-time balance visibility) supplemented by Excel for forecasting. Larger platforms implement specialized treasury management systems with automated reconciliation, integrated capital call processing, cash flow forecasting, and multi-bank consolidated views. <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a>-registered advisers must maintain records of all wire transfers and banking activity per custody rule requirements.</p>
 
 <p>API connections push transaction data automatically, providing real-time cash visibility and eliminating reconciliation delays. Advanced implementations enable automated wire initiation directly from fund systems.</p>
 
@@ -113,7 +113,7 @@ const article: Article = {
 
 <ul>
 <li>Select banks offering same-day wire processing, after-hours support, and competitive sub-line pricing</li>
-<li>Size subscription facilities at 15-25% of commitments; negotiate same-day draw sublimits</li>
+<li>Size subscription facilities at 15-25% of commitments using the <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a>; negotiate same-day draw sublimits</li>
 <li>Establish wire templates for all portfolio companies; implement dual-control above $2M-$5M</li>
 <li>Set tiered signature authority: individual GP to $1M, two GPs to $5M, full IC above</li>
 <li>Plan quarterly capital calls during active deployment; provide 10-15 day notice</li>

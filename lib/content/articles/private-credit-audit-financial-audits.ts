@@ -7,9 +7,9 @@ const article: Article = {
   subtitle: 'Managing annual audits, loan portfolio testing, CECL validation, fair value procedures, and BDC/RIC compliance for private credit fund operational excellence',
   fundType: 'private-credit',
   pillar: 'audit',
-  content: `<p>Financial statement audits provide independent verification of fund NAV, validate credit loss allowances under CECL methodology, and confirm loan portfolio valuations for illiquid debt instruments. Unlike private equity fund audits focused on equity valuations, private credit audits require expertise in loan accounting, credit risk assessment, interest income recognition, and specialized structures including BDCs and RICs.</p>
+  content: `<p>Financial statement audits provide independent verification of fund NAV, validate credit loss allowances under CECL methodology, and confirm loan portfolio valuations for illiquid debt instruments. Unlike private equity fund audits focused on equity valuations, private credit audits require expertise in loan accounting, credit risk assessment, interest income recognition, and specialized structures including BDCs and RICs. The <a href="https://www.aicpa.org" target="_blank" rel="noopener noreferrer">AICPA</a> sets professional standards that govern audit procedures for investment funds.</p>
 
-<p>LPAs typically mandate annual audits by PCAOB-registered accounting firms, with most funds targeting completion within 120 days of fiscal year-end. The audit process involves extensive testing of loan portfolios, CECL allowance validation, fair value procedures for illiquid instruments, and specialized testing for BDC asset coverage ratios or RIC qualification requirements when applicable.</p>
+<p>LPAs typically mandate annual audits by PCAOB-registered accounting firms, with most funds targeting completion within 120 days of fiscal year-end. The audit process involves extensive testing of loan portfolios, CECL allowance validation, fair value procedures for illiquid instruments, and specialized testing for BDC asset coverage ratios or RIC qualification requirements when applicable. Understanding your <a href="/tools/fund-expense-allocation">fund expense allocation</a> framework early helps streamline audit preparation.</p>
 
 <h2>Audit Firm Selection and Engagement</h2>
 
@@ -21,7 +21,7 @@ const article: Article = {
 
 <h3>Evaluation Criteria</h3>
 
-<p>Key selection factors include experience with private credit strategies and loan types, CECL and fair value expertise, fee structures, service level commitments, and LP acceptance requirements. Evaluate auditors' experience with CECL methodology, fair value measurement for illiquid instruments, PIK interest and OID accounting, and BDC/RIC compliance testing.</p>
+<p>Key selection factors include experience with private credit strategies and loan types, CECL and fair value expertise, fee structures, service level commitments, and LP acceptance requirements. Evaluate auditors' experience with CECL methodology, fair value measurement for illiquid instruments compliant with <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a> standards like ASC 820, PIK interest and OID accounting, and BDC/RIC compliance testing.</p>
 
 <h3>Annual Audit Fees</h3>
 
@@ -74,7 +74,7 @@ const article: Article = {
 
 <h2>Credit Loss Allowance Validation (CECL)</h2>
 
-<p>CECL under ASC 326 requires recognition of expected credit losses over contractual loan lives, including day-one losses on newly originated loans. This forward-looking approach creates substantial audit challenges.</p>
+<p>CECL under ASC 326, as promulgated by <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a>, requires recognition of expected credit losses over contractual loan lives, including day-one losses on newly originated loans. This forward-looking approach creates substantial audit challenges.</p>
 
 <h3>CECL Methodology</h3>
 
@@ -92,7 +92,7 @@ const article: Article = {
 
 <h2>Fair Value Audit Procedures</h2>
 
-<p>Funds electing fair value for loans face ASC 820 measurement requirements. Most private credit holdings are Level 3 (unobservable inputs) given lack of observable market data for private loans.</p>
+<p>Funds electing fair value for loans face ASC 820 measurement requirements per <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a> guidance. Most private credit holdings are Level 3 (unobservable inputs) given lack of observable market data for private loans. Use the <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> to model how valuations flow through to LP/GP economics.</p>
 
 <h3>Valuation Techniques</h3>
 
@@ -124,7 +124,7 @@ const article: Article = {
 
 <h2>BDC Audit Considerations</h2>
 
-<p>BDCs are regulated as investment companies under the 1940 Act, with enhanced audit requirements beyond private LP funds.</p>
+<p>BDCs are regulated as investment companies under the 1940 Act, with enhanced audit requirements beyond private LP funds. The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> oversees BDC registration and ongoing compliance.</p>
 
 <h3>Qualifying Asset Testing</h3>
 
@@ -136,7 +136,7 @@ const article: Article = {
 
 <h3>RIC Status and Affiliate Transactions</h3>
 
-<p>BDCs electing RIC status must distribute at least 90% of investment company taxable income. Auditors verify distribution calculations and timing. Section 17 of the 1940 Act restricts transactions between BDCs and affiliated persons—auditors identify affiliates and test transactions for compliance with prohibitions and exemptions.</p>
+<p>BDCs electing RIC status must distribute at least 90% of investment company taxable income per <a href="https://www.irs.gov" target="_blank" rel="noopener noreferrer">IRS</a> requirements. Auditors verify distribution calculations and timing. Section 17 of the 1940 Act restricts transactions between BDCs and affiliated persons—auditors identify affiliates and test transactions for compliance with prohibitions and exemptions.</p>
 
 <h2>Internal Controls and Administrator Coordination</h2>
 
@@ -152,7 +152,7 @@ const article: Article = {
 
 <h3>SOC Reports</h3>
 
-<p>Administrator SOC 1 Type II reports cover controls over NAV calculation, trade capture, reconciliation, pricing, and financial reporting. Fund auditors rely on these reports to assess administrator controls. When SOC reports identify deficiencies, evaluate whether compensating fund-level controls are necessary.</p>
+<p>Administrator SOC 1 Type II reports, governed by <a href="https://www.aicpa.org" target="_blank" rel="noopener noreferrer">AICPA</a> standards, cover controls over NAV calculation, trade capture, reconciliation, pricing, and financial reporting. Fund auditors rely on these reports to assess administrator controls. When SOC reports identify deficiencies, evaluate whether compensating fund-level controls are necessary. The <a href="/tools/management-company-budget">Management Company Budget Planner</a> can help project administration and audit-related expenses.</p>
 
 <h2>Audit Timeline Management</h2>
 
@@ -169,7 +169,7 @@ const article: Article = {
 <h2>Key Takeaways</h2>
 
 <ul>
-<li><strong>Audit costs scale with complexity:</strong> Emerging managers typically pay $25,000-$60,000; established mid-sized funds $75,000-$200,000. Big Four firms command 30-50% premiums but provide institutional credibility and deep CECL/fair value expertise.</li>
+<li><strong>Audit costs scale with complexity:</strong> Emerging managers typically pay $25,000-$60,000; established mid-sized funds $75,000-$200,000. Big Four firms command 30-50% premiums but provide institutional credibility and deep CECL/fair value expertise. Plan for these costs using the <a href="/tools/management-company-budget">Management Company Budget Planner</a>.</li>
 
 <li><strong>Loan portfolio testing requires comprehensive documentation:</strong> Files should contain executed agreements, security documents, borrower financials, covenant certificates, and valuation support. Auditors employ sampling stratified by loan size, credit quality, and risk characteristics.</li>
 

@@ -9,9 +9,9 @@ const article: Article = {
   pillar: 'cyber-it',
   content: `<p>Technology infrastructure and cybersecurity represent critical operational foundations for private credit funds, enabling complex systems to originate, monitor, and service loan portfolios while protecting sensitive borrower information. The operational demands facing direct lenders differ materially from traditional investment management, requiring specialized loan servicing platforms processing daily payment activity, covenant tracking systems monitoring dozens of metrics per borrower, and document management infrastructure organizing thousands of credit agreements.</p>
 
-<p>A typical mid-market direct lender managing a $750M portfolio tracks 80-120 active loans, each generating monthly compliance certificates, payment activity requiring daily reconciliation, periodic financial statement updates, and ongoing borrower communications. This intensity creates technology demands exceeding comparable private equity funds.</p>
+<p>A typical mid-market direct lender managing a $750M portfolio tracks 80-120 active loans, each generating monthly compliance certificates, payment activity requiring daily reconciliation, periodic financial statement updates, and ongoing borrower communications. This intensity creates technology demands exceeding comparable private equity funds. Use the <a href="/tools/management-company-budget">Management Company Budget Planner</a> to project technology infrastructure investments.</p>
 
-<p>Regulatory expectations have elevated cybersecurity to a board-level fiduciary responsibility. The SEC's 2023 Cybersecurity Risk Management Rules require registered investment advisers to implement written policies, conduct periodic risk assessments, establish incident response procedures, and provide quarterly reporting to boards regarding cybersecurity risks and incidents.</p>
+<p>Regulatory expectations have elevated cybersecurity to a board-level fiduciary responsibility. The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a>'s 2023 Cybersecurity Risk Management Rules require registered investment advisers to implement written policies, conduct periodic risk assessments, establish incident response procedures, and provide quarterly reporting to boards regarding cybersecurity risks and incidents.</p>
 
 <h2>Loan Servicing Platform Technology</h2>
 
@@ -37,7 +37,7 @@ const article: Article = {
 <li><strong>Lighter-weight solutions:</strong> Custom databases on SQL Server with Excel interfaces ($50,000-$150,000 development), cloud spreadsheets, or administrator-provided systems for emerging managers under $200M.</li>
 </ul>
 
-<p>Implementation considerations include integration with fund accounting, bank connectivity for reconciliation, document management linking, and scalability. Cloud-based solutions offer lower upfront costs, automatic updates, and remote accessibility, but require careful evaluation of data security and vendor stability.</p>
+<p>Implementation considerations include integration with fund accounting, bank connectivity for reconciliation, document management linking, and scalability. Cloud-based solutions offer lower upfront costs, automatic updates, and remote accessibility, but require careful evaluation of data security and vendor stability. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> includes technology selection considerations for new fund managers.</p>
 
 <h3>Data Integration</h3>
 
@@ -142,11 +142,11 @@ const article: Article = {
 
 <h3>SEC Reporting and Form PF</h3>
 
-<p>Advisers with at least $2B in private equity fund assets (including private credit under Form PF definitions) file quarterly reports with fund-level and portfolio-level detail including composition, leverage, concentrations, strategies, and risk management. Technology systems must aggregate data across servicing, accounting, and portfolio management platforms.</p>
+<p>Advisers with at least $2B in private equity fund assets (including private credit under Form PF definitions) file quarterly reports with the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> with fund-level and portfolio-level detail including composition, leverage, concentrations, strategies, and risk management. Technology systems must aggregate data across servicing, accounting, and portfolio management platforms.</p>
 
 <h3>BDC Compliance</h3>
 
-<p>Business Development Companies require specialized technology for investment compliance monitoring tracking concentration limits, asset coverage ratio monitoring ensuring 150%+ coverage, and distribution requirement tracking for RIC tax status requiring 90% distribution of investment company taxable income.</p>
+<p>Business Development Companies require specialized technology for investment compliance monitoring tracking concentration limits, asset coverage ratio monitoring ensuring 150%+ coverage per <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> regulations, and distribution requirement tracking for RIC tax status requiring 90% distribution of investment company taxable income per <a href="https://www.irs.gov" target="_blank" rel="noopener noreferrer">IRS</a> rules.</p>
 
 <h3>AML and Sanctions Compliance</h3>
 
@@ -154,7 +154,7 @@ const article: Article = {
 
 <h3>Data Retention</h3>
 
-<p>SEC regulations require maintaining books and records for 5-7 years depending on record type. Email archiving systems capture communications in tamper-proof repositories supporting legal hold, search for e-discovery, and retention policies. Document retention platforms apply consistent rules across loan files and compliance records.</p>
+<p><a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> regulations require maintaining books and records for 5-7 years depending on record type. Email archiving systems capture communications in tamper-proof repositories supporting legal hold, search for e-discovery, and retention policies. Document retention platforms apply consistent rules across loan files and compliance records.</p>
 
 <h2>Vendor Risk Management</h2>
 
@@ -199,11 +199,11 @@ const article: Article = {
 
 <li><strong>Email security and wire transfer controls prevent BEC:</strong> Advanced email solutions, DMARC implementation, and out-of-band verification protect against the most common attack vector.</li>
 
-<li><strong>Regulatory technology reflects increasing complexity:</strong> Form PF reporting, BDC compliance, sanctions screening, and record retention require specialized platforms.</li>
+<li><strong>Regulatory technology reflects increasing complexity:</strong> <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> Form PF reporting, BDC compliance, sanctions screening, and record retention require specialized platforms.</li>
 
 <li><strong>Vendor risk management extends the security perimeter:</strong> Technology vendors require rigorous due diligence, contractual protections, and ongoing monitoring given access to systems and data.</li>
 
-<li><strong>Technology investments should scale with portfolio size:</strong> Emerging managers may use lighter-weight systems while larger platforms require institutional-grade capabilities.</li>
+<li><strong>Technology investments should scale with portfolio size:</strong> Emerging managers may use lighter-weight systems while larger platforms require institutional-grade capabilities. Use the <a href="/tools/management-company-budget">Management Company Budget Planner</a> to forecast technology spend.</li>
 </ul>`,
   metaTitle: 'Technology Infrastructure and Cybersecurity for Private Credit Funds',
   metaDescription: 'Complete guide to private credit technology: loan servicing platforms, covenant tracking systems, data security, document management, cybersecurity, and regulatory technology.',

@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Navigating Form PF, Volcker Rule, short selling regulations, Reg SHO, and marketing rules for liquid alternative strategies',
   fundType: 'hedge-funds',
   pillar: 'compliance',
-  content: `<p>Dodd-Frank eliminated the private adviser exemption that hedge funds relied upon, mandating SEC registration for advisers with $150 million or more in AUM and creating Form PF systemic risk reporting. Beyond core Advisers Act requirements, hedge fund advisers face additional obligations from trading activities: Regulation SHO short selling rules, insider trading prevention, best execution requirements, and Marketing Rule compliance for performance advertising.</p>
+  content: `<p>Dodd-Frank eliminated the private adviser exemption that hedge funds relied upon, mandating <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> registration for advisers with $150 million or more in AUM and creating Form PF systemic risk reporting. Beyond core Advisers Act requirements, hedge fund advisers face additional obligations from trading activities: Regulation SHO short selling rules, insider trading prevention, best execution requirements, and Marketing Rule compliance for performance advertising. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> outlines regulatory considerations during fund formation.</p>
 
 <h2>SEC Registration and the Investment Advisers Act Framework</h2>
 
@@ -21,7 +21,7 @@ const article: Article = {
 
 <p>Part 1 Schedule D collects information about owners, control persons, and service providers. Section 7.B requests fund-level information for each private fund: identification, classification, AUM, strategy description, and beneficial ownership.</p>
 
-<p>Part 2 requires plain English disclosure. Item 4 covers advisory business and strategy descriptions (long/short equity, global macro, relative value, event-driven). Items 5 and 6 address fees: hedge funds typically charge 1-2% management fees and 15-25% performance fees subject to high-water marks. Disclosures must explain calculation methodologies, crystallization periods, and hurdle rates.</p>
+<p>Part 2 requires plain English disclosure. Item 4 covers advisory business and strategy descriptions (long/short equity, global macro, relative value, event-driven). Items 5 and 6 address fees: hedge funds typically charge 1-2% management fees and 15-25% performance fees subject to high-water marks. Disclosures must explain calculation methodologies, crystallization periods, and hurdle rates. The <a href="/tools/management-fee-calculator">Management Fee Calculator</a> can help model various fee arrangements.</p>
 
 <p>Item 8 requires strategy and risk disclosure: security analysis methodologies, fundamental vs. technical analysis approaches, and material risks including leverage, short selling, derivatives, liquidity, and counterparty exposure. Item 11 addresses code of ethics and personal trading policies, including pre-clearance, reporting, and blackout provisions.</p>
 
@@ -53,7 +53,7 @@ const article: Article = {
 
 <h3>Locate Requirements</h3>
 
-<p>Regulation SHO requires broker-dealers to have reasonable grounds to believe securities can be borrowed for delivery before effecting short sales. This prevents naked short selling that leads to settlement failures.</p>
+<p>Regulation SHO requires broker-dealers to have reasonable grounds to believe securities can be borrowed for delivery before effecting short sales. This prevents naked short selling that leads to settlement failures. Detailed rules are available on the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC website</a>.</p>
 
 <p>Prime brokers handle locates through stock loan desks. When a hedge fund enters a short sale order, the broker checks borrow availability. Hard-to-borrow stocks may still be available but at high borrow costs. Locate status changes rapidly based on borrowing demand and lending supply. If borrows become unavailable or are recalled, funds must cover positions or face mandatory buy-ins. Compliance should ensure portfolio managers understand borrow markets and size positions appropriately for hard-to-borrow securities.</p>
 
@@ -71,7 +71,7 @@ const article: Article = {
 
 <h2>Volcker Rule: Proprietary Trading and Covered Fund Restrictions</h2>
 
-<p>The Volcker Rule, implemented under Section 619 of the Dodd-Frank Act, prohibits banking entities from engaging in proprietary trading and from acquiring ownership interests in or sponsoring hedge funds and private equity funds with certain exceptions. While the Volcker Rule primarily regulates banking entities rather than hedge funds directly, hedge funds with banking entity relationships must understand how the rule affects capital raising, prime brokerage, and service provider arrangements.</p>
+<p>The Volcker Rule, implemented under Section 619 of the Dodd-Frank Act, prohibits banking entities from engaging in proprietary trading and from acquiring ownership interests in or sponsoring hedge funds and private equity funds with certain exceptions. While the Volcker Rule primarily regulates banking entities rather than hedge funds directly, hedge funds with banking entity relationships must understand how the rule affects capital raising, prime brokerage, and service provider arrangements. Additional guidance is available from the <a href="https://www.finra.org" target="_blank" rel="noopener noreferrer">FINRA</a> website for broker-dealer considerations.</p>
 
 <h3>Covered Fund Definition and Banking Entity Restrictions</h3>
 
@@ -216,7 +216,7 @@ const article: Article = {
 <h2>Key Takeaways</h2>
 
 <ul>
-<li><strong>SEC registration triggers comprehensive compliance obligations:</strong> Hedge fund advisers with $150 million or more in AUM must register and implement written compliance programs, maintain specified books and records, and submit to SEC examination authority.</li>
+<li><strong>SEC registration triggers comprehensive compliance obligations:</strong> Hedge fund advisers with $150 million or more in AUM must register with the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> and implement written compliance programs, maintain specified books and records, and submit to SEC examination authority.</li>
 
 <li><strong>Form PF reporting demands substantial operational infrastructure:</strong> Large hedge fund advisers report detailed portfolio, leverage, and risk information quarterly, requiring sophisticated data aggregation and reporting systems to compile required information accurately.</li>
 
@@ -230,7 +230,7 @@ const article: Article = {
 
 <li><strong>Best execution and allocation obligations require documented policies:</strong> Fiduciary duties mandate seeking favorable execution terms and allocating opportunities fairly among clients, with compliance programs documenting methodologies and monitoring adherence.</li>
 
-<li><strong>The Custody Rule audit exemption facilitates compliance:</strong> Annual GAAP audits distributed timely to investors satisfy Custody Rule requirements, eliminating separate surprise examination obligations for most hedge funds.</li>
+<li><strong>The Custody Rule audit exemption facilitates compliance:</strong> Annual GAAP audits distributed timely to investors satisfy Custody Rule requirements, eliminating separate surprise examination obligations for most hedge funds. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> can assist in tracking audit and compliance-related expenses.</li>
 
 <li><strong>Chief compliance officers need trading operations expertise:</strong> Effective hedge fund CCOs understand trading strategies, instruments, and operational processes sufficiently to identify compliance risks while maintaining independence from investment decisions.</li>
 

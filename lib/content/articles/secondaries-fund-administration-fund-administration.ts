@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Comprehensive guide to secondaries fund administration including purchase price allocation, dual capital account maintenance, multi-fund coordination, and since-purchase performance calculation',
   fundType: 'secondaries',
   pillar: 'fund-administration',
-  content: `<p>Secondaries fund administration differs fundamentally from traditional PE administration. Rather than tracking investments from inception, administrators manage acquired LP interests purchased mid-lifecycle at premiums or discounts to NAV. This creates specialized requirements: purchase accounting allocations, dual capital account tracking (economic vs. tax basis), coordination across multiple underlying fund administrators, since-purchase performance metrics, and layered waterfall calculations.</p>
+  content: `<p>Secondaries fund administration differs fundamentally from traditional PE administration. Rather than tracking investments from inception, administrators manage acquired LP interests purchased mid-lifecycle at premiums or discounts to NAV. This creates specialized requirements: purchase accounting allocations, dual capital account tracking (economic vs. tax basis), coordination across multiple underlying fund administrators, since-purchase performance metrics, and layered waterfall calculations. Administration must align with <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a> fair value standards and <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> reporting guidelines.</p>
 
 <p>Secondaries funds typically hold 20-50+ underlying fund positions simultaneously, each with different administrators, vintage years, accounting policies, and distribution schedules. The administrator aggregates disparate data into consolidated reporting, maintains transaction-level tracking for performance attribution, and coordinates cash flows across numerous capital calls and distributions.</p>
 
@@ -53,7 +53,7 @@ const article: Article = {
 
 <h3>Section 754 Elections</h3>
 
-<p>Some underlying funds make IRC Section 754 elections allowing basis step-up when interests transfer, bringing tax basis closer to economic basis. Without 754 elections, the administrator maintains basis differences throughout the holding period, tracking each underlying fund's election status and coordinating basis adjustment calculations where applicable.</p>
+<p>Some underlying funds make IRC Section 754 elections allowing basis step-up when interests transfer, bringing tax basis closer to economic basis. Without 754 elections, the administrator maintains basis differences throughout the holding period, tracking each underlying fund's election status and coordinating basis adjustment calculations where applicable. The <a href="https://www.irs.gov" target="_blank" rel="noopener noreferrer">IRS</a> provides detailed guidance on Section 754 elections and partnership basis adjustments.</p>
 
 <h2>Multi-Fund Position and Data Management</h2>
 
@@ -99,7 +99,7 @@ const article: Article = {
 
 <p>When the secondaries fund receives distributions, applying the waterfall requires determining whether distributions represent return of capital, return on capital, or carried interest from the underlying fund's perspective, and then how to characterize them for the secondaries fund's own waterfall. This creates layered waterfall complexity.</p>
 
-<p>For example, an underlying fund distribution might represent partial return of contributed capital to that fund plus realized gains. The secondaries fund's economic capital account shows this distribution as return of its purchase price paid (different from the underlying fund's capital) until its investment is recouped, then as profit. The secondaries fund's own waterfall then determines how to split this profit between LPs and GP based on whether preferred returns have been met and carry has been earned.</p>
+<p>For example, an underlying fund distribution might represent partial return of contributed capital to that fund plus realized gains. The secondaries fund's economic capital account shows this distribution as return of its purchase price paid (different from the underlying fund's capital) until its investment is recouped, then as profit. The secondaries fund's own waterfall then determines how to split this profit between LPs and GP based on whether preferred returns have been met and carry has been earned. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps model these layered waterfall calculations and their impact on LP and GP economics.</p>
 
 <h2>Performance Calculation and Reporting</h2>
 
@@ -109,7 +109,7 @@ const article: Article = {
 
 <p>The primary performance metrics calculate returns from the secondaries fund's purchase date, not from the underlying funds' inception dates. This since-purchase perspective shows the value created by the secondaries transaction itself. The administrator calculates since-purchase IRR using cash flows from acquisition through current date (purchase price as negative cash flow, capital calls as negative, distributions as positive, current NAV as terminal value), since-purchase MOIC as (distributions + current NAV) / (purchase price + capital calls), and since-purchase DPI as distributions / (purchase price + capital calls).</p>
 
-<p>These metrics answer the key question: did the secondaries fund create value through its acquisition pricing and subsequent realization? A position purchased at a 20% discount to NAV should generate outperformance if underlying portfolio performance merely matches expectations, since the favorable entry price provides a margin of safety.</p>
+<p>These metrics answer the key question: did the secondaries fund create value through its acquisition pricing and subsequent realization? A position purchased at a 20% discount to NAV should generate outperformance if underlying portfolio performance merely matches expectations, since the favorable entry price provides a margin of safety. The <a href="/tools/management-fee-calculator">Management Fee Calculator</a> can help model how fee structures impact net returns at various pricing scenarios.</p>
 
 <h3>Underlying Fund Performance Context</h3>
 

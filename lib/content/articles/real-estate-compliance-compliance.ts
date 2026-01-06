@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Comprehensive guide to real estate fund compliance covering Form ADV filing, REIT qualification tests, Regulation D private placements, Marketing Rule compliance, environmental regulations, and property-level regulatory obligations',
   fundType: 'real-estate',
   pillar: 'compliance',
-  content: `<p>Compliance in real estate funds encompasses multiple overlapping regulatory frameworks at both fund and property levels. At the fund level, managers navigate investment adviser regulations under the Investment Advisers Act of 1940, complex REIT qualification requirements when applicable (quarterly asset tests, annual income tests, mandatory 90% distribution requirements), securities law compliance for private placements under Regulation D, and the SEC's Marketing Rule.</p>
+  content: `<p>Compliance in real estate funds encompasses multiple overlapping regulatory frameworks at both fund and property levels. At the fund level, managers navigate investment adviser regulations under the Investment Advisers Act of 1940, complex REIT qualification requirements when applicable (quarterly asset tests, annual income tests, mandatory 90% distribution requirements), securities law compliance for private placements under Regulation D, and the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC's</a> Marketing Rule. For compliance considerations during fund formation, see the <a href="/tools/fund-launch-guide">Fund Launch Guide</a>.</p>
 
 <p>At the property level, obligations include environmental regulations (Phase I/II assessments, asbestos management, underground storage tank compliance), zoning and land use restrictions, Fair Housing Act requirements, Americans with Disabilities Act accessibility requirements, and building code compliance. The complexity stems from operating simultaneously under fund-level investment adviser regulations and property-level location-specific regulations varying across 5-15 jurisdictions for a typical portfolio.</p>
 
@@ -37,7 +37,7 @@ const article: Article = {
 
 <h2>REIT Qualification Tests</h2>
 
-<p>Funds electing REIT tax treatment under IRC Sections 856-860 gain pass-through taxation avoiding corporate-level tax but face complex qualification requirements. REIT disqualification triggers immediate 21% corporate taxation and potential five-year prohibition on REIT re-election.</p>
+<p>Funds electing REIT tax treatment under <a href="https://www.irs.gov" target="_blank" rel="noopener noreferrer">IRC Sections 856-860</a> gain pass-through taxation avoiding corporate-level tax but face complex qualification requirements. REIT disqualification triggers immediate 21% corporate taxation and potential five-year prohibition on REIT re-election.</p>
 
 <h3>Asset Tests</h3>
 
@@ -53,7 +53,7 @@ const article: Article = {
 
 <h3>Distribution Requirements</h3>
 
-<p>REIT qualification requires distributing minimum 90% of taxable income annually (not GAAP income—taxable income often differs due to depreciation differences and timing). Distribution planning involves mid-year taxable income forecasts, distribution timing analysis, board authorizations, and year-end true-up after final taxable income calculation.</p>
+<p>REIT qualification requires distributing minimum 90% of taxable income annually (not GAAP income—taxable income often differs due to depreciation differences and timing). Distribution planning involves mid-year taxable income forecasts, distribution timing analysis, board authorizations, and year-end true-up after final taxable income calculation. Use the <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> to model how REIT distribution requirements affect waterfall economics.</p>
 
 <p>Property sales often generate large taxable gains requiring corresponding distributions even if proceeds immediately reinvest in new properties. A REIT generating a $25M taxable gain requires approximately $22.5M in distributions (90% of $25M) regardless of whether cash is available.</p>
 
@@ -73,11 +73,11 @@ const article: Article = {
 
 <h2>Marketing Rule Compliance</h2>
 
-<p>The SEC's 2020 Marketing Rule (Rule 206(4)-1, effective November 2021) modernized advertising and solicitation regulations. General prohibitions prevent advertisements including untrue facts or misleading omissions, cherry-picking profitable recommendations, unbalanced performance presentations, and misleading implications about adviser services.</p>
+<p>The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC's</a> 2020 Marketing Rule (Rule 206(4)-1, effective November 2021) modernized advertising and solicitation regulations. General prohibitions prevent advertisements including untrue facts or misleading omissions, cherry-picking profitable recommendations, unbalanced performance presentations, and misleading implications about adviser services.</p>
 
 <p>Testimonials and endorsements require comprehensive disclosures: clear disclosure of any compensation paid to the provider, additional disclosure if the testimonial comes from a client not similarly situated to target audience, and evaluation whether the testimonial oversimplifies or creates unjustified expectations.</p>
 
-<p>Performance advertising requires net performance presentation showing returns net of advisory fees, performance fees, and other costs (with limited exceptions for institutional investors). Benchmark comparisons must use appropriate benchmarks with disclosure explaining construction and limitations. One, five, and ten year period performance is required when showing performance.</p>
+<p>Performance advertising requires net performance presentation showing returns net of advisory fees, performance fees, and other costs (with limited exceptions for institutional investors). Benchmark comparisons must use appropriate benchmarks with disclosure explaining construction and limitations. One, five, and ten year period performance is required when showing performance. Use the <a href="/tools/management-fee-calculator">Management Fee Calculator</a> to accurately model gross-to-net fee impact for compliant performance reporting.</p>
 
 <p>Hypothetical performance including model portfolios, backtested returns, or targeted returns requires disclosure of criteria, assumptions, limitations, and key risks. Substantiation records must support methodology, assumptions, and reasonable basis for targets.</p>
 
@@ -106,13 +106,13 @@ const article: Article = {
 <h2>Key Takeaways</h2>
 
 <ul>
-<li><strong>Investment adviser registration requires accurate Form ADV filings:</strong> Annual filings within 90 days of fiscal year-end, other-than-annual amendments within 30 days for material changes. Part 2 brochure delivery to new clients, annual delivery notice to existing clients.</li>
+<li><strong>Investment adviser registration requires accurate Form ADV filings:</strong> Annual filings within 90 days of fiscal year-end, other-than-annual amendments within 30 days for material changes. Part 2 brochure delivery to new clients, annual delivery notice to existing clients. Review <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> guidance for current Form ADV requirements.</li>
 
 <li><strong>Compliance policies must address real estate-specific risks:</strong> Property acquisition allocation, development monitoring, disposition timing, related party transactions, and REIT compliance when applicable. Annual review assesses policy adequacy and effectiveness.</li>
 
 <li><strong>Personal trading controls prevent conflicts:</strong> Pre-clearance for real estate securities, blackout periods around property transactions and quarterly reporting, holdings and transaction reports. Access persons include investment personnel, compliance staff, and senior management.</li>
 
-<li><strong>REIT qualification requires continuous monitoring:</strong> Quarterly asset tests (75% qualifying assets, 25%/5%/10% single issuer limits, 20% TRS limit), annual income tests (75% and 95% qualifying income), 90% distribution requirement. Disqualification triggers 21% corporate tax and five-year re-election prohibition.</li>
+<li><strong>REIT qualification requires continuous monitoring:</strong> Quarterly asset tests (75% qualifying assets, 25%/5%/10% single issuer limits, 20% TRS limit), annual income tests (75% and 95% qualifying income), 90% distribution requirement. Disqualification triggers 21% corporate tax and five-year re-election prohibition. See <a href="https://www.irs.gov" target="_blank" rel="noopener noreferrer">IRS</a> guidance for current REIT requirements.</li>
 
 <li><strong>Prohibited transaction tax prevention requires safe harbor compliance:</strong> Two-year holding, 10% annual sales limit, seven or fewer sales per year, no substantial services, non-foreclosure property. The CCO tracks holding periods and sales against limits.</li>
 
@@ -122,7 +122,7 @@ const article: Article = {
 
 <li><strong>Environmental compliance requires Phase I/II ESAs before acquisitions:</strong> Phase I provides CERCLA defense. Contamination triggers remediation estimates, price negotiation, or acquisition abandonment. Ongoing monitoring post-closing.</li>
 
-<li><strong>Fair Housing and ADA compliance prevent discrimination:</strong> Personnel training, uniform qualification criteria, advertising review, accessibility audits, and accommodation request procedures.</li>
+<li><strong>Fair Housing and ADA compliance prevent discrimination:</strong> Personnel training, uniform qualification criteria, advertising review, accessibility audits, and accommodation request procedures. Use the <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> to categorize compliance-related expenses correctly. Follow <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> best practices for LP reporting on compliance matters.</li>
 </ul>`,
   metaTitle: 'Real Estate Fund Compliance: Investment Adviser Regulations, REIT Requirements, and Property-Level Obligations',
   metaDescription: 'Comprehensive guide to real estate fund compliance covering Form ADV filing, REIT qualification tests and distribution requirements, Regulation D placements, Marketing Rule, environmental regulations, Fair Housing Act, ADA, and building code compliance.',

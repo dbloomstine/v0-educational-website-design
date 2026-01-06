@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Targeting institutional investors, emphasizing ESG credentials, and securing long-term capital commitments for infrastructure investing',
   fundType: 'infrastructure',
   pillar: 'fundraising',
-  content: `<p>Infrastructure fundraising operates within a distinct paradigm shaped by long-duration assets and specialized institutional investors seeking defensive returns, inflation protection, and ESG-aligned opportunities. Unlike venture or buyout fundraising emphasizing rapid value creation, infrastructure centers on demonstrating stable, predictable cash flows from essential services.</p>
+  content: `<p>Infrastructure fundraising operates within a distinct paradigm shaped by long-duration assets and specialized institutional investors seeking defensive returns, inflation protection, and ESG-aligned opportunities. Unlike venture or buyout fundraising emphasizing rapid value creation, infrastructure centers on demonstrating stable, predictable cash flows from essential services. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> provides comprehensive checklists for emerging managers preparing for their first institutional fundraise.</p>
 
 <p>Infrastructure assets provide essential services: power generation ($180-250 billion annual GDP contribution), water systems (300+ million people served), transportation ($19 trillion goods annually), and communications ($2.1 trillion digital economy). These generate contracted or regulated revenues with 5-15% volatility versus 25-40% for traditional operating companies.</p>
 
@@ -35,7 +35,7 @@ const article: Article = {
 
 <p>Public pension constraints include political scrutiny, ESG mandates (22 states) versus restrictions (18 states), fee transparency requirements, and domestic investment preferences (15-30% targets in some states).</p>
 
-<p>Marketing emphasizes steady distributions (4-6% cash yield), downside protection (stress testing showing 15-25% NAV decline versus 40-60% for buyout), inflation linkage (2-4% contract escalators), and long-term value preservation. Fundraising cycles span 6-12 months with quarterly touchpoints and consultant relationship building.</p>
+<p>Marketing emphasizes steady distributions (4-6% cash yield), downside protection (stress testing showing 15-25% NAV decline versus 40-60% for buyout), inflation linkage (2-4% contract escalators), and long-term value preservation. Fundraising cycles span 6-12 months with quarterly touchpoints and consultant relationship building. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps demonstrate distribution mechanics to prospective LPs.</p>
 
 <h3>Insurance Companies (12-18% of capital)</h3>
 
@@ -108,9 +108,9 @@ const article: Article = {
 
 <h3>Management Fees</h3>
 
-<p>Fees commonly run 1.5-2.0% on committed capital during investment period, stepping to 1.0-1.5% on invested capital during harvest. This supports $18-35 million annual operating costs for 25-45 person teams.</p>
+<p>Fees commonly run 1.5-2.0% on committed capital during investment period, stepping to 1.0-1.5% on invested capital during harvest. This supports $18-35 million annual operating costs for 25-45 person teams. The <a href="/tools/management-fee-calculator">Management Fee Calculator</a> helps model fee structures across different fund sizes and investor classes.</p>
 
-<p>Fee offset policies require 50-100% of transaction and advisory fees returned to LPs. Organizational expenses of $8-18 million either capitalize to fund or GP absorbs. Ongoing expenses ($1.25-2.8 million annually for administrator, audit, legal) often cap at 0.1-0.2% of NAV.</p>
+<p>Fee offset policies require 50-100% of transaction and advisory fees returned to LPs. Organizational expenses of $8-18 million either capitalize to fund or GP absorbs. Ongoing expenses ($1.25-2.8 million annually for administrator, audit, legal) often cap at 0.1-0.2% of NAV. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> assists with categorizing these costs across fund, GP, and portfolio company levels.</p>
 
 <h3>Carried Interest</h3>
 
@@ -170,7 +170,9 @@ const article: Article = {
 <li><strong>In-house IR provides multi-fund value:</strong> Teams of 3-6 ($1.2-2.4M annually) support successive fundraises, improve retention to 85-92%, and accelerate timelines to 9-12 months.</li>
 
 <li><strong>Competitive landscape demands differentiation:</strong> 280+ funds managing $650B+ require clear sector specialization, operational value creation capabilities, or access advantages.</li>
-</ul>`,
+</ul>
+
+<p>For modeling management company operating costs during fundraising, use the <a href="/tools/management-company-budget">Management Company Budget Planner</a>. The <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a> helps demonstrate IRR impacts of capital call timing to prospective investors. Industry best practices for fee transparency and LP reporting are available from <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a>. The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> provides regulatory guidance on Form ADV disclosures and marketing rule compliance.</p>`,
   metaTitle: 'Infrastructure Fundraising: Institutional Capital, ESG, and Long-Term Commitments',
   metaDescription: 'Guide to infrastructure fundraising covering institutional investor targeting, ESG positioning with impact measurement, fund terms and structure, placement agent economics, and fundraising process management.',
   publishedDate: 'November 30, 2025',

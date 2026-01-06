@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Managing deal flow platforms, portfolio tracking systems, document management, data room security, and cybersecurity infrastructure for high-velocity venture operations',
   fundType: 'venture-capital',
   pillar: 'cyber-it',
-  content: `<p>Venture capital funds process thousands of inbound opportunities, conduct detailed diligence on hundreds, and execute dozens of investments across multiple stages and sectors annually. This volume demands sophisticated deal flow management systems that track relationships, capture evaluation data, and maintain institutional knowledge. The resulting technology ecosystem spans specialized CRM platforms, portfolio tracking systems, secure document repositories, and collaboration tools, all requiring robust cybersecurity controls to protect highly sensitive startup information, proprietary investment theses, and confidential LP data.</p>
+  content: `<p>Venture capital funds process thousands of inbound opportunities, conduct detailed diligence on hundreds, and execute dozens of investments across multiple stages and sectors annually. This volume demands sophisticated deal flow management systems that track relationships, capture evaluation data, and maintain institutional knowledge. The resulting technology ecosystem spans specialized CRM platforms, portfolio tracking systems, secure document repositories, and collaboration tools, all requiring robust cybersecurity controls to protect highly sensitive startup information, proprietary investment theses, and confidential LP data. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> includes technology infrastructure requirements for emerging managers.</p>
 
 <h2>Deal Flow Management Systems</h2>
 
@@ -42,7 +42,7 @@ const article: Article = {
 <li>Valuation tracking for quarterly reporting and annual audits</li>
 </ul>
 
-<p>Data quality remains a persistent challenge. Many funds designate portfolio operations personnel who work directly with portfolio company CFOs to provide templates, standardize metric definitions, and troubleshoot reporting gaps.</p>
+<p>Data quality remains a persistent challenge. Many funds designate portfolio operations personnel who work directly with portfolio company CFOs to provide templates, standardize metric definitions, and troubleshoot reporting gaps. <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> provides standardized reporting templates that help streamline portfolio company data collection.</p>
 
 <h2>Document Management and Data Rooms</h2>
 
@@ -84,7 +84,7 @@ const article: Article = {
 <li>Scenario analysis showing exit proceeds across valuations and liquidation preference structures</li>
 </ul>
 
-<p>Conduct quarterly reconciliations comparing fund-tracked ownership percentages, share counts, and liquidation preferences against portfolio company cap tables. Discrepancies often arise from unreported option exercises, warrant issuances, or employee secondary transactions.</p>
+<p>Conduct quarterly reconciliations comparing fund-tracked ownership percentages, share counts, and liquidation preferences against portfolio company cap tables. Discrepancies often arise from unreported option exercises, warrant issuances, or employee secondary transactions. The <a href="/tools/management-fee-calculator">Management Fee Calculator</a> and <a href="/tools/management-company-budget">Management Company Budget Planner</a> help model how portfolio economics flow through to GP revenue.</p>
 
 <h2>Cybersecurity Infrastructure</h2>
 
@@ -120,7 +120,7 @@ const article: Article = {
 
 <h2>Regulatory Compliance and Data Privacy</h2>
 
-<p>SEC rules adopted in 2023 require registered investment advisers to maintain written cybersecurity policies, conduct annual program reviews, and report significant cybersecurity incidents to the SEC within 30 days.</p>
+<p><a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> rules adopted in 2023 require registered investment advisers to maintain written cybersecurity policies, conduct annual program reviews, and report significant cybersecurity incidents to the SEC within 30 days.</p>
 
 <p>Required cybersecurity policy elements:</p>
 <ul>
@@ -134,7 +134,7 @@ const article: Article = {
 
 <p>Data privacy regulations (GDPR for European investors, CCPA for California residents) grant individuals rights to access, correct, or delete personal data. Funds must implement processes for responding to data subject requests and maintain processing records.</p>
 
-<p>Investment Advisers Act Rule 204-2 requires preserving investment documentation, investor communications, and financial statements for five years. Establish retention schedules satisfying the longer of regulatory requirements or operational needs, automatically deleting data when periods expire unless litigation holds require preservation.</p>
+<p>Investment Advisers Act Rule 204-2 requires preserving investment documentation, investor communications, and financial statements for five years. Establish retention schedules satisfying the longer of regulatory requirements or operational needs, automatically deleting data when periods expire unless litigation holds require preservation. Fund managers should coordinate technology policies with their <a href="/tools/fund-expense-allocation">expense allocation</a> approach to ensure proper classification of IT costs.</p>
 
 <h2>Security Awareness and Training</h2>
 
@@ -160,7 +160,7 @@ const article: Article = {
 <li>Portfolio tracking platforms including Carta, eFront Insight, or Chronograph aggregate financial and operational data from dozens of portfolio companies for monitoring performance, identifying companies requiring intervention, supporting quarterly reporting, and enabling data-driven investment committee discussions about follow-on deployments</li>
 <li>Document management through platforms like Box, Dropbox Business, or purpose-built solutions like DocSend provides secure storage and controlled sharing of highly sensitive due diligence materials, investment documentation, and portfolio company confidential information, with granular access controls and audit logging tracking document access</li>
 <li>Virtual data rooms from providers like Intralinks, Datasite, or venture-focused alternatives enable secure document sharing during fundraising and investment processes, with watermarking, download restrictions, and detailed audit trails protecting confidential information while enabling efficient diligence</li>
-<li>Cap table management tools, particularly Carta's integrated approach connecting portfolio company cap tables with fund ownership tracking, eliminate manual reconciliation while enabling real-time monitoring of ownership positions, dilution impacts, and pro-rata participation rights across portfolios</li>
+<li>Cap table management tools, particularly Carta's integrated approach connecting portfolio company cap tables with fund ownership tracking, eliminate manual reconciliation while enabling real-time monitoring of ownership positions, dilution impacts, and pro-rata participation rights across portfolios. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps model how ownership structures affect exit proceeds allocation</li>
 <li>Cybersecurity infrastructure including endpoint detection and response, full disk encryption, multi-factor authentication, advanced email security, and VPN or zero-trust network access protects against threats targeting sensitive portfolio company information and fund operational systems</li>
 <li>Cloud application security through CASB and SSPM tools provides visibility into SaaS usage, detects shadow IT, enforces data loss prevention, and identifies security misconfigurations across the dozens of cloud platforms that comprise modern venture fund technology stacks</li>
 <li>SEC cybersecurity regulations require registered advisers to implement written policies, conduct annual risk assessments, maintain incident response procedures, and report significant cybersecurity incidents, elevating cybersecurity from IT concern to fiduciary responsibility requiring board-level oversight and systematic risk management</li>

@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Comprehensive guide to infrastructure fund audits covering 20-40 year DCF projection testing, ASC 980 regulatory accounting, multi-tranche debt covenant verification, and hedge accounting validation',
   fundType: 'infrastructure',
   pillar: 'audit',
-  content: `<p>Annual financial audits represent a cornerstone of infrastructure fund governance, providing independent verification of net asset values, validating long-duration cash flow assumptions, confirming regulatory accounting compliance, and testing complex project finance debt covenants. Unlike traditional private equity funds with 5-7 year hold periods, infrastructure funds employ 20-40 year DCF models where small assumption variations create material NAV impacts—a 50 basis point discount rate change affects valuations by 8-12 percent over 25-year horizons.</p>
+  content: `<p>Annual financial audits represent a cornerstone of infrastructure fund governance, providing independent verification of net asset values, validating long-duration cash flow assumptions, confirming regulatory accounting compliance, and testing complex project finance debt covenants. Unlike traditional private equity funds with 5-7 year hold periods, infrastructure funds employ 20-40 year DCF models where small assumption variations create material NAV impacts—a 50 basis point discount rate change affects valuations by 8-12 percent over 25-year horizons. Fund managers can use the <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> to model how these valuation changes flow through to LP and GP economics.</p>
 
 <p>Infrastructure audits differ fundamentally from other alternative asset audits. While hedge funds focus on securities pricing and PE emphasizes purchase price allocations, infrastructure audits center on DCF projection reasonableness testing and regulatory accounting compliance. Utility investments following ASC 980 create regulatory assets and liabilities absent from standard GAAP. Transportation assets require revenue recognition assessment under complex concession agreements. Project finance debt with 5-15 lender syndicates demands extensive confirmation procedures.</p>
 
@@ -17,7 +17,7 @@ const article: Article = {
 
 <h3>Sector Expertise Evaluation</h3>
 
-<p>Selecting appropriate audit firms involves evaluating specialized sector knowledge beyond general alternative asset expertise. Infrastructure audit complexity spans utility regulatory accounting, transportation concession agreements, project finance covenant mechanics, and long-duration valuation modeling—capabilities concentrated primarily within Big Four infrastructure practice groups. These teams maintain sector specialists supplemented by national technical resources for complex interpretations. Regional firms serving smaller funds often lack this depth, potentially requiring external consultants for complex assets.</p>
+<p>Selecting appropriate audit firms involves evaluating specialized sector knowledge beyond general alternative asset expertise. Infrastructure audit complexity spans utility regulatory accounting, transportation concession agreements, project finance covenant mechanics, and long-duration valuation modeling—capabilities concentrated primarily within Big Four infrastructure practice groups. These teams maintain sector specialists supplemented by national technical resources for complex interpretations. The <a href="https://www.aicpa.org" target="_blank" rel="noopener noreferrer">AICPA</a> provides professional standards and guidance for audit practitioners. Regional firms serving smaller funds often lack this depth, potentially requiring external consultants for complex assets.</p>
 
 <h3>Fee Structures</h3>
 
@@ -29,7 +29,7 @@ const article: Article = {
 
 <h3>DCF Methodology Fundamentals</h3>
 
-<p>Infrastructure valuation relies predominantly on discounted cash flow analysis projecting unlevered free cash flows over 20-40 year asset economic lives. DCF dominates given limited transaction comparables for unique assets. Auditors devote extensive procedures to DCF testing—40-60 percent of total audit hours compared to 20-30 percent for valuation in hedge fund audits.</p>
+<p>Infrastructure valuation relies predominantly on discounted cash flow analysis projecting unlevered free cash flows over 20-40 year asset economic lives. DCF dominates given limited transaction comparables for unique assets. Auditors devote extensive procedures to DCF testing—40-60 percent of total audit hours compared to 20-30 percent for valuation in hedge fund audits. The <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a> provides authoritative guidance on fair value measurement standards that govern these valuations.</p>
 
 <h3>Revenue Projection Testing</h3>
 
@@ -41,7 +41,7 @@ const article: Article = {
 
 <p>Operating expense projections require benchmarking against historical performance and industry standards. Auditors analyze expense ratios (utility opex typically 30-50% of revenues, toll roads 15-30%, social infrastructure 10-25%), evaluate inflation assumptions (2-4% annual escalation typical), and assess expense optimization assumptions.</p>
 
-<p>Capital expenditure projections represent critical valuation drivers. Maintenance capex typically projects 1-4% of asset value annually. Auditors validate major replacement cycles (pavement overlays every 15-20 years, transformer replacements every 30-40 years), confirm regulatory requirements or concession obligations, and evaluate whether growth capex appropriately included or excluded from valuation. Tax provision testing validates corporate tax rates using statutory rates (21% federal plus 4-8% state).</p>
+<p>Capital expenditure projections represent critical valuation drivers. Maintenance capex typically projects 1-4% of asset value annually. Auditors validate major replacement cycles (pavement overlays every 15-20 years, transformer replacements every 30-40 years), confirm regulatory requirements or concession obligations, and evaluate whether growth capex appropriately included or excluded from valuation. Tax provision testing validates corporate tax rates using statutory rates (21% federal plus 4-8% state). Fund managers can use the <a href="/tools/management-company-budget">Management Company Budget Planner</a> to model how these capital expenditure projections affect overall fund economics.</p>
 
 <h2>Audit Timeline and Fieldwork Coordination</h2>
 
@@ -79,7 +79,7 @@ const article: Article = {
 
 <h3>ASC 980 Framework</h3>
 
-<p>Regulated utility investments following ASC 980 employ specialized accounting creating asset and liability categories unavailable to non-regulated entities. Rate regulation changes economic environment—regulators set prices recovering prudently incurred costs plus allowed returns. Regulatory accounting reflects this by deferring costs as regulatory assets when recovery authorized in future periods and establishing regulatory liabilities for amounts collected subject to future refund.</p>
+<p>Regulated utility investments following ASC 980 employ specialized accounting creating asset and liability categories unavailable to non-regulated entities. Rate regulation changes economic environment—regulators set prices recovering prudently incurred costs plus allowed returns. The <a href="https://fasb.org" target="_blank" rel="noopener noreferrer">FASB</a> codification provides authoritative guidance on regulatory accounting standards. Regulatory accounting reflects this by deferring costs as regulatory assets when recovery authorized in future periods and establishing regulatory liabilities for amounts collected subject to future refund.</p>
 
 <p>Common regulatory assets include storm restoration costs deferred following major hurricanes, pension and OPEB obligations, income tax regulatory assets from timing differences, and environmental remediation costs. Auditors test recoverability through rate order review, legal analysis, historical precedent evaluation, and cash flow projections. Regulatory assets lacking clear recovery authorization require impairment analysis.</p>
 
@@ -107,7 +107,7 @@ const article: Article = {
 
 <p>Reserve accounts provide liquidity cushions: debt service reserves covering 6-12 months scheduled payments, maintenance reserves, major maintenance reserves, insurance deductible reserves, and operating expense reserves (2-6 months). Auditors test existence, balances, and compliance through bank confirmations, agreement review, calculation testing, and restriction testing for balance sheet classification.</p>
 
-<p>Cash flow waterfall analysis tests distribution priority sequences: operating expenses first, debt service second (senior then junior), reserve funding third, then equity distributions after satisfying obligations and meeting distribution tests. Auditors test distributions ensuring waterfall compliance, confirm distribution test calculations, and scrutinize related party distributions.</p>
+<p>Cash flow waterfall analysis tests distribution priority sequences: operating expenses first, debt service second (senior then junior), reserve funding third, then equity distributions after satisfying obligations and meeting distribution tests. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps model these priority sequences and their impact on investor economics. Auditors test distributions ensuring waterfall compliance, confirm distribution test calculations, and scrutinize related party distributions.</p>
 
 <h2>Hedge Accounting Validation</h2>
 
@@ -123,7 +123,7 @@ const article: Article = {
 
 <h2>Internal Control Frameworks</h2>
 
-<p>Control frameworks address infrastructure-specific risks: valuation controls over assumption development including segregation between preparer and reviewer, management approval for final valuations, and documentation retention; regulatory accounting controls ensuring specialized personnel and technical review; debt covenant monitoring controls ensuring quarterly calculations and timely lender reporting; cash management and waterfall controls; and financial close controls.</p>
+<p>Control frameworks address infrastructure-specific risks: valuation controls over assumption development including segregation between preparer and reviewer, management approval for final valuations, and documentation retention; regulatory accounting controls ensuring specialized personnel and technical review; debt covenant monitoring controls ensuring quarterly calculations and timely lender reporting; cash management and waterfall controls; and financial close controls. The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> provides regulatory oversight and guidance on internal control requirements for registered investment advisers.</p>
 
 <p>Operating effectiveness testing evaluates whether designed controls operated consistently through inquiry, inspection, reperformance, and sampling. Material weaknesses represent significant deficiencies creating audit report modification requirements. CFOs prioritize remediation through process improvements and enhanced review procedures.</p>
 
@@ -144,8 +144,10 @@ const article: Article = {
 
 <li><strong>Hedge accounting validation requires comprehensive documentation:</strong> ASC 815 hedge documentation review confirms contemporaneous designation. Quarterly effectiveness testing confirms 80-125% offset between hedge and hedged item.</li>
 
-<li><strong>Year-round documentation discipline enables efficient audits:</strong> Maintaining current valuation files, regulatory documentation, debt schedules, and revenue recognition memoranda facilitates completion versus year-end scrambles.</li>
-</ul>`,
+<li><strong>Year-round documentation discipline enables efficient audits:</strong> Maintaining current valuation files, regulatory documentation, debt schedules, and revenue recognition memoranda facilitates completion versus year-end scrambles. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> helps emerging managers establish proper documentation practices from inception.</li>
+</ul>
+
+<p>For additional guidance on management fee structures that affect audit scope, see the <a href="/tools/management-fee-calculator">Management Fee Calculator</a>. Fund managers modeling expense allocations across multiple assets can use the <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> to ensure consistent treatment. The <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> provides best practice guidance on LP reporting and transparency standards.</p>`,
   metaTitle: 'Infrastructure Fund Audits: DCF Valuation, Regulatory Accounting, Debt Testing',
   metaDescription: 'Comprehensive guide to infrastructure fund audits covering DCF projection testing, ASC 980 regulatory accounting review, project finance debt verification, hedge accounting validation, and revenue recognition.',
   publishedDate: 'November 24, 2025',

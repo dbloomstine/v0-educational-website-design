@@ -7,7 +7,7 @@ const article: Article = {
   subtitle: 'Managing infrastructure asset insurance including property damage, business interruption, liability, and specialized operational coverages',
   fundType: 'infrastructure',
   pillar: 'insurance',
-  content: `<p>Infrastructure insurance addresses fundamentally different exposures than typical commercial coverage. These assets represent capital-intensive investments valued at $150-850 million per facility, serving essential public functions for hundreds of thousands to millions of users. Unlike commercial operations, infrastructure coverage protects critical services where failures affect millions—utility customers losing power, commuters facing transportation disruptions, or communities losing access to essential services.</p>
+  content: `<p>Infrastructure insurance addresses fundamentally different exposures than typical commercial coverage. These assets represent capital-intensive investments valued at $150-850 million per facility, serving essential public functions for hundreds of thousands to millions of users. Unlike commercial operations, infrastructure coverage protects critical services where failures affect millions—utility customers losing power, commuters facing transportation disruptions, or communities losing access to essential services. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> includes insurance planning considerations for emerging managers establishing risk management frameworks.</p>
 
 <p>Infrastructure insurance involves catastrophic loss potential ($50-500+ million per incident), extended operational periods of 25-50+ years requiring stable insurance markets, and complex stakeholder requirements. Project finance lenders mandate comprehensive coverage with limits of $50-150+ million, regulators require proof of financial responsibility, and government partners specify minimum insurance conditions in concession agreements. Premium costs for infrastructure portfolios typically total 0.8-1.2% of asset values annually.</p>
 
@@ -61,7 +61,7 @@ const article: Article = {
 
 <p>Catastrophe modeling using platforms from RMS, AIR Worldwide, or CoreLogic quantifies probable maximum loss at various return periods. Typical reporting shows PML at 100-year (1% annual probability), 250-year (0.4%), and 500-year (0.2%) levels.</p>
 
-<p>CFOs use modeling results to set attachment points for catastrophe coverage (retaining high-frequency events while transferring catastrophe exposure), select coverage limits, and evaluate premium adequacy versus potential tail losses.</p>
+<p>CFOs use modeling results to set attachment points for catastrophe coverage (retaining high-frequency events while transferring catastrophe exposure), select coverage limits, and evaluate premium adequacy versus potential tail losses. The <a href="/tools/management-company-budget">Management Company Budget Planner</a> helps allocate insurance costs across fund operating budgets.</p>
 
 <h2>Liability Coverage Programs</h2>
 
@@ -87,7 +87,7 @@ const article: Article = {
 
 <h3>Environmental Liability</h3>
 
-<p>Environmental coverage addresses pollution incidents, contamination discovery, and remediation costs. Utilities handling hazardous materials (coal ash, petroleum products, PCBs) risk contamination generating cleanup costs of $15-85 million for moderate sites to $75-850 million for complex multi-media contamination.</p>
+<p>Environmental coverage addresses pollution incidents, contamination discovery, and remediation costs. Utilities handling hazardous materials (coal ash, petroleum products, PCBs) risk contamination generating cleanup costs of $15-85 million for moderate sites to $75-850 million for complex multi-media contamination. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> assists with categorizing environmental remediation costs across fund and portfolio company levels.</p>
 
 <p>Regulatory penalties compound cleanup costs under the Clean Water Act, RCRA, and Clean Air Act. Third-party damages from contamination affecting communities create additional exposure including property value diminution, personal injury claims, and business interruption for affected businesses.</p>
 
@@ -146,7 +146,7 @@ const article: Article = {
 
 <h2>Lender Requirements</h2>
 
-<p>Project finance lenders impose comprehensive insurance requirements protecting collateral values and debt service capacity. Loan agreements typically specify:</p>
+<p>Project finance lenders impose comprehensive insurance requirements protecting collateral values and debt service capacity. The <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> requires disclosure of material insurance gaps and uninsured risks in fund documentation. Loan agreements typically specify:</p>
 
 <ul>
 <li><strong>Minimum coverage types:</strong> Property, business interruption, general liability, pollution, professional liability, terrorism, and flood/earthquake where applicable</li>
@@ -208,7 +208,9 @@ const article: Article = {
 <li><strong>Self-insured retentions require cost-benefit analysis:</strong> Model premium savings against expected retained losses to identify optimal deductibles minimizing total cost of risk.</li>
 
 <li><strong>Captives offer long-term economics for larger portfolios:</strong> Portfolios generating $8-12 million+ annual premium can justify captive formation for underwriting profits, investment income, and risk management control.</li>
-</ul>`,
+</ul>
+
+<p>For modeling management fee structures that account for insurance costs, use the <a href="/tools/management-fee-calculator">Management Fee Calculator</a>. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps model how insurance-related expenses affect fund returns and distributions. Industry best practices for LP reporting on risk management are available from <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a>. The <a href="https://www.aicpa.org" target="_blank" rel="noopener noreferrer">AICPA</a> provides guidance on insurance accounting and disclosure requirements under GAAP.</p>`,
   metaTitle: 'Infrastructure Insurance: Property, Liability, and Operational Risk Coverage',
   metaDescription: 'Guide to infrastructure insurance covering property damage, business interruption, liability protection, cyber risk, catastrophe modeling, sector-specific coverages, lender requirements, and captive insurance.',
   publishedDate: 'November 1, 2025',

@@ -7,13 +7,13 @@ const article: Article = {
   subtitle: 'Comprehensive guide to secondaries treasury management including subscription credit facilities for acquisition financing ($50-500M+ lines), coordinating capital calls and distributions from numerous underlying funds with unpredictable timing, tracking $100M+ in unfunded commitments across portfolio, cash forecasting challenges from limited visibility into underlying fund activity, optimizing liquidity buffers balancing cash drag against default risk, and banking relationship management across multiple custody and operating accounts',
   fundType: 'secondaries',
   pillar: 'banking',
-  content: `<p>Secondaries funds face treasury complexity that primary funds never encounter. A fund holding 30 underlying positions might receive 100+ capital call notices annually, process 80+ distributions, and manage $200M in unfunded commitments with deployment rates varying 10-40% annually. Cash flow timing is largely determined by external parties—underlying fund GPs making capital calls or distribution decisions—creating forecasting challenges and requiring substantial liquidity buffers.</p>
+  content: `<p>Secondaries funds face treasury complexity that primary funds never encounter. A fund holding 30 underlying positions might receive 100+ capital call notices annually, process 80+ distributions, and manage $200M in unfunded commitments with deployment rates varying 10-40% annually. Cash flow timing is largely determined by external parties—underlying fund GPs making capital calls or distribution decisions—creating forecasting challenges and requiring substantial liquidity buffers. Effective treasury management aligns with <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> guidance on capital call practices and LP expectations.</p>
 
 <h2>Subscription Credit Facilities for Acquisition Financing</h2>
 
 <h3>Facility Structure and Terms</h3>
 
-<p>Subscription facilities provide revolving credit equal to 15-35% of total fund commitments. A $1B secondaries fund might obtain a $200M facility (20% of commitments) from a syndicate of 2-4 banks. Key terms: SOFR plus 175-275 basis points depending on credit quality, commitment fees of 25-50 bps annually on unused portions, borrowing base requirements excluding defaulted investors, and concentration limits capping exposure to any single investor.</p>
+<p>Subscription facilities provide revolving credit equal to 15-35% of total fund commitments. A $1B secondaries fund might obtain a $200M facility (20% of commitments) from a syndicate of 2-4 banks. Key terms: SOFR plus 175-275 basis points depending on credit quality, commitment fees of 25-50 bps annually on unused portions, borrowing base requirements excluding defaulted investors, and concentration limits capping exposure to any single investor. Use the <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a> to model facility structures and their impact on fund returns.</p>
 
 <p>Documentation includes credit agreements, security agreements granting lenders interests in investor commitments, investor consent provisions, and intercreditor agreements. Negotiate for covenant flexibility, cure rights before acceleration, and competitive pricing.</p>
 
@@ -21,7 +21,7 @@ const article: Article = {
 
 <p>Competitive processes may require closing within 2-4 weeks; bilateral opportunities may close in days. Calling capital from investors takes 10-15 days minimum. Subscription facilities solve this: draw $50M to fund an acquisition immediately, then call capital over the following weeks to repay.</p>
 
-<p>Advantages: competitive execution speed, capital call batching (quarterly $30-50M tranches versus small frequent calls), and timing flexibility. Drawbacks: interest costs of 5-7% annually create drag if draws remain outstanding, and covenant violations can restrict access when most needed.</p>
+<p>Advantages: competitive execution speed, capital call batching (quarterly $30-50M tranches versus small frequent calls), and timing flexibility. Drawbacks: interest costs of 5-7% annually create drag if draws remain outstanding, and covenant violations can restrict access when most needed. The <a href="/tools/management-fee-calculator">Management Fee Calculator</a> helps model how subscription line interest impacts net returns to LPs.</p>
 
 <h3>Covenant Monitoring and Compliance</h3>
 
@@ -43,7 +43,7 @@ const article: Article = {
 
 <h3>Distribution Processing</h3>
 
-<p>Small distributions of $100K-500K occur routinely; large distributions of $5-50M+ result from major exits. Processing includes: monitoring bank accounts for incoming wires, confirming source and classification (return of capital versus income), determining retention versus immediate distribution to investors, executing wires within contractual timeframes (often 30-60 days), and booking as realized gains/losses or basis reductions.</p>
+<p>Small distributions of $100K-500K occur routinely; large distributions of $5-50M+ result from major exits. Processing includes: monitoring bank accounts for incoming wires, confirming source and classification (return of capital versus income), determining retention versus immediate distribution to investors, executing wires within contractual timeframes (often 30-60 days), and booking as realized gains/losses or basis reductions. The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> helps model how distributions flow through to LPs versus GP carry.</p>
 
 <p>Funds in active investment periods may retain distributions for acquisitions or capital calls. Mature funds in harvest mode typically distribute within 30-60 days to maximize DPI. Document policies in fund formation documents and communicate when exercising discretion.</p>
 
@@ -57,7 +57,7 @@ const article: Article = {
 
 <h3>Unfunded Commitment Recording and Monitoring</h3>
 
-<p>At acquisition, the secondaries fund inherits the selling LP's unfunded commitment—if purchasing a 10% interest in a fund with $100M total unfunded commitments across all LPs, the secondaries fund assumes $10M unfunded obligation. This is recorded as a contingent liability and reduced as capital calls are funded. The CFO maintains an unfunded commitment schedule showing each position, total unfunded amount, deployment pace and expected timing, worst-case drawdown scenarios if funds call full commitments quickly, and aggregate unfunded across the entire portfolio (often $100-300M+ for institutional secondaries funds). This schedule is reviewed monthly, updated for capital calls funded, and used for liquidity planning.</p>
+<p>At acquisition, the secondaries fund inherits the selling LP's unfunded commitment—if purchasing a 10% interest in a fund with $100M total unfunded commitments across all LPs, the secondaries fund assumes $10M unfunded obligation. This is recorded as a contingent liability and reduced as capital calls are funded. The CFO maintains an unfunded commitment schedule showing each position, total unfunded amount, deployment pace and expected timing, worst-case drawdown scenarios if funds call full commitments quickly, and aggregate unfunded across the entire portfolio (often $100-300M+ for institutional secondaries funds). This schedule is reviewed monthly, updated for capital calls funded, and used for liquidity planning. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> provides frameworks for establishing robust unfunded commitment tracking from day one.</p>
 
 <h3>Liquidity Reserve Sizing</h3>
 
@@ -73,7 +73,7 @@ const article: Article = {
 
 <h3>Minimizing Cash Drag</h3>
 
-<p>Idle cash earns minimal returns (currently 4-5% in money market funds versus 12-15%+ private equity target returns), creating 7-10 percentage point drag on fund performance. The CFO minimizes cash drag by calling capital just-in-time drawing from subscription facilities to fund acquisitions and capital calls, then calling investor capital to repay facilities shortly after, timing investor distributions strategically rather than holding proceeds as cash waiting for optimal distribution timing, distributing proceeds promptly if no near-term uses exist, and investing temporary balances in institutional money market funds, treasury bills, or overnight sweep accounts earning market rates rather than leaving funds in non-interest-bearing checking accounts. Even small optimizations matter—earning an extra 50 basis points on $20M average cash balance over 10 years adds $1M+ to fund returns.</p>
+<p>Idle cash earns minimal returns (currently 4-5% in money market funds versus 12-15%+ private equity target returns), creating 7-10 percentage point drag on fund performance. The CFO minimizes cash drag by calling capital just-in-time drawing from subscription facilities to fund acquisitions and capital calls, then calling investor capital to repay facilities shortly after, timing investor distributions strategically rather than holding proceeds as cash waiting for optimal distribution timing, distributing proceeds promptly if no near-term uses exist, and investing temporary balances in institutional money market funds, treasury bills, or overnight sweep accounts earning market rates rather than leaving funds in non-interest-bearing checking accounts. Even small optimizations matter—earning an extra 50 basis points on $20M average cash balance over 10 years adds $1M+ to fund returns. Use the <a href="/tools/management-company-budget">Management Company Budget Planner</a> to model cash flow scenarios and optimize treasury operations.</p>
 
 <h3>Capital Call Optimization</h3>
 
@@ -118,7 +118,7 @@ const article: Article = {
 <h2>Key Takeaways</h2>
 
 <ul>
-<li><strong>Subscription credit facilities enable acquisition speed and capital call batching improving LP experience:</strong> Facilities sized at 15-35% of commitments provide immediate acquisition funding allowing competitive transaction execution while calling investor capital quarterly rather than for each transaction, reducing administrative burden and potentially improving investor satisfaction despite interest costs of 5-7% annually.</li>
+<li><strong>Subscription credit facilities enable acquisition speed and capital call batching improving LP experience:</strong> Facilities sized at 15-35% of commitments provide immediate acquisition funding allowing competitive transaction execution while calling investor capital quarterly rather than for each transaction, reducing administrative burden and potentially improving investor satisfaction despite interest costs of 5-7% annually. Use the <a href="/tools/subscription-credit-line">Subscription Credit Line Calculator</a> to model facility impacts on IRR.</li>
 
 <li><strong>Multi-fund cash flow coordination is operationally intensive with 100+ annual capital calls and distributions:</strong> Processing capital calls from 20-50+ underlying funds each operating independently, matching distributions to sources, and maintaining accurate records demands systematic procedures, technology automation, and dedicated treasury resources significantly exceeding primary fund requirements.</li>
 
@@ -136,7 +136,7 @@ const article: Article = {
 
 <li><strong>Banking relationship quality affects facility pricing, platform capabilities, and problem-solving support:</strong> Primary banking relationships with major institutions having private equity fund specialties provide competitive facility pricing (SOFR + 175-275 bps), sophisticated treasury management platforms enabling efficient operations, and responsive relationship bankers facilitating facility negotiations and operational support.</li>
 
-<li><strong>Distribution policy balancing investor liquidity and operational efficiency requires clear communication:</strong> Distributing proceeds promptly maximizes DPI and investor cash return but retaining proceeds for near-term capital calls or acquisitions reduces leverage costs and call frequency—documenting policy in fund terms and communicating execution rationale maintains investor alignment and prevents surprises.</li>
+<li><strong>Distribution policy balancing investor liquidity and operational efficiency requires clear communication:</strong> Distributing proceeds promptly maximizes DPI and investor cash return but retaining proceeds for near-term capital calls or acquisitions reduces leverage costs and call frequency—documenting policy in fund terms and communicating execution rationale maintains investor alignment and prevents surprises. Review <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> guidelines and <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> disclosure requirements for distribution reporting standards.</li>
 </ul>`,
   metaTitle: 'Secondaries Banking: Acquisition Financing, Multi-Fund Cash Flow & Treasury Management',
   metaDescription: 'Comprehensive guide to secondaries treasury covering subscription credit facilities, multi-fund cash coordination, unfunded commitment tracking, liquidity optimization, and banking relationship management.',

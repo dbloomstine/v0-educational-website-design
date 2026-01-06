@@ -15,7 +15,7 @@ const article: Article = {
 
 <h3>Registration Thresholds</h3>
 
-<p>Investment advisers with at least $100 million in AUM generally register with the SEC, while smaller advisers register with states. The Dodd-Frank Act eliminated the private fund adviser exemption, so credit fund managers must register once AUM exceeds $150 million. The venture capital exemption does not apply to lending strategies.</p>
+<p>Investment advisers with at least $100 million in AUM generally register with the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a>, while smaller advisers register with states. The Dodd-Frank Act eliminated the private fund adviser exemption, so credit fund managers must register once AUM exceeds $150 million. The venture capital exemption does not apply to lending strategies. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> outlines key registration milestones for new fund managers.</p>
 
 <p>Registration triggers comprehensive obligations: written compliance policies and procedures, designation of a chief compliance officer, specified books and records per Rule 204-2, Form ADV disclosure, and SEC examination authority.</p>
 
@@ -25,7 +25,7 @@ const article: Article = {
 
 <ul>
 <li><strong>Item 4:</strong> Describe lending strategies—direct origination, whole loan purchases, secondary acquisitions—and target borrower profiles</li>
-<li><strong>Item 5:</strong> Detail fee structures (typically 1.0-2.0% management fee, 10-20% carried interest)</li>
+<li><strong>Item 5:</strong> Detail fee structures (typically 1.0-2.0% management fee, 10-20% carried interest). Use the <a href="/tools/management-fee-calculator">Management Fee Calculator</a> to model these structures.</li>
 <li><strong>Item 8:</strong> Explain underwriting methodologies, credit analysis, and material risks including default, illiquidity, concentration, and bankruptcy risks</li>
 <li><strong>Item 10:</strong> Disclose affiliations with originators, servicers, or placement agents</li>
 </ul>
@@ -122,7 +122,7 @@ const article: Article = {
 
 <h3>Plan Asset Issues</h3>
 
-<p>ERISA Section 406 prohibits transactions between benefit plans and parties in interest, including loans and extensions of credit. The plan assets regulation determines when fund assets are deemed to include plan assets of investing benefit plans.</p>
+<p>ERISA Section 406 prohibits transactions between benefit plans and parties in interest, including loans and extensions of credit. The plan assets regulation determines when fund assets are deemed to include plan assets of investing benefit plans. <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> provides guidance on structuring funds to accommodate institutional LP requirements.</p>
 
 <p>If plan assets status applies: the manager becomes an ERISA fiduciary with duties of prudence and loyalty, fund investments become plan assets subject to prohibited transaction rules, and transactions with parties in interest may violate ERISA. Violations create personal liability, excise taxes, and unwinding of transactions.</p>
 
@@ -140,7 +140,7 @@ const article: Article = {
 
 <h2>Anti-Money Laundering Compliance</h2>
 
-<p>FinCEN rules require SEC-registered advisers to establish AML programs reasonably designed to prevent money laundering and terrorist financing. Programs must include policies and controls, a designated compliance officer, employee training, and independent testing.</p>
+<p>FinCEN rules require <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a>-registered advisers to establish AML programs reasonably designed to prevent money laundering and terrorist financing. Programs must include policies and controls, a designated compliance officer, employee training, and independent testing.</p>
 
 <p>Customer due diligence focuses on identifying fund investors and borrowers: collect beneficial ownership information (25%+ owners and control persons), screen against OFAC's SDN list, assess risk profiles, and conduct enhanced due diligence for higher-risk customers including politically exposed persons.</p>
 
@@ -158,7 +158,7 @@ const article: Article = {
 
 <p>Key requirements:</p>
 <ul>
-<li>Present both gross and net performance (after fees and expenses)</li>
+<li>Present both gross and net performance (after fees and expenses). The <a href="/tools/distribution-waterfall">Distribution Waterfall Visualizer</a> can help model gross vs. net outcomes.</li>
 <li>Disclose calculation methodology (time-weighted vs. IRR)</li>
 <li>Show multiple periods (1-year, 3-year, 5-year, since inception)</li>
 <li>Include all portfolios with substantially similar strategies—no cherry-picking</li>
@@ -233,7 +233,7 @@ const article: Article = {
 <h2>Key Takeaways</h2>
 
 <ul>
-<li><strong>SEC registration triggers credit-specific obligations:</strong> Beyond traditional adviser requirements, credit managers must address lending law compliance, bankruptcy considerations, and loan documentation standards.</li>
+<li><strong><a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> registration triggers credit-specific obligations:</strong> Beyond traditional adviser requirements, credit managers must address lending law compliance, bankruptcy considerations, and loan documentation standards. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> covers registration milestones.</li>
 
 <li><strong>Form ADV must describe credit strategies and risks:</strong> Clearly explain lending approaches, underwriting standards, borrower profiles, and material risks distinguishing credit from equity strategies.</li>
 
@@ -243,7 +243,7 @@ const article: Article = {
 
 <li><strong>Bankruptcy knowledge is essential:</strong> Understanding the automatic stay, reorganization dynamics, secured creditor protections, and avoidance powers enables protective loan structuring and effective workout management.</li>
 
-<li><strong>ERISA considerations affect fundraising:</strong> Most funds limit plan investors below 25% or structure for VCOC qualification to avoid plan asset status and prohibited transaction restrictions.</li>
+<li><strong>ERISA considerations affect fundraising:</strong> Most funds limit plan investors below 25% or structure for VCOC qualification to avoid plan asset status and prohibited transaction restrictions. Consult <a href="https://ilpa.org" target="_blank" rel="noopener noreferrer">ILPA</a> resources for LP structuring best practices.</li>
 
 <li><strong>Marketing Rule requires balanced performance:</strong> Present gross and net, include all substantially similar portfolios, disclose methodologies, and obtain compliance review before dissemination.</li>
 
