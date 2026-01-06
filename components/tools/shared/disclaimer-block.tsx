@@ -75,7 +75,7 @@ export function DisclaimerBlock({
             </p>
 
             <p className="text-xs pt-3 border-t border-border/30 text-muted-foreground/70 font-medium">
-              Content last reviewed: December 2024
+              Content last reviewed: January 2025
             </p>
           </div>
         </div>

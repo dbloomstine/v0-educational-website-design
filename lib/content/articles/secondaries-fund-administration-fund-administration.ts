@@ -7,59 +7,53 @@ const article: Article = {
   subtitle: 'Comprehensive guide to secondaries fund administration including purchase price allocation, dual capital account maintenance, multi-fund coordination, and since-purchase performance calculation',
   fundType: 'secondaries',
   pillar: 'fund-administration',
-  content: `<p>Fund administration for secondaries funds presents unique complexities distinct from traditional private equity administration. Rather than tracking investments from inception through exit, secondaries administrators manage acquired LP interests purchased at specific points in underlying fund lifecycles, often at premiums or discounts to reported Net Asset Value. This creates specialized requirements including purchase accounting allocations, dual capital account tracking reconciling economic reality with tax basis, coordination across multiple underlying fund administrators with diverse reporting standards and schedules, calculation of since-purchase performance metrics measuring returns from acquisition rather than underlying fund inception, and complex waterfall calculations when secondaries funds distribute proceeds from multiple layered structures.</p>
+  content: `<p>Secondaries fund administration differs fundamentally from traditional PE administration. Rather than tracking investments from inception, administrators manage acquired LP interests purchased mid-lifecycle at premiums or discounts to NAV. This creates specialized requirements: purchase accounting allocations, dual capital account tracking (economic vs. tax basis), coordination across multiple underlying fund administrators, since-purchase performance metrics, and layered waterfall calculations.</p>
 
-<p>The operational complexity stems from secondaries funds typically holding positions in 20-50+ underlying funds simultaneously, each with different administrators, vintage years, accounting policies, and distributions schedules. The secondaries fund administrator must aggregate disparate data sources into coherent consolidated reporting, maintain detailed transaction-level tracking enabling performance attribution, coordinate cash management across numerous capital call and distribution events, and provide investors with clear visibility into portfolio composition and returns despite the inherent complexity of acquired positions.</p>
-
-<p>This article examines the comprehensive administrative responsibilities unique to secondaries funds, explores technical accounting and operational challenges, provides practical guidance for establishing efficient processes, and addresses emerging considerations including GP-led transaction accounting, continuation fund administration, and preferred equity structure tracking.</p>
+<p>Secondaries funds typically hold 20-50+ underlying fund positions simultaneously, each with different administrators, vintage years, accounting policies, and distribution schedules. The administrator aggregates disparate data into consolidated reporting, maintains transaction-level tracking for performance attribution, and coordinates cash flows across numerous capital calls and distributions.</p>
 
 <h2>Purchase Accounting and Basis Allocation</h2>
 
-<p>When a secondaries fund acquires an LP interest, the transaction requires purchase accounting determining how to allocate the purchase price paid to the acquired position's underlying assets and establishing initial carrying values for ongoing tracking.</p>
-
 <h3>Fair Value Hierarchy and Allocation</h3>
 
-<p>Purchase price allocation follows fair value accounting principles requiring the administrator to allocate the purchase price to the proportionate share of underlying portfolio companies at their fair values at acquisition date. If the secondaries fund purchases a 5% LP interest in an underlying PE fund for $40 million, and the underlying fund holds 20 portfolio companies with aggregate fair value of $800 million, the acquired 5% interest represents $40 million of underlying portfolio company value. When the purchase price exactly equals this proportionate NAV, allocation is straightforward.</p>
+<p>Purchase price allocation requires allocating the purchase price to underlying portfolio companies at their fair values at acquisition. If the secondaries fund purchases a 5% LP interest for $40 million in a fund holding portfolio companies worth $800 million aggregate, the 5% interest represents $40 million of underlying value. When purchase price equals proportionate NAV, allocation is straightforward.</p>
 
-<p>However, secondaries transactions frequently occur at discounts or premiums to reported NAV. If the secondaries fund pays $36 million (10% discount to the $40 million NAV), the administrator must determine whether the $4 million discount reflects portfolio company values lower than reported marks, liquidity discount for holding illiquid LP interests, seller urgency creating favorable pricing, or other factors. This determination impacts ongoing accounting treatment.</p>
+<p>But secondaries transactions frequently occur at discounts or premiums. If the fund pays $36 million (10% discount to $40 million NAV), the administrator must determine whether the $4 million discount reflects lower portfolio company values than reported marks, liquidity discount, or seller urgency.</p>
 
-<p>If the discount reflects portfolio company value adjustments (the administrator believes underlying marks are too high), the purchase price allocation writes down specific portfolio companies to lower fair values. For example, if the underlying fund marks a software company at $100 million but comparable transactions suggest $80 million represents fair value, the administrator allocates proportionately less value to that company. This approach means the secondaries fund's carrying value diverges from the underlying fund's reported NAV from acquisition, creating ongoing reconciliation requirements.</p>
+<p>If the discount reflects value disagreement, purchase accounting writes down specific companies. For example, if the underlying fund marks a software company at $100 million but comparables suggest $80 million, the administrator allocates proportionately less value, creating ongoing reconciliation requirements as carrying values diverge from reported NAV.</p>
 
-<p>Alternatively, if the discount reflects liquidity rather than fundamental value disagreement, the administrator may record a "basis difference" or discount that amortizes over the expected holding period. This approach maintains carrying values aligned with underlying fund reporting while separately tracking the acquisition discount.</p>
+<p>If the discount reflects liquidity rather than value disagreement, the administrator records a "basis difference" that amortizes over the holding period, maintaining carrying values aligned with underlying fund reporting.</p>
 
 <h3>Intangible Asset Recognition</h3>
 
-<p>In some transactions, particularly GP-led continuation funds, the secondaries buyer may identify and separately value intangible assets including GP relationships, deal sourcing capabilities, or specialized sector expertise that create value beyond portfolio company holdings. These intangibles require separate identification, valuation, and amortization schedules. For example, purchasing a stake in a continuation fund might include valuing the GP's proprietary deal flow at $2 million, amortized over 5 years as the benefit is realized.</p>
+<p>In GP-led continuation funds, the buyer may separately value intangible assets (GP relationships, deal sourcing, sector expertise) beyond portfolio holdings. These require separate valuation and amortization. For example, purchasing a continuation fund stake might value the GP's proprietary deal flow at $2 million, amortized over 5 years.</p>
 
 <h3>Unfunded Commitment Accounting</h3>
 
-<p>Acquired LP interests typically include unfunded capital commitments representing future cash obligations. The administrator records these commitments as contingent liabilities, tracking total commitment, funded amount to date (including the purchase price paid), and remaining unfunded obligation. When underlying funds issue capital calls, the secondaries fund funds its proportionate share, increasing invested capital and reducing unfunded commitments.</p>
+<p>Acquired LP interests typically include unfunded commitments recorded as contingent liabilities. The administrator tracks total commitment, funded amount (including purchase price), and remaining obligation. When underlying funds call capital, the secondaries fund funds its share, increasing invested capital and reducing unfunded commitments.</p>
 
-<p>The accounting treatment differs from primary funds where capital contributions equal committed capital. In secondaries, the purchase price represents one economic investment, while subsequent capital calls represent additional investments requiring separate tracking for performance measurement purposes.</p>
+<p>Unlike primary funds where contributions equal committed capital, secondaries require separate tracking: the purchase price is one economic investment, while subsequent capital calls are additional investments requiring distinct performance measurement.</p>
 
 <h2>Dual Capital Account Tracking</h2>
 
-<p>Perhaps the most complex aspect of secondaries administration is maintaining dual capital account perspectives reconciling economic reality with tax reporting requirements.</p>
+<p>The most complex aspect of secondaries administration is maintaining dual capital account perspectives: economic reality versus tax requirements.</p>
 
 <h3>Economic Capital Accounts</h3>
 
-<p>From an economic perspective, the secondaries fund's investors care about returns measured from their capital contributions into the secondaries fund. When the secondaries fund acquires an LP interest for $36 million, that $36 million represents invested capital from the secondaries fund's economic standpoint. Subsequent distributions from the underlying fund return this invested capital and generate returns. Performance metrics (IRR, MOIC) calculate based on this economic reality.</p>
+<p>Economically, when the secondaries fund acquires an LP interest for $36 million, that $36 million represents invested capital. Performance metrics (IRR, MOIC) calculate from this economic basis.</p>
 
-<p>The administrator maintains economic capital accounts showing each secondaries fund investor's contributions (their share of the $36 million acquisition price plus any subsequent capital calls funded), distributions received (their share of underlying fund distributions), and current carrying value (their proportionate share of the acquired position's current NAV). These economic accounts drive investor reporting and fee calculations.</p>
+<p>The administrator maintains economic accounts showing each investor's contributions (their share of acquisition price plus subsequent capital calls), distributions received, and current carrying value. These drive investor reporting and fee calculations.</p>
 
 <h3>Tax Capital Accounts</h3>
 
-<p>From a tax perspective, the underlying fund's administrator continues tracking capital accounts based on the original LP's contributions, distributions, and allocated income from the fund's inception. When the secondaries fund acquires this interest, it steps into the original LP's tax shoes, inheriting the historical capital account even though economically the secondaries fund paid a different amount.</p>
+<p>For tax purposes, the secondaries fund steps into the original LP's shoes, inheriting the historical capital account regardless of purchase price.</p>
 
-<p>For example, if the original LP contributed $50 million to the underlying fund over its life, received $20 million in distributions, and has $40 million remaining NAV, their tax capital account reflects these amounts. When the secondaries fund purchases this interest for $36 million, the tax capital account remains at $30 million ($50M contributed - $20M distributed), not $36 million. This creates a $6 million difference between economic basis ($36M) and tax basis ($30M).</p>
+<p>Example: The original LP contributed $50 million, received $20 million distributions, and has $40 million NAV. Tax capital account: $30 million ($50M - $20M). When the secondaries fund purchases for $36 million, the tax capital account stays at $30 million, creating a $6 million basis difference between economic ($36M) and tax ($30M).</p>
 
-<p>The administrator must maintain both views: economic accounts for investor reporting and performance measurement, and tax accounts for K-1 preparation reflecting the underlying fund's allocations. Each distribution received requires allocation to both accounts—economically it returns invested capital and generates returns, while for tax it represents return of capital or allocated gain based on the underlying fund's characterization.</p>
+<p>The administrator maintains both views: economic accounts for investor reporting and tax accounts for K-1 preparation. Each distribution requires dual allocation—economically as return of invested capital, for tax as characterized by the underlying fund.</p>
 
-<h3>Section 754 Elections and Basis Adjustments</h3>
+<h3>Section 754 Elections</h3>
 
-<p>Some underlying funds make IRC Section 754 elections allowing step-up (or step-down) of inside basis when partnership interests transfer. If the underlying fund has a 754 election in place, the secondaries fund may receive basis adjustments bringing tax basis closer to economic basis, simplifying ongoing administration. However, many funds don't have 754 elections, requiring the administrator to maintain the basis differences throughout the holding period.</p>
-
-<p>The administrator tracks whether each underlying fund has 754 elections, coordinates with underlying fund administrators on basis adjustment calculations when applicable, and maintains detailed schedules reconciling economic and tax basis for positions without adjustments.</p>
+<p>Some underlying funds make IRC Section 754 elections allowing basis step-up when interests transfer, bringing tax basis closer to economic basis. Without 754 elections, the administrator maintains basis differences throughout the holding period, tracking each underlying fund's election status and coordinating basis adjustment calculations where applicable.</p>
 
 <h2>Multi-Fund Position and Data Management</h2>
 

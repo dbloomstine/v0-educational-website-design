@@ -7,21 +7,17 @@ const article: Article = {
   subtitle: 'Detailed guide to structuring fund-level insurance programs with quantitative benchmarks for policy limits, premiums, and coverage requirements',
   fundType: 'private-equity',
   pillar: 'insurance',
-  content: `<article><section><h2>Introduction to PE Fund Insurance Programs</h2>
+  content: `<article><section><h2>PE Fund Insurance Economics</h2>
 
-<p>Private equity fund managers face a complex landscape of operational, regulatory, and fiduciary risks that require comprehensive insurance coverage tailored to their unique business model. As funds grow in size and complexity, exposure to claims from limited partners, portfolio companies, regulators, and other stakeholders increases substantially. According to <a href="https://www.aon.com/" target="_blank" rel="noopener noreferrer">Aon's annual insurance market report</a>, claims against PE fund managers have increased 35% since 2019, with average defense costs exceeding $1.2 million per claim even when allegations prove unfounded.</p>
+<p>According to <a href="https://www.aon.com/" target="_blank" rel="noopener noreferrer">Aon's annual insurance market report</a>, claims against PE fund managers have increased 35% since 2019, with average defense costs exceeding $1.2 million per claim even when allegations prove unfounded.</p>
 
-<p>For a typical $750 million mid-market PE fund, annual insurance costs range from $250,000-450,000 across all coverage lines, representing approximately 1-2% of management fee revenue. This investment provides protection against claim scenarios that could otherwise consume years of fund economics: a single SEC enforcement action can result in $5-25 million in penalties and legal fees, while investor litigation following a failed investment may generate $10-50 million in damages claims. Properly structured insurance programs transform these potentially catastrophic exposures into manageable, budgeted expenses.</p>
-
-<p>This comprehensive guide examines each essential coverage type with specific policy limits, premium benchmarks, and practical implementation guidance for fund CFOs and operations professionals. For related topics on financial oversight and risk management, see our guides on <a href="/articles/private-equity/cfo/cfo-responsibilities">CFO Responsibilities</a> and <a href="/articles/private-equity/compliance/compliance">Compliance for Private Equity Funds</a>.</p></section>
+<p>For a $750 million mid-market PE fund, annual insurance costs range from $250,000-450,000 across all coverage lines (1-2% of management fee revenue). A single SEC enforcement action can result in $5-25 million in penalties and legal fees; investor litigation following a failed investment may generate $10-50 million in damages claims. Properly structured insurance transforms catastrophic exposures into budgeted expenses.</p></section>
 
 <section><h2>Directors and Officers (D&O) Liability Insurance</h2>
 
-<p>D&O liability insurance represents the cornerstone of PE fund insurance programs, protecting fund managers, general partners, and individual directors and officers from personal liability arising from alleged wrongful acts in their management capacity. Given that PE professionals frequently serve on 3-8 portfolio company boards simultaneously, D&O exposure spans both fund-level decisions and portfolio company governance responsibilities.</p>
+<p>D&O protects fund managers, GPs, and individual officers from personal liability for alleged wrongful acts. PE professionals serving on 3-8 portfolio company boards face exposure spanning fund-level decisions and portfolio company governance.</p>
 
 <h3>D&O Coverage Structure: Side A, B, and C</h3>
-
-<p>Standard D&O policies provide three distinct coverage sections, each addressing different claim scenarios:</p>
 
 <table>
 <thead>
@@ -36,7 +32,7 @@ const article: Article = {
 
 <h3>D&O Policy Limits by Fund Size</h3>
 
-<p>Appropriate D&O limits depend on fund size, number of portfolio companies, investment strategy, and jurisdictional exposure. Industry benchmarks from <a href="https://www.lockton.com/" target="_blank" rel="noopener noreferrer">Lockton</a> and other specialty brokers suggest:</p>
+<p>Industry benchmarks from <a href="https://www.lockton.com/" target="_blank" rel="noopener noreferrer">Lockton</a>:</p>
 
 <table>
 <thead>
@@ -53,7 +49,7 @@ const article: Article = {
 
 <h3>D&O Retention (Deductible) Structures</h3>
 
-<p>D&O retentions typically apply only to Side B and Side C claims, with Side A coverage often providing zero retention for individuals:</p>
+<p>Retentions apply to Side B and Side C claims only:</p>
 
 <ul>
 <li><strong>Emerging managers ($100-500M):</strong> $50,000-150,000 retention</li>
@@ -64,20 +60,18 @@ const article: Article = {
 
 <h3>Critical D&O Coverage Extensions</h3>
 
-<p>Beyond base coverage, ensure D&O policies include these essential extensions:</p>
-
 <ul>
-<li><strong>Outside directorship liability:</strong> Coverage for fund professionals serving on portfolio company boards (confirm adequate limits separate from fund D&O)</li>
-<li><strong>Regulatory investigation coverage:</strong> Defense costs for SEC examinations, DOJ inquiries, state attorney general investigations (subpoena response alone can cost $100,000-500,000)</li>
-<li><strong>Advancement of defense costs:</strong> Insurer pays defense costs as incurred rather than after claim resolution</li>
-<li><strong>Broad definition of claim:</strong> Includes formal and informal regulatory proceedings, grand jury subpoenas, target letters</li>
-<li><strong>Non-rescindable coverage:</strong> Insurer cannot rescind coverage based on application misstatements by other insureds</li>
+<li><strong>Outside directorship liability:</strong> Coverage for portfolio company board service (confirm adequate limits separate from fund D&O)</li>
+<li><strong>Regulatory investigation coverage:</strong> SEC examinations, DOJ inquiries, state AG investigations (subpoena response alone costs $100,000-500,000)</li>
+<li><strong>Advancement of defense costs:</strong> Insurer pays as incurred, not after claim resolution</li>
+<li><strong>Broad definition of claim:</strong> Formal and informal regulatory proceedings, grand jury subpoenas, target letters</li>
+<li><strong>Non-rescindable coverage:</strong> Insurer cannot rescind based on application misstatements by other insureds</li>
 <li><strong>Discovery period:</strong> 6-12 month extended reporting period if policy not renewed</li>
 </ul></section>
 
 <section><h2>Side A DIC (Difference in Conditions) Coverage</h2>
 
-<p>Side A DIC policies provide dedicated protection for individual directors and officers that sits above or alongside standard D&O coverage, responding when primary coverage is unavailable, exhausted, or contains coverage gaps. For PE professionals with significant personal assets and board service across multiple entities, Side A DIC coverage represents essential protection that standard D&O policies cannot fully replicate.</p>
+<p>Side A DIC provides dedicated individual protection above or alongside standard D&O, responding when primary coverage is unavailable, exhausted, or contains gaps.</p>
 
 <h3>When Side A DIC Coverage Responds</h3>
 
@@ -106,15 +100,15 @@ const article: Article = {
 <h3>Key Side A DIC Policy Features</h3>
 
 <ul>
-<li><strong>No retention:</strong> Coverage responds from dollar one with no deductible for individuals</li>
-<li><strong>Broader coverage terms:</strong> Fewer exclusions than standard D&O; more favorable definitions</li>
-<li><strong>Independent of underlying:</strong> Coverage determined solely by DIC policy terms, not primary policy</li>
-<li><strong>Personal asset protection:</strong> Specifically designed to protect individual wealth when corporate indemnification unavailable</li>
+<li><strong>No retention:</strong> Coverage responds from dollar one</li>
+<li><strong>Broader coverage terms:</strong> Fewer exclusions than standard D&O</li>
+<li><strong>Independent of underlying:</strong> Coverage determined solely by DIC policy terms</li>
+<li><strong>Personal asset protection:</strong> Protects individual wealth when corporate indemnification unavailable</li>
 </ul></section>
 
 <section><h2>Errors and Omissions (E&O) / Professional Liability Insurance</h2>
 
-<p>Errors and Omissions insurance protects PE fund managers against claims arising from professional services rendered as investment advisers. While D&O coverage focuses on management decisions and fiduciary duties, E&O addresses claims related to investment advice, portfolio management execution, fee calculations, and representations in marketing materials.</p>
+<p>E&O protects against claims from professional services as investment advisers: investment advice, portfolio management execution, fee calculations, and marketing representations. D&O focuses on management decisions and fiduciary duties.</p>
 
 <h3>E&O vs. D&O Coverage Distinction</h3>
 
@@ -150,16 +144,16 @@ const article: Article = {
 <h3>E&O Coverage Considerations for PE Funds</h3>
 
 <ul>
-<li><strong>Claims-made coverage:</strong> E&O policies respond to claims first made during the policy period regardless of when the alleged act occurred; maintain continuous coverage and protect retroactive dates</li>
-<li><strong>Regulatory coverage:</strong> Verify policy covers SEC, FINRA, and state regulatory proceedings including document production costs and examination response</li>
-<li><strong>Fund entity coverage:</strong> Ensure policy covers the fund, GP, and management company—not just individuals</li>
-<li><strong>Coverage for outsourced functions:</strong> Claims arising from administrator, auditor, or other service provider errors may implicate fund's oversight responsibilities</li>
+<li><strong>Claims-made coverage:</strong> Responds to claims first made during policy period; maintain continuous coverage and protect retroactive dates</li>
+<li><strong>Regulatory coverage:</strong> Verify coverage for SEC, FINRA, and state proceedings including document production costs</li>
+<li><strong>Fund entity coverage:</strong> Ensure coverage for fund, GP, and management company—not just individuals</li>
+<li><strong>Outsourced functions:</strong> Administrator or auditor errors may implicate fund's oversight responsibilities</li>
 <li><strong>Performance fee disputes:</strong> Carried interest calculation errors can generate significant claims; confirm coverage applies</li>
 </ul></section>
 
 <section><h2>Cyber Liability Insurance</h2>
 
-<p>Cyber liability insurance has evolved from optional coverage to essential protection as PE funds increasingly rely on digital infrastructure and face sophisticated threat actors targeting financial services firms. According to <a href="https://www.ibm.com/reports/data-breach" target="_blank" rel="noopener noreferrer">IBM's Cost of a Data Breach Report</a>, financial services firms experienced average breach costs of $5.9 million in 2023, with costs continuing to rise annually.</p>
+<p>According to <a href="https://www.ibm.com/reports/data-breach" target="_blank" rel="noopener noreferrer">IBM's Cost of a Data Breach Report</a>, financial services firms experienced average breach costs of $5.9 million in 2023.</p>
 
 <h3>Cyber Coverage Components</h3>
 
@@ -196,23 +190,23 @@ const article: Article = {
 
 <h3>Cyber Insurance Underwriting Requirements</h3>
 
-<p>Insurers increasingly require specific security controls as conditions for coverage or favorable pricing:</p>
+<p>Required controls for coverage or favorable pricing:</p>
 
 <ul>
-<li><strong>Multi-factor authentication (MFA):</strong> Required for email, VPN, and privileged accounts—non-negotiable for most carriers</li>
+<li><strong>Multi-factor authentication (MFA):</strong> Required for email, VPN, privileged accounts—non-negotiable for most carriers</li>
 <li><strong>Endpoint detection and response (EDR):</strong> Advanced malware protection beyond traditional antivirus</li>
 <li><strong>Email security:</strong> Advanced threat protection, DMARC implementation, phishing simulation training</li>
 <li><strong>Backup procedures:</strong> Offline/immutable backups with tested recovery procedures</li>
 <li><strong>Privileged access management:</strong> Controls over administrator and elevated access accounts</li>
-<li><strong>Security awareness training:</strong> Regular employee training with phishing simulations (monthly preferred)</li>
+<li><strong>Security awareness training:</strong> Regular training with phishing simulations (monthly preferred)</li>
 <li><strong>Incident response plan:</strong> Documented procedures tested through tabletop exercises</li>
 </ul>
 
-<p>Funds lacking these controls face premium surcharges of 25-100%, coverage restrictions, or declined applications. Investing $50,000-150,000 annually in cybersecurity improvements can reduce insurance costs while genuinely reducing risk exposure. For detailed guidance, see our <a href="/articles/private-equity/cyber-it/cybersecurity-it-infrastructure">Cybersecurity article</a>.</p></section>
+<p>Funds lacking these controls face premium surcharges of 25-100%, coverage restrictions, or declined applications. Investing $50,000-150,000 annually in cybersecurity improvements can reduce insurance costs while reducing actual risk.</p></section>
 
 <section><h2>Crime and Fidelity Insurance</h2>
 
-<p>Crime insurance protects PE funds against direct financial losses from employee dishonesty, forgery, theft, computer fraud, and funds transfer fraud. While internal fraud may seem unlikely, the substantial assets flowing through fund accounts create attractive targets for both internal and external actors.</p>
+<p>Crime insurance covers direct losses from employee dishonesty, forgery, theft, computer fraud, and funds transfer fraud.</p>
 
 <h3>Crime Coverage Components</h3>
 
@@ -241,19 +235,17 @@ const article: Article = {
 
 <h3>Crime Loss Prevention Controls</h3>
 
-<p>Insurers evaluate internal controls when underwriting crime coverage:</p>
-
 <ul>
 <li><strong>Dual authorization:</strong> Two-person approval for wire transfers exceeding $50,000-100,000</li>
 <li><strong>Callback verification:</strong> Phone confirmation of wire instructions to known numbers (not numbers in the wire request)</li>
 <li><strong>Segregation of duties:</strong> Separate individuals for initiating and approving payments</li>
 <li><strong>Background checks:</strong> Comprehensive screening for employees with financial access</li>
-<li><strong>Reconciliation procedures:</strong> Daily bank account reconciliation to detect unauthorized transactions promptly</li>
+<li><strong>Reconciliation procedures:</strong> Daily bank account reconciliation to detect unauthorized transactions</li>
 </ul></section>
 
 <section><h2>Employment Practices Liability Insurance (EPLI)</h2>
 
-<p>EPLI protects PE fund management companies against employment-related claims from current, former, or prospective employees. While PE firms typically have smaller headcounts (10-50 employees) than corporate enterprises, the high-compensation environment and competitive culture can generate significant employment disputes.</p>
+<p>EPLI protects against employment-related claims. PE firms (typically 10-50 employees) with high-compensation environments can generate significant disputes.</p>
 
 <h3>EPLI Coverage Scope</h3>
 
@@ -283,15 +275,15 @@ const article: Article = {
 
 <ul>
 <li><strong>Employee handbook:</strong> Clear policies on harassment, discrimination, complaint procedures; annual acknowledgment</li>
-<li><strong>Training programs:</strong> Annual harassment prevention training (required in many states including CA, NY, IL)</li>
+<li><strong>Training programs:</strong> Annual harassment prevention training (required in CA, NY, IL)</li>
 <li><strong>Investigation procedures:</strong> Documented process for handling complaints; consistent application</li>
-<li><strong>Termination protocols:</strong> Legal review of terminations; documentation of performance issues</li>
-<li><strong>Compensation documentation:</strong> Clear bonus/carry documentation to reduce disputes over compensation entitlements</li>
+<li><strong>Termination protocols:</strong> Legal review of terminations; document performance issues</li>
+<li><strong>Compensation documentation:</strong> Clear bonus/carry documentation to reduce disputes</li>
 </ul></section>
 
 <section><h2>Portfolio Company Insurance Oversight</h2>
 
-<p>PE funds must establish comprehensive insurance oversight for portfolio companies, as inadequate coverage can impair investment value, create unexpected liabilities for the fund, or expose fund professionals serving as directors. This oversight responsibility begins during acquisition due diligence and continues through exit.</p>
+<p>Inadequate portfolio company coverage can impair investment value, create unexpected fund liabilities, or expose fund directors. Oversight runs from acquisition due diligence through exit.</p>
 
 <h3>Acquisition Due Diligence Insurance Review</h3>
 
@@ -310,8 +302,6 @@ const article: Article = {
 </table>
 
 <h3>Portfolio Company Insurance Requirements</h3>
-
-<p>Standard fund-imposed requirements for portfolio companies:</p>
 
 <table>
 <thead>
@@ -332,21 +322,21 @@ const article: Article = {
 <h3>Additional Insured and Notice Requirements</h3>
 
 <ul>
-<li><strong>Additional insured status:</strong> Fund (GP and LP entities) named as additional insured on GL, auto, and umbrella policies; provides direct coverage and policy notice rights</li>
-<li><strong>Certificate of insurance:</strong> Annual certificates confirming coverage in force; automatic notification of cancellation or non-renewal (30-60 days advance notice)</li>
-<li><strong>Waiver of subrogation:</strong> Policy endorsement preventing insurer from pursuing claims against fund</li>
-<li><strong>Primary/non-contributory:</strong> Portfolio company coverage responds first before fund's coverage</li>
+<li><strong>Additional insured status:</strong> Fund (GP/LP entities) named on GL, auto, umbrella policies; provides direct coverage and notice rights</li>
+<li><strong>Certificate of insurance:</strong> Annual certificates; 30-60 days advance cancellation notice</li>
+<li><strong>Waiver of subrogation:</strong> Prevents insurer from pursuing claims against fund</li>
+<li><strong>Primary/non-contributory:</strong> Portfolio company coverage responds first</li>
 </ul>
 
 <h3>Representations and Warranties Insurance (RWI)</h3>
 
-<p>For acquisitions, Representations and Warranties Insurance provides coverage for breaches of seller representations in the purchase agreement. RWI has become standard in PE transactions, allowing sellers to achieve "clean exits" while providing buyers with recourse beyond escrow holdbacks.</p>
+<p>RWI covers breaches of seller representations in purchase agreements. Standard in PE transactions.</p>
 
 <ul>
 <li><strong>Typical coverage:</strong> 10-20% of enterprise value</li>
 <li><strong>Premium:</strong> 2.5-4.0% of coverage limit (one-time payment)</li>
 <li><strong>Retention:</strong> 0.5-1.0% of enterprise value (often declining over policy term)</li>
-<li><strong>Policy term:</strong> 3 years for general reps; 6 years for fundamental reps; longer for tax and environmental</li>
+<li><strong>Policy term:</strong> 3 years for general reps; 6 years for fundamental reps; longer for tax/environmental</li>
 </ul></section>
 
 <section><h2>Insurance Broker Selection and Management</h2>
