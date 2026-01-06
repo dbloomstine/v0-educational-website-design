@@ -277,6 +277,7 @@ const article: Article = {
   metaTitle: 'GP-Stakes Fund Administration: Management Company Accounting, Valuation & Cash Flow Processing',
   metaDescription: 'Comprehensive guide to GP-stakes fund administration covering partnership equity accounting, DCF valuation methodologies, multi-source cash flow processing, portfolio GP business metrics, and specialized reporting requirements.',
   publishedDate: 'November 6, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 36,
 }
 

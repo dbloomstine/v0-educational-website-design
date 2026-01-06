@@ -208,6 +208,7 @@ const article: Article = {
   metaTitle: 'Technology Infrastructure and Cybersecurity for Private Credit Funds',
   metaDescription: 'Complete guide to private credit technology: loan servicing platforms, covenant tracking systems, data security, document management, cybersecurity, and regulatory technology.',
   publishedDate: 'November 8, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 12,
 }
 

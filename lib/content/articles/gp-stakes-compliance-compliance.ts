@@ -237,6 +237,7 @@ const article: Article = {
   metaTitle: 'GP-Stakes Compliance: Affiliate Transactions, Information Barriers & Valuation Governance',
   metaDescription: 'Comprehensive guide to GP-stakes compliance covering affiliate transaction controls, information barriers for confidential data, valuation governance, co-investment allocation, Form ADV reporting, and regulatory coordination.',
   publishedDate: 'November 4, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 25,
 }
 

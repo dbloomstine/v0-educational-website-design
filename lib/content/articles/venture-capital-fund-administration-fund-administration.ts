@@ -448,6 +448,7 @@ const article: Article = {
   metaTitle: 'Venture Capital Fund Administration: Early-Stage Portfolio Management',
   metaDescription: 'Comprehensive guide to VC fund administration covering NAV calculation for early-stage companies, 409A coordination, down round accounting, liquidation preference tracking, and follow-on reserve management.',
   publishedDate: 'November 20, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 30,
 }
 

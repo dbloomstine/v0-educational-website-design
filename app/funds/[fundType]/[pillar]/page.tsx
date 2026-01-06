@@ -33,9 +33,16 @@ export default async function PillarPage({ params }: PillarPageProps) {
   const relatedArticles = getRelatedArticles(article)
   const tools = getAllTools().filter(tool => tool.status === 'active').slice(0, 4)
 
-  // Format date for display
+  // Format dates for display
   const publishedDate = new Date(article.publishedDate)
-  const formattedDate = publishedDate.toLocaleDateString('en-US', {
+  const formattedPublishedDate = publishedDate.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
+  const lastUpdatedDate = article.lastUpdatedDate ? new Date(article.lastUpdatedDate) : null
+  const formattedLastUpdatedDate = lastUpdatedDate?.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -48,7 +55,7 @@ export default async function PillarPage({ params }: PillarPageProps) {
     headline: article.title,
     description: article.subtitle,
     datePublished: publishedDate.toISOString(),
-    dateModified: publishedDate.toISOString(),
+    dateModified: (lastUpdatedDate || publishedDate).toISOString(),
     author: {
       '@type': 'Person',
       name: 'Danny Bloomstine',
@@ -143,7 +150,13 @@ export default async function PillarPage({ params }: PillarPageProps) {
 
                 <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>{formattedDate}</span>
+                    <span>Published: {formattedPublishedDate}</span>
+                    {formattedLastUpdatedDate && formattedLastUpdatedDate !== formattedPublishedDate && (
+                      <>
+                        <span className="text-border">|</span>
+                        <span>Updated: {formattedLastUpdatedDate}</span>
+                      </>
+                    )}
                     <span className="text-border">|</span>
                     <span>{article.readingTime} min read</span>
                   </div>
@@ -250,7 +263,7 @@ export async function generateMetadata({ params }: PillarPageProps) {
       description: article.metaDescription,
       type: 'article',
       publishedTime: new Date(article.publishedDate).toISOString(),
-      modifiedTime: new Date(article.publishedDate).toISOString(),
+      modifiedTime: new Date(article.lastUpdatedDate || article.publishedDate).toISOString(),
       authors: ['FundOpsHQ'],
       url,
       siteName: 'FundOpsHQ',

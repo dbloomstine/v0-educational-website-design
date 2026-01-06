@@ -131,6 +131,7 @@ const article: Article = {
   metaTitle: 'Infrastructure Fund CFO: Project Finance, Regulation, Capital Planning, and Stakeholder Management',
   metaDescription: 'Comprehensive guide to infrastructure CFO responsibilities covering project finance structuring, utility rate-making, concession compliance, multi-decade capital planning, ESG leadership, and institutional investor reporting.',
   publishedDate: 'November 26, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 10,
 }
 

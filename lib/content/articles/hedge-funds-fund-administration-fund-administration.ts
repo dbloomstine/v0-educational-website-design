@@ -239,6 +239,7 @@ const article: Article = {
   metaTitle: 'Hedge Fund Administration: NAV Calculation and Investor Servicing',
   metaDescription: 'Complete guide to hedge fund administration covering daily NAV calculation, trade reconciliation, performance fees, capital accounts, and administrator oversight.',
   publishedDate: 'November 16, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 24,
 }
 

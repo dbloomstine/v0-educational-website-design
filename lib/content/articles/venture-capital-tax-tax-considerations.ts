@@ -11,6 +11,7 @@ const article: Article = {
   metaTitle: 'Tax Considerations for Venture Capital Funds: QSBS, K-1s & Cross-Border',
   metaDescription: 'Comprehensive guide to VC fund taxation including QSBS eligibility tracking, K-1 preparation, gain characterization, worthless stock deductions, cross-border considerations, and blocker structures for international investors.',
   publishedDate: 'November 24, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 19,
 }
 

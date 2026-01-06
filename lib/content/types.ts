@@ -28,6 +28,7 @@ export interface Article {
   metaTitle: string
   metaDescription: string
   publishedDate: string
+  lastUpdatedDate?: string // optional, shown if present
   readingTime: number // minutes
   relatedArticles?: string[] // article IDs
 }

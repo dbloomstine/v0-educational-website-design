@@ -235,6 +235,7 @@ const article: Article = {
   metaTitle: 'Secondaries Cybersecurity and IT: Data Protection, Portfolio Systems, and Technology Infrastructure',
   metaDescription: 'Comprehensive guide to secondaries technology covering cybersecurity governance, endpoint protection, email security, data rooms, portfolio management systems, incident response, regulatory compliance, and vendor risk management.',
   publishedDate: 'November 9, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 29,
 }
 

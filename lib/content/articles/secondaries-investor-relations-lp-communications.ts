@@ -225,6 +225,7 @@ const article: Article = {
   metaTitle: 'Secondaries Fund Investor Relations: Portfolio Transparency, Deal Selection, and Return Attribution',
   metaDescription: 'Comprehensive guide to secondaries IR covering portfolio composition reporting, transaction transparency, performance attribution, quarterly communications, annual meetings, LPAC governance, and LP relationship management.',
   publishedDate: 'November 13, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 23,
 }
 

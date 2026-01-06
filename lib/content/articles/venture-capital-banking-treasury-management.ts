@@ -124,6 +124,7 @@ const article: Article = {
   metaTitle: 'Banking and Treasury Management for Venture Capital Funds',
   metaDescription: 'Comprehensive guide to VC fund treasury operations: subscription lines, rapid wire execution, signature authority, capital call cycles, and cash management for high-velocity investing.',
   publishedDate: 'November 16, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 7,
 }
 

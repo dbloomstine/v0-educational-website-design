@@ -239,6 +239,7 @@ const article: Article = {
   metaTitle: 'Fund Administration for Private Credit: NAV Calculation & Valuation',
   metaDescription: 'Guide to private credit fund administration covering loan accounting, NAV calculation, fair value measurement, credit mark governance, interest income recognition, and debt investor reporting.',
   publishedDate: 'November 9, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 11,
 }
 

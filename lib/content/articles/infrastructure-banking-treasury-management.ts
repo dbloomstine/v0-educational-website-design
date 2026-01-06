@@ -145,6 +145,7 @@ const article: Article = {
   metaTitle: 'Infrastructure Banking: Project Finance, Debt Management, and Treasury Operations',
   metaDescription: 'Comprehensive guide to infrastructure treasury covering project finance structures, lender relationships, interest rate hedging, cash management, and refinancing strategies.',
   publishedDate: 'November 25, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 12,
 }
 

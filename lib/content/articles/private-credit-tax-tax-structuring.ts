@@ -11,6 +11,7 @@ const article: Article = {
   metaTitle: 'Tax Considerations for Private Credit Funds: K-1, UBTI, OID & Structuring',
   metaDescription: 'Comprehensive guide to private credit fund taxation including K-1 preparation, UBTI management for tax-exempt investors, interest income treatment, offshore blocker structures, and OID/market discount rules.',
   publishedDate: 'November 14, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 24,
 }
 

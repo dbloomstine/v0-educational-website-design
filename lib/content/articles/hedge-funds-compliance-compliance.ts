@@ -239,6 +239,7 @@ const article: Article = {
   metaTitle: 'Compliance for Hedge Funds: Regulations and Trading Requirements',
   metaDescription: 'Comprehensive guide to hedge fund compliance including Form PF, Volcker Rule, Regulation SHO, insider trading prevention, marketing rules, and compliance program implementation.',
   publishedDate: 'November 14, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 25,
 }
 

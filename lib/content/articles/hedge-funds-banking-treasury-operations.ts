@@ -205,6 +205,7 @@ const article: Article = {
   metaTitle: 'Hedge Fund Banking and Treasury: Cash Management and FX Operations',
   metaDescription: 'Complete guide to hedge fund treasury covering prime broker cash management, liquidity forecasting, multi-currency operations, margin financing, and payment controls.',
   publishedDate: 'November 12, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 27,
 }
 

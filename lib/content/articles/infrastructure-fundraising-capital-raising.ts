@@ -176,6 +176,7 @@ const article: Article = {
   metaTitle: 'Infrastructure Fundraising: Institutional Capital, ESG, and Long-Term Commitments',
   metaDescription: 'Guide to infrastructure fundraising covering institutional investor targeting, ESG positioning with impact measurement, fund terms and structure, placement agent economics, and fundraising process management.',
   publishedDate: 'November 30, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 10,
 }
 

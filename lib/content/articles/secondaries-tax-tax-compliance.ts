@@ -275,6 +275,7 @@ const article: Article = {
   metaTitle: 'Secondaries Fund Tax: Section 743(b) Adjustments, Multi-Fund K-1s, UBTI & State Tax',
   metaDescription: 'Comprehensive guide to secondaries tax covering purchase basis allocation, Section 754 elections, coordinating underlying fund K-1s, built-in gains, UBTI, blocker corporations, state and international tax, and investor reporting.',
   publishedDate: 'November 14, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 37,
 }
 

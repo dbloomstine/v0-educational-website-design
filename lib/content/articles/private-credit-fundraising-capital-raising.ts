@@ -11,6 +11,7 @@ const article: Article = {
   metaTitle: 'Fundraising for Private Credit Funds: Capital Raising Guide',
   metaDescription: 'Comprehensive guide to private credit fundraising: LP due diligence, track record presentation, income-focused investors, BDC structures, interval funds, and evergreen fund considerations.',
   publishedDate: 'November 10, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 26,
 }
 

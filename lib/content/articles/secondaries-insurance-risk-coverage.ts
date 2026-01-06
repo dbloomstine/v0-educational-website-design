@@ -193,6 +193,7 @@ const article: Article = {
   metaTitle: 'Secondaries Insurance: R&W Coverage, D&O Protection, Cyber Risk, and Comprehensive Risk Management',
   metaDescription: 'Comprehensive guide to secondaries insurance covering D&O liability, E&O coverage, cyber risk, R&W insurance, fiduciary liability, EPLI, crime coverage, contingent liabilities, claims management, and portfolio risk assessment.',
   publishedDate: 'November 12, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 25,
 }
 

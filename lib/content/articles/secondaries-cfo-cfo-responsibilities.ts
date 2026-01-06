@@ -269,6 +269,7 @@ const article: Article = {
   metaTitle: 'Secondaries Fund CFO: Transaction Execution, Valuation & Portfolio Management',
   metaDescription: 'Comprehensive guide to secondaries fund CFO responsibilities covering LP interest valuation, GP-led structures, continuation funds, transaction execution, and operational integration.',
   publishedDate: 'November 7, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 28,
 }
 

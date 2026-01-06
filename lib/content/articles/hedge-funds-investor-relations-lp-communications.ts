@@ -161,6 +161,7 @@ const article: Article = {
   metaTitle: 'Hedge Fund Investor Relations: Reporting and Communication Strategies',
   metaDescription: 'Comprehensive guide to hedge fund investor relations covering monthly reporting, difficult conversations, ODD management, redemption strategies, and crisis communications.',
   publishedDate: 'November 19, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 10,
 }
 

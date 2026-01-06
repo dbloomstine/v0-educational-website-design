@@ -131,6 +131,7 @@ const article: Article = {
   metaTitle: 'CFO Responsibilities in Private Credit Fund Operations',
   metaDescription: 'Complete guide to private credit CFO duties: loan accounting, covenant monitoring, credit portfolio oversight, regulatory compliance, and operational best practices.',
   publishedDate: 'November 6, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 11,
 }
 

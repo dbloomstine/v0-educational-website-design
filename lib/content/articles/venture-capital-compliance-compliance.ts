@@ -151,6 +151,7 @@ const article: Article = {
   metaTitle: 'VC Fund Compliance: Adviser Exemption, Form ADV/PF & QSBS Guide',
   metaDescription: 'Comprehensive compliance guide for venture capital funds covering VC adviser exemption requirements, Form ADV/PF obligations, investment restrictions, QSBS structuring, pay-to-play rules, and NVCA standards.',
   publishedDate: 'November 18, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 12,
 }
 

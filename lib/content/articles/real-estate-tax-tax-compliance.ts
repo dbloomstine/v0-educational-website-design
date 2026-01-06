@@ -190,6 +190,7 @@ const article: Article = {
   metaTitle: 'Real Estate Fund Tax: Partnership Rules, REIT Structures, Cost Segregation, Multi-State Compliance, and K-1 Preparation',
   metaDescription: 'Comprehensive guide to real estate fund tax covering partnership taxation, Section 704(b) capital accounts, REIT qualification, cost segregation studies, 1031 exchanges, multi-state compliance, UBTI, FIRPTA withholding, property tax, and carried interest Section 1061 rules.',
   publishedDate: 'November 4, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 32,
 }
 

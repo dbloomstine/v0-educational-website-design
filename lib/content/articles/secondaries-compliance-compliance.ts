@@ -297,6 +297,7 @@ const article: Article = {
   metaTitle: 'Secondaries Fund Compliance: Transfer Restrictions, ERISA, GP Consent & Regulatory Approvals',
   metaDescription: 'Comprehensive guide to secondaries compliance covering LP transfer approvals, GP consent processes, Form ADV/PF reporting, ERISA plan assets, AML/KYC, cross-border regulatory requirements, and multi-fund oversight coordination.',
   publishedDate: 'November 8, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 34,
 }
 

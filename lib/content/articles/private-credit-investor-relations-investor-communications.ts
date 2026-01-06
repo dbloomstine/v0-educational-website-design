@@ -71,6 +71,7 @@ const article: Article = {
   metaTitle: 'Private Credit Investor Relations: LP Communications & Portfolio Reporting',
   metaDescription: 'Complete guide to private credit IR: credit portfolio reporting, covenant compliance disclosures, quarterly metrics, default reporting, income distributions, and LP communications best practices.',
   publishedDate: 'November 12, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 23,
 }
 

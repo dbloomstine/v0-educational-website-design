@@ -11,6 +11,7 @@ const article: Article = {
   metaTitle: 'Investor Relations in Private Equity: Quarterly Reporting & LP Communications',
   metaDescription: 'Complete guide to PE investor relations: quarterly reporting, annual deliverables, ILPA guidelines, investor portals, crisis communications, and LP engagement.',
   publishedDate: 'November 23, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 27,
 }
 

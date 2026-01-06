@@ -179,6 +179,15 @@ export function SiteFooter() {
 
         <div className="mt-12 border-t border-border pt-8 text-center text-sm text-muted-foreground space-y-2">
           <p>© {new Date().getFullYear()} FundOpsHQ. All rights reserved.</p>
+          <p className="flex items-center justify-center gap-4">
+            <Link href="/privacy" className="hover:text-foreground transition-colors">
+              Privacy Policy
+            </Link>
+            <span className="text-border">|</span>
+            <Link href="/terms" className="hover:text-foreground transition-colors">
+              Terms of Service
+            </Link>
+          </p>
           <p>
             Built by <a href="https://www.linkedin.com/in/danny-bloomstine/" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary underline">Danny Bloomstine</a>
           </p>

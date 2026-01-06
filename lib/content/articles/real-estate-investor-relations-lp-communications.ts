@@ -297,6 +297,7 @@ const article: Article = {
   metaTitle: 'Real Estate Fund Investor Relations: Reporting, Property Tours, Capital Communications, and LP Management',
   metaDescription: 'Comprehensive guide to real estate fund investor relations covering quarterly performance reporting, property operational updates, capital calls and distributions, annual meetings and property tours, LPAC management, crisis communications, ESG reporting, and institutional investor servicing.',
   publishedDate: 'November 2, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 30,
 }
 

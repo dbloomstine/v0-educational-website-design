@@ -9,6 +9,7 @@ export const article: Article = {
   pillar: 'investor-relations',
   readingTime: 29,
   publishedDate: 'November 23, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   metaTitle: 'VC Investor Relations: LP Communications Best Practices | Fund Management Guide',
   metaDescription: 'Learn how to build strong LP relationships through transparent reporting, portfolio updates, valuation methodology, and effective communication strategies for venture capital funds.',
   content: `<p>In venture capital, the GP-LP relationship is built on trust, transparency, and consistent communication. Excellent LP communications fulfill fiduciary responsibilities while laying groundwork for future fundraising, expanded relationships, and valuable network effects.</p>

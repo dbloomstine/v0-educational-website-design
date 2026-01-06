@@ -200,6 +200,7 @@ const article: Article = {
   metaTitle: 'Property Management for Real Estate Funds: Operations, Leasing, Maintenance, and Oversight',
   metaDescription: 'Comprehensive guide to property management covering third-party manager selection, leasing strategies, tenant retention, maintenance operations, capital improvements, financial reporting, budgets, vendor management, technology systems, and asset management coordination.',
   publishedDate: 'November 3, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 30,
 }
 

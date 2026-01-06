@@ -260,6 +260,7 @@ const article: Article = {
   metaTitle: 'Compliance for Private Credit Funds: SEC Registration & Regulations',
   metaDescription: 'Guide to private credit fund compliance including SEC registration, Form ADV/PF, credit-specific lending regulations, ERISA considerations, and compliance program best practices.',
   publishedDate: 'November 7, 2025',
+  lastUpdatedDate: 'January 6, 2025',
   readingTime: 12,
 }
 
