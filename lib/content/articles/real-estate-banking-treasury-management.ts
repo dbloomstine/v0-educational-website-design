@@ -178,7 +178,7 @@ const article: Article = {
   metaTitle: 'Real Estate Fund Banking: Property Financing, Cash Management, Construction Loans, and Lender Relations',
   metaDescription: 'Comprehensive guide to real estate fund banking covering fund-level cash operations, subscription facilities, property accounts, acquisition bridge financing, construction loans, permanent mortgages, refinancing strategies, and lender relationship management.',
   publishedDate: 'November 26, 2025',
-  readingTime: 18,
+  readingTime: 27,
 }
 
 export default article

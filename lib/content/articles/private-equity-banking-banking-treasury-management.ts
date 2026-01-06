@@ -389,7 +389,7 @@ const article: Article = {
   metaTitle: 'Banking and Treasury Management for Private Equity Funds: Complete Guide',
   metaDescription: 'Comprehensive PE fund banking guide with quantitative benchmarks: subscription credit facilities, cash management optimization, capital call processing, distribution execution, and bank relationship management.',
   publishedDate: 'November 16, 2025',
-  readingTime: 18,
+  readingTime: 14,
 }
 
 export default article

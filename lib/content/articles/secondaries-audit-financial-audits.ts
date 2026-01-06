@@ -207,7 +207,7 @@ const article: Article = {
   metaTitle: 'Secondaries Fund Audits: LP Valuation Testing, Multi-Fund Confirmations & Purchase Accounting',
   metaDescription: 'Comprehensive guide to secondaries audits covering LP interest fair value determination, underlying fund NAV reliance, multi-fund confirmation procedures, purchase price allocation, Section 743(b) validation, and performance calculation testing.',
   publishedDate: 'November 5, 2025',
-  readingTime: 18,
+  readingTime: 22,
 }
 
 export default article

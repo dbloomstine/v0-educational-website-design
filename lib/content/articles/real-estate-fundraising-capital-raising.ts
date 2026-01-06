@@ -21,7 +21,7 @@ const article: Article = {
 <li><strong>Track records:</strong> Top quartile performance—15-18% net IRR for value-add, 18-25%+ opportunistic, 8-12% core</li>
 <li><strong>Differentiated theses:</strong> Clear alpha sources through informational advantages, operational expertise, or market inefficiencies</li>
 <li><strong>Experienced teams:</strong> Acquisition, asset management, and disposition capabilities</li>
-<li><strong>Appropriate terms:</strong> Management fees 1.0-2.0%, carried interest 15-25% over 6-10% preferred returns, American waterfall mechanics, clawback provisions</li>
+<li><strong>Appropriate terms:</strong> Management fees 1.0-2.0%, carried interest 15-25% over 6-10% preferred returns, European waterfall mechanics, clawback provisions</li>
 </ul>
 
 <p>First-time managers require creative approaches: seed capital ($25-100M typical) from anchor investors, emerging manager programs (CalPERS, CalSTRS, LACERA), co-GP structures with established firms, or smaller initial fund sizes ($100-300M).</p>
@@ -183,12 +183,12 @@ const article: Article = {
 
 <p>Waterfall mechanics:</p>
 <ul>
-<li><strong>European:</strong> Deal-by-deal carry after each investment's preferred return. Early sponsor economics but overpayment risk if later losses reduce aggregate returns.</li>
-<li><strong>American:</strong> Full preferred return across all capital before any carry. Maximum LP protection but delays sponsor economics 7-10 years.</li>
+<li><strong>American:</strong> Deal-by-deal carry after each investment's preferred return. Early sponsor economics but overpayment risk if later losses reduce aggregate returns.</li>
+<li><strong>European:</strong> Full preferred return across all capital before any carry. Maximum LP protection but delays sponsor economics 7-10 years.</li>
 <li><strong>Hybrid:</strong> Interim carry subject to clawback through escrow, guarantees, or holdbacks.</li>
 </ul>
 
-<p>Most institutional funds use American or American with clawback.</p>
+<p>Most institutional funds use European or European with clawback.</p>
 
 <h3>GP Commitment</h3>
 
@@ -396,7 +396,7 @@ const article: Article = {
 
 <li><strong>Strategy differentiation provides competitive advantage in crowded market with 200+ active funds:</strong> Differentiation sources include local market expertise (regional presence with proprietary deal flow networks generating off-market opportunities), specialized property type knowledge (niche sectors like life sciences or data centers with technical capabilities), operational value-add platforms (property management driving 15-25% NOI growth over 3-5 years), sourcing advantages (family office relationships enabling bilateral negotiations), and consistent execution (top-decile performance across funds and cycles). Pitch materials must support differentiation with concrete evidence—market presence with transaction history, case studies with performance metrics, proof of off-market volume and pricing advantages. Generic capabilities without supporting evidence fail to convince sophisticated investors.</li>
 
-<li><strong>Fund terms balance sponsor economics and investor protection with management fees of 1.0-2.0% and carry of 15-25%:</strong> Management fee structures calculate 1.5-2.0% on committed capital during 3-5 year investment period transitioning to 1.0-1.5% on invested capital thereafter, with levels reflecting strategy intensity (core 1.0-1.25%, value-add 1.25-1.75%, opportunistic 1.75-2.0%). Carried interest of 20-25% over 8-10% preferred returns (opportunistic 8-9%, value-add 8%, core-plus 6-7%, core 5-6%) uses American waterfalls requiring aggregate preferred return satisfaction or American with clawback enabling interim carry subject to repayment if final performance disappoints. GP commitments of 2-5% of fund size or $5-10M minimums align interests with pro rata capital call parity preventing timing advantages.</li>
+<li><strong>Fund terms balance sponsor economics and investor protection with management fees of 1.0-2.0% and carry of 15-25%:</strong> Management fee structures calculate 1.5-2.0% on committed capital during 3-5 year investment period transitioning to 1.0-1.5% on invested capital thereafter, with levels reflecting strategy intensity (core 1.0-1.25%, value-add 1.25-1.75%, opportunistic 1.75-2.0%). Carried interest of 20-25% over 8-10% preferred returns (opportunistic 8-9%, value-add 8%, core-plus 6-7%, core 5-6%) uses European waterfalls requiring aggregate preferred return satisfaction or European with clawback enabling interim carry subject to repayment if final performance disappoints. GP commitments of 2-5% of fund size or $5-10M minimums align interests with pro rata capital call parity preventing timing advantages.</li>
 
 <li><strong>Institutional investor targeting requires systematic pipeline management with 6-12 month conversion timelines:</strong> Effective targeting evaluates strategy alignment (matching risk/return objectives and portfolio gaps), allocation capacity (institutions below policy targets have capital available), check size compatibility ($25-50M minimum checks affect fund size feasibility), and prior relationships (higher conversion probability). Sales process stages include initial outreach (5-15% to first meetings), preliminary meetings (25-40% to serious consideration), DDQ completion (40-60% to onsite visits), operational due diligence (60-75% to IC presentation), IC approval (50-70% to commitment), and legal documentation (90%+ to close). CRM systems (Salesforce, Chronograph, Anduin) track pipeline with probability-weighted forecasts.</li>
 
@@ -415,7 +415,7 @@ const article: Article = {
   metaTitle: 'Real Estate Fund Fundraising: Institutional Targeting, Track Records, Terms, and Capital Raising',
   metaDescription: 'Comprehensive guide to real estate fundraising covering LP targeting, track record presentation, fund terms negotiation, management fees and carry structures, waterfall mechanics, DDQ coordination, placement agents, and emerging manager strategies.',
   publishedDate: 'November 30, 2025',
-  readingTime: 18,
+  readingTime: 21,
 }
 
 export default article

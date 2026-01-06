@@ -137,7 +137,7 @@ const article: Article = {
   metaTitle: 'Insurance for Private Credit Funds: D&O, E&O & Risk Mitigation',
   metaDescription: 'Comprehensive insurance guide for private credit funds covering D&O liability, E&O coverage, R&W insurance, lender liability protection, credit vs operational risk, and collateral insurance requirements.',
   publishedDate: 'November 11, 2025',
-  readingTime: 14,
+  readingTime: 11,
 }
 
 export default article

@@ -93,7 +93,7 @@ const article: Article = {
 
 <h2>Regulatory Compliance</h2>
 
-<p>Investment advisers managing private credit funds with $150 million or more in regulatory AUM typically must register with the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a>. Registration requires Form ADV filings and adherence to Advisers Act requirements including comprehensive compliance policies and periodic examinations. Private equity fund advisers (including most private credit advisers under Form PF) with at least $2 billion file quarterly Form PF reports.</p>
+<p>Investment advisers managing private credit funds with $150 million or more in regulatory AUM typically must register with the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a>. Registration requires Form ADV filings and adherence to Advisers Act requirements including comprehensive compliance policies and periodic examinations. Large hedge fund advisers (with at least $1.5 billion in hedge fund AUM, which includes many credit funds due to leverage) file quarterly Form PF reports within 15 calendar days of quarter end.</p>
 
 <p>BDCs must register under the Investment Company Act and comply with extensive regulations regarding investments, leverage, distributions, and reporting. The CFO plays a central role in BDC compliance including tracking investment concentration limits, monitoring asset coverage ratios governing maximum leverage, calculating distribution requirements, and coordinating quarterly and annual SEC reporting on Forms 10-Q and 10-K.</p>
 
@@ -131,7 +131,7 @@ const article: Article = {
   metaTitle: 'CFO Responsibilities in Private Credit Fund Operations',
   metaDescription: 'Complete guide to private credit CFO duties: loan accounting, covenant monitoring, credit portfolio oversight, regulatory compliance, and operational best practices.',
   publishedDate: 'November 6, 2025',
-  readingTime: 14,
+  readingTime: 11,
 }
 
 export default article

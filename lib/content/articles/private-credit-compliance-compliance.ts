@@ -15,7 +15,7 @@ const article: Article = {
 
 <h3>Registration Thresholds</h3>
 
-<p>Investment advisers with at least $100 million in AUM generally register with the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a>, while smaller advisers register with states. The Dodd-Frank Act eliminated the private fund adviser exemption, so credit fund managers must register once AUM exceeds $150 million. The venture capital exemption does not apply to lending strategies. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> outlines key registration milestones for new fund managers.</p>
+<p>Investment advisers with at least $110 million in AUM generally register with the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a>, while smaller advisers register with states. Private fund advisers managing less than $150 million in private fund assets in the United States may qualify as exempt reporting advisers under the private fund adviser exemption, though they still file abbreviated Form ADV. The venture capital exemption does not apply to lending strategies. The <a href="/tools/fund-launch-guide">Fund Launch Guide</a> outlines key registration milestones for new fund managers.</p>
 
 <p>Registration triggers comprehensive obligations: written compliance policies and procedures, designation of a chief compliance officer, specified books and records per Rule 204-2, Form ADV disclosure, and SEC examination authority.</p>
 
@@ -25,7 +25,7 @@ const article: Article = {
 
 <ul>
 <li><strong>Item 4:</strong> Describe lending strategies—direct origination, whole loan purchases, secondary acquisitions—and target borrower profiles</li>
-<li><strong>Item 5:</strong> Detail fee structures (typically 1.0-2.0% management fee, 10-20% carried interest). Use the <a href="/tools/management-fee-calculator">Management Fee Calculator</a> to model these structures.</li>
+<li><strong>Item 5:</strong> Detail fee structures (typically 1.0-2.0% management fee, 15-20% carried interest). Use the <a href="/tools/management-fee-calculator">Management Fee Calculator</a> to model these structures.</li>
 <li><strong>Item 8:</strong> Explain underwriting methodologies, credit analysis, and material risks including default, illiquidity, concentration, and bankruptcy risks</li>
 <li><strong>Item 10:</strong> Disclose affiliations with originators, servicers, or placement agents</li>
 </ul>
@@ -42,7 +42,7 @@ const article: Article = {
 
 <h3>Filing Requirements</h3>
 
-<p>All private fund advisers with $150 million+ in private fund AUM file Form PF Section 1 annually (within 120 days of fiscal year end). Advisers with $1.5 billion+ in "hedge fund" AUM file Section 2 quarterly (within 60 days).</p>
+<p>All private fund advisers with $150 million+ in private fund AUM file Form PF Section 1 annually (within 120 days of fiscal year end). Advisers with $1.5 billion+ in "hedge fund" AUM file Section 2 quarterly (within 15 calendar days of quarter end).</p>
 
 <p>Form PF defines hedge funds broadly to include funds that charge performance fees on unrealized gains, may borrow more than de minimis amounts, sell short, or use derivatives beyond currency hedging. Most credit funds trigger this definition through leverage. However, closed-end funds structured like private equity may classify as PE funds rather than hedge funds, affecting reporting obligations.</p>
 
@@ -260,7 +260,7 @@ const article: Article = {
   metaTitle: 'Compliance for Private Credit Funds: SEC Registration & Regulations',
   metaDescription: 'Guide to private credit fund compliance including SEC registration, Form ADV/PF, credit-specific lending regulations, ERISA considerations, and compliance program best practices.',
   publishedDate: 'November 7, 2025',
-  readingTime: 15,
+  readingTime: 12,
 }
 
 export default article

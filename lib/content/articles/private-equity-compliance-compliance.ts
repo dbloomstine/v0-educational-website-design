@@ -211,7 +211,7 @@ const article: Article = {
   metaTitle: 'Compliance for Private Equity Funds: SEC Registration & Requirements',
   metaDescription: 'Comprehensive guide to PE fund compliance covering SEC registration, Form ADV/PF requirements, custody rules, marketing regulations, political contributions, ERISA considerations, and CCO responsibilities.',
   publishedDate: 'November 18, 2025',
-  readingTime: 18,
+  readingTime: 23,
 }
 
 export default article

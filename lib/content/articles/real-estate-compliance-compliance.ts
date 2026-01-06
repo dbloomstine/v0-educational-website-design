@@ -127,7 +127,7 @@ const article: Article = {
   metaTitle: 'Real Estate Fund Compliance: Investment Adviser Regulations, REIT Requirements, and Property-Level Obligations',
   metaDescription: 'Comprehensive guide to real estate fund compliance covering Form ADV filing, REIT qualification tests and distribution requirements, Regulation D placements, Marketing Rule, environmental regulations, Fair Housing Act, ADA, and building code compliance.',
   publishedDate: 'November 28, 2025',
-  readingTime: 14,
+  readingTime: 11,
 }
 
 export default article

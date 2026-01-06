@@ -7,7 +7,7 @@ export const article: Article = {
   subtitle: 'Master the art of LP communications in venture capital with strategies for portfolio reporting, valuation transparency, exit activity updates, and maintaining strong limited partner relationships.',
   fundType: 'venture-capital',
   pillar: 'investor-relations',
-  readingTime: 13,
+  readingTime: 29,
   publishedDate: 'November 23, 2025',
   metaTitle: 'VC Investor Relations: LP Communications Best Practices | Fund Management Guide',
   metaDescription: 'Learn how to build strong LP relationships through transparent reporting, portfolio updates, valuation methodology, and effective communication strategies for venture capital funds.',

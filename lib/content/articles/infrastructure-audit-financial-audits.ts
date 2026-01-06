@@ -151,7 +151,7 @@ const article: Article = {
   metaTitle: 'Infrastructure Fund Audits: DCF Valuation, Regulatory Accounting, Debt Testing',
   metaDescription: 'Comprehensive guide to infrastructure fund audits covering DCF projection testing, ASC 980 regulatory accounting review, project finance debt verification, hedge accounting validation, and revenue recognition.',
   publishedDate: 'November 24, 2025',
-  readingTime: 14,
+  readingTime: 12,
 }
 
 export default article

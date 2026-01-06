@@ -199,7 +199,7 @@ const article: Article = {
 
 <h3>HSR Antitrust Clearance</h3>
 
-<p>The Hart-Scott-Rodino (HSR) Act requires premerger notification filings and waiting periods for acquisitions exceeding value thresholds (adjusted annually, $111.4 million for 2024). When a secondaries fund acquires LP interests where the value of portfolio companies attributable to the acquired interest exceeds HSR thresholds, HSR filing may be required. The analysis is complex: the acquiring person's size (the secondaries fund and any affiliates), the size of transaction (typically calculated as 50% of the assets of the fund being acquired times the percentage interest being purchased), and whether exemptions apply such as the investment-only exemption for passive LP interests.</p>
+<p>The Hart-Scott-Rodino (HSR) Act requires premerger notification filings and waiting periods for acquisitions exceeding value thresholds (adjusted annually, $126.4 million for 2025). When a secondaries fund acquires LP interests where the value of portfolio companies attributable to the acquired interest exceeds HSR thresholds, HSR filing may be required. The analysis is complex: the acquiring person's size (the secondaries fund and any affiliates), the size of transaction (typically calculated as 50% of the assets of the fund being acquired times the percentage interest being purchased), and whether exemptions apply such as the investment-only exemption for passive LP interests.</p>
 
 <p>The CCO coordinates HSR analysis with antitrust counsel for larger secondaries transactions, filing HSR notifications when required and observing the mandatory waiting period (30 days for standard filings, 15 days for early termination if granted). HSR violations carry significant penalties making proper analysis critical. Even when HSR filing isn't required, maintaining documentation of the analysis provides protection if the determination is later questioned.</p>
 
@@ -297,7 +297,7 @@ const article: Article = {
   metaTitle: 'Secondaries Fund Compliance: Transfer Restrictions, ERISA, GP Consent & Regulatory Approvals',
   metaDescription: 'Comprehensive guide to secondaries compliance covering LP transfer approvals, GP consent processes, Form ADV/PF reporting, ERISA plan assets, AML/KYC, cross-border regulatory requirements, and multi-fund oversight coordination.',
   publishedDate: 'November 8, 2025',
-  readingTime: 18,
+  readingTime: 34,
 }
 
 export default article

@@ -249,7 +249,7 @@ const article: Article = {
   metaTitle: 'Hedge Fund Tax Compliance: Trading Reporting, Wash Sales, and Foreign Tax',
   metaDescription: 'Guide to hedge fund taxation covering high-volume K-1 reporting, wash sale rules, international withholding, and UBTI considerations.',
   publishedDate: 'November 22, 2025',
-  readingTime: 18,
+  readingTime: 36,
 }
 
 export default article

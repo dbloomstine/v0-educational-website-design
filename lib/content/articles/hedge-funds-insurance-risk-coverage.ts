@@ -287,7 +287,7 @@ const article: Article = {
   metaTitle: 'Hedge Fund Insurance: D&O, E&O, Cyber, and Crime Coverage',
   metaDescription: 'Complete guide to hedge fund insurance covering directors and officers liability, errors and omissions, cyber protection, crime coverage, and risk management.',
   publishedDate: 'November 18, 2025',
-  readingTime: 18,
+  readingTime: 26,
 }
 
 export default article

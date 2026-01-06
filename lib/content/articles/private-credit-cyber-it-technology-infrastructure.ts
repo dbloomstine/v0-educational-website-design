@@ -142,7 +142,7 @@ const article: Article = {
 
 <h3>SEC Reporting and Form PF</h3>
 
-<p>Advisers with at least $2B in private equity fund assets (including private credit under Form PF definitions) file quarterly reports with the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> with fund-level and portfolio-level detail including composition, leverage, concentrations, strategies, and risk management. Technology systems must aggregate data across servicing, accounting, and portfolio management platforms.</p>
+<p>Large hedge fund advisers with at least $1.5 billion in hedge fund AUM (which includes most leveraged credit funds under Form PF definitions) file quarterly Form PF reports with the <a href="https://www.sec.gov" target="_blank" rel="noopener noreferrer">SEC</a> within 15 calendar days of quarter end, with fund-level and portfolio-level detail including composition, leverage, concentrations, strategies, and risk management. Technology systems must aggregate data across servicing, accounting, and portfolio management platforms.</p>
 
 <h3>BDC Compliance</h3>
 
@@ -208,7 +208,7 @@ const article: Article = {
   metaTitle: 'Technology Infrastructure and Cybersecurity for Private Credit Funds',
   metaDescription: 'Complete guide to private credit technology: loan servicing platforms, covenant tracking systems, data security, document management, cybersecurity, and regulatory technology.',
   publishedDate: 'November 8, 2025',
-  readingTime: 15,
+  readingTime: 12,
 }
 
 export default article

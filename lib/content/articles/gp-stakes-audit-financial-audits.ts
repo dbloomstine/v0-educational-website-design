@@ -137,7 +137,7 @@ const article: Article = {
   metaTitle: 'GP-Stakes Fund Audits: Valuation Testing, DCF Analysis, and Investment Verification',
   metaDescription: 'Comprehensive guide to GP-stakes audits covering DCF valuation testing, AUM growth assumptions, carried interest projections, discount rates, investment accounting, distribution verification, related parties, and controls.',
   publishedDate: 'November 1, 2025',
-  readingTime: 18,
+  readingTime: 14,
 }
 
 export default article

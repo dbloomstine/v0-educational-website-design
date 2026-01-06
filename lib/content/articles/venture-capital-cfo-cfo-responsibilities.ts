@@ -55,7 +55,7 @@ const article: Article = {
 
 <h3>Capital Call Optimization</h3>
 
-<p>The CFO balances multiple considerations: providing adequate notice to investors (typically 10-14 days per industry standard), minimizing idle cash awaiting deployment, maintaining sufficient liquidity for time-sensitive investments, and avoiding excessive call frequency. Many VC CFOs establish capital call policies such as minimum call amounts, target frequency (no more than monthly), and reserve buffers to accommodate deployment velocity uncertainty.</p>
+<p>The CFO balances multiple considerations: providing adequate notice to investors (typically 10-15 business days per industry standard), minimizing idle cash awaiting deployment, maintaining sufficient liquidity for time-sensitive investments, and avoiding excessive call frequency. Many VC CFOs establish capital call policies such as minimum call amounts, target frequency (no more than monthly), and reserve buffers to accommodate deployment velocity uncertainty.</p>
 
 <h3>Syndication and Co-Investment Coordination</h3>
 
@@ -284,7 +284,7 @@ const article: Article = {
   metaTitle: 'CFO Responsibilities in Venture Capital Fund Operations',
   metaDescription: 'Complete guide to VC fund CFO duties: high-velocity deployment, fair value measurement for startups, portfolio company support, and rapid deployment cycle management.',
   publishedDate: 'November 17, 2025',
-  readingTime: 10,
+  readingTime: 17,
 }
 
 export default article

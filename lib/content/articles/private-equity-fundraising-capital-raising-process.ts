@@ -340,7 +340,7 @@ const article: Article = {
   metaTitle: 'Fundraising for Private Equity Funds: Complete Capital Raising Guide',
   metaDescription: 'Comprehensive PE fundraising guide with quantitative benchmarks: LP targeting, due diligence requirements, first close mechanics, placement agents, and timeline management for emerging and established managers.',
   publishedDate: 'November 21, 2025',
-  readingTime: 18,
+  readingTime: 14,
 }
 
 export default article

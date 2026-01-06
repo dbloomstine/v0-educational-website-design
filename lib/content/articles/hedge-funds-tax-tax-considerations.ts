@@ -129,7 +129,7 @@ const article: Article = {
   metaTitle: 'Tax Considerations for Hedge Funds: Trading Activity & Mark-to-Market',
   metaDescription: 'Comprehensive guide to hedge fund taxation covering K-1 preparation for trading portfolios, Section 475 mark-to-market elections, dealer vs investor treatment, constructive sales, short-against-the-box, and straddle rules for optimizing tax outcomes.',
   publishedDate: 'November 23, 2025',
-  readingTime: 14,
+  readingTime: 12,
 }
 
 export default article

@@ -374,7 +374,7 @@ const article: Article = {
   metaTitle: 'Fund Administration for Private Equity: NAV and Investor Reporting',
   metaDescription: 'Essential guide to PE fund administration: NAV calculation, capital accounts, administrator selection, service levels, cost structures, and outsourcing decisions.',
   publishedDate: 'November 20, 2025',
-  readingTime: 18,
+  readingTime: 19,
 }
 
 export default article

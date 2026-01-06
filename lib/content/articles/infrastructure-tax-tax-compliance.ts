@@ -154,7 +154,7 @@ const article: Article = {
   metaTitle: 'Infrastructure Fund Tax: Depreciation, International Planning, and Investor Reporting',
   metaDescription: 'Guide to infrastructure fund taxation covering MACRS depreciation, cost segregation, bonus depreciation, partnership K-1 preparation, Section 754 basis adjustments, multi-state compliance, GILTI, UBTI planning, and renewable energy tax credits.',
   publishedDate: 'November 3, 2025',
-  readingTime: 15,
+  readingTime: 10,
 }
 
 export default article

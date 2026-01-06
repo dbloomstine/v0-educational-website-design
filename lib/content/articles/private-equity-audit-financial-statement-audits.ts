@@ -195,7 +195,7 @@ const article: Article = {
   metaTitle: 'Financial Statement Audits for Private Equity Funds',
   metaDescription: 'Complete guide to PE fund audits: firm selection, planning, valuation testing, internal controls, capital account testing, and audit deliverables.',
   publishedDate: 'November 15, 2025',
-  readingTime: 14,
+  readingTime: 9,
 }
 
 export default article

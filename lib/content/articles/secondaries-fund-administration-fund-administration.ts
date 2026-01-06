@@ -249,7 +249,7 @@ const article: Article = {
   metaTitle: 'Secondaries Fund Administration: Accounting, Tracking & Performance Reporting',
   metaDescription: 'Comprehensive guide to secondaries fund administration covering purchase accounting, dual capital accounts, multi-fund coordination, cash management, performance calculation, and investor reporting.',
   publishedDate: 'November 10, 2025',
-  readingTime: 18,
+  readingTime: 20,
 }
 
 export default article

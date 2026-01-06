@@ -127,7 +127,7 @@ const article: Article = {
   metaTitle: 'Insurance and Risk Coverage for Venture Capital Funds',
   metaDescription: 'Comprehensive guide to VC fund insurance: D&O coverage, board observer vs director liability, E&O protection, portfolio company insurance guidance, cyber liability, and crime coverage.',
   publishedDate: 'November 22, 2025',
-  readingTime: 15,
+  readingTime: 10,
 }
 
 export default article

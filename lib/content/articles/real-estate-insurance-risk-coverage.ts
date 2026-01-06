@@ -172,7 +172,7 @@ const article: Article = {
   metaTitle: 'Real Estate Fund Insurance: Property, Liability, Environmental Coverage and Risk Management',
   metaDescription: 'Comprehensive guide to real estate insurance covering all-risk property policies, business interruption, general liability, environmental pollution coverage, builders risk, D&O, EPLI, cyber insurance, and claims management.',
   publishedDate: 'November 1, 2025',
-  readingTime: 18,
+  readingTime: 22,
 }
 
 export default article

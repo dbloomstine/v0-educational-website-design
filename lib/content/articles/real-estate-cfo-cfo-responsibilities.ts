@@ -404,7 +404,7 @@ const article: Article = {
   metaTitle: 'Real Estate Fund CFO: Property Finance, Debt Management, REIT Compliance, and Operations',
   metaDescription: 'Comprehensive guide to real estate fund CFO responsibilities covering property-level accounting, acquisition finance, asset-level debt structures, capital deployment, NOI optimization, REIT compliance, and investor reporting.',
   publishedDate: 'November 27, 2025',
-  readingTime: 18,
+  readingTime: 30,
 }
 
 export default article

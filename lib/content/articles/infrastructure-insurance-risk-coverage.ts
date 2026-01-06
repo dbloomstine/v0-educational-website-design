@@ -214,7 +214,7 @@ const article: Article = {
   metaTitle: 'Infrastructure Insurance: Property, Liability, and Operational Risk Coverage',
   metaDescription: 'Guide to infrastructure insurance covering property damage, business interruption, liability protection, cyber risk, catastrophe modeling, sector-specific coverages, lender requirements, and captive insurance.',
   publishedDate: 'November 1, 2025',
-  readingTime: 15,
+  readingTime: 12,
 }
 
 export default article

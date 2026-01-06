@@ -157,7 +157,7 @@ const article: Article = {
 
 <h3>Breach Notification Requirements</h3>
 
-<p>Breach notification requirements vary by jurisdiction and data type affected. U.S. state laws require notification to affected individuals when personally identifiable information is compromised, with specific timing requirements (often 30-60 days from discovery) and content requirements. GDPR requires notification to data protection authorities within 72 hours of breach discovery and notification to affected individuals when risk to rights and freedoms exists. SEC cybersecurity rules (adopted 2023) require public companies and registered investment advisers to disclose material cybersecurity incidents on Form 8-K within four business days and to disclose cybersecurity governance and risk management practices in annual reports. Breach notification typically involves: forensic investigation determining what data was accessed, legal analysis of notification obligations, notification letter preparation, establishment of call centers handling inquiries, and offering credit monitoring services to affected individuals.</p>
+<p>Breach notification requirements vary by jurisdiction and data type affected. U.S. state laws require notification to affected individuals when personally identifiable information is compromised, with specific timing requirements (often 30-60 days from discovery) and content requirements. GDPR requires notification to data protection authorities within 72 hours of breach discovery and notification to affected individuals when risk to rights and freedoms exists. SEC cybersecurity rules (adopted 2023) require public companies to disclose material cybersecurity incidents on Form 8-K within four business days; registered investment advisers must report significant cybersecurity incidents on Form ADV-E and disclose cybersecurity governance and risk management practices in Form ADV. Breach notification typically involves: forensic investigation determining what data was accessed, legal analysis of notification obligations, notification letter preparation, establishment of call centers handling inquiries, and offering credit monitoring services to affected individuals.</p>
 
 <h3>Cyber Insurance Integration</h3>
 
@@ -226,7 +226,7 @@ const article: Article = {
 
 <li><strong>Security information and event management enables threat detection through centralized log analysis:</strong> SIEM platforms ($50-200K+ annually) from Splunk, Microsoft Sentinel, IBM QRadar, or LogRhythm aggregate security events from firewalls, endpoints, servers, and applications, correlating activities to detect brute force attacks, data exfiltration, compromised credentials, and suspicious privileged access. Managed SIEM services ($5-20K monthly) provide outsourced 24/7 monitoring and analysis for organizations lacking internal SOCs.</li>
 
-<li><strong>Incident response plans and breach management capabilities minimize damage from inevitable compromises:</strong> Response frameworks following NIST or SANS guidelines organize activities across preparation, detection, containment, eradication, recovery, and lessons learned. Incident response teams include IT/security, legal counsel, communications, and external specialists (forensics firms, breach counsel). Breach notification requirements vary by jurisdiction—state laws requiring 30-60 day notification, GDPR requiring 72-hour authority notification, SEC rules requiring 4-day material incident disclosure for RIAs.</li>
+<li><strong>Incident response plans and breach management capabilities minimize damage from inevitable compromises:</strong> Response frameworks following NIST or SANS guidelines organize activities across preparation, detection, containment, eradication, recovery, and lessons learned. Incident response teams include IT/security, legal counsel, communications, and external specialists (forensics firms, breach counsel). Breach notification requirements vary by jurisdiction—state laws requiring 30-60 day notification, GDPR requiring 72-hour authority notification, SEC rules requiring RIAs to report significant incidents on Form ADV-E.</li>
 
 <li><strong>Regulatory compliance requirements include SEC cybersecurity rules, breach notification laws, GDPR, and SOC 2 attestation:</strong> SEC Rule 204A requires registered investment advisers to adopt cybersecurity policies, report incidents, and disclose governance practices. SOC 2 Type II attestation ($40-100K initial audit, $25-60K annual audits) provides independent verification of security controls commonly required during LP due diligence. GDPR and CCPA impose personal data protection requirements with significant penalties for non-compliance. The <a href="https://www.aicpa.org" target="_blank" rel="noopener noreferrer">AICPA</a> establishes SOC reporting standards.</li>
 
@@ -235,7 +235,7 @@ const article: Article = {
   metaTitle: 'Secondaries Cybersecurity and IT: Data Protection, Portfolio Systems, and Technology Infrastructure',
   metaDescription: 'Comprehensive guide to secondaries technology covering cybersecurity governance, endpoint protection, email security, data rooms, portfolio management systems, incident response, regulatory compliance, and vendor risk management.',
   publishedDate: 'November 9, 2025',
-  readingTime: 18,
+  readingTime: 29,
 }
 
 export default article

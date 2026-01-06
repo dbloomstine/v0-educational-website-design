@@ -275,7 +275,7 @@ const article: Article = {
   metaTitle: 'Hedge Fund Financial Audits: Process, Controls, and Best Practices',
   metaDescription: 'Complete guide to hedge fund audits covering auditor selection, audit process timeline, controls testing, SOC reports, and management letter response.',
   publishedDate: 'November 11, 2025',
-  readingTime: 18,
+  readingTime: 26,
 }
 
 export default article

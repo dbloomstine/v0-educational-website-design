@@ -119,7 +119,7 @@ const article: Article = {
   metaTitle: 'GP-Stakes Fundraising: Return Characteristics, Portfolio GP Quality, and Partnership Approach',
   metaDescription: 'Comprehensive guide to GP-stakes fundraising covering economic profile education, portfolio GP selection criteria, partnership value creation, LP targeting strategies, marketing materials, and track record presentation.',
   publishedDate: 'November 7, 2025',
-  readingTime: 18,
+  readingTime: 12,
 }
 
 export default article

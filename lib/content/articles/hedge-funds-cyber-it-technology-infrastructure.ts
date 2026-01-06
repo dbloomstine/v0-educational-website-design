@@ -263,7 +263,7 @@ const article: Article = {
   metaTitle: 'Hedge Fund Cybersecurity and IT: Technology Infrastructure and Protection',
   metaDescription: 'Complete guide to hedge fund technology covering trading systems, cybersecurity controls, regulatory compliance, incident response, and business continuity.',
   publishedDate: 'November 15, 2025',
-  readingTime: 27,
+  readingTime: 35,
 }
 
 export default article

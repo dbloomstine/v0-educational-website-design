@@ -143,7 +143,7 @@ const article: Article = {
   metaTitle: 'Infrastructure Cybersecurity: OT Protection, SCADA Security, and Compliance',
   metaDescription: 'Comprehensive guide to infrastructure cybersecurity covering operational technology security, critical infrastructure requirements, incident response, and vendor risk management.',
   publishedDate: 'November 28, 2025',
-  readingTime: 14,
+  readingTime: 12,
 }
 
 export default article

@@ -108,7 +108,7 @@ const article: Article = {
 
 <h3>Management Fees</h3>
 
-<p>Fees commonly run 1.5-2.0% on committed capital during investment period, stepping to 1.0-1.5% on invested capital during harvest. This supports $18-35 million annual operating costs for 25-45 person teams. The <a href="/tools/management-fee-calculator">Management Fee Calculator</a> helps model fee structures across different fund sizes and investor classes.</p>
+<p>Fees commonly run 1.0-1.5% on committed capital during investment period, stepping to 0.75-1.25% on invested capital during harvest. This supports $15-30 million annual operating costs for 25-45 person teams. The <a href="/tools/management-fee-calculator">Management Fee Calculator</a> helps model fee structures across different fund sizes and investor classes.</p>
 
 <p>Fee offset policies require 50-100% of transaction and advisory fees returned to LPs. Organizational expenses of $8-18 million either capitalize to fund or GP absorbs. Ongoing expenses ($1.25-2.8 million annually for administrator, audit, legal) often cap at 0.1-0.2% of NAV. The <a href="/tools/fund-expense-allocation">Fund Expense Allocation Helper</a> assists with categorizing these costs across fund, GP, and portfolio company levels.</p>
 
@@ -157,7 +157,7 @@ const article: Article = {
 
 <li><strong>Extended terms with higher hurdles:</strong> 12-15 year lives with 8-10% preferred returns compensate for lockup. Fee step-downs during extensions and clawback provisions protect LPs.</li>
 
-<li><strong>Management fees support substantial operating costs:</strong> 1.5-2.0% during investment, 1.0-1.5% during harvest supports $18-35 million annual costs. Offset policies credit transaction fees 50-100%.</li>
+<li><strong>Management fees support substantial operating costs:</strong> 1.0-1.5% during investment, 0.75-1.25% during harvest supports $15-30 million annual costs. Offset policies credit transaction fees 50-100%.</li>
 
 <li><strong>Placement agents justify 1.5-3.0% fees for emerging managers:</strong> First-time funds benefit from institutional access; established managers with 75-85% re-ups raise directly preserving economics.</li>
 
@@ -176,7 +176,7 @@ const article: Article = {
   metaTitle: 'Infrastructure Fundraising: Institutional Capital, ESG, and Long-Term Commitments',
   metaDescription: 'Guide to infrastructure fundraising covering institutional investor targeting, ESG positioning with impact measurement, fund terms and structure, placement agent economics, and fundraising process management.',
   publishedDate: 'November 30, 2025',
-  readingTime: 15,
+  readingTime: 10,
 }
 
 export default article
