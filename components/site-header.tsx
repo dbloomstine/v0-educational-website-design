@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Logo } from "@/components/logo"
-import { Menu, X, ChevronDown, ExternalLink, DollarSign, Building, TrendingUp, LineChart, Split, Rocket, Headphones } from "lucide-react"
+import { Menu, X, ChevronDown, ExternalLink, DollarSign, Building, TrendingUp, LineChart, Split, Rocket } from "lucide-react"
 import { getAllFundTypes } from "@/lib/content/fund-types"
 import { getAllTools } from "@/lib/content/tools"
 import { getAllRoles } from "@/lib/content/roles"
@@ -240,15 +240,6 @@ export function SiteHeader() {
             </div>
           </Dropdown>
 
-          {/* Listen Link */}
-          <Link
-            href="/listen"
-            className="inline-flex h-9 w-max items-center gap-1.5 justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-          >
-            <Headphones className="h-4 w-4" />
-            Listen
-          </Link>
-
           {/* Videos Link */}
           <Link
             href="/interviews"
@@ -401,24 +392,6 @@ export function SiteHeader() {
                   View All {tools.length} Tools →
                 </Link>
               </div>
-            </div>
-
-            {/* Listen */}
-            <div className="pt-4 border-t border-border">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Listen
-              </h3>
-              <Link
-                href="/listen"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-              >
-                <span className="font-medium text-foreground flex items-center gap-2">
-                  <Headphones className="h-4 w-4" />
-                  FundOpsHQ Audio
-                </span>
-                <span className="block text-xs text-muted-foreground mt-0.5">Listen to articles on Apple Podcasts, Spotify, or YouTube</span>
-              </Link>
             </div>
 
             {/* Videos */}

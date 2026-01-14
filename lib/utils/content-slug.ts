@@ -1,6 +1,6 @@
 /**
  * Shared slug creation utilities
- * Used by: blog.ts, newsletters.ts, podcasts.ts
+ * Used by: blog.ts, newsletters.ts
  */
 
 /**

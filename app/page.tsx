@@ -430,7 +430,7 @@ export default function HomePage() {
               </div>
               <div>
                 <div className="text-3xl font-bold text-foreground mb-1">
-                  <AnimatedCounter end={11} duration={1500} />
+                  <AnimatedCounter end={6} duration={1500} />
                 </div>
                 <div className="text-sm text-muted-foreground">Free interactive tools</div>
               </div>

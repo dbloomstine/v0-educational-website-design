@@ -5,9 +5,8 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, ArrowRight, User, Mail, Headphones } from 'lucide-react'
+import { ArrowLeft, ArrowRight, User, Mail } from 'lucide-react'
 import { getNewsletter, getNewsletterPosts, NEWSLETTERS, type NewsletterSlug } from '@/lib/newsletters'
-import { getPodcastEpisodes } from '@/lib/podcasts'
 
 interface NewsletterPageProps {
   params: {
@@ -56,24 +55,6 @@ export default async function NewsletterArchivePage({ params }: NewsletterPagePr
   }
 
   const posts = await getNewsletterPosts(newsletterSlug as NewsletterSlug)
-
-  // For FundOpsHQ Insights, fetch podcast episodes to show audio badges
-  let audioTitles: Set<string> = new Set()
-  if (newsletterSlug === 'fundopshq-insights') {
-    const episodes = await getPodcastEpisodes()
-    // Normalize titles for matching
-    audioTitles = new Set(
-      episodes.map(ep => ep.title.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim())
-    )
-  }
-
-  // Helper to check if a post has audio
-  const hasAudio = (title: string) => {
-    if (newsletterSlug !== 'fundopshq-insights') return false
-    const normalizedTitle = title.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim()
-    return audioTitles.has(normalizedTitle) ||
-      Array.from(audioTitles).some(t => t.includes(normalizedTitle) || normalizedTitle.includes(t))
-  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -151,43 +132,32 @@ export default async function NewsletterArchivePage({ params }: NewsletterPagePr
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {posts.map((post) => {
-                    const postHasAudio = hasAudio(post.title)
-                    return (
-                      <Link
-                        key={post.slug}
-                        href={`/newsletter/${newsletterSlug}/${post.slug}`}
-                        className="group block"
-                      >
-                        <Card className="transition-all hover:border-accent hover:shadow-lg">
-                          <CardHeader>
-                            <div className="flex items-start justify-between gap-3">
-                              <CardTitle className="text-xl leading-snug group-hover:text-primary transition-colors">
-                                {post.title}
-                              </CardTitle>
-                              {postHasAudio && (
-                                <span className="flex-shrink-0 inline-flex items-center gap-1 rounded-full bg-accent px-2 py-1 text-[11px] font-medium text-accent-foreground">
-                                  <Headphones className="h-3 w-3" />
-                                  Audio
-                                </span>
-                              )}
-                            </div>
-                            {post.summary && (
-                              <CardDescription className="leading-relaxed line-clamp-2">
-                                {post.summary}
-                              </CardDescription>
-                            )}
-                          </CardHeader>
-                          <CardContent className="pt-0">
-                            <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                              Read issue
-                              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </Link>
-                    )
-                  })}
+                  {posts.map((post) => (
+                    <Link
+                      key={post.slug}
+                      href={`/newsletter/${newsletterSlug}/${post.slug}`}
+                      className="group block"
+                    >
+                      <Card className="transition-all hover:border-accent hover:shadow-lg">
+                        <CardHeader>
+                          <CardTitle className="text-xl leading-snug group-hover:text-primary transition-colors">
+                            {post.title}
+                          </CardTitle>
+                          {post.summary && (
+                            <CardDescription className="leading-relaxed line-clamp-2">
+                              {post.summary}
+                            </CardDescription>
+                          )}
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                            Read issue
+                            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  ))}
                 </div>
               )}
             </div>
