@@ -486,18 +486,11 @@ export default function HomePage() {
               <p className="mb-6 text-muted-foreground text-balance leading-relaxed">
                 FundOpsHQ is a free resource built to share what I&apos;ve learned from years in fund operations. Whether you&apos;re new to the field or looking to brush up on a topic, I hope you find something useful here.
               </p>
-              <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-                <Button variant="outline" asChild>
-                  <Link href="/about">
-                    About FundOpsHQ
-                  </Link>
-                </Button>
-                <Button asChild>
-                  <Link href="/contact">
-                    Get in Touch
-                  </Link>
-                </Button>
-              </div>
+              <Button variant="outline" asChild>
+                <Link href="/about">
+                  About FundOpsHQ
+                </Link>
+              </Button>
             </AnimateOnScroll>
           </div>
         </section>

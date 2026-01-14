@@ -73,14 +73,14 @@ export default function NotFound() {
                 </div>
                 <p className="text-sm text-muted-foreground">
                   Check out our{" "}
-                  <Link href="/help" className="text-primary hover:underline">
-                    help resources
+                  <Link href="/tools" className="text-primary hover:underline">
+                    free tools
                   </Link>{" "}
                   or{" "}
                   <Link href="/contact" className="text-primary hover:underline">
-                    get in touch
-                  </Link>{" "}
-                  if you need assistance.
+                    send feedback
+                  </Link>
+                  .
                 </p>
               </div>
             </div>

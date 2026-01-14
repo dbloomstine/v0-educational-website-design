@@ -486,7 +486,7 @@ export const TASKS: FundLaunchTask[] = [
     benchmark: 'Average admin fee for emerging managers: 5-15 bps of AUM',
     category: 'operations',
     priority: 'critical',
-    deepDiveUrl: '/help/fund-admin-selection',
+    deepDiveUrl: '',
     applicableTo: { strategies: 'all', sizes: 'all', jurisdictions: 'all' },
     order: 1,
   },

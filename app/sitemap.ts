@@ -22,7 +22,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: '/contact', priority: 0.8 },
     { path: '/tools', priority: 0.9 },
     { path: '/newsletter', priority: 0.8 },
-    { path: '/help', priority: 0.8 },
     { path: '/blog', priority: 0.8 },
   ]
 
@@ -32,23 +31,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority,
-    })
-  })
-
-  // Help pages
-  const helpPages = [
-    'sec-exam-prep',
-    'fund-admin-selection',
-    'launching-a-fund',
-    'compliance-review',
-  ]
-
-  helpPages.forEach((slug) => {
-    routes.push({
-      url: `${baseUrl}/help/${slug}`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
     })
   })
 

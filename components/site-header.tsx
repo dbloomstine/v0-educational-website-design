@@ -2,9 +2,8 @@
 
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/logo"
-import { Menu, X, ChevronDown, ExternalLink, Calendar, DollarSign, Building, Calculator, TrendingUp, LineChart, Split, FileText, Shield, Rocket, FileCheck, Headphones } from "lucide-react"
+import { Menu, X, ChevronDown, ExternalLink, DollarSign, Building, TrendingUp, LineChart, Split, Rocket, Headphones } from "lucide-react"
 import { getAllFundTypes } from "@/lib/content/fund-types"
 import { getAllTools } from "@/lib/content/tools"
 import { getAllRoles } from "@/lib/content/roles"
@@ -213,7 +212,6 @@ export function SiteHeader() {
                   >
                     <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent/60 mt-0.5">
                       {tool.icon === 'Rocket' && <Rocket className="h-4 w-4 text-foreground" />}
-                      {tool.icon === 'Calendar' && <Calendar className="h-4 w-4 text-foreground" />}
                       {tool.icon === 'DollarSign' && <DollarSign className="h-4 w-4 text-foreground" />}
                       {tool.icon === 'Building' && <Building className="h-4 w-4 text-foreground" />}
                       {tool.icon === 'TrendingUp' && <TrendingUp className="h-4 w-4 text-foreground" />}
@@ -236,120 +234,6 @@ export function SiteHeader() {
                   className="flex items-center justify-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
                 >
                   View All {tools.length} Tools
-                  <span className="text-xs">→</span>
-                </Link>
-              </div>
-            </div>
-          </Dropdown>
-
-          {/* How I Can Help Dropdown */}
-          <Dropdown
-            trigger="Help"
-            id="help"
-            isOpen={openDropdown === 'help'}
-            onOpenChange={handleDropdownOpen('help')}
-          >
-            <div className="w-[380px] p-4">
-              {/* Time-Sensitive */}
-              <div className="mb-3">
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 px-2">Time-Sensitive</div>
-                <div className="space-y-1">
-                  <Link
-                    href="/help/sec-exam-prep"
-                    onClick={() => setOpenDropdown(null)}
-                    className="flex items-start gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent/50"
-                  >
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent/60 mt-0.5">
-                      <Shield className="h-4 w-4 text-foreground" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-foreground">SEC Exam Preparation</div>
-                      <div className="text-xs text-muted-foreground line-clamp-1">Got an exam notice? I can help you prepare.</div>
-                    </div>
-                  </Link>
-                  <Link
-                    href="/help/annual-audit-prep"
-                    onClick={() => setOpenDropdown(null)}
-                    className="flex items-start gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent/50"
-                  >
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent/60 mt-0.5">
-                      <FileCheck className="h-4 w-4 text-foreground" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-foreground">Annual Audit Prep</div>
-                      <div className="text-xs text-muted-foreground line-clamp-1">PBC lists, common findings, timeline management.</div>
-                    </div>
-                  </Link>
-                  <Link
-                    href="/help/k1-tax-season"
-                    onClick={() => setOpenDropdown(null)}
-                    className="flex items-start gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent/50"
-                  >
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent/60 mt-0.5">
-                      <FileText className="h-4 w-4 text-foreground" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-foreground">K-1 Tax Season</div>
-                      <div className="text-xs text-muted-foreground line-clamp-1">Delivery timelines and investor communication.</div>
-                    </div>
-                  </Link>
-                </div>
-              </div>
-
-              {/* Operations & Strategy */}
-              <div className="mb-3 pt-2 border-t border-border">
-                <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2 px-2">Operations & Strategy</div>
-                <div className="space-y-1">
-                  <Link
-                    href="/help/fund-admin-selection"
-                    onClick={() => setOpenDropdown(null)}
-                    className="flex items-start gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent/50"
-                  >
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent/60 mt-0.5">
-                      <Building className="h-4 w-4 text-foreground" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-foreground">Fund Admin Selection</div>
-                      <div className="text-xs text-muted-foreground line-clamp-1">Running an RFP? I can help you evaluate.</div>
-                    </div>
-                  </Link>
-                  <Link
-                    href="/help/launching-a-fund"
-                    onClick={() => setOpenDropdown(null)}
-                    className="flex items-start gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent/50"
-                  >
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent/60 mt-0.5">
-                      <Rocket className="h-4 w-4 text-foreground" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-foreground">Launching a Fund</div>
-                      <div className="text-xs text-muted-foreground line-clamp-1">First-time manager? Get operationally oriented.</div>
-                    </div>
-                  </Link>
-                  <Link
-                    href="/help/waterfall-calculations"
-                    onClick={() => setOpenDropdown(null)}
-                    className="flex items-start gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent/50"
-                  >
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent/60 mt-0.5">
-                      <Calculator className="h-4 w-4 text-foreground" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-foreground">Waterfall Calculations</div>
-                      <div className="text-xs text-muted-foreground line-clamp-1">Structures, validation, and common errors.</div>
-                    </div>
-                  </Link>
-                </div>
-              </div>
-
-              {/* View All Link */}
-              <div className="pt-2 border-t border-border">
-                <Link
-                  href="/help"
-                  onClick={() => setOpenDropdown(null)}
-                  className="flex items-center justify-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                >
-                  View All 9 Topics
                   <span className="text-xs">→</span>
                 </Link>
               </div>
@@ -408,11 +292,6 @@ export function SiteHeader() {
             {mobileMenuOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
           </button>
 
-          <Button asChild size="sm" className="hidden md:inline-flex">
-            <Link href="/contact">
-              Need Help?
-            </Link>
-          </Button>
         </div>
       </div>
 
@@ -493,54 +372,6 @@ export function SiteHeader() {
                   className="block rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors text-center"
                 >
                   View All Newsletters
-                </Link>
-              </div>
-            </div>
-
-            {/* How I Can Help */}
-            <div className="pt-4 border-t border-border">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                How I Can Help
-              </h3>
-              <div className="space-y-2">
-                <Link
-                  href="/help/sec-exam-prep"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-                >
-                  <span className="font-medium text-foreground">SEC Exam Preparation</span>
-                  <span className="block text-xs text-muted-foreground mt-0.5">Got an exam notice?</span>
-                </Link>
-                <Link
-                  href="/help/fund-admin-selection"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-                >
-                  <span className="font-medium text-foreground">Fund Admin Selection</span>
-                  <span className="block text-xs text-muted-foreground mt-0.5">Running an RFP?</span>
-                </Link>
-                <Link
-                  href="/help/launching-a-fund"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-                >
-                  <span className="font-medium text-foreground">Launching a Fund</span>
-                  <span className="block text-xs text-muted-foreground mt-0.5">First-time manager?</span>
-                </Link>
-                <Link
-                  href="/help/compliance-review"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-                >
-                  <span className="font-medium text-foreground">Compliance Gut Check</span>
-                  <span className="block text-xs text-muted-foreground mt-0.5">Need a second opinion?</span>
-                </Link>
-                <Link
-                  href="/help"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors text-center"
-                >
-                  View All Topics
                 </Link>
               </div>
             </div>
@@ -645,14 +476,6 @@ export function SiteHeader() {
               </a>
             </div>
 
-            {/* Mobile CTA */}
-            <div className="pt-4 border-t border-border">
-              <Button asChild size="sm" className="w-full">
-                <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
-                  Need Help?
-                </Link>
-              </Button>
-            </div>
           </div>
         </nav>
       )}

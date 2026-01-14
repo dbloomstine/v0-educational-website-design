@@ -2,9 +2,9 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { BookOpen, Users, Target, TrendingUp, Linkedin, Calendar, Building2, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { BookOpen, Users, Target, TrendingUp, Linkedin, Building2, ArrowRight, CheckCircle2 } from 'lucide-react'
 import { PageHero, SectionCTA } from '@/components/layout'
 
 export const metadata: Metadata = {
@@ -206,42 +206,23 @@ export default function AboutPage() {
                   </div>
                 </div>
 
-                {/* CTA Card */}
+                {/* Connect */}
                 <div className="lg:col-span-2">
-                  <Card className="border-border/60 bg-card">
-                    <CardHeader>
-                      <CardTitle className="text-lg">Want to chat?</CardTitle>
-                      <CardDescription>
-                        I&apos;m happy to be a sounding board, answer questions, or just talk shop. No sales pitch.
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
-                      <Button asChild className="w-full" size="lg">
-                        <a
-                          href="https://outlook.office.com/bookwithme/user/64e88c9063b2407fb03a67e5c3df844d@iqeq.com/meetingtype/2GfPzbwFuEiKymGSplU9ZQ2?anonymous&ismsaljsauthenabled&ep=mcard"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Calendar className="mr-2 h-4 w-4" />
-                          Book a Conversation
-                        </a>
-                      </Button>
-                      <Button asChild variant="outline" className="w-full" size="lg">
-                        <a
-                          href="https://www.linkedin.com/in/danny-bloomstine/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <Linkedin className="mr-2 h-4 w-4" />
-                          Connect on LinkedIn
-                        </a>
-                      </Button>
-                    </CardContent>
-                  </Card>
-
-                  <div className="mt-6 flex items-center gap-3 text-sm text-muted-foreground">
-                    <Building2 className="h-4 w-4 shrink-0" />
-                    <span>Managing Director at IQ-EQ</span>
+                  <div className="rounded-lg border border-border/60 bg-card p-6">
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground mb-4">
+                      <Building2 className="h-4 w-4 shrink-0" />
+                      <span>Managing Director at IQ-EQ</span>
+                    </div>
+                    <Button asChild variant="outline" className="w-full" size="lg">
+                      <a
+                        href="https://www.linkedin.com/in/danny-bloomstine/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Linkedin className="mr-2 h-4 w-4" />
+                        Connect on LinkedIn
+                      </a>
+                    </Button>
                   </div>
                 </div>
               </div>

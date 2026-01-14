@@ -1,5 +1,4 @@
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { Logo } from "@/components/logo"
 import { ExternalLink } from "lucide-react"
 
@@ -7,18 +6,7 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-card">
       <div className="container mx-auto px-4 py-16">
-        {/* CTA Section */}
-        <div className="mb-16 rounded-lg border border-border bg-accent/30 p-8 text-center">
-          <h2 className="mb-3 text-2xl font-semibold text-balance">Have a Question?</h2>
-          <p className="mb-6 text-muted-foreground text-balance">
-            I&apos;m happy to be a sounding board, talk through a challenge, or point you in the right direction. No sales pitch.
-          </p>
-          <Button size="lg" asChild>
-            <Link href="/contact">Need Help?</Link>
-          </Button>
-        </div>
-
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-5">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           {/* Logo & About */}
           <div>
             <div className="mb-4">
@@ -63,38 +51,6 @@ export function SiteFooter() {
                   Shop
                   <ExternalLink className="h-3 w-3" />
                 </a>
-              </li>
-            </ul>
-          </div>
-
-          {/* How I Can Help */}
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">How I Can Help</h3>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/help/sec-exam-prep" className="text-muted-foreground hover:text-foreground transition-colors">
-                  SEC Exam Prep
-                </Link>
-              </li>
-              <li>
-                <Link href="/help/fund-admin-selection" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Fund Admin Selection
-                </Link>
-              </li>
-              <li>
-                <Link href="/help/launching-a-fund" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Launching a Fund
-                </Link>
-              </li>
-              <li>
-                <Link href="/help/compliance-review" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Compliance Review
-                </Link>
-              </li>
-              <li>
-                <Link href="/help" className="text-muted-foreground hover:text-foreground transition-colors">
-                  View All
-                </Link>
               </li>
             </ul>
           </div>
