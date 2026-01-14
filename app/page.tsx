@@ -57,6 +57,7 @@ const featuredArticles = [
     category: "Private Equity",
     href: "/funds/private-equity/cfo",
     color: "oklch(0.60 0.16 270)",  // Muted purple (matches PE fund type)
+    readingTime: "9 min read",
   },
   {
     title: "Infrastructure Fund Banking & Treasury",
@@ -64,6 +65,7 @@ const featuredArticles = [
     category: "Infrastructure",
     href: "/funds/infrastructure/banking",
     color: "oklch(0.60 0.14 200)",  // Slate blue (matches Infrastructure fund type)
+    readingTime: "12 min read",
   },
   {
     title: "Hedge Fund Compliance Frameworks",
@@ -71,6 +73,7 @@ const featuredArticles = [
     category: "Hedge Funds",
     href: "/funds/hedge-funds/compliance",
     color: "oklch(0.55 0.03 250)",  // Slate gray (monochrome)
+    readingTime: "15 min read",
   },
 ]
 
@@ -148,7 +151,7 @@ export default function HomePage() {
 
                 <AnimateOnScroll delay={200}>
                   <p className="mb-8 max-w-xl text-lg text-muted-foreground leading-relaxed">
-                    Articles and tools to help you understand fund ops - whether you&apos;re new to the field or brushing up on a topic. PE, VC, credit, hedge funds, real estate, and more.
+                    Free articles and tools to help you understand fund ops—whether you&apos;re new to the field or diving deeper into a specific topic. Covering PE, VC, credit, hedge funds, real estate, infrastructure, and more.
                   </p>
                 </AnimateOnScroll>
 
@@ -383,13 +386,18 @@ export default function HomePage() {
                 <Link key={article.title} href={article.href} className="group h-full">
                   <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
                     <CardHeader>
-                      <div className="mb-2 flex items-center gap-2">
-                        <div
-                          className="h-2 w-2 rounded-full"
-                          style={{ backgroundColor: article.color }}
-                        />
-                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                          {article.category}
+                      <div className="mb-2 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="h-2 w-2 rounded-full"
+                            style={{ backgroundColor: article.color }}
+                          />
+                          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                            {article.category}
+                          </span>
+                        </div>
+                        <span className="text-xs text-muted-foreground">
+                          {article.readingTime}
                         </span>
                       </div>
                       <CardTitle className="text-lg font-semibold leading-snug group-hover:text-foreground transition-colors">
@@ -441,37 +449,53 @@ export default function HomePage() {
         {/* Newsletter Section */}
         <section className="py-16">
           <div className="container mx-auto px-4">
-            <AnimateOnScroll className="mx-auto max-w-2xl">
-              <div className="rounded-sm border border-border bg-card p-8 lg:p-10">
-                <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground text-center">
-                  Newsletter
+            <AnimateOnScroll>
+              <div className="mb-10 text-center">
+                <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+                  Newsletters
                 </p>
-                <h2 className="mb-3 text-2xl font-bold text-center" style={{ letterSpacing: '-0.01em' }}>Stay informed</h2>
-                <p className="mb-6 text-muted-foreground text-balance text-center">
-                  Fund operations insights, regulatory updates, and practical guidance delivered to your inbox.
-                </p>
-
-                <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-                  <Button asChild>
-                    <Link href="/newsletter/fundopshq-insights">
-                      FundOpsHQ Insights
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                  <Button variant="outline" asChild>
-                    <Link href="/newsletter/fundwatch-briefing">
-                      FundWatch Briefing
-                    </Link>
-                  </Button>
-                </div>
-
-                <p className="mt-5 text-sm text-muted-foreground text-center">
-                  <Link href="/newsletter" className="hover:text-foreground transition-colors underline underline-offset-4">
-                    View all newsletters
-                  </Link>
+                <h2 className="mb-3 text-2xl font-bold" style={{ letterSpacing: '-0.01em' }}>Stay in the loop</h2>
+                <p className="text-muted-foreground max-w-xl mx-auto">
+                  Two newsletters, two different focuses. Pick what works for you.
                 </p>
               </div>
             </AnimateOnScroll>
+
+            <div className="grid gap-6 sm:grid-cols-2 max-w-3xl mx-auto">
+              <Link href="/newsletter/fundopshq-insights" className="group">
+                <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-semibold">FundOpsHQ Insights</CardTitle>
+                    <CardDescription className="leading-relaxed">
+                      Deep dives on fund operations topics, frameworks, and practical guidance. Published when there&apos;s something worth sharing.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                      Subscribe
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+
+              <Link href="/newsletter/fundwatch-briefing" className="group">
+                <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-semibold">FundWatch Briefing</CardTitle>
+                    <CardDescription className="leading-relaxed">
+                      Weekly roundup of fund launches, closes, and industry news. Quick reads to stay current on what&apos;s happening in the market.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                      Subscribe
+                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -482,13 +506,16 @@ export default function HomePage() {
               <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
                 About
               </p>
-              <h2 className="mb-3 text-2xl font-bold" style={{ letterSpacing: '-0.01em' }}>Here to help you learn</h2>
+              <h2 className="mb-3 text-2xl font-bold" style={{ letterSpacing: '-0.01em' }}>Built by someone who does this work</h2>
+              <p className="mb-4 text-muted-foreground text-balance leading-relaxed">
+                Hi, I&apos;m Danny. I&apos;ve spent over a decade in fund operations across PE, VC, credit, and infrastructure funds. I built FundOpsHQ to share what I&apos;ve learned along the way.
+              </p>
               <p className="mb-6 text-muted-foreground text-balance leading-relaxed">
-                FundOpsHQ is a free resource built to share what I&apos;ve learned from years in fund operations. Whether you&apos;re new to the field or looking to brush up on a topic, I hope you find something useful here.
+                Whether you&apos;re just getting started or brushing up on a specific topic, I hope you find something useful here. No sales pitch, just practical knowledge.
               </p>
               <Button variant="outline" asChild>
                 <Link href="/about">
-                  About FundOpsHQ
+                  More about FundOpsHQ
                 </Link>
               </Button>
             </AnimateOnScroll>
