@@ -194,10 +194,10 @@ export function SiteHeader() {
             </div>
           </Dropdown>
 
-          {/* Free Tools Dropdown */}
+          {/* Tools Dropdown */}
           <Dropdown
-            trigger="Free Tools"
-            id="free-tools"
+            trigger="Tools"
+            id="tools"
             isOpen={openDropdown === 'tools'}
             onOpenChange={handleDropdownOpen('tools')}
           >
@@ -367,10 +367,10 @@ export function SiteHeader() {
               </div>
             </div>
 
-            {/* Free Tools */}
+            {/* Tools */}
             <div className="pt-4 border-t border-border">
               <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Free Tools
+                Tools
               </h3>
               <div className="space-y-2">
                 {tools.slice(0, 6).map((tool) => (

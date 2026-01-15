@@ -9,17 +9,17 @@ import { PageHero, SectionCTA } from '@/components/layout'
 
 export const metadata: Metadata = {
   title: 'About FundOpsHQ',
-  description: 'FundOpsHQ is a free resource to help you learn fund operations. Articles and tools covering PE, VC, hedge funds, and more.',
+  description: 'FundOpsHQ is a resource to help you learn fund operations. Articles and tools covering PE, VC, hedge funds, and more.',
   openGraph: {
     title: 'About FundOpsHQ',
-    description: 'Free resources to help you learn fund operations across all asset classes.',
+    description: 'Resources to help you learn fund operations across all asset classes.',
     type: 'website',
     url: 'https://fundops.com/about',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'About FundOpsHQ',
-    description: 'Free resources to help you learn fund operations.',
+    description: 'Resources to help you learn fund operations.',
   },
   alternates: {
     canonical: 'https://fundops.com/about',
@@ -44,8 +44,8 @@ const values = [
   },
   {
     icon: TrendingUp,
-    title: "Always Free",
-    description: "All articles and tools are free to use. No paywalls, no sign-up required."
+    title: "Always Accessible",
+    description: "All articles and tools are available without paywalls or sign-up required."
   },
 ]
 
@@ -70,7 +70,7 @@ export default function AboutPage() {
       <main id="main-content" className="flex-1">
         <PageHero
           title="About FundOpsHQ"
-          subtitle="A free resource to help you learn fund operations. Articles and tools covering PE, VC, hedge funds, private credit, real estate, and more."
+          subtitle="A resource to help you learn fund operations. Articles and tools covering PE, VC, hedge funds, private credit, real estate, and more."
           titleSize="large"
         />
 
@@ -87,7 +87,7 @@ export default function AboutPage() {
                 </h2>
                 <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
                   Fund operations can be complex, and good resources are hard to find. This site is my way of sharing
-                  what I&apos;ve learned over the years—practical, free, and hopefully useful.
+                  what I&apos;ve learned over the years—practical and hopefully useful.
                 </p>
               </div>
 
@@ -232,7 +232,7 @@ export default function AboutPage() {
 
         <SectionCTA
           title="Ready to dive in?"
-          description="Explore our resources by fund type or check out our free tools and calculators."
+          description="Explore our resources by fund type or check out our tools and calculators."
         >
           <Button asChild size="lg">
             <Link href="/#fund-types">
@@ -242,7 +242,7 @@ export default function AboutPage() {
           </Button>
           <Button variant="outline" asChild size="lg">
             <Link href="/tools">
-              Free Tools
+              Tools
             </Link>
           </Button>
         </SectionCTA>

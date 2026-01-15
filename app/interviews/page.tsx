@@ -193,7 +193,7 @@ export default function InterviewsPage() {
                   <Link href="/#fund-types">Fund Types</Link>
                 </Button>
                 <Button variant="outline" size="sm" asChild>
-                  <Link href="/tools">Free Tools</Link>
+                  <Link href="/tools">Tools</Link>
                 </Button>
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/newsletter">Newsletters</Link>

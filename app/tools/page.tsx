@@ -20,18 +20,18 @@ import {
 } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Free Tools & Calculators | FundOpsHQ',
-  description: 'Free fund operations tools and calculators for fund formation, management fees, waterfall distributions, and expense allocation.',
+  title: 'Tools & Calculators | FundOpsHQ',
+  description: 'Fund operations tools and calculators for fund formation, waterfall distributions, and expense allocation.',
   openGraph: {
-    title: 'Free Tools & Calculators | FundOpsHQ',
-    description: 'Free fund operations tools and calculators for fund formation, budgeting, economics, and operations.',
+    title: 'Tools & Calculators | FundOpsHQ',
+    description: 'Fund operations tools and calculators for fund formation, economics, and operations.',
     type: 'website',
     url: 'https://fundops.com/tools',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Free Tools & Calculators | FundOpsHQ',
-    description: 'Free fund operations tools and calculators for fund formation, budgeting, economics, and operations.',
+    title: 'Tools & Calculators | FundOpsHQ',
+    description: 'Fund operations tools and calculators for fund formation, economics, and operations.',
   },
   alternates: {
     canonical: 'https://fundops.com/tools',

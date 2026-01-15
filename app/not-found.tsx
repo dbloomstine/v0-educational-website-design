@@ -74,7 +74,7 @@ export default function NotFound() {
                 <p className="text-sm text-muted-foreground">
                   Check out our{" "}
                   <Link href="/tools" className="text-primary hover:underline">
-                    free tools
+                    tools
                   </Link>{" "}
                   or{" "}
                   <Link href="/contact" className="text-primary hover:underline">

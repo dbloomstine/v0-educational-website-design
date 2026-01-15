@@ -15,17 +15,17 @@ import { getAllRoles } from "@/lib/content/roles"
 
 export const metadata: Metadata = {
   title: 'FundOpsHQ | Learn Fund Operations for PE, VC, Credit & More',
-  description: 'Free educational resources for fund operations professionals. Articles, tools, and guides covering Private Equity, Venture Capital, Hedge Funds, Private Credit, Real Estate, and Infrastructure fund operations.',
+  description: 'Educational resources for fund operations professionals. Articles, tools, and guides covering Private Equity, Venture Capital, Hedge Funds, Private Credit, Real Estate, and Infrastructure fund operations.',
   openGraph: {
     title: 'FundOpsHQ | Learn Fund Operations for PE, VC, Credit & More',
-    description: 'Free educational resources for fund operations professionals. Articles, tools, and guides across all alternative asset classes.',
+    description: 'Educational resources for fund operations professionals. Articles, tools, and guides across all alternative asset classes.',
     type: 'website',
     url: 'https://fundops.com',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'FundOpsHQ | Learn Fund Operations',
-    description: 'Free educational resources for fund operations professionals across all alternative asset classes.',
+    description: 'Educational resources for fund operations professionals across all alternative asset classes.',
   },
   alternates: {
     canonical: 'https://fundops.com',
@@ -84,7 +84,7 @@ const organizationJsonLd = {
   name: 'FundOpsHQ',
   url: 'https://fundops.com',
   logo: 'https://fundops.com/icon.svg',
-  description: 'Free articles and tools to help you learn fund operations across Private Equity, Venture Capital, Hedge Funds, Private Credit, Real Estate, and Infrastructure.',
+  description: 'Articles and tools to help you learn fund operations across Private Equity, Venture Capital, Hedge Funds, Private Credit, Real Estate, and Infrastructure.',
   founder: {
     '@type': 'Person',
     name: 'Danny Bloomstine',
@@ -110,7 +110,7 @@ const websiteJsonLd = {
   '@type': 'WebSite',
   name: 'FundOpsHQ',
   url: 'https://fundops.com',
-  description: 'Free resources to help you learn fund operations',
+  description: 'Resources to help you learn fund operations',
   publisher: {
     '@type': 'Organization',
     name: 'FundOpsHQ',
@@ -139,7 +139,7 @@ export default function HomePage() {
               <div className="lg:col-span-7">
                 <AnimateOnScroll delay={0}>
                   <p className="mb-4 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                    Free Resources
+                    Resources
                   </p>
                 </AnimateOnScroll>
 
@@ -151,7 +151,7 @@ export default function HomePage() {
 
                 <AnimateOnScroll delay={200}>
                   <p className="mb-8 max-w-xl text-lg text-muted-foreground leading-relaxed">
-                    Free articles and tools to help you understand fund ops—whether you&apos;re new to the field or diving deeper into a specific topic. Covering PE, VC, credit, hedge funds, real estate, infrastructure, and more.
+                    Articles and tools to help you understand fund ops—whether you&apos;re new to the field or diving deeper into a specific topic. Covering PE, VC, credit, hedge funds, real estate, infrastructure, and more.
                   </p>
                 </AnimateOnScroll>
 
@@ -438,9 +438,9 @@ export default function HomePage() {
               </div>
               <div>
                 <div className="text-3xl font-bold text-foreground mb-1">
-                  <AnimatedCounter end={6} duration={1500} />
+                  <AnimatedCounter end={3} duration={1500} />
                 </div>
-                <div className="text-sm text-muted-foreground">Free interactive tools</div>
+                <div className="text-sm text-muted-foreground">Interactive tools</div>
               </div>
             </div>
           </div>

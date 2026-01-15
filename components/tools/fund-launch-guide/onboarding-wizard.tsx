@@ -156,8 +156,8 @@ export function OnboardingWizard({ onComplete, onSkip }: OnboardingWizardProps) 
                   <div className="text-xs text-muted-foreground">Tasks</div>
                 </div>
                 <div className="p-4 rounded-lg bg-accent/50">
-                  <div className="text-2xl font-bold text-primary">100%</div>
-                  <div className="text-xs text-muted-foreground">Free</div>
+                  <div className="text-2xl font-bold text-primary">Local</div>
+                  <div className="text-xs text-muted-foreground">Saved</div>
                 </div>
               </div>
             </div>

@@ -145,7 +145,7 @@ interface RelatedToolsProps {
 export function RelatedTools({
   tools,
   title = "Related Tools",
-  subtitle = "Free calculators and planning tools",
+  subtitle = "Calculators and planning tools",
   compact = false,
   showViewAll = true,
   maxTools = 6,
