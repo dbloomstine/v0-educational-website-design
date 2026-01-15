@@ -13,7 +13,7 @@ export function SiteFooter() {
               <Logo height={24} className="text-foreground" />
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Free guides, tools, and articles to help you learn fund operations.
+              Guides, tools, and articles to help you learn fund operations.
             </p>
           </div>
 

@@ -127,6 +127,7 @@ export const TAX_ADVISORS = [
   'Forvis',
   'Grassi',
   'Grant Thornton',
+  'IQ-EQ',
   'Kaufman Rossin',
   'KPMG Tax',
   'Marcum LLP',
