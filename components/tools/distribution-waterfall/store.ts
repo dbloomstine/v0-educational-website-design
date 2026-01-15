@@ -1,5 +1,6 @@
 import { create } from 'zustand'
-import { persist, subscribeWithSelector } from 'zustand/middleware'
+import { persist } from 'zustand/middleware'
+import { useShallow } from 'zustand/react/shallow'
 import { WaterfallInput, WaterfallOutput, defaultInput, calculateWaterfall } from './waterfallCalculations'
 
 // Preset scenarios
@@ -104,9 +105,8 @@ interface WaterfallStore {
 }
 
 export const useWaterfallStore = create<WaterfallStore>()(
-  subscribeWithSelector(
-    persist(
-      (set, get) => ({
+  persist(
+    (set, get) => ({
         // Initial state
         input: defaultInput,
         output: calculateWaterfall(defaultInput),
@@ -202,15 +202,16 @@ export const useWaterfallStore = create<WaterfallStore>()(
       }
     )
   )
-)
 
 // Selector hooks
 export const useOutput = () => useWaterfallStore(state => state.output)
 export const useInput = () => useWaterfallStore(state => state.input)
 export const useActiveTab = () => useWaterfallStore(state => state.activeTab)
 export const useShowOnboarding = () => useWaterfallStore(state => state.showOnboarding)
-export const useComparison = () => useWaterfallStore(state => ({
-  showComparison: state.showComparison,
-  compareInput: state.compareInput,
-  compareOutput: state.compareOutput
-}))
+export const useComparison = () => useWaterfallStore(
+  useShallow(state => ({
+    showComparison: state.showComparison,
+    compareInput: state.compareInput,
+    compareOutput: state.compareOutput
+  }))
+)
