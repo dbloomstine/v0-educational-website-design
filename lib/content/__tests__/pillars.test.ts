@@ -3,12 +3,12 @@ import { pillars, getPillar, getPillarsByFundType } from '../pillars'
 
 describe('pillars', () => {
   describe('pillars registry', () => {
-    it('should contain 12 pillars', () => {
-      expect(Object.keys(pillars).length).toBe(12)
+    it('should contain 14 pillars', () => {
+      expect(Object.keys(pillars).length).toBe(14)
     })
 
     it('should have core pillars available to all fund types', () => {
-      const corePillars = ['cfo', 'compliance', 'fund-administration', 'investor-relations', 'tax', 'banking', 'fundraising', 'insurance', 'audit', 'cyber-it']
+      const corePillars = ['cfo', 'compliance', 'fund-administration', 'investor-relations', 'tax', 'banking', 'fundraising', 'insurance', 'audit', 'cyber-it', 'legal', 'hr']
       corePillars.forEach(pillarSlug => {
         expect(pillars[pillarSlug]).toBeDefined()
         expect(pillars[pillarSlug].fundTypes.length).toBe(8)
@@ -53,20 +53,20 @@ describe('pillars', () => {
   })
 
   describe('getPillarsByFundType', () => {
-    it('should return 10 pillars for private-equity', () => {
+    it('should return 12 pillars for private-equity', () => {
       const pePillars = getPillarsByFundType('private-equity')
-      expect(pePillars.length).toBe(10)
+      expect(pePillars.length).toBe(12)
     })
 
-    it('should return 11 pillars for private-credit (includes loan-administration)', () => {
+    it('should return 13 pillars for private-credit (includes loan-administration)', () => {
       const pcPillars = getPillarsByFundType('private-credit')
-      expect(pcPillars.length).toBe(11)
+      expect(pcPillars.length).toBe(13)
       expect(pcPillars.find(p => p.slug === 'loan-administration')).toBeDefined()
     })
 
-    it('should return 11 pillars for hedge-funds (includes prime-brokerage)', () => {
+    it('should return 13 pillars for hedge-funds (includes prime-brokerage)', () => {
       const hfPillars = getPillarsByFundType('hedge-funds')
-      expect(hfPillars.length).toBe(11)
+      expect(hfPillars.length).toBe(13)
       expect(hfPillars.find(p => p.slug === 'prime-brokerage')).toBeDefined()
     })
 
