@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -9,7 +9,7 @@ import { useWaterfallStore, useActiveTab, useShowOnboarding, useOutput, PRESETS 
 import { CalculatorTab } from './tabs/calculator-tab'
 import { LearnTab } from './tabs/learn-tab'
 import { formatMultiple, formatPercent } from './waterfallCalculations'
-import { Download, Share2, RotateCcw, FileText, Droplets, Loader2 } from 'lucide-react'
+import { Download, Share2, RotateCcw, FileText, Droplets } from 'lucide-react'
 
 // Format large numbers as millions
 function formatMillions(value: number): string {
@@ -187,36 +187,10 @@ function QuickStartDialog() {
 
 // Main component
 export function DistributionWaterfall() {
-  const [mounted, setMounted] = useState(false)
   const activeTab = useActiveTab()
   const setActiveTab = useWaterfallStore(state => state.setActiveTab)
   const reset = useWaterfallStore(state => state.reset)
   const output = useOutput()
-
-  // Hydration fix: wait for client-side mount before rendering
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
-    return (
-      <div className="space-y-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Distribution Waterfall</h1>
-            <p className="text-muted-foreground">
-              Visualize how fund proceeds flow to LPs and GP
-            </p>
-          </div>
-        </div>
-        <Card className="bg-accent/30">
-          <CardContent className="py-12 flex items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
 
   return (
     <div className="space-y-6">
