@@ -84,6 +84,20 @@ export const pillars: Record<string, Pillar> = {
     slug: 'prime-brokerage',
     description: 'Prime broker relationships and margin management',
     fundTypes: ['hedge-funds']
+  },
+  'legal': {
+    id: 'legal',
+    title: 'Legal & Fund Formation',
+    slug: 'legal',
+    description: 'Fund structuring, LPA negotiations, and regulatory filings',
+    fundTypes: ['private-equity', 'private-credit', 'venture-capital', 'hedge-funds', 'real-estate', 'infrastructure', 'secondaries', 'gp-stakes']
+  },
+  'hr': {
+    id: 'hr',
+    title: 'HR & Benefits',
+    slug: 'hr',
+    description: 'Team structure, compensation, carried interest, and PEO relationships',
+    fundTypes: ['private-equity', 'private-credit', 'venture-capital', 'hedge-funds', 'real-estate', 'infrastructure', 'secondaries', 'gp-stakes']
   }
 }
 
