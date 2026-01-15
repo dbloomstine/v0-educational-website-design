@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { FundLaunchGuide } from '@/components/tools/fund-launch-guide/fund-launch-guide'
+import { FundLaunchGuide } from '@/components/tools/fund-launch-guide'
 
 export const metadata: Metadata = {
   title: 'Fund Launch Guide | FundOpsHQ',
