@@ -9,7 +9,7 @@ import { ManagementFeeCalculator } from './management-fee-calculator'
 import { ManagementCompanyBudget } from './management-company-budget'
 import { FundExpenseAllocation } from './fund-expense-allocation'
 import { DistributionWaterfall } from './distribution-waterfall'
-import { SubscriptionCreditLine } from './subscription-credit-line/subscription-credit-line'
+import { SubscriptionCreditLineV2 } from './subscription-credit-line'
 
 interface ToolPlaceholderProps {
   tool: Tool
@@ -86,7 +86,7 @@ export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
       <div className="py-12">
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-7xl">
-            <SubscriptionCreditLine />
+            <SubscriptionCreditLineV2 />
           </div>
         </div>
       </div>
