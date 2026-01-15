@@ -499,28 +499,6 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* About/CTA Section */}
-        <section className="py-16 border-t border-border bg-accent/5">
-          <div className="container mx-auto px-4">
-            <AnimateOnScroll className="mx-auto max-w-2xl text-center">
-              <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                About
-              </p>
-              <h2 className="mb-3 text-2xl font-bold" style={{ letterSpacing: '-0.01em' }}>Built by someone who does this work</h2>
-              <p className="mb-4 text-muted-foreground text-balance leading-relaxed">
-                Hi, I&apos;m Danny. I&apos;ve spent over a decade in fund operations across PE, VC, credit, and infrastructure funds. I built FundOpsHQ to share what I&apos;ve learned along the way.
-              </p>
-              <p className="mb-6 text-muted-foreground text-balance leading-relaxed">
-                Whether you&apos;re just getting started or brushing up on a specific topic, I hope you find something useful here. No sales pitch, just practical knowledge.
-              </p>
-              <Button variant="outline" asChild>
-                <Link href="/about">
-                  More about FundOpsHQ
-                </Link>
-              </Button>
-            </AnimateOnScroll>
-          </div>
-        </section>
       </main>
 
       <SiteFooter />

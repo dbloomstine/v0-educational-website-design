@@ -3,7 +3,6 @@ import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Breadcrumb } from "@/components/breadcrumb"
-import { ArticleCTA } from "@/components/article-cta"
 import { RelatedArticles } from "@/components/related-articles"
 import { ArticleToc } from "@/components/article-toc"
 import { ShareButtons } from "@/components/share-buttons"
@@ -181,8 +180,6 @@ export default async function PillarPage({ params }: PillarPageProps) {
                     <div dangerouslySetInnerHTML={{ __html: article.content }} />
                   </div>
 
-                  {/* Article CTA */}
-                  <ArticleCTA topic={pillar.title} />
 
                   {/* Related Articles */}
                   {relatedArticles.length > 0 && (

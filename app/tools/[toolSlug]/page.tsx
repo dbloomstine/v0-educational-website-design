@@ -21,16 +21,16 @@ export async function generateStaticParams() {
 
 // Map tool slugs to enhanced SEO titles with intent keywords
 const toolSeoTitles: Record<string, string> = {
-  'fund-formation-timeline': 'Free Fund Formation Timeline Generator | Fund Launch Checklist',
-  'management-fee-calculator': 'Free Management Fee Calculator | Private Fund Fee Modeling',
-  'management-company-budget': 'Free Management Company Budget Planner | GP Runway Calculator',
-  'fund-admin-pricing': 'Free Fund Admin Pricing Estimator | Administration Cost Calculator',
-  'audit-fee-estimator': 'Free Audit Fee Estimator | Private Fund Audit Cost Calculator',
-  'tax-fee-estimator': 'Free Tax Fee Estimator | Fund Tax Preparation Cost Calculator',
-  'kyc-aml-cost-estimator': 'Free KYC/AML Cost Estimator | Investor Onboarding Calculator',
-  'distribution-waterfall': 'Free Distribution Waterfall Calculator | PE/VC Carry Visualizer',
-  'subscription-credit-line': 'Free Subscription Line Calculator | Credit Facility IRR Impact',
-  'fund-expense-allocation': 'Free Fund Expense Allocation Tool | Expense Classification Helper',
+  'fund-formation-timeline': 'Fund Formation Timeline Generator | Fund Launch Checklist',
+  'management-fee-calculator': 'Management Fee Calculator | Private Fund Fee Modeling',
+  'management-company-budget': 'Management Company Budget Planner | GP Runway Calculator',
+  'fund-admin-pricing': 'Fund Admin Pricing Estimator | Administration Cost Calculator',
+  'audit-fee-estimator': 'Audit Fee Estimator | Private Fund Audit Cost Calculator',
+  'tax-fee-estimator': 'Tax Fee Estimator | Fund Tax Preparation Cost Calculator',
+  'kyc-aml-cost-estimator': 'KYC/AML Cost Estimator | Investor Onboarding Calculator',
+  'distribution-waterfall': 'Distribution Waterfall Calculator | PE/VC Carry Visualizer',
+  'subscription-credit-line': 'Subscription Line Calculator | Credit Facility IRR Impact',
+  'fund-expense-allocation': 'Fund Expense Allocation Tool | Expense Classification Helper',
   'investor-report-generator': 'AI Investor Report Generator | Quarterly Letter Writing Tool',
 }
 
@@ -45,22 +45,22 @@ export async function generateMetadata({ params }: ToolPageProps): Promise<Metad
   }
 
   // Use enhanced SEO title if available, otherwise fall back to default
-  const seoTitle = toolSeoTitles[tool.slug] || `Free ${tool.title}`
+  const seoTitle = toolSeoTitles[tool.slug] || tool.title
   const fullTitle = `${seoTitle} | FundOpsHQ`
 
   return {
     title: fullTitle,
-    description: `Free online ${tool.title.toLowerCase()}. ${tool.shortDescription}`,
+    description: `${tool.title}. ${tool.shortDescription}`,
     openGraph: {
       title: seoTitle,
-      description: `Free online tool: ${tool.shortDescription}`,
+      description: tool.shortDescription,
       type: 'website',
       url: `https://fundops.com/tools/${tool.slug}`,
     },
     twitter: {
       card: 'summary_large_image',
       title: seoTitle,
-      description: `Free online tool: ${tool.shortDescription}`,
+      description: tool.shortDescription,
     },
     alternates: {
       canonical: `https://fundops.com/tools/${tool.slug}`,

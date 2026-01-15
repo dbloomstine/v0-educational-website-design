@@ -148,7 +148,7 @@ export default function ToolsPage() {
             <AnimateOnScroll className="max-w-3xl mx-auto text-center">
               <div className="inline-flex items-center gap-2 rounded-full bg-foreground/5 border border-border px-4 py-1.5 text-sm font-medium text-foreground mb-6">
                 <Zap className="h-4 w-4 text-amber-500" />
-                {tools.length} Free Tools
+                {tools.length} Tools
               </div>
               <h1 className="mb-5 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl">
                 Tools & Calculators

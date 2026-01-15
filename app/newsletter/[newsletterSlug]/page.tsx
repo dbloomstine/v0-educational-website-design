@@ -117,11 +117,8 @@ export default async function NewsletterArchivePage({ params }: NewsletterPagePr
         <section className="py-20">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-4xl">
-              <div className="mb-8 flex items-center justify-between">
+              <div className="mb-8">
                 <h2 className="text-2xl font-bold">All Issues</h2>
-                <span className="text-sm text-muted-foreground">
-                  {posts.length} {posts.length === 1 ? 'issue' : 'issues'}
-                </span>
               </div>
 
               {posts.length === 0 ? (

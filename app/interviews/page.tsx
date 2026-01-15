@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { AnimateOnScroll } from '@/components/animate-on-scroll'
@@ -8,6 +7,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Mic2, Users, Lightbulb, ArrowRight } from 'lucide-react'
 import { SectionCTA } from '@/components/layout'
 import { createPageMetadata } from '@/lib/seo'
+import { Logo } from '@/components/logo'
 
 export const metadata = createPageMetadata({
   title: 'FundOpsHQ Interviews | Coming Soon',
@@ -63,16 +63,9 @@ export default function InterviewsPage() {
               </AnimateOnScroll>
 
               <AnimateOnScroll delay={100}>
-                {/* Logo - Monochrome SVG, centered */}
+                {/* Logo - FundOpsHQ wordmark, centered */}
                 <div className="mb-8 flex justify-center">
-                  <Image
-                    src="/logos/fundopshq-interviews-mono-dark.svg"
-                    alt="FundOpsHQ Interviews"
-                    width={320}
-                    height={72}
-                    className="h-auto w-[280px] sm:w-[320px]"
-                    priority
-                  />
+                  <Logo height={48} />
                 </div>
               </AnimateOnScroll>
 
