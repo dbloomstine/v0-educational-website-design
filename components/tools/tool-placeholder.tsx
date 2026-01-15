@@ -7,7 +7,7 @@ import { Tool } from '@/lib/content/types'
 import { AlertCircle, Calculator } from 'lucide-react'
 import { ManagementFeeCalculator } from './management-fee-calculator'
 import { ManagementCompanyBudget } from './management-company-budget'
-import { FundExpenseAllocation } from './fund-expense-allocation/fund-expense-allocation'
+import { FundExpenseAllocation } from './fund-expense-allocation'
 import { DistributionWaterfall } from './distribution-waterfall'
 import { SubscriptionCreditLine } from './subscription-credit-line/subscription-credit-line'
 
