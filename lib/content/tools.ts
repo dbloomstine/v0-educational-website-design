@@ -1,6 +1,6 @@
 import { Tool, ToolCategory, ToolPersona } from './types'
 
-// 6 high-trust tools for FundOpsHQ
+// Educational tools for FundOpsHQ
 const tools: Tool[] = [
   // A. Fund Formation
   {
@@ -27,56 +27,6 @@ const tools: Tool[] = [
     status: 'active',
     icon: 'Rocket'
   },
-  {
-    id: 'management-fee-calculator',
-    title: 'Management Fee Calculator',
-    slug: 'management-fee-calculator',
-    shortDescription: 'Model management fee schedules across fund life, commitment period, and step-downs.',
-    inputs: [
-      'Fund size',
-      'Term',
-      'Commitment period',
-      'Fee rates',
-      'Fee bases',
-      'Step-downs'
-    ],
-    outputs: [
-      'Year-by-year fee schedule',
-      'Summary metrics'
-    ],
-    categories: ['Fund Formation'],
-    personas: ['GP', 'CFO or Controller', 'LP'],
-    complexity: 'Intermediate',
-    status: 'active',
-    icon: 'DollarSign'
-  },
-  {
-    id: 'management-company-budget',
-    title: 'Management Company Budget Planner',
-    slug: 'management-company-budget',
-    shortDescription: 'Calculate your burn rate, runway, and seed capital needs with a simple budget model.',
-    inputs: [
-      'Starting cash',
-      'Fund size and fee rate',
-      'Team costs (all-in monthly)',
-      'Operations costs (admin, audit, legal)',
-      'Overhead costs (office, insurance, tech)'
-    ],
-    outputs: [
-      'Monthly burn rate',
-      'Annual budget vs revenue',
-      'Runway in months',
-      'Break-even timing',
-      'Seed capital needed',
-      'Cash runway chart'
-    ],
-    categories: ['Fund Formation'],
-    personas: ['GP', 'CFO or Controller', 'COO or Operations'],
-    complexity: 'Beginner',
-    status: 'active',
-    icon: 'Building'
-  },
-
   // B. Fund Economics
   {
     id: 'distribution-waterfall',
@@ -102,32 +52,6 @@ const tools: Tool[] = [
     status: 'active',
     icon: 'TrendingUp'
   },
-  {
-    id: 'subscription-credit-line',
-    title: 'Subscription Credit Line Impact Visualizer',
-    slug: 'subscription-credit-line',
-    shortDescription: 'Show how a subscription line of credit affects IRR, MOIC, and fee drag.',
-    inputs: [
-      'Fund size',
-      'Facility size',
-      'Interest rate',
-      'Typical days outstanding',
-      'Draw pattern',
-      'Pacing'
-    ],
-    outputs: [
-      'IRR with and without the line',
-      'MOIC impact',
-      'Fee drag',
-      'Simple charts'
-    ],
-    categories: ['Fund Economics'],
-    personas: ['GP', 'CFO or Controller', 'LP'],
-    complexity: 'Advanced',
-    status: 'active',
-    icon: 'LineChart'
-  },
-
   // C. Operations and Compliance
   {
     id: 'fund-expense-allocation',
@@ -213,7 +137,7 @@ export function getToolCountByCategory(): Record<string, number> {
 
 // Get SEO-friendly title for a tool
 export function getToolSeoTitle(tool: Tool): string {
-  return `${tool.title} | Free Fund Operations Tool | FundOpsHQ`
+  return `${tool.title} | Fund Operations Tool | FundOpsHQ`
 }
 
 // Get structured data for a tool (JSON-LD)
