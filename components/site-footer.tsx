@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { Logo } from "@/components/logo"
-import { ExternalLink } from "lucide-react"
+import { ExternalLink, Linkedin } from "lucide-react"
 
 export function SiteFooter() {
   return (
@@ -139,8 +139,11 @@ export function SiteFooter() {
               Terms of Service
             </Link>
           </p>
-          <p>
+          <p className="flex items-center justify-center gap-2">
             Built by <a href="https://www.linkedin.com/in/danny-bloomstine/" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-primary underline">Danny Bloomstine</a>
+            <a href="https://www.linkedin.com/in/danny-bloomstine/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-[#0A66C2] transition-colors" aria-label="LinkedIn">
+              <Linkedin className="h-5 w-5" />
+            </a>
           </p>
         </div>
       </div>
