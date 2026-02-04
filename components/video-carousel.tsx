@@ -2,10 +2,31 @@
 
 import { useState, useCallback, useEffect } from "react"
 import useEmblaCarousel from "embla-carousel-react"
-import { ChevronLeft, ChevronRight, Play } from "lucide-react"
+import { ChevronLeft, ChevronRight, Play, Video } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { VideoLightbox } from "./video-lightbox"
 import type { YouTubeVideo } from "@/lib/youtube"
+
+function VideoThumbnail({ src, alt }: { src: string; alt: string }) {
+  const [hasError, setHasError] = useState(false)
+
+  if (hasError) {
+    return (
+      <div className="absolute inset-0 w-full h-full bg-accent/50 flex items-center justify-center">
+        <Video className="h-12 w-12 text-muted-foreground/50" />
+      </div>
+    )
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className="absolute inset-0 w-full h-full object-cover"
+      onError={() => setHasError(true)}
+    />
+  )
+}
 
 interface VideoCarouselProps {
   videos: YouTubeVideo[]
@@ -66,11 +87,7 @@ export function VideoCarousel({ videos }: VideoCarouselProps) {
                   className="group relative block w-full aspect-video rounded-lg overflow-hidden border border-border bg-card transition-all duration-300 hover:border-foreground/30 hover:shadow-lg"
                 >
                   {/* Thumbnail */}
-                  <img
-                    src={video.thumbnail}
-                    alt={video.title}
-                    className="absolute inset-0 w-full h-full object-cover"
-                  />
+                  <VideoThumbnail src={video.thumbnail} alt={video.title} />
 
                   {/* Gradient Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-background/30 to-transparent opacity-70 group-hover:opacity-90 transition-opacity" />
