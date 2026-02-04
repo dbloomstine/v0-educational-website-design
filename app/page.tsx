@@ -12,6 +12,8 @@ import { ArrowRight, Calculator, Building, DollarSign, Users, Shield } from "luc
 import { getAllFundTypes } from "@/lib/content/fund-types"
 import { getAllTools } from "@/lib/content/tools"
 import { getAllRoles } from "@/lib/content/roles"
+import { type YouTubeVideo } from "@/lib/youtube"
+import { VideoCarousel } from "@/components/video-carousel"
 
 export const metadata: Metadata = {
   title: 'FundOpsHQ | Learn Fund Operations for PE, VC, Credit & More',
@@ -74,6 +76,22 @@ const featuredArticles = [
     href: "/funds/hedge-funds/compliance",
     color: "oklch(0.55 0.03 250)",  // Slate gray (monochrome)
     readingTime: "15 min read",
+  },
+]
+
+// Hardcoded videos - update manually when new videos are published
+const videos: YouTubeVideo[] = [
+  {
+    videoId: "ZZeBWwR2NOY",
+    title: "How Fund Valuations Actually Work w. Monica Blocker, Houlihan Capital",
+    thumbnail: "https://img.youtube.com/vi/ZZeBWwR2NOY/hqdefault.jpg",
+    publishedAt: "2025-02-02",
+  },
+  {
+    videoId: "aYOmTExZm4w",
+    title: "Nick Maroules, BDO: Inside Fund Auditing, LP Transparency & ILPA Templates",
+    thumbnail: "https://img.youtube.com/vi/aYOmTExZm4w/hqdefault.jpg",
+    publishedAt: "2025-02-03",
   },
 ]
 
@@ -242,6 +260,39 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* Recent Videos Section */}
+        {videos.length > 0 && (
+          <section className="py-16 border-b border-border">
+            <div className="container mx-auto px-4">
+              <AnimateOnScroll>
+                <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
+                      Videos
+                    </p>
+                    <h2 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>Recent Conversations</h2>
+                    <p className="text-muted-foreground max-w-2xl">
+                      Conversations with fund ops professionals sharing what they&apos;ve learned
+                    </p>
+                  </div>
+                  <Button variant="outline" asChild className="sm:shrink-0">
+                    <Link href="/interviews">
+                      View All Videos
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                  </Button>
+                </div>
+              </AnimateOnScroll>
+
+              <AnimateOnScroll delay={100}>
+                <div className="max-w-4xl">
+                  <VideoCarousel videos={videos.slice(0, 3)} />
+                </div>
+              </AnimateOnScroll>
+            </div>
+          </section>
+        )}
 
         {/* Fund Types Grid */}
         <section id="fund-types" className="py-16 scroll-mt-16">
