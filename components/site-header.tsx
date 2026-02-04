@@ -243,12 +243,9 @@ export function SiteHeader() {
           {/* Videos Link */}
           <Link
             href="/interviews"
-            className="inline-flex h-9 w-max items-center gap-1.5 justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+            className="inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
           >
             Videos
-            <span className="inline-flex items-center rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent-foreground">
-              Soon
-            </span>
           </Link>
 
           {/* About Link */}
@@ -404,13 +401,8 @@ export function SiteHeader() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
               >
-                <span className="font-medium text-foreground flex items-center gap-2">
-                  FundOpsHQ Interviews
-                  <span className="inline-flex items-center rounded-full bg-accent px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent-foreground">
-                    Soon
-                  </span>
-                </span>
-                <span className="block text-xs text-muted-foreground mt-0.5">Conversations with fund operations professionals</span>
+                <span className="font-medium text-foreground">Videos & Podcast</span>
+                <span className="block text-xs text-muted-foreground mt-0.5">Watch and listen to fund operations content</span>
               </Link>
             </div>
 
