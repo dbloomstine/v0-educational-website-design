@@ -20,11 +20,11 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   metadataBase: new URL('https://fundops.com'),
   title: {
-    default: "FundOpsHQ - Fund Operations Resources",
+    default: "FundOpsHQ - Conversations on Fund Operations",
     template: "%s | FundOpsHQ"
   },
   description:
-    "Articles and tools to help you learn fund operations. Covering PE, VC, hedge funds, private credit, real estate, infrastructure, and more.",
+    "Weekly conversations with professionals across the investment funds industry sharing what they've learned. Watch on YouTube or listen on Spotify and Apple Podcasts.",
   keywords: [
     "fund operations",
     "private equity operations",
@@ -50,21 +50,21 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://fundops.com',
     siteName: 'FundOpsHQ',
-    title: 'FundOpsHQ - Fund Operations Resources',
-    description: 'Articles and tools to help you learn fund operations across all asset classes.',
+    title: 'FundOpsHQ - Conversations on Fund Operations',
+    description: 'Weekly conversations with professionals across the investment funds industry sharing what they\'ve learned.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'FundOpsHQ - Fund Operations Resources',
+        alt: 'FundOpsHQ - Conversations on Fund Operations',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FundOpsHQ - Fund Operations Resources',
-    description: 'Articles and tools to help you learn fund operations.',
+    title: 'FundOpsHQ - Conversations on Fund Operations',
+    description: 'Weekly conversations with professionals across the investment funds industry.',
     images: ['/og-image.png'],
   },
   robots: {
