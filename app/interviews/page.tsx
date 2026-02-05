@@ -11,10 +11,10 @@ import { fetchPlaylistVideos } from '@/lib/youtube'
 import { VideoCarousel } from '@/components/video-carousel'
 
 export const metadata = createPageMetadata({
-  title: 'Videos & Podcast | FundOpsHQ',
-  description: 'Watch and listen to fund operations content. Videos, podcast episodes, and conversations about PE, VC, hedge funds, and alternative asset operations.',
+  title: 'Watch | FundOpsHQ',
+  description: 'Conversations on fund operations—from the people who do it. Weekly episodes with CFOs, COOs, and fund admins sharing what they\'ve learned.',
   path: '/interviews',
-  ogDescription: 'Watch and listen to fund operations content from FundOpsHQ.',
+  ogDescription: 'Weekly conversations with fund operations experts. Watch on YouTube or listen on Spotify and Apple Podcasts.',
 })
 
 const highlights = [
@@ -107,24 +107,38 @@ export default async function InterviewsPage() {
             <div className="mx-auto max-w-4xl">
               <AnimateOnScroll delay={0}>
                 <p className="mb-4 text-sm font-medium uppercase tracking-widest text-muted-foreground text-center">
-                  Watch & Listen
+                  FundOpsHQ with Danny Bloomstine
                 </p>
               </AnimateOnScroll>
 
               <AnimateOnScroll delay={100}>
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-center mb-6" style={{ letterSpacing: '-0.02em' }}>
-                  Videos & Podcast
+                  Conversations on fund operations—from the people who do it
                 </h1>
               </AnimateOnScroll>
 
               <AnimateOnScroll delay={200}>
+                <div className="flex flex-wrap items-center justify-center gap-4 mb-6 text-sm text-muted-foreground">
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="font-semibold text-foreground">{videos.filter(v => v.guest).length}</span> guests
+                  </span>
+                  <span className="text-border">•</span>
+                  <span className="inline-flex items-center gap-1.5">
+                    <span className="font-semibold text-foreground">{videos.length}</span> episodes
+                  </span>
+                  <span className="text-border">•</span>
+                  <span>New episodes weekly</span>
+                </div>
+              </AnimateOnScroll>
+
+              <AnimateOnScroll delay={300}>
                 <p className="text-lg text-muted-foreground leading-relaxed text-balance text-center max-w-2xl mx-auto mb-10">
-                  Fund operations content in video and audio format. Watch on YouTube, listen on your favorite podcast app, or catch quick clips on TikTok.
+                  CFOs, COOs, and fund admins sharing what they&apos;ve learned about PE, VC, credit, and alternative asset operations.
                 </p>
               </AnimateOnScroll>
 
               {/* YouTube Playlist Embed */}
-              <AnimateOnScroll delay={300}>
+              <AnimateOnScroll delay={400}>
                 <div className="relative w-full aspect-video rounded-lg overflow-hidden border border-border bg-card">
                   <iframe
                     src={`https://www.youtube.com/embed/${YOUTUBE_FIRST_VIDEO_ID}?list=${YOUTUBE_PLAYLIST_ID}`}

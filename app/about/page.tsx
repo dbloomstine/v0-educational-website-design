@@ -4,8 +4,9 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { BookOpen, Users, Target, TrendingUp, Linkedin, Building2, ArrowRight, CheckCircle2 } from 'lucide-react'
+import { BookOpen, Users, Target, TrendingUp, Linkedin, Building2, ArrowRight, CheckCircle2, Play, Mic2, Calendar } from 'lucide-react'
 import { PageHero, SectionCTA } from '@/components/layout'
+import { SubscribePlatforms } from '@/components/subscribe-platforms'
 
 export const metadata: Metadata = {
   title: 'About FundOpsHQ',
@@ -105,6 +106,86 @@ export default function AboutPage() {
                     </CardHeader>
                   </Card>
                 ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* The Show Section */}
+        <section className="py-20 border-t border-border bg-accent/5">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-4xl">
+              <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-start">
+                <div>
+                  <div className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-foreground mb-6">
+                    The Show
+                  </div>
+                  <h2 className="text-3xl font-bold tracking-tight mb-6">
+                    Conversations with fund ops professionals
+                  </h2>
+                  <div className="space-y-5 text-muted-foreground leading-relaxed">
+                    <p>
+                      FundOpsHQ is also a weekly video series featuring conversations with CFOs, COOs, fund administrators,
+                      and service providers who share what they&apos;ve learned from the front lines of fund operations.
+                    </p>
+                    <p>
+                      Each episode dives into real challenges, practical solutions, and career insights across
+                      private equity, venture capital, credit, and other alternative asset classes.
+                    </p>
+                  </div>
+                  <div className="mt-8">
+                    <Button asChild>
+                      <Link href="/interviews">
+                        Watch Episodes
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div className="rounded-xl border border-border bg-card p-6">
+                    <h3 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">
+                      Format
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent">
+                          <Play className="h-4 w-4 text-foreground" />
+                        </div>
+                        <div>
+                          <div className="font-medium text-sm">Video Interviews</div>
+                          <div className="text-sm text-muted-foreground">Full episodes on YouTube</div>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent">
+                          <Mic2 className="h-4 w-4 text-foreground" />
+                        </div>
+                        <div>
+                          <div className="font-medium text-sm">Podcast</div>
+                          <div className="text-sm text-muted-foreground">Audio on Spotify & Apple</div>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent">
+                          <Calendar className="h-4 w-4 text-foreground" />
+                        </div>
+                        <div>
+                          <div className="font-medium text-sm">Weekly</div>
+                          <div className="text-sm text-muted-foreground">New episodes every week</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-border bg-card p-6">
+                    <h3 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">
+                      Subscribe
+                    </h3>
+                    <SubscribePlatforms variant="stacked" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>

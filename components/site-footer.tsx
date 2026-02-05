@@ -22,6 +22,16 @@ export function SiteFooter() {
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Resources</h3>
             <ul className="space-y-2 text-sm">
               <li>
+                <Link href="/interviews" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Watch
+                </Link>
+              </li>
+              <li>
+                <Link href="/guests" className="text-muted-foreground hover:text-foreground transition-colors">
+                  Guests
+                </Link>
+              </li>
+              <li>
                 <Link href="/newsletter" className="text-muted-foreground hover:text-foreground transition-colors">
                   Newsletters
                 </Link>

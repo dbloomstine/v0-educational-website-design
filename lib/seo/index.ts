@@ -18,9 +18,11 @@ export {
   generateFAQSchema,
   generateHowToSchema,
   generateToolSchema,
+  generateVideoSchema,
   type ArticleSchemaOptions,
   type BreadcrumbItem,
   type FAQSchemaItem,
   type HowToSchemaOptions,
   type SoftwareApplicationSchemaOptions,
+  type VideoSchemaOptions,
 } from './schema'

@@ -8,26 +8,30 @@ import { AnimatedCounter } from "@/components/animated-counter"
 import { BackToTop } from "@/components/back-to-top"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight, Calculator, Building, DollarSign, Users, Shield } from "lucide-react"
+import { ArrowRight, Calculator } from "lucide-react"
 import { getAllFundTypes } from "@/lib/content/fund-types"
 import { getAllTools } from "@/lib/content/tools"
 import { getAllRoles } from "@/lib/content/roles"
-import { type YouTubeVideo } from "@/lib/youtube"
-import { VideoCarousel } from "@/components/video-carousel"
+import { fetchPlaylistVideos } from "@/lib/youtube"
+import { FeaturedEpisode } from "@/components/featured-episode"
+import { EpisodeCard } from "@/components/episode-card"
+import { SubscribePlatforms } from "@/components/subscribe-platforms"
+import { ResourceTabs } from "@/components/resource-tabs"
+import { GoDeeper } from "@/components/go-deeper"
 
 export const metadata: Metadata = {
-  title: 'FundOpsHQ | Learn Fund Operations for PE, VC, Credit & More',
-  description: 'Educational resources for fund operations professionals. Articles, tools, and guides covering Private Equity, Venture Capital, Hedge Funds, Private Credit, Real Estate, and Infrastructure fund operations.',
+  title: 'FundOpsHQ | Fund Operations Conversations with Industry Experts',
+  description: 'Weekly episodes with CFOs, COOs, and fund admins sharing what they\'ve learned about PE, VC, credit, and alternative asset operations. Watch on YouTube or listen on Spotify and Apple Podcasts.',
   openGraph: {
-    title: 'FundOpsHQ | Learn Fund Operations for PE, VC, Credit & More',
-    description: 'Educational resources for fund operations professionals. Articles, tools, and guides across all alternative asset classes.',
+    title: 'FundOpsHQ | Fund Operations Conversations with Industry Experts',
+    description: 'Weekly episodes with fund operations experts. Watch on YouTube or listen on your favorite podcast app.',
     type: 'website',
     url: 'https://fundops.com',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FundOpsHQ | Learn Fund Operations',
-    description: 'Educational resources for fund operations professionals across all alternative asset classes.',
+    title: 'FundOpsHQ | Fund Operations Conversations',
+    description: 'Weekly episodes with CFOs, COOs, and fund admins sharing what they\'ve learned about fund operations.',
   },
   alternates: {
     canonical: 'https://fundops.com',
@@ -41,59 +45,9 @@ const fundTypes = getAllFundTypes().map((fundType) => ({
   color: fundType.color,
 }))
 
-const tools = getAllTools().filter(tool => tool.status === 'active').slice(0, 6)
+const tools = getAllTools().filter(tool => tool.status === 'active').slice(0, 3)
 
 const roles = getAllRoles()
-
-const operationalPillars = [
-  { name: "CFO & Finance", icon: DollarSign, description: "Budgeting, reporting, and financial oversight" },
-  { name: "Compliance", icon: Shield, description: "Regulatory requirements and best practices" },
-  { name: "Fund Administration", icon: Building, description: "NAV, capital accounts, and investor reporting" },
-  { name: "Investor Relations", icon: Users, description: "LP communications and fundraising support" },
-]
-
-const featuredArticles = [
-  {
-    title: "CFO Responsibilities in Private Equity Funds",
-    description: "Managing portfolio company oversight, value creation, and investor reporting",
-    category: "Private Equity",
-    href: "/funds/private-equity/cfo",
-    color: "oklch(0.60 0.16 270)",  // Muted purple (matches PE fund type)
-    readingTime: "9 min read",
-  },
-  {
-    title: "Infrastructure Fund Banking & Treasury",
-    description: "Project finance structures, lender relationships, and long-term debt management",
-    category: "Infrastructure",
-    href: "/funds/infrastructure/banking",
-    color: "oklch(0.60 0.14 200)",  // Slate blue (matches Infrastructure fund type)
-    readingTime: "12 min read",
-  },
-  {
-    title: "Hedge Fund Compliance Frameworks",
-    description: "Building robust compliance programs for multi-strategy funds",
-    category: "Hedge Funds",
-    href: "/funds/hedge-funds/compliance",
-    color: "oklch(0.55 0.03 250)",  // Slate gray (monochrome)
-    readingTime: "15 min read",
-  },
-]
-
-// Hardcoded videos - update manually when new videos are published
-const videos: YouTubeVideo[] = [
-  {
-    videoId: "ZZeBWwR2NOY",
-    title: "How Fund Valuations Actually Work w. Monica Blocker, Houlihan Capital",
-    thumbnail: "https://img.youtube.com/vi/ZZeBWwR2NOY/hqdefault.jpg",
-    publishedAt: "2025-02-02",
-  },
-  {
-    videoId: "aYOmTExZm4w",
-    title: "Nick Maroules, BDO: Inside Fund Auditing, LP Transparency & ILPA Templates",
-    thumbnail: "https://img.youtube.com/vi/aYOmTExZm4w/hqdefault.jpg",
-    publishedAt: "2025-02-03",
-  },
-]
 
 // Organization structured data for homepage
 const organizationJsonLd = {
@@ -102,7 +56,7 @@ const organizationJsonLd = {
   name: 'FundOpsHQ',
   url: 'https://fundops.com',
   logo: 'https://fundops.com/icon.svg',
-  description: 'Articles and tools to help you learn fund operations across Private Equity, Venture Capital, Hedge Funds, Private Credit, Real Estate, and Infrastructure.',
+  description: 'Weekly conversations with fund operations experts covering PE, VC, credit, and alternative asset operations. Plus articles and tools to help you learn.',
   founder: {
     '@type': 'Person',
     name: 'Danny Bloomstine',
@@ -128,14 +82,16 @@ const websiteJsonLd = {
   '@type': 'WebSite',
   name: 'FundOpsHQ',
   url: 'https://fundops.com',
-  description: 'Resources to help you learn fund operations',
+  description: 'Fund operations conversations with industry experts, plus articles and tools to help you learn.',
   publisher: {
     '@type': 'Organization',
     name: 'FundOpsHQ',
   },
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  const videos = await fetchPlaylistVideos()
+
   return (
     <div className="flex min-h-screen flex-col">
       <script
@@ -149,119 +105,48 @@ export default function HomePage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* Hero Section - Institutional */}
+        {/* Show Hero Section */}
         <section className="border-b border-border bg-background">
           <div className="container mx-auto px-4 py-16 sm:py-20 lg:py-24">
-            <div className="grid gap-12 lg:grid-cols-12 lg:items-center">
+            <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
               {/* Left content - 7 columns */}
               <div className="lg:col-span-7">
                 <AnimateOnScroll delay={0}>
                   <p className="mb-4 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                    Resources
+                    FundOpsHQ with Danny Bloomstine
                   </p>
                 </AnimateOnScroll>
 
                 <AnimateOnScroll delay={100}>
                   <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl" style={{ letterSpacing: '-0.02em' }}>
-                    Learn fund operations, one topic at a time
+                    Conversations on fund operations—from the people who do it
                   </h1>
                 </AnimateOnScroll>
 
                 <AnimateOnScroll delay={200}>
                   <p className="mb-8 max-w-xl text-lg text-muted-foreground leading-relaxed">
-                    Articles and tools to help you understand fund ops—whether you&apos;re new to the field or diving deeper into a specific topic. Covering PE, VC, credit, hedge funds, real estate, infrastructure, and more.
+                    Weekly episodes exploring PE, VC, credit, and alternative asset operations with the CFOs, COOs, and fund admins living it.
                   </p>
                 </AnimateOnScroll>
 
                 <AnimateOnScroll delay={300}>
-                  <Button asChild size="lg" className="px-8">
-                    <Link href="#fund-types">
-                      Explore Resources
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
+                  <SubscribePlatforms variant="inline" />
                 </AnimateOnScroll>
               </div>
 
-              {/* Right visual - 5 columns - Abstract gradient fade */}
-              <div className="hidden md:block lg:col-span-5 relative min-h-[200px] lg:min-h-0">
-                {/* Floating gradient orbs that fade to the right */}
-                <div className="absolute inset-0 overflow-hidden">
-                  {/* Large primary orb */}
-                  <div
-                    className="absolute -right-20 top-1/4 w-64 lg:w-96 h-64 lg:h-96 rounded-full opacity-30"
-                    style={{
-                      background: 'radial-gradient(circle, hsla(210, 60%, 50%, 0.4) 0%, hsla(210, 50%, 40%, 0.1) 40%, transparent 70%)',
-                      filter: 'blur(40px)',
-                    }}
-                  />
-                  {/* Secondary accent orb */}
-                  <div
-                    className="absolute right-10 bottom-1/4 w-48 lg:w-72 h-48 lg:h-72 rounded-full opacity-25"
-                    style={{
-                      background: 'radial-gradient(circle, hsla(230, 50%, 45%, 0.35) 0%, hsla(225, 40%, 35%, 0.1) 50%, transparent 70%)',
-                      filter: 'blur(50px)',
-                    }}
-                  />
-                  {/* Subtle teal accent */}
-                  <div
-                    className="absolute right-1/3 top-1/3 w-32 lg:w-48 h-32 lg:h-48 rounded-full opacity-20"
-                    style={{
-                      background: 'radial-gradient(circle, hsla(195, 60%, 45%, 0.3) 0%, transparent 60%)',
-                      filter: 'blur(30px)',
-                    }}
-                  />
-                </div>
-
-                {/* Subtle dot grid pattern that fades out */}
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    backgroundImage: 'radial-gradient(circle, hsla(215, 40%, 60%, 0.15) 1px, transparent 1px)',
-                    backgroundSize: '24px 24px',
-                    maskImage: 'linear-gradient(to right, transparent 0%, black 30%, black 60%, transparent 100%)',
-                    WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 30%, black 60%, transparent 100%)',
-                  }}
-                />
-
-                {/* Diagonal lines accent */}
-                <div
-                  className="absolute inset-0 opacity-[0.03]"
-                  style={{
-                    backgroundImage: 'repeating-linear-gradient(45deg, hsla(215, 40%, 70%, 1) 0px, hsla(215, 40%, 70%, 1) 1px, transparent 1px, transparent 20px)',
-                    maskImage: 'linear-gradient(to right, transparent 10%, black 40%, black 70%, transparent 95%)',
-                    WebkitMaskImage: 'linear-gradient(to right, transparent 10%, black 40%, black 70%, transparent 95%)',
-                  }}
-                />
+              {/* Right content - 5 columns - Featured Episode */}
+              <div className="lg:col-span-5">
+                <AnimateOnScroll delay={200}>
+                  {videos.length > 0 && (
+                    <FeaturedEpisode video={videos[0]} />
+                  )}
+                </AnimateOnScroll>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Operational Pillars - Quick Overview */}
-        <section className="py-10 border-b border-border bg-card/30">
-          <div className="container mx-auto px-4">
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-              {operationalPillars.map((pillar, index) => (
-                <div
-                  key={pillar.name}
-                  className="flex items-start gap-4 p-4 rounded-lg transition-colors hover:bg-accent/30"
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent">
-                    <pillar.icon className="h-5 w-5 text-foreground" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-foreground">{pillar.name}</h3>
-                    <p className="text-sm text-muted-foreground">{pillar.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Recent Videos Section */}
+        {/* Latest Conversations Section */}
         {videos.length > 0 && (
           <section className="py-16 border-b border-border">
             <div className="container mx-auto px-4">
@@ -269,106 +154,49 @@ export default function HomePage() {
                 <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                   <div>
                     <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                      Videos
+                      Watch
                     </p>
-                    <h2 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>Recent Conversations</h2>
+                    <h2 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>Latest Conversations</h2>
                     <p className="text-muted-foreground max-w-2xl">
-                      Conversations with fund ops professionals sharing what they&apos;ve learned
+                      Fund ops professionals sharing what they&apos;ve learned
                     </p>
                   </div>
                   <Button variant="outline" asChild className="sm:shrink-0">
                     <Link href="/interviews">
-                      View All Videos
+                      View All Episodes
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Link>
                   </Button>
                 </div>
               </AnimateOnScroll>
 
-              <AnimateOnScroll delay={100}>
-                <div className="max-w-4xl">
-                  <VideoCarousel videos={videos.slice(0, 3)} />
+              {/* Episode grid - featured + additional */}
+              <div className="grid gap-6 lg:grid-cols-3">
+                {/* Featured episode (larger) */}
+                {videos[0] && (
+                  <AnimateOnScroll delay={100} className="lg:col-span-2">
+                    <FeaturedEpisode video={videos[0]} />
+                  </AnimateOnScroll>
+                )}
+
+                {/* Additional episodes */}
+                <div className="space-y-6">
+                  {videos.slice(1, 3).map((video, index) => (
+                    <AnimateOnScroll key={video.videoId} delay={150 + index * 50}>
+                      <EpisodeCard video={video} />
+                    </AnimateOnScroll>
+                  ))}
                 </div>
-              </AnimateOnScroll>
+              </div>
             </div>
           </section>
         )}
 
-        {/* Fund Types Grid */}
-        <section id="fund-types" className="py-16 scroll-mt-16">
-          <div className="container mx-auto px-4">
-            <AnimateOnScroll>
-              <div className="mb-10">
-                <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                  By Asset Class
-                </p>
-                <h2 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>Explore by Fund Type</h2>
-                <p className="text-muted-foreground max-w-2xl">
-                  Find relevant resources tailored to your specific asset class and fund structure
-                </p>
-              </div>
-            </AnimateOnScroll>
+        {/* Go Deeper Transition */}
+        <GoDeeper />
 
-            <StaggeredGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" staggerDelay={75} duration={700}>
-              {fundTypes.map((fund) => (
-                <Link key={fund.name} href={fund.href} className="group h-full">
-                  <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
-                    <CardHeader className="pb-2">
-                      <div
-                        className="mb-3 h-1 w-10 rounded-full"
-                        style={{ backgroundColor: fund.color }}
-                      />
-                      <CardTitle className="text-base font-semibold">{fund.name}</CardTitle>
-                      <CardDescription className="leading-relaxed text-sm">{fund.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                        Explore
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </StaggeredGrid>
-          </div>
-        </section>
-
-        {/* Roles Grid */}
-        <section className="py-16 border-t border-border bg-accent/5">
-          <div className="container mx-auto px-4">
-            <AnimateOnScroll>
-              <div className="mb-10">
-                <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                  By Role
-                </p>
-                <h2 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>Explore by Role</h2>
-                <p className="text-muted-foreground max-w-2xl">
-                  Find resources relevant to your function
-                </p>
-              </div>
-            </AnimateOnScroll>
-
-            <StaggeredGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" staggerDelay={100} duration={700}>
-              {roles.map((role) => (
-                <Link key={role.slug} href={`/roles/${role.slug}`} className="group h-full">
-                  <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
-                    <CardHeader className="pb-2">
-                      <CardTitle className="text-base font-semibold">{role.title}</CardTitle>
-                      <CardDescription className="leading-relaxed text-sm">{role.description}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                        View Resources
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </StaggeredGrid>
-          </div>
-        </section>
+        {/* Resource Hub - Tabbed Fund Types & Roles */}
+        <ResourceTabs fundTypes={fundTypes} roles={roles} />
 
         {/* Tools Section - Featured */}
         <section className="py-16 border-y border-border">
@@ -417,81 +245,33 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Featured Articles */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <AnimateOnScroll>
-              <div className="mb-10">
-                <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                  Insights
-                </p>
-                <h2 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>Featured Resources</h2>
-                <p className="text-muted-foreground max-w-2xl">
-                  In-depth guides on critical fund operations topics
-                </p>
-              </div>
-            </AnimateOnScroll>
-
-            <StaggeredGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" staggerDelay={100} duration={700}>
-              {featuredArticles.map((article) => (
-                <Link key={article.title} href={article.href} className="group h-full">
-                  <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
-                    <CardHeader>
-                      <div className="mb-2 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div
-                            className="h-2 w-2 rounded-full"
-                            style={{ backgroundColor: article.color }}
-                          />
-                          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                            {article.category}
-                          </span>
-                        </div>
-                        <span className="text-xs text-muted-foreground">
-                          {article.readingTime}
-                        </span>
-                      </div>
-                      <CardTitle className="text-lg font-semibold leading-snug group-hover:text-foreground transition-colors">
-                        {article.title}
-                      </CardTitle>
-                      <CardDescription className="leading-relaxed text-sm">
-                        {article.description}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                        Read Article
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </StaggeredGrid>
-          </div>
-        </section>
-
         {/* Stats/Trust Section */}
         <section className="py-10 border-y border-border bg-card/30">
           <div className="container mx-auto px-4">
-            <div className="grid gap-8 sm:grid-cols-3 text-center">
+            <div className="grid gap-8 grid-cols-2 sm:grid-cols-4 text-center">
+              <div>
+                <div className="text-3xl font-bold text-foreground mb-1">
+                  <AnimatedCounter end={videos.length} duration={1500} />
+                </div>
+                <div className="text-sm text-muted-foreground">Episodes</div>
+              </div>
+              <div>
+                <div className="text-3xl font-bold text-foreground mb-1">
+                  <AnimatedCounter end={videos.filter(v => v.guest).length} duration={1500} />
+                </div>
+                <div className="text-sm text-muted-foreground">Guests</div>
+              </div>
               <div>
                 <div className="text-3xl font-bold text-foreground mb-1">
                   <AnimatedCounter end={80} suffix="+" />
                 </div>
-                <div className="text-sm text-muted-foreground">In-depth articles</div>
+                <div className="text-sm text-muted-foreground">Articles</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-foreground mb-1">
                   <AnimatedCounter end={8} duration={1500} />
                 </div>
-                <div className="text-sm text-muted-foreground">Fund types covered</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-foreground mb-1">
-                  <AnimatedCounter end={3} duration={1500} />
-                </div>
-                <div className="text-sm text-muted-foreground">Interactive tools</div>
+                <div className="text-sm text-muted-foreground">Fund types</div>
               </div>
             </div>
           </div>

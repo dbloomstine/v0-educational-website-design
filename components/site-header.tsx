@@ -113,6 +113,22 @@ export function SiteHeader() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-1">
+          {/* Watch Link - First position */}
+          <Link
+            href="/interviews"
+            className="inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+          >
+            Watch
+          </Link>
+
+          {/* Guests Link */}
+          <Link
+            href="/guests"
+            className="inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+          >
+            Guests
+          </Link>
+
           {/* Fund Types Dropdown */}
           <Dropdown
             trigger="Fund Types"
@@ -240,14 +256,6 @@ export function SiteHeader() {
             </div>
           </Dropdown>
 
-          {/* Videos Link */}
-          <Link
-            href="/interviews"
-            className="inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-          >
-            Videos
-          </Link>
-
           {/* About Link */}
           <Link
             href="/about"
@@ -292,8 +300,33 @@ export function SiteHeader() {
           className="md:hidden border-t border-border bg-background max-h-[calc(100vh-4rem)] overflow-y-auto"
         >
           <div className="container mx-auto px-4 py-4 space-y-4">
-            {/* Fund Types */}
+            {/* Watch - First position */}
             <div>
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Watch
+              </h3>
+              <div className="space-y-2">
+                <Link
+                  href="/interviews"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
+                >
+                  <span className="font-medium text-foreground">Videos & Podcast</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">Watch and listen to fund operations content</span>
+                </Link>
+                <Link
+                  href="/guests"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
+                >
+                  <span className="font-medium text-foreground">Guests</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">Meet the fund operations experts</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Fund Types */}
+            <div className="pt-4 border-t border-border">
               <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                 Fund Types
               </h3>
@@ -389,21 +422,6 @@ export function SiteHeader() {
                   View All {tools.length} Tools →
                 </Link>
               </div>
-            </div>
-
-            {/* Videos */}
-            <div className="pt-4 border-t border-border">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Videos
-              </h3>
-              <Link
-                href="/interviews"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-              >
-                <span className="font-medium text-foreground">Videos & Podcast</span>
-                <span className="block text-xs text-muted-foreground mt-0.5">Watch and listen to fund operations content</span>
-              </Link>
             </div>
 
             {/* About */}

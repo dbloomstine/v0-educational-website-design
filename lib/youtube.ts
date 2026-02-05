@@ -1,8 +1,15 @@
+export interface YouTubeVideoGuest {
+  name: string
+  title: string
+  company: string
+}
+
 export interface YouTubeVideo {
   videoId: string
   title: string
   thumbnail: string
   publishedAt: string
+  guest?: YouTubeVideoGuest
 }
 
 // Manually maintained list of videos (YouTube RSS feeds are unreliable for playlists)
@@ -10,15 +17,36 @@ export interface YouTubeVideo {
 const VIDEOS: YouTubeVideo[] = [
   {
     videoId: "ZZeBWwR2NOY",
-    title: "How Fund Valuations Actually Work w. Monica Blocker, Houlihan Capital",
-    thumbnail: "https://img.youtube.com/vi/ZZeBWwR2NOY/mqdefault.jpg",
+    title: "How Fund Valuations Actually Work",
+    thumbnail: "https://img.youtube.com/vi/ZZeBWwR2NOY/hqdefault.jpg",
     publishedAt: "2025-02-02",
+    guest: {
+      name: "Monica Blocker",
+      title: "Managing Director",
+      company: "Houlihan Capital",
+    },
   },
   {
     videoId: "aYOmTExZm4w",
-    title: "Nick Maroules, BDO: Inside Fund Auditing, LP Transparency & ILPA Templates",
-    thumbnail: "https://img.youtube.com/vi/aYOmTExZm4w/mqdefault.jpg",
+    title: "Inside Fund Auditing, LP Transparency & ILPA Templates",
+    thumbnail: "https://img.youtube.com/vi/aYOmTExZm4w/hqdefault.jpg",
     publishedAt: "2025-02-03",
+    guest: {
+      name: "Nick Maroules",
+      title: "Partner",
+      company: "BDO",
+    },
+  },
+  {
+    videoId: "pD45W2Zcd2M",
+    title: "Navigating Real Estate Challenges with AI",
+    thumbnail: "https://img.youtube.com/vi/pD45W2Zcd2M/hqdefault.jpg",
+    publishedAt: "2026-01-27",
+    guest: {
+      name: "Marcel Kanngiesser",
+      title: "Partner",
+      company: "PwC",
+    },
   },
 ]
 

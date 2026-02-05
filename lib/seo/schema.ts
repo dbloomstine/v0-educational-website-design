@@ -187,3 +187,49 @@ export function generateToolSchema({
     },
   }
 }
+
+/**
+ * Options for video schema
+ */
+export interface VideoSchemaOptions {
+  /** Video title */
+  name: string
+  /** Video description */
+  description: string
+  /** Full URL of the video page */
+  url: string
+  /** Thumbnail URL */
+  thumbnailUrl: string
+  /** Upload/publish date (ISO string) */
+  uploadDate: string
+  /** YouTube embed URL */
+  embedUrl: string
+  /** Duration in ISO 8601 format (optional) */
+  duration?: string
+}
+
+/**
+ * Generate VideoObject JSON-LD schema
+ */
+export function generateVideoSchema({
+  name,
+  description,
+  url,
+  thumbnailUrl,
+  uploadDate,
+  embedUrl,
+  duration,
+}: VideoSchemaOptions) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name,
+    description,
+    url,
+    thumbnailUrl,
+    uploadDate,
+    embedUrl,
+    ...(duration && { duration }),
+    publisher: DEFAULT_PUBLISHER,
+  }
+}
