@@ -21,7 +21,7 @@ import { GoDeeper } from "@/components/go-deeper"
 
 export const metadata: Metadata = {
   title: 'FundOpsHQ | Fund Operations Conversations with Industry Experts',
-  description: 'Weekly episodes with CFOs, COOs, and fund admins sharing what they\'ve learned about PE, VC, credit, and alternative asset operations. Watch on YouTube or listen on Spotify and Apple Podcasts.',
+  description: 'Weekly conversations with professionals across the investment funds industry sharing what they\'ve learned. Watch on YouTube or listen on Spotify and Apple Podcasts.',
   openGraph: {
     title: 'FundOpsHQ | Fund Operations Conversations with Industry Experts',
     description: 'Weekly episodes with fund operations experts. Watch on YouTube or listen on your favorite podcast app.',
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'FundOpsHQ | Fund Operations Conversations',
-    description: 'Weekly episodes with CFOs, COOs, and fund admins sharing what they\'ve learned about fund operations.',
+    description: 'Weekly conversations with professionals across the investment funds industry sharing what they\'ve learned.',
   },
   alternates: {
     canonical: 'https://fundops.com',
@@ -125,7 +125,7 @@ export default async function HomePage() {
 
                 <AnimateOnScroll delay={200}>
                   <p className="mb-8 max-w-xl text-lg text-muted-foreground leading-relaxed">
-                    Weekly episodes exploring PE, VC, credit, and alternative asset operations with the CFOs, COOs, and fund admins living it.
+                    Weekly conversations with professionals across the investment funds industry sharing what they've learned.
                   </p>
                 </AnimateOnScroll>
 

@@ -12,7 +12,7 @@ import { VideoCarousel } from '@/components/video-carousel'
 
 export const metadata = createPageMetadata({
   title: 'Watch | FundOpsHQ',
-  description: 'Conversations on fund operations—from the people who do it. Weekly episodes with CFOs, COOs, and fund admins sharing what they\'ve learned.',
+  description: 'Conversations on fund operations—from the people who do it. Weekly episodes with professionals across the investment funds industry.',
   path: '/interviews',
   ogDescription: 'Weekly conversations with fund operations experts. Watch on YouTube or listen on Spotify and Apple Podcasts.',
 })
@@ -26,7 +26,7 @@ const highlights = [
   {
     icon: Users,
     title: 'Diverse Perspectives',
-    description: 'Content covering CFOs, COOs, fund admins, compliance officers, and service providers.',
+    description: 'Content covering fund operations professionals from across the industry.',
   },
   {
     icon: Lightbulb,
@@ -133,7 +133,7 @@ export default async function InterviewsPage() {
 
               <AnimateOnScroll delay={300}>
                 <p className="text-lg text-muted-foreground leading-relaxed text-balance text-center max-w-2xl mx-auto mb-10">
-                  CFOs, COOs, and fund admins sharing what they&apos;ve learned about PE, VC, credit, and alternative asset operations.
+                  Professionals across the investment funds industry sharing what they've learned.
                 </p>
               </AnimateOnScroll>
 

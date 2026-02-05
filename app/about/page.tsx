@@ -125,8 +125,8 @@ export default function AboutPage() {
                   </h2>
                   <div className="space-y-5 text-muted-foreground leading-relaxed">
                     <p>
-                      FundOpsHQ is also a weekly video series featuring conversations with CFOs, COOs, fund administrators,
-                      and service providers who share what they&apos;ve learned from the front lines of fund operations.
+                      FundOpsHQ is also a weekly video series featuring conversations with professionals across the investment funds industry
+                      who share what they've learned from the front lines of fund operations.
                     </p>
                     <p>
                       Each episode dives into real challenges, practical solutions, and career insights across

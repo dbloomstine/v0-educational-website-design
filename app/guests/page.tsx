@@ -11,7 +11,7 @@ import { fetchPlaylistVideos } from '@/lib/youtube'
 
 export const metadata = createPageMetadata({
   title: 'Guests | FundOpsHQ',
-  description: 'Meet the fund operations experts featured on FundOpsHQ. CFOs, COOs, fund administrators, and service providers sharing what they\'ve learned.',
+  description: 'Meet the professionals featured on FundOpsHQ—sharing what they\'ve learned from across the investment funds industry.',
   path: '/guests',
   ogDescription: 'Meet the fund operations experts featured on FundOpsHQ.',
 })
@@ -58,7 +58,7 @@ export default async function GuestsPage() {
 
               <AnimateOnScroll delay={200}>
                 <p className="text-lg text-muted-foreground leading-relaxed text-balance max-w-2xl mx-auto mb-8">
-                  CFOs, COOs, fund administrators, and service providers sharing what they&apos;ve learned from the front lines of fund operations.
+                  Professionals from across the investment funds industry sharing what they've learned.
                 </p>
               </AnimateOnScroll>
 
