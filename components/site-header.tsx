@@ -198,6 +198,14 @@ export function SiteHeader() {
                 <div className="text-sm font-medium text-foreground">FundWatch Briefing</div>
                 <div className="text-xs text-muted-foreground">Weekly news & updates</div>
               </Link>
+              <Link
+                href="/fund-watch"
+                onClick={() => setOpenDropdown(null)}
+                className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
+              >
+                <div className="text-sm font-medium text-foreground">Fund Watch Tracker</div>
+                <div className="text-xs text-muted-foreground">Browse all tracked funds</div>
+              </Link>
               <div className="pt-2 mt-2 border-t border-border">
                 <Link
                   href="/newsletter"
@@ -386,6 +394,14 @@ export function SiteHeader() {
                 >
                   <span className="font-medium text-foreground">FundWatch Briefing</span>
                   <span className="block text-xs text-muted-foreground mt-0.5">Weekly fund operations intel</span>
+                </Link>
+                <Link
+                  href="/fund-watch"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
+                >
+                  <span className="font-medium text-foreground">Fund Watch Tracker</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">Browse all tracked funds</span>
                 </Link>
                 <Link
                   href="/newsletter"
