@@ -87,3 +87,39 @@ export function formatAum(millions: number): string {
   }
   return `$${millions.toFixed(0)}M`
 }
+
+const MONTHS_SHORT = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+export function getQuarter(dateStr: string | null): string | null {
+  if (!dateStr) return null
+  const d = new Date(dateStr + "T00:00:00")
+  if (isNaN(d.getTime())) return null
+  const q = Math.ceil((d.getMonth() + 1) / 3)
+  return `Q${q} ${d.getFullYear()}`
+}
+
+export function getYearMonth(dateStr: string | null): string | null {
+  if (!dateStr) return null
+  const d = new Date(dateStr + "T00:00:00")
+  if (isNaN(d.getTime())) return null
+  return `${MONTHS_SHORT[d.getMonth()]} ${d.getFullYear()}`
+}
+
+export type AmountBucketKey = "all" | "lt500m" | "500m-1b" | "1b-5b" | "5b+" | "undisclosed"
+
+export const AMOUNT_BUCKETS: { key: AmountBucketKey; label: string }[] = [
+  { key: "all", label: "All Sizes" },
+  { key: "lt500m", label: "Under $500M" },
+  { key: "500m-1b", label: "$500M\u2013$1B" },
+  { key: "1b-5b", label: "$1B\u2013$5B" },
+  { key: "5b+", label: "$5B+" },
+  { key: "undisclosed", label: "Undisclosed" },
+]
+
+export function getAmountBucket(millions: number | null): AmountBucketKey {
+  if (millions === null || millions === 0) return "undisclosed"
+  if (millions < 500) return "lt500m"
+  if (millions < 1000) return "500m-1b"
+  if (millions < 5000) return "1b-5b"
+  return "5b+"
+}

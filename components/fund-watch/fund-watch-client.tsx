@@ -1,0 +1,162 @@
+"use client"
+
+import { useMemo, useEffect, useCallback, useRef, useState } from "react"
+import { useFundWatchFilters, applyFilters, applySorting } from "@/lib/hooks/use-fund-watch-filters"
+import { FundFilterBar, ALL_COLUMNS } from "@/components/fund-watch/fund-filter-bar"
+import { FundTable } from "@/components/fund-watch/fund-table"
+import { downloadCSV, createTableSection } from "@/lib/exports/csv-export"
+import type { FundEntry } from "@/lib/content/fund-watch"
+import { formatAum } from "@/lib/content/fund-watch"
+
+const COLUMNS_STORAGE_KEY = "fundwatch-columns"
+const DENSITY_STORAGE_KEY = "fundwatch-density"
+
+function getDefaultColumns(): Set<string> {
+  return new Set(ALL_COLUMNS.filter((c) => c.defaultVisible).map((c) => c.key))
+}
+
+function loadColumns(): Set<string> {
+  if (typeof window === "undefined") return getDefaultColumns()
+  try {
+    const stored = localStorage.getItem(COLUMNS_STORAGE_KEY)
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      if (Array.isArray(parsed) && parsed.length > 0) return new Set(parsed)
+    }
+  } catch { /* ignore */ }
+  return getDefaultColumns()
+}
+
+function saveColumns(cols: Set<string>) {
+  try { localStorage.setItem(COLUMNS_STORAGE_KEY, JSON.stringify([...cols])) } catch { /* ignore */ }
+}
+
+function loadDensity(): "comfortable" | "compact" {
+  if (typeof window === "undefined") return "comfortable"
+  try {
+    const stored = localStorage.getItem(DENSITY_STORAGE_KEY)
+    if (stored === "compact") return "compact"
+  } catch { /* ignore */ }
+  return "comfortable"
+}
+
+function saveDensity(d: "comfortable" | "compact") {
+  try { localStorage.setItem(DENSITY_STORAGE_KEY, d) } catch { /* ignore */ }
+}
+
+interface FundWatchClientProps {
+  funds: FundEntry[]
+  categories: string[]
+  stages: string[]
+}
+
+export function FundWatchClient({ funds, categories, stages }: FundWatchClientProps) {
+  const filterHook = useFundWatchFilters()
+
+  const [visibleColumns, setVisibleColumns] = useState<Set<string>>(getDefaultColumns)
+  const [density, setDensityState] = useState<"comfortable" | "compact">("comfortable")
+  const searchRef = useRef<HTMLInputElement>(null)
+
+  // Load persisted settings on mount
+  useEffect(() => {
+    setVisibleColumns(loadColumns())
+    setDensityState(loadDensity())
+  }, [])
+
+  const toggleColumn = useCallback((key: string) => {
+    setVisibleColumns((prev) => {
+      const next = new Set(prev)
+      if (next.has(key)) next.delete(key)
+      else next.add(key)
+      saveColumns(next)
+      return next
+    })
+  }, [])
+
+  const setDensity = useCallback((d: "comfortable" | "compact") => {
+    setDensityState(d)
+    saveDensity(d)
+  }, [])
+
+  // Apply filters + sorting
+  const filtered = useMemo(() => applyFilters(funds, filterHook.state), [funds, filterHook.state])
+  const sorted = useMemo(() => applySorting(filtered, filterHook.state.sort, filterHook.state.dir), [filtered, filterHook.state.sort, filterHook.state.dir])
+
+  // CSV export
+  const handleExportCSV = useCallback(() => {
+    const totalAum = sorted.reduce((sum, f) => sum + (f.amount_usd_millions ?? 0), 0)
+    downloadCSV({
+      filename: `fundwatch-tracker-${new Date().toISOString().slice(0, 10)}`,
+      toolName: "FundWatch Tracker",
+      sections: [
+        createTableSection(
+          `${sorted.length} funds | ${formatAum(totalAum)} total AUM`,
+          ["Fund Name", "Fund Manager", "Amount", "Category", "Stage", "Date", "Location", "Status", "Source"],
+          sorted.map((f) => [
+            f.fund_name,
+            f.firm,
+            f.amount,
+            f.category,
+            f.stage,
+            f.announcement_date ?? "",
+            f.location,
+            f.is_covered ? "Covered" : "Pending",
+            f.source_url,
+          ])
+        ),
+      ],
+      includeDisclaimer: false,
+    })
+  }, [sorted])
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      // "/" focuses search (unless already in an input)
+      if (e.key === "/" && !["INPUT", "TEXTAREA", "SELECT"].includes((e.target as HTMLElement)?.tagName)) {
+        e.preventDefault()
+        searchRef.current?.focus()
+      }
+      // Escape clears search if focused in search
+      if (e.key === "Escape" && document.activeElement === searchRef.current) {
+        filterHook.setSearch("")
+        searchRef.current?.blur()
+      }
+    }
+    document.addEventListener("keydown", onKeyDown)
+    return () => document.removeEventListener("keydown", onKeyDown)
+  }, [filterHook])
+
+  return (
+    <div className="space-y-4">
+      <FundFilterBar
+        state={filterHook.state}
+        categories={categories}
+        stages={stages}
+        allFunds={funds}
+        filteredCount={sorted.length}
+        visibleColumns={visibleColumns}
+        density={density}
+        onSetSearch={filterHook.setSearch}
+        onSetCategories={filterHook.setCategories}
+        onSetStages={filterHook.setStages}
+        onSetSize={filterHook.setSize}
+        onSetDateRange={filterHook.setDateRange}
+        onSetStatus={filterHook.setStatus}
+        onClearAll={filterHook.clearAll}
+        onToggleColumn={toggleColumn}
+        onSetDensity={setDensity}
+        onExportCSV={handleExportCSV}
+        searchRef={searchRef}
+      />
+      <FundTable
+        funds={sorted}
+        visibleColumns={visibleColumns}
+        density={density}
+        sortField={filterHook.state.sort}
+        sortDir={filterHook.state.dir}
+        onSort={filterHook.setSort}
+      />
+    </div>
+  )
+}

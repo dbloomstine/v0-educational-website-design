@@ -1,9 +1,9 @@
 import { Metadata } from "next"
 import Link from "next/link"
+import { Suspense } from "react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-import { StatsCards } from "@/components/fund-watch/stats-cards"
-import { FundTable } from "@/components/fund-watch/fund-table"
+import { FundWatchClient } from "@/components/fund-watch/fund-watch-client"
 import { getFundDirectoryData } from "@/lib/content/fund-watch-loader"
 import { ArrowLeft } from "lucide-react"
 
@@ -57,8 +57,8 @@ export default async function FundWatchPage() {
             </Link>
             <h1 className="text-4xl font-bold tracking-tight mb-3">FundWatch Tracker</h1>
             <p className="text-lg text-muted-foreground max-w-2xl">
-              Every fund close and launch tracked by the FundWatch pipeline. Filter by category,
-              stage, and coverage status.
+              Every fund close and launch tracked by the FundWatch pipeline. Filter, sort, and
+              export across categories, stages, date ranges, and fund sizes.
             </p>
             {data && (
               <p className="mt-4 text-xs text-muted-foreground">
@@ -75,25 +75,17 @@ export default async function FundWatchPage() {
         </section>
 
         {data ? (
-          <>
-            {/* Stats */}
-            <section className="py-10">
-              <div className="container mx-auto px-4">
-                <StatsCards stats={data.stats} categoryCount={data.categories.length} />
-              </div>
-            </section>
-
-            {/* Table */}
-            <section className="pb-16">
-              <div className="container mx-auto px-4">
-                <FundTable
+          <section className="py-10 pb-16">
+            <div className="container mx-auto px-4">
+              <Suspense fallback={<div className="h-96 flex items-center justify-center text-muted-foreground">Loading tracker...</div>}>
+                <FundWatchClient
                   funds={data.funds}
                   categories={data.categories}
                   stages={data.stages}
                 />
-              </div>
-            </section>
-          </>
+              </Suspense>
+            </div>
+          </section>
         ) : (
           <section className="py-20">
             <div className="container mx-auto px-4 text-center">
