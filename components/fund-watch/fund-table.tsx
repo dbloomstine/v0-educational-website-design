@@ -525,38 +525,62 @@ export function FundTable({ funds, categories, stages }: FundTableProps) {
                                 </p>
                               )}
 
-                              {/* Source Articles */}
+                              {/* Sources */}
                               <div>
                                 <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
                                   <Newspaper className="h-3 w-3" />
-                                  Source Articles
+                                  Sources
                                 </p>
-                                {articles.length === 0 ? (
-                                  <p className="text-sm text-muted-foreground/60 italic">No linked articles</p>
+                                {!fund.source_url && articles.length === 0 ? (
+                                  <p className="text-sm text-muted-foreground/60 italic">No sources available</p>
                                 ) : (
                                   <div className="space-y-1.5">
-                                    {articles.map((article, ai) => (
-                                      <div key={ai} className="flex items-center gap-2 text-sm">
+                                    {fund.source_url && (
+                                      <div className="flex items-center gap-2 text-sm">
                                         <a
-                                          href={article.url}
+                                          href={fund.source_url}
                                           target="_blank"
                                           rel="noopener noreferrer"
                                           className="text-foreground hover:underline underline-offset-2 line-clamp-1"
                                         >
-                                          {article.title}
+                                          {fund.source_name || "Source"}
                                         </a>
-                                        {article.source_name && (
+                                        {fund.source_name && (
                                           <Badge variant="outline" className="text-[10px] shrink-0 px-1.5 py-0">
-                                            {article.source_name}
+                                            {fund.source_name}
                                           </Badge>
                                         )}
-                                        {article.published_date && (
+                                        {fund.announcement_date && (
                                           <span className="text-xs text-muted-foreground shrink-0">
-                                            {formatDate(article.published_date)}
+                                            {formatDate(fund.announcement_date)}
                                           </span>
                                         )}
                                       </div>
-                                    ))}
+                                    )}
+                                    {articles
+                                      .filter((article) => article.url !== fund.source_url)
+                                      .map((article, ai) => (
+                                        <div key={ai} className="flex items-center gap-2 text-sm">
+                                          <a
+                                            href={article.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-foreground hover:underline underline-offset-2 line-clamp-1"
+                                          >
+                                            {article.title}
+                                          </a>
+                                          {article.source_name && (
+                                            <Badge variant="outline" className="text-[10px] shrink-0 px-1.5 py-0">
+                                              {article.source_name}
+                                            </Badge>
+                                          )}
+                                          {article.published_date && (
+                                            <span className="text-xs text-muted-foreground shrink-0">
+                                              {formatDate(article.published_date)}
+                                            </span>
+                                          )}
+                                        </div>
+                                      ))}
                                   </div>
                                 )}
                               </div>
