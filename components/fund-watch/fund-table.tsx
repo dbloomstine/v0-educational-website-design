@@ -183,7 +183,7 @@ export function FundTable({
                 <TableHead className="hidden lg:table-cell">Source</TableHead>
               )}
               {isVisible("description") && (
-                <TableHead className="hidden xl:table-cell max-w-[200px]">Description</TableHead>
+                <TableHead className="hidden xl:table-cell">Description</TableHead>
               )}
               {isVisible("source_link") && (
                 <TableHead className="w-10">
@@ -277,8 +277,8 @@ function FundRow({
         </TableCell>
 
         {isVisible("fund") && (
-          <TableCell className={`${py} max-w-[200px] sm:max-w-none`}>
-            <span className="font-medium text-foreground line-clamp-1">{fund.fund_name}</span>
+          <TableCell className={`${py} whitespace-nowrap`}>
+            <span className="font-medium text-foreground">{fund.fund_name}</span>
             {/* Show firm inline on mobile where firm column is hidden */}
             <span className="block text-xs text-muted-foreground md:hidden">{fund.firm}</span>
             {/* Show category & stage inline on mobile */}
@@ -299,7 +299,7 @@ function FundRow({
           </TableCell>
         )}
         {isVisible("firm") && (
-          <TableCell className={`hidden md:table-cell text-sm text-muted-foreground ${py}`}>
+          <TableCell className={`hidden md:table-cell text-sm text-muted-foreground whitespace-nowrap ${py}`}>
             {fund.firm}
           </TableCell>
         )}
@@ -313,7 +313,7 @@ function FundRow({
           </TableCell>
         )}
         {isVisible("category") && (
-          <TableCell className={`hidden md:table-cell ${py}`}>
+          <TableCell className={`hidden md:table-cell whitespace-nowrap ${py}`}>
             <Badge
               variant="outline"
               className={CATEGORY_BADGE_CLASSES[fund.category] ?? ""}
@@ -323,7 +323,7 @@ function FundRow({
           </TableCell>
         )}
         {isVisible("stage") && (
-          <TableCell className={`hidden md:table-cell ${py}`}>
+          <TableCell className={`hidden md:table-cell whitespace-nowrap ${py}`}>
             <Badge
               variant="outline"
               className={STAGE_BADGE[fund.stage] ?? STAGE_BADGE.other}
@@ -343,12 +343,12 @@ function FundRow({
           </TableCell>
         )}
         {isVisible("location") && (
-          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground ${py}`}>
+          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap ${py}`}>
             {fund.location}
           </TableCell>
         )}
         {isVisible("status") && (
-          <TableCell className={`hidden sm:table-cell ${py}`}>
+          <TableCell className={`hidden sm:table-cell whitespace-nowrap ${py}`}>
             <span className="inline-flex items-center gap-1.5">
               <span
                 className={`inline-block h-2 w-2 rounded-full ${
@@ -367,13 +367,13 @@ function FundRow({
           </TableCell>
         )}
         {isVisible("source_name") && (
-          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground ${py}`}>
+          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap ${py}`}>
             {fund.source_name}
           </TableCell>
         )}
         {isVisible("description") && (
-          <TableCell className={`hidden xl:table-cell text-sm text-muted-foreground max-w-[200px] truncate ${py}`}>
-            {fund.description_notes || "\u2014"}
+          <TableCell className={`hidden xl:table-cell text-sm text-muted-foreground ${py}`}>
+            <span className="block max-w-[400px]">{fund.description_notes || "\u2014"}</span>
           </TableCell>
         )}
         {isVisible("source_link") && (
