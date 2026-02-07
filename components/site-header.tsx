@@ -129,49 +129,48 @@ export function SiteHeader() {
             Guests
           </Link>
 
-          {/* Fund Types Dropdown */}
+          {/* Articles Dropdown (Fund Types + Roles) */}
           <Dropdown
-            trigger="Fund Types"
-            id="fund-types"
-            isOpen={openDropdown === 'fund-types'}
-            onOpenChange={handleDropdownOpen('fund-types')}
+            trigger="Articles"
+            id="articles"
+            isOpen={openDropdown === 'articles'}
+            onOpenChange={handleDropdownOpen('articles')}
           >
-            <ul className="grid w-[400px] grid-cols-2 gap-1 p-3">
-              {fundTypes.map((fund) => (
-                <li key={fund.name}>
-                  <Link
-                    href={fund.href}
-                    onClick={() => setOpenDropdown(null)}
-                    className="group flex items-center gap-2.5 rounded-md px-3 py-2 text-foreground transition-colors hover:bg-accent/50"
-                  >
-                    <div className="h-2 w-2 rounded-full" style={{ backgroundColor: fund.color }} />
-                    <span className="text-sm font-medium">{fund.name}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </Dropdown>
-
-          {/* Roles Dropdown */}
-          <Dropdown
-            trigger="Roles"
-            id="roles"
-            isOpen={openDropdown === 'roles'}
-            onOpenChange={handleDropdownOpen('roles')}
-          >
-            <ul className="w-[220px] p-3">
-              {roles.map((role) => (
-                <li key={role.name}>
-                  <Link
-                    href={role.href}
-                    onClick={() => setOpenDropdown(null)}
-                    className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
-                  >
-                    <span className="text-sm font-medium text-foreground">{role.fullName}</span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <div className="w-[460px] p-4">
+              <div className="mb-2">
+                <p className="px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">By Fund Type</p>
+              </div>
+              <ul className="grid grid-cols-2 gap-1">
+                {fundTypes.map((fund) => (
+                  <li key={fund.name}>
+                    <Link
+                      href={fund.href}
+                      onClick={() => setOpenDropdown(null)}
+                      className="group flex items-center gap-2.5 rounded-md px-3 py-2 text-foreground transition-colors hover:bg-accent/50"
+                    >
+                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: fund.color }} />
+                      <span className="text-sm font-medium">{fund.name}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-3 pt-3 border-t border-border">
+                <p className="px-3 mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">By Role</p>
+                <ul className="grid grid-cols-2 gap-1">
+                  {roles.map((role) => (
+                    <li key={role.name}>
+                      <Link
+                        href={role.href}
+                        onClick={() => setOpenDropdown(null)}
+                        className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
+                      >
+                        <span className="text-sm font-medium text-foreground">{role.fullName}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
           </Dropdown>
 
           {/* Newsletters Dropdown */}
@@ -333,11 +332,12 @@ export function SiteHeader() {
               </div>
             </div>
 
-            {/* Fund Types */}
+            {/* Articles (Fund Types + Roles) */}
             <div className="pt-4 border-t border-border">
               <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Fund Types
+                Articles
               </h3>
+              <p className="mb-2 text-xs font-medium text-muted-foreground px-1">By Fund Type</p>
               <div className="grid grid-cols-2 gap-2">
                 {fundTypes.map((fund) => (
                   <Link
@@ -351,14 +351,7 @@ export function SiteHeader() {
                   </Link>
                 ))}
               </div>
-            </div>
-
-
-            {/* Roles */}
-            <div className="pt-4 border-t border-border">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                By Role
-              </h3>
+              <p className="mt-4 mb-2 text-xs font-medium text-muted-foreground px-1">By Role</p>
               <div className="grid grid-cols-2 gap-2">
                 {roles.map((role) => (
                   <Link
