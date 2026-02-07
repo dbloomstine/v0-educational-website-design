@@ -1,5 +1,14 @@
 // --- Types ---
 
+export interface FundArticle {
+  title: string
+  url: string
+  source_name: string
+  source_domain: string
+  published_date: string | null
+  summary: string
+}
+
 export interface FundEntry {
   fund_name: string
   firm: string
@@ -14,6 +23,7 @@ export interface FundEntry {
   description_notes: string
   is_covered: boolean
   covered_date: string | null
+  articles: FundArticle[]
 }
 
 export interface FeedHealthEntry {
@@ -66,16 +76,6 @@ export const CATEGORY_BADGE_CLASSES: Record<string, string> = {
     "bg-sky-950/50 text-sky-300 border-sky-800",
   "Real Estate":
     "bg-rose-950/50 text-rose-300 border-rose-800",
-}
-
-// Bar chart colors per category
-export const CATEGORY_COLORS: Record<string, string> = {
-  "Venture Capital": "#8b5cf6",
-  "Private Equity": "#3b82f6",
-  "Credit Funds": "#10b981",
-  "Secondaries & GP-Stakes": "#f59e0b",
-  Infrastructure: "#0ea5e9",
-  "Real Estate": "#f43f5e",
 }
 
 // --- Helpers ---

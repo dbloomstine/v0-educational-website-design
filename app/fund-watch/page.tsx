@@ -3,7 +3,6 @@ import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { StatsCards } from "@/components/fund-watch/stats-cards"
-import { CategoryChart } from "@/components/fund-watch/category-chart"
 import { FundTable } from "@/components/fund-watch/fund-table"
 import { getFundDirectoryData } from "@/lib/content/fund-watch-loader"
 import { ArrowLeft } from "lucide-react"
@@ -11,11 +10,11 @@ import { ArrowLeft } from "lucide-react"
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: "Fund Watch Tracker | FundOpsHQ",
+  title: "FundWatch Tracker | FundOpsHQ",
   description:
     "Track fund closes and launches across private equity, venture capital, credit, infrastructure, real estate, and secondaries. Updated weekly.",
   openGraph: {
-    title: "Fund Watch Tracker | FundOpsHQ",
+    title: "FundWatch Tracker | FundOpsHQ",
     description:
       "Track fund closes and launches across private equity, venture capital, credit, infrastructure, real estate, and secondaries.",
     type: "website",
@@ -56,7 +55,7 @@ export default async function FundWatchPage() {
               <ArrowLeft className="mr-2 h-4 w-4" />
               FundWatch Briefing
             </Link>
-            <h1 className="text-4xl font-bold tracking-tight mb-3">Fund Watch Tracker</h1>
+            <h1 className="text-4xl font-bold tracking-tight mb-3">FundWatch Tracker</h1>
             <p className="text-lg text-muted-foreground max-w-2xl">
               Every fund close and launch tracked by the FundWatch pipeline. Filter by category,
               stage, and coverage status.
@@ -84,21 +83,14 @@ export default async function FundWatchPage() {
               </div>
             </section>
 
-            {/* Chart + Table */}
+            {/* Table */}
             <section className="pb-16">
               <div className="container mx-auto px-4">
-                <div className="grid lg:grid-cols-[340px_1fr] gap-6">
-                  <div>
-                    <CategoryChart byCategory={data.stats.by_category} />
-                  </div>
-                  <div>
-                    <FundTable
-                      funds={data.funds}
-                      categories={data.categories}
-                      stages={data.stages}
-                    />
-                  </div>
-                </div>
+                <FundTable
+                  funds={data.funds}
+                  categories={data.categories}
+                  stages={data.stages}
+                />
               </div>
             </section>
           </>

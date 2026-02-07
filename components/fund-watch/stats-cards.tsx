@@ -33,9 +33,7 @@ export function StatsCards({ stats, categoryCount }: StatsCardsProps) {
       value: stats.date_range.earliest && stats.date_range.latest
         ? formatDateRange(stats.date_range.earliest, stats.date_range.latest)
         : "N/A",
-      detail: stats.date_range.earliest && stats.date_range.latest
-        ? `${stats.date_range.earliest} to ${stats.date_range.latest}`
-        : "No dates available",
+      detail: "Announcement date span",
       icon: Calendar,
     },
   ]
@@ -63,11 +61,16 @@ export function StatsCards({ stats, categoryCount }: StatsCardsProps) {
 }
 
 function formatDateRange(earliest: string, latest: string): string {
-  const e = new Date(earliest)
-  const l = new Date(latest)
+  const e = new Date(earliest + "T00:00:00")
+  const l = new Date(latest + "T00:00:00")
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-  const eStr = `${months[e.getUTCMonth()]} ${e.getUTCFullYear()}`
-  const lStr = `${months[l.getUTCMonth()]} ${l.getUTCFullYear()}`
-  if (eStr === lStr) return lStr
-  return `${eStr} - ${lStr}`
+  const eStr = `${months[e.getMonth()]} ${e.getDate()}`
+  const lStr = `${months[l.getMonth()]} ${l.getDate()}, ${l.getFullYear()}`
+  if (e.getFullYear() === l.getFullYear() && e.getMonth() === l.getMonth() && e.getDate() === l.getDate()) {
+    return lStr
+  }
+  if (e.getFullYear() !== l.getFullYear()) {
+    return `${eStr}, ${e.getFullYear()} \u2013 ${lStr}`
+  }
+  return `${eStr} \u2013 ${lStr}`
 }
