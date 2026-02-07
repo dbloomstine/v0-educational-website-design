@@ -352,7 +352,7 @@ export function FundTable({ funds, categories, stages }: FundTableProps) {
                   <TableHead className="hidden md:table-cell">Stage</TableHead>
                 )}
                 {isVisible("date") && (
-                  <TableHead>
+                  <TableHead className="hidden sm:table-cell">
                     <button
                       onClick={() => toggleSort("date")}
                       className="inline-flex items-center font-medium hover:text-foreground transition-colors"
@@ -420,10 +420,25 @@ export function FundTable({ funds, categories, stages }: FundTableProps) {
                         </TableCell>
 
                         {isVisible("fund") && (
-                          <TableCell className="py-2">
+                          <TableCell className="py-2 max-w-[200px] sm:max-w-none">
                             <div>
-                              <span className="font-medium text-foreground">{fund.fund_name}</span>
+                              <span className="font-medium text-foreground line-clamp-1">{fund.fund_name}</span>
                               <span className="block text-xs text-muted-foreground">{fund.firm}</span>
+                              {/* Show category & stage inline on mobile where those columns are hidden */}
+                              <div className="flex items-center gap-1.5 mt-1 md:hidden">
+                                <Badge
+                                  variant="outline"
+                                  className={`text-[10px] px-1.5 py-0 ${CATEGORY_BADGE_CLASSES[fund.category] ?? ""}`}
+                                >
+                                  {fund.category}
+                                </Badge>
+                                <Badge
+                                  variant="outline"
+                                  className={`text-[10px] px-1.5 py-0 ${STAGE_BADGE[fund.stage] ?? STAGE_BADGE.other}`}
+                                >
+                                  {fund.stage}
+                                </Badge>
+                              </div>
                             </div>
                           </TableCell>
                         )}
@@ -457,7 +472,7 @@ export function FundTable({ funds, categories, stages }: FundTableProps) {
                           </TableCell>
                         )}
                         {isVisible("date") && (
-                          <TableCell className="text-sm text-muted-foreground whitespace-nowrap py-2">
+                          <TableCell className="hidden sm:table-cell text-sm text-muted-foreground whitespace-nowrap py-2">
                             {formatDate(fund.announcement_date)}
                           </TableCell>
                         )}
@@ -516,8 +531,13 @@ export function FundTable({ funds, categories, stages }: FundTableProps) {
                       {/* Expanded detail row */}
                       {isExpanded && (
                         <TableRow key={`${rowKey}-detail`} className={i % 2 === 1 ? "bg-muted/20" : ""}>
-                          <TableCell colSpan={visibleColCount} className="px-10 py-4 border-t-0">
+                          <TableCell colSpan={visibleColCount} className="px-4 sm:px-10 py-4 border-t-0">
                             <div className="space-y-3">
+                              {/* Date on mobile (hidden in table column) */}
+                              <p className="text-xs text-muted-foreground sm:hidden">
+                                {formatDate(fund.announcement_date)}
+                              </p>
+
                               {/* Description */}
                               {fund.description_notes && (
                                 <p className="text-sm text-muted-foreground">
@@ -536,12 +556,13 @@ export function FundTable({ funds, categories, stages }: FundTableProps) {
                                 ) : (
                                   <div className="space-y-1.5">
                                     {fund.source_url && (
-                                      <div className="flex items-center gap-2 text-sm">
+                                      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
                                         <a
                                           href={fund.source_url}
                                           target="_blank"
                                           rel="noopener noreferrer"
-                                          className="text-foreground hover:underline underline-offset-2 line-clamp-1"
+                                          className="text-foreground hover:underline underline-offset-2 line-clamp-1 min-w-0 break-all sm:break-normal"
+                                          onClick={(e) => e.stopPropagation()}
                                         >
                                           {fund.source_name || "Source"}
                                         </a>
@@ -560,12 +581,13 @@ export function FundTable({ funds, categories, stages }: FundTableProps) {
                                     {articles
                                       .filter((article) => article.url !== fund.source_url)
                                       .map((article, ai) => (
-                                        <div key={ai} className="flex items-center gap-2 text-sm">
+                                        <div key={ai} className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
                                           <a
                                             href={article.url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className="text-foreground hover:underline underline-offset-2 line-clamp-1"
+                                            className="text-foreground hover:underline underline-offset-2 line-clamp-1 min-w-0 break-all sm:break-normal"
+                                            onClick={(e) => e.stopPropagation()}
                                           >
                                             {article.title}
                                           </a>
