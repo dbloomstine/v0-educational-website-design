@@ -91,7 +91,7 @@ export function FundWatchClient({ funds, categories, stages }: FundWatchClientPr
       sections: [
         createTableSection(
           `${sorted.length} funds | ${formatAum(totalAum)} total AUM`,
-          ["Fund Name", "Fund Manager", "Amount", "Category", "Stage", "Date", "Location", "Status", "Source"],
+          ["Fund Name", "Fund Manager", "Amount", "Category", "Stage", "Date", "Location", "Source"],
           sorted.map((f) => [
             f.fund_name,
             f.firm,
@@ -100,7 +100,6 @@ export function FundWatchClient({ funds, categories, stages }: FundWatchClientPr
             f.stage,
             f.announcement_date ?? "",
             f.location,
-            f.is_covered ? "Covered" : "Pending",
             f.source_url,
           ])
         ),

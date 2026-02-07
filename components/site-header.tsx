@@ -113,21 +113,32 @@ export function SiteHeader() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-1">
-          {/* Watch Link - First position */}
-          <Link
-            href="/interviews"
-            className="inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+          {/* Podcast Dropdown */}
+          <Dropdown
+            trigger="Podcast"
+            id="podcast"
+            isOpen={openDropdown === 'podcast'}
+            onOpenChange={handleDropdownOpen('podcast')}
           >
-            Watch
-          </Link>
-
-          {/* Guests Link */}
-          <Link
-            href="/guests"
-            className="inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-          >
-            Guests
-          </Link>
+            <div className="w-[240px] p-3">
+              <Link
+                href="/interviews"
+                onClick={() => setOpenDropdown(null)}
+                className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
+              >
+                <div className="text-sm font-medium text-foreground">Episodes</div>
+                <div className="text-xs text-muted-foreground">Watch and listen to interviews</div>
+              </Link>
+              <Link
+                href="/guests"
+                onClick={() => setOpenDropdown(null)}
+                className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
+              >
+                <div className="text-sm font-medium text-foreground">Guests</div>
+                <div className="text-xs text-muted-foreground">Meet the fund ops experts</div>
+              </Link>
+            </div>
+          </Dropdown>
 
           {/* Articles Dropdown (Fund Types + Roles) */}
           <Dropdown
@@ -307,10 +318,10 @@ export function SiteHeader() {
           className="md:hidden border-t border-border bg-background max-h-[calc(100vh-4rem)] overflow-y-auto"
         >
           <div className="container mx-auto px-4 py-4 space-y-4">
-            {/* Watch - First position */}
+            {/* Podcast */}
             <div>
               <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Watch
+                Podcast
               </h3>
               <div className="space-y-2">
                 <Link
@@ -318,8 +329,8 @@ export function SiteHeader() {
                   onClick={() => setMobileMenuOpen(false)}
                   className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
                 >
-                  <span className="font-medium text-foreground">Videos & Podcast</span>
-                  <span className="block text-xs text-muted-foreground mt-0.5">Watch and listen to fund operations content</span>
+                  <span className="font-medium text-foreground">Episodes</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">Watch and listen to interviews</span>
                 </Link>
                 <Link
                   href="/guests"
@@ -327,7 +338,7 @@ export function SiteHeader() {
                   className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
                 >
                   <span className="font-medium text-foreground">Guests</span>
-                  <span className="block text-xs text-muted-foreground mt-0.5">Meet the fund operations experts</span>
+                  <span className="block text-xs text-muted-foreground mt-0.5">Meet the fund ops experts</span>
                 </Link>
               </div>
             </div>

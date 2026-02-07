@@ -57,7 +57,6 @@ const COLUMN_SORT: Record<string, SortField> = {
   quarter: "quarter",
   date: "date",
   location: "location",
-  covered_date: "covered_date",
 }
 
 function SortIcon({ field, currentSort, currentDir }: { field: SortField; currentSort: SortField; currentDir: SortDir }) {
@@ -99,8 +98,6 @@ export function FundTable({
     (isVisible("quarter") ? 1 : 0) +
     (isVisible("date") ? 1 : 0) +
     (isVisible("location") ? 1 : 0) +
-    (isVisible("status") ? 1 : 0) +
-    (isVisible("covered_date") ? 1 : 0) +
     (isVisible("source_name") ? 1 : 0) +
     (isVisible("description") ? 1 : 0) +
     (isVisible("source_link") ? 1 : 0)
@@ -169,14 +166,6 @@ export function FundTable({
               {isVisible("location") && (
                 <SortableHead colKey="location" className="hidden lg:table-cell">
                   Location
-                </SortableHead>
-              )}
-              {isVisible("status") && (
-                <TableHead className="hidden sm:table-cell">Status</TableHead>
-              )}
-              {isVisible("covered_date") && (
-                <SortableHead colKey="covered_date" className="hidden lg:table-cell">
-                  Covered
                 </SortableHead>
               )}
               {isVisible("source_name") && (
@@ -347,25 +336,6 @@ function FundRow({
             {fund.location}
           </TableCell>
         )}
-        {isVisible("status") && (
-          <TableCell className={`hidden sm:table-cell whitespace-nowrap ${py}`}>
-            <span className="inline-flex items-center gap-1.5">
-              <span
-                className={`inline-block h-2 w-2 rounded-full ${
-                  fund.is_covered ? "bg-emerald-400" : "bg-amber-400"
-                }`}
-              />
-              <span className="text-xs text-muted-foreground">
-                {fund.is_covered ? "Covered" : "Pending"}
-              </span>
-            </span>
-          </TableCell>
-        )}
-        {isVisible("covered_date") && (
-          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap ${py}`}>
-            {formatDate(fund.covered_date)}
-          </TableCell>
-        )}
         {isVisible("source_name") && (
           <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap ${py}`}>
             {fund.source_name}
@@ -407,10 +377,6 @@ function FundRow({
                 {fund.location && fund.location !== "N/A" && (
                   <p className="text-xs text-muted-foreground">Location: {fund.location}</p>
                 )}
-                <p className="text-xs text-muted-foreground">
-                  {fund.is_covered ? "Covered" : "Pending"}
-                  {fund.covered_date && ` on ${formatDate(fund.covered_date)}`}
-                </p>
               </div>
 
               {/* Description */}

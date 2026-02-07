@@ -55,8 +55,6 @@ export const ALL_COLUMNS: ColumnDef[] = [
   { key: "quarter", label: "Quarter", defaultVisible: false },
   { key: "date", label: "Date", defaultVisible: true },
   { key: "location", label: "Location", defaultVisible: true },
-  { key: "status", label: "Status", defaultVisible: false },
-  { key: "covered_date", label: "Covered Date", defaultVisible: false },
   { key: "source_name", label: "Source", defaultVisible: false },
   { key: "description", label: "Description", defaultVisible: false },
   { key: "source_link", label: "Source Link", defaultVisible: true },
@@ -294,7 +292,7 @@ export function FundFilterBar({
     state.size !== "all" ||
     state.from ||
     state.to ||
-    state.status !== "all"
+    false
 
   // Active filter chips
   const chips: { label: string; onRemove: () => void }[] = []
@@ -315,13 +313,6 @@ export function FundFilterBar({
     const label = state.from && state.to ? `${state.from} \u2013 ${state.to}` : state.from || state.to
     chips.push({ label: `Date: ${label}`, onRemove: () => onSetDateRange("", "") })
   }
-  if (state.status !== "all") {
-    chips.push({
-      label: state.status === "covered" ? "Covered" : "Pending",
-      onRemove: () => onSetStatus("all"),
-    })
-  }
-
   // Shared filter controls (used in both desktop and mobile)
   const filterControls = (
     <>
@@ -353,16 +344,6 @@ export function FundFilterBar({
         quarters={quarters}
         onSetDateRange={onSetDateRange}
       />
-      <Select value={state.status} onValueChange={onSetStatus}>
-        <SelectTrigger className="w-[110px] h-9 text-sm">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="all">All Status</SelectItem>
-          <SelectItem value="covered">Covered</SelectItem>
-          <SelectItem value="pending">Pending</SelectItem>
-        </SelectContent>
-      </Select>
     </>
   )
 
@@ -493,20 +474,6 @@ export function FundFilterBar({
                       ))}
                     </div>
                   )}
-                </div>
-                {/* Status */}
-                <div>
-                  <Label className="text-xs text-muted-foreground mb-2 block">Status</Label>
-                  <Select value={state.status} onValueChange={onSetStatus}>
-                    <SelectTrigger className="w-full h-9 text-sm">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Status</SelectItem>
-                      <SelectItem value="covered">Covered</SelectItem>
-                      <SelectItem value="pending">Pending</SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
                 {hasActiveFilters && (
                   <Button variant="ghost" size="sm" onClick={onClearAll} className="mt-2">

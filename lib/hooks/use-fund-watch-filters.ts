@@ -14,7 +14,6 @@ export type SortField =
   | "quarter"
   | "date"
   | "location"
-  | "covered_date"
 export type SortDir = "asc" | "desc"
 
 export interface FundWatchFilterState {
@@ -24,7 +23,6 @@ export interface FundWatchFilterState {
   size: AmountBucketKey
   from: string
   to: string
-  status: string
   sort: SortField
   dir: SortDir
 }
@@ -36,7 +34,6 @@ const DEFAULT_STATE: FundWatchFilterState = {
   size: "all",
   from: "",
   to: "",
-  status: "all",
   sort: "date",
   dir: "desc",
 }
@@ -51,7 +48,6 @@ function stateToParams(state: FundWatchFilterState): URLSearchParams {
   if (state.size !== "all") params.set("size", state.size)
   if (state.from) params.set("from", state.from)
   if (state.to) params.set("to", state.to)
-  if (state.status !== "all") params.set("status", state.status)
   if (state.sort !== "date") params.set("sort", state.sort)
   if (state.dir !== "desc") params.set("dir", state.dir)
   return params
@@ -71,8 +67,6 @@ function paramsToState(params: URLSearchParams): Partial<FundWatchFilterState> {
   if (from) partial.from = from
   const to = params.get("to")
   if (to) partial.to = to
-  const status = params.get("status")
-  if (status) partial.status = status
   const sort = params.get("sort")
   if (sort) partial.sort = sort as SortField
   const dir = params.get("dir")
@@ -115,12 +109,6 @@ export function applyFilters(funds: FundEntry[], state: FundWatchFilterState): F
     result = result.filter((f) => f.announcement_date && f.announcement_date <= state.to)
   }
 
-  if (state.status === "covered") {
-    result = result.filter((f) => f.is_covered)
-  } else if (state.status === "pending") {
-    result = result.filter((f) => !f.is_covered)
-  }
-
   return result
 }
 
@@ -146,11 +134,6 @@ export function applySorting(funds: FundEntry[], sortField: SortField, sortDir: 
       }
       case "location":
         return a.location.localeCompare(b.location) * dir
-      case "covered_date": {
-        const ca = a.covered_date ?? ""
-        const cb = b.covered_date ?? ""
-        return ca.localeCompare(cb) * dir
-      }
       default:
         return 0
     }
@@ -209,7 +192,7 @@ export function useFundWatchFilters() {
   const setStages = useCallback((stage: string[]) => setState((s) => ({ ...s, stage })), [setState])
   const setSize = useCallback((size: AmountBucketKey) => setState((s) => ({ ...s, size })), [setState])
   const setDateRange = useCallback((from: string, to: string) => setState((s) => ({ ...s, from, to })), [setState])
-  const setStatus = useCallback((status: string) => setState((s) => ({ ...s, status })), [setState])
+  const setStatus = useCallback((_status: string) => { /* no-op: status hidden from public UI */ }, [])
 
   const setSort = useCallback(
     (field: SortField) => {
@@ -232,7 +215,6 @@ export function useFundWatchFilters() {
     if (state.stage.length > 0) count++
     if (state.size !== "all") count++
     if (state.from || state.to) count++
-    if (state.status !== "all") count++
     return count
   }, [state])
 
