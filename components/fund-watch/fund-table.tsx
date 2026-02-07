@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState, useCallback, useRef, useMemo } from "react"
 import {
   ExternalLink,
   ArrowUpDown,
@@ -45,6 +45,8 @@ interface FundTableProps {
   sortField: SortField
   sortDir: SortDir
   onSort: (field: SortField) => void
+  columnWidths: Record<string, number>
+  onColumnResize: (key: string, width: number) => void
 }
 
 // Column sort field mapping
@@ -59,9 +61,68 @@ const COLUMN_SORT: Record<string, SortField> = {
   location: "location",
 }
 
+// Ordered list of all column keys (for building the header/cells in order)
+const COLUMN_ORDER = [
+  "chevron",
+  "fund",
+  "firm",
+  "amount",
+  "category",
+  "stage",
+  "quarter",
+  "date",
+  "location",
+  "source_name",
+  "description",
+  "source_link",
+]
+
 function SortIcon({ field, currentSort, currentDir }: { field: SortField; currentSort: SortField; currentDir: SortDir }) {
   if (currentSort !== field) return <ArrowUpDown className="ml-1 h-3 w-3 opacity-40" />
   return currentDir === "asc" ? <ArrowUp className="ml-1 h-3 w-3" /> : <ArrowDown className="ml-1 h-3 w-3" />
+}
+
+// --- Resize handle ---
+
+function ResizeHandle({ onResize }: { onResize: (delta: number) => void }) {
+  const startXRef = useRef(0)
+
+  const onMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      e.preventDefault()
+      startXRef.current = e.clientX
+      document.body.style.cursor = "col-resize"
+      document.body.style.userSelect = "none"
+
+      const onMouseMove = (me: MouseEvent) => {
+        const delta = me.clientX - startXRef.current
+        startXRef.current = me.clientX
+        onResize(delta)
+      }
+
+      const onMouseUp = () => {
+        document.removeEventListener("mousemove", onMouseMove)
+        document.removeEventListener("mouseup", onMouseUp)
+        document.body.style.cursor = ""
+        document.body.style.userSelect = ""
+      }
+
+      document.addEventListener("mousemove", onMouseMove)
+      document.addEventListener("mouseup", onMouseUp)
+    },
+    [onResize]
+  )
+
+  return (
+    <div
+      onMouseDown={onMouseDown}
+      className="hidden md:block absolute right-0 top-0 bottom-0 w-[5px] cursor-col-resize z-40 group/handle"
+      style={{ touchAction: "none" }}
+    >
+      <div className="absolute right-[2px] top-2 bottom-2 w-[1px] bg-border opacity-0 group-hover/handle:opacity-100 transition-opacity" />
+    </div>
+  )
 }
 
 export function FundTable({
@@ -71,6 +132,8 @@ export function FundTable({
   sortField,
   sortDir,
   onSort,
+  columnWidths,
+  onColumnResize,
 }: FundTableProps) {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
 
@@ -87,143 +150,202 @@ export function FundTable({
 
   const py = density === "compact" ? "py-1" : "py-2"
 
-  // Count visible columns + expand chevron
-  const visibleColCount =
-    1 + // chevron
-    (isVisible("fund") ? 1 : 0) +
-    (isVisible("firm") ? 1 : 0) +
-    (isVisible("amount") ? 1 : 0) +
-    (isVisible("category") ? 1 : 0) +
-    (isVisible("stage") ? 1 : 0) +
-    (isVisible("quarter") ? 1 : 0) +
-    (isVisible("date") ? 1 : 0) +
-    (isVisible("location") ? 1 : 0) +
-    (isVisible("source_name") ? 1 : 0) +
-    (isVisible("description") ? 1 : 0) +
-    (isVisible("source_link") ? 1 : 0)
+  // Build visible column list in order
+  const visibleCols = useMemo(() => {
+    return COLUMN_ORDER.filter((key) => key === "chevron" || visibleColumns.has(key))
+  }, [visibleColumns])
+
+  const visibleColCount = visibleCols.length
+
+  // Compute total table width from visible column widths
+  const totalTableWidth = useMemo(() => {
+    return visibleCols.reduce((sum, key) => sum + (columnWidths[key] ?? 100), 0)
+  }, [visibleCols, columnWidths])
+
+  // Chevron width for sticky offset
+  const chevronWidth = columnWidths.chevron ?? 40
+  const fundWidth = columnWidths.fund ?? 220
 
   // Aggregate footer
   const totalAum = funds.reduce((sum, f) => sum + (f.amount_usd_millions ?? 0), 0)
 
-  // Sortable header helper
-  const SortableHead = ({ colKey, children, className }: { colKey: string; children: React.ReactNode; className?: string }) => {
+  // Resize handler factory
+  const makeResizeHandler = useCallback(
+    (key: string) => (delta: number) => {
+      const current = columnWidths[key] ?? 100
+      const newWidth = Math.max(50, current + delta)
+      onColumnResize(key, newWidth)
+    },
+    [columnWidths, onColumnResize]
+  )
+
+  // Sticky styles
+  const chevronStickyStyle: React.CSSProperties = {
+    position: "sticky",
+    left: 0,
+    width: chevronWidth,
+    minWidth: chevronWidth,
+  }
+
+  const fundStickyStyle: React.CSSProperties = {
+    position: "sticky",
+    left: chevronWidth,
+    width: fundWidth,
+    minWidth: fundWidth,
+    boxShadow: "2px 0 4px -2px rgba(0,0,0,0.1)",
+  }
+
+  // Header cell renderer with sort + resize
+  const renderHeaderCell = (colKey: string) => {
+    const w = columnWidths[colKey] ?? 100
+    const style: React.CSSProperties = { width: w, minWidth: w, position: "relative" }
     const sf = COLUMN_SORT[colKey]
-    if (!sf) return <TableHead className={className}>{children}</TableHead>
-    return (
-      <TableHead className={className}>
-        <button
-          onClick={() => onSort(sf)}
-          className="inline-flex items-center font-medium hover:text-foreground transition-colors"
+
+    // Sticky overrides for chevron and fund
+    if (colKey === "chevron") {
+      return (
+        <TableHead
+          key={colKey}
+          className="px-2 bg-background z-30"
+          style={{ ...chevronStickyStyle, position: "sticky", zIndex: 30 }}
         >
-          {children}
-          <SortIcon field={sf} currentSort={sortField} currentDir={sortDir} />
-        </button>
+          <ResizeHandle onResize={makeResizeHandler("chevron")} />
+        </TableHead>
+      )
+    }
+
+    if (colKey === "fund") {
+      return (
+        <TableHead
+          key={colKey}
+          className="bg-background z-30"
+          style={{ ...fundStickyStyle, position: "sticky", zIndex: 30 }}
+        >
+          <button
+            onClick={() => onSort(COLUMN_SORT.fund)}
+            className="inline-flex items-center font-medium hover:text-foreground transition-colors"
+          >
+            Fund Name
+            <SortIcon field={COLUMN_SORT.fund} currentSort={sortField} currentDir={sortDir} />
+          </button>
+          <ResizeHandle onResize={makeResizeHandler("fund")} />
+        </TableHead>
+      )
+    }
+
+    // Responsive classes for specific columns
+    const responsiveClass =
+      colKey === "firm" || colKey === "category" || colKey === "stage"
+        ? "hidden md:table-cell"
+        : colKey === "quarter" || colKey === "location" || colKey === "source_name"
+        ? "hidden lg:table-cell"
+        : colKey === "date"
+        ? "hidden sm:table-cell"
+        : colKey === "description"
+        ? "hidden xl:table-cell"
+        : ""
+
+    const extraClass = colKey === "amount" ? "text-right" : ""
+
+    if (colKey === "source_link") {
+      return (
+        <TableHead key={colKey} className={responsiveClass} style={{ ...style, position: "relative" }}>
+          <span className="sr-only">Source</span>
+          <ResizeHandle onResize={makeResizeHandler(colKey)} />
+        </TableHead>
+      )
+    }
+
+    const labelMap: Record<string, string> = {
+      firm: "Fund Manager",
+      amount: "Amount",
+      category: "Category",
+      stage: "Stage",
+      quarter: "Quarter",
+      date: "Date",
+      location: "Location",
+      source_name: "Source",
+      description: "Description",
+    }
+
+    if (sf) {
+      return (
+        <TableHead key={colKey} className={`${responsiveClass} ${extraClass}`} style={{ ...style, position: "relative" }}>
+          <button
+            onClick={() => onSort(sf)}
+            className="inline-flex items-center font-medium hover:text-foreground transition-colors"
+          >
+            {labelMap[colKey] ?? colKey}
+            <SortIcon field={sf} currentSort={sortField} currentDir={sortDir} />
+          </button>
+          <ResizeHandle onResize={makeResizeHandler(colKey)} />
+        </TableHead>
+      )
+    }
+
+    return (
+      <TableHead key={colKey} className={`${responsiveClass} ${extraClass}`} style={{ ...style, position: "relative" }}>
+        {labelMap[colKey] ?? colKey}
+        <ResizeHandle onResize={makeResizeHandler(colKey)} />
       </TableHead>
     )
   }
 
   return (
     <div className="rounded-lg border border-border overflow-hidden">
-      <div className="overflow-x-auto">
-        <Table>
-          <TableHeader className="sticky top-0 z-10 bg-background">
-            <TableRow className="hover:bg-transparent">
-              <TableHead className="w-8 px-2" />
-
-              {isVisible("fund") && (
-                <SortableHead colKey="fund">Fund Name</SortableHead>
-              )}
-              {isVisible("firm") && (
-                <SortableHead colKey="firm" className="hidden md:table-cell">
-                  Fund Manager
-                </SortableHead>
-              )}
-              {isVisible("amount") && (
-                <SortableHead colKey="amount" className="text-right">
-                  Amount
-                </SortableHead>
-              )}
-              {isVisible("category") && (
-                <SortableHead colKey="category" className="hidden md:table-cell">
-                  Category
-                </SortableHead>
-              )}
-              {isVisible("stage") && (
-                <SortableHead colKey="stage" className="hidden md:table-cell">
-                  Stage
-                </SortableHead>
-              )}
-              {isVisible("quarter") && (
-                <SortableHead colKey="quarter" className="hidden lg:table-cell">
-                  Quarter
-                </SortableHead>
-              )}
-              {isVisible("date") && (
-                <SortableHead colKey="date" className="hidden sm:table-cell">
-                  Date
-                </SortableHead>
-              )}
-              {isVisible("location") && (
-                <SortableHead colKey="location" className="hidden lg:table-cell">
-                  Location
-                </SortableHead>
-              )}
-              {isVisible("source_name") && (
-                <TableHead className="hidden lg:table-cell">Source</TableHead>
-              )}
-              {isVisible("description") && (
-                <TableHead className="hidden xl:table-cell">Description</TableHead>
-              )}
-              {isVisible("source_link") && (
-                <TableHead className="w-10">
-                  <span className="sr-only">Source</span>
-                </TableHead>
-              )}
+      <Table
+        className="w-auto"
+        style={{ tableLayout: "fixed", width: totalTableWidth }}
+      >
+        <TableHeader className="sticky top-0 z-10 bg-background">
+          <TableRow className="hover:bg-transparent">
+            {visibleCols.map((colKey) => renderHeaderCell(colKey))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {funds.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={visibleColCount} className="text-center py-8 text-muted-foreground">
+                No funds match the current filters.
+              </TableCell>
             </TableRow>
-          </TableHeader>
-          <TableBody>
-            {funds.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={visibleColCount} className="text-center py-8 text-muted-foreground">
-                  No funds match the current filters.
-                </TableCell>
-              </TableRow>
-            ) : (
-              funds.map((fund, i) => {
-                const rowKey = `${fund.fund_name}-${fund.firm}-${i}`
-                const isExpanded = expandedRows.has(rowKey)
-                const articles = fund.articles ?? []
+          ) : (
+            funds.map((fund, i) => {
+              const rowKey = `${fund.fund_name}-${fund.firm}-${i}`
+              const isExpanded = expandedRows.has(rowKey)
+              const articles = fund.articles ?? []
 
-                return (
-                  <FundRow
-                    key={rowKey}
-                    fund={fund}
-                    rowKey={rowKey}
-                    index={i}
-                    isExpanded={isExpanded}
-                    articles={articles}
-                    isVisible={isVisible}
-                    py={py}
-                    visibleColCount={visibleColCount}
-                    onToggle={toggleRow}
-                  />
-                )
-              })
-            )}
+              return (
+                <FundRow
+                  key={rowKey}
+                  fund={fund}
+                  rowKey={rowKey}
+                  index={i}
+                  isExpanded={isExpanded}
+                  articles={articles}
+                  isVisible={isVisible}
+                  py={py}
+                  visibleColCount={visibleColCount}
+                  onToggle={toggleRow}
+                  chevronWidth={chevronWidth}
+                  fundWidth={fundWidth}
+                />
+              )
+            })
+          )}
 
-            {/* Aggregate footer */}
-            {funds.length > 0 && (
-              <TableRow className="bg-muted/30 hover:bg-muted/30 border-t">
-                <TableCell className={`w-8 px-2 ${py}`} />
-                <TableCell colSpan={visibleColCount - 1} className={`${py} text-sm font-medium text-muted-foreground`}>
-                  {funds.length} fund{funds.length !== 1 ? "s" : ""}
-                  {totalAum > 0 && <> &middot; {formatAum(totalAum)} total AUM</>}
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+          {/* Aggregate footer */}
+          {funds.length > 0 && (
+            <TableRow className="bg-muted/30 hover:bg-muted/30 border-t">
+              <TableCell className={`px-2 ${py}`} />
+              <TableCell colSpan={visibleColCount - 1} className={`${py} text-sm font-medium text-muted-foreground`}>
+                {funds.length} fund{funds.length !== 1 ? "s" : ""}
+                {totalAum > 0 && <> &middot; {formatAum(totalAum)} total AUM</>}
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </div>
   )
 }
@@ -240,6 +362,8 @@ function FundRow({
   py,
   visibleColCount,
   onToggle,
+  chevronWidth,
+  fundWidth,
 }: {
   fund: FundEntry
   rowKey: string
@@ -250,14 +374,21 @@ function FundRow({
   py: string
   visibleColCount: number
   onToggle: (key: string) => void
+  chevronWidth: number
+  fundWidth: number
 }) {
+  const rowBg = index % 2 === 1 ? "bg-muted/20" : "bg-background"
+
   return (
     <>
       <TableRow
         className={`cursor-pointer ${index % 2 === 1 ? "bg-muted/20" : ""} ${isExpanded ? "border-b-0" : ""}`}
         onClick={() => onToggle(rowKey)}
       >
-        <TableCell className={`w-8 px-2 ${py}`}>
+        <TableCell
+          className={`px-2 ${py} ${rowBg} z-20`}
+          style={{ position: "sticky", left: 0 }}
+        >
           {isExpanded ? (
             <ChevronDown className="h-4 w-4 text-muted-foreground" />
           ) : (
@@ -266,7 +397,14 @@ function FundRow({
         </TableCell>
 
         {isVisible("fund") && (
-          <TableCell className={`${py} whitespace-nowrap`}>
+          <TableCell
+            className={`${py} whitespace-nowrap ${rowBg} z-20`}
+            style={{
+              position: "sticky",
+              left: chevronWidth,
+              boxShadow: "2px 0 4px -2px rgba(0,0,0,0.1)",
+            }}
+          >
             <span className="font-medium text-foreground">{fund.fund_name}</span>
             {/* Show firm inline on mobile where firm column is hidden */}
             <span className="block text-xs text-muted-foreground md:hidden">{fund.firm}</span>

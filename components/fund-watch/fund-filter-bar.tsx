@@ -107,6 +107,7 @@ interface FundFilterBarProps {
   onToggleColumn: (key: string) => void
   onSetDensity: (d: "comfortable" | "compact") => void
   onExportCSV: () => void
+  onResetColumnWidths: () => void
   searchRef: React.RefObject<HTMLInputElement | null>
 }
 
@@ -280,6 +281,7 @@ export function FundFilterBar({
   onToggleColumn,
   onSetDensity,
   onExportCSV,
+  onResetColumnWidths,
   searchRef,
 }: FundFilterBarProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -541,6 +543,16 @@ export function FundFilterBar({
                     Compact
                   </button>
                 </div>
+              </div>
+              <div className="border-t mt-3 pt-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-full text-xs"
+                  onClick={onResetColumnWidths}
+                >
+                  Reset column widths
+                </Button>
               </div>
             </PopoverContent>
           </Popover>

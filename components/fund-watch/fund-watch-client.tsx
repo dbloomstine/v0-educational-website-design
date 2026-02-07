@@ -10,6 +10,7 @@ import { formatAum } from "@/lib/content/fund-watch"
 
 const COLUMNS_STORAGE_KEY = "fundwatch-columns"
 const DENSITY_STORAGE_KEY = "fundwatch-density"
+const COL_WIDTHS_STORAGE_KEY = "fundwatch-col-widths"
 
 function getDefaultColumns(): Set<string> {
   return new Set(ALL_COLUMNS.filter((c) => c.defaultVisible).map((c) => c.key))
@@ -44,6 +45,37 @@ function saveDensity(d: "comfortable" | "compact") {
   try { localStorage.setItem(DENSITY_STORAGE_KEY, d) } catch { /* ignore */ }
 }
 
+export const DEFAULT_COLUMN_WIDTHS: Record<string, number> = {
+  chevron: 40,
+  fund: 220,
+  firm: 160,
+  amount: 110,
+  category: 130,
+  stage: 120,
+  quarter: 90,
+  date: 120,
+  location: 120,
+  source_name: 120,
+  description: 300,
+  source_link: 50,
+}
+
+function loadColumnWidths(): Record<string, number> {
+  if (typeof window === "undefined") return { ...DEFAULT_COLUMN_WIDTHS }
+  try {
+    const stored = localStorage.getItem(COL_WIDTHS_STORAGE_KEY)
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      if (parsed && typeof parsed === "object") return { ...DEFAULT_COLUMN_WIDTHS, ...parsed }
+    }
+  } catch { /* ignore */ }
+  return { ...DEFAULT_COLUMN_WIDTHS }
+}
+
+function saveColumnWidths(widths: Record<string, number>) {
+  try { localStorage.setItem(COL_WIDTHS_STORAGE_KEY, JSON.stringify(widths)) } catch { /* ignore */ }
+}
+
 interface FundWatchClientProps {
   funds: FundEntry[]
   categories: string[]
@@ -55,12 +87,14 @@ export function FundWatchClient({ funds, categories, stages }: FundWatchClientPr
 
   const [visibleColumns, setVisibleColumns] = useState<Set<string>>(getDefaultColumns)
   const [density, setDensityState] = useState<"comfortable" | "compact">("comfortable")
+  const [columnWidths, setColumnWidths] = useState<Record<string, number>>(() => ({ ...DEFAULT_COLUMN_WIDTHS }))
   const searchRef = useRef<HTMLInputElement>(null)
 
   // Load persisted settings on mount
   useEffect(() => {
     setVisibleColumns(loadColumns())
     setDensityState(loadDensity())
+    setColumnWidths(loadColumnWidths())
   }, [])
 
   const toggleColumn = useCallback((key: string) => {
@@ -76,6 +110,19 @@ export function FundWatchClient({ funds, categories, stages }: FundWatchClientPr
   const setDensity = useCallback((d: "comfortable" | "compact") => {
     setDensityState(d)
     saveDensity(d)
+  }, [])
+
+  const handleColumnResize = useCallback((key: string, width: number) => {
+    setColumnWidths((prev) => {
+      const next = { ...prev, [key]: width }
+      saveColumnWidths(next)
+      return next
+    })
+  }, [])
+
+  const resetColumnWidths = useCallback(() => {
+    setColumnWidths({ ...DEFAULT_COLUMN_WIDTHS })
+    try { localStorage.removeItem(COL_WIDTHS_STORAGE_KEY) } catch { /* ignore */ }
   }, [])
 
   // Apply filters + sorting
@@ -146,6 +193,7 @@ export function FundWatchClient({ funds, categories, stages }: FundWatchClientPr
         onToggleColumn={toggleColumn}
         onSetDensity={setDensity}
         onExportCSV={handleExportCSV}
+        onResetColumnWidths={resetColumnWidths}
         searchRef={searchRef}
       />
       <FundTable
@@ -155,6 +203,8 @@ export function FundWatchClient({ funds, categories, stages }: FundWatchClientPr
         sortField={filterHook.state.sort}
         sortDir={filterHook.state.dir}
         onSort={filterHook.setSort}
+        columnWidths={columnWidths}
+        onColumnResize={handleColumnResize}
       />
     </div>
   )

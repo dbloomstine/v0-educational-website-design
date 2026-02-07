@@ -208,14 +208,6 @@ export function SiteHeader() {
                 <div className="text-sm font-medium text-foreground">FundWatch Briefing</div>
                 <div className="text-xs text-muted-foreground">Weekly news & updates</div>
               </Link>
-              <Link
-                href="/fund-watch"
-                onClick={() => setOpenDropdown(null)}
-                className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
-              >
-                <div className="text-sm font-medium text-foreground">FundWatch Tracker</div>
-                <div className="text-xs text-muted-foreground">Browse all tracked funds</div>
-              </Link>
               <div className="pt-2 mt-2 border-t border-border">
                 <Link
                   href="/newsletter"
@@ -227,6 +219,14 @@ export function SiteHeader() {
               </div>
             </div>
           </Dropdown>
+
+          {/* Tracker Link */}
+          <Link
+            href="/fund-watch"
+            className="inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+          >
+            Tracker
+          </Link>
 
           {/* Tools Dropdown */}
           <Dropdown
@@ -400,14 +400,6 @@ export function SiteHeader() {
                   <span className="block text-xs text-muted-foreground mt-0.5">Weekly fund operations intel</span>
                 </Link>
                 <Link
-                  href="/fund-watch"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-                >
-                  <span className="font-medium text-foreground">FundWatch Tracker</span>
-                  <span className="block text-xs text-muted-foreground mt-0.5">Browse all tracked funds</span>
-                </Link>
-                <Link
                   href="/newsletter"
                   onClick={() => setMobileMenuOpen(false)}
                   className="block rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors text-center"
@@ -415,6 +407,21 @@ export function SiteHeader() {
                   View All Newsletters
                 </Link>
               </div>
+            </div>
+
+            {/* Tracker */}
+            <div className="pt-4 border-t border-border">
+              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                Tracker
+              </h3>
+              <Link
+                href="/fund-watch"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
+              >
+                <span className="font-medium text-foreground">FundWatch Tracker</span>
+                <span className="block text-xs text-muted-foreground mt-0.5">Browse all tracked funds</span>
+              </Link>
             </div>
 
             {/* Tools */}
