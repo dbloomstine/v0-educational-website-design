@@ -12,6 +12,7 @@ export interface FundArticle {
 export interface FundEntry {
   fund_name: string
   firm: string
+  firm_slug?: string
   amount: string
   amount_usd_millions: number | null
   category: string
@@ -28,6 +29,16 @@ export interface FundEntry {
   covered_date: string | null
   date_added: string | null
   articles: FundArticle[]
+}
+
+export interface ManagerEntry {
+  firm: string
+  firm_slug: string
+  fund_count: number
+  total_aum_millions: number
+  categories: string[]
+  city: string
+  country: string
 }
 
 export interface FeedHealthEntry {
@@ -59,6 +70,7 @@ export interface FundWatchStats {
 export interface FundDirectoryData {
   generated_at: string
   funds: FundEntry[]
+  managers?: ManagerEntry[]
   categories: string[]
   stages: string[]
   feed_health: FeedHealthEntry[]
@@ -83,6 +95,10 @@ export const CATEGORY_BADGE_CLASSES: Record<string, string> = {
 }
 
 // --- Helpers ---
+
+export function slugify(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
+}
 
 export function formatAum(millions: number): string {
   if (millions >= 1000) {

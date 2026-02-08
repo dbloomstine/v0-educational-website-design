@@ -28,6 +28,7 @@ export interface FundWatchFilterState {
   to: string
   sort: SortField
   dir: SortDir
+  cf: Record<string, string[]>
 }
 
 const DEFAULT_STATE: FundWatchFilterState = {
@@ -39,6 +40,7 @@ const DEFAULT_STATE: FundWatchFilterState = {
   to: "",
   sort: "date",
   dir: "desc",
+  cf: {},
 }
 
 // --- URL param serialization ---
@@ -53,6 +55,9 @@ function stateToParams(state: FundWatchFilterState): URLSearchParams {
   if (state.to) params.set("to", state.to)
   if (state.sort !== "date") params.set("sort", state.sort)
   if (state.dir !== "desc") params.set("dir", state.dir)
+  for (const [col, vals] of Object.entries(state.cf)) {
+    if (vals.length > 0) params.set(`cf_${col}`, vals.join(","))
+  }
   return params
 }
 
@@ -74,6 +79,13 @@ function paramsToState(params: URLSearchParams): Partial<FundWatchFilterState> {
   if (sort) partial.sort = sort as SortField
   const dir = params.get("dir")
   if (dir) partial.dir = dir as SortDir
+  const cf: Record<string, string[]> = {}
+  params.forEach((value, key) => {
+    if (key.startsWith("cf_")) {
+      cf[key.slice(3)] = value.split(",")
+    }
+  })
+  if (Object.keys(cf).length > 0) partial.cf = cf
   return partial
 }
 
@@ -115,7 +127,28 @@ export function applyFilters(funds: FundEntry[], state: FundWatchFilterState): F
     result = result.filter((f) => f.announcement_date && f.announcement_date <= state.to)
   }
 
+  // Column-level filters (AND across columns)
+  for (const [col, vals] of Object.entries(state.cf)) {
+    if (vals.length === 0) continue
+    result = result.filter((f) => {
+      const v = getColumnValue(f, col)
+      return vals.includes(v)
+    })
+  }
+
   return result
+}
+
+function getColumnValue(f: FundEntry, col: string): string {
+  switch (col) {
+    case "firm": return f.firm
+    case "category": return f.category
+    case "stage": return f.stage
+    case "city": return f.city || "N/A"
+    case "country": return f.country || "\u2014"
+    case "source_name": return f.source_name || "\u2014"
+    default: return ""
+  }
 }
 
 export function applySorting(funds: FundEntry[], sortField: SortField, sortDir: SortDir): FundEntry[] {
@@ -221,6 +254,21 @@ export function useFundWatchFilters() {
     [setState]
   )
 
+  const setColumnFilter = useCallback(
+    (column: string, values: string[]) => {
+      setState((s) => {
+        const cf = { ...s.cf }
+        if (values.length === 0) {
+          delete cf[column]
+        } else {
+          cf[column] = values
+        }
+        return { ...s, cf }
+      })
+    },
+    [setState]
+  )
+
   const clearAll = useCallback(() => setState(DEFAULT_STATE), [setState])
 
   const activeFilterCount = useMemo(() => {
@@ -230,6 +278,9 @@ export function useFundWatchFilters() {
     if (state.stage.length > 0) count++
     if (state.size !== "all") count++
     if (state.from || state.to) count++
+    for (const vals of Object.values(state.cf)) {
+      if (vals.length > 0) count++
+    }
     return count
   }, [state])
 
@@ -242,6 +293,7 @@ export function useFundWatchFilters() {
     setDateRange,
     setStatus,
     setSort,
+    setColumnFilter,
     clearAll,
     activeFilterCount,
   }

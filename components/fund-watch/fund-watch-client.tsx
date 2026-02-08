@@ -197,10 +197,12 @@ export function FundWatchClient({ funds, categories, stages }: FundWatchClientPr
         onSetDensity={setDensity}
         onExportCSV={handleExportCSV}
         onResetColumnWidths={resetColumnWidths}
+        onColumnFilter={filterHook.setColumnFilter}
         searchRef={searchRef}
       />
       <FundTable
         funds={sorted}
+        allFunds={funds}
         visibleColumns={visibleColumns}
         density={density}
         sortField={filterHook.state.sort}
@@ -208,6 +210,8 @@ export function FundWatchClient({ funds, categories, stages }: FundWatchClientPr
         onSort={filterHook.setSort}
         columnWidths={columnWidths}
         onColumnResize={handleColumnResize}
+        columnFilters={filterHook.state.cf}
+        onColumnFilter={filterHook.setColumnFilter}
       />
     </div>
   )

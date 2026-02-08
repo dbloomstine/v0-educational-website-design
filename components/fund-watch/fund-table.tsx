@@ -1,15 +1,27 @@
 "use client"
 
 import { useState, useCallback, useRef, useMemo } from "react"
+import Link from "next/link"
 import {
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
   ChevronRight,
   ChevronDown,
+  ListFilter,
   Newspaper,
+  Search,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Label } from "@/components/ui/label"
+import { Button } from "@/components/ui/button"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import {
   Table,
   TableBody,
@@ -19,7 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import type { FundEntry } from "@/lib/content/fund-watch"
-import { CATEGORY_BADGE_CLASSES, formatAum, getQuarter } from "@/lib/content/fund-watch"
+import { CATEGORY_BADGE_CLASSES, formatAum, getQuarter, slugify } from "@/lib/content/fund-watch"
 import type { SortField, SortDir } from "@/lib/hooks/use-fund-watch-filters"
 
 const STAGE_BADGE: Record<string, string> = {
@@ -43,8 +55,109 @@ function formatDate(iso: string | null | undefined): string {
   return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`
 }
 
+// Columns that support the column-level filter popover
+const FILTERABLE_COLUMNS = new Set(["firm", "category", "stage", "city", "country", "source_name"])
+
+function getFilterableValue(fund: FundEntry, col: string): string {
+  switch (col) {
+    case "firm": return fund.firm
+    case "category": return fund.category
+    case "stage": return fund.stage
+    case "city": return fund.city || "N/A"
+    case "country": return fund.country || "\u2014"
+    case "source_name": return fund.source_name || "\u2014"
+    default: return ""
+  }
+}
+
+// --- Column filter popover ---
+
+function ColumnFilterPopover({
+  column,
+  values,
+  selected,
+  onChange,
+}: {
+  column: string
+  values: string[]
+  selected: string[]
+  onChange: (vals: string[]) => void
+}) {
+  const [search, setSearch] = useState("")
+  const showSearch = values.length > 8
+  const filtered = search
+    ? values.filter((v) => v.toLowerCase().includes(search.toLowerCase()))
+    : values
+
+  const isActive = selected.length > 0
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          className="inline-flex items-center ml-0.5 relative"
+          onClick={(e) => e.stopPropagation()}
+          title={`Filter by ${column}`}
+        >
+          <ListFilter className={`h-3 w-3 ${isActive ? "text-blue-400" : "opacity-30 hover:opacity-70"} transition-opacity`} />
+          {isActive && (
+            <span className="absolute -top-1 -right-1 h-1.5 w-1.5 rounded-full bg-blue-400" />
+          )}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-56 p-3" onClick={(e) => e.stopPropagation()}>
+        {showSearch && (
+          <div className="relative mb-2">
+            <Search className="absolute left-2 top-1/2 h-3 w-3 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="h-7 pl-7 text-xs"
+            />
+          </div>
+        )}
+        <div className="max-h-48 overflow-y-auto space-y-1.5">
+          {filtered.map((val) => (
+            <div key={val} className="flex items-center gap-2">
+              <Checkbox
+                id={`cf-${column}-${val}`}
+                checked={selected.includes(val)}
+                onCheckedChange={(checked) => {
+                  if (checked) onChange([...selected, val])
+                  else onChange(selected.filter((s) => s !== val))
+                }}
+              />
+              <Label
+                htmlFor={`cf-${column}-${val}`}
+                className="text-xs font-normal cursor-pointer truncate"
+              >
+                {val}
+              </Label>
+            </div>
+          ))}
+          {filtered.length === 0 && (
+            <p className="text-xs text-muted-foreground py-2 text-center">No matches</p>
+          )}
+        </div>
+        {isActive && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-full text-xs mt-2"
+            onClick={() => onChange([])}
+          >
+            Clear
+          </Button>
+        )}
+      </PopoverContent>
+    </Popover>
+  )
+}
+
 interface FundTableProps {
   funds: FundEntry[]
+  allFunds: FundEntry[]
   visibleColumns: Set<string>
   density: "comfortable" | "compact"
   sortField: SortField
@@ -52,6 +165,8 @@ interface FundTableProps {
   onSort: (field: SortField) => void
   columnWidths: Record<string, number>
   onColumnResize: (key: string, width: number) => void
+  columnFilters: Record<string, string[]>
+  onColumnFilter: (col: string, vals: string[]) => void
 }
 
 // Column sort field mapping
@@ -152,6 +267,7 @@ function ResizeHandle({ onResize }: { onResize: (delta: number) => void }) {
 
 export function FundTable({
   funds,
+  allFunds,
   visibleColumns,
   density,
   sortField,
@@ -159,8 +275,24 @@ export function FundTable({
   onSort,
   columnWidths,
   onColumnResize,
+  columnFilters,
+  onColumnFilter,
 }: FundTableProps) {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
+
+  // Compute unique values per filterable column from allFunds (so options don't disappear when filtered)
+  const uniqueColumnValues = useMemo(() => {
+    const result: Record<string, string[]> = {}
+    for (const col of FILTERABLE_COLUMNS) {
+      const counts = new Map<string, number>()
+      for (const f of allFunds) {
+        const v = getFilterableValue(f, col)
+        counts.set(v, (counts.get(v) ?? 0) + 1)
+      }
+      result[col] = [...counts.keys()].sort((a, b) => a.localeCompare(b))
+    }
+    return result
+  }, [allFunds])
 
   const isVisible = useCallback((key: string) => visibleColumns.has(key), [visibleColumns])
 
@@ -291,17 +423,29 @@ export function FundTable({
 
     const tooltip = TOOLTIP_MAP[colKey]
 
+    const filterPopover = FILTERABLE_COLUMNS.has(colKey) ? (
+      <ColumnFilterPopover
+        column={colKey}
+        values={uniqueColumnValues[colKey] ?? []}
+        selected={columnFilters[colKey] ?? []}
+        onChange={(vals) => onColumnFilter(colKey, vals)}
+      />
+    ) : null
+
     if (sf) {
       return (
         <TableHead key={colKey} className={`${responsiveClass} ${extraClass}`} style={{ ...style, position: "relative" }}>
-          <button
-            onClick={() => onSort(sf)}
-            className="inline-flex items-center font-medium hover:text-foreground transition-colors"
-            title={tooltip}
-          >
-            {labelMap[colKey] ?? colKey}
-            <SortIcon field={sf} currentSort={sortField} currentDir={sortDir} />
-          </button>
+          <div className="inline-flex items-center gap-0.5">
+            <button
+              onClick={() => onSort(sf)}
+              className="inline-flex items-center font-medium hover:text-foreground transition-colors"
+              title={tooltip}
+            >
+              {labelMap[colKey] ?? colKey}
+              <SortIcon field={sf} currentSort={sortField} currentDir={sortDir} />
+            </button>
+            {filterPopover}
+          </div>
           <ResizeHandle onResize={makeResizeHandler(colKey)} />
         </TableHead>
       )
@@ -309,7 +453,10 @@ export function FundTable({
 
     return (
       <TableHead key={colKey} className={`${responsiveClass} ${extraClass}`} style={{ ...style, position: "relative" }}>
-        <span title={tooltip}>{labelMap[colKey] ?? colKey}</span>
+        <div className="inline-flex items-center gap-0.5">
+          <span title={tooltip}>{labelMap[colKey] ?? colKey}</span>
+          {filterPopover}
+        </div>
         <ResizeHandle onResize={makeResizeHandler(colKey)} />
       </TableHead>
     )
@@ -432,7 +579,13 @@ function FundRow({
           >
             <span className="font-medium text-foreground truncate block">{fund.fund_name}</span>
             {/* Show firm inline on mobile where firm column is hidden */}
-            <span className="block text-xs text-muted-foreground md:hidden">{fund.firm}</span>
+            <Link
+              href={`/fund-watch/managers/${fund.firm_slug || slugify(fund.firm)}`}
+              className="block text-xs text-muted-foreground hover:text-foreground hover:underline underline-offset-2 transition-colors md:hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {fund.firm}
+            </Link>
             {/* Show category & stage inline on mobile */}
             <div className="flex items-center gap-1.5 mt-1 md:hidden">
               <Badge
@@ -451,8 +604,14 @@ function FundRow({
           </TableCell>
         )}
         {isVisible("firm") && (
-          <TableCell className={`hidden md:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
-            {fund.firm}
+          <TableCell className={`hidden md:table-cell text-sm whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+            <Link
+              href={`/fund-watch/managers/${fund.firm_slug || slugify(fund.firm)}`}
+              className="text-muted-foreground hover:text-foreground hover:underline underline-offset-2 transition-colors"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {fund.firm}
+            </Link>
           </TableCell>
         )}
         {isVisible("amount") && (
@@ -549,7 +708,16 @@ function FundRow({
 
               {/* Key Details Grid */}
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-3">
-                <DetailItem label="Fund Manager" value={fund.firm} />
+                <div className="min-w-0">
+                  <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-0.5">Fund Manager</p>
+                  <Link
+                    href={`/fund-watch/managers/${fund.firm_slug || slugify(fund.firm)}`}
+                    className="text-sm text-foreground hover:underline underline-offset-2 transition-colors truncate block"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {fund.firm}
+                  </Link>
+                </div>
                 <DetailItem label="Fund Size" value={fund.amount === "Undisclosed" ? "Undisclosed" : fund.amount} muted={fund.amount === "Undisclosed"} />
                 <DetailItem label="Stage" value={titleCase(fund.stage)} />
                 <DetailItem label="Category" value={fund.category} />

@@ -3,6 +3,7 @@ import { Suspense } from "react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { FundWatchClient } from "@/components/fund-watch/fund-watch-client"
+import { FundWatchMethodology } from "@/components/fund-watch/fund-watch-methodology"
 import { getFundDirectoryData } from "@/lib/content/fund-watch-loader"
 import { Radio } from "lucide-react"
 
@@ -84,6 +85,8 @@ export default async function FundWatchPage() {
             </div>
           </div>
         </section>
+
+        <FundWatchMethodology />
 
         {data ? (
           <section className="py-10 pb-16">

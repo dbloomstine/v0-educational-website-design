@@ -90,6 +90,16 @@ function deriveQuarters(funds: FundEntry[]): { label: string; from: string; to: 
 
 // --- Props ---
 
+// Column display names for filter chips
+const COLUMN_LABEL_MAP: Record<string, string> = {
+  firm: "Firm",
+  category: "Category",
+  stage: "Stage",
+  city: "City",
+  country: "Country",
+  source_name: "Source",
+}
+
 interface FundFilterBarProps {
   state: FundWatchFilterState
   categories: string[]
@@ -109,6 +119,7 @@ interface FundFilterBarProps {
   onSetDensity: (d: "comfortable" | "compact") => void
   onExportCSV: () => void
   onResetColumnWidths: () => void
+  onColumnFilter: (col: string, vals: string[]) => void
   searchRef: React.RefObject<HTMLInputElement | null>
 }
 
@@ -283,11 +294,13 @@ export function FundFilterBar({
   onSetDensity,
   onExportCSV,
   onResetColumnWidths,
+  onColumnFilter,
   searchRef,
 }: FundFilterBarProps) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const quarters = useMemo(() => deriveQuarters(allFunds), [allFunds])
 
+  const cfActive = Object.values(state.cf).some((v) => v.length > 0)
   const hasActiveFilters =
     state.q ||
     state.cat.length > 0 ||
@@ -295,7 +308,7 @@ export function FundFilterBar({
     state.size !== "all" ||
     state.from ||
     state.to ||
-    false
+    cfActive
 
   // Active filter chips
   const chips: { label: string; onRemove: () => void }[] = []
@@ -315,6 +328,16 @@ export function FundFilterBar({
   if (state.from || state.to) {
     const label = state.from && state.to ? `${state.from} \u2013 ${state.to}` : state.from || state.to
     chips.push({ label: `Date: ${label}`, onRemove: () => onSetDateRange("", "") })
+  }
+  // Column filter chips
+  for (const [col, vals] of Object.entries(state.cf)) {
+    for (const v of vals) {
+      const colLabel = COLUMN_LABEL_MAP[col] ?? col
+      chips.push({
+        label: `${colLabel}: ${v}`,
+        onRemove: () => onColumnFilter(col, vals.filter((x) => x !== v)),
+      })
+    }
   }
   // Shared filter controls (used in both desktop and mobile)
   const filterControls = (
