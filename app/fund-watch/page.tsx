@@ -1,12 +1,10 @@
 import { Metadata } from "next"
-import Link from "next/link"
 import { Suspense } from "react"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { FundWatchClient } from "@/components/fund-watch/fund-watch-client"
 import { getFundDirectoryData } from "@/lib/content/fund-watch-loader"
-import { ArrowLeft, Activity, TrendingUp, Layers, Radio } from "lucide-react"
-import { formatAum } from "@/lib/content/fund-watch"
+import { Radio } from "lucide-react"
 
 export const revalidate = 3600
 
@@ -28,12 +26,6 @@ export const metadata: Metadata = {
 
 export default async function FundWatchPage() {
   const data = await getFundDirectoryData()
-
-  const stats = data?.stats
-  const totalAum = stats?.total_aum_millions
-    ? formatAum(stats.total_aum_millions)
-    : null
-  const categoryCount = stats ? Object.keys(stats.by_category).length : 0
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -68,64 +60,26 @@ export default async function FundWatchPage() {
           />
 
           <div className="container relative mx-auto px-4 pt-10 pb-12">
-            <Link
-              href="/newsletter/fundwatch-briefing"
-              className="inline-flex items-center text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors mb-8"
-            >
-              <ArrowLeft className="mr-1.5 h-3 w-3" />
-              FundWatch Briefing
-            </Link>
-
-            <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8">
-              {/* Left: branding + copy */}
-              <div className="max-w-xl">
-                <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-400 mb-5">
-                  <Radio className="h-3 w-3" />
-                  Live Fund Intelligence
-                </div>
-                <h1 className="text-4xl font-bold tracking-tight mb-3">
-                  FundWatch Tracker
-                </h1>
-                <p className="text-[15px] leading-relaxed text-muted-foreground">
-                  Every fund close, launch, and raise tracked by the FundWatch pipeline.
-                  Filter, sort, and export across categories, stages, date ranges, and fund sizes.
-                </p>
-                {data && (
-                  <p className="mt-4 text-xs text-muted-foreground/50">
-                    Last updated {new Date(data.generated_at).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })}
-                  </p>
-                )}
+            <div className="max-w-xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-400 mb-5">
+                <Radio className="h-3 w-3" />
+                Live Fund Intelligence
               </div>
-
-              {/* Right: stat cards */}
-              {stats && (
-                <div className="grid grid-cols-3 gap-3 lg:gap-4">
-                  <div className="rounded-lg border border-white/[0.06] bg-white/[0.03] px-4 py-3 min-w-[120px]">
-                    <div className="flex items-center gap-1.5 text-muted-foreground/50 mb-1">
-                      <Activity className="h-3 w-3" />
-                      <span className="text-[11px] font-medium uppercase tracking-wider">Funds</span>
-                    </div>
-                    <p className="text-2xl font-semibold tabular-nums">{stats.total_funds}</p>
-                  </div>
-                  <div className="rounded-lg border border-white/[0.06] bg-white/[0.03] px-4 py-3 min-w-[120px]">
-                    <div className="flex items-center gap-1.5 text-muted-foreground/50 mb-1">
-                      <TrendingUp className="h-3 w-3" />
-                      <span className="text-[11px] font-medium uppercase tracking-wider">Total AUM</span>
-                    </div>
-                    <p className="text-2xl font-semibold tabular-nums">{totalAum}</p>
-                  </div>
-                  <div className="rounded-lg border border-white/[0.06] bg-white/[0.03] px-4 py-3 min-w-[120px]">
-                    <div className="flex items-center gap-1.5 text-muted-foreground/50 mb-1">
-                      <Layers className="h-3 w-3" />
-                      <span className="text-[11px] font-medium uppercase tracking-wider">Categories</span>
-                    </div>
-                    <p className="text-2xl font-semibold tabular-nums">{categoryCount}</p>
-                  </div>
-                </div>
+              <h1 className="text-4xl font-bold tracking-tight mb-3">
+                FundWatch Tracker
+              </h1>
+              <p className="text-[15px] leading-relaxed text-muted-foreground">
+                Every fund close, launch, and raise tracked by the FundWatch pipeline.
+                Filter, sort, and export across categories, stages, date ranges, and fund sizes.
+              </p>
+              {data && (
+                <p className="mt-4 text-xs text-muted-foreground/50">
+                  Last updated {new Date(data.generated_at).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </p>
               )}
             </div>
           </div>
