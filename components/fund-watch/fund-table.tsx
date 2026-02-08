@@ -31,9 +31,11 @@ const STAGE_BADGE: Record<string, string> = {
   other: "bg-zinc-800/50 text-zinc-300 border-zinc-700",
 }
 
-function formatDate(iso: string | null): string {
+function formatDate(iso: string | null | undefined): string {
   if (!iso) return "N/A"
-  const d = new Date(iso + "T00:00:00")
+  // Handle both date-only (YYYY-MM-DD) and datetime (YYYY-MM-DDTHH:MM:SS) strings
+  const d = iso.includes("T") ? new Date(iso) : new Date(iso + "T00:00:00")
+  if (isNaN(d.getTime())) return "N/A"
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
   return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`
 }
