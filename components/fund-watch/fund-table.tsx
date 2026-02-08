@@ -316,12 +316,12 @@ export function FundTable({
   }
 
   return (
-    <div className="rounded-lg border border-border overflow-auto">
+    <div className="rounded-lg border border-border overflow-auto max-h-[calc(100vh-220px)]">
       <Table
         className="w-auto"
         style={{ tableLayout: "fixed", width: totalTableWidth }}
       >
-        <TableHeader className="sticky top-0 z-10 bg-background">
+        <TableHeader className="sticky top-0 z-20 bg-background shadow-[0_1px_0_0_hsl(var(--border))]">
           <TableRow className="hover:bg-transparent">
             {visibleCols.map((colKey) => renderHeaderCell(colKey))}
           </TableRow>
@@ -537,7 +537,8 @@ function FundRow({
       {/* Expanded detail row */}
       {isExpanded && (
         <TableRow className={index % 2 === 1 ? "bg-muted/20" : ""}>
-          <TableCell colSpan={visibleColCount} className="px-4 sm:px-10 py-5 border-t-0">
+          <TableCell colSpan={visibleColCount} className="p-0 border-t-0">
+            <div className="sticky left-0 px-4 sm:px-10 py-5" style={{ width: "calc(100vw - 82px)", maxWidth: "100vw" }}>
             <div className="max-w-3xl space-y-4">
               {/* Description */}
               {fund.description_notes && (
@@ -617,6 +618,7 @@ function FundRow({
                   </div>
                 </div>
               )}
+            </div>
             </div>
           </TableCell>
         </TableRow>
