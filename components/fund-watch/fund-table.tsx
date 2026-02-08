@@ -463,7 +463,7 @@ export function FundTable({
   }
 
   return (
-    <div className="rounded-lg border border-border overflow-auto max-h-[calc(100vh-220px)]">
+    <div className="rounded-lg border border-border overflow-x-auto">
       <Table
         className="w-auto"
         style={{ tableLayout: "fixed", width: totalTableWidth }}
