@@ -169,14 +169,18 @@ export function FundTable({
   // Aggregate footer
   const totalAum = funds.reduce((sum, f) => sum + (f.amount_usd_millions ?? 0), 0)
 
-  // Resize handler factory
+  // Keep a ref to latest columnWidths so resize handlers don't go stale mid-drag
+  const columnWidthsRef = useRef(columnWidths)
+  columnWidthsRef.current = columnWidths
+
+  // Resize handler factory — reads from ref to avoid stale closures during drag
   const makeResizeHandler = useCallback(
     (key: string) => (delta: number) => {
-      const current = columnWidths[key] ?? 100
+      const current = columnWidthsRef.current[key] ?? 100
       const newWidth = Math.max(50, current + delta)
       onColumnResize(key, newWidth)
     },
-    [columnWidths, onColumnResize]
+    [onColumnResize]
   )
 
   // Sticky styles
