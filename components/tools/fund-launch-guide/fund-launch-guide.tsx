@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
-import dynamic from 'next/dynamic'
 import { cn } from '@/lib/utils'
 import {
   FundConfig,
@@ -13,15 +12,6 @@ import {
 import { PHASES, getApplicableTasks } from './data'
 import { TaskCard } from './task-card'
 
-// Dynamic import to avoid SSR issues with framer-motion and canvas-confetti
-const JourneyMode = dynamic(() => import('./journey-mode').then(mod => mod.JourneyMode), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-pulse text-muted-foreground">Loading...</div>
-    </div>
-  ),
-})
 import { ProgressDashboard } from './progress-dashboard'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -64,7 +54,7 @@ interface StoredState {
   completedTasks: string[]
   viewMode: ViewMode
   expandedTasks: string[]
-  hasCompletedOnboarding: boolean
+  hasCompletedOnboarding?: boolean
   providers?: Record<string, string>
 }
 
@@ -100,7 +90,6 @@ export function FundLaunchGuide() {
   const [expandedPhases, setExpandedPhases] = useState<Set<string>>(new Set())
 
   // UI state
-  const [showOnboarding, setShowOnboarding] = useState(true)
   const [hasLoaded, setHasLoaded] = useState(false)
   const [showCopied, setShowCopied] = useState(false)
   const [showSaved, setShowSaved] = useState(false)
@@ -121,11 +110,14 @@ export function FundLaunchGuide() {
         setCompletedTasks(new Set(parsed.completedTasks))
         setViewMode(parsed.viewMode || 'timeline')
         setExpandedTasks(new Set(parsed.expandedTasks || []))
-        setShowOnboarding(!parsed.hasCompletedOnboarding)
         setProviders(parsed.providers || {})
+      } else {
+        // No stored state — use default config directly (no onboarding wizard)
+        setConfig(DEFAULT_CONFIG)
       }
     } catch {
       // Silent fail - localStorage may be unavailable
+      setConfig(DEFAULT_CONFIG)
     }
     setHasLoaded(true)
   }, [])
@@ -292,22 +284,6 @@ export function FundLaunchGuide() {
   }
 
   // Handlers
-  const handleOnboardingComplete = (newConfig: FundConfig, newProviders: Record<string, string>, journeyCompletedTasks?: string[]) => {
-    setConfig(newConfig)
-    setProviders(newProviders)
-    setShowOnboarding(false)
-    // Preserve any tasks marked complete during the journey
-    setCompletedTasks(new Set(journeyCompletedTasks || []))
-    setExpandedTasks(new Set())
-    // Keep phases collapsed - user can expand as needed
-    setExpandedPhases(new Set())
-  }
-
-  const handleOnboardingSkip = () => {
-    setConfig(DEFAULT_CONFIG)
-    setShowOnboarding(false)
-  }
-
   const handleToggleTaskComplete = (taskId: string) => {
     setCompletedTasks(prev => {
       const next = new Set(prev)
@@ -375,7 +351,11 @@ export function FundLaunchGuide() {
   }
 
   const handleReconfigure = () => {
-    setShowOnboarding(true)
+    setConfig(DEFAULT_CONFIG)
+    setCompletedTasks(new Set())
+    setExpandedTasks(new Set())
+    setExpandedPhases(new Set())
+    setProviders({})
   }
 
   const handleRemoveProvider = (key: string) => {
@@ -656,7 +636,6 @@ export function FundLaunchGuide() {
         const decoded = JSON.parse(atob(stateParam))
         if (decoded.c) {
           setConfig(decoded.c)
-          setShowOnboarding(false)
           if (decoded.t) {
             setCompletedTasks(new Set(decoded.t))
           }
@@ -678,17 +657,7 @@ export function FundLaunchGuide() {
     )
   }
 
-  // Onboarding - Now uses the gamified Journey Mode
-  if (showOnboarding) {
-    return (
-      <JourneyMode
-        onComplete={handleOnboardingComplete}
-        onSkip={handleOnboardingSkip}
-      />
-    )
-  }
-
-  // No config (shouldn't happen)
+  // No config yet (loading)
   if (!config) {
     return null
   }

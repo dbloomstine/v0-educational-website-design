@@ -9,7 +9,6 @@ import {
   AlertCircle,
   Scale,
   Calculator,
-  Star,
   Search
 } from 'lucide-react'
 import { classifyExpense, type ClassificationInput, type ClassificationResult as Result } from './expenseData'
@@ -19,10 +18,8 @@ import { ClassificationResults } from './classification-results'
 import { SampleScenariosSection } from './sample-scenarios'
 
 import { ExpenseLookup } from './expense-lookup'
-import { ResultsWalkthrough } from './results-walkthrough'
-import { Quiz, QuizResults, EXPENSE_QUIZ_QUESTIONS } from './quiz'
 
-type ViewMode = 'lookup' | 'advanced' | 'quiz' | 'results'
+type ViewMode = 'lookup' | 'advanced' | 'results'
 
 const _STORAGE_KEY = 'fundExpenseAllocation_lastInput'
 
@@ -33,8 +30,6 @@ export function FundExpenseAllocation() {
 
   // Default to the new lookup mode (simplified experience)
   const [viewMode, setViewMode] = useState<ViewMode>('lookup')
-  const [showWalkthrough, setShowWalkthrough] = useState(false)
-  const [quizScore, setQuizScore] = useState<{ score: number; total: number } | null>(null)
 
   // Results state (for advanced mode)
   const [result, setResult] = useState<Result | null>(null)
@@ -104,24 +99,9 @@ export function FundExpenseAllocation() {
     setViewMode('results')
   }
 
-  // Walkthrough completion handler
-  const handleWalkthroughComplete = () => {
-    setShowWalkthrough(false)
-    setViewMode('results')
-  }
-
   // Sample scenario handler
   const handleLoadSample = (sample: ClassificationInput) => {
     handleClassify(sample)
-  }
-
-  // Quiz handlers
-  const handleQuizComplete = (score: number, total: number) => {
-    setQuizScore({ score, total })
-  }
-
-  const handleQuizRetry = () => {
-    setQuizScore(null)
   }
 
   // Export handler
@@ -166,35 +146,10 @@ export function FundExpenseAllocation() {
           <span className="hidden xs:inline">Advanced</span>
           <span className="xs:hidden">More</span>
         </Button>
-        <Button
-          variant={viewMode === 'quiz' ? 'default' : 'outline'}
-          size="lg"
-          onClick={() => {
-            setViewMode('quiz')
-            setQuizScore(null)
-          }}
-          aria-label="Knowledge quiz"
-          aria-current={viewMode === 'quiz' ? 'page' : undefined}
-          className="gap-1.5 sm:gap-2 text-xs sm:text-sm px-3 sm:px-4 min-h-[44px] focus:ring-2 focus:ring-primary"
-        >
-          <Star className="h-4 w-4" aria-hidden="true" />
-          Quiz
-        </Button>
       </div>
     </nav>
   )
 
-
-  // Show results walkthrough (if triggered from advanced mode)
-  if (showWalkthrough && result && currentInput) {
-    return (
-      <ResultsWalkthrough
-        result={result}
-        input={currentInput}
-        onClose={handleWalkthroughComplete}
-      />
-    )
-  }
 
   return (
     <div className="space-y-4 sm:space-y-6">
@@ -215,32 +170,7 @@ export function FundExpenseAllocation() {
           </motion.div>
         )}
 
-        {viewMode === 'quiz' && (
-              <motion.div
-                key="quiz"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="max-w-2xl mx-auto"
-              >
-                {quizScore ? (
-                  <QuizResults
-                    score={quizScore.score}
-                    total={quizScore.total}
-                    onRetry={handleQuizRetry}
-                    onClose={() => setViewMode('lookup')}
-                  />
-                ) : (
-                  <Quiz
-                    questions={EXPENSE_QUIZ_QUESTIONS.slice(0, 5)}
-                    onComplete={handleQuizComplete}
-                    onClose={() => setViewMode('lookup')}
-                  />
-                )}
-              </motion.div>
-            )}
-
-            {viewMode === 'advanced' && (
+        {viewMode === 'advanced' && (
               <motion.div
                 key="advanced"
                 initial={{ opacity: 0, y: 20 }}

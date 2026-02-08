@@ -6,8 +6,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { WaterfallInput, WaterfallOutput, defaultInput, calculateWaterfall, formatCurrency, formatMultiple } from './waterfallCalculations'
 import { InputForm } from './input-form'
 import { ResultsView } from './results-view'
-import { JourneyMode } from './journey-mode'
-import { ResultsWalkthrough } from './results-walkthrough'
 import { Glossary } from './glossary'
 import { FAQSection } from './faq-section'
 import { SampleScenarios } from './sample-scenarios'
@@ -15,15 +13,12 @@ import { CalculationBreakdown } from './calculation-breakdown'
 import { PeerComparison } from './peer-comparison'
 import { WhatIfSliders } from './what-if-sliders'
 import { SkipToContent, LiveRegion, ScrollToTop, AutoSaveIndicator, MobileResultsGrid } from './accessibility'
-import { exportWaterfallSummary, exportComparisonCSV, exportComparisonPDF, exportComparisonExcel } from './export'
-import { Quiz as QuizPanel } from './quiz'
+import { exportWaterfallSummary } from './export'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ShareButton } from '@/components/tools/share-button'
-import { ExportToolbar, MethodologyBlock, RelatedToolsSection, LastUpdated, DisclaimerBlock } from '@/components/tools/shared'
+import { MethodologyBlock, RelatedToolsSection, LastUpdated, DisclaimerBlock } from '@/components/tools/shared'
 import {
-  Sparkles,
   BookOpen,
   HelpCircle,
   Calculator,
@@ -33,8 +28,6 @@ import {
   ChevronDown,
   ChevronUp,
   RotateCcw,
-  Play,
-  Brain
 } from 'lucide-react'
 
 // Preset scenarios
@@ -110,7 +103,6 @@ const presets: Record<string, { name: string; description: string; input: Waterf
 }
 
 const LOCAL_STORAGE_KEY = 'waterfall-calculator-data'
-const JOURNEY_COMPLETED_KEY = 'waterfall-journey-completed'
 
 export function DistributionWaterfall() {
   const searchParams = useSearchParams()
@@ -156,16 +148,8 @@ export function DistributionWaterfall() {
   // State
   const [input, setInput] = useState<WaterfallInput>(getInitialInput)
   const [output, setOutput] = useState<WaterfallOutput>(calculateWaterfall(getInitialInput()))
-  const [compareMode, setCompareMode] = useState(false)
-  const [compareInput, setCompareInput] = useState<WaterfallInput | null>(null)
-  const [compareOutput, setCompareOutput] = useState<WaterfallOutput | null>(null)
   const [selectedScenario, setSelectedScenario] = useState<'low' | 'medium' | 'high'>('medium')
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
-
-  // Journey mode state
-  const [showJourney, setShowJourney] = useState(false)
-  const [showWalkthrough, setShowWalkthrough] = useState(false)
-  const [journeyCompleted, setJourneyCompleted] = useState(false)
 
   // Expandable sections state
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -176,21 +160,7 @@ export function DistributionWaterfall() {
     glossary: false,
     faq: false,
     scenarios: false,
-    quiz: false
   })
-
-  // Check if journey was previously completed
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const completed = localStorage.getItem(JOURNEY_COMPLETED_KEY)
-      setJourneyCompleted(completed === 'true')
-
-      // Show journey mode for first-time users
-      if (!completed && !searchParams.get('fundSize')) {
-        setShowJourney(true)
-      }
-    }
-  }, [searchParams])
 
   // Auto-save to localStorage
   useEffect(() => {
@@ -255,29 +225,6 @@ export function DistributionWaterfall() {
     setOutput(newOutput)
   }
 
-  const handleJourneyComplete = (journeyInput: WaterfallInput) => {
-    handleInputChange(journeyInput)
-    setShowJourney(false)
-    setShowWalkthrough(true)
-    localStorage.setItem(JOURNEY_COMPLETED_KEY, 'true')
-    setJourneyCompleted(true)
-  }
-
-  const handleWalkthroughComplete = () => {
-    setShowWalkthrough(false)
-  }
-
-  const _loadPreset = (presetKey: string) => {
-    const preset = presets[presetKey]
-    if (preset) {
-      setInput(preset.input)
-      setOutput(calculateWaterfall(preset.input))
-      setCompareMode(false)
-      setCompareInput(null)
-      setCompareOutput(null)
-    }
-  }
-
   const handleScenarioChange = (scenario: 'low' | 'medium' | 'high') => {
     setSelectedScenario(scenario)
     const multipliers = { low: 1.5, medium: 2.0, high: 3.0 }
@@ -287,23 +234,6 @@ export function DistributionWaterfall() {
 
   const handleExport = () => {
     exportWaterfallSummary(output)
-  }
-
-  const startComparison = () => {
-    setCompareMode(true)
-    setCompareInput({ ...input })
-    setCompareOutput({ ...output })
-  }
-
-  const copyScenarioToCompare = () => {
-    setCompareMode(true)
-    setCompareInput({ ...input })
-    setCompareOutput({ ...output })
-  }
-
-  const updateCompareInput = (newInput: WaterfallInput) => {
-    setCompareInput(newInput)
-    setCompareOutput(calculateWaterfall(newInput))
   }
 
   const toggleSection = (section: string) => {
@@ -316,60 +246,12 @@ export function DistributionWaterfall() {
   const handleStartOver = () => {
     setInput(defaultInput)
     setOutput(calculateWaterfall(defaultInput))
-    setCompareMode(false)
-    setCompareInput(null)
-    setCompareOutput(null)
-    localStorage.removeItem(JOURNEY_COMPLETED_KEY)
-    setShowJourney(true)
   }
 
   const loadScenarioFromLibrary = (scenarioInput: WaterfallInput) => {
     handleInputChange(scenarioInput)
     setExpandedSections(prev => ({ ...prev, scenarios: false }))
     window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
-
-  // Show journey mode
-  if (showJourney) {
-    // Check if there's existing data in localStorage for welcome back modal
-    let savedInput: WaterfallInput | null = null
-    if (typeof window !== 'undefined' && journeyCompleted) {
-      try {
-        const saved = localStorage.getItem(LOCAL_STORAGE_KEY)
-        if (saved) {
-          const parsed = JSON.parse(saved)
-          if (parsed.input) savedInput = parsed.input
-        }
-      } catch {
-        // Ignore localStorage errors
-      }
-    }
-
-    return (
-      <JourneyMode
-        onComplete={handleJourneyComplete}
-        onSkip={() => {
-          setShowJourney(false)
-          localStorage.setItem(JOURNEY_COMPLETED_KEY, 'true')
-          setJourneyCompleted(true)
-        }}
-        existingData={savedInput}
-      />
-    )
-  }
-
-  // Show results walkthrough after journey
-  if (showWalkthrough) {
-    return (
-      <div className="max-w-4xl mx-auto space-y-8">
-        <SkipToContent />
-        <ResultsWalkthrough
-          output={output}
-          onComplete={handleWalkthroughComplete}
-          onSkip={handleWalkthroughComplete}
-        />
-      </div>
-    )
   }
 
   return (
@@ -395,35 +277,15 @@ export function DistributionWaterfall() {
         {/* Action buttons */}
         <div className="flex flex-wrap justify-center gap-3 mt-4">
           <Button
-            variant="outline"
-            size="lg"
-            onClick={() => setShowJourney(true)}
-            aria-label={journeyCompleted ? 'Restart guided tutorial' : 'Start guided tutorial'}
-            className="gap-2 min-h-[44px] focus:ring-2 focus:ring-primary"
-          >
-            <Play className="h-4 w-4" aria-hidden="true" />
-            {journeyCompleted ? 'Restart Tutorial' : 'Start Tutorial'}
-          </Button>
-          <Button
-            variant="outline"
-            size="lg"
-            onClick={() => setShowWalkthrough(true)}
-            aria-label="Open results explanation"
-            className="gap-2 min-h-[44px] focus:ring-2 focus:ring-primary"
-          >
-            <Sparkles className="h-4 w-4" aria-hidden="true" />
-            Explain Results
-          </Button>
-          <Button
             variant="ghost"
             size="lg"
             onClick={handleStartOver}
-            aria-label="Start over with new inputs"
+            aria-label="Reset to default inputs"
             title="Clear results and enter new deal terms"
             className="gap-2 min-h-[44px] focus:ring-2 focus:ring-primary"
           >
             <RotateCcw className="h-4 w-4" aria-hidden="true" />
-            Start Over
+            Reset
           </Button>
         </div>
       </div>
@@ -506,162 +368,17 @@ export function DistributionWaterfall() {
       </div>
 
       {/* Main Content */}
-      {compareMode ? (
-        <Tabs defaultValue="scenario-a" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="scenario-a">Scenario A</TabsTrigger>
-            <TabsTrigger value="scenario-b">Scenario B</TabsTrigger>
-            <TabsTrigger value="comparison">Side-by-Side</TabsTrigger>
-          </TabsList>
+      <div className="grid gap-8 lg:grid-cols-2">
+        {/* Left Column - Input Form */}
+        <div>
+          <InputForm input={input} onChange={handleInputChange} />
+        </div>
 
-          <TabsContent value="scenario-a" className="mt-6">
-            <div className="grid gap-8 lg:grid-cols-2">
-              <div>
-                <h3 className="mb-4 text-lg font-semibold">Scenario A Inputs</h3>
-                <InputForm input={input} onChange={handleInputChange} />
-              </div>
-              <div>
-                <h3 className="mb-4 text-lg font-semibold">Scenario A Results</h3>
-                <ResultsView output={output} onExport={handleExport} onCopyScenario={copyScenarioToCompare} />
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="scenario-b" className="mt-6">
-            <div className="grid gap-8 lg:grid-cols-2">
-              <div>
-                <h3 className="mb-4 text-lg font-semibold">Scenario B Inputs</h3>
-                {compareInput && (
-                  <InputForm input={compareInput} onChange={updateCompareInput} />
-                )}
-              </div>
-              <div>
-                <h3 className="mb-4 text-lg font-semibold">Scenario B Results</h3>
-                {compareOutput && (
-                  <ResultsView output={compareOutput} onExport={() => exportWaterfallSummary(compareOutput)} />
-                )}
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="comparison" className="mt-6">
-            {compareOutput && (
-              <Card className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-semibold">Side-by-Side Comparison</h3>
-                  <ExportToolbar
-                    onExportCSV={() => exportComparisonCSV(output, compareOutput)}
-                    onExportExcel={() => exportComparisonExcel(output, compareOutput)}
-                    onExportPDF={() => exportComparisonPDF(output, compareOutput)}
-                  />
-                </div>
-                <div className="grid gap-6 sm:grid-cols-2">
-                  <div>
-                    <h4 className="mb-3 text-lg font-medium text-primary">Scenario A</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Structure:</span>
-                        <span className="font-medium">{output.input.waterfallType === 'european' ? 'European' : 'American'}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Pref Rate:</span>
-                        <span className="font-medium">{(output.input.prefRate * 100).toFixed(1)}%</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Carry:</span>
-                        <span className="font-medium">{(output.input.carryRate * 100).toFixed(0)}%</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Proceeds:</span>
-                        <span className="font-medium">{formatCurrency(output.input.grossProceeds)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm font-semibold pt-2 border-t">
-                        <span>LP Total:</span>
-                        <span>{formatCurrency(output.totalToLPs)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm font-semibold">
-                        <span>GP Total:</span>
-                        <span>{formatCurrency(output.totalToGP)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm font-semibold">
-                        <span>LP Multiple:</span>
-                        <span>{formatMultiple(output.lpMultiple)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm font-semibold text-primary">
-                        <span>Effective Carry:</span>
-                        <span>{(output.effectiveCarryRate * 100).toFixed(2)}%</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h4 className="mb-3 text-lg font-medium text-primary">Scenario B</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Structure:</span>
-                        <span className="font-medium">{compareOutput.input.waterfallType === 'european' ? 'European' : 'American'}</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Pref Rate:</span>
-                        <span className="font-medium">{(compareOutput.input.prefRate * 100).toFixed(1)}%</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Carry:</span>
-                        <span className="font-medium">{(compareOutput.input.carryRate * 100).toFixed(0)}%</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Proceeds:</span>
-                        <span className="font-medium">{formatCurrency(compareOutput.input.grossProceeds)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm font-semibold pt-2 border-t">
-                        <span>LP Total:</span>
-                        <span>{formatCurrency(compareOutput.totalToLPs)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm font-semibold">
-                        <span>GP Total:</span>
-                        <span>{formatCurrency(compareOutput.totalToGP)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm font-semibold">
-                        <span>LP Multiple:</span>
-                        <span>{formatMultiple(compareOutput.lpMultiple)}</span>
-                      </div>
-                      <div className="flex justify-between text-sm font-semibold text-primary">
-                        <span>Effective Carry:</span>
-                        <span>{(compareOutput.effectiveCarryRate * 100).toFixed(2)}%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-6">
-                  <Button onClick={() => setCompareMode(false)} variant="outline">
-                    Exit Comparison Mode
-                  </Button>
-                </div>
-              </Card>
-            )}
-          </TabsContent>
-        </Tabs>
-      ) : (
-        <>
-          <div className="grid gap-8 lg:grid-cols-2">
-            {/* Left Column - Input Form */}
-            <div>
-              <InputForm input={input} onChange={handleInputChange} />
-              <div className="mt-4">
-                <Button onClick={startComparison} variant="outline" className="w-full">
-                  Compare Two Scenarios
-                </Button>
-              </div>
-            </div>
-
-            {/* Right Column - Results */}
-            <div>
-              <ResultsView output={output} onExport={handleExport} onCopyScenario={copyScenarioToCompare} />
-            </div>
-          </div>
-        </>
-      )}
+        {/* Right Column - Results */}
+        <div>
+          <ResultsView output={output} onExport={handleExport} />
+        </div>
+      </div>
 
       {/* What-If Sliders */}
       <div className="space-y-2">
@@ -908,51 +625,6 @@ export function DistributionWaterfall() {
               aria-label="Frequently asked questions"
             >
               <FAQSection />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Quiz */}
-      <div className="space-y-2">
-        <button
-          onClick={() => toggleSection('quiz')}
-          aria-expanded={expandedSections.quiz}
-          aria-controls="quiz-content"
-          aria-label="Toggle knowledge quiz section"
-          className={`flex items-center justify-between w-full p-4 rounded-lg border border-border bg-card hover:bg-muted/50 transition-colors min-h-[44px] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 ${expandedSections.quiz ? 'sticky top-0 z-10 shadow-sm' : ''}`}
-        >
-          <div className="flex items-center gap-3">
-            <Brain className="h-5 w-5 text-primary" aria-hidden="true" />
-            <div className="text-left">
-              <h3 className="font-semibold text-foreground">Knowledge Quiz</h3>
-              <p className="text-sm text-muted-foreground">
-                {expandedSections.quiz ? 'Click here to collapse' : 'Test your understanding of waterfall mechanics'}
-              </p>
-            </div>
-          </div>
-          {expandedSections.quiz ? (
-            <ChevronUp className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-          ) : (
-            <ChevronDown className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-          )}
-        </button>
-        <AnimatePresence>
-          {expandedSections.quiz && (
-            <motion.div
-              id="quiz-content"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              role="region"
-              aria-label="Knowledge quiz"
-            >
-              <QuizPanel
-                onCorrectAnswer={() => {}}
-                onComplete={(_score, _total) => {}}
-                onClose={() => toggleSection('quiz')}
-              />
             </motion.div>
           )}
         </AnimatePresence>
