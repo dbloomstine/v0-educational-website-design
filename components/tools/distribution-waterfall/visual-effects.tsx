@@ -98,7 +98,6 @@ export function WaterfallFlowAnimation({
   isPlaying?: boolean
 }) {
   const [currentTier, setCurrentTier] = useState(0)
-  const [_flowAmount, setFlowAmount] = useState(0)
 
   const tierColors = [
     { bg: 'from-blue-400 to-blue-500', water: 'bg-blue-400' },
@@ -114,11 +113,6 @@ export function WaterfallFlowAnimation({
     const interval = setInterval(() => {
       tier = (tier + 1) % (output.tiers.length + 1)
       setCurrentTier(tier)
-      if (tier > 0 && tier <= output.tiers.length) {
-        setFlowAmount(output.tiers[tier - 1].total)
-      } else {
-        setFlowAmount(output.input.grossProceeds)
-      }
     }, 2000)
 
     return () => clearInterval(interval)

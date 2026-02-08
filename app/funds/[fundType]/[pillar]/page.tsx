@@ -162,7 +162,6 @@ export default async function PillarPage({ params }: PillarPageProps) {
                   <ShareButtons
                     url={`https://fundops.com/funds/${article.fundType}/${article.pillar}`}
                     title={article.title}
-                    description={article.subtitle}
                   />
                 </div>
               </div>

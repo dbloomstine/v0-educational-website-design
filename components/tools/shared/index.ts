@@ -13,12 +13,6 @@ export {
   OutputColumn
 } from "./tool-page-layout"
 export {
-  ExpandableSection,
-  ExpandableSectionGroup,
-  type ExpandableSectionProps,
-  type ExpandableSectionGroupProps
-} from "./expandable-section"
-export {
   FAQBase,
   type FAQItem,
   type FAQCategoryConfig,
@@ -42,19 +36,6 @@ export {
   type QuizBaseProps,
   type QuizResultsProps
 } from "./quiz-base"
-export {
-  JourneyModeBase,
-  JourneyWelcome,
-  JourneyCelebration,
-  JourneyWelcomeBack,
-  JOURNEY_THEMES,
-  type JourneyTheme,
-  type JourneyModeBaseProps,
-  type JourneyRenderHelpers,
-  type JourneyWelcomeProps,
-  type JourneyCelebrationProps,
-  type JourneyWelcomeBackProps,
-} from "./journey-mode-base"
 export {
   ResultsWalkthroughBase,
   WalkthroughContentSection,

@@ -3,7 +3,6 @@
 import dynamic from 'next/dynamic'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { ExportButtons } from './export-buttons'
 import { Tool } from '@/lib/content/types'
 import { AlertCircle, Calculator, Loader2 } from 'lucide-react'
 import { ManagementFeeCalculator } from './management-fee-calculator'
@@ -50,9 +49,6 @@ const categoryColors: Record<string, string> = {
 }
 
 export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
-  const primaryCategory = tool.categories[0]
-  const _categoryColor = categoryColors[primaryCategory] || 'oklch(0.6 0.16 210)'
-
   // If this is the Management Fee Calculator tool, render the actual calculator
   if (tool.slug === 'management-fee-calculator') {
     return (
@@ -231,10 +227,9 @@ export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
                   <div>
                     <h4 className="font-medium mb-1">Export Results</h4>
                     <p className="text-sm text-muted-foreground">
-                      Save your calculations in multiple formats
+                      Export options will be available when the calculator is implemented
                     </p>
                   </div>
-                  <ExportButtons disabled={true} />
                 </div>
               </div>
             </CardContent>

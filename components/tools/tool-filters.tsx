@@ -172,14 +172,3 @@ export function ToolFilters({ categories, personas, complexities }: ToolFiltersP
     </div>
   )
 }
-
-// Hook to get active filters from URL
-export function useToolFilters() {
-  const searchParams = useSearchParams()
-
-  return {
-    categories: searchParams.get('categories')?.split(',').filter(Boolean) || [],
-    personas: searchParams.get('personas')?.split(',').filter(Boolean) || [],
-    complexities: searchParams.get('complexities')?.split(',').filter(Boolean) || []
-  }
-}

@@ -7,16 +7,13 @@ import { Linkedin, Twitter, Link2, Check } from "lucide-react"
 interface ShareButtonsProps {
   url: string
   title: string
-  description?: string
 }
 
-export function ShareButtons({ url, title, description }: ShareButtonsProps) {
+export function ShareButtons({ url, title }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false)
 
   const encodedUrl = encodeURIComponent(url)
   const encodedTitle = encodeURIComponent(title)
-  // description reserved for future use in share links
-  void description
 
   const shareLinks = {
     linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
@@ -28,8 +25,8 @@ export function ShareButtons({ url, title, description }: ShareButtonsProps) {
       await navigator.clipboard.writeText(url)
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
-      console.error('Failed to copy:', err)
+    } catch {
+      // Clipboard write failed silently
     }
   }
 
