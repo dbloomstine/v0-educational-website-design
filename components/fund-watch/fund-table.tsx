@@ -198,7 +198,7 @@ export function FundTable({
   // Header cell renderer with sort + resize
   const renderHeaderCell = (colKey: string) => {
     const w = columnWidths[colKey] ?? 100
-    const style: React.CSSProperties = { width: w, minWidth: w, position: "relative" }
+    const style: React.CSSProperties = { width: w, minWidth: w, position: "relative", overflow: "hidden" }
     const sf = COLUMN_SORT[colKey]
 
     // Sticky overrides for chevron and fund
@@ -398,14 +398,14 @@ function FundRow({
 
         {isVisible("fund") && (
           <TableCell
-            className={`${py} whitespace-nowrap ${rowBg} z-20`}
+            className={`${py} whitespace-nowrap overflow-hidden ${rowBg} z-20`}
             style={{
               position: "sticky",
               left: chevronWidth,
               boxShadow: "2px 0 4px -2px rgba(0,0,0,0.1)",
             }}
           >
-            <span className="font-medium text-foreground">{fund.fund_name}</span>
+            <span className="font-medium text-foreground truncate block">{fund.fund_name}</span>
             {/* Show firm inline on mobile where firm column is hidden */}
             <span className="block text-xs text-muted-foreground md:hidden">{fund.firm}</span>
             {/* Show category & stage inline on mobile */}
@@ -426,12 +426,12 @@ function FundRow({
           </TableCell>
         )}
         {isVisible("firm") && (
-          <TableCell className={`hidden md:table-cell text-sm text-muted-foreground whitespace-nowrap ${py}`}>
+          <TableCell className={`hidden md:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {fund.firm}
           </TableCell>
         )}
         {isVisible("amount") && (
-          <TableCell className={`text-right font-mono text-sm whitespace-nowrap ${py}`}>
+          <TableCell className={`text-right font-mono text-sm whitespace-nowrap overflow-hidden ${py}`}>
             {fund.amount === "Undisclosed" ? (
               <span className="text-muted-foreground">Undisclosed</span>
             ) : (
@@ -440,7 +440,7 @@ function FundRow({
           </TableCell>
         )}
         {isVisible("category") && (
-          <TableCell className={`hidden md:table-cell whitespace-nowrap ${py}`}>
+          <TableCell className={`hidden md:table-cell whitespace-nowrap overflow-hidden ${py}`}>
             <Badge
               variant="outline"
               className={CATEGORY_BADGE_CLASSES[fund.category] ?? ""}
@@ -450,7 +450,7 @@ function FundRow({
           </TableCell>
         )}
         {isVisible("stage") && (
-          <TableCell className={`hidden md:table-cell whitespace-nowrap ${py}`}>
+          <TableCell className={`hidden md:table-cell whitespace-nowrap overflow-hidden ${py}`}>
             <Badge
               variant="outline"
               className={STAGE_BADGE[fund.stage] ?? STAGE_BADGE.other}
@@ -460,27 +460,27 @@ function FundRow({
           </TableCell>
         )}
         {isVisible("quarter") && (
-          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap ${py}`}>
+          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {getQuarter(fund.announcement_date) ?? "N/A"}
           </TableCell>
         )}
         {isVisible("date") && (
-          <TableCell className={`hidden sm:table-cell text-sm text-muted-foreground whitespace-nowrap ${py}`}>
+          <TableCell className={`hidden sm:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {formatDate(fund.announcement_date)}
           </TableCell>
         )}
         {isVisible("location") && (
-          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap ${py}`}>
+          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {fund.location}
           </TableCell>
         )}
         {isVisible("source_name") && (
-          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap ${py}`}>
+          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {fund.source_name}
           </TableCell>
         )}
         {isVisible("description") && (
-          <TableCell className={`hidden xl:table-cell text-sm text-muted-foreground ${py}`}>
+          <TableCell className={`hidden xl:table-cell text-sm text-muted-foreground overflow-hidden ${py}`}>
             <span className="block max-w-[400px]">{fund.description_notes || "\u2014"}</span>
           </TableCell>
         )}

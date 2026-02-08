@@ -47,11 +47,11 @@ function saveDensity(d: "comfortable" | "compact") {
 
 export const DEFAULT_COLUMN_WIDTHS: Record<string, number> = {
   chevron: 40,
-  fund: 220,
-  firm: 160,
+  fund: 280,
+  firm: 180,
   amount: 110,
-  category: 130,
-  stage: 120,
+  category: 150,
+  stage: 130,
   quarter: 90,
   date: 120,
   location: 120,
