@@ -77,6 +77,18 @@ export interface FundDirectoryData {
   stats: FundWatchStats
 }
 
+// --- Union types ---
+
+export type FundCategory =
+  | "Venture Capital"
+  | "Private Equity"
+  | "Credit Funds"
+  | "Secondaries & GP-Stakes"
+  | "Infrastructure"
+  | "Real Estate"
+
+export type FundStage = "first close" | "interim close" | "final close" | "launch" | "other"
+
 // --- Category badge color mapping (dark theme) ---
 
 export const CATEGORY_BADGE_CLASSES: Record<string, string> = {
@@ -96,9 +108,10 @@ export const CATEGORY_BADGE_CLASSES: Record<string, string> = {
 
 // --- Helpers ---
 
-export function slugify(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
-}
+// Re-export slugify from shared utility for backwards compatibility
+export { slugify } from "@/lib/utils/content-slug"
+// Import for local use
+import { slugify } from "@/lib/utils/content-slug"
 
 export function formatAum(millions: number): string {
   if (millions >= 1000) {
@@ -142,4 +155,43 @@ export function getAmountBucket(millions: number | null): AmountBucketKey {
   if (millions < 1000) return "500m-1b"
   if (millions < 5000) return "1b-5b"
   return "5b+"
+}
+
+// --- Stage badge color mapping (dark theme) ---
+
+export const STAGE_BADGE_CLASSES: Record<string, string> = {
+  "final close": "bg-emerald-950/50 text-emerald-300 border-emerald-800",
+  "first close": "bg-sky-950/50 text-sky-300 border-sky-800",
+  "interim close": "bg-amber-950/50 text-amber-300 border-amber-800",
+  launch: "bg-violet-950/50 text-violet-300 border-violet-800",
+  other: "bg-zinc-800/50 text-zinc-300 border-zinc-700",
+}
+
+// --- Common formatting helpers ---
+
+export function titleCase(s: string): string {
+  return s.replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
+export function formatDate(iso: string | null | undefined): string {
+  if (!iso) return "N/A"
+  const d = iso.includes("T") ? new Date(iso) : new Date(iso + "T00:00:00")
+  if (isNaN(d.getTime())) return "N/A"
+  return `${MONTHS_SHORT[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`
+}
+
+export function getColumnValue(f: FundEntry, col: string): string {
+  switch (col) {
+    case "firm": return f.firm
+    case "category": return f.category
+    case "stage": return f.stage
+    case "city": return f.city || "N/A"
+    case "country": return f.country || "\u2014"
+    case "source_name": return f.source_name || "\u2014"
+    default: return ""
+  }
+}
+
+export function getFirmSlug(entry: { firm_slug?: string; firm: string }): string {
+  return entry.firm_slug || slugify(entry.firm)
 }

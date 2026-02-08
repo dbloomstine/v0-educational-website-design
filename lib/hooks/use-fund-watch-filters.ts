@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback, useRef, useEffect } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import type { FundEntry, AmountBucketKey } from "@/lib/content/fund-watch"
-import { getAmountBucket } from "@/lib/content/fund-watch"
+import { getAmountBucket, getColumnValue } from "@/lib/content/fund-watch"
 
 export type SortField =
   | "name"
@@ -137,18 +137,6 @@ export function applyFilters(funds: FundEntry[], state: FundWatchFilterState): F
   }
 
   return result
-}
-
-function getColumnValue(f: FundEntry, col: string): string {
-  switch (col) {
-    case "firm": return f.firm
-    case "category": return f.category
-    case "stage": return f.stage
-    case "city": return f.city || "N/A"
-    case "country": return f.country || "\u2014"
-    case "source_name": return f.source_name || "\u2014"
-    default: return ""
-  }
 }
 
 export function applySorting(funds: FundEntry[], sortField: SortField, sortDir: SortDir): FundEntry[] {

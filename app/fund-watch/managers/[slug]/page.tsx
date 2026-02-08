@@ -4,7 +4,7 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ManagerProfile } from "@/components/fund-watch/manager-profile"
 import { getFundDirectoryData } from "@/lib/content/fund-watch-loader"
-import { slugify } from "@/lib/content/fund-watch"
+import { getFirmSlug } from "@/lib/content/fund-watch"
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -14,7 +14,7 @@ export async function generateStaticParams() {
   const data = await getFundDirectoryData()
   if (!data) return []
   const slugs = new Set(
-    data.funds.map((f) => f.firm_slug || slugify(f.firm)).filter(Boolean)
+    data.funds.map((f) => getFirmSlug(f)).filter(Boolean)
   )
   return [...slugs].map((slug) => ({ slug }))
 }
@@ -25,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!data) return {}
 
   const manager = data.managers?.find((m) => m.firm_slug === slug)
-  const firmName = manager?.firm ?? data.funds.find((f) => (f.firm_slug || slugify(f.firm)) === slug)?.firm
+  const firmName = manager?.firm ?? data.funds.find((f) => (getFirmSlug(f)) === slug)?.firm
   if (!firmName) return {}
 
   return {
@@ -49,7 +49,7 @@ export default async function ManagerPage({ params }: PageProps) {
   if (!data) notFound()
 
   const managerFunds = data.funds.filter(
-    (f) => (f.firm_slug || slugify(f.firm)) === slug
+    (f) => (getFirmSlug(f)) === slug
   )
   if (managerFunds.length === 0) notFound()
 

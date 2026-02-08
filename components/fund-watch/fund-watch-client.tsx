@@ -2,79 +2,69 @@
 
 import { useMemo, useEffect, useCallback, useRef, useState } from "react"
 import { useFundWatchFilters, applyFilters, applySorting } from "@/lib/hooks/use-fund-watch-filters"
-import { FundFilterBar, ALL_COLUMNS } from "@/components/fund-watch/fund-filter-bar"
+import { FundFilterBar } from "@/components/fund-watch/fund-filter-bar"
+import { getDefaultColumnWidths, getDefaultVisibleColumns } from "@/lib/content/fund-watch-columns"
 import { FundTable } from "@/components/fund-watch/fund-table"
 import { downloadCSV, createTableSection } from "@/lib/exports/csv-export"
 import type { FundEntry } from "@/lib/content/fund-watch"
 import { formatAum } from "@/lib/content/fund-watch"
 
-const COLUMNS_STORAGE_KEY = "fundwatch-columns"
-const DENSITY_STORAGE_KEY = "fundwatch-density"
-const COL_WIDTHS_STORAGE_KEY = "fundwatch-col-widths"
+// --- Generic localStorage hook ---
 
-function getDefaultColumns(): Set<string> {
-  return new Set(ALL_COLUMNS.filter((c) => c.defaultVisible).map((c) => c.key))
+function useLocalSetting<T>(
+  key: string,
+  defaultValue: () => T,
+  serialize: (v: T) => string = (v) => JSON.stringify(v),
+  deserialize: (raw: string, defaults: T) => T | null = (raw) => {
+    try { return JSON.parse(raw) as T } catch { return null }
+  },
+): [T, (v: T | ((prev: T) => T)) => void, () => void] {
+  const [value, setValueRaw] = useState<T>(defaultValue)
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(key)
+      if (stored) {
+        const parsed = deserialize(stored, defaultValue())
+        if (parsed !== null) setValueRaw(parsed)
+      }
+    } catch { /* ignore */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const setValue = useCallback((v: T | ((prev: T) => T)) => {
+    setValueRaw((prev) => {
+      const next = typeof v === "function" ? (v as (prev: T) => T)(prev) : v
+      try { localStorage.setItem(key, serialize(next)) } catch { /* ignore */ }
+      return next
+    })
+  }, [key, serialize])
+
+  const reset = useCallback(() => {
+    setValueRaw(defaultValue())
+    try { localStorage.removeItem(key) } catch { /* ignore */ }
+  }, [key, defaultValue])
+
+  return [value, setValue, reset]
 }
 
-function loadColumns(): Set<string> {
-  if (typeof window === "undefined") return getDefaultColumns()
+// Serializers for Set<string>
+const serializeSet = (s: Set<string>) => JSON.stringify([...s])
+const deserializeSet = (raw: string): Set<string> | null => {
   try {
-    const stored = localStorage.getItem(COLUMNS_STORAGE_KEY)
-    if (stored) {
-      const parsed = JSON.parse(stored)
-      if (Array.isArray(parsed) && parsed.length > 0) return new Set(parsed)
-    }
+    const parsed = JSON.parse(raw)
+    if (Array.isArray(parsed) && parsed.length > 0) return new Set(parsed)
   } catch { /* ignore */ }
-  return getDefaultColumns()
+  return null
 }
 
-function saveColumns(cols: Set<string>) {
-  try { localStorage.setItem(COLUMNS_STORAGE_KEY, JSON.stringify([...cols])) } catch { /* ignore */ }
-}
-
-function loadDensity(): "comfortable" | "compact" {
-  if (typeof window === "undefined") return "comfortable"
+// Serializers for column widths (merge with defaults)
+const deserializeWidths = (raw: string, defaults: Record<string, number>): Record<string, number> | null => {
   try {
-    const stored = localStorage.getItem(DENSITY_STORAGE_KEY)
-    if (stored === "compact") return "compact"
+    const parsed = JSON.parse(raw)
+    if (parsed && typeof parsed === "object") return { ...defaults, ...parsed }
   } catch { /* ignore */ }
-  return "comfortable"
-}
-
-function saveDensity(d: "comfortable" | "compact") {
-  try { localStorage.setItem(DENSITY_STORAGE_KEY, d) } catch { /* ignore */ }
-}
-
-export const DEFAULT_COLUMN_WIDTHS: Record<string, number> = {
-  chevron: 40,
-  fund: 280,
-  firm: 180,
-  amount: 110,
-  category: 150,
-  stage: 130,
-  quarter: 90,
-  date: 120,
-  date_added: 120,
-  city: 120,
-  state: 70,
-  country: 90,
-  source_name: 140,
-}
-
-function loadColumnWidths(): Record<string, number> {
-  if (typeof window === "undefined") return { ...DEFAULT_COLUMN_WIDTHS }
-  try {
-    const stored = localStorage.getItem(COL_WIDTHS_STORAGE_KEY)
-    if (stored) {
-      const parsed = JSON.parse(stored)
-      if (parsed && typeof parsed === "object") return { ...DEFAULT_COLUMN_WIDTHS, ...parsed }
-    }
-  } catch { /* ignore */ }
-  return { ...DEFAULT_COLUMN_WIDTHS }
-}
-
-function saveColumnWidths(widths: Record<string, number>) {
-  try { localStorage.setItem(COL_WIDTHS_STORAGE_KEY, JSON.stringify(widths)) } catch { /* ignore */ }
+  return null
 }
 
 interface FundWatchClientProps {
@@ -86,45 +76,29 @@ interface FundWatchClientProps {
 export function FundWatchClient({ funds, categories, stages }: FundWatchClientProps) {
   const filterHook = useFundWatchFilters()
 
-  const [visibleColumns, setVisibleColumns] = useState<Set<string>>(getDefaultColumns)
-  const [density, setDensityState] = useState<"comfortable" | "compact">("comfortable")
-  const [columnWidths, setColumnWidths] = useState<Record<string, number>>(() => ({ ...DEFAULT_COLUMN_WIDTHS }))
+  const [visibleColumns, setVisibleColumns] = useLocalSetting(
+    "fundwatch-columns", getDefaultVisibleColumns, serializeSet, deserializeSet,
+  )
+  const [density, setDensity] = useLocalSetting(
+    "fundwatch-density", () => "comfortable" as "comfortable" | "compact",
+  )
+  const [columnWidths, setColumnWidths, resetColumnWidths] = useLocalSetting(
+    "fundwatch-col-widths", getDefaultColumnWidths, undefined, deserializeWidths,
+  )
   const searchRef = useRef<HTMLInputElement>(null)
-
-  // Load persisted settings on mount
-  useEffect(() => {
-    setVisibleColumns(loadColumns())
-    setDensityState(loadDensity())
-    setColumnWidths(loadColumnWidths())
-  }, [])
 
   const toggleColumn = useCallback((key: string) => {
     setVisibleColumns((prev) => {
       const next = new Set(prev)
       if (next.has(key)) next.delete(key)
       else next.add(key)
-      saveColumns(next)
       return next
     })
-  }, [])
-
-  const setDensity = useCallback((d: "comfortable" | "compact") => {
-    setDensityState(d)
-    saveDensity(d)
-  }, [])
+  }, [setVisibleColumns])
 
   const handleColumnResize = useCallback((key: string, width: number) => {
-    setColumnWidths((prev) => {
-      const next = { ...prev, [key]: width }
-      saveColumnWidths(next)
-      return next
-    })
-  }, [])
-
-  const resetColumnWidths = useCallback(() => {
-    setColumnWidths({ ...DEFAULT_COLUMN_WIDTHS })
-    try { localStorage.removeItem(COL_WIDTHS_STORAGE_KEY) } catch { /* ignore */ }
-  }, [])
+    setColumnWidths((prev) => ({ ...prev, [key]: width }))
+  }, [setColumnWidths])
 
   // Apply filters + sorting
   const filtered = useMemo(() => applyFilters(funds, filterHook.state), [funds, filterHook.state])

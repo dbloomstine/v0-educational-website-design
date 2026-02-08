@@ -37,29 +37,7 @@ import {
 import type { FundEntry, AmountBucketKey } from "@/lib/content/fund-watch"
 import { AMOUNT_BUCKETS } from "@/lib/content/fund-watch"
 import type { FundWatchFilterState } from "@/lib/hooks/use-fund-watch-filters"
-
-// --- Column definitions (shared with table) ---
-
-export interface ColumnDef {
-  key: string
-  label: string
-  defaultVisible: boolean
-}
-
-export const ALL_COLUMNS: ColumnDef[] = [
-  { key: "fund", label: "Fund Name", defaultVisible: true },
-  { key: "firm", label: "Fund Manager", defaultVisible: true },
-  { key: "amount", label: "Amount", defaultVisible: true },
-  { key: "category", label: "Category", defaultVisible: true },
-  { key: "stage", label: "Stage", defaultVisible: true },
-  { key: "quarter", label: "Quarter", defaultVisible: false },
-  { key: "date", label: "Date", defaultVisible: true },
-  { key: "date_added", label: "Date Added", defaultVisible: false },
-  { key: "city", label: "City", defaultVisible: true },
-  { key: "state", label: "State", defaultVisible: false },
-  { key: "country", label: "Country", defaultVisible: false },
-  { key: "source_name", label: "Source", defaultVisible: true },
-]
+import { COLUMNS } from "@/lib/content/fund-watch-columns"
 
 // --- Quarter helpers ---
 
@@ -527,7 +505,7 @@ export function FundFilterBar({
             <PopoverContent align="end" className="w-56">
               <p className="text-sm font-medium mb-3">Visible columns</p>
               <div className="space-y-2">
-                {ALL_COLUMNS.map((col) => (
+                {COLUMNS.map((col) => (
                   <div key={col.key} className="flex items-center gap-2">
                     <Checkbox
                       id={`col-${col.key}`}
