@@ -1,13 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { useWaterfallStore, useActiveTab, useShowOnboarding, useOutput, PRESETS } from './store'
+import { useWaterfallStore, useShowOnboarding, useOutput, PRESETS } from './store'
 import { CalculatorTab } from './tabs/calculator-tab'
-import { LearnTab } from './tabs/learn-tab'
 import { formatMultiple, formatPercent } from './waterfallCalculations'
 import { Download, Share2, RotateCcw, FileText, Droplets } from 'lucide-react'
 
@@ -187,8 +185,6 @@ function QuickStartDialog() {
 
 // Main component
 export function DistributionWaterfall() {
-  const activeTab = useActiveTab()
-  const setActiveTab = useWaterfallStore(state => state.setActiveTab)
   const reset = useWaterfallStore(state => state.reset)
   const output = useOutput()
 
@@ -246,21 +242,10 @@ export function DistributionWaterfall() {
         </CardContent>
       </Card>
 
-      {/* Main tabs */}
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="calculator">Calculator</TabsTrigger>
-          <TabsTrigger value="learn">Learn</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="calculator" className="mt-6">
-          <CalculatorTab />
-        </TabsContent>
-
-        <TabsContent value="learn" className="mt-6">
-          <LearnTab />
-        </TabsContent>
-      </Tabs>
+      {/* Main content */}
+      <div className="mt-6">
+        <CalculatorTab />
+      </div>
 
       {/* Disclaimer */}
       <Card className="bg-muted/30">

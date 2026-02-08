@@ -1,12 +1,10 @@
 'use client'
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { useExpenseStore, useActiveTab, useShowOnboarding, expenseCategories } from './store'
+import { useExpenseStore, useShowOnboarding, expenseCategories } from './store'
 import { LookupTab } from './tabs/lookup-tab'
-import { LearnTab } from './tabs/learn-tab'
 import { RotateCcw, Scale, Building, Briefcase } from 'lucide-react'
 
 // Quick start dialog
@@ -70,8 +68,6 @@ function QuickStartDialog() {
 
 // Main component
 export function FundExpenseAllocation() {
-  const activeTab = useActiveTab()
-  const setActiveTab = useExpenseStore(state => state.setActiveTab)
   const reset = useExpenseStore(state => state.reset)
 
   // Count categories by classification
@@ -119,21 +115,10 @@ export function FundExpenseAllocation() {
         </CardContent>
       </Card>
 
-      {/* Main tabs */}
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="lookup">Lookup</TabsTrigger>
-          <TabsTrigger value="learn">Learn</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="lookup" className="mt-6">
-          <LookupTab />
-        </TabsContent>
-
-        <TabsContent value="learn" className="mt-6">
-          <LearnTab />
-        </TabsContent>
-      </Tabs>
+      {/* Main content */}
+      <div className="mt-6">
+        <LookupTab />
+      </div>
 
       {/* Disclaimer */}
       <Card className="bg-muted/30">

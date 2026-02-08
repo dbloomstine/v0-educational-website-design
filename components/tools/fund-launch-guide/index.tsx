@@ -1,20 +1,16 @@
 'use client'
 
 import { useEffect, useCallback } from 'react'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
-import { useFundLaunchStore, useActiveTab, useShowOnboarding, useHasLoaded, PHASES } from './store'
+import { useFundLaunchStore, useShowOnboarding, useHasLoaded, PHASES } from './store'
 import { ChecklistTab } from './tabs/checklist-tab'
-import { LearnTab } from './tabs/learn-tab'
 import { JourneyMode } from './journey-mode'
 import { OnboardingWizard } from './onboarding-wizard'
 import { FundConfig } from './types'
 import { cn } from '@/lib/utils'
 import {
-  ListChecks,
-  BookOpen,
   Search,
   Command,
   X,
@@ -316,8 +312,6 @@ function ReconfigureWizard() {
 
 // Main component
 export function FundLaunchGuide() {
-  const activeTab = useActiveTab()
-  const setActiveTab = useFundLaunchStore(state => state.setActiveTab)
   const config = useFundLaunchStore(state => state.config)
   const hasLoaded = useHasLoaded()
   const showOnboarding = useShowOnboarding()
@@ -421,27 +415,10 @@ export function FundLaunchGuide() {
         </CardContent>
       </Card>
 
-      {/* Main tabs */}
-      <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as typeof activeTab)}>
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="checklist" className="gap-2">
-            <ListChecks className="h-4 w-4" />
-            Checklist
-          </TabsTrigger>
-          <TabsTrigger value="learn" className="gap-2">
-            <BookOpen className="h-4 w-4" />
-            Learn
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="checklist" className="mt-6">
-          <ChecklistTab />
-        </TabsContent>
-
-        <TabsContent value="learn" className="mt-6">
-          <LearnTab />
-        </TabsContent>
-      </Tabs>
+      {/* Main content */}
+      <div className="mt-6">
+        <ChecklistTab />
+      </div>
 
       {/* Disclaimer */}
       <Card className="bg-muted/30">
