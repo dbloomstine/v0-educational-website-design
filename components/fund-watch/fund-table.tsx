@@ -316,7 +316,7 @@ export function FundTable({
   }
 
   return (
-    <div className="rounded-lg border border-border overflow-hidden">
+    <div className="rounded-lg border border-border overflow-auto">
       <Table
         className="w-auto"
         style={{ tableLayout: "fixed", width: totalTableWidth }}
@@ -401,7 +401,8 @@ function FundRow({
   chevronWidth: number
   fundWidth: number
 }) {
-  const rowBg = index % 2 === 1 ? "bg-muted/20" : "bg-background"
+  // Sticky cells need a fully opaque background so content doesn't bleed through when scrolling horizontally
+  const stickyBg = "bg-background"
 
   return (
     <>
@@ -410,7 +411,7 @@ function FundRow({
         onClick={() => onToggle(rowKey)}
       >
         <TableCell
-          className={`px-2 ${py} ${rowBg} z-20`}
+          className={`px-2 ${py} ${stickyBg} z-20`}
           style={{ position: "sticky", left: 0 }}
         >
           {isExpanded ? (
@@ -422,11 +423,11 @@ function FundRow({
 
         {isVisible("fund") && (
           <TableCell
-            className={`${py} whitespace-nowrap overflow-hidden ${rowBg} z-20`}
+            className={`${py} whitespace-nowrap overflow-hidden ${stickyBg} z-20`}
             style={{
               position: "sticky",
               left: chevronWidth,
-              boxShadow: "2px 0 4px -2px rgba(0,0,0,0.1)",
+              boxShadow: "2px 0 4px -2px rgba(0,0,0,0.15)",
             }}
           >
             <span className="font-medium text-foreground truncate block">{fund.fund_name}</span>
