@@ -480,7 +480,7 @@ function FundRow({
               variant="outline"
               className={STAGE_BADGE[fund.stage] ?? STAGE_BADGE.other}
             >
-              {fund.stage}
+              {titleCase(fund.stage)}
             </Badge>
           </TableCell>
         )}
