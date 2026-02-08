@@ -176,30 +176,44 @@ export function FundWatchClient({ funds, categories, stages }: FundWatchClientPr
     return () => document.removeEventListener("keydown", onKeyDown)
   }, [filterHook])
 
+  const filterBarRef = useRef<HTMLDivElement>(null)
+  const [filterBarH, setFilterBarH] = useState(0)
+
+  useEffect(() => {
+    if (!filterBarRef.current) return
+    const ro = new ResizeObserver(([entry]) => {
+      setFilterBarH(entry.borderBoxSize?.[0]?.blockSize ?? entry.contentRect.height)
+    })
+    ro.observe(filterBarRef.current)
+    return () => ro.disconnect()
+  }, [])
+
   return (
-    <div className="space-y-4">
-      <FundFilterBar
-        state={filterHook.state}
-        categories={categories}
-        stages={stages}
-        allFunds={funds}
-        filteredCount={sorted.length}
-        visibleColumns={visibleColumns}
-        density={density}
-        onSetSearch={filterHook.setSearch}
-        onSetCategories={filterHook.setCategories}
-        onSetStages={filterHook.setStages}
-        onSetSize={filterHook.setSize}
-        onSetDateRange={filterHook.setDateRange}
-        onSetStatus={filterHook.setStatus}
-        onClearAll={filterHook.clearAll}
-        onToggleColumn={toggleColumn}
-        onSetDensity={setDensity}
-        onExportCSV={handleExportCSV}
-        onResetColumnWidths={resetColumnWidths}
-        onColumnFilter={filterHook.setColumnFilter}
-        searchRef={searchRef}
-      />
+    <div className="space-y-3">
+      <div ref={filterBarRef} className="sticky z-30 bg-background pb-2" style={{ top: 64 }}>
+        <FundFilterBar
+          state={filterHook.state}
+          categories={categories}
+          stages={stages}
+          allFunds={funds}
+          filteredCount={sorted.length}
+          visibleColumns={visibleColumns}
+          density={density}
+          onSetSearch={filterHook.setSearch}
+          onSetCategories={filterHook.setCategories}
+          onSetStages={filterHook.setStages}
+          onSetSize={filterHook.setSize}
+          onSetDateRange={filterHook.setDateRange}
+          onSetStatus={filterHook.setStatus}
+          onClearAll={filterHook.clearAll}
+          onToggleColumn={toggleColumn}
+          onSetDensity={setDensity}
+          onExportCSV={handleExportCSV}
+          onResetColumnWidths={resetColumnWidths}
+          onColumnFilter={filterHook.setColumnFilter}
+          searchRef={searchRef}
+        />
+      </div>
       <FundTable
         funds={sorted}
         allFunds={funds}
@@ -212,6 +226,7 @@ export function FundWatchClient({ funds, categories, stages }: FundWatchClientPr
         onColumnResize={handleColumnResize}
         columnFilters={filterHook.state.cf}
         onColumnFilter={filterHook.setColumnFilter}
+        stickyHeaderTop={filterBarH + 64}
       />
     </div>
   )

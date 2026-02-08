@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useRef, useMemo, useEffect } from "react"
+import { useState, useCallback, useRef, useMemo } from "react"
 import Link from "next/link"
 import {
   ArrowUpDown,
@@ -167,6 +167,7 @@ interface FundTableProps {
   onColumnResize: (key: string, width: number) => void
   columnFilters: Record<string, string[]>
   onColumnFilter: (col: string, vals: string[]) => void
+  stickyHeaderTop?: number
 }
 
 // Column sort field mapping
@@ -277,28 +278,9 @@ export function FundTable({
   onColumnResize,
   columnFilters,
   onColumnFilter,
+  stickyHeaderTop = 0,
 }: FundTableProps) {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [tableMaxH, setTableMaxH] = useState("calc(100vh - 220px)")
-
-  // Dynamically compute max-height so the table fills remaining viewport
-  useEffect(() => {
-    function update() {
-      if (!containerRef.current) return
-      const rect = containerRef.current.getBoundingClientRect()
-      // Clamp: at least 300px, at most full remaining viewport minus a small bottom margin
-      const available = Math.max(300, window.innerHeight - rect.top - 16)
-      setTableMaxH(`${available}px`)
-    }
-    update()
-    window.addEventListener("scroll", update, { passive: true })
-    window.addEventListener("resize", update, { passive: true })
-    return () => {
-      window.removeEventListener("scroll", update)
-      window.removeEventListener("resize", update)
-    }
-  }, [])
 
   // Compute unique values per filterable column from allFunds (so options don't disappear when filtered)
   const uniqueColumnValues = useMemo(() => {
@@ -483,12 +465,12 @@ export function FundTable({
   }
 
   return (
-    <div ref={containerRef} className="rounded-lg border border-border overflow-auto" style={{ maxHeight: tableMaxH }}>
+    <div className="rounded-lg border border-border">
       <Table
         className="w-auto"
         style={{ tableLayout: "fixed", width: totalTableWidth }}
       >
-        <TableHeader className="sticky top-0 z-20 bg-background shadow-[0_1px_0_0_hsl(var(--border))]">
+        <TableHeader className="sticky z-20 bg-background shadow-[0_1px_0_0_hsl(var(--border))]" style={{ top: stickyHeaderTop }}>
           <TableRow className="hover:bg-transparent">
             {visibleCols.map((colKey) => renderHeaderCell(colKey))}
           </TableRow>

@@ -89,7 +89,7 @@ export default async function FundWatchPage() {
         <FundWatchMethodology />
 
         {data ? (
-          <section className="py-10 pb-16">
+          <section className="py-6 pb-16">
             <div className="container mx-auto px-4">
               <Suspense fallback={<div className="h-96 flex items-center justify-center text-muted-foreground">Loading tracker...</div>}>
                 <FundWatchClient
