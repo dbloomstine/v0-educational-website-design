@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useRef, useMemo } from "react"
+import { useState, useCallback, useRef, useMemo, useEffect } from "react"
 import Link from "next/link"
 import {
   ArrowUpDown,
@@ -279,6 +279,26 @@ export function FundTable({
   onColumnFilter,
 }: FundTableProps) {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [tableMaxH, setTableMaxH] = useState("calc(100vh - 220px)")
+
+  // Dynamically compute max-height so the table fills remaining viewport
+  useEffect(() => {
+    function update() {
+      if (!containerRef.current) return
+      const rect = containerRef.current.getBoundingClientRect()
+      // Clamp: at least 300px, at most full remaining viewport minus a small bottom margin
+      const available = Math.max(300, window.innerHeight - rect.top - 16)
+      setTableMaxH(`${available}px`)
+    }
+    update()
+    window.addEventListener("scroll", update, { passive: true })
+    window.addEventListener("resize", update, { passive: true })
+    return () => {
+      window.removeEventListener("scroll", update)
+      window.removeEventListener("resize", update)
+    }
+  }, [])
 
   // Compute unique values per filterable column from allFunds (so options don't disappear when filtered)
   const uniqueColumnValues = useMemo(() => {
@@ -463,7 +483,7 @@ export function FundTable({
   }
 
   return (
-    <div className="rounded-lg border border-border overflow-x-auto">
+    <div ref={containerRef} className="rounded-lg border border-border overflow-auto" style={{ maxHeight: tableMaxH }}>
       <Table
         className="w-auto"
         style={{ tableLayout: "fixed", width: totalTableWidth }}
