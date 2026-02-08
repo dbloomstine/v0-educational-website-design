@@ -13,7 +13,10 @@ export type SortField =
   | "stage"
   | "quarter"
   | "date"
-  | "location"
+  | "date_added"
+  | "city"
+  | "state"
+  | "country"
 export type SortDir = "asc" | "desc"
 
 export interface FundWatchFilterState {
@@ -85,7 +88,10 @@ export function applyFilters(funds: FundEntry[], state: FundWatchFilterState): F
       (f) =>
         f.fund_name.toLowerCase().includes(q) ||
         f.firm.toLowerCase().includes(q) ||
-        f.location.toLowerCase().includes(q)
+        f.location.toLowerCase().includes(q) ||
+        (f.city ?? "").toLowerCase().includes(q) ||
+        (f.state ?? "").toLowerCase().includes(q) ||
+        (f.country ?? "").toLowerCase().includes(q)
     )
   }
 
@@ -132,8 +138,17 @@ export function applySorting(funds: FundEntry[], sortField: SortField, sortDir: 
         const db = b.announcement_date ?? ""
         return da.localeCompare(db) * dir
       }
-      case "location":
-        return a.location.localeCompare(b.location) * dir
+      case "date_added": {
+        const daa = a.date_added ?? ""
+        const dab = b.date_added ?? ""
+        return daa.localeCompare(dab) * dir
+      }
+      case "city":
+        return (a.city ?? "").localeCompare(b.city ?? "") * dir
+      case "state":
+        return (a.state ?? "").localeCompare(b.state ?? "") * dir
+      case "country":
+        return (a.country ?? "").localeCompare(b.country ?? "") * dir
       default:
         return 0
     }

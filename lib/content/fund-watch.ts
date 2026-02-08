@@ -16,6 +16,9 @@ export interface FundEntry {
   amount_usd_millions: number | null
   category: string
   location: string
+  city: string
+  state: string
+  country: string
   stage: string
   announcement_date: string | null
   source_url: string
@@ -23,6 +26,7 @@ export interface FundEntry {
   description_notes: string
   is_covered: boolean
   covered_date: string | null
+  date_added: string | null
   articles: FundArticle[]
 }
 

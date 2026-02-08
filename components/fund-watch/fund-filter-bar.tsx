@@ -54,9 +54,11 @@ export const ALL_COLUMNS: ColumnDef[] = [
   { key: "stage", label: "Stage", defaultVisible: true },
   { key: "quarter", label: "Quarter", defaultVisible: false },
   { key: "date", label: "Date", defaultVisible: true },
-  { key: "location", label: "Location", defaultVisible: true },
+  { key: "date_added", label: "Date Added", defaultVisible: false },
+  { key: "city", label: "City", defaultVisible: true },
+  { key: "state", label: "State", defaultVisible: false },
+  { key: "country", label: "Country", defaultVisible: false },
   { key: "source_name", label: "Source", defaultVisible: false },
-  { key: "description", label: "Description", defaultVisible: false },
   { key: "source_link", label: "Source Link", defaultVisible: true },
 ]
 

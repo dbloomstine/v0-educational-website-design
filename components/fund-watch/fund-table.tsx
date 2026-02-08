@@ -58,7 +58,10 @@ const COLUMN_SORT: Record<string, SortField> = {
   stage: "stage",
   quarter: "quarter",
   date: "date",
-  location: "location",
+  date_added: "date_added",
+  city: "city",
+  state: "state",
+  country: "country",
 }
 
 // Ordered list of all column keys (for building the header/cells in order)
@@ -71,11 +74,29 @@ const COLUMN_ORDER = [
   "stage",
   "quarter",
   "date",
-  "location",
+  "date_added",
+  "city",
+  "state",
+  "country",
   "source_name",
-  "description",
   "source_link",
 ]
+
+// Tooltip text for each column header
+const TOOLTIP_MAP: Record<string, string> = {
+  fund: "Name of the fund vehicle",
+  firm: "General partner or management firm",
+  amount: "Total fund size or capital raised",
+  category: "Fund strategy type (PE, VC, Credit, etc.)",
+  stage: "Fundraising milestone: first close, interim close, final close, or launch",
+  quarter: "Fiscal quarter of the announcement",
+  date: "When the fund close/launch was publicly announced",
+  date_added: "When this fund was added to FundWatch",
+  city: "Firm headquarters city",
+  state: "State or province (US/Canada)",
+  country: "Country where the firm is headquartered",
+  source_name: "Primary news source for the announcement",
+}
 
 function SortIcon({ field, currentSort, currentDir }: { field: SortField; currentSort: SortField; currentDir: SortDir }) {
   if (currentSort !== field) return <ArrowUpDown className="ml-1 h-3 w-3 opacity-40" />
@@ -228,6 +249,7 @@ export function FundTable({
           <button
             onClick={() => onSort(COLUMN_SORT.fund)}
             className="inline-flex items-center font-medium hover:text-foreground transition-colors"
+            title={TOOLTIP_MAP.fund}
           >
             Fund Name
             <SortIcon field={COLUMN_SORT.fund} currentSort={sortField} currentDir={sortDir} />
@@ -241,12 +263,10 @@ export function FundTable({
     const responsiveClass =
       colKey === "firm" || colKey === "category" || colKey === "stage"
         ? "hidden md:table-cell"
-        : colKey === "quarter" || colKey === "location" || colKey === "source_name"
+        : colKey === "quarter" || colKey === "city" || colKey === "state" || colKey === "country" || colKey === "source_name" || colKey === "date_added"
         ? "hidden lg:table-cell"
         : colKey === "date"
         ? "hidden sm:table-cell"
-        : colKey === "description"
-        ? "hidden xl:table-cell"
         : ""
 
     const extraClass = colKey === "amount" ? "text-right" : ""
@@ -267,10 +287,14 @@ export function FundTable({
       stage: "Stage",
       quarter: "Quarter",
       date: "Date",
-      location: "Location",
+      date_added: "Date Added",
+      city: "City",
+      state: "State",
+      country: "Country",
       source_name: "Source",
-      description: "Description",
     }
+
+    const tooltip = TOOLTIP_MAP[colKey]
 
     if (sf) {
       return (
@@ -278,6 +302,7 @@ export function FundTable({
           <button
             onClick={() => onSort(sf)}
             className="inline-flex items-center font-medium hover:text-foreground transition-colors"
+            title={tooltip}
           >
             {labelMap[colKey] ?? colKey}
             <SortIcon field={sf} currentSort={sortField} currentDir={sortDir} />
@@ -289,7 +314,7 @@ export function FundTable({
 
     return (
       <TableHead key={colKey} className={`${responsiveClass} ${extraClass}`} style={{ ...style, position: "relative" }}>
-        {labelMap[colKey] ?? colKey}
+        <span title={tooltip}>{labelMap[colKey] ?? colKey}</span>
         <ResizeHandle onResize={makeResizeHandler(colKey)} />
       </TableHead>
     )
@@ -473,19 +498,29 @@ function FundRow({
             {formatDate(fund.announcement_date)}
           </TableCell>
         )}
-        {isVisible("location") && (
+        {isVisible("date_added") && (
           <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
-            {fund.location}
+            {fund.date_added ? formatDate(fund.date_added) : "N/A"}
+          </TableCell>
+        )}
+        {isVisible("city") && (
+          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+            {fund.city || "N/A"}
+          </TableCell>
+        )}
+        {isVisible("state") && (
+          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+            {fund.state || "\u2014"}
+          </TableCell>
+        )}
+        {isVisible("country") && (
+          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+            {fund.country || "\u2014"}
           </TableCell>
         )}
         {isVisible("source_name") && (
           <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {fund.source_name}
-          </TableCell>
-        )}
-        {isVisible("description") && (
-          <TableCell className={`hidden xl:table-cell text-sm text-muted-foreground overflow-hidden ${py}`}>
-            <span className="block max-w-[400px]">{fund.description_notes || "\u2014"}</span>
           </TableCell>
         )}
         {isVisible("source_link") && (
@@ -516,8 +551,10 @@ function FundRow({
                 <p className="text-xs text-muted-foreground">
                   {formatDate(fund.announcement_date)}
                 </p>
-                {fund.location && fund.location !== "N/A" && (
-                  <p className="text-xs text-muted-foreground">Location: {fund.location}</p>
+                {fund.city && fund.city !== "N/A" && (
+                  <p className="text-xs text-muted-foreground">
+                    {fund.city}{fund.state ? `, ${fund.state}` : ""}{fund.country ? ` (${fund.country})` : ""}
+                  </p>
                 )}
               </div>
 

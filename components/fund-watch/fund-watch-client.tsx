@@ -54,9 +54,11 @@ export const DEFAULT_COLUMN_WIDTHS: Record<string, number> = {
   stage: 130,
   quarter: 90,
   date: 120,
-  location: 120,
+  date_added: 120,
+  city: 120,
+  state: 70,
+  country: 90,
   source_name: 120,
-  description: 300,
   source_link: 50,
 }
 
@@ -138,7 +140,7 @@ export function FundWatchClient({ funds, categories, stages }: FundWatchClientPr
       sections: [
         createTableSection(
           `${sorted.length} funds | ${formatAum(totalAum)} total AUM`,
-          ["Fund Name", "Fund Manager", "Amount", "Category", "Stage", "Date", "Location", "Source"],
+          ["Fund Name", "Fund Manager", "Amount", "Category", "Stage", "Date", "City", "State", "Country", "Source"],
           sorted.map((f) => [
             f.fund_name,
             f.firm,
@@ -146,7 +148,9 @@ export function FundWatchClient({ funds, categories, stages }: FundWatchClientPr
             f.category,
             f.stage,
             f.announcement_date ?? "",
-            f.location,
+            f.city ?? "",
+            f.state ?? "",
+            f.country ?? "",
             f.source_url,
           ])
         ),
