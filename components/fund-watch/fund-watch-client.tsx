@@ -58,8 +58,7 @@ export const DEFAULT_COLUMN_WIDTHS: Record<string, number> = {
   city: 120,
   state: 70,
   country: 90,
-  source_name: 120,
-  source_link: 50,
+  source_name: 140,
 }
 
 function loadColumnWidths(): Record<string, number> {

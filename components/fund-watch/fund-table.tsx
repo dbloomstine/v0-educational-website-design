@@ -2,7 +2,6 @@
 
 import { useState, useCallback, useRef, useMemo } from "react"
 import {
-  ExternalLink,
   ArrowUpDown,
   ArrowUp,
   ArrowDown,
@@ -29,6 +28,10 @@ const STAGE_BADGE: Record<string, string> = {
   "interim close": "bg-amber-950/50 text-amber-300 border-amber-800",
   launch: "bg-violet-950/50 text-violet-300 border-violet-800",
   other: "bg-zinc-800/50 text-zinc-300 border-zinc-700",
+}
+
+function titleCase(s: string): string {
+  return s.replace(/\b\w/g, (c) => c.toUpperCase())
 }
 
 function formatDate(iso: string | null | undefined): string {
@@ -81,7 +84,6 @@ const COLUMN_ORDER = [
   "state",
   "country",
   "source_name",
-  "source_link",
 ]
 
 // Tooltip text for each column header
@@ -273,15 +275,6 @@ export function FundTable({
 
     const extraClass = colKey === "amount" ? "text-right" : ""
 
-    if (colKey === "source_link") {
-      return (
-        <TableHead key={colKey} className={responsiveClass} style={{ ...style, position: "relative" }}>
-          <span className="sr-only">Source</span>
-          <ResizeHandle onResize={makeResizeHandler(colKey)} />
-        </TableHead>
-      )
-    }
-
     const labelMap: Record<string, string> = {
       firm: "Fund Manager",
       amount: "Amount",
@@ -451,7 +444,7 @@ function FundRow({
                 variant="outline"
                 className={`text-[10px] px-1.5 py-0 ${STAGE_BADGE[fund.stage] ?? STAGE_BADGE.other}`}
               >
-                {fund.stage}
+                {titleCase(fund.stage)}
               </Badge>
             </div>
           </TableCell>
@@ -521,23 +514,20 @@ function FundRow({
           </TableCell>
         )}
         {isVisible("source_name") && (
-          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
-            {fund.source_name}
-          </TableCell>
-        )}
-        {isVisible("source_link") && (
-          <TableCell className={py}>
-            {fund.source_url && (
+          <TableCell className={`hidden lg:table-cell text-sm whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+            {fund.source_url ? (
               <a
                 href={fund.source_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-muted-foreground hover:text-foreground transition-colors"
+                className="text-muted-foreground hover:text-foreground hover:underline underline-offset-2 transition-colors"
                 title={fund.source_name || "Source"}
                 onClick={(e) => e.stopPropagation()}
               >
-                <ExternalLink className="h-4 w-4" />
+                {fund.source_name || "Source"}
               </a>
+            ) : (
+              <span className="text-muted-foreground">{fund.source_name || "\u2014"}</span>
             )}
           </TableCell>
         )}
@@ -546,36 +536,39 @@ function FundRow({
       {/* Expanded detail row */}
       {isExpanded && (
         <TableRow className={index % 2 === 1 ? "bg-muted/20" : ""}>
-          <TableCell colSpan={visibleColCount} className="px-4 sm:px-10 py-4 border-t-0">
-            <div className="space-y-3">
-              {/* Mobile-only details */}
-              <div className="sm:hidden space-y-1">
-                <p className="text-xs text-muted-foreground">
-                  {formatDate(fund.announcement_date)}
-                </p>
-                {fund.city && fund.city !== "N/A" && (
-                  <p className="text-xs text-muted-foreground">
-                    {fund.city}{fund.state ? `, ${fund.state}` : ""}{fund.country ? ` (${fund.country})` : ""}
-                  </p>
-                )}
-              </div>
-
+          <TableCell colSpan={visibleColCount} className="px-4 sm:px-10 py-5 border-t-0">
+            <div className="max-w-3xl space-y-4">
               {/* Description */}
               {fund.description_notes && (
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-foreground/90 leading-relaxed capitalize">
                   {fund.description_notes}
                 </p>
               )}
 
+              {/* Key Details Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-3">
+                <DetailItem label="Fund Manager" value={fund.firm} />
+                <DetailItem label="Fund Size" value={fund.amount === "Undisclosed" ? "Undisclosed" : fund.amount} muted={fund.amount === "Undisclosed"} />
+                <DetailItem label="Stage" value={titleCase(fund.stage)} />
+                <DetailItem label="Category" value={fund.category} />
+                {(fund.city && fund.city !== "N/A") ? (
+                  <DetailItem
+                    label="Headquarters"
+                    value={[fund.city, fund.state, fund.country].filter(Boolean).join(", ")}
+                  />
+                ) : fund.location && fund.location !== "N/A" ? (
+                  <DetailItem label="Headquarters" value={fund.location} />
+                ) : null}
+                <DetailItem label="Announced" value={formatDate(fund.announcement_date)} muted={!fund.announcement_date} />
+              </div>
+
               {/* Sources */}
-              <div>
-                <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                  <Newspaper className="h-3 w-3" />
-                  Sources
-                </p>
-                {!fund.source_url && articles.length === 0 ? (
-                  <p className="text-sm text-muted-foreground/60 italic">No sources available</p>
-                ) : (
+              {(fund.source_url || articles.length > 0) && (
+                <div className="pt-3 border-t border-border/50">
+                  <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                    <Newspaper className="h-3 w-3" />
+                    Sources
+                  </p>
                   <div className="space-y-1.5">
                     {fund.source_url && (
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
@@ -586,13 +579,8 @@ function FundRow({
                           className="text-foreground hover:underline underline-offset-2 line-clamp-1 min-w-0 break-all sm:break-normal"
                           onClick={(e) => e.stopPropagation()}
                         >
-                          {fund.source_name || "Source"}
+                          {fund.source_name || "View source"}
                         </a>
-                        {fund.source_name && (
-                          <Badge variant="outline" className="text-[10px] shrink-0 px-1.5 py-0">
-                            {fund.source_name}
-                          </Badge>
-                        )}
                         {fund.announcement_date && (
                           <span className="text-xs text-muted-foreground shrink-0">
                             {formatDate(fund.announcement_date)}
@@ -626,12 +614,21 @@ function FundRow({
                         </div>
                       ))}
                   </div>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </TableCell>
         </TableRow>
       )}
     </>
+  )
+}
+
+function DetailItem({ label, value, muted }: { label: string; value: string; muted?: boolean }) {
+  return (
+    <div className="min-w-0">
+      <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-0.5">{label}</p>
+      <p className={`text-sm truncate ${muted ? "text-muted-foreground" : "text-foreground"}`}>{value}</p>
+    </div>
   )
 }

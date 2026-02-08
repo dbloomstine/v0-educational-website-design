@@ -58,8 +58,7 @@ export const ALL_COLUMNS: ColumnDef[] = [
   { key: "city", label: "City", defaultVisible: true },
   { key: "state", label: "State", defaultVisible: false },
   { key: "country", label: "Country", defaultVisible: false },
-  { key: "source_name", label: "Source", defaultVisible: false },
-  { key: "source_link", label: "Source Link", defaultVisible: true },
+  { key: "source_name", label: "Source", defaultVisible: true },
 ]
 
 // --- Quarter helpers ---
