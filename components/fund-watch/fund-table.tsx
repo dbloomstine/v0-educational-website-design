@@ -316,15 +316,6 @@ export function FundTable({
 
   const visibleColCount = visibleCols.length
 
-  // Compute total table width from visible column widths
-  const totalTableWidth = useMemo(() => {
-    return visibleCols.reduce((sum, key) => sum + (columnWidths[key] ?? 100), 0)
-  }, [visibleCols, columnWidths])
-
-  // Chevron width for sticky offset
-  const chevronWidth = columnWidths.chevron ?? 40
-  const fundWidth = columnWidths.fund ?? 220
-
   // Aggregate footer
   const totalAum = funds.reduce((sum, f) => sum + (f.amount_usd_millions ?? 0), 0)
 
@@ -342,57 +333,16 @@ export function FundTable({
     [onColumnResize]
   )
 
-  // Sticky styles
-  const chevronStickyStyle: React.CSSProperties = {
-    position: "sticky",
-    left: 0,
-    width: chevronWidth,
-    minWidth: chevronWidth,
-  }
-
-  const fundStickyStyle: React.CSSProperties = {
-    position: "sticky",
-    left: chevronWidth,
-    width: fundWidth,
-    minWidth: fundWidth,
-    boxShadow: "2px 0 4px -2px rgba(0,0,0,0.1)",
-  }
-
   // Header cell renderer with sort + resize
   const renderHeaderCell = (colKey: string) => {
     const w = columnWidths[colKey] ?? 100
-    const style: React.CSSProperties = { width: w, minWidth: w, position: "relative", overflow: "hidden" }
+    const style: React.CSSProperties = { width: w, minWidth: 40, position: "relative", overflow: "hidden" }
     const sf = COLUMN_SORT[colKey]
 
-    // Sticky overrides for chevron and fund
     if (colKey === "chevron") {
       return (
-        <TableHead
-          key={colKey}
-          className="px-2 bg-background z-30"
-          style={{ ...chevronStickyStyle, position: "sticky", zIndex: 30 }}
-        >
+        <TableHead key={colKey} className="px-2" style={{ width: w, minWidth: 40, position: "relative" }}>
           <ResizeHandle onResize={makeResizeHandler("chevron")} />
-        </TableHead>
-      )
-    }
-
-    if (colKey === "fund") {
-      return (
-        <TableHead
-          key={colKey}
-          className="bg-background z-30"
-          style={{ ...fundStickyStyle, position: "sticky", zIndex: 30 }}
-        >
-          <button
-            onClick={() => onSort(COLUMN_SORT.fund)}
-            className="inline-flex items-center font-medium hover:text-foreground transition-colors"
-            title={TOOLTIP_MAP.fund}
-          >
-            Fund Name
-            <SortIcon field={COLUMN_SORT.fund} currentSort={sortField} currentDir={sortDir} />
-          </button>
-          <ResizeHandle onResize={makeResizeHandler("fund")} />
         </TableHead>
       )
     }
@@ -410,6 +360,7 @@ export function FundTable({
     const extraClass = colKey === "amount" ? "text-right" : ""
 
     const labelMap: Record<string, string> = {
+      fund: "Fund Name",
       firm: "Fund Manager",
       amount: "Amount",
       category: "Category",
@@ -436,7 +387,7 @@ export function FundTable({
 
     if (sf) {
       return (
-        <TableHead key={colKey} className={`${responsiveClass} ${extraClass}`} style={{ ...style, position: "relative" }}>
+        <TableHead key={colKey} className={`${responsiveClass} ${extraClass}`} style={style}>
           <div className="inline-flex items-center gap-0.5">
             <button
               onClick={() => onSort(sf)}
@@ -454,7 +405,7 @@ export function FundTable({
     }
 
     return (
-      <TableHead key={colKey} className={`${responsiveClass} ${extraClass}`} style={{ ...style, position: "relative" }}>
+      <TableHead key={colKey} className={`${responsiveClass} ${extraClass}`} style={style}>
         <div className="inline-flex items-center gap-0.5">
           <span title={tooltip}>{labelMap[colKey] ?? colKey}</span>
           {filterPopover}
@@ -466,11 +417,8 @@ export function FundTable({
 
   return (
     <div className="rounded-lg border border-border">
-      <Table
-        className="w-auto"
-        style={{ tableLayout: "fixed", width: totalTableWidth }}
-      >
-        <TableHeader className="sticky z-20 bg-background shadow-[0_1px_0_0_hsl(var(--border))]" style={{ top: stickyHeaderTop }}>
+      <Table className="w-full" style={{ tableLayout: "fixed" }}>
+        <TableHeader className="sticky z-30 bg-background shadow-[0_1px_0_0_hsl(var(--border))]" style={{ top: stickyHeaderTop }}>
           <TableRow className="hover:bg-transparent">
             {visibleCols.map((colKey) => renderHeaderCell(colKey))}
           </TableRow>
@@ -500,8 +448,6 @@ export function FundTable({
                   py={py}
                   visibleColCount={visibleColCount}
                   onToggle={toggleRow}
-                  chevronWidth={chevronWidth}
-                  fundWidth={fundWidth}
                 />
               )
             })
@@ -535,8 +481,6 @@ function FundRow({
   py,
   visibleColCount,
   onToggle,
-  chevronWidth,
-  fundWidth,
 }: {
   fund: FundEntry
   rowKey: string
@@ -547,22 +491,14 @@ function FundRow({
   py: string
   visibleColCount: number
   onToggle: (key: string) => void
-  chevronWidth: number
-  fundWidth: number
 }) {
-  // Sticky cells need a fully opaque background so content doesn't bleed through when scrolling horizontally
-  const stickyBg = "bg-background"
-
   return (
     <>
       <TableRow
         className={`cursor-pointer ${index % 2 === 1 ? "bg-muted/20" : ""} ${isExpanded ? "border-b-0" : ""}`}
         onClick={() => onToggle(rowKey)}
       >
-        <TableCell
-          className={`px-2 ${py} ${stickyBg} z-20`}
-          style={{ position: "sticky", left: 0 }}
-        >
+        <TableCell className={`px-2 ${py}`}>
           {isExpanded ? (
             <ChevronDown className="h-4 w-4 text-muted-foreground" />
           ) : (
@@ -571,14 +507,7 @@ function FundRow({
         </TableCell>
 
         {isVisible("fund") && (
-          <TableCell
-            className={`${py} whitespace-nowrap overflow-hidden ${stickyBg} z-20`}
-            style={{
-              position: "sticky",
-              left: chevronWidth,
-              boxShadow: "2px 0 4px -2px rgba(0,0,0,0.15)",
-            }}
-          >
+          <TableCell className={`${py} whitespace-nowrap overflow-hidden`}>
             <span className="font-medium text-foreground truncate block">{fund.fund_name}</span>
             {/* Show firm inline on mobile where firm column is hidden */}
             <Link
@@ -699,7 +628,7 @@ function FundRow({
       {isExpanded && (
         <TableRow className={index % 2 === 1 ? "bg-muted/20" : ""}>
           <TableCell colSpan={visibleColCount} className="p-0 border-t-0">
-            <div className="sticky left-0 px-4 sm:px-10 py-5" style={{ width: "calc(100vw - 82px)", maxWidth: "100vw" }}>
+            <div className="px-4 sm:px-10 py-5">
             <div className="max-w-3xl space-y-4">
               {/* Description */}
               {fund.description_notes && (
