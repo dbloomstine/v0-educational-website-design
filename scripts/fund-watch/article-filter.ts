@@ -6,6 +6,7 @@
 
 import type { RawArticle, FilteredArticle, ClaudeFilterResponse } from './types';
 import { PIPELINE_CONFIG } from './config';
+import { withRetry } from './retry';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 
@@ -100,13 +101,16 @@ Snippet: ${article.content_snippet.slice(0, 500)}`;
 }
 
 /**
- * Filter a single article
+ * Filter a single article with retry logic
  */
 export async function filterArticle(
   article: RawArticle
 ): Promise<FilteredArticle> {
   try {
-    const result = await callClaudeFilter(article);
+    const result = await withRetry(
+      () => callClaudeFilter(article),
+      { maxRetries: 3, initialDelayMs: 1000 }
+    );
 
     return {
       ...article,

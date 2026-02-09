@@ -1,0 +1,68 @@
+name: Feed Discovery
+
+on:
+  schedule:
+    # Run on the 1st of each month at 6 AM UTC
+    - cron: '0 6 1 * *'
+  workflow_dispatch:
+    # Allow manual trigger
+
+jobs:
+  discover-feeds:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Run Feed Discovery
+        id: discovery
+        run: |
+          OUTPUT=$(npx tsx scripts/fund-watch/feed-discovery.ts 2>&1)
+          echo "$OUTPUT"
+
+          # Check if new feeds were found
+          if echo "$OUTPUT" | grep -q "New feeds found: 0"; then
+            echo "new_feeds=false" >> $GITHUB_OUTPUT
+          else
+            echo "new_feeds=true" >> $GITHUB_OUTPUT
+          fi
+
+          # Save output for issue body
+          echo "DISCOVERY_OUTPUT<<EOF" >> $GITHUB_ENV
+          echo "$OUTPUT" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Create Issue for New Feeds
+        if: steps.discovery.outputs.new_feeds == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const output = process.env.DISCOVERY_OUTPUT;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `New RSS Feeds Discovered - ${new Date().toISOString().split('T')[0]}`,
+              body: `The monthly feed discovery found new RSS feeds that could be added to Fund Watch.\n\n\`\`\`\n${output}\n\`\`\`\n\nReview the feeds above and add relevant ones to \`scripts/fund-watch/config.ts\`.`,
+              labels: ['enhancement', 'fund-watch']
+            });
+
+      - name: Summary
+        run: |
+          echo "## Feed Discovery Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Date:** $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "$DISCOVERY_OUTPUT" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

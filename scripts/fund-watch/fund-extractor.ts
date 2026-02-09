@@ -17,6 +17,7 @@ import {
   STAGE_PATTERNS,
   AMOUNT_PATTERNS,
 } from './config';
+import { withRetry } from './retry';
 
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 
@@ -209,13 +210,16 @@ function parseAmountToMillions(amount: string): number | null {
 }
 
 /**
- * Extract a single fund from article
+ * Extract a single fund from article with retry logic
  */
 export async function extractFund(
   article: FilteredArticle
 ): Promise<ExtractedFund | null> {
   try {
-    const result = await callClaudeExtract(article);
+    const result = await withRetry(
+      () => callClaudeExtract(article),
+      { maxRetries: 3, initialDelayMs: 1000 }
+    );
     if (!result) {
       return null;
     }
