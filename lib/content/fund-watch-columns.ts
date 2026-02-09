@@ -113,9 +113,9 @@ export const COLUMNS: ColumnDef[] = [
   },
   {
     key: "source_name",
-    label: "Source",
+    label: "Source(s)",
     defaultVisible: true,
-    tooltip: "Primary news source for the announcement",
+    tooltip: "News sources for the announcement",
     filterable: true,
     width: 140,
   },
