@@ -223,6 +223,7 @@ export function formatAmount(amountMillions: number | null): string {
  * Known firm websites for fallback when not extracted from article
  */
 export const FIRM_WEBSITE_MAP: Record<string, string> = {
+  // Major PE firms
   'blackstone': 'blackstone.com',
   'kkr': 'kkr.com',
   'apollo': 'apollo.com',
@@ -231,6 +232,22 @@ export const FIRM_WEBSITE_MAP: Record<string, string> = {
   'warburg': 'warburgpincus.com',
   'advent': 'adventinternational.com',
   'bain capital': 'baincapital.com',
+  'permira': 'permira.com',
+  'thoma bravo': 'thomabravo.com',
+  'vista equity': 'vistaequitypartners.com',
+  'silver lake': 'silverlake.com',
+  'cvc': 'cvc.com',
+  'eqt': 'eqtgroup.com',
+  'bridgepoint': 'bridgepoint.eu',
+  'clearlake': 'clearlake.com',
+  'h.i.g.': 'higcapital.com',
+  'hig capital': 'higcapital.com',
+  'lindsay goldberg': 'lindsaygoldberg.com',
+  'new mountain': 'newmountaincapital.com',
+  'arlington capital': 'arlingtoncap.com',
+  'shore capital': 'shorecp.com',
+
+  // VC firms
   'sequoia': 'sequoiacap.com',
   'andreessen': 'a16z.com',
   'a16z': 'a16z.com',
@@ -239,16 +256,10 @@ export const FIRM_WEBSITE_MAP: Record<string, string> = {
   'benchmark': 'benchmark.com',
   'greylock': 'greylock.com',
   'general catalyst': 'generalcatalyst.com',
-  'goldman': 'goldmansachs.com',
-  'morgan stanley': 'morganstanley.com',
-  'coller': 'collercapital.com',
-  'cvc': 'cvc.com',
-  'eqt': 'eqtgroup.com',
-  'permira': 'permira.com',
-  'thoma bravo': 'thomabravo.com',
-  'vista equity': 'vistaequitypartners.com',
-  'silver lake': 'silverlake.com',
-  'brookfield': 'brookfield.com',
+  'lux capital': 'luxcapital.com',
+  'point72': 'point72.com',
+
+  // Credit/debt funds
   'ares': 'aresmgmt.com',
   'oaktree': 'oaktreecapital.com',
   'blue owl': 'blueowl.com',
@@ -258,6 +269,49 @@ export const FIRM_WEBSITE_MAP: Record<string, string> = {
   'monroe capital': 'monroecap.com',
   'antares': 'antares.com',
   'arcmont': 'arcmont.com',
+  'benefit street': 'benefitstreetpartners.com',
+  'crescent capital': 'crescentcap.com',
+  'tree line': 'treelinecapital.com',
+  'sixth street': 'sixthstreet.com',
+  'viola credit': 'viola-group.com',
+
+  // Real estate
+  'brookfield': 'brookfield.com',
+  'hines': 'hines.com',
+  'heitman': 'heitman.com',
+  'bridge investment': 'bridgeig.com',
+  'cbre investment': 'cbreim.com',
+  'patrizia': 'patrizia.ag',
+  'stonepeak': 'stonepeakpartners.com',
+
+  // Infrastructure
+  'infranity': 'infranity.com',
+  'ardian': 'ardian.com',
+
+  // Secondaries / GP stakes
+  'coller': 'collercapital.com',
+  'hamilton lane': 'hamiltonlane.com',
+  'stepstone': 'stepstoneglobal.com',
+  'stafford': 'staffordcp.com',
+  'banner ridge': 'bannerridgepartners.com',
+
+  // Banks/asset managers
+  'goldman': 'goldmansachs.com',
+  'morgan stanley': 'morganstanley.com',
+  'j.p. morgan': 'jpmorgan.com',
+  'jp morgan': 'jpmorgan.com',
+  'jpmorgan': 'jpmorgan.com',
+  'blackrock': 'blackrock.com',
+  'invesco': 'invesco.com',
+  'alliancebernstein': 'alliancebernstein.com',
+  'allianz': 'allianz.com',
+  'janus henderson': 'janushenderson.com',
+  'hsbc': 'hsbc.com',
+  'cibc': 'cibc.com',
+  'investec': 'investec.com',
+  'swiss life': 'swisslife-am.com',
+
+  // Sovereign wealth / pensions
   'adia': 'adia.ae',
   'mubadala': 'mubadala.com',
   'gic': 'gic.com.sg',
@@ -268,6 +322,59 @@ export const FIRM_WEBSITE_MAP: Record<string, string> = {
   'otpp': 'otpp.com',
   'calpers': 'calpers.ca.gov',
   'calstrs': 'calstrs.com',
+  'qia': 'qia.qa',
+  'jadwa': 'jadwa.com',
+
+  // European firms
+  'eurazeo': 'eurazeo.com',
+  'apheon': 'apheon.com',
+  'amethis': 'amethis.com',
+  'daphni': 'daphni.com',
+  'b2venture': 'b2venture.vc',
+
+  // Asia-Pacific
+  'capitaland': 'capitaland.com',
+  'seatown': 'seatownholdings.com',
+  'rrj capital': 'rrjcapital.com',
+
+  // Mid-market / specialty
+  'capman': 'capman.com',
+  'foresight': 'foresightgroup.eu',
+  'pantheon': 'pantheon.com',
+  'davidson kempner': 'davidsonkempner.com',
+  'galaxy digital': 'galaxydigital.io',
+  'hashkey': 'hashkey.com',
+  'obra capital': 'obracapital.com',
+  'santé ventures': 'santeventures.com',
+  'mcrock': 'mcrockcapital.com',
+  'guidepost': 'guidepostgrowth.com',
+  'appworks': 'appworks.tw',
+  'encore consumer': 'encoreconsumercapital.com',
+  'highland rim': 'highlandrimcapital.com',
+  'highvista': 'highvista.com',
+  'pinegrove': 'pinegrovepartners.com',
+  'bv investment': 'bvlp.com',
+  'nassau': 'nfrg.com',
+
+  // Development banks
+  'asian development bank': 'adb.org',
+  'british business bank': 'british-business-bank.co.uk',
+
+  // Others from fund directory
+  'tortoise': 'tortoiseadvisors.com',
+  'realty income': 'realtyincome.com',
+  'first trust': 'ftportfolios.com',
+  'westwood': 'westwoodgroup.com',
+  'lendable': 'lendable.com',
+  'lighthouse canton': 'lighthousecanton.com',
+  'creator fund': 'creatorfund.vc',
+  'sundaram': 'sundaramalternates.com',
+  'hdfc': 'hdfcfund.com',
+  'sanlam': 'sanlaminvestments.com',
+  'centum': 'centum.co.ke',
+  'sahel capital': 'sahelcp.com',
+  'samara': 'samaracapital.in',
+  'ariel investments': 'arielinvestments.com',
 };
 
 /**

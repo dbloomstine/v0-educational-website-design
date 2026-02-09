@@ -198,8 +198,8 @@ export function FundTable({
   return (
     <div className="rounded-lg border border-border">
       <Table className="w-full" style={{ tableLayout: "fixed" }}>
-        <TableHeader className="sticky z-30 bg-background shadow-[0_1px_0_0_hsl(var(--border))]" style={{ top: stickyHeaderTop }}>
-          <TableRow className="hover:bg-transparent">
+        <TableHeader className="bg-muted/30">
+          <TableRow className="hover:bg-transparent border-b">
             {visibleCols.map((colKey) => renderHeaderCell(colKey))}
           </TableRow>
         </TableHeader>
