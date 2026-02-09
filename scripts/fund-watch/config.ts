@@ -95,6 +95,38 @@ export const FEEDS: FeedConfig[] = [
     type: 'rss',
     enabled: true,
   },
+
+  // Discovered feeds (added via feed-discovery)
+  {
+    name: 'Financial Times',
+    url: 'https://ft.com/rss/home',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'Buyouts Insider',
+    url: 'https://buyoutsinsider.com/feed',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'PE International',
+    url: 'https://privateequityinternational.com/feed',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'VC Journal',
+    url: 'https://venturecapitaljournal.com/feed',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'Private Equity Wire',
+    url: 'https://privateequitywire.co.uk/feed',
+    type: 'rss',
+    enabled: true,
+  },
 ];
 
 // ============================================================================

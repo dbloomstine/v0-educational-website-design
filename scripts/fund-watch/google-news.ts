@@ -102,8 +102,8 @@ export async function fetchGoogleNewsQuery(
     const url = buildGoogleNewsUrl(query);
     const feed = await parser.parseURL(url);
 
-    const articles = feed.items.map((item) =>
-      itemToArticle(item as RSSItem, query)
+    const articles = feed.items.map((item: RSSItem) =>
+      itemToArticle(item, query)
     );
 
     console.log(`[GoogleNews] "${query}": ${articles.length} articles`);

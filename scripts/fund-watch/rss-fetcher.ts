@@ -98,8 +98,8 @@ export async function fetchFeed(
 
   try {
     const feed = await parser.parseURL(config.url);
-    const articles = feed.items.map((item) =>
-      itemToArticle(item as RSSItem, config.name)
+    const articles = feed.items.map((item: RSSItem) =>
+      itemToArticle(item, config.name)
     );
 
     return {
