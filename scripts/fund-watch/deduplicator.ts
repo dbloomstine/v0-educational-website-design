@@ -59,6 +59,38 @@ function similarityRatio(a: string, b: string): number {
 }
 
 /**
+ * Normalize fund name for comparison - strips common words
+ */
+function normalizeFundName(name: string): string {
+  const stopwords = [
+    'fund', 'funds', 'capital', 'partners', 'investments', 'investment',
+    'management', 'ventures', 'equity', 'private', 'opportunities',
+    'infrastructure', 'credit', 'real', 'estate', 'focused', 'european',
+    'asia', 'americas', 'global', 'the', 'and', 'of', 'for', 'lp', 'llc',
+  ];
+  let normalized = name.toLowerCase();
+  for (const word of stopwords) {
+    normalized = normalized.replace(new RegExp(`\\b${word}\\b`, 'gi'), '');
+  }
+  return normalized.replace(/[^a-z0-9]/g, '');
+}
+
+/**
+ * Check if dates are within N days of each other
+ */
+function datesWithinDays(dateA: string, dateB: string, days: number): boolean {
+  try {
+    const a = new Date(dateA);
+    const b = new Date(dateB);
+    const diffMs = Math.abs(a.getTime() - b.getTime());
+    const diffDays = diffMs / (1000 * 60 * 60 * 24);
+    return diffDays <= days;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Check if two funds are similar using fuzzy matching
  */
 export function isSimilarFund(
@@ -76,22 +108,52 @@ export function isSimilarFund(
   // Check name similarity
   const nameSimilar = similarityRatio(aName, bName) > 1 - threshold;
 
-  // Check firm similarity
+  // Check firm similarity (also check if one contains the other)
   const firmSimilar = similarityRatio(aFirm, bFirm) > 1 - threshold;
+  const firmContains = aFirm.includes(bFirm.slice(0, 8)) || bFirm.includes(aFirm.slice(0, 8));
+  const sameFirm = firmSimilar || firmContains;
 
   // Check amount closeness (if both have amounts)
   const aAmount = 'amount_usd_millions' in a ? a.amount_usd_millions : null;
   const bAmount = 'amount_usd_millions' in b ? b.amount_usd_millions : null;
 
-  let amountClose = true;
+  let amountClose = false;
+  let amountExact = false;
   if (aAmount && bAmount) {
-    const variance =
-      Math.abs(aAmount - bAmount) / Math.max(aAmount, bAmount);
+    const variance = Math.abs(aAmount - bAmount) / Math.max(aAmount, bAmount);
     amountClose = variance < PIPELINE_CONFIG.AMOUNT_VARIANCE_THRESHOLD;
+    amountExact = variance < 0.01; // Within 1%
   }
 
-  // Match if: (name AND firm similar) OR (firm similar AND amount close)
-  return (nameSimilar && firmSimilar) || (firmSimilar && amountClose);
+  // Check date proximity
+  const dateA = 'announcement_date' in a ? a.announcement_date : '';
+  const dateB = 'announcement_date' in b ? b.announcement_date : '';
+  const datesClose = datesWithinDays(dateA, dateB, 3);
+
+  // Check category match
+  const sameCategory = a.category === b.category;
+
+  // Check normalized fund names (strips common words)
+  const aNorm = normalizeFundName(a.fund_name);
+  const bNorm = normalizeFundName(b.fund_name);
+  const normalizedSimilar = similarityRatio(aNorm, bNorm) > 0.6;
+
+  // RULE 1: Standard fuzzy match (name AND firm similar)
+  if (nameSimilar && sameFirm) return true;
+
+  // RULE 2: Same firm + close amount
+  if (sameFirm && amountClose) return true;
+
+  // RULE 3: Same firm + same category + close dates (likely same fund with different article titles)
+  if (sameFirm && sameCategory && datesClose) return true;
+
+  // RULE 4: Same firm + exact amount + close dates (high confidence duplicate)
+  if (sameFirm && amountExact && datesClose) return true;
+
+  // RULE 5: Same firm + normalized names similar (strips common words)
+  if (sameFirm && normalizedSimilar) return true;
+
+  return false;
 }
 
 /**
@@ -224,6 +286,66 @@ function extractDomain(url: string): string {
   } catch {
     return 'unknown';
   }
+}
+
+/**
+ * Scan existing directory for potential duplicates
+ * Returns pairs of funds that might be duplicates for manual review
+ */
+export function findPotentialDuplicates(
+  funds: Fund[]
+): Array<{ fund1: Fund; fund2: Fund; reason: string }> {
+  const duplicates: Array<{ fund1: Fund; fund2: Fund; reason: string }> = [];
+
+  for (let i = 0; i < funds.length; i++) {
+    for (let j = i + 1; j < funds.length; j++) {
+      const a = funds[i];
+      const b = funds[j];
+
+      // Skip if different firms (normalized)
+      const aFirmNorm = normalizeFirmName(a.firm);
+      const bFirmNorm = normalizeFirmName(b.firm);
+      if (similarityRatio(aFirmNorm, bFirmNorm) < 0.7) continue;
+
+      // Check various duplicate signals
+      const reasons: string[] = [];
+
+      // Same amount
+      if (a.amount_usd_millions && b.amount_usd_millions) {
+        const variance = Math.abs(a.amount_usd_millions - b.amount_usd_millions) /
+          Math.max(a.amount_usd_millions, b.amount_usd_millions);
+        if (variance < 0.05) reasons.push(`same amount ($${a.amount_usd_millions}M)`);
+      }
+
+      // Close dates
+      if (datesWithinDays(a.announcement_date, b.announcement_date, 3)) {
+        reasons.push('dates within 3 days');
+      }
+
+      // Same category
+      if (a.category === b.category) {
+        reasons.push(`same category (${a.category})`);
+      }
+
+      // Similar normalized names
+      const aNorm = normalizeFundName(a.fund_name);
+      const bNorm = normalizeFundName(b.fund_name);
+      if (similarityRatio(aNorm, bNorm) > 0.5) {
+        reasons.push('similar normalized names');
+      }
+
+      // If 3+ signals, flag as potential duplicate
+      if (reasons.length >= 3) {
+        duplicates.push({
+          fund1: a,
+          fund2: b,
+          reason: reasons.join(', '),
+        });
+      }
+    }
+  }
+
+  return duplicates;
 }
 
 /**
