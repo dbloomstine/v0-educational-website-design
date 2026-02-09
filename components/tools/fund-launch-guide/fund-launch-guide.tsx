@@ -45,14 +45,35 @@ const categoryStyles: Record<string, string> = {
   finance: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
 }
 
+// Strategy options
+const STRATEGIES = [
+  { value: 'all', label: 'All Strategies' },
+  { value: 'VC', label: 'Venture Capital' },
+  { value: 'PE', label: 'Private Equity' },
+  { value: 'Private Credit', label: 'Private Credit' },
+  { value: 'Hedge Fund', label: 'Hedge Fund' },
+  { value: 'Real Estate', label: 'Real Estate' },
+  { value: 'Infrastructure', label: 'Infrastructure' },
+]
+
+// Size options
+const SIZES = [
+  { value: 'all', label: 'All Sizes' },
+  { value: 'emerging', label: 'Emerging (<$100M)' },
+  { value: 'mid', label: 'Mid ($100M-$500M)' },
+  { value: 'large', label: 'Large (>$500M)' },
+]
+
 export function FundLaunchGuide() {
   // State
   const [completedTasks, setCompletedTasks] = useState<Set<string>>(new Set())
   const [expandedTasks, setExpandedTasks] = useState<Set<string>>(new Set())
-  const [expandedPhases, setExpandedPhases] = useState<Set<string>>(new Set(PHASES.map(p => p.id)))
+  const [expandedPhases, setExpandedPhases] = useState<Set<string>>(new Set()) // Start collapsed
   const [searchQuery, setSearchQuery] = useState('')
   const [phaseFilter, setPhaseFilter] = useState<string>('all')
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
+  const [strategyFilter, setStrategyFilter] = useState<string>('all')
+  const [sizeFilter, setSizeFilter] = useState<string>('all')
   const [hasLoaded, setHasLoaded] = useState(false)
 
   // Load from localStorage
@@ -81,6 +102,22 @@ export function FundLaunchGuide() {
   const filteredTasks = useMemo(() => {
     let tasks = TASKS
 
+    // Strategy filter - filter by applicableTo.strategies
+    if (strategyFilter !== 'all') {
+      tasks = tasks.filter(t =>
+        t.applicableTo.strategies === 'all' ||
+        t.applicableTo.strategies.includes(strategyFilter as never)
+      )
+    }
+
+    // Size filter - filter by applicableTo.sizes
+    if (sizeFilter !== 'all') {
+      tasks = tasks.filter(t =>
+        t.applicableTo.sizes === 'all' ||
+        t.applicableTo.sizes.includes(sizeFilter as never)
+      )
+    }
+
     // Phase filter
     if (phaseFilter !== 'all') {
       tasks = tasks.filter(t => t.phaseId === phaseFilter)
@@ -101,7 +138,7 @@ export function FundLaunchGuide() {
     }
 
     return tasks
-  }, [phaseFilter, categoryFilter, searchQuery])
+  }, [strategyFilter, sizeFilter, phaseFilter, categoryFilter, searchQuery])
 
   // Group tasks by phase
   const tasksByPhase = useMemo(() => {
@@ -117,12 +154,12 @@ export function FundLaunchGuide() {
     return map
   }, [filteredTasks])
 
-  // Progress stats
+  // Progress stats - based on filtered tasks
   const progress = useMemo(() => {
-    const completed = TASKS.filter(t => completedTasks.has(t.id)).length
-    const total = TASKS.length
-    return { completed, total, percent: Math.round((completed / total) * 100) }
-  }, [completedTasks])
+    const completed = filteredTasks.filter(t => completedTasks.has(t.id)).length
+    const total = filteredTasks.length
+    return { completed, total, percent: total > 0 ? Math.round((completed / total) * 100) : 0 }
+  }, [filteredTasks, completedTasks])
 
   // Handlers
   const handleToggleTask = (taskId: string) => {
@@ -374,40 +411,66 @@ export function FundLaunchGuide() {
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center print:hidden">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search tasks..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9"
-          />
+      <div className="flex flex-col gap-3 print:hidden">
+        {/* Strategy and Size filters - primary */}
+        <div className="flex flex-wrap gap-2">
+          <Select value={strategyFilter} onValueChange={setStrategyFilter}>
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="All Strategies" />
+            </SelectTrigger>
+            <SelectContent>
+              {STRATEGIES.map(s => (
+                <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={sizeFilter} onValueChange={setSizeFilter}>
+            <SelectTrigger className="w-[160px]">
+              <SelectValue placeholder="All Sizes" />
+            </SelectTrigger>
+            <SelectContent>
+              {SIZES.map(s => (
+                <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
-        <Select value={phaseFilter} onValueChange={setPhaseFilter}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="All Phases" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Phases</SelectItem>
-            {PHASES.map(phase => (
-              <SelectItem key={phase.id} value={phase.id}>{phase.shortName}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-          <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="All Categories" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="legal">Legal</SelectItem>
-            <SelectItem value="regulatory">Regulatory</SelectItem>
-            <SelectItem value="operations">Operations</SelectItem>
-            <SelectItem value="marketing">Marketing</SelectItem>
-            <SelectItem value="finance">Finance</SelectItem>
-          </SelectContent>
-        </Select>
+        {/* Search and secondary filters */}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <div className="relative flex-1 max-w-sm">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search tasks..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          <Select value={phaseFilter} onValueChange={setPhaseFilter}>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="All Phases" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Phases</SelectItem>
+              {PHASES.map(phase => (
+                <SelectItem key={phase.id} value={phase.id}>{phase.shortName}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+            <SelectTrigger className="w-[150px]">
+              <SelectValue placeholder="All Categories" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value="legal">Legal</SelectItem>
+              <SelectItem value="regulatory">Regulatory</SelectItem>
+              <SelectItem value="operations">Operations</SelectItem>
+              <SelectItem value="marketing">Marketing</SelectItem>
+              <SelectItem value="finance">Finance</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {/* No results */}
@@ -420,6 +483,8 @@ export function FundLaunchGuide() {
               setSearchQuery('')
               setPhaseFilter('all')
               setCategoryFilter('all')
+              setStrategyFilter('all')
+              setSizeFilter('all')
             }}
             className="mt-2"
           >
