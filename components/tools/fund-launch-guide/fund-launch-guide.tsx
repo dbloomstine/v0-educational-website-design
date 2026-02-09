@@ -25,7 +25,7 @@ import {
 import * as XLSX from 'xlsx'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
-import { RelatedToolsSection, DisclaimerBlock } from '@/components/tools/shared'
+import { DisclaimerBlock } from '@/components/tools/shared'
 
 const STORAGE_KEY = 'fundopshq-fund-launch-simple'
 
@@ -443,27 +443,6 @@ export function FundLaunchGuide() {
             onToggleExpand={handleToggleExpand}
           />
         ))}
-      </div>
-
-      {/* Related Tools */}
-      <div className="print:hidden">
-        <RelatedToolsSection
-          currentToolSlug="fund-launch-guide"
-          relatedTools={[
-            {
-              slug: 'management-company-budget',
-              title: 'Management Company Budget Planner',
-              description: 'Calculate your burn rate, runway, and seed capital needs.',
-              reason: 'Plan your budget alongside your launch milestones'
-            },
-            {
-              slug: 'fund-expense-allocation',
-              title: 'Fund Expense Allocation Helper',
-              description: 'Classify expenses as fund or management company.',
-              reason: 'Set up proper expense allocation policies'
-            }
-          ]}
-        />
       </div>
 
       {/* Disclaimer */}
