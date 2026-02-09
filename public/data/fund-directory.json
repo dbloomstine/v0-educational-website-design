@@ -8776,26 +8776,26 @@
     }
   ],
   "stats": {
-    "total_funds": 210,
+    "total_funds": 204,
     "total_covered": 52,
-    "total_uncovered": 158,
-    "total_aum_millions": 4590452.1,
+    "total_uncovered": 152,
+    "total_aum_millions": 4589069.1,
     "by_category": {
-      "Venture Capital": 52,
-      "Private Equity": 50,
+      "Venture Capital": 51,
+      "Private Equity": 47,
       "Credit Funds": 41,
       "Real Estate": 26,
-      "Infrastructure": 25,
+      "Infrastructure": 23,
       "Secondaries & GP-Stakes": 16
     },
     "by_stage": {
-      "Final Close": 51,
-      "First Close": 35,
+      "Final Close": 47,
+      "First Close": 34,
       "Interim Close": 4,
-      "Launch": 70,
+      "Launch": 69,
       "Other": 50
     },
-    "article_count": 214,
+    "article_count": 206,
     "feed_count": 50,
     "date_range": {
       "earliest": "2025-10-01",
