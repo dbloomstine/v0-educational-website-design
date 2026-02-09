@@ -144,5 +144,6 @@ export function getDefaultColumnWidths(): Record<string, number> {
 }
 
 export function getDefaultVisibleColumns(): Set<string> {
-  return new Set(COLUMNS.filter((c) => c.defaultVisible).map((c) => c.key))
+  // Show all columns by default for new visitors
+  return new Set(COLUMNS.map((c) => c.key))
 }
