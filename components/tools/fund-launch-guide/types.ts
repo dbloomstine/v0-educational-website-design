@@ -1,4 +1,4 @@
-// Fund Launch Guide v2 - Types and Data Model
+// Fund Launch Guide - Types
 
 export type FundStrategy =
   | 'VC'
@@ -26,9 +26,9 @@ export type TaskCategory =
   | 'finance'
 
 export type TaskPriority =
-  | 'critical' // Must do, blocks other tasks
-  | 'important' // Should do, best practice
-  | 'optional' // Nice to have, situation dependent
+  | 'critical'
+  | 'important'
+  | 'optional'
 
 export interface FundLaunchPhase {
   id: string
@@ -38,91 +38,32 @@ export interface FundLaunchPhase {
   icon: string
   color: string
   order: number
-  estimatedWeeks: string // e.g., "4-8 weeks"
+  estimatedWeeks: string
 }
 
 export interface TaskDependency {
   taskId: string
-  type: 'required' | 'recommended' // Required = blocking, Recommended = soft suggestion
+  type: 'required' | 'recommended'
 }
 
 export interface FundLaunchTask {
   id: string
   phaseId: string
-
-  // Content
   title: string
-  quickTip: string // 1-2 sentences, always visible
-  fullExplanation: string // Expanded content
-  pitfalls?: string[] // Common mistakes to avoid
-
-  // Metadata
-  timeEstimate: string // e.g., "2-4 weeks"
-  benchmark?: string // e.g., "90% of funds complete before first close"
+  quickTip: string
+  fullExplanation: string
+  pitfalls?: string[]
+  timeEstimate: string
+  benchmark?: string
   category: TaskCategory
   priority: TaskPriority
-
-  // Dependencies
   dependencies?: TaskDependency[]
-
-  // Applicability - which fund configs this applies to
   applicableTo: {
     strategies: FundStrategy[] | 'all'
     sizes: FundSize[] | 'all'
     jurisdictions: Jurisdiction[] | 'all'
   }
-
-  // Links
-  deepDiveUrl?: string // Link to FundOpsHQ article
+  deepDiveUrl?: string
   externalResources?: { label: string; url: string }[]
-
-  // Display
   order: number
-}
-
-export interface FundConfig {
-  strategy: FundStrategy
-  size: FundSize
-  jurisdiction: Jurisdiction
-  hasAnchor: boolean
-  targetFirstClose?: Date
-  fundName?: string
-}
-
-export interface UserProgress {
-  completedTasks: string[]
-  config: FundConfig
-  currentPhase?: string
-  startedAt: number
-  lastUpdated: number
-}
-
-export type ViewMode = 'timeline' | 'board' | 'list'
-
-export interface FundLaunchState {
-  // User configuration
-  config: FundConfig | null
-
-  // Progress
-  completedTasks: Set<string>
-
-  // UI state
-  viewMode: ViewMode
-  expandedTasks: Set<string>
-  currentPhase: string | null
-
-  // Onboarding
-  hasCompletedOnboarding: boolean
-  showOnboarding: boolean
-}
-
-// Storage key for localStorage
-export const STORAGE_KEY = 'fundopshq-fund-launch-guide'
-
-// Default config
-export const DEFAULT_CONFIG: FundConfig = {
-  strategy: 'VC',
-  size: 'emerging',
-  jurisdiction: 'US Onshore',
-  hasAnchor: false,
 }
