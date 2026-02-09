@@ -27,32 +27,7 @@ const tools: Tool[] = [
     status: 'active',
     icon: 'Rocket'
   },
-  // B. Fund Economics
-  {
-    id: 'distribution-waterfall',
-    title: 'Distribution Waterfall Visualizer',
-    slug: 'distribution-waterfall',
-    shortDescription: 'Visualize LP and GP economics across preferred return, catch-up, and carry tiers.',
-    inputs: [
-      'Contributions',
-      'Distributions or proceeds',
-      'LP and GP percentages',
-      'Preferred return',
-      'Carry rate',
-      'Years'
-    ],
-    outputs: [
-      'Tier-by-tier breakdown',
-      'Total to LP and GP',
-      'Basic charts to show flows'
-    ],
-    categories: ['Fund Economics'],
-    personas: ['GP', 'CFO or Controller', 'LP', 'Lawyer'],
-    complexity: 'Advanced',
-    status: 'active',
-    icon: 'TrendingUp'
-  },
-  // C. Operations and Compliance
+  // B. Operations and Compliance
   {
     id: 'fund-expense-allocation',
     title: 'Fund Expense Allocation Helper',

@@ -643,19 +643,19 @@ export function SubscriptionCreditLine() {
         currentToolSlug="subscription-credit-line"
         relatedTools={[
           {
-            slug: 'distribution-waterfall',
-            title: 'Distribution Waterfall Visualizer',
-            description: 'Model LP and GP economics across preferred return, catch-up, and carry tiers.',
-            reason: 'Understand how credit line IRR boost interacts with waterfall distributions'
-          },
-          {
             slug: 'management-fee-calculator',
             title: 'Management Fee Calculator',
             description: 'Model fund-level management fees and understand how different structures impact economics.',
             reason: 'Compare credit line costs against management fee economics'
+          },
+          {
+            slug: 'fund-expense-allocation',
+            title: 'Fund Expense Allocation Helper',
+            description: 'Classify expenses as fund or management company with market practice guidance.',
+            reason: 'Ensure credit line interest is properly allocated and disclosed'
           }
         ]}
-        learningPath="Master fund economics: Credit Line → Waterfall → Fee Calculator"
+        learningPath="Master fund economics: Credit Line → Expense Allocation → Fee Calculator"
       />
 
       {/* Disclaimer */}

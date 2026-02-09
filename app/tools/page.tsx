@@ -55,11 +55,6 @@ const toolAccents: Record<string, { gradient: string; glow: string; icon: string
     glow: 'group-hover:shadow-violet-500/10',
     icon: 'text-violet-500'
   },
-  'distribution-waterfall': {
-    gradient: 'from-amber-500/15 via-orange-500/5 to-transparent',
-    glow: 'group-hover:shadow-amber-500/10',
-    icon: 'text-amber-500'
-  },
   'subscription-credit-line': {
     gradient: 'from-cyan-500/15 via-sky-500/5 to-transparent',
     glow: 'group-hover:shadow-cyan-500/10',

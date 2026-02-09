@@ -28,7 +28,6 @@ const toolSeoTitles: Record<string, string> = {
   'audit-fee-estimator': 'Audit Fee Estimator | Private Fund Audit Cost Calculator',
   'tax-fee-estimator': 'Tax Fee Estimator | Fund Tax Preparation Cost Calculator',
   'kyc-aml-cost-estimator': 'KYC/AML Cost Estimator | Investor Onboarding Calculator',
-  'distribution-waterfall': 'Distribution Waterfall Calculator | PE/VC Carry Visualizer',
   'subscription-credit-line': 'Subscription Line Calculator | Credit Facility IRR Impact',
   'fund-expense-allocation': 'Fund Expense Allocation Tool | Expense Classification Helper',
   'investor-report-generator': 'AI Investor Report Generator | Quarterly Letter Writing Tool',

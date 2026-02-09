@@ -1,39 +1,14 @@
 "use client"
 
-import dynamic from 'next/dynamic'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tool } from '@/lib/content/types'
-import { AlertCircle, Calculator, Loader2 } from 'lucide-react'
+import { AlertCircle, Calculator } from 'lucide-react'
 import { ManagementFeeCalculator } from './management-fee-calculator'
 import { ManagementCompanyBudget } from './management-company-budget'
 import { FundExpenseAllocation } from './fund-expense-allocation'
 import { SubscriptionCreditLineV2 } from './subscription-credit-line'
 
-// Dynamic import with SSR disabled to avoid Zustand persist hydration mismatch
-const DistributionWaterfall = dynamic(
-  () => import('./distribution-waterfall').then(mod => mod.DistributionWaterfall),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="space-y-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">Distribution Waterfall</h1>
-            <p className="text-muted-foreground">
-              Visualize how fund proceeds flow to LPs and GP
-            </p>
-          </div>
-        </div>
-        <Card className="bg-accent/30">
-          <CardContent className="py-12 flex items-center justify-center">
-            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-)
 
 interface ToolPlaceholderProps {
   tool: Tool
@@ -82,19 +57,6 @@ export function ToolPlaceholder({ tool }: ToolPlaceholderProps) {
         <div className="container mx-auto px-4">
           <div className="mx-auto max-w-7xl">
             <FundExpenseAllocation />
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // If this is the Distribution Waterfall Visualizer tool, render the actual tool
-  if (tool.slug === 'distribution-waterfall') {
-    return (
-      <div className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-7xl">
-            <DistributionWaterfall />
           </div>
         </div>
       </div>

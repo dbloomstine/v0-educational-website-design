@@ -703,19 +703,19 @@ export function ManagementFeeCalculator() {
                           currentToolSlug="management-fee-calculator"
                           relatedTools={[
                             {
-                              slug: 'distribution-waterfall',
-                              title: 'Distribution Waterfall Visualizer',
-                              description: 'Visualize LP and GP economics across preferred return, catch-up, and carry tiers.',
-                              reason: 'After modeling your management fees, understand how profits flow through the waterfall'
-                            },
-                            {
                               slug: 'management-company-budget',
                               title: 'Management Company Budget Planner',
                               description: 'Calculate your burn rate, runway, and seed capital needs with a simple budget model.',
                               reason: 'Use your fee projections to build a realistic management company budget'
+                            },
+                            {
+                              slug: 'fund-expense-allocation',
+                              title: 'Fund Expense Allocation Helper',
+                              description: 'Classify expenses as fund or management company with market practice guidance.',
+                              reason: 'Understand which expenses are covered by management fees vs charged to the fund'
                             }
                           ]}
-                          learningPath="Master fund economics: Fee Calculator → Waterfall → Credit Line"
+                          learningPath="Master fund economics: Fee Calculator → Expense Allocation → Budget Planner"
                         />
 
                         {/* Methodology */}
