@@ -127,6 +127,194 @@ export const FEEDS: FeedConfig[] = [
     type: 'rss',
     enabled: true,
   },
+
+  // Additional press releases
+  {
+    name: 'GlobeNewswire PE',
+    url: 'https://www.globenewswire.com/RssFeed/subjectcode/25-Private%20Equity/feedTitle/GlobeNewswire%20-%20Private%20Equity',
+    type: 'rss',
+    enabled: true,
+  },
+
+  // VC/Tech sources
+  {
+    name: 'Crunchbase News',
+    url: 'https://news.crunchbase.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'VentureBeat',
+    url: 'https://venturebeat.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'Fortune',
+    url: 'https://fortune.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'Axios',
+    url: 'https://www.axios.com/feeds/feed.rss',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'StrictlyVC',
+    url: 'https://www.strictlyvc.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+
+  // Credit
+  {
+    name: 'Creditflux',
+    url: 'https://www.creditflux.com/rss/',
+    type: 'rss',
+    enabled: true,
+  },
+
+  // Real Estate
+  {
+    name: 'Commercial Observer',
+    url: 'https://commercialobserver.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'Bisnow',
+    url: 'https://www.bisnow.com/rss/',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'Mingtiandi',
+    url: 'https://www.mingtiandi.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'Connect CRE',
+    url: 'https://www.connectcre.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+
+  // Infrastructure/Energy
+  {
+    name: 'Energy Investor',
+    url: 'https://www.energyinvestor.net/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+
+  // Regional - Asia
+  {
+    name: 'China Money Network',
+    url: 'https://www.chinamoneynetwork.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'Tech in Asia',
+    url: 'https://www.techinasia.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+
+  // Regional - Europe
+  {
+    name: 'Growth Business',
+    url: 'https://www.growthbusiness.co.uk/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'EU-Startups',
+    url: 'https://www.eu-startups.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+
+  // Regional - Latin America
+  {
+    name: 'LAVCA',
+    url: 'https://lavca.org/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'Latin Finance',
+    url: 'https://www.latinfinance.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+
+  // Regional - Africa/MENA
+  {
+    name: 'Africa PE News',
+    url: 'https://www.africaprivateequitynews.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'Wamda',
+    url: 'https://www.wamda.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+
+  // Alternatives/Institutional
+  {
+    name: 'Chief Investment Officer',
+    url: 'https://www.ai-cio.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'Family Capital',
+    url: 'https://www.famcap.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+
+  // Fund Ops
+  {
+    name: 'Private Funds CFO',
+    url: 'https://www.privatefundscfo.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+
+  // PE/M&A
+  {
+    name: 'Middle Market Growth',
+    url: 'https://middlemarketgrowth.org/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+
+  // Sector-specific
+  {
+    name: 'AgFunder',
+    url: 'https://agfundernews.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'CleanTechnica',
+    url: 'https://cleantechnica.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
+  {
+    name: 'Impact Alpha',
+    url: 'https://impactalpha.com/feed/',
+    type: 'rss',
+    enabled: true,
+  },
 ];
 
 // ============================================================================
@@ -236,34 +424,86 @@ export const STAGE_PATTERNS: Record<FundStage, RegExp> = {
 // ============================================================================
 
 export const SOURCE_DOMAIN_MAP: Record<string, string> = {
+  // Press releases / Newswires
   'businesswire.com': 'Business Wire',
   'prnewswire.com': 'PR Newswire',
-  'finance.yahoo.com': 'Yahoo Finance',
-  'sg.finance.yahoo.com': 'Yahoo Finance',
-  'techcrunch.com': 'TechCrunch',
+  'globenewswire.com': 'GlobeNewswire',
+  'newswire.ca': 'Newswire.ca',
+  'news.google.com': 'Google News',
+
+  // Major financial news
   'bloomberg.com': 'Bloomberg',
   'wsj.com': 'WSJ',
   'ft.com': 'Financial Times',
-  'pitchbook.com': 'PitchBook',
   'reuters.com': 'Reuters',
-  'perenews.com': 'PERE',
+  'finance.yahoo.com': 'Yahoo Finance',
+  'sg.finance.yahoo.com': 'Yahoo Finance',
+
+  // VC/Tech
+  'techcrunch.com': 'TechCrunch',
+  'axios.com': 'Axios',
+  'fortune.com': 'Fortune',
+  'venturebeat.com': 'VentureBeat',
+  'news.crunchbase.com': 'Crunchbase News',
+  'strictlyvc.com': 'StrictlyVC',
+
+  // PE/VC Industry publications
+  'pitchbook.com': 'PitchBook',
   'pehub.com': 'PE Hub',
   'buyoutsinsider.com': 'Buyouts Insider',
   'privateequityinternational.com': 'PEI',
-  'secondariesinvestor.com': 'Secondaries Investor',
-  'hedgeweek.com': 'Hedgeweek',
-  'infrastructureinvestor.com': 'Infrastructure Investor',
-  'privatedebtinvestor.com': 'Private Debt Investor',
   'venturecapitaljournal.com': 'Venture Capital Journal',
+  'privateequitywire.co.uk': 'Private Equity Wire',
+  'middlemarketgrowth.org': 'Middle Market Growth',
+  'famcap.com': 'Family Capital',
+
+  // Credit
+  'privatedebtinvestor.com': 'Private Debt Investor',
   'alternativecreditinvestor.com': 'Alternative Credit Investor',
+  'creditflux.com': 'Creditflux',
+
+  // Real Estate
+  'perenews.com': 'PERE',
+  'commercialobserver.com': 'Commercial Observer',
+  'bisnow.com': 'Bisnow',
+  'mingtiandi.com': 'Mingtiandi',
+  'connectcre.com': 'Connect CRE',
+
+  // Infrastructure
+  'infrastructureinvestor.com': 'Infrastructure Investor',
+  'energyinvestor.net': 'Energy Investor',
+
+  // Secondaries
+  'secondariesinvestor.com': 'Secondaries Investor',
+
+  // Alternatives general
   'altassets.net': 'AltAssets',
-  'axios.com': 'Axios',
-  'fortune.com': 'Fortune',
+  'hedgeweek.com': 'Hedgeweek',
+  'ai-cio.com': 'Chief Investment Officer',
   'esgtoday.com': 'ESG Today',
-  'globenewswire.com': 'GlobeNewswire',
-  'newswire.ca': 'Newswire.ca',
+  'privatefundscfo.com': 'Private Funds CFO',
+
+  // Regional - Asia
+  'chinamoneynetwork.com': 'China Money Network',
+  'techinasia.com': 'Tech in Asia',
+
+  // Regional - Europe
+  'growthbusiness.co.uk': 'Growth Business',
+  'eu-startups.com': 'EU-Startups',
+
+  // Regional - Latin America
+  'lavca.org': 'LAVCA',
+  'latinfinance.com': 'Latin Finance',
+
+  // Regional - Africa/MENA
+  'africaprivateequitynews.com': 'Africa PE News',
+  'wamda.com': 'Wamda',
   'zawya.com': 'Zawya',
-  'news.google.com': 'Google News',
+
+  // Sector-specific
+  'agfundernews.com': 'AgFunder',
+  'cleantechnica.com': 'CleanTechnica',
+  'impactalpha.com': 'Impact Alpha',
 };
 
 // ============================================================================
