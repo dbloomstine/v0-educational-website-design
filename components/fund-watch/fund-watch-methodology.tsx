@@ -1,8 +1,4 @@
-"use client"
-
-import { useState } from "react"
-import { ChevronDown, Rss, Sparkles, Eye } from "lucide-react"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { Rss, Sparkles } from "lucide-react"
 
 const STEPS = [
   {
@@ -13,54 +9,39 @@ const STEPS = [
   },
   {
     icon: Sparkles,
-    title: "AI Classification",
+    title: "AI Extraction",
     description:
-      "Each article is classified by an AI model that extracts fund name, size, firm, category, and stage.",
-  },
-  {
-    icon: Eye,
-    title: "Human Review",
-    description:
-      "Top announcements are reviewed and featured in the weekly FundWatch Briefing newsletter.",
+      "Each article is processed by AI to extract fund name, size, firm, category, and stage.",
   },
 ] as const
 
 export function FundWatchMethodology() {
-  const [open, setOpen] = useState(false)
-
   return (
-    <Collapsible open={open} onOpenChange={setOpen}>
-      <div className="flex justify-center">
-        <CollapsibleTrigger className="inline-flex items-center gap-1.5 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors py-4">
-          How this tracker works
-          <ChevronDown
-            className={`h-3 w-3 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
-          />
-        </CollapsibleTrigger>
-      </div>
-      <CollapsibleContent>
-        <div className="pb-6 pt-1">
-          <div className="container mx-auto px-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
-              {STEPS.map((step) => (
-                <div key={step.title} className="flex flex-col items-center text-center gap-2">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-muted/50 border border-border">
-                    <step.icon className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                  <p className="text-sm font-medium text-foreground">{step.title}</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    {step.description}
-                  </p>
-                </div>
-              ))}
+    <div className="border-b border-border/50 bg-muted/20">
+      <div className="container mx-auto px-4 py-5">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10">
+          {STEPS.map((step, i) => (
+            <div key={step.title} className="flex items-center gap-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted/60 border border-border/50">
+                <step.icon className="h-4 w-4 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground">{step.title}</p>
+                <p className="text-xs text-muted-foreground max-w-[220px]">
+                  {step.description}
+                </p>
+              </div>
+              {i < STEPS.length - 1 && (
+                <div className="hidden sm:block w-px h-8 bg-border/50 ml-4" />
+              )}
             </div>
-            <p className="text-[11px] text-muted-foreground/50 text-center mt-5">
-              Some entries may have incomplete data. Fund sizes marked &ldquo;Undisclosed&rdquo; were
-              not publicly reported.
-            </p>
-          </div>
+          ))}
         </div>
-      </CollapsibleContent>
-    </Collapsible>
+        <p className="text-[11px] text-muted-foreground/50 text-center mt-4">
+          Some entries may have incomplete data. Fund sizes marked &ldquo;Undisclosed&rdquo; were
+          not publicly reported.
+        </p>
+      </div>
+    </div>
   )
 }
