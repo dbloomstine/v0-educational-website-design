@@ -13,6 +13,7 @@ export interface FundEntry {
   fund_name: string
   firm: string
   firm_slug?: string
+  firm_website?: string | null
   amount: string
   amount_usd_millions: number | null
   category: string

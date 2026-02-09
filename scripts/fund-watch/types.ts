@@ -41,6 +41,7 @@ export interface Fund {
   fund_name: string;
   firm: string;
   firm_slug: string;
+  firm_website: string | null;
   amount: string;
   amount_usd_millions: number | null;
   category: FundCategory;
@@ -168,6 +169,7 @@ export interface FilteredArticle extends RawArticle {
 export interface ExtractedFund {
   fund_name: string;
   firm: string;
+  firm_website?: string | null;
   amount: string;
   amount_usd_millions: number | null;
   category: FundCategory;
@@ -242,6 +244,7 @@ export interface ClaudeFilterResponse {
 export interface ClaudeExtractResponse {
   fund_name: string;
   firm: string;
+  firm_website?: string;
   amount: string;
   amount_usd_millions: number | null;
   category: string;

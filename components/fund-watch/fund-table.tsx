@@ -148,7 +148,7 @@ export function FundTable({
     const responsiveClass =
       colKey === "firm" || colKey === "category" || colKey === "stage"
         ? "hidden md:table-cell"
-        : colKey === "quarter" || colKey === "city" || colKey === "state" || colKey === "country" || colKey === "source_name" || colKey === "date_added"
+        : colKey === "quarter" || colKey === "city" || colKey === "state" || colKey === "country" || colKey === "source_name" || colKey === "date_added" || colKey === "website"
         ? "hidden lg:table-cell"
         : colKey === "date"
         ? "hidden sm:table-cell"
@@ -325,6 +325,23 @@ const FundRow = memo(function FundRow({
             >
               {fund.firm}
             </Link>
+          </TableCell>
+        )}
+        {isVisible("website") && (
+          <TableCell className={`hidden lg:table-cell text-sm whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+            {fund.firm_website ? (
+              <a
+                href={`https://${fund.firm_website}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-muted-foreground hover:text-foreground hover:underline underline-offset-2 transition-colors"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {fund.firm_website}
+              </a>
+            ) : (
+              <span className="text-muted-foreground">{"\u2014"}</span>
+            )}
           </TableCell>
         )}
         {isVisible("amount") && (

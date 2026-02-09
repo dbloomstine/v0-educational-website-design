@@ -48,10 +48,17 @@ For location:
 - If city not mentioned, use firm HQ city if known
 - Split into city, state (if US), country
 
+For firm_website:
+- Extract the fund manager's official website if mentioned in the article
+- If not mentioned, infer from firm name (e.g., "blackstone.com" for Blackstone)
+- Return just the domain without protocol (e.g., "blackstone.com" not "https://www.blackstone.com")
+- Return null if unknown
+
 JSON Format:
 {
   "fund_name": "Full fund name",
   "firm": "Firm name (without 'LLC', 'LP', etc.)",
+  "firm_website": "Firm's website domain (e.g., 'blackstone.com') or null",
   "amount": "Original amount string (e.g., '$2.5B', '€500M', 'Undisclosed')",
   "amount_usd_millions": number or null,
   "category": "Category from list above",
@@ -228,6 +235,7 @@ export async function extractFund(
     const fund: ExtractedFund = {
       fund_name: result.fund_name || article.title.split(' - ')[0],
       firm: result.firm || 'Unknown',
+      firm_website: result.firm_website || null,
       amount: result.amount || 'Undisclosed',
       amount_usd_millions:
         result.amount_usd_millions ?? parseAmountToMillions(result.amount),

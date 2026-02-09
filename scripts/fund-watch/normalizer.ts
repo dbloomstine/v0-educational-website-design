@@ -216,6 +216,85 @@ export function formatAmount(amountMillions: number | null): string {
 }
 
 // ============================================================================
+// Firm Website Mapping
+// ============================================================================
+
+/**
+ * Known firm websites for fallback when not extracted from article
+ */
+export const FIRM_WEBSITE_MAP: Record<string, string> = {
+  'blackstone': 'blackstone.com',
+  'kkr': 'kkr.com',
+  'apollo': 'apollo.com',
+  'carlyle': 'carlyle.com',
+  'tpg': 'tpg.com',
+  'warburg': 'warburgpincus.com',
+  'advent': 'adventinternational.com',
+  'bain capital': 'baincapital.com',
+  'sequoia': 'sequoiacap.com',
+  'andreessen': 'a16z.com',
+  'a16z': 'a16z.com',
+  'lightspeed': 'lsvp.com',
+  'accel': 'accel.com',
+  'benchmark': 'benchmark.com',
+  'greylock': 'greylock.com',
+  'general catalyst': 'generalcatalyst.com',
+  'goldman': 'goldmansachs.com',
+  'morgan stanley': 'morganstanley.com',
+  'coller': 'collercapital.com',
+  'cvc': 'cvc.com',
+  'eqt': 'eqtgroup.com',
+  'permira': 'permira.com',
+  'thoma bravo': 'thomabravo.com',
+  'vista equity': 'vistaequitypartners.com',
+  'silver lake': 'silverlake.com',
+  'brookfield': 'brookfield.com',
+  'ares': 'aresmgmt.com',
+  'oaktree': 'oaktreecapital.com',
+  'blue owl': 'blueowl.com',
+  'hps': 'hpspartners.com',
+  'owl rock': 'blueowl.com',
+  'golub': 'golubcapital.com',
+  'monroe capital': 'monroecap.com',
+  'antares': 'antares.com',
+  'arcmont': 'arcmont.com',
+  'adia': 'adia.ae',
+  'mubadala': 'mubadala.com',
+  'gic': 'gic.com.sg',
+  'temasek': 'temasek.com.sg',
+  'cppib': 'cppinvestments.com',
+  'cdpq': 'cdpq.com',
+  'psp': 'investpsp.com',
+  'otpp': 'otpp.com',
+  'calpers': 'calpers.ca.gov',
+  'calstrs': 'calstrs.com',
+};
+
+/**
+ * Infer firm website from firm name or use extracted value
+ */
+export function inferFirmWebsite(firm: string, extracted?: string | null): string | null {
+  // If a valid website was extracted, use it
+  if (extracted && extracted.trim()) {
+    // Remove protocol prefix if present and validate it looks like a domain
+    const cleaned = extracted.replace(/^https?:\/\//, '').replace(/^www\./, '');
+    if (cleaned.includes('.')) {
+      return cleaned;
+    }
+  }
+
+  // Try to find a match in our known firms map
+  const lowerFirm = firm.toLowerCase();
+  for (const [key, website] of Object.entries(FIRM_WEBSITE_MAP)) {
+    if (lowerFirm.includes(key)) {
+      return website;
+    }
+  }
+
+  return null;
+}
+
+// ============================================================================
 // Location Normalization
 // ============================================================================
 

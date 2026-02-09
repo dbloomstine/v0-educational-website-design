@@ -29,6 +29,13 @@ export const COLUMNS: ColumnDef[] = [
     width: 180,
   },
   {
+    key: "website",
+    label: "Website",
+    defaultVisible: false,
+    tooltip: "Fund manager's official website",
+    width: 140,
+  },
+  {
     key: "amount",
     label: "Amount",
     defaultVisible: true,

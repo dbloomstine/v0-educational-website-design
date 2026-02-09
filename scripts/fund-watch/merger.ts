@@ -18,6 +18,7 @@ import type {
 import { PATHS } from './config';
 import { fundExistsInDirectory, mergeFundData, createDedupeKey } from './deduplicator';
 import { enrichFund } from './fund-extractor';
+import { inferFirmWebsite } from './normalizer';
 
 /**
  * Load fund directory from JSON file
@@ -150,6 +151,7 @@ function extractedToFund(extracted: ExtractedFund): Fund {
     fund_name: enriched.fund_name,
     firm: enriched.firm,
     firm_slug: enriched.firm_slug,
+    firm_website: inferFirmWebsite(enriched.firm, enriched.firm_website),
     amount: enriched.amount,
     amount_usd_millions: enriched.amount_usd_millions,
     category: enriched.category,
