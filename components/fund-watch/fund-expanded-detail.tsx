@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Newspaper } from "lucide-react"
+import { ExternalLink, Newspaper } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import type { FundEntry } from "@/lib/content/fund-watch"
 import { formatDate, getFirmSlug, titleCase } from "@/lib/content/fund-watch"
@@ -49,6 +49,21 @@ export function FundExpandedDetail({
             </div>
           ) : (
             <DetailItem label="Category" value={fund.category} />
+          )}
+          {showFirmLink && fund.firm_website && (
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider mb-0.5">Website</p>
+              <a
+                href={`https://${fund.firm_website}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-foreground hover:underline underline-offset-2 transition-colors truncate flex items-center gap-1"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {fund.firm_website}
+                <ExternalLink className="h-3 w-3 shrink-0" />
+              </a>
+            </div>
           )}
           {showFirmLink && (
             <>

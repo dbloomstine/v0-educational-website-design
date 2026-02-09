@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react"
 import Link from "next/link"
-import { ArrowLeft, ChevronRight, ChevronDown, MapPin } from "lucide-react"
+import { ArrowLeft, ChevronRight, ChevronDown, ExternalLink, MapPin } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import {
   Table,
@@ -51,6 +51,7 @@ export function ManagerProfile({
   }, [])
 
   const location = [city, country].filter(Boolean).join(", ")
+  const firmWebsite = funds.find((f) => f.firm_website)?.firm_website
 
   // Sort funds by amount (largest first), undisclosed at bottom
   const sorted = [...funds].sort((a, b) => (b.amount_usd_millions ?? 0) - (a.amount_usd_millions ?? 0))
@@ -69,7 +70,20 @@ export function ManagerProfile({
       {/* Header */}
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
-          <h1 className="text-3xl font-bold tracking-tight">{firmName}</h1>
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold tracking-tight">{firmName}</h1>
+            {firmWebsite && (
+              <a
+                href={`https://${firmWebsite}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {firmWebsite}
+                <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+            )}
+          </div>
           {location && (
             <div className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/30 px-3 py-1 text-xs text-muted-foreground shrink-0">
               <MapPin className="h-3 w-3" />

@@ -10,14 +10,6 @@ import {
   ChevronDown,
 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 import { FundExpandedDetail } from "@/components/fund-watch/fund-expanded-detail"
 import { ColumnFilterPopover } from "@/components/fund-watch/column-filter-popover"
 import { ResizeHandle } from "@/components/fund-watch/resize-handle"
@@ -130,12 +122,13 @@ export function FundTable({
   const renderHeaderCell = (colKey: string) => {
     const w = columnWidths[colKey] ?? 100
     const style: React.CSSProperties = { width: w, minWidth: 40, position: "relative", overflow: "hidden" }
+    const baseClass = "h-12 px-4 text-left align-middle font-medium text-muted-foreground bg-muted/50"
 
     if (colKey === "chevron") {
       return (
-        <TableHead key={colKey} className="px-2" style={{ width: w, minWidth: 40, position: "relative" }}>
+        <th key={colKey} className={`${baseClass} px-2`} style={{ width: w, minWidth: 40, position: "relative" }}>
           <ResizeHandle onResize={makeResizeHandler("chevron")} />
-        </TableHead>
+        </th>
       )
     }
 
@@ -167,7 +160,7 @@ export function FundTable({
 
     if (sf) {
       return (
-        <TableHead key={colKey} className={`${responsiveClass} ${extraClass}`} style={style}>
+        <th key={colKey} className={`${baseClass} ${responsiveClass} ${extraClass}`} style={style}>
           <div className="inline-flex items-center gap-0.5">
             <button
               onClick={() => onSort(sf)}
@@ -180,71 +173,73 @@ export function FundTable({
             {filterPopover}
           </div>
           <ResizeHandle onResize={makeResizeHandler(colKey)} />
-        </TableHead>
+        </th>
       )
     }
 
     return (
-      <TableHead key={colKey} className={`${responsiveClass} ${extraClass}`} style={style}>
+      <th key={colKey} className={`${baseClass} ${responsiveClass} ${extraClass}`} style={style}>
         <div className="inline-flex items-center gap-0.5">
           <span title={tooltip}>{label}</span>
           {filterPopover}
         </div>
         <ResizeHandle onResize={makeResizeHandler(colKey)} />
-      </TableHead>
+      </th>
     )
   }
 
   return (
-    <div className="rounded-lg border border-border">
-      <Table className="w-full" style={{ tableLayout: "fixed" }}>
-        <TableHeader className="bg-muted/30">
-          <TableRow className="hover:bg-transparent border-b">
-            {visibleCols.map((colKey) => renderHeaderCell(colKey))}
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {funds.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={visibleColCount} className="text-center py-8 text-muted-foreground">
-                No funds match the current filters.
-              </TableCell>
-            </TableRow>
-          ) : (
-            funds.map((fund, i) => {
-              const rowKey = `${fund.fund_name}-${fund.firm}-${i}`
-              const isExpanded = expandedRows.has(rowKey)
-              const articles = fund.articles ?? []
+    <div className="rounded-lg border border-border overflow-hidden">
+      <div className="overflow-auto max-h-[70vh]">
+        <table className="w-full text-sm" style={{ tableLayout: "fixed" }}>
+          <thead className="bg-muted/50 sticky top-0 z-10">
+            <tr className="border-b">
+              {visibleCols.map((colKey) => renderHeaderCell(colKey))}
+            </tr>
+          </thead>
+          <tbody>
+            {funds.length === 0 ? (
+              <tr>
+                <td colSpan={visibleColCount} className="text-center py-8 text-muted-foreground">
+                  No funds match the current filters.
+                </td>
+              </tr>
+            ) : (
+              funds.map((fund, i) => {
+                const rowKey = `${fund.fund_name}-${fund.firm}-${i}`
+                const isExpanded = expandedRows.has(rowKey)
+                const articles = fund.articles ?? []
 
-              return (
-                <FundRow
-                  key={rowKey}
-                  fund={fund}
-                  rowKey={rowKey}
-                  index={i}
-                  isExpanded={isExpanded}
-                  articles={articles}
-                  isVisible={isVisible}
-                  py={py}
-                  visibleColCount={visibleColCount}
-                  onToggle={toggleRow}
-                />
-              )
-            })
-          )}
+                return (
+                  <FundRow
+                    key={rowKey}
+                    fund={fund}
+                    rowKey={rowKey}
+                    index={i}
+                    isExpanded={isExpanded}
+                    articles={articles}
+                    isVisible={isVisible}
+                    py={py}
+                    visibleColCount={visibleColCount}
+                    onToggle={toggleRow}
+                  />
+                )
+              })
+            )}
 
-          {/* Aggregate footer */}
-          {funds.length > 0 && (
-            <TableRow className="bg-muted/30 hover:bg-muted/30 border-t">
-              <TableCell className={`px-2 ${py}`} />
-              <TableCell colSpan={visibleColCount - 1} className={`${py} text-sm font-medium text-muted-foreground`}>
-                {funds.length} fund{funds.length !== 1 ? "s" : ""}
-                {totalAum > 0 && <> &middot; {formatAum(totalAum)} total AUM</>}
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            {/* Aggregate footer */}
+            {funds.length > 0 && (
+              <tr className="bg-muted/30 border-t">
+                <td className={`px-2 ${py}`} />
+                <td colSpan={visibleColCount - 1} className={`${py} text-sm font-medium text-muted-foreground p-4`}>
+                  {funds.length} fund{funds.length !== 1 ? "s" : ""}
+                  {totalAum > 0 && <> &middot; {formatAum(totalAum)} total AUM</>}
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
@@ -274,22 +269,24 @@ const FundRow = memo(function FundRow({
   visibleColCount,
   onToggle,
 }: FundRowProps) {
+  const cellClass = "p-4 align-middle [&:has([role=checkbox])]:pr-0"
+
   return (
     <>
-      <TableRow
-        className={`cursor-pointer ${index % 2 === 1 ? "bg-muted/20" : ""} ${isExpanded ? "border-b-0" : ""}`}
+      <tr
+        className={`cursor-pointer border-b transition-colors hover:bg-muted/50 ${index % 2 === 1 ? "bg-muted/20" : ""} ${isExpanded ? "border-b-0" : ""}`}
         onClick={() => onToggle(rowKey)}
       >
-        <TableCell className={`px-2 ${py}`}>
+        <td className={`${cellClass} px-2 ${py}`}>
           {isExpanded ? (
             <ChevronDown className="h-4 w-4 text-muted-foreground" />
           ) : (
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           )}
-        </TableCell>
+        </td>
 
         {isVisible("fund") && (
-          <TableCell className={`${py} whitespace-nowrap overflow-hidden`}>
+          <td className={`${cellClass} ${py} whitespace-nowrap overflow-hidden`}>
             <span className="font-medium text-foreground truncate block">{fund.fund_name}</span>
             {/* Show firm inline on mobile where firm column is hidden */}
             <Link
@@ -314,10 +311,10 @@ const FundRow = memo(function FundRow({
                 {titleCase(fund.stage)}
               </Badge>
             </div>
-          </TableCell>
+          </td>
         )}
         {isVisible("firm") && (
-          <TableCell className={`hidden md:table-cell text-sm whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+          <td className={`${cellClass} hidden md:table-cell text-sm whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             <Link
               href={`/fund-watch/managers/${getFirmSlug(fund)}`}
               className="text-muted-foreground hover:text-foreground hover:underline underline-offset-2 transition-colors"
@@ -325,10 +322,10 @@ const FundRow = memo(function FundRow({
             >
               {fund.firm}
             </Link>
-          </TableCell>
+          </td>
         )}
         {isVisible("website") && (
-          <TableCell className={`hidden lg:table-cell text-sm whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+          <td className={`${cellClass} hidden lg:table-cell text-sm whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {fund.firm_website ? (
               <a
                 href={`https://${fund.firm_website}`}
@@ -342,69 +339,69 @@ const FundRow = memo(function FundRow({
             ) : (
               <span className="text-muted-foreground">{"\u2014"}</span>
             )}
-          </TableCell>
+          </td>
         )}
         {isVisible("amount") && (
-          <TableCell className={`text-right font-mono text-sm whitespace-nowrap overflow-hidden ${py}`}>
+          <td className={`${cellClass} text-right font-mono text-sm whitespace-nowrap overflow-hidden ${py}`}>
             {fund.amount === "Undisclosed" ? (
               <span className="text-muted-foreground">Undisclosed</span>
             ) : (
               fund.amount
             )}
-          </TableCell>
+          </td>
         )}
         {isVisible("category") && (
-          <TableCell className={`hidden md:table-cell whitespace-nowrap overflow-hidden ${py}`}>
+          <td className={`${cellClass} hidden md:table-cell whitespace-nowrap overflow-hidden ${py}`}>
             <Badge
               variant="outline"
               className={CATEGORY_BADGE_CLASSES[fund.category] ?? ""}
             >
               {fund.category}
             </Badge>
-          </TableCell>
+          </td>
         )}
         {isVisible("stage") && (
-          <TableCell className={`hidden md:table-cell whitespace-nowrap overflow-hidden ${py}`}>
+          <td className={`${cellClass} hidden md:table-cell whitespace-nowrap overflow-hidden ${py}`}>
             <Badge
               variant="outline"
               className={STAGE_BADGE_CLASSES[fund.stage] ?? STAGE_BADGE_CLASSES.other}
             >
               {titleCase(fund.stage)}
             </Badge>
-          </TableCell>
+          </td>
         )}
         {isVisible("quarter") && (
-          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+          <td className={`${cellClass} hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {getQuarter(fund.announcement_date) ?? "N/A"}
-          </TableCell>
+          </td>
         )}
         {isVisible("date") && (
-          <TableCell className={`hidden sm:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+          <td className={`${cellClass} hidden sm:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {formatDate(fund.announcement_date)}
-          </TableCell>
+          </td>
         )}
         {isVisible("date_added") && (
-          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+          <td className={`${cellClass} hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {fund.date_added ? formatDate(fund.date_added) : "N/A"}
-          </TableCell>
+          </td>
         )}
         {isVisible("city") && (
-          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+          <td className={`${cellClass} hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {fund.city || "N/A"}
-          </TableCell>
+          </td>
         )}
         {isVisible("state") && (
-          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+          <td className={`${cellClass} hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {fund.state || "\u2014"}
-          </TableCell>
+          </td>
         )}
         {isVisible("country") && (
-          <TableCell className={`hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+          <td className={`${cellClass} hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {fund.country || "\u2014"}
-          </TableCell>
+          </td>
         )}
         {isVisible("source_name") && (
-          <TableCell className={`hidden lg:table-cell text-sm whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
+          <td className={`${cellClass} hidden lg:table-cell text-sm whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {fund.source_url ? (
               <a
                 href={fund.source_url}
@@ -419,17 +416,17 @@ const FundRow = memo(function FundRow({
             ) : (
               <span className="text-muted-foreground">{fund.source_name || "\u2014"}</span>
             )}
-          </TableCell>
+          </td>
         )}
-      </TableRow>
+      </tr>
 
       {/* Expanded detail row */}
       {isExpanded && (
-        <TableRow className={index % 2 === 1 ? "bg-muted/20" : ""}>
-          <TableCell colSpan={visibleColCount} className="p-0 border-t-0">
+        <tr className={index % 2 === 1 ? "bg-muted/20" : ""}>
+          <td colSpan={visibleColCount} className="p-0 border-t-0">
             <FundExpandedDetail fund={fund} articles={articles} />
-          </TableCell>
-        </TableRow>
+          </td>
+        </tr>
       )}
     </>
   )
