@@ -237,13 +237,6 @@ export function FundExpenseAllocation() {
     }
   }, [filteredExpenses])
 
-  // Count by classification (unfiltered for stats)
-  const counts = useMemo(() => ({
-    fund: expenseCategories.filter((e) => e.defaultClassification === 'fund-expense').length,
-    mgmt: expenseCategories.filter((e) => e.defaultClassification === 'management-expense').length,
-    caseByCase: expenseCategories.filter((e) => e.defaultClassification === 'case-by-case').length,
-  }), [])
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -253,26 +246,6 @@ export function FundExpenseAllocation() {
           Learn how to classify common fund expenses between fund and management company
         </p>
       </div>
-
-      {/* Stats bar */}
-      <Card className="bg-accent/30">
-        <CardContent className="py-4">
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <p className="text-xs text-muted-foreground">Fund Expenses</p>
-              <p className="text-lg font-semibold text-blue-400">{counts.fund}</p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Management Expenses</p>
-              <p className="text-lg font-semibold text-emerald-400">{counts.mgmt}</p>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground">Case-by-Case</p>
-              <p className="text-lg font-semibold text-amber-400">{counts.caseByCase}</p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Search and Filter */}
       <div className="flex flex-col sm:flex-row gap-3">
@@ -306,7 +279,6 @@ export function FundExpenseAllocation() {
               title="Fund Expenses"
               classification="fund-expense"
               expenses={grouped['fund-expense']}
-              defaultOpen={true}
             />
             <CategorySection
               title="Management Expenses"
