@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-09T14:19:00.023Z",
+  "generated_at": "2026-02-09T14:21:33.372Z",
   "funds": [
     {
       "fund_name": "Fearless Fund Microfinance Fund",
@@ -1122,38 +1122,6 @@
       "firm_website": "highvista.com"
     },
     {
-      "fund_name": "HighVista Fund XI",
-      "firm": "HighVista",
-      "firm_slug": "highvista",
-      "amount": "$800m",
-      "amount_usd_millions": 800,
-      "category": "Private Equity",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "US",
-      "stage": "Final Close",
-      "announcement_date": "2026-02-03",
-      "source_url": "https://www.buyoutsinsider.com/highvista-closed-fund-xi-with-800m-in-four-months/",
-      "source_name": "Buyouts Insider",
-      "description_notes": "close HighVista Fund XI, an $800 million private equity fund, at final close. The fund represents the firm's eleventh vintage, though without published details on strategy focus, LP composition, or size trajectory relative to prior funds, the specific positioning remains unclear.",
-      "is_covered": false,
-      "covered_date": null,
-      "date_added": "2026-02-08T01:33:08",
-      "articles": [
-        {
-          "title": "HighVista closes Fund XI with $800m in four months",
-          "url": "https://www.buyoutsinsider.com/highvista-closed-fund-xi-with-800m-in-four-months/",
-          "source_name": "Buyouts Insider",
-          "source_domain": "buyoutsinsider.com",
-          "published_date": "2026-02-03",
-          "summary": "",
-          "feed_name": "Buyouts Insider"
-        }
-      ],
-      "firm_website": "highvista.com"
-    },
-    {
       "fund_name": "Eurazeo & Pantheon Private Debt Continuation Vehicle",
       "firm": "Eurazeo",
       "firm_slug": "eurazeo",
@@ -1282,38 +1250,6 @@
         }
       ],
       "firm_website": null
-    },
-    {
-      "fund_name": "Hamilton Lane Infrastructure Fund",
-      "firm": "Hamilton Lane",
-      "firm_slug": "hamilton-lane",
-      "amount": "Undisclosed",
-      "amount_usd_millions": null,
-      "category": "Infrastructure",
-      "location": "Philadelphia, PA",
-      "city": "Philadelphia",
-      "state": "PA",
-      "country": "US",
-      "stage": "Final Close",
-      "announcement_date": "2026-02-03",
-      "source_url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPNHdRajVfNmtCTTFCTWtfTEhMRktTQkJPOXJlTXBrSU9nWWhiejMtTm5JNDU2Z1l1VkNmcUlUNHpjQkw0dlVBR2huaGRDMExMRXFLWmJidmU3TVlYbmZhdnAwY194dHVtcEtaWUVWaUktTkJxWnExV2syUUhKTDA5YktVbVVQQThTbXVzVjlsRzR1bUR1ZDVLdDhPRFJlZk0tMktEVGp0OWc5dzRCN2c?oc=5",
-      "source_name": "Financialnewswire",
-      "description_notes": "closes infrastructure fund after exceeding its fundraising target. Hamilton Lane secured commitments beyond its initial goal, demonstrating strong investor demand for infrastructure investments. The fund's final close marks a successful completion of the fundraising phase.",
-      "is_covered": false,
-      "covered_date": null,
-      "date_added": "2026-02-08T15:35:22",
-      "articles": [
-        {
-          "title": "Hamilton Lane closes infrastructure fund after exceeding target - Financial Newswire",
-          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPNHdRajVfNmtCTTFCTWtfTEhMRktTQkJPOXJlTXBrSU9nWWhiejMtTm5JNDU2Z1l1VkNmcUlUNHpjQkw0dlVBR2huaGRDMExMRXFLWmJidmU3TVlYbmZhdnAwY194dHVtcEtaWUVWaUktTkJxWnExV2syUUhKTDA5YktVbVVQQThTbXVzVjlsRzR1bUR1ZDVLdDhPRFJlZk0tMktEVGp0OWc5dzRCN2c?oc=5",
-          "source_name": "Financial Newswire",
-          "source_domain": "financialnewswire.com.au",
-          "published_date": "2026-02-03",
-          "summary": "Hamilton Lane closes infrastructure fund after exceeding target&nbsp;&nbsp;Financial Newswire",
-          "feed_name": "search:First/final close"
-        }
-      ],
-      "firm_website": "hamiltonlane.com"
     },
     {
       "fund_name": "Infrastructure Opportunities Fund II",
@@ -2433,47 +2369,6 @@
       "firm_website": "carlyle.com"
     },
     {
-      "fund_name": "European-Focused Energy Storage Fund",
-      "firm": "Gore Street Capital",
-      "firm_slug": "gore-street-capital",
-      "amount": "Undisclosed",
-      "amount_usd_millions": null,
-      "category": "Infrastructure",
-      "location": "London, UK",
-      "city": "London",
-      "state": "",
-      "country": "UK",
-      "stage": "First Close",
-      "announcement_date": "2026-01-22",
-      "source_url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxPNDY4OU5SS3l5R2NweEdmT0Q3ajVoN25oQldnTEJiRFF0aVpCSmRiYmEtS2UtVG5tRjJVVHlHUVlwV0xkWEluajRHWm5ZTG1rVWNuR1V6TkJjU2lzM2dPRGZ6TUhWWEhmN0hoUlNSdDdvR0RBejRyV2JxQldFV0xGaW14WFJZUmpNSVozcGlOem1acTItcnFPZER1R1FyemxwaGZ1T3JDRk1wNUNWWFBCRU5TUGN0RVg5RkFpN09wX192Rk5PWkZXOGRkV0pHWWY5OHNmbVlJX2ZoQjdOZFdQc2tBVVExa3JHa2dlSnJOZVJpZFZJSGc?oc=5",
-      "source_name": "funds-europe.com",
-      "description_notes": "focuses on energy storage investments across Europe",
-      "is_covered": false,
-      "covered_date": null,
-      "date_added": "2026-02-08T01:39:22",
-      "articles": [
-        {
-          "title": "Gore Street Capital Successfully Completes First Close for its European-Focused Energy Storage Fund - PR Newswire",
-          "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxPNDY4OU5SS3l5R2NweEdmT0Q3ajVoN25oQldnTEJiRFF0aVpCSmRiYmEtS2UtVG5tRjJVVHlHUVlwV0xkWEluajRHWm5ZTG1rVWNuR1V6TkJjU2lzM2dPRGZ6TUhWWEhmN0hoUlNSdDdvR0RBejRyV2JxQldFV0xGaW14WFJZUmpNSVozcGlOem1acTItcnFPZER1R1FyemxwaGZ1T3JDRk1wNUNWWFBCRU5TUGN0RVg5RkFpN09wX192Rk5PWkZXOGRkV0pHWWY5OHNmbVlJX2ZoQjdOZFdQc2tBVVExa3JHa2dlSnJOZVJpZFZJSGc?oc=5",
-          "source_name": "News",
-          "source_domain": "news.google.com",
-          "published_date": "2026-01-22",
-          "summary": "Gore Street Capital Successfully Completes First Close for its European-Focused Energy Storage Fund&nbsp;&nbsp;PR Newswire",
-          "feed_name": "search:Press release fund closes"
-        },
-        {
-          "title": "Gore Street Capital announces first close for energy storage fund - funds-europe.com",
-          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNWEpnYW0yckJHVy00SktSODNaQy14Q29ubmwzVTNQeG9FZzdmbURnZUJNLUpaanUwa1k1YkliM2ZJSDFiQmFLeGtySzVTSF9tOWZQbmxfWWEzczU5MUk5dXZ4U3Vid0Q1Y1NXTHZvWV9SZ2Nyd3RmNVRzUHNQTFNiUExCSUFuQ3NKWEFsajBfUXJqS0Nsb1E?oc=5",
-          "source_name": "News",
-          "source_domain": "news.google.com",
-          "published_date": "2026-01-22",
-          "summary": "Gore Street Capital announces first close for energy storage fund&nbsp;&nbsp;funds-europe.com",
-          "feed_name": "search:First/final close"
-        }
-      ],
-      "firm_website": "gorestreetcap.com"
-    },
-    {
       "fund_name": "Nine Mile Fund",
       "firm": "Nine Mile",
       "firm_slug": "nine-mile",
@@ -2759,38 +2654,6 @@
         }
       ],
       "firm_website": "allianz.com"
-    },
-    {
-      "fund_name": "Blueprint Equity Fund (unnamed/unspecified vintage)",
-      "firm": "Blueprint Equity",
-      "firm_slug": "blueprint-equity",
-      "amount": "$333 Million",
-      "amount_usd_millions": 333,
-      "category": "Private Equity",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "",
-      "stage": "Final Close",
-      "announcement_date": "2026-01-20",
-      "source_url": "https://news.google.com/rss/articles/CBMiogNBVV95cUxQTm5nSzJ4QjBxM0VBMmZzTUFIbFBHSE1rRTFLOXhHSmdveEE3SlFOT00wWTNWVVVsSEFaYzVWYURzRkJrel9TbVFDb29SR1EtLWRVVkhSTjZTb0Y0S25RTXRoVjFEb183dWl6VHN1dk5LaFdyTlhBc3JfbG15eHhKSE83UC1VUjEyY3dVaGhBSy1qZ3pvM2tsM2MybEhHTUZGTkhoRFJHTFdqUXN5UjlBdkVacEJlam13cExpeDZjbmU0ZXd4MXN3Sll2M0VJMmVyZTZXUHNyZUdhT1o0OXFCRU1FTHdJNXh1SkVtQS1vQWp1RHBncVNXQ3gyc19TZDVrTWVVMjZMb2dXS0Z4ekVoSVpOOW1IQWpiYkRvbl9VTDl0YzNnR2xjY1NJelpmV0VvU0pNZGl2NUc0anczei1UM2o4OXRUMTFtMHNYek0xUU9DeFpNc0xNS1RnWTdqSGVGM1dQdjFsUmNfbllZUlRmMGh2ZW5EQ0dPRWdCS0hjLVNLQ3ZmdkxwLUVFUXlqYmNXTmNYSVg0X2FJR09tcV80UW5R?oc=5",
-      "source_name": "WSJ",
-      "description_notes": "raised $333 million in an oversubscribed final close, exceeding its target. The fund attracted strong investor demand, indicating robust confidence in Blueprint Equity's investment strategy and track record.",
-      "is_covered": false,
-      "covered_date": null,
-      "date_added": "2026-02-08T15:36:16",
-      "articles": [
-        {
-          "title": "Exclusive | Blueprint Equity Banks $333 Million for Oversubscribed Fund - The Wall Street Journal",
-          "url": "https://news.google.com/rss/articles/CBMiogNBVV95cUxQTm5nSzJ4QjBxM0VBMmZzTUFIbFBHSE1rRTFLOXhHSmdveEE3SlFOT00wWTNWVVVsSEFaYzVWYURzRkJrel9TbVFDb29SR1EtLWRVVkhSTjZTb0Y0S25RTXRoVjFEb183dWl6VHN1dk5LaFdyTlhBc3JfbG15eHhKSE83UC1VUjEyY3dVaGhBSy1qZ3pvM2tsM2MybEhHTUZGTkhoRFJHTFdqUXN5UjlBdkVacEJlam13cExpeDZjbmU0ZXd4MXN3Sll2M0VJMmVyZTZXUHNyZUdhT1o0OXFCRU1FTHdJNXh1SkVtQS1vQWp1RHBncVNXQ3gyc19TZDVrTWVVMjZMb2dXS0Z4ekVoSVpOOW1IQWpiYkRvbl9VTDl0YzNnR2xjY1NJelpmV0VvU0pNZGl2NUc0anczei1UM2o4OXRUMTFtMHNYek0xUU9DeFpNc0xNS1RnWTdqSGVGM1dQdjFsUmNfbllZUlRmMGh2ZW5EQ0dPRWdCS0hjLVNLQ3ZmdkxwLUVFUXlqYmNXTmNYSVg0X2FJR09tcV80UW5R?oc=5",
-          "source_name": "The Wall Street Journal",
-          "source_domain": "wsj.com",
-          "published_date": "2026-01-20",
-          "summary": "Exclusive | Blueprint Equity Banks $333 Million for Oversubscribed Fund&nbsp;&nbsp;The Wall Street Journal",
-          "feed_name": "search:Oversubscribed funds"
-        }
-      ],
-      "firm_website": null
     },
     {
       "fund_name": "Growth Street Partners Fund III",
@@ -3414,47 +3277,6 @@
         }
       ],
       "firm_website": "tortoiseadvisors.com"
-    },
-    {
-      "fund_name": "European Lower Middle Market Private Equity Fund",
-      "firm": "H.I.G. Capital",
-      "firm_slug": "h-i-g-capital",
-      "amount": "Undisclosed",
-      "amount_usd_millions": null,
-      "category": "Private Equity",
-      "location": "Miami, FL",
-      "city": "Miami",
-      "state": "FL",
-      "country": "US",
-      "stage": "Final Close",
-      "announcement_date": "2026-01-15",
-      "source_url": "https://news.google.com/rss/articles/CBMikAJBVV95cUxPaHowVFRMNS0zQ2hUX3paWkl4eTlqQnhGNC1uTDcydzFIZEtKLVdLWGtkak1OWUZLSXhQY3NjVExWanRQMmVmOER0Q05NdHB6cTFCTV9oa3NXckFFejU5b3BaWVV2NUQ3V0pHNVlMWkJQLW5QUUo0Tzhmc19ZaDN4Qnd1ZnhKU3VhUGlrYUFHOUJRcEVCNHRhM3dCd1RpejZSQmNXNGNEOGxKT1JFQnhVY1Q2VDhMbXhVUTNubWRuV1BWV3JwRUs3UnBjY2VnQ1d5aTJ3Y1pjeDA1TFFQMWlGRWFxb0dsNzRpT21RYXNIbjJ1TTB0SkxWV09kemJ5QUhLa2Z3a3RpNHpRSmpMRFdkYQ?oc=5",
-      "source_name": "Laotian Times",
-      "description_notes": "focuses on european lower middle market investments",
-      "is_covered": false,
-      "covered_date": null,
-      "date_added": "2026-02-08T01:42:57",
-      "articles": [
-        {
-          "title": "H.I.G. Capital Announces Closing of Oversubscribed European Lower Middle Market Private Equity Fund | Corporate - EQS News",
-          "url": "https://news.google.com/rss/articles/CBMikAJBVV95cUxPaHowVFRMNS0zQ2hUX3paWkl4eTlqQnhGNC1uTDcydzFIZEtKLVdLWGtkak1OWUZLSXhQY3NjVExWanRQMmVmOER0Q05NdHB6cTFCTV9oa3NXckFFejU5b3BaWVV2NUQ3V0pHNVlMWkJQLW5QUUo0Tzhmc19ZaDN4Qnd1ZnhKU3VhUGlrYUFHOUJRcEVCNHRhM3dCd1RpejZSQmNXNGNEOGxKT1JFQnhVY1Q2VDhMbXhVUTNubWRuV1BWV3JwRUs3UnBjY2VnQ1d5aTJ3Y1pjeDA1TFFQMWlGRWFxb0dsNzRpT21RYXNIbjJ1TTB0SkxWV09kemJ5QUhLa2Z3a3RpNHpRSmpMRFdkYQ?oc=5",
-          "source_name": "News",
-          "source_domain": "news.google.com",
-          "published_date": "2026-01-15",
-          "summary": "H.I.G. Capital Announces Closing of Oversubscribed European Lower Middle Market Private Equity Fund | Corporate&nbsp;&nbsp;EQS News",
-          "feed_name": "search:PE/VC fund closes"
-        },
-        {
-          "title": "H.I.G. Capital Announces Closing of Oversubscribed European Lower Middle Market Private Equity Fund - Laotian Times",
-          "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQd3BKSWloQ1JZUHhlOUFha3FWbnMxcG9DR3ZwcGdrTjN0ZS1FZjEtQ3h0ckxUMzY2UkxjaEdQb1hYM24zdHhXUXpWTGxwWkNqTUxfa0JzUW0wZlRXcEhNQVEycEU2dGc2YjVrQnBFUDd0N2dJN0l4QVRSUEJzTlhsMExNVFNfYlRxVlEzZXkxQ3pfQzlpaHRDZzFsVy1Tb2t2VGtjVkFWMzhlZXkwTWx5c3dGTFJHUjB1WmtDYlRjLVFsX1pibFEtMHRSSmlrdEto?oc=5",
-          "source_name": "News",
-          "source_domain": "news.google.com",
-          "published_date": "2026-01-15",
-          "summary": "H.I.G. Capital Announces Closing of Oversubscribed European Lower Middle Market Private Equity Fund&nbsp;&nbsp;Laotian Times",
-          "feed_name": "search:Oversubscribed funds"
-        }
-      ],
-      "firm_website": "higcapital.com"
     },
     {
       "fund_name": "Samara Capital Fund III",
@@ -5203,38 +5025,6 @@
           "source_domain": "news.google.com",
           "published_date": "2025-12-11",
           "summary": "IIT Bombay Launches India’s First Rs 250-Crore Deep Tech Fund&nbsp;&nbsp;GKToday",
-          "feed_name": "search:PE/VC fund closes"
-        }
-      ],
-      "firm_website": null
-    },
-    {
-      "fund_name": "Y-Point Venture Capital Fund",
-      "firm": "IIT-Bombay",
-      "firm_slug": "iit-bombay",
-      "amount": "₹250 Crore",
-      "amount_usd_millions": 250,
-      "category": "Venture Capital",
-      "location": "Mumbai, India",
-      "city": "Mumbai",
-      "state": "",
-      "country": "India",
-      "stage": "Launch",
-      "announcement_date": "2025-12-11",
-      "source_url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOb1E1U29zVERSZUFUMlZuNlVTMHM5NTRLM2RwNS1KTzh5TXh0WTJIOFZQN0V1ZUJHazNjSXVWVF9aRHRTYkZqem02MzZMaWZLNnZkLWZULTdqQi1zN0dmaWxfSHJwbzFvbjZ0RW81cXA4aTNHNzVWODZBTDhycDhvc1NodHpEWmJDRDFMU2pWSXJCeFFkc0ZidHlLY0FtQUR1V29zN0hZV04wSFBZR2k5Y0dQX2UyLTRWVGE4?oc=5",
-      "source_name": "Indian Masterminds",
-      "description_notes": "launches country's first deep tech venture capital fund",
-      "is_covered": false,
-      "covered_date": null,
-      "date_added": "2026-02-08T01:51:00",
-      "articles": [
-        {
-          "title": "Y-Point Venture Capital Fund: IIT-Bombay Launches Country’s First Deep Tech VC Fund Worth ₹250 Crore - Indian Masterminds",
-          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOb1E1U29zVERSZUFUMlZuNlVTMHM5NTRLM2RwNS1KTzh5TXh0WTJIOFZQN0V1ZUJHazNjSXVWVF9aRHRTYkZqem02MzZMaWZLNnZkLWZULTdqQi1zN0dmaWxfSHJwbzFvbjZ0RW81cXA4aTNHNzVWODZBTDhycDhvc1NodHpEWmJDRDFMU2pWSXJCeFFkc0ZidHlLY0FtQUR1V29zN0hZV04wSFBZR2k5Y0dQX2UyLTRWVGE4?oc=5",
-          "source_name": "News",
-          "source_domain": "news.google.com",
-          "published_date": "2025-12-11",
-          "summary": "Y-Point Venture Capital Fund: IIT-Bombay Launches Country’s First Deep Tech VC Fund Worth ₹250 Crore&nbsp;&nbsp;Indian Masterminds",
           "feed_name": "search:PE/VC fund closes"
         }
       ],
