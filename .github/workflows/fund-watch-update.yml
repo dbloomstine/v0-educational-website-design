@@ -62,7 +62,7 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
-          if git diff --quiet public/data/fund-directory.json; then
+          if git diff --quiet public/data/fund-directory.json public/data/covered-funds.json; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
@@ -73,7 +73,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/data/fund-directory.json
+          git add public/data/fund-directory.json public/data/covered-funds.json
           git commit -m "chore: automated fund watch update $(date +%Y-%m-%d)"
           git push
 
@@ -94,6 +94,17 @@ jobs:
           cat public/data/fund-directory.json | npx json stats
           echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 
+      - name: Notify Slack on Success
+        if: success() && steps.changes.outputs.has_changes == 'true' && env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          FUND_COUNT=$(cat public/data/fund-directory.json | jq '.stats.total_funds')
+          COVERED_COUNT=$(cat public/data/fund-directory.json | jq '.stats.total_covered')
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\":\"✅ Fund Watch updated successfully.\n• Total funds: ${FUND_COUNT}\n• Covered: ${COVERED_COUNT}\"}" \
+            $SLACK_WEBHOOK_URL
+
   notify-on-failure:
     needs: update-funds
     if: failure()
@@ -111,3 +122,13 @@ jobs:
               body: `The automated fund watch update workflow failed.\n\n**Run URL:** ${runUrl}\n\nPlease investigate and fix the issue.`,
               labels: ['automation', 'fund-watch', 'bug']
             });
+
+      - name: Notify Slack on Failure
+        if: env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          curl -X POST -H 'Content-type: application/json' \
+            --data "{\"text\":\"🚨 Fund Watch pipeline failed!\nCheck GitHub Actions: ${RUN_URL}\"}" \
+            $SLACK_WEBHOOK_URL

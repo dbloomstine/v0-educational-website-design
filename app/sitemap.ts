@@ -4,7 +4,7 @@ import { articles } from '@/lib/content/articles'
 import { getAllTools } from '@/lib/content/tools'
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://fundops.com'
+  const baseUrl = 'https://fundopshq.com'
 
   // Homepage
   const routes: MetadataRoute.Sitemap = [

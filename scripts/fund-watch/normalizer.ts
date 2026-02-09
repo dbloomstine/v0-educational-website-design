@@ -9,6 +9,7 @@ import {
   CATEGORY_KEYWORDS,
   STAGE_PATTERNS,
   AMOUNT_PATTERNS,
+  FX_RATES,
 } from './config';
 
 // ============================================================================
@@ -180,6 +181,25 @@ export function normalizeStage(stage: string): FundStage {
 // ============================================================================
 
 /**
+ * Get USD conversion rate for a currency
+ */
+function getUsdRate(currency: string): number {
+  switch (currency) {
+    case 'EUR':
+      return FX_RATES.EUR_USD;
+    case 'GBP':
+      return FX_RATES.GBP_USD;
+    case 'CAD':
+      return FX_RATES.CAD_USD;
+    case 'INR':
+      return FX_RATES.INR_USD;
+    case 'USD':
+    default:
+      return 1;
+  }
+}
+
+/**
  * Parse amount string to USD millions
  */
 export function parseAmountToMillions(amount: string): number | null {
@@ -190,11 +210,13 @@ export function parseAmountToMillions(amount: string): number | null {
     return null;
   }
 
-  for (const { regex, multiplier } of AMOUNT_PATTERNS) {
+  for (const { regex, multiplier, currency } of AMOUNT_PATTERNS) {
     const match = amount.match(regex);
     if (match) {
       const value = parseFloat(match[1]);
-      return Math.round(value * multiplier * 10) / 10; // Round to 1 decimal
+      const fxRate = getUsdRate(currency);
+      const usdMillions = value * multiplier * fxRate;
+      return Math.round(usdMillions * 10) / 10; // Round to 1 decimal
     }
   }
 

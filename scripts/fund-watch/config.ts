@@ -12,7 +12,7 @@ import type { FeedConfig, FundCategory, FundStage } from './types';
 
 export const PATHS = {
   FUND_DIRECTORY: 'public/data/fund-directory.json',
-  COVERED_FUNDS: process.env.HOME + '/.claude/fund-watch/covered-funds.json',
+  COVERED_FUNDS: 'public/data/covered-funds.json',
 } as const;
 
 // ============================================================================
@@ -507,22 +507,40 @@ export const SOURCE_DOMAIN_MAP: Record<string, string> = {
 };
 
 // ============================================================================
+// FX Rates (for converting non-USD amounts)
+// ============================================================================
+
+export const FX_RATES = {
+  EUR_USD: 1.08,
+  GBP_USD: 1.27,
+  CAD_USD: 0.74,
+  INR_USD: 0.012,
+  LAST_UPDATED: '2026-02-09',
+} as const;
+
+// ============================================================================
 // Amount Parsing Patterns
 // ============================================================================
 
 export const AMOUNT_PATTERNS = [
-  // $X.XB, $XB
-  { regex: /\$(\d+(?:\.\d+)?)\s*(?:billion|bn|b)\b/i, multiplier: 1000 },
-  // $X.XM, $XM
-  { regex: /\$(\d+(?:\.\d+)?)\s*(?:million|mn|m)\b/i, multiplier: 1 },
-  // €X.XB, €XB
-  { regex: /[€£](\d+(?:\.\d+)?)\s*(?:billion|bn|b)\b/i, multiplier: 1000 },
-  // €X.XM, €XM
-  { regex: /[€£](\d+(?:\.\d+)?)\s*(?:million|mn|m)\b/i, multiplier: 1 },
-  // C$X.XM
-  { regex: /C\$(\d+(?:\.\d+)?)\s*(?:million|mn|m)\b/i, multiplier: 1 },
-  // ₹XCr (Indian Crore = 10M)
-  { regex: /₹(\d+(?:\.\d+)?)\s*(?:crore|cr)\b/i, multiplier: 10 },
+  // $X.XB, $XB (USD)
+  { regex: /\$(\d+(?:\.\d+)?)\s*(?:billion|bn|b)\b/i, multiplier: 1000, currency: 'USD' },
+  // $X.XM, $XM (USD)
+  { regex: /\$(\d+(?:\.\d+)?)\s*(?:million|mn|m)\b/i, multiplier: 1, currency: 'USD' },
+  // €X.XB, €XB (EUR)
+  { regex: /€(\d+(?:\.\d+)?)\s*(?:billion|bn|b)\b/i, multiplier: 1000, currency: 'EUR' },
+  // €X.XM, €XM (EUR)
+  { regex: /€(\d+(?:\.\d+)?)\s*(?:million|mn|m)\b/i, multiplier: 1, currency: 'EUR' },
+  // £X.XB (GBP)
+  { regex: /£(\d+(?:\.\d+)?)\s*(?:billion|bn|b)\b/i, multiplier: 1000, currency: 'GBP' },
+  // £X.XM (GBP)
+  { regex: /£(\d+(?:\.\d+)?)\s*(?:million|mn|m)\b/i, multiplier: 1, currency: 'GBP' },
+  // C$X.XB (CAD)
+  { regex: /C\$(\d+(?:\.\d+)?)\s*(?:billion|bn|b)\b/i, multiplier: 1000, currency: 'CAD' },
+  // C$X.XM (CAD)
+  { regex: /C\$(\d+(?:\.\d+)?)\s*(?:million|mn|m)\b/i, multiplier: 1, currency: 'CAD' },
+  // ₹XCr (Indian Crore = 10M INR)
+  { regex: /₹(\d+(?:\.\d+)?)\s*(?:crore|cr)\b/i, multiplier: 10, currency: 'INR' },
 ];
 
 // ============================================================================

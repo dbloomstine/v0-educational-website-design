@@ -8,6 +8,7 @@
 const Parser = require('rss-parser');
 import type { FeedConfig, RawArticle, FeedHealth, RSSItem } from './types';
 import { PIPELINE_CONFIG, SOURCE_DOMAIN_MAP } from './config';
+import { shouldRetryDisabledFeed } from './feed-health';
 
 const parser = new Parser({
   timeout: PIPELINE_CONFIG.FEED_FETCH_TIMEOUT_MS,
@@ -153,40 +154,67 @@ export async function fetchAllFeeds(
     healthMap.set(h.feed_url, h);
   }
 
-  console.log(`[RSS] Fetching ${enabledFeeds.length} feeds...`);
+  // Find disabled feeds that should be retried
+  const feedsToRetry: FeedConfig[] = [];
+  for (const feed of feeds.filter((f) => f.type === 'rss')) {
+    const health = healthMap.get(feed.url);
+    if (health && !health.enabled && shouldRetryDisabledFeed(health)) {
+      feedsToRetry.push(feed);
+    }
+  }
 
-  for (const feed of enabledFeeds) {
+  if (feedsToRetry.length > 0) {
+    console.log(`[RSS] Will retry ${feedsToRetry.length} previously disabled feeds...`);
+  }
+
+  const allFeedsToFetch = [...enabledFeeds, ...feedsToRetry];
+  console.log(`[RSS] Fetching ${allFeedsToFetch.length} feeds (${enabledFeeds.length} enabled, ${feedsToRetry.length} retries)...`);
+
+  for (const feed of allFeedsToFetch) {
+    const isRetry = feedsToRetry.includes(feed);
     const { articles, health } = await fetchFeed(feed);
     allArticles.push(...articles);
 
     // Merge with existing health data
     const existing = healthMap.get(feed.url);
+    const newErrorCount = health.last_error
+      ? (existing?.error_count || 0) + 1
+      : 0;
+
+    // If retry succeeds, re-enable the feed
+    const shouldEnable = isRetry && !health.last_error;
+
     const updatedHealth: FeedHealth = {
       feed_name: health.feed_name!,
       feed_url: health.feed_url!,
       last_fetch: health.last_fetch!,
       last_success: health.last_success || existing?.last_success || null,
-      error_count: health.last_error
-        ? (existing?.error_count || 0) + 1
-        : 0,
+      error_count: health.last_error ? newErrorCount : 0,
       article_count: health.article_count || existing?.article_count || 0,
       last_error: health.last_error || '',
-      enabled:
-        health.last_error && (existing?.error_count || 0) + 1 >= 5
+      enabled: shouldEnable
+        ? true
+        : health.last_error && newErrorCount >= 5
           ? false
           : existing?.enabled ?? true,
     };
 
     healthUpdates.push(updatedHealth);
-    console.log(
-      `[RSS] ${feed.name}: ${articles.length} articles ${health.last_error ? '(error)' : ''}`
-    );
+
+    const statusStr = isRetry
+      ? shouldEnable
+        ? '(re-enabled!)'
+        : '(retry failed)'
+      : health.last_error
+        ? '(error)'
+        : '';
+    console.log(`[RSS] ${feed.name}: ${articles.length} articles ${statusStr}`);
 
     // Small delay between feeds to be polite
     await new Promise((resolve) => setTimeout(resolve, 500));
   }
 
-  console.log(`[RSS] Total: ${allArticles.length} articles from ${enabledFeeds.length} feeds`);
+  console.log(`[RSS] Total: ${allArticles.length} articles from ${allFeedsToFetch.length} feeds`);
   return { articles: allArticles, healthUpdates };
 }
 

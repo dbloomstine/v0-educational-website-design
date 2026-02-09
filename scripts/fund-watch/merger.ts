@@ -14,11 +14,25 @@ import type {
   FundDirectoryStats,
   FundCategory,
   FundStage,
+  FundArticle,
 } from './types';
 import { PATHS } from './config';
 import { fundExistsInDirectory, mergeFundData, createDedupeKey } from './deduplicator';
 import { enrichFund } from './fund-extractor';
 import { inferFirmWebsite } from './normalizer';
+
+/**
+ * Deduplicate articles by URL (strips query params and trailing slashes)
+ */
+function dedupeArticles(articles: FundArticle[]): FundArticle[] {
+  const seen = new Set<string>();
+  return articles.filter((a) => {
+    const key = a.url.split('?')[0].replace(/\/$/, '');
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
 
 /**
  * Load fund directory from JSON file
@@ -42,6 +56,11 @@ export async function saveFundDirectory(data: FundDirectory): Promise<void> {
 
   // Update generated_at timestamp
   data.generated_at = new Date().toISOString();
+
+  // Dedupe articles for all funds before saving
+  for (const fund of data.funds) {
+    fund.articles = dedupeArticles(fund.articles);
+  }
 
   // Recalculate stats
   data.stats = calculateStats(data.funds, data.feed_health);

@@ -153,6 +153,16 @@ export function isSimilarFund(
   // RULE 5: Same firm + normalized names similar (strips common words)
   if (sameFirm && normalizedSimilar) return true;
 
+  // RULE 6: Same firm + identical fund number (e.g., "Fund III" and "Fund III")
+  const aFundNum = extractFundNumber(a.fund_name);
+  const bFundNum = extractFundNumber(b.fund_name);
+  if (sameFirm && aFundNum === bFundNum && aFundNum !== '') return true;
+
+  // RULE 7: One fund name is substring of other (same firm, min 5 chars)
+  if (sameFirm && aNorm.length > 5 && bNorm.length > 5) {
+    if (aNorm.includes(bNorm) || bNorm.includes(aNorm)) return true;
+  }
+
   return false;
 }
 
@@ -236,6 +246,29 @@ export function fundExistsInDirectory(
 }
 
 /**
+ * Deduplicate articles by URL (strips query params and trailing slashes)
+ */
+function dedupeArticles(
+  articles: Array<{
+    title: string;
+    url: string;
+    source_name: string;
+    source_domain: string;
+    published_date: string;
+    summary: string;
+    feed_name: string;
+  }>
+): typeof articles {
+  const seen = new Set<string>();
+  return articles.filter((a) => {
+    const key = a.url.split('?')[0].replace(/\/$/, '');
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+/**
  * Merge new fund data into existing fund (update if newer)
  */
 export function mergeFundData(
@@ -248,6 +281,19 @@ export function mergeFundData(
 
   if (newDate > existingDate) {
     // New data is more recent - update relevant fields
+    const updatedArticles = dedupeArticles([
+      ...existing.articles,
+      {
+        title: `Update: ${newFund.fund_name}`,
+        url: newFund.source_url,
+        source_name: newFund.source_name,
+        source_domain: extractDomain(newFund.source_url),
+        published_date: newFund.announcement_date,
+        summary: newFund.description_notes,
+        feed_name: 'update',
+      },
+    ]);
+
     return {
       ...existing,
       amount: newFund.amount || existing.amount,
@@ -256,23 +302,35 @@ export function mergeFundData(
       stage: newFund.stage || existing.stage,
       announcement_date: newFund.announcement_date,
       description_notes: newFund.description_notes || existing.description_notes,
-      // Add new article to articles array
+      articles: updatedArticles,
+    };
+  }
+
+  // Existing data is same or newer - still check for new article URL
+  const newArticleUrl = newFund.source_url.split('?')[0].replace(/\/$/, '');
+  const hasUrl = existing.articles.some(
+    (a) => a.url.split('?')[0].replace(/\/$/, '') === newArticleUrl
+  );
+
+  if (!hasUrl) {
+    // Add the new article even if date is older (different source)
+    return {
+      ...existing,
       articles: [
         ...existing.articles,
         {
-          title: `Update: ${newFund.fund_name}`,
+          title: newFund.fund_name,
           url: newFund.source_url,
           source_name: newFund.source_name,
           source_domain: extractDomain(newFund.source_url),
           published_date: newFund.announcement_date,
           summary: newFund.description_notes,
-          feed_name: 'update',
+          feed_name: 'additional',
         },
       ],
     };
   }
 
-  // Existing data is same or newer - don't update
   return existing;
 }
 

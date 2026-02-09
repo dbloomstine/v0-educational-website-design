@@ -1,0 +1,544 @@
+{
+  "last_updated": "2026-02-06",
+  "schema_version": "2.0",
+  "covered_funds": [
+    {
+      "fund_name": "Andreessen Horowitz (Growth, Apps, Infrastructure, American Dynamism, Bio + Health)",
+      "firm": "Andreessen Horowitz",
+      "amount": "$15B",
+      "category": "Venture Capital",
+      "location": "Menlo Park",
+      "date_covered": "2026-01-09",
+      "announcement_date": "2026-01-09",
+      "source_url": "https://techcrunch.com/2026/01/09/the-venture-firm-that-ate-silicon-valley/"
+    },
+    {
+      "fund_name": "Monroe Capital Private Credit Fund V",
+      "firm": "Monroe Capital",
+      "amount": "$6.1B",
+      "category": "Credit Funds",
+      "location": "Chicago",
+      "date_covered": "2026-01-09",
+      "announcement_date": "2026-01-06",
+      "source_url": "https://www.businesswire.com/news/home/20260106001190/en/Monroe-Capital-Closes-6.1-Billion-in-New-Investable-Capital-for-its-Private-Credit-Strategy"
+    },
+    {
+      "fund_name": "Banner Ridge Secondary Fund VI",
+      "firm": "Banner Ridge Partners",
+      "amount": "$4.2B",
+      "category": "Secondaries & GP-Stakes",
+      "location": "New York",
+      "date_covered": "2026-01-09",
+      "announcement_date": "2026-01-06",
+      "source_url": "https://www.prnewswire.com/news-releases/banner-ridge-raises-4-2-billion-in-oversubscribed-secondary-fund-vi-302653426.html"
+    },
+    {
+      "fund_name": "Warburg Pincus Financial Sector III",
+      "firm": "Warburg Pincus",
+      "amount": "$3B",
+      "category": "Private Equity",
+      "location": "New York",
+      "date_covered": "2026-01-09",
+      "announcement_date": "2026-01-07",
+      "source_url": "https://www.prnewswire.com/news-releases/warburg-pincus-closes-on-3-0-billion-financial-services-fund-302654453.html"
+    },
+    {
+      "fund_name": "BV Investment Partners Fund XII",
+      "firm": "BV Investment Partners",
+      "amount": "$2.465B",
+      "category": "Private Equity",
+      "location": "Boston",
+      "date_covered": "2026-01-09",
+      "announcement_date": "2026-01-06",
+      "source_url": "https://sg.finance.yahoo.com/news/bv-investment-partners-announces-raising-123000635.html"
+    },
+    {
+      "fund_name": "Harvey Capital Partners (Debut Fund)",
+      "firm": "Harvey Capital Partners",
+      "amount": "$1.8B",
+      "category": "Credit Funds",
+      "location": "New York",
+      "date_covered": "2026-01-09",
+      "announcement_date": "2026-01-07",
+      "source_url": "https://www.bloomberg.com/news/articles/2026-01-07/harvey-capital-raises-1-8-billion-in-standout-hedge-fund-debut"
+    },
+    {
+      "fund_name": "AppWorks Fund IV",
+      "firm": "AppWorks",
+      "amount": "$165M",
+      "category": "Venture Capital",
+      "location": "Taipei",
+      "date_covered": "2026-01-09",
+      "announcement_date": "2026-01-07",
+      "source_url": "https://technode.global/2026/01/07/appworks-closes-fund-iv-to-lift-total-funds-raised-to-386m/"
+    },
+    {
+      "fund_name": "Creation Investments Impact Credit Fund II",
+      "firm": "Creation Investments",
+      "amount": "$46M",
+      "category": "Credit Funds",
+      "location": "Chicago",
+      "date_covered": "2026-01-09",
+      "announcement_date": "2026-01-07",
+      "source_url": "https://www.prnewswire.com/news-releases/creation-investments-announces-final-close-of-impact-credit-fund-ii-302655291.html"
+    },
+    {
+      "fund_name": "Coller Capital CIP IX",
+      "firm": "Coller Capital",
+      "amount": "$12.5B",
+      "category": "Secondaries & GP-Stakes",
+      "location": "London",
+      "date_covered": "2026-01-16",
+      "announcement_date": "2026-01-13",
+      "source_url": "https://www.collercapital.com/coller-capital-raises-17-billion-for-global-private-equity-secondaries-platform/"
+    },
+    {
+      "fund_name": "Ares Credit Secondaries Fund",
+      "firm": "Ares Management",
+      "amount": "$7.1B",
+      "category": "Secondaries & GP-Stakes",
+      "location": "Los Angeles",
+      "date_covered": "2026-01-16",
+      "announcement_date": "2026-01-12",
+      "source_url": "https://www.businesswire.com/news/home/20260112199694/en/Ares-Raises-Over-7-Billion-for-Leading-Credit-Secondaries-Strategy"
+    },
+    {
+      "fund_name": "Sixth Street Specialty Lending Europe III",
+      "firm": "Sixth Street",
+      "amount": "\u20ac3.75B",
+      "category": "Credit Funds",
+      "location": "San Francisco",
+      "date_covered": "2026-01-16",
+      "announcement_date": "2026-01-14",
+      "source_url": "https://www.businesswire.com/news/home/20260114643327/en/Sixth-Street-Raises-E3.75-Billion-for-Third-European-Direct-Lending-Fund"
+    },
+    {
+      "fund_name": "KKR Asia Credit Opportunities Fund II",
+      "firm": "KKR",
+      "amount": "$2.5B",
+      "category": "Credit Funds",
+      "location": "New York",
+      "date_covered": "2026-01-16",
+      "announcement_date": "2026-01-15",
+      "source_url": "https://www.alternativeswatch.com/2026/01/16/kkr-closes-asia-private-credit-opportunities-fund-ii/"
+    },
+    {
+      "fund_name": "AIP Fund V",
+      "firm": "AIP Management",
+      "amount": "\u20ac2B",
+      "category": "Infrastructure",
+      "location": "Copenhagen",
+      "date_covered": "2026-01-16",
+      "announcement_date": "2026-01-14",
+      "source_url": "https://www.infrastructureinvestor.com/aip-hits-e2bn-first-close-for-fifth-energy-transition-fund/"
+    },
+    {
+      "fund_name": "H.I.G. Europe Capital Partners IV",
+      "firm": "H.I.G. Capital",
+      "amount": "\u20ac1.6B",
+      "category": "Private Equity",
+      "location": "Miami",
+      "date_covered": "2026-01-16",
+      "announcement_date": "2026-01-15",
+      "source_url": "https://www.prnewswire.com/news-releases/hig-capital-announces-closing-of-oversubscribed-european-lower-middle-market-private-equity-fund-302661613.html"
+    },
+    {
+      "fund_name": "CBRE Real Estate Partners 2",
+      "firm": "CBRE Investment Management",
+      "amount": "$1.62B",
+      "category": "Real Estate",
+      "location": "Los Angeles",
+      "date_covered": "2026-01-16",
+      "announcement_date": "2026-01-14",
+      "source_url": "https://www.alternativeswatch.com/2026/01/14/cbre-im-closes-1-6bn-real-estate-secondaries-fund/"
+    },
+    {
+      "fund_name": "New Mountain Strategic Equity Fund II",
+      "firm": "New Mountain Capital",
+      "amount": "$1.2B",
+      "category": "Private Equity",
+      "location": "New York",
+      "date_covered": "2026-01-16",
+      "announcement_date": "2026-01-15",
+      "source_url": "https://www.businesswire.com/news/home/20260115448435/en/New-Mountain-Capital-Closes-on-1.2-Billion-for-New-Mountain-Strategic-Equity-Fund-II"
+    },
+    {
+      "fund_name": "RRJ Capital Structured Hybrid Opportunity Fund",
+      "firm": "RRJ Capital",
+      "amount": "$1.1B",
+      "category": "Credit Funds",
+      "location": "Singapore",
+      "date_covered": "2026-01-16",
+      "announcement_date": "2026-01-09",
+      "source_url": "https://pe-insights.com/rrj-launches-asia-credit-push-with-1-1bn-first-close/"
+    },
+    {
+      "fund_name": "Davidson Kempner Income Fund II",
+      "firm": "Davidson Kempner Capital Management",
+      "amount": "$1.1B",
+      "category": "Credit Funds",
+      "location": "New York",
+      "date_covered": "2026-01-16",
+      "announcement_date": "2026-01-08",
+      "source_url": "https://alternativecreditinvestor.com/2026/01/08/davidson-kempner-tops-1-1bn-with-second-income-fund/"
+    },
+    {
+      "fund_name": "Guidepost Growth Equity IV",
+      "firm": "Guidepost Growth Equity",
+      "amount": "$521M",
+      "category": "Private Equity",
+      "location": "Boston",
+      "date_covered": "2026-01-16",
+      "announcement_date": "2026-01-08",
+      "source_url": "https://www.businesswire.com/news/home/20260108412121/en/Guidepost-Growth-Equity-Raises-521-Million-Oversubscribed-Fourth-Fund"
+    },
+    {
+      "fund_name": "Westwood Energy Secondaries Fund II",
+      "firm": "Westwood Holdings Group",
+      "amount": "$300M",
+      "category": "Secondaries & GP-Stakes",
+      "location": "Dallas",
+      "date_covered": "2026-01-16",
+      "announcement_date": "2026-01-14",
+      "source_url": "https://www.globenewswire.com/news-release/2026/01/14/3218558/0/en/Westwood-Closes-Second-Flagship-Energy-Secondaries-Fund-with-More-Than-300-Million-Raised.html"
+    },
+    {
+      "fund_name": "Highland Rim Capital (Debut Fund)",
+      "firm": "Highland Rim Capital",
+      "amount": "$208M",
+      "category": "Private Equity",
+      "location": "Nashville",
+      "date_covered": "2026-01-16",
+      "announcement_date": "2026-01-05",
+      "source_url": "https://peprofessional.com/2026/01/highland-rim-capital-closes-208-million-debut-fund-above-target/"
+    },
+    {
+      "fund_name": "Crescent Credit Solutions VII CV",
+      "firm": "Crescent Capital Group / Pantheon",
+      "amount": "$3.2B",
+      "category": "Secondaries & GP-Stakes",
+      "location": "Los Angeles",
+      "date_covered": "2026-01-23",
+      "announcement_date": "2026-01-20",
+      "source_url": "https://www.businesswire.com/news/home/20260120639338/en/Crescent-Closes-$3.2-Billion-Private-Credit-Continuation-Vehicle"
+    },
+    {
+      "fund_name": "Amethis Fund III",
+      "firm": "Amethis / Edmond de Rothschild PE",
+      "amount": "\u20ac406M",
+      "category": "Private Equity",
+      "location": "Paris",
+      "date_covered": "2026-01-23",
+      "announcement_date": "2026-01-15",
+      "source_url": "https://amethis.com/en/amethis-and-edmond-de-rothschild-private-equity-announce-the-final-closing-of-amethis-fund-iii-in-line-with-its-target-at-eur-406m/"
+    },
+    {
+      "fund_name": "Sahel Capital Agribusiness Fund II",
+      "firm": "Sahel Capital",
+      "amount": "$29M",
+      "category": "Venture Capital",
+      "location": "Lagos",
+      "date_covered": "2026-01-23",
+      "announcement_date": "2026-01-16",
+      "source_url": "https://innovation-village.com/sahel-capital-agribusiness-fund-ii-announces-first-close/"
+    },
+    {
+      "fund_name": "CF Private Equity Co-Investment Opportunities V",
+      "firm": "CF Private Equity",
+      "amount": "$187M",
+      "category": "Private Equity",
+      "location": "Norwalk",
+      "date_covered": "2026-01-23",
+      "announcement_date": "2026-01-13",
+      "source_url": "https://www.commonfund.org/cf-private-equity/cf-private-equity-announces-the-final-close-of-its-fifth-co-investment-fund-at-187m-exceeding-its-target"
+    },
+    {
+      "fund_name": "Bansk Group Fund II",
+      "firm": "Bansk Group",
+      "amount": "$1.45B",
+      "category": "Private Equity",
+      "location": "New York",
+      "date_covered": "2026-01-23",
+      "announcement_date": "2026-01-12",
+      "source_url": "https://www.prnewswire.com/news-releases/bansk-group-closes-fund-ii-above-target-at-1-45-billion-302658160.html"
+    },
+    {
+      "fund_name": "Rosberg Ventures Fund III",
+      "firm": "Rosberg Ventures",
+      "amount": "$100M",
+      "category": "Venture Capital",
+      "location": "London",
+      "date_covered": "2026-01-23",
+      "announcement_date": "2026-01-12",
+      "source_url": "https://www.bloomberg.com/news/articles/2026-01-12/former-f1-champ-nico-rosberg-raises-100-million-for-vc-firm"
+    },
+    {
+      "fund_name": "Lindsay Goldberg Fund VI",
+      "firm": "Lindsay Goldberg",
+      "amount": "$4.9B",
+      "category": "Private Equity",
+      "location": "New York",
+      "date_covered": "2026-01-30",
+      "announcement_date": "2026-01-06",
+      "source_url": "https://www.businesswire.com/news/home/20260106666994/en/Lindsay-Goldberg-Raises-$4.9-Billion-for-Oversubscribed-Fund-VI"
+    },
+    {
+      "fund_name": "Goldman Sachs PECP IV",
+      "firm": "Goldman Sachs Alternatives",
+      "amount": "$2.8B",
+      "category": "Private Equity",
+      "location": "New York",
+      "date_covered": "2026-01-30",
+      "announcement_date": "2026-01-22",
+      "source_url": "https://am.gs.com/en-us/advisors/news/press-release/2026/PECP-final-close"
+    },
+    {
+      "fund_name": "Pinegrove Opportunity Partners I",
+      "firm": "Pinegrove Opportunity Partners",
+      "amount": "$2.2B",
+      "category": "Secondaries & GP-Stakes",
+      "location": "San Francisco",
+      "date_covered": "2026-01-30",
+      "announcement_date": "2026-01-22",
+      "source_url": "https://www.prnewswire.com/news-releases/pinegrove-opportunity-partners-raises-2-2-billion-for-inaugural-fund-302668494.html"
+    },
+    {
+      "fund_name": "Eldridge Diversified Credit Fund I",
+      "firm": "Eldridge / Carlyle AlpInvest",
+      "amount": "$1.5B",
+      "category": "Credit Funds",
+      "location": "Greenwich",
+      "date_covered": "2026-01-30",
+      "announcement_date": "2026-01-22",
+      "source_url": "https://www.alternativeswatch.com/2026/01/22/eldridge-carlyle-alpinvest-close-first-joint-secondaries-fund/"
+    },
+    {
+      "fund_name": "Springcoast Partners I",
+      "firm": "Springcoast Partners",
+      "amount": "$750M",
+      "category": "Private Equity",
+      "location": "New York",
+      "date_covered": "2026-01-30",
+      "announcement_date": "2026-01-06",
+      "source_url": "https://www.businesswire.com/news/home/20260106367847/en/Springcoast-Partners-Closes-Inaugural-Funds-with-$750-Million-in-Capital-Commitments"
+    },
+    {
+      "fund_name": "Catalio Structured Opportunities Fund II",
+      "firm": "Catalio Capital Management",
+      "amount": "$325M",
+      "category": "Credit Funds",
+      "location": "New York",
+      "date_covered": "2026-01-30",
+      "announcement_date": "2026-01-06",
+      "source_url": "https://alternativecreditinvestor.com/2026/01/08/catalio-raises-325m-at-close-of-second-healthcare-credit-fund/"
+    },
+    {
+      "fund_name": "McRock Capital Fund III",
+      "firm": "McRock Capital",
+      "amount": "C$120M",
+      "category": "Venture Capital",
+      "location": "Toronto",
+      "date_covered": "2026-01-30",
+      "announcement_date": "2026-01-05",
+      "source_url": "https://betakit.com/mcrock-capital-closes-120-million-in-third-fund-backing-industrial-software-startups/"
+    },
+    {
+      "fund_name": "2150 Fund II",
+      "firm": "2150",
+      "amount": "\u20ac210M",
+      "category": "Venture Capital",
+      "location": "London",
+      "stage": "final close",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-01-26",
+      "source_url": "https://techcrunch.com/2026/01/26/vc-firm-2150-raises-e210m-fund-to-solve-cities-climate-challenges/"
+    },
+    {
+      "fund_name": "SNAK Venture Partners Fund",
+      "firm": "SNAK Venture Partners",
+      "amount": "$50M",
+      "category": "Venture Capital",
+      "location": "New York",
+      "stage": "final close",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-02-04",
+      "source_url": "https://techcrunch.com/2026/02/04/snak-venture-partners-raises-50m-fund-to-back-digitizing-marketplaces/"
+    },
+    {
+      "fund_name": "Power Sustainable Infrastructure Credit Fund I",
+      "firm": "Power Sustainable",
+      "amount": "$1B+",
+      "category": "Credit Funds",
+      "location": "Montreal",
+      "stage": "final close",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-02-03",
+      "source_url": "https://www.prnewswire.com/news-releases/power-sustainable-announces-the-final-close-of-its-inaugural-infrastructure-credit-fund-302677026.html"
+    },
+    {
+      "fund_name": "Eurazeo & Pantheon Private Debt Continuation Vehicle",
+      "firm": "Eurazeo",
+      "amount": "\u20ac480M",
+      "category": "Credit Funds",
+      "location": "Paris",
+      "stage": "final close",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-02-03",
+      "source_url": "https://alternativecreditinvestor.com/2026/02/03/eurazeo-raises-e480m-for-private-debt-continuation-fund/"
+    },
+    {
+      "fund_name": "Nassau Credit Opportunities Fund",
+      "firm": "Nassau Financial Group",
+      "amount": "Undisclosed",
+      "category": "Credit Funds",
+      "location": "Hartford",
+      "stage": "launch",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-01-12",
+      "source_url": "https://alternativecreditinvestor.com/2026/01/12/nassau-launches-credit-opportunities-fund-targeting-us-and-europe/"
+    },
+    {
+      "fund_name": "Obra Capital CLO III",
+      "firm": "Obra Capital",
+      "amount": "$450M",
+      "category": "Credit Funds",
+      "location": "New York",
+      "stage": "final close",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-01-14",
+      "source_url": "https://alternativecreditinvestor.com/2026/01/14/obra-capital-hits-450m-for-third-clo/"
+    },
+    {
+      "fund_name": "Golub Capital GP-Led Secondaries Strategy",
+      "firm": "Golub Capital",
+      "amount": "$1B+",
+      "category": "Secondaries & GP-Stakes",
+      "location": "Chicago",
+      "stage": "launch",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-01-28",
+      "source_url": "https://golubcapital.com/news-insights/golub-capital-launches-gp-led-secondaries-strategy/"
+    },
+    {
+      "fund_name": "Blue Earth Capital Impact Secondaries",
+      "firm": "Blue Earth Capital",
+      "amount": "$100M+",
+      "category": "Secondaries & GP-Stakes",
+      "location": "Zug",
+      "stage": "first close",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-01-28",
+      "source_url": "https://www.esgtoday.com/impact-investor-blue-earth-capital-raises-100-million-for-new-secondaries-strategy/"
+    },
+    {
+      "fund_name": "PICTON Morningside Private Equity Fund",
+      "firm": "PICTON Investments / Morningside Capital",
+      "amount": "Undisclosed",
+      "category": "Secondaries & GP-Stakes",
+      "location": "Toronto",
+      "stage": "launch",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-02-02",
+      "source_url": "https://www.newswire.ca/news-releases/innovation-in-private-equity-picton-investments-launches-private-equity-fund-with-specialized-canadian-asset-manager-morningside-capital-inc--826148578.html"
+    },
+    {
+      "fund_name": "HighVista Private Equity Fund XI",
+      "firm": "HighVista Strategies",
+      "amount": "$800M",
+      "category": "Private Equity",
+      "location": "Boston",
+      "stage": "final close",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-02-03",
+      "source_url": "https://www.prnewswire.com/news-releases/highvista-closes-oversubscribed-private-equity-fund-xi-at-800-million-surpassing-target-302677399.html"
+    },
+    {
+      "fund_name": "CAZ GP Stakes Fund",
+      "firm": "CAZ Investments",
+      "amount": "Undisclosed",
+      "category": "Secondaries & GP-Stakes",
+      "location": "Houston",
+      "stage": "launch",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-02-03",
+      "source_url": "https://www.prnewswire.com/news-releases/caz-investments-announces-launch-of-the-caz-gp-stakes-fund-302677420.html"
+    },
+    {
+      "fund_name": "Otro Capital Fund I",
+      "firm": "Otro Capital",
+      "amount": "$1.2B",
+      "category": "Private Equity",
+      "location": "New York",
+      "stage": "final close",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-02-03",
+      "source_url": "https://www.businesswire.com/news/home/20260203296133/en/Otro-Capital-Closes-Oversubscribed-Inaugural-Sports-Fund-With-$1.2-Billion"
+    },
+    {
+      "fund_name": "Bayhawk Capital Fund I",
+      "firm": "Bayhawk Capital",
+      "amount": "$616M",
+      "category": "Private Equity",
+      "location": "Boston",
+      "stage": "final close",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-02-04",
+      "source_url": "https://www.kirkland.com/news/press-release/2026/02/kirkland-advises-bayhawk-on-final-close-of-inaugural-fund-at-over-$600-million"
+    },
+    {
+      "fund_name": "Mubadala Capital MCCF I",
+      "firm": "Mubadala Capital",
+      "amount": "$554M",
+      "category": "Private Equity",
+      "location": "Abu Dhabi",
+      "stage": "final close",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-01-28",
+      "source_url": "https://www.zawya.com/en/press-release/companies-news/mubadala-capital-closes-oversubscribed-inaugural-co-investment-fund-in-excess-of-550mln-tr4braar"
+    },
+    {
+      "fund_name": "CAVU Consumer Partners Fund V",
+      "firm": "CAVU Consumer Partners",
+      "amount": "$325M",
+      "category": "Private Equity",
+      "location": "Los Angeles",
+      "stage": "final close",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-02-03",
+      "source_url": "https://finance.yahoo.com/news/cavu-consumer-partners-closes-fifth-144500180.html"
+    },
+    {
+      "fund_name": "Voyager Ventures Fund II",
+      "firm": "Voyager Ventures",
+      "amount": "$275M",
+      "category": "Venture Capital",
+      "location": "San Francisco",
+      "stage": "launch",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-01-30",
+      "source_url": "https://www.esgtoday.com/voyager-ventures-launches-275-million-fund-to-invest-in-energy-industrial-climate-tech-startups/"
+    },
+    {
+      "fund_name": "DS2 Capital",
+      "firm": "DS2 Capital / Gallatin Point Capital",
+      "amount": "Undisclosed",
+      "category": "Credit Funds",
+      "location": "Charlotte",
+      "stage": "launch",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-02-06",
+      "source_url": "https://alternativecreditinvestor.com/2026/02/06/stephen-riddell-and-gallatin-point-capital-launch-clo-focused-credit-investment-firm/"
+    },
+    {
+      "fund_name": "Patrizia/Mitsui Emerging Asia Sustainable Infrastructure Fund",
+      "firm": "Patrizia / Mitsui",
+      "amount": "$300M",
+      "category": "Infrastructure",
+      "location": "Augsburg",
+      "stage": "launch",
+      "date_covered": "2026-02-06",
+      "announcement_date": "2026-02-02",
+      "source_url": "https://www.infrastructureinvestor.com/patrizia-and-mitsui-pivot-to-emerging-asia-with-300m-climate-fund-exclusive/"
+    }
+  ]
+}

@@ -113,6 +113,31 @@ export function resetFeedHealth(health: FeedHealth): FeedHealth {
 }
 
 /**
+ * Check if a disabled feed should be retried
+ * Retries disabled feeds after 24 hours to check if the issue resolved
+ */
+export function shouldRetryDisabledFeed(health: FeedHealth): boolean {
+  // Only consider disabled feeds
+  if (health.enabled) return false;
+
+  // If never fetched, definitely try
+  if (!health.last_fetch) return true;
+
+  // Retry if 24+ hours since last attempt
+  const lastFetch = new Date(health.last_fetch);
+  const hoursSinceFetch = (Date.now() - lastFetch.getTime()) / (1000 * 60 * 60);
+
+  return hoursSinceFetch >= 24;
+}
+
+/**
+ * Get feeds that should be retried (disabled but ready for retry)
+ */
+export function getFeedsToRetry(healthList: FeedHealth[]): FeedHealth[] {
+  return healthList.filter(shouldRetryDisabledFeed);
+}
+
+/**
  * Merge new health data with existing health list
  */
 export function mergeHealthLists(
