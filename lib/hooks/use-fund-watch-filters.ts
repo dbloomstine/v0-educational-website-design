@@ -13,7 +13,6 @@ export type SortField =
   | "stage"
   | "quarter"
   | "date"
-  | "date_added"
   | "city"
   | "state"
   | "country"
@@ -176,11 +175,6 @@ export function applySorting(funds: FundEntry[], sortField: SortField, sortDir: 
         const da = a.announcement_date ?? ""
         const db = b.announcement_date ?? ""
         return da.localeCompare(db) * dir
-      }
-      case "date_added": {
-        const daa = a.date_added ?? ""
-        const dab = b.date_added ?? ""
-        return daa.localeCompare(dab) * dir
       }
       case "city":
         return (a.city ?? "").localeCompare(b.city ?? "") * dir

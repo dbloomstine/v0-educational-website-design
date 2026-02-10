@@ -141,7 +141,7 @@ export function FundTable({
     const responsiveClass =
       colKey === "firm" || colKey === "category" || colKey === "stage"
         ? "hidden md:table-cell"
-        : colKey === "quarter" || colKey === "city" || colKey === "state" || colKey === "country" || colKey === "source_name" || colKey === "date_added" || colKey === "website"
+        : colKey === "quarter" || colKey === "city" || colKey === "state" || colKey === "country" || colKey === "source_name" || colKey === "website"
         ? "hidden lg:table-cell"
         : colKey === "date"
         ? "hidden sm:table-cell"
@@ -378,11 +378,6 @@ const FundRow = memo(function FundRow({
         {isVisible("date") && (
           <td className={`${cellClass} hidden sm:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
             {formatDate(fund.announcement_date)}
-          </td>
-        )}
-        {isVisible("date_added") && (
-          <td className={`${cellClass} hidden lg:table-cell text-sm text-muted-foreground whitespace-nowrap overflow-hidden text-ellipsis ${py}`}>
-            {fund.date_added ? formatDate(fund.date_added) : "N/A"}
           </td>
         )}
         {isVisible("city") && (

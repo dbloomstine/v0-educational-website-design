@@ -132,7 +132,7 @@ function MultiSelectFilter({
         </Button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-52 p-3">
-        <div className="space-y-2">
+        <div className="space-y-2 max-h-[60vh] overflow-y-auto">
           {options.map((opt) => (
             <div key={opt} className="flex items-center gap-2">
               <Checkbox

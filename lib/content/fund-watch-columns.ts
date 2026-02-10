@@ -78,14 +78,6 @@ export const COLUMNS: ColumnDef[] = [
     width: 120,
   },
   {
-    key: "date_added",
-    label: "Date Added",
-    defaultVisible: false,
-    sortKey: "date_added",
-    tooltip: "When this fund was added to FundWatch",
-    width: 120,
-  },
-  {
     key: "city",
     label: "City",
     defaultVisible: true,

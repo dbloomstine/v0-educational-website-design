@@ -235,7 +235,6 @@ function extractedToFund(extracted: ExtractedFund): Fund {
     description_notes: enriched.description_notes,
     is_covered: false,
     covered_date: null,
-    date_added: new Date().toISOString(),
     articles: [
       {
         title: enriched.fund_name,

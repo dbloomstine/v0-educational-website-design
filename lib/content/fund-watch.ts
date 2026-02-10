@@ -30,7 +30,6 @@ export interface FundEntry {
   description_notes: string
   is_covered: boolean
   covered_date: string | null
-  date_added: string | null
   articles: FundArticle[]
 }
 
