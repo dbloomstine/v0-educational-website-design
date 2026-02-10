@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-10T14:38:11.486Z",
+  "generated_at": "2026-02-10T14:48:12.572Z",
   "funds": [
     {
       "fund_name": "Fearless Fund Microfinance Fund",
@@ -1296,38 +1296,6 @@
       "target_geography": "North America"
     },
     {
-      "fund_name": "Hamilton Lane Infrastructure Fund",
-      "firm": "Hamilton Lane",
-      "firm_slug": "hamilton-lane",
-      "amount": "Undisclosed",
-      "amount_usd_millions": null,
-      "category": "Infrastructure",
-      "location": "Philadelphia, PA",
-      "city": "Philadelphia",
-      "state": "PA",
-      "country": "US",
-      "stage": "Final Close",
-      "announcement_date": "2026-02-03",
-      "source_url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPNHdRajVfNmtCTTFCTWtfTEhMRktTQkJPOXJlTXBrSU9nWWhiejMtTm5JNDU2Z1l1VkNmcUlUNHpjQkw0dlVBR2huaGRDMExMRXFLWmJidmU3TVlYbmZhdnAwY194dHVtcEtaWUVWaUktTkJxWnExV2syUUhKTDA5YktVbVVQQThTbXVzVjlsRzR1bUR1ZDVLdDhPRFJlZk0tMktEVGp0OWc5dzRCN2c?oc=5",
-      "source_name": "Financialnewswire",
-      "description_notes": "closes infrastructure fund after exceeding its fundraising target. Hamilton Lane secured commitments beyond its initial goal, demonstrating strong investor demand for infrastructure investments. The fund's final close marks a successful completion of the fundraising phase.",
-      "is_covered": false,
-      "covered_date": null,
-      "date_added": "2026-02-08T15:35:22",
-      "articles": [
-        {
-          "title": "Hamilton Lane closes infrastructure fund after exceeding target - Financial Newswire",
-          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPNHdRajVfNmtCTTFCTWtfTEhMRktTQkJPOXJlTXBrSU9nWWhiejMtTm5JNDU2Z1l1VkNmcUlUNHpjQkw0dlVBR2huaGRDMExMRXFLWmJidmU3TVlYbmZhdnAwY194dHVtcEtaWUVWaUktTkJxWnExV2syUUhKTDA5YktVbVVQQThTbXVzVjlsRzR1bUR1ZDVLdDhPRFJlZk0tMktEVGp0OWc5dzRCN2c?oc=5",
-          "source_name": "Financial Newswire",
-          "source_domain": "financialnewswire.com.au",
-          "published_date": "2026-02-03",
-          "summary": "Hamilton Lane closes infrastructure fund after exceeding target&nbsp;&nbsp;Financial Newswire",
-          "feed_name": "search:First/final close"
-        }
-      ],
-      "target_geography": "North America"
-    },
-    {
       "fund_name": "Infrastructure Opportunities Fund II",
       "firm": "Hamilton Lane",
       "firm_slug": "hamilton-lane",
@@ -1363,6 +1331,15 @@
           "source_domain": "seekingalpha.com",
           "published_date": "2026-02-02",
           "summary": "Hamilton Lane Closes on Nearly $2 Billion in Infrastructure Opportunities Fund II and Related Vehicles, Tripling Size of Predecessor Fund (2026-02-02)&nbsp;&nbsp;Seeking Alpha",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Hamilton Lane closes infrastructure fund after exceeding target - Financial Newswire",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPNHdRajVfNmtCTTFCTWtfTEhMRktTQkJPOXJlTXBrSU9nWWhiejMtTm5JNDU2Z1l1VkNmcUlUNHpjQkw0dlVBR2huaGRDMExMRXFLWmJidmU3TVlYbmZhdnAwY194dHVtcEtaWUVWaUktTkJxWnExV2syUUhKTDA5YktVbVVQQThTbXVzVjlsRzR1bUR1ZDVLdDhPRFJlZk0tMktEVGp0OWc5dzRCN2c?oc=5",
+          "source_name": "Financial Newswire",
+          "source_domain": "financialnewswire.com.au",
+          "published_date": "2026-02-03",
+          "summary": "Hamilton Lane closes infrastructure fund after exceeding target&nbsp;&nbsp;Financial Newswire",
           "feed_name": "search:First/final close"
         }
       ],
@@ -6992,7 +6969,7 @@
     {
       "firm": "Hamilton Lane",
       "firm_slug": "hamilton-lane",
-      "fund_count": 2,
+      "fund_count": 1,
       "total_aum_millions": 2000,
       "categories": ["Infrastructure"],
       "city": "Philadelphia",
@@ -8701,7 +8678,7 @@
     }
   ],
   "stats": {
-    "total_funds": 210,
+    "total_funds": 209,
     "total_covered": 52,
     "total_uncovered": 158,
     "total_aum_millions": 4590452.1,
