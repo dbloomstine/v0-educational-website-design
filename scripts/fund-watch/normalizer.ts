@@ -31,6 +31,7 @@ export function inferCategory(
   // Priority order for category detection
   const categoryPriority: FundCategory[] = [
     'Secondaries & GP-Stakes',
+    'Hedge Funds',
     'Infrastructure',
     'Real Estate',
     'Credit Funds',
@@ -53,6 +54,7 @@ export function inferCategory(
     'Real Estate',
     'Infrastructure',
     'Secondaries & GP-Stakes',
+    'Hedge Funds',
   ];
 
   if (existingCategory && validCategories.includes(existingCategory as FundCategory)) {
@@ -73,6 +75,7 @@ export function normalizeCategory(category: string): FundCategory {
     'Real Estate',
     'Infrastructure',
     'Secondaries & GP-Stakes',
+    'Hedge Funds',
   ];
 
   // Exact match
@@ -95,6 +98,10 @@ export function normalizeCategory(category: string): FundCategory {
     'secondaries': 'Secondaries & GP-Stakes',
     'gpstakes': 'Secondaries & GP-Stakes',
     'gp-stakes': 'Secondaries & GP-Stakes',
+    'hedge': 'Hedge Funds',
+    'hedgefund': 'Hedge Funds',
+    'multistrategy': 'Hedge Funds',
+    'globalmacro': 'Hedge Funds',
   };
 
   const lowerCategory = category.toLowerCase().replace(/[^a-z]/g, '');

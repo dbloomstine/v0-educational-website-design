@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-10T15:04:27.815Z",
+  "generated_at": "2026-02-10T15:44:09.253Z",
   "funds": [
     {
       "fund_name": "Fearless Fund Microfinance Fund",
@@ -6869,6 +6869,40 @@
       "strategy": "Early Stage"
     },
     {
+      "fund_name": "Berkshire Bridge Loan Investors-MF1 III",
+      "firm": "Berkshire Residential/Limekiln",
+      "firm_slug": "berkshire-residentiallimekiln",
+      "firm_website": null,
+      "amount": "$1.99B",
+      "amount_usd_millions": 1990,
+      "category": "Real Estate",
+      "strategy": "Value-Add",
+      "target_geography": "North America",
+      "location": "Boston, MA",
+      "city": "Boston",
+      "state": "MA",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-12-19",
+      "source_url": "https://investments.berkshireresidentialinvestments.com/berkshire-bridge-loan-investors-mf1-iii-l-p-held-a-final-close-on-december-19-2024-with-1-99-billion-of-capital-commitments/",
+      "source_name": "Berkshire Residential",
+      "description_notes": "Berkshire Bridge Loan Investors closed its third fund at $1.99B for multifamily bridge lending.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "Berkshire Bridge Loan Investors-MF1 III",
+          "url": "https://investments.berkshireresidentialinvestments.com/berkshire-bridge-loan-investors-mf1-iii-l-p-held-a-final-close-on-december-19-2024-with-1-99-billion-of-capital-commitments/",
+          "source_name": "Berkshire Residential",
+          "source_domain": "investments.berkshireresidentialinvestments.com",
+          "published_date": "2024-12-19",
+          "summary": "Berkshire Bridge Loan Investors closed its third fund at $1.99B for multifamily bridge lending.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
       "fund_name": "Antin Infrastructure Partners Fund V",
       "firm": "Antin Infrastructure Partners",
       "firm_slug": "antin-infrastructure-partners",
@@ -6933,6 +6967,40 @@
           "published_date": "2024-12-15",
           "summary": "Global private equity fund of funds exceeding target.",
           "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Valeas Capital Partners Fund I",
+      "firm": "Valeas Capital Partners",
+      "firm_slug": "valeas-capital-partners",
+      "firm_website": null,
+      "amount": "$600M",
+      "amount_usd_millions": 600,
+      "category": "Private Equity",
+      "strategy": "Lower Middle Market",
+      "target_geography": "North America",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-12-10",
+      "source_url": "https://peprofessional.com/new-funds-menu/",
+      "source_name": "PE Professional",
+      "description_notes": "Valeas Capital Partners closed its debut fund at $600M targeting lower middle market investments.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "Valeas Capital Partners Fund I",
+          "url": "https://peprofessional.com/new-funds-menu/",
+          "source_name": "PE Professional",
+          "source_domain": "peprofessional.com",
+          "published_date": "2024-12-10",
+          "summary": "Valeas Capital Partners closed its debut fund at $600M targeting lower middle market investments.",
+          "feed_name": "backfill"
         }
       ]
     },
@@ -7073,6 +7141,176 @@
       ]
     },
     {
+      "fund_name": "Asgard-Steno Global Macro Fund",
+      "firm": "Asgard Asset Management",
+      "firm_slug": "asgard-asset-management",
+      "firm_website": null,
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Hedge Funds",
+      "strategy": "Global Macro",
+      "target_geography": "Global",
+      "location": "Copenhagen, Denmark",
+      "city": "Copenhagen",
+      "state": "",
+      "country": "Denmark",
+      "stage": "Launch",
+      "announcement_date": "2024-12-01",
+      "source_url": "https://hedgenordic.com/2024/10/asgard-and-andreas-steno-unveil-global-macro-hedge-fund/",
+      "source_name": "HedgeNordic",
+      "description_notes": "Asgard Asset Management and Andreas Steno unveiled their global macro hedge fund launching December 2024.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:44:09.248Z",
+      "articles": [
+        {
+          "title": "Asgard-Steno Global Macro Fund",
+          "url": "https://hedgenordic.com/2024/10/asgard-and-andreas-steno-unveil-global-macro-hedge-fund/",
+          "source_name": "HedgeNordic",
+          "source_domain": "hedgenordic.com",
+          "published_date": "2024-12-01",
+          "summary": "Asgard Asset Management and Andreas Steno unveiled their global macro hedge fund launching December 2024.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "iCON Infrastructure Partners VII",
+      "firm": "iCON Infrastructure",
+      "firm_slug": "icon-infrastructure",
+      "firm_website": null,
+      "amount": "$4B",
+      "amount_usd_millions": 4000,
+      "category": "Infrastructure",
+      "strategy": "Core Infrastructure",
+      "target_geography": "Global",
+      "location": "London, UK",
+      "city": "London",
+      "state": "",
+      "country": "UK",
+      "stage": "Final Close",
+      "announcement_date": "2024-11-20",
+      "source_url": "https://realassets.ipe.com/news/icons-latest-infrastructure-fund-nears-4bn-final-close/10130180.article",
+      "source_name": "IPE Real Assets",
+      "description_notes": "iCON Infrastructure closed Fund VII near $4B for global infrastructure investments.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "iCON Infrastructure Partners VII",
+          "url": "https://realassets.ipe.com/news/icons-latest-infrastructure-fund-nears-4bn-final-close/10130180.article",
+          "source_name": "IPE Real Assets",
+          "source_domain": "realassets.ipe.com",
+          "published_date": "2024-11-20",
+          "summary": "iCON Infrastructure closed Fund VII near $4B for global infrastructure investments.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "Gramercy Capital Solutions Fund III",
+      "firm": "Gramercy Funds Management",
+      "firm_slug": "gramercy-funds-management",
+      "firm_website": null,
+      "amount": "$685M",
+      "amount_usd_millions": 685,
+      "category": "Credit Funds",
+      "strategy": "Distressed",
+      "target_geography": "Global",
+      "location": "Greenwich, CT",
+      "city": "Greenwich",
+      "state": "CT",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-11-18",
+      "source_url": "https://www.businesswire.com/news/home/20241118827551/en/Gramercy-Funds-Management-Announces-Close-of-Gramercy-Capital-Solutions-Fund-III",
+      "source_name": "Business Wire",
+      "description_notes": "Gramercy Funds closed its third capital solutions fund at $685M for opportunistic credit investments.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "Gramercy Capital Solutions Fund III",
+          "url": "https://www.businesswire.com/news/home/20241118827551/en/Gramercy-Funds-Management-Announces-Close-of-Gramercy-Capital-Solutions-Fund-III",
+          "source_name": "Business Wire",
+          "source_domain": "businesswire.com",
+          "published_date": "2024-11-18",
+          "summary": "Gramercy Funds closed its third capital solutions fund at $685M for opportunistic credit investments.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "QuadCP Fund II",
+      "firm": "Quad Capital Partners",
+      "firm_slug": "quad-capital-partners",
+      "firm_website": null,
+      "amount": "$210M",
+      "amount_usd_millions": 210,
+      "category": "Real Estate",
+      "strategy": "Value-Add",
+      "target_geography": "North America",
+      "location": "Los Angeles, CA",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-11-15",
+      "source_url": "https://www.dakota.com/resources/blog/november-2024-new-fund-launches",
+      "source_name": "Dakota",
+      "description_notes": "Quad Capital Partners launched its second real estate fund targeting $210M.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "QuadCP Fund II",
+          "url": "https://www.dakota.com/resources/blog/november-2024-new-fund-launches",
+          "source_name": "Dakota",
+          "source_domain": "dakota.com",
+          "published_date": "2024-11-15",
+          "summary": "Quad Capital Partners launched its second real estate fund targeting $210M.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "Artá Capital Fund III",
+      "firm": "Artá Capital",
+      "firm_slug": "art-capital",
+      "firm_website": null,
+      "amount": "€400M",
+      "amount_usd_millions": 432,
+      "category": "Private Equity",
+      "strategy": "Middle Market",
+      "target_geography": "Europe",
+      "location": "Madrid, Spain",
+      "city": "Madrid",
+      "state": "",
+      "country": "Spain",
+      "stage": "Final Close",
+      "announcement_date": "2024-11-11",
+      "source_url": "https://pitchbook.com/newsletter/global-vc-and-pe-fundraising-news-for-november-11-2024",
+      "source_name": "PitchBook",
+      "description_notes": "Spain-based Artá Capital closed its third private equity fund at €400M.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "Artá Capital Fund III",
+          "url": "https://pitchbook.com/newsletter/global-vc-and-pe-fundraising-news-for-november-11-2024",
+          "source_name": "PitchBook",
+          "source_domain": "pitchbook.com",
+          "published_date": "2024-11-11",
+          "summary": "Spain-based Artá Capital closed its third private equity fund at €400M.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
       "fund_name": "Altos Ventures Fund",
       "firm": "Altos Ventures",
       "firm_slug": "altos-ventures",
@@ -7103,6 +7341,74 @@
           "published_date": "2024-11-01",
           "summary": "Tech venture fund.",
           "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Kate Global Master Fund LP",
+      "firm": "Kate Capital",
+      "firm_slug": "kate-capital",
+      "firm_website": null,
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Hedge Funds",
+      "strategy": "Multi-Strategy",
+      "target_geography": "Global",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-11-01",
+      "source_url": "https://www.dakota.com/resources/blog/november-2024-new-fund-launches",
+      "source_name": "Dakota",
+      "description_notes": "Paul Podolsky launched Kate Global Master Fund LP, a multi-strategy hedge fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "Kate Global Master Fund LP",
+          "url": "https://www.dakota.com/resources/blog/november-2024-new-fund-launches",
+          "source_name": "Dakota",
+          "source_domain": "dakota.com",
+          "published_date": "2024-11-01",
+          "summary": "Paul Podolsky launched Kate Global Master Fund LP, a multi-strategy hedge fund.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "Harmonix Fund III",
+      "firm": "Harmonix",
+      "firm_slug": "harmonix",
+      "firm_website": null,
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Venture Capital",
+      "strategy": "Early Stage",
+      "target_geography": "North America",
+      "location": "San Francisco, CA",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-10-31",
+      "source_url": "https://www.prnewswire.com/news-releases/harmonix-announces-the-final-close-of-harmonix-fund-iii-on-october-31st-2024-302234317.html",
+      "source_name": "PR Newswire",
+      "description_notes": "Harmonix closed its third venture fund to continue investing in early-stage technology companies.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "Harmonix Fund III",
+          "url": "https://www.prnewswire.com/news-releases/harmonix-announces-the-final-close-of-harmonix-fund-iii-on-october-31st-2024-302234317.html",
+          "source_name": "PR Newswire",
+          "source_domain": "prnewswire.com",
+          "published_date": "2024-10-31",
+          "summary": "Harmonix closed its third venture fund to continue investing in early-stage technology companies.",
+          "feed_name": "backfill"
         }
       ]
     },
@@ -7243,6 +7549,40 @@
       ]
     },
     {
+      "fund_name": "WhiteHawk Fund IV",
+      "firm": "WhiteHawk Capital Partners",
+      "firm_slug": "whitehawk-capital-partners",
+      "firm_website": null,
+      "amount": "$1.1B",
+      "amount_usd_millions": 1100,
+      "category": "Credit Funds",
+      "strategy": "Direct Lending",
+      "target_geography": "North America",
+      "location": "Miami, FL",
+      "city": "Miami",
+      "state": "FL",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-10-22",
+      "source_url": "https://www.businesswire.com/news/home/20241022102071/en/WhiteHawk-Capital-Partners-LP-Announces-Over-1.1-Billion-of-Equity-Commitments",
+      "source_name": "Business Wire",
+      "description_notes": "WhiteHawk Capital Partners closed Fund IV at over $1.1B, exceeding its target offering size.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "WhiteHawk Fund IV",
+          "url": "https://www.businesswire.com/news/home/20241022102071/en/WhiteHawk-Capital-Partners-LP-Announces-Over-1.1-Billion-of-Equity-Commitments",
+          "source_name": "Business Wire",
+          "source_domain": "businesswire.com",
+          "published_date": "2024-10-22",
+          "summary": "WhiteHawk Capital Partners closed Fund IV at over $1.1B, exceeding its target offering size.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
       "fund_name": "Ares U.S. Real Estate Opportunity Fund IV",
       "firm": "Ares Management",
       "firm_slug": "ares-management",
@@ -7282,6 +7622,40 @@
           "published_date": "2024-10-15",
           "summary": "European opportunistic real estate fund, distinct from US fund.",
           "feed_name": "update"
+        }
+      ]
+    },
+    {
+      "fund_name": "NAACP Capital Fund of Funds",
+      "firm": "NAACP/Kapor Capital",
+      "firm_slug": "naacpkapor-capital",
+      "firm_website": null,
+      "amount": "$200M",
+      "amount_usd_millions": 200,
+      "category": "Venture Capital",
+      "strategy": "Early Stage",
+      "target_geography": "North America",
+      "location": "Baltimore, MD",
+      "city": "Baltimore",
+      "state": "MD",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-10-15",
+      "source_url": "https://naacp.org/articles/naacp-launches-innovative-200-million-fund-funds-transform-venture-capital-landscape",
+      "source_name": "NAACP",
+      "description_notes": "NAACP launched a $200M fund of funds to invest in VC managers supporting underrepresented founders.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "NAACP Capital Fund of Funds",
+          "url": "https://naacp.org/articles/naacp-launches-innovative-200-million-fund-funds-transform-venture-capital-landscape",
+          "source_name": "NAACP",
+          "source_domain": "naacp.org",
+          "published_date": "2024-10-15",
+          "summary": "NAACP launched a $200M fund of funds to invest in VC managers supporting underrepresented founders.",
+          "feed_name": "backfill"
         }
       ]
     },
@@ -7712,6 +8086,142 @@
       ]
     },
     {
+      "fund_name": "Perryridge Capital",
+      "firm": "Perryridge Capital",
+      "firm_slug": "perryridge-capital",
+      "firm_website": null,
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Hedge Funds",
+      "strategy": "Long-Short Equity",
+      "target_geography": "North America",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-09-01",
+      "source_url": "https://www.hedgeweek.com/forty-high-profile-hedge-fund-launches-expected-in-2024/",
+      "source_name": "Hedgeweek",
+      "description_notes": "Perryridge Capital launched as a long-short equity hedge fund in 2024.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:44:09.248Z",
+      "articles": [
+        {
+          "title": "Perryridge Capital",
+          "url": "https://www.hedgeweek.com/forty-high-profile-hedge-fund-launches-expected-in-2024/",
+          "source_name": "Hedgeweek",
+          "source_domain": "hedgeweek.com",
+          "published_date": "2024-09-01",
+          "summary": "Perryridge Capital launched as a long-short equity hedge fund in 2024.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "Create Health Ventures Fund I",
+      "firm": "Create Health Ventures",
+      "firm_slug": "create-health-ventures",
+      "firm_website": null,
+      "amount": "$21M",
+      "amount_usd_millions": 21,
+      "category": "Venture Capital",
+      "strategy": "Seed/Pre-Seed",
+      "target_geography": "North America",
+      "location": "Boston, MA",
+      "city": "Boston",
+      "state": "MA",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-08-15",
+      "source_url": "https://news.crunchbase.com/venture/monthly-funding-recap-august-2024/",
+      "source_name": "Crunchbase News",
+      "description_notes": "Create Health Ventures closed its debut fund at $21M to invest in healthcare startups.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "Create Health Ventures Fund I",
+          "url": "https://news.crunchbase.com/venture/monthly-funding-recap-august-2024/",
+          "source_name": "Crunchbase News",
+          "source_domain": "news.crunchbase.com",
+          "published_date": "2024-08-15",
+          "summary": "Create Health Ventures closed its debut fund at $21M to invest in healthcare startups.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "Arrowpoint Investment Partners",
+      "firm": "Arrowpoint Investment Partners",
+      "firm_slug": "arrowpoint-investment-partners",
+      "firm_website": null,
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Hedge Funds",
+      "strategy": "Multi-Strategy",
+      "target_geography": "Asia-Pacific",
+      "location": "Singapore",
+      "city": "Singapore",
+      "state": "",
+      "country": "Singapore",
+      "stage": "Launch",
+      "announcement_date": "2024-08-15",
+      "source_url": "https://www.efinancialcareers.com/news/hedge-fund-launches-2024",
+      "source_name": "eFinancialCareers",
+      "description_notes": "Arrowpoint Investment Partners launched in Singapore, founded by ex-Millennium PMs Jonathan Xiong and Joo Lee.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:44:09.248Z",
+      "articles": [
+        {
+          "title": "Arrowpoint Investment Partners",
+          "url": "https://www.efinancialcareers.com/news/hedge-fund-launches-2024",
+          "source_name": "eFinancialCareers",
+          "source_domain": "efinancialcareers.com",
+          "published_date": "2024-08-15",
+          "summary": "Arrowpoint Investment Partners launched in Singapore, founded by ex-Millennium PMs Jonathan Xiong and Joo Lee.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "Stonepeak Opportunities Fund",
+      "firm": "Stonepeak",
+      "firm_slug": "stonepeak",
+      "firm_website": null,
+      "amount": "$3.15B",
+      "amount_usd_millions": 3150,
+      "category": "Infrastructure",
+      "strategy": "Infrastructure Equity",
+      "target_geography": "North America",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-08-06",
+      "source_url": "https://stonepeak.com/news/stonepeak-closes-opportunities-fund-with-3-15-billion-of-commitments",
+      "source_name": "Stonepeak",
+      "description_notes": "Stonepeak closed its Opportunities Fund at $3.15B for higher-returning infrastructure investments.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "Stonepeak Opportunities Fund",
+          "url": "https://stonepeak.com/news/stonepeak-closes-opportunities-fund-with-3-15-billion-of-commitments",
+          "source_name": "Stonepeak",
+          "source_domain": "stonepeak.com",
+          "published_date": "2024-08-06",
+          "summary": "Stonepeak closed its Opportunities Fund at $3.15B for higher-returning infrastructure investments.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
       "fund_name": "Alpine Investors Continuation Fund",
       "firm": "Alpine Investors",
       "firm_slug": "alpine-investors",
@@ -7844,6 +8354,40 @@
           "published_date": "2024-07-17",
           "summary": "Growth equity fund targeting consumer and industrial companies.",
           "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "LongRiver Investments Fund I",
+      "firm": "LongRiver Investments",
+      "firm_slug": "longriver-investments",
+      "firm_website": null,
+      "amount": "$385M",
+      "amount_usd_millions": 385,
+      "category": "Venture Capital",
+      "strategy": "Growth Stage",
+      "target_geography": "Asia-Pacific",
+      "location": "Hong Kong",
+      "city": "Hong Kong",
+      "state": "",
+      "country": "Hong Kong",
+      "stage": "Final Close",
+      "announcement_date": "2024-07-15",
+      "source_url": "https://community.ionanalytics.com/avcj-private-equity-venture-capital-awards-shortlist-2024/fundraising-of-the-year-venture-capital-2024",
+      "source_name": "AVCJ",
+      "description_notes": "LongRiver Investments closed its debut Asia-focused venture fund at $385M.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "LongRiver Investments Fund I",
+          "url": "https://community.ionanalytics.com/avcj-private-equity-venture-capital-awards-shortlist-2024/fundraising-of-the-year-venture-capital-2024",
+          "source_name": "AVCJ",
+          "source_domain": "community.ionanalytics.com",
+          "published_date": "2024-07-15",
+          "summary": "LongRiver Investments closed its debut Asia-focused venture fund at $385M.",
+          "feed_name": "backfill"
         }
       ]
     },
@@ -7984,6 +8528,40 @@
       ]
     },
     {
+      "fund_name": "Jain Global",
+      "firm": "Jain Global",
+      "firm_slug": "jain-global",
+      "firm_website": null,
+      "amount": "$5.3B",
+      "amount_usd_millions": 5300,
+      "category": "Hedge Funds",
+      "strategy": "Multi-Strategy",
+      "target_geography": "Global",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-07-01",
+      "source_url": "https://www.hedgeweek.com/jain-global-to-launch-with-strong-asia-presence/",
+      "source_name": "Hedgeweek",
+      "description_notes": "Jain Global launched with $5.3B, one of the largest hedge fund launches since ExodusPoint in 2018, with strong Asia presence.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:44:09.248Z",
+      "articles": [
+        {
+          "title": "Jain Global",
+          "url": "https://www.hedgeweek.com/jain-global-to-launch-with-strong-asia-presence/",
+          "source_name": "Hedgeweek",
+          "source_domain": "hedgeweek.com",
+          "published_date": "2024-07-01",
+          "summary": "Jain Global launched with $5.3B, one of the largest hedge fund launches since ExodusPoint in 2018, with strong Asia presence.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
       "fund_name": "Astorg Continuation Fund",
       "firm": "Astorg",
       "firm_slug": "astorg",
@@ -8116,6 +8694,74 @@
           "published_date": "2024-07-01",
           "summary": "Southeast Asia mid-market buyout fund.",
           "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Lone Star Fund XII",
+      "firm": "Lone Star Funds",
+      "firm_slug": "lone-star-funds",
+      "firm_website": null,
+      "amount": "$5.3B",
+      "amount_usd_millions": 5300,
+      "category": "Private Equity",
+      "strategy": "Opportunistic",
+      "target_geography": "Global",
+      "location": "Dallas, TX",
+      "city": "Dallas",
+      "state": "TX",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-06-28",
+      "source_url": "https://www.businesswire.com/news/home/20240702999133/en/Lone-Star-Funds-Announces-Final-Closing-of-Lone-Star-Fund-XII",
+      "source_name": "Business Wire",
+      "description_notes": "Lone Star Funds closed Fund XII at $5.3B targeting opportunistic investments in real estate and distressed assets globally.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "Lone Star Fund XII",
+          "url": "https://www.businesswire.com/news/home/20240702999133/en/Lone-Star-Funds-Announces-Final-Closing-of-Lone-Star-Fund-XII",
+          "source_name": "Business Wire",
+          "source_domain": "businesswire.com",
+          "published_date": "2024-06-28",
+          "summary": "Lone Star Funds closed Fund XII at $5.3B targeting opportunistic investments in real estate and distressed assets globally.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "KLAR Partners Fund II",
+      "firm": "KLAR Partners",
+      "firm_slug": "klar-partners",
+      "firm_website": null,
+      "amount": "€870M",
+      "amount_usd_millions": 940,
+      "category": "Infrastructure",
+      "strategy": "Core Infrastructure",
+      "target_geography": "Europe",
+      "location": "Copenhagen, Denmark",
+      "city": "Copenhagen",
+      "state": "",
+      "country": "Denmark",
+      "stage": "Final Close",
+      "announcement_date": "2024-06-27",
+      "source_url": "https://www.prnewswire.com/news-releases/klar-partners-announces-the-final-close-of-fund-ii-at-870-million-302184367.html",
+      "source_name": "PR Newswire",
+      "description_notes": "KLAR Partners closed its second infrastructure fund at €870M focused on European mid-market infrastructure.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "KLAR Partners Fund II",
+          "url": "https://www.prnewswire.com/news-releases/klar-partners-announces-the-final-close-of-fund-ii-at-870-million-302184367.html",
+          "source_name": "PR Newswire",
+          "source_domain": "prnewswire.com",
+          "published_date": "2024-06-27",
+          "summary": "KLAR Partners closed its second infrastructure fund at €870M focused on European mid-market infrastructure.",
+          "feed_name": "backfill"
         }
       ]
     },
@@ -8358,6 +9004,40 @@
       ]
     },
     {
+      "fund_name": "Helix Partners",
+      "firm": "Helix Partners",
+      "firm_slug": "helix-partners",
+      "firm_website": null,
+      "amount": "$1.5B",
+      "amount_usd_millions": 1500,
+      "category": "Hedge Funds",
+      "strategy": "Event Driven",
+      "target_geography": "Global",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-06-01",
+      "source_url": "https://www.efinancialcareers.com/news/hedge-fund-launches-2024",
+      "source_name": "eFinancialCareers",
+      "description_notes": "Helix Partners launched with $1.5B backing from Millennium, focusing on distressed debt and event-driven strategies.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:44:09.248Z",
+      "articles": [
+        {
+          "title": "Helix Partners",
+          "url": "https://www.efinancialcareers.com/news/hedge-fund-launches-2024",
+          "source_name": "eFinancialCareers",
+          "source_domain": "efinancialcareers.com",
+          "published_date": "2024-06-01",
+          "summary": "Helix Partners launched with $1.5B backing from Millennium, focusing on distressed debt and event-driven strategies.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
       "fund_name": "Foresite Capital Fund VI",
       "firm": "Foresite Capital",
       "firm_slug": "foresite-capital",
@@ -8524,6 +9204,40 @@
           "published_date": "2024-06-01",
           "summary": "Canadian venture fund targeting tech companies.",
           "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Freestone Grove Partners",
+      "firm": "Freestone Grove",
+      "firm_slug": "freestone-grove",
+      "firm_website": null,
+      "amount": "$3.5B",
+      "amount_usd_millions": 3500,
+      "category": "Hedge Funds",
+      "strategy": "Multi-Strategy",
+      "target_geography": "Global",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-05-15",
+      "source_url": "https://www.efinancialcareers.com/news/hedge-fund-launches-2024",
+      "source_name": "eFinancialCareers",
+      "description_notes": "Freestone Grove Partners launched with $3.5B, one of the largest hedge fund launches of 2024.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.818Z",
+      "articles": [
+        {
+          "title": "Freestone Grove Partners",
+          "url": "https://www.efinancialcareers.com/news/hedge-fund-launches-2024",
+          "source_name": "eFinancialCareers",
+          "source_domain": "efinancialcareers.com",
+          "published_date": "2024-05-15",
+          "summary": "Freestone Grove Partners launched with $3.5B, one of the largest hedge fund launches of 2024.",
+          "feed_name": "backfill"
         }
       ]
     },
@@ -8834,6 +9548,40 @@
       ]
     },
     {
+      "fund_name": "Taula Capital",
+      "firm": "Taula Capital Management",
+      "firm_slug": "taula-capital-management",
+      "firm_website": null,
+      "amount": "$5B",
+      "amount_usd_millions": 5000,
+      "category": "Hedge Funds",
+      "strategy": "Multi-Strategy",
+      "target_geography": "Global",
+      "location": "Miami, FL",
+      "city": "Miami",
+      "state": "FL",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-04-15",
+      "source_url": "https://www.efinancialcareers.com/news/hedge-fund-launches-2024",
+      "source_name": "eFinancialCareers",
+      "description_notes": "Taula Capital launched with $5B, one of the largest hedge fund startups of 2024.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:44:09.248Z",
+      "articles": [
+        {
+          "title": "Taula Capital",
+          "url": "https://www.efinancialcareers.com/news/hedge-fund-launches-2024",
+          "source_name": "eFinancialCareers",
+          "source_domain": "efinancialcareers.com",
+          "published_date": "2024-04-15",
+          "summary": "Taula Capital launched with $5B, one of the largest hedge fund startups of 2024.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
       "fund_name": "Arctos Sports Partners Fund II",
       "firm": "Arctos Partners",
       "firm_slug": "arctos-partners",
@@ -9106,6 +9854,40 @@
       ]
     },
     {
+      "fund_name": "Benchstone Capital Management",
+      "firm": "Benchstone Capital",
+      "firm_slug": "benchstone-capital",
+      "firm_website": null,
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Hedge Funds",
+      "strategy": "Long-Short Equity",
+      "target_geography": "North America",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-04-01",
+      "source_url": "https://www.hedgeweek.com/forty-high-profile-hedge-fund-launches-expected-in-2024/",
+      "source_name": "Hedgeweek",
+      "description_notes": "Benchstone Capital Management launched as a long-short equity focused hedge fund in 2024.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:44:09.248Z",
+      "articles": [
+        {
+          "title": "Benchstone Capital Management",
+          "url": "https://www.hedgeweek.com/forty-high-profile-hedge-fund-launches-expected-in-2024/",
+          "source_name": "Hedgeweek",
+          "source_domain": "hedgeweek.com",
+          "published_date": "2024-04-01",
+          "summary": "Benchstone Capital Management launched as a long-short equity focused hedge fund in 2024.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
       "fund_name": "Hunter Point Capital Fund I",
       "firm": "Hunter Point Capital",
       "firm_slug": "hunter-point-capital",
@@ -9136,6 +9918,74 @@
           "published_date": "2024-03-29",
           "summary": "Debut GP stakes fund from Mubadala-backed firm.",
           "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "World Fund",
+      "firm": "World Fund",
+      "firm_slug": "world-fund",
+      "firm_website": null,
+      "amount": "€300M",
+      "amount_usd_millions": 324,
+      "category": "Venture Capital",
+      "strategy": "Sector-Specific",
+      "target_geography": "Europe",
+      "location": "Berlin, Germany",
+      "city": "Berlin",
+      "state": "",
+      "country": "Germany",
+      "stage": "Final Close",
+      "announcement_date": "2024-03-22",
+      "source_url": "https://www.worldfund.vc/articles/final-fund-closing-annoucement-at-300m-eur",
+      "source_name": "World Fund",
+      "description_notes": "Climate-focused VC World Fund closed at €300M to invest in European climate tech companies.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.817Z",
+      "articles": [
+        {
+          "title": "World Fund",
+          "url": "https://www.worldfund.vc/articles/final-fund-closing-annoucement-at-300m-eur",
+          "source_name": "World Fund",
+          "source_domain": "worldfund.vc",
+          "published_date": "2024-03-22",
+          "summary": "Climate-focused VC World Fund closed at €300M to invest in European climate tech companies.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "State Street Global Alternative Beta Fund",
+      "firm": "State Street Global Advisors",
+      "firm_slug": "state-street-global-advisors",
+      "firm_website": null,
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Hedge Funds",
+      "strategy": "Quantitative",
+      "target_geography": "Global",
+      "location": "Boston, MA",
+      "city": "Boston",
+      "state": "MA",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-03-15",
+      "source_url": "https://investors.statestreet.com/investor-news-events/press-releases/news-details/2024/State-Street-Global-Advisors-launches-Global-Alternative-Beta-fund/default.aspx",
+      "source_name": "State Street",
+      "description_notes": "State Street Global Advisors launched its Global Alternative Beta Fund for systematic hedge fund replication.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:44:09.248Z",
+      "articles": [
+        {
+          "title": "State Street Global Alternative Beta Fund",
+          "url": "https://investors.statestreet.com/investor-news-events/press-releases/news-details/2024/State-Street-Global-Advisors-launches-Global-Alternative-Beta-fund/default.aspx",
+          "source_name": "State Street",
+          "source_domain": "investors.statestreet.com",
+          "published_date": "2024-03-15",
+          "summary": "State Street Global Advisors launched its Global Alternative Beta Fund for systematic hedge fund replication.",
+          "feed_name": "backfill"
         }
       ]
     },
@@ -9378,6 +10228,176 @@
       ]
     },
     {
+      "fund_name": "Seroba Fund IV",
+      "firm": "Seroba",
+      "firm_slug": "seroba",
+      "firm_website": null,
+      "amount": "€123M",
+      "amount_usd_millions": 134,
+      "category": "Venture Capital",
+      "strategy": "Sector-Specific",
+      "target_geography": "Europe",
+      "location": "Dublin, Ireland",
+      "city": "Dublin",
+      "state": "",
+      "country": "Ireland",
+      "stage": "Final Close",
+      "announcement_date": "2024-02-01",
+      "source_url": "https://www.businesswire.com/news/home/20240129917649/en/Seroba-Announces-Above-Target-Final-Close-of-its-Fund-IV",
+      "source_name": "Business Wire",
+      "description_notes": "Seroba announced above-target final close of its Fund IV at €123M ($134M) for life sciences investments.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:44:09.248Z",
+      "articles": [
+        {
+          "title": "Seroba Fund IV",
+          "url": "https://www.businesswire.com/news/home/20240129917649/en/Seroba-Announces-Above-Target-Final-Close-of-its-Fund-IV",
+          "source_name": "Business Wire",
+          "source_domain": "businesswire.com",
+          "published_date": "2024-02-01",
+          "summary": "Seroba announced above-target final close of its Fund IV at €123M ($134M) for life sciences investments.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "WovenEarth Fund I",
+      "firm": "WovenEarth Ventures",
+      "firm_slug": "wovenearth-ventures",
+      "firm_website": null,
+      "amount": "$152M",
+      "amount_usd_millions": 152,
+      "category": "Venture Capital",
+      "strategy": "Sector-Specific",
+      "target_geography": "North America",
+      "location": "San Francisco, CA",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-01-31",
+      "source_url": "https://www.prnewswire.com/news-releases/wovenearth-ventures-closes-152m-us-early-stage-climate-tech-fund-of-funds-302064124.html",
+      "source_name": "PR Newswire",
+      "description_notes": "WovenEarth Ventures closed $152M for its US early-stage climate tech fund of funds.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:44:09.248Z",
+      "articles": [
+        {
+          "title": "WovenEarth Fund I",
+          "url": "https://www.prnewswire.com/news-releases/wovenearth-ventures-closes-152m-us-early-stage-climate-tech-fund-of-funds-302064124.html",
+          "source_name": "PR Newswire",
+          "source_domain": "prnewswire.com",
+          "published_date": "2024-01-31",
+          "summary": "WovenEarth Ventures closed $152M for its US early-stage climate tech fund of funds.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "Launchbay Capital VC Secondary Growth Fund",
+      "firm": "Launchbay Capital",
+      "firm_slug": "launchbay-capital",
+      "firm_website": null,
+      "amount": "$100M",
+      "amount_usd_millions": 100,
+      "category": "Secondaries & GP-Stakes",
+      "strategy": "LP Secondaries",
+      "target_geography": null,
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "First Close",
+      "announcement_date": "2024-01-23",
+      "source_url": "https://www.globenewswire.com/news-release/2024/01/23/2813937/0/en/Launchbay-Capital-Announces-First-Close-of-New-100m-VC-Secondary-Growth-Fund.html",
+      "source_name": "GlobeNewswire",
+      "description_notes": "Launchbay Capital announced first close of its $100M VC secondary growth fund with 25% already committed.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.817Z",
+      "articles": [
+        {
+          "title": "Launchbay Capital VC Secondary Growth Fund",
+          "url": "https://www.globenewswire.com/news-release/2024/01/23/2813937/0/en/Launchbay-Capital-Announces-First-Close-of-New-100m-VC-Secondary-Growth-Fund.html",
+          "source_name": "GlobeNewswire",
+          "source_domain": "globenewswire.com",
+          "published_date": "2024-01-23",
+          "summary": "Launchbay Capital announced first close of its $100M VC secondary growth fund with 25% already committed.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "AC Ventures Fund V",
+      "firm": "AC Ventures",
+      "firm_slug": "ac-ventures",
+      "firm_website": null,
+      "amount": "$210M",
+      "amount_usd_millions": 210,
+      "category": "Venture Capital",
+      "strategy": "Early Stage",
+      "target_geography": "Asia-Pacific",
+      "location": "Jakarta, Indonesia",
+      "city": "Jakarta",
+      "state": "",
+      "country": "Indonesia",
+      "stage": "Final Close",
+      "announcement_date": "2024-01-22",
+      "source_url": "https://techcrunch.com/2024/01/22/ac-ventures-fund-v/",
+      "source_name": "TechCrunch",
+      "description_notes": "Indonesia-focused VC firm AC Ventures closed its fifth fund at $210M to invest in Southeast Asian startups.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.817Z",
+      "articles": [
+        {
+          "title": "AC Ventures Fund V",
+          "url": "https://techcrunch.com/2024/01/22/ac-ventures-fund-v/",
+          "source_name": "TechCrunch",
+          "source_domain": "techcrunch.com",
+          "published_date": "2024-01-22",
+          "summary": "Indonesia-focused VC firm AC Ventures closed its fifth fund at $210M to invest in Southeast Asian startups.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "RidgeLake Partners GP Stakes Fund",
+      "firm": "RidgeLake Partners",
+      "firm_slug": "ridgelake-partners",
+      "firm_website": null,
+      "amount": "$1.1B",
+      "amount_usd_millions": 1100,
+      "category": "Secondaries & GP-Stakes",
+      "strategy": "GP-Led",
+      "target_geography": "North America",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-01-17",
+      "source_url": "https://www.prnewswire.com/news-releases/ridgelake-partners-holds-final-close-on-1-1-billion-for-its-inaugural-gp-stakes-fund-302036522.html",
+      "source_name": "PR Newswire",
+      "description_notes": "RidgeLake Partners (an Apogem Capital and OA Private Capital partnership) held final close on its inaugural GP stakes fund at $1.1B.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:44:09.246Z",
+      "articles": [
+        {
+          "title": "RidgeLake Partners GP Stakes Fund",
+          "url": "https://www.prnewswire.com/news-releases/ridgelake-partners-holds-final-close-on-1-1-billion-for-its-inaugural-gp-stakes-fund-302036522.html",
+          "source_name": "PR Newswire",
+          "source_domain": "prnewswire.com",
+          "published_date": "2024-01-17",
+          "summary": "RidgeLake Partners (an Apogem Capital and OA Private Capital partnership) held final close on its inaugural GP stakes fund at $1.1B.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
       "fund_name": "Carlyle CLO Equity Fund",
       "firm": "The Carlyle Group",
       "firm_slug": "the-carlyle-group",
@@ -9408,6 +10428,74 @@
           "published_date": "2024-01-15",
           "summary": "CLO equity investment fund.",
           "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "ABC Impact Fund II",
+      "firm": "ABC Impact",
+      "firm_slug": "abc-impact",
+      "firm_website": null,
+      "amount": "$550M",
+      "amount_usd_millions": 550,
+      "category": "Private Equity",
+      "strategy": "Growth Equity",
+      "target_geography": "Asia-Pacific",
+      "location": "Singapore",
+      "city": "Singapore",
+      "state": "",
+      "country": "Singapore",
+      "stage": "First Close",
+      "announcement_date": "2024-01-15",
+      "source_url": "https://www.prnewswire.com/apac/news-releases/singapores-abc-impact-secures-first-close-of-fund-ii-with-support-from-new-investors-302035215.html",
+      "source_name": "PR Newswire",
+      "description_notes": "Singapore's ABC Impact secured first close of Fund II at $550M+ with support from new investors.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:44:09.248Z",
+      "articles": [
+        {
+          "title": "ABC Impact Fund II",
+          "url": "https://www.prnewswire.com/apac/news-releases/singapores-abc-impact-secures-first-close-of-fund-ii-with-support-from-new-investors-302035215.html",
+          "source_name": "PR Newswire",
+          "source_domain": "prnewswire.com",
+          "published_date": "2024-01-15",
+          "summary": "Singapore's ABC Impact secured first close of Fund II at $550M+ with support from new investors.",
+          "feed_name": "backfill"
+        }
+      ]
+    },
+    {
+      "fund_name": "Banner Ridge Secondary Fund V",
+      "firm": "Banner Ridge Partners",
+      "firm_slug": "banner-ridge-partners",
+      "firm_website": null,
+      "amount": "$2.15B",
+      "amount_usd_millions": 2150,
+      "category": "Secondaries & GP-Stakes",
+      "strategy": "LP Secondaries",
+      "target_geography": null,
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-01-03",
+      "source_url": "https://www.prnewswire.com/news-releases/banner-ridge-raises-2-15-billion-in-oversubscribed-secondary-fund-v-302024685.html",
+      "source_name": "PR Newswire",
+      "description_notes": "Banner Ridge Partners closed its oversubscribed fifth secondaries fund, significantly exceeding its initial target.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:37:04.814Z",
+      "articles": [
+        {
+          "title": "Banner Ridge Secondary Fund V",
+          "url": "https://www.prnewswire.com/news-releases/banner-ridge-raises-2-15-billion-in-oversubscribed-secondary-fund-v-302024685.html",
+          "source_name": "PR Newswire",
+          "source_domain": "prnewswire.com",
+          "published_date": "2024-01-03",
+          "summary": "Banner Ridge Partners closed its oversubscribed fifth secondaries fund, significantly exceeding its initial target.",
+          "feed_name": "backfill"
         }
       ]
     }
@@ -11341,17 +12429,18 @@
     }
   ],
   "stats": {
-    "total_funds": 283,
+    "total_funds": 315,
     "total_covered": 52,
     "total_uncovered": 231,
-    "total_aum_millions": 4939708.1,
+    "total_aum_millions": 4978741.1,
     "by_category": {
-      "Venture Capital": 69,
-      "Private Equity": 74,
-      "Credit Funds": 49,
-      "Real Estate": 33,
-      "Infrastructure": 30,
-      "Secondaries & GP-Stakes": 28
+      "Venture Capital": 77,
+      "Private Equity": 78,
+      "Credit Funds": 51,
+      "Real Estate": 35,
+      "Infrastructure": 33,
+      "Secondaries & GP-Stakes": 31,
+      "Hedge Funds": 10
     },
     "by_stage": {
       "Final Close": 97,
@@ -11391,7 +12480,7 @@
     "article_count": 304,
     "feed_count": 16,
     "date_range": {
-      "earliest": "2024-01-15",
+      "earliest": "2024-01-03",
       "latest": "2026-02-07"
     }
   },

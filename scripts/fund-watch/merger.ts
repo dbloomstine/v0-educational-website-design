@@ -115,6 +115,7 @@ function calculateStats(
     'Real Estate': 0,
     'Infrastructure': 0,
     'Secondaries & GP-Stakes': 0,
+    'Hedge Funds': 0,
   };
 
   const byStage: Record<FundStage, number> = {

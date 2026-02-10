@@ -32,6 +32,7 @@ CATEGORIES (pick exactly one):
 - Real Estate
 - Infrastructure
 - Secondaries & GP-Stakes
+- Hedge Funds
 
 STRATEGIES (pick the most specific one that applies, or null if unclear):
 Venture Capital: Seed/Pre-Seed, Early Stage, Growth Stage, Late Stage, Sector-Specific
@@ -40,6 +41,7 @@ Credit Funds: Direct Lending, Mezzanine, Distressed, Specialty Finance, Asset-Ba
 Real Estate: Core, Core-Plus, Value-Add, Opportunistic, Development
 Infrastructure: Core Infrastructure, Infrastructure Equity, Energy Transition, Digital Infrastructure
 Secondaries: LP Secondaries, GP-Led, Direct Secondaries, Continuation Fund
+Hedge Funds: Long-Short Equity, Multi-Strategy, Global Macro, Event Driven, Quantitative, Arbitrage, Market Neutral
 
 TARGET GEOGRAPHY (pick exactly one, or null if unclear):
 - North America
@@ -170,6 +172,7 @@ function normalizeCategory(category: string): FundCategory {
     'Real Estate',
     'Infrastructure',
     'Secondaries & GP-Stakes',
+    'Hedge Funds',
   ];
 
   // Exact match
@@ -236,6 +239,8 @@ function normalizeStrategy(strategy: string | undefined): FundStrategy | null {
     'Core Infrastructure', 'Infrastructure Equity', 'Energy Transition', 'Digital Infrastructure',
     // Secondaries
     'LP Secondaries', 'GP-Led', 'Direct Secondaries', 'Continuation Fund',
+    // Hedge Funds
+    'Long-Short Equity', 'Multi-Strategy', 'Global Macro', 'Event Driven', 'Quantitative', 'Arbitrage', 'Market Neutral',
     'Other',
   ];
 
@@ -282,6 +287,23 @@ function normalizeStrategy(strategy: string | undefined): FundStrategy | null {
     'gp-led': 'GP-Led',
     'gp led': 'GP-Led',
     'continuation': 'Continuation Fund',
+    // Hedge Fund strategies
+    'long-short': 'Long-Short Equity',
+    'long short': 'Long-Short Equity',
+    'long/short': 'Long-Short Equity',
+    'multi-strategy': 'Multi-Strategy',
+    'multistrategy': 'Multi-Strategy',
+    'global macro': 'Global Macro',
+    'macro': 'Global Macro',
+    'event driven': 'Event Driven',
+    'event-driven': 'Event Driven',
+    'quantitative': 'Quantitative',
+    'quant': 'Quantitative',
+    'systematic': 'Quantitative',
+    'arbitrage': 'Arbitrage',
+    'relative value': 'Arbitrage',
+    'market neutral': 'Market Neutral',
+    'market-neutral': 'Market Neutral',
   };
 
   for (const [key, value] of Object.entries(strategyMap)) {

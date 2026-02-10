@@ -43,6 +43,10 @@ export function FundWatchMethodology() {
             <span>
               Sizes marked "Undisclosed" were not publicly reported
             </span>
+            <span className="text-border">•</span>
+            <span>
+              Data coverage begins January 2024
+            </span>
           </p>
           <button
             onClick={() => setExpanded(!expanded)}
@@ -63,7 +67,7 @@ export function FundWatchMethodology() {
               ))}
             </div>
             <p className="mt-3 text-xs text-muted-foreground/50 text-center">
-              Pipeline runs daily at 1 AM EST via GitHub Actions. Fund data is extracted using Claude AI and deduplicated automatically.
+              Pipeline runs daily at 1 AM EST via GitHub Actions. Fund data is extracted using Claude AI and deduplicated automatically. Data coverage: January 2024 to present.
             </p>
           </div>
         )}

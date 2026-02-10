@@ -91,6 +91,7 @@ export type FundCategory =
   | "Secondaries & GP-Stakes"
   | "Infrastructure"
   | "Real Estate"
+  | "Hedge Funds"
 
 export type FundStage = "first close" | "interim close" | "final close" | "launch" | "other"
 
@@ -109,6 +110,8 @@ export const CATEGORY_BADGE_CLASSES: Record<string, string> = {
     "bg-sky-950/50 text-sky-300 border-sky-800",
   "Real Estate":
     "bg-rose-950/50 text-rose-300 border-rose-800",
+  "Hedge Funds":
+    "bg-cyan-950/50 text-cyan-300 border-cyan-800",
 }
 
 // --- Helpers ---

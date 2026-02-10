@@ -14,7 +14,8 @@ export type FundCategory =
   | 'Credit Funds'
   | 'Real Estate'
   | 'Infrastructure'
-  | 'Secondaries & GP-Stakes';
+  | 'Secondaries & GP-Stakes'
+  | 'Hedge Funds';
 
 export type FundStage =
   | 'Launch'
@@ -58,6 +59,14 @@ export type FundStrategy =
   | 'GP-Led'
   | 'Direct Secondaries'
   | 'Continuation Fund'
+  // Hedge Fund strategies
+  | 'Long-Short Equity'
+  | 'Multi-Strategy'
+  | 'Global Macro'
+  | 'Event Driven'
+  | 'Quantitative'
+  | 'Arbitrage'
+  | 'Market Neutral'
   | 'Other';
 
 export type TargetGeography =

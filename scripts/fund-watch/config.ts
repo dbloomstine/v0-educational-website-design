@@ -95,6 +95,12 @@ export const FEEDS: FeedConfig[] = [
     type: 'rss',
     enabled: true,
   },
+  {
+    name: 'HFM Global',
+    url: 'https://www.hfm.global/feed/',
+    type: 'rss',
+    enabled: false, // Site appears to be down as of Feb 2026
+  },
 
   // Discovered feeds (added via feed-discovery)
   {
@@ -328,6 +334,8 @@ export const GOOGLE_NEWS_QUERIES = [
   'infrastructure fund close',
   'real estate fund close',
   'secondaries fund close',
+  'hedge fund launch',
+  'hedge fund close',
   'fund final close',
   'fund first close',
   'fund oversubscribed',
@@ -405,6 +413,23 @@ export const CATEGORY_KEYWORDS: Record<FundCategory, string[]> = {
     'lp secondary',
     'gp-led',
   ],
+  'Hedge Funds': [
+    'hedge fund',
+    'multi-strategy',
+    'multistrategy',
+    'global macro',
+    'long-short',
+    'long short',
+    'event driven',
+    'event-driven',
+    'market neutral',
+    'quantitative fund',
+    'systematic fund',
+    'arbitrage fund',
+    '2 and 20',
+    'two and twenty',
+    'high water mark',
+  ],
 };
 
 // ============================================================================
@@ -458,6 +483,14 @@ export const STRATEGY_KEYWORDS: Record<FundStrategy, string[]> = {
   'GP-Led': ['gp-led', 'gp led', 'sponsor-led', 'general partner led'],
   'Direct Secondaries': ['direct secondary', 'direct secondaries', 'co-investment secondary'],
   'Continuation Fund': ['continuation fund', 'continuation vehicle', 'single-asset continuation'],
+  // Hedge Fund strategies
+  'Long-Short Equity': ['long-short', 'long short', 'long/short', 'equity hedge'],
+  'Multi-Strategy': ['multi-strategy', 'multistrategy', 'multi strategy', 'diversified hedge'],
+  'Global Macro': ['global macro', 'macro fund', 'macro strategy'],
+  'Event Driven': ['event driven', 'event-driven', 'merger arbitrage', 'activist'],
+  'Quantitative': ['quantitative', 'quant fund', 'systematic', 'algorithmic', 'algo trading'],
+  'Arbitrage': ['arbitrage', 'relative value', 'statistical arbitrage', 'fixed income arbitrage'],
+  'Market Neutral': ['market neutral', 'market-neutral', 'beta neutral', 'equity market neutral'],
   'Other': [],
 };
 
@@ -552,6 +585,7 @@ export const SOURCE_DOMAIN_MAP: Record<string, string> = {
   // Alternatives general
   'altassets.net': 'AltAssets',
   'hedgeweek.com': 'Hedgeweek',
+  'hfm.global': 'HFM Global',
   'ai-cio.com': 'Chief Investment Officer',
   'esgtoday.com': 'ESG Today',
   'privatefundscfo.com': 'Private Funds CFO',
