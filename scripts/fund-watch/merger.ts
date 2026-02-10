@@ -14,6 +14,8 @@ import type {
   FundDirectoryStats,
   FundCategory,
   FundStage,
+  FundStrategy,
+  TargetGeography,
   FundArticle,
 } from './types';
 import { PATHS } from './config';
@@ -49,6 +51,32 @@ export async function loadFundDirectory(): Promise<FundDirectory> {
 }
 
 /**
+ * Extract unique strategies from funds
+ */
+function extractUniqueStrategies(funds: Fund[]): FundStrategy[] {
+  const unique = new Set<FundStrategy>();
+  for (const fund of funds) {
+    if (fund.strategy) {
+      unique.add(fund.strategy);
+    }
+  }
+  return [...unique].sort();
+}
+
+/**
+ * Extract unique geographies from funds
+ */
+function extractUniqueGeographies(funds: Fund[]): TargetGeography[] {
+  const unique = new Set<TargetGeography>();
+  for (const fund of funds) {
+    if (fund.target_geography) {
+      unique.add(fund.target_geography);
+    }
+  }
+  return [...unique].sort();
+}
+
+/**
  * Save fund directory to JSON file
  */
 export async function saveFundDirectory(data: FundDirectory): Promise<void> {
@@ -64,6 +92,10 @@ export async function saveFundDirectory(data: FundDirectory): Promise<void> {
 
   // Recalculate stats
   data.stats = calculateStats(data.funds, data.feed_health);
+
+  // Compute unique strategies and geographies
+  data.strategies = extractUniqueStrategies(data.funds);
+  data.geographies = extractUniqueGeographies(data.funds);
 
   await fs.writeFile(filePath, JSON.stringify(data, null, 2), 'utf-8');
   console.log(`[Merger] Saved fund directory with ${data.funds.length} funds`);
@@ -93,6 +125,9 @@ function calculateStats(
     'Other': 0,
   };
 
+  const byStrategy: Record<string, number> = {};
+  const byGeography: Record<string, number> = {};
+
   let totalAum = 0;
   let covered = 0;
   let articleCount = 0;
@@ -108,6 +143,16 @@ function calculateStats(
     // Stage count
     if (byStage[fund.stage] !== undefined) {
       byStage[fund.stage]++;
+    }
+
+    // Strategy count
+    if (fund.strategy) {
+      byStrategy[fund.strategy] = (byStrategy[fund.strategy] || 0) + 1;
+    }
+
+    // Geography count
+    if (fund.target_geography) {
+      byGeography[fund.target_geography] = (byGeography[fund.target_geography] || 0) + 1;
     }
 
     // AUM
@@ -139,6 +184,8 @@ function calculateStats(
     total_aum_millions: Math.round(totalAum * 10) / 10,
     by_category: byCategory,
     by_stage: byStage,
+    by_strategy: byStrategy,
+    by_geography: byGeography,
     article_count: articleCount,
     feed_count: feedHealth.length,
     date_range: {
@@ -174,6 +221,8 @@ function extractedToFund(extracted: ExtractedFund): Fund {
     amount: enriched.amount,
     amount_usd_millions: enriched.amount_usd_millions,
     category: enriched.category,
+    strategy: enriched.strategy,
+    target_geography: enriched.target_geography,
     location: enriched.location,
     city: enriched.city,
     state: enriched.state,

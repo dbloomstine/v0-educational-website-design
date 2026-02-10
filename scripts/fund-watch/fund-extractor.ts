@@ -10,6 +10,8 @@ import type {
   ClaudeExtractResponse,
   FundCategory,
   FundStage,
+  FundStrategy,
+  TargetGeography,
 } from './types';
 import {
   PIPELINE_CONFIG,
@@ -30,6 +32,22 @@ CATEGORIES (pick exactly one):
 - Real Estate
 - Infrastructure
 - Secondaries & GP-Stakes
+
+STRATEGIES (pick the most specific one that applies, or null if unclear):
+Venture Capital: Seed/Pre-Seed, Early Stage, Growth Stage, Late Stage, Sector-Specific
+Private Equity: Buyout, Growth Equity, Lower Middle Market, Middle Market, Large Cap
+Credit Funds: Direct Lending, Mezzanine, Distressed, Specialty Finance, Asset-Based
+Real Estate: Core, Core-Plus, Value-Add, Opportunistic, Development
+Infrastructure: Core Infrastructure, Infrastructure Equity, Energy Transition, Digital Infrastructure
+Secondaries: LP Secondaries, GP-Led, Direct Secondaries, Continuation Fund
+
+TARGET GEOGRAPHY (pick exactly one, or null if unclear):
+- North America
+- Europe
+- Asia-Pacific
+- Latin America
+- Middle East & Africa
+- Global (if multi-region or worldwide focus)
 
 STAGES (pick exactly one):
 - Final Close
@@ -62,6 +80,8 @@ JSON Format:
   "amount": "Original amount string (e.g., '$2.5B', '€500M', 'Undisclosed')",
   "amount_usd_millions": number or null,
   "category": "Category from list above",
+  "strategy": "Strategy from list above or null",
+  "target_geography": "Geography from list above or null",
   "location": "City, State/Country",
   "city": "City name",
   "state": "State code if US (e.g., 'NY', 'CA'), empty otherwise",
@@ -198,6 +218,136 @@ function normalizeStage(stage: string): FundStage {
 }
 
 /**
+ * Validate and normalize strategy
+ */
+function normalizeStrategy(strategy: string | undefined): FundStrategy | null {
+  if (!strategy) return null;
+
+  const validStrategies: FundStrategy[] = [
+    // VC
+    'Seed/Pre-Seed', 'Early Stage', 'Growth Stage', 'Late Stage', 'Sector-Specific',
+    // PE
+    'Buyout', 'Growth Equity', 'Lower Middle Market', 'Middle Market', 'Large Cap',
+    // Credit
+    'Direct Lending', 'Mezzanine', 'Distressed', 'Specialty Finance', 'Asset-Based',
+    // Real Estate
+    'Core', 'Core-Plus', 'Value-Add', 'Opportunistic', 'Development',
+    // Infrastructure
+    'Core Infrastructure', 'Infrastructure Equity', 'Energy Transition', 'Digital Infrastructure',
+    // Secondaries
+    'LP Secondaries', 'GP-Led', 'Direct Secondaries', 'Continuation Fund',
+    'Other',
+  ];
+
+  // Exact match
+  if (validStrategies.includes(strategy as FundStrategy)) {
+    return strategy as FundStrategy;
+  }
+
+  // Fuzzy match
+  const lowerStrategy = strategy.toLowerCase();
+  const strategyMap: Record<string, FundStrategy> = {
+    'seed': 'Seed/Pre-Seed',
+    'pre-seed': 'Seed/Pre-Seed',
+    'early': 'Early Stage',
+    'early-stage': 'Early Stage',
+    'growth': 'Growth Stage',
+    'late': 'Late Stage',
+    'late-stage': 'Late Stage',
+    'buyout': 'Buyout',
+    'lbo': 'Buyout',
+    'leveraged buyout': 'Buyout',
+    'lower middle': 'Lower Middle Market',
+    'middle market': 'Middle Market',
+    'large cap': 'Large Cap',
+    'mega cap': 'Large Cap',
+    'direct lending': 'Direct Lending',
+    'mezzanine': 'Mezzanine',
+    'distressed': 'Distressed',
+    'special situations': 'Distressed',
+    'specialty finance': 'Specialty Finance',
+    'asset-based': 'Asset-Based',
+    'core': 'Core',
+    'core-plus': 'Core-Plus',
+    'core plus': 'Core-Plus',
+    'value-add': 'Value-Add',
+    'value add': 'Value-Add',
+    'opportunistic': 'Opportunistic',
+    'development': 'Development',
+    'energy transition': 'Energy Transition',
+    'renewables': 'Energy Transition',
+    'digital infrastructure': 'Digital Infrastructure',
+    'data center': 'Digital Infrastructure',
+    'lp secondaries': 'LP Secondaries',
+    'gp-led': 'GP-Led',
+    'gp led': 'GP-Led',
+    'continuation': 'Continuation Fund',
+  };
+
+  for (const [key, value] of Object.entries(strategyMap)) {
+    if (lowerStrategy.includes(key)) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Validate and normalize target geography
+ */
+function normalizeGeography(geography: string | undefined): TargetGeography | null {
+  if (!geography) return null;
+
+  const validGeographies: TargetGeography[] = [
+    'North America',
+    'Europe',
+    'Asia-Pacific',
+    'Latin America',
+    'Middle East & Africa',
+    'Global',
+  ];
+
+  // Exact match
+  if (validGeographies.includes(geography as TargetGeography)) {
+    return geography as TargetGeography;
+  }
+
+  // Fuzzy match
+  const lowerGeo = geography.toLowerCase();
+  const geoMap: Record<string, TargetGeography> = {
+    'north america': 'North America',
+    'us': 'North America',
+    'united states': 'North America',
+    'canada': 'North America',
+    'europe': 'Europe',
+    'eu': 'Europe',
+    'european': 'Europe',
+    'asia': 'Asia-Pacific',
+    'asia-pacific': 'Asia-Pacific',
+    'apac': 'Asia-Pacific',
+    'pacific': 'Asia-Pacific',
+    'latin america': 'Latin America',
+    'latam': 'Latin America',
+    'south america': 'Latin America',
+    'middle east': 'Middle East & Africa',
+    'mena': 'Middle East & Africa',
+    'africa': 'Middle East & Africa',
+    'global': 'Global',
+    'worldwide': 'Global',
+    'multi-region': 'Global',
+  };
+
+  for (const [key, value] of Object.entries(geoMap)) {
+    if (lowerGeo.includes(key)) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+/**
  * Parse amount string to USD millions
  */
 function parseAmountToMillions(amount: string): number | null {
@@ -240,6 +390,8 @@ export async function extractFund(
       amount_usd_millions:
         result.amount_usd_millions ?? parseAmountToMillions(result.amount),
       category: normalizeCategory(result.category),
+      strategy: normalizeStrategy(result.strategy),
+      target_geography: normalizeGeography(result.target_geography),
       location: result.location || 'N/A',
       city: result.city || 'N/A',
       state: result.state || '',

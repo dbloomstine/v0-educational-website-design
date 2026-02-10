@@ -23,6 +23,8 @@ export interface FundWatchFilterState {
   q: string
   cat: string[]
   stage: string[]
+  strategy: string[]
+  geography: string[]
   size: AmountBucketKey
   from: string
   to: string
@@ -35,6 +37,8 @@ const DEFAULT_STATE: FundWatchFilterState = {
   q: "",
   cat: [],
   stage: [],
+  strategy: [],
+  geography: [],
   size: "all",
   from: "",
   to: "",
@@ -50,6 +54,8 @@ function stateToParams(state: FundWatchFilterState): URLSearchParams {
   if (state.q) params.set("q", state.q)
   if (state.cat.length > 0) params.set("cat", state.cat.join(","))
   if (state.stage.length > 0) params.set("stage", state.stage.join(","))
+  if (state.strategy.length > 0) params.set("strategy", state.strategy.join(","))
+  if (state.geography.length > 0) params.set("geo", state.geography.join(","))
   if (state.size !== "all") params.set("size", state.size)
   if (state.from) params.set("from", state.from)
   if (state.to) params.set("to", state.to)
@@ -69,6 +75,10 @@ function paramsToState(params: URLSearchParams): Partial<FundWatchFilterState> {
   if (cat) partial.cat = cat.split(",")
   const stage = params.get("stage")
   if (stage) partial.stage = stage.split(",")
+  const strategy = params.get("strategy")
+  if (strategy) partial.strategy = strategy.split(",")
+  const geo = params.get("geo")
+  if (geo) partial.geography = geo.split(",")
   const size = params.get("size")
   if (size) partial.size = size as AmountBucketKey
   const from = params.get("from")
@@ -113,6 +123,14 @@ export function applyFilters(funds: FundEntry[], state: FundWatchFilterState): F
 
   if (state.stage.length > 0) {
     result = result.filter((f) => state.stage.includes(f.stage))
+  }
+
+  if (state.strategy.length > 0) {
+    result = result.filter((f) => f.strategy && state.strategy.includes(f.strategy))
+  }
+
+  if (state.geography.length > 0) {
+    result = result.filter((f) => f.target_geography && state.geography.includes(f.target_geography))
   }
 
   if (state.size !== "all") {
@@ -226,6 +244,8 @@ export function useFundWatchFilters() {
   const setSearch = useCallback((q: string) => setState((s) => ({ ...s, q })), [setState])
   const setCategories = useCallback((cat: string[]) => setState((s) => ({ ...s, cat })), [setState])
   const setStages = useCallback((stage: string[]) => setState((s) => ({ ...s, stage })), [setState])
+  const setStrategies = useCallback((strategy: string[]) => setState((s) => ({ ...s, strategy })), [setState])
+  const setGeographies = useCallback((geography: string[]) => setState((s) => ({ ...s, geography })), [setState])
   const setSize = useCallback((size: AmountBucketKey) => setState((s) => ({ ...s, size })), [setState])
   const setDateRange = useCallback((from: string, to: string) => setState((s) => ({ ...s, from, to })), [setState])
   const setStatus = useCallback((_status: string) => { /* no-op: status hidden from public UI */ }, [])
@@ -264,6 +284,8 @@ export function useFundWatchFilters() {
     if (state.q) count++
     if (state.cat.length > 0) count++
     if (state.stage.length > 0) count++
+    if (state.strategy.length > 0) count++
+    if (state.geography.length > 0) count++
     if (state.size !== "all") count++
     if (state.from || state.to) count++
     for (const vals of Object.values(state.cf)) {
@@ -277,6 +299,8 @@ export function useFundWatchFilters() {
     setSearch,
     setCategories,
     setStages,
+    setStrategies,
+    setGeographies,
     setSize,
     setDateRange,
     setStatus,

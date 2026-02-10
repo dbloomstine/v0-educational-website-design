@@ -71,9 +71,29 @@ interface FundWatchClientProps {
   funds: FundEntry[]
   categories: string[]
   stages: string[]
+  strategies?: string[]
+  geographies?: string[]
 }
 
-export function FundWatchClient({ funds, categories, stages }: FundWatchClientProps) {
+export function FundWatchClient({ funds, categories, stages, strategies: propStrategies, geographies: propGeographies }: FundWatchClientProps) {
+  // Derive strategies and geographies from fund data if not provided
+  const strategies = useMemo(() => {
+    if (propStrategies && propStrategies.length > 0) return propStrategies
+    const unique = new Set<string>()
+    for (const f of funds) {
+      if (f.strategy) unique.add(f.strategy)
+    }
+    return [...unique].sort()
+  }, [funds, propStrategies])
+
+  const geographies = useMemo(() => {
+    if (propGeographies && propGeographies.length > 0) return propGeographies
+    const unique = new Set<string>()
+    for (const f of funds) {
+      if (f.target_geography) unique.add(f.target_geography)
+    }
+    return [...unique].sort()
+  }, [funds, propGeographies])
   const filterHook = useFundWatchFilters()
 
   const [visibleColumns, setVisibleColumns] = useLocalSetting(
@@ -169,6 +189,8 @@ export function FundWatchClient({ funds, categories, stages }: FundWatchClientPr
           state={filterHook.state}
           categories={categories}
           stages={stages}
+          strategies={strategies}
+          geographies={geographies}
           allFunds={funds}
           filteredCount={sorted.length}
           visibleColumns={visibleColumns}
@@ -176,6 +198,8 @@ export function FundWatchClient({ funds, categories, stages }: FundWatchClientPr
           onSetSearch={filterHook.setSearch}
           onSetCategories={filterHook.setCategories}
           onSetStages={filterHook.setStages}
+          onSetStrategies={filterHook.setStrategies}
+          onSetGeographies={filterHook.setGeographies}
           onSetSize={filterHook.setSize}
           onSetDateRange={filterHook.setDateRange}
           onSetStatus={filterHook.setStatus}

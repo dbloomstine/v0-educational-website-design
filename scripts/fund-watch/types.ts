@@ -23,6 +23,51 @@ export type FundStage =
   | 'Final Close'
   | 'Other';
 
+export type FundStrategy =
+  // Venture Capital strategies
+  | 'Seed/Pre-Seed'
+  | 'Early Stage'
+  | 'Growth Stage'
+  | 'Late Stage'
+  | 'Sector-Specific'
+  // Private Equity strategies
+  | 'Buyout'
+  | 'Growth Equity'
+  | 'Lower Middle Market'
+  | 'Middle Market'
+  | 'Large Cap'
+  // Credit strategies
+  | 'Direct Lending'
+  | 'Mezzanine'
+  | 'Distressed'
+  | 'Specialty Finance'
+  | 'Asset-Based'
+  // Real Estate strategies
+  | 'Core'
+  | 'Core-Plus'
+  | 'Value-Add'
+  | 'Opportunistic'
+  | 'Development'
+  // Infrastructure strategies
+  | 'Core Infrastructure'
+  | 'Infrastructure Equity'
+  | 'Energy Transition'
+  | 'Digital Infrastructure'
+  // Secondaries strategies
+  | 'LP Secondaries'
+  | 'GP-Led'
+  | 'Direct Secondaries'
+  | 'Continuation Fund'
+  | 'Other';
+
+export type TargetGeography =
+  | 'North America'
+  | 'Europe'
+  | 'Asia-Pacific'
+  | 'Latin America'
+  | 'Middle East & Africa'
+  | 'Global';
+
 // ============================================================================
 // Fund Entities
 // ============================================================================
@@ -45,6 +90,8 @@ export interface Fund {
   amount: string;
   amount_usd_millions: number | null;
   category: FundCategory;
+  strategy: FundStrategy | null;
+  target_geography: TargetGeography | null;
   location: string;
   city: string;
   state: string;
@@ -98,6 +145,8 @@ export interface FundDirectoryStats {
   total_aum_millions: number;
   by_category: Record<FundCategory, number>;
   by_stage: Record<FundStage, number>;
+  by_strategy: Record<string, number>;
+  by_geography: Record<string, number>;
   article_count: number;
   feed_count: number;
   date_range: {
@@ -109,6 +158,8 @@ export interface FundDirectoryStats {
 export interface FundDirectory {
   generated_at: string;
   funds: Fund[];
+  strategies: FundStrategy[];
+  geographies: TargetGeography[];
   feed_health: FeedHealth[];
   stats: FundDirectoryStats;
 }
@@ -173,6 +224,8 @@ export interface ExtractedFund {
   amount: string;
   amount_usd_millions: number | null;
   category: FundCategory;
+  strategy: FundStrategy | null;
+  target_geography: TargetGeography | null;
   location: string;
   city: string;
   state: string;
@@ -248,6 +301,8 @@ export interface ClaudeExtractResponse {
   amount: string;
   amount_usd_millions: number | null;
   category: string;
+  strategy?: string;
+  target_geography?: string;
   location: string;
   city: string;
   state: string;

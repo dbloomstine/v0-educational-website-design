@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { FundWatchClient } from "@/components/fund-watch/fund-watch-client"
 import { FundWatchMethodology } from "@/components/fund-watch/fund-watch-methodology"
+import { StaleDataBanner } from "@/components/fund-watch/stale-data-banner"
 import { getFundDirectoryData } from "@/lib/content/fund-watch-loader"
 import { Radio } from "lucide-react"
 
@@ -88,6 +89,8 @@ export default async function FundWatchPage() {
 
         <FundWatchMethodology />
 
+        {data && <StaleDataBanner generatedAt={data.generated_at} />}
+
         {data ? (
           <section className="py-6 pb-16">
             <div className="container mx-auto px-4">
@@ -96,6 +99,8 @@ export default async function FundWatchPage() {
                   funds={data.funds}
                   categories={data.categories}
                   stages={data.stages}
+                  strategies={data.strategies}
+                  geographies={data.geographies}
                 />
               </Suspense>
             </div>

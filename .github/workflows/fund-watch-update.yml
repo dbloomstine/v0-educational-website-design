@@ -123,6 +123,24 @@ jobs:
               labels: ['automation', 'fund-watch', 'bug']
             });
 
+      - name: Send Email Notification on Failure
+        if: env.RESEND_API_KEY != ''
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          NOTIFY_EMAIL: ${{ secrets.NOTIFY_EMAIL }}
+        run: |
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          DATE=$(date -u '+%Y-%m-%d')
+          curl -X POST 'https://api.resend.com/emails' \
+            -H "Authorization: Bearer ${RESEND_API_KEY}" \
+            -H 'Content-Type: application/json' \
+            -d "{
+              \"from\": \"FundWatch Pipeline <noreply@fundopshq.com>\",
+              \"to\": [\"${NOTIFY_EMAIL}\"],
+              \"subject\": \"Fund Watch Pipeline Failed - ${DATE}\",
+              \"html\": \"<h2>Fund Watch Pipeline Failed</h2><p>The automated fund watch update workflow failed on ${DATE}.</p><p><a href='${RUN_URL}'>View GitHub Actions Run</a></p><p>Please investigate and fix the issue.</p>\"
+            }"
+
       - name: Notify Slack on Failure
         if: env.SLACK_WEBHOOK_URL != ''
         env:

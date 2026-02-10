@@ -4,7 +4,7 @@
  * Feed URLs, category mappings, and constants for the automation pipeline.
  */
 
-import type { FeedConfig, FundCategory, FundStage } from './types';
+import type { FeedConfig, FundCategory, FundStage, FundStrategy, TargetGeography } from './types';
 
 // ============================================================================
 // File Paths
@@ -417,6 +417,79 @@ export const STAGE_PATTERNS: Record<FundStage, RegExp> = {
   'Interim Close': /\b(interim close|additional close|second close)\b/i,
   Launch: /\b(launch|debut|new fund|raising|targeting|announces? fund|begins? fundrais)\b/i,
   Other: /./,
+};
+
+// ============================================================================
+// Strategy Detection Keywords
+// ============================================================================
+
+export const STRATEGY_KEYWORDS: Record<FundStrategy, string[]> = {
+  // Venture Capital strategies
+  'Seed/Pre-Seed': ['seed', 'pre-seed', 'preseed', 'angel'],
+  'Early Stage': ['early stage', 'series a', 'series b', 'early-stage'],
+  'Growth Stage': ['growth stage', 'growth equity', 'series c', 'series d', 'expansion'],
+  'Late Stage': ['late stage', 'late-stage', 'pre-ipo', 'series e', 'series f'],
+  'Sector-Specific': ['sector-specific', 'fintech fund', 'healthcare fund', 'climate fund', 'ai fund'],
+  // Private Equity strategies
+  'Buyout': ['buyout', 'lbo', 'leveraged buyout', 'control investment', 'acquisition'],
+  'Growth Equity': ['growth equity', 'minority growth', 'growth capital'],
+  'Lower Middle Market': ['lower middle market', 'lower-middle', 'small-cap buyout'],
+  'Middle Market': ['middle market', 'mid-market', 'mid market'],
+  'Large Cap': ['large cap', 'large-cap', 'mega fund', 'mega-cap'],
+  // Credit strategies
+  'Direct Lending': ['direct lending', 'direct loan', 'senior debt', 'unitranche'],
+  'Mezzanine': ['mezzanine', 'mezz', 'junior debt', 'subordinated'],
+  'Distressed': ['distressed', 'special situations', 'turnaround', 'restructuring'],
+  'Specialty Finance': ['specialty finance', 'asset-backed', 'consumer credit', 'equipment finance'],
+  'Asset-Based': ['asset-based lending', 'abl', 'receivables'],
+  // Real Estate strategies
+  'Core': ['core real estate', 'stabilized properties', 'income-focused'],
+  'Core-Plus': ['core-plus', 'core plus', 'enhanced core'],
+  'Value-Add': ['value-add', 'value add', 'repositioning'],
+  'Opportunistic': ['opportunistic', 'development', 'ground-up'],
+  'Development': ['development', 'construction', 'ground-up'],
+  // Infrastructure strategies
+  'Core Infrastructure': ['core infrastructure', 'essential infrastructure', 'regulated assets'],
+  'Infrastructure Equity': ['infrastructure equity', 'infra equity'],
+  'Energy Transition': ['energy transition', 'renewable', 'clean energy', 'decarbonization', 'solar', 'wind'],
+  'Digital Infrastructure': ['digital infrastructure', 'data center', 'fiber', 'telecom tower', '5g'],
+  // Secondaries strategies
+  'LP Secondaries': ['lp secondary', 'lp secondaries', 'lp-led', 'limited partner secondary'],
+  'GP-Led': ['gp-led', 'gp led', 'sponsor-led', 'general partner led'],
+  'Direct Secondaries': ['direct secondary', 'direct secondaries', 'co-investment secondary'],
+  'Continuation Fund': ['continuation fund', 'continuation vehicle', 'single-asset continuation'],
+  'Other': [],
+};
+
+// ============================================================================
+// Geography Detection Keywords
+// ============================================================================
+
+export const GEOGRAPHY_KEYWORDS: Record<TargetGeography, string[]> = {
+  'North America': [
+    'north america', 'united states', 'u.s.', 'us-focused', 'american',
+    'canada', 'canadian', 'mexico', 'north american',
+  ],
+  'Europe': [
+    'europe', 'european', 'eu', 'uk', 'united kingdom', 'germany', 'france',
+    'nordic', 'benelux', 'southern europe', 'central europe', 'eastern europe',
+  ],
+  'Asia-Pacific': [
+    'asia', 'asia-pacific', 'apac', 'china', 'india', 'japan', 'korea',
+    'southeast asia', 'asean', 'australia', 'pacific', 'asian',
+  ],
+  'Latin America': [
+    'latin america', 'latam', 'south america', 'brazil', 'mexico', 'chile',
+    'colombia', 'argentina', 'peru', 'central america',
+  ],
+  'Middle East & Africa': [
+    'middle east', 'mena', 'africa', 'african', 'gcc', 'gulf',
+    'saudi', 'uae', 'emirates', 'sub-saharan', 'south africa', 'nigeria',
+  ],
+  'Global': [
+    'global', 'worldwide', 'multi-region', 'international', 'cross-border',
+    'pan-regional',
+  ],
 };
 
 // ============================================================================

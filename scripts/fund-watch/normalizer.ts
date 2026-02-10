@@ -4,12 +4,14 @@
  * Normalizes fund data (categories, stages, locations, amounts).
  */
 
-import type { ExtractedFund, FundCategory, FundStage } from './types';
+import type { ExtractedFund, FundCategory, FundStage, FundStrategy, TargetGeography } from './types';
 import {
   CATEGORY_KEYWORDS,
   STAGE_PATTERNS,
   AMOUNT_PATTERNS,
   FX_RATES,
+  STRATEGY_KEYWORDS,
+  GEOGRAPHY_KEYWORDS,
 } from './config';
 
 // ============================================================================
@@ -174,6 +176,142 @@ export function normalizeStage(stage: string): FundStage {
   }
 
   return 'Other';
+}
+
+// ============================================================================
+// Strategy Normalization
+// ============================================================================
+
+/**
+ * Infer strategy from fund name, category, and description
+ */
+export function inferStrategy(
+  fundName: string,
+  category: FundCategory,
+  description: string,
+  existingStrategy?: string | null
+): FundStrategy | null {
+  // If already has a valid strategy, keep it
+  if (existingStrategy) {
+    const validStrategies = Object.keys(STRATEGY_KEYWORDS) as FundStrategy[];
+    if (validStrategies.includes(existingStrategy as FundStrategy)) {
+      return existingStrategy as FundStrategy;
+    }
+  }
+
+  const text = `${fundName} ${description}`.toLowerCase();
+
+  // Check each strategy's keywords
+  for (const [strategy, keywords] of Object.entries(STRATEGY_KEYWORDS)) {
+    if (strategy === 'Other') continue;
+    if (keywords.some((kw) => text.includes(kw.toLowerCase()))) {
+      return strategy as FundStrategy;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Normalize strategy string to valid FundStrategy
+ */
+export function normalizeStrategy(strategy: string | null | undefined): FundStrategy | null {
+  if (!strategy) return null;
+
+  const validStrategies = Object.keys(STRATEGY_KEYWORDS) as FundStrategy[];
+
+  // Exact match
+  if (validStrategies.includes(strategy as FundStrategy)) {
+    return strategy as FundStrategy;
+  }
+
+  // Keyword-based match
+  const lowerStrategy = strategy.toLowerCase();
+  for (const [strat, keywords] of Object.entries(STRATEGY_KEYWORDS)) {
+    if (strat === 'Other') continue;
+    if (keywords.some((kw) => lowerStrategy.includes(kw))) {
+      return strat as FundStrategy;
+    }
+  }
+
+  return null;
+}
+
+// ============================================================================
+// Geography Normalization
+// ============================================================================
+
+/**
+ * Infer target geography from fund name, location, and description
+ */
+export function inferGeography(
+  fundName: string,
+  description: string,
+  country: string,
+  existingGeography?: string | null
+): TargetGeography | null {
+  // If already has a valid geography, keep it
+  if (existingGeography) {
+    const validGeographies = Object.keys(GEOGRAPHY_KEYWORDS) as TargetGeography[];
+    if (validGeographies.includes(existingGeography as TargetGeography)) {
+      return existingGeography as TargetGeography;
+    }
+  }
+
+  const text = `${fundName} ${description}`.toLowerCase();
+
+  // Check each geography's keywords
+  for (const [geo, keywords] of Object.entries(GEOGRAPHY_KEYWORDS)) {
+    if (keywords.some((kw) => text.includes(kw.toLowerCase()))) {
+      return geo as TargetGeography;
+    }
+  }
+
+  // Fallback: infer from country if available
+  if (country) {
+    const lowerCountry = country.toLowerCase();
+    if (['us', 'usa', 'united states', 'canada', 'mexico'].includes(lowerCountry)) {
+      return 'North America';
+    }
+    if (['uk', 'gb', 'germany', 'france', 'spain', 'italy', 'netherlands', 'sweden', 'norway', 'denmark', 'finland', 'switzerland'].includes(lowerCountry)) {
+      return 'Europe';
+    }
+    if (['china', 'japan', 'korea', 'india', 'singapore', 'australia', 'hong kong', 'taiwan', 'indonesia', 'vietnam', 'thailand', 'malaysia', 'philippines'].includes(lowerCountry)) {
+      return 'Asia-Pacific';
+    }
+    if (['brazil', 'argentina', 'chile', 'colombia', 'peru'].includes(lowerCountry)) {
+      return 'Latin America';
+    }
+    if (['saudi arabia', 'uae', 'qatar', 'kuwait', 'south africa', 'nigeria', 'egypt', 'kenya'].includes(lowerCountry)) {
+      return 'Middle East & Africa';
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Normalize geography string to valid TargetGeography
+ */
+export function normalizeGeography(geography: string | null | undefined): TargetGeography | null {
+  if (!geography) return null;
+
+  const validGeographies = Object.keys(GEOGRAPHY_KEYWORDS) as TargetGeography[];
+
+  // Exact match
+  if (validGeographies.includes(geography as TargetGeography)) {
+    return geography as TargetGeography;
+  }
+
+  // Keyword-based match
+  const lowerGeo = geography.toLowerCase();
+  for (const [geo, keywords] of Object.entries(GEOGRAPHY_KEYWORDS)) {
+    if (keywords.some((kw) => lowerGeo.includes(kw))) {
+      return geo as TargetGeography;
+    }
+  }
+
+  return null;
 }
 
 // ============================================================================
@@ -605,10 +743,28 @@ export function normalizeFund(fund: ExtractedFund): ExtractedFund {
   // Build normalized location string
   const location = normalizeLocation(city, state, country);
 
+  // Infer strategy if not set
+  const strategy = inferStrategy(
+    fund.fund_name,
+    category,
+    fund.description_notes,
+    fund.strategy
+  );
+
+  // Infer target geography if not set
+  const target_geography = inferGeography(
+    fund.fund_name,
+    fund.description_notes,
+    country,
+    fund.target_geography
+  );
+
   return {
     ...fund,
     category,
     stage,
+    strategy,
+    target_geography,
     amount_usd_millions: amountMillions,
     location,
     city: city || 'N/A',

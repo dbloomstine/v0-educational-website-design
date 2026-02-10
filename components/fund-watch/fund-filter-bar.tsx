@@ -82,6 +82,8 @@ interface FundFilterBarProps {
   state: FundWatchFilterState
   categories: string[]
   stages: string[]
+  strategies: string[]
+  geographies: string[]
   allFunds: FundEntry[]
   filteredCount: number
   visibleColumns: Set<string>
@@ -89,6 +91,8 @@ interface FundFilterBarProps {
   onSetSearch: (q: string) => void
   onSetCategories: (cat: string[]) => void
   onSetStages: (stage: string[]) => void
+  onSetStrategies: (strategy: string[]) => void
+  onSetGeographies: (geography: string[]) => void
   onSetSize: (size: AmountBucketKey) => void
   onSetDateRange: (from: string, to: string) => void
   onSetStatus: (status: string) => void
@@ -257,6 +261,8 @@ export function FundFilterBar({
   state,
   categories,
   stages,
+  strategies,
+  geographies,
   allFunds,
   filteredCount,
   visibleColumns,
@@ -264,6 +270,8 @@ export function FundFilterBar({
   onSetSearch,
   onSetCategories,
   onSetStages,
+  onSetStrategies,
+  onSetGeographies,
   onSetSize,
   onSetDateRange,
   onSetStatus,
@@ -283,6 +291,8 @@ export function FundFilterBar({
     state.q ||
     state.cat.length > 0 ||
     state.stage.length > 0 ||
+    state.strategy.length > 0 ||
+    state.geography.length > 0 ||
     state.size !== "all" ||
     state.from ||
     state.to ||
@@ -298,6 +308,12 @@ export function FundFilterBar({
   }
   for (const s of state.stage) {
     chips.push({ label: s, onRemove: () => onSetStages(state.stage.filter((x) => x !== s)) })
+  }
+  for (const s of state.strategy) {
+    chips.push({ label: `Strategy: ${s}`, onRemove: () => onSetStrategies(state.strategy.filter((x) => x !== s)) })
+  }
+  for (const g of state.geography) {
+    chips.push({ label: `Geo: ${g}`, onRemove: () => onSetGeographies(state.geography.filter((x) => x !== g)) })
   }
   if (state.size !== "all") {
     const bucket = AMOUNT_BUCKETS.find((b) => b.key === state.size)
@@ -332,6 +348,22 @@ export function FundFilterBar({
         selected={state.stage}
         onSelectionChange={onSetStages}
       />
+      {strategies.length > 0 && (
+        <MultiSelectFilter
+          label="Strategy"
+          options={strategies}
+          selected={state.strategy}
+          onSelectionChange={onSetStrategies}
+        />
+      )}
+      {geographies.length > 0 && (
+        <MultiSelectFilter
+          label="Geography"
+          options={geographies}
+          selected={state.geography}
+          onSelectionChange={onSetGeographies}
+        />
+      )}
       <Select value={state.size} onValueChange={(v) => onSetSize(v as AmountBucketKey)}>
         <SelectTrigger className="w-[140px] h-9 text-sm">
           <SelectValue />
@@ -430,6 +462,48 @@ export function FundFilterBar({
                     ))}
                   </div>
                 </div>
+                {/* Strategy */}
+                {strategies.length > 0 && (
+                  <div>
+                    <Label className="text-xs text-muted-foreground mb-2 block">Strategy</Label>
+                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                      {strategies.map((s) => (
+                        <div key={s} className="flex items-center gap-2">
+                          <Checkbox
+                            id={`mob-strategy-${s}`}
+                            checked={state.strategy.includes(s)}
+                            onCheckedChange={(checked) => {
+                              if (checked) onSetStrategies([...state.strategy, s])
+                              else onSetStrategies(state.strategy.filter((x) => x !== s))
+                            }}
+                          />
+                          <Label htmlFor={`mob-strategy-${s}`} className="text-sm font-normal cursor-pointer">{s}</Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {/* Geography */}
+                {geographies.length > 0 && (
+                  <div>
+                    <Label className="text-xs text-muted-foreground mb-2 block">Geography</Label>
+                    <div className="space-y-2">
+                      {geographies.map((g) => (
+                        <div key={g} className="flex items-center gap-2">
+                          <Checkbox
+                            id={`mob-geo-${g}`}
+                            checked={state.geography.includes(g)}
+                            onCheckedChange={(checked) => {
+                              if (checked) onSetGeographies([...state.geography, g])
+                              else onSetGeographies(state.geography.filter((x) => x !== g))
+                            }}
+                          />
+                          <Label htmlFor={`mob-geo-${g}`} className="text-sm font-normal cursor-pointer">{g}</Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 {/* Amount */}
                 <div>
                   <Label className="text-xs text-muted-foreground mb-2 block">Amount</Label>

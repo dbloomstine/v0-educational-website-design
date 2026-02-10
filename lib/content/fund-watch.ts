@@ -17,6 +17,8 @@ export interface FundEntry {
   amount: string
   amount_usd_millions: number | null
   category: string
+  strategy: string | null
+  target_geography: string | null
   location: string
   city: string
   state: string
@@ -74,6 +76,8 @@ export interface FundDirectoryData {
   managers?: ManagerEntry[]
   categories: string[]
   stages: string[]
+  strategies: string[]
+  geographies: string[]
   feed_health: FeedHealthEntry[]
   stats: FundWatchStats
 }
