@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-10T16:24:21.855Z",
+  "generated_at": "2026-02-10T16:40:56.537Z",
   "funds": [
     {
       "fund_name": "Fearless Fund Microfinance Fund",
@@ -30,7 +30,8 @@
           "feed_name": "search:PE/VC fund closes"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "fearless.fund"
     },
     {
       "fund_name": "Covenant 12th Value-Add Fund",
@@ -62,7 +63,8 @@
         }
       ],
       "strategy": "Core-Plus",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "covenantcapgroup.com"
     },
     {
       "fund_name": "Mundi Ventures Deep Tech & Climate Growth Fund",
@@ -129,7 +131,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "strategy": "Growth Stage"
+      "strategy": "Growth Stage",
+      "firm_website": "mundiventures.com"
     },
     {
       "fund_name": "Deep Tech Fund",
@@ -220,7 +223,8 @@
         }
       ],
       "strategy": "Buyout",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "timberbaypartners.com"
     },
     {
       "fund_name": "Gerber Taylor Co-Invest PE, VC Fund",
@@ -336,7 +340,8 @@
         }
       ],
       "strategy": "Direct Lending",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "hsbc.com"
     },
     {
       "fund_name": "Carousel Capital Continuation Fund",
@@ -368,7 +373,8 @@
         }
       ],
       "strategy": "Continuation Fund",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "carouselcapital.com"
     },
     {
       "fund_name": "Covenant Affordable Housing Sidecar",
@@ -400,7 +406,8 @@
         }
       ],
       "strategy": "Asset-Based",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "covenantcapgroup.com"
     },
     {
       "fund_name": "Deep-Tech Fund",
@@ -431,7 +438,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "unicornivc.com"
     },
     {
       "fund_name": "Newcore Capital Social Infrastructure Fund",
@@ -471,7 +479,8 @@
           "feed_name": "PERE"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "newcorecapital.com"
     },
     {
       "fund_name": "Ardian Infrastructure Secondaries Fund",
@@ -511,7 +520,8 @@
           "feed_name": "additional"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "ardian.com"
     },
     {
       "fund_name": "Kembara Deep Tech Investment Fund",
@@ -552,7 +562,8 @@
         }
       ],
       "strategy": "Early Stage",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "mundiventures.com"
     },
     {
       "fund_name": "SNAK Venture Partners Fund",
@@ -641,7 +652,8 @@
           "summary": "Vest Ventures debuts as western Romania’s first venture capital investment fund, with EUR 16 mln budget&nbsp;&nbsp;Romania Insider",
           "feed_name": "search:PE/VC fund closes"
         }
-      ]
+      ],
+      "firm_website": "vestventures.com"
     },
     {
       "fund_name": "MedArtha Capital Maiden PE Fund",
@@ -703,7 +715,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "unicornivc.com"
     },
     {
       "fund_name": "Bayhawk Capital Fund I",
@@ -783,7 +796,8 @@
           "feed_name": "search:Press release fund closes"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "shorecp.com"
     },
     {
       "fund_name": "Project Level",
@@ -814,7 +828,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "arielinvestments.com"
     },
     {
       "fund_name": "SlateVC Inaugural Growth Fund",
@@ -846,7 +861,8 @@
         }
       ],
       "strategy": "Late Stage",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "slate.vc"
     },
     {
       "fund_name": "Shipping Assets Fund",
@@ -877,7 +893,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "mpc-capital.com"
     },
     {
       "fund_name": "Golden Sparrow Ventures Fund II",
@@ -948,7 +965,8 @@
           "feed_name": "search:PE/VC fund closes"
         }
       ],
-      "strategy": "Buyout"
+      "strategy": "Buyout",
+      "firm_website": "cedarbridge.com"
     },
     {
       "fund_name": "Hybrid Fund for Indian Mid-Market Businesses",
@@ -980,7 +998,8 @@
         }
       ],
       "strategy": "Middle Market",
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "rmbcapitalworks.com"
     },
     {
       "fund_name": "Undisclosed Clearlake Fund",
@@ -1011,7 +1030,8 @@
           "feed_name": "search:Oversubscribed funds"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "clearlake.com"
     },
     {
       "fund_name": "Hongkong Land Singapore Private Real Estate Fund",
@@ -1042,7 +1062,8 @@
           "feed_name": "search:Credit/Real estate"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "hkland.com"
     },
     {
       "fund_name": "Otro Capital Fund I",
@@ -1085,7 +1106,8 @@
       "covered_date": "2026-02-06",
       "articles": [],
       "strategy": "Asset-Based",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "powersustainable.com"
     },
     {
       "fund_name": "HighVista Private Equity Fund XI",
@@ -1125,7 +1147,8 @@
           "feed_name": "additional"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "highvista.com"
     },
     {
       "fund_name": "HighVista Fund XI",
@@ -1156,7 +1179,8 @@
           "feed_name": "Buyouts Insider"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "highvista.com"
     },
     {
       "fund_name": "Eurazeo & Pantheon Private Debt Continuation Vehicle",
@@ -1178,7 +1202,8 @@
       "covered_date": "2026-02-06",
       "articles": [],
       "strategy": "Continuation Fund",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "eurazeo.com"
     },
     {
       "fund_name": "Encore Consumer Capital Fund V",
@@ -1209,7 +1234,8 @@
           "feed_name": "search:Oversubscribed funds"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "encoreconsumercapital.com"
     },
     {
       "fund_name": "CAVU Consumer Partners Fund V",
@@ -1251,7 +1277,8 @@
       "is_covered": true,
       "covered_date": "2026-02-06",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "cazinvestments.com"
     },
     {
       "fund_name": "Technology Opportunities Strategy",
@@ -1331,7 +1358,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "hamiltonlane.com"
     },
     {
       "fund_name": "Seraya Fund",
@@ -1362,7 +1390,8 @@
           "feed_name": "Infrastructure Investor"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "serayapartners.com"
     },
     {
       "fund_name": "Santé Ventures Fifth Fund",
@@ -1401,7 +1430,8 @@
           "summary": "Peter Thiel-backed fintech venture fund.",
           "feed_name": "additional"
         }
-      ]
+      ],
+      "firm_website": "santeventures.com"
     },
     {
       "fund_name": "Patrizia/Mitsui Emerging Asia Sustainable Infrastructure Fund",
@@ -1423,7 +1453,8 @@
       "covered_date": "2026-02-06",
       "articles": [],
       "strategy": "Asset-Based",
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "patrizia.ag"
     },
     {
       "fund_name": "Shorooq Late-Stage Growth Fund",
@@ -1455,7 +1486,8 @@
         }
       ],
       "strategy": "Late Stage",
-      "target_geography": "Middle East & Africa"
+      "target_geography": "Middle East & Africa",
+      "firm_website": "shorooq.com"
     },
     {
       "fund_name": "XSML Africa Fund IV",
@@ -1487,7 +1519,8 @@
         }
       ],
       "strategy": "Seed/Pre-Seed",
-      "target_geography": "Middle East & Africa"
+      "target_geography": "Middle East & Africa",
+      "firm_website": "xsmlcapital.com"
     },
     {
       "fund_name": "Constructor Capital Fund",
@@ -1549,7 +1582,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "mpc-capital.com"
     },
     {
       "fund_name": "PICTON Morningside Private Equity Fund",
@@ -1610,7 +1644,8 @@
           "feed_name": "additional"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "stonepeakpartners.com"
     },
     {
       "fund_name": "KKR Flagship Fund V",
@@ -1641,7 +1676,8 @@
           "feed_name": "search:Secondaries/Infra/GP-stakes"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "kkr.com"
     },
     {
       "fund_name": "Voyager Ventures Fund II",
@@ -1662,7 +1698,8 @@
       "is_covered": true,
       "covered_date": "2026-02-06",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "voyagerventures.co"
     },
     {
       "fund_name": "DGAM Global Private Equity Fund",
@@ -1702,7 +1739,8 @@
           "feed_name": "search:PE/VC fund closes"
         }
       ],
-      "target_geography": "Global"
+      "target_geography": "Global",
+      "firm_website": "desjardins.com"
     },
     {
       "fund_name": "Stoneshield Opportunity Fund IV",
@@ -1734,7 +1772,8 @@
         }
       ],
       "strategy": "Core-Plus",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "stoneshield.es"
     },
     {
       "fund_name": "daphni Blue",
@@ -1765,7 +1804,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "daphni.com"
     },
     {
       "fund_name": "EV3 Ventures Fund",
@@ -1828,7 +1868,8 @@
         }
       ],
       "strategy": "Energy Transition",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "comstockcompanies.com"
     },
     {
       "fund_name": "Tree Line Fourth Flagship Fund",
@@ -1869,7 +1910,8 @@
         }
       ],
       "strategy": "Buyout",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "treelinecapital.com"
     },
     {
       "fund_name": "Golub Capital GP-Led Secondaries Strategy",
@@ -1891,7 +1933,8 @@
       "covered_date": "2026-02-06",
       "articles": [],
       "strategy": "GP-Led",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "golubcapital.com"
     },
     {
       "fund_name": "Mubadala Capital MCCF I",
@@ -1922,7 +1965,8 @@
           "feed_name": "search:Oversubscribed funds"
         }
       ],
-      "target_geography": "Middle East & Africa"
+      "target_geography": "Middle East & Africa",
+      "firm_website": "mubadala.com"
     },
     {
       "fund_name": "LBP AM Climate Debt Fund",
@@ -1953,7 +1997,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "lbpam.com"
     },
     {
       "fund_name": "Navam Capital Maiden Deeptech Fund",
@@ -2035,7 +2080,8 @@
         }
       ],
       "strategy": "Early Stage",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "b2venture.vc"
     },
     {
       "fund_name": "Blue Earth Capital Impact Secondaries",
@@ -2066,7 +2112,8 @@
           "feed_name": "search:Secondaries/Infra/GP-stakes"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "blueearth.capital"
     },
     {
       "fund_name": "ZOHO.VC",
@@ -2098,7 +2145,8 @@
         }
       ],
       "strategy": "Early Stage",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "zollhof.de"
     },
     {
       "fund_name": "Epidarex Capital Fund IV",
@@ -2130,7 +2178,8 @@
         }
       ],
       "strategy": "Growth Stage",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "epidarex.com"
     },
     {
       "fund_name": "AmanaVest",
@@ -2276,7 +2325,8 @@
         }
       ],
       "strategy": "Buyout",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "kkr.com"
     },
     {
       "fund_name": "Gore Street Capital Europe BESS Fund",
@@ -2308,7 +2358,8 @@
         }
       ],
       "strategy": "Asset-Based",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "gorestreetcap.com"
     },
     {
       "fund_name": "BlackRock Private Debt Fund",
@@ -2348,7 +2399,8 @@
           "feed_name": "additional"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "blackrock.com"
     },
     {
       "fund_name": "Goldman Sachs PECP IV",
@@ -2369,7 +2421,8 @@
       "is_covered": true,
       "covered_date": "2026-01-30",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "goldmansachs.com"
     },
     {
       "fund_name": "Pinegrove Opportunity Partners I",
@@ -2390,7 +2443,8 @@
       "is_covered": true,
       "covered_date": "2026-01-30",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "pinegrovepartners.com"
     },
     {
       "fund_name": "Eldridge Diversified Credit Fund I",
@@ -2411,7 +2465,8 @@
       "is_covered": true,
       "covered_date": "2026-01-30",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "carlyle.com"
     },
     {
       "fund_name": "European-Focused Energy Storage Fund",
@@ -2451,7 +2506,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "gorestreetcap.com"
     },
     {
       "fund_name": "Nine Mile Fund",
@@ -2481,7 +2537,8 @@
           "summary": "Nine Mile closes oversubscribed placement&nbsp;&nbsp;Mining.com.au",
           "feed_name": "search:Oversubscribed funds"
         }
-      ]
+      ],
+      "firm_website": "ninemilecapital.com"
     },
     {
       "fund_name": "Blueprint Equity Fund III",
@@ -2554,7 +2611,8 @@
         }
       ],
       "strategy": "Growth Stage",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "lendable.com"
     },
     {
       "fund_name": "Unnamed Galaxy Digital Crypto Hedge Fund",
@@ -2585,7 +2643,8 @@
           "feed_name": "search:PE/VC fund closes"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "galaxydigital.io"
     },
     {
       "fund_name": "Crescent Credit Solutions VII CV",
@@ -2606,7 +2665,8 @@
       "is_covered": true,
       "covered_date": "2026-01-23",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "crescentcap.com"
     },
     {
       "fund_name": "Heitman Value-Add Investment Series",
@@ -2638,7 +2698,8 @@
         }
       ],
       "strategy": "Value-Add",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "heitman.com"
     },
     {
       "fund_name": "Modulus Private Credit Fund",
@@ -2670,7 +2731,8 @@
         }
       ],
       "strategy": "Middle Market",
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "modulus.com"
     },
     {
       "fund_name": "DuneVista Global Fund",
@@ -2733,7 +2795,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "allianz.com"
     },
     {
       "fund_name": "Blueprint Equity Fund (unnamed/unspecified vintage)",
@@ -2858,7 +2921,8 @@
         }
       ],
       "strategy": "Buyout",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "axiomequity.com"
     },
     {
       "fund_name": "CIBC Diversified Private Credit Fund LP",
@@ -2889,7 +2953,8 @@
           "feed_name": "search:Credit/Real estate"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "cibc.com"
     },
     {
       "fund_name": "Stafford Infrastructure Secondaries Fund",
@@ -2920,7 +2985,8 @@
           "feed_name": "search:Secondaries/Infra/GP-stakes"
         }
       ],
-      "strategy": "GP-Led"
+      "strategy": "GP-Led",
+      "firm_website": "staffordcp.com"
     },
     {
       "fund_name": "Core Impact Fund V",
@@ -2969,7 +3035,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "ananda.vc"
     },
     {
       "fund_name": "Develop North Fund",
@@ -3001,7 +3068,8 @@
         }
       ],
       "strategy": "Seed/Pre-Seed",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "develop-north.com"
     },
     {
       "fund_name": "Celadon Partners Cross-Border Fund",
@@ -3054,7 +3122,8 @@
       "is_covered": true,
       "covered_date": "2026-01-23",
       "articles": [],
-      "target_geography": "Middle East & Africa"
+      "target_geography": "Middle East & Africa",
+      "firm_website": "sahelcp.com"
     },
     {
       "fund_name": "Superorganism Biodiversity Fund",
@@ -3165,7 +3234,8 @@
           "feed_name": "search:Credit/Real estate"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "invesco.com"
     },
     {
       "fund_name": "New APAC Fund",
@@ -3196,7 +3266,8 @@
           "feed_name": "search:Credit/Real estate"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "kkr.com"
     },
     {
       "fund_name": "KKR Asia Credit Opportunities Fund II",
@@ -3217,7 +3288,8 @@
       "is_covered": true,
       "covered_date": "2026-01-16",
       "articles": [],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "kkr.com"
     },
     {
       "fund_name": "H.I.G. Europe Capital Partners IV",
@@ -3257,7 +3329,8 @@
           "feed_name": "additional"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "higcapital.com"
     },
     {
       "fund_name": "New Mountain Strategic Equity Fund II",
@@ -3288,7 +3361,8 @@
           "feed_name": "additional"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "newmountaincapital.com"
     },
     {
       "fund_name": "UCITS infrastructure fund",
@@ -3329,7 +3403,8 @@
         }
       ],
       "strategy": "Growth Stage",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "pac-am.com"
     },
     {
       "fund_name": "Amethis Fund III",
@@ -3360,7 +3435,8 @@
           "feed_name": "search:PE/VC fund closes"
         }
       ],
-      "target_geography": "Middle East & Africa"
+      "target_geography": "Middle East & Africa",
+      "firm_website": "amethis.com"
     },
     {
       "fund_name": "Tortoise Energy & Infrastructure Interval Fund",
@@ -3391,7 +3467,8 @@
           "feed_name": "search:Press release fund closes"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "tortoiseadvisors.com"
     },
     {
       "fund_name": "European Lower Middle Market Private Equity Fund",
@@ -3432,7 +3509,8 @@
         }
       ],
       "strategy": "Lower Middle Market",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "higcapital.com"
     },
     {
       "fund_name": "Samara Capital Fund III",
@@ -3463,7 +3541,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "samaracapital.in"
     },
     {
       "fund_name": "Sixth Street Specialty Lending Europe III",
@@ -3494,7 +3573,8 @@
           "feed_name": "search:Oversubscribed funds"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "sixthstreet.com"
     },
     {
       "fund_name": "AIP Fund V",
@@ -3544,7 +3624,8 @@
         }
       ],
       "strategy": "Energy Transition",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "aipam.com"
     },
     {
       "fund_name": "CBRE Real Estate Partners 2",
@@ -3565,7 +3646,8 @@
       "is_covered": true,
       "covered_date": "2026-01-16",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "cbreim.com"
     },
     {
       "fund_name": "Obra Capital CLO III",
@@ -3586,7 +3668,8 @@
       "is_covered": true,
       "covered_date": "2026-02-06",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "obracapital.com"
     },
     {
       "fund_name": "Westwood Energy Secondaries Fund II",
@@ -3607,7 +3690,8 @@
       "is_covered": true,
       "covered_date": "2026-01-16",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "westwoodgroup.com"
     },
     {
       "fund_name": "GCC Private Credit Fund",
@@ -3647,7 +3731,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Middle East & Africa"
+      "target_geography": "Middle East & Africa",
+      "firm_website": "jadwa.com"
     },
     {
       "fund_name": "Agricultural Commodity Transformation Fund",
@@ -3679,7 +3764,8 @@
         }
       ],
       "strategy": "Core Infrastructure",
-      "target_geography": "Global"
+      "target_geography": "Global",
+      "firm_website": "investinternational.nl"
     },
     {
       "fund_name": "Bridges Property Fund VI",
@@ -3710,7 +3796,8 @@
           "feed_name": "search:Oversubscribed funds"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "bridgesfundmanagement.com"
     },
     {
       "fund_name": "Infranity Evergreen Infrastructure Fund",
@@ -3741,7 +3828,8 @@
           "feed_name": "search:Secondaries/Infra/GP-stakes"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "infranity.com"
     },
     {
       "fund_name": "Coller Capital CIP IX",
@@ -3762,7 +3850,8 @@
       "is_covered": true,
       "covered_date": "2026-01-16",
       "articles": [],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "collercapital.com"
     },
     {
       "fund_name": "Bain Capital Real Estate Fund",
@@ -3802,7 +3891,8 @@
           "feed_name": "additional"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "baincapital.com"
     },
     {
       "fund_name": "Nigeria Energy Transition Fund",
@@ -3904,7 +3994,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "capitaland.com"
     },
     {
       "fund_name": "Interstate Equities Fund VI",
@@ -3936,7 +4027,8 @@
         }
       ],
       "strategy": "Value-Add",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "interstateequities.com"
     },
     {
       "fund_name": "Arcano Secondaries Vehicle",
@@ -3967,7 +4059,8 @@
           "feed_name": "search:Oversubscribed funds"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "arcanopartners.com"
     },
     {
       "fund_name": "Ares Credit Secondaries Fund",
@@ -3988,7 +4081,8 @@
       "is_covered": true,
       "covered_date": "2026-01-16",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "aresmgmt.com"
     },
     {
       "fund_name": "Bansk Group Fund II",
@@ -4048,7 +4142,8 @@
           "summary": "Apheon Hits €1.25 Billion Hard Cap for Latest Flagship Fund&nbsp;&nbsp;Bloomberg.com",
           "feed_name": "search:Oversubscribed funds"
         }
-      ]
+      ],
+      "firm_website": "apheon.com"
     },
     {
       "fund_name": "Commercial Real Estate Lending Platform",
@@ -4080,7 +4175,8 @@
         }
       ],
       "strategy": "Growth Stage",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "patrimonium.ch"
     },
     {
       "fund_name": "Rosberg Ventures Fund III",
@@ -4101,7 +4197,8 @@
       "is_covered": true,
       "covered_date": "2026-01-23",
       "articles": [],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "rosbergventures.com"
     },
     {
       "fund_name": "e2vc Fund III",
@@ -4154,7 +4251,8 @@
       "is_covered": true,
       "covered_date": "2026-02-06",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "nfrg.com"
     },
     {
       "fund_name": "India Opportunities Fund",
@@ -4185,7 +4283,8 @@
           "feed_name": "search:Press release fund closes"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "barjeelgeojit.com"
     },
     {
       "fund_name": "CBRE IM Secondaries Fund II",
@@ -4216,7 +4315,8 @@
           "feed_name": "search:Secondaries/Infra/GP-stakes"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "cbreim.com"
     },
     {
       "fund_name": "Andreessen Horowitz (Growth, Apps, Infrastructure, American Dynamism, Bio + Health)",
@@ -4237,7 +4337,8 @@
       "is_covered": true,
       "covered_date": "2026-01-09",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "a16z.com"
     },
     {
       "fund_name": "RRJ Capital Structured Hybrid Opportunity Fund",
@@ -4258,7 +4359,8 @@
       "is_covered": true,
       "covered_date": "2026-01-16",
       "articles": [],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "rrjcapital.com"
     },
     {
       "fund_name": "KKR Third European Opportunistic Fund",
@@ -4290,7 +4392,8 @@
         }
       ],
       "strategy": "Opportunistic",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "kkr.com"
     },
     {
       "fund_name": "Wolff Real Estate Fund",
@@ -4321,7 +4424,8 @@
           "feed_name": "search:Credit/Real estate"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "wolff.com"
     },
     {
       "fund_name": "Evergreen Private Equity Fund",
@@ -4352,7 +4456,8 @@
           "feed_name": "search:PE/VC fund closes"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "bridgepoint.eu"
     },
     {
       "fund_name": "Benefit Street Partners Flagship U.S. Real Estate Debt Strategy",
@@ -4383,7 +4488,8 @@
           "feed_name": "search:Press release fund closes"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "benefitstreetpartners.com"
     },
     {
       "fund_name": "Lux Capital Fund IX",
@@ -4423,7 +4529,8 @@
           "feed_name": "search:Oversubscribed funds"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "luxcapital.com"
     },
     {
       "fund_name": "Davidson Kempner Income Fund II",
@@ -4444,7 +4551,8 @@
       "is_covered": true,
       "covered_date": "2026-01-16",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "davidsonkempner.com"
     },
     {
       "fund_name": "Eir Partners Fund III",
@@ -4512,7 +4620,8 @@
         }
       ],
       "strategy": "Buyout",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "eirpartners.com"
     },
     {
       "fund_name": "SolarWind 3",
@@ -4566,7 +4675,8 @@
       "covered_date": "2026-01-16",
       "articles": [],
       "strategy": "Growth Stage",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "guidepostgrowth.com"
     },
     {
       "fund_name": "Warburg Pincus Financial Sector III",
@@ -4587,7 +4697,8 @@
       "is_covered": true,
       "covered_date": "2026-01-09",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "warburgpincus.com"
     },
     {
       "fund_name": "EAAA Alternatives Real Assets Fund",
@@ -4650,7 +4761,8 @@
           "feed_name": "additional"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "harveycapital.com"
     },
     {
       "fund_name": "AppWorks Fund IV",
@@ -4671,7 +4783,8 @@
       "is_covered": true,
       "covered_date": "2026-01-09",
       "articles": [],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "appworks.tw"
     },
     {
       "fund_name": "Creation Investments Impact Credit Fund II",
@@ -4692,7 +4805,8 @@
       "is_covered": true,
       "covered_date": "2026-01-09",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "creationinvestments.com"
     },
     {
       "fund_name": "Monroe Capital Private Credit Fund V",
@@ -4713,7 +4827,8 @@
       "is_covered": true,
       "covered_date": "2026-01-09",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "monroecap.com"
     },
     {
       "fund_name": "Lindsay Goldberg Fund VI",
@@ -4734,7 +4849,8 @@
       "is_covered": true,
       "covered_date": "2026-01-30",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "lindsaygoldberg.com"
     },
     {
       "fund_name": "Banner Ridge Secondary Fund VI",
@@ -4765,7 +4881,8 @@
           "feed_name": "search:Press release fund closes"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "bannerridgepartners.com"
     },
     {
       "fund_name": "BV Investment Partners Fund XII",
@@ -4796,7 +4913,8 @@
           "feed_name": "additional"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "bvlp.com"
     },
     {
       "fund_name": "Sundaram Alternates ESG-aligned Real Estate Credit Fund V",
@@ -4845,7 +4963,8 @@
           "feed_name": "search:Credit/Real estate"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "sundaramalternates.com"
     },
     {
       "fund_name": "Springcoast Partners I",
@@ -4866,7 +4985,8 @@
       "is_covered": true,
       "covered_date": "2026-01-30",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "springcoastpartners.com"
     },
     {
       "fund_name": "Catalio Structured Opportunities Fund II",
@@ -4887,7 +5007,8 @@
       "is_covered": true,
       "covered_date": "2026-01-30",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "cataliocapital.com"
     },
     {
       "fund_name": "HDFC AMC Private Credit Fund",
@@ -4945,7 +5066,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "hdfcfund.com"
     },
     {
       "fund_name": "Residential Fund for Germany",
@@ -5008,7 +5130,8 @@
           "feed_name": "search:Oversubscribed funds"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "highlandrimcapital.com"
     },
     {
       "fund_name": "McRock Capital Fund III",
@@ -5029,7 +5152,8 @@
       "is_covered": true,
       "covered_date": "2026-01-30",
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "mcrockcapital.com"
     },
     {
       "fund_name": "CapMan Natural Capital Fund IV",
@@ -5060,7 +5184,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "capman.com"
     },
     {
       "fund_name": "USD Real Estate Income Fund",
@@ -5091,7 +5216,8 @@
           "feed_name": "search:Credit/Real estate"
         }
       ],
-      "target_geography": "Middle East & Africa"
+      "target_geography": "Middle East & Africa",
+      "firm_website": "centum.co.ke"
     },
     {
       "fund_name": "HashKey Capital Fund IV",
@@ -5122,7 +5248,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "hashkey.com"
     },
     {
       "fund_name": "Sandbrook Infrastructure Fund II",
@@ -5154,7 +5281,8 @@
         }
       ],
       "strategy": "Middle Market",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "sandbrookcapital.com"
     },
     {
       "fund_name": "IIT Bombay Deep Tech Fund",
@@ -5247,7 +5375,8 @@
           "feed_name": "search:Press release fund closes"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "ftportfolios.com"
     },
     {
       "fund_name": "Mavenark Credit and Growth Fund – Series",
@@ -5309,7 +5438,8 @@
           "feed_name": "search:Credit/Real estate"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "seatownholdings.com"
     },
     {
       "fund_name": "Transition VC Debut Fund",
@@ -5341,7 +5471,8 @@
         }
       ],
       "strategy": "Seed/Pre-Seed",
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "transitionvc.com"
     },
     {
       "fund_name": "KKR PE Fund",
@@ -5372,7 +5503,8 @@
           "feed_name": "search:PE/VC fund closes"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "kkr.com"
     },
     {
       "fund_name": "ADB-Qatar Fund for Development Partnership",
@@ -5404,7 +5536,8 @@
         }
       ],
       "strategy": "Opportunistic",
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "adb.org"
     },
     {
       "fund_name": "Sanlam Investments Property Impact Fund",
@@ -5435,7 +5568,8 @@
           "feed_name": "search:Secondaries/Infra/GP-stakes"
         }
       ],
-      "target_geography": "Middle East & Africa"
+      "target_geography": "Middle East & Africa",
+      "firm_website": "sanlaminvestments.com"
     },
     {
       "fund_name": "AllianzGI Private Debt Secondaries Fund II",
@@ -5484,7 +5618,8 @@
           "feed_name": "search:PE/VC fund closes"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "allianz.com"
     },
     {
       "fund_name": "CAIS Sports, Media and Entertainment Fund",
@@ -5515,7 +5650,8 @@
           "feed_name": "search:Press release fund closes"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "caisgroup.com"
     },
     {
       "fund_name": "Mubadala Capital and Aldar Real Estate Fund",
@@ -5546,7 +5682,8 @@
           "feed_name": "search:Secondaries/Infra/GP-stakes"
         }
       ],
-      "target_geography": "Middle East & Africa"
+      "target_geography": "Middle East & Africa",
+      "firm_website": "mubadala.com"
     },
     {
       "fund_name": "VentureSoul Maiden Debt Fund",
@@ -5609,7 +5746,8 @@
         }
       ],
       "strategy": "Value-Add",
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "hines.com"
     },
     {
       "fund_name": "Investec Private Credit Fund",
@@ -5640,7 +5778,8 @@
           "feed_name": "search:Credit/Real estate"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "investec.com"
     },
     {
       "fund_name": "Firgun Ventures VC Fund",
@@ -5670,7 +5809,8 @@
           "summary": "Firgun Ventures Launches $250 Million VC Fund to Invest in Quantum, Announces First $70 Million Close&nbsp;&nbsp;The Quantum Insider",
           "feed_name": "search:First/final close"
         }
-      ]
+      ],
+      "firm_website": "firgunventures.com"
     },
     {
       "fund_name": "FS Mid Market Private Equity Fund",
@@ -5733,7 +5873,8 @@
           "feed_name": "search:Credit/Real estate"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "bridgeig.com"
     },
     {
       "fund_name": "British Business Bank Venture Capital Initiative",
@@ -5764,7 +5905,8 @@
           "feed_name": "search:PE/VC fund closes"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "british-business-bank.co.uk"
     },
     {
       "fund_name": "COIN II",
@@ -5795,7 +5937,8 @@
           "feed_name": "search:PE/VC fund closes"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "jpmorgan.com"
     },
     {
       "fund_name": "STPEX",
@@ -5826,7 +5969,8 @@
           "feed_name": "search:PE/VC fund closes"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "stepstoneglobal.com"
     },
     {
       "fund_name": "Japan-focused private equity fund",
@@ -5857,7 +6001,8 @@
           "feed_name": "search:PE/VC fund closes"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "qia.qa"
     },
     {
       "fund_name": "Alternative Income Fund",
@@ -5960,7 +6105,8 @@
           "feed_name": "search:PE/VC fund closes"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "sidbi.in"
     },
     {
       "fund_name": "United Global Premium Opportunity Fund",
@@ -5991,7 +6137,8 @@
           "feed_name": "search:Press release fund closes"
         }
       ],
-      "target_geography": "Global"
+      "target_geography": "Global",
+      "firm_website": "uobam.com.my"
     },
     {
       "fund_name": "IN-SPACe And SIDBI VC Fund",
@@ -6023,7 +6170,8 @@
         }
       ],
       "strategy": "Early Stage",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "sidbi.in"
     },
     {
       "fund_name": "Point72 Private Credit Fund",
@@ -6054,7 +6202,8 @@
           "feed_name": "search:Credit/Real estate"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "point72.com"
     },
     {
       "fund_name": "Aspirity Partners Debut Fund",
@@ -6116,7 +6265,8 @@
           "feed_name": "search:Credit/Real estate"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "aresmgmt.com"
     },
     {
       "fund_name": "ACP VII",
@@ -6147,7 +6297,8 @@
           "feed_name": "search:Oversubscribed funds"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "arlingtoncap.com"
     },
     {
       "fund_name": "Viola Credit ABL Fund",
@@ -6178,7 +6329,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "strategy": "Asset-Based"
+      "strategy": "Asset-Based",
+      "firm_website": "viola-group.com"
     },
     {
       "fund_name": "Lighthouse Canton India Fund",
@@ -6209,7 +6361,8 @@
           "feed_name": "search:Credit/Real estate"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "lighthousecanton.com"
     },
     {
       "fund_name": "Winterberg Investment X",
@@ -6272,7 +6425,8 @@
         }
       ],
       "strategy": "Direct Lending",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "breakwallcapital.com"
     },
     {
       "fund_name": "Foresight North West Regional Investment Fund III",
@@ -6304,7 +6458,8 @@
         }
       ],
       "strategy": "Growth Stage",
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "foresightgroup.eu"
     },
     {
       "fund_name": "Global Private Credit Evergreen Fund",
@@ -6335,7 +6490,8 @@
           "feed_name": "search:Credit/Real estate"
         }
       ],
-      "target_geography": "Global"
+      "target_geography": "Global",
+      "firm_website": "alliancebernstein.com"
     },
     {
       "fund_name": "Abacus Finance SBIC Fund",
@@ -6367,7 +6523,8 @@
         }
       ],
       "strategy": "Lower Middle Market",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "abacusfinance.com"
     },
     {
       "fund_name": "Enko Capital Flagship Private Credit Fund",
@@ -6399,7 +6556,8 @@
         }
       ],
       "strategy": "Middle Market",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "enkocapital.com"
     },
     {
       "fund_name": "Artha India Ventures Fund II",
@@ -6430,7 +6588,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "arthaindiaventures.com"
     },
     {
       "fund_name": "Janus Henderson Shariah-compliant Private Credit Fund",
@@ -6461,7 +6620,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "strategy": "Growth Stage"
+      "strategy": "Growth Stage",
+      "firm_website": "janushenderson.com"
     },
     {
       "fund_name": "Threestones Healthcare Real Estate Fund",
@@ -6492,7 +6652,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "strategy": "Asset-Based"
+      "strategy": "Asset-Based",
+      "firm_website": "threestonescapital.com"
     },
     {
       "fund_name": "Swiss Life AM Real Estate Strategy",
@@ -6523,7 +6684,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "swisslife-am.com"
     },
     {
       "fund_name": "55 North Quantum Technology Fund",
@@ -6555,7 +6717,8 @@
         }
       ],
       "strategy": "Seed/Pre-Seed",
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "55north.com"
     },
     {
       "fund_name": "Realty Income REIT inaugural open-end fund",
@@ -6586,7 +6749,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "realtyincome.com"
     },
     {
       "fund_name": "Brookfield Global Infrastructure Debt Fund IV",
@@ -6626,7 +6790,8 @@
           "feed_name": "search:Secondaries/Infra/GP-stakes"
         }
       ],
-      "target_geography": "Global"
+      "target_geography": "Global",
+      "firm_website": "brookfield.com"
     },
     {
       "fund_name": "Creator Fund",
@@ -6657,7 +6822,8 @@
           "feed_name": "search:First/final close"
         }
       ],
-      "strategy": "Early Stage"
+      "strategy": "Early Stage",
+      "firm_website": "creatorfund.vc"
     },
     {
       "fund_name": "Berkshire Bridge Loan Investors-MF1 III",
@@ -6729,7 +6895,7 @@
       "fund_name": "Warburg Pincus Multi-Asset Continuation Fund",
       "firm": "Warburg Pincus",
       "firm_slug": "warburg-pincus",
-      "firm_website": null,
+      "firm_website": "warburgpincus.com",
       "amount": "$2.2B",
       "amount_usd_millions": 2200,
       "category": "Secondaries & GP-Stakes",
@@ -6843,7 +7009,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "strategy": "Asset-Based"
     },
     {
       "fund_name": "Nordic Capital Evolution II",
@@ -6864,13 +7031,14 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "strategy": "Middle Market"
     },
     {
       "fund_name": "BlackRock Global Infrastructure Solutions V",
       "firm": "BlackRock",
       "firm_slug": "blackrock",
-      "firm_website": null,
+      "firm_website": "blackrock.com",
       "amount": "$1.1B",
       "amount_usd_millions": 1100,
       "category": "Infrastructure",
@@ -7137,7 +7305,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "strategy": "Early Stage"
     },
     {
       "fund_name": "Asgard-Steno Global Macro",
@@ -7158,13 +7327,14 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "strategy": "Global Macro"
     },
     {
       "fund_name": "Brookfield Infrastructure Fund VI",
       "firm": "Brookfield Asset Management",
       "firm_slug": "brookfield-asset-management",
-      "firm_website": null,
+      "firm_website": "brookfield.com",
       "amount": "$28B",
       "amount_usd_millions": 28000,
       "category": "Infrastructure",
@@ -7230,7 +7400,7 @@
       "fund_name": "Bain Capital Global Special Situations II",
       "firm": "Bain Capital",
       "firm_slug": "bain-capital",
-      "firm_website": null,
+      "firm_website": "baincapital.com",
       "amount": "$5.7B",
       "amount_usd_millions": 5700,
       "category": "Credit Funds",
@@ -7296,7 +7466,7 @@
       "fund_name": "Ares Private Equity Group IV",
       "firm": "Ares Management",
       "firm_slug": "ares-management",
-      "firm_website": null,
+      "firm_website": "aresmgmt.com",
       "amount": "$3.7B",
       "amount_usd_millions": 3700,
       "category": "Private Equity",
@@ -7329,7 +7499,7 @@
       "fund_name": "Ardian Secondaries Fund IX",
       "firm": "Ardian",
       "firm_slug": "ardian",
-      "firm_website": null,
+      "firm_website": "ardian.com",
       "amount": "$30B",
       "amount_usd_millions": 30000,
       "category": "Secondaries & GP-Stakes",
@@ -7509,13 +7679,14 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "strategy": "Global Macro"
     },
     {
       "fund_name": "CVC Capital Partners IX",
       "firm": "CVC Capital Partners",
       "firm_slug": "cvc-capital-partners",
-      "firm_website": null,
+      "firm_website": "cvc.com",
       "amount": "€26B",
       "amount_usd_millions": 28300,
       "category": "Private Equity",
@@ -7614,7 +7785,7 @@
       "fund_name": "Carlyle Credit Opportunities Fund III",
       "firm": "Carlyle",
       "firm_slug": "carlyle",
-      "firm_website": null,
+      "firm_website": "carlyle.com",
       "amount": "$7.1B",
       "amount_usd_millions": 7100,
       "category": "Credit Funds",
@@ -7980,13 +8151,14 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "strategy": "Buyout"
     },
     {
       "fund_name": "Ares European Real Estate Fund VI",
       "firm": "Ares Management",
       "firm_slug": "ares-management",
-      "firm_website": null,
+      "firm_website": "aresmgmt.com",
       "amount": "€2.24B",
       "amount_usd_millions": 2420,
       "category": "Real Estate",
@@ -8109,7 +8281,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "strategy": "Opportunistic"
     },
     {
       "fund_name": "Avantyr Capital",
@@ -8370,7 +8543,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "point72.com"
     },
     {
       "fund_name": "Palinuro Capital",
@@ -8391,7 +8565,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "strategy": "Global Macro"
     },
     {
       "fund_name": "Waterton Residential Property Venture XV",
@@ -8799,7 +8974,7 @@
       "fund_name": "BlackRock Global Infrastructure Debt Fund II",
       "firm": "BlackRock",
       "firm_slug": "blackrock",
-      "firm_website": null,
+      "firm_website": "blackrock.com",
       "amount": "$1.3B",
       "amount_usd_millions": 1300,
       "category": "Infrastructure",
@@ -8913,7 +9088,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "kkr.com"
     },
     {
       "fund_name": "Franklin Venture Partners Fund II",
@@ -8952,7 +9128,7 @@
       "fund_name": "Stonepeak Opportunities Fund",
       "firm": "Stonepeak",
       "firm_slug": "stonepeak",
-      "firm_website": null,
+      "firm_website": "stonepeakpartners.com",
       "amount": "$3.15B",
       "amount_usd_millions": 3150,
       "category": "Infrastructure",
@@ -9099,7 +9275,9 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "kkr.com",
+      "strategy": "Opportunistic"
     },
     {
       "fund_name": "Quadria Capital Fund III",
@@ -9570,7 +9748,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "strategy": "Buyout"
     },
     {
       "fund_name": "Lone Star Fund XII",
@@ -9642,7 +9821,7 @@
       "fund_name": "Goldman Sachs Real Estate Secondaries Fund",
       "firm": "Goldman Sachs",
       "firm_slug": "goldman-sachs",
-      "firm_website": null,
+      "firm_website": "goldmansachs.com",
       "amount": "$3.4B",
       "amount_usd_millions": 3400,
       "category": "Real Estate",
@@ -10239,7 +10418,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "blackstone.com"
     },
     {
       "fund_name": "Canyon US Real Estate Debt Fund III",
@@ -10320,7 +10500,7 @@
       "fund_name": "TPG Rise Climate II",
       "firm": "TPG",
       "firm_slug": "tpg",
-      "firm_website": null,
+      "firm_website": "tpg.com",
       "amount": "$7.3B",
       "amount_usd_millions": 7300,
       "category": "Infrastructure",
@@ -10368,7 +10548,9 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "eqtgroup.com",
+      "strategy": "Middle Market"
     },
     {
       "fund_name": "Neuberger Berman Private Equity Fund V",
@@ -10407,7 +10589,7 @@
       "fund_name": "GIC Real Estate Partners V",
       "firm": "GIC",
       "firm_slug": "gic",
-      "firm_website": null,
+      "firm_website": "gic.com.sg",
       "amount": "$5B",
       "amount_usd_millions": 5000,
       "category": "Real Estate",
@@ -10473,7 +10655,7 @@
       "fund_name": "Apollo Infrastructure Equity Fund II",
       "firm": "Apollo Global Management",
       "firm_slug": "apollo-global-management",
-      "firm_website": null,
+      "firm_website": "apollo.com",
       "amount": "$5.2B",
       "amount_usd_millions": 5200,
       "category": "Infrastructure",
@@ -10506,7 +10688,7 @@
       "fund_name": "KKR Asia Pacific Infrastructure II",
       "firm": "KKR",
       "firm_slug": "kkr",
-      "firm_website": null,
+      "firm_website": "kkr.com",
       "amount": "$6.4B",
       "amount_usd_millions": 6400,
       "category": "Infrastructure",
@@ -10608,13 +10790,14 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "strategy": "Asset-Based"
     },
     {
       "fund_name": "Clearlake Capital Partners VIII",
       "firm": "Clearlake Capital",
       "firm_slug": "clearlake-capital",
-      "firm_website": null,
+      "firm_website": "clearlake.com",
       "amount": "$14.1B",
       "amount_usd_millions": 14100,
       "category": "Private Equity",
@@ -10680,7 +10863,7 @@
       "fund_name": "Permira VIII",
       "firm": "Permira",
       "firm_slug": "permira",
-      "firm_website": null,
+      "firm_website": "permira.com",
       "amount": "€16.7B",
       "amount_usd_millions": 18200,
       "category": "Private Equity",
@@ -10992,7 +11175,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "strategy": "Seed/Pre-Seed"
     },
     {
       "fund_name": "Carlyle Japan Partners V",
@@ -11013,7 +11197,9 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "carlyle.com",
+      "strategy": "Buyout"
     },
     {
       "fund_name": "Mundi Ventures Kembara Fund",
@@ -11034,7 +11220,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "mundiventures.com"
     },
     {
       "fund_name": "Capstone Investment Advisors Fund",
@@ -11241,7 +11428,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "strategy": "Buyout"
     },
     {
       "fund_name": "IK Strategic Opportunities I",
@@ -11283,7 +11471,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "strategy": "Event Driven"
     },
     {
       "fund_name": "CF Private Equity Secondaries Fund IV",
@@ -11733,7 +11922,9 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "gic.com.sg",
+      "strategy": "Growth Stage"
     },
     {
       "fund_name": "Stonepeak Asia Infrastructure Fund",
@@ -11754,7 +11945,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "stonepeakpartners.com"
     },
     {
       "fund_name": "Manulife Capital Partners VII",
@@ -12027,7 +12219,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Europe"
+      "target_geography": "Europe",
+      "firm_website": "bridgepoint.eu"
     },
     {
       "fund_name": "LeapFrog Emerging Consumer Fund IV",
@@ -12099,7 +12292,7 @@
       "fund_name": "AKKR Strategic Capital LP",
       "firm": "AKKR",
       "firm_slug": "akkr",
-      "firm_website": null,
+      "firm_website": "kkr.com",
       "amount": "$2.2B",
       "amount_usd_millions": 2200,
       "category": "Secondaries & GP-Stakes",
@@ -12132,7 +12325,7 @@
       "fund_name": "EQT X",
       "firm": "EQT",
       "firm_slug": "eqt",
-      "firm_website": null,
+      "firm_website": "eqtgroup.com",
       "amount": "$24B",
       "amount_usd_millions": 24000,
       "category": "Private Equity",
@@ -12246,13 +12439,15 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "cvc.com",
+      "strategy": "Buyout"
     },
     {
       "fund_name": "Brookfield Strategic Real Estate Partners V",
       "firm": "Brookfield",
       "firm_slug": "brookfield",
-      "firm_website": null,
+      "firm_website": "brookfield.com",
       "amount": "$8B",
       "amount_usd_millions": 8000,
       "category": "Real Estate",
@@ -12285,7 +12480,7 @@
       "fund_name": "Sequoia Capital Global Growth Fund IV",
       "firm": "Sequoia Capital",
       "firm_slug": "sequoia-capital",
-      "firm_website": null,
+      "firm_website": "sequoiacap.com",
       "amount": "$2B",
       "amount_usd_millions": 2000,
       "category": "Venture Capital",
@@ -12351,7 +12546,7 @@
       "fund_name": "General Catalyst Fund",
       "firm": "General Catalyst",
       "firm_slug": "general-catalyst",
-      "firm_website": null,
+      "firm_website": "generalcatalyst.com",
       "amount": "$8B",
       "amount_usd_millions": 8000,
       "category": "Venture Capital",
@@ -12453,13 +12648,15 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "firm_website": "brookfield.com",
+      "strategy": "Energy Transition"
     },
     {
       "fund_name": "Warburg Pincus Global Growth XIV",
       "firm": "Warburg Pincus",
       "firm_slug": "warburg-pincus",
-      "firm_website": null,
+      "firm_website": "warburgpincus.com",
       "amount": "$17.3B",
       "amount_usd_millions": 17300,
       "category": "Private Equity",
@@ -12492,7 +12689,7 @@
       "fund_name": "Accel Growth Fund VII",
       "firm": "Accel",
       "firm_slug": "accel",
-      "firm_website": null,
+      "firm_website": "accel.com",
       "amount": "$3B",
       "amount_usd_millions": 3000,
       "category": "Venture Capital",
@@ -12558,7 +12755,7 @@
       "fund_name": "Andreessen Horowitz Crypto Fund 4",
       "firm": "Andreessen Horowitz",
       "firm_slug": "andreessen-horowitz",
-      "firm_website": null,
+      "firm_website": "a16z.com",
       "amount": "$4.5B",
       "amount_usd_millions": 4500,
       "category": "Venture Capital",
@@ -12726,7 +12923,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "North America"
+      "target_geography": "North America",
+      "strategy": "Multi-Strategy"
     },
     {
       "fund_name": "WovenEarth Fund I",
@@ -12780,7 +12978,8 @@
       "is_covered": false,
       "covered_date": null,
       "articles": [],
-      "target_geography": "Asia-Pacific"
+      "target_geography": "Asia-Pacific",
+      "firm_website": "kkr.com"
     },
     {
       "fund_name": "Launchbay Capital VC Secondary Growth Fund",
@@ -12791,7 +12990,7 @@
       "amount_usd_millions": 100,
       "category": "Secondaries & GP-Stakes",
       "strategy": "LP Secondaries",
-      "target_geography": null,
+      "target_geography": "North America",
       "location": "New York, NY",
       "city": "New York",
       "state": "NY",
@@ -12819,7 +13018,7 @@
       "fund_name": "Morgan Stanley Direct Lending Fund",
       "firm": "Morgan Stanley",
       "firm_slug": "morgan-stanley",
-      "firm_website": null,
+      "firm_website": "morganstanley.com",
       "amount": "Undisclosed",
       "amount_usd_millions": null,
       "category": "Credit Funds",
@@ -13059,12 +13258,12 @@
       "fund_name": "Banner Ridge Secondary Fund V",
       "firm": "Banner Ridge Partners",
       "firm_slug": "banner-ridge-partners",
-      "firm_website": null,
+      "firm_website": "bannerridgepartners.com",
       "amount": "$2.15B",
       "amount_usd_millions": 2150,
       "category": "Secondaries & GP-Stakes",
       "strategy": "LP Secondaries",
-      "target_geography": null,
+      "target_geography": "North America",
       "location": "New York, NY",
       "city": "New York",
       "state": "NY",
