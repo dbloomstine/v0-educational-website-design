@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-10T16:18:48.714Z",
+  "generated_at": "2026-02-10T16:24:21.855Z",
   "funds": [
     {
       "fund_name": "Fearless Fund Microfinance Fund",
@@ -13507,5 +13507,2004 @@
         }
       ]
     }
-  ]
+  ],
+  "managers": [
+    {
+      "firm": "Korean Government",
+      "firm_slug": "korean-government",
+      "fund_count": 1,
+      "total_aum_millions": 4400000,
+      "categories": ["Venture Capital"],
+      "city": "Seoul",
+      "country": "South Korea"
+    },
+    {
+      "firm": "Andreessen Horowitz",
+      "firm_slug": "andreessen-horowitz",
+      "fund_count": 1,
+      "total_aum_millions": 15000,
+      "categories": ["Venture Capital"],
+      "city": "Menlo Park",
+      "country": "US"
+    },
+    {
+      "firm": "Coller Capital",
+      "firm_slug": "coller-capital",
+      "fund_count": 1,
+      "total_aum_millions": 12500,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "Benefit Street Partners",
+      "firm_slug": "benefit-street-partners",
+      "fund_count": 1,
+      "total_aum_millions": 10000,
+      "categories": ["Real Estate"],
+      "city": "Providence",
+      "country": "US"
+    },
+    {
+      "firm": "Hongkong Land",
+      "firm_slug": "hongkong-land",
+      "fund_count": 1,
+      "total_aum_millions": 8200,
+      "categories": ["Real Estate"],
+      "city": "Singapore",
+      "country": "Singapore"
+    },
+    {
+      "firm": "Ares Management",
+      "firm_slug": "ares-management",
+      "fund_count": 1,
+      "total_aum_millions": 7100,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "Los Angeles",
+      "country": "US"
+    },
+    {
+      "firm": "Monroe Capital",
+      "firm_slug": "monroe-capital",
+      "fund_count": 1,
+      "total_aum_millions": 6100,
+      "categories": ["Credit Funds"],
+      "city": "Chicago",
+      "country": "US"
+    },
+    {
+      "firm": "Arlington Capital Partners",
+      "firm_slug": "arlington-capital-partners",
+      "fund_count": 1,
+      "total_aum_millions": 6000,
+      "categories": ["Private Equity"],
+      "city": "Washington",
+      "country": "US"
+    },
+    {
+      "firm": "Ardian",
+      "firm_slug": "ardian",
+      "fund_count": 1,
+      "total_aum_millions": 5000,
+      "categories": ["Infrastructure"],
+      "city": "Paris",
+      "country": "France"
+    },
+    {
+      "firm": "Bain Capital",
+      "firm_slug": "bain-capital",
+      "fund_count": 1,
+      "total_aum_millions": 5000,
+      "categories": ["Real Estate"],
+      "city": "Boston",
+      "country": "US"
+    },
+    {
+      "firm": "Lindsay Goldberg",
+      "firm_slug": "lindsay-goldberg",
+      "fund_count": 1,
+      "total_aum_millions": 4900,
+      "categories": ["Private Equity"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Banner Ridge Partners",
+      "firm_slug": "banner-ridge-partners",
+      "fund_count": 1,
+      "total_aum_millions": 4200,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Brookfield",
+      "firm_slug": "brookfield",
+      "fund_count": 1,
+      "total_aum_millions": 4000,
+      "categories": ["Infrastructure"],
+      "city": "New York City",
+      "country": "US"
+    },
+    {
+      "firm": "Sixth Street",
+      "firm_slug": "sixth-street",
+      "fund_count": 1,
+      "total_aum_millions": 3750,
+      "categories": ["Credit Funds"],
+      "city": "San Francisco",
+      "country": "US"
+    },
+    {
+      "firm": "KKR",
+      "firm_slug": "kkr",
+      "fund_count": 6,
+      "total_aum_millions": 3600,
+      "categories": ["Credit Funds", "Private Equity", "Real Estate"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Crescent Capital Group / Pantheon",
+      "firm_slug": "crescent-capital-group-pantheon",
+      "fund_count": 1,
+      "total_aum_millions": 3200,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "Los Angeles",
+      "country": "US"
+    },
+    {
+      "firm": "Warburg Pincus",
+      "firm_slug": "warburg-pincus",
+      "fund_count": 1,
+      "total_aum_millions": 3000,
+      "categories": ["Private Equity"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "EAAA Alternatives",
+      "firm_slug": "eaaa-alternatives",
+      "fund_count": 1,
+      "total_aum_millions": 3000,
+      "categories": ["Real Estate"],
+      "city": "N/A",
+      "country": "India"
+    },
+    {
+      "firm": "Goldman Sachs Alternatives",
+      "firm_slug": "goldman-sachs-alternatives",
+      "fund_count": 1,
+      "total_aum_millions": 2800,
+      "categories": ["Private Equity"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Heitman",
+      "firm_slug": "heitman",
+      "fund_count": 1,
+      "total_aum_millions": 2600,
+      "categories": ["Real Estate"],
+      "city": "Chicago",
+      "country": "US"
+    },
+    {
+      "firm": "HDFC Asset Management Company",
+      "firm_slug": "hdfc-asset-management-company",
+      "fund_count": 1,
+      "total_aum_millions": 2500,
+      "categories": ["Credit Funds"],
+      "city": "Mumbai",
+      "country": "India"
+    },
+    {
+      "firm": "QIA and Orix",
+      "firm_slug": "qia-and-orix",
+      "fund_count": 1,
+      "total_aum_millions": 2500,
+      "categories": ["Private Equity"],
+      "city": "Doha",
+      "country": "Qatar"
+    },
+    {
+      "firm": "BV Investment Partners",
+      "firm_slug": "bv-investment-partners",
+      "fund_count": 1,
+      "total_aum_millions": 2465,
+      "categories": ["Private Equity"],
+      "city": "Boston",
+      "country": "US"
+    },
+    {
+      "firm": "Pinegrove Opportunity Partners",
+      "firm_slug": "pinegrove-opportunity-partners",
+      "fund_count": 1,
+      "total_aum_millions": 2200,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "San Francisco",
+      "country": "US"
+    },
+    {
+      "firm": "Hamilton Lane",
+      "firm_slug": "hamilton-lane",
+      "fund_count": 1,
+      "total_aum_millions": 2000,
+      "categories": ["Infrastructure"],
+      "city": "Philadelphia",
+      "country": "US"
+    },
+    {
+      "firm": "Modulus",
+      "firm_slug": "modulus",
+      "fund_count": 1,
+      "total_aum_millions": 2000,
+      "categories": ["Credit Funds"],
+      "city": "Mumbai",
+      "country": "India"
+    },
+    {
+      "firm": "AIP Management",
+      "firm_slug": "aip-management",
+      "fund_count": 1,
+      "total_aum_millions": 2000,
+      "categories": ["Infrastructure"],
+      "city": "Copenhagen",
+      "country": "Denmark"
+    },
+    {
+      "firm": "Nigerian Government",
+      "firm_slug": "nigerian-government",
+      "fund_count": 1,
+      "total_aum_millions": 2000,
+      "categories": ["Infrastructure"],
+      "city": "Abuja",
+      "country": "Nigeria"
+    },
+    {
+      "firm": "Viola Credit",
+      "firm_slug": "viola-credit",
+      "fund_count": 1,
+      "total_aum_millions": 2000,
+      "categories": ["Credit Funds"],
+      "city": "Tel Aviv",
+      "country": "Israel"
+    },
+    {
+      "firm": "Harvey Capital Partners",
+      "firm_slug": "harvey-capital-partners",
+      "fund_count": 1,
+      "total_aum_millions": 1800,
+      "categories": ["Credit Funds"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "CBRE Investment Management",
+      "firm_slug": "cbre-investment-management",
+      "fund_count": 2,
+      "total_aum_millions": 1620,
+      "categories": ["Real Estate", "Secondaries & GP-Stakes"],
+      "city": "Los Angeles",
+      "country": "US"
+    },
+    {
+      "firm": "H.I.G. Capital",
+      "firm_slug": "h-i-g-capital",
+      "fund_count": 2,
+      "total_aum_millions": 1600,
+      "categories": ["Private Equity"],
+      "city": "Miami",
+      "country": "US"
+    },
+    {
+      "firm": "Mubadala Capital",
+      "firm_slug": "mubadala-capital",
+      "fund_count": 2,
+      "total_aum_millions": 1554,
+      "categories": ["Private Equity", "Real Estate"],
+      "city": "Abu Dhabi",
+      "country": "UAE"
+    },
+    {
+      "firm": "Eldridge / Carlyle AlpInvest",
+      "firm_slug": "eldridge-carlyle-alpinvest",
+      "fund_count": 1,
+      "total_aum_millions": 1500,
+      "categories": ["Credit Funds"],
+      "city": "Greenwich",
+      "country": "US"
+    },
+    {
+      "firm": "Lux Capital",
+      "firm_slug": "lux-capital",
+      "fund_count": 1,
+      "total_aum_millions": 1500,
+      "categories": ["Venture Capital"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Lighthouse Canton",
+      "firm_slug": "lighthouse-canton",
+      "fund_count": 1,
+      "total_aum_millions": 1500,
+      "categories": ["Credit Funds"],
+      "city": "Singapore",
+      "country": "Singapore"
+    },
+    {
+      "firm": "Bansk Group",
+      "firm_slug": "bansk-group",
+      "fund_count": 1,
+      "total_aum_millions": 1450,
+      "categories": ["Private Equity"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Unicorn India Ventures",
+      "firm_slug": "unicorn-india-ventures",
+      "fund_count": 2,
+      "total_aum_millions": 1440,
+      "categories": ["Venture Capital"],
+      "city": "Mumbai",
+      "country": "India"
+    },
+    {
+      "firm": "Apheon",
+      "firm_slug": "apheon",
+      "fund_count": 1,
+      "total_aum_millions": 1250,
+      "categories": ["Private Equity"],
+      "city": "Luxembourg",
+      "country": "Luxembourg"
+    },
+    {
+      "firm": "Otro Capital",
+      "firm_slug": "otro-capital",
+      "fund_count": 1,
+      "total_aum_millions": 1200,
+      "categories": ["Private Equity"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "New Mountain Capital",
+      "firm_slug": "new-mountain-capital",
+      "fund_count": 1,
+      "total_aum_millions": 1200,
+      "categories": ["Private Equity"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Sundaram Alternates",
+      "firm_slug": "sundaram-alternates",
+      "fund_count": 1,
+      "total_aum_millions": 1200,
+      "categories": ["Real Estate"],
+      "city": "Chennai",
+      "country": "India"
+    },
+    {
+      "firm": "Allianz Global Investors",
+      "firm_slug": "allianz-global-investors",
+      "fund_count": 1,
+      "total_aum_millions": 1200,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "Munich",
+      "country": "Germany"
+    },
+    {
+      "firm": "Covenant",
+      "firm_slug": "covenant",
+      "fund_count": 2,
+      "total_aum_millions": 1100,
+      "categories": ["Real Estate"],
+      "city": "Denver",
+      "country": "US"
+    },
+    {
+      "firm": "Tree Line",
+      "firm_slug": "tree-line",
+      "fund_count": 1,
+      "total_aum_millions": 1100,
+      "categories": ["Private Equity"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Stafford",
+      "firm_slug": "stafford",
+      "fund_count": 1,
+      "total_aum_millions": 1100,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
+      "firm": "RRJ Capital",
+      "firm_slug": "rrj-capital",
+      "fund_count": 1,
+      "total_aum_millions": 1100,
+      "categories": ["Credit Funds"],
+      "city": "Singapore",
+      "country": "Singapore"
+    },
+    {
+      "firm": "Davidson Kempner Capital Management",
+      "firm_slug": "davidson-kempner-capital-management",
+      "fund_count": 1,
+      "total_aum_millions": 1100,
+      "categories": ["Credit Funds"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Kembara",
+      "firm_slug": "kembara",
+      "fund_count": 1,
+      "total_aum_millions": 1000,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Power Sustainable",
+      "firm_slug": "power-sustainable",
+      "fund_count": 1,
+      "total_aum_millions": 1000,
+      "categories": ["Credit Funds"],
+      "city": "Montreal",
+      "country": "Canada"
+    },
+    {
+      "firm": "Golub Capital",
+      "firm_slug": "golub-capital",
+      "fund_count": 1,
+      "total_aum_millions": 1000,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "Chicago",
+      "country": "US"
+    },
+    {
+      "firm": "DuneVista Capital",
+      "firm_slug": "dunevista-capital",
+      "fund_count": 1,
+      "total_aum_millions": 1000,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Allianz",
+      "firm_slug": "allianz",
+      "fund_count": 1,
+      "total_aum_millions": 1000,
+      "categories": ["Credit Funds"],
+      "city": "Munich",
+      "country": "Germany"
+    },
+    {
+      "firm": "Eir Partners",
+      "firm_slug": "eir-partners",
+      "fund_count": 1,
+      "total_aum_millions": 1000,
+      "categories": ["Private Equity"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "J.P. Morgan Asset Management",
+      "firm_slug": "j-p-morgan-asset-management",
+      "fund_count": 1,
+      "total_aum_millions": 1000,
+      "categories": ["Credit Funds"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "SIDBI",
+      "firm_slug": "sidbi",
+      "fund_count": 1,
+      "total_aum_millions": 1000,
+      "categories": ["Venture Capital"],
+      "city": "Lucknow",
+      "country": "India"
+    },
+    {
+      "firm": "IN-SPACe and SIDBI",
+      "firm_slug": "in-space-and-sidbi",
+      "fund_count": 1,
+      "total_aum_millions": 1000,
+      "categories": ["Venture Capital"],
+      "city": "New Delhi",
+      "country": "India"
+    },
+    {
+      "firm": "Point72",
+      "firm_slug": "point72",
+      "fund_count": 1,
+      "total_aum_millions": 1000,
+      "categories": ["Credit Funds"],
+      "city": "Stamford",
+      "country": "US"
+    },
+    {
+      "firm": "SeaTown",
+      "firm_slug": "seatown",
+      "fund_count": 1,
+      "total_aum_millions": 900,
+      "categories": ["Credit Funds"],
+      "city": "Singapore",
+      "country": "Singapore"
+    },
+    {
+      "firm": "Aspirity Partners",
+      "firm_slug": "aspirity-partners",
+      "fund_count": 1,
+      "total_aum_millions": 875,
+      "categories": ["Private Equity"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "HighVista Strategies",
+      "firm_slug": "highvista-strategies",
+      "fund_count": 1,
+      "total_aum_millions": 800,
+      "categories": ["Private Equity"],
+      "city": "Boston",
+      "country": "US"
+    },
+    {
+      "firm": "HighVista",
+      "firm_slug": "highvista",
+      "fund_count": 1,
+      "total_aum_millions": 800,
+      "categories": ["Private Equity"],
+      "city": "N/A",
+      "country": "US"
+    },
+    {
+      "firm": "Mundi Ventures",
+      "firm_slug": "mundi-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 750,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
+      "firm": "Springcoast Partners",
+      "firm_slug": "springcoast-partners",
+      "fund_count": 1,
+      "total_aum_millions": 750,
+      "categories": ["Private Equity"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "StepStone",
+      "firm_slug": "stepstone",
+      "fund_count": 1,
+      "total_aum_millions": 750,
+      "categories": ["Private Equity"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Transition VC",
+      "firm_slug": "transition-vc",
+      "fund_count": 1,
+      "total_aum_millions": 700,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": "India"
+    },
+    {
+      "firm": "Blueprint Equity",
+      "firm_slug": "blueprint-equity",
+      "fund_count": 2,
+      "total_aum_millions": 666,
+      "categories": ["Private Equity", "Venture Capital"],
+      "city": "N/A",
+      "country": "US"
+    },
+    {
+      "firm": "Seraya Partners",
+      "firm_slug": "seraya-partners",
+      "fund_count": 1,
+      "total_aum_millions": 650,
+      "categories": ["Infrastructure"],
+      "city": "Singapore",
+      "country": "Singapore"
+    },
+    {
+      "firm": "SolarWind",
+      "firm_slug": "solarwind",
+      "fund_count": 1,
+      "total_aum_millions": 630,
+      "categories": ["Infrastructure"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Bayhawk Capital",
+      "firm_slug": "bayhawk-capital",
+      "fund_count": 1,
+      "total_aum_millions": 616,
+      "categories": ["Private Equity"],
+      "city": "Boston",
+      "country": "US"
+    },
+    {
+      "firm": "IITM & UIV",
+      "firm_slug": "iitm-uiv",
+      "fund_count": 1,
+      "total_aum_millions": 600,
+      "categories": ["Venture Capital"],
+      "city": "Chennai",
+      "country": "India"
+    },
+    {
+      "firm": "Pacific AM",
+      "firm_slug": "pacific-am",
+      "fund_count": 1,
+      "total_aum_millions": 600,
+      "categories": ["Infrastructure"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "IIT Bombay",
+      "firm_slug": "iit-bombay",
+      "fund_count": 2,
+      "total_aum_millions": 550,
+      "categories": ["Venture Capital"],
+      "city": "Mumbai",
+      "country": "India"
+    },
+    {
+      "firm": "Guidepost Growth Equity",
+      "firm_slug": "guidepost-growth-equity",
+      "fund_count": 1,
+      "total_aum_millions": 521,
+      "categories": ["Private Equity"],
+      "city": "Boston",
+      "country": "US"
+    },
+    {
+      "firm": "LBP AM",
+      "firm_slug": "lbp-am",
+      "fund_count": 1,
+      "total_aum_millions": 500,
+      "categories": ["Credit Funds"],
+      "city": "Paris",
+      "country": "France"
+    },
+    {
+      "firm": "Gore Street Capital",
+      "firm_slug": "gore-street-capital",
+      "fund_count": 2,
+      "total_aum_millions": 500,
+      "categories": ["Infrastructure"],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
+      "firm": "Patrimonium and Bayview",
+      "firm_slug": "patrimonium-and-bayview",
+      "fund_count": 1,
+      "total_aum_millions": 500,
+      "categories": ["Real Estate"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Greykite and Arax",
+      "firm_slug": "greykite-and-arax",
+      "fund_count": 1,
+      "total_aum_millions": 500,
+      "categories": ["Real Estate"],
+      "city": "N/A",
+      "country": "Germany"
+    },
+    {
+      "firm": "Artha India Ventures",
+      "firm_slug": "artha-india-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 500,
+      "categories": ["Venture Capital"],
+      "city": "Mumbai",
+      "country": "India"
+    },
+    {
+      "firm": "Threestones",
+      "firm_slug": "threestones",
+      "fund_count": 1,
+      "total_aum_millions": 500,
+      "categories": ["Real Estate"],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
+      "firm": "Eurazeo",
+      "firm_slug": "eurazeo",
+      "fund_count": 1,
+      "total_aum_millions": 480,
+      "categories": ["Credit Funds"],
+      "city": "Paris",
+      "country": "France"
+    },
+    {
+      "firm": "Obra Capital",
+      "firm_slug": "obra-capital",
+      "fund_count": 1,
+      "total_aum_millions": 450,
+      "categories": ["Credit Funds"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Amethis / Edmond de Rothschild PE",
+      "firm_slug": "amethis-edmond-de-rothschild-pe",
+      "fund_count": 1,
+      "total_aum_millions": 406,
+      "categories": ["Private Equity"],
+      "city": "Paris",
+      "country": "France"
+    },
+    {
+      "firm": "Shore Capital Partners",
+      "firm_slug": "shore-capital-partners",
+      "fund_count": 1,
+      "total_aum_millions": 400,
+      "categories": ["Private Equity"],
+      "city": "Chicago",
+      "country": "US"
+    },
+    {
+      "firm": "Stoneshield",
+      "firm_slug": "stoneshield",
+      "fund_count": 1,
+      "total_aum_millions": 400,
+      "categories": ["Real Estate"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Investec",
+      "firm_slug": "investec",
+      "fund_count": 1,
+      "total_aum_millions": 400,
+      "categories": ["Credit Funds"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "Navam Capital",
+      "firm_slug": "navam-capital",
+      "fund_count": 1,
+      "total_aum_millions": 378,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": "India"
+    },
+    {
+      "firm": "Encore Consumer Capital",
+      "firm_slug": "encore-consumer-capital",
+      "fund_count": 1,
+      "total_aum_millions": 350,
+      "categories": ["Private Equity"],
+      "city": "Chicago",
+      "country": "US"
+    },
+    {
+      "firm": "Santé Ventures",
+      "firm_slug": "sant-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 330,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "CAVU Consumer Partners",
+      "firm_slug": "cavu-consumer-partners",
+      "fund_count": 1,
+      "total_aum_millions": 325,
+      "categories": ["Private Equity"],
+      "city": "Los Angeles",
+      "country": "US"
+    },
+    {
+      "firm": "Catalio Capital Management",
+      "firm_slug": "catalio-capital-management",
+      "fund_count": 1,
+      "total_aum_millions": 325,
+      "categories": ["Credit Funds"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Patrizia / Mitsui",
+      "firm_slug": "patrizia-mitsui",
+      "fund_count": 1,
+      "total_aum_millions": 300,
+      "categories": ["Infrastructure"],
+      "city": "Augsburg",
+      "country": "Germany"
+    },
+    {
+      "firm": "Lendable",
+      "firm_slug": "lendable",
+      "fund_count": 1,
+      "total_aum_millions": 300,
+      "categories": ["Credit Funds"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "Westwood Holdings Group",
+      "firm_slug": "westwood-holdings-group",
+      "fund_count": 1,
+      "total_aum_millions": 300,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "Dallas",
+      "country": "US"
+    },
+    {
+      "firm": "55 North",
+      "firm_slug": "55-north",
+      "fund_count": 1,
+      "total_aum_millions": 300,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Timber Bay",
+      "firm_slug": "timber-bay",
+      "fund_count": 1,
+      "total_aum_millions": 281,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "N/A",
+      "country": "US"
+    },
+    {
+      "firm": "Voyager Ventures",
+      "firm_slug": "voyager-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 275,
+      "categories": ["Venture Capital"],
+      "city": "San Francisco",
+      "country": "US"
+    },
+    {
+      "firm": "Abacus Finance",
+      "firm_slug": "abacus-finance",
+      "fund_count": 1,
+      "total_aum_millions": 262.5,
+      "categories": ["Credit Funds"],
+      "city": "N/A",
+      "country": "US"
+    },
+    {
+      "firm": "daphni",
+      "firm_slug": "daphni",
+      "fund_count": 1,
+      "total_aum_millions": 260,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
+      "firm": "Ariel Investments",
+      "firm_slug": "ariel-investments",
+      "fund_count": 1,
+      "total_aum_millions": 250,
+      "categories": ["Venture Capital"],
+      "city": "Chicago",
+      "country": "US"
+    },
+    {
+      "firm": "HashKey Capital",
+      "firm_slug": "hashkey-capital",
+      "fund_count": 1,
+      "total_aum_millions": 250,
+      "categories": ["Venture Capital"],
+      "city": "Hong Kong",
+      "country": "Hong Kong"
+    },
+    {
+      "firm": "Firgun Ventures",
+      "firm_slug": "firgun-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 250,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "2150",
+      "firm_slug": "2150",
+      "fund_count": 1,
+      "total_aum_millions": 210,
+      "categories": ["Venture Capital"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "Highland Rim Capital",
+      "firm_slug": "highland-rim-capital",
+      "fund_count": 1,
+      "total_aum_millions": 208,
+      "categories": ["Private Equity"],
+      "city": "Nashville",
+      "country": "US"
+    },
+    {
+      "firm": "Shorooq",
+      "firm_slug": "shorooq",
+      "fund_count": 1,
+      "total_aum_millions": 200,
+      "categories": ["Venture Capital"],
+      "city": "Doha",
+      "country": "Qatar"
+    },
+    {
+      "firm": "Growth Street Partners",
+      "firm_slug": "growth-street-partners",
+      "fund_count": 1,
+      "total_aum_millions": 200,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": "US"
+    },
+    {
+      "firm": "Jadwa Investment",
+      "firm_slug": "jadwa-investment",
+      "fund_count": 1,
+      "total_aum_millions": 200,
+      "categories": ["Credit Funds"],
+      "city": "Riyadh",
+      "country": "Saudi Arabia"
+    },
+    {
+      "firm": "CF Private Equity",
+      "firm_slug": "cf-private-equity",
+      "fund_count": 1,
+      "total_aum_millions": 187,
+      "categories": ["Private Equity"],
+      "city": "Norwalk",
+      "country": "US"
+    },
+    {
+      "firm": "AppWorks",
+      "firm_slug": "appworks",
+      "fund_count": 1,
+      "total_aum_millions": 165,
+      "categories": ["Venture Capital"],
+      "city": "Taipei",
+      "country": "Taiwan"
+    },
+    {
+      "firm": "b2venture",
+      "firm_slug": "b2venture",
+      "fund_count": 1,
+      "total_aum_millions": 150,
+      "categories": ["Venture Capital"],
+      "city": "Berlin",
+      "country": "Germany"
+    },
+    {
+      "firm": "Deep33 Ventures",
+      "firm_slug": "deep33-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 150,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": "Israel"
+    },
+    {
+      "firm": "CapitaLand Investment",
+      "firm_slug": "capitaland-investment",
+      "fund_count": 1,
+      "total_aum_millions": 150,
+      "categories": ["Real Estate"],
+      "city": "Singapore",
+      "country": "Singapore"
+    },
+    {
+      "firm": "XSML",
+      "firm_slug": "xsml",
+      "fund_count": 1,
+      "total_aum_millions": 142,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "SlateVC",
+      "firm_slug": "slatevc",
+      "fund_count": 1,
+      "total_aum_millions": 132,
+      "categories": ["Venture Capital"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "Breakwall Capital",
+      "firm_slug": "breakwall-capital",
+      "fund_count": 1,
+      "total_aum_millions": 125,
+      "categories": ["Credit Funds"],
+      "city": "Houston",
+      "country": "US"
+    },
+    {
+      "firm": "McRock Capital",
+      "firm_slug": "mcrock-capital",
+      "fund_count": 1,
+      "total_aum_millions": 120,
+      "categories": ["Venture Capital"],
+      "city": "Toronto",
+      "country": "Canada"
+    },
+    {
+      "firm": "Gerber Taylor",
+      "firm_slug": "gerber-taylor",
+      "fund_count": 1,
+      "total_aum_millions": 111,
+      "categories": ["Private Equity"],
+      "city": "N/A",
+      "country": "US"
+    },
+    {
+      "firm": "Constructor Capital",
+      "firm_slug": "constructor-capital",
+      "fund_count": 1,
+      "total_aum_millions": 110,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "MPC Capital and Storm Capital",
+      "firm_slug": "mpc-capital-and-storm-capital",
+      "fund_count": 2,
+      "total_aum_millions": 105,
+      "categories": ["Infrastructure"],
+      "city": "Hamburg",
+      "country": "Germany"
+    },
+    {
+      "firm": "Blue Earth Capital",
+      "firm_slug": "blue-earth-capital",
+      "fund_count": 1,
+      "total_aum_millions": 100,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "Zug",
+      "country": "Switzerland"
+    },
+    {
+      "firm": "Galaxy Digital",
+      "firm_slug": "galaxy-digital",
+      "fund_count": 1,
+      "total_aum_millions": 100,
+      "categories": ["Venture Capital"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Rosberg Ventures",
+      "firm_slug": "rosberg-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 100,
+      "categories": ["Venture Capital"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "e2vc",
+      "firm_slug": "e2vc",
+      "fund_count": 1,
+      "total_aum_millions": 100,
+      "categories": ["Venture Capital"],
+      "city": "Berlin",
+      "country": "Germany"
+    },
+    {
+      "firm": "Enko Capital",
+      "firm_slug": "enko-capital",
+      "fund_count": 1,
+      "total_aum_millions": 100,
+      "categories": ["Credit Funds"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Foresight",
+      "firm_slug": "foresight",
+      "fund_count": 1,
+      "total_aum_millions": 90,
+      "categories": ["Private Equity"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "2048",
+      "firm_slug": "2048",
+      "fund_count": 1,
+      "total_aum_millions": 82,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": "US"
+    },
+    {
+      "firm": "Wolff",
+      "firm_slug": "wolff",
+      "fund_count": 1,
+      "total_aum_millions": 75,
+      "categories": ["Real Estate"],
+      "city": "Los Angeles",
+      "country": "US"
+    },
+    {
+      "firm": "Ananda Impact Ventures",
+      "firm_slug": "ananda-impact-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 73,
+      "categories": ["Venture Capital"],
+      "city": "Mumbai",
+      "country": "India"
+    },
+    {
+      "firm": "EV3 Ventures",
+      "firm_slug": "ev3-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 61.7,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Develop North",
+      "firm_slug": "develop-north",
+      "fund_count": 1,
+      "total_aum_millions": 58,
+      "categories": ["Venture Capital"],
+      "city": "Manchester",
+      "country": "UK"
+    },
+    {
+      "firm": "SNAK Venture Partners",
+      "firm_slug": "snak-venture-partners",
+      "fund_count": 1,
+      "total_aum_millions": 50,
+      "categories": ["Venture Capital"],
+      "city": "Chicago",
+      "country": "US"
+    },
+    {
+      "firm": "Comstock",
+      "firm_slug": "comstock",
+      "fund_count": 1,
+      "total_aum_millions": 50,
+      "categories": ["Infrastructure"],
+      "city": "Arlington",
+      "country": "US"
+    },
+    {
+      "firm": "Creation Investments",
+      "firm_slug": "creation-investments",
+      "fund_count": 1,
+      "total_aum_millions": 46,
+      "categories": ["Credit Funds"],
+      "city": "Chicago",
+      "country": "US"
+    },
+    {
+      "firm": "Creator Fund",
+      "firm_slug": "creator-fund",
+      "fund_count": 1,
+      "total_aum_millions": 41,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Sahel Capital",
+      "firm_slug": "sahel-capital",
+      "fund_count": 1,
+      "total_aum_millions": 29,
+      "categories": ["Venture Capital"],
+      "city": "Lagos",
+      "country": "Nigeria"
+    },
+    {
+      "firm": "Superorganism",
+      "firm_slug": "superorganism",
+      "fund_count": 1,
+      "total_aum_millions": 25.9,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Golden Sparrow Ventures",
+      "firm_slug": "golden-sparrow-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 20,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Vest Ventures",
+      "firm_slug": "vest-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 16,
+      "categories": ["Venture Capital"],
+      "city": "Cluj-Napoca",
+      "country": "Romania"
+    },
+    {
+      "firm": "ZOLLHOF",
+      "firm_slug": "zollhof",
+      "fund_count": 1,
+      "total_aum_millions": 10,
+      "categories": ["Venture Capital"],
+      "city": "Nuremberg",
+      "country": "Germany"
+    },
+    {
+      "firm": "Fearless Fund",
+      "firm_slug": "fearless-fund",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Credit Funds"],
+      "city": "Atlanta",
+      "country": "US"
+    },
+    {
+      "firm": "DS2 Capital / Gallatin Point Capital",
+      "firm_slug": "ds2-capital-gallatin-point-capital",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Credit Funds"],
+      "city": "Charlotte",
+      "country": "US"
+    },
+    {
+      "firm": "HSBC Asset Management",
+      "firm_slug": "hsbc-asset-management",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Credit Funds"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "Carousel Capital",
+      "firm_slug": "carousel-capital",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "Charlotte",
+      "country": "US"
+    },
+    {
+      "firm": "Newcore Capital",
+      "firm_slug": "newcore-capital",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Infrastructure"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "MedArtha Capital",
+      "firm_slug": "medartha-capital",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "CedarBridge",
+      "firm_slug": "cedarbridge",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "RMB Capitalworks",
+      "firm_slug": "rmb-capitalworks",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "Mumbai",
+      "country": "India"
+    },
+    {
+      "firm": "Clearlake Capital Group",
+      "firm_slug": "clearlake-capital-group",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "Santa Monica",
+      "country": "US"
+    },
+    {
+      "firm": "CAZ Investments",
+      "firm_slug": "caz-investments",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "Houston",
+      "country": "US"
+    },
+    {
+      "firm": "Eterna Growth Partners",
+      "firm_slug": "eterna-growth-partners",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "Boston",
+      "country": "US"
+    },
+    {
+      "firm": "PICTON Investments / Morningside Capital",
+      "firm_slug": "picton-investments-morningside-capital",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "Toronto",
+      "country": "Canada"
+    },
+    {
+      "firm": "Stonepeak",
+      "firm_slug": "stonepeak",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Infrastructure"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Desjardins Global Asset Management",
+      "firm_slug": "desjardins-global-asset-management",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "Montreal",
+      "country": "Canada"
+    },
+    {
+      "firm": "Epidarex Capital",
+      "firm_slug": "epidarex-capital",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Venture Capital"],
+      "city": "Boston",
+      "country": "US"
+    },
+    {
+      "firm": "ShaikhTech",
+      "firm_slug": "shaikhtech",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Real Estate"],
+      "city": "Riyadh",
+      "country": "Saudi Arabia"
+    },
+    {
+      "firm": "Premier Invest",
+      "firm_slug": "premier-invest",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Infrastructure"],
+      "city": "Abu Dhabi",
+      "country": "UAE"
+    },
+    {
+      "firm": "BlackRock",
+      "firm_slug": "blackrock",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Credit Funds"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Nine Mile",
+      "firm_slug": "nine-mile",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Axiom Equity",
+      "firm_slug": "axiom-equity",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "CIBC Asset Management",
+      "firm_slug": "cibc-asset-management",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Credit Funds"],
+      "city": "Toronto",
+      "country": "Canada"
+    },
+    {
+      "firm": "Celadon Partners",
+      "firm_slug": "celadon-partners",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Infrastructure"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "Kairon Capital",
+      "firm_slug": "kairon-capital",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Venture Capital"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Invesco",
+      "firm_slug": "invesco",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Credit Funds"],
+      "city": "Atlanta",
+      "country": "US"
+    },
+    {
+      "firm": "Tortoise Capital",
+      "firm_slug": "tortoise-capital",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Infrastructure"],
+      "city": "Leawood",
+      "country": "US"
+    },
+    {
+      "firm": "Samara Capital",
+      "firm_slug": "samara-capital",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "Mumbai",
+      "country": "India"
+    },
+    {
+      "firm": "Invest International",
+      "firm_slug": "invest-international",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Infrastructure"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Bridges",
+      "firm_slug": "bridges",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Real Estate"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "Infranity",
+      "firm_slug": "infranity",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Infrastructure"],
+      "city": "Paris",
+      "country": "France"
+    },
+    {
+      "firm": "Interstate Equities",
+      "firm_slug": "interstate-equities",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Real Estate"],
+      "city": "N/A",
+      "country": "US"
+    },
+    {
+      "firm": "Arcano",
+      "firm_slug": "arcano",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Secondaries & GP-Stakes"],
+      "city": "Madrid",
+      "country": "Spain"
+    },
+    {
+      "firm": "Nassau Financial Group",
+      "firm_slug": "nassau-financial-group",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Credit Funds"],
+      "city": "Hartford",
+      "country": "US"
+    },
+    {
+      "firm": "Barjeel Geojit",
+      "firm_slug": "barjeel-geojit",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Venture Capital"],
+      "city": "Dubai",
+      "country": "UAE"
+    },
+    {
+      "firm": "Bridgepoint",
+      "firm_slug": "bridgepoint",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "CapMan",
+      "firm_slug": "capman",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Infrastructure"],
+      "city": "Helsinki",
+      "country": "Finland"
+    },
+    {
+      "firm": "Centum",
+      "firm_slug": "centum",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Real Estate"],
+      "city": "Nairobi",
+      "country": "Kenya"
+    },
+    {
+      "firm": "Sandbrook Capital",
+      "firm_slug": "sandbrook-capital",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Infrastructure"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "First Trust",
+      "firm_slug": "first-trust",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Credit Funds"],
+      "city": "Wheaton",
+      "country": "US"
+    },
+    {
+      "firm": "Mavenark",
+      "firm_slug": "mavenark",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Credit Funds"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Asian Development Bank",
+      "firm_slug": "asian-development-bank",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Infrastructure"],
+      "city": "Mandaluyong",
+      "country": "Philippines"
+    },
+    {
+      "firm": "Sanlam Investments",
+      "firm_slug": "sanlam-investments",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Real Estate"],
+      "city": "Johannesburg",
+      "country": "South Africa"
+    },
+    {
+      "firm": "CAIS Advisors",
+      "firm_slug": "cais-advisors",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "New York City",
+      "country": "US"
+    },
+    {
+      "firm": "VentureSoul",
+      "firm_slug": "venturesoul",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Credit Funds"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Hines",
+      "firm_slug": "hines",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Real Estate"],
+      "city": "Houston",
+      "country": "US"
+    },
+    {
+      "firm": "Future Standard",
+      "firm_slug": "future-standard",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "Philadelphia",
+      "country": "US"
+    },
+    {
+      "firm": "Bridge Investment Group",
+      "firm_slug": "bridge-investment-group",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "Salt Lake City",
+      "country": "US"
+    },
+    {
+      "firm": "British Business Bank",
+      "firm_slug": "british-business-bank",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Venture Capital"],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "Irving Investors",
+      "firm_slug": "irving-investors",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Credit Funds"],
+      "city": "N/A",
+      "country": "US"
+    },
+    {
+      "firm": "Nyver Capital",
+      "firm_slug": "nyver-capital",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "UOBAM (Malaysia)",
+      "firm_slug": "uobam-malaysia",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Credit Funds"],
+      "city": "Kuala Lumpur",
+      "country": "Malaysia"
+    },
+    {
+      "firm": "Ares",
+      "firm_slug": "ares",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Real Estate"],
+      "city": "Los Angeles",
+      "country": "US"
+    },
+    {
+      "firm": "TIC Holding Schweiz AG",
+      "firm_slug": "tic-holding-schweiz-ag",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Private Equity"],
+      "city": "Zurich",
+      "country": "Switzerland"
+    },
+    {
+      "firm": "AllianceBernstein",
+      "firm_slug": "alliancebernstein",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Credit Funds"],
+      "city": "New York",
+      "country": "US"
+    },
+    {
+      "firm": "Janus Henderson",
+      "firm_slug": "janus-henderson",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Credit Funds"],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
+      "firm": "Swiss Life Asset Management",
+      "firm_slug": "swiss-life-asset-management",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Real Estate"],
+      "city": "Zurich",
+      "country": "Switzerland"
+    },
+    {
+      "firm": "Realty Income REIT",
+      "firm_slug": "realty-income-reit",
+      "fund_count": 1,
+      "total_aum_millions": 0,
+      "categories": ["Real Estate"],
+      "city": "San Diego",
+      "country": "US"
+    }
+  ],
+  "categories": [
+    "Credit Funds",
+    "Hedge Funds",
+    "Infrastructure",
+    "Private Equity",
+    "Real Estate",
+    "Secondaries & GP-Stakes",
+    "Venture Capital"
+  ],
+  "stages": ["Final Close", "First Close", "Interim Close", "Launch", "Other"],
+  "strategies": [
+    "Arbitrage",
+    "Asset-Based",
+    "Buyout",
+    "Co-Investment",
+    "Continuation Fund",
+    "Core Infrastructure",
+    "Core-Plus",
+    "Digital Infrastructure",
+    "Direct Lending",
+    "Distressed",
+    "Diversified",
+    "Early Stage",
+    "Energy Transition",
+    "Event Driven",
+    "GP-Led",
+    "Global Macro",
+    "Growth Equity",
+    "Growth Stage",
+    "Infrastructure Equity",
+    "LP Secondaries",
+    "LP-Led",
+    "Late Stage",
+    "Long-Short Equity",
+    "Lower Middle Market",
+    "Middle Market",
+    "Multi-Strategy",
+    "Opportunistic",
+    "Opportunistic Credit",
+    "Quantitative",
+    "Sector-Specific",
+    "Seed/Pre-Seed",
+    "Specialty Finance",
+    "Value-Add"
+  ],
+  "geographies": [
+    "Asia-Pacific",
+    "Europe",
+    "Global",
+    "Middle East & Africa",
+    "North America"
+  ],
+  "feed_health": [
+    {
+      "feed_name": "AltAssets",
+      "feed_url": "https://www.altassets.net/feed",
+      "last_fetch": "2026-02-10T05:16:51.035312",
+      "last_success": "2026-02-10T05:16:51.035322",
+      "error_count": 0,
+      "article_count": 10,
+      "last_error": "",
+      "enabled": true
+    },
+    {
+      "feed_name": "Alternative Credit Investor",
+      "feed_url": "https://alternativecreditinvestor.com/feed/",
+      "last_fetch": "2026-02-10T05:16:48.230691",
+      "last_success": "2026-02-10T05:16:48.230702",
+      "error_count": 0,
+      "article_count": 10,
+      "last_error": "",
+      "enabled": true
+    },
+    {
+      "feed_name": "Axios Pro Rata",
+      "feed_url": "https://api.axios.com/feed/pro-rata",
+      "last_fetch": "2026-02-07T09:57:44.742843",
+      "last_success": null,
+      "error_count": 1,
+      "article_count": 0,
+      "last_error": "Feed parse error for Axios Pro Rata: <unknown>:3:0: syntax error",
+      "enabled": true
+    },
+    {
+      "feed_name": "Business Wire - Banking/Financial",
+      "feed_url": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRXg==",
+      "last_fetch": "2026-02-07T20:24:45.586329",
+      "last_success": "2026-02-07T20:24:45.586334",
+      "error_count": 0,
+      "article_count": 9,
+      "last_error": "",
+      "enabled": true
+    },
+    {
+      "feed_name": "Business Wire - Financial Services",
+      "feed_url": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeEFpRWg==",
+      "last_fetch": "2026-02-07T18:23:25.617308",
+      "last_success": "2026-02-07T18:23:25.617316",
+      "error_count": 0,
+      "article_count": 0,
+      "last_error": "",
+      "enabled": true
+    },
+    {
+      "feed_name": "Buyouts Insider",
+      "feed_url": "https://www.buyoutsinsider.com/feed/",
+      "last_fetch": "2026-02-10T05:16:56.945958",
+      "last_success": "2026-02-10T05:16:56.945988",
+      "error_count": 0,
+      "article_count": 10,
+      "last_error": "",
+      "enabled": true
+    },
+    {
+      "feed_name": "ESG Today",
+      "feed_url": "https://www.esgtoday.com/feed/",
+      "last_fetch": "2026-02-10T04:05:00.634198",
+      "last_success": "2026-02-10T04:05:00.634205",
+      "error_count": 0,
+      "article_count": 10,
+      "last_error": "",
+      "enabled": true
+    },
+    {
+      "feed_name": "GlobeNewswire - Financial",
+      "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
+      "last_fetch": "2026-02-10T04:04:56.226365",
+      "last_success": "2026-02-10T04:04:56.226374",
+      "error_count": 0,
+      "article_count": 20,
+      "last_error": "",
+      "enabled": true
+    },
+    {
+      "feed_name": "Hedgeweek",
+      "feed_url": "https://www.hedgeweek.com/feed/",
+      "last_fetch": "2026-02-10T05:16:44.988054",
+      "last_success": "2026-02-10T05:16:44.988064",
+      "error_count": 0,
+      "article_count": 10,
+      "last_error": "",
+      "enabled": true
+    },
+    {
+      "feed_name": "Infrastructure Investor",
+      "feed_url": "https://www.infrastructureinvestor.com/feed/",
+      "last_fetch": "2026-02-10T04:45:24.371725",
+      "last_success": "2026-02-10T04:45:24.371749",
+      "error_count": 0,
+      "article_count": 10,
+      "last_error": "",
+      "enabled": true
+    },
+    {
+      "feed_name": "PE Hub",
+      "feed_url": "https://www.pehub.com/feed/",
+      "last_fetch": "2026-02-10T05:16:54.163951",
+      "last_success": "2026-02-10T05:16:54.163966",
+      "error_count": 0,
+      "article_count": 10,
+      "last_error": "",
+      "enabled": true
+    },
+    {
+      "feed_name": "PERE",
+      "feed_url": "https://www.perenews.com/feed/",
+      "last_fetch": "2026-02-10T05:00:53.922789",
+      "last_success": "2026-02-10T05:00:53.922799",
+      "error_count": 0,
+      "article_count": 10,
+      "last_error": "",
+      "enabled": true
+    },
+    {
+      "feed_name": "PR Newswire - Financial Services",
+      "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
+      "last_fetch": "2026-02-10T04:04:53.980808",
+      "last_success": "2026-02-10T04:04:53.980814",
+      "error_count": 0,
+      "article_count": 20,
+      "last_error": "",
+      "enabled": true
+    },
+    {
+      "feed_name": "Private Debt Investor",
+      "feed_url": "https://www.privatedebtinvestor.com/feed/",
+      "last_fetch": "2026-02-10T05:08:26.515691",
+      "last_success": "2026-02-10T05:08:26.515706",
+      "error_count": 0,
+      "article_count": 10,
+      "last_error": "",
+      "enabled": true
+    },
+    {
+      "feed_name": "Secondaries Investor",
+      "feed_url": "https://www.secondariesinvestor.com/feed/",
+      "last_fetch": "2026-02-10T05:08:23.681563",
+      "last_success": "2026-02-10T05:08:23.681575",
+      "error_count": 0,
+      "article_count": 10,
+      "last_error": "",
+      "enabled": true
+    },
+    {
+      "feed_name": "TechCrunch - Venture",
+      "feed_url": "https://techcrunch.com/category/venture/feed/",
+      "last_fetch": "2026-02-10T04:04:58.067648",
+      "last_success": "2026-02-10T04:04:58.067657",
+      "error_count": 0,
+      "article_count": 20,
+      "last_error": "",
+      "enabled": true
+    }
+  ],
+  "stats": {
+    "total_funds": 419,
+    "total_covered": 52,
+    "total_uncovered": 367,
+    "total_aum_millions": 5483772.140000001,
+    "by_category": {
+      "Credit Funds": 60,
+      "Real Estate": 47,
+      "Venture Capital": 92,
+      "Secondaries & GP-Stakes": 41,
+      "Private Equity": 103,
+      "Infrastructure": 50,
+      "Hedge Funds": 26
+    },
+    "by_stage": {
+      "Launch": 123,
+      "Final Close": 197,
+      "Other": 50,
+      "Interim Close": 4,
+      "First Close": 45
+    },
+    "article_count": 396,
+    "feed_count": 16,
+    "date_range": {
+      "earliest": "2024-01-03",
+      "latest": "2026-02-07"
+    }
+  }
 }
