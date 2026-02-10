@@ -815,6 +815,39 @@ const FIRM_HQ_MAP: Record<string, { city: string; state: string; country: string
   'cvc': { city: 'London', state: '', country: 'UK' },
   'eqt': { city: 'Stockholm', state: '', country: 'Sweden' },
   'permira': { city: 'London', state: '', country: 'UK' },
+
+  // Added February 2026 - batch 1
+  'mundi ventures': { city: 'Madrid', state: '', country: 'Spain' },
+  'mundi': { city: 'Madrid', state: '', country: 'Spain' },
+  'santé ventures': { city: 'Austin', state: 'TX', country: 'US' },
+  'sante ventures': { city: 'Austin', state: 'TX', country: 'US' },
+  'santé': { city: 'Austin', state: 'TX', country: 'US' },
+  'gore street': { city: 'London', state: '', country: 'UK' },
+  'blueprint equity': { city: 'La Jolla', state: 'CA', country: 'US' },
+  'daphni': { city: 'Paris', state: '', country: 'France' },
+  'stafford': { city: 'London', state: '', country: 'UK' },
+  'stafford capital': { city: 'London', state: '', country: 'UK' },
+  'janus henderson': { city: 'London', state: '', country: 'UK' },
+  'janus': { city: 'London', state: '', country: 'UK' },
+  'creator fund': { city: 'London', state: '', country: 'UK' },
+  'xsml': { city: 'Amsterdam', state: '', country: 'Netherlands' },
+  'timber bay': { city: 'Cincinnati', state: 'OH', country: 'US' },
+  'cedarbridge': { city: 'Dubai', state: '', country: 'UAE' },
+  'enko': { city: 'London', state: '', country: 'UK' },
+  'enko capital': { city: 'London', state: '', country: 'UK' },
+
+  // Added February 2026 - batch 2
+  'constructor capital': { city: 'Schaffhausen', state: '', country: 'Switzerland' },
+  'ev3': { city: 'New York', state: 'NY', country: 'US' },
+  'ev3 ventures': { city: 'New York', state: 'NY', country: 'US' },
+  'escape velocity': { city: 'New York', state: 'NY', country: 'US' },
+  'abacus finance': { city: 'New York', state: 'NY', country: 'US' },
+  'abacus': { city: 'New York', state: 'NY', country: 'US' },
+  'firgun': { city: 'London', state: '', country: 'UK' },
+  'firgun ventures': { city: 'London', state: '', country: 'UK' },
+  'navam': { city: 'Kolkata', state: '', country: 'India' },
+  'navam capital': { city: 'Kolkata', state: '', country: 'India' },
+  '55 north': { city: 'Copenhagen', state: '', country: 'Denmark' },
 };
 
 /**
