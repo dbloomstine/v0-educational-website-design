@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-10T14:58:56.549Z",
+  "generated_at": "2026-02-10T15:04:27.815Z",
   "funds": [
     {
       "fund_name": "Fearless Fund Microfinance Fund",
@@ -606,6 +606,15 @@
           "published_date": "2026-02-04",
           "summary": "SNAK Venture Partners Closes Oversubscribed $50M Debut Fund&nbsp;&nbsp;The Tech Buzz",
           "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "Matter Venture Partners Fund I",
+          "url": "https://techcrunch.com/2024/03/28/wen-hsieh-matter-venture-partners-300m-fund/",
+          "source_name": "TechCrunch",
+          "source_domain": "techcrunch.com",
+          "published_date": "2024-03-28",
+          "summary": "Deep tech venture fund from former Kleiner Perkins partner.",
+          "feed_name": "additional"
         }
       ],
       "strategy": "Early Stage",
@@ -1137,6 +1146,15 @@
           "published_date": "2026-02-03",
           "summary": "HighVista Closes Oversubscribed Private Equity Fund XI at $800 Million, Surpassing Target&nbsp;&nbsp;PR Newswire",
           "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "HighVista Private Equity X",
+          "url": "https://www.highvistastrategies.com/private-markets/us-lower-middle-market-private-equity/",
+          "source_name": "highvistastrategies.com",
+          "source_domain": "highvistastrategies.com",
+          "published_date": "2024-05-01",
+          "summary": "Lower middle market PE fund of funds.",
+          "feed_name": "additional"
         }
       ],
       "target_geography": "North America"
@@ -1414,6 +1432,15 @@
           "published_date": "2026-02-02",
           "summary": "Santé Ventures Raises $330 Million for Fifth Fund to Advance Breakthrough Healthcare Innovation&nbsp;&nbsp;PR Newswire",
           "feed_name": "search:Press release fund closes"
+        },
+        {
+          "title": "Valar Ventures Fund IX",
+          "url": "https://techcrunch.com/2024/05/22/peter-thiel-valar-ventures-new-fund-size-performance/",
+          "source_name": "TechCrunch",
+          "source_domain": "techcrunch.com",
+          "published_date": "2024-05-22",
+          "summary": "Peter Thiel-backed fintech venture fund.",
+          "feed_name": "additional"
         }
       ]
     },
@@ -3351,7 +3378,17 @@
       "is_covered": true,
       "covered_date": "2026-01-16",
       "date_added": "2026-02-07T16:53:32",
-      "articles": [],
+      "articles": [
+        {
+          "title": "New Mountain Strategic Equity Fund II",
+          "url": "https://www.jdsupra.com/legalnews/healthcare-life-sciences-private-equity-7835765/",
+          "source_name": "JD Supra",
+          "source_domain": "jdsupra.com",
+          "published_date": "2024-08-01",
+          "summary": "Strategic equity fund focused on healthcare and business services.",
+          "feed_name": "additional"
+        }
+      ],
       "target_geography": "North America"
     },
     {
@@ -4603,6 +4640,15 @@
           "published_date": "2024-06-27",
           "summary": "European lower middle market buyout fund.",
           "feed_name": "additional"
+        },
+        {
+          "title": "Eir Partners Fund III",
+          "url": "https://www.jdsupra.com/legalnews/healthcare-life-sciences-private-equity-7835765/",
+          "source_name": "JD Supra",
+          "source_domain": "jdsupra.com",
+          "published_date": "2024-11-01",
+          "summary": "Healthcare services buyout fund.",
+          "feed_name": "additional"
         }
       ],
       "strategy": "Buyout",
@@ -4890,7 +4936,17 @@
       "is_covered": true,
       "covered_date": "2026-01-09",
       "date_added": "2026-02-07T16:53:32",
-      "articles": [],
+      "articles": [
+        {
+          "title": "Vintage Investment Partners Fund IV",
+          "url": "https://pitchbook.com/newsletter/global-vc-and-pe-fundraising-news-for-january-12-2024",
+          "source_name": "PitchBook",
+          "source_domain": "pitchbook.com",
+          "published_date": "2024-01-15",
+          "summary": "Israeli venture fund of funds.",
+          "feed_name": "additional"
+        }
+      ],
       "target_geography": "North America"
     },
     {
@@ -7119,6 +7175,40 @@
       ]
     },
     {
+      "fund_name": "MaC Venture Capital Fund III",
+      "firm": "MaC Venture Capital",
+      "firm_slug": "mac-venture-capital",
+      "firm_website": null,
+      "amount": "$150M",
+      "amount_usd_millions": 150,
+      "category": "Venture Capital",
+      "strategy": "Early Stage",
+      "target_geography": "North America",
+      "location": "Los Angeles, CA",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-10-29",
+      "source_url": "https://fortune.com/2024/10/29/exclusive-mac-vc-raises-150-million-for-its-third-fund-in-four-years/",
+      "source_name": "Fortune",
+      "description_notes": "Diverse-led early-stage venture fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.630Z",
+      "articles": [
+        {
+          "title": "MaC Venture Capital Fund III",
+          "url": "https://fortune.com/2024/10/29/exclusive-mac-vc-raises-150-million-for-its-third-fund-in-four-years/",
+          "source_name": "Fortune",
+          "source_domain": "fortune.com",
+          "published_date": "2024-10-29",
+          "summary": "Diverse-led early-stage venture fund.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
       "fund_name": "TPG GP Solutions",
       "firm": "TPG",
       "firm_slug": "tpg",
@@ -7230,6 +7320,40 @@
       ]
     },
     {
+      "fund_name": "Insight Partners Continuation Fund",
+      "firm": "Insight Partners",
+      "firm_slug": "insight-partners",
+      "firm_website": null,
+      "amount": "$1.5B",
+      "amount_usd_millions": 1500,
+      "category": "Secondaries & GP-Stakes",
+      "strategy": "GP-Led",
+      "target_geography": "North America",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-10-01",
+      "source_url": "https://pitchbook.com/news/articles/gp-led-secondaries-to-end-2024-with-new-record",
+      "source_name": "PitchBook",
+      "description_notes": "GP-led continuation vehicle.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.649Z",
+      "articles": [
+        {
+          "title": "Insight Partners Continuation Fund",
+          "url": "https://pitchbook.com/news/articles/gp-led-secondaries-to-end-2024-with-new-record",
+          "source_name": "PitchBook",
+          "source_domain": "pitchbook.com",
+          "published_date": "2024-10-01",
+          "summary": "GP-led continuation vehicle.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
       "fund_name": "Five Elms Capital Fund VI",
       "firm": "Five Elms Capital",
       "firm_slug": "five-elms-capital",
@@ -7259,6 +7383,74 @@
           "source_domain": "finance.yahoo.com",
           "published_date": "2024-10-01",
           "summary": "Growth equity fund focused on B2B software companies.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Trivest Growth Investment Fund III",
+      "firm": "Trivest Partners",
+      "firm_slug": "trivest-partners",
+      "firm_website": null,
+      "amount": "$730M",
+      "amount_usd_millions": 730,
+      "category": "Venture Capital",
+      "strategy": "Growth Stage",
+      "target_geography": "North America",
+      "location": "Coral Gables, FL",
+      "city": "Coral Gables",
+      "state": "FL",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-10-01",
+      "source_url": "https://www.kirkland.com/news/press-release/2024/10/kirkland-advises-on-close-of-trivest-growth-investment-fund-iii",
+      "source_name": "Kirkland & Ellis",
+      "description_notes": "Growth equity fund targeting founder-owned businesses.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.620Z",
+      "articles": [
+        {
+          "title": "Trivest Growth Investment Fund III",
+          "url": "https://www.kirkland.com/news/press-release/2024/10/kirkland-advises-on-close-of-trivest-growth-investment-fund-iii",
+          "source_name": "Kirkland & Ellis",
+          "source_domain": "kirkland.com",
+          "published_date": "2024-10-01",
+          "summary": "Growth equity fund targeting founder-owned businesses.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "ISAI Expansion III",
+      "firm": "ISAI",
+      "firm_slug": "isai",
+      "firm_website": null,
+      "amount": "$200M",
+      "amount_usd_millions": 200,
+      "category": "Private Equity",
+      "strategy": "Growth Stage",
+      "target_geography": "Europe",
+      "location": "Paris, France",
+      "city": "Paris",
+      "state": "",
+      "country": "France",
+      "stage": "First Close",
+      "announcement_date": "2024-10-01",
+      "source_url": "https://www.isai.vc/news/isai-expansion-announces-the-first-close-of-its-third-tech-buyout-fund-surpassing-75-of-its-final-target-size",
+      "source_name": "ISAI",
+      "description_notes": "French tech buyout fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:04:27.807Z",
+      "articles": [
+        {
+          "title": "ISAI Expansion III",
+          "url": "https://www.isai.vc/news/isai-expansion-announces-the-first-close-of-its-third-tech-buyout-fund-surpassing-75-of-its-final-target-size",
+          "source_name": "ISAI",
+          "source_domain": "isai.vc",
+          "published_date": "2024-10-01",
+          "summary": "French tech buyout fund.",
           "feed_name": "initial"
         }
       ]
@@ -7481,6 +7673,74 @@
           "source_domain": "privatedebtinvestor.com",
           "published_date": "2024-09-01",
           "summary": "Real estate debt fund focused on NYC office market.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Brandon Capital Fund VI",
+      "firm": "Brandon Capital",
+      "firm_slug": "brandon-capital",
+      "firm_website": null,
+      "amount": "$270M",
+      "amount_usd_millions": 270,
+      "category": "Venture Capital",
+      "strategy": null,
+      "target_geography": "Asia-Pacific",
+      "location": "Melbourne, Australia",
+      "city": "Melbourne",
+      "state": "",
+      "country": "Australia",
+      "stage": "First Close",
+      "announcement_date": "2024-09-01",
+      "source_url": "https://www.capitalbrief.com/briefing/biotech-vc-brandon-capital-secures-first-close-of-270m-fund-74cddb30-ecb0-4743-8595-abce3ecbb2f0/",
+      "source_name": "Capital Brief",
+      "description_notes": "Australian biotech venture fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:04:27.797Z",
+      "articles": [
+        {
+          "title": "Brandon Capital Fund VI",
+          "url": "https://www.capitalbrief.com/briefing/biotech-vc-brandon-capital-secures-first-close-of-270m-fund-74cddb30-ecb0-4743-8595-abce3ecbb2f0/",
+          "source_name": "Capital Brief",
+          "source_domain": "capitalbrief.com",
+          "published_date": "2024-09-01",
+          "summary": "Australian biotech venture fund.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Alpine Investors Continuation Fund",
+      "firm": "Alpine Investors",
+      "firm_slug": "alpine-investors",
+      "firm_website": null,
+      "amount": "$3.4B",
+      "amount_usd_millions": 3400,
+      "category": "Secondaries & GP-Stakes",
+      "strategy": "GP-Led",
+      "target_geography": "North America",
+      "location": "San Francisco, CA",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-08-01",
+      "source_url": "https://pitchbook.com/news/articles/gp-led-secondaries-to-end-2024-with-new-record",
+      "source_name": "PitchBook",
+      "description_notes": "GP-led continuation fund for Apex Service Partners.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.644Z",
+      "articles": [
+        {
+          "title": "Alpine Investors Continuation Fund",
+          "url": "https://pitchbook.com/news/articles/gp-led-secondaries-to-end-2024-with-new-record",
+          "source_name": "PitchBook",
+          "source_domain": "pitchbook.com",
+          "published_date": "2024-08-01",
+          "summary": "GP-led continuation fund for Apex Service Partners.",
           "feed_name": "initial"
         }
       ]
@@ -7724,6 +7984,40 @@
       ]
     },
     {
+      "fund_name": "Astorg Continuation Fund",
+      "firm": "Astorg",
+      "firm_slug": "astorg",
+      "firm_website": null,
+      "amount": "$1.5B",
+      "amount_usd_millions": 1500,
+      "category": "Secondaries & GP-Stakes",
+      "strategy": "GP-Led",
+      "target_geography": "Europe",
+      "location": "Paris, France",
+      "city": "Paris",
+      "state": "",
+      "country": "France",
+      "stage": "Final Close",
+      "announcement_date": "2024-07-01",
+      "source_url": "https://pitchbook.com/news/articles/gp-led-secondaries-to-end-2024-with-new-record",
+      "source_name": "PitchBook",
+      "description_notes": "GP-led continuation fund for Normec.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.652Z",
+      "articles": [
+        {
+          "title": "Astorg Continuation Fund",
+          "url": "https://pitchbook.com/news/articles/gp-led-secondaries-to-end-2024-with-new-record",
+          "source_name": "PitchBook",
+          "source_domain": "pitchbook.com",
+          "published_date": "2024-07-01",
+          "summary": "GP-led continuation fund for Normec.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
       "fund_name": "Breakthrough Energy Ventures III",
       "firm": "Breakthrough Energy",
       "firm_slug": "breakthrough-energy",
@@ -7787,6 +8081,40 @@
           "source_domain": "newspringcapital.com",
           "published_date": "2024-07-01",
           "summary": "Mezzanine fund targeting lower middle market companies.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Exacta Asia Investment III",
+      "firm": "Exacta Asia",
+      "firm_slug": "exacta-asia",
+      "firm_website": null,
+      "amount": "$320M",
+      "amount_usd_millions": 320,
+      "category": "Private Equity",
+      "strategy": "Buyout",
+      "target_geography": "Asia-Pacific",
+      "location": "Singapore, Singapore",
+      "city": "Singapore",
+      "state": "",
+      "country": "Singapore",
+      "stage": "Final Close",
+      "announcement_date": "2024-07-01",
+      "source_url": "https://www.dealstreetasia.com/stories/se-asia-pe-funds-h2-2024-review-summary-436056",
+      "source_name": "DealStreetAsia",
+      "description_notes": "Southeast Asia mid-market buyout fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:04:27.809Z",
+      "articles": [
+        {
+          "title": "Exacta Asia Investment III",
+          "url": "https://www.dealstreetasia.com/stories/se-asia-pe-funds-h2-2024-review-summary-436056",
+          "source_name": "DealStreetAsia",
+          "source_domain": "dealstreetasia.com",
+          "published_date": "2024-07-01",
+          "summary": "Southeast Asia mid-market buyout fund.",
           "feed_name": "initial"
         }
       ]
@@ -7894,6 +8222,74 @@
       ]
     },
     {
+      "fund_name": "Dover Street XI",
+      "firm": "HarbourVest Partners",
+      "firm_slug": "harbourvest-partners",
+      "firm_website": null,
+      "amount": "$15.1B",
+      "amount_usd_millions": 15100,
+      "category": "Secondaries & GP-Stakes",
+      "strategy": null,
+      "target_geography": "North America",
+      "location": "Boston, MA",
+      "city": "Boston",
+      "state": "MA",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-06-01",
+      "source_url": "https://www.ropesgray.com/en/insights/viewpoints/102ju08/secondaries-what-we-saw-in-2024-and-what-we-expect-in-2025",
+      "source_name": "Ropes & Gray",
+      "description_notes": "Flagship diversified secondaries fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.642Z",
+      "articles": [
+        {
+          "title": "Dover Street XI",
+          "url": "https://www.ropesgray.com/en/insights/viewpoints/102ju08/secondaries-what-we-saw-in-2024-and-what-we-expect-in-2025",
+          "source_name": "Ropes & Gray",
+          "source_domain": "ropesgray.com",
+          "published_date": "2024-06-01",
+          "summary": "Flagship diversified secondaries fund.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Goldman Sachs Vintage Real Estate Partners III",
+      "firm": "Goldman Sachs Asset Management",
+      "firm_slug": "goldman-sachs-asset-management",
+      "firm_website": "goldmansachs.com",
+      "amount": "$3.4B",
+      "amount_usd_millions": 3400,
+      "category": "Secondaries & GP-Stakes",
+      "strategy": "Opportunistic",
+      "target_geography": "Global",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-06-01",
+      "source_url": "https://am.gs.com/en-int/advisors/news/press-release/2024/goldman-sachs-alternatives-vrep-iii",
+      "source_name": "Goldman Sachs",
+      "description_notes": "Global opportunistic real estate secondaries fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.632Z",
+      "articles": [
+        {
+          "title": "Goldman Sachs Vintage Real Estate Partners III",
+          "url": "https://am.gs.com/en-int/advisors/news/press-release/2024/goldman-sachs-alternatives-vrep-iii",
+          "source_name": "Goldman Sachs",
+          "source_domain": "am.gs.com",
+          "published_date": "2024-06-01",
+          "summary": "Global opportunistic real estate secondaries fund.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
       "fund_name": "Chorus Capital SRT Fund",
       "firm": "Chorus Capital",
       "firm_slug": "chorus-capital",
@@ -7923,6 +8319,108 @@
           "source_domain": "withintelligence.com",
           "published_date": "2024-06-01",
           "summary": "Significant risk transfer (SRT) focused credit fund.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Macquarie Real Estate Partners",
+      "firm": "Macquarie Asset Management",
+      "firm_slug": "macquarie-asset-management",
+      "firm_website": null,
+      "amount": "$1.9B",
+      "amount_usd_millions": 1900,
+      "category": "Real Estate",
+      "strategy": "Opportunistic",
+      "target_geography": "Global",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-06-01",
+      "source_url": "https://www.macquarie.com/us/en/about/news/2024/macquarie-asset-management-announces-final-close-of-global-opportunistic-real-estate-fund.html",
+      "source_name": "Macquarie",
+      "description_notes": "Global opportunistic real estate fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.635Z",
+      "articles": [
+        {
+          "title": "Macquarie Real Estate Partners",
+          "url": "https://www.macquarie.com/us/en/about/news/2024/macquarie-asset-management-announces-final-close-of-global-opportunistic-real-estate-fund.html",
+          "source_name": "Macquarie",
+          "source_domain": "macquarie.com",
+          "published_date": "2024-06-01",
+          "summary": "Global opportunistic real estate fund.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Foresite Capital Fund VI",
+      "firm": "Foresite Capital",
+      "firm_slug": "foresite-capital",
+      "firm_website": null,
+      "amount": "$900M",
+      "amount_usd_millions": 900,
+      "category": "Venture Capital",
+      "strategy": null,
+      "target_geography": "North America",
+      "location": "San Francisco, CA",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-06-01",
+      "source_url": "https://www.genomeweb.com/business-news/private-financing-life-science-tools-and-diagnostics-firms-significantly-first-half",
+      "source_name": "GenomeWeb",
+      "description_notes": "Healthcare and life sciences venture fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:04:27.794Z",
+      "articles": [
+        {
+          "title": "Foresite Capital Fund VI",
+          "url": "https://www.genomeweb.com/business-news/private-financing-life-science-tools-and-diagnostics-firms-significantly-first-half",
+          "source_name": "GenomeWeb",
+          "source_domain": "genomeweb.com",
+          "published_date": "2024-06-01",
+          "summary": "Healthcare and life sciences venture fund.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Northlane Capital Partners III",
+      "firm": "Northlane Capital Partners",
+      "firm_slug": "northlane-capital-partners",
+      "firm_website": null,
+      "amount": "$750M",
+      "amount_usd_millions": 750,
+      "category": "Private Equity",
+      "strategy": "Buyout",
+      "target_geography": "North America",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-06-01",
+      "source_url": "https://pulse2.com/northlane-capital-partners-fund-iii-closed-at-750-million/",
+      "source_name": "pulse2.com",
+      "description_notes": "Lower middle market buyout fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.617Z",
+      "articles": [
+        {
+          "title": "Northlane Capital Partners III",
+          "url": "https://pulse2.com/northlane-capital-partners-fund-iii-closed-at-750-million/",
+          "source_name": "pulse2.com",
+          "source_domain": "pulse2.com",
+          "published_date": "2024-06-01",
+          "summary": "Lower middle market buyout fund.",
           "feed_name": "initial"
         }
       ]
@@ -8166,6 +8664,74 @@
       ]
     },
     {
+      "fund_name": "ECI Partners XII",
+      "firm": "ECI Partners",
+      "firm_slug": "eci-partners",
+      "firm_website": null,
+      "amount": "$1.3B",
+      "amount_usd_millions": 1300,
+      "category": "Private Equity",
+      "strategy": "Buyout",
+      "target_geography": "Europe",
+      "location": "London, UK",
+      "city": "London",
+      "state": "UK",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-05-01",
+      "source_url": "https://www.ey.com/content/dam/ey-unified-site/ey-com/de-de/newsroom/2025/03/ey-state-of-pe-report-europe-2024.pdf",
+      "source_name": "EY",
+      "description_notes": "UK mid-market buyout fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:04:27.801Z",
+      "articles": [
+        {
+          "title": "ECI Partners XII",
+          "url": "https://www.ey.com/content/dam/ey-unified-site/ey-com/de-de/newsroom/2025/03/ey-state-of-pe-report-europe-2024.pdf",
+          "source_name": "EY",
+          "source_domain": "ey.com",
+          "published_date": "2024-05-01",
+          "summary": "UK mid-market buyout fund.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Niobrara Capital Fund I",
+      "firm": "Niobrara Capital",
+      "firm_slug": "niobrara-capital",
+      "firm_website": null,
+      "amount": "$815M",
+      "amount_usd_millions": 815,
+      "category": "Private Equity",
+      "strategy": null,
+      "target_geography": "North America",
+      "location": "Denver, CO",
+      "city": "Denver",
+      "state": "CO",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-05-01",
+      "source_url": "https://www.withintelligence.com/insights/private-equity-emerging-managers-to-watch-2025-where-are-they-now/",
+      "source_name": "withintelligence.com",
+      "description_notes": "Debut fund from emerging manager focused on business services.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.622Z",
+      "articles": [
+        {
+          "title": "Niobrara Capital Fund I",
+          "url": "https://www.withintelligence.com/insights/private-equity-emerging-managers-to-watch-2025-where-are-they-now/",
+          "source_name": "withintelligence.com",
+          "source_domain": "withintelligence.com",
+          "published_date": "2024-05-01",
+          "summary": "Debut fund from emerging manager focused on business services.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
       "fund_name": "Clean Energy Ventures Fund II",
       "firm": "Clean Energy Ventures",
       "firm_slug": "clean-energy-ventures",
@@ -8302,6 +8868,40 @@
       ]
     },
     {
+      "fund_name": "ICG LP Secondaries I",
+      "firm": "ICG",
+      "firm_slug": "icg",
+      "firm_website": null,
+      "amount": "$1.6B",
+      "amount_usd_millions": 1600,
+      "category": "Secondaries & GP-Stakes",
+      "strategy": "LP Secondaries",
+      "target_geography": "North America",
+      "location": "London, UK",
+      "city": "London",
+      "state": "UK",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-04-02",
+      "source_url": "https://www.icgam.com/2024/04/02/icg-announces-1bn-final-close-for-debut-lp-secondaries-fund/",
+      "source_name": "ICG",
+      "description_notes": "Debut LP secondaries fund from ICG.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.647Z",
+      "articles": [
+        {
+          "title": "ICG LP Secondaries I",
+          "url": "https://www.icgam.com/2024/04/02/icg-announces-1bn-final-close-for-debut-lp-secondaries-fund/",
+          "source_name": "ICG",
+          "source_domain": "icgam.com",
+          "published_date": "2024-04-02",
+          "summary": "Debut LP secondaries fund from ICG.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
       "fund_name": "Apax XI",
       "firm": "Apax Partners",
       "firm_slug": "apax-partners",
@@ -8404,6 +9004,176 @@
       ]
     },
     {
+      "fund_name": "Norvestor IX",
+      "firm": "Norvestor",
+      "firm_slug": "norvestor",
+      "firm_website": null,
+      "amount": "$1.6B",
+      "amount_usd_millions": 1600,
+      "category": "Private Equity",
+      "strategy": "Buyout",
+      "target_geography": "Europe",
+      "location": "Oslo, Norway",
+      "city": "Oslo",
+      "state": "",
+      "country": "Norway",
+      "stage": "Final Close",
+      "announcement_date": "2024-04-01",
+      "source_url": "https://www.ey.com/content/dam/ey-unified-site/ey-com/de-de/newsroom/2025/03/ey-state-of-pe-report-europe-2024.pdf",
+      "source_name": "EY",
+      "description_notes": "Nordic mid-market buyout fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:04:27.804Z",
+      "articles": [
+        {
+          "title": "Norvestor IX",
+          "url": "https://www.ey.com/content/dam/ey-unified-site/ey-com/de-de/newsroom/2025/03/ey-state-of-pe-report-europe-2024.pdf",
+          "source_name": "EY",
+          "source_domain": "ey.com",
+          "published_date": "2024-04-01",
+          "summary": "Nordic mid-market buyout fund.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Greystar Equity Partners XI",
+      "firm": "Greystar",
+      "firm_slug": "greystar",
+      "firm_website": null,
+      "amount": "$1.5B",
+      "amount_usd_millions": 1500,
+      "category": "Real Estate",
+      "strategy": "Value-Add",
+      "target_geography": "North America",
+      "location": "Charleston, SC",
+      "city": "Charleston",
+      "state": "SC",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-04-01",
+      "source_url": "https://www.greystar.com/business/about-greystar/newsroom/greystar-announces-final-close-for-11th-us-multifamily-valueadd-real-estate-fund",
+      "source_name": "Greystar",
+      "description_notes": "US multifamily value-add fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.637Z",
+      "articles": [
+        {
+          "title": "Greystar Equity Partners XI",
+          "url": "https://www.greystar.com/business/about-greystar/newsroom/greystar-announces-final-close-for-11th-us-multifamily-valueadd-real-estate-fund",
+          "source_name": "Greystar",
+          "source_domain": "greystar.com",
+          "published_date": "2024-04-01",
+          "summary": "US multifamily value-add fund.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "CF Private Equity Secondaries IV",
+      "firm": "Commonfund",
+      "firm_slug": "commonfund",
+      "firm_website": null,
+      "amount": "$1.1B",
+      "amount_usd_millions": 1100,
+      "category": "Secondaries & GP-Stakes",
+      "strategy": null,
+      "target_geography": "North America",
+      "location": "Wilton, CT",
+      "city": "Wilton",
+      "state": "CT",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-04-01",
+      "source_url": "https://www.commonfund.org/cf-private-equity/cf-private-equity-closes-its-fourth-secondaries-fund-at-1.1-bn",
+      "source_name": "Commonfund",
+      "description_notes": "Secondaries fund for institutional investors.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.654Z",
+      "articles": [
+        {
+          "title": "CF Private Equity Secondaries IV",
+          "url": "https://www.commonfund.org/cf-private-equity/cf-private-equity-closes-its-fourth-secondaries-fund-at-1.1-bn",
+          "source_name": "Commonfund",
+          "source_domain": "commonfund.org",
+          "published_date": "2024-04-01",
+          "summary": "Secondaries fund for institutional investors.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Hunter Point Capital Fund I",
+      "firm": "Hunter Point Capital",
+      "firm_slug": "hunter-point-capital",
+      "firm_website": null,
+      "amount": "$3.3B",
+      "amount_usd_millions": 3300,
+      "category": "Secondaries & GP-Stakes",
+      "strategy": null,
+      "target_geography": "North America",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-03-29",
+      "source_url": "https://www.kirkland.com/news/press-release/2024/03/kirkland-advises-on-close-of-3-3-billion-hunter-point-capital-i-fund",
+      "source_name": "Kirkland & Ellis",
+      "description_notes": "Debut GP stakes fund from Mubadala-backed firm.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.606Z",
+      "articles": [
+        {
+          "title": "Hunter Point Capital Fund I",
+          "url": "https://www.kirkland.com/news/press-release/2024/03/kirkland-advises-on-close-of-3-3-billion-hunter-point-capital-i-fund",
+          "source_name": "Kirkland & Ellis",
+          "source_domain": "kirkland.com",
+          "published_date": "2024-03-29",
+          "summary": "Debut GP stakes fund from Mubadala-backed firm.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Lexington Capital Partners X",
+      "firm": "Lexington Partners",
+      "firm_slug": "lexington-partners",
+      "firm_website": null,
+      "amount": "$22.7B",
+      "amount_usd_millions": 22700,
+      "category": "Secondaries & GP-Stakes",
+      "strategy": null,
+      "target_geography": "North America",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-03-01",
+      "source_url": "https://www.ropesgray.com/en/insights/viewpoints/102ju08/secondaries-what-we-saw-in-2024-and-what-we-expect-in-2025",
+      "source_name": "Ropes & Gray",
+      "description_notes": "Largest secondaries fund in Lexington history.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.639Z",
+      "articles": [
+        {
+          "title": "Lexington Capital Partners X",
+          "url": "https://www.ropesgray.com/en/insights/viewpoints/102ju08/secondaries-what-we-saw-in-2024-and-what-we-expect-in-2025",
+          "source_name": "Ropes & Gray",
+          "source_domain": "ropesgray.com",
+          "published_date": "2024-03-01",
+          "summary": "Largest secondaries fund in Lexington history.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
       "fund_name": "Cinven Fund VIII",
       "firm": "Cinven",
       "firm_slug": "cinven",
@@ -8472,6 +9242,108 @@
       ]
     },
     {
+      "fund_name": "Goldman Sachs West Street Life Sciences I",
+      "firm": "Goldman Sachs Asset Management",
+      "firm_slug": "goldman-sachs-asset-management",
+      "firm_website": "goldmansachs.com",
+      "amount": "$650M",
+      "amount_usd_millions": 650,
+      "category": "Venture Capital",
+      "strategy": null,
+      "target_geography": "North America",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-03-01",
+      "source_url": "https://www.genomeweb.com/business-news/private-financing-life-science-tools-and-diagnostics-firms-significantly-first-half",
+      "source_name": "GenomeWeb",
+      "description_notes": "Life sciences and healthcare venture fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:04:27.791Z",
+      "articles": [
+        {
+          "title": "Goldman Sachs West Street Life Sciences I",
+          "url": "https://www.genomeweb.com/business-news/private-financing-life-science-tools-and-diagnostics-firms-significantly-first-half",
+          "source_name": "GenomeWeb",
+          "source_domain": "genomeweb.com",
+          "published_date": "2024-03-01",
+          "summary": "Life sciences and healthcare venture fund.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Team8 Capital Fund II",
+      "firm": "Team8",
+      "firm_slug": "team8",
+      "firm_website": null,
+      "amount": "$235M",
+      "amount_usd_millions": 235,
+      "category": "Venture Capital",
+      "strategy": null,
+      "target_geography": null,
+      "location": "Tel Aviv, Israel",
+      "city": "Tel Aviv",
+      "state": "",
+      "country": "Israel",
+      "stage": "Final Close",
+      "announcement_date": "2024-03-01",
+      "source_url": "https://www.calcalistech.com/ctechnews/article/s1c8qzvdel",
+      "source_name": "calcalistech.com",
+      "description_notes": "Cybersecurity-focused venture fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.627Z",
+      "articles": [
+        {
+          "title": "Team8 Capital Fund II",
+          "url": "https://www.calcalistech.com/ctechnews/article/s1c8qzvdel",
+          "source_name": "calcalistech.com",
+          "source_domain": "calcalistech.com",
+          "published_date": "2024-03-01",
+          "summary": "Cybersecurity-focused venture fund.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "LeapFrog Emerging Consumer Fund IV",
+      "firm": "LeapFrog Investments",
+      "firm_slug": "leapfrog-investments",
+      "firm_website": null,
+      "amount": "$1B",
+      "amount_usd_millions": 1000,
+      "category": "Private Equity",
+      "strategy": null,
+      "target_geography": "North America",
+      "location": "Washington, DC",
+      "city": "Washington",
+      "state": "DC",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2024-02-29",
+      "source_url": "https://leapfroginvest.com/press-release/leapfrogs-flagship-fund-targeting-1b-will-hold-final-close-in-feb-2024/",
+      "source_name": "leapfroginvest.com",
+      "description_notes": "Impact-focused fund targeting emerging market financial services and healthcare.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.610Z",
+      "articles": [
+        {
+          "title": "LeapFrog Emerging Consumer Fund IV",
+          "url": "https://leapfroginvest.com/press-release/leapfrogs-flagship-fund-targeting-1b-will-hold-final-close-in-feb-2024/",
+          "source_name": "leapfroginvest.com",
+          "source_domain": "leapfroginvest.com",
+          "published_date": "2024-02-29",
+          "summary": "Impact-focused fund targeting emerging market financial services and healthcare.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
       "fund_name": "Ancala Infrastructure Fund III",
       "firm": "Ancala Partners",
       "firm_slug": "ancala-partners",
@@ -8501,6 +9373,40 @@
           "source_domain": "ancala.com",
           "published_date": "2024-02-01",
           "summary": "European mid-market infrastructure fund.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Carlyle CLO Equity Fund",
+      "firm": "The Carlyle Group",
+      "firm_slug": "the-carlyle-group",
+      "firm_website": "carlyle.com",
+      "amount": "$600M",
+      "amount_usd_millions": 600,
+      "category": "Credit Funds",
+      "strategy": null,
+      "target_geography": "North America",
+      "location": "Washington, DC",
+      "city": "Washington",
+      "state": "DC",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2024-01-15",
+      "source_url": "https://pitchbook.com/newsletter/global-vc-and-pe-fundraising-news-for-january-12-2024",
+      "source_name": "PitchBook",
+      "description_notes": "CLO equity investment fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-02-10T15:02:26.612Z",
+      "articles": [
+        {
+          "title": "Carlyle CLO Equity Fund",
+          "url": "https://pitchbook.com/newsletter/global-vc-and-pe-fundraising-news-for-january-12-2024",
+          "source_name": "PitchBook",
+          "source_domain": "pitchbook.com",
+          "published_date": "2024-01-15",
+          "summary": "CLO equity investment fund.",
           "feed_name": "initial"
         }
       ]
@@ -10435,57 +11341,57 @@
     }
   ],
   "stats": {
-    "total_funds": 258,
+    "total_funds": 283,
     "total_covered": 52,
-    "total_uncovered": 206,
-    "total_aum_millions": 4873188.1,
+    "total_uncovered": 231,
+    "total_aum_millions": 4939708.1,
     "by_category": {
-      "Venture Capital": 63,
-      "Private Equity": 67,
-      "Credit Funds": 48,
-      "Real Estate": 31,
+      "Venture Capital": 69,
+      "Private Equity": 74,
+      "Credit Funds": 49,
+      "Real Estate": 33,
       "Infrastructure": 30,
-      "Secondaries & GP-Stakes": 19
+      "Secondaries & GP-Stakes": 28
     },
     "by_stage": {
-      "Final Close": 79,
-      "First Close": 35,
+      "Final Close": 97,
+      "First Close": 37,
       "Interim Close": 4,
-      "Launch": 90,
+      "Launch": 95,
       "Other": 50
     },
     "by_strategy": {
       "Core-Plus": 3,
-      "Growth Stage": 17,
-      "Buyout": 17,
+      "Growth Stage": 19,
+      "Buyout": 21,
       "Seed/Pre-Seed": 8,
       "Direct Lending": 3,
       "Continuation Fund": 2,
       "Asset-Based": 11,
-      "Early Stage": 11,
+      "Early Stage": 12,
       "Late Stage": 2,
       "Middle Market": 13,
       "Energy Transition": 4,
-      "GP-Led": 3,
-      "Value-Add": 6,
+      "GP-Led": 6,
+      "Value-Add": 7,
       "Lower Middle Market": 4,
       "Core Infrastructure": 2,
-      "Opportunistic": 4,
+      "Opportunistic": 6,
       "Growth Equity": 1,
       "Distressed": 1,
-      "LP Secondaries": 1
+      "LP Secondaries": 2
     },
     "by_geography": {
-      "North America": 128,
-      "Asia-Pacific": 33,
-      "Europe": 52,
+      "North America": 144,
+      "Asia-Pacific": 35,
+      "Europe": 56,
       "Middle East & Africa": 12,
-      "Global": 10
+      "Global": 12
     },
-    "article_count": 273,
+    "article_count": 304,
     "feed_count": 16,
     "date_range": {
-      "earliest": "2024-02-01",
+      "earliest": "2024-01-15",
       "latest": "2026-02-07"
     }
   },
