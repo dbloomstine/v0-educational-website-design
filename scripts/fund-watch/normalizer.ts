@@ -609,6 +609,156 @@ export const FIRM_WEBSITE_MAP: Record<string, string> = {
   'springcoast': 'springcoastpartners.com',
   'wolff': 'wolff.com',
   'sidbi': 'sidbi.in',
+
+  // New firms from web search - February 2026
+  // Major PE/Growth Equity
+  'alpine investors': 'alpineinvestors.com',
+  'apax': 'apax.com',
+  'battery ventures': 'battery.com',
+  'berkshire partners': 'berkshirepartners.com',
+  'cinven': 'cinven.com',
+  'genstar': 'gencap.com',
+  'hellman': 'hf.com',
+  'hellman & friedman': 'hf.com',
+  'hg capital': 'hgcapital.com',
+  'hg ': 'hgcapital.com',
+  'icg': 'icgam.com',
+  'intermediate capital': 'icgam.com',
+  'ik partners': 'ikpartners.com',
+  'insight partners': 'insightpartners.com',
+  'jordan company': 'tjclp.com',
+  'kohlberg': 'kohlberg.com',
+  'nordic capital': 'nordiccapital.com',
+  'pai partners': 'paipartners.com',
+  'partners group': 'partnersgroup.com',
+  'summit partners': 'summitpartners.com',
+  'triton partners': 'triton-partners.com',
+  'trivest': 'trivest.com',
+
+  // VC firms
+  'battery': 'battery.com',
+  'coatue': 'coatue.com',
+  'dst global': 'dst-global.com',
+  'foresite': 'foresitecapital.com',
+  'five elms': 'fiveelms.com',
+  'frazier healthcare': 'frazierhealthcare.com',
+  'iconiq': 'iconiqcapital.com',
+  'index ventures': 'indexventures.com',
+  'speedinvest': 'speedinvest.com',
+  'thrive capital': 'thrivecap.com',
+  'tiger global': 'tigerglobal.com',
+  'softbank': 'visionfund.com',
+  'vision fund': 'visionfund.com',
+
+  // Infrastructure
+  'antin': 'antin-ip.com',
+  'antin infrastructure': 'antin-ip.com',
+  'ancala': 'ancala.com',
+  'copenhagen infrastructure': 'cip.com',
+  'fengate': 'fengate.com',
+  'global infrastructure partners': 'global-infra.com',
+  'gip': 'global-infra.com',
+  'icon infrastructure': 'iconinfrastructure.com',
+  'meridiam': 'meridiam.com',
+
+  // Real Estate
+  'cbre global': 'cbreim.com',
+  'greystar': 'greystar.com',
+  'harrison street': 'harrisonst.com',
+  'ksl capital': 'kslcapital.com',
+  'lone star': 'lonestarfunds.com',
+  'stockbridge': 'stockbridge.com',
+  'waterton': 'waterton.com',
+
+  // Credit/Debt
+  'acore': 'acorecapital.com',
+  'blue torch': 'bluetorchcapital.com',
+  'canyon partners': 'canyonpartners.com',
+
+  // Secondaries/GP-Stakes
+  'arctos': 'arctospartners.com',
+  'harbourvest': 'harbourvest.com',
+  'hunter point': 'hunterpointcapital.com',
+  'lexington partners': 'lexingtonpartners.com',
+
+  // Asset Managers
+  'd.e. shaw': 'deshaw.com',
+  'de shaw': 'deshaw.com',
+  'capstone investment': 'capstoneco.com',
+  'franklin templeton': 'franklintempleton.com',
+  'gramercy': 'gramercy.com',
+  'macquarie': 'macquarie.com',
+  'magnetar': 'magnetar.com',
+  'manulife': 'manulifeim.com',
+  'neuberger': 'nb.com',
+  'pag': 'pag.com',
+  'state street': 'ssga.com',
+
+  // Climate/Impact
+  'breakthrough energy': 'breakthroughenergy.org',
+  'clean energy ventures': 'cleanenergyventures.com',
+  'engine': 'engine.xyz',
+  'leapfrog': 'leapfroginvest.com',
+  'world fund': 'worldfund.vc',
+
+  // Regional/Specialty
+  'astorg': 'astorg.com',
+  'bregal sagemount': 'sagemount.com',
+  'eci partners': 'ecipartners.com',
+  'kedaara': 'kedaara.com',
+  'newspring': 'newspringcapital.com',
+  'norvestor': 'norvestor.com',
+
+  // Additional firms - batch 2
+  'altos ventures': 'altos.vc',
+  'ccmp': 'ccmpgrowth.com',
+  'cortec': 'cortecgroup.com',
+  'centeroak': 'centeroakpartners.com',
+  'monomoy': 'mcpfunds.com',
+  'mill point': 'millpoint.com',
+  'pennybacker': 'pennybackercap.com',
+  'renovus': 'renovuscapital.com',
+  'exoduspoint': 'exoduspoint.com',
+  'jain global': 'jainglobal.com',
+  'quadria': 'quadriacapital.com',
+  'ac ventures': 'acv.vc',
+  'team8': 'team8.vc',
+  'fly ventures': 'fly.vc',
+  'isai': 'isai.vc',
+  'brandon capital': 'brandoncapital.vc',
+
+  // Additional firms - batch 3
+  'blackfin': 'blackfin.com',
+  'commonfund': 'commonfund.org',
+  'cf private equity': 'cfprivateequity.com',
+  'vestar': 'vestarcapital.com',
+  'gtcr': 'gtcr.com',
+  'veritas capital': 'veritascapital.com',
+  'roark': 'roarkcapital.com',
+  'leonard green': 'leonardgreen.com',
+  'welsh carson': 'wcas.com',
+  'wcas': 'wcas.com',
+  'francisco partners': 'franciscopartners.com',
+  'great hill': 'greathillpartners.com',
+  'oak hill': 'oakhill.com',
+  'onex': 'onex.com',
+  'lovell minnick': 'lmpartners.com',
+  'madison industries': 'madison.net',
+  'odyssey investment': 'odysseyinvestment.com',
+
+  // Additional firms - batch 4
+  'cavu consumer': 'cavuconsumer.com',
+  'cavu': 'cavuconsumer.com',
+  'blueprint equity': 'onblueprint.com',
+  'kensington capital': 'kcpl.ca',
+  'd. e. shaw': 'deshaw.com',
+  'hg': 'hgcapital.com',
+
+  // Additional firms - batch 5
+  'kian capital': 'kiancapital.com',
+  'launchbay': 'launchbaycapital.com',
+  'klar partners': 'klarpartners.com',
+  'klar': 'klarpartners.com',
 };
 
 /**

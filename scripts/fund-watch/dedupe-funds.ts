@@ -27,6 +27,15 @@ const DUPLICATES_TO_REMOVE = [
 
   // IIT Bombay - same fund with different names
   ['Y-Point Venture Capital Fund', 'Duplicate of IIT Bombay Deep Tech Fund'],
+
+  // Asgard - same fund, keep the one with "Fund" in name
+  ['Asgard-Steno Global Macro', 'Duplicate of Asgard-Steno Global Macro Fund'],
+
+  // KKR - same fund with slightly different name, keep the May 2024 entry
+  ['KKR Asia Pacific Infrastructure Investors II', 'Duplicate of KKR Asia Pacific Infrastructure II ($6.4B)'],
+
+  // Commonfund - same fund, keep the one with "Fund" in name
+  ['CF Private Equity Secondaries IV', 'Duplicate of CF Private Equity Secondaries Fund IV ($1.1B)'],
 ];
 
 async function main() {
