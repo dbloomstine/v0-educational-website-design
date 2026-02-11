@@ -1,6 +1,1145 @@
 {
-  "generated_at": "2026-02-11T13:29:06.297Z",
+  "generated_at": "2026-02-11T14:50:10.993Z",
   "funds": [
+    {
+      "fund_name": "CVC Capital Partners Asia VI",
+      "firm": "CVC Capital Partners",
+      "amount": "Undisclosed",
+      "amount_usd_millions": 6800,
+      "category": "Private Equity",
+      "location": "Hong Kong",
+      "city": "Hong Kong",
+      "country": "HK",
+      "stage": "Final Close",
+      "announcement_date": "2026-02-11",
+      "source_url": "https://www.cvc.com/media/news/2024/2024-02-21-cvc-raises-us-68-billion-for-its-sixth-asia-fund/",
+      "source_name": "CVC",
+      "description_notes": "Montana Capital Partners has reached the final close of its sixth opportunity secondary program. The fund focuses on secondary market opportunities, though specific investment details and fund size were not disclosed.",
+      "firm_slug": "cvc-capital-partners",
+      "state": "",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Update: MCP Opportunity Secondary Program VI (OSP VI)",
+          "url": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxNTjNBbUhTWU4yczBuanpfdlk3RkhnOXVtVklwSHhFUjBEdHVPdThVbXhicmZkUmJReFcwVWhaRGotaDd6MWRBbzVqSlo4M0ZBT0NXc1Q1QUZOMXdEbHpBSFIxRWd0bjlQYXZkYlp2Q0Z6WWVrbWRVMlV0QmhLUnl5TG0zMXdFVUdQVk1TRzRFTzBiVGp4Q0pKdmk2UUh6QmRtVGhRYVlMQzhaYXRlU3ZzMkxSNVJBQ3FWWGhjaWp1YlNUQXc4V1FDWHVNWFBHVGMyOFRXTkRkeW92dTlDNDBlZzJpbjFRWGZjVVMw?oc=5",
+          "source_name": "Morningstar",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-11",
+          "summary": "Montana Capital Partners has reached the final close of its sixth opportunity secondary program. The fund focuses on secondary market opportunities, though specific investment details and fund size were not disclosed.",
+          "feed_name": "update"
+        }
+      ],
+      "target_geography": "Asia-Pacific",
+      "firm_website": "cvc.com",
+      "strategy": "Buyout"
+    },
+    {
+      "fund_name": "IK Strategic Opportunities I",
+      "firm": "IK Partners",
+      "amount": "$568 million",
+      "amount_usd_millions": 568,
+      "category": "Secondaries & GP-Stakes",
+      "location": "London, UK",
+      "city": "London",
+      "country": "UK",
+      "stage": "Final Close",
+      "announcement_date": "2026-02-11",
+      "source_url": "https://ikpartners.com/press-release/ik-partners-closes-fund-x-at-e3-3-billion-hard-cap/",
+      "source_name": "IK Partners",
+      "description_notes": "JDM Partners has closed its Opportunity Fund at $568 million, focusing on opportunistic real estate investments.",
+      "firm_slug": "ik-partners",
+      "state": "",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Update: JDM Partners Opportunity Fund",
+          "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPYTBCUjVIaVZIbDdmeHk2TXMzV0NiUkk2T1hlWnR6bWJoZ3JlM2s4SVRDdlZlejJBYm1ia014MEstYVl6YllhUzl2aW1aUGxNdnl6Zzg4REJOZ3Z3QnhhRmFwdWFfSjVkUDk0MGFtUXdYYkdjYmxodm1PVE1vdFV3RnZRVHNlU3FHSVowbTZlRUpCZw?oc=5",
+          "source_name": "azbigmedia.com",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-11",
+          "summary": "JDM Partners has closed its Opportunity Fund at $568 million, focusing on opportunistic real estate investments.",
+          "feed_name": "update"
+        }
+      ],
+      "target_geography": "Europe",
+      "firm_website": "ikpartners.com"
+    },
+    {
+      "fund_name": "CedarBridge Private Equity Fund III",
+      "firm": "CedarBridge",
+      "firm_slug": "cedarbridge",
+      "amount": "$150 million",
+      "amount_usd_millions": 150,
+      "category": "Private Equity",
+      "location": "Dubai, UAE",
+      "city": "Dubai",
+      "state": "",
+      "country": "UAE",
+      "stage": "Final Close",
+      "announcement_date": "2026-02-11",
+      "source_url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNSVFvQ1k5X3pYOWtheDUyb3NVb2N0Z1NuUHNUeDNJX2k4UnhLcF9iZEFXWkNVeXk5UzdMZnFwYmZEa2JXay13SDFfTGhDQWdMS0kwTnlHdUh5TG16SGJhYlRMaVpNd3k5Qk5UTVVILXpsU0FPdzd3WlZkQXpsZndBaUl4NUg2d1l2Y2c?oc=5",
+      "source_name": "Wamda",
+      "description_notes": "CedarBridge High Growth III focuses on platform investments and scaling high-quality businesses across education, healthcare, beauty, wellness, pets, and other consumer services in the GCC region. The fund completed its first close in November 2025 with existing investors and expects final close by end of 2026.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "CedarBridge begins deploying third private equity fund across the GCC - Wamda",
+          "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNSVFvQ1k5X3pYOWtheDUyb3NVb2N0Z1NuUHNUeDNJX2k4UnhLcF9iZEFXWkNVeXk5UzdMZnFwYmZEa2JXay13SDFfTGhDQWdMS0kwTnlHdUh5TG16SGJhYlRMaVpNd3k5Qk5UTVVILXpsU0FPdzd3WlZkQXpsZndBaUl4NUg2d1l2Y2c?oc=5",
+          "source_name": "News",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-04",
+          "summary": "CedarBridge begins deploying third private equity fund across the GCC&nbsp;&nbsp;Wamda",
+          "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "Update: CedarBridge High Growth III, L.P.",
+          "url": "http://wamda.com/2026/02/cedarbridge-begins-deploying-private-equity-fund-gcc",
+          "source_name": "Wamda",
+          "source_domain": "wamda.com",
+          "published_date": "2026-02-11",
+          "summary": "CedarBridge High Growth III focuses on platform investments and scaling high-quality businesses across education, healthcare, beauty, wellness, pets, and other consumer services in the GCC region. The fund completed its first close in November 2025 with existing investors and expects final close by end of 2026.",
+          "feed_name": "update"
+        }
+      ],
+      "strategy": "Buyout",
+      "firm_website": "cedarbridge.com",
+      "target_geography": "Middle East & Africa"
+    },
+    {
+      "fund_name": "Digital Venture Fund V (DV5)",
+      "firm": "Elaia",
+      "firm_slug": "elaia",
+      "firm_website": "elaia.com",
+      "amount": "€120M",
+      "amount_usd_millions": 132,
+      "category": "Venture Capital",
+      "strategy": "Sector-Specific",
+      "target_geography": "Europe",
+      "location": "Paris, France",
+      "city": "Paris",
+      "state": "",
+      "country": "France",
+      "stage": "Launch",
+      "announcement_date": "2026-02-11",
+      "source_url": "https://www.eu-startups.com/2026/02/french-vc-elaia-reaches-e120-million-first-close-for-new-multi-stage-b2b-technology-fund/",
+      "source_name": "EU-Startups",
+      "description_notes": "Multi-stage fund targeting European B2B technology startups from pre-seed to Series B with ticket sizes of €1-15 million. The fund aims to scale to €300 million total and has already begun making its first investments.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Digital Venture Fund V (DV5)",
+          "url": "https://www.eu-startups.com/2026/02/french-vc-elaia-reaches-e120-million-first-close-for-new-multi-stage-b2b-technology-fund/",
+          "source_name": "EU-Startups",
+          "source_domain": "eu-startups.com",
+          "published_date": "2026-02-11",
+          "summary": "Multi-stage fund targeting European B2B technology startups from pre-seed to Series B with ticket sizes of €1-15 million. The fund aims to scale to €300 million total and has already begun making its first investments.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Catalio Structured Opportunities Fund II",
+      "firm": "Catalio Capital Management",
+      "firm_slug": "catalio-capital-management",
+      "amount": "$50M",
+      "amount_usd_millions": 50,
+      "category": "Credit Funds",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Other",
+      "announcement_date": "2026-02-11",
+      "source_url": "https://alternativecreditinvestor.com/2026/01/08/catalio-raises-325m-at-close-of-second-healthcare-credit-fund/",
+      "source_name": "Alternative Credit Investor",
+      "description_notes": "Aruwa Capital's second fund targets investments in Africa with backing from IFC, focusing on expansion into Ghana markets. The fund represents the firm's continued growth in the African venture capital ecosystem.",
+      "is_covered": true,
+      "covered_date": "2026-01-30",
+      "articles": [
+        {
+          "title": "Update: Aruwa Capital Management Fund II",
+          "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE4ySjFmMGZzRU81aDB0Sk1NUW1FOFU1NmRfVXptNVk2MWdoX0dYa3dpckc0SEhPQjNvZy1RUDlXVVZ4MllZMW1RSUpzQ0VmeVA5NHJ3M2JqRU1pbE1ZVHJybDNDdG8?oc=5",
+          "source_name": "Launch Base Africa",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-11",
+          "summary": "Aruwa Capital's second fund targets investments in Africa with backing from IFC, focusing on expansion into Ghana markets. The fund represents the firm's continued growth in the African venture capital ecosystem.",
+          "feed_name": "update"
+        }
+      ],
+      "target_geography": "North America",
+      "firm_website": "cataliocapital.com"
+    },
+    {
+      "fund_name": "Patria Latin America Private Credit Fund II",
+      "firm": "Patria Investments",
+      "firm_slug": "patria-investments",
+      "firm_website": "patria.com",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "strategy": "Direct Lending",
+      "target_geography": "Latin America",
+      "location": "São Paulo, Brazil",
+      "city": "São Paulo",
+      "state": "",
+      "country": "Brazil",
+      "stage": "Final Close",
+      "announcement_date": "2026-02-11",
+      "source_url": "https://alternativecreditinvestor.com/2026/02/11/patria-eyes-next-latin-america-private-credit-strategy/",
+      "source_name": "Alternative Credit Investor",
+      "description_notes": "Patria's next vintage Latin America private credit strategy targeting the region's structurally under-levered corporate credit market. The previous fund closed with $314 million in commitments from the $60.1 billion global alternative asset manager.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Patria Latin America Private Credit Fund II",
+          "url": "https://alternativecreditinvestor.com/2026/02/11/patria-eyes-next-latin-america-private-credit-strategy/",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-02-11",
+          "summary": "Patria's next vintage Latin America private credit strategy targeting the region's structurally under-levered corporate credit market. The previous fund closed with $314 million in commitments from the $60.1 billion global alternative asset manager.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Centennial shake-up at top as industrial fund launched",
+      "firm": "Centennial",
+      "firm_slug": "centennial",
+      "firm_website": null,
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Private Equity",
+      "strategy": null,
+      "target_geography": null,
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Launch",
+      "announcement_date": "2026-02-11",
+      "source_url": "https://news.google.com/rss/articles/CBMiiAJBVV95cUxPZTJ1T21QZ1pSWVE2TWd3MUxqaVFCTHg1UUNaWVdjeXdFekhva2VUSjhPQzVneVBUakRJMVhKZW5rVmluLWJKaXVETTYxaFZoWXdrNnBTUF91QmVicXRRMlZoNjZ2ajlONG1WNkZqVTFvWHpRZnVtS0pzckwzcV9yMGFoZVZRb0xOa2xhdUtVOVZ2RFhGckcwYTBJTDdCZVVwaXBQVm9HYTVLQXl2SWpCQ1BhNUJTS0dIX3VpVDBaTUI1Y2xDd3VRQ245Uk5semw4MnpJdmVoYmNydmp0U2FNb3c3eWdQRGQxVC1lU3NrTVdXRWE3bXpiTU9vZWtuNzRJaE9VNW04S0fSAYgCQVVfeXFMT2UydU9tUGdaUllRNk1ndzFMamlRQkx4NVFDWllXY3l3RXpIb2tlVEo4T0M1Z3lQVGpESTFYSmVua1Zpbi1iSml1RE02MWhWaFl3azZwU1BfdUJlYnF0UTJWaDY2dmo5TjRtVjZGalUxb1h6UWZ1bUtKc3JMM3FfcjBhaGVWUW9MTmtsYXVLVTlWdkRYRnJHMGEwSUw3QmVVcGlwUFZvR2E1S0F5dklqQkNQYTVCU0tHSF91aVQwWk1CNWNsQ3d1UUNuOVJObHpsODJ6SXZlaGJjcnZqdFNhTW93N3lnUERkMVQtZVNza01XV0VhN216Yk1Pb2Vrbjc0SWhPVTVtOEtH?oc=5",
+      "source_name": "The Australian",
+      "description_notes": "Centennial has launched an industrial-focused fund amid leadership changes at the firm.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Centennial shake-up at top as industrial fund launched",
+          "url": "https://news.google.com/rss/articles/CBMiiAJBVV95cUxPZTJ1T21QZ1pSWVE2TWd3MUxqaVFCTHg1UUNaWVdjeXdFekhva2VUSjhPQzVneVBUakRJMVhKZW5rVmluLWJKaXVETTYxaFZoWXdrNnBTUF91QmVicXRRMlZoNjZ2ajlONG1WNkZqVTFvWHpRZnVtS0pzckwzcV9yMGFoZVZRb0xOa2xhdUtVOVZ2RFhGckcwYTBJTDdCZVVwaXBQVm9HYTVLQXl2SWpCQ1BhNUJTS0dIX3VpVDBaTUI1Y2xDd3VRQ245Uk5semw4MnpJdmVoYmNydmp0U2FNb3c3eWdQRGQxVC1lU3NrTVdXRWE3bXpiTU9vZWtuNzRJaE9VNW04S0fSAYgCQVVfeXFMT2UydU9tUGdaUllRNk1ndzFMamlRQkx4NVFDWllXY3l3RXpIb2tlVEo4T0M1Z3lQVGpESTFYSmVua1Zpbi1iSml1RE02MWhWaFl3azZwU1BfdUJlYnF0UTJWaDY2dmo5TjRtVjZGalUxb1h6UWZ1bUtKc3JMM3FfcjBhaGVWUW9MTmtsYXVLVTlWdkRYRnJHMGEwSUw3QmVVcGlwUFZvR2E1S0F5dklqQkNQYTVCU0tHSF91aVQwWk1CNWNsQ3d1UUNuOVJObHpsODJ6SXZlaGJjcnZqdFNhTW93N3lnUERkMVQtZVNza01XV0VhN216Yk1Pb2Vrbjc0SWhPVTVtOEtH?oc=5",
+          "source_name": "The Australian",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-11",
+          "summary": "Centennial has launched an industrial-focused fund amid leadership changes at the firm.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "First Interval Fund focused on Private Asset-Backed Credit",
+      "firm": "Privacore Capital and Victory Park Capital",
+      "firm_slug": "privacore-capital-and-victory-park-capital",
+      "firm_website": "acorecapital.com",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "strategy": "Asset-Based",
+      "target_geography": null,
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Launch",
+      "announcement_date": "2026-02-11",
+      "source_url": "https://news.google.com/rss/articles/CBMinAJBVV95cUxPRUZvM2lBRlFkd212c3ZJRVczd053MXFEVEtLNFJZNGk5akswQzVBWWt5bWI5Qk5ZY1ZTS0haNUloQlJ2YVpvQjhTc1pGN2g2TXRkSEZCZnFEdkVyWjFITXczQ3JBQnpEeTdNQzRMUFAxa1FzeFVwWWRkTDZlWE85dDVFWEZwV2pJNG1QZy05b3RUY0RPTHFPNkp6ZW81TWFkZGVjX1JZRjFmWTZNRmd1dGdLOGRaMnd4Z2l6MkZEZDFJbE9RRERZVUxrdFhqc3VsZWVBcnBYV0x2czFBZFZmX1BaSllzNFJoNi1hX25KQTlGdUV5YmRfbEFDQ25BYmR4YUhTczBoN1V2RW1CX3YtN2l6NUMwakp5S2xzMg?oc=5",
+      "source_name": "Business Wire",
+      "description_notes": "First interval fund launched by Janus Henderson affiliates Privacore Capital and Victory Park Capital, focusing on private asset-backed credit investments. The fund structure allows for periodic liquidity through interval fund mechanics.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "First Interval Fund focused on Private Asset-Backed Credit",
+          "url": "https://news.google.com/rss/articles/CBMinAJBVV95cUxPRUZvM2lBRlFkd212c3ZJRVczd053MXFEVEtLNFJZNGk5akswQzVBWWt5bWI5Qk5ZY1ZTS0haNUloQlJ2YVpvQjhTc1pGN2g2TXRkSEZCZnFEdkVyWjFITXczQ3JBQnpEeTdNQzRMUFAxa1FzeFVwWWRkTDZlWE85dDVFWEZwV2pJNG1QZy05b3RUY0RPTHFPNkp6ZW81TWFkZGVjX1JZRjFmWTZNRmd1dGdLOGRaMnd4Z2l6MkZEZDFJbE9RRERZVUxrdFhqc3VsZWVBcnBYV0x2czFBZFZmX1BaSllzNFJoNi1hX25KQTlGdUV5YmRfbEFDQ25BYmR4YUhTczBoN1V2RW1CX3YtN2l6NUMwakp5S2xzMg?oc=5",
+          "source_name": "Business Wire",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-11",
+          "summary": "First interval fund launched by Janus Henderson affiliates Privacore Capital and Victory Park Capital, focusing on private asset-backed credit investments. The fund structure allows for periodic liquidity through interval fund mechanics.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "ACORE Credit Partners II",
+      "firm": "ACORE Capital",
+      "firm_slug": "acore-capital",
+      "firm_website": "acorecapital.com",
+      "amount": "$1.3bn",
+      "amount_usd_millions": 1300,
+      "category": "Real Estate",
+      "strategy": "Value-Add",
+      "target_geography": "North America",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2026-02-10",
+      "source_url": "https://www.perenews.com/acore-capital-closes-largest-debt-fund-of-2024-to-date/",
+      "source_name": "PERE",
+      "description_notes": "A continuation vehicle for the 2018 vintage of Ares' US direct lending fund, providing existing investors the opportunity to continue exposure to a portfolio of senior, floating-rate loans to US mid-market companies backed by private equity sponsors. The vehicle also allows new investors to join the portfolio.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "ACORE Credit Partners II",
+          "url": "https://www.perenews.com/acore-capital-closes-largest-debt-fund-of-2024-to-date/",
+          "source_name": "PERE",
+          "source_domain": "perenews.com",
+          "published_date": "2024-04-20",
+          "summary": "ACORE Capital closed its second credit partners fund at $1.4B, the largest real estate debt fund of 2024.",
+          "feed_name": "backfill"
+        },
+        {
+          "title": "Update: Ares US Direct Lending Fund 2018 Continuation Vehicle",
+          "url": "https://alternativecreditinvestor.com/2026/02/10/coller-capital-closes-1-3bn-continuation-vehicle-for-ares/",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-02-10",
+          "summary": "A continuation vehicle for the 2018 vintage of Ares' US direct lending fund, providing existing investors the opportunity to continue exposure to a portfolio of senior, floating-rate loans to US mid-market companies backed by private equity sponsors. The vehicle also allows new investors to join the portfolio.",
+          "feed_name": "update"
+        }
+      ]
+    },
+    {
+      "fund_name": "Power Sustainable Infrastructure Credit Fund I",
+      "firm": "Power Sustainable",
+      "firm_slug": "power-sustainable",
+      "amount": "$1B+",
+      "amount_usd_millions": 1000,
+      "category": "Credit Funds",
+      "location": "Montreal, Canada",
+      "city": "Montreal",
+      "state": "QC",
+      "country": "Canada",
+      "stage": "Other",
+      "announcement_date": "2026-02-10",
+      "source_url": "https://www.prnewswire.com/news-releases/power-sustainable-announces-the-final-close-of-its-inaugural-infrastructure-credit-fund-302677026.html",
+      "source_name": "PR Newswire",
+      "description_notes": "A sustainable infrastructure credit fund managed by Power that has raised over $1 billion, focusing on infrastructure debt investments.",
+      "is_covered": true,
+      "covered_date": "2026-02-06",
+      "articles": [
+        {
+          "title": "Update: Power Sustainable Infrastructure Credit Fund",
+          "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNeW9yN0tjYVhTUF9lYVZUVlJnSTNBZU85cS02LXhkS2l0aTlCRThMTV9nNWRTdjdycEFvdGw5S3ZrcUVOMzc4clZ6S2NBVlpmRk9pVnU0WWtaLUpGQ1JSUUJ1MjB1TkFTYUluTHBvMzlHNUpnZkFuMWFhMUhyWWFqS01QRnZITjI0Z00wLUpsaXdlUHk1?oc=5",
+          "source_name": "connectmoney.com",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-10",
+          "summary": "A sustainable infrastructure credit fund managed by Power that has raised over $1 billion, focusing on infrastructure debt investments.",
+          "feed_name": "update"
+        }
+      ],
+      "strategy": "Asset-Based",
+      "target_geography": "North America",
+      "firm_website": "powersustainable.com"
+    },
+    {
+      "fund_name": "Primary Ventures Fund V",
+      "firm": "Primary Ventures",
+      "firm_slug": "primary-ventures",
+      "firm_website": null,
+      "amount": "$625M",
+      "amount_usd_millions": 625,
+      "category": "Venture Capital",
+      "strategy": "Seed/Pre-Seed",
+      "target_geography": "North America",
+      "location": "US",
+      "city": "N/A",
+      "state": "",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2026-02-10",
+      "source_url": "https://techcrunch.com/2026/02/10/primary-ventures-raises-massive-625m-fund-v-to-focus-on-seed-investing/",
+      "source_name": "TechCrunch",
+      "description_notes": "Primary Ventures Fund V is a $625 million seed-stage venture capital fund focused on investing nationwide. The fund represents a sizable accomplishment for the seed-stage VC firm.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Primary Ventures Fund V",
+          "url": "https://techcrunch.com/2026/02/10/primary-ventures-raises-massive-625m-fund-v-to-focus-on-seed-investing/",
+          "source_name": "TechCrunch",
+          "source_domain": "techcrunch.com",
+          "published_date": "2026-02-10",
+          "summary": "Primary Ventures Fund V is a $625 million seed-stage venture capital fund focused on investing nationwide. The fund represents a sizable accomplishment for the seed-stage VC firm.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Keppel Private Credit Fund III",
+      "firm": "Keppel",
+      "firm_slug": "keppel",
+      "firm_website": "kepcorp.com",
+      "amount": "$561M+",
+      "amount_usd_millions": 561,
+      "category": "Infrastructure",
+      "strategy": "Direct Lending",
+      "target_geography": "Asia-Pacific",
+      "location": "Singapore, Singapore",
+      "city": "Singapore",
+      "state": "",
+      "country": "Singapore",
+      "stage": "Interim Close",
+      "announcement_date": "2026-02-10",
+      "source_url": "https://www.mingtiandi.com/real-estate/finance/keppel-private-credit-fund-gets-125m-commitment-from-beijings-aiib/",
+      "source_name": "Mingtiandi",
+      "description_notes": "Keppel's third private credit fund focuses on direct lending opportunities in the Asia-Pacific region. The fund received a significant $125 million commitment from the Asian Infrastructure Investment Bank, bringing its total size to over $561 million.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Keppel Private Credit Fund III",
+          "url": "https://www.mingtiandi.com/real-estate/finance/keppel-private-credit-fund-gets-125m-commitment-from-beijings-aiib/",
+          "source_name": "Mingtiandi",
+          "source_domain": "mingtiandi.com",
+          "published_date": "2026-02-10",
+          "summary": "Keppel's third private credit fund focuses on direct lending opportunities in the Asia-Pacific region. The fund received a significant $125 million commitment from the Asian Infrastructure Investment Bank, bringing its total size to over $561 million.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Sustainable Maritime Infrastructure II",
+      "firm": "Eurazeo",
+      "firm_slug": "eurazeo",
+      "firm_website": "eurazeo.com",
+      "amount": "€175m",
+      "amount_usd_millions": 192.5,
+      "category": "Infrastructure",
+      "strategy": "Core Infrastructure",
+      "target_geography": "Europe",
+      "location": "Paris, France",
+      "city": "Paris",
+      "state": "",
+      "country": "France",
+      "stage": "Final Close",
+      "announcement_date": "2026-02-10",
+      "source_url": "https://alternativecreditinvestor.com/2026/02/10/eurazeo-raises-e175m-for-maritime-infra-fund/",
+      "source_name": "Alternative Credit Investor",
+      "description_notes": "Eurazeo's second sustainable maritime infrastructure fund dedicated to supporting sustainable maritime infrastructure projects. The fund exceeded its initial first-close goal of €125m and targets a final close of €400m.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Sustainable Maritime Infrastructure II",
+          "url": "https://alternativecreditinvestor.com/2026/02/10/eurazeo-raises-e175m-for-maritime-infra-fund/",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-02-10",
+          "summary": "Eurazeo's second sustainable maritime infrastructure fund dedicated to supporting sustainable maritime infrastructure projects. The fund exceeded its initial first-close goal of €125m and targets a final close of €400m.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Louisiana Teachers commits $100m to Crow Holdings real estate fund",
+      "firm": "Crow Holdings",
+      "firm_slug": "crow-holdings",
+      "firm_website": "crowholdings.com",
+      "amount": "$100M",
+      "amount_usd_millions": 100,
+      "category": "Real Estate",
+      "strategy": "Asset-Based",
+      "target_geography": null,
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Other",
+      "announcement_date": "2026-02-10",
+      "source_url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQLWNKdzVERmNQRHJlcnFrSkc2cW5LeFhtZEdhdW1jd0hLd2t1ZERtQ01TZDhVRTl5elVlNnMtNUljX1dzYWo0Z0lkY1VwZ1FHbUE5bUdYS09kRmZCTTdkUGdWLWdzdDllNEZqYUZ1VUhCWHk5Ni1yYUU1YWRNZ2sxcU1STVg3bWIwWU9XV3dZZTk2aUxqVjAxX2g4b2dZQU5UdlZKZnFoQTdJZDZhemFBUnBmRGE?oc=5",
+      "source_name": "IPE Real Assets",
+      "description_notes": "Louisiana Teachers' Retirement System commits $100 million to a Crow Holdings real estate fund. Limited details available about the fund's specific strategy or focus areas.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Louisiana Teachers commits $100m to Crow Holdings real estate fund",
+          "url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQLWNKdzVERmNQRHJlcnFrSkc2cW5LeFhtZEdhdW1jd0hLd2t1ZERtQ01TZDhVRTl5elVlNnMtNUljX1dzYWo0Z0lkY1VwZ1FHbUE5bUdYS09kRmZCTTdkUGdWLWdzdDllNEZqYUZ1VUhCWHk5Ni1yYUU1YWRNZ2sxcU1STVg3bWIwWU9XV3dZZTk2aUxqVjAxX2g4b2dZQU5UdlZKZnFoQTdJZDZhemFBUnBmRGE?oc=5",
+          "source_name": "IPE Real Assets",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-10",
+          "summary": "Louisiana Teachers' Retirement System commits $100 million to a Crow Holdings real estate fund. Limited details available about the fund's specific strategy or focus areas.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Oaktree makes global credit fund available in UCITS structure",
+      "firm": "Oaktree",
+      "firm_slug": "oaktree",
+      "firm_website": "oaktreecapital.com",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "strategy": "Asset-Based",
+      "target_geography": "Global",
+      "location": "Los Angeles, CA",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2026-02-10",
+      "source_url": "https://www.privatedebtinvestor.com/oaktree-makes-global-credit-fund-available-in-ucits-structure/",
+      "source_name": "Private Debt Investor",
+      "description_notes": "Oaktree is launching a UCITS structure for its global credit fund to expand access to its evergreen credit vehicle for investors in Europe, Asia-Pacific and Latin America.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Oaktree makes global credit fund available in UCITS structure",
+          "url": "https://www.privatedebtinvestor.com/oaktree-makes-global-credit-fund-available-in-ucits-structure/",
+          "source_name": "Private Debt Investor",
+          "source_domain": "privatedebtinvestor.com",
+          "published_date": "2026-02-10",
+          "summary": "Oaktree is launching a UCITS structure for its global credit fund to expand access to its evergreen credit vehicle for investors in Europe, Asia-Pacific and Latin America.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Azora to close largest-ever Southern European real estate fund",
+      "firm": "Azora",
+      "firm_slug": "azora",
+      "firm_website": "azora.com",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Real Estate",
+      "strategy": null,
+      "target_geography": "Europe",
+      "location": "Madrid, Spain",
+      "city": "Madrid",
+      "state": "",
+      "country": "Spain",
+      "stage": "Final Close",
+      "announcement_date": "2026-02-10",
+      "source_url": "https://www.perenews.com/azora-to-close-largest-ever-southern-european-real-estate-fund/",
+      "source_name": "PERE",
+      "description_notes": "Madrid-based Azora is closing its largest-ever Southern European real estate fund, having already hit its revised target with final close expected by mid-year.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Azora to close largest-ever Southern European real estate fund",
+          "url": "https://www.perenews.com/azora-to-close-largest-ever-southern-european-real-estate-fund/",
+          "source_name": "PERE",
+          "source_domain": "perenews.com",
+          "published_date": "2026-02-10",
+          "summary": "Madrid-based Azora is closing its largest-ever Southern European real estate fund, having already hit its revised target with final close expected by mid-year.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "In brief: DFIs lead African food fund to first close",
+      "firm": "Unknown",
+      "firm_slug": "unknown",
+      "firm_website": null,
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "strategy": "Opportunistic",
+      "target_geography": "Middle East & Africa",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "First Close",
+      "announcement_date": "2026-02-10",
+      "source_url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPS2FpczlUVHFxWnYyTWFyOGxYbHFzVDh6SU55bEZvRUNoc0xjZHByZ3RKbWJPQU9FQ0VMcEItLUh2UVdSYkowbTlrdHBoN0VYa1ljblZnaml3MkJKRlFNLTlldno1VUVXQmdubHdxT1hfdXE2eGRWVVFrbzliQVlINDZleEVhMzdwdlhKTnZCcw?oc=5",
+      "source_name": "New Private Markets",
+      "description_notes": "An African food sector focused fund led by development finance institutions (DFIs) has reached its first close.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "In brief: DFIs lead African food fund to first close",
+          "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPS2FpczlUVHFxWnYyTWFyOGxYbHFzVDh6SU55bEZvRUNoc0xjZHByZ3RKbWJPQU9FQ0VMcEItLUh2UVdSYkowbTlrdHBoN0VYa1ljblZnaml3MkJKRlFNLTlldno1VUVXQmdubHdxT1hfdXE2eGRWVVFrbzliQVlINDZleEVhMzdwdlhKTnZCcw?oc=5",
+          "source_name": "New Private Markets",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-10",
+          "summary": "An African food sector focused fund led by development finance institutions (DFIs) has reached its first close.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "New Community Transformation Fund II",
+      "firm": "New Community Transformation Fund",
+      "firm_slug": "new-community-transformation-fund",
+      "firm_website": null,
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "strategy": null,
+      "target_geography": null,
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "First Close",
+      "announcement_date": "2026-02-10",
+      "source_url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOREExMzEyUmpRNHdCYWVYWHNnaWtfbHZzVk9BYS1RUGtDWV82bm1wUGJBZEF6R2IwbGZWd3JkbGEydkRKVmo3NEdIMGpJRXVQV2QxNnhvMjFzU1NvbjZLTTl5bDRwVEVnQ3JLbWY0M05ob2IxcVJEdkNOOGtjdUd1LTJzSEQySHFJbkNPTWx5NVNMSlBsMFBNUl9XakVKMnBQTC1fNDZQVWk2VGJYN1EtX1RqMEl6Zw?oc=5",
+      "source_name": "Google News",
+      "description_notes": "New Community Transformation Fund has completed the first close of their second venture fund, though specific investment strategy and fundraising target remain undisclosed.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "New Community Transformation Fund II",
+          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOREExMzEyUmpRNHdCYWVYWHNnaWtfbHZzVk9BYS1RUGtDWV82bm1wUGJBZEF6R2IwbGZWd3JkbGEydkRKVmo3NEdIMGpJRXVQV2QxNnhvMjFzU1NvbjZLTTl5bDRwVEVnQ3JLbWY0M05ob2IxcVJEdkNOOGtjdUd1LTJzSEQySHFJbkNPTWx5NVNMSlBsMFBNUl9XakVKMnBQTC1fNDZQVWk2VGJYN1EtX1RqMEl6Zw?oc=5",
+          "source_name": "Google News",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-10",
+          "summary": "New Community Transformation Fund has completed the first close of their second venture fund, though specific investment strategy and fundraising target remain undisclosed.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Meliora Ventures debut fund",
+      "firm": "Meliora Ventures",
+      "firm_slug": "meliora-ventures",
+      "firm_website": null,
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Venture Capital",
+      "strategy": "Sector-Specific",
+      "target_geography": null,
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Launch",
+      "announcement_date": "2026-02-10",
+      "source_url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxQVUVPV2poREdsdjJZOTJEVEZHdHIzNWl0NmdQSEtXR0lUQnRXNllSemxPUF9zZnZTZ0lKUUFTYWdQRWlHQ3U5ZlV3c1hrSE80ejQ1WXl0dG05WExwY3VRY0VPaGtHeHlRWjZZLUp3UnNzMk4ydWhJWWp3RDd0dkZDSjl5VjhYSkRtQng2b1N0Mzhlampmd3J1ZnNNdzhIYlNKTUI2NjViOG1zaU5qRkd1WGQ4NFp4NFBOLWRqUW81cXhnUTVocHVJeERENXdmZ2ZTVThWdlFOSGtYV3l3M0E?oc=5",
+      "source_name": "Capital Brief",
+      "description_notes": "Meliora Ventures' debut fund focuses on investing in AI media startups, led by Clive Dickens. The fund targets early-stage companies at the intersection of artificial intelligence and media technology.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Meliora Ventures debut fund",
+          "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxQVUVPV2poREdsdjJZOTJEVEZHdHIzNWl0NmdQSEtXR0lUQnRXNllSemxPUF9zZnZTZ0lKUUFTYWdQRWlHQ3U5ZlV3c1hrSE80ejQ1WXl0dG05WExwY3VRY0VPaGtHeHlRWjZZLUp3UnNzMk4ydWhJWWp3RDd0dkZDSjl5VjhYSkRtQng2b1N0Mzhlampmd3J1ZnNNdzhIYlNKTUI2NjViOG1zaU5qRkd1WGQ4NFp4NFBOLWRqUW81cXhnUTVocHVJeERENXdmZ2ZTVThWdlFOSGtYV3l3M0E?oc=5",
+          "source_name": "Capital Brief",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-10",
+          "summary": "Meliora Ventures' debut fund focuses on investing in AI media startups, led by Clive Dickens. The fund targets early-stage companies at the intersection of artificial intelligence and media technology.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Covenant 12th Value-Add Fund",
+      "firm": "Covenant",
+      "firm_slug": "covenant",
+      "amount": "$1.1B",
+      "amount_usd_millions": 1100,
+      "category": "Real Estate",
+      "location": "Denver, CO",
+      "city": "Denver",
+      "state": "CO",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2026-02-09",
+      "source_url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxQeVRhbzZGOGR3NkFxTndKS2FUcUZEYXZoajVOVmgxWXVtT2lnS0czMjZYSGpCMlFESmtCbko2aVB6bEh3Wlo3Qy14eXBfSEdRN2Y2cDd5TkZEXzJyb2ZsSTRNV1c5UG1BVmlxZlBsT2xBbDcyU0dDbnRER1hETUVmVWw0cU5zQldFdDJmcmlvblgzNDhVeUpxb1BuZS1hQkVIOWlGUC1Gb1BicmNxTERhMW9sWFFVNVdqTVNsZHNNdjRIdWptMHc0X1E3T0VBOXZ5QU11Ql9vOUlCWmM?oc=5",
+      "source_name": "Business Wire",
+      "description_notes": "Covenant Capital Group's largest fund in its 25-year history targeting multifamily assets. The Nashville-based private equity firm closed the fund as private equity continues to circle the multifamily sector.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Covenant Raises over $1.1 Billion for 12th Value-Add Fund, Affordable Housing Sidecar - Business Wire",
+          "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxQeVRhbzZGOGR3NkFxTndKS2FUcUZEYXZoajVOVmgxWXVtT2lnS0czMjZYSGpCMlFESmtCbko2aVB6bEh3Wlo3Qy14eXBfSEdRN2Y2cDd5TkZEXzJyb2ZsSTRNV1c5UG1BVmlxZlBsT2xBbDcyU0dDbnRER1hETUVmVWw0cU5zQldFdDJmcmlvblgzNDhVeUpxb1BuZS1hQkVIOWlGUC1Gb1BicmNxTERhMW9sWFFVNVdqTVNsZHNNdjRIdWptMHc0X1E3T0VBOXZ5QU11Ql9vOUlCWmM?oc=5",
+          "source_name": "News",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-06",
+          "summary": "Covenant Raises over $1.1 Billion for 12th Value-Add Fund, Affordable Housing Sidecar&nbsp;&nbsp;Business Wire",
+          "feed_name": "search:Press release fund closes"
+        },
+        {
+          "title": "Update: Nashville-Based Firm Raises $1.1B Multifamily Fund As Private Equity Circles Sector",
+          "url": "https://www.bisnow.com/national/news/multifamily/nashville-based-firm-raises-11b-multifamily-fund-as-private-equity-circles-sector-133125",
+          "source_name": "Bisnow",
+          "source_domain": "bisnow.com",
+          "published_date": "2026-02-09",
+          "summary": "Covenant Capital Group's largest fund in its 25-year history targeting multifamily assets. The Nashville-based private equity firm closed the fund as private equity continues to circle the multifamily sector.",
+          "feed_name": "update"
+        }
+      ],
+      "strategy": "Core-Plus",
+      "target_geography": "North America",
+      "firm_website": "covenantcapgroup.com"
+    },
+    {
+      "fund_name": "BV Investment Partners Fund XII",
+      "firm": "BV Investment Partners",
+      "firm_slug": "bv-investment-partners",
+      "amount": "$400M+",
+      "amount_usd_millions": 400,
+      "category": "Private Equity",
+      "location": "Boston, MA",
+      "city": "Boston",
+      "state": "MA",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2026-02-09",
+      "source_url": "https://sg.finance.yahoo.com/news/bv-investment-partners-announces-raising-123000635.html",
+      "source_name": "Yahoo Finance",
+      "description_notes": "The fund focuses on industrial outdoor storage (IOS) investments and was oversubscribed, with investor demand substantially exceeding its $400 million hard-cap. This represents the third fund from the New York-based specialist manager.",
+      "is_covered": true,
+      "covered_date": "2026-01-09",
+      "articles": [
+        {
+          "title": "Vintage Investment Partners Fund IV",
+          "url": "https://pitchbook.com/newsletter/global-vc-and-pe-fundraising-news-for-january-12-2024",
+          "source_name": "PitchBook",
+          "source_domain": "pitchbook.com",
+          "published_date": "2024-01-15",
+          "summary": "Israeli venture fund of funds.",
+          "feed_name": "additional"
+        },
+        {
+          "title": "Update: Catalyst Investment Partners Fund III",
+          "url": "https://www.perenews.com/ios-specialist-catalyst-investment-partners-closes-oversubscribed-third-fund/",
+          "source_name": "PERE",
+          "source_domain": "perenews.com",
+          "published_date": "2026-02-09",
+          "summary": "The fund focuses on industrial outdoor storage (IOS) investments and was oversubscribed, with investor demand substantially exceeding its $400 million hard-cap. This represents the third fund from the New York-based specialist manager.",
+          "feed_name": "update"
+        }
+      ],
+      "target_geography": "North America",
+      "firm_website": "bvlp.com"
+    },
+    {
+      "fund_name": "Investec Private Credit Fund",
+      "firm": "Investec",
+      "firm_slug": "investec",
+      "amount": "Undisclosed",
+      "amount_usd_millions": 400,
+      "category": "Credit Funds",
+      "location": "London, UK",
+      "city": "London",
+      "state": "",
+      "country": "UK",
+      "stage": "Final Close",
+      "announcement_date": "2026-02-09",
+      "source_url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQUE5hdnR4Mmw0RzkxdHdMeUlDeDNlMWp2U2pESWp3WE9fOTVRblhsM2daOEd0VkgyZ1R5QnczWS1OWHkzRkp0WHY1dTNkbDdQUi1vVlFwR0I1R2dqS3UyVHNYRmFJVjFqOU5LaTZ1MTdOd29rLXVRbHZfMk1lWkFmbU9CLW1fVDdFRkw5bG92UWh3QkFmVUlaakdPbjhMWV9rOHJFUldvOUM?oc=5",
+      "source_name": "Alternative Credit Investor",
+      "description_notes": "Investec's second private debt fund has closed, though specific fund size and strategy details were not disclosed in this brief market update.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Carlyle backs €400m Investec private credit fund launch - Alternative Credit Investor",
+          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQUE5hdnR4Mmw0RzkxdHdMeUlDeDNlMWp2U2pESWp3WE9fOTVRblhsM2daOEd0VkgyZ1R5QnczWS1OWHkzRkp0WHY1dTNkbDdQUi1vVlFwR0I1R2dqS3UyVHNYRmFJVjFqOU5LaTZ1MTdOd29rLXVRbHZfMk1lWkFmbU9CLW1fVDdFRkw5bG92UWh3QkFmVUlaakdPbjhMWV9rOHJFUldvOUM?oc=5",
+          "source_name": "News",
+          "source_domain": "news.google.com",
+          "published_date": "2025-11-25",
+          "summary": "Carlyle backs €400m Investec private credit fund launch&nbsp;&nbsp;Alternative Credit Investor",
+          "feed_name": "search:Credit/Real estate"
+        },
+        {
+          "title": "Update: Investec Private Debt Fund II",
+          "url": "https://www.privatedebtinvestor.com/loan-note-measuring-stress-in-the-sponsored-market-investec-closes-second-pd-fund/",
+          "source_name": "Private Debt Investor",
+          "source_domain": "privatedebtinvestor.com",
+          "published_date": "2026-02-09",
+          "summary": "Investec's second private debt fund has closed, though specific fund size and strategy details were not disclosed in this brief market update.",
+          "feed_name": "update"
+        }
+      ],
+      "target_geography": "Europe",
+      "firm_website": "investec.com"
+    },
+    {
+      "fund_name": "SlateVC Inaugural Growth Fund",
+      "firm": "SlateVC",
+      "firm_slug": "slatevc",
+      "amount": "€132M",
+      "amount_usd_millions": 145.2,
+      "category": "Venture Capital",
+      "location": "London, UK",
+      "city": "London",
+      "state": "",
+      "country": "UK",
+      "stage": "First Close",
+      "announcement_date": "2026-02-09",
+      "source_url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxQWmlIdGlVWnpyR2JxTTZyUGc1VnBJdkVMNkVpV1RNSEV2eE1CNVE0RUJ2SEluZHFoWkxvM3Q3d3B5R3lGV2x5b2k5ZngtLXR5dmJvNVgzXzBwdnhFek1ma2RnQXpudmpKSkgxSWlXSFBvVnk5QTZFZ3BlSmNZbTZ3SWhiQU1qV1AzX0tpYWx5aXdqSnhvWU14LXNETXNoOC1DajlqS2tpRUV2M3ZWREVJaFl2endUOHVuZFo5UnlxdGlRV0xB?oc=5",
+      "source_name": "EU-Startups",
+      "description_notes": "SlateVC's pan-European fund focused on growth-stage climate technology investments. The fund targets climate-focused companies across Europe with growth capital.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "French climate investor SlateVC raises €132 million first close for inaugural growth fund - EU-Startups",
+          "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxQWmlIdGlVWnpyR2JxTTZyUGc1VnBJdkVMNkVpV1RNSEV2eE1CNVE0RUJ2SEluZHFoWkxvM3Q3d3B5R3lGV2x5b2k5ZngtLXR5dmJvNVgzXzBwdnhFek1ma2RnQXpudmpKSkgxSWlXSFBvVnk5QTZFZ3BlSmNZbTZ3SWhiQU1qV1AzX0tpYWx5aXdqSnhvWU14LXNETXNoOC1DajlqS2tpRUV2M3ZWREVJaFl2endUOHVuZFo5UnlxdGlRV0xB?oc=5",
+          "source_name": "News",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-04",
+          "summary": "French climate investor SlateVC raises €132 million first close for inaugural growth fund&nbsp;&nbsp;EU-Startups",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Update: Pan-European Climate Growth Fund",
+          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOMlllUldqSjMydlpMYTBYaHMxcjBtOUVJQXhTSi1xME1FXzZqRy1PWWdrU1paUjJ6bC03NklxZVRyVkNiclFuSE9EM2FQSUwza2w2NTlTYUVEOXZOOWlWeTVuVzFTQ3VDUmViTTIyaXM5eV90TjQ0cV9lYVJKNXRveGxPaFZYRVBrcFViRUo3Slk1aVBoVXFVVWJyRGFOemhL0gGmAUFVX3lxTE45MTJVTmg3ZlVyS19yM3RrbzBGd2Fxd0wyVmJpeENOYmYweFJJTlAxNTZCaGhhc1NlNTk2WEZuNkhfU0hEME5zV3E1bjdnM1hRU08tcWVOX1Zkd0FDQVpIN2psSnFRcXVsU0pCOUQxT1oydGJTOXVlT1RlbVI4SVZUbGM1MVJGNUhkdUhfMTJucHlrbEVXdEhXNXh6Z0NEb0hTQWUwVmc?oc=5",
+          "source_name": "Pulse 2.0",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-09",
+          "summary": "SlateVC's pan-European fund focused on growth-stage climate technology investments. The fund targets climate-focused companies across Europe with growth capital.",
+          "feed_name": "update"
+        }
+      ],
+      "strategy": "Late Stage",
+      "target_geography": "Europe",
+      "firm_website": "slate.vc"
+    },
+    {
+      "fund_name": "Phatisa Food and Agribusiness Fund III",
+      "firm": "Phatisa",
+      "firm_slug": "phatisa",
+      "firm_website": "phatisa.com",
+      "amount": "$86M",
+      "amount_usd_millions": 86,
+      "category": "Credit Funds",
+      "strategy": "Sector-Specific",
+      "target_geography": "Middle East & Africa",
+      "location": "Africa",
+      "city": "N/A",
+      "state": "",
+      "country": "Africa",
+      "stage": "First Close",
+      "announcement_date": "2026-02-09",
+      "source_url": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxPblhXbDYyQzByMWZQaXJPeVFFd2xQZ3ZYQmNVdTlyeDJLbWxXcDBVazZwcUg3T1RoclZwUC1WNFFvcTk0T211UWdjRjJsWkMwNnBRREg1d0Y5b3FfeC1ORFdLU3JtUldpWVJPS2ljMUwzTUdzVWVvSlJzQ3V3dGNaVlN2WEVFWUZSdHJKbHFVVV9mNU9iclJ6SkJKZ0dmVnhWZnR4ckJocDVLcDJVU1NmNktJMkVPaDc0WHdnbGhyaFFkNzkxbFBDRS15SElCM3RoQVpTcHoyc2sxc3hZOWc5b2p5VlVta1FaWkow?oc=5",
+      "source_name": "Google News",
+      "description_notes": "Phatisa's third fund focuses on food and agribusiness investments across Africa's food value chain. The fund targets opportunities in the African foodchain sector with $86M secured in its first close.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Phatisa Food and Agribusiness Fund III",
+          "url": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxPblhXbDYyQzByMWZQaXJPeVFFd2xQZ3ZYQmNVdTlyeDJLbWxXcDBVazZwcUg3T1RoclZwUC1WNFFvcTk0T211UWdjRjJsWkMwNnBRREg1d0Y5b3FfeC1ORFdLU3JtUldpWVJPS2ljMUwzTUdzVWVvSlJzQ3V3dGNaVlN2WEVFWUZSdHJKbHFVVV9mNU9iclJ6SkJKZ0dmVnhWZnR4ckJocDVLcDJVU1NmNktJMkVPaDc0WHdnbGhyaFFkNzkxbFBDRS15SElCM3RoQVpTcHoyc2sxc3hZOWc5b2p5VlVta1FaWkow?oc=5",
+          "source_name": "Google News",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-09",
+          "summary": "Phatisa's third fund focuses on food and agribusiness investments across Africa's food value chain. The fund targets opportunities in the African foodchain sector with $86M secured in its first close.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Heartland Ventures Fund III",
+      "firm": "Heartland Ventures",
+      "firm_slug": "heartland-ventures",
+      "firm_website": null,
+      "amount": "$35.2M",
+      "amount_usd_millions": 35.2,
+      "category": "Credit Funds",
+      "strategy": "Asset-Based",
+      "target_geography": null,
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Launch",
+      "announcement_date": "2026-02-09",
+      "source_url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQeGxaaEVoSVd0MnI1MVBFc1FZbTg0ZXJPVzhmUm95Q1VPRGZLTEpaTmtkQ0xaVGM2anpUdDBKLTMxSWRVa1VPd2RBMzhrOFVQOXNTSDhQU2ZkcVlIUmFmeS1wWkotZVdISzNEYTdkUHNveklEUFMyY1cxVWNLWDQtMmtTcXVOaXM0SUJ6Qi0zUTQ4NEY5WjZiSkFaN3ltV0dINVVNVEpQSXQ?oc=5",
+      "source_name": "Venture Capital Journal",
+      "description_notes": "Heartland Ventures has raised an initial $35.2 million for its third fund, targeting a total of $60 million. The fund's specific investment strategy and geographic focus were not disclosed in the available information.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Heartland Ventures Fund III",
+          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQeGxaaEVoSVd0MnI1MVBFc1FZbTg0ZXJPVzhmUm95Q1VPRGZLTEpaTmtkQ0xaVGM2anpUdDBKLTMxSWRVa1VPd2RBMzhrOFVQOXNTSDhQU2ZkcVlIUmFmeS1wWkotZVdISzNEYTdkUHNveklEUFMyY1cxVWNLWDQtMmtTcXVOaXM0SUJ6Qi0zUTQ4NEY5WjZiSkFaN3ltV0dINVVNVEpQSXQ?oc=5",
+          "source_name": "Venture Capital Journal",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-09",
+          "summary": "Heartland Ventures has raised an initial $35.2 million for its third fund, targeting a total of $60 million. The fund's specific investment strategy and geographic focus were not disclosed in the available information.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Phatisa Food Fund 3",
+      "firm": "Phatisa",
+      "firm_slug": "phatisa",
+      "firm_website": "phatisa.com",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Private Equity",
+      "strategy": "Sector-Specific",
+      "target_geography": "Middle East & Africa",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "First Close",
+      "announcement_date": "2026-02-09",
+      "source_url": "https://www.africaprivateequitynews.com/p/phatisa-food-fund-3-reaches-first",
+      "source_name": "Africa PE News",
+      "description_notes": "The fund focuses on food sector investments in Africa, having made its first investment in Zaad Group, an African seed and crop protection platform.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Phatisa Food Fund 3",
+          "url": "https://www.africaprivateequitynews.com/p/phatisa-food-fund-3-reaches-first",
+          "source_name": "Africa PE News",
+          "source_domain": "africaprivateequitynews.com",
+          "published_date": "2026-02-09",
+          "summary": "The fund focuses on food sector investments in Africa, having made its first investment in Zaad Group, an African seed and crop protection platform.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "StepStone eyes first closes for flagship, debut GP-led fund by H1 2026",
+      "firm": "StepStone",
+      "firm_slug": "stepstone",
+      "firm_website": "stepstone.com",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Secondaries & GP-Stakes",
+      "strategy": "GP-Led",
+      "target_geography": null,
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Launch",
+      "announcement_date": "2026-02-09",
+      "source_url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPNXVEeElQUjFDVGJ5RC13RkppaDc2dDVzZUVSbkNGdWJtRVh5RzN4RUl6cld0cHRpMVRIdmVLaEE2LVVQXzdTM0hMRE5pQ1p5bnF3RkVFMnVIUWhzOUNaZWJ3b3ZyMXpRZFpfMm5EelVCdHVZOGRDRm00c25STkp5ZVc4c21PXzRYd3RYQUx2UkFYN20tenYyWjI2XzhjX3NRaUpTODNJU1lWQQ?oc=5",
+      "source_name": "Secondaries Investor",
+      "description_notes": "StepStone is targeting first closes for both its flagship fund and debut GP-led secondary fund by the first half of 2026. The firm is expanding into GP-led transactions as part of its secondaries strategy.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "StepStone eyes first closes for flagship, debut GP-led fund by H1 2026",
+          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPNXVEeElQUjFDVGJ5RC13RkppaDc2dDVzZUVSbkNGdWJtRVh5RzN4RUl6cld0cHRpMVRIdmVLaEE2LVVQXzdTM0hMRE5pQ1p5bnF3RkVFMnVIUWhzOUNaZWJ3b3ZyMXpRZFpfMm5EelVCdHVZOGRDRm00c25STkp5ZVc4c21PXzRYd3RYQUx2UkFYN20tenYyWjI2XzhjX3NRaUpTODNJU1lWQQ?oc=5",
+          "source_name": "Secondaries Investor",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-09",
+          "summary": "StepStone is targeting first closes for both its flagship fund and debut GP-led secondary fund by the first half of 2026. The firm is expanding into GP-led transactions as part of its secondaries strategy.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "IFC mulls $50m investment in latest Ascertis private credit fund",
+      "firm": "Ascertis",
+      "firm_slug": "ascertis",
+      "firm_website": null,
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "strategy": "Asset-Based",
+      "target_geography": null,
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Other",
+      "announcement_date": "2026-02-09",
+      "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOajRIbTZkM1E5engySng5Wkh6VlJ0V0VoSTFmUFA3UV9TM3ZrdENIaHFMa2dYLXhqVVBHVEZsbXU0RFptZUhBbDVwODFvWF9kdTJJREU0aXJCZXl3SHkzcU80eTZLdjVJUHlhTXAxeTBxZ2hJM2ZsLVlBaTN6RjA5dHlBRlM?oc=5",
+      "source_name": "DealStreetAsia",
+      "description_notes": "Ascertis private credit fund is considering a $50 million investment from IFC. The fund focuses on private credit investments, though specific strategy and target geography details are not provided in the available information.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "IFC mulls $50m investment in latest Ascertis private credit fund",
+          "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOajRIbTZkM1E5engySng5Wkh6VlJ0V0VoSTFmUFA3UV9TM3ZrdENIaHFMa2dYLXhqVVBHVEZsbXU0RFptZUhBbDVwODFvWF9kdTJJREU0aXJCZXl3SHkzcU80eTZLdjVJUHlhTXAxeTBxZ2hJM2ZsLVlBaTN6RjA5dHlBRlM?oc=5",
+          "source_name": "DealStreetAsia",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-09",
+          "summary": "Ascertis private credit fund is considering a $50 million investment from IFC. The fund focuses on private credit investments, though specific strategy and target geography details are not provided in the available information.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "2025 Australian Cricket Infrastructure Fund",
+      "firm": "Unknown",
+      "firm_slug": "unknown",
+      "firm_website": null,
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Infrastructure",
+      "strategy": "Core Infrastructure",
+      "target_geography": "Asia-Pacific",
+      "location": "Australia",
+      "city": "N/A",
+      "state": "",
+      "country": "Australia",
+      "stage": "Launch",
+      "announcement_date": "2026-02-09",
+      "source_url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPbkNEVmh4eEg1emg4OV9ZMUtySWFOd1o1dWEzYzZreE5HeXpueHdQRWFlcnZKem84ZlliaExOZFVwd1YtTXNadXJIWTktN01EYnQ1LXN4RU1ZNWhXUE54dkpZblFHOEROVXJMUkIydTlVNV9WRWM2MTBuWlh2eDFpTnNlUzRVY2xDUDl0UHU1MG5NR2ZTbmtXd1dVUVVYX253al9UVVJudTlVNWFOOEE?oc=5",
+      "source_name": "The Indian Sun",
+      "description_notes": "Infrastructure fund focused on cricket facilities and sports infrastructure development in Australia. Applications are now open for the 2025 funding cycle.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "2025 Australian Cricket Infrastructure Fund",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPbkNEVmh4eEg1emg4OV9ZMUtySWFOd1o1dWEzYzZreE5HeXpueHdQRWFlcnZKem84ZlliaExOZFVwd1YtTXNadXJIWTktN01EYnQ1LXN4RU1ZNWhXUE54dkpZblFHOEROVXJMUkIydTlVNV9WRWM2MTBuWlh2eDFpTnNlUzRVY2xDUDl0UHU1MG5NR2ZTbmtXd1dVUVVYX253al9UVVJudTlVNWFOOEE?oc=5",
+          "source_name": "The Indian Sun",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-09",
+          "summary": "Infrastructure fund focused on cricket facilities and sports infrastructure development in Australia. Applications are now open for the 2025 funding cycle.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Special Opportunities AIF",
+      "firm": "Aditya Birla Sun Life AMC",
+      "firm_slug": "aditya-birla-sun-life-amc",
+      "firm_website": "adityabirlacapital.com",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "strategy": null,
+      "target_geography": "Asia-Pacific",
+      "location": "Mumbai, India",
+      "city": "Mumbai",
+      "state": "",
+      "country": "India",
+      "stage": "Final Close",
+      "announcement_date": "2026-02-09",
+      "source_url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOU3pmRnk1eV9jWEQ3OHFtczNtV3ZmTXoxbE5xLWFKdnN6emltSDlkNFRuRjdDTUpNRklSNlY5R3hvT1Z3Rlk2bDBvR1JfNEtCR2Z3RXljSC01Q3I4b2ZCTGJKNXNxbjR5bGF6bDAxcHJPN3ozbTdualJxRDhQSGRmWGNKdDJZX0pNRG03MUZPQmhpR1F4ZnBhd3V3UFM?oc=5",
+      "source_name": "VCCircle",
+      "description_notes": "Aditya Birla Sun Life AMC has reached the final close of its Special Opportunities Alternative Investment Fund. The fund focuses on special situation investments with undisclosed fund size and strategy details.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Special Opportunities AIF",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOU3pmRnk1eV9jWEQ3OHFtczNtV3ZmTXoxbE5xLWFKdnN6emltSDlkNFRuRjdDTUpNRklSNlY5R3hvT1Z3Rlk2bDBvR1JfNEtCR2Z3RXljSC01Q3I4b2ZCTGJKNXNxbjR5bGF6bDAxcHJPN3ozbTdualJxRDhQSGRmWGNKdDJZX0pNRG03MUZPQmhpR1F4ZnBhd3V3UFM?oc=5",
+          "source_name": "VCCircle",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-09",
+          "summary": "Aditya Birla Sun Life AMC has reached the final close of its Special Opportunities Alternative Investment Fund. The fund focuses on special situation investments with undisclosed fund size and strategy details.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "PixelSky Capital Fund",
+      "firm": "PixelSky Capital",
+      "firm_slug": "pixelsky-capital",
+      "firm_website": null,
+      "amount": "Rs 400 crore",
+      "amount_usd_millions": 48,
+      "category": "Credit Funds",
+      "strategy": null,
+      "target_geography": "Asia-Pacific",
+      "location": "India",
+      "city": "N/A",
+      "state": "",
+      "country": "India",
+      "stage": "First Close",
+      "announcement_date": "2026-02-08",
+      "source_url": "https://news.google.com/rss/articles/CBMi4gJBVV95cUxNcFFaNUEzMTVvZ1J6SDB4TWFKaDRkd3F0dXJJRE51WHJUV250cHEtY1dmWnBNSmk4dU9zSlNOT0JTM193dURRV0lPTktQMDBGSHlrWXhBTXhzZUwySFhkSjhwcTRRVE5DV2pRdkUxRHdmWVVNZGttRzdsdXhLenFwNG40WkNQaExBQVYzcXlXRUw2TDZGYUJ5cWlPZUFrMlRYNjk2dHVTT1VyQnE2NmI4M01ldmYtblhacDJxNFNYcEUxb2RTbHFvdWtoVDRjN25BaW5RMko0U0dHYmExQlB3RzZycUQ5MEFuVW52VE5xMnlOWHZUQV9VNEZyQThra0NnaHVTd1l5ZThVQVFfYVlzZzZUR1BUT1VvRUwzeHV5QzBQRXo5SmVEUnhsbUdaeWpveVU0blRpTThKX0RFUlZ4NVR3RktfTFRjQ1dLdG9Fd0ROcnY1YVRad1Jhc1JrZ0prZHc?oc=5",
+      "source_name": "MSN",
+      "description_notes": "PixelSky Capital has completed its first close at Rs 150 crore and is targeting a total corpus of Rs 400 crore for its fund.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "PixelSky Capital Fund",
+          "url": "https://news.google.com/rss/articles/CBMi4gJBVV95cUxNcFFaNUEzMTVvZ1J6SDB4TWFKaDRkd3F0dXJJRE51WHJUV250cHEtY1dmWnBNSmk4dU9zSlNOT0JTM193dURRV0lPTktQMDBGSHlrWXhBTXhzZUwySFhkSjhwcTRRVE5DV2pRdkUxRHdmWVVNZGttRzdsdXhLenFwNG40WkNQaExBQVYzcXlXRUw2TDZGYUJ5cWlPZUFrMlRYNjk2dHVTT1VyQnE2NmI4M01ldmYtblhacDJxNFNYcEUxb2RTbHFvdWtoVDRjN25BaW5RMko0U0dHYmExQlB3RzZycUQ5MEFuVW52VE5xMnlOWHZUQV9VNEZyQThra0NnaHVTd1l5ZThVQVFfYVlzZzZUR1BUT1VvRUwzeHV5QzBQRXo5SmVEUnhsbUdaeWpveVU0blRpTThKX0RFUlZ4NVR3RktfTFRjQ1dLdG9Fd0ROcnY1YVRad1Jhc1JrZ0prZHc?oc=5",
+          "source_name": "MSN",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-08",
+          "summary": "PixelSky Capital has completed its first close at Rs 150 crore and is targeting a total corpus of Rs 400 crore for its fund.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "9Unicorns Fund",
+      "firm": "9Unicorns",
+      "firm_slug": "9unicorns",
+      "firm_website": "9unicorns.com",
+      "amount": "Rs 200 crore",
+      "amount_usd_millions": 24,
+      "category": "Credit Funds",
+      "strategy": null,
+      "target_geography": "Asia-Pacific",
+      "location": "Mumbai, India",
+      "city": "Mumbai",
+      "state": "",
+      "country": "India",
+      "stage": "Interim Close",
+      "announcement_date": "2026-02-08",
+      "source_url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxOZnFsbFd4RE56cjR2NnEyX1pWSm1CTGx2eUI5bU1GcEkzbXBmY3M5LThjSVRBVVZhekZtYjRULWdGdmlWZEtYT2x4TF9MZ2dRVlRKV3ZXS2tpNkhnc1hhbWZ0c1JfekhQTTFMc0lXNUNQWEFZSnN6cDRJX2lQay1maDVTRUpBT1ZLVWhoc2xpdUVaM2d3LTZ0ZUJnZFJtdlo0ZnFOZG1lR1VyS0dfMFFQQ3Z5RTdvM1pDc29qdUxDSDlMRFFpT2I4SUFJWV83dVFtSVAtNEF6QUFZQ1lhRWhHMk9Id2NCOU9fQnN5NlgtSXB0dEQ3?oc=5",
+      "source_name": "TechCrunch",
+      "description_notes": "9Unicorns announces the second close of its fund at Rs 200 crore, while increasing its total investment corpus to Rs 500 crore. The fund focuses on venture capital investments in the Indian startup ecosystem.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "9Unicorns Fund",
+          "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxOZnFsbFd4RE56cjR2NnEyX1pWSm1CTGx2eUI5bU1GcEkzbXBmY3M5LThjSVRBVVZhekZtYjRULWdGdmlWZEtYT2x4TF9MZ2dRVlRKV3ZXS2tpNkhnc1hhbWZ0c1JfekhQTTFMc0lXNUNQWEFZSnN6cDRJX2lQay1maDVTRUpBT1ZLVWhoc2xpdUVaM2d3LTZ0ZUJnZFJtdlo0ZnFOZG1lR1VyS0dfMFFQQ3Z5RTdvM1pDc29qdUxDSDlMRFFpT2I4SUFJWV83dVFtSVAtNEF6QUFZQ1lhRWhHMk9Id2NCOU9fQnN5NlgtSXB0dEQ3?oc=5",
+          "source_name": "TechCrunch",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-08",
+          "summary": "9Unicorns announces the second close of its fund at Rs 200 crore, while increasing its total investment corpus to Rs 500 crore. The fund focuses on venture capital investments in the Indian startup ecosystem.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Abu Dhabi-based Ruya Partners targets US$400 million fundraise for Middle East private credit fund",
+      "firm": "Ruya Partners",
+      "firm_slug": "ruya-partners",
+      "firm_website": null,
+      "amount": "$400M",
+      "amount_usd_millions": 400,
+      "category": "Credit Funds",
+      "strategy": "Direct Lending",
+      "target_geography": "Middle East & Africa",
+      "location": "Abu Dhabi, UAE",
+      "city": "Abu Dhabi",
+      "state": "",
+      "country": "UAE",
+      "stage": "Launch",
+      "announcement_date": "2026-02-07",
+      "source_url": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxOaXlzbmFUbmlmdUpNdkFDbTd2LUdhZGdnU2xSUGJ2QTB6Y0hWUDVpSlI4T09abHJkZWVidlUwWUVWd3ZaUklTZUdELTJVMjhXU2tNRVd0Q2oyX0czTGt5V0lmUmQzUUp5Wld5dTIzQWwzNW5jaUpYUUZUVU42bXQtNWlKeW4wRVp0SFQybkpZd2NqSTZ6ZU9Ock5sZHVKYTBCNzV3UU1vMWRJS0NMTHlmN3RFZXp4TXhoQV9HSjZ1RXpONklOckU3UzFXdlhNVHhzc0FBZG9HVllhMWxETVlqTXVB?oc=5",
+      "source_name": "MSN",
+      "description_notes": "Abu Dhabi-based Ruya Partners is targeting $400 million for a private credit fund focused on the Middle East region.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Abu Dhabi-based Ruya Partners targets US$400 million fundraise for Middle East private credit fund",
+          "url": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxOaXlzbmFUbmlmdUpNdkFDbTd2LUdhZGdnU2xSUGJ2QTB6Y0hWUDVpSlI4T09abHJkZWVidlUwWUVWd3ZaUklTZUdELTJVMjhXU2tNRVd0Q2oyX0czTGt5V0lmUmQzUUp5Wld5dTIzQWwzNW5jaUpYUUZUVU42bXQtNWlKeW4wRVp0SFQybkpZd2NqSTZ6ZU9Ock5sZHVKYTBCNzV3UU1vMWRJS0NMTHlmN3RFZXp4TXhoQV9HSjZ1RXpONklOckU3UzFXdlhNVHhzc0FBZG9HVllhMWxETVlqTXVB?oc=5",
+          "source_name": "MSN",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-07",
+          "summary": "Abu Dhabi-based Ruya Partners is targeting $400 million for a private credit fund focused on the Middle East region.",
+          "feed_name": "initial"
+        }
+      ]
+    },
     {
       "fund_name": "Fearless Fund Microfinance Fund",
       "firm": "Fearless Fund",
@@ -34,37 +1173,37 @@
       "firm_website": "fearless.fund"
     },
     {
-      "fund_name": "Covenant 12th Value-Add Fund",
-      "firm": "Covenant",
-      "firm_slug": "covenant",
-      "amount": "$1.1B",
-      "amount_usd_millions": 1100,
-      "category": "Real Estate",
-      "location": "Denver, CO",
-      "city": "Denver",
-      "state": "CO",
+      "fund_name": "Blue Owl Opportunistic Alternative Credit Fund",
+      "firm": "Blue Owl",
+      "firm_slug": "blue-owl",
+      "firm_website": "blueowl.com",
+      "amount": "$2.5B",
+      "amount_usd_millions": 2500,
+      "category": "Credit Funds",
+      "strategy": "Specialty Finance",
+      "target_geography": "North America",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
       "country": "US",
       "stage": "Final Close",
       "announcement_date": "2026-02-06",
-      "source_url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxQeVRhbzZGOGR3NkFxTndKS2FUcUZEYXZoajVOVmgxWXVtT2lnS0czMjZYSGpCMlFESmtCbko2aVB6bEh3Wlo3Qy14eXBfSEdRN2Y2cDd5TkZEXzJyb2ZsSTRNV1c5UG1BVmlxZlBsT2xBbDcyU0dDbnRER1hETUVmVWw0cU5zQldFdDJmcmlvblgzNDhVeUpxb1BuZS1hQkVIOWlGUC1Gb1BicmNxTERhMW9sWFFVNVdqTVNsZHNNdjRIdWptMHc0X1E3T0VBOXZ5QU11Ql9vOUlCWmM?oc=5",
-      "source_name": "Business Wire",
-      "description_notes": "close a $1.1B real estate value-add fund targeting core-plus and value-add multifamily, office, and industrial assets across the US. Covenant's 12th vintage maintains the firm's strategy of mid-cycle asset repositioning with 5-7 year hold periods, drawing continued support from institutional LPs including pension funds and endowments. The fund size tracks ahead of Covenant's historical $800M-$1B range, reflecting strong LP appetite for experienced operators in stabilized real estate.",
+      "source_url": "https://www.creditflux.com/Funds/2026-02-06/Blue-Owl-raises-USD-25bn-for-opportunistic-alternative-credit-fund",
+      "source_name": "Creditflux",
+      "description_notes": "Blue Owl's opportunistic alternative credit fund focuses on specialty finance opportunities. The firm indicated it remains positive on software lending despite concerns about AI's impact on certain businesses.",
       "is_covered": false,
       "covered_date": null,
       "articles": [
         {
-          "title": "Covenant Raises over $1.1 Billion for 12th Value-Add Fund, Affordable Housing Sidecar - Business Wire",
-          "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxQeVRhbzZGOGR3NkFxTndKS2FUcUZEYXZoajVOVmgxWXVtT2lnS0czMjZYSGpCMlFESmtCbko2aVB6bEh3Wlo3Qy14eXBfSEdRN2Y2cDd5TkZEXzJyb2ZsSTRNV1c5UG1BVmlxZlBsT2xBbDcyU0dDbnRER1hETUVmVWw0cU5zQldFdDJmcmlvblgzNDhVeUpxb1BuZS1hQkVIOWlGUC1Gb1BicmNxTERhMW9sWFFVNVdqTVNsZHNNdjRIdWptMHc0X1E3T0VBOXZ5QU11Ql9vOUlCWmM?oc=5",
-          "source_name": "News",
-          "source_domain": "news.google.com",
+          "title": "Blue Owl Opportunistic Alternative Credit Fund",
+          "url": "https://www.creditflux.com/Funds/2026-02-06/Blue-Owl-raises-USD-25bn-for-opportunistic-alternative-credit-fund",
+          "source_name": "Creditflux",
+          "source_domain": "creditflux.com",
           "published_date": "2026-02-06",
-          "summary": "Covenant Raises over $1.1 Billion for 12th Value-Add Fund, Affordable Housing Sidecar&nbsp;&nbsp;Business Wire",
-          "feed_name": "search:Press release fund closes"
+          "summary": "Blue Owl's opportunistic alternative credit fund focuses on specialty finance opportunities. The firm indicated it remains positive on software lending despite concerns about AI's impact on certain businesses.",
+          "feed_name": "initial"
         }
-      ],
-      "strategy": "Core-Plus",
-      "target_geography": "North America",
-      "firm_website": "covenantcapgroup.com"
+      ]
     },
     {
       "fund_name": "Mundi Ventures Deep Tech & Climate Growth Fund",
@@ -129,11 +1268,69 @@
           "published_date": "2026-02-05",
           "summary": "Kembara closes €750M first close to fuel growth of European deep tech startups&nbsp;&nbsp;The Next Web",
           "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Kembara",
+          "url": "https://techcrunch.com/2026/02/04/mundi-ventures-closes-on-e750m-for-kembara-its-largest-deep-tech-and-climate-fund/",
+          "source_name": "TechCrunch",
+          "source_domain": "techcrunch.com",
+          "published_date": "2026-02-05",
+          "summary": "A deep tech and climate focused venture capital fund that represents Mundi Ventures' largest fund to date. The fund completed a €750M first close toward its €1B target, focusing on investments in deep technology and climate solutions.",
+          "feed_name": "additional"
         }
       ],
       "strategy": "Growth Stage",
       "firm_website": "mundiventures.com",
       "target_geography": "Europe"
+    },
+    {
+      "fund_name": "Bayhawk Capital Fund I",
+      "firm": "Bayhawk Capital",
+      "firm_slug": "bayhawk-capital",
+      "amount": "$616M",
+      "amount_usd_millions": 616,
+      "category": "Private Equity",
+      "location": "Boston, MA",
+      "city": "Boston",
+      "state": "MA",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2026-02-06",
+      "source_url": "https://www.kirkland.com/news/press-release/2026/02/kirkland-advises-bayhawk-on-final-close-of-inaugural-fund-at-over-$600-million",
+      "source_name": "Kirkland & Ellis",
+      "description_notes": "BayHawk Capital has closed its inaugural private equity fund at $616 million. Limited details are available about the fund's specific investment strategy or geographic focus.",
+      "is_covered": true,
+      "covered_date": "2026-02-06",
+      "articles": [
+        {
+          "title": "Newly minted BayHawk Capital garners $616m for inaugural fund",
+          "url": "https://www.buyoutsinsider.com/newly-minted-bayhawk-capital-garners-616m-for-inaugural-fund/",
+          "source_name": "Buyouts Insider",
+          "source_domain": "buyoutsinsider.com",
+          "published_date": "2026-02-05",
+          "summary": "",
+          "feed_name": "Buyouts Insider"
+        },
+        {
+          "title": "Former THL Partners execs launch BayHawk Capital with $616M first fund - The Business Journals",
+          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPLXlkSTIxM0lvWHRPSXNqT2k4R2dRX1FULTBSQXdaZlF6aVZyVFNBVkhBdjdwcnNlX1ZMZEFEVVoyS2FoUDJOWjBoNDhFZzM3d1g1NDc3UUdqOGk2eDJnOWJoVjl1ajhmamxBRFVEVUtsTld1UmM1ZHRjS2VmWXVMRmFR?oc=5",
+          "source_name": "News",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-05",
+          "summary": "Former THL Partners execs launch BayHawk Capital with $616M first fund&nbsp;&nbsp;The Business Journals",
+          "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "Update: BayHawk Capital Inaugural Fund",
+          "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTE9vOEVTU3M4NzJ3aFVBQ05HYnNLU1JOLTZGYjFkWEVGNVkxY0tielpwSVR2Z1pzUmhiaHBZUkgwZEdQQ3hUVkN3azlQN0YwX0VobXhVUEZ6TmQ3cUJ1am9KR0tB0gFnQVVfeXFMT0ZDU3VjZXJzV01zcndNOHZGNWdDd1Z4cWt3RXVCX0JfU2RJcFJ6b09xbDc0VFJkSVp0WVBsMm9FM08yclRjU3BrZHNpQXdlYklEZml1Vk1WNEhLcWcySVowWFBOcEdOOA?oc=5",
+          "source_name": "Pulse 2.0",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-06",
+          "summary": "BayHawk Capital has closed its inaugural private equity fund at $616 million. Limited details are available about the fund's specific investment strategy or geographic focus.",
+          "feed_name": "update"
+        }
+      ],
+      "target_geography": "North America"
     },
     {
       "fund_name": "Deep Tech Fund",
@@ -254,6 +1451,15 @@
           "published_date": "2026-02-06",
           "summary": "",
           "feed_name": "AltAssets"
+        },
+        {
+          "title": "Gerber Taylor beats target for new co-invest PE, VC fund to reach $111m final close",
+          "url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxONEtkZzZ0NDN2YUFibE5wWlpHQ3lncDFFYjk4Qk1JU19EVExlcGEzS2k4SmlSU0NSZFpBVjJkQkwxUHNGbEVrY1lyZ2M3M25WMFhtQmx3VFctTVdfLXVMV0phTm9kaWpkRTZaX0ZDTUp2alNxMzBidGpQTXd1QnJpeFMwLXZWd1NTczFFZWpwdUFJUGNQTFQ1aXBQVFZLUk41dU9IS2UwQkJGUXJyNWVsR1lER1FwWWRIZHY0bVFQRmhKMFZyeWlyQTBPWmw?oc=5",
+          "source_name": "Google News",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-06",
+          "summary": "Gerber Taylor's co-investment fund focusing on both private equity and venture capital opportunities has exceeded its target to reach final close at $111 million.",
+          "feed_name": "additional"
         }
       ],
       "target_geography": "North America"
@@ -338,6 +1544,15 @@
           "published_date": "2026-02-06",
           "summary": "",
           "feed_name": "Alternative Credit Investor"
+        },
+        {
+          "title": "Admiral Group backs HSBC private credit fund as insurers pivot from traditional fixed income",
+          "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxQZldmYlFfZTZNVUJUZDhRNmM5NGtuTVpaNGlfemFzcmxBbkRycTJzbUw3RnNTR2lwWTdaVzlJYzRNc1FUemFaNzFtNmN5UGVoVnpYX1JpZTI3V1lEdlV1UGlsai1xdnpxcm1WTlRvUXRLa2NTN2RFS2UtVDRaNXJnaFFWRzVtZkIzTDl0a2xSRk1nZXNGNDZlQXNMZENEbmxvUzNXVUVacEw4WmU3OEVnY2lWYkYwRmNIVHJVeDNTSVpMSXRQXzBSR21YYVU3U0ZKTnlKeTNjVm1vR2JFSkFCZERsa0NkekhzTUVFbE1zckNnYUZWZnc?oc=5",
+          "source_name": "Insurance Business",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-06",
+          "summary": "HSBC private credit fund that has secured backing from Admiral Group as part of insurers' strategic shift away from traditional fixed income investments into alternative credit strategies.",
+          "feed_name": "additional"
         }
       ],
       "strategy": "Direct Lending",
@@ -484,6 +1699,47 @@
       "firm_website": "newcorecapital.com"
     },
     {
+      "fund_name": "Hongkong Land Singapore Private Real Estate Fund",
+      "firm": "Hongkong Land",
+      "firm_slug": "hongkong-land",
+      "amount": "Undisclosed",
+      "amount_usd_millions": 8200,
+      "category": "Real Estate",
+      "location": "Singapore, Singapore",
+      "city": "Singapore",
+      "state": "",
+      "country": "Singapore",
+      "stage": "Launch",
+      "announcement_date": "2026-02-05",
+      "source_url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOTXZuSVJCOV9TNFZacGJ6RlBrbFR0bHNPLXhYWkdFZGhfeWxqbGhSYXRVbUxuelUtXzZuX2lIbEpGeTBtN1hxdDFYbmFqbnVVM1l4NmlxN1lRcG04NlhfUHNTUEYwVkpfeWIxWS1sMVZEMDhkQ2N1cU1FbDFOOXlXTXVxMmVPTUVh?oc=5",
+      "source_name": "Yahoo News Singapore",
+      "description_notes": "Hongkong Land has launched what is described as Singapore's largest property fund as part of the CEO's strategic pivot for the company.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Hongkong Land launches Singapore private real estate fund with $8.2 bil AUM - Yahoo News Singapore",
+          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOTXZuSVJCOV9TNFZacGJ6RlBrbFR0bHNPLXhYWkdFZGhfeWxqbGhSYXRVbUxuelUtXzZuX2lIbEpGeTBtN1hxdDFYbmFqbnVVM1l4NmlxN1lRcG04NlhfUHNTUEYwVkpfeWIxWS1sMVZEMDhkQ2N1cU1FbDFOOXlXTXVxMmVPTUVh?oc=5",
+          "source_name": "News",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-03",
+          "summary": "Hongkong Land launches Singapore private real estate fund with $8.2 bil AUM&nbsp;&nbsp;Yahoo News Singapore",
+          "feed_name": "search:Credit/Real estate"
+        },
+        {
+          "title": "Update: Hongkong Land launches Singapore's largest property fund as part of CEO's strategic pivot",
+          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNUU1rUDY0N21EM2pBV1BkcEdoSGNBSExsak82Njd0ZnRKYmVrdWJvTFFCXzUzZHVVaFkyd19VU3FJbWd2M1ZvOC1oeVBVYzEyVDZ2Vk5zTGRWaUhTNHpHb3lPR2pPZ0ZOSnhpaVFOTzVBMUJmOFhaajVQM2NWV09xNG8xcEF4RjZkYndycQ?oc=5",
+          "source_name": "Fortune",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-05",
+          "summary": "Hongkong Land has launched what is described as Singapore's largest property fund as part of the CEO's strategic pivot for the company.",
+          "feed_name": "update"
+        }
+      ],
+      "target_geography": "Asia-Pacific",
+      "firm_website": "hkland.com"
+    },
+    {
       "fund_name": "Ardian Infrastructure Secondaries Fund",
       "firm": "Ardian",
       "firm_slug": "ardian",
@@ -560,11 +1816,53 @@
           "published_date": "2026-02-05",
           "summary": "Funding Europe's “second renaissance”: Barcelona’s Kembara hits €750 million first close for €1 billion DeepTech fund&nbsp;&nbsp;EU-Startups",
           "feed_name": "search:First/final close"
+        },
+        {
+          "title": "DeepTech fund",
+          "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxPNF9oaUNxaXZoWTY2R2tvTlloUVpnaTk2UXRINzA2Q2d5VW1Kdzd4b2UzdHpxZ3dpMGFDMDByOU5YYUFpZS12eHRiUlFLdG1Iajl3anoxUkRpMzFMQVlrSGRrYVlHY3Z0VG5kdnJ4Ukh6TjB6dmV2bnBwWEFRVGhKNlJjM01aN3pZSk96QjhrbVdOOE11bjhaTUFkODJseTAtRk5TRVVxVmw2aDNrUmNNaGNtTUt4VklZeHFRclRNaWtuNFdEMXpqNlJSX2xOejdBNlJoWVJIUTU3QQ?oc=5",
+          "source_name": "BeBeez International",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-05",
+          "summary": "Kembara's DeepTech fund targets €1 billion to fund Europe's 'second renaissance' with a focus on deep technology investments. The fund achieved a €750 million first close and is based in Barcelona.",
+          "feed_name": "additional"
         }
       ],
       "strategy": "Early Stage",
       "target_geography": "Europe",
       "firm_website": "mundiventures.com"
+    },
+    {
+      "fund_name": "Billionaire Ishbia raises $400 million for industrial fund",
+      "firm": "Ishbia",
+      "firm_slug": "ishbia",
+      "firm_website": null,
+      "amount": "$400 million",
+      "amount_usd_millions": 400,
+      "category": "Private Equity",
+      "strategy": "Asset-Based",
+      "target_geography": null,
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Other",
+      "announcement_date": "2026-02-05",
+      "source_url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPcmVPM0ZUamUzeGZ4M1k2SGwzc2oxTlkwcmdzTG4yUXlpQm1Ic2I1aDhTVnhnSmdsQUlBNjBQN1pOREotZ1RfSDRBMzlNWkRtemVrVkd6Ni1tektQN3l5UlA1NmRKWkp3eDhfRVpvRVU3dkFSSVJhRTJCOEduaXdKWEJRN2JObS03NkhSOUx2RjZUR0d6NUJVbzFMTU1pU1RSRlJXYlU0Q1RUaEU?oc=5",
+      "source_name": "MSN",
+      "description_notes": "Billionaire Ishbia has raised $400 million for an industrial-focused fund, though specific details about the fund's strategy and investment approach are not provided in the available content.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Billionaire Ishbia raises $400 million for industrial fund",
+          "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPcmVPM0ZUamUzeGZ4M1k2SGwzc2oxTlkwcmdzTG4yUXlpQm1Ic2I1aDhTVnhnSmdsQUlBNjBQN1pOREotZ1RfSDRBMzlNWkRtemVrVkd6Ni1tektQN3l5UlA1NmRKWkp3eDhfRVpvRVU3dkFSSVJhRTJCOEduaXdKWEJRN2JObS03NkhSOUx2RjZUR0d6NUJVbzFMTU1pU1RSRlJXYlU0Q1RUaEU?oc=5",
+          "source_name": "MSN",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-05",
+          "summary": "Billionaire Ishbia has raised $400 million for an industrial-focused fund, though specific details about the fund's strategy and investment approach are not provided in the available content.",
+          "feed_name": "initial"
+        }
+      ]
     },
     {
       "fund_name": "SNAK Venture Partners Fund",
@@ -615,6 +1913,55 @@
       ],
       "strategy": "Early Stage",
       "target_geography": "North America"
+    },
+    {
+      "fund_name": "Golden Sparrow Ventures Fund II",
+      "firm": "Golden Sparrow Ventures",
+      "firm_slug": "golden-sparrow-ventures",
+      "amount": "$20M",
+      "amount_usd_millions": 20,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "First Close",
+      "announcement_date": "2026-02-05",
+      "source_url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQQS1nQWJuZTJFMUc1NXVzekhOeVg5OWNHV0RIbFZhMHlpVDhzaF9hUkhUako5c2Nkd0RjS2Q2eG5QVnNBREpGNnlDQ056SDRUV0xfWVI3WjBRTlNjV3B0ckdpLTdzcWd1WHhhazlvVWEycERWVnFBVndLaFFsN3RNUDNGRUhvbXFvc2Zobg?oc=5",
+      "source_name": "Indian Startup Times",
+      "description_notes": "Golden Sparrow Ventures has announced the first close of their second fund at $20 million. Limited information is available about the fund's specific investment strategy or target sectors.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Golden Sparrow Ventures Hits First Close of $20M Fund II for Deep-Tech and AI - Indian Startup Times",
+          "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQVDJIdjVWaVZUVlRmTDd6RnRWVGUzcjVEdTlVSWxBa1JDejFlbFU5TlJGM3I4VllXZUh4WkczdlpyUTl4ZVBZdFZCT0dvRnRhLVdsWkdJNHBJanFOZDQ5dGlXSmxwUkdoYl9GWVV3cnpoTEVoZW4yOXE5blJmUEQtbXZxa2JjRmVtWnRPX1pTMU54RTlORnpzYkpKbjlreHI1dmJtSXdfUWpLQkZvSUxwaTZoOEsxaDZxdjgtMERUVm0?oc=5",
+          "source_name": "News",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-05",
+          "summary": "Golden Sparrow Ventures Hits First Close of $20M Fund II for Deep-Tech and AI&nbsp;&nbsp;Indian Startup Times",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Golden Sparrow Ventures raises $20M in first close of Fund II - YourStory.com",
+          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQQS1nQWJuZTJFMUc1NXVzekhOeVg5OWNHV0RIbFZhMHlpVDhzaF9hUkhUako5c2Nkd0RjS2Q2eG5QVnNBREpGNnlDQ056SDRUV0xfWVI3WjBRTlNjV3B0ckdpLTdzcWd1WHhhazlvVWEycERWVnFBVndLaFFsN3RNUDNGRUhvbXFvc2Zobg?oc=5",
+          "source_name": "News",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-04",
+          "summary": "Golden Sparrow Ventures raises $20M in first close of Fund II&nbsp;&nbsp;YourStory.com",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Update: Golden Sparrow Ventures Fund II",
+          "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQNWVPb3lfMEdnb3g5TzZCWUlDamE1bG5UUkQ3UkdSNU1UQk55a2tsVDNVN09ZREFSTFBwRmpITklGMXhrZV9CMWJLeE1MbEpaSTVncVJzLWVVV1RwcWxvU21odnpUd2kxbk5iMks3YXNpRzRvaGxQak81QmoxT1plUzd0eWdTRHBVOWh4ckZBd2phUm5JalU1aFphbjM1YmEtY0d0VG50OEItR1E0UFl1bTQ1bVhMWVE?oc=5",
+          "source_name": "Entrepreneur",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-05",
+          "summary": "Golden Sparrow Ventures has announced the first close of their second fund at $20 million. Limited information is available about the fund's specific investment strategy or target sectors.",
+          "feed_name": "update"
+        }
+      ],
+      "strategy": "Asset-Based"
     },
     {
       "fund_name": "Vest Ventures",
@@ -688,6 +2035,98 @@
       "strategy": "Buyout"
     },
     {
+      "fund_name": "Metrics Real Estate Fund",
+      "firm": "Metrics",
+      "firm_slug": "metrics",
+      "firm_website": null,
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Real Estate",
+      "strategy": null,
+      "target_geography": null,
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Other",
+      "announcement_date": "2026-02-05",
+      "source_url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxOR09iVndhQ2w4SFRCSzNoVDQxZi1WbEZyQVVlNDNHeTgzT21WQkNYNThJaVpBSXFDWENKTlZNUkx6ODI2MTQ0MXpLSjlWUmpQMzZrcFVWMTV0QXU0TlRleWNVaXBlUGRXXzNzLWVwYjZnSEZIMzJRcDRWdVdqS0xjeGwteTBZcW5ZNDJOQkltOFI4TXI3dmZvaFJRVXRRSUtJVkc3LUtoREh3NWlGcE00OHB1OUUzR201d3VEWlpCVzd2RGJCQlNZako1dw?oc=5",
+      "source_name": "TipRanks",
+      "description_notes": "A real estate fund that provides monthly distributions to investors, confirming actual distribution amounts for January 2026.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Metrics Real Estate Fund",
+          "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxOR09iVndhQ2w4SFRCSzNoVDQxZi1WbEZyQVVlNDNHeTgzT21WQkNYNThJaVpBSXFDWENKTlZNUkx6ODI2MTQ0MXpLSjlWUmpQMzZrcFVWMTV0QXU0TlRleWNVaXBlUGRXXzNzLWVwYjZnSEZIMzJRcDRWdVdqS0xjeGwteTBZcW5ZNDJOQkltOFI4TXI3dmZvaFJRVXRRSUtJVkc3LUtoREh3NWlGcE00OHB1OUUzR201d3VEWlpCVzd2RGJCQlNZako1dw?oc=5",
+          "source_name": "TipRanks",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-05",
+          "summary": "A real estate fund that provides monthly distributions to investors, confirming actual distribution amounts for January 2026.",
+          "feed_name": "initial"
+        }
+      ]
+    },
+    {
+      "fund_name": "Infrastructure Opportunities Fund II",
+      "firm": "Hamilton Lane",
+      "firm_slug": "hamilton-lane",
+      "amount": "$1.9B",
+      "amount_usd_millions": 1900,
+      "category": "Infrastructure",
+      "location": "Philadelphia, PA",
+      "city": "Philadelphia",
+      "state": "PA",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2026-02-04",
+      "source_url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNMmhtbDNNZk5WZzY4UmpRcVhxTno5RGh3Vms4aDlpR2xUNmxwNHVKUEF5V3FZTU5VU01iX29lYUVuR0x0QmVFOUhHZmxLVm1lb2RURmpvQlIxYzNYX2ROdVczbkUxbEtzNHVQYThPRjRucnNsQldNZ0FhSjBRaWc1dEM4aU9CMWNOMGZ5ZkU4ZDR1QmJKOFhVZVhZVGFLR3phUW1RS1hIVmswXzR6SnVfMGJkRE0tdjZfbEJxVVlzd2FhaU9Sb3NEbA?oc=5",
+      "source_name": "Seekingalpha",
+      "description_notes": "Hamilton Lane successfully raised $1.9 billion for a new infrastructure fund, surpassing its original target amount.",
+      "is_covered": false,
+      "covered_date": null,
+      "articles": [
+        {
+          "title": "Hamilton Lane Closes on Nearly $2 Billion in Infrastructure Opportunities Fund II and Related Vehicles, Tripling Size of Predecessor Fund - PR Newswire",
+          "url": "https://news.google.com/rss/articles/CBMimwJBVV95cUxQT2VZNkZoc3Q4RDVqYUxqaDBweDk0a2ZUeTFScDktTDR6cWFoaU1kVkR6RExjMlpwd24tdDFyVmxlMmhta2xpVGgya3RFQmtUbkw3cHptT01LSkd5ZUZjRGNXWXlrMG0wblpTVmRYUk1rTmJpSk9LeFNzU2RHdzZaYVRZb29hbkV3RGt4akpRWHFDNFdGb2FBNFlDX29lQlQ1NHJ2TWhXdDMzWEVVTHE0cXN2Q0ExdFBuSi1NTnJDcEFFRmdCcm5Ka0ltWlBMbjdycHhic3ZDZUZ4MmdjNUVBVE5KVkFDZWxsUTlBRWVNUUtzTTBTanBVMzdseGtKWG1XMWR1MlRTMGpqcGQ5Zm5sRWw2QWUxeFFCcUdn?oc=5",
+          "source_name": "News",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-02",
+          "summary": "Hamilton Lane Closes on Nearly $2 Billion in Infrastructure Opportunities Fund II and Related Vehicles, Tripling Size of Predecessor Fund&nbsp;&nbsp;PR Newswire",
+          "feed_name": "search:Press release fund closes"
+        },
+        {
+          "title": "Hamilton Lane Closes on Nearly $2 Billion in Infrastructure Opportunities Fund II and Related Vehicles, Tripling Size of Predecessor Fund (2026-02-02) - Seeking Alpha",
+          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNMmhtbDNNZk5WZzY4UmpRcVhxTno5RGh3Vms4aDlpR2xUNmxwNHVKUEF5V3FZTU5VU01iX29lYUVuR0x0QmVFOUhHZmxLVm1lb2RURmpvQlIxYzNYX2ROdVczbkUxbEtzNHVQYThPRjRucnNsQldNZ0FhSjBRaWc1dEM4aU9CMWNOMGZ5ZkU4ZDR1QmJKOFhVZVhZVGFLR3phUW1RS1hIVmswXzR6SnVfMGJkRE0tdjZfbEJxVVlzd2FhaU9Sb3NEbA?oc=5",
+          "source_name": "Seeking Alpha",
+          "source_domain": "seekingalpha.com",
+          "published_date": "2026-02-02",
+          "summary": "Hamilton Lane Closes on Nearly $2 Billion in Infrastructure Opportunities Fund II and Related Vehicles, Tripling Size of Predecessor Fund (2026-02-02)&nbsp;&nbsp;Seeking Alpha",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Hamilton Lane closes infrastructure fund after exceeding target - Financial Newswire",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPNHdRajVfNmtCTTFCTWtfTEhMRktTQkJPOXJlTXBrSU9nWWhiejMtTm5JNDU2Z1l1VkNmcUlUNHpjQkw0dlVBR2huaGRDMExMRXFLWmJidmU3TVlYbmZhdnAwY194dHVtcEtaWUVWaUktTkJxWnExV2syUUhKTDA5YktVbVVQQThTbXVzVjlsRzR1bUR1ZDVLdDhPRFJlZk0tMktEVGp0OWc5dzRCN2c?oc=5",
+          "source_name": "Financial Newswire",
+          "source_domain": "financialnewswire.com.au",
+          "published_date": "2026-02-03",
+          "summary": "Hamilton Lane closes infrastructure fund after exceeding target&nbsp;&nbsp;Financial Newswire",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Update: Hamilton Lane raises $1.9B for new infrastructure fund, exceeding target",
+          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxOUS1xTG1PZjhXY0FKaFZVRTJUeDZXMHJFNklaX3BzSHNkNnFHaVNjdVpTQWNBOVY2cGxzNFkwZXE0Tm1hbWFqNWtYdFBIZXhKTDhOYm9URDRJMFVYQ0J6NGQzS0tkR3RmMmdjS25XUEk1amM1amFEZlpuSTBCY0NqaDBTaEl3MExYaTFpSlU5VEdFQmZMUmVSYUpuN3cxdzhFcG9rTGtabEJ0QzhoT0RpZ2ZKeHFnWGhIVkNJ?oc=5",
+          "source_name": "MSN",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-04",
+          "summary": "Hamilton Lane successfully raised $1.9 billion for a new infrastructure fund, surpassing its original target amount.",
+          "feed_name": "update"
+        }
+      ],
+      "target_geography": "North America",
+      "firm_website": "hamiltonlane.com"
+    },
+    {
       "fund_name": "Unicorn India Ventures Fund III",
       "firm": "Unicorn India Ventures",
       "firm_slug": "unicorn-india-ventures",
@@ -718,46 +2157,6 @@
       ],
       "target_geography": "Asia-Pacific",
       "firm_website": "unicornivc.com"
-    },
-    {
-      "fund_name": "Bayhawk Capital Fund I",
-      "firm": "Bayhawk Capital",
-      "firm_slug": "bayhawk-capital",
-      "amount": "$616M",
-      "amount_usd_millions": 616,
-      "category": "Private Equity",
-      "location": "Boston, MA",
-      "city": "Boston",
-      "state": "MA",
-      "country": "US",
-      "stage": "Final Close",
-      "announcement_date": "2026-02-04",
-      "source_url": "https://www.kirkland.com/news/press-release/2026/02/kirkland-advises-bayhawk-on-final-close-of-inaugural-fund-at-over-$600-million",
-      "source_name": "Kirkland & Ellis",
-      "description_notes": "launched by former THL Partners executives",
-      "is_covered": true,
-      "covered_date": "2026-02-06",
-      "articles": [
-        {
-          "title": "Newly minted BayHawk Capital garners $616m for inaugural fund",
-          "url": "https://www.buyoutsinsider.com/newly-minted-bayhawk-capital-garners-616m-for-inaugural-fund/",
-          "source_name": "Buyouts Insider",
-          "source_domain": "buyoutsinsider.com",
-          "published_date": "2026-02-05",
-          "summary": "",
-          "feed_name": "Buyouts Insider"
-        },
-        {
-          "title": "Former THL Partners execs launch BayHawk Capital with $616M first fund - The Business Journals",
-          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPLXlkSTIxM0lvWHRPSXNqT2k4R2dRX1FULTBSQXdaZlF6aVZyVFNBVkhBdjdwcnNlX1ZMZEFEVVoyS2FoUDJOWjBoNDhFZzM3d1g1NDc3UUdqOGk2eDJnOWJoVjl1ajhmamxBRFVEVUtsTld1UmM1ZHRjS2VmWXVMRmFR?oc=5",
-          "source_name": "News",
-          "source_domain": "news.google.com",
-          "published_date": "2026-02-05",
-          "summary": "Former THL Partners execs launch BayHawk Capital with $616M first fund&nbsp;&nbsp;The Business Journals",
-          "feed_name": "search:PE/VC fund closes"
-        }
-      ],
-      "target_geography": "North America"
     },
     {
       "fund_name": "Shore Capital Partners Second Industrials Fund",
@@ -827,43 +2226,19 @@
           "published_date": "2026-02-04",
           "summary": "Ariel Investments’ Project Level women’s sports fund raises US$250m&nbsp;&nbsp;SportsPro",
           "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Project Level",
+          "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTFB2VXFMZFROMU04eTNxczRuN28wSE9BbWJNTEtxWkhySXZXTFdEdkVzVlFIemFkMjV3NXJXRXhTZEpiVE02dWhsQUdreTFtVEN2WnF5clU0UTV6djMxNGtiWnRqVVJIUkdCM2Z1cTNnZUN2aTlSbk5ZaUhKclBWODA?oc=5",
+          "source_name": "afrotech.com",
+          "source_domain": "news.google.com",
+          "published_date": "2026-02-04",
+          "summary": "Ariel Investments' new venture fund Project Level has completed its first close with $250M in committed capital. The fund represents the firm's expansion into venture capital investing.",
+          "feed_name": "additional"
         }
       ],
       "target_geography": "North America",
       "firm_website": "arielinvestments.com"
-    },
-    {
-      "fund_name": "SlateVC Inaugural Growth Fund",
-      "firm": "SlateVC",
-      "firm_slug": "slatevc",
-      "amount": "€132M",
-      "amount_usd_millions": 132,
-      "category": "Venture Capital",
-      "location": "London, UK",
-      "city": "London",
-      "state": "",
-      "country": "UK",
-      "stage": "First Close",
-      "announcement_date": "2026-02-04",
-      "source_url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxQWmlIdGlVWnpyR2JxTTZyUGc1VnBJdkVMNkVpV1RNSEV2eE1CNVE0RUJ2SEluZHFoWkxvM3Q3d3B5R3lGV2x5b2k5ZngtLXR5dmJvNVgzXzBwdnhFek1ma2RnQXpudmpKSkgxSWlXSFBvVnk5QTZFZ3BlSmNZbTZ3SWhiQU1qV1AzX0tpYWx5aXdqSnhvWU14LXNETXNoOC1DajlqS2tpRUV2M3ZWREVJaFl2endUOHVuZFo5UnlxdGlRV0xB?oc=5",
-      "source_name": "EU-Startups",
-      "description_notes": "close inaugural €132M growth-stage venture fund targeting European technology companies. SlateVC's first institutional fund emphasizes mid-to-late stage investments across software, fintech, and deep tech sectors, with backing from prominent European family offices and institutional LPs seeking exposure to continent-based scaling companies.",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [
-        {
-          "title": "French climate investor SlateVC raises €132 million first close for inaugural growth fund - EU-Startups",
-          "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxQWmlIdGlVWnpyR2JxTTZyUGc1VnBJdkVMNkVpV1RNSEV2eE1CNVE0RUJ2SEluZHFoWkxvM3Q3d3B5R3lGV2x5b2k5ZngtLXR5dmJvNVgzXzBwdnhFek1ma2RnQXpudmpKSkgxSWlXSFBvVnk5QTZFZ3BlSmNZbTZ3SWhiQU1qV1AzX0tpYWx5aXdqSnhvWU14LXNETXNoOC1DajlqS2tpRUV2M3ZWREVJaFl2endUOHVuZFo5UnlxdGlRV0xB?oc=5",
-          "source_name": "News",
-          "source_domain": "news.google.com",
-          "published_date": "2026-02-04",
-          "summary": "French climate investor SlateVC raises €132 million first close for inaugural growth fund&nbsp;&nbsp;EU-Startups",
-          "feed_name": "search:First/final close"
-        }
-      ],
-      "strategy": "Late Stage",
-      "target_geography": "Europe",
-      "firm_website": "slate.vc"
     },
     {
       "fund_name": "Shipping Assets Fund",
@@ -896,79 +2271,6 @@
       ],
       "target_geography": "Europe",
       "firm_website": "mpc-capital.com"
-    },
-    {
-      "fund_name": "Golden Sparrow Ventures Fund II",
-      "firm": "Golden Sparrow Ventures",
-      "firm_slug": "golden-sparrow-ventures",
-      "amount": "$20M",
-      "amount_usd_millions": 20,
-      "category": "Venture Capital",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "",
-      "stage": "First Close",
-      "announcement_date": "2026-02-04",
-      "source_url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQQS1nQWJuZTJFMUc1NXVzekhOeVg5OWNHV0RIbFZhMHlpVDhzaF9hUkhUako5c2Nkd0RjS2Q2eG5QVnNBREpGNnlDQ056SDRUV0xfWVI3WjBRTlNjV3B0ckdpLTdzcWd1WHhhazlvVWEycERWVnFBVndLaFFsN3RNUDNGRUhvbXFvc2Zobg?oc=5",
-      "source_name": "Indian Startup Times",
-      "description_notes": "N/A - Insufficient public information available about Golden Sparrow Ventures Fund II to produce an accurate description. Golden Sparrow Ventures does not appear to be a widely tracked or publicly profiled venture capital firm, limiting ability to verify strategy, target market, LP base, or fund vintage comparisons.",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [
-        {
-          "title": "Golden Sparrow Ventures Hits First Close of $20M Fund II for Deep-Tech and AI - Indian Startup Times",
-          "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQVDJIdjVWaVZUVlRmTDd6RnRWVGUzcjVEdTlVSWxBa1JDejFlbFU5TlJGM3I4VllXZUh4WkczdlpyUTl4ZVBZdFZCT0dvRnRhLVdsWkdJNHBJanFOZDQ5dGlXSmxwUkdoYl9GWVV3cnpoTEVoZW4yOXE5blJmUEQtbXZxa2JjRmVtWnRPX1pTMU54RTlORnpzYkpKbjlreHI1dmJtSXdfUWpLQkZvSUxwaTZoOEsxaDZxdjgtMERUVm0?oc=5",
-          "source_name": "News",
-          "source_domain": "news.google.com",
-          "published_date": "2026-02-05",
-          "summary": "Golden Sparrow Ventures Hits First Close of $20M Fund II for Deep-Tech and AI&nbsp;&nbsp;Indian Startup Times",
-          "feed_name": "search:First/final close"
-        },
-        {
-          "title": "Golden Sparrow Ventures raises $20M in first close of Fund II - YourStory.com",
-          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQQS1nQWJuZTJFMUc1NXVzekhOeVg5OWNHV0RIbFZhMHlpVDhzaF9hUkhUako5c2Nkd0RjS2Q2eG5QVnNBREpGNnlDQ056SDRUV0xfWVI3WjBRTlNjV3B0ckdpLTdzcWd1WHhhazlvVWEycERWVnFBVndLaFFsN3RNUDNGRUhvbXFvc2Zobg?oc=5",
-          "source_name": "News",
-          "source_domain": "news.google.com",
-          "published_date": "2026-02-04",
-          "summary": "Golden Sparrow Ventures raises $20M in first close of Fund II&nbsp;&nbsp;YourStory.com",
-          "feed_name": "search:First/final close"
-        }
-      ],
-      "strategy": "Asset-Based"
-    },
-    {
-      "fund_name": "CedarBridge Private Equity Fund III",
-      "firm": "CedarBridge",
-      "firm_slug": "cedarbridge",
-      "amount": "Undisclosed",
-      "amount_usd_millions": null,
-      "category": "Private Equity",
-      "location": "Dubai, UAE",
-      "city": "Dubai",
-      "state": "",
-      "country": "UAE",
-      "stage": "Launch",
-      "announcement_date": "2026-02-04",
-      "source_url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNSVFvQ1k5X3pYOWtheDUyb3NVb2N0Z1NuUHNUeDNJX2k4UnhLcF9iZEFXWkNVeXk5UzdMZnFwYmZEa2JXay13SDFfTGhDQWdMS0kwTnlHdUh5TG16SGJhYlRMaVpNd3k5Qk5UTVVILXpsU0FPdzd3WlZkQXpsZndBaUl4NUg2d1l2Y2c?oc=5",
-      "source_name": "Wamda",
-      "description_notes": "launching its third private equity fund to target mid-market buyouts, though the firm has not disclosed the target size or LP roster. CedarBridge's third vehicle comes as the firm expands its acquisition strategy, building on prior vintages focused on operational improvements and value creation in lower mid-market companies.",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [
-        {
-          "title": "CedarBridge begins deploying third private equity fund across the GCC - Wamda",
-          "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxNSVFvQ1k5X3pYOWtheDUyb3NVb2N0Z1NuUHNUeDNJX2k4UnhLcF9iZEFXWkNVeXk5UzdMZnFwYmZEa2JXay13SDFfTGhDQWdMS0kwTnlHdUh5TG16SGJhYlRMaVpNd3k5Qk5UTVVILXpsU0FPdzd3WlZkQXpsZndBaUl4NUg2d1l2Y2c?oc=5",
-          "source_name": "News",
-          "source_domain": "news.google.com",
-          "published_date": "2026-02-04",
-          "summary": "CedarBridge begins deploying third private equity fund across the GCC&nbsp;&nbsp;Wamda",
-          "feed_name": "search:PE/VC fund closes"
-        }
-      ],
-      "strategy": "Buyout",
-      "firm_website": "cedarbridge.com",
-      "target_geography": "Middle East & Africa"
     },
     {
       "fund_name": "Hybrid Fund for Indian Mid-Market Businesses",
@@ -1036,38 +2338,6 @@
       "firm_website": "clearlake.com"
     },
     {
-      "fund_name": "Hongkong Land Singapore Private Real Estate Fund",
-      "firm": "Hongkong Land",
-      "firm_slug": "hongkong-land",
-      "amount": "$8.2B",
-      "amount_usd_millions": 8200,
-      "category": "Real Estate",
-      "location": "Singapore, Singapore",
-      "city": "Singapore",
-      "state": "",
-      "country": "Singapore",
-      "stage": "Launch",
-      "announcement_date": "2026-02-03",
-      "source_url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOTXZuSVJCOV9TNFZacGJ6RlBrbFR0bHNPLXhYWkdFZGhfeWxqbGhSYXRVbUxuelUtXzZuX2lIbEpGeTBtN1hxdDFYbmFqbnVVM1l4NmlxN1lRcG04NlhfUHNTUEYwVkpfeWIxWS1sMVZEMDhkQ2N1cU1FbDFOOXlXTXVxMmVPTUVh?oc=5",
-      "source_name": "Yahoo News Singapore",
-      "description_notes": "launches private real estate fund focused on Singapore market",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [
-        {
-          "title": "Hongkong Land launches Singapore private real estate fund with $8.2 bil AUM - Yahoo News Singapore",
-          "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxOTXZuSVJCOV9TNFZacGJ6RlBrbFR0bHNPLXhYWkdFZGhfeWxqbGhSYXRVbUxuelUtXzZuX2lIbEpGeTBtN1hxdDFYbmFqbnVVM1l4NmlxN1lRcG04NlhfUHNTUEYwVkpfeWIxWS1sMVZEMDhkQ2N1cU1FbDFOOXlXTXVxMmVPTUVh?oc=5",
-          "source_name": "News",
-          "source_domain": "news.google.com",
-          "published_date": "2026-02-03",
-          "summary": "Hongkong Land launches Singapore private real estate fund with $8.2 bil AUM&nbsp;&nbsp;Yahoo News Singapore",
-          "feed_name": "search:Credit/Real estate"
-        }
-      ],
-      "target_geography": "Asia-Pacific",
-      "firm_website": "hkland.com"
-    },
-    {
       "fund_name": "Otro Capital Fund I",
       "firm": "Otro Capital",
       "firm_slug": "otro-capital",
@@ -1087,29 +2357,6 @@
       "covered_date": "2026-02-06",
       "articles": [],
       "target_geography": "North America"
-    },
-    {
-      "fund_name": "Power Sustainable Infrastructure Credit Fund I",
-      "firm": "Power Sustainable",
-      "firm_slug": "power-sustainable",
-      "amount": "$1B+",
-      "amount_usd_millions": 1000,
-      "category": "Credit Funds",
-      "location": "Montreal, Canada",
-      "city": "Montreal",
-      "state": "QC",
-      "country": "Canada",
-      "stage": "Final Close",
-      "announcement_date": "2026-02-03",
-      "source_url": "https://www.prnewswire.com/news-releases/power-sustainable-announces-the-final-close-of-its-inaugural-infrastructure-credit-fund-302677026.html",
-      "source_name": "PR Newswire",
-      "description_notes": "",
-      "is_covered": true,
-      "covered_date": "2026-02-06",
-      "articles": [],
-      "strategy": "Asset-Based",
-      "target_geography": "North America",
-      "firm_website": "powersustainable.com"
     },
     {
       "fund_name": "HighVista Private Equity Fund XI",
@@ -1281,56 +2528,6 @@
         }
       ],
       "target_geography": "North America"
-    },
-    {
-      "fund_name": "Infrastructure Opportunities Fund II",
-      "firm": "Hamilton Lane",
-      "firm_slug": "hamilton-lane",
-      "amount": "$2B",
-      "amount_usd_millions": 2000,
-      "category": "Infrastructure",
-      "location": "Philadelphia, PA",
-      "city": "Philadelphia",
-      "state": "PA",
-      "country": "US",
-      "stage": "Final Close",
-      "announcement_date": "2026-02-02",
-      "source_url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNMmhtbDNNZk5WZzY4UmpRcVhxTno5RGh3Vms4aDlpR2xUNmxwNHVKUEF5V3FZTU5VU01iX29lYUVuR0x0QmVFOUhHZmxLVm1lb2RURmpvQlIxYzNYX2ROdVczbkUxbEtzNHVQYThPRjRucnNsQldNZ0FhSjBRaWc1dEM4aU9CMWNOMGZ5ZkU4ZDR1QmJKOFhVZVhZVGFLR3phUW1RS1hIVmswXzR6SnVfMGJkRE0tdjZfbEJxVVlzd2FhaU9Sb3NEbA?oc=5",
-      "source_name": "Seekingalpha",
-      "description_notes": "closes on nearly $2 billion for infrastructure investments, tripling the size of its predecessor fund. Hamilton Lane's second infrastructure opportunities vehicle represents significant growth in the firm's infrastructure platform.",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [
-        {
-          "title": "Hamilton Lane Closes on Nearly $2 Billion in Infrastructure Opportunities Fund II and Related Vehicles, Tripling Size of Predecessor Fund - PR Newswire",
-          "url": "https://news.google.com/rss/articles/CBMimwJBVV95cUxQT2VZNkZoc3Q4RDVqYUxqaDBweDk0a2ZUeTFScDktTDR6cWFoaU1kVkR6RExjMlpwd24tdDFyVmxlMmhta2xpVGgya3RFQmtUbkw3cHptT01LSkd5ZUZjRGNXWXlrMG0wblpTVmRYUk1rTmJpSk9LeFNzU2RHdzZaYVRZb29hbkV3RGt4akpRWHFDNFdGb2FBNFlDX29lQlQ1NHJ2TWhXdDMzWEVVTHE0cXN2Q0ExdFBuSi1NTnJDcEFFRmdCcm5Ka0ltWlBMbjdycHhic3ZDZUZ4MmdjNUVBVE5KVkFDZWxsUTlBRWVNUUtzTTBTanBVMzdseGtKWG1XMWR1MlRTMGpqcGQ5Zm5sRWw2QWUxeFFCcUdn?oc=5",
-          "source_name": "News",
-          "source_domain": "news.google.com",
-          "published_date": "2026-02-02",
-          "summary": "Hamilton Lane Closes on Nearly $2 Billion in Infrastructure Opportunities Fund II and Related Vehicles, Tripling Size of Predecessor Fund&nbsp;&nbsp;PR Newswire",
-          "feed_name": "search:Press release fund closes"
-        },
-        {
-          "title": "Hamilton Lane Closes on Nearly $2 Billion in Infrastructure Opportunities Fund II and Related Vehicles, Tripling Size of Predecessor Fund (2026-02-02) - Seeking Alpha",
-          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNMmhtbDNNZk5WZzY4UmpRcVhxTno5RGh3Vms4aDlpR2xUNmxwNHVKUEF5V3FZTU5VU01iX29lYUVuR0x0QmVFOUhHZmxLVm1lb2RURmpvQlIxYzNYX2ROdVczbkUxbEtzNHVQYThPRjRucnNsQldNZ0FhSjBRaWc1dEM4aU9CMWNOMGZ5ZkU4ZDR1QmJKOFhVZVhZVGFLR3phUW1RS1hIVmswXzR6SnVfMGJkRE0tdjZfbEJxVVlzd2FhaU9Sb3NEbA?oc=5",
-          "source_name": "Seeking Alpha",
-          "source_domain": "seekingalpha.com",
-          "published_date": "2026-02-02",
-          "summary": "Hamilton Lane Closes on Nearly $2 Billion in Infrastructure Opportunities Fund II and Related Vehicles, Tripling Size of Predecessor Fund (2026-02-02)&nbsp;&nbsp;Seeking Alpha",
-          "feed_name": "search:First/final close"
-        },
-        {
-          "title": "Hamilton Lane closes infrastructure fund after exceeding target - Financial Newswire",
-          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPNHdRajVfNmtCTTFCTWtfTEhMRktTQkJPOXJlTXBrSU9nWWhiejMtTm5JNDU2Z1l1VkNmcUlUNHpjQkw0dlVBR2huaGRDMExMRXFLWmJidmU3TVlYbmZhdnAwY194dHVtcEtaWUVWaUktTkJxWnExV2syUUhKTDA5YktVbVVQQThTbXVzVjlsRzR1bUR1ZDVLdDhPRFJlZk0tMktEVGp0OWc5dzRCN2c?oc=5",
-          "source_name": "Financial Newswire",
-          "source_domain": "financialnewswire.com.au",
-          "published_date": "2026-02-03",
-          "summary": "Hamilton Lane closes infrastructure fund after exceeding target&nbsp;&nbsp;Financial Newswire",
-          "feed_name": "search:First/final close"
-        }
-      ],
-      "target_geography": "North America",
-      "firm_website": "hamiltonlane.com"
     },
     {
       "fund_name": "Seraya Fund",
@@ -4747,38 +5944,6 @@
       "firm_website": "bannerridgepartners.com"
     },
     {
-      "fund_name": "BV Investment Partners Fund XII",
-      "firm": "BV Investment Partners",
-      "firm_slug": "bv-investment-partners",
-      "amount": "$2.465B",
-      "amount_usd_millions": 2465,
-      "category": "Private Equity",
-      "location": "Boston, MA",
-      "city": "Boston",
-      "state": "MA",
-      "country": "US",
-      "stage": "Other",
-      "announcement_date": "2026-01-06",
-      "source_url": "https://sg.finance.yahoo.com/news/bv-investment-partners-announces-raising-123000635.html",
-      "source_name": "Yahoo Finance",
-      "description_notes": "",
-      "is_covered": true,
-      "covered_date": "2026-01-09",
-      "articles": [
-        {
-          "title": "Vintage Investment Partners Fund IV",
-          "url": "https://pitchbook.com/newsletter/global-vc-and-pe-fundraising-news-for-january-12-2024",
-          "source_name": "PitchBook",
-          "source_domain": "pitchbook.com",
-          "published_date": "2024-01-15",
-          "summary": "Israeli venture fund of funds.",
-          "feed_name": "additional"
-        }
-      ],
-      "target_geography": "North America",
-      "firm_website": "bvlp.com"
-    },
-    {
       "fund_name": "Sundaram Alternates ESG-aligned Real Estate Credit Fund V",
       "firm": "Sundaram Alternates",
       "firm_slug": "sundaram-alternates",
@@ -4849,28 +6014,6 @@
       "articles": [],
       "target_geography": "North America",
       "firm_website": "springcoastpartners.com"
-    },
-    {
-      "fund_name": "Catalio Structured Opportunities Fund II",
-      "firm": "Catalio Capital Management",
-      "firm_slug": "catalio-capital-management",
-      "amount": "$325M",
-      "amount_usd_millions": 325,
-      "category": "Credit Funds",
-      "location": "New York, NY",
-      "city": "New York",
-      "state": "NY",
-      "country": "US",
-      "stage": "Other",
-      "announcement_date": "2026-01-06",
-      "source_url": "https://alternativecreditinvestor.com/2026/01/08/catalio-raises-325m-at-close-of-second-healthcare-credit-fund/",
-      "source_name": "Alternative Credit Investor",
-      "description_notes": "",
-      "is_covered": true,
-      "covered_date": "2026-01-30",
-      "articles": [],
-      "target_geography": "North America",
-      "firm_website": "cataliocapital.com"
     },
     {
       "fund_name": "HDFC AMC Private Credit Fund",
@@ -5579,38 +6722,6 @@
       "strategy": "Value-Add",
       "target_geography": "Asia-Pacific",
       "firm_website": "hines.com"
-    },
-    {
-      "fund_name": "Investec Private Credit Fund",
-      "firm": "Investec",
-      "firm_slug": "investec",
-      "amount": "€400M",
-      "amount_usd_millions": 400,
-      "category": "Credit Funds",
-      "location": "London, UK",
-      "city": "London",
-      "state": "",
-      "country": "UK",
-      "stage": "Launch",
-      "announcement_date": "2025-11-25",
-      "source_url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQUE5hdnR4Mmw0RzkxdHdMeUlDeDNlMWp2U2pESWp3WE9fOTVRblhsM2daOEd0VkgyZ1R5QnczWS1OWHkzRkp0WHY1dTNkbDdQUi1vVlFwR0I1R2dqS3UyVHNYRmFJVjFqOU5LaTZ1MTdOd29rLXVRbHZfMk1lWkFmbU9CLW1fVDdFRkw5bG92UWh3QkFmVUlaakdPbjhMWV9rOHJFUldvOUM?oc=5",
-      "source_name": "Alternative Credit Investor",
-      "description_notes": "backed by Carlyle, focusing on private credit investments",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [
-        {
-          "title": "Carlyle backs €400m Investec private credit fund launch - Alternative Credit Investor",
-          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQUE5hdnR4Mmw0RzkxdHdMeUlDeDNlMWp2U2pESWp3WE9fOTVRblhsM2daOEd0VkgyZ1R5QnczWS1OWHkzRkp0WHY1dTNkbDdQUi1vVlFwR0I1R2dqS3UyVHNYRmFJVjFqOU5LaTZ1MTdOd29rLXVRbHZfMk1lWkFmbU9CLW1fVDdFRkw5bG92UWh3QkFmVUlaakdPbjhMWV9rOHJFUldvOUM?oc=5",
-          "source_name": "News",
-          "source_domain": "news.google.com",
-          "published_date": "2025-11-25",
-          "summary": "Carlyle backs €400m Investec private credit fund launch&nbsp;&nbsp;Alternative Credit Investor",
-          "feed_name": "search:Credit/Real estate"
-        }
-      ],
-      "target_geography": "Europe",
-      "firm_website": "investec.com"
     },
     {
       "fund_name": "Firgun Ventures VC Fund",
@@ -11105,39 +12216,6 @@
       ]
     },
     {
-      "fund_name": "ACORE Credit Partners II",
-      "firm": "ACORE Capital",
-      "firm_slug": "acore-capital",
-      "firm_website": "acorecapital.com",
-      "amount": "$1.4B",
-      "amount_usd_millions": 1400,
-      "category": "Real Estate",
-      "strategy": "Value-Add",
-      "target_geography": "North America",
-      "location": "New York, NY",
-      "city": "New York",
-      "state": "NY",
-      "country": "US",
-      "stage": "Final Close",
-      "announcement_date": "2024-04-20",
-      "source_url": "https://www.perenews.com/acore-capital-closes-largest-debt-fund-of-2024-to-date/",
-      "source_name": "PERE",
-      "description_notes": "ACORE Capital closed its second credit partners fund at $1.4B, the largest real estate debt fund of 2024.",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [
-        {
-          "title": "ACORE Credit Partners II",
-          "url": "https://www.perenews.com/acore-capital-closes-largest-debt-fund-of-2024-to-date/",
-          "source_name": "PERE",
-          "source_domain": "perenews.com",
-          "published_date": "2024-04-20",
-          "summary": "ACORE Capital closed its second credit partners fund at $1.4B, the largest real estate debt fund of 2024.",
-          "feed_name": "backfill"
-        }
-      ]
-    },
-    {
       "fund_name": "Stockbridge Value-Add Fund V",
       "firm": "Stockbridge Capital Group",
       "firm_slug": "stockbridge-capital-group",
@@ -11281,28 +12359,6 @@
       "target_geography": "North America",
       "strategy": "Event Driven",
       "firm_website": "magnetar.com"
-    },
-    {
-      "fund_name": "IK Strategic Opportunities I",
-      "firm": "IK Partners",
-      "amount": "€505M",
-      "amount_usd_millions": 550,
-      "category": "Secondaries & GP-Stakes",
-      "location": "London, UK",
-      "city": "London",
-      "country": "UK",
-      "stage": "Final Close",
-      "announcement_date": "2024-04-15",
-      "source_url": "https://ikpartners.com/press-release/ik-partners-closes-fund-x-at-e3-3-billion-hard-cap/",
-      "source_name": "IK Partners",
-      "description_notes": "First strategic opportunities fund",
-      "firm_slug": "ik-partners",
-      "state": "",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [],
-      "target_geography": "Europe",
-      "firm_website": "ikpartners.com"
     },
     {
       "fund_name": "CF Private Equity Secondaries Fund IV",
@@ -12217,29 +13273,6 @@
           "feed_name": "backfill"
         }
       ]
-    },
-    {
-      "fund_name": "CVC Capital Partners Asia VI",
-      "firm": "CVC Capital Partners",
-      "amount": "$6.8B",
-      "amount_usd_millions": 6800,
-      "category": "Private Equity",
-      "location": "Hong Kong",
-      "city": "Hong Kong",
-      "country": "HK",
-      "stage": "Final Close",
-      "announcement_date": "2024-02-21",
-      "source_url": "https://www.cvc.com/media/news/2024/2024-02-21-cvc-raises-us-68-billion-for-its-sixth-asia-fund/",
-      "source_name": "CVC",
-      "description_notes": "Sixth Asia buyout fund",
-      "firm_slug": "cvc-capital-partners",
-      "state": "",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [],
-      "target_geography": "Asia-Pacific",
-      "firm_website": "cvc.com",
-      "strategy": "Buyout"
     },
     {
       "fund_name": "Brookfield Strategic Real Estate Partners V",
@@ -14875,6 +15908,7 @@
     "Asia-Pacific",
     "Europe",
     "Global",
+    "Latin America",
     "Middle East & Africa",
     "North America"
   ],
@@ -14892,8 +15926,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-02-11T13:22:32.801Z",
-      "last_success": "2026-02-11T13:22:32.801Z",
+      "last_fetch": "2026-02-11T14:37:28.146Z",
+      "last_success": "2026-02-11T14:37:28.146Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -14942,8 +15976,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-02-11T13:22:34.006Z",
-      "last_success": "2026-02-11T13:22:34.006Z",
+      "last_fetch": "2026-02-11T14:37:29.390Z",
+      "last_success": "2026-02-11T14:37:29.390Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -14962,18 +15996,18 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-02-11T13:22:35.427Z",
+      "last_fetch": "2026-02-11T14:37:30.640Z",
       "last_success": "2026-02-11T13:22:35.427Z",
-      "error_count": 0,
+      "error_count": 1,
       "article_count": 10,
-      "last_error": "",
+      "last_error": "Status code 503",
       "enabled": true
     },
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-02-11T13:22:28.339Z",
-      "last_success": "2026-02-11T13:22:28.339Z",
+      "last_fetch": "2026-02-11T14:37:22.573Z",
+      "last_success": "2026-02-11T14:37:22.573Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -14982,8 +16016,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-02-11T13:22:20.699Z",
-      "last_success": "2026-02-11T13:22:20.699Z",
+      "last_fetch": "2026-02-11T14:37:14.717Z",
+      "last_success": "2026-02-11T14:37:14.717Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -14992,8 +16026,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-02-11T13:22:30.588Z",
-      "last_success": "2026-02-11T13:22:30.588Z",
+      "last_fetch": "2026-02-11T14:37:26.014Z",
+      "last_success": "2026-02-11T14:37:26.014Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15002,8 +16036,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-02-11T13:22:17.990Z",
-      "last_success": "2026-02-11T13:22:17.990Z",
+      "last_fetch": "2026-02-11T14:37:12.318Z",
+      "last_success": "2026-02-11T14:37:12.318Z",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -15012,8 +16046,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-02-11T13:22:23.131Z",
-      "last_success": "2026-02-11T13:22:23.131Z",
+      "last_fetch": "2026-02-11T14:37:17.405Z",
+      "last_success": "2026-02-11T14:37:17.405Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15022,8 +16056,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-02-11T13:22:26.340Z",
-      "last_success": "2026-02-11T13:22:26.340Z",
+      "last_fetch": "2026-02-11T14:37:20.441Z",
+      "last_success": "2026-02-11T14:37:20.441Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15032,8 +16066,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-02-11T13:22:20.009Z",
-      "last_success": "2026-02-11T13:22:20.009Z",
+      "last_fetch": "2026-02-11T14:37:14.134Z",
+      "last_success": "2026-02-11T14:37:14.134Z",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -15042,19 +16076,19 @@
     {
       "feed_name": "Business Wire - Finance",
       "feed_url": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeGVtTWg==",
-      "last_fetch": "2026-02-11T13:22:18.766Z",
-      "last_success": "2026-02-11T13:22:18.766Z",
+      "last_fetch": "2026-02-11T14:37:12.916Z",
+      "last_success": "2026-02-11T14:37:12.916Z",
       "error_count": 0,
-      "article_count": 17,
+      "article_count": 18,
       "last_error": "",
       "enabled": true
     },
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed/",
-      "last_fetch": "2026-02-11T13:22:34.841Z",
+      "last_fetch": "2026-02-11T14:37:30.072Z",
       "last_success": "2026-02-11T06:03:48.997Z",
-      "error_count": 1,
+      "error_count": 2,
       "article_count": 10,
       "last_error": "Status code 405",
       "enabled": true
@@ -15062,8 +16096,8 @@
     {
       "feed_name": "Financial Times",
       "feed_url": "https://ft.com/rss/home",
-      "last_fetch": "2026-02-11T13:22:37.425Z",
-      "last_success": "2026-02-11T13:22:37.425Z",
+      "last_fetch": "2026-02-11T14:37:31.526Z",
+      "last_success": "2026-02-11T14:37:31.526Z",
       "error_count": 0,
       "article_count": 8,
       "last_error": "",
@@ -15072,8 +16106,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://buyoutsinsider.com/feed",
-      "last_fetch": "2026-02-11T13:22:38.885Z",
-      "last_success": "2026-02-11T13:22:38.885Z",
+      "last_fetch": "2026-02-11T14:37:32.801Z",
+      "last_success": "2026-02-11T14:37:32.801Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15082,8 +16116,8 @@
     {
       "feed_name": "PE International",
       "feed_url": "https://privateequityinternational.com/feed",
-      "last_fetch": "2026-02-11T13:22:42.700Z",
-      "last_success": "2026-02-11T13:22:42.700Z",
+      "last_fetch": "2026-02-11T14:37:35.914Z",
+      "last_success": "2026-02-11T14:37:35.914Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15092,8 +16126,8 @@
     {
       "feed_name": "VC Journal",
       "feed_url": "https://venturecapitaljournal.com/feed",
-      "last_fetch": "2026-02-11T13:22:46.122Z",
-      "last_success": "2026-02-11T13:22:46.122Z",
+      "last_fetch": "2026-02-11T14:37:38.910Z",
+      "last_success": "2026-02-11T14:37:38.910Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15102,8 +16136,8 @@
     {
       "feed_name": "Private Equity Wire",
       "feed_url": "https://privateequitywire.co.uk/feed",
-      "last_fetch": "2026-02-11T13:22:49.139Z",
-      "last_success": "2026-02-11T13:22:49.139Z",
+      "last_fetch": "2026-02-11T14:37:43.357Z",
+      "last_success": "2026-02-11T14:37:43.357Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15112,8 +16146,8 @@
     {
       "feed_name": "GlobeNewswire PE",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Private%20Equity/feedTitle/GlobeNewswire%20-%20Private%20Equity",
-      "last_fetch": "2026-02-11T13:22:52.045Z",
-      "last_success": "2026-02-11T13:22:52.045Z",
+      "last_fetch": "2026-02-11T14:37:45.957Z",
+      "last_success": "2026-02-11T14:37:45.957Z",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -15122,8 +16156,8 @@
     {
       "feed_name": "Crunchbase News",
       "feed_url": "https://news.crunchbase.com/feed/",
-      "last_fetch": "2026-02-11T13:22:53.014Z",
-      "last_success": "2026-02-11T13:22:53.014Z",
+      "last_fetch": "2026-02-11T14:37:46.707Z",
+      "last_success": "2026-02-11T14:37:46.707Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15132,8 +16166,8 @@
     {
       "feed_name": "VentureBeat",
       "feed_url": "https://venturebeat.com/feed/",
-      "last_fetch": "2026-02-11T13:22:53.752Z",
-      "last_success": "2026-02-11T13:22:53.752Z",
+      "last_fetch": "2026-02-11T14:37:47.361Z",
+      "last_success": "2026-02-11T14:37:47.361Z",
       "error_count": 0,
       "article_count": 7,
       "last_error": "",
@@ -15142,8 +16176,8 @@
     {
       "feed_name": "Fortune",
       "feed_url": "https://fortune.com/feed/",
-      "last_fetch": "2026-02-11T13:22:54.454Z",
-      "last_success": "2026-02-11T13:22:54.454Z",
+      "last_fetch": "2026-02-11T14:37:48.027Z",
+      "last_success": "2026-02-11T14:37:48.027Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15152,8 +16186,8 @@
     {
       "feed_name": "Axios",
       "feed_url": "https://www.axios.com/feeds/feed.rss",
-      "last_fetch": "2026-02-11T13:22:55.210Z",
-      "last_success": "2026-02-11T13:22:55.210Z",
+      "last_fetch": "2026-02-11T14:37:48.703Z",
+      "last_success": "2026-02-11T14:37:48.703Z",
       "error_count": 0,
       "article_count": 100,
       "last_error": "",
@@ -15162,8 +16196,8 @@
     {
       "feed_name": "StrictlyVC",
       "feed_url": "https://www.strictlyvc.com/feed/",
-      "last_fetch": "2026-02-11T13:22:56.431Z",
-      "last_success": "2026-02-11T13:22:56.431Z",
+      "last_fetch": "2026-02-11T14:37:49.830Z",
+      "last_success": "2026-02-11T14:37:49.830Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15172,8 +16206,8 @@
     {
       "feed_name": "Creditflux",
       "feed_url": "https://www.creditflux.com/rss/",
-      "last_fetch": "2026-02-11T13:22:57.278Z",
-      "last_success": "2026-02-11T13:22:57.278Z",
+      "last_fetch": "2026-02-11T14:37:50.514Z",
+      "last_success": "2026-02-11T14:37:50.514Z",
       "error_count": 0,
       "article_count": 50,
       "last_error": "",
@@ -15182,8 +16216,8 @@
     {
       "feed_name": "Commercial Observer",
       "feed_url": "https://commercialobserver.com/feed/",
-      "last_fetch": "2026-02-11T13:22:59.247Z",
-      "last_success": "2026-02-11T13:22:59.247Z",
+      "last_fetch": "2026-02-11T14:37:52.286Z",
+      "last_success": "2026-02-11T14:37:52.286Z",
       "error_count": 0,
       "article_count": 17,
       "last_error": "",
@@ -15192,8 +16226,8 @@
     {
       "feed_name": "Bisnow",
       "feed_url": "https://www.bisnow.com/rss/",
-      "last_fetch": "2026-02-11T13:23:00.376Z",
-      "last_success": "2026-02-11T13:23:00.376Z",
+      "last_fetch": "2026-02-11T14:37:53.324Z",
+      "last_success": "2026-02-11T14:37:53.324Z",
       "error_count": 0,
       "article_count": 30,
       "last_error": "",
@@ -15202,8 +16236,8 @@
     {
       "feed_name": "Mingtiandi",
       "feed_url": "https://www.mingtiandi.com/feed/",
-      "last_fetch": "2026-02-11T13:23:01.685Z",
-      "last_success": "2026-02-11T13:23:01.685Z",
+      "last_fetch": "2026-02-11T14:37:54.563Z",
+      "last_success": "2026-02-11T14:37:54.563Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15212,8 +16246,8 @@
     {
       "feed_name": "Connect CRE",
       "feed_url": "https://www.connectcre.com/feed/",
-      "last_fetch": "2026-02-11T13:23:02.318Z",
-      "last_success": "2026-02-11T13:23:02.318Z",
+      "last_fetch": "2026-02-11T14:37:55.174Z",
+      "last_success": "2026-02-11T14:37:55.174Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15222,8 +16256,8 @@
     {
       "feed_name": "Energy Investor",
       "feed_url": "https://www.energyinvestor.net/feed/",
-      "last_fetch": "2026-02-11T13:23:03.347Z",
-      "last_success": "2026-02-11T13:23:03.347Z",
+      "last_fetch": "2026-02-11T14:37:56.165Z",
+      "last_success": "2026-02-11T14:37:56.165Z",
       "error_count": 0,
       "article_count": 1,
       "last_error": "",
@@ -15232,8 +16266,8 @@
     {
       "feed_name": "China Money Network",
       "feed_url": "https://www.chinamoneynetwork.com/feed/",
-      "last_fetch": "2026-02-11T13:23:04.827Z",
-      "last_success": "2026-02-11T13:23:04.827Z",
+      "last_fetch": "2026-02-11T14:37:57.046Z",
+      "last_success": "2026-02-11T14:37:57.046Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15242,8 +16276,8 @@
     {
       "feed_name": "Tech in Asia",
       "feed_url": "https://www.techinasia.com/feed/",
-      "last_fetch": "2026-02-11T13:23:06.473Z",
-      "last_success": "2026-02-11T13:23:06.473Z",
+      "last_fetch": "2026-02-11T14:37:58.848Z",
+      "last_success": "2026-02-11T14:37:58.848Z",
       "error_count": 0,
       "article_count": 36,
       "last_error": "",
@@ -15252,8 +16286,8 @@
     {
       "feed_name": "Growth Business",
       "feed_url": "https://www.growthbusiness.co.uk/feed/",
-      "last_fetch": "2026-02-11T13:23:09.753Z",
-      "last_success": "2026-02-11T13:23:09.753Z",
+      "last_fetch": "2026-02-11T14:38:01.969Z",
+      "last_success": "2026-02-11T14:38:01.969Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15262,8 +16296,8 @@
     {
       "feed_name": "EU-Startups",
       "feed_url": "https://www.eu-startups.com/feed/",
-      "last_fetch": "2026-02-11T13:23:12.936Z",
-      "last_success": "2026-02-11T13:23:12.936Z",
+      "last_fetch": "2026-02-11T14:38:04.995Z",
+      "last_success": "2026-02-11T14:38:04.995Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15272,9 +16306,9 @@
     {
       "feed_name": "LAVCA",
       "feed_url": "https://lavca.org/feed/",
-      "last_fetch": "2026-02-11T13:23:15.361Z",
+      "last_fetch": "2026-02-11T14:38:06.907Z",
       "last_success": null,
-      "error_count": 2,
+      "error_count": 3,
       "article_count": 0,
       "last_error": "Status code 403",
       "enabled": true
@@ -15282,8 +16316,8 @@
     {
       "feed_name": "Latin Finance",
       "feed_url": "https://www.latinfinance.com/feed/",
-      "last_fetch": "2026-02-11T13:23:15.954Z",
-      "last_success": "2026-02-11T13:23:15.954Z",
+      "last_fetch": "2026-02-11T14:38:07.486Z",
+      "last_success": "2026-02-11T14:38:07.486Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15292,8 +16326,8 @@
     {
       "feed_name": "Africa PE News",
       "feed_url": "https://www.africaprivateequitynews.com/feed/",
-      "last_fetch": "2026-02-11T13:23:16.721Z",
-      "last_success": "2026-02-11T13:23:16.721Z",
+      "last_fetch": "2026-02-11T14:38:08.332Z",
+      "last_success": "2026-02-11T14:38:08.332Z",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -15302,8 +16336,8 @@
     {
       "feed_name": "Wamda",
       "feed_url": "https://www.wamda.com/feed/",
-      "last_fetch": "2026-02-11T13:23:18.000Z",
-      "last_success": "2026-02-11T13:23:18.000Z",
+      "last_fetch": "2026-02-11T14:38:09.756Z",
+      "last_success": "2026-02-11T14:38:09.756Z",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -15312,8 +16346,8 @@
     {
       "feed_name": "Chief Investment Officer",
       "feed_url": "https://www.ai-cio.com/feed/",
-      "last_fetch": "2026-02-11T13:23:20.270Z",
-      "last_success": "2026-02-11T13:23:20.270Z",
+      "last_fetch": "2026-02-11T14:38:13.369Z",
+      "last_success": "2026-02-11T14:38:13.369Z",
       "error_count": 0,
       "article_count": 5,
       "last_error": "",
@@ -15322,8 +16356,8 @@
     {
       "feed_name": "Family Capital",
       "feed_url": "https://www.famcap.com/feed/",
-      "last_fetch": "2026-02-11T13:23:21.035Z",
-      "last_success": "2026-02-11T13:23:21.035Z",
+      "last_fetch": "2026-02-11T14:38:14.160Z",
+      "last_success": "2026-02-11T14:38:14.160Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15332,8 +16366,8 @@
     {
       "feed_name": "Private Funds CFO",
       "feed_url": "https://www.privatefundscfo.com/feed/",
-      "last_fetch": "2026-02-11T13:23:22.101Z",
-      "last_success": "2026-02-11T13:23:22.101Z",
+      "last_fetch": "2026-02-11T14:38:15.181Z",
+      "last_success": "2026-02-11T14:38:15.181Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15342,8 +16376,8 @@
     {
       "feed_name": "Middle Market Growth",
       "feed_url": "https://middlemarketgrowth.org/feed/",
-      "last_fetch": "2026-02-11T13:23:24.311Z",
-      "last_success": "2026-02-11T13:23:24.311Z",
+      "last_fetch": "2026-02-11T14:38:18.363Z",
+      "last_success": "2026-02-11T14:38:18.363Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -15352,8 +16386,8 @@
     {
       "feed_name": "AgFunder",
       "feed_url": "https://agfundernews.com/feed/",
-      "last_fetch": "2026-02-11T13:23:25.536Z",
-      "last_success": "2026-02-11T13:23:25.536Z",
+      "last_fetch": "2026-02-11T14:38:19.824Z",
+      "last_success": "2026-02-11T14:38:19.824Z",
       "error_count": 0,
       "article_count": 50,
       "last_error": "",
@@ -15362,8 +16396,8 @@
     {
       "feed_name": "CleanTechnica",
       "feed_url": "https://cleantechnica.com/feed/",
-      "last_fetch": "2026-02-11T13:23:26.313Z",
-      "last_success": "2026-02-11T13:23:26.313Z",
+      "last_fetch": "2026-02-11T14:38:20.504Z",
+      "last_success": "2026-02-11T14:38:20.504Z",
       "error_count": 0,
       "article_count": 45,
       "last_error": "",
@@ -15372,51 +16406,53 @@
     {
       "feed_name": "Impact Alpha",
       "feed_url": "https://impactalpha.com/feed/",
-      "last_fetch": "2026-02-11T13:23:27.143Z",
+      "last_fetch": "2026-02-11T14:38:21.166Z",
       "last_success": null,
-      "error_count": 2,
+      "error_count": 3,
       "article_count": 0,
       "last_error": "Status code 403",
       "enabled": true
     }
   ],
   "stats": {
-    "total_funds": 411,
+    "total_funds": 437,
     "total_covered": 52,
-    "total_uncovered": 359,
-    "total_aum_millions": 5474889.1,
+    "total_uncovered": 385,
+    "total_aum_millions": 5477634,
     "by_category": {
-      "Venture Capital": 91,
-      "Private Equity": 100,
-      "Credit Funds": 60,
-      "Real Estate": 47,
-      "Infrastructure": 48,
-      "Secondaries & GP-Stakes": 40,
+      "Venture Capital": 94,
+      "Private Equity": 103,
+      "Credit Funds": 73,
+      "Real Estate": 50,
+      "Infrastructure": 51,
+      "Secondaries & GP-Stakes": 41,
       "Hedge Funds": 25
     },
     "by_stage": {
-      "Final Close": 192,
-      "First Close": 44,
-      "Interim Close": 4,
-      "Launch": 121,
-      "Other": 50
+      "Final Close": 200,
+      "First Close": 49,
+      "Interim Close": 6,
+      "Launch": 128,
+      "Other": 54
     },
     "by_strategy": {
-      "Core-Plus": 4,
-      "Growth Stage": 22,
       "Buyout": 34,
-      "Seed/Pre-Seed": 10,
-      "Direct Lending": 8,
-      "Continuation Fund": 6,
-      "Asset-Based": 13,
-      "Early Stage": 17,
+      "Sector-Specific": 9,
+      "Direct Lending": 11,
+      "Asset-Based": 19,
+      "Value-Add": 13,
+      "Seed/Pre-Seed": 11,
+      "Core Infrastructure": 7,
+      "Opportunistic": 13,
+      "Core-Plus": 4,
       "Late Stage": 2,
+      "GP-Led": 9,
+      "Specialty Finance": 2,
+      "Growth Stage": 22,
+      "Continuation Fund": 6,
+      "Early Stage": 17,
       "Middle Market": 17,
       "Energy Transition": 5,
-      "GP-Led": 8,
-      "Value-Add": 13,
-      "Core Infrastructure": 5,
-      "Opportunistic": 12,
       "Growth Equity": 13,
       "Lower Middle Market": 6,
       "Infrastructure Equity": 2,
@@ -15431,23 +16467,22 @@
       "Long-Short Equity": 3,
       "Event Driven": 3,
       "LP Secondaries": 5,
-      "Sector-Specific": 5,
       "Quantitative": 1,
-      "Arbitrage": 1,
-      "Specialty Finance": 1
+      "Arbitrage": 1
     },
     "by_geography": {
-      "North America": 200,
-      "Europe": 79,
-      "Asia-Pacific": 49,
-      "Middle East & Africa": 13,
-      "Global": 53
+      "Asia-Pacific": 54,
+      "Europe": 82,
+      "Middle East & Africa": 17,
+      "North America": 202,
+      "Latin America": 1,
+      "Global": 54
     },
-    "article_count": 388,
+    "article_count": 433,
     "feed_count": 50,
     "date_range": {
       "earliest": "2024-01-03",
-      "latest": "2026-02-07"
+      "latest": "2026-02-11"
     }
   }
 }
