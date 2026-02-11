@@ -16,6 +16,17 @@ export interface YouTubeVideo {
 // Add new videos here when you publish them
 const VIDEOS: YouTubeVideo[] = [
   {
+    videoId: "hf0gv5Qc3ig",
+    title: "Neil O'Donnell & Mehak Rashid, Legal Scale: Simplicity Can Save Emerging Managers Costly Mistakes",
+    thumbnail: "https://img.youtube.com/vi/hf0gv5Qc3ig/hqdefault.jpg",
+    publishedAt: "2026-02-11",
+    guest: {
+      name: "Neil O'Donnell & Mehak Rashid",
+      title: "Managing Partners",
+      company: "Legal Scale",
+    },
+  },
+  {
     videoId: "ZZeBWwR2NOY",
     title: "How Fund Valuations Actually Work",
     thumbnail: "https://img.youtube.com/vi/ZZeBWwR2NOY/hqdefault.jpg",
