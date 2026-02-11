@@ -175,10 +175,10 @@ async function runPipeline(options: CliOptions): Promise<PipelineResult> {
       const newFunds = unique_funds.filter(f => {
         const covered = isFundCovered(f, coveredData.covered_funds);
         if (covered) {
-          // Find which covered fund it matched
+          // Find which covered fund it matched (with null safety)
           const match = coveredData.covered_funds.find(c =>
-            c.fund_name.toLowerCase().includes(f.firm.toLowerCase().slice(0, 8)) ||
-            f.fund_name.toLowerCase().includes(c.firm.toLowerCase().slice(0, 8))
+            (c.fund_name && f.firm && c.fund_name.toLowerCase().includes(f.firm.toLowerCase().slice(0, 8))) ||
+            (f.fund_name && c.firm && f.fund_name.toLowerCase().includes(c.firm.toLowerCase().slice(0, 8)))
           );
           coveredMatches.push({ fund: f, match: match?.fund_name || 'unknown' });
         }
