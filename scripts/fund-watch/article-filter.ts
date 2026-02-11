@@ -173,45 +173,67 @@ export async function filterArticles(
 /**
  * Pre-filter articles using simple heuristics before Claude
  * This reduces API calls by filtering obvious non-fund news
+ *
+ * IMPORTANT: This filter is intentionally LOOSE to avoid missing legitimate fund news.
+ * It only excludes articles that are CLEARLY not fund news. When in doubt, let Claude decide.
  */
 export function preFilterArticles(articles: RawArticle[]): RawArticle[] {
+  // CONSERVATIVE exclude patterns - only exclude things that are DEFINITELY not fund news
+  // Removed: Series A/B/C patterns (these can appear in fund news context)
+  // Removed: Broad crypto patterns (some crypto funds are legitimate)
   const excludePatterns = [
-    // Company funding, not fund vehicle
-    /\braises?\s+\$?\d+.*\bseries\s+[a-z]\b/i,
-    /\bseed\s+round\b.*\bstartup\b/i,
-    /\bseries\s+[a-z]\b.*\bfunding\b/i,
-    // Performance/returns news
+    // Performance/returns news (about existing fund results, not closes)
     /\breturns?\s+\d+%/i,
-    /\bperformance\b.*\bquarter\b/i,
-    /\bhedge fund\b.*\b(gains?|losses?|returns?)\b/i,
+    /\bperformance\b.*\b(quarter|annual|year)\b/i,
+    /\bhedge fund\b.*\b(gains?|losses?|returns?|beats?|trails?)\b/i,
     // Stock/market news
-    /\bipo\b/i,
+    /\bipo\b.*\b(price|shares?|stock)\b/i,
     /\bstock\s+price\b/i,
     /\bmarket\s+cap\b/i,
-    /\bshares?\s+(fall|rise|drop|surge)/i,
-    // ETF/mutual fund (not PE/VC)
-    /\betf\b/i,
-    /\bmutual fund\b/i,
+    /\bshares?\s+(fall|rise|drop|surge|plunge)\b/i,
+    /\bearnings?\s+(report|miss|beat)\b/i,
+    // ETF/mutual fund (not PE/VC) - be specific
+    /\betf\b.*\b(launch|list|trade)\b/i,
+    /\bmutual fund\b.*\b(performance|return|nav)\b/i,
     /\bindex fund\b/i,
-    // Crypto
-    /\bcrypto\b/i,
-    /\bbitcoin\b/i,
-    /\bethererum\b/i,
-    /\btoken\b/i,
+    // Obvious non-fund content
+    /\bspac\b.*\b(merger|deal|ipo)\b/i,
+    /\bm&a\s+deal\b/i,
+    /\bacquisition\b.*\b(target|bid|offer)\b/i,
   ];
 
+  // EXPANDED include patterns - catch more fund announcement phrasings
   const includePatterns = [
-    /\bfund\b.*\b(close[ds]?|launch|raise[ds]?)\b/i,
-    /\b(final|first|interim)\s+close\b/i,
+    // Core fund close/launch patterns
+    /\bfund\b.*\b(close[ds]?|launch(es|ed)?|raise[ds]?|debut)\b/i,
+    /\b(final|first|interim|initial|second|third)\s+close\b/i,
     /\boversubscribed\b/i,
     /\bhard cap\b/i,
-    /\btarget(ing|ed)?\s+\$?\d+.*\b(billion|million|bn|m)\b/i,
-    /\bprivate (equity|credit|debt)\b.*\bfund\b/i,
-    /\bventure\s+(capital|fund)\b.*\b(close|raise|launch)\b/i,
-    /\binfrastructure fund\b/i,
-    /\breal estate fund\b/i,
-    /\bsecondaries?\s+fund\b/i,
+    /\bsoft cap\b/i,
+    // Amount targeting patterns
+    /\btarget(ing|ed|s)?\s+\$?\d+.*\b(billion|million|bn|m)\b/i,
+    /\brais(es?|ed|ing)\s+\$?\d+.*\b(billion|million|bn|m)\b/i,
+    /\bsecur(es?|ed|ing)\s+\$?\d+.*\b(billion|million|bn|m)\b/i,
+    // Fund type + action patterns
+    /\bprivate (equity|credit|debt)\b.*\b(fund|vehicle)\b/i,
+    /\bventure\s+(capital|fund)\b/i,
+    /\binfrastructure\s+(fund|vehicle)\b/i,
+    /\breal estate\s+(fund|vehicle)\b/i,
+    /\bsecondaries?\s+(fund|vehicle)\b/i,
     /\bcontinuation\s+(fund|vehicle)\b/i,
+    /\bgp[- ]?stakes?\b/i,
+    /\bcredit\s+fund\b/i,
+    /\bdebt\s+fund\b/i,
+    /\blending\s+fund\b/i,
+    // Additional close/fundraise phrasings
+    /\b(completes?|reaches?|hits?|achieves?)\b.*\b(fundraise|fundraising|close|closing)\b/i,
+    /\b(secures?|gathers?|attracts?)\b.*\b(commitments?|capital|backing)\b/i,
+    /\bcommitments?\s+(of|totaling|worth)\s+\$?\d+/i,
+    /\b(billion|million)\s+(fund|vehicle|close)\b/i,
+    /\bfundraising\b.*\b(complete[ds]?|finish(ed)?|wraps?)\b/i,
+    // LP/investor patterns
+    /\blp\s+(commitments?|investors?)\b/i,
+    /\binstitutional\s+investors?\b.*\b(commit|back|fund)\b/i,
   ];
 
   return articles.filter((a) => {
@@ -227,7 +249,7 @@ export function preFilterArticles(articles: RawArticle[]): RawArticle[] {
       return false;
     }
 
-    // Default: keep for Claude to decide
+    // Default: keep for Claude to decide (IMPORTANT: be inclusive, not exclusive)
     return true;
   });
 }

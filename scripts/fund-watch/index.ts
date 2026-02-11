@@ -124,6 +124,27 @@ async function runPipeline(options: CliOptions): Promise<PipelineResult> {
     console.log(`  - Unique: ${uniqueArticles.length} articles`);
     console.log(`  - Pre-filtered: ${preFiltered.length} articles`);
 
+    // Verbose logging: show what was filtered out
+    if (options.verbose) {
+      const removed = uniqueArticles.filter(a => !preFiltered.includes(a));
+      if (removed.length > 0) {
+        console.log(`\n  [PRE-FILTER REMOVED] ${removed.length} articles:`);
+        removed.slice(0, 15).forEach(a => {
+          console.log(`    ✗ ${a.title.slice(0, 80)}${a.title.length > 80 ? '...' : ''}`);
+        });
+        if (removed.length > 15) {
+          console.log(`    ... and ${removed.length - 15} more`);
+        }
+      }
+      console.log(`\n  [PRE-FILTER PASSED] ${preFiltered.length} articles:`);
+      preFiltered.slice(0, 10).forEach(a => {
+        console.log(`    ✓ ${a.title.slice(0, 80)}${a.title.length > 80 ? '...' : ''}`);
+      });
+      if (preFiltered.length > 10) {
+        console.log(`    ... and ${preFiltered.length - 10} more`);
+      }
+    }
+
     // Step 5: Filter with Claude (or skip)
     let filteredArticles;
     if (!options.skipApi) {
@@ -147,12 +168,22 @@ async function runPipeline(options: CliOptions): Promise<PipelineResult> {
       const normalizedFunds = normalizeFunds(extractedFunds);
 
       // Dedupe among themselves
-      const { unique_funds } = dedupeExtractedFunds(normalizedFunds);
+      const { unique_funds, duplicates } = dedupeExtractedFunds(normalizedFunds);
 
       // Filter out already covered funds
-      const newFunds = unique_funds.filter(
-        f => !isFundCovered(f, coveredData.covered_funds)
-      );
+      const coveredMatches: Array<{ fund: typeof unique_funds[0]; match: string }> = [];
+      const newFunds = unique_funds.filter(f => {
+        const covered = isFundCovered(f, coveredData.covered_funds);
+        if (covered) {
+          // Find which covered fund it matched
+          const match = coveredData.covered_funds.find(c =>
+            c.fund_name.toLowerCase().includes(f.firm.toLowerCase().slice(0, 8)) ||
+            f.fund_name.toLowerCase().includes(c.firm.toLowerCase().slice(0, 8))
+          );
+          coveredMatches.push({ fund: f, match: match?.fund_name || 'unknown' });
+        }
+        return !covered;
+      });
 
       context.funds_extracted = extractedFunds.length;
       context.funds_deduplicated = unique_funds.length;
@@ -161,6 +192,30 @@ async function runPipeline(options: CliOptions): Promise<PipelineResult> {
       console.log(`  - Extracted: ${extractedFunds.length} funds`);
       console.log(`  - After dedup: ${unique_funds.length} funds`);
       console.log(`  - New (not covered): ${newFunds.length} funds`);
+
+      // Verbose logging: show what was filtered at each stage
+      if (options.verbose) {
+        if (duplicates.length > 0) {
+          console.log(`\n  [DEDUP REMOVED] ${duplicates.length} duplicate funds:`);
+          duplicates.slice(0, 5).forEach(d => {
+            console.log(`    ✗ ${d.fund.fund_name} (matched: ${d.matched_with})`);
+          });
+          if (duplicates.length > 5) console.log(`    ... and ${duplicates.length - 5} more`);
+        }
+        if (coveredMatches.length > 0) {
+          console.log(`\n  [ALREADY COVERED] ${coveredMatches.length} funds already in covered-funds.json:`);
+          coveredMatches.slice(0, 5).forEach(m => {
+            console.log(`    ✗ ${m.fund.fund_name} (matched: ${m.match})`);
+          });
+          if (coveredMatches.length > 5) console.log(`    ... and ${coveredMatches.length - 5} more`);
+        }
+        if (newFunds.length > 0) {
+          console.log(`\n  [NEW FUNDS] ${newFunds.length} funds to be added:`);
+          newFunds.forEach(f => {
+            console.log(`    ✓ ${f.fund_name} (${f.amount || 'Undisclosed'}) - ${f.firm}`);
+          });
+        }
+      }
     } else {
       console.log('\n[6/7] Skipping fund extraction');
     }

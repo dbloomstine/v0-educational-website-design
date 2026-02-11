@@ -408,12 +408,19 @@ export function findPotentialDuplicates(
 
 /**
  * Check if fund is in covered-funds list
+ *
+ * Uses a higher threshold (0.85) to reduce false "already covered" matches.
+ * This helps ensure new funds aren't incorrectly filtered out as duplicates.
  */
 export function isFundCovered(
   fund: ExtractedFund,
   coveredFunds: Array<{ fund_name: string; firm: string }>
 ): boolean {
   const dedupeKey = createDedupeKey(fund);
+
+  // Threshold for fuzzy matching - raised from 0.8 to 0.85 to reduce false positives
+  // Higher threshold = require MORE similarity to mark as "already covered"
+  const COVERED_MATCH_THRESHOLD = 0.85;
 
   for (const covered of coveredFunds) {
     const coveredKey = createDedupeKey({
@@ -425,15 +432,15 @@ export function isFundCovered(
       return true;
     }
 
-    // Also check fuzzy match on fund name
+    // Also check fuzzy match on fund name - use lower threshold
     const nameSimilar =
       similarityRatio(
         fund.fund_name.toLowerCase(),
         covered.fund_name.toLowerCase()
-      ) > 0.8;
+      ) > COVERED_MATCH_THRESHOLD;
     const firmSimilar =
       similarityRatio(fund.firm.toLowerCase(), covered.firm.toLowerCase()) >
-      0.8;
+      COVERED_MATCH_THRESHOLD;
 
     if (nameSimilar && firmSimilar) {
       return true;
