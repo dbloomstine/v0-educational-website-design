@@ -897,6 +897,101 @@ export function inferLocationFromFirm(
 // Full Fund Normalization
 // ============================================================================
 
+// ============================================================================
+// Fund Name Validation
+// ============================================================================
+
+/**
+ * Headline indicator words - if fund name contains these, it's likely a headline
+ */
+const HEADLINE_INDICATORS = [
+  /\b(commits?|committed)\b/i,
+  /\b(targets?|targeting)\b/i,
+  /\b(eyes?|eyeing)\b/i,
+  /\b(mulls?|mulling)\b/i,
+  /\b(launches?|launching)\b/i,
+  /\b(makes?|making)\b/i,
+  /\b(announces?|announcing)\b/i,
+  /\b(closes?|closing)\s+(on|its|the|at)/i,  // "closes on" but not "Fund III closes"
+  /\b(raises?|raising)\s+\$/i,  // "raises $X" is headline-like
+  /\b(shake-?up|shakeup)\b/i,
+  /\bIn brief:/i,
+  /\bavailable in\b/i,
+  /\bto close\b/i,
+  /\bto launch\b/i,
+  /\bfirst closes? for\b/i,
+  /\bdebut\s+(fund|vehicle)?\s*$/i,  // ends with "debut" or "debut fund"
+];
+
+/**
+ * Check if a fund name looks like an article headline
+ */
+export function isHeadlineLikeName(fundName: string): boolean {
+  return HEADLINE_INDICATORS.some(pattern => pattern.test(fundName));
+}
+
+/**
+ * Attempt to construct a proper fund name from a headline-like name
+ */
+export function fixHeadlineFundName(
+  fundName: string,
+  firm: string,
+  category: string,
+  description: string
+): string {
+  // If it's not headline-like, return as-is
+  if (!isHeadlineLikeName(fundName)) {
+    return fundName;
+  }
+
+  console.log(`[Normalize] WARNING: Headline-like fund name detected: "${fundName}"`);
+
+  // Try to extract a fund type from the description or name
+  const typePatterns: Array<{ pattern: RegExp; type: string }> = [
+    { pattern: /real estate/i, type: 'Real Estate Fund' },
+    { pattern: /private credit/i, type: 'Private Credit Fund' },
+    { pattern: /credit fund/i, type: 'Credit Fund' },
+    { pattern: /infrastructure/i, type: 'Infrastructure Fund' },
+    { pattern: /secondar/i, type: 'Secondary Fund' },
+    { pattern: /continuation/i, type: 'Continuation Fund' },
+    { pattern: /gp-?led/i, type: 'GP-Led Secondary Fund' },
+    { pattern: /buyout/i, type: 'Buyout Fund' },
+    { pattern: /venture/i, type: 'Venture Fund' },
+    { pattern: /growth/i, type: 'Growth Fund' },
+    { pattern: /industrial/i, type: 'Industrial Fund' },
+  ];
+
+  const context = `${fundName} ${description}`.toLowerCase();
+  let fundType = 'Fund';
+
+  for (const { pattern, type } of typePatterns) {
+    if (pattern.test(context)) {
+      fundType = type;
+      break;
+    }
+  }
+
+  // Also try category-based fallback
+  if (fundType === 'Fund') {
+    const categoryTypes: Record<string, string> = {
+      'Real Estate': 'Real Estate Fund',
+      'Credit Funds': 'Credit Fund',
+      'Infrastructure': 'Infrastructure Fund',
+      'Private Equity': 'Private Equity Fund',
+      'Venture Capital': 'Venture Fund',
+      'Secondaries & GP-Stakes': 'Secondary Fund',
+      'Hedge Funds': 'Hedge Fund',
+    };
+    fundType = categoryTypes[category] || 'Fund';
+  }
+
+  // Construct the new name: [Firm] [Fund Type]
+  const newName = `${firm} ${fundType}`;
+  console.log(`[Normalize] Auto-fixed to: "${newName}"`);
+
+  return newName;
+}
+
 /**
  * Normalize all fields of an extracted fund
  */
@@ -908,9 +1003,17 @@ export function normalizeFund(fund: ExtractedFund): ExtractedFund {
     fund.category
   );
 
+  // Fix headline-like fund names BEFORE other processing
+  const fund_name = fixHeadlineFundName(
+    fund.fund_name,
+    fund.firm,
+    category,
+    fund.description_notes
+  );
+
   // Infer stage if not set or invalid
   const stage = inferStage(
-    fund.fund_name,
+    fund_name,
     fund.description_notes,
     fund.stage
   );
@@ -935,7 +1038,7 @@ export function normalizeFund(fund: ExtractedFund): ExtractedFund {
 
   // Infer strategy if not set
   const strategy = inferStrategy(
-    fund.fund_name,
+    fund_name,
     category,
     fund.description_notes,
     fund.strategy
@@ -943,7 +1046,7 @@ export function normalizeFund(fund: ExtractedFund): ExtractedFund {
 
   // Infer target geography if not set
   const target_geography = inferGeography(
-    fund.fund_name,
+    fund_name,
     fund.description_notes,
     country,
     fund.target_geography
@@ -951,6 +1054,7 @@ export function normalizeFund(fund: ExtractedFund): ExtractedFund {
 
   return {
     ...fund,
+    fund_name,  // Use the fixed fund name
     category,
     stage,
     strategy,
