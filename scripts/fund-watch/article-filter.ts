@@ -174,82 +174,69 @@ export async function filterArticles(
  * Pre-filter articles using simple heuristics before Claude
  * This reduces API calls by filtering obvious non-fund news
  *
- * IMPORTANT: This filter is intentionally LOOSE to avoid missing legitimate fund news.
- * It only excludes articles that are CLEARLY not fund news. When in doubt, let Claude decide.
+ * STRATEGY: REQUIRE a fund-related signal to pass. Articles must match at least
+ * one include pattern to be sent to Claude. This keeps volume manageable (~100-200
+ * articles) while catching legitimate fund news.
  */
 export function preFilterArticles(articles: RawArticle[]): RawArticle[] {
-  // CONSERVATIVE exclude patterns - only exclude things that are DEFINITELY not fund news
-  // Removed: Series A/B/C patterns (these can appear in fund news context)
-  // Removed: Broad crypto patterns (some crypto funds are legitimate)
+  // Exclude patterns - remove even if they match include patterns
   const excludePatterns = [
+    // Startup funding rounds (Series A/B/C for companies, not fund vehicles)
+    /\braises?\s+\$?\d+.*\bseries\s+[a-z]\b/i,
+    /\bseries\s+[a-z]\b.*\bfunding\b/i,
+    /\bseed\s+(round|funding)\b/i,
     // Performance/returns news (about existing fund results, not closes)
     /\breturns?\s+\d+%/i,
     /\bperformance\b.*\b(quarter|annual|year)\b/i,
     /\bhedge fund\b.*\b(gains?|losses?|returns?|beats?|trails?)\b/i,
     // Stock/market news
-    /\bipo\b.*\b(price|shares?|stock)\b/i,
+    /\bipo\b/i,
     /\bstock\s+price\b/i,
     /\bmarket\s+cap\b/i,
     /\bshares?\s+(fall|rise|drop|surge|plunge)\b/i,
     /\bearnings?\s+(report|miss|beat)\b/i,
-    // ETF/mutual fund (not PE/VC) - be specific
-    /\betf\b.*\b(launch|list|trade)\b/i,
-    /\bmutual fund\b.*\b(performance|return|nav)\b/i,
+    // ETF/mutual fund (not PE/VC)
+    /\betf\b/i,
+    /\bmutual fund\b/i,
     /\bindex fund\b/i,
-    // Obvious non-fund content
-    /\bspac\b.*\b(merger|deal|ipo)\b/i,
-    /\bm&a\s+deal\b/i,
-    /\bacquisition\b.*\b(target|bid|offer)\b/i,
   ];
 
-  // EXPANDED include patterns - catch more fund announcement phrasings
+  // Include patterns - MUST match at least one to pass to Claude
   const includePatterns = [
     // Core fund close/launch patterns
     /\bfund\b.*\b(close[ds]?|launch(es|ed)?|raise[ds]?|debut)\b/i,
-    /\b(final|first|interim|initial|second|third)\s+close\b/i,
+    /\b(final|first|interim|initial)\s+close\b/i,
     /\boversubscribed\b/i,
     /\bhard cap\b/i,
-    /\bsoft cap\b/i,
-    // Amount targeting patterns
-    /\btarget(ing|ed|s)?\s+\$?\d+.*\b(billion|million|bn|m)\b/i,
-    /\brais(es?|ed|ing)\s+\$?\d+.*\b(billion|million|bn|m)\b/i,
-    /\bsecur(es?|ed|ing)\s+\$?\d+.*\b(billion|million|bn|m)\b/i,
-    // Fund type + action patterns
-    /\bprivate (equity|credit|debt)\b.*\b(fund|vehicle)\b/i,
-    /\bventure\s+(capital|fund)\b/i,
-    /\binfrastructure\s+(fund|vehicle)\b/i,
-    /\breal estate\s+(fund|vehicle)\b/i,
-    /\bsecondaries?\s+(fund|vehicle)\b/i,
+    // Amount + fund patterns
+    /\b\$\d+(\.\d+)?\s*(billion|bn|b|million|mn|m)\b.*\bfund\b/i,
+    /\bfund\b.*\b\$\d+(\.\d+)?\s*(billion|bn|b|million|mn|m)\b/i,
+    // Fund type patterns (these are specific enough)
+    /\bprivate (equity|credit|debt)\s+fund\b/i,
+    /\bventure (capital|fund)\b.*\b(close|raise|launch|target)\b/i,
+    /\binfrastructure fund\b/i,
+    /\breal estate fund\b/i,
+    /\bsecondaries?\s+fund\b/i,
     /\bcontinuation\s+(fund|vehicle)\b/i,
     /\bgp[- ]?stakes?\b/i,
-    /\bcredit\s+fund\b/i,
-    /\bdebt\s+fund\b/i,
-    /\blending\s+fund\b/i,
-    // Additional close/fundraise phrasings
-    /\b(completes?|reaches?|hits?|achieves?)\b.*\b(fundraise|fundraising|close|closing)\b/i,
-    /\b(secures?|gathers?|attracts?)\b.*\b(commitments?|capital|backing)\b/i,
-    /\bcommitments?\s+(of|totaling|worth)\s+\$?\d+/i,
-    /\b(billion|million)\s+(fund|vehicle|close)\b/i,
-    /\bfundraising\b.*\b(complete[ds]?|finish(ed)?|wraps?)\b/i,
-    // LP/investor patterns
-    /\blp\s+(commitments?|investors?)\b/i,
-    /\binstitutional\s+investors?\b.*\b(commit|back|fund)\b/i,
+    /\bcredit fund\b/i,
+    /\bdirect lending\b.*\bfund\b/i,
+    // Fundraising completion patterns
+    /\b(completes?|closes?|reaches?)\s+(fundrais|its\s+fund|the\s+fund)/i,
+    /\bfundraising\b.*\b(complete[ds]?|close[ds]?)\b/i,
+    /\bcommitments?\b.*\b(billion|million)\b/i,
   ];
 
   return articles.filter((a) => {
     const text = `${a.title} ${a.content_snippet}`.toLowerCase();
 
-    // Strong include patterns bypass exclude check
-    if (includePatterns.some((p) => p.test(text))) {
-      return true;
-    }
-
-    // Exclude obvious non-fund news
+    // First check excludes - these are definite rejections
     if (excludePatterns.some((p) => p.test(text))) {
       return false;
     }
 
-    // Default: keep for Claude to decide (IMPORTANT: be inclusive, not exclusive)
-    return true;
+    // MUST match at least one include pattern to pass
+    // This is the key change - no more "default: keep"
+    return includePatterns.some((p) => p.test(text));
   });
 }
