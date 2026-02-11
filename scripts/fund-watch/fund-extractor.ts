@@ -25,6 +25,14 @@ const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 
 const EXTRACT_PROMPT = `Extract structured fund data from this article. Return JSON only.
 
+CRITICAL - FUND NAME RULES:
+- The fund_name MUST be the actual name of the fund vehicle (e.g., "Apollo Credit Fund IX", "Blackstone Real Estate Partners X")
+- NEVER use the article headline as the fund name
+- NEVER include phrases like "commits to", "launches", "targets", "closes", "eyes", "mulls" in the fund name
+- If the exact fund name is not stated, construct it from: [Firm Name] + [Strategy/Type] + [Fund Number if applicable]
+- Examples of WRONG fund names: "Louisiana Teachers commits $100m to Crow Holdings fund", "Oaktree makes global credit fund available"
+- Examples of CORRECT fund names: "Crow Holdings Real Estate Fund", "Oaktree Global Credit Fund"
+
 CATEGORIES (pick exactly one):
 - Venture Capital
 - Private Equity
@@ -76,7 +84,7 @@ For firm_website:
 
 JSON Format:
 {
-  "fund_name": "Full fund name",
+  "fund_name": "Actual fund vehicle name (NOT the article headline) - e.g., 'Apollo Credit Fund IX'",
   "firm": "Firm name (without 'LLC', 'LP', etc.)",
   "firm_website": "Firm's website domain (e.g., 'blackstone.com') or null",
   "amount": "Original amount string (e.g., '$2.5B', '€500M', 'Undisclosed')",
