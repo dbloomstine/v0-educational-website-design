@@ -513,7 +513,7 @@
       ]
     },
     {
-      "fund_name": "Azora to close largest-ever Southern European real estate fund",
+      "fund_name": "Azora Southern European Real Estate Fund",
       "firm": "Azora",
       "firm_slug": "azora",
       "firm_website": "azora.com",
@@ -547,7 +547,7 @@
     },
     {
       "fund_name": "Africa Food Security Fund",
-      "firm": "Unknown",
+      "firm": "DFI Consortium",
       "firm_slug": "unknown",
       "firm_website": null,
       "amount": "Undisclosed",
@@ -580,7 +580,7 @@
     },
     {
       "fund_name": "New Community Transformation Fund II",
-      "firm": "New Community Transformation Fund",
+      "firm": "NCTF Partners",
       "firm_slug": "new-community-transformation-fund",
       "firm_website": null,
       "amount": "Undisclosed",
@@ -612,7 +612,7 @@
       ]
     },
     {
-      "fund_name": "Meliora Ventures debut fund",
+      "fund_name": "Meliora Ventures Fund I",
       "firm": "Meliora Ventures",
       "firm_slug": "meliora-ventures",
       "firm_website": null,
@@ -877,39 +877,6 @@
       ]
     },
     {
-      "fund_name": "Phatisa Food Fund 3",
-      "firm": "Phatisa",
-      "firm_slug": "phatisa",
-      "firm_website": "phatisa.com",
-      "amount": "Undisclosed",
-      "amount_usd_millions": null,
-      "category": "Private Equity",
-      "strategy": "Sector-Specific",
-      "target_geography": "Middle East & Africa",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "N/A",
-      "stage": "First Close",
-      "announcement_date": "2026-02-09",
-      "source_url": "https://www.africaprivateequitynews.com/p/phatisa-food-fund-3-reaches-first",
-      "source_name": "Africa PE News",
-      "description_notes": "The fund focuses on food sector investments in Africa, having made its first investment in Zaad Group, an African seed and crop protection platform.",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [
-        {
-          "title": "Phatisa Food Fund 3",
-          "url": "https://www.africaprivateequitynews.com/p/phatisa-food-fund-3-reaches-first",
-          "source_name": "Africa PE News",
-          "source_domain": "africaprivateequitynews.com",
-          "published_date": "2026-02-09",
-          "summary": "The fund focuses on food sector investments in Africa, having made its first investment in Zaad Group, an African seed and crop protection platform.",
-          "feed_name": "initial"
-        }
-      ]
-    },
-    {
       "fund_name": "StepStone GP-Led Secondary Fund",
       "firm": "StepStone",
       "firm_slug": "stepstone",
@@ -971,39 +938,6 @@
           "source_domain": "news.google.com",
           "published_date": "2026-02-09",
           "summary": "Ascertis private credit fund is considering a $50 million investment from IFC. The fund focuses on private credit investments, though specific strategy and target geography details are not provided in the available information.",
-          "feed_name": "initial"
-        }
-      ]
-    },
-    {
-      "fund_name": "2025 Australian Cricket Infrastructure Fund",
-      "firm": "Unknown",
-      "firm_slug": "unknown",
-      "firm_website": null,
-      "amount": "Undisclosed",
-      "amount_usd_millions": null,
-      "category": "Infrastructure",
-      "strategy": "Core Infrastructure",
-      "target_geography": "Asia-Pacific",
-      "location": "Australia",
-      "city": "N/A",
-      "state": "",
-      "country": "Australia",
-      "stage": "Launch",
-      "announcement_date": "2026-02-09",
-      "source_url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPbkNEVmh4eEg1emg4OV9ZMUtySWFOd1o1dWEzYzZreE5HeXpueHdQRWFlcnZKem84ZlliaExOZFVwd1YtTXNadXJIWTktN01EYnQ1LXN4RU1ZNWhXUE54dkpZblFHOEROVXJMUkIydTlVNV9WRWM2MTBuWlh2eDFpTnNlUzRVY2xDUDl0UHU1MG5NR2ZTbmtXd1dVUVVYX253al9UVVJudTlVNWFOOEE?oc=5",
-      "source_name": "The Indian Sun",
-      "description_notes": "Infrastructure fund focused on cricket facilities and sports infrastructure development in Australia. Applications are now open for the 2025 funding cycle.",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [
-        {
-          "title": "2025 Australian Cricket Infrastructure Fund",
-          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPbkNEVmh4eEg1emg4OV9ZMUtySWFOd1o1dWEzYzZreE5HeXpueHdQRWFlcnZKem84ZlliaExOZFVwd1YtTXNadXJIWTktN01EYnQ1LXN4RU1ZNWhXUE54dkpZblFHOEROVXJMUkIydTlVNV9WRWM2MTBuWlh2eDFpTnNlUzRVY2xDUDl0UHU1MG5NR2ZTbmtXd1dVUVVYX253al9UVVJudTlVNWFOOEE?oc=5",
-          "source_name": "The Indian Sun",
-          "source_domain": "news.google.com",
-          "published_date": "2026-02-09",
-          "summary": "Infrastructure fund focused on cricket facilities and sports infrastructure development in Australia. Applications are now open for the 2025 funding cycle.",
           "feed_name": "initial"
         }
       ]
@@ -1108,7 +1042,7 @@
       ]
     },
     {
-      "fund_name": "Ruya Partners Middle East Credit Fund",
+      "fund_name": "Ruya Partners Private Credit Fund",
       "firm": "Ruya Partners",
       "firm_slug": "ruya-partners",
       "firm_website": null,
