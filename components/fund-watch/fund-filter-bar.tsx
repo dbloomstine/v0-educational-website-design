@@ -39,31 +39,47 @@ import { AMOUNT_BUCKETS } from "@/lib/content/fund-watch"
 import type { FundWatchFilterState } from "@/lib/hooks/use-fund-watch-filters"
 import { COLUMNS } from "@/lib/content/fund-watch-columns"
 
-// --- Quarter helpers ---
+// --- Date preset helpers ---
 
+function getDatePresets(): { label: string; from: string; to: string }[] {
+  const today = new Date()
+  const formatDate = (d: Date) => d.toISOString().split("T")[0]
+
+  const presets: { label: string; from: string; to: string }[] = []
+
+  // Last 7 days
+  const last7 = new Date(today)
+  last7.setDate(last7.getDate() - 7)
+  presets.push({ label: "Last 7 days", from: formatDate(last7), to: formatDate(today) })
+
+  // Last 30 days
+  const last30 = new Date(today)
+  last30.setDate(last30.getDate() - 30)
+  presets.push({ label: "Last 30 days", from: formatDate(last30), to: formatDate(today) })
+
+  // Last 90 days
+  const last90 = new Date(today)
+  last90.setDate(last90.getDate() - 90)
+  presets.push({ label: "Last 90 days", from: formatDate(last90), to: formatDate(today) })
+
+  // This year
+  const yearStart = new Date(today.getFullYear(), 0, 1)
+  presets.push({ label: "This year", from: formatDate(yearStart), to: formatDate(today) })
+
+  // Last year
+  const lastYearStart = new Date(today.getFullYear() - 1, 0, 1)
+  const lastYearEnd = new Date(today.getFullYear() - 1, 11, 31)
+  presets.push({ label: "Last year", from: formatDate(lastYearStart), to: formatDate(lastYearEnd) })
+
+  // All time (use a far past date)
+  presets.push({ label: "All time", from: "2020-01-01", to: formatDate(today) })
+
+  return presets
+}
+
+// Keep deriveQuarters for backwards compatibility but unused
 function deriveQuarters(funds: FundEntry[]): { label: string; from: string; to: string }[] {
-  const seen = new Set<string>()
-  const quarters: { label: string; from: string; to: string }[] = []
-
-  for (const f of funds) {
-    if (!f.announcement_date) continue
-    const d = new Date(f.announcement_date + "T00:00:00")
-    if (isNaN(d.getTime())) continue
-    const q = Math.ceil((d.getMonth() + 1) / 3)
-    const year = d.getFullYear()
-    const key = `Q${q} ${year}`
-    if (seen.has(key)) continue
-    seen.add(key)
-    const startMonth = (q - 1) * 3
-    const from = `${year}-${String(startMonth + 1).padStart(2, "0")}-01`
-    const endMonth = startMonth + 2
-    const lastDay = new Date(year, endMonth + 1, 0).getDate()
-    const to = `${year}-${String(endMonth + 1).padStart(2, "0")}-${String(lastDay).padStart(2, "0")}`
-    quarters.push({ label: key, from, to })
-  }
-
-  quarters.sort((a, b) => b.from.localeCompare(a.from))
-  return quarters
+  return getDatePresets()
 }
 
 // --- Props ---
