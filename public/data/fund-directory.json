@@ -731,39 +731,6 @@
       "firm_website": "powersustainable.com"
     },
     {
-      "fund_name": "Power Sustainable Infrastructure Credit Fund",
-      "firm": "Power Corporation",
-      "firm_slug": "power-corporation",
-      "firm_website": null,
-      "amount": "$1B+",
-      "amount_usd_millions": 1000,
-      "category": "Infrastructure",
-      "strategy": "Specialty Finance",
-      "target_geography": null,
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "N/A",
-      "stage": "Other",
-      "announcement_date": "2026-02-10",
-      "source_url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNeW9yN0tjYVhTUF9lYVZUVlJnSTNBZU85cS02LXhkS2l0aTlCRThMTV9nNWRTdjdycEFvdGw5S3ZrcUVOMzc4clZ6S2NBVlpmRk9pVnU0WWtaLUpGQ1JSUUJ1MjB1TkFTYUluTHBvMzlHNUpnZkFuMWFhMUhyWWFqS01QRnZITjI0Z00wLUpsaXdlUHk1?oc=5",
-      "source_name": "connectmoney.com",
-      "description_notes": "A credit fund focused on financing sustainable infrastructure projects. The fund has exceeded $1 billion in commitments.",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [
-        {
-          "title": "Power Sustainable Infrastructure Credit Fund",
-          "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxNeW9yN0tjYVhTUF9lYVZUVlJnSTNBZU85cS02LXhkS2l0aTlCRThMTV9nNWRTdjdycEFvdGw5S3ZrcUVOMzc4clZ6S2NBVlpmRk9pVnU0WWtaLUpGQ1JSUUJ1MjB1TkFTYUluTHBvMzlHNUpnZkFuMWFhMUhyWWFqS01QRnZITjI0Z00wLUpsaXdlUHk1?oc=5",
-          "source_name": "connectmoney.com",
-          "source_domain": "news.google.com",
-          "published_date": "2026-02-10",
-          "summary": "A credit fund focused on financing sustainable infrastructure projects. The fund has exceeded $1 billion in commitments.",
-          "feed_name": "initial"
-        }
-      ]
-    },
-    {
       "fund_name": "Primary Ventures Fund V",
       "firm": "Primary Ventures",
       "firm_slug": "primary-ventures",
@@ -1089,39 +1056,6 @@
           "source_domain": "news.google.com",
           "published_date": "2026-02-10",
           "summary": "An African-focused food sector fund that has reached its first close with backing from development finance institutions (DFIs).",
-          "feed_name": "initial"
-        }
-      ]
-    },
-    {
-      "fund_name": "New Community Transformation Fund II",
-      "firm": "New Community Transformation Fund",
-      "firm_slug": "new-community-transformation-fund",
-      "firm_website": null,
-      "amount": "Undisclosed",
-      "amount_usd_millions": null,
-      "category": "Credit Funds",
-      "strategy": null,
-      "target_geography": null,
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "N/A",
-      "stage": "First Close",
-      "announcement_date": "2026-02-10",
-      "source_url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOREExMzEyUmpRNHdCYWVYWHNnaWtfbHZzVk9BYS1RUGtDWV82bm1wUGJBZEF6R2IwbGZWd3JkbGEydkRKVmo3NEdIMGpJRXVQV2QxNnhvMjFzU1NvbjZLTTl5bDRwVEVnQ3JLbWY0M05ob2IxcVJEdkNOOGtjdUd1LTJzSEQySHFJbkNPTWx5NVNMSlBsMFBNUl9XakVKMnBQTC1fNDZQVWk2VGJYN1EtX1RqMEl6Zw?oc=5",
-      "source_name": "Google News",
-      "description_notes": "New Community Transformation Fund has completed the first close of its second venture fund. The fund amount was not disclosed in the announcement.",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [
-        {
-          "title": "New Community Transformation Fund II",
-          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxOREExMzEyUmpRNHdCYWVYWHNnaWtfbHZzVk9BYS1RUGtDWV82bm1wUGJBZEF6R2IwbGZWd3JkbGEydkRKVmo3NEdIMGpJRXVQV2QxNnhvMjFzU1NvbjZLTTl5bDRwVEVnQ3JLbWY0M05ob2IxcVJEdkNOOGtjdUd1LTJzSEQySHFJbkNPTWx5NVNMSlBsMFBNUl9XakVKMnBQTC1fNDZQVWk2VGJYN1EtX1RqMEl6Zw?oc=5",
-          "source_name": "Google News",
-          "source_domain": "news.google.com",
-          "published_date": "2026-02-10",
-          "summary": "New Community Transformation Fund has completed the first close of its second venture fund. The fund amount was not disclosed in the announcement.",
           "feed_name": "initial"
         }
       ]
@@ -1578,72 +1512,6 @@
           "source_domain": "news.google.com",
           "published_date": "2026-02-09",
           "summary": "Aditya Birla Sun Life AMC has reached the final close of its Special Opportunities Alternative Investment Fund. The fund focuses on special situation investments with undisclosed fund size and strategy details.",
-          "feed_name": "initial"
-        }
-      ]
-    },
-    {
-      "fund_name": "Phatisa Food Fund 3",
-      "firm": "Phatisa",
-      "firm_slug": "phatisa",
-      "firm_website": null,
-      "amount": "Undisclosed",
-      "amount_usd_millions": null,
-      "category": "Private Equity",
-      "strategy": "Sector-Specific",
-      "target_geography": "Middle East & Africa",
-      "location": "Africa",
-      "city": "N/A",
-      "state": "",
-      "country": "Africa",
-      "stage": "First Close",
-      "announcement_date": "2026-02-09",
-      "source_url": "https://www.africaprivateequitynews.com/p/phatisa-food-fund-3-reaches-first",
-      "source_name": "Africa PE News",
-      "description_notes": "A sector-specific private equity fund focused on food and agriculture investments in Africa. The fund has made its first investment in Zaad Group, an African seed and crop protection platform.",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [
-        {
-          "title": "Phatisa Food Fund 3",
-          "url": "https://www.africaprivateequitynews.com/p/phatisa-food-fund-3-reaches-first",
-          "source_name": "Africa PE News",
-          "source_domain": "africaprivateequitynews.com",
-          "published_date": "2026-02-09",
-          "summary": "A sector-specific private equity fund focused on food and agriculture investments in Africa. The fund has made its first investment in Zaad Group, an African seed and crop protection platform.",
-          "feed_name": "initial"
-        }
-      ]
-    },
-    {
-      "fund_name": "Tampa private credit fund invests in Sarasota townhomes",
-      "firm": "Unknown",
-      "firm_slug": "unknown",
-      "firm_website": null,
-      "amount": "Undisclosed",
-      "amount_usd_millions": null,
-      "category": "Real Estate",
-      "strategy": "Specialty Finance",
-      "target_geography": "North America",
-      "location": "Tampa, FL",
-      "city": "Tampa",
-      "state": "FL",
-      "country": "US",
-      "stage": "Other",
-      "announcement_date": "2026-02-09",
-      "source_url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPT3FkX1lmNGQtTmx6YVhlc1NOMXlCNFNRV1dadXpVVWlVWS1Gd25qSUN2cGJrVWZ5X09HZnNNR280dElZTzZ2RlM5UEVWcXRrcGhKelNZVWtrWVhkOUdvVXRzQ2J1WjFQdFNGSjZ1MkdFUTZhcWRTU2p1eG1SaU9ETy15X3AzRWpaeWc5WGJHWGFpRFFtTnQ5ZXhYWm91WFQwYkZza01pd0JuQQ?oc=5",
-      "source_name": "The Business Journals",
-      "description_notes": "A Tampa-based private credit fund has made an investment in townhomes located in Sarasota, Florida. The investment represents real estate-focused specialty finance activity in the Florida market.",
-      "is_covered": false,
-      "covered_date": null,
-      "articles": [
-        {
-          "title": "Tampa private credit fund invests in Sarasota townhomes",
-          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxPT3FkX1lmNGQtTmx6YVhlc1NOMXlCNFNRV1dadXpVVWlVWS1Gd25qSUN2cGJrVWZ5X09HZnNNR280dElZTzZ2RlM5UEVWcXRrcGhKelNZVWtrWVhkOUdvVXRzQ2J1WjFQdFNGSjZ1MkdFUTZhcWRTU2p1eG1SaU9ETy15X3AzRWpaeWc5WGJHWGFpRFFtTnQ5ZXhYWm91WFQwYkZza01pd0JuQQ?oc=5",
-          "source_name": "The Business Journals",
-          "source_domain": "news.google.com",
-          "published_date": "2026-02-09",
-          "summary": "A Tampa-based private credit fund has made an investment in townhomes located in Sarasota, Florida. The investment represents real estate-focused specialty finance activity in the Florida market.",
           "feed_name": "initial"
         }
       ]
