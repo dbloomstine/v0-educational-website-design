@@ -912,6 +912,8 @@ const HEADLINE_INDICATORS = [
   /\b(launches?|launching)\b/i,
   /\b(makes?|making)\b/i,
   /\b(announces?|announcing)\b/i,
+  /\b(slates?|slating)\b/i,  // "slates $50 million for..."
+  /\b(allocates?|allocating)\s+\$/i,  // "allocates $X to..."
   /\b(closes?|closing)\s+(on|its|the|at)/i,  // "closes on" but not "Fund III closes"
   /\b(raises?|raising)\s+\$/i,  // "raises $X" is headline-like
   /\b(shake-?up|shakeup)\b/i,
