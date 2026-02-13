@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-02-06",
+  "last_updated": "2026-02-13",
   "schema_version": "2.0",
   "covered_funds": [
     {
@@ -539,6 +539,160 @@
       "date_covered": "2026-02-06",
       "announcement_date": "2026-02-02",
       "source_url": "https://www.infrastructureinvestor.com/patrizia-and-mitsui-pivot-to-emerging-asia-with-300m-climate-fund-exclusive/"
+    },
+    {
+      "fund_name": "Leonard Green Sage Equity Investors",
+      "firm": "Leonard Green & Partners",
+      "amount": "$3.6B",
+      "category": "Secondaries & GP-Stakes",
+      "location": "Los Angeles",
+      "stage": "final close",
+      "date_covered": "2026-02-13",
+      "announcement_date": "2026-01-26",
+      "source_url": "https://www.prnewswire.com/news-releases/leonard-green--partners-announces-inaugural-sage-equity-investors-at-over-3-6-billion-of-commitments-302670129.html"
+    },
+    {
+      "fund_name": "Blue Owl Strategic Equity",
+      "firm": "Blue Owl Capital",
+      "amount": "$3B+",
+      "category": "Secondaries & GP-Stakes",
+      "location": "New York",
+      "stage": "final close",
+      "date_covered": "2026-02-13",
+      "announcement_date": "2026-02-11",
+      "source_url": "https://www.prnewswire.com/news-releases/blue-owl-capital-closes-inaugural-strategic-equity-secondaries-strategy-with-over-3-billion-raised-across-institutional-and-private-wealth-channels-302685014.html"
+    },
+    {
+      "fund_name": "Oaktree Special Situations Fund IV",
+      "firm": "Oaktree Capital",
+      "amount": "$2.4B",
+      "category": "Credit Funds",
+      "location": "Los Angeles",
+      "stage": "first close",
+      "date_covered": "2026-02-13",
+      "announcement_date": "2026-02-11",
+      "source_url": "https://www.bloomberg.com/news/articles/2026-02-11/oaktree-raises-record-2-4-billion-for-special-situations-fund"
+    },
+    {
+      "fund_name": "Primary Ventures Fund V",
+      "firm": "Primary Ventures",
+      "amount": "$625M",
+      "category": "Venture Capital",
+      "location": "New York",
+      "stage": "final close",
+      "date_covered": "2026-02-13",
+      "announcement_date": "2026-02-10",
+      "source_url": "https://techcrunch.com/2026/02/10/primary-ventures-raises-massive-625m-fund-v-to-focus-on-seed-investing/"
+    },
+    {
+      "fund_name": "Union Capital Equity Partners IV",
+      "firm": "Union Capital Associates",
+      "amount": "$450M",
+      "category": "Private Equity",
+      "location": "Greenwich",
+      "stage": "final close",
+      "date_covered": "2026-02-13",
+      "announcement_date": "2026-02-12",
+      "source_url": "https://www.morningstar.com/news/business-wire/20260212155302/union-capital-associates-closes-oversubscribed-fund-iv-at-450-million-hard-cap"
+    },
+    {
+      "fund_name": "Kotak Yield & Growth Fund",
+      "firm": "Kotak Alts",
+      "amount": "$430M",
+      "category": "Credit Funds",
+      "location": "Mumbai",
+      "stage": "first close",
+      "date_covered": "2026-02-13",
+      "announcement_date": "2026-02-12",
+      "source_url": "https://www.dealstreetasia.com/stories/india-kotak-yield-growth-fund-secures-430m-in-first-close-472718"
+    },
+    {
+      "fund_name": "Encore Consumer Capital Fund V",
+      "firm": "Encore Consumer Capital",
+      "amount": "$350M",
+      "category": "Private Equity",
+      "location": "San Francisco",
+      "stage": "final close",
+      "date_covered": "2026-02-13",
+      "announcement_date": "2026-02-03",
+      "source_url": "https://www.nosh.com/news/2026/encore-consumer-capital-closes-350m-oversubscribed-fund-v/"
+    },
+    {
+      "fund_name": "Blueprint Equity Fund III",
+      "firm": "Blueprint Equity",
+      "amount": "$333M",
+      "category": "Venture Capital",
+      "location": "San Diego",
+      "stage": "final close",
+      "date_covered": "2026-02-13",
+      "announcement_date": "2026-01-22",
+      "source_url": "https://peprofessional.com/2026/01/blueprint-races-to-close-on-333-million-third-fund/"
+    },
+    {
+      "fund_name": "Basis Set Ventures Fund IV",
+      "firm": "Basis Set Ventures",
+      "amount": "$250M",
+      "category": "Venture Capital",
+      "location": "San Francisco",
+      "stage": "final close",
+      "date_covered": "2026-02-13",
+      "announcement_date": "2026-01-26",
+      "source_url": "https://www.basisset.com/insights/announcing-our-250m-fund-iv"
+    },
+    {
+      "fund_name": "Gradiente Fund III",
+      "firm": "Gradiente SGR",
+      "amount": "€180M+",
+      "category": "Private Equity",
+      "location": "Padova",
+      "stage": "final close",
+      "date_covered": "2026-02-13",
+      "announcement_date": "2026-01-16",
+      "source_url": "https://pulse2.com/gradiente-sgr-closes-e180-million-gradiente-iii-fund-growing-33-versus-prior-vehicle/"
+    },
+    {
+      "fund_name": "Eurazeo Sustainable Maritime Infrastructure II",
+      "firm": "Eurazeo",
+      "amount": "€175M",
+      "category": "Infrastructure",
+      "location": "Paris",
+      "stage": "first close",
+      "date_covered": "2026-02-13",
+      "announcement_date": "2026-02-10",
+      "source_url": "https://alternativecreditinvestor.com/2026/02/10/eurazeo-raises-e175m-for-maritime-infra-fund/"
+    },
+    {
+      "fund_name": "XSML African Rivers Fund IV",
+      "firm": "XSML Capital",
+      "amount": "$142M",
+      "category": "Credit Funds",
+      "location": "Kinshasa",
+      "stage": "final close",
+      "date_covered": "2026-02-13",
+      "announcement_date": "2026-01-28",
+      "source_url": "https://disruptafrica.com/2026/02/02/frontier-investor-xsml-capital-closes-4th-fund-at-142m/"
+    },
+    {
+      "fund_name": "SlateVC Growth Fund I",
+      "firm": "SlateVC",
+      "amount": "€132M",
+      "category": "Venture Capital",
+      "location": "Paris",
+      "stage": "first close",
+      "date_covered": "2026-02-13",
+      "announcement_date": "2026-02-04",
+      "source_url": "https://www.eu-startups.com/2026/02/french-climate-investor-slatevc-raises-e132-million-first-close-for-inaugural-growth-fund"
+    },
+    {
+      "fund_name": "Constructor Capital Fund I",
+      "firm": "Constructor Capital",
+      "amount": "$110M",
+      "category": "Venture Capital",
+      "location": "Zurich",
+      "stage": "final close",
+      "date_covered": "2026-02-13",
+      "announcement_date": "2026-02-02",
+      "source_url": "https://tech.eu/2026/02/02/constructor-capital-closes-110m-fund-i-for-science-first-founders/"
     }
   ]
 }
