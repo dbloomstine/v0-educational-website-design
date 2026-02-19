@@ -140,13 +140,13 @@ export function SiteHeader() {
             </div>
           </Dropdown>
 
-          {/* FundWatch Tracker Link */}
-          <Link
+          {/* FundWatch Tracker Link — hidden until ready */}
+          {/* <Link
             href="/fund-watch"
             className="inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
           >
             FundWatch Tracker
-          </Link>
+          </Link> */}
 
           {/* Articles Dropdown (Fund Types + Roles) */}
           <Dropdown
@@ -343,8 +343,8 @@ export function SiteHeader() {
               </div>
             </div>
 
-            {/* FundWatch Tracker */}
-            <div className="pt-4 border-t border-border">
+            {/* FundWatch Tracker — hidden until ready */}
+            {/* <div className="pt-4 border-t border-border">
               <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                 FundWatch Tracker
               </h3>
@@ -356,7 +356,7 @@ export function SiteHeader() {
                 <span className="font-medium text-foreground">FundWatch Tracker</span>
                 <span className="block text-xs text-muted-foreground mt-0.5">Browse all tracked funds</span>
               </Link>
-            </div>
+            </div> */}
 
             {/* Articles (Fund Types + Roles) */}
             <div className="pt-4 border-t border-border">
