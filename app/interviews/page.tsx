@@ -80,7 +80,7 @@ const platforms = [
 
 // YouTube playlist ID and first video for embedding
 const YOUTUBE_PLAYLIST_ID = 'PLZG9Q54lvPcZ-HOuVG61UzjoAtA8ZuewC'
-const YOUTUBE_FIRST_VIDEO_ID = 'ZZeBWwR2NOY'
+const YOUTUBE_FIRST_VIDEO_ID = 'E33qmA5uews'
 
 export default async function InterviewsPage() {
   const videos = await fetchPlaylistVideos()
