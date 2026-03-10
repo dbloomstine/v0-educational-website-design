@@ -1,6 +1,201 @@
 {
-  "generated_at": "2026-03-09T12:27:26.131835Z",
+  "generated_at": "2026-03-10T13:01:28.453936Z",
   "funds": [
+    {
+      "fund_name": "Copenhagen Infrastructure Partners Credit Fund II",
+      "firm": "Copenhagen Infrastructure Partners",
+      "firm_slug": "copenhagen-infrastructure-partners",
+      "amount": "\u20ac1.3B",
+      "amount_usd_millions": 1300.0,
+      "category": "Credit Funds",
+      "location": "Copenhagen, Denmark",
+      "city": "Copenhagen",
+      "state": "",
+      "country": "Denmark",
+      "stage": "First Close",
+      "announcement_date": "2026-03-10",
+      "source_url": "https://news.google.com/rss/articles/CBMinAJBVV95cUxPeUFZREhVQjF2dk1RVXY4NlRwa1NBY1ZobDBMUExZVi1uNmRzcjRseHdtbWZ3VFdNUWpiR2hYcmZMN1ZzdDYxdkZ1SHY4V2RhTU1lbE11bUN0SXFndU04TFdsZllKNmdQLWJTNmpISHVUa0JiUmdJWmlZNEtJbnUzNC1yb25hYkRFdW5UR3BTZnZPLXpaWDBlNGZpYUdJZ0F6OXh5V1JfMjFaOEpCN2VUc2hZb285UGtxZVcyY0VxeDVRQV9jOXYydnozTVo0bzMzTWpuLWllNnJZaWlETldyNnFBSDlwSVU4bXM5c1FTeE0telJMMjN6akg2VTI2YVF0TjhtTmJCTF9ka0RaMUN3X0hSRjdIeHgyRC1hV9IBogJBVV95cUxQMWY0Vm5yTVVFd3NOYTBMTVp5N2toNUNBckdjUzYtVWpSM2hVTklQNFd6RldVVHB5akhmdTREY00zMGN0cGoyMEUzNWNxejZtcVBIejB2cWVwM3hsZHRNU0M1eG1tcHp5bVhiYTVSajRSUmtMU0o1ZWdjMnBsaHFaODBlYTNFOXAxYXNkUmFuWG40dDlReTNFcVhrdW9GNm9kWDFIS21KejlHbEI2MFFKWmNXWXE3Q200TkYtelRQSmNPUWVuUi12OWZzNzF2cmgyUHlIUDdXa3Y4bTAyeHd4UzFud0g3MlNWRlBaNjh2eGVBaXJPVkZTMWtkaUZKY1NqWXVMTTJEY1RwcElXWEdiY0JhNEtVRUx6cnBTbF9nYk9jdw?oc=5",
+      "source_name": "Manilatimes",
+      "description_notes": "raises \u20ac1.3 billion at first close for the second vintage of Copenhagen Infrastructure Partners' flagship credit strategy. The fund represents the firm's continued expansion in credit investing, building on the success of its prior credit vehicle.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-03-10T12:07:57",
+      "articles": [
+        {
+          "title": "Copenhagen Infrastructure Partners raises EUR 1.3 bn for the 2nd vintage of its flagship credit strategy at first close - The Manila Times",
+          "url": "https://news.google.com/rss/articles/CBMinAJBVV95cUxPeUFZREhVQjF2dk1RVXY4NlRwa1NBY1ZobDBMUExZVi1uNmRzcjRseHdtbWZ3VFdNUWpiR2hYcmZMN1ZzdDYxdkZ1SHY4V2RhTU1lbE11bUN0SXFndU04TFdsZllKNmdQLWJTNmpISHVUa0JiUmdJWmlZNEtJbnUzNC1yb25hYkRFdW5UR3BTZnZPLXpaWDBlNGZpYUdJZ0F6OXh5V1JfMjFaOEpCN2VUc2hZb285UGtxZVcyY0VxeDVRQV9jOXYydnozTVo0bzMzTWpuLWllNnJZaWlETldyNnFBSDlwSVU4bXM5c1FTeE0telJMMjN6akg2VTI2YVF0TjhtTmJCTF9ka0RaMUN3X0hSRjdIeHgyRC1hV9IBogJBVV95cUxQMWY0Vm5yTVVFd3NOYTBMTVp5N2toNUNBckdjUzYtVWpSM2hVTklQNFd6RldVVHB5akhmdTREY00zMGN0cGoyMEUzNWNxejZtcVBIejB2cWVwM3hsZHRNU0M1eG1tcHp5bVhiYTVSajRSUmtMU0o1ZWdjMnBsaHFaODBlYTNFOXAxYXNkUmFuWG40dDlReTNFcVhrdW9GNm9kWDFIS21KejlHbEI2MFFKWmNXWXE3Q200TkYtelRQSmNPUWVuUi12OWZzNzF2cmgyUHlIUDdXa3Y4bTAyeHd4UzFud0g3MlNWRlBaNjh2eGVBaXJPVkZTMWtkaUZKY1NqWXVMTTJEY1RwcElXWEdiY0JhNEtVRUx6cnBTbF9nYk9jdw?oc=5",
+          "source_name": "The Manila Times",
+          "source_domain": "manilatimes.net",
+          "published_date": "2026-03-10",
+          "summary": "Copenhagen Infrastructure Partners raises EUR 1.3 bn for the 2nd vintage of its flagship credit strategy at first close&nbsp;&nbsp;The Manila Times",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Copenhagen Infrastructure Partners raises EUR 1.3 bn for the 2nd vintage of its flagship credit strategy at first close - Niagara Falls Review",
+          "url": "https://news.google.com/rss/articles/CBMilAJBVV95cUxNb1Yxb242Y01rb2RLMmgwaEQ1S1ZrSDcxNU5TVmxzeUwyRDAxaUN6Zm0wUjQ0T2Y4WlJRcVdqTU5Pb1dJdHc4QVRiS0FzZWZjQjBuT3ptbGtRU3JPbV9SaWxudHlsZ3ZCYUxmQjl5SnprTkpUZnFhdWRucDdzVllEeVc1czVROVRGSTM5Q1BGamJIdEFRc1RHOW9aeG9UZVJFVngwcVRCYmltSG9jSXNXdW9Ub1ROZEM1NW1Ma1hQbnNsU1MwbmFURGozMVpLclpsMkpSVmtMWktKYVhrMG5iY0FnNkU3S01GTEtHTzJCN0FEU3NaamxSYkNLeEVYMHZLX09STHkzX01lZFhTRzUxS3Noa0o?oc=5",
+          "source_name": "Niagara Falls Review",
+          "source_domain": "niagarafallsreview.ca",
+          "published_date": "2026-03-10",
+          "summary": "Copenhagen Infrastructure Partners raises EUR 1.3 bn for the 2nd vintage of its flagship credit strategy at first close&nbsp;&nbsp;Niagara Falls Review",
+          "feed_name": "search:First/final close"
+        }
+      ]
+    },
+    {
+      "fund_name": "CIP Credit Fund",
+      "firm": "CIP",
+      "firm_slug": "cip",
+      "amount": "\u20ac1.3B",
+      "amount_usd_millions": 1300.0,
+      "category": "Credit Funds",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Other",
+      "announcement_date": "2026-03-10",
+      "source_url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE96U244MFlxR0ZQMkJCOEN5cVBKZE9OU25SS254NkxIYm9ma2t0ME9mdmZOd2ZiUmRyMDVQeGhSc09NYjFmTmpIZGtLT2hLNkQ5bXQ4ZHBVTVNRRTljclY0Zlk4TWRkaERCM0E?oc=5",
+      "source_name": "Renews",
+      "description_notes": "raises \u20ac1.3 billion for a credit fund focused on renewable energy investments. Limited details available from the article summary regarding specific strategy, LP composition, or fund positioning relative to prior vintages.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-03-10T12:07:57",
+      "articles": [
+        {
+          "title": "CIP raises \u20ac1.3bn for credit fund - reNews - Renewable Energy News",
+          "url": "https://news.google.com/rss/articles/CBMiakFVX3lxTE96U244MFlxR0ZQMkJCOEN5cVBKZE9OU25SS254NkxIYm9ma2t0ME9mdmZOd2ZiUmRyMDVQeGhSc09NYjFmTmpIZGtLT2hLNkQ5bXQ4ZHBVTVNRRTljclY0Zlk4TWRkaERCM0E?oc=5",
+          "source_name": "reNews - Renewable Energy News",
+          "source_domain": "renews.biz",
+          "published_date": "2026-03-10",
+          "summary": "CIP raises \u20ac1.3bn for credit fund&nbsp;&nbsp;reNews - Renewable Energy News",
+          "feed_name": "search:First/final close"
+        }
+      ]
+    },
+    {
+      "fund_name": "Cross Capital First Fund-of-Funds",
+      "firm": "Cross Capital",
+      "firm_slug": "cross-capital",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Secondaries & GP-Stakes",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Final Close",
+      "announcement_date": "2026-03-10",
+      "source_url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE90VW45anp5bF8wOGpVV0Ftc0xPZnEwR25PZWJnS1dvZ0pRWUNndWN4U2t0LUY3eVh0Nm1iODhRWnpoZTRFbmpUYmNYVkZIdkNyd0wtQUtSQWVYSUE2NGk0bEdVNXBubkcwZl9HNnVpWlhkLWlJNFpDT1V0aXZuZw?oc=5",
+      "source_name": "Dealstreetasia",
+      "description_notes": "closes its inaugural fund-of-funds vehicle focused on secondaries and GP-stakes investments, targeting exposure to mid-market and lower-middle-market buyout funds across North America. The debut offering marks Cross Capital's expansion beyond direct investing into the secondary and continuation fund space, positioning LPs for diversified exposure across multiple vintage years and manager relationships. First-time fund vehicles in the secondaries space typically attract institutional capital seeking experienced GP selection and portfolio construction amid a competitive fundraising environment.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-03-10T12:07:57",
+      "articles": [
+        {
+          "title": "Cross Capital attracts two new LPs, nears final close for first fund-of-funds - DealStreetAsia",
+          "url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE90VW45anp5bF8wOGpVV0Ftc0xPZnEwR25PZWJnS1dvZ0pRWUNndWN4U2t0LUY3eVh0Nm1iODhRWnpoZTRFbmpUYmNYVkZIdkNyd0wtQUtSQWVYSUE2NGk0bEdVNXBubkcwZl9HNnVpWlhkLWlJNFpDT1V0aXZuZw?oc=5",
+          "source_name": "DealStreetAsia",
+          "source_domain": "dealstreetasia.com",
+          "published_date": "2026-03-10",
+          "summary": "Cross Capital attracts two new LPs, nears final close for first fund-of-funds&nbsp;&nbsp;DealStreetAsia",
+          "feed_name": "search:First/final close"
+        }
+      ]
+    },
+    {
+      "fund_name": "Real Estate Secondaries Platform",
+      "firm": "ADIA and Ardian",
+      "firm_slug": "adia-and-ardian",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Secondaries & GP-Stakes",
+      "location": "Abu Dhabi, UAE",
+      "city": "Abu Dhabi",
+      "state": "",
+      "country": "UAE",
+      "stage": "Launch",
+      "announcement_date": "2026-03-10",
+      "source_url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxNRUJ6TGFDMWpJQXAyVkZsN2kxa19JLWVwSThJSGtSSjd3ZXR0ZVJ5RkhUTFI4dU1FMWhxdzZtRUhzVUtiemJ1RlFJaFZINmNaTS16RVdlRFFVT2F0dnM5bXhhaHN2UWhwYXJRd29obG9fX3RpdmJHZVl2TUpHQ2p2QmZScFdIamtvQ2RlUkRlQWV1eF9PREJianM5RGJKb2tPQl8wNTVnQQ?oc=5",
+      "source_name": "Realassets",
+      "description_notes": "launch a joint secondaries platform combining ADIA's $150B+ in assets under management with Ardian's \u20ac116B AUM and established secondaries expertise. The partnership targets real estate secondary transactions and GP-stakes globally, pooling the two firms' capital and deal flow capabilities to compete in the fragmented secondary market. This represents a strategic consolidation of resources rather than a traditional fund vehicle, positioning both institutions to scale their exposure to distressed and continuation deals across institutional real estate portfolios.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-03-10T12:07:57",
+      "articles": [
+        {
+          "title": "ADIA and Ardian launch real estate secondaries platform - IPE Real Assets",
+          "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxNRUJ6TGFDMWpJQXAyVkZsN2kxa19JLWVwSThJSGtSSjd3ZXR0ZVJ5RkhUTFI4dU1FMWhxdzZtRUhzVUtiemJ1RlFJaFZINmNaTS16RVdlRFFVT2F0dnM5bXhhaHN2UWhwYXJRd29obG9fX3RpdmJHZVl2TUpHQ2p2QmZScFdIamtvQ2RlUkRlQWV1eF9PREJianM5RGJKb2tPQl8wNTVnQQ?oc=5",
+          "source_name": "IPE Real Assets",
+          "source_domain": "realassets.ipe.com",
+          "published_date": "2026-03-10",
+          "summary": "ADIA and Ardian launch real estate secondaries platform&nbsp;&nbsp;IPE Real Assets",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
+        }
+      ]
+    },
+    {
+      "fund_name": "Apollo Long-Term Asset Fund",
+      "firm": "Apollo",
+      "firm_slug": "apollo",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Infrastructure",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2026-03-10",
+      "source_url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOYlliblhDZmRTaWdVZTN3dUQ3a2lNaXJBR2ZVZTByUXFaUTVhWWdwZXBTOXZrQk5WM08wREppbjdtcGVBUmlCQjZPRnJrOGd3R00yaTJTeFZiNlNzcmRxTEhOSnRzdjZfdkhSOGNpcDZSdkppQmZWSGlYZVpYZDk3LTVUVm5Zd0dfX2c4OU4yekQtTEdhMGFxeXJoUnRaYmxMZXVyWHhpM19GRlEzdFlwUldiM0NGUTYtRE9md2JjSXFIUGdtT1HSAcsBQVVfeXFMT0ZfYU02Q1hSMDhuTGZJMmFWU3h1RHQwRGZTWFJ6WW90aVlrQmZGZUNucE9La202MU1WeHZXQ2libXdtZEU4MWtvT1FsU2dDajJwNEtqMHhlUXdQcDM1eUNYLWxON3ZQWGc2MFlhWXdaQ3BLQUlHdWYwYUtyZ25wYlRzU3ZwT1hNZENZQUVWQm1za2VLMHpjM2lIQUlEa2FGeC1ScHVaNnlWcDRaazdPVl9pcWZRLUNETERPeWYyYm9jdTk2VG5fVXRiMTg?oc=5",
+      "source_name": "Manilatimes",
+      "description_notes": "launch a long-term infrastructure fund designed to invest in essential assets with stable, inflation-protected cash flows across sectors like utilities, transportation, and energy transition. Apollo, leveraging its $481B in AUM and established infrastructure investment platform, targets institutional LPs seeking 10+ year hold periods and yield-generating alternatives to traditional fixed income. The fund represents the firm's expansion in permanent capital vehicles as mega-managers compete for longer-duration LP mandates.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-03-10T12:07:57",
+      "articles": [
+        {
+          "title": "Apollo to Launch First Long-Term Asset Fund in the UK - The Manila Times",
+          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOYlliblhDZmRTaWdVZTN3dUQ3a2lNaXJBR2ZVZTByUXFaUTVhWWdwZXBTOXZrQk5WM08wREppbjdtcGVBUmlCQjZPRnJrOGd3R00yaTJTeFZiNlNzcmRxTEhOSnRzdjZfdkhSOGNpcDZSdkppQmZWSGlYZVpYZDk3LTVUVm5Zd0dfX2c4OU4yekQtTEdhMGFxeXJoUnRaYmxMZXVyWHhpM19GRlEzdFlwUldiM0NGUTYtRE9md2JjSXFIUGdtT1HSAcsBQVVfeXFMT0ZfYU02Q1hSMDhuTGZJMmFWU3h1RHQwRGZTWFJ6WW90aVlrQmZGZUNucE9La202MU1WeHZXQ2libXdtZEU4MWtvT1FsU2dDajJwNEtqMHhlUXdQcDM1eUNYLWxON3ZQWGc2MFlhWXdaQ3BLQUlHdWYwYUtyZ25wYlRzU3ZwT1hNZENZQUVWQm1za2VLMHpjM2lIQUlEa2FGeC1ScHVaNnlWcDRaazdPVl9pcWZRLUNETERPeWYyYm9jdTk2VG5fVXRiMTg?oc=5",
+          "source_name": "The Manila Times",
+          "source_domain": "manilatimes.net",
+          "published_date": "2026-03-10",
+          "summary": "Apollo to Launch First Long-Term Asset Fund in the UK&nbsp;&nbsp;The Manila Times",
+          "feed_name": "search:Credit/Real estate"
+        }
+      ]
+    },
+    {
+      "fund_name": "Founders Fund Growth Fund",
+      "firm": "Founders Fund",
+      "firm_slug": "founders-fund",
+      "amount": "$6B",
+      "amount_usd_millions": 6000.0,
+      "category": "Venture Capital",
+      "location": "San Francisco, CA",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2026-03-09",
+      "source_url": "https://techcrunch.com/2026/03/09/founders-fund-nears-6-billion-close-for-latest-growth-fund-sources-say/",
+      "source_name": "TechCrunch",
+      "description_notes": "targets growth-stage technology investments nearing a $6 billion close. The fund represents Founders Fund's latest vehicle for backing scaling companies in the venture ecosystem.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-03-10T12:07:57",
+      "articles": [
+        {
+          "title": "Founders Fund nears $6B close for latest growth fund, sources say",
+          "url": "https://techcrunch.com/2026/03/09/founders-fund-nears-6-billion-close-for-latest-growth-fund-sources-say/",
+          "source_name": "TechCrunch",
+          "source_domain": "techcrunch.com",
+          "published_date": "2026-03-10",
+          "summary": "",
+          "feed_name": "TechCrunch - Venture"
+        }
+      ]
+    },
     {
       "fund_name": "360 ONE Asset Management Fifth Private Credit Strategy",
       "firm": "360 ONE Asset Management",
@@ -29,6 +224,15 @@
           "published_date": "2026-03-09",
           "summary": "India: 360 ONE Asset raises $400m for fifth private credit strategy&nbsp;&nbsp;DealStreetAsia",
           "feed_name": "search:Credit/Real estate"
+        },
+        {
+          "title": "360 ONE Asset closes fifth private credit fund with $400m commitments",
+          "url": "https://alternativecreditinvestor.com/2026/03/09/360-one-asset-closes-fifth-private-credit-fund-with-400m-commitments/",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-03-09",
+          "summary": "",
+          "feed_name": "Alternative Credit Investor"
         }
       ]
     },
@@ -39,15 +243,15 @@
       "amount": "Undisclosed",
       "amount_usd_millions": null,
       "category": "Real Estate",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "Dubai, UAE",
+      "city": "Dubai",
       "state": "",
-      "country": "Egypt",
+      "country": "UAE",
       "stage": "Launch",
       "announcement_date": "2026-03-09",
       "source_url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxNLU81TVI4Ym84a21KczI2REpsZ3dvSFVrbnY0T25jaFE5c1NBS2RTUWtTWGh0RjdMTG1nOTgwaWM2ajI4TGlaMDNnUEpNWkh4LXJZOWV1T1labkxQWW1yVU5sczdSY0RvcEdPZ09FVjl3M19oMy15dldxYmgybWhvYXJSQ1JKdVZHbDBDWFZpcjFld2NHVmJrQXBUNTAwQzlmbmFUeGs0MUxsdFAyUjVmX3E4UWwteTJCOGhOcUNZZ0tiSm96UjlVQkM5TkdpV2t5YUk0ajFRYndLbzVJT09FOFdsbw?oc=5",
       "source_name": "Zawya",
-      "description_notes": "secures regulatory approval from Egypt's Financial Regulatory Authority (FRA) to establish a real estate fund management and underwriting company. The approval enables Emtelaak to launch fund operations in Egypt's real estate sector, though specific fund size and investment strategy details were not disclosed.",
+      "description_notes": "launch a real estate fund with an undisclosed initial capital commitment, targeting opportunities in the Middle East region where Emtelaak has established local expertise and relationships. The fund represents the firm's dedicated vehicle for direct real estate investments, building on its track record in the region's property markets.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-09T10:22:16",
@@ -59,6 +263,37 @@
           "source_domain": "zawya.com",
           "published_date": "2026-03-09",
           "summary": "Egypt: Emtelaak secures FRA approval to launch real estate fund management, underwriting company&nbsp;&nbsp;ZAWYA",
+          "feed_name": "search:Credit/Real estate"
+        }
+      ]
+    },
+    {
+      "fund_name": "Fonci\u00e8re Quaero II",
+      "firm": "Quaero Capital",
+      "firm_slug": "quaero-capital",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Real Estate",
+      "location": "Paris, France",
+      "city": "Paris",
+      "state": "",
+      "country": "France",
+      "stage": "First Close",
+      "announcement_date": "2026-03-09",
+      "source_url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQT2hjNU1SRUVvQk1abC1NellBYnk3Nm0xVzEyMDh4aDR4ZkNPd3JyX3dCUEdSN0tuakxJYkJCa2RWTnBMWXppN01Ua00yVDdNUmxucEptS3ZUOWg3MWxJRkRDY2pBeXJTM2J5YzRwV0c5X2l1Y2QwSEQ5SnZVeDdaZzZ6eUllT09Vc2JEbkFrQ2UyTm9QX3pZQ01MSGc2R0VPb3dCUTZubHFWWXNMYjBoOXBmOEtqVTFVZkUxajlUaw?oc=5",
+      "source_name": "Rankiapro",
+      "description_notes": "closes first tranche for Fonci\u00e8re Quaero II, a real estate fund from French asset manager Quaero Capital focused on European property investments. the fund builds on the success of its predecessor vehicle, targeting institutional investors seeking diversified real estate exposure across the continent.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-03-10T12:07:57",
+      "articles": [
+        {
+          "title": "Quaero Capital reaches first close of Fonci\u00e8re Quaero II - RankiaPro",
+          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxQT2hjNU1SRUVvQk1abC1NellBYnk3Nm0xVzEyMDh4aDR4ZkNPd3JyX3dCUEdSN0tuakxJYkJCa2RWTnBMWXppN01Ua00yVDdNUmxucEptS3ZUOWg3MWxJRkRDY2pBeXJTM2J5YzRwV0c5X2l1Y2QwSEQ5SnZVeDdaZzZ6eUllT09Vc2JEbkFrQ2UyTm9QX3pZQ01MSGc2R0VPb3dCUTZubHFWWXNMYjBoOXBmOEtqVTFVZkUxajlUaw?oc=5",
+          "source_name": "RankiaPro",
+          "source_domain": "rankiapro.com",
+          "published_date": "2026-03-09",
+          "summary": "Quaero Capital reaches first close of Fonci\u00e8re Quaero II&nbsp;&nbsp;RankiaPro",
           "feed_name": "search:Credit/Real estate"
         }
       ]
@@ -83,6 +318,15 @@
       "covered_date": null,
       "date_added": "2026-03-09T10:22:16",
       "articles": [
+        {
+          "title": "Arnya Real Estate Fund secures \u20b91,030-Cr first close to invest in Mumbai and Pune projects - Business Review Live",
+          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQMlc1cDBnR2pRMTlLR1llMmdCRDYxZVJjamo1c05hV1VQSjdRZElQTWw3dG1LaFZhcU5yb3dTX2ZpZVp1Q2RZcTFFTG9UWmJ6NkstVXhELWZsMGFiSzcxUjB4NXdUTF8tcGdIT0RSOGp3Q1d1dFBjYjB1bHN3aDBIMFNiYmppWkg4cDBjSXkwaUhhdGhvamZVcUlYejJVV2pXQXMzYWEzVXEyMnNyWVNoRzdiTDdKN0UxVWJ1dHRVMk8xajJTVjdpLQ?oc=5",
+          "source_name": "Business Review Live",
+          "source_domain": "businessreviewlive.com",
+          "published_date": "2026-03-09",
+          "summary": "Arnya Real Estate Fund secures \u20b91,030-Cr first close to invest in Mumbai and Pune projects&nbsp;&nbsp;Business Review Live",
+          "feed_name": "search:First/final close"
+        },
         {
           "title": "Arnya Real Estate Fund - Equity announces first close at Rs 1,030 cr - Business Standard",
           "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxPWEV0ZEZpZHZNbEQxY0dEbDJvU3VwQUdfbDlXclVZem04Z1IxdWF3QTRjMm1jUS1XazdpdEZVcVZwUXI4Snl0R3E4cVlDbkd6RmY3YndickJIM2c3RG5Qb1VyeUhaMTk2UUFnYlk5d0JQTTJfZFhuN3hJcUxsVnYwU1U0MGV3VnBNZEhWUnU4RXA4NnJ1SFJrU2hmWmJmeDVfNGhIVDFPbm16Q0VwX3pBbmtqdjVXbGxGRFFkMGxEUEFyMjFkQm9pVmFUN1FlRk9oZ0txS3M3NNIB3AFBVV95cUxNTGtnd0VwaXRvNU1CTmx5VFg4eHJEYmtoTjlXY09rdUdXNm1oZVZsS09wd1FDNWJSUk93cFlwV0NfZlMxUWNpd1JWcF9fZWNDNTVELTAxYnpPNDZZdm1kSnlGU1R6YzFUTGdHU2pTb1hzc1d4TE9DVklSZzY2WkJxN2xzcFhCX2xfYmVJdDVqRUYybUE0TVpjTEJkckczRDgxNTNXMkxrOHgwblhPYUYwZG5lUjlTcXNvdlVfTTgxV29wSnZnZE5EdmVON2FTdDFuaVlQMEowMmJ2Q0pk?oc=5",
@@ -353,7 +597,7 @@
       "announcement_date": "2026-03-06",
       "source_url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPWjdocVNhdm8yXzk2N2lmNkVQVmQ4WkdVM3hrbHc3OXJlR1B1YXQ5dE91UWxfajRiQUZ6UmhIQ0FRR0ZqR05qcmR6SkVlRkt4ZnBiYlc2QkszQ0xRUWdZYmlYcXF6dkpTaml0NjlRMFBZNlNwZVQ2QUhwcXdYUjh4NC0zUXNMMjVYaVBDWFFlX3V3SGow?oc=5",
       "source_name": "PERE",
-      "description_notes": "close a first tranche of an undisclosed residential real estate fund targeting the German housing market, where Zaga Capital is focusing on multifamily and residential assets amid supply constraints and demographic demand in key metropolitan areas. the debut fund from the firm marks an entry into continental European real estate with institutional backing from pension funds and family offices seeking yield in the residential sector.",
+      "description_notes": "close a debut residential real estate fund targeting the German housing market, where Zaga Capital is capitalizing on strong demand for multifamily and single-family assets across major metropolitan areas. the fund's first close marks the firm's entry into European real estate with a focus on value-add and core-plus strategies in a market characterized by supply constraints and demographic tailwinds. no major LP roster has been disclosed, though the fund's launch reflects broader investor appetite for stabilized residential exposure in continental Europe.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-08T10:01:35",
@@ -402,7 +646,7 @@
       "announcement_date": "2026-03-06",
       "source_url": "https://www.perenews.com/msrei-on-course-for-its-gxi-fundraising-target-after-major-first-close/",
       "source_name": "PERE",
-      "description_notes": "achieves a major first close toward its fundraising target. The fund appears to be on track to meet its overall capital raise goal, signaling strong investor demand for MSREI's real estate investment strategy.",
+      "description_notes": "launch GXI, a real estate fund from MSREI at first close with an undisclosed target. Limited details are available on the fund's specific strategy, LP composition, or how it positions relative to prior vintages.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-08T10:01:35",
@@ -415,6 +659,15 @@
           "published_date": "2026-03-06",
           "summary": "",
           "feed_name": "PERE"
+        },
+        {
+          "title": "MSREI on course for its GXI fundraising target after major first close - Private Equity Real Estate | PERE",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNVjRNSTRKRUQwcmRkNUpnMTkyaUtYemU2T185N29ReVRpaWdsMTB1QkVTdmM2d1AyMUxia1BVNERQbGUtWFhVbGRwNHRUMEs2VHNpdzg1VGVGQ3hMbGFLbDZLUjZoUFhEeGtYVnVKaHNTUkZPY1VfUmlZLXI2WHZ5a2hVM21GVk5ZSjJNcU9TMHpTbjRQLTFyd2oyLUE?oc=5",
+          "source_name": "Private Equity Real Estate | PERE",
+          "source_domain": "perenews.com",
+          "published_date": "2026-03-06",
+          "summary": "MSREI on course for its GXI fundraising target after major first close&nbsp;&nbsp;Private Equity Real Estate | PERE",
+          "feed_name": "search:First/final close"
         }
       ]
     },
@@ -589,6 +842,15 @@
       "covered_date": null,
       "date_added": "2026-03-06T11:01:30",
       "articles": [
+        {
+          "title": "BNP Paribas AM Alts closes first GP Stakes fund at \u20ac540m",
+          "url": "https://alternativecreditinvestor.com/2026/03/10/bnp-paribas-am-alts-closes-first-gp-stakes-fund-at-e540m/",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-03-10",
+          "summary": "",
+          "feed_name": "Alternative Credit Investor"
+        },
         {
           "title": "BNP Paribas AM shuts down \u20ac750m sustainability fund \u2013 exclusive",
           "url": "https://www.infrastructureinvestor.com/bnp-paribas-am-shuts-down-e750m-sustainability-fund-exclusive/",
@@ -829,15 +1091,15 @@
       "amount": "Undisclosed",
       "amount_usd_millions": null,
       "category": "Infrastructure",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "London, UK",
+      "city": "London",
       "state": "",
-      "country": "",
+      "country": "UK",
       "stage": "Launch",
       "announcement_date": "2026-03-05",
       "source_url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxQZHE0T2pGUWZoNHJTYXFIYW13N2trN2VvWW9jcDZDR0Y2ZzFsd0ZueklrbzY3RDFJQS15ZjVJWXlmTVFBZ2hUQWFSLUxKRW1id3hlVG5KbWM1TmFFM1VjQTFDUk05NHBvTTNYb2Y1T3BHb1VJOG5fZnUxSlBRNUlvcWdSZEw2Zw?oc=5",
       "source_name": "Funds-Europe",
-      "description_notes": "launch an infrastructure debt platform in partnership between AlbaCore, a specialist infrastructure investor, and MUFJ (Mitsubishi UFJ Financial Group), Japan's largest bank, to provide financing solutions for critical infrastructure assets across developed markets. The platform combines AlbaCore's infrastructure expertise with MUFJ's capital and distribution capabilities, targeting a market where institutional demand for stable, long-duration infrastructure debt remains robust.",
+      "description_notes": "launch an infrastructure debt platform as a joint venture between AlbaCore Capital and Mitsubishi UFJ Financial Group (MUFJ), targeting debt financing opportunities across energy, utilities, transportation, and social infrastructure assets. The platform combines AlbaCore's infrastructure investment expertise with MUFJ's capital markets capabilities and balance sheet, positioning it to compete with established infrastructure debt managers in a market driven by increasing refinancing needs and transition infrastructure demand.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-06T11:01:30",
@@ -1032,6 +1294,37 @@
           "published_date": "2026-03-04",
           "summary": "GHARAGE Ventures unveils \u20ac40 million Fund I, anchored by Gebr. Heinemann, to back travel and RetailTech startups&nbsp;&nbsp;EU-Startups",
           "feed_name": "search:PE/VC fund closes"
+        }
+      ]
+    },
+    {
+      "fund_name": "Singapore EQDP fund",
+      "firm": "JPMorgan Asset Management",
+      "firm_slug": "jpmorgan-asset-management",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2026-03-04",
+      "source_url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQVzIyX1VIQldUdGZKaHd2OVRISUNsRWtWZzM3TWJXUzJIZGVHQWdPODdtTlRpWHpOQmxyX1BoanlvcVV5X2VZYmMwam04Y0NWYThPbUJSUlVnY05zdUlDNFhzc3ZpN0RrclhkNElqbzA1NWlUVVRnem1ydDJNNjRVMFpPRFh5YW4zcEpOTThfTFdWQkg5bXdaRWVCNUQwV2ZD?oc=5",
+      "source_name": "Citywire",
+      "description_notes": "launches Singapore-focused equity distribution platform fund in partnership with UOB. The fund targets equity distribution strategies in Singapore with backing from a major Asian banking partner. JPMorgan Asset Management expands its Asia-Pacific alternatives platform through this new vehicle.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-03-10T12:07:57",
+      "articles": [
+        {
+          "title": "Exclusive: UOB partners JPMAM for Singapore EQDP fund launch - Citywire",
+          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQVzIyX1VIQldUdGZKaHd2OVRISUNsRWtWZzM3TWJXUzJIZGVHQWdPODdtTlRpWHpOQmxyX1BoanlvcVV5X2VZYmMwam04Y0NWYThPbUJSUlVnY05zdUlDNFhzc3ZpN0RrclhkNElqbzA1NWlUVVRnem1ydDJNNjRVMFpPRFh5YW4zcEpOTThfTFdWQkg5bXdaRWVCNUQwV2ZD?oc=5",
+          "source_name": "Citywire",
+          "source_domain": "citywire.com",
+          "published_date": "2026-03-04",
+          "summary": "Exclusive: UOB partners JPMAM for Singapore EQDP fund launch&nbsp;&nbsp;Citywire",
+          "feed_name": "search:Credit/Real estate"
         }
       ]
     },
@@ -2467,6 +2760,15 @@
           "published_date": "2026-02-25",
           "summary": "Riyadh Valley Company & SparkLabs Launch King Saud University Venture Fund&nbsp;&nbsp;PR Newswire",
           "feed_name": "search:Press release fund closes"
+        },
+        {
+          "title": "Riyadh Valley Company & SparkLabs Launch King Saud University Venture Fund - waya.media",
+          "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQdlA5eDlpV2dXTEZiVVpjbl9waEpkelZ1ZS1QbFJESlFvOHFodVlSYVJublFMTHRYeXNEbVNTa1dKYVozX0tkdzNHV1Y3cDVZQVlGTkxXeUJDYVJQM0lhVlpIa3Rac0hTWUYtQ09GNld1QjZWa3B5UlJsbVctUkJjZS1RT2lQR0pSYXIyblhLdmVwcHF0TEhv?oc=5",
+          "source_name": "waya.media",
+          "source_domain": "waya.media",
+          "published_date": "2026-02-25",
+          "summary": "Riyadh Valley Company & SparkLabs Launch King Saud University Venture Fund&nbsp;&nbsp;waya.media",
+          "feed_name": "search:PE/VC fund closes"
         }
       ]
     },
@@ -6311,6 +6613,15 @@
       "covered_date": null,
       "date_added": "2026-02-12T12:53:02",
       "articles": [
+        {
+          "title": "Elaia: \u20ac120 Million First Close For DV5 Multi-Stage B2B Tech Fund - Pulse 2.0",
+          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOT3F5M19ad0haMk1EVVJfcWVVZWNNaVhWOG9CNG5jd3E2SGpMSEVLVDJfel9GVWVacVYxamhQMUc3YUppQkpqbHpRbDhBdHljQTFzcTdETl9RZHRYZUJ2YjVHLWNRa0Y4ZXd0NC1jVGtBV2Qtb3pVLVlTcHpfYzNsX0lQT2EwUHpPOFdxX9IBkgFBVV95cUxPTGo0Wm5CVGhCUFctanU1TW5jd0VWVHl3Tm9ieHNBSUYzdzRVSG8yRTFOWWhBaDlDalVic3pKUEJJbnR3b3p2eDVUekhtUVZfbEdKYkp0ZG53c3RyckJaWnBmeHNvdXlCanA2Y1JsWlczRVVkbXJ4dTFoM0FuN3gwMHNyZzVDLUVNVGRMaFRsODQ0dw?oc=5",
+          "source_name": "Pulse 2.0",
+          "source_domain": "pulse2.com",
+          "published_date": "2026-02-14",
+          "summary": "Elaia: \u20ac120 Million First Close For DV5 Multi-Stage B2B Tech Fund&nbsp;&nbsp;Pulse 2.0",
+          "feed_name": "search:First/final close"
+        },
         {
           "title": "French VC Elaia reaches \u20ac120 million first close for new multi-stage B2B technology fund - EU-Startups",
           "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxNUV85emFtSXNSd2pMM1BaOVZRSHdiSVQ1MWc5OTVMVDREU193RnlHSUg4dFdZM1JmbzR6VnZoaE9tclFEOW1qY2psb01ja3p1ZC1TNTcwRmc4RjZPWTk4eVNsRUU2MWxrdVg1RWxrNE15UTE3X1VlUGNCMHRDVFN5SUswOEg3Nmt0bmpueUcwVktoc295S09Pak9hMWp2WGszOHlkNnlFbjBYSDUzTFNxRFM2czI5RFJURnZhMVdkTDZuVG8?oc=5",
@@ -10603,6 +10914,15 @@
           "published_date": "2026-01-20",
           "summary": "Exclusive | Blueprint Equity Banks $333 Million for Oversubscribed Fund&nbsp;&nbsp;WSJ",
           "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "Exclusive | Blueprint Equity Banks $333 Million for Oversubscribed Fund - WSJ",
+          "url": "https://news.google.com/rss/articles/CBMiogNBVV95cUxON2lhQ1ptTHQxOFMwSVNpR28yMjJ0Mi1PS1pvNUttSTVVZURDMUJYWHQzMWxaTG14VEF6QjczT1dzbVV3TUxJV1FPX3JoWXo5VUxGejdTc0ZWSll3NmJjNjM1UjlSVDN3YXZRdU52ZTdPVDREY211aldUUTNyaXo2U2NhV0RFVFFJT01pcFFvcC1EazkzZGJMM3k5eGNFNE1MWmEzaVJsRm1LVXlCeDlmN1R5eWNNZzZBc01vZ1JwTmN0NDZWNFE4TlRBLXpEWVJGd052a1NGODZocjNHc3E2VDFVcDRzYXozbGRQWGtmY0VMYktiOVRRZ1Jxd0lpbGFYSExnMzRHOHlER1VvX2Q2aFFfdUhiRFFBTUNLdDJmVHJfSDZ5dWlIcWdwU3MzYi1vRDdYSnhyS1RrRjc2N3hfQXFYNGxyQmptN0pSNFBwbWFCaG9rS2JVRnkwQzNIclRhYXp0ZVR6YjhmZE05NG5EaTd1M1hJREl0MndEaUlMelhCTWd6SXZPY1l4aF9xUGVqMEFDcmsyUU5fYnVGOHJTZU9n?oc=5",
+          "source_name": "WSJ",
+          "source_domain": "wsj.com",
+          "published_date": "2026-01-20",
+          "summary": "Exclusive | Blueprint Equity Banks $333 Million for Oversubscribed Fund&nbsp;&nbsp;WSJ",
+          "feed_name": "search:Oversubscribed funds"
         }
       ]
     },
@@ -10723,6 +11043,15 @@
           "published_date": "2026-03-09",
           "summary": "Axiom Equity Announces Final Close of Second Flagship Fund Above Hard-Cap&nbsp;&nbsp;Yahoo Finance UK",
           "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Axiom Equity closes second fund on undisclosed sum - EU.COM",
+          "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOTDR4elFJamtwd1hqdUJVLVBZZHVrc2NkdXNld1pCLVowZ2VIYUJTbll2QkNjckw2UEI2Z2lfbUhOOThrOTBxcEk1a3RISmtSUUtiQmhSMzY0YnZZMGFnUmpkRFl0TWUyc19tVTdvWHp0dk9FbWh4b1JoZmcxVEFXR3BxbWtITEhWazM0?oc=5",
+          "source_name": "EU.COM",
+          "source_domain": "realdeals.eu.com",
+          "published_date": "2026-03-06",
+          "summary": "Axiom Equity closes second fund on undisclosed sum&nbsp;&nbsp;EU.COM",
+          "feed_name": "search:PE/VC fund closes"
         },
         {
           "title": "AG advises Axiom Equity on the closing of Fund II - Addleshaw Goddard LLP",
@@ -11684,6 +12013,37 @@
       ]
     },
     {
+      "fund_name": "AIP latest fund",
+      "firm": "AIP",
+      "firm_slug": "aip",
+      "amount": "$2.3B",
+      "amount_usd_millions": 2300.0,
+      "category": "Infrastructure",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "First Close",
+      "announcement_date": "2026-01-14",
+      "source_url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNVGJwRThYUlV3cEd0eTZKamxzSlJHTEZOai1yREwxQUJyWjAxNmJWdmJOcG1ZNnNCbUpfUEpUV3p2V2IyZWpvWFlieXNWSDE3QzY5WE92V1pMZ3hSaHNqRDlSMHRiUTVwOFhvS1NuOExrVkY3T0R1cmd6WXl0RjB3TGhEVXF0U2pSQzhlQi1tSlQ4SzZsQXZXMmRRLXhRdw?oc=5",
+      "source_name": "PitchBook",
+      "description_notes": "close $2.3B for AIP's latest infrastructure fund, targeting core and core-plus assets in North America and Europe with a focus on energy transition, digital infrastructure, and essential services. The fund represents growth from prior vintages and underscores strong LP appetite for infrastructure amid inflation hedging demand and ESG mandates.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-03-10T12:07:57",
+      "articles": [
+        {
+          "title": "Danish infra manager AIP holds $2.3B first close for latest fund - PitchBook",
+          "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNVGJwRThYUlV3cEd0eTZKamxzSlJHTEZOai1yREwxQUJyWjAxNmJWdmJOcG1ZNnNCbUpfUEpUV3p2V2IyZWpvWFlieXNWSDE3QzY5WE92V1pMZ3hSaHNqRDlSMHRiUTVwOFhvS1NuOExrVkY3T0R1cmd6WXl0RjB3TGhEVXF0U2pSQzhlQi1tSlQ4SzZsQXZXMmRRLXhRdw?oc=5",
+          "source_name": "PitchBook",
+          "source_domain": "pitchbook.com",
+          "published_date": "2026-01-14",
+          "summary": "Danish infra manager AIP holds $2.3B first close for latest fund&nbsp;&nbsp;PitchBook",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
+        }
+      ]
+    },
+    {
       "fund_name": "AIP Fund V",
       "firm": "AIP Management",
       "firm_slug": "aip-management",
@@ -12149,6 +12509,33 @@
       "covered_date": null,
       "date_added": "2026-02-08T01:44:42",
       "articles": [
+        {
+          "title": "Bain Capital nears final close of record $10.5 billion Asia fund, sources say - Reuters",
+          "url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNdmVOZ2Q5NVJGOTdsZHp4cGg4MDBBUWNHSjRvb19oTzlabmIxMGJRcTlDYmdjMzBfZVNaRjVZYjhTSG54cjM2V2ZmbDdXbTlzOUF3cE1IVk12VHpTd1VTYzVXR1lNLTZaVVBDOVY3U1F5SnVOc2ZpM1JJblNGeWZFc1k5cmRWVGhIUnVtbDlVdk5tRzNtVWQxejBQSnlhWkMzMnRDNmtzTi01Q0dQX0NYQ1p2SHVYWmRLZzRzV1FWYVREOFNT?oc=5",
+          "source_name": "Reuters",
+          "source_domain": "reuters.com",
+          "published_date": "2026-03-10",
+          "summary": "Bain Capital nears final close of record $10.5 billion Asia fund, sources say&nbsp;&nbsp;Reuters",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Bain Capital nears final close of record $10.5 billion Asia fund, sources say - TradingView",
+          "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxPNzM0dVpKeG1KRmkxMVh1SkFYZEowX3pIMlN3STFNUE1WNmpWOHA0VWcwZnoxRU5FZEJKTlNGMWxKWi1LRVlZejhGQmNTUFVpQ0dBOEVfOXNwVEhTX2dNWjB3VDhCYmxvQVZlQ3lGRnVUMGhXNktUb1JoS0J1WlNUdzAzY0sxV0sydHdYYWthbldyTWtWWFBRSUdiVGRnblgtSzRkOXNwczdLbFNfT0xlWU92bzR6dnVrQ3BSZ3dQMG9nNVdZTmlCX1hCYU5jcG42Ymg2VENMZk9iMWppbWc?oc=5",
+          "source_name": "TradingView",
+          "source_domain": "tradingview.com",
+          "published_date": "2026-03-10",
+          "summary": "Bain Capital nears final close of record $10.5 billion Asia fund, sources say&nbsp;&nbsp;TradingView",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Bain Capital nears final close of record US$10.5 billion Asia fund, sources say - The Edge Malaysia",
+          "url": "https://news.google.com/rss/articles/CBMiUEFVX3lxTE5xMTFzSmd4OUJTaWl2dFplOXVoMWFwMUh1UUJTYXRJSGpLbFRuZ2RnLUxDVHZSZEkyYmlFQmpySllhZVVxQkRFTEZsQ3lReDNp?oc=5",
+          "source_name": "The Edge Malaysia",
+          "source_domain": "theedgemalaysia.com",
+          "published_date": "2026-03-10",
+          "summary": "Bain Capital nears final close of record US$10.5 billion Asia fund, sources say&nbsp;&nbsp;The Edge Malaysia",
+          "feed_name": "search:First/final close"
+        },
         {
           "title": "Bain Capital Real Estate Closes on $5 Billion in New Capital, Expanding Scale Across High-Conviction Strategies - Business Wire",
           "url": "https://news.google.com/rss/articles/CBMi_gFBVV95cUxNbjBZaU14MUg1M2VCY0M4czd5RVQ4aGYyXzhqVm02dTdnLXVmUDJXN0dDRC1hZGZ6MzYwVHYzdnpyT0I0T0szVVF2eFZFcW9FZXhpYnBTTS1YS3JWb1JBMFVsYTNwblpMNHFRei1BbFgxeGxpWFZ0R3pMS28yNWVkTnJrMThxS0g2T1FPdW1GTEYya25qeElGc3JWeF9xWjdxZVpMa2RKU1U4S1l5TmJyUVAzeUd4Nmh1dTQ0bFJ4T0FJeWxVdGx0VElBUTMwMDlLOGxEQ2l2Q2hjdTZQZlpYZk04c1F6T3VETmRzSWNmU1pLM0tvLVgwNnM2T0I4UQ?oc=5",
@@ -16306,6 +16693,17 @@
       "country": "US"
     },
     {
+      "firm": "Founders Fund",
+      "firm_slug": "founders-fund",
+      "fund_count": 1,
+      "total_aum_millions": 6000.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "San Francisco",
+      "country": "US"
+    },
+    {
       "firm": "Blue Owl",
       "firm_slug": "blue-owl",
       "fund_count": 2,
@@ -16675,6 +17073,17 @@
       "country": "India"
     },
     {
+      "firm": "AIP",
+      "firm_slug": "aip",
+      "fund_count": 1,
+      "total_aum_millions": 2300.0,
+      "categories": [
+        "Infrastructure"
+      ],
+      "city": "New York",
+      "country": "US"
+    },
+    {
       "firm": "South Street Partners",
       "firm_slug": "south-street-partners",
       "fund_count": 1,
@@ -16974,6 +17383,28 @@
       ],
       "city": "Luxembourg",
       "country": "Luxembourg"
+    },
+    {
+      "firm": "Copenhagen Infrastructure Partners",
+      "firm_slug": "copenhagen-infrastructure-partners",
+      "fund_count": 1,
+      "total_aum_millions": 1300.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "Copenhagen",
+      "country": "Denmark"
+    },
+    {
+      "firm": "CIP",
+      "firm_slug": "cip",
+      "fund_count": 1,
+      "total_aum_millions": 1300.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "N/A",
+      "country": "N/A"
     },
     {
       "firm": "STG",
@@ -19360,6 +19791,39 @@
       "country": "N/A"
     },
     {
+      "firm": "Cross Capital",
+      "firm_slug": "cross-capital",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Secondaries & GP-Stakes"
+      ],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
+      "firm": "ADIA and Ardian",
+      "firm_slug": "adia-and-ardian",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Secondaries & GP-Stakes"
+      ],
+      "city": "Abu Dhabi",
+      "country": "UAE"
+    },
+    {
+      "firm": "Apollo",
+      "firm_slug": "apollo",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Infrastructure"
+      ],
+      "city": "New York",
+      "country": "US"
+    },
+    {
       "firm": "Emtelaak",
       "firm_slug": "emtelaak",
       "fund_count": 1,
@@ -19367,8 +19831,19 @@
       "categories": [
         "Real Estate"
       ],
-      "city": "N/A",
-      "country": "Egypt"
+      "city": "Dubai",
+      "country": "UAE"
+    },
+    {
+      "firm": "Quaero Capital",
+      "firm_slug": "quaero-capital",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Real Estate"
+      ],
+      "city": "Paris",
+      "country": "France"
     },
     {
       "firm": "Schroders Greencoat",
@@ -19422,8 +19897,19 @@
       "categories": [
         "Infrastructure"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "JPMorgan Asset Management",
+      "firm_slug": "jpmorgan-asset-management",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "New York",
+      "country": "US"
     },
     {
       "firm": "Arixa Capital",
@@ -20613,8 +21099,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-03-09T06:16:23.609577",
-      "last_success": "2026-03-09T06:16:23.609588",
+      "last_fetch": "2026-03-10T06:24:29.530542",
+      "last_success": "2026-03-10T06:24:29.530552",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -20623,8 +21109,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-03-09T06:16:21.412721",
-      "last_success": "2026-03-09T06:16:21.412730",
+      "last_fetch": "2026-03-10T06:24:27.178908",
+      "last_success": "2026-03-10T06:24:27.178916",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -20663,8 +21149,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-03-09T06:16:29.140094",
-      "last_success": "2026-03-09T06:16:29.140104",
+      "last_fetch": "2026-03-10T07:21:19.805246",
+      "last_success": "2026-03-10T07:21:19.805256",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -20673,8 +21159,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-03-09T06:16:05.173595",
-      "last_success": "2026-03-09T06:16:05.173605",
+      "last_fetch": "2026-03-10T06:20:17.136670",
+      "last_success": "2026-03-10T06:20:17.136676",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -20683,8 +21169,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-03-09T06:15:08.082734",
-      "last_success": "2026-03-09T06:15:08.082741",
+      "last_fetch": "2026-03-10T06:11:21.756188",
+      "last_success": "2026-03-10T06:11:21.756192",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -20693,8 +21179,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-03-09T06:16:19.645548",
-      "last_success": "2026-03-09T06:16:19.645557",
+      "last_fetch": "2026-03-10T06:24:25.340166",
+      "last_success": "2026-03-10T06:24:25.340173",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -20703,8 +21189,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-03-09T06:16:08.504024",
-      "last_success": "2026-03-09T06:16:08.504034",
+      "last_fetch": "2026-03-10T06:20:19.578087",
+      "last_success": "2026-03-10T06:20:19.578099",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -20713,8 +21199,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-03-09T06:16:26.447856",
-      "last_success": "2026-03-09T06:16:26.447867",
+      "last_fetch": "2026-03-10T06:24:32.473425",
+      "last_success": "2026-03-10T06:24:32.473435",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -20723,8 +21209,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-03-09T06:16:11.549670",
-      "last_success": "2026-03-09T06:16:11.549680",
+      "last_fetch": "2026-03-10T06:20:22.591979",
+      "last_success": "2026-03-10T06:20:22.591988",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -20733,8 +21219,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-03-09T06:15:06.481513",
-      "last_success": "2026-03-09T06:15:06.481517",
+      "last_fetch": "2026-03-10T06:11:20.243729",
+      "last_success": "2026-03-10T06:11:20.243732",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -20743,8 +21229,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-03-09T06:16:17.636976",
-      "last_success": "2026-03-09T06:16:17.636986",
+      "last_fetch": "2026-03-10T06:21:47.479200",
+      "last_success": "2026-03-10T06:21:47.479210",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -20753,8 +21239,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-03-09T06:16:14.515212",
-      "last_success": "2026-03-09T06:16:14.515222",
+      "last_fetch": "2026-03-10T06:21:43.204204",
+      "last_success": "2026-03-10T06:21:43.204209",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -20763,8 +21249,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-03-09T06:15:09.314753",
-      "last_success": "2026-03-09T06:15:09.314765",
+      "last_fetch": "2026-03-10T06:11:23.001273",
+      "last_success": "2026-03-10T06:11:23.001281",
       "error_count": 0,
       "article_count": 19,
       "last_error": "",
@@ -20772,31 +21258,31 @@
     }
   ],
   "stats": {
-    "total_funds": 449,
+    "total_funds": 458,
     "total_covered": 52,
-    "total_uncovered": 397,
-    "total_aum_millions": 4899249.7,
+    "total_uncovered": 406,
+    "total_aum_millions": 4910149.7,
     "by_category": {
-      "Credit Funds": 94,
-      "Real Estate": 48,
-      "Venture Capital": 107,
+      "Credit Funds": 97,
+      "Secondaries & GP-Stakes": 32,
+      "Infrastructure": 59,
+      "Venture Capital": 108,
+      "Real Estate": 49,
       "Private Equity": 112,
-      "Infrastructure": 57,
-      "Secondaries & GP-Stakes": 30,
       "N/A": 1
     },
     "by_stage": {
-      "Launch": 167,
-      "First Close": 76,
-      "Final Close": 128,
-      "Other": 71,
+      "First Close": 79,
+      "Other": 72,
+      "Final Close": 130,
+      "Launch": 170,
       "Interim Close": 7
     },
     "article_count": 168,
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-03-09"
+      "latest": "2026-03-10"
     }
   }
 }
