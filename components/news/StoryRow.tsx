@@ -28,8 +28,7 @@ export function StoryRow({ story }: StoryRowProps) {
       <HoverCardTrigger asChild>
         <div
           className={cn(
-            'flex items-center gap-2 px-3 py-2 border-b border-border/40 hover:bg-accent/30 transition-colors group',
-            story.isHighSignal && 'border-l-2 border-l-red-500'
+            'flex items-center gap-2 px-3 py-2 border-b border-border/40 hover:bg-accent/30 transition-colors group'
           )}
         >
           {/* Event type badge */}
@@ -118,12 +117,6 @@ export function StoryRow({ story }: StoryRowProps) {
         <div className="p-4 space-y-3">
           {/* Badges */}
           <div className="flex flex-wrap items-center gap-1.5">
-            {story.isHighSignal && (
-              <span className="inline-flex items-center gap-1 rounded-full border border-red-800 bg-red-900/50 px-2 py-0.5 text-[10px] font-medium text-red-300">
-                <Zap className="h-2.5 w-2.5" />
-                Signal
-              </span>
-            )}
             {eventLabel && (
               <span className={cn('inline-flex rounded-full border px-2 py-0.5 text-[10px] font-medium', eventLabel.color)}>
                 {eventLabel.label}
