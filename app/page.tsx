@@ -3,12 +3,11 @@ import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { AnimateOnScroll } from "@/components/animate-on-scroll"
-import { StaggeredGrid } from "@/components/staggered-grid"
 import { AnimatedCounter } from "@/components/animated-counter"
 import { BackToTop } from "@/components/back-to-top"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight, Calculator } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import { getAllFundTypes } from "@/lib/content/fund-types"
 import { getAllTools } from "@/lib/content/tools"
 import { getAllRoles } from "@/lib/content/roles"
@@ -16,8 +15,6 @@ import { fetchPlaylistVideos } from "@/lib/youtube"
 import { FeaturedEpisode } from "@/components/featured-episode"
 import { EpisodeCard } from "@/components/episode-card"
 import { SubscribePlatforms } from "@/components/subscribe-platforms"
-import { ResourceTabs } from "@/components/resource-tabs"
-import { GoDeeper } from "@/components/go-deeper"
 
 export const metadata: Metadata = {
   title: 'FundOpsHQ | Fund Operations Conversations with Industry Experts',
@@ -192,14 +189,14 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* Go Deeper Transition */}
-        <GoDeeper />
+        {/* Go Deeper Transition — hidden until articles/tools are public */}
+        {/* <GoDeeper /> */}
 
-        {/* Resource Hub - Tabbed Fund Types & Roles */}
-        <ResourceTabs fundTypes={fundTypes} roles={roles} />
+        {/* Resource Hub - Tabbed Fund Types & Roles — hidden until articles are public */}
+        {/* <ResourceTabs fundTypes={fundTypes} roles={roles} /> */}
 
-        {/* Tools Section - Featured */}
-        <section className="py-16 border-y border-border">
+        {/* Tools Section — hidden until tools are public */}
+        {/* <section className="py-16 border-y border-border">
           <div className="container mx-auto px-4">
             <AnimateOnScroll>
               <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
@@ -243,12 +240,12 @@ export default async function HomePage() {
               ))}
             </StaggeredGrid>
           </div>
-        </section>
+        </section> */}
 
         {/* Stats/Trust Section */}
         <section className="py-10 border-y border-border bg-card/30">
           <div className="container mx-auto px-4">
-            <div className="grid gap-8 grid-cols-2 sm:grid-cols-4 text-center">
+            <div className="grid gap-8 grid-cols-2 text-center max-w-md mx-auto">
               <div>
                 <div className="text-3xl font-bold text-foreground mb-1">
                   <AnimatedCounter end={videos.length} duration={1500} />
@@ -260,18 +257,6 @@ export default async function HomePage() {
                   <AnimatedCounter end={videos.filter(v => v.guest).length} duration={1500} />
                 </div>
                 <div className="text-sm text-muted-foreground">Guests</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-foreground mb-1">
-                  <AnimatedCounter end={80} suffix="+" />
-                </div>
-                <div className="text-sm text-muted-foreground">Articles</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-foreground mb-1">
-                  <AnimatedCounter end={8} duration={1500} />
-                </div>
-                <div className="text-sm text-muted-foreground">Fund types</div>
               </div>
             </div>
           </div>

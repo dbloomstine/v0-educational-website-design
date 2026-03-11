@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Logo } from "@/components/logo"
-import { Menu, X, ChevronDown, ExternalLink, DollarSign, Building, TrendingUp, LineChart, Split, Rocket } from "lucide-react"
+import { Menu, X, ChevronDown, ExternalLink } from "lucide-react"
 import { getAllFundTypes } from "@/lib/content/fund-types"
 import { getAllTools } from "@/lib/content/tools"
 import { getAllRoles } from "@/lib/content/roles"
@@ -236,8 +236,8 @@ export function SiteHeader() {
             </div>
           </Dropdown>
 
-          {/* Tools Dropdown */}
-          <Dropdown
+          {/* Tools Dropdown — hidden until ready for public */}
+          {/* <Dropdown
             trigger="Tools"
             id="tools"
             isOpen={openDropdown === 'tools'}
@@ -268,7 +268,6 @@ export function SiteHeader() {
                 ))}
               </div>
 
-              {/* View All Link */}
               <div className="pt-3 mt-3 border-t border-border">
                 <Link
                   href="/tools"
@@ -280,7 +279,7 @@ export function SiteHeader() {
                 </Link>
               </div>
             </div>
-          </Dropdown>
+          </Dropdown> */}
 
           {/* About Link */}
           <Link
@@ -447,8 +446,8 @@ export function SiteHeader() {
               </div>
             </div>
 
-            {/* Tools */}
-            <div className="pt-4 border-t border-border">
+            {/* Tools — hidden until ready for public */}
+            {/* <div className="pt-4 border-t border-border">
               <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                 Tools
               </h3>
@@ -472,7 +471,7 @@ export function SiteHeader() {
                   View All {tools.length} Tools →
                 </Link>
               </div>
-            </div>
+            </div> */}
 
             {/* About */}
             <div className="pt-4 border-t border-border">

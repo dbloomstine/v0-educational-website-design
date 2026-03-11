@@ -6,14 +6,14 @@ export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-card">
       <div className="container mx-auto px-4 py-16">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-12 md:grid-cols-2">
           {/* Logo & About */}
           <div>
             <div className="mb-4">
               <Logo height={24} className="text-foreground" />
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              Guides, tools, and articles to help you learn fund operations.
+              Conversations on fund operations—from the people who do it.
             </p>
           </div>
 
@@ -37,8 +37,8 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/tools" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Tools & Templates
+                <Link href="/news" className="text-muted-foreground hover:text-foreground transition-colors">
+                  News
                 </Link>
               </li>
               <li>
@@ -60,82 +60,52 @@ export function SiteFooter() {
             </ul>
           </div>
 
-          {/* Fund Types - Column 1 */}
-          <div>
+          {/* Fund Types — hidden until articles are public */}
+          {/* <div>
             <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">Fund Types</h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link
-                  href="/funds/private-equity"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/funds/private-equity" className="text-muted-foreground hover:text-foreground transition-colors">
                   Private Equity
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/funds/private-credit"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/funds/private-credit" className="text-muted-foreground hover:text-foreground transition-colors">
                   Private Credit
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/funds/venture-capital"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/funds/venture-capital" className="text-muted-foreground hover:text-foreground transition-colors">
                   Venture Capital
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/funds/hedge-funds"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/funds/hedge-funds" className="text-muted-foreground hover:text-foreground transition-colors">
                   Hedge Funds
                 </Link>
               </li>
-            </ul>
-          </div>
-
-          {/* Fund Types - Column 2 */}
-          <div className="lg:pt-8">
-            <ul className="space-y-2 text-sm">
               <li>
-                <Link
-                  href="/funds/real-estate"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/funds/real-estate" className="text-muted-foreground hover:text-foreground transition-colors">
                   Real Estate
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/funds/infrastructure"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/funds/infrastructure" className="text-muted-foreground hover:text-foreground transition-colors">
                   Infrastructure
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/funds/secondaries"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/funds/secondaries" className="text-muted-foreground hover:text-foreground transition-colors">
                   Secondaries
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/funds/gp-stakes"
-                  className="text-muted-foreground hover:text-foreground transition-colors"
-                >
+                <Link href="/funds/gp-stakes" className="text-muted-foreground hover:text-foreground transition-colors">
                   GP-Stakes
                 </Link>
               </li>
             </ul>
-          </div>
+          </div> */}
         </div>
 
         <div className="mt-12 border-t border-border pt-8 text-center text-sm text-muted-foreground space-y-2">
