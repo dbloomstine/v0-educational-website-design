@@ -156,8 +156,8 @@ export function SiteHeader() {
             FundWatch Tracker
           </Link> */}
 
-          {/* Articles Dropdown (Fund Types + Roles) */}
-          <Dropdown
+          {/* Articles Dropdown — hidden for now, content quality TBD */}
+          {/* <Dropdown
             trigger="Articles"
             id="articles"
             isOpen={openDropdown === 'articles'}
@@ -198,7 +198,7 @@ export function SiteHeader() {
                 </ul>
               </div>
             </div>
-          </Dropdown>
+          </Dropdown> */}
 
           {/* Newsletters Dropdown */}
           <Dropdown
@@ -381,8 +381,8 @@ export function SiteHeader() {
               </Link>
             </div> */}
 
-            {/* Articles (Fund Types + Roles) */}
-            <div className="pt-4 border-t border-border">
+            {/* Articles — hidden for now, content quality TBD */}
+            {/* <div className="pt-4 border-t border-border">
               <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
                 Articles
               </h3>
@@ -413,7 +413,7 @@ export function SiteHeader() {
                   </Link>
                 ))}
               </div>
-            </div>
+            </div> */}
 
             {/* Newsletters */}
             <div className="pt-4 border-t border-border">
