@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Search, X, Loader2, TrendingUp, Zap, ChevronDown, SlidersHorizontal } from 'lucide-react'
+import { Search, X, Loader2, TrendingUp, ChevronDown, SlidersHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { StoryRow } from './StoryRow'
 import { FirmLogo } from './FirmLogo'
@@ -63,7 +63,7 @@ export function NewsFeed() {
   const [eventType, setEventType] = useState(searchParams.get('type') || '')
   const [fundActivity, setFundActivity] = useState(searchParams.get('fundActivity') === 'true')
   const [fundSize, setFundSize] = useState(searchParams.get('fundSize') || '')
-  const [trustedOnly, setTrustedOnly] = useState(searchParams.get('trusted') === 'true')
+  const trustedOnly = false
   const [trendingFirm, setTrendingFirm] = useState(searchParams.get('firm') || '')
   const [fundSizeOpen, setFundSizeOpen] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -84,7 +84,6 @@ export function NewsFeed() {
     eventType,
     fundActivity,
     fundSize,
-    trustedOnly,
     trendingFirm,
     dateRange !== '7d',
   ].filter(Boolean).length
@@ -180,7 +179,6 @@ export function NewsFeed() {
     setEventType('')
     setFundActivity(false)
     setFundSize('')
-    setTrustedOnly(false)
     setTrendingFirm('')
   }
 
@@ -314,18 +312,6 @@ export function NewsFeed() {
               )}
             </div>
 
-            <button
-              onClick={() => setTrustedOnly(!trustedOnly)}
-              className={cn(
-                'inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors',
-                trustedOnly
-                  ? 'bg-blue-900/50 text-blue-300 border-blue-700'
-                  : 'bg-muted text-muted-foreground border-border hover:bg-accent'
-              )}
-            >
-              <Zap className="h-3 w-3" />
-              Top Sources
-            </button>
           </div>
 
           {/* Fund Type pills */}
