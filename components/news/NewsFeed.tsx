@@ -428,13 +428,6 @@ export function NewsFeed() {
         <>
           {/* Dense story list */}
           <div className="rounded-lg border border-border bg-card overflow-hidden">
-            {/* Column header */}
-            <div className="flex items-center gap-2 px-3 py-1.5 border-b border-border bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              <span className="flex-1">
-                {stories.length} stories
-              </span>
-            </div>
-
             {/* Story rows */}
             {stories.map((story) => (
               <StoryRow key={story.id} story={story} />

@@ -1,6 +1,5 @@
 'use client'
 
-import Link from 'next/link'
 import { ExternalLink, Newspaper } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { FirmLogo } from './FirmLogo'
@@ -24,11 +23,11 @@ export function StoryRow({ story }: StoryRowProps) {
   const fundSize = formatFundSize(story.maxFundSizeUsd)
 
   return (
-    <HoverCard openDelay={300} closeDelay={100}>
+    <HoverCard openDelay={200} closeDelay={150}>
       <HoverCardTrigger asChild>
         <div
           className={cn(
-            'flex items-center gap-2 px-3 py-2 border-b border-border/40 hover:bg-accent/30 transition-colors group'
+            'flex items-center gap-2 px-3 py-2 border-b border-border/40 hover:bg-accent/30 transition-colors group cursor-default'
           )}
         >
           {/* Event type badge */}
@@ -70,13 +69,10 @@ export function StoryRow({ story }: StoryRowProps) {
             </span>
           )}
 
-          {/* Headline */}
-          <Link
-            href={`/news/story/${story.id}`}
-            className="flex-1 min-w-0 text-[13px] font-medium text-foreground truncate group-hover:text-blue-400 transition-colors"
-          >
+          {/* Headline — plain text, no link */}
+          <span className="flex-1 min-w-0 text-[13px] font-medium text-foreground truncate">
             {decodeHtmlEntities(story.headline)}
-          </Link>
+          </span>
 
           {/* Firm chips (max 2) */}
           {story.firmChips.length > 0 && (
@@ -113,7 +109,7 @@ export function StoryRow({ story }: StoryRowProps) {
       </HoverCardTrigger>
 
       {/* Hover preview card */}
-      <HoverCardContent side="bottom" align="start" className="w-[420px] p-0">
+      <HoverCardContent side="right" align="start" sideOffset={8} className="w-[420px] p-0">
         <div className="p-4 space-y-3">
           {/* Badges */}
           <div className="flex flex-wrap items-center gap-1.5">
@@ -144,16 +140,13 @@ export function StoryRow({ story }: StoryRowProps) {
           </div>
 
           {/* Headline */}
-          <Link
-            href={`/news/story/${story.id}`}
-            className="block text-sm font-semibold text-foreground hover:text-blue-400 transition-colors leading-snug"
-          >
+          <h3 className="text-sm font-semibold text-foreground leading-snug">
             {decodeHtmlEntities(story.headline)}
-          </Link>
+          </h3>
 
           {/* Summary */}
           {story.summary && (
-            <p className="text-xs text-muted-foreground leading-relaxed line-clamp-4">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               {decodeHtmlEntities(story.summary)}
             </p>
           )}
@@ -185,19 +178,19 @@ export function StoryRow({ story }: StoryRowProps) {
             <span>{formatRelativeDate(story.lastUpdated)}</span>
           </div>
 
-          {/* Source links */}
+          {/* Source links — show all, these are the primary click-through */}
           {story.articles.length > 0 && (
-            <div className="space-y-1">
-              {story.articles.slice(0, 4).map((article) => (
+            <div className="space-y-1.5">
+              {story.articles.map((article) => (
                 <a
                   key={article.id}
                   href={article.sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-foreground transition-colors truncate"
+                  className="flex items-center gap-2 rounded-md px-2 py-1.5 -mx-2 text-[11px] text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-colors"
                 >
-                  <ExternalLink className="h-2.5 w-2.5 shrink-0" />
-                  <span className="shrink-0 font-medium">{article.sourceName || 'Source'}</span>
+                  <ExternalLink className="h-3 w-3 shrink-0 opacity-50" />
+                  <span className="shrink-0 font-semibold">{article.sourceName || 'Source'}</span>
                   <span className="truncate opacity-60">{decodeHtmlEntities(article.title)}</span>
                 </a>
               ))}
