@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { formatDistanceToNow } from 'date-fns'
 import { ChevronDown, ChevronUp, Newspaper, Zap, ExternalLink } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { FirmLogo } from './FirmLogo'
 import type { Story } from '@/lib/news/types'
 
 const EVENT_LABELS: Record<string, { label: string; color: string }> = {
@@ -138,20 +139,7 @@ export function StoryCard({ story, featured = false }: StoryCardProps) {
                 key={firm.slug}
                 className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-2.5 py-1 text-xs font-medium text-muted-foreground"
               >
-                {firm.logoUrl ? (
-                  <img
-                    src={firm.logoUrl}
-                    alt=""
-                    width={14}
-                    height={14}
-                    className="rounded-sm"
-                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-                  />
-                ) : (
-                  <span className="flex h-3.5 w-3.5 items-center justify-center rounded-sm bg-muted text-[8px] font-bold text-muted-foreground">
-                    {firm.name.charAt(0)}
-                  </span>
-                )}
+                <FirmLogo name={firm.name} logoUrl={firm.logoUrl} />
                 {firm.name}
               </span>
             ))}

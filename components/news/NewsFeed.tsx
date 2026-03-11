@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Search, X, Loader2, TrendingUp, Zap, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { StoryCard } from './StoryCard'
+import { FirmLogo } from './FirmLogo'
 import type { FeedResponse, Story, TrendingFirm, FacetCounts } from '@/lib/news/types'
 
 // ── Filter constants ──────────────────────────────────────────────
@@ -388,6 +389,7 @@ export function NewsFeed() {
                     : 'bg-muted text-muted-foreground border-border hover:bg-accent hover:text-foreground'
                 )}
               >
+                <FirmLogo name={firm.name} logoUrl={firm.logoUrl} />
                 {firm.name}
                 <span className={cn('text-[10px]', trendingFirm === firm.firmId ? 'text-blue-200' : 'text-muted-foreground/60')}>
                   {firm.mentionCount}
