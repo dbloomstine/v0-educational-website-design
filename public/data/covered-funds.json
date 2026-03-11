@@ -1,5 +1,5 @@
 {
-  "last_updated": "2026-02-13",
+  "last_updated": "2026-02-20",
   "schema_version": "2.0",
   "covered_funds": [
     {
@@ -693,6 +693,149 @@
       "date_covered": "2026-02-13",
       "announcement_date": "2026-02-02",
       "source_url": "https://tech.eu/2026/02/02/constructor-capital-closes-110m-fund-i-for-science-first-founders/"
+    },
+    {
+      "fund_name": "Thrive Capital",
+      "firm": "Thrive Capital",
+      "amount": "$10B",
+      "category": "Venture Capital",
+      "location": "New York",
+      "stage": "final close",
+      "date_covered": "2026-02-20",
+      "announcement_date": "2026-02-17",
+      "source_url": "https://techcrunch.com/2026/02/17/thrive-raises-10b-for-new-fund-its-largest-yet/"
+    },
+    {
+      "fund_name": "Lux Capital Fund IX",
+      "firm": "Lux Capital",
+      "amount": "$1.5B",
+      "category": "Venture Capital",
+      "location": "New York",
+      "stage": "final close",
+      "date_covered": "2026-02-20",
+      "announcement_date": "2026-01-07",
+      "source_url": "https://techcrunch.com/2026/01/07/lux-capital-lands-1-5-billion-for-its-largest-fund-ever/"
+    },
+    {
+      "fund_name": "Battery Ventures XV",
+      "firm": "Battery Ventures",
+      "amount": "$3.25B",
+      "category": "Venture Capital",
+      "location": "Boston",
+      "stage": "final close",
+      "date_covered": "2026-02-20",
+      "announcement_date": "2026-02-18",
+      "source_url": "https://www.businesswire.com/news/home/20260218854989/en/Battery-Ventures-Raises-$3.25-Billion-to-Back-Innovative-Tech-Companies-Worldwide"
+    },
+    {
+      "fund_name": "Frist Cressey Ventures Fund IV",
+      "firm": "Frist Cressey Ventures",
+      "amount": "$425M",
+      "category": "Venture Capital",
+      "location": "Nashville",
+      "stage": "final close",
+      "date_covered": "2026-02-20",
+      "announcement_date": "2026-02-18",
+      "source_url": "https://www.prnewswire.com/news-releases/frist-cressey-ventures-announces-oversubscribed-425m-fund-iv-to-reshape-care-delivery-302691405.html"
+    },
+    {
+      "fund_name": "HashKey Fintech Multi-Strategy Fund IV",
+      "firm": "HashKey Capital",
+      "amount": "$250M",
+      "category": "Venture Capital",
+      "location": "Singapore",
+      "stage": "first close",
+      "date_covered": "2026-02-20",
+      "announcement_date": "2025-12-24",
+      "source_url": "https://www.prnewswire.com/apac/news-releases/hashkey-capital-announces-first-closing-of-us250-million-fund-iv-to-accelerate-global-blockchain-adoption-302649107.html"
+    },
+    {
+      "fund_name": "HGGC Fund V",
+      "firm": "HGGC",
+      "amount": "$3.2B",
+      "category": "Private Equity",
+      "location": "Palo Alto",
+      "stage": "final close",
+      "date_covered": "2026-02-20",
+      "announcement_date": "2026-02-18",
+      "source_url": "https://www.businesswire.com/news/home/20260218229522/en/HGGC-Closes-Oversubscribed-Fund-V-at-$3.2-Billion"
+    },
+    {
+      "fund_name": "JLL Partners Fund IX",
+      "firm": "JLL Partners",
+      "amount": "$1.4B",
+      "category": "Private Equity",
+      "location": "New York",
+      "stage": "final close",
+      "date_covered": "2026-02-20",
+      "announcement_date": "2026-02-18",
+      "source_url": "https://www.businesswire.com/news/home/20260218126870/en/JLL-Partners-Raises-$1.4-Billion-for-its-Fund-IX"
+    },
+    {
+      "fund_name": "Kinterra Critical Materials & Infrastructure Opportunities Fund II",
+      "firm": "Kinterra Capital",
+      "amount": "$950M",
+      "category": "Private Equity",
+      "location": "Toronto",
+      "stage": "final close",
+      "date_covered": "2026-02-20",
+      "announcement_date": "2026-02-17",
+      "source_url": "https://www.prnewswire.com/news-releases/kinterra-capital-closes-oversubscribed-us950-million-fund-ii-following-strong-investor-demand-302688450.html"
+    },
+    {
+      "fund_name": "Soundcore Capital Partners Fund III",
+      "firm": "Soundcore Capital Partners",
+      "amount": "$450M",
+      "category": "Private Equity",
+      "location": "New York",
+      "stage": "final close",
+      "date_covered": "2026-02-20",
+      "announcement_date": "2026-02-19",
+      "source_url": "https://www.prnewswire.com/news-releases/soundcore-capital-partners-closes-oversubscribed-fund-iii-at-450-million-302692517.html"
+    },
+    {
+      "fund_name": "Hollyport Secondary Opportunities IX",
+      "firm": "Hollyport Capital",
+      "amount": "$4.5B",
+      "category": "Secondaries & GP-Stakes",
+      "location": "London",
+      "stage": "final close",
+      "date_covered": "2026-02-20",
+      "announcement_date": "2026-01-15",
+      "source_url": "https://www.proskauer.com/release/proskauer-advises-hollyport-capital-on-45bn-hollyport-ix-fund"
+    },
+    {
+      "fund_name": "Coller Capital / Ares Credit Continuation Vehicle",
+      "firm": "Coller Capital",
+      "amount": "$1.3B",
+      "category": "Secondaries & GP-Stakes",
+      "location": "London",
+      "stage": "other",
+      "date_covered": "2026-02-20",
+      "announcement_date": "2026-02-10",
+      "source_url": "https://www.collercapital.com/coller-capital-leads-private-credit-continuation-vehicle-with-ares/"
+    },
+    {
+      "fund_name": "Meridiam Infrastructure Europe Core Fund",
+      "firm": "Meridiam",
+      "amount": "$2.6B",
+      "category": "Infrastructure",
+      "location": "Paris",
+      "stage": "final close",
+      "date_covered": "2026-02-20",
+      "announcement_date": "2026-02-18",
+      "source_url": "https://irei.com/news/meridiam-announces-closing-of-2-6b-european-core-infrastructure-fund/"
+    },
+    {
+      "fund_name": "Hamilton Lane Infrastructure Opportunities Fund II",
+      "firm": "Hamilton Lane",
+      "amount": "$2B",
+      "category": "Infrastructure",
+      "location": "Conshohocken",
+      "stage": "final close",
+      "date_covered": "2026-02-20",
+      "announcement_date": "2026-02-02",
+      "source_url": "https://www.prnewswire.com/news-releases/hamilton-lane-closes-on-nearly-2-billion-in-infrastructure-opportunities-fund-ii-and-related-vehicles-tripling-size-of-predecessor-fund-302674890.html"
     }
   ]
 }
