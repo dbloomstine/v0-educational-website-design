@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { ExternalLink, Newspaper, Zap } from 'lucide-react'
+import { ExternalLink, Newspaper } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { FirmLogo } from './FirmLogo'
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card'
@@ -32,11 +32,6 @@ export function StoryRow({ story }: StoryRowProps) {
             story.isHighSignal && 'border-l-2 border-l-red-500'
           )}
         >
-          {/* Signal indicator */}
-          {story.isHighSignal && (
-            <Zap className="h-3 w-3 text-red-400 shrink-0" />
-          )}
-
           {/* Event type badge */}
           {eventLabel ? (
             <span

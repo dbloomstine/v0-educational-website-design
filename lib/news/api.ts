@@ -16,7 +16,7 @@ export async function fetchNewsFeed(params: URLSearchParams): Promise<FeedRespon
 export async function fetchStory(id: string): Promise<Story> {
   const res = await fetch(`${INTEL_API_URL}/api/news/story?id=${id}`, {
     headers: { 'x-api-key': INTEL_API_KEY },
-    next: { revalidate: 120 },
+    cache: 'no-store',
   })
   if (!res.ok) throw new Error('Failed to fetch story')
   const json = await res.json()
