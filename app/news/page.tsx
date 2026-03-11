@@ -32,13 +32,13 @@ export default function NewsPage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1 bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-6">
-            <h1 className="text-3xl font-heading font-bold text-foreground">
-              Fund Operations News
+        <div className="container mx-auto px-4 py-4">
+          <div className="mb-3 flex items-baseline gap-3">
+            <h1 className="text-xl font-heading font-bold text-foreground">
+              Fund News
             </h1>
-            <p className="mt-2 text-muted-foreground">
-              Real-time intelligence on fund activity, executive moves, and market developments
+            <p className="text-xs text-muted-foreground">
+              Real-time fund activity, executive moves &amp; market developments
             </p>
           </div>
           <Suspense fallback={<NewsFeedSkeleton />}>
@@ -54,17 +54,19 @@ export default function NewsPage() {
 
 function NewsFeedSkeleton() {
   return (
-    <div className="space-y-4 animate-pulse">
-      <div className="h-10 bg-muted rounded-lg" />
-      <div className="h-6 bg-muted rounded-lg w-3/4" />
-      <div className="flex gap-2">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-8 w-20 bg-muted rounded-lg" />
-        ))}
+    <div className="space-y-3 animate-pulse">
+      <div className="flex items-center gap-2">
+        <div className="h-8 flex-1 bg-muted rounded-lg" />
+        <div className="h-8 w-32 bg-muted rounded-lg" />
+        <div className="h-8 w-20 bg-muted rounded-lg" />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-40 bg-muted rounded-lg" />
+      <div className="rounded-lg border border-border bg-card overflow-hidden">
+        {Array.from({ length: 15 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-2 px-3 py-2 border-b border-border/40">
+            <div className="h-4 w-10 rounded bg-muted" />
+            <div className="h-4 flex-1 rounded bg-muted" />
+            <div className="h-4 w-16 rounded bg-muted" />
+          </div>
         ))}
       </div>
     </div>

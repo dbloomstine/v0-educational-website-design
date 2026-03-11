@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Search, X, Loader2, TrendingUp, Zap, ChevronDown } from 'lucide-react'
+import { Search, X, Loader2, TrendingUp, Zap, ChevronDown, SlidersHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { StoryRow } from './StoryRow'
 import { FirmLogo } from './FirmLogo'
@@ -66,6 +66,7 @@ export function NewsFeed() {
   const [trustedOnly, setTrustedOnly] = useState(searchParams.get('trusted') === 'true')
   const [trendingFirm, setTrendingFirm] = useState(searchParams.get('firm') || '')
   const [fundSizeOpen, setFundSizeOpen] = useState(false)
+  const [filtersOpen, setFiltersOpen] = useState(false)
 
   // Data state
   const [stories, setStories] = useState<Story[]>([])
@@ -188,108 +189,41 @@ export function NewsFeed() {
     fetchFeed(offset, true)
   }
 
+  // Pill filter count (category/type/firm filters only, not search/date)
+  const pillFilterCount = [category, eventType, trendingFirm].filter(Boolean).length
+
   return (
-    <div className="space-y-6">
-      {/* ── Search bar ─────────────────────────────────────── */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <input
-          type="text"
-          placeholder="Search fund news..."
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          className="w-full rounded-lg border border-border bg-muted py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
-        />
-        {searchInput && (
-          <button
-            onClick={() => {
-              setSearchInput('')
-              setQuery('')
-            }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        )}
-      </div>
-
-      {/* ── Filter row ─────────────────────────────────────── */}
-      <div className="flex flex-wrap items-center gap-2">
-        {/* Fund Activity toggle */}
-        <button
-          onClick={() => setFundActivity(!fundActivity)}
-          className={cn(
-            'inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors',
-            fundActivity
-              ? 'bg-blue-900/50 text-blue-300 border-blue-700'
-              : 'bg-muted text-muted-foreground border-border hover:bg-accent'
-          )}
-        >
-          <TrendingUp className="h-3 w-3" />
-          Fund Activity
-        </button>
-
-        {/* Fund Size dropdown */}
-        <div className="relative">
-          <button
-            onClick={() => setFundSizeOpen(!fundSizeOpen)}
-            className={cn(
-              'inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors',
-              fundSize
-                ? 'bg-blue-900/50 text-blue-300 border-blue-700'
-                : 'bg-muted text-muted-foreground border-border hover:bg-accent'
-            )}
-          >
-            {fundSize
-              ? FUND_SIZE_OPTIONS.find((o) => o.value === fundSize)?.label || 'Fund Size'
-              : 'Fund Size'}
-            <ChevronDown className={cn('h-3 w-3 transition-transform', fundSizeOpen && 'rotate-180')} />
-          </button>
-          {fundSizeOpen && (
-            <div className="absolute top-full left-0 z-50 mt-1 w-36 rounded-lg border border-border bg-popover p-1 shadow-lg">
-              {FUND_SIZE_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => {
-                    setFundSize(opt.value)
-                    setFundSizeOpen(false)
-                  }}
-                  className={cn(
-                    'block w-full rounded-md px-3 py-1.5 text-left text-xs transition-colors',
-                    fundSize === opt.value
-                      ? 'bg-accent text-foreground'
-                      : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
-                  )}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
+    <div className="space-y-3">
+      {/* ── Compact toolbar ──────────────────────────────────── */}
+      <div className="flex items-center gap-2">
+        {/* Search */}
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search fund news..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            className="w-full rounded-lg border border-border bg-muted py-1.5 pl-9 pr-8 text-xs text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+          />
+          {searchInput && (
+            <button
+              onClick={() => { setSearchInput(''); setQuery('') }}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
           )}
         </div>
 
-        {/* Trusted Only toggle */}
-        <button
-          onClick={() => setTrustedOnly(!trustedOnly)}
-          className={cn(
-            'inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors',
-            trustedOnly
-              ? 'bg-blue-900/50 text-blue-300 border-blue-700'
-              : 'bg-muted text-muted-foreground border-border hover:bg-accent'
-          )}
-        >
-          <Zap className="h-3 w-3" />
-          Trusted Only
-        </button>
-
-        {/* Date range selector */}
+        {/* Date range */}
         <div className="flex items-center rounded-lg border border-border bg-muted p-0.5">
           {DATE_RANGES.map((range) => (
             <button
               key={range.value}
               onClick={() => setDateRange(range.value)}
               className={cn(
-                'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
+                'rounded-md px-2 py-1 text-[11px] font-medium transition-colors',
                 dateRange === range.value
                   ? 'bg-foreground text-background'
                   : 'text-muted-foreground hover:text-foreground'
@@ -300,103 +234,184 @@ export function NewsFeed() {
           ))}
         </div>
 
-        {/* Clear filters */}
+        {/* Filters toggle */}
+        <button
+          onClick={() => setFiltersOpen(!filtersOpen)}
+          className={cn(
+            'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-medium transition-colors',
+            filtersOpen || pillFilterCount > 0
+              ? 'bg-blue-900/50 text-blue-300 border-blue-700'
+              : 'bg-muted text-muted-foreground border-border hover:bg-accent'
+          )}
+        >
+          <SlidersHorizontal className="h-3 w-3" />
+          Filters
+          {pillFilterCount > 0 && (
+            <span className="rounded-full bg-blue-600 px-1.5 text-[9px] text-white">{pillFilterCount}</span>
+          )}
+        </button>
+
+        {/* Clear */}
         {activeFilterCount > 0 && (
           <button
             onClick={clearFilters}
-            className="inline-flex items-center gap-1 rounded-lg border border-border bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+            className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
           >
             <X className="h-3 w-3" />
-            Clear ({activeFilterCount})
+            Clear
           </button>
         )}
       </div>
 
-      {/* ── Category + type pills ────────────────────────────── */}
-      <div className="rounded-lg border border-border bg-card/50 p-4 space-y-3">
-        <div>
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2 block">Fund Type</span>
-          <div className="flex flex-wrap gap-1.5">
-            {FUND_CATEGORIES.map((cat) => {
-              const count = facets?.categories[cat.value] ?? 0
-              return (
-                <button
-                  key={cat.value}
-                  onClick={() => setCategory(category === cat.value ? '' : cat.value)}
-                  className={cn(
-                    'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
-                    category === cat.value
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
-                  )}
-                >
-                  {cat.label}
-                  {count > 0 && (
-                    <span className={cn('text-[10px]', category === cat.value ? 'text-blue-200' : 'text-muted-foreground/60')}>
-                      {count}
-                    </span>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        </div>
+      {/* ── Collapsible filter panel ─────────────────────────── */}
+      {filtersOpen && (
+        <div className="rounded-lg border border-border bg-card/50 p-3 space-y-3">
+          {/* Quick toggles row */}
+          <div className="flex flex-wrap items-center gap-1.5">
+            <button
+              onClick={() => setFundActivity(!fundActivity)}
+              className={cn(
+                'inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors',
+                fundActivity
+                  ? 'bg-blue-900/50 text-blue-300 border-blue-700'
+                  : 'bg-muted text-muted-foreground border-border hover:bg-accent'
+              )}
+            >
+              <TrendingUp className="h-3 w-3" />
+              Fund Activity
+            </button>
 
-        <div className="border-t border-border pt-3">
-          <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2 block">Event Type</span>
-          <div className="flex flex-wrap gap-1.5">
-            {ARTICLE_TYPES.map((type) => {
-              const count = facets?.types[type.value] ?? 0
-              return (
-                <button
-                  key={type.value}
-                  onClick={() => setEventType(eventType === type.value ? '' : type.value)}
-                  className={cn(
-                    'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
-                    eventType === type.value
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
-                  )}
-                >
-                  {type.label}
-                  {count > 0 && (
-                    <span className={cn('text-[10px]', eventType === type.value ? 'text-blue-200' : 'text-muted-foreground/60')}>
-                      {count}
-                    </span>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Trending firms ─────────────────────────────────── */}
-      {trending.length > 0 && (
-        <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Trending Firms
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {trending.map((firm) => (
+            <div className="relative">
               <button
-                key={firm.firmId}
-                onClick={() => setTrendingFirm(trendingFirm === firm.firmId ? '' : firm.firmId)}
+                onClick={() => setFundSizeOpen(!fundSizeOpen)}
                 className={cn(
-                  'inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors',
-                  trendingFirm === firm.firmId
+                  'inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors',
+                  fundSize
                     ? 'bg-blue-900/50 text-blue-300 border-blue-700'
-                    : 'bg-muted text-muted-foreground border-border hover:bg-accent hover:text-foreground'
+                    : 'bg-muted text-muted-foreground border-border hover:bg-accent'
                 )}
               >
-                <FirmLogo name={firm.name} logoUrl={firm.logoUrl} />
-                {firm.name}
-                <span className={cn('text-[10px]', trendingFirm === firm.firmId ? 'text-blue-200' : 'text-muted-foreground/60')}>
-                  {firm.mentionCount}
-                </span>
+                {fundSize ? FUND_SIZE_OPTIONS.find((o) => o.value === fundSize)?.label || 'Fund Size' : 'Fund Size'}
+                <ChevronDown className={cn('h-3 w-3 transition-transform', fundSizeOpen && 'rotate-180')} />
               </button>
-            ))}
+              {fundSizeOpen && (
+                <div className="absolute top-full left-0 z-50 mt-1 w-36 rounded-lg border border-border bg-popover p-1 shadow-lg">
+                  {FUND_SIZE_OPTIONS.map((opt) => (
+                    <button
+                      key={opt.value}
+                      onClick={() => { setFundSize(opt.value); setFundSizeOpen(false) }}
+                      className={cn(
+                        'block w-full rounded-md px-3 py-1.5 text-left text-xs transition-colors',
+                        fundSize === opt.value
+                          ? 'bg-accent text-foreground'
+                          : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
+                      )}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <button
+              onClick={() => setTrustedOnly(!trustedOnly)}
+              className={cn(
+                'inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors',
+                trustedOnly
+                  ? 'bg-blue-900/50 text-blue-300 border-blue-700'
+                  : 'bg-muted text-muted-foreground border-border hover:bg-accent'
+              )}
+            >
+              <Zap className="h-3 w-3" />
+              Trusted Only
+            </button>
           </div>
+
+          {/* Fund Type pills */}
+          <div>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">Fund Type</span>
+            <div className="flex flex-wrap gap-1">
+              {FUND_CATEGORIES.map((cat) => {
+                const count = facets?.categories[cat.value] ?? 0
+                return (
+                  <button
+                    key={cat.value}
+                    onClick={() => setCategory(category === cat.value ? '' : cat.value)}
+                    className={cn(
+                      'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors',
+                      category === cat.value
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
+                    )}
+                  >
+                    {cat.label}
+                    {count > 0 && (
+                      <span className={cn('text-[9px]', category === cat.value ? 'text-blue-200' : 'text-muted-foreground/50')}>
+                        {count}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Event Type pills */}
+          <div>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">Event Type</span>
+            <div className="flex flex-wrap gap-1">
+              {ARTICLE_TYPES.map((type) => {
+                const count = facets?.types[type.value] ?? 0
+                return (
+                  <button
+                    key={type.value}
+                    onClick={() => setEventType(eventType === type.value ? '' : type.value)}
+                    className={cn(
+                      'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors',
+                      eventType === type.value
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
+                    )}
+                  >
+                    {type.label}
+                    {count > 0 && (
+                      <span className={cn('text-[9px]', eventType === type.value ? 'text-blue-200' : 'text-muted-foreground/50')}>
+                        {count}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* Trending firms */}
+          {trending.length > 0 && (
+            <div>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">Trending Firms</span>
+              <div className="flex flex-wrap gap-1">
+                {trending.map((firm) => (
+                  <button
+                    key={firm.firmId}
+                    onClick={() => setTrendingFirm(trendingFirm === firm.firmId ? '' : firm.firmId)}
+                    className={cn(
+                      'inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors',
+                      trendingFirm === firm.firmId
+                        ? 'bg-blue-900/50 text-blue-300 border-blue-700'
+                        : 'bg-muted text-muted-foreground border-border hover:bg-accent hover:text-foreground'
+                    )}
+                  >
+                    <FirmLogo name={firm.name} logoUrl={firm.logoUrl} size={12} />
+                    {firm.name}
+                    <span className={cn('text-[9px]', trendingFirm === firm.firmId ? 'text-blue-200' : 'text-muted-foreground/50')}>
+                      {firm.mentionCount}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
 
