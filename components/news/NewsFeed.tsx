@@ -311,56 +311,63 @@ export function NewsFeed() {
         )}
       </div>
 
-      {/* ── Category pills ─────────────────────────────────── */}
-      <div className="flex flex-wrap gap-1.5">
-        {FUND_CATEGORIES.map((cat) => {
-          const count = facets?.categories[cat.value] ?? 0
-          return (
-            <button
-              key={cat.value}
-              onClick={() => setCategory(category === cat.value ? '' : cat.value)}
-              className={cn(
-                'inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium transition-colors',
-                category === cat.value
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
-              )}
-            >
-              {cat.label}
-              {count > 0 && (
-                <span className={cn('text-[10px]', category === cat.value ? 'text-blue-200' : 'text-muted-foreground/60')}>
-                  {count}
-                </span>
-              )}
-            </button>
-          )
-        })}
-      </div>
+      {/* ── Category + type pills ────────────────────────────── */}
+      <div className="rounded-lg border border-border bg-card/50 p-4 space-y-3">
+        <div>
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2 block">Fund Type</span>
+          <div className="flex flex-wrap gap-1.5">
+            {FUND_CATEGORIES.map((cat) => {
+              const count = facets?.categories[cat.value] ?? 0
+              return (
+                <button
+                  key={cat.value}
+                  onClick={() => setCategory(category === cat.value ? '' : cat.value)}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
+                    category === cat.value
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
+                  )}
+                >
+                  {cat.label}
+                  {count > 0 && (
+                    <span className={cn('text-[10px]', category === cat.value ? 'text-blue-200' : 'text-muted-foreground/60')}>
+                      {count}
+                    </span>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        </div>
 
-      {/* ── Article type pills ─────────────────────────────── */}
-      <div className="flex flex-wrap gap-1.5">
-        {ARTICLE_TYPES.map((type) => {
-          const count = facets?.types[type.value] ?? 0
-          return (
-            <button
-              key={type.value}
-              onClick={() => setEventType(eventType === type.value ? '' : type.value)}
-              className={cn(
-                'inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-medium transition-colors',
-                eventType === type.value
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
-              )}
-            >
-              {type.label}
-              {count > 0 && (
-                <span className={cn('text-[10px]', eventType === type.value ? 'text-blue-200' : 'text-muted-foreground/60')}>
-                  {count}
-                </span>
-              )}
-            </button>
-          )
-        })}
+        <div className="border-t border-border pt-3">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground mb-2 block">Event Type</span>
+          <div className="flex flex-wrap gap-1.5">
+            {ARTICLE_TYPES.map((type) => {
+              const count = facets?.types[type.value] ?? 0
+              return (
+                <button
+                  key={type.value}
+                  onClick={() => setEventType(eventType === type.value ? '' : type.value)}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
+                    eventType === type.value
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
+                  )}
+                >
+                  {type.label}
+                  {count > 0 && (
+                    <span className={cn('text-[10px]', eventType === type.value ? 'text-blue-200' : 'text-muted-foreground/60')}>
+                      {count}
+                    </span>
+                  )}
+                </button>
+              )
+            })}
+          </div>
+        </div>
       </div>
 
       {/* ── Trending firms ─────────────────────────────────── */}
@@ -410,12 +417,19 @@ export function NewsFeed() {
         </div>
       ) : (
         <>
+          {/* Section label */}
+          <div className="flex items-center gap-2 pt-2">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Top Stories</span>
+            <div className="flex-1 border-t border-border" />
+            <span className="text-[11px] text-muted-foreground/60">{stories.length} results</span>
+          </div>
+
           {/* Featured story — first result, full width */}
           <StoryCard story={stories[0]} featured />
 
           {/* Remaining stories in 2-col grid */}
           {stories.length > 1 && (
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               {stories.slice(1).map((story) => (
                 <StoryCard key={story.id} story={story} />
               ))}

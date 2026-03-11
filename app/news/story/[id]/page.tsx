@@ -21,15 +21,15 @@ const EVENT_LABELS: Record<string, { label: string; color: string }> = {
   press_release: { label: 'Press', color: 'bg-muted text-muted-foreground border-border' },
 }
 
-const CATEGORY_COLORS: Record<string, string> = {
-  PE: 'bg-indigo-900/50 text-indigo-300',
-  VC: 'bg-emerald-900/50 text-emerald-300',
-  credit: 'bg-amber-900/50 text-amber-300',
-  hedge: 'bg-purple-900/50 text-purple-300',
-  real_estate: 'bg-orange-900/50 text-orange-300',
-  infrastructure: 'bg-sky-900/50 text-sky-300',
-  secondaries: 'bg-rose-900/50 text-rose-300',
-  gp_stakes: 'bg-teal-900/50 text-teal-300',
+const CATEGORY_LABELS: Record<string, { label: string; color: string }> = {
+  PE: { label: 'PE', color: 'bg-indigo-900/50 text-indigo-300' },
+  VC: { label: 'VC', color: 'bg-emerald-900/50 text-emerald-300' },
+  credit: { label: 'Credit', color: 'bg-amber-900/50 text-amber-300' },
+  hedge: { label: 'Hedge', color: 'bg-purple-900/50 text-purple-300' },
+  real_estate: { label: 'Real Estate', color: 'bg-orange-900/50 text-orange-300' },
+  infrastructure: { label: 'Infra', color: 'bg-sky-900/50 text-sky-300' },
+  secondaries: { label: 'Secondaries', color: 'bg-rose-900/50 text-rose-300' },
+  gp_stakes: { label: 'GP-Stakes', color: 'bg-teal-900/50 text-teal-300' },
 }
 
 // ── Helpers ───────────────────────────────────────────────────────
@@ -158,16 +158,19 @@ export default async function StoryPage({
                 {eventLabel.label}
               </span>
             )}
-            {story.fundCategories.map((cat) => (
-              <span
-                key={cat}
-                className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
-                  CATEGORY_COLORS[cat] || 'bg-muted text-muted-foreground'
-                }`}
-              >
-                {cat.replace('_', ' ')}
-              </span>
-            ))}
+            {story.fundCategories.map((cat) => {
+              const catInfo = CATEGORY_LABELS[cat]
+              return (
+                <span
+                  key={cat}
+                  className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${
+                    catInfo?.color || 'bg-muted text-muted-foreground'
+                  }`}
+                >
+                  {catInfo?.label || cat.replace('_', ' ')}
+                </span>
+              )
+            })}
             {fundSize && (
               <span className="inline-flex rounded-full bg-muted px-2.5 py-1 text-xs font-medium text-muted-foreground">
                 {fundSize}
@@ -201,8 +204,22 @@ export default async function StoryPage({
                 {story.firmChips.map((firm) => (
                   <span
                     key={firm.slug}
-                    className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-sm font-medium text-foreground"
+                    className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground"
                   >
+                    {firm.logoUrl ? (
+                      <img
+                        src={firm.logoUrl}
+                        alt=""
+                        width={16}
+                        height={16}
+                        className="rounded-sm"
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                      />
+                    ) : (
+                      <span className="flex h-4 w-4 items-center justify-center rounded-sm bg-muted text-[9px] font-bold text-muted-foreground">
+                        {firm.name.charAt(0)}
+                      </span>
+                    )}
                     {firm.name}
                   </span>
                 ))}

@@ -19,15 +19,15 @@ const EVENT_LABELS: Record<string, { label: string; color: string }> = {
   press_release: { label: 'Press', color: 'bg-muted text-muted-foreground border-border' },
 }
 
-const CATEGORY_COLORS: Record<string, string> = {
-  PE: 'bg-indigo-900/50 text-indigo-300',
-  VC: 'bg-emerald-900/50 text-emerald-300',
-  credit: 'bg-amber-900/50 text-amber-300',
-  hedge: 'bg-purple-900/50 text-purple-300',
-  real_estate: 'bg-orange-900/50 text-orange-300',
-  infrastructure: 'bg-sky-900/50 text-sky-300',
-  secondaries: 'bg-rose-900/50 text-rose-300',
-  gp_stakes: 'bg-teal-900/50 text-teal-300',
+const CATEGORY_LABELS: Record<string, { label: string; color: string }> = {
+  PE: { label: 'PE', color: 'bg-indigo-900/50 text-indigo-300' },
+  VC: { label: 'VC', color: 'bg-emerald-900/50 text-emerald-300' },
+  credit: { label: 'Credit', color: 'bg-amber-900/50 text-amber-300' },
+  hedge: { label: 'Hedge', color: 'bg-purple-900/50 text-purple-300' },
+  real_estate: { label: 'Real Estate', color: 'bg-orange-900/50 text-orange-300' },
+  infrastructure: { label: 'Infra', color: 'bg-sky-900/50 text-sky-300' },
+  secondaries: { label: 'Secondaries', color: 'bg-rose-900/50 text-rose-300' },
+  gp_stakes: { label: 'GP-Stakes', color: 'bg-teal-900/50 text-teal-300' },
 }
 
 function decodeHtmlEntities(text: string): string {
@@ -90,17 +90,20 @@ export function StoryCard({ story, featured = false }: StoryCardProps) {
               {eventLabel.label}
             </span>
           )}
-          {story.fundCategories.map((cat) => (
-            <span
-              key={cat}
-              className={cn(
-                'inline-flex rounded-full px-2 py-0.5 text-xs font-medium',
-                CATEGORY_COLORS[cat] || 'bg-muted text-muted-foreground'
-              )}
-            >
-              {cat.replace('_', ' ')}
-            </span>
-          ))}
+          {story.fundCategories.map((cat) => {
+            const catInfo = CATEGORY_LABELS[cat]
+            return (
+              <span
+                key={cat}
+                className={cn(
+                  'inline-flex rounded-full px-2 py-0.5 text-xs font-medium',
+                  catInfo?.color || 'bg-muted text-muted-foreground'
+                )}
+              >
+                {catInfo?.label || cat.replace('_', ' ')}
+              </span>
+            )
+          })}
           {fundSize && (
             <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
               {fundSize}
@@ -127,14 +130,28 @@ export function StoryCard({ story, featured = false }: StoryCardProps) {
           </p>
         )}
 
-        {/* Firm chips */}
+        {/* Firm chips with logos */}
         {story.firmChips.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1.5">
             {story.firmChips.map((firm) => (
               <span
                 key={firm.slug}
-                className="inline-flex items-center rounded-full border border-border bg-muted/50 px-2.5 py-0.5 text-xs font-medium text-muted-foreground"
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-2.5 py-1 text-xs font-medium text-muted-foreground"
               >
+                {firm.logoUrl ? (
+                  <img
+                    src={firm.logoUrl}
+                    alt=""
+                    width={14}
+                    height={14}
+                    className="rounded-sm"
+                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                  />
+                ) : (
+                  <span className="flex h-3.5 w-3.5 items-center justify-center rounded-sm bg-muted text-[8px] font-bold text-muted-foreground">
+                    {firm.name.charAt(0)}
+                  </span>
+                )}
                 {firm.name}
               </span>
             ))}
