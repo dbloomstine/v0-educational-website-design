@@ -324,7 +324,7 @@ export function NewsFeed() {
               )}
             >
               <Zap className="h-3 w-3" />
-              Trusted Only
+              Top Sources
             </button>
           </div>
 

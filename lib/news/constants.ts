@@ -55,15 +55,29 @@ export function formatCompactTime(date: string): string {
     const d = new Date(date)
     const diffMs = now.getTime() - d.getTime()
     const diffMin = Math.floor(diffMs / 60000)
+
+    // Less than 1 hour: show minutes
     if (diffMin < 60) return `${diffMin}m`
+
     const diffHr = Math.floor(diffMin / 60)
-    if (diffHr < 24) return `${diffHr}h`
+
+    // Less than 6 hours: show hours
+    if (diffHr < 6) return `${diffHr}h`
+
+    // Same calendar day: "Today"
+    if (d.toDateString() === now.toDateString()) return 'Today'
+
+    // Yesterday
+    const yesterday = new Date(now)
+    yesterday.setDate(yesterday.getDate() - 1)
+    if (d.toDateString() === yesterday.toDateString()) return 'Yest.'
+
+    // Within 7 days: show day name
     const diffDay = Math.floor(diffHr / 24)
-    if (diffDay < 7) return `${diffDay}d`
-    const diffWeek = Math.floor(diffDay / 7)
-    if (diffWeek < 5) return `${diffWeek}w`
-    const diffMo = Math.floor(diffDay / 30)
-    return `${diffMo}mo`
+    if (diffDay < 7) return d.toLocaleDateString('en-US', { weekday: 'short' })
+
+    // Older: show date
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   } catch {
     return ''
   }
