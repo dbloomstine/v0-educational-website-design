@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Search, X, Loader2, TrendingUp, Zap, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { StoryCard } from './StoryCard'
+import { StoryRow } from './StoryRow'
 import { FirmLogo } from './FirmLogo'
 import type { FeedResponse, Story, TrendingFirm, FacetCounts } from '@/lib/news/types'
 
@@ -402,8 +402,14 @@ export function NewsFeed() {
 
       {/* ── Stories ─────────────────────────────────────────── */}
       {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <div className="rounded-lg border border-border bg-card overflow-hidden">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-2 px-3 py-2 border-b border-border/40">
+              <div className="h-4 w-10 rounded bg-muted animate-pulse" />
+              <div className="h-4 flex-1 rounded bg-muted animate-pulse" />
+              <div className="h-4 w-16 rounded bg-muted animate-pulse" />
+            </div>
+          ))}
         </div>
       ) : stories.length === 0 ? (
         <div className="rounded-lg border border-border bg-card py-16 text-center">
@@ -419,40 +425,36 @@ export function NewsFeed() {
         </div>
       ) : (
         <>
-          {/* Section label */}
-          <div className="flex items-center gap-2 pt-2">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Top Stories</span>
-            <div className="flex-1 border-t border-border" />
-            <span className="text-[11px] text-muted-foreground/60">{stories.length} results</span>
-          </div>
-
-          {/* Featured story — first result, full width */}
-          <StoryCard story={stories[0]} featured />
-
-          {/* Remaining stories in 2-col grid */}
-          {stories.length > 1 && (
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              {stories.slice(1).map((story) => (
-                <StoryCard key={story.id} story={story} />
-              ))}
+          {/* Dense story list */}
+          <div className="rounded-lg border border-border bg-card overflow-hidden">
+            {/* Column header */}
+            <div className="flex items-center gap-2 px-3 py-1.5 border-b border-border bg-muted/30 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <span className="flex-1">
+                {stories.length} stories
+              </span>
             </div>
-          )}
+
+            {/* Story rows */}
+            {stories.map((story) => (
+              <StoryRow key={story.id} story={story} />
+            ))}
+          </div>
 
           {/* Load more */}
           {hasMore && (
-            <div className="flex justify-center pt-4">
+            <div className="flex justify-center pt-2">
               <button
                 onClick={loadMore}
                 disabled={loadingMore}
-                className="inline-flex items-center gap-2 rounded-lg border border-border bg-muted px-6 py-2.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
               >
                 {loadingMore ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-3 w-3 animate-spin" />
                     Loading...
                   </>
                 ) : (
-                  'Show more stories'
+                  'Load more stories'
                 )}
               </button>
             </div>
