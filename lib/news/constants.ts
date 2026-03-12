@@ -1,16 +1,16 @@
 import { formatDistanceToNow } from 'date-fns'
 
 export const EVENT_LABELS: Record<string, { label: string; short: string; color: string }> = {
-  fund_launch: { label: 'Launch', short: 'Launch', color: 'bg-red-900/50 text-red-300 border-red-800' },
-  fund_close: { label: 'Close', short: 'Close', color: 'bg-red-900/50 text-red-300 border-red-800' },
-  capital_raise: { label: 'Raise', short: 'Raise', color: 'bg-orange-900/50 text-orange-300 border-orange-800' },
-  executive_hire: { label: 'Hire', short: 'Hire', color: 'bg-violet-900/50 text-violet-300 border-violet-800' },
-  executive_change: { label: 'Exec Change', short: 'ExChg', color: 'bg-violet-900/50 text-violet-300 border-violet-800' },
+  fund_launch: { label: 'Fund Launch', short: 'Launch', color: 'bg-red-900/50 text-red-300 border-red-800' },
+  fund_close: { label: 'Final Close', short: 'Close', color: 'bg-red-900/50 text-red-300 border-red-800' },
+  capital_raise: { label: 'Capital Raise', short: 'Raise', color: 'bg-orange-900/50 text-orange-300 border-orange-800' },
+  executive_hire: { label: 'New Hire', short: 'Hire', color: 'bg-violet-900/50 text-violet-300 border-violet-800' },
+  executive_change: { label: 'Exec Move', short: 'Move', color: 'bg-violet-900/50 text-violet-300 border-violet-800' },
   executive_departure: { label: 'Departure', short: 'Dept', color: 'bg-violet-900/50 text-violet-300 border-violet-800' },
   acquisition: { label: 'M&A', short: 'M&A', color: 'bg-blue-900/50 text-blue-300 border-blue-800' },
   regulatory_action: { label: 'Regulatory', short: 'Reg', color: 'bg-amber-900/50 text-amber-300 border-amber-800' },
-  market_commentary: { label: 'Market', short: 'Mkt', color: 'bg-muted text-muted-foreground border-border' },
-  press_release: { label: 'Press', short: 'Press', color: 'bg-muted text-muted-foreground border-border' },
+  market_commentary: { label: 'Analysis', short: 'Analysis', color: 'bg-muted text-muted-foreground border-border' },
+  press_release: { label: 'Press Release', short: 'Press', color: 'bg-muted text-muted-foreground border-border' },
 }
 
 export const CATEGORY_LABELS: Record<string, { label: string; color: string }> = {

@@ -57,18 +57,35 @@ const FUND_CATEGORIES = [
 ] as const
 
 const ARTICLE_TYPES = [
-  { label: 'Launch', value: 'fund_launch' },
-  { label: 'Close', value: 'fund_close' },
-  { label: 'Raise', value: 'capital_raise' },
-  { label: 'Hire', value: 'executive_hire' },
-  { label: 'Exec Change', value: 'executive_change' },
+  { label: 'Fund Launch', value: 'fund_launch' },
+  { label: 'Final Close', value: 'fund_close' },
+  { label: 'Capital Raise', value: 'capital_raise' },
+  { label: 'New Hire', value: 'executive_hire' },
+  { label: 'Exec Move', value: 'executive_change' },
   { label: 'M&A', value: 'acquisition' },
   { label: 'Regulatory', value: 'regulatory_action' },
-  { label: 'Press', value: 'press_release' },
-  { label: 'Market', value: 'market_commentary' },
+  { label: 'Press Release', value: 'press_release' },
+  { label: 'Analysis', value: 'market_commentary' },
 ] as const
 
 const PAGE_SIZE = 20
+
+// Multi-select helpers for comma-separated filter strings
+function toggleFilter(current: string, value: string): string {
+  const values = current ? current.split(',') : []
+  const idx = values.indexOf(value)
+  if (idx >= 0) {
+    values.splice(idx, 1)
+  } else {
+    values.push(value)
+  }
+  return values.join(',')
+}
+
+function hasFilter(current: string, value: string): boolean {
+  if (!current) return false
+  return current.split(',').includes(value)
+}
 
 // ── Component ─────────────────────────────────────────────────────
 
@@ -349,17 +366,17 @@ export function NewsFeed() {
                 return (
                   <button
                     key={cat.value}
-                    onClick={() => setCategory(category === cat.value ? '' : cat.value)}
+                    onClick={() => setCategory(toggleFilter(category, cat.value))}
                     className={cn(
                       'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors',
-                      category === cat.value
+                      hasFilter(category, cat.value)
                         ? 'bg-blue-600 text-white'
                         : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
                     )}
                   >
                     {cat.label}
                     {count > 0 && (
-                      <span className={cn('text-[9px]', category === cat.value ? 'text-blue-200' : 'text-muted-foreground/50')}>
+                      <span className={cn('text-[9px]', hasFilter(category, cat.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
                         {count}
                       </span>
                     )}
@@ -378,17 +395,17 @@ export function NewsFeed() {
                 return (
                   <button
                     key={type.value}
-                    onClick={() => setEventType(eventType === type.value ? '' : type.value)}
+                    onClick={() => setEventType(toggleFilter(eventType, type.value))}
                     className={cn(
                       'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors',
-                      eventType === type.value
+                      hasFilter(eventType, type.value)
                         ? 'bg-blue-600 text-white'
                         : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
                     )}
                   >
                     {type.label}
                     {count > 0 && (
-                      <span className={cn('text-[9px]', eventType === type.value ? 'text-blue-200' : 'text-muted-foreground/50')}>
+                      <span className={cn('text-[9px]', hasFilter(eventType, type.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
                         {count}
                       </span>
                     )}
