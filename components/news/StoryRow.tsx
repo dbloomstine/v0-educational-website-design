@@ -82,13 +82,13 @@ export function StoryRow({ story }: StoryRowProps) {
         onMouseEnter={handleRowEnter}
         onMouseMove={handleRowMove}
         onMouseLeave={handleRowLeave}
-        className="grid items-center px-3 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default"
+        className="grid items-center px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default"
         style={{
-          gridTemplateColumns: '54px 150px 52px 1fr minmax(0, 240px) 130px 42px',
-          gap: '6px',
+          gridTemplateColumns: '52px 140px 48px 1fr auto 130px 42px',
+          gap: '8px',
         }}
       >
-        {/* Col 1: Event type badge — fixed 54px */}
+        {/* Col 1: Event type badge — fixed 52px */}
         <div className="flex items-center">
           {eventLabel ? (
             <span
@@ -102,7 +102,7 @@ export function StoryRow({ story }: StoryRowProps) {
           ) : null}
         </div>
 
-        {/* Col 2: Category badges — fixed 150px, room for 2 badges */}
+        {/* Col 2: Category badges — fixed 140px, room for 2 badges */}
         <div className="flex items-center gap-1 overflow-hidden">
           {story.fundCategories.slice(0, 2).map((cat) => {
             const catInfo = CATEGORY_LABELS[cat]
@@ -120,7 +120,7 @@ export function StoryRow({ story }: StoryRowProps) {
           })}
         </div>
 
-        {/* Col 3: Fund size — fixed 52px */}
+        {/* Col 3: Fund size — fixed 48px */}
         <div className="flex items-center justify-end">
           {fundSize && (
             <span className="text-[11px] font-mono font-medium text-muted-foreground whitespace-nowrap">
@@ -129,13 +129,13 @@ export function StoryRow({ story }: StoryRowProps) {
           )}
         </div>
 
-        {/* Col 4: Headline — takes remaining space */}
-        <span className="text-[14px] font-medium text-foreground truncate">
+        {/* Col 4: Headline — takes remaining space, no truncation */}
+        <span className="text-[14px] font-medium text-foreground leading-snug">
           {decodeHtmlEntities(story.headline)}
         </span>
 
-        {/* Col 5: Firm chips (max 2) — up to 240px */}
-        <div className="hidden md:flex items-center justify-end gap-1.5 overflow-hidden">
+        {/* Col 5: Firm chips (max 2) — auto width, shrinks if needed */}
+        <div className="hidden md:flex items-center justify-end gap-1.5 min-w-0">
           {story.firmChips.slice(0, 2).map((firm) => (
             <span
               key={firm.slug}
