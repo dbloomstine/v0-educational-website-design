@@ -53,7 +53,11 @@ export function formatRelativeDate(date: string): string {
 export function formatCompactTime(date: string): string {
   try {
     const now = new Date()
-    const d = new Date(date)
+    // Date-only strings (YYYY-MM-DD) are parsed as UTC midnight, which shifts
+    // backward in local timezones west of UTC. Append T12:00:00 to keep the
+    // correct calendar day regardless of timezone.
+    const normalized = /^\d{4}-\d{2}-\d{2}$/.test(date) ? `${date}T12:00:00` : date
+    const d = new Date(normalized)
     const diffMs = now.getTime() - d.getTime()
     const diffMin = Math.floor(diffMs / 60000)
 
