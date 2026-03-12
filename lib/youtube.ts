@@ -16,6 +16,17 @@ export interface YouTubeVideo {
 // Add new videos here when you publish them
 const VIDEOS: YouTubeVideo[] = [
   {
+    videoId: "YuAG_UZ7mOQ",
+    title: "Javad Mostofizadeh, WilmerHale: What GPs Get Wrong About Side Letters, Fees & Compliance",
+    thumbnail: "https://img.youtube.com/vi/YuAG_UZ7mOQ/hqdefault.jpg",
+    publishedAt: "2026-03-09",
+    guest: {
+      name: "Javad Mostofizadeh",
+      title: "Partner",
+      company: "WilmerHale",
+    },
+  },
+  {
     videoId: "E33qmA5uews",
     title: "Adam Tope, DLA Piper - Fund Formation, GP & LP Led Secondaries, & Emerging Manager Advice",
     thumbnail: "https://img.youtube.com/vi/E33qmA5uews/hqdefault.jpg",
