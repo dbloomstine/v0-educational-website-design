@@ -4,23 +4,23 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { BookOpen, Users, Target, TrendingUp, Linkedin, Building2, ArrowRight, CheckCircle2, Play, Mic2, Calendar } from 'lucide-react'
+import { Mic2, Users, Newspaper, TrendingUp, Linkedin, Building2, ArrowRight, CheckCircle2, Play, Calendar } from 'lucide-react'
 import { PageHero, SectionCTA } from '@/components/layout'
 import { SubscribePlatforms } from '@/components/subscribe-platforms'
 
 export const metadata: Metadata = {
   title: 'About FundOpsHQ',
-  description: 'FundOpsHQ is a resource to help you learn fund operations. Articles and tools covering PE, VC, hedge funds, and more.',
+  description: 'FundOpsHQ is a weekly show and newsletter by Danny Bloomstine featuring conversations with professionals across the investment funds industry.',
   openGraph: {
     title: 'About FundOpsHQ',
-    description: 'Resources to help you learn fund operations across all asset classes.',
+    description: 'Weekly conversations with fund operations professionals. Watch, listen, and stay informed.',
     type: 'website',
     url: 'https://fundops.com/about',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'About FundOpsHQ',
-    description: 'Resources to help you learn fund operations.',
+    description: 'Weekly conversations with fund operations professionals.',
   },
   alternates: {
     canonical: 'https://fundops.com/about',
@@ -29,24 +29,24 @@ export const metadata: Metadata = {
 
 const values = [
   {
-    icon: BookOpen,
-    title: "Multiple Fund Types",
-    description: "Covering PE, VC, credit, hedge funds, real estate, infrastructure, secondaries, and GP-stakes."
-  },
-  {
-    icon: Target,
-    title: "Practical & Useful",
-    description: "Real-world guidance you can actually use, not just theory."
+    icon: Mic2,
+    title: "Weekly Conversations",
+    description: "New episodes every week featuring professionals from across the investment funds industry."
   },
   {
     icon: Users,
-    title: "For Ops Teams",
-    description: "Whether you're a CFO, COO, fund admin, or just getting started in operations."
+    title: "Real Perspectives",
+    description: "Guests share what they've actually learned—not theory, but hard-won experience from the field."
+  },
+  {
+    icon: Newspaper,
+    title: "Industry News & Newsletters",
+    description: "Stay current with fund launches, market moves, and operational insights delivered to your inbox."
   },
   {
     icon: TrendingUp,
-    title: "Always Accessible",
-    description: "All articles and tools are available without paywalls or sign-up required."
+    title: "Always Free",
+    description: "Every episode, newsletter, and news update is free and accessible—no paywalls or sign-ups required."
   },
 ]
 
@@ -71,7 +71,7 @@ export default function AboutPage() {
       <main id="main-content" className="flex-1">
         <PageHero
           title="About FundOpsHQ"
-          subtitle="A resource to help you learn fund operations. Articles and tools covering PE, VC, hedge funds, private credit, real estate, and more."
+          subtitle="A weekly show, newsletters, and news covering fund operations across PE, VC, hedge funds, private credit, real estate, and more."
           titleSize="large"
         />
 
@@ -81,14 +81,14 @@ export default function AboutPage() {
             <div className="mx-auto max-w-4xl">
               <div className="text-center mb-16">
                 <div className="inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2 text-sm font-medium text-accent-foreground mb-6">
-                  Our Mission
+                  What This Is
                 </div>
                 <h2 className="text-3xl font-bold tracking-tight mb-6 lg:text-4xl">
-                  Here to help you learn
+                  Conversations, news, and insights
                 </h2>
                 <p className="text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-                  Fund operations can be complex, and good resources are hard to find. This site is my way of sharing
-                  what I&apos;ve learned over the years—practical and hopefully useful.
+                  Fund operations can be complex, and good resources are hard to find. FundOpsHQ is my way of
+                  bringing together the people and stories behind the work—through conversations, newsletters, and industry news.
                 </p>
               </div>
 
@@ -125,7 +125,7 @@ export default function AboutPage() {
                   </h2>
                   <div className="space-y-5 text-muted-foreground leading-relaxed">
                     <p>
-                      FundOpsHQ is also a weekly video series featuring conversations with professionals across the investment funds industry
+                      FundOpsHQ is a weekly video series featuring conversations with professionals across the investment funds industry
                       who share what they've learned from the front lines of fund operations.
                     </p>
                     <p>
@@ -197,21 +197,21 @@ export default function AboutPage() {
             <div className="mx-auto max-w-4xl">
               <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-start">
                 <div>
-                  <h2 className="text-3xl font-bold tracking-tight mb-6">What We Cover</h2>
+                  <h2 className="text-3xl font-bold tracking-tight mb-6">Topics We Cover</h2>
                   <div className="space-y-6 text-muted-foreground">
                     <p className="leading-relaxed">
-                      Our content spans the full spectrum of fund operations, organized by operational function
-                      and tailored to each fund type&apos;s unique requirements.
+                      Our conversations and newsletters span the full spectrum of fund operations—across
+                      every fund type and operational function.
                     </p>
                     <p className="leading-relaxed">
-                      Whether you&apos;re a seasoned CFO optimizing processes, a compliance officer navigating new regulations,
-                      or an operations professional expanding into new fund types—we have resources for you.
+                      Whether you&apos;re a seasoned CFO, a compliance officer navigating new regulations,
+                      or just getting started in fund ops—there&apos;s something here for you.
                     </p>
                   </div>
                   <div className="mt-8">
                     <Button asChild>
-                      <Link href="/#fund-types">
-                        Explore by Fund Type
+                      <Link href="/interviews">
+                        Watch Episodes
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Link>
                     </Button>
@@ -236,21 +236,21 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Our Approach */}
+        {/* Why It Exists */}
         <section className="py-20">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl">
-              <h2 className="text-3xl font-bold tracking-tight mb-8 text-center">Our Approach</h2>
+              <h2 className="text-3xl font-bold tracking-tight mb-8 text-center">Why FundOpsHQ Exists</h2>
 
               <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
                 <p>
-                  Each article on FundOpsHQ addresses specific operational challenges, offers actionable
-                  recommendations, and highlights common pitfalls to avoid. We structure content to allow
-                  quick reference while providing sufficient depth for detailed understanding.
+                  There&apos;s no shortage of content about investing, but very little about the operational
+                  side—the people, processes, and decisions that keep funds running. That&apos;s the gap
+                  FundOpsHQ is here to fill.
                 </p>
                 <p>
-                  Our goal is to be the resource you turn to when facing a new operational challenge,
-                  evaluating process improvements, or onboarding team members to fund operations responsibilities.
+                  Every episode is a chance to hear directly from the people doing the work—what they&apos;ve
+                  learned, what they&apos;d do differently, and what they wish they&apos;d known earlier.
                 </p>
               </div>
             </div>
@@ -280,9 +280,9 @@ export default function AboutPage() {
                       growing business development at Juniper Square, and now at IQ-EQ helping firms navigate operational decisions.
                     </p>
                     <p>
-                      This resource was created to bridge the gap between high-level theory and day-to-day
-                      operational reality. Every article draws from hands-on experience managing the complexities
-                      of fund operations across multiple asset classes.
+                      He started FundOpsHQ to bring more visibility to the operational side of the industry—through
+                      conversations with the people doing the work, and by sharing the news and insights that matter
+                      to fund ops teams.
                     </p>
                   </div>
                 </div>
@@ -313,17 +313,17 @@ export default function AboutPage() {
 
         <SectionCTA
           title="Ready to dive in?"
-          description="Explore our resources by fund type or check out our tools and calculators."
+          description="Watch the latest episodes or subscribe to the newsletters to stay in the loop."
         >
           <Button asChild size="lg">
-            <Link href="/#fund-types">
-              Explore Resources
+            <Link href="/interviews">
+              Watch Episodes
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
           <Button variant="outline" asChild size="lg">
-            <Link href="/tools">
-              Tools
+            <Link href="/newsletter">
+              Newsletters
             </Link>
           </Button>
         </SectionCTA>

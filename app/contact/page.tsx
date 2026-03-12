@@ -8,9 +8,9 @@ import { createPageMetadata } from '@/lib/seo'
 
 export const metadata = createPageMetadata({
   title: 'Contact | FundOpsHQ',
-  description: 'Have feedback or suggestions about FundOpsHQ? Found an error in an article? Let me know.',
+  description: 'Want to be a guest on the show? Have a topic suggestion? Get in touch.',
   path: '/contact',
-  ogDescription: 'Have feedback or suggestions about FundOpsHQ? Let me know.',
+  ogDescription: 'Want to be a guest on the show? Have a topic suggestion? Get in touch.',
 })
 
 export default function ContactPage() {
@@ -21,7 +21,7 @@ export default function ContactPage() {
       <main id="main-content" className="flex-1">
         <PageHero
           title="Contact"
-          subtitle="Have feedback about the site? Found an error? Have a suggestion for a topic to cover? I'd love to hear from you."
+          subtitle="Want to be a guest on the show? Have a topic suggestion or feedback? I'd love to hear from you."
           titleSize="large"
           align="left"
         />
@@ -39,7 +39,7 @@ export default function ContactPage() {
                     </div>
                     <h3 className="mb-2 text-xl font-semibold">Send an email</h3>
                     <p className="mb-6 text-muted-foreground text-sm">
-                      Questions, corrections, or suggestions about the site.
+                      Guest inquiries, topic suggestions, or general feedback.
                     </p>
                     <Button asChild size="lg" className="w-full">
                       <a href="mailto:danny.bloomstine@iqeq.com?subject=FundOpsHQ%20Feedback">

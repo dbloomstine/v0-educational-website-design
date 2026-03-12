@@ -172,17 +172,17 @@ export default async function GuestsPage() {
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-2xl text-center">
               <p className="text-sm text-muted-foreground mb-4">
-                Explore more FundOpsHQ content
+                Explore more from FundOpsHQ
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/interviews">All Episodes</Link>
                 </Button>
                 <Button variant="outline" size="sm" asChild>
-                  <Link href="/#fund-types">Fund Types</Link>
+                  <Link href="/newsletter">Newsletters</Link>
                 </Button>
                 <Button variant="outline" size="sm" asChild>
-                  <Link href="/newsletter">Newsletters</Link>
+                  <Link href="/news">News</Link>
                 </Button>
               </div>
             </div>

@@ -84,9 +84,8 @@ export default function PrivacyPolicyPage() {
 
                   <h3 className="text-xl font-semibold mb-3 mt-6">Local Storage</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    Some of our interactive tools use your browser&apos;s local storage to save your preferences and
-                    progress (such as calculator inputs). This data is stored only on your device and is never
-                    transmitted to our servers.
+                    Our Site may use your browser&apos;s local storage to save preferences. This data is stored
+                    only on your device and is never transmitted to our servers.
                   </p>
                 </div>
 

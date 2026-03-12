@@ -310,17 +310,17 @@ export default async function InterviewsPage() {
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-2xl text-center">
               <p className="text-sm text-muted-foreground mb-4">
-                Explore more FundOpsHQ resources
+                Explore more from FundOpsHQ
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
                 <Button variant="outline" size="sm" asChild>
-                  <Link href="/#fund-types">Fund Types</Link>
-                </Button>
-                <Button variant="outline" size="sm" asChild>
-                  <Link href="/tools">Tools</Link>
+                  <Link href="/guests">Guests</Link>
                 </Button>
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/newsletter">Newsletters</Link>
+                </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <Link href="/news">News</Link>
                 </Button>
               </div>
             </div>
