@@ -77,18 +77,15 @@ export function StoryRow({ story }: StoryRowProps) {
 
   return (
     <>
-      {/* Grid row: event | categories | size | headline | firms | source | time */}
+      {/* Grid row: event | categories+size | headline | firms | source | time */}
+      {/* Responsive: 4 cols on mobile, 6 cols on lg+ */}
       <div
         onMouseEnter={handleRowEnter}
         onMouseMove={handleRowMove}
         onMouseLeave={handleRowLeave}
-        className="grid items-center px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default"
-        style={{
-          gridTemplateColumns: '52px 140px 48px 1fr auto 130px 42px',
-          gap: '8px',
-        }}
+        className="grid items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[52px_190px_1fr_50px] lg:grid-cols-[52px_190px_1fr_240px_180px_50px]"
       >
-        {/* Col 1: Event type badge — fixed 52px */}
+        {/* Col 1: Event type badge */}
         <div className="flex items-center">
           {eventLabel ? (
             <span
@@ -102,7 +99,7 @@ export function StoryRow({ story }: StoryRowProps) {
           ) : null}
         </div>
 
-        {/* Col 2: Category badges — fixed 140px, room for 2 badges */}
+        {/* Col 2: Category badges + fund size */}
         <div className="flex items-center gap-1 overflow-hidden">
           {story.fundCategories.slice(0, 2).map((cat) => {
             const catInfo = CATEGORY_LABELS[cat]
@@ -118,31 +115,27 @@ export function StoryRow({ story }: StoryRowProps) {
               </span>
             )
           })}
-        </div>
-
-        {/* Col 3: Fund size — fixed 48px */}
-        <div className="flex items-center justify-end">
           {fundSize && (
-            <span className="text-[11px] font-mono font-medium text-muted-foreground whitespace-nowrap">
+            <span className="inline-flex rounded bg-muted/60 px-1.5 py-0.5 text-[11px] font-mono font-medium leading-none text-muted-foreground whitespace-nowrap">
               {fundSize}
             </span>
           )}
         </div>
 
-        {/* Col 4: Headline — takes remaining space, no truncation */}
+        {/* Col 3: Headline */}
         <span className="text-[14px] font-medium text-foreground leading-snug">
           {decodeHtmlEntities(story.headline)}
         </span>
 
-        {/* Col 5: Firm chips (max 2) — auto width, shrinks if needed */}
-        <div className="hidden md:flex items-center justify-end gap-1.5 min-w-0">
+        {/* Col 4: Firm chips (max 2) — only visible on lg+ */}
+        <div className="hidden lg:flex items-center justify-end gap-1.5 overflow-hidden">
           {story.firmChips.slice(0, 2).map((firm) => (
             <span
               key={firm.slug}
               className="inline-flex items-center gap-1.5 rounded border border-border/60 bg-muted/30 px-2 py-0.5 text-[11px] text-muted-foreground whitespace-nowrap"
             >
               <FirmLogo name={firm.name} logoUrl={firm.logoUrl} size={16} />
-              <span className="max-w-[90px] truncate">{firm.name}</span>
+              <span className="max-w-[100px] truncate">{firm.name}</span>
             </span>
           ))}
           {story.firmChips.length > 2 && (
@@ -152,14 +145,14 @@ export function StoryRow({ story }: StoryRowProps) {
           )}
         </div>
 
-        {/* Col 6: Source — fixed 130px */}
+        {/* Col 5: Source — only visible on lg+ */}
         <span className="hidden lg:block text-[12px] text-muted-foreground/60 truncate text-right">
           {story.articleCount > 1
             ? `${story.articleCount} sources`
             : story.sourceNames[0] || ''}
         </span>
 
-        {/* Col 7: Time — fixed 42px */}
+        {/* Col 6: Time */}
         <span className="text-[12px] text-muted-foreground/50 text-right tabular-nums whitespace-nowrap">
           {formatCompactTime(story.lastUpdated)}
         </span>

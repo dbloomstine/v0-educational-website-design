@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { Search, X, Loader2, TrendingUp, ChevronDown, SlidersHorizontal } from 'lucide-react'
+import { Search, X, Loader2, ChevronDown, SlidersHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { StoryRow } from './StoryRow'
 import { FirmLogo } from './FirmLogo'
@@ -17,12 +17,32 @@ const DATE_RANGES = [
   { label: '90d', value: '90d' },
 ] as const
 
-const FUND_SIZE_OPTIONS = [
-  { label: 'Any Size', value: '' },
-  { label: '$100M+', value: '100000000' },
-  { label: '$500M+', value: '500000000' },
-  { label: '$1B+', value: '1000000000' },
-  { label: '$5B+', value: '5000000000' },
+const FUND_SIZE_MIN_OPTIONS = [
+  { label: 'No min', value: '' },
+  { label: '$10M', value: '10000000' },
+  { label: '$25M', value: '25000000' },
+  { label: '$50M', value: '50000000' },
+  { label: '$100M', value: '100000000' },
+  { label: '$250M', value: '250000000' },
+  { label: '$500M', value: '500000000' },
+  { label: '$1B', value: '1000000000' },
+  { label: '$2B', value: '2000000000' },
+  { label: '$5B', value: '5000000000' },
+  { label: '$10B', value: '10000000000' },
+] as const
+
+const FUND_SIZE_MAX_OPTIONS = [
+  { label: 'No max', value: '' },
+  { label: '$50M', value: '50000000' },
+  { label: '$100M', value: '100000000' },
+  { label: '$250M', value: '250000000' },
+  { label: '$500M', value: '500000000' },
+  { label: '$1B', value: '1000000000' },
+  { label: '$2B', value: '2000000000' },
+  { label: '$5B', value: '5000000000' },
+  { label: '$10B', value: '10000000000' },
+  { label: '$25B', value: '25000000000' },
+  { label: '$50B+', value: '50000000000' },
 ] as const
 
 const FUND_CATEGORIES = [
@@ -61,8 +81,8 @@ export function NewsFeed() {
   const [dateRange, setDateRange] = useState(searchParams.get('range') || '7d')
   const [category, setCategory] = useState(searchParams.get('category') || '')
   const [eventType, setEventType] = useState(searchParams.get('type') || '')
-  const [fundActivity, setFundActivity] = useState(searchParams.get('fundActivity') === 'true')
-  const [fundSize, setFundSize] = useState(searchParams.get('fundSize') || '')
+  const [fundSizeMin, setFundSizeMin] = useState(searchParams.get('fundSizeMin') || '')
+  const [fundSizeMax, setFundSizeMax] = useState(searchParams.get('fundSizeMax') || '')
   const trustedOnly = false
   const [trendingFirm, setTrendingFirm] = useState(searchParams.get('firm') || '')
   const [fundSizeOpen, setFundSizeOpen] = useState(false)
@@ -82,8 +102,8 @@ export function NewsFeed() {
     query,
     category,
     eventType,
-    fundActivity,
-    fundSize,
+    fundSizeMin,
+    fundSizeMax,
     trendingFirm,
     dateRange !== '7d',
   ].filter(Boolean).length
@@ -98,13 +118,13 @@ export function NewsFeed() {
       if (dateRange) params.set('range', dateRange)
       if (category) params.set('category', category)
       if (eventType) params.set('type', eventType)
-      if (fundActivity) params.set('fundActivity', 'true')
-      if (fundSize) params.set('fundSize', fundSize)
+      if (fundSizeMin) params.set('fundSizeMin', fundSizeMin)
+      if (fundSizeMax) params.set('fundSizeMax', fundSizeMax)
       if (trustedOnly) params.set('trusted', 'true')
       if (trendingFirm) params.set('firm', trendingFirm)
       return params
     },
-    [query, dateRange, category, eventType, fundActivity, fundSize, trustedOnly, trendingFirm]
+    [query, dateRange, category, eventType, fundSizeMin, fundSizeMax, trustedOnly, trendingFirm]
   )
 
   // Sync URL
@@ -114,13 +134,13 @@ export function NewsFeed() {
     if (dateRange && dateRange !== '7d') params.set('range', dateRange)
     if (category) params.set('category', category)
     if (eventType) params.set('type', eventType)
-    if (fundActivity) params.set('fundActivity', 'true')
-    if (fundSize) params.set('fundSize', fundSize)
+    if (fundSizeMin) params.set('fundSizeMin', fundSizeMin)
+    if (fundSizeMax) params.set('fundSizeMax', fundSizeMax)
     if (trustedOnly) params.set('trusted', 'true')
     if (trendingFirm) params.set('firm', trendingFirm)
     const qs = params.toString()
     router.replace(qs ? `/news?${qs}` : '/news', { scroll: false })
-  }, [router, query, dateRange, category, eventType, fundActivity, fundSize, trustedOnly, trendingFirm])
+  }, [router, query, dateRange, category, eventType, fundSizeMin, fundSizeMax, trustedOnly, trendingFirm])
 
   // Fetch feed
   const fetchFeed = useCallback(
@@ -161,7 +181,7 @@ export function NewsFeed() {
     fetchFeed(0, false)
     syncUrl()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, dateRange, category, eventType, fundActivity, fundSize, trustedOnly, trendingFirm])
+  }, [query, dateRange, category, eventType, fundSizeMin, fundSizeMax, trustedOnly, trendingFirm])
 
   // Search debounce
   const [searchInput, setSearchInput] = useState(query)
@@ -177,8 +197,8 @@ export function NewsFeed() {
     setDateRange('7d')
     setCategory('')
     setEventType('')
-    setFundActivity(false)
-    setFundSize('')
+    setFundSizeMin('')
+    setFundSizeMax('')
     setTrendingFirm('')
   }
 
@@ -264,54 +284,60 @@ export function NewsFeed() {
       {/* ── Collapsible filter panel ─────────────────────────── */}
       {filtersOpen && (
         <div className="rounded-lg border border-border bg-card/50 p-3 space-y-3">
-          {/* Quick toggles row */}
-          <div className="flex flex-wrap items-center gap-1.5">
+          {/* Fund size range */}
+          <div className="flex flex-wrap items-center gap-2">
             <button
-              onClick={() => setFundActivity(!fundActivity)}
+              onClick={() => setFundSizeOpen(!fundSizeOpen)}
               className={cn(
                 'inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors',
-                fundActivity
+                fundSizeMin || fundSizeMax
                   ? 'bg-blue-900/50 text-blue-300 border-blue-700'
                   : 'bg-muted text-muted-foreground border-border hover:bg-accent'
               )}
             >
-              <TrendingUp className="h-3 w-3" />
-              Fund Activity
+              {fundSizeMin || fundSizeMax
+                ? `${FUND_SIZE_MIN_OPTIONS.find((o) => o.value === fundSizeMin)?.label || 'Any'} – ${FUND_SIZE_MAX_OPTIONS.find((o) => o.value === fundSizeMax)?.label || 'Any'}`
+                : 'Fund Size'}
+              <ChevronDown className={cn('h-3 w-3 transition-transform', fundSizeOpen && 'rotate-180')} />
             </button>
 
-            <div className="relative">
-              <button
-                onClick={() => setFundSizeOpen(!fundSizeOpen)}
-                className={cn(
-                  'inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors',
-                  fundSize
-                    ? 'bg-blue-900/50 text-blue-300 border-blue-700'
-                    : 'bg-muted text-muted-foreground border-border hover:bg-accent'
-                )}
-              >
-                {fundSize ? FUND_SIZE_OPTIONS.find((o) => o.value === fundSize)?.label || 'Fund Size' : 'Fund Size'}
-                <ChevronDown className={cn('h-3 w-3 transition-transform', fundSizeOpen && 'rotate-180')} />
-              </button>
-              {fundSizeOpen && (
-                <div className="absolute top-full left-0 z-50 mt-1 w-36 rounded-lg border border-border bg-popover p-1 shadow-lg">
-                  {FUND_SIZE_OPTIONS.map((opt) => (
-                    <button
-                      key={opt.value}
-                      onClick={() => { setFundSize(opt.value); setFundSizeOpen(false) }}
-                      className={cn(
-                        'block w-full rounded-md px-3 py-1.5 text-left text-xs transition-colors',
-                        fundSize === opt.value
-                          ? 'bg-accent text-foreground'
-                          : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
-                      )}
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+            {fundSizeOpen && (
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-medium text-muted-foreground/60 uppercase">Min</span>
+                  <select
+                    value={fundSizeMin}
+                    onChange={(e) => setFundSizeMin(e.target.value)}
+                    className="rounded-md border border-border bg-muted px-2 py-1 text-[11px] text-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                  >
+                    {FUND_SIZE_MIN_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
                 </div>
-              )}
-            </div>
-
+                <span className="text-[11px] text-muted-foreground/40">–</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[10px] font-medium text-muted-foreground/60 uppercase">Max</span>
+                  <select
+                    value={fundSizeMax}
+                    onChange={(e) => setFundSizeMax(e.target.value)}
+                    className="rounded-md border border-border bg-muted px-2 py-1 text-[11px] text-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+                  >
+                    {FUND_SIZE_MAX_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    ))}
+                  </select>
+                </div>
+                {(fundSizeMin || fundSizeMax) && (
+                  <button
+                    onClick={() => { setFundSizeMin(''); setFundSizeMax('') }}
+                    className="text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Fund Type pills */}

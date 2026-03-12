@@ -29,15 +29,14 @@ export async function GET(req: Request) {
     params.set('days', RANGE_TO_DAYS[range])
   }
 
-  // fundActivity → signal
-  if (incoming.get('fundActivity') === 'true') {
-    params.set('signal', 'true')
+  // fundSizeMin → minSize, fundSizeMax → maxSize
+  const fundSizeMin = incoming.get('fundSizeMin')
+  if (fundSizeMin) {
+    params.set('minSize', fundSizeMin)
   }
-
-  // fundSize → minSize
-  const fundSize = incoming.get('fundSize')
-  if (fundSize) {
-    params.set('minSize', fundSize)
+  const fundSizeMax = incoming.get('fundSizeMax')
+  if (fundSizeMax) {
+    params.set('maxSize', fundSizeMax)
   }
 
   // trusted → quality
