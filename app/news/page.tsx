@@ -32,7 +32,7 @@ export default function NewsPage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1 bg-background">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto max-w-5xl px-4 py-4">
           <div className="mb-3 flex items-baseline gap-3">
             <h1 className="text-xl font-heading font-bold text-foreground">
               Fund News

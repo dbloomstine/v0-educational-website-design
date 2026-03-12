@@ -109,7 +109,7 @@ export function StoryRow({ story }: StoryRowProps) {
       </HoverCardTrigger>
 
       {/* Hover preview card */}
-      <HoverCardContent side="right" align="start" sideOffset={8} className="w-[420px] p-0">
+      <HoverCardContent side="right" align="start" sideOffset={8} collisionPadding={16} className="w-[420px] p-0">
         <div className="p-4 space-y-3">
           {/* Badges */}
           <div className="flex flex-wrap items-center gap-1.5">
