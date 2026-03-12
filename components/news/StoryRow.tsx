@@ -1,9 +1,10 @@
 'use client'
 
+import { useCallback, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { ExternalLink, Newspaper } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { FirmLogo } from './FirmLogo'
-import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card'
 import {
   EVENT_LABELS,
   CATEGORY_LABELS,
@@ -22,182 +23,247 @@ export function StoryRow({ story }: StoryRowProps) {
   const eventLabel = story.eventType ? EVENT_LABELS[story.eventType] : null
   const fundSize = formatFundSize(story.maxFundSizeUsd)
 
+  const [visible, setVisible] = useState(false)
+  const [coords, setCoords] = useState({ x: 0, y: 0 })
+  const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const cardRef = useRef<HTMLDivElement>(null)
+
+  const clearTimers = useCallback(() => {
+    if (openTimer.current) { clearTimeout(openTimer.current); openTimer.current = null }
+    if (closeTimer.current) { clearTimeout(closeTimer.current); closeTimer.current = null }
+  }, [])
+
+  const handleRowEnter = useCallback((e: React.MouseEvent) => {
+    clearTimers()
+    setCoords({ x: e.clientX, y: e.clientY })
+    openTimer.current = setTimeout(() => setVisible(true), 200)
+  }, [clearTimers])
+
+  const handleRowMove = useCallback((e: React.MouseEvent) => {
+    if (!visible) {
+      setCoords({ x: e.clientX, y: e.clientY })
+    }
+  }, [visible])
+
+  const handleRowLeave = useCallback(() => {
+    clearTimers()
+    closeTimer.current = setTimeout(() => setVisible(false), 150)
+  }, [clearTimers])
+
+  const handleCardEnter = useCallback(() => {
+    clearTimers()
+  }, [clearTimers])
+
+  const handleCardLeave = useCallback(() => {
+    clearTimers()
+    closeTimer.current = setTimeout(() => setVisible(false), 150)
+  }, [clearTimers])
+
+  // Position the card: to the right of cursor, clamped to viewport
+  const cardWidth = 420
+  const cardPad = 12
+  let left = coords.x + cardPad
+  let top = coords.y
+
+  if (typeof window !== 'undefined') {
+    if (left + cardWidth > window.innerWidth - 16) {
+      left = coords.x - cardWidth - cardPad
+    }
+    if (top + 300 > window.innerHeight) {
+      top = Math.max(16, window.innerHeight - 400)
+    }
+  }
+
   return (
-    <HoverCard openDelay={200} closeDelay={150}>
-      <HoverCardTrigger asChild>
-        <div
-          className={cn(
-            'flex items-center gap-2 px-3 py-2 border-b border-border/40 hover:bg-accent/30 transition-colors group cursor-default'
-          )}
-        >
-          {/* Event type badge */}
+    <>
+      {/* Grid row: event | categories | size | headline | firms | source | time */}
+      <div
+        onMouseEnter={handleRowEnter}
+        onMouseMove={handleRowMove}
+        onMouseLeave={handleRowLeave}
+        className="grid items-center px-3 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default"
+        style={{
+          gridTemplateColumns: '54px 150px 52px 1fr minmax(0, 240px) 130px 42px',
+          gap: '6px',
+        }}
+      >
+        {/* Col 1: Event type badge — fixed 54px */}
+        <div className="flex items-center">
           {eventLabel ? (
             <span
               className={cn(
-                'shrink-0 inline-flex rounded border px-1.5 py-0.5 text-[10px] font-medium leading-none',
+                'inline-flex rounded border px-1.5 py-0.5 text-[11px] font-semibold leading-none whitespace-nowrap',
                 eventLabel.color
               )}
             >
               {eventLabel.short}
             </span>
-          ) : (
-            <span className="shrink-0 w-[42px]" />
-          )}
+          ) : null}
+        </div>
 
-          {/* Category badges (max 2) */}
-          <div className="shrink-0 flex items-center gap-1">
-            {story.fundCategories.slice(0, 2).map((cat) => {
-              const catInfo = CATEGORY_LABELS[cat]
-              return (
-                <span
-                  key={cat}
-                  className={cn(
-                    'inline-flex rounded px-1 py-0.5 text-[10px] font-medium leading-none',
-                    catInfo?.color || 'bg-muted text-muted-foreground'
-                  )}
-                >
-                  {catInfo?.label || cat}
-                </span>
-              )
-            })}
-          </div>
+        {/* Col 2: Category badges — fixed 150px, room for 2 badges */}
+        <div className="flex items-center gap-1 overflow-hidden">
+          {story.fundCategories.slice(0, 2).map((cat) => {
+            const catInfo = CATEGORY_LABELS[cat]
+            return (
+              <span
+                key={cat}
+                className={cn(
+                  'inline-flex rounded px-1.5 py-0.5 text-[11px] font-semibold leading-none whitespace-nowrap',
+                  catInfo?.color || 'bg-muted text-muted-foreground'
+                )}
+              >
+                {catInfo?.label || cat}
+              </span>
+            )
+          })}
+        </div>
 
-          {/* Fund size */}
+        {/* Col 3: Fund size — fixed 52px */}
+        <div className="flex items-center justify-end">
           {fundSize && (
-            <span className="shrink-0 text-[11px] font-mono text-muted-foreground">
+            <span className="text-[11px] font-mono font-medium text-muted-foreground whitespace-nowrap">
               {fundSize}
             </span>
           )}
+        </div>
 
-          {/* Headline — plain text, no link */}
-          <span className="flex-1 min-w-0 text-[13px] font-medium text-foreground truncate">
-            {decodeHtmlEntities(story.headline)}
-          </span>
+        {/* Col 4: Headline — takes remaining space */}
+        <span className="text-[14px] font-medium text-foreground truncate">
+          {decodeHtmlEntities(story.headline)}
+        </span>
 
-          {/* Firm chips (max 2) */}
-          {story.firmChips.length > 0 && (
-            <div className="hidden md:flex shrink-0 items-center gap-1">
-              {story.firmChips.slice(0, 2).map((firm) => (
-                <span
-                  key={firm.slug}
-                  className="inline-flex items-center gap-1 rounded border border-border/60 bg-muted/30 px-1.5 py-0.5 text-[10px] text-muted-foreground"
-                >
-                  <FirmLogo name={firm.name} logoUrl={firm.logoUrl} size={12} />
-                  <span className="max-w-[80px] truncate">{firm.name}</span>
+        {/* Col 5: Firm chips (max 2) — up to 240px */}
+        <div className="hidden md:flex items-center justify-end gap-1.5 overflow-hidden">
+          {story.firmChips.slice(0, 2).map((firm) => (
+            <span
+              key={firm.slug}
+              className="inline-flex items-center gap-1.5 rounded border border-border/60 bg-muted/30 px-2 py-0.5 text-[11px] text-muted-foreground whitespace-nowrap"
+            >
+              <FirmLogo name={firm.name} logoUrl={firm.logoUrl} size={16} />
+              <span className="max-w-[90px] truncate">{firm.name}</span>
+            </span>
+          ))}
+          {story.firmChips.length > 2 && (
+            <span className="text-[11px] text-muted-foreground/50">
+              +{story.firmChips.length - 2}
+            </span>
+          )}
+        </div>
+
+        {/* Col 6: Source — fixed 130px */}
+        <span className="hidden lg:block text-[12px] text-muted-foreground/60 truncate text-right">
+          {story.articleCount > 1
+            ? `${story.articleCount} sources`
+            : story.sourceNames[0] || ''}
+        </span>
+
+        {/* Col 7: Time — fixed 42px */}
+        <span className="text-[12px] text-muted-foreground/50 text-right tabular-nums whitespace-nowrap">
+          {formatCompactTime(story.lastUpdated)}
+        </span>
+      </div>
+
+      {/* Hover preview card — portaled, positioned near cursor */}
+      {visible && typeof document !== 'undefined' && createPortal(
+        <div
+          ref={cardRef}
+          onMouseEnter={handleCardEnter}
+          onMouseLeave={handleCardLeave}
+          style={{ position: 'fixed', left, top, zIndex: 50, width: cardWidth }}
+          className="rounded-md border bg-popover text-popover-foreground shadow-lg animate-in fade-in-0 zoom-in-95 duration-150"
+        >
+          <div className="p-4 space-y-3">
+            {/* Badges */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              {eventLabel && (
+                <span className={cn('inline-flex rounded-full border px-2 py-0.5 text-[11px] font-medium', eventLabel.color)}>
+                  {eventLabel.label}
                 </span>
-              ))}
-              {story.firmChips.length > 2 && (
-                <span className="text-[10px] text-muted-foreground/50">
-                  +{story.firmChips.length - 2}
+              )}
+              {story.fundCategories.map((cat) => {
+                const catInfo = CATEGORY_LABELS[cat]
+                return (
+                  <span
+                    key={cat}
+                    className={cn(
+                      'inline-flex rounded-full px-2 py-0.5 text-[11px] font-medium',
+                      catInfo?.color || 'bg-muted text-muted-foreground'
+                    )}
+                  >
+                    {catInfo?.label || cat}
+                  </span>
+                )
+              })}
+              {fundSize && (
+                <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
+                  {fundSize}
                 </span>
               )}
             </div>
-          )}
 
-          {/* Source */}
-          <span className="hidden lg:block shrink-0 w-[100px] text-[11px] text-muted-foreground/60 truncate text-right">
-            {story.articleCount > 1
-              ? `${story.articleCount} sources`
-              : story.sourceNames[0] || ''}
-          </span>
+            {/* Headline */}
+            <h3 className="text-sm font-semibold text-foreground leading-snug">
+              {decodeHtmlEntities(story.headline)}
+            </h3>
 
-          {/* Time */}
-          <span className="shrink-0 w-[36px] text-[11px] text-muted-foreground/50 text-right tabular-nums">
-            {formatCompactTime(story.lastUpdated)}
-          </span>
-        </div>
-      </HoverCardTrigger>
-
-      {/* Hover preview card */}
-      <HoverCardContent side="right" align="start" sideOffset={8} collisionPadding={16} className="w-[420px] p-0">
-        <div className="p-4 space-y-3">
-          {/* Badges */}
-          <div className="flex flex-wrap items-center gap-1.5">
-            {eventLabel && (
-              <span className={cn('inline-flex rounded-full border px-2 py-0.5 text-[10px] font-medium', eventLabel.color)}>
-                {eventLabel.label}
-              </span>
+            {/* Summary */}
+            {story.summary && (
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {decodeHtmlEntities(story.summary)}
+              </p>
             )}
-            {story.fundCategories.map((cat) => {
-              const catInfo = CATEGORY_LABELS[cat]
-              return (
-                <span
-                  key={cat}
-                  className={cn(
-                    'inline-flex rounded-full px-2 py-0.5 text-[10px] font-medium',
-                    catInfo?.color || 'bg-muted text-muted-foreground'
-                  )}
-                >
-                  {catInfo?.label || cat}
+
+            {/* Firm chips */}
+            {story.firmChips.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {story.firmChips.map((firm) => (
+                  <span
+                    key={firm.slug}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
+                  >
+                    <FirmLogo name={firm.name} logoUrl={firm.logoUrl} size={14} />
+                    {firm.name}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Sources + time */}
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground/60 border-t border-border/50 pt-2">
+              <div className="flex items-center gap-1.5">
+                <Newspaper className="h-3 w-3" />
+                <span>
+                  {story.articleCount} {story.articleCount === 1 ? 'source' : 'sources'}
+                  {story.sourceNames.length > 0 && ` — ${story.sourceNames.slice(0, 3).join(', ')}`}
                 </span>
-              )
-            })}
-            {fundSize && (
-              <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-                {fundSize}
-              </span>
+              </div>
+              <span>{formatRelativeDate(story.lastUpdated)}</span>
+            </div>
+
+            {/* Source links */}
+            {story.articles.length > 0 && (
+              <div className="space-y-1.5">
+                {story.articles.map((article) => (
+                  <a
+                    key={article.id}
+                    href={article.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 rounded-md px-2 py-1.5 -mx-2 text-[11px] text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-colors"
+                  >
+                    <ExternalLink className="h-3 w-3 shrink-0 opacity-50" />
+                    <span className="shrink-0 font-semibold">{article.sourceName || 'Source'}</span>
+                    <span className="truncate opacity-60">{decodeHtmlEntities(article.title)}</span>
+                  </a>
+                ))}
+              </div>
             )}
           </div>
-
-          {/* Headline */}
-          <h3 className="text-sm font-semibold text-foreground leading-snug">
-            {decodeHtmlEntities(story.headline)}
-          </h3>
-
-          {/* Summary */}
-          {story.summary && (
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              {decodeHtmlEntities(story.summary)}
-            </p>
-          )}
-
-          {/* Firm chips */}
-          {story.firmChips.length > 0 && (
-            <div className="flex flex-wrap gap-1.5">
-              {story.firmChips.map((firm) => (
-                <span
-                  key={firm.slug}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[10px] font-medium text-muted-foreground"
-                >
-                  <FirmLogo name={firm.name} logoUrl={firm.logoUrl} size={12} />
-                  {firm.name}
-                </span>
-              ))}
-            </div>
-          )}
-
-          {/* Sources + time */}
-          <div className="flex items-center justify-between text-[11px] text-muted-foreground/60 border-t border-border/50 pt-2">
-            <div className="flex items-center gap-1.5">
-              <Newspaper className="h-3 w-3" />
-              <span>
-                {story.articleCount} {story.articleCount === 1 ? 'source' : 'sources'}
-                {story.sourceNames.length > 0 && ` — ${story.sourceNames.slice(0, 3).join(', ')}`}
-              </span>
-            </div>
-            <span>{formatRelativeDate(story.lastUpdated)}</span>
-          </div>
-
-          {/* Source links — show all, these are the primary click-through */}
-          {story.articles.length > 0 && (
-            <div className="space-y-1.5">
-              {story.articles.map((article) => (
-                <a
-                  key={article.id}
-                  href={article.sourceUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-md px-2 py-1.5 -mx-2 text-[11px] text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-colors"
-                >
-                  <ExternalLink className="h-3 w-3 shrink-0 opacity-50" />
-                  <span className="shrink-0 font-semibold">{article.sourceName || 'Source'}</span>
-                  <span className="truncate opacity-60">{decodeHtmlEntities(article.title)}</span>
-                </a>
-              ))}
-            </div>
-          )}
-        </div>
-      </HoverCardContent>
-    </HoverCard>
+        </div>,
+        document.body
+      )}
+    </>
   )
 }
