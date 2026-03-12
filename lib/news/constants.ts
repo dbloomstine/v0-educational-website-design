@@ -58,16 +58,6 @@ export function formatCompactTime(date: string): string {
     // correct calendar day regardless of timezone.
     const normalized = /^\d{4}-\d{2}-\d{2}$/.test(date) ? `${date}T12:00:00` : date
     const d = new Date(normalized)
-    const diffMs = now.getTime() - d.getTime()
-    const diffMin = Math.floor(diffMs / 60000)
-
-    // Less than 1 hour: show minutes
-    if (diffMin < 60) return `${diffMin}m`
-
-    const diffHr = Math.floor(diffMin / 60)
-
-    // Less than 6 hours: show hours
-    if (diffHr < 6) return `${diffHr}h`
 
     // Same calendar day: "Today"
     if (d.toDateString() === now.toDateString()) return 'Today'
@@ -75,11 +65,12 @@ export function formatCompactTime(date: string): string {
     // Yesterday
     const yesterday = new Date(now)
     yesterday.setDate(yesterday.getDate() - 1)
-    if (d.toDateString() === yesterday.toDateString()) return 'Yest.'
+    if (d.toDateString() === yesterday.toDateString()) return 'Yesterday'
 
     // Within 7 days: show day name
-    const diffDay = Math.floor(diffHr / 24)
-    if (diffDay < 7) return d.toLocaleDateString('en-US', { weekday: 'short' })
+    const diffMs = now.getTime() - d.getTime()
+    const diffDay = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+    if (diffDay < 7) return d.toLocaleDateString('en-US', { weekday: 'long' })
 
     // Older: show date
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
