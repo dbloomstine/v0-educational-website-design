@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase/client'
+import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { isAuthorizedPipelineRequest } from '@/lib/pipeline/auth'
 import { classifyPendingArticles } from '@/lib/news/classify-articles'
 
@@ -13,7 +13,7 @@ export async function GET(req: Request) {
   try {
     // Recovery: reset stuck articles that have been "processing" for >10 min
     const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString()
-    await supabaseAdmin
+    await getSupabaseAdmin()
       .from('news_items')
       .update({ classification_status: 'pending' })
       .eq('classification_status', 'processing')
@@ -24,7 +24,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'ANTHROPIC_API_KEY not set' }, { status: 500 })
     }
 
-    const result = await classifyPendingArticles(supabaseAdmin, apiKey)
+    const result = await classifyPendingArticles(getSupabaseAdmin(), apiKey)
 
     return NextResponse.json({
       ok: true,

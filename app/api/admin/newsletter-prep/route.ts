@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase/client'
+import { getSupabaseAdmin } from '@/lib/supabase/client'
 
 export const dynamic = 'force-dynamic'
 
@@ -27,7 +27,7 @@ export async function GET(req: Request) {
   }
 
   // Query high-value articles in date range
-  const { data: rows, error } = await supabaseAdmin
+  const { data: rows, error } = await getSupabaseAdmin()
     .from('news_items')
     .select('id, title, source_url, source_name, published_date, article_type, fund_categories, is_high_signal, relevance_score, tldr, entities_raw, extracted_data, event_type')
     .eq('classification_status', 'complete')

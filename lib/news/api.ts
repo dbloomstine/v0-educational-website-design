@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase/client'
+import { getSupabaseAdmin } from '@/lib/supabase/client'
 import type { NewsArticle, FacetCounts, ArticleFeedResponse } from './types'
 
 export interface QueryParams {
@@ -28,7 +28,7 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
   const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString()
 
   // --- Main articles query ---
-  let query = supabaseAdmin
+  let query = getSupabaseAdmin()
     .from('news_items')
     .select('id, title, source_url, source_name, published_date, article_type, fund_categories, is_high_signal, relevance_score, tldr, extracted_data, event_type')
     .eq('classification_status', 'complete')
@@ -112,7 +112,7 @@ function mapRowToArticle(row: any): NewsArticle {
 
 async function queryFacets(dateCutoff: string): Promise<FacetCounts> {
   // Get all completed non-duplicate articles in range for facet counting
-  const { data: facetRows } = await supabaseAdmin
+  const { data: facetRows } = await getSupabaseAdmin()
     .from('news_items')
     .select('fund_categories, article_type, is_high_signal')
     .eq('classification_status', 'complete')

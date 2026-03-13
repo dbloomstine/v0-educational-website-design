@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase/client'
+import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { isAuthorizedPipelineRequest } from '@/lib/pipeline/auth'
 import { runIngestion } from '@/lib/news/ingest-worker'
 
@@ -18,7 +18,7 @@ export async function GET(req: Request) {
 
   try {
     const result = await runIngestion({
-      supabase: supabaseAdmin,
+      supabase: getSupabaseAdmin(),
       tiers,
     })
 
