@@ -43,10 +43,14 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
     query = query.overlaps('fund_categories', cats)
   }
 
-  // Article type filter
+  // Article type filter — when no type is explicitly selected,
+  // hide "other" (irrelevant noise) and require minimum relevance
   if (params.type) {
     const types = params.type.split(',')
     query = query.in('article_type', types)
+  } else {
+    query = query.neq('article_type', 'other')
+    query = query.gte('relevance_score', 0.2)
   }
 
   // Text search
@@ -111,13 +115,15 @@ function mapRowToArticle(row: any): NewsArticle {
 }
 
 async function queryFacets(dateCutoff: string): Promise<FacetCounts> {
-  // Get all completed non-duplicate articles in range for facet counting
+  // Get fund-relevant articles in range for facet counting (exclude noise)
   const { data: facetRows } = await getSupabaseAdmin()
     .from('news_items')
     .select('fund_categories, article_type, is_high_signal')
     .eq('classification_status', 'complete')
     .eq('is_duplicate', false)
     .gte('published_date', dateCutoff)
+    .neq('article_type', 'other')
+    .gte('relevance_score', 0.2)
 
   const categories: Record<string, number> = {}
   const types: Record<string, number> = {}
