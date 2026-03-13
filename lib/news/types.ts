@@ -17,6 +17,7 @@ export interface NewsArticle {
   geography: string[]
   personName: string | null
   personTitle: string | null
+  firmDomain: string | null
 }
 
 export interface FacetCounts {

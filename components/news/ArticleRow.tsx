@@ -14,6 +14,53 @@ import {
 } from '@/lib/news/constants'
 import type { NewsArticle } from '@/lib/news/types'
 
+// ─── Firm Logo ───────────────────────────────────────────────────────────────
+
+const LOGO_COLORS = [
+  'bg-blue-900/60 text-blue-300',
+  'bg-emerald-900/60 text-emerald-300',
+  'bg-violet-900/60 text-violet-300',
+  'bg-amber-900/60 text-amber-300',
+  'bg-rose-900/60 text-rose-300',
+  'bg-cyan-900/60 text-cyan-300',
+  'bg-indigo-900/60 text-indigo-300',
+  'bg-orange-900/60 text-orange-300',
+]
+
+function getInitialColor(name: string): string {
+  let hash = 0
+  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  return LOGO_COLORS[Math.abs(hash) % LOGO_COLORS.length]
+}
+
+function FirmLogo({ domain, firmName, size = 20 }: { domain: string | null; firmName: string | null; size?: number }) {
+  const [imgError, setImgError] = useState(false)
+
+  if (!domain || imgError) {
+    const initial = (firmName ?? '?')[0].toUpperCase()
+    return (
+      <div
+        className={cn('rounded-full flex items-center justify-center text-[10px] font-bold shrink-0', getInitialColor(firmName ?? ''))}
+        style={{ width: size, height: size }}
+      >
+        {initial}
+      </div>
+    )
+  }
+
+  return (
+    <img
+      src={`https://logo.clearbit.com/${domain}`}
+      alt=""
+      className="rounded-full object-contain bg-white shrink-0"
+      style={{ width: size, height: size }}
+      onError={() => setImgError(true)}
+    />
+  )
+}
+
+// ─── Article Row ─────────────────────────────────────────────────────────────
+
 interface ArticleRowProps {
   article: NewsArticle
 }
@@ -76,13 +123,18 @@ export function ArticleRow({ article }: ArticleRowProps) {
 
   return (
     <>
-      {/* Grid row: event | categories+size | headline | source | time */}
+      {/* Grid row: logo | event | categories+size | headline | source | time */}
       <div
         onMouseEnter={handleRowEnter}
         onMouseMove={handleRowMove}
         onMouseLeave={handleRowLeave}
-        className="grid items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[52px_140px_1fr_50px] lg:grid-cols-[52px_190px_1fr_180px_50px]"
+        className="grid items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[24px_52px_140px_1fr_50px] lg:grid-cols-[24px_52px_190px_1fr_180px_50px]"
       >
+        {/* Col 0: Firm logo */}
+        <div className="flex items-center justify-center">
+          <FirmLogo domain={article.firmDomain} firmName={article.firmName} />
+        </div>
+
         {/* Col 1: Event type badge */}
         <div className="flex items-center">
           {eventLabel ? (
@@ -174,10 +226,18 @@ export function ArticleRow({ article }: ArticleRowProps) {
               )}
             </div>
 
-            {/* Headline */}
-            <h3 className="text-sm font-semibold text-foreground leading-snug">
-              {decodeHtmlEntities(article.title)}
-            </h3>
+            {/* Headline with logo */}
+            <div className="flex items-start gap-2.5">
+              <FirmLogo domain={article.firmDomain} firmName={article.firmName} size={28} />
+              <div className="min-w-0">
+                <h3 className="text-sm font-semibold text-foreground leading-snug">
+                  {decodeHtmlEntities(article.title)}
+                </h3>
+                {article.firmName && (
+                  <p className="text-[11px] text-muted-foreground/60 mt-0.5">{article.firmName}</p>
+                )}
+              </div>
+            </div>
 
             {/* Firm / Fund / Person details */}
             {(article.firmName || article.fundName || article.personName) && (

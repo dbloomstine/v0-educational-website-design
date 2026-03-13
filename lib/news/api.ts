@@ -117,6 +117,7 @@ function mapRowToArticle(row: any): NewsArticle {
     geography: (extractedData?.geography as string[]) ?? [],
     personName: (extractedData?.person_name as string) ?? null,
     personTitle: (extractedData?.person_title as string) ?? null,
+    firmDomain: (extractedData?.firm_domain as string) ?? null,
   }
 }
 

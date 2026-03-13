@@ -14,6 +14,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { resolveFirmDomain } from './resolve-firm-logo';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>;
@@ -162,6 +163,9 @@ export async function classifyPendingArticles(
           continue;
         }
 
+        // Resolve firm domain for logo display (non-blocking — null on failure)
+        const firmDomain = await resolveFirmDomain(classification.firm_name ?? '');
+
         const { error: updateError } = await supabase
           .from('news_items')
           .update({
@@ -189,6 +193,7 @@ export async function classifyPendingArticles(
               geography: classification.geography,
               person_name: classification.person_name,
               person_title: classification.person_title,
+              firm_domain: firmDomain,
             },
           })
           .eq('id', article.id);
