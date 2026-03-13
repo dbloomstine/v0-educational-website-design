@@ -93,44 +93,43 @@ export default function NewsletterPrepPage() {
     }
   }
 
+  const csvEscape = (val: string | null): string => {
+    if (!val) return ''
+    if (val.includes(',') || val.includes('"') || val.includes('\n')) {
+      return `"${val.replace(/"/g, '""')}"`
+    }
+    return val
+  }
+
   const formatForClaude = (): string => {
     if (!data) return ''
-    const lines: string[] = []
-    lines.push(`# Fund News Data — ${data.dateRange.start} to ${data.dateRange.end}`)
-    lines.push(`${data.totalArticles} articles, grouped by fund category, sorted by fund size.`)
-    lines.push('')
+    const rows: string[] = []
+
+    // CSV header
+    rows.push('category,firm,fund_size,event_type,fund_name,strategy,geo,person,person_title,headline,tldr,source,url')
 
     for (const group of data.groups) {
-      const label = CATEGORY_DISPLAY[group.category] ?? group.category.toUpperCase()
-      lines.push(`## ${label}`)
-      lines.push('')
-
-      for (const article of group.articles) {
-        const firm = article.firmName ?? 'Unknown Firm'
-        const size = formatSize(article.fundSizeUsdMillions)
-        const event = article.eventType ?? article.articleType ?? 'other'
-
-        // Compact structured format
-        lines.push(`### ${firm}${size ? ` — ${size}` : ''} [${event}]`)
-
-        // Metadata on one line
-        const meta: string[] = []
-        if (article.fundName) meta.push(article.fundName)
-        if (article.fundStrategy) meta.push(article.fundStrategy)
-        if (article.geography.length > 0) meta.push(article.geography.join(', '))
-        if (article.personName) {
-          meta.push(`${article.personName}${article.personTitle ? ` (${article.personTitle})` : ''}`)
-        }
-        if (meta.length > 0) lines.push(meta.join(' · '))
-
-        lines.push(article.title)
-        if (article.tldr) lines.push(article.tldr)
-        lines.push(`[${article.sourceName ?? 'Source'}](${article.sourceUrl})`)
-        lines.push('')
+      const cat = CATEGORY_DISPLAY[group.category] ?? group.category
+      for (const a of group.articles) {
+        rows.push([
+          csvEscape(cat),
+          csvEscape(a.firmName),
+          a.fundSizeUsdMillions ? formatSize(a.fundSizeUsdMillions) : '',
+          a.eventType ?? a.articleType ?? '',
+          csvEscape(a.fundName),
+          csvEscape(a.fundStrategy),
+          a.geography.length > 0 ? csvEscape(a.geography.join('; ')) : '',
+          csvEscape(a.personName),
+          csvEscape(a.personTitle),
+          csvEscape(a.title),
+          csvEscape(a.tldr),
+          csvEscape(a.sourceName),
+          csvEscape(a.sourceUrl),
+        ].join(','))
       }
     }
 
-    return lines.join('\n')
+    return rows.join('\n')
   }
 
   const copyForClaude = async () => {
