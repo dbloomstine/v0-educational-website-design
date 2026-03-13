@@ -139,6 +139,17 @@ export default function NewsletterPrepPage() {
     setTimeout(() => setCopied(false), 2000)
   }
 
+  const downloadCsv = () => {
+    const text = formatForClaude()
+    const blob = new Blob([text], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `fund-watch-${start}-to-${end}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  }
+
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 p-6">
       <div className="max-w-4xl mx-auto space-y-6">
@@ -209,12 +220,20 @@ export default function NewsletterPrepPage() {
               <p className="text-sm text-gray-400">
                 {data.totalArticles} articles from {data.dateRange.start} to {data.dateRange.end}
               </p>
-              <button
-                onClick={copyForClaude}
-                className="rounded bg-emerald-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-emerald-500"
-              >
-                {copied ? 'Copied!' : 'Copy for Claude'}
-              </button>
+              <div className="flex gap-2">
+                <button
+                  onClick={downloadCsv}
+                  className="rounded bg-emerald-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-emerald-500"
+                >
+                  Download CSV
+                </button>
+                <button
+                  onClick={copyForClaude}
+                  className="rounded bg-gray-700 px-4 py-1.5 text-sm font-medium text-gray-200 hover:bg-gray-600"
+                >
+                  {copied ? 'Copied!' : 'Copy to Clipboard'}
+                </button>
+              </div>
             </div>
 
             {data.groups.map((group) => (
