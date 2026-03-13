@@ -1,41 +1,16 @@
-export interface StoryArticle {
+export interface NewsArticle {
   id: string
   title: string
   sourceUrl: string
   sourceName: string | null
   publishedDate: string | null
-}
-
-export interface FirmChip {
-  name: string
-  slug: string
-  logoUrl?: string | null
-}
-
-export interface Story {
-  id: string
-  headline: string
-  summary: string | null
-  articleCount: number
-  firstSeen: string
-  lastUpdated: string
-  gravityScore: number
-  eventType: string | null
+  articleType: string | null
   fundCategories: string[]
-  maxFundSizeUsd: number | null
   isHighSignal: boolean
-  sourceNames: string[]
-  firmChips: FirmChip[]
-  gpNames: string[]
-  articles: StoryArticle[]
-}
-
-export interface TrendingFirm {
-  firmId: string
-  name: string
-  slug: string
-  mentionCount: number
-  logoUrl: string | null
+  relevanceScore: number | null
+  tldr: string | null
+  fundSizeUsd: number | null
+  eventType: string | null
 }
 
 export interface FacetCounts {
@@ -45,10 +20,8 @@ export interface FacetCounts {
   totalInRange: number
 }
 
-export interface FeedResponse {
-  stories: Story[]
-  unclustered: []
-  trending: TrendingFirm[]
+export interface ArticleFeedResponse {
+  articles: NewsArticle[]
   facets: FacetCounts
   hasMore: boolean
   offset: number

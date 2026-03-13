@@ -4,9 +4,8 @@ import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Search, X, Loader2, ChevronDown, SlidersHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { StoryRow } from './StoryRow'
-import { FirmLogo } from './FirmLogo'
-import type { FeedResponse, Story, TrendingFirm, FacetCounts } from '@/lib/news/types'
+import { ArticleRow } from './ArticleRow'
+import type { ArticleFeedResponse, NewsArticle, FacetCounts } from '@/lib/news/types'
 
 // ── Filter constants ──────────────────────────────────────────────
 
@@ -63,9 +62,12 @@ const ARTICLE_TYPES = [
   { label: 'New Hire', value: 'executive_hire' },
   { label: 'Exec Move', value: 'executive_change' },
   { label: 'M&A', value: 'acquisition' },
+  { label: 'Merger', value: 'merger' },
   { label: 'Regulatory', value: 'regulatory_action' },
+  { label: 'Legal', value: 'legal_alert' },
   { label: 'Press Release', value: 'press_release' },
   { label: 'Analysis', value: 'market_commentary' },
+  { label: 'Industry', value: 'industry_analysis' },
 ] as const
 
 const PAGE_SIZE = 20
@@ -100,14 +102,11 @@ export function NewsFeed() {
   const [eventType, setEventType] = useState(searchParams.get('type') || '')
   const [fundSizeMin, setFundSizeMin] = useState(searchParams.get('fundSizeMin') || '')
   const [fundSizeMax, setFundSizeMax] = useState(searchParams.get('fundSizeMax') || '')
-  const trustedOnly = false
-  const [trendingFirm, setTrendingFirm] = useState(searchParams.get('firm') || '')
   const [fundSizeOpen, setFundSizeOpen] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
 
   // Data state
-  const [stories, setStories] = useState<Story[]>([])
-  const [trending, setTrending] = useState<TrendingFirm[]>([])
+  const [articles, setArticles] = useState<NewsArticle[]>([])
   const [facets, setFacets] = useState<FacetCounts | null>(null)
   const [hasMore, setHasMore] = useState(false)
   const [offset, setOffset] = useState(0)
@@ -121,7 +120,6 @@ export function NewsFeed() {
     eventType,
     fundSizeMin,
     fundSizeMax,
-    trendingFirm,
     dateRange !== '7d',
   ].filter(Boolean).length
 
@@ -137,11 +135,9 @@ export function NewsFeed() {
       if (eventType) params.set('type', eventType)
       if (fundSizeMin) params.set('fundSizeMin', fundSizeMin)
       if (fundSizeMax) params.set('fundSizeMax', fundSizeMax)
-      if (trustedOnly) params.set('trusted', 'true')
-      if (trendingFirm) params.set('firm', trendingFirm)
       return params
     },
-    [query, dateRange, category, eventType, fundSizeMin, fundSizeMax, trustedOnly, trendingFirm]
+    [query, dateRange, category, eventType, fundSizeMin, fundSizeMax]
   )
 
   // Sync URL
@@ -153,11 +149,9 @@ export function NewsFeed() {
     if (eventType) params.set('type', eventType)
     if (fundSizeMin) params.set('fundSizeMin', fundSizeMin)
     if (fundSizeMax) params.set('fundSizeMax', fundSizeMax)
-    if (trustedOnly) params.set('trusted', 'true')
-    if (trendingFirm) params.set('firm', trendingFirm)
     const qs = params.toString()
     router.replace(qs ? `/news?${qs}` : '/news', { scroll: false })
-  }, [router, query, dateRange, category, eventType, fundSizeMin, fundSizeMax, trustedOnly, trendingFirm])
+  }, [router, query, dateRange, category, eventType, fundSizeMin, fundSizeMax])
 
   // Fetch feed
   const fetchFeed = useCallback(
@@ -172,13 +166,12 @@ export function NewsFeed() {
         const params = buildParams(newOffset)
         const res = await fetch(`/api/news/feed?${params.toString()}`)
         const json = await res.json()
-        const data: FeedResponse = json.data
+        const data: ArticleFeedResponse = json.data
 
         if (append) {
-          setStories((prev) => [...prev, ...data.stories])
+          setArticles((prev) => [...prev, ...data.articles])
         } else {
-          setStories(data.stories)
-          setTrending(data.trending)
+          setArticles(data.articles)
           setFacets(data.facets)
         }
         setHasMore(data.hasMore)
@@ -198,7 +191,7 @@ export function NewsFeed() {
     fetchFeed(0, false)
     syncUrl()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, dateRange, category, eventType, fundSizeMin, fundSizeMax, trustedOnly, trendingFirm])
+  }, [query, dateRange, category, eventType, fundSizeMin, fundSizeMax])
 
   // Search debounce
   const [searchInput, setSearchInput] = useState(query)
@@ -216,7 +209,6 @@ export function NewsFeed() {
     setEventType('')
     setFundSizeMin('')
     setFundSizeMax('')
-    setTrendingFirm('')
   }
 
   // Load more
@@ -224,8 +216,8 @@ export function NewsFeed() {
     fetchFeed(offset, true)
   }
 
-  // Pill filter count (category/type/firm filters only, not search/date)
-  const pillFilterCount = [category, eventType, trendingFirm].filter(Boolean).length
+  // Pill filter count (category/type filters only, not search/date)
+  const pillFilterCount = [category, eventType].filter(Boolean).length
 
   return (
     <div className="space-y-3">
@@ -414,37 +406,10 @@ export function NewsFeed() {
               })}
             </div>
           </div>
-
-          {/* Trending firms */}
-          {trending.length > 0 && (
-            <div>
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">Trending Firms</span>
-              <div className="flex flex-wrap gap-1">
-                {trending.map((firm) => (
-                  <button
-                    key={firm.firmId}
-                    onClick={() => setTrendingFirm(trendingFirm === firm.firmId ? '' : firm.firmId)}
-                    className={cn(
-                      'inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors',
-                      trendingFirm === firm.firmId
-                        ? 'bg-blue-900/50 text-blue-300 border-blue-700'
-                        : 'bg-muted text-muted-foreground border-border hover:bg-accent hover:text-foreground'
-                    )}
-                  >
-                    <FirmLogo name={firm.name} logoUrl={firm.logoUrl} size={12} />
-                    {firm.name}
-                    <span className={cn('text-[9px]', trendingFirm === firm.firmId ? 'text-blue-200' : 'text-muted-foreground/50')}>
-                      {firm.mentionCount}
-                    </span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       )}
 
-      {/* ── Stories ─────────────────────────────────────────── */}
+      {/* ── Articles ─────────────────────────────────────────── */}
       {loading ? (
         <div className="rounded-lg border border-border bg-card overflow-hidden">
           {Array.from({ length: 12 }).map((_, i) => (
@@ -455,9 +420,9 @@ export function NewsFeed() {
             </div>
           ))}
         </div>
-      ) : stories.length === 0 ? (
+      ) : articles.length === 0 ? (
         <div className="rounded-lg border border-border bg-card py-16 text-center">
-          <p className="text-muted-foreground">No stories found matching your filters.</p>
+          <p className="text-muted-foreground">No articles found matching your filters.</p>
           {activeFilterCount > 0 && (
             <button
               onClick={clearFilters}
@@ -469,11 +434,10 @@ export function NewsFeed() {
         </div>
       ) : (
         <>
-          {/* Dense story list */}
+          {/* Dense article list */}
           <div className="rounded-lg border border-border bg-card overflow-hidden">
-            {/* Story rows */}
-            {stories.map((story) => (
-              <StoryRow key={story.id} story={story} />
+            {articles.map((article) => (
+              <ArticleRow key={article.id} article={article} />
             ))}
           </div>
 
@@ -491,7 +455,7 @@ export function NewsFeed() {
                     Loading...
                   </>
                 ) : (
-                  'Load more stories'
+                  'Load more articles'
                 )}
               </button>
             </div>

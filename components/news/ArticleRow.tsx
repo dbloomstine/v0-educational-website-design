@@ -2,9 +2,8 @@
 
 import { useCallback, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { ExternalLink, Newspaper } from 'lucide-react'
+import { ExternalLink } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { FirmLogo } from './FirmLogo'
 import {
   EVENT_LABELS,
   CATEGORY_LABELS,
@@ -13,15 +12,15 @@ import {
   formatCompactTime,
   formatRelativeDate,
 } from '@/lib/news/constants'
-import type { Story } from '@/lib/news/types'
+import type { NewsArticle } from '@/lib/news/types'
 
-interface StoryRowProps {
-  story: Story
+interface ArticleRowProps {
+  article: NewsArticle
 }
 
-export function StoryRow({ story }: StoryRowProps) {
-  const eventLabel = story.eventType ? EVENT_LABELS[story.eventType] : null
-  const fundSize = formatFundSize(story.maxFundSizeUsd)
+export function ArticleRow({ article }: ArticleRowProps) {
+  const eventLabel = article.eventType ? EVENT_LABELS[article.eventType] : null
+  const fundSize = formatFundSize(article.fundSizeUsd)
 
   const [visible, setVisible] = useState(false)
   const [coords, setCoords] = useState({ x: 0, y: 0 })
@@ -77,13 +76,12 @@ export function StoryRow({ story }: StoryRowProps) {
 
   return (
     <>
-      {/* Grid row: event | categories+size | headline | firms | source | time */}
-      {/* Responsive: 4 cols on mobile, 6 cols on lg+ */}
+      {/* Grid row: event | categories+size | headline | source | time */}
       <div
         onMouseEnter={handleRowEnter}
         onMouseMove={handleRowMove}
         onMouseLeave={handleRowLeave}
-        className="grid items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[52px_190px_1fr_50px] lg:grid-cols-[52px_190px_1fr_240px_180px_50px]"
+        className="grid items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[52px_140px_1fr_50px] lg:grid-cols-[52px_190px_1fr_180px_50px]"
       >
         {/* Col 1: Event type badge */}
         <div className="flex items-center">
@@ -101,7 +99,7 @@ export function StoryRow({ story }: StoryRowProps) {
 
         {/* Col 2: Category badges + fund size */}
         <div className="flex items-center gap-1 overflow-hidden">
-          {story.fundCategories.slice(0, 2).map((cat) => {
+          {article.fundCategories.slice(0, 2).map((cat) => {
             const catInfo = CATEGORY_LABELS[cat]
             return (
               <span
@@ -123,38 +121,18 @@ export function StoryRow({ story }: StoryRowProps) {
         </div>
 
         {/* Col 3: Headline */}
-        <span className="text-[14px] font-medium text-foreground leading-snug">
-          {decodeHtmlEntities(story.headline)}
+        <span className="text-[14px] font-medium text-foreground leading-snug truncate">
+          {decodeHtmlEntities(article.title)}
         </span>
 
-        {/* Col 4: Firm chips (max 2) — only visible on lg+ */}
-        <div className="hidden lg:flex items-center justify-end gap-1.5 overflow-hidden">
-          {story.firmChips.slice(0, 2).map((firm) => (
-            <span
-              key={firm.slug}
-              className="inline-flex items-center gap-1.5 rounded border border-border/60 bg-muted/30 px-2 py-0.5 text-[11px] text-muted-foreground whitespace-nowrap"
-            >
-              <FirmLogo name={firm.name} logoUrl={firm.logoUrl} size={16} />
-              <span className="max-w-[100px] truncate">{firm.name}</span>
-            </span>
-          ))}
-          {story.firmChips.length > 2 && (
-            <span className="text-[11px] text-muted-foreground/50">
-              +{story.firmChips.length - 2}
-            </span>
-          )}
-        </div>
-
-        {/* Col 5: Source — only visible on lg+ */}
+        {/* Col 4: Source name — only visible on lg+ */}
         <span className="hidden lg:block text-[12px] text-muted-foreground/60 truncate text-right">
-          {story.articleCount > 1
-            ? `${story.articleCount} sources`
-            : story.sourceNames[0] || ''}
+          {article.sourceName || ''}
         </span>
 
-        {/* Col 6: Time */}
+        {/* Col 5: Time */}
         <span className="text-[12px] text-muted-foreground/50 text-right tabular-nums whitespace-nowrap">
-          {formatCompactTime(story.lastUpdated)}
+          {article.publishedDate ? formatCompactTime(article.publishedDate) : ''}
         </span>
       </div>
 
@@ -175,7 +153,7 @@ export function StoryRow({ story }: StoryRowProps) {
                   {eventLabel.label}
                 </span>
               )}
-              {story.fundCategories.map((cat) => {
+              {article.fundCategories.map((cat) => {
                 const catInfo = CATEGORY_LABELS[cat]
                 return (
                   <span
@@ -198,61 +176,29 @@ export function StoryRow({ story }: StoryRowProps) {
 
             {/* Headline */}
             <h3 className="text-sm font-semibold text-foreground leading-snug">
-              {decodeHtmlEntities(story.headline)}
+              {decodeHtmlEntities(article.title)}
             </h3>
 
-            {/* Summary */}
-            {story.summary && (
+            {/* TLDR */}
+            {article.tldr && (
               <p className="text-xs text-muted-foreground leading-relaxed">
-                {decodeHtmlEntities(story.summary)}
+                {article.tldr}
               </p>
             )}
 
-            {/* Firm chips */}
-            {story.firmChips.length > 0 && (
-              <div className="flex flex-wrap gap-1.5">
-                {story.firmChips.map((firm) => (
-                  <span
-                    key={firm.slug}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted/50 px-2 py-0.5 text-[11px] font-medium text-muted-foreground"
-                  >
-                    <FirmLogo name={firm.name} logoUrl={firm.logoUrl} size={14} />
-                    {firm.name}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            {/* Sources + time */}
+            {/* Source link + time */}
             <div className="flex items-center justify-between text-[11px] text-muted-foreground/60 border-t border-border/50 pt-2">
-              <div className="flex items-center gap-1.5">
-                <Newspaper className="h-3 w-3" />
-                <span>
-                  {story.articleCount} {story.articleCount === 1 ? 'source' : 'sources'}
-                  {story.sourceNames.length > 0 && ` — ${story.sourceNames.slice(0, 3).join(', ')}`}
-                </span>
-              </div>
-              <span>{formatRelativeDate(story.lastUpdated)}</span>
+              <a
+                href={article.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
+              >
+                <ExternalLink className="h-3 w-3 shrink-0 opacity-50" />
+                <span className="font-semibold">{article.sourceName || 'Source'}</span>
+              </a>
+              <span>{article.publishedDate ? formatRelativeDate(article.publishedDate) : ''}</span>
             </div>
-
-            {/* Source links */}
-            {story.articles.length > 0 && (
-              <div className="space-y-1.5">
-                {story.articles.map((article) => (
-                  <a
-                    key={article.id}
-                    href={article.sourceUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 rounded-md px-2 py-1.5 -mx-2 text-[11px] text-muted-foreground hover:bg-accent/50 hover:text-foreground transition-colors"
-                  >
-                    <ExternalLink className="h-3 w-3 shrink-0 opacity-50" />
-                    <span className="shrink-0 font-semibold">{article.sourceName || 'Source'}</span>
-                    <span className="truncate opacity-60">{decodeHtmlEntities(article.title)}</span>
-                  </a>
-                ))}
-              </div>
-            )}
           </div>
         </div>,
         document.body
