@@ -21,6 +21,8 @@ interface ArticleItem {
   geography: string[]
   personName: string | null
   personTitle: string | null
+  city: string | null
+  fundNumber: string | null
 }
 
 interface ArticleGroup {
@@ -106,7 +108,7 @@ export default function NewsletterPrepPage() {
     const rows: string[] = []
 
     // CSV header
-    rows.push('category,firm,fund_size,event_type,fund_name,strategy,geo,person,person_title,headline,tldr,source,url')
+    rows.push('category,firm,city,fund_size,event_type,fund_name,fund_number,strategy,geo,person,person_title,headline,tldr,source,url')
 
     for (const group of data.groups) {
       const cat = CATEGORY_DISPLAY[group.category] ?? group.category
@@ -114,9 +116,11 @@ export default function NewsletterPrepPage() {
         rows.push([
           csvEscape(cat),
           csvEscape(a.firmName),
+          csvEscape(a.city),
           a.fundSizeUsdMillions ? formatSize(a.fundSizeUsdMillions) : '',
           a.eventType ?? a.articleType ?? '',
           csvEscape(a.fundName),
+          csvEscape(a.fundNumber),
           csvEscape(a.fundStrategy),
           a.geography.length > 0 ? csvEscape(a.geography.join('; ')) : '',
           csvEscape(a.personName),
@@ -245,7 +249,7 @@ export default function NewsletterPrepPage() {
                 {group.articles.map((article) => (
                   <div key={article.id} className="rounded border border-gray-800 bg-gray-900/50 p-3 space-y-1.5">
                     <div className="flex flex-wrap items-center gap-2 text-xs text-gray-400">
-                      {article.firmName && <span className="font-medium text-gray-300">{article.firmName}</span>}
+                      {article.firmName && <span className="font-medium text-gray-300">{article.firmName}{article.city && <span className="font-normal text-gray-500"> ({article.city})</span>}</span>}
                       {article.fundSizeUsdMillions && (
                         <span className="text-emerald-400 font-mono">{formatSize(article.fundSizeUsdMillions)}</span>
                       )}
@@ -257,7 +261,7 @@ export default function NewsletterPrepPage() {
                     <p className="text-sm font-medium text-gray-100">{article.title}</p>
                     {(article.fundName || article.fundStrategy || article.personName || article.geography.length > 0) && (
                       <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-gray-500">
-                        {article.fundName && <span>Fund: <span className="text-gray-300">{article.fundName}</span></span>}
+                        {article.fundName && <span>Fund: <span className="text-gray-300">{article.fundName}{article.fundNumber && ` (${article.fundNumber})`}</span></span>}
                         {article.fundStrategy && <span>Strategy: <span className="text-gray-300 capitalize">{article.fundStrategy}</span></span>}
                         {article.personName && <span>{article.personTitle ?? 'Person'}: <span className="text-gray-300">{article.personName}</span></span>}
                         {article.geography.length > 0 && <span>Geo: <span className="text-gray-300">{article.geography.join(', ')}</span></span>}

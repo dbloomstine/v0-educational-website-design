@@ -81,6 +81,8 @@ export async function GET(req: Request) {
       geography: (extractedData?.geography as string[]) ?? [],
       personName: (extractedData?.person_name as string) ?? null,
       personTitle: (extractedData?.person_title as string) ?? null,
+      city: (extractedData?.city as string) ?? null,
+      fundNumber: (extractedData?.fund_number as string) ?? null,
     }
   })
 

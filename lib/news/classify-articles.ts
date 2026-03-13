@@ -57,6 +57,8 @@ interface ClassificationOutput {
   geography: string[] | null;
   person_name: string | null;
   person_title: string | null;
+  city: string | null;
+  fund_number: string | null;
 }
 
 // ─── Constants ──────────────────────────────────────────────────────────────
@@ -86,7 +88,9 @@ For each article, return a JSON object with exactly these fields:
   "fund_strategy": string | null,  // e.g. "buyout", "growth equity", "venture", "direct lending", "distressed", "mezzanine", "opportunistic", "core-plus", "value-add", "multi-strategy", "secondaries", "co-investment", "fund-of-funds", "continuation vehicle", "NAV lending"
   "geography": string[],           // where the fund invests or firm is headquartered: ["North America"], ["Europe"], ["Asia-Pacific"], ["Global"], ["Middle East"], ["Latin America"]. Empty array if unclear.
   "person_name": string | null,    // for executive hires/departures/changes: full name
-  "person_title": string | null    // for executive moves: their title (e.g. "Managing Director", "Partner", "CFO", "Head of Investor Relations", "CIO")
+  "person_title": string | null,   // for executive moves: their title (e.g. "Managing Director", "Partner", "CFO", "Head of Investor Relations", "CIO")
+  "city": string | null,           // firm HQ city (e.g. "New York", "London", "Hong Kong", "San Francisco"). Extract from article text or known firm info. null if unclear.
+  "fund_number": string | null     // fund series number if mentioned (e.g. "Fund VII", "Fund X", "Fund III", "Fund I"). Extract the roman or arabic numeral designation. null if not mentioned.
 }
 
 RELEVANCE SCORING (follow strictly):
@@ -193,6 +197,8 @@ export async function classifyPendingArticles(
               geography: classification.geography,
               person_name: classification.person_name,
               person_title: classification.person_title,
+              city: classification.city,
+              fund_number: classification.fund_number,
               firm_domain: firmDomain,
             },
           })
