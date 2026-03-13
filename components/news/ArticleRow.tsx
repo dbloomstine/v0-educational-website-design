@@ -123,18 +123,13 @@ export function ArticleRow({ article }: ArticleRowProps) {
 
   return (
     <>
-      {/* Grid row: logo | event | categories+size | headline | source | time */}
+      {/* Grid row: type | category | size | headline | date | source */}
       <div
         onMouseEnter={handleRowEnter}
         onMouseMove={handleRowMove}
         onMouseLeave={handleRowLeave}
-        className="grid items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[24px_52px_140px_1fr_50px] lg:grid-cols-[24px_52px_190px_1fr_180px_50px]"
+        className="grid items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[56px_140px_1fr_56px] lg:grid-cols-[56px_140px_72px_1fr_56px_150px]"
       >
-        {/* Col 0: Firm logo */}
-        <div className="flex items-center justify-center">
-          <FirmLogo domain={article.firmDomain} firmName={article.firmName} />
-        </div>
-
         {/* Col 1: Event type badge */}
         <div className="flex items-center">
           {eventLabel ? (
@@ -149,7 +144,7 @@ export function ArticleRow({ article }: ArticleRowProps) {
           ) : null}
         </div>
 
-        {/* Col 2: Category badges + fund size */}
+        {/* Col 2: Category badges */}
         <div className="flex items-center gap-1 overflow-hidden">
           {article.fundCategories.slice(0, 2).map((cat) => {
             const catInfo = CATEGORY_LABELS[cat]
@@ -165,26 +160,29 @@ export function ArticleRow({ article }: ArticleRowProps) {
               </span>
             )
           })}
-          {fundSize && (
-            <span className="inline-flex rounded bg-muted/60 px-1.5 py-0.5 text-[11px] font-mono font-medium leading-none text-muted-foreground whitespace-nowrap">
-              {fundSize}
-            </span>
-          )}
         </div>
 
-        {/* Col 3: Headline */}
-        <span className="text-[14px] font-medium text-foreground leading-snug truncate">
-          {decodeHtmlEntities(article.title)}
+        {/* Col 3: Fund size — lg only */}
+        <span className="hidden lg:block text-[11px] font-mono font-medium text-muted-foreground whitespace-nowrap">
+          {fundSize || ''}
         </span>
 
-        {/* Col 4: Source name — only visible on lg+ */}
-        <span className="hidden lg:block text-[12px] text-muted-foreground/60 truncate text-right">
-          {article.sourceName || ''}
-        </span>
+        {/* Col 4: Logo + Headline */}
+        <div className="flex items-center gap-2 min-w-0">
+          <FirmLogo domain={article.firmDomain} firmName={article.firmName} />
+          <span className="text-[14px] font-medium text-foreground leading-snug truncate">
+            {decodeHtmlEntities(article.title)}
+          </span>
+        </div>
 
-        {/* Col 5: Time */}
-        <span className="text-[12px] text-muted-foreground/50 text-right tabular-nums whitespace-nowrap">
+        {/* Col 5: Date */}
+        <span className="text-[11px] text-muted-foreground/50 tabular-nums whitespace-nowrap">
           {article.publishedDate ? formatCompactTime(article.publishedDate) : ''}
+        </span>
+
+        {/* Col 6: Source name — lg only, left-aligned */}
+        <span className="hidden lg:block text-[12px] text-muted-foreground/60 truncate">
+          {article.sourceName || ''}
         </span>
       </div>
 

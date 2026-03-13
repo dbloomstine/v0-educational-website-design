@@ -70,7 +70,7 @@ const ARTICLE_TYPES = [
   { label: 'Industry', value: 'industry_analysis' },
 ] as const
 
-const PAGE_SIZE = 20
+const PAGE_SIZE = 60
 
 // Multi-select helpers for comma-separated filter strings
 function toggleFilter(current: string, value: string): string {
@@ -436,6 +436,15 @@ export function NewsFeed() {
         <>
           {/* Dense article list */}
           <div className="rounded-lg border border-border bg-card overflow-hidden">
+            {/* Column headers */}
+            <div className="grid items-center gap-x-2 px-4 py-1.5 border-b border-border bg-muted/50 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 grid-cols-[56px_140px_1fr_56px] lg:grid-cols-[56px_140px_72px_1fr_56px_150px]">
+              <span>Type</span>
+              <span>Category</span>
+              <span className="hidden lg:block">Size</span>
+              <span className="pl-7">Headline</span>
+              <span>Date</span>
+              <span className="hidden lg:block">Source</span>
+            </div>
             {articles.map((article) => (
               <ArticleRow key={article.id} article={article} />
             ))}
