@@ -96,6 +96,9 @@ export default function NewsletterPrepPage() {
   const formatForClaude = (): string => {
     if (!data) return ''
     const lines: string[] = []
+    lines.push(`# Fund News Data — ${data.dateRange.start} to ${data.dateRange.end}`)
+    lines.push(`${data.totalArticles} articles, grouped by fund category, sorted by fund size.`)
+    lines.push('')
 
     for (const group of data.groups) {
       const label = CATEGORY_DISPLAY[group.category] ?? group.category.toUpperCase()
@@ -105,27 +108,24 @@ export default function NewsletterPrepPage() {
       for (const article of group.articles) {
         const firm = article.firmName ?? 'Unknown Firm'
         const size = formatSize(article.fundSizeUsdMillions)
-        const sizeStr = size ? ` | ${size}` : ''
         const event = article.eventType ?? article.articleType ?? 'other'
 
-        // Header line: Firm | $Size | [event_type]
-        lines.push(`${firm}${sizeStr} | [${event}]`)
+        // Compact structured format
+        lines.push(`### ${firm}${size ? ` — ${size}` : ''} [${event}]`)
 
-        // Fund details line (if available)
-        const details: string[] = []
-        if (article.fundName) details.push(`Fund: ${article.fundName}`)
-        if (article.fundStrategy) details.push(`Strategy: ${article.fundStrategy}`)
-        if (article.geography.length > 0) details.push(`Geo: ${article.geography.join(', ')}`)
+        // Metadata on one line
+        const meta: string[] = []
+        if (article.fundName) meta.push(article.fundName)
+        if (article.fundStrategy) meta.push(article.fundStrategy)
+        if (article.geography.length > 0) meta.push(article.geography.join(', '))
         if (article.personName) {
-          details.push(`${article.personTitle ?? 'Person'}: ${article.personName}`)
+          meta.push(`${article.personName}${article.personTitle ? ` (${article.personTitle})` : ''}`)
         }
-        if (details.length > 0) lines.push(details.join(' | '))
+        if (meta.length > 0) lines.push(meta.join(' · '))
 
-        lines.push(`**${article.title}**`)
-        if (article.tldr) {
-          lines.push(article.tldr)
-        }
-        lines.push(`Sources (1): [${article.sourceName ?? 'Source'}](${article.sourceUrl})`)
+        lines.push(article.title)
+        if (article.tldr) lines.push(article.tldr)
+        lines.push(`[${article.sourceName ?? 'Source'}](${article.sourceUrl})`)
         lines.push('')
       }
     }

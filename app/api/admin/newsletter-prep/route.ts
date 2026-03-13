@@ -42,8 +42,18 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
+  // Filter to North America / Global / unknown geography (for newsletter focus)
+  const ALLOWED_GEO = ['North America', 'Global']
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const articles = (rows ?? []).map((row: any) => {
+  const allRows = (rows ?? []).filter((row: any) => {
+    const geo = (row.extracted_data as Record<string, unknown> | null)?.geography as string[] | null
+    // Include if: no geography data (older articles), or has North America/Global
+    if (!geo || geo.length === 0) return true
+    return geo.some((g) => ALLOWED_GEO.includes(g))
+  })
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const articles = allRows.map((row: any) => {
     const extractedData = row.extracted_data as Record<string, unknown> | null
     const entitiesRaw = row.entities_raw as Array<{ name: string; type: string; role: string | null }> | null
     const fundSizeMillions = extractedData?.fund_size_usd_millions as number | null
