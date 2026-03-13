@@ -6,7 +6,6 @@ export const dynamic = 'force-dynamic'
 const FUND_RELEVANT_TYPES = [
   'fund_launch', 'fund_close', 'capital_raise',
   'executive_hire', 'executive_change', 'executive_departure',
-  'acquisition', 'merger', 'regulatory_action', 'legal_alert',
 ]
 
 const CATEGORY_ORDER = ['PE', 'VC', 'credit', 'hedge', 'real_estate', 'infrastructure', 'secondaries', 'gp_stakes']
