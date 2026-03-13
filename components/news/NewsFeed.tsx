@@ -432,61 +432,57 @@ export function NewsFeed() {
             </div>
           </div>
 
-          {/* Event Type groups */}
+          {/* Event Type groups — compact horizontal flow */}
           <div>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-2 block">Event Type</span>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
-              {EVENT_TYPE_GROUPS.map((group) => {
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">Event Type</span>
+            <div className="flex flex-wrap items-center gap-x-1 gap-y-1.5">
+              {EVENT_TYPE_GROUPS.map((group, gi) => {
                 const groupValues = group.types.map((t) => t.value)
-                const groupCount = group.types.reduce((sum, t) => sum + (facets?.types[t.value] ?? 0), 0)
                 const allSelected = groupHasAll(eventType, groupValues)
                 const someSelected = groupHasAny(eventType, groupValues)
                 return (
-                  <div key={group.label} className="space-y-1">
-                    {/* Group header — clickable to toggle all */}
+                  <div key={group.label} className="flex items-center gap-1">
+                    {/* Divider between groups */}
+                    {gi > 0 && <div className="w-px h-4 bg-border/60 mx-1.5" />}
+                    {/* Group label — clickable */}
                     <button
                       onClick={() => setEventType(toggleGroupFilter(eventType, groupValues))}
                       title={group.tip}
                       className={cn(
-                        'w-full flex items-center justify-between rounded-md px-2 py-1 text-[10px] font-semibold uppercase tracking-wider transition-colors',
+                        'text-[10px] font-semibold uppercase tracking-wider whitespace-nowrap transition-colors mr-0.5',
                         allSelected
-                          ? 'bg-blue-600/20 text-blue-300'
+                          ? 'text-blue-300'
                           : someSelected
-                            ? 'bg-blue-600/10 text-blue-400/80'
-                            : 'text-muted-foreground/70 hover:text-muted-foreground'
+                            ? 'text-blue-400/70'
+                            : 'text-muted-foreground/40 hover:text-muted-foreground/70'
                       )}
                     >
-                      <span>{group.label}</span>
-                      {groupCount > 0 && (
-                        <span className="text-[9px] font-normal text-muted-foreground/40">{groupCount}</span>
-                      )}
+                      {group.label}
                     </button>
                     {/* Sub-type pills */}
-                    <div className="flex flex-wrap gap-1">
-                      {group.types.map((type) => {
-                        const count = facets?.types[type.value] ?? 0
-                        return (
-                          <button
-                            key={type.value}
-                            onClick={() => setEventType(toggleFilter(eventType, type.value))}
-                            title={type.tip}
-                            className={cn(
-                              'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium transition-colors',
-                              hasFilter(eventType, type.value)
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
-                            )}
-                          >
-                            {type.label}
-                            {count > 0 && (
-                              <span className={cn('text-[9px]', hasFilter(eventType, type.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
-                                {count}
-                              </span>
-                            )}
-                          </button>
-                        )
-                      })}
-                    </div>
+                    {group.types.map((type) => {
+                      const count = facets?.types[type.value] ?? 0
+                      return (
+                        <button
+                          key={type.value}
+                          onClick={() => setEventType(toggleFilter(eventType, type.value))}
+                          title={type.tip}
+                          className={cn(
+                            'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium transition-colors',
+                            hasFilter(eventType, type.value)
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
+                          )}
+                        >
+                          {type.label}
+                          {count > 0 && (
+                            <span className={cn('text-[9px]', hasFilter(eventType, type.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
+                              {count}
+                            </span>
+                          )}
+                        </button>
+                      )
+                    })}
                   </div>
                 )
               })}
