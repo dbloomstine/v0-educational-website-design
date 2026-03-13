@@ -111,6 +111,12 @@ function mapRowToArticle(row: any): NewsArticle {
     tldr: row.tldr,
     fundSizeUsd: fundSizeMillions ? fundSizeMillions * 1_000_000 : null,
     eventType: row.event_type ?? row.article_type,
+    firmName: (extractedData?.firm_name as string) ?? null,
+    fundName: (extractedData?.fund_name as string) ?? null,
+    fundStrategy: (extractedData?.fund_strategy as string) ?? null,
+    geography: (extractedData?.geography as string[]) ?? [],
+    personName: (extractedData?.person_name as string) ?? null,
+    personTitle: (extractedData?.person_title as string) ?? null,
   }
 }
 

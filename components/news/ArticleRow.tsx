@@ -179,6 +179,27 @@ export function ArticleRow({ article }: ArticleRowProps) {
               {decodeHtmlEntities(article.title)}
             </h3>
 
+            {/* Firm / Fund / Person details */}
+            {(article.firmName || article.fundName || article.personName) && (
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+                {article.firmName && (
+                  <span><span className="text-muted-foreground/50">Firm:</span> <span className="font-medium text-foreground/80">{article.firmName}</span></span>
+                )}
+                {article.fundName && (
+                  <span><span className="text-muted-foreground/50">Fund:</span> <span className="font-medium text-foreground/80">{article.fundName}</span></span>
+                )}
+                {article.personName && (
+                  <span><span className="text-muted-foreground/50">{article.personTitle ? article.personTitle : 'Person'}:</span> <span className="font-medium text-foreground/80">{article.personName}</span></span>
+                )}
+                {article.fundStrategy && (
+                  <span><span className="text-muted-foreground/50">Strategy:</span> <span className="font-medium text-foreground/80 capitalize">{article.fundStrategy}</span></span>
+                )}
+                {article.geography.length > 0 && (
+                  <span><span className="text-muted-foreground/50">Geo:</span> <span className="font-medium text-foreground/80">{article.geography.join(', ')}</span></span>
+                )}
+              </div>
+            )}
+
             {/* TLDR */}
             {article.tldr && (
               <p className="text-xs text-muted-foreground leading-relaxed">

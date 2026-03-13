@@ -11,6 +11,12 @@ export interface NewsArticle {
   tldr: string | null
   fundSizeUsd: number | null
   eventType: string | null
+  firmName: string | null
+  fundName: string | null
+  fundStrategy: string | null
+  geography: string[]
+  personName: string | null
+  personTitle: string | null
 }
 
 export interface FacetCounts {

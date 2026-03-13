@@ -47,10 +47,11 @@ export async function GET(req: Request) {
   const articles = (rows ?? []).map((row: any) => {
     const extractedData = row.extracted_data as Record<string, unknown> | null
     const entitiesRaw = row.entities_raw as Array<{ name: string; type: string; role: string | null }> | null
-
-    // Extract firm name from entities
-    const firmEntity = entitiesRaw?.find((e) => e.type === 'firm')
     const fundSizeMillions = extractedData?.fund_size_usd_millions as number | null
+
+    // Use first-class firm_name from classification; fall back to entities for older articles
+    const firmEntity = entitiesRaw?.find((e) => e.type === 'firm')
+    const firmName = (extractedData?.firm_name as string) ?? firmEntity?.name ?? null
 
     return {
       id: row.id,
@@ -64,8 +65,13 @@ export async function GET(req: Request) {
       isHighSignal: row.is_high_signal,
       relevanceScore: row.relevance_score,
       tldr: row.tldr,
-      firmName: firmEntity?.name ?? null,
+      firmName,
+      fundName: (extractedData?.fund_name as string) ?? null,
       fundSizeUsdMillions: fundSizeMillions,
+      fundStrategy: (extractedData?.fund_strategy as string) ?? null,
+      geography: (extractedData?.geography as string[]) ?? [],
+      personName: (extractedData?.person_name as string) ?? null,
+      personTitle: (extractedData?.person_title as string) ?? null,
     }
   })
 

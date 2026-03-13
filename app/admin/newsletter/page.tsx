@@ -15,7 +15,12 @@ interface ArticleItem {
   relevanceScore: number | null
   tldr: string | null
   firmName: string | null
+  fundName: string | null
   fundSizeUsdMillions: number | null
+  fundStrategy: string | null
+  geography: string[]
+  personName: string | null
+  personTitle: string | null
 }
 
 interface ArticleGroup {
@@ -103,7 +108,19 @@ export default function NewsletterPrepPage() {
         const sizeStr = size ? ` | ${size}` : ''
         const event = article.eventType ?? article.articleType ?? 'other'
 
+        // Header line: Firm | $Size | [event_type]
         lines.push(`${firm}${sizeStr} | [${event}]`)
+
+        // Fund details line (if available)
+        const details: string[] = []
+        if (article.fundName) details.push(`Fund: ${article.fundName}`)
+        if (article.fundStrategy) details.push(`Strategy: ${article.fundStrategy}`)
+        if (article.geography.length > 0) details.push(`Geo: ${article.geography.join(', ')}`)
+        if (article.personName) {
+          details.push(`${article.personTitle ?? 'Person'}: ${article.personName}`)
+        }
+        if (details.length > 0) lines.push(details.join(' | '))
+
         lines.push(`**${article.title}**`)
         if (article.tldr) {
           lines.push(article.tldr)
@@ -208,8 +225,8 @@ export default function NewsletterPrepPage() {
                   <span className="ml-2 text-sm font-normal text-gray-500">({group.articles.length})</span>
                 </h2>
                 {group.articles.map((article) => (
-                  <div key={article.id} className="rounded border border-gray-800 bg-gray-900/50 p-3 space-y-1">
-                    <div className="flex items-center gap-2 text-xs text-gray-400">
+                  <div key={article.id} className="rounded border border-gray-800 bg-gray-900/50 p-3 space-y-1.5">
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-gray-400">
                       {article.firmName && <span className="font-medium text-gray-300">{article.firmName}</span>}
                       {article.fundSizeUsdMillions && (
                         <span className="text-emerald-400 font-mono">{formatSize(article.fundSizeUsdMillions)}</span>
@@ -220,6 +237,14 @@ export default function NewsletterPrepPage() {
                       )}
                     </div>
                     <p className="text-sm font-medium text-gray-100">{article.title}</p>
+                    {(article.fundName || article.fundStrategy || article.personName || article.geography.length > 0) && (
+                      <div className="flex flex-wrap gap-x-3 gap-y-0.5 text-[11px] text-gray-500">
+                        {article.fundName && <span>Fund: <span className="text-gray-300">{article.fundName}</span></span>}
+                        {article.fundStrategy && <span>Strategy: <span className="text-gray-300 capitalize">{article.fundStrategy}</span></span>}
+                        {article.personName && <span>{article.personTitle ?? 'Person'}: <span className="text-gray-300">{article.personName}</span></span>}
+                        {article.geography.length > 0 && <span>Geo: <span className="text-gray-300">{article.geography.join(', ')}</span></span>}
+                      </div>
+                    )}
                     {article.tldr && <p className="text-xs text-gray-400">{article.tldr}</p>}
                     <a
                       href={article.sourceUrl}
