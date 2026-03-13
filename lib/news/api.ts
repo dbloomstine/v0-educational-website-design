@@ -47,6 +47,10 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
   // hide "other" (irrelevant noise) and require minimum relevance
   if (params.type) {
     const types = params.type.split(',')
+    // Include legacy "merger" articles when filtering by "acquisition"
+    if (types.includes('acquisition') && !types.includes('merger')) {
+      types.push('merger')
+    }
     query = query.in('article_type', types)
   } else {
     query = query.neq('article_type', 'other')

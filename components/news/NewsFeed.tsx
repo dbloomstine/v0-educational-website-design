@@ -55,19 +55,49 @@ const FUND_CATEGORIES = [
   { label: 'GP-Stakes', value: 'gp_stakes' },
 ] as const
 
-const ARTICLE_TYPES = [
-  { label: 'Fund Launch', value: 'fund_launch' },
-  { label: 'Final Close', value: 'fund_close' },
-  { label: 'Capital Raise', value: 'capital_raise' },
-  { label: 'New Hire', value: 'executive_hire' },
-  { label: 'Exec Move', value: 'executive_change' },
-  { label: 'M&A', value: 'acquisition' },
-  { label: 'Merger', value: 'merger' },
-  { label: 'Regulatory', value: 'regulatory_action' },
-  { label: 'Legal', value: 'legal_alert' },
-  { label: 'Press Release', value: 'press_release' },
-  { label: 'Analysis', value: 'market_commentary' },
-  { label: 'Industry', value: 'industry_analysis' },
+const EVENT_TYPE_GROUPS = [
+  {
+    label: 'Fund Activity',
+    tip: 'Fund lifecycle events — launches, closes, and fundraising updates',
+    types: [
+      { label: 'Launch', value: 'fund_launch', tip: 'New fund vehicle announced or in market' },
+      { label: 'Close', value: 'fund_close', tip: 'First close, final close, or hard cap reached' },
+      { label: 'Raise', value: 'capital_raise', tip: 'Fundraising updates, LP commitments, target sizes' },
+    ],
+  },
+  {
+    label: 'People',
+    tip: 'Executive hires, departures, and role changes at fund managers',
+    types: [
+      { label: 'Hire', value: 'executive_hire', tip: 'New executive joins a fund manager or service provider' },
+      { label: 'Move', value: 'executive_change', tip: 'Internal promotion, title change, or role shift' },
+      { label: 'Departure', value: 'executive_departure', tip: 'Executive leaves a firm' },
+    ],
+  },
+  {
+    label: 'Deals',
+    tip: 'Mergers, acquisitions, and strategic transactions between firms',
+    types: [
+      { label: 'M&A', value: 'acquisition', tip: 'Acquisition or merger between fund managers or service providers' },
+    ],
+  },
+  {
+    label: 'Regulatory',
+    tip: 'Government actions, compliance alerts, and legal developments',
+    types: [
+      { label: 'Reg Action', value: 'regulatory_action', tip: 'SEC enforcement, new rules, CFTC actions' },
+      { label: 'Legal', value: 'legal_alert', tip: 'Lawsuits, legal opinions, compliance alerts' },
+    ],
+  },
+  {
+    label: 'Commentary',
+    tip: 'Market analysis, industry reports, and press releases',
+    types: [
+      { label: 'Analysis', value: 'market_commentary', tip: 'Market trends, opinion pieces, thought leadership' },
+      { label: 'Industry', value: 'industry_analysis', tip: 'Deep-dive industry reports and research' },
+      { label: 'Press', value: 'press_release', tip: 'Official announcements from firms' },
+    ],
+  },
 ] as const
 
 const PAGE_SIZE = 60
@@ -87,6 +117,30 @@ function toggleFilter(current: string, value: string): string {
 function hasFilter(current: string, value: string): boolean {
   if (!current) return false
   return current.split(',').includes(value)
+}
+
+function toggleGroupFilter(current: string, values: readonly string[]): string {
+  const selected = current ? current.split(',') : []
+  const allSelected = values.every((v) => selected.includes(v))
+  if (allSelected) {
+    // Deselect all in this group
+    return selected.filter((v) => !values.includes(v)).join(',')
+  }
+  // Select all in this group (add missing ones)
+  const combined = new Set([...selected, ...values])
+  return [...combined].join(',')
+}
+
+function groupHasAny(current: string, values: readonly string[]): boolean {
+  if (!current) return false
+  const selected = current.split(',')
+  return values.some((v) => selected.includes(v))
+}
+
+function groupHasAll(current: string, values: readonly string[]): boolean {
+  if (!current) return false
+  const selected = current.split(',')
+  return values.every((v) => selected.includes(v))
 }
 
 // ── Component ─────────────────────────────────────────────────────
@@ -378,30 +432,62 @@ export function NewsFeed() {
             </div>
           </div>
 
-          {/* Event Type pills */}
+          {/* Event Type groups */}
           <div>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">Event Type</span>
-            <div className="flex flex-wrap gap-1">
-              {ARTICLE_TYPES.map((type) => {
-                const count = facets?.types[type.value] ?? 0
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-2 block">Event Type</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
+              {EVENT_TYPE_GROUPS.map((group) => {
+                const groupValues = group.types.map((t) => t.value)
+                const groupCount = group.types.reduce((sum, t) => sum + (facets?.types[t.value] ?? 0), 0)
+                const allSelected = groupHasAll(eventType, groupValues)
+                const someSelected = groupHasAny(eventType, groupValues)
                 return (
-                  <button
-                    key={type.value}
-                    onClick={() => setEventType(toggleFilter(eventType, type.value))}
-                    className={cn(
-                      'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors',
-                      hasFilter(eventType, type.value)
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
-                    )}
-                  >
-                    {type.label}
-                    {count > 0 && (
-                      <span className={cn('text-[9px]', hasFilter(eventType, type.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
-                        {count}
-                      </span>
-                    )}
-                  </button>
+                  <div key={group.label} className="space-y-1">
+                    {/* Group header — clickable to toggle all */}
+                    <button
+                      onClick={() => setEventType(toggleGroupFilter(eventType, groupValues))}
+                      title={group.tip}
+                      className={cn(
+                        'w-full flex items-center justify-between rounded-md px-2 py-1 text-[10px] font-semibold uppercase tracking-wider transition-colors',
+                        allSelected
+                          ? 'bg-blue-600/20 text-blue-300'
+                          : someSelected
+                            ? 'bg-blue-600/10 text-blue-400/80'
+                            : 'text-muted-foreground/70 hover:text-muted-foreground'
+                      )}
+                    >
+                      <span>{group.label}</span>
+                      {groupCount > 0 && (
+                        <span className="text-[9px] font-normal text-muted-foreground/40">{groupCount}</span>
+                      )}
+                    </button>
+                    {/* Sub-type pills */}
+                    <div className="flex flex-wrap gap-1">
+                      {group.types.map((type) => {
+                        const count = facets?.types[type.value] ?? 0
+                        return (
+                          <button
+                            key={type.value}
+                            onClick={() => setEventType(toggleFilter(eventType, type.value))}
+                            title={type.tip}
+                            className={cn(
+                              'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium transition-colors',
+                              hasFilter(eventType, type.value)
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
+                            )}
+                          >
+                            {type.label}
+                            {count > 0 && (
+                              <span className={cn('text-[9px]', hasFilter(eventType, type.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
+                                {count}
+                              </span>
+                            )}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  </div>
                 )
               })}
             </div>

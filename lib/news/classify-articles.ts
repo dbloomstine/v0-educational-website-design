@@ -70,7 +70,7 @@ const SYSTEM_PROMPT = `You are classifying news articles about investment funds 
 For each article, return a JSON object with exactly these fields:
 {
   "fund_categories": string[],     // subset of: ["PE","VC","credit","hedge","real_estate","infrastructure","secondaries","gp_stakes"] — all that apply
-  "article_type": string,          // one of: fund_launch, fund_close, capital_raise, executive_hire, executive_departure, executive_change, acquisition, merger, regulatory_action, legal_alert, market_commentary, press_release, industry_analysis, award, other
+  "article_type": string,          // one of: fund_launch, fund_close, capital_raise, executive_hire, executive_departure, executive_change, acquisition, regulatory_action, legal_alert, market_commentary, press_release, industry_analysis, award, other. Use "acquisition" for BOTH acquisitions and mergers.
   "source_type": string,           // one of: press_release, trade_press, news_wire, law_firm, regulatory, blog
   "is_high_signal": boolean,       // true for: fund launch/close with named firm, C-suite/partner hire at fund manager, regulatory enforcement, M&A between GPs or service providers
   "signal_reason": string | null,  // brief reason if is_high_signal

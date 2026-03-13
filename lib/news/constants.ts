@@ -8,7 +8,7 @@ export const EVENT_LABELS: Record<string, { label: string; short: string; color:
   executive_change: { label: 'Exec Move', short: 'Move', color: 'bg-violet-900/50 text-violet-300 border-violet-800' },
   executive_departure: { label: 'Departure', short: 'Dept', color: 'bg-violet-900/50 text-violet-300 border-violet-800' },
   acquisition: { label: 'M&A', short: 'M&A', color: 'bg-blue-900/50 text-blue-300 border-blue-800' },
-  merger: { label: 'Merger', short: 'Merger', color: 'bg-blue-900/50 text-blue-300 border-blue-800' },
+  merger: { label: 'M&A', short: 'M&A', color: 'bg-blue-900/50 text-blue-300 border-blue-800' },
   regulatory_action: { label: 'Regulatory', short: 'Reg', color: 'bg-amber-900/50 text-amber-300 border-amber-800' },
   legal_alert: { label: 'Legal Alert', short: 'Legal', color: 'bg-amber-900/50 text-amber-300 border-amber-800' },
   market_commentary: { label: 'Analysis', short: 'Analysis', color: 'bg-muted text-muted-foreground border-border' },
