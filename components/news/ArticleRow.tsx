@@ -46,11 +46,11 @@ function FirmLogo({
 }) {
   const [imgError, setImgError] = useState(false)
 
-  // If we have a domain, try the Clearbit logo first
+  // If we have a domain, fetch the favicon via Google's reliable service
   if (domain && !imgError) {
     return (
       <img
-        src={`https://logo.clearbit.com/${domain}`}
+        src={`https://www.google.com/s2/favicons?domain=${domain}&sz=128`}
         alt=""
         className="rounded-full object-contain bg-white shrink-0"
         style={{ width: size, height: size }}
