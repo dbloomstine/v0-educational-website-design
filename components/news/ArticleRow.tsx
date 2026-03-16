@@ -33,29 +33,42 @@ function getInitialColor(name: string): string {
   return LOGO_COLORS[Math.abs(hash) % LOGO_COLORS.length]
 }
 
-function FirmLogo({ domain, firmName, size = 20 }: { domain: string | null; firmName: string | null; size?: number }) {
+function FirmLogo({
+  domain,
+  firmName,
+  sourceName,
+  size = 20,
+}: {
+  domain: string | null
+  firmName: string | null
+  sourceName?: string | null
+  size?: number
+}) {
   const [imgError, setImgError] = useState(false)
 
-  if (!domain || imgError) {
-    const initial = (firmName ?? '?')[0].toUpperCase()
+  // If we have a domain, try the Clearbit logo first
+  if (domain && !imgError) {
     return (
-      <div
-        className={cn('rounded-full flex items-center justify-center text-[10px] font-bold shrink-0', getInitialColor(firmName ?? ''))}
+      <img
+        src={`https://logo.clearbit.com/${domain}`}
+        alt=""
+        className="rounded-full object-contain bg-white shrink-0"
         style={{ width: size, height: size }}
-      >
-        {initial}
-      </div>
+        onError={() => setImgError(true)}
+      />
     )
   }
 
+  // Fallback: letter initial from firmName, or sourceName if no firm
+  const displayName = firmName || sourceName || '?'
+  const initial = displayName[0].toUpperCase()
   return (
-    <img
-      src={`https://logo.clearbit.com/${domain}`}
-      alt=""
-      className="rounded-full object-contain bg-white shrink-0"
+    <div
+      className={cn('rounded-full flex items-center justify-center text-[10px] font-bold shrink-0', getInitialColor(displayName))}
       style={{ width: size, height: size }}
-      onError={() => setImgError(true)}
-    />
+    >
+      {initial}
+    </div>
   )
 }
 
@@ -169,7 +182,7 @@ export function ArticleRow({ article }: ArticleRowProps) {
 
         {/* Col 4: Logo + Headline */}
         <div className="flex items-center gap-2 min-w-0">
-          <FirmLogo domain={article.firmDomain} firmName={article.firmName} />
+          <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} />
           <span className="text-[14px] font-medium text-foreground leading-snug truncate">
             {decodeHtmlEntities(article.title)}
           </span>
@@ -226,7 +239,7 @@ export function ArticleRow({ article }: ArticleRowProps) {
 
             {/* Headline with logo */}
             <div className="flex items-start gap-2.5">
-              <FirmLogo domain={article.firmDomain} firmName={article.firmName} size={28} />
+              <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} size={28} />
               <div className="min-w-0">
                 <h3 className="text-sm font-semibold text-foreground leading-snug">
                   {decodeHtmlEntities(article.title)}
