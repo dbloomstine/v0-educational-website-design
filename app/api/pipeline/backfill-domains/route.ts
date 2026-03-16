@@ -14,15 +14,20 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  const url = new URL(req.url)
+  const offset = Number(url.searchParams.get('offset') ?? '0')
+  const batchSize = Math.min(Number(url.searchParams.get('limit') ?? '500'), 1000)
+
   const supabase = getSupabaseAdmin()
 
-  // Find articles with firm_name in extracted_data but no firm_domain
+  // Find articles with extracted_data, paginated
   const { data: rows, error } = await supabase
     .from('news_items')
     .select('id, extracted_data')
     .eq('classification_status', 'complete')
     .not('extracted_data', 'is', null)
-    .limit(500)
+    .order('published_date', { ascending: false })
+    .range(offset, offset + batchSize - 1)
 
   if (error || !rows) {
     return NextResponse.json({ error: error?.message ?? 'No rows' }, { status: 500 })
@@ -64,6 +69,8 @@ export async function GET(req: Request) {
   return NextResponse.json({
     ok: true,
     total: rows.length,
+    offset,
+    nextOffset: offset + batchSize,
     needsDomain: needsDomain.length,
     updated,
     failed,
