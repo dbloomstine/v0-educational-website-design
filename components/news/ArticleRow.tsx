@@ -180,9 +180,14 @@ export function ArticleRow({ article }: ArticleRowProps) {
           {fundSize || ''}
         </span>
 
-        {/* Col 4: Logo + Headline */}
-        <div className="flex items-center gap-2 min-w-0">
+        {/* Col 4: Logo + Firm pill + Headline */}
+        <div className="flex items-center gap-1.5 min-w-0">
           <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} />
+          {article.firmName && (
+            <span className="inline-flex shrink-0 max-w-[100px] rounded bg-muted/50 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground truncate leading-none">
+              {article.firmName}
+            </span>
+          )}
           <span className="text-[14px] font-medium text-foreground leading-snug truncate">
             {decodeHtmlEntities(article.title)}
           </span>

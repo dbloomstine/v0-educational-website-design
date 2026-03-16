@@ -5,6 +5,13 @@
 
 const firmDomainCache = new Map<string, string | null>();
 
+/** Strip corporate suffixes that cause Clearbit lookups to fail */
+function normalizeFirmName(name: string): string {
+  return name
+    .replace(/,?\s*(Inc\.?|LLC|Ltd\.?|L\.?P\.?|PLC|Corp\.?|Co\.?|S\.?A\.?|AG|GmbH|N\.?V\.?)$/i, '')
+    .trim();
+}
+
 /**
  * Resolve a firm name to its website domain via Clearbit autocomplete.
  * Returns the domain (e.g. "carlyle.com") or null if not found.
@@ -16,28 +23,35 @@ export async function resolveFirmDomain(firmName: string): Promise<string | null
   const cached = firmDomainCache.get(firmName);
   if (cached !== undefined) return cached;
 
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3000);
+  // Try the original name first, then the normalized version without suffixes
+  const namesToTry = [firmName];
+  const normalized = normalizeFirmName(firmName);
+  if (normalized !== firmName) namesToTry.push(normalized);
 
-    const res = await fetch(
-      `https://autocomplete.clearbit.com/v1/companies/suggest?query=${encodeURIComponent(firmName)}`,
-      { signal: controller.signal }
-    );
-    clearTimeout(timeout);
+  for (const name of namesToTry) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 3000);
 
-    if (!res.ok) {
-      firmDomainCache.set(firmName, null);
-      return null;
+      const res = await fetch(
+        `https://autocomplete.clearbit.com/v1/companies/suggest?query=${encodeURIComponent(name)}`,
+        { signal: controller.signal }
+      );
+      clearTimeout(timeout);
+
+      if (!res.ok) continue;
+
+      const results = (await res.json()) as Array<{ name: string; domain: string; logo: string }>;
+      const domain = results?.[0]?.domain ?? null;
+      if (domain) {
+        firmDomainCache.set(firmName, domain);
+        return domain;
+      }
+    } catch {
+      // Timeout or network error — try next variant
     }
-
-    const results = (await res.json()) as Array<{ name: string; domain: string; logo: string }>;
-    const domain = results?.[0]?.domain ?? null;
-    firmDomainCache.set(firmName, domain);
-    return domain;
-  } catch {
-    // Timeout or network error — store null so we don't retry this run
-    firmDomainCache.set(firmName, null);
-    return null;
   }
+
+  firmDomainCache.set(firmName, null);
+  return null;
 }
