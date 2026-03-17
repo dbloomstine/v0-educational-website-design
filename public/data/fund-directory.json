@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-16T13:04:13.652077Z",
+  "generated_at": "2026-03-17T13:03:49.377145Z",
   "funds": [
     {
       "fund_name": "RGreen Invest Fund V",
@@ -23488,8 +23488,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-03-15T08:50:28.271337",
-      "last_success": "2026-03-15T08:50:28.271345",
+      "last_fetch": "2026-03-17T07:28:32.092653",
+      "last_success": "2026-03-17T07:28:32.092663",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -23498,8 +23498,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-03-15T08:37:11.648862",
-      "last_success": "2026-03-15T08:37:11.648870",
+      "last_fetch": "2026-03-17T07:28:29.911279",
+      "last_success": "2026-03-17T07:28:29.911288",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -23538,18 +23538,18 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-03-15T09:37:20.447956",
-      "last_success": "2026-03-15T09:37:20.447967",
-      "error_count": 0,
-      "article_count": 10,
-      "last_error": "",
+      "last_fetch": "2026-03-17T08:17:26.483587",
+      "last_success": null,
+      "error_count": 1,
+      "article_count": 0,
+      "last_error": "Feed parse error for Buyouts Insider: <urlopen error [Errno 8] nodename nor servname provided, or not known>",
       "enabled": true
     },
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-03-15T06:14:51.020101",
-      "last_success": "2026-03-15T06:14:51.020106",
+      "last_fetch": "2026-03-17T06:20:20.393480",
+      "last_success": "2026-03-17T06:20:20.393487",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -23558,8 +23558,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-03-15T06:14:48.515949",
-      "last_success": "2026-03-15T06:14:48.515952",
+      "last_fetch": "2026-03-17T06:14:19.456218",
+      "last_success": "2026-03-17T06:14:19.456223",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -23568,8 +23568,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-03-15T08:37:09.924324",
-      "last_success": "2026-03-15T08:37:09.924332",
+      "last_fetch": "2026-03-17T07:28:28.007348",
+      "last_success": "2026-03-17T07:28:28.007355",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -23578,8 +23578,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-03-15T06:31:12.645923",
-      "last_success": "2026-03-15T06:31:12.645929",
+      "last_fetch": "2026-03-17T06:20:23.576130",
+      "last_success": "2026-03-17T06:20:23.576139",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -23588,18 +23588,18 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-03-15T08:50:32.653522",
-      "last_success": "2026-03-15T08:50:32.653533",
-      "error_count": 0,
-      "article_count": 10,
-      "last_error": "",
+      "last_fetch": "2026-03-17T08:17:25.381622",
+      "last_success": null,
+      "error_count": 1,
+      "article_count": 0,
+      "last_error": "Feed parse error for PE Hub: <urlopen error [Errno 8] nodename nor servname provided, or not known>",
       "enabled": true
     },
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-03-15T06:31:28.742978",
-      "last_success": "2026-03-15T06:31:28.742985",
+      "last_fetch": "2026-03-17T07:11:38.601310",
+      "last_success": "2026-03-17T07:11:38.601319",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -23608,8 +23608,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-03-15T06:14:46.768627",
-      "last_success": "2026-03-15T06:14:46.768630",
+      "last_fetch": "2026-03-17T06:14:17.756921",
+      "last_success": "2026-03-17T06:14:17.756924",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -23618,8 +23618,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-03-15T07:36:10.724939",
-      "last_success": "2026-03-15T07:36:10.724946",
+      "last_fetch": "2026-03-17T07:25:48.865437",
+      "last_success": "2026-03-17T07:25:48.865455",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -23628,8 +23628,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-03-15T07:36:07.368208",
-      "last_success": "2026-03-15T07:36:07.368214",
+      "last_fetch": "2026-03-17T07:25:44.828256",
+      "last_success": "2026-03-17T07:25:44.828263",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -23638,8 +23638,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-03-15T06:14:49.768313",
-      "last_success": "2026-03-15T06:14:49.768317",
+      "last_fetch": "2026-03-17T06:14:20.629006",
+      "last_success": "2026-03-17T06:14:20.629011",
       "error_count": 0,
       "article_count": 19,
       "last_error": "",
@@ -23667,7 +23667,7 @@
       "Other": 77,
       "Interim Close": 7
     },
-    "article_count": 168,
+    "article_count": 148,
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
