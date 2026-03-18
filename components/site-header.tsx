@@ -207,23 +207,49 @@ export function SiteHeader() {
             isOpen={openDropdown === 'newsletter'}
             onOpenChange={handleDropdownOpen('newsletter')}
           >
-            <div className="w-[280px] p-3">
-              <Link
-                href="/newsletter/fundopshq-insights"
-                onClick={() => setOpenDropdown(null)}
-                className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
-              >
-                <div className="text-sm font-medium text-foreground">FundOpsHQ Insights</div>
-                <div className="text-xs text-muted-foreground">Deep dives & frameworks</div>
-              </Link>
-              <Link
-                href="/newsletter/fundwatch-briefing"
-                onClick={() => setOpenDropdown(null)}
-                className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
-              >
-                <div className="text-sm font-medium text-foreground">FundWatch Briefing</div>
-                <div className="text-xs text-muted-foreground">Weekly news & updates</div>
-              </Link>
+            <div className="w-[300px] p-3">
+              <div className="space-y-1">
+                <div className="rounded-md px-3 py-2 hover:bg-accent/50 transition-colors">
+                  <Link
+                    href="/newsletter/fundopshq-insights"
+                    onClick={() => setOpenDropdown(null)}
+                    className="block"
+                  >
+                    <div className="text-sm font-medium text-foreground">FundOpsHQ Insights</div>
+                    <div className="text-xs text-muted-foreground">Deep dives & frameworks</div>
+                  </Link>
+                  <a
+                    href="https://dannybloomstine.beehiiv.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 mt-1.5 text-[11px] font-medium text-foreground/70 hover:text-foreground transition-colors"
+                    onClick={() => setOpenDropdown(null)}
+                  >
+                    Subscribe
+                    <ExternalLink className="h-2.5 w-2.5" />
+                  </a>
+                </div>
+                <div className="rounded-md px-3 py-2 hover:bg-accent/50 transition-colors">
+                  <Link
+                    href="/newsletter/fundwatch-briefing"
+                    onClick={() => setOpenDropdown(null)}
+                    className="block"
+                  >
+                    <div className="text-sm font-medium text-foreground">FundWatch Briefing</div>
+                    <div className="text-xs text-muted-foreground">Weekly news & updates</div>
+                  </Link>
+                  <a
+                    href="https://fundwatch-briefing.beehiiv.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 mt-1.5 text-[11px] font-medium text-foreground/70 hover:text-foreground transition-colors"
+                    onClick={() => setOpenDropdown(null)}
+                  >
+                    Subscribe
+                    <ExternalLink className="h-2.5 w-2.5" />
+                  </a>
+                </div>
+              </div>
               <div className="pt-2 mt-2 border-t border-border">
                 <Link
                   href="/newsletter"

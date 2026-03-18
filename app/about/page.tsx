@@ -180,10 +180,7 @@ export default function AboutPage() {
                   </div>
 
                   <div className="rounded-xl border border-border bg-card p-6">
-                    <h3 className="font-semibold mb-4 text-sm uppercase tracking-wider text-muted-foreground">
-                      Subscribe
-                    </h3>
-                    <SubscribePlatforms variant="stacked" />
+                    <SubscribePlatforms variant="hub" />
                   </div>
                 </div>
               </div>

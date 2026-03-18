@@ -112,14 +112,6 @@ const ALL_CHANNELS: Channel[] = [
     group: 'follow',
   },
   {
-    name: "TikTok",
-    subtitle: "Short-form clips",
-    href: "https://www.tiktok.com/@dannybloomstine",
-    icon: <TikTokIcon className="h-5 w-5" />,
-    iconBg: "bg-pink-950/80 text-pink-400",
-    group: 'follow',
-  },
-  {
     name: "Instagram",
     subtitle: "@dannybloomstine",
     href: "https://www.instagram.com/dannybloomstine/",
@@ -128,11 +120,11 @@ const ALL_CHANNELS: Channel[] = [
     group: 'follow',
   },
   {
-    name: "RedNote",
-    subtitle: "Fund ops on Xiaohongshu",
-    href: "https://www.xiaohongshu.com/user/profile/6789c34b000000000d00bcf3",
-    icon: <RedNoteIcon className="h-5 w-5" />,
-    iconBg: "bg-red-950/80 text-red-400",
+    name: "TikTok",
+    subtitle: "Short-form clips",
+    href: "https://www.tiktok.com/@dannybloomstine",
+    icon: <TikTokIcon className="h-5 w-5" />,
+    iconBg: "bg-pink-950/80 text-pink-400",
     group: 'follow',
   },
   {
@@ -141,6 +133,14 @@ const ALL_CHANNELS: Channel[] = [
     href: "https://facebook.com/profile.php?id=61579864313553",
     icon: <FacebookIcon className="h-5 w-5" />,
     iconBg: "bg-blue-950/80 text-blue-400",
+    group: 'follow',
+  },
+  {
+    name: "RedNote",
+    subtitle: "Fund ops on Xiaohongshu",
+    href: "https://www.xiaohongshu.com/user/profile/6789c34b000000000d00bcf3",
+    icon: <RedNoteIcon className="h-5 w-5" />,
+    iconBg: "bg-red-950/80 text-red-400",
     group: 'follow',
   },
   {

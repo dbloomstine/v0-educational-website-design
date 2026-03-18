@@ -4,6 +4,7 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { AnimateOnScroll } from "@/components/animate-on-scroll"
 import { BackToTop } from "@/components/back-to-top"
+import Image from "next/image"
 import { ArrowRight, ExternalLink, Newspaper, Headphones, ShoppingBag, Users, Info, Rss } from "lucide-react"
 import { fetchPlaylistVideos } from "@/lib/youtube"
 import { FeaturedEpisode } from "@/components/featured-episode"
@@ -101,7 +102,17 @@ export default async function HomePage() {
           <div className="container mx-auto px-4 pt-12 pb-10 sm:pt-16 sm:pb-12">
             <div className="max-w-2xl mx-auto text-center">
               <AnimateOnScroll delay={0} direction="none">
-                <Logo height={32} className="text-foreground mx-auto mb-5" />
+                <div className="mb-5 flex flex-col items-center gap-3">
+                  <Image
+                    src="/danny-headshot.png"
+                    alt="Danny Bloomstine"
+                    width={80}
+                    height={80}
+                    className="rounded-full border-2 border-border/60 object-cover"
+                    priority
+                  />
+                  <Logo height={28} className="text-foreground" />
+                </div>
               </AnimateOnScroll>
 
               <AnimateOnScroll delay={100}>
