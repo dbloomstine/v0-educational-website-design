@@ -3,18 +3,12 @@ import Link from "next/link"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { AnimateOnScroll } from "@/components/animate-on-scroll"
-import { AnimatedCounter } from "@/components/animated-counter"
 import { BackToTop } from "@/components/back-to-top"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowRight } from "lucide-react"
-import { getAllFundTypes } from "@/lib/content/fund-types"
-import { getAllTools } from "@/lib/content/tools"
-import { getAllRoles } from "@/lib/content/roles"
+import { ArrowRight, ExternalLink, Newspaper, Headphones, ShoppingBag, Users, Info, Rss } from "lucide-react"
 import { fetchPlaylistVideos } from "@/lib/youtube"
 import { FeaturedEpisode } from "@/components/featured-episode"
-import { EpisodeCard } from "@/components/episode-card"
 import { SubscribePlatforms } from "@/components/subscribe-platforms"
+import { Logo } from "@/components/logo"
 
 export const metadata: Metadata = {
   title: 'FundOpsHQ | Fund Operations Conversations with Industry Experts',
@@ -34,17 +28,6 @@ export const metadata: Metadata = {
     canonical: 'https://fundops.com',
   },
 }
-
-const fundTypes = getAllFundTypes().map((fundType) => ({
-  name: fundType.name,
-  description: fundType.description,
-  href: `/funds/${fundType.slug}`,
-  color: fundType.color,
-}))
-
-const tools = getAllTools().filter(tool => tool.status === 'active').slice(0, 3)
-
-const roles = getAllRoles()
 
 // Organization structured data for homepage
 const organizationJsonLd = {
@@ -66,6 +49,8 @@ const organizationJsonLd = {
   },
   sameAs: [
     'https://www.linkedin.com/in/danny-bloomstine/',
+    'https://www.youtube.com/playlist?list=PLZG9Q54lvPcZ-HOuVG61UzjoAtA8ZuewC',
+    'https://www.tiktok.com/@dannybloomstine',
   ],
   contactPoint: {
     '@type': 'ContactPoint',
@@ -86,6 +71,15 @@ const websiteJsonLd = {
   },
 }
 
+const EXPLORE_LINKS = [
+  { name: 'Episodes', href: '/interviews', icon: Headphones, description: 'Full video conversations' },
+  { name: 'Guests', href: '/guests', icon: Users, description: 'Industry experts' },
+  { name: 'News Feed', href: '/news', icon: Rss, description: 'Fund industry news' },
+  { name: 'Newsletters', href: '/newsletter', icon: Newspaper, description: 'Subscribe to updates' },
+  { name: 'About', href: '/about', icon: Info, description: 'The FundOpsHQ story' },
+  { name: 'Shop', href: 'https://fundopshq-shop.myshopify.com/collections/all', icon: ShoppingBag, description: 'Merch & gear', external: true },
+] as const
+
 export default async function HomePage() {
   const videos = await fetchPlaylistVideos()
 
@@ -102,219 +96,129 @@ export default async function HomePage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* Show Hero Section */}
-        <section className="border-b border-border bg-background">
-          <div className="container mx-auto px-4 py-16 sm:py-20 lg:py-24">
-            <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
-              {/* Left content - 7 columns */}
-              <div className="lg:col-span-7">
-                <AnimateOnScroll delay={0}>
-                  <p className="mb-4 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                    FundOpsHQ with Danny Bloomstine
-                  </p>
-                </AnimateOnScroll>
+        {/* ─── Hero: compact personal brand intro ─── */}
+        <section className="border-b border-border/50 bg-background">
+          <div className="container mx-auto px-4 pt-12 pb-10 sm:pt-16 sm:pb-12">
+            <div className="max-w-2xl mx-auto text-center">
+              <AnimateOnScroll delay={0} direction="none">
+                <Logo height={32} className="text-foreground mx-auto mb-5" />
+              </AnimateOnScroll>
 
-                <AnimateOnScroll delay={100}>
-                  <h1 className="mb-6 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl" style={{ letterSpacing: '-0.02em' }}>
-                    Conversations on fund operations—from the people who do it
-                  </h1>
-                </AnimateOnScroll>
+              <AnimateOnScroll delay={100}>
+                <p className="text-sm font-medium text-muted-foreground/70 mb-3 tracking-wide">
+                  with Danny Bloomstine
+                </p>
+              </AnimateOnScroll>
 
-                <AnimateOnScroll delay={200}>
-                  <p className="mb-8 max-w-xl text-lg text-muted-foreground leading-relaxed">
-                    Weekly conversations with professionals across the investment funds industry sharing what they've learned.
-                  </p>
-                </AnimateOnScroll>
+              <AnimateOnScroll delay={200}>
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight leading-snug mb-4" style={{ letterSpacing: '-0.02em' }}>
+                  Conversations on fund operations—from the people who do it
+                </h1>
+              </AnimateOnScroll>
 
-                <AnimateOnScroll delay={300}>
-                  <SubscribePlatforms variant="inline" />
-                </AnimateOnScroll>
-              </div>
-
-              {/* Right content - 5 columns - Featured Episode */}
-              <div className="lg:col-span-5">
-                <AnimateOnScroll delay={200}>
-                  {videos.length > 0 && (
-                    <FeaturedEpisode video={videos[0]} />
-                  )}
-                </AnimateOnScroll>
-              </div>
+              <AnimateOnScroll delay={300}>
+                <p className="text-muted-foreground text-base leading-relaxed max-w-lg mx-auto">
+                  Weekly interviews with professionals across the investment funds industry. Watch, listen, and subscribe below.
+                </p>
+              </AnimateOnScroll>
             </div>
           </div>
         </section>
 
-        {/* Latest Conversations Section */}
-        {videos.length > 0 && (
-          <section className="py-16 border-b border-border">
-            <div className="container mx-auto px-4">
-              <AnimateOnScroll>
-                <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                      Watch
-                    </p>
-                    <h2 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>Latest Conversations</h2>
-                    <p className="text-muted-foreground max-w-2xl">
-                      Fund ops professionals sharing what they&apos;ve learned
-                    </p>
-                  </div>
-                  <Button variant="outline" asChild className="sm:shrink-0">
-                    <Link href="/interviews">
-                      View All Episodes
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
-                </div>
+        {/* ─── Subscribe Hub: the main event ─── */}
+        <section className="py-10 sm:py-14">
+          <div className="container mx-auto px-4">
+            <div className="max-w-md mx-auto">
+              <AnimateOnScroll delay={100}>
+                <SubscribePlatforms variant="hub" />
               </AnimateOnScroll>
+            </div>
+          </div>
+        </section>
 
-              {/* Episode grid - featured + additional */}
-              <div className="grid gap-6 lg:grid-cols-3">
-                {/* Featured episode (larger) */}
-                {videos[0] && (
-                  <AnimateOnScroll delay={100} className="lg:col-span-2">
-                    <FeaturedEpisode video={videos[0]} />
-                  </AnimateOnScroll>
-                )}
+        {/* ─── Latest Episode ─── */}
+        {videos.length > 0 && (
+          <section className="py-10 sm:py-14 border-t border-border/50">
+            <div className="container mx-auto px-4">
+              <div className="max-w-2xl mx-auto">
+                <AnimateOnScroll>
+                  <div className="flex items-end justify-between mb-5">
+                    <div>
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-1.5">
+                        Latest Episode
+                      </p>
+                      <h2 className="text-xl font-bold" style={{ letterSpacing: '-0.01em' }}>
+                        Watch Now
+                      </h2>
+                    </div>
+                    <Link
+                      href="/interviews"
+                      className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
+                    >
+                      All episodes
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
+                </AnimateOnScroll>
 
-                {/* Additional episodes */}
-                <div className="space-y-6">
-                  {videos.slice(1, 3).map((video, index) => (
-                    <AnimateOnScroll key={video.videoId} delay={150 + index * 50}>
-                      <EpisodeCard video={video} />
-                    </AnimateOnScroll>
-                  ))}
-                </div>
+                <AnimateOnScroll delay={100}>
+                  <FeaturedEpisode video={videos[0]} />
+                </AnimateOnScroll>
               </div>
             </div>
           </section>
         )}
 
-        {/* Go Deeper Transition — hidden until articles/tools are public */}
-        {/* <GoDeeper /> */}
-
-        {/* Resource Hub - Tabbed Fund Types & Roles — hidden until articles are public */}
-        {/* <ResourceTabs fundTypes={fundTypes} roles={roles} /> */}
-
-        {/* Tools Section — hidden until tools are public */}
-        {/* <section className="py-16 border-y border-border">
+        {/* ─── Explore: quick links to site sections ─── */}
+        <section className="py-10 sm:py-14 border-t border-border/50">
           <div className="container mx-auto px-4">
-            <AnimateOnScroll>
-              <div className="mb-10 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                    Resources
-                  </p>
-                  <h2 className="mb-3 text-3xl font-bold" style={{ letterSpacing: '-0.01em' }}>Tools & Calculators</h2>
-                  <p className="text-muted-foreground max-w-2xl">
-                    Practical calculators and planning tools for fund operations
-                  </p>
-                </div>
-                <Button variant="outline" asChild className="sm:shrink-0">
-                  <Link href="/tools">
-                    View All Tools
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
-              </div>
-            </AnimateOnScroll>
+            <div className="max-w-md mx-auto">
+              <AnimateOnScroll>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-3">
+                  Explore
+                </p>
+              </AnimateOnScroll>
 
-            <StaggeredGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3" staggerDelay={100} duration={700}>
-              {tools.map((tool) => (
-                <Link key={tool.slug} href={`/tools/${tool.slug}`} className="group h-full">
-                  <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
-                    <CardHeader>
-                      <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-sm bg-accent/60">
-                        <Calculator className="h-4 w-4 text-foreground" />
-                      </div>
-                      <CardTitle className="text-base font-semibold leading-snug">{tool.title}</CardTitle>
-                      <CardDescription className="leading-relaxed text-sm">{tool.shortDescription}</CardDescription>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                        Use Tool
-                        <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              ))}
-            </StaggeredGrid>
-          </div>
-        </section> */}
+              <div className="grid grid-cols-2 gap-2">
+                {EXPLORE_LINKS.map((link, i) => {
+                  const Icon = link.icon
+                  const isExternal = 'external' in link && link.external
 
-        {/* Stats/Trust Section */}
-        <section className="py-10 border-y border-border bg-card/30">
-          <div className="container mx-auto px-4">
-            <div className="grid gap-8 grid-cols-2 text-center max-w-md mx-auto">
-              <div>
-                <div className="text-3xl font-bold text-foreground mb-1">
-                  <AnimatedCounter end={videos.length} duration={1500} />
-                </div>
-                <div className="text-sm text-muted-foreground">Episodes</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-foreground mb-1">
-                  <AnimatedCounter end={videos.filter(v => v.guest).length} duration={1500} />
-                </div>
-                <div className="text-sm text-muted-foreground">Guests</div>
+                  const content = (
+                    <div className="group flex items-center gap-3 rounded-lg border border-border/60 bg-card/40 px-3.5 py-3 transition-all duration-200 hover:bg-card/80 hover:border-foreground/15">
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted/50 text-muted-foreground transition-colors group-hover:text-foreground">
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-[13px] font-semibold text-foreground/90 leading-tight flex items-center gap-1">
+                          {link.name}
+                          {isExternal && <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/50" />}
+                        </div>
+                        <div className="text-[11px] text-muted-foreground/50 mt-0.5 leading-tight">
+                          {link.description}
+                        </div>
+                      </div>
+                    </div>
+                  )
+
+                  return (
+                    <AnimateOnScroll key={link.name} delay={50 + i * 30}>
+                      {isExternal ? (
+                        <a href={link.href} target="_blank" rel="noopener noreferrer">
+                          {content}
+                        </a>
+                      ) : (
+                        <Link href={link.href}>
+                          {content}
+                        </Link>
+                      )}
+                    </AnimateOnScroll>
+                  )
+                })}
               </div>
             </div>
           </div>
         </section>
-
-        {/* Newsletter Section */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <AnimateOnScroll>
-              <div className="mb-10 text-center">
-                <p className="mb-3 text-sm font-medium uppercase tracking-widest text-muted-foreground">
-                  Newsletters
-                </p>
-                <h2 className="mb-3 text-2xl font-bold" style={{ letterSpacing: '-0.01em' }}>Stay in the loop</h2>
-                <p className="text-muted-foreground max-w-xl mx-auto">
-                  Two newsletters, two different focuses. Pick what works for you.
-                </p>
-              </div>
-            </AnimateOnScroll>
-
-            <div className="grid gap-6 sm:grid-cols-2 max-w-3xl mx-auto">
-              <Link href="/newsletter/fundopshq-insights" className="group">
-                <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
-                  <CardHeader>
-                    <CardTitle className="text-lg font-semibold">FundOpsHQ Insights</CardTitle>
-                    <CardDescription className="leading-relaxed">
-                      Deep dives on fund operations topics, frameworks, and practical guidance. Published when there&apos;s something worth sharing.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                      Subscribe
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-
-              <Link href="/newsletter/fundwatch-briefing" className="group">
-                <Card className="h-full transition-colors duration-200 border-border/60 hover:border-foreground/20">
-                  <CardHeader>
-                    <CardTitle className="text-lg font-semibold">FundWatch Briefing</CardTitle>
-                    <CardDescription className="leading-relaxed">
-                      Weekly roundup of fund launches, closes, and industry news. Quick reads to stay current on what&apos;s happening in the market.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                      Subscribe
-                      <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            </div>
-          </div>
-        </section>
-
       </main>
 
       <SiteFooter />
