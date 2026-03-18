@@ -35,6 +35,7 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
     .eq('is_duplicate', false)
     .gte('published_date', cutoff.split('T')[0])
     .order('published_date', { ascending: false })
+    .order('relevance_score', { ascending: false })
     .range(offset, offset + limit)
 
   // Category filter (fund_categories is a text[] column)
@@ -54,7 +55,7 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
     query = query.in('article_type', types)
   } else {
     query = query.neq('article_type', 'other')
-    query = query.gte('relevance_score', 0.2)
+    query = query.gte('relevance_score', 0.4)
   }
 
   // Text search
@@ -134,7 +135,7 @@ async function queryFacets(dateCutoff: string): Promise<FacetCounts> {
     .eq('is_duplicate', false)
     .gte('published_date', dateCutoff)
     .neq('article_type', 'other')
-    .gte('relevance_score', 0.2)
+    .gte('relevance_score', 0.4)
 
   const categories: Record<string, number> = {}
   const types: Record<string, number> = {}

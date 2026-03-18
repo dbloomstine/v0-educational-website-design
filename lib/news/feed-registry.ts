@@ -107,10 +107,11 @@ export const FEED_REGISTRY: FeedSource[] = [
   {
     name: 'Crunchbase News',
     url: 'https://news.crunchbase.com/feed/',
-    tier: 1,
+    tier: 2,
     categories: ['VC', 'PE'],
-    fetchIntervalMinutes: 30,
+    fetchIntervalMinutes: 240,
     sourceType: 'trade_press',
+    notes: 'Low signal rate (10% good) — demoted from tier 1, reduced frequency',
   },
   {
     name: 'Institutional Investor',
@@ -394,8 +395,9 @@ export const FEED_REGISTRY: FeedSource[] = [
     url: 'https://www.wealthmanagement.com/rss.xml',
     tier: 2,
     categories: ['PE', 'hedge', 'credit'],
-    fetchIntervalMinutes: 60,
+    fetchIntervalMinutes: 360,
     sourceType: 'news_wire',
+    notes: 'Low signal rate (4% good) — reduced frequency',
   },
   {
     name: 'Investment Week',
@@ -410,8 +412,9 @@ export const FEED_REGISTRY: FeedSource[] = [
     url: 'https://www.esgtoday.com/feed/',
     tier: 2,
     categories: ['PE', 'infrastructure'],
-    fetchIntervalMinutes: 120,
+    fetchIntervalMinutes: 360,
     sourceType: 'news_wire',
+    notes: 'Low signal rate (6% good) — reduced frequency',
   },
   {
     name: 'Commercial Observer',
@@ -429,14 +432,9 @@ export const FEED_REGISTRY: FeedSource[] = [
     fetchIntervalMinutes: 60,
     sourceType: 'news_wire',
   },
-  {
-    name: 'TechCrunch Fundraising',
-    url: 'https://techcrunch.com/category/fundraising/feed/',
-    tier: 2,
-    categories: ['VC'],
-    fetchIntervalMinutes: 60,
-    sourceType: 'news_wire',
-  },
+  // TechCrunch Fundraising REMOVED — 0% signal rate (avg relevance 0.05).
+  // All articles are startup fundraising rounds (Series A/B/C), not fund launches.
+  // TechCrunch VC (tier 1) already covers real VC fund news.
 
   // ════════════════════════════════════════════════════════════════════════
   // TIER 3 — Law Firm Client Alerts
@@ -550,8 +548,9 @@ export const FEED_REGISTRY: FeedSource[] = [
     url: 'https://www.gibsondunn.com/rss',
     tier: 3,
     categories: ['PE', 'credit'],
-    fetchIntervalMinutes: 120,
+    fetchIntervalMinutes: 360,
     sourceType: 'law_firm',
+    notes: 'Low signal rate (5% good) — reduced frequency',
   },
   {
     name: 'Cleary Gottlieb',

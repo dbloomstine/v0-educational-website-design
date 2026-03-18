@@ -271,7 +271,7 @@ async function processFeed(
     }
 
     // Pre-filter obviously irrelevant content at ingest time to save classification costs
-    const classificationStatus = isIrrelevantAtIngest(article.title)
+    const classificationStatus = isIrrelevantAtIngest(article.title, article.sourceName)
       ? 'filtered'
       : 'pending';
 
@@ -443,13 +443,56 @@ const INGEST_IRRELEVANT_PATTERNS = [
   /\b(high school|elementary school|middle school|prom|homecoming)\b/i,
   // Spam / SEO content
   /\b(best \d+ tips|top \d+ ways|you won't believe|click here)\b/i,
+  // Securities fraud ambulance-chaser class action solicitations
+  /\bopportunit(y|ies) to lead\b.*\b(securities|fraud|class action|lawsuit)\b/i,
+  /\b(securities fraud|class action).*\b(lawsuit|investigation|alert)\b/i,
+  /\binvestors have opportunity\b/i,
+  /\b(shareholder|investor) alert.*\b(securities|fraud|class action)\b/i,
+  /\bROBBINS GELLER\b|\bPOMERANTZ\b|\bBERNSTEIN LIEBHARD\b|\bGLANCY PRONGAY\b|\bSCHALL LAW\b|\bBRONSTEIN, GEWIRTZ\b|\bJOHNSON FISTEL\b|\bLEVI & KORSINSKY\b/i,
+  /\bclass action\b.*\b(filed|commenced|pending)\b/i,
+  /\bsecurities class action\b/i,
 ];
 
-function isIrrelevantAtIngest(title: string): boolean {
+/**
+ * Keywords that must appear in PR Newswire / wire service titles
+ * to be worth ingesting. Without one of these, the article is almost
+ * certainly irrelevant (beverage companies, pharma, tech products, etc.).
+ */
+const WIRE_SERVICE_KEYWORD_GATE = /\b(fund|capital|private equity|private credit|venture|hedge|real estate invest|infrastructure invest|secondaries|gp.?stakes|lp commitment|buyout|growth equity|direct lending|mezzanine|co.?invest|continuation vehicle|nav lend|limited partner|general partner|fund.?of.?funds|asset manage|investment manage|portfolio manage|alternative.?invest|institutional invest|pension fund|endowment|sovereign wealth|family office|fund admin|fund service|fund launch|fund close|fund raise|fundrais|first close|final close|hard cap|dry powder|carry|waterfall|capital call|distribution|placement agent|investor relation|aum|assets under)\b/i;
+
+/** Source names that require keyword-gating to be worth ingesting */
+const WIRE_SERVICE_SOURCES = new Set([
+  'pr newswire financial',
+  'pr newswire',
+]);
+
+/**
+ * Common non-English word patterns (German, French, Spanish, etc.)
+ * that use Latin characters and slip past the non-Latin character check.
+ */
+const NON_ENGLISH_PATTERNS = [
+  // German
+  /\b(erwirbt|beteiligung|unternehmen|bekanntgabe|abschluss|ankündigung|gibt.*bekannt|führt|stellt.*vor|bringt.*markt|beschleunigt|verstärkt|übernimmt|ernennt|aufgenommen|geschäft|milliarden|millionen|zusammenarbeit)\b/i,
+  // French
+  /\b(annonce|présente|lance|renforce|partenariat|investissement|résultats|acquisition|développement|technologie|entreprise|société|gestion|rapport|stratégi[eq]|croissance|communiqué|hépatique|conférence)\b/i,
+  // Spanish / Portuguese
+  /\b(anuncia|presenta|inversión|resultados|adquisición|desarrollo|tecnología|compañía|sociedad|gestión|informe|estrategia|crecimiento|comunicado)\b/i,
+];
+
+function isIrrelevantAtIngest(title: string, sourceName?: string): boolean {
   // Non-English detection: >30% non-Latin characters
   // eslint-disable-next-line no-control-regex
   const nonLatin = title.replace(/[\x00-\x7F\u00C0-\u024F\u1E00-\u1EFF]/g, '').length;
   if (nonLatin > title.length * 0.3) return true;
+
+  // Non-English detection: common German/French/Spanish words in Latin-script titles
+  if (NON_ENGLISH_PATTERNS.some((pat) => pat.test(title))) return true;
+
+  // Wire service keyword gate: PR Newswire produces ~2,000 articles/week
+  // but only ~2% are relevant. Require fund-related keywords to ingest.
+  if (sourceName && WIRE_SERVICE_SOURCES.has(sourceName.toLowerCase())) {
+    if (!WIRE_SERVICE_KEYWORD_GATE.test(title)) return true;
+  }
 
   return INGEST_IRRELEVANT_PATTERNS.some((pat) => pat.test(title));
 }

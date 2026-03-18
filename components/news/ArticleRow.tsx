@@ -141,7 +141,10 @@ export function ArticleRow({ article }: ArticleRowProps) {
         onMouseEnter={handleRowEnter}
         onMouseMove={handleRowMove}
         onMouseLeave={handleRowLeave}
-        className="grid items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[56px_140px_1fr_56px] lg:grid-cols-[56px_140px_72px_1fr_56px_150px]"
+        className={cn(
+          'grid items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[56px_140px_1fr_56px] lg:grid-cols-[56px_140px_72px_1fr_56px_150px]',
+          article.isHighSignal && 'border-l-2 border-l-amber-500/70'
+        )}
       >
         {/* Col 1: Event type badge */}
         <div className="flex items-center">

@@ -71,7 +71,7 @@ const SYSTEM_PROMPT = `You are classifying news articles about investment funds 
 
 For each article, return a JSON object with exactly these fields:
 {
-  "fund_categories": string[],     // subset of: ["PE","VC","credit","hedge","real_estate","infrastructure","secondaries","gp_stakes"] — all that apply
+  "fund_categories": string[],     // subset of: ["PE","VC","credit","hedge","real_estate","infrastructure","secondaries","gp_stakes"] — all that apply. Use UPPERCASE for PE and VC.
   "article_type": string,          // one of: fund_launch, fund_close, capital_raise, executive_hire, executive_departure, executive_change, acquisition, regulatory_action, legal_alert, market_commentary, press_release, industry_analysis, award, other. Use "acquisition" for BOTH acquisitions and mergers.
   "source_type": string,           // one of: press_release, trade_press, news_wire, law_firm, regulatory, blog
   "is_high_signal": boolean,       // true for: fund launch/close with named firm, C-suite/partner hire at fund manager, regulatory enforcement, M&A between GPs or service providers
@@ -81,7 +81,7 @@ For each article, return a JSON object with exactly these fields:
   "entities": [
     { "name": string, "type": "firm"|"fund"|"person", "role": string | null, "confidence": number }
   ],
-  "firm_name": string | null,      // primary fund manager / GP / investment firm. For exec moves, the firm they joined or left. For M&A, the acquirer.
+  "firm_name": string | null,      // ALWAYS extract the primary fund manager / GP / investment firm mentioned. For exec moves, the firm they joined or left. For M&A, the acquirer. For market commentary, the most prominent fund manager discussed. Extract aggressively — if ANY fund manager is named in the headline, extract it.
   "fund_name": string | null,      // specific fund vehicle name (e.g. "Apollo Fund X", "Blackstone Real Estate Partners IX"). null if no specific fund named.
   "fund_size_usd_millions": number | null,  // fund size in USD millions. Convert: $3B = 3000, €500M ≈ 550, £200M ≈ 255. null if not mentioned.
   "close_type": string | null,     // "final_close" | "first_close" | "interim_close" | "hard_cap" | "target" | "launch" if mentioned
@@ -97,20 +97,23 @@ RELEVANCE SCORING (follow strictly):
 0.8–1.0  Named fund launch/close WITH dollar amount or target size. Major M&A between fund managers or fund service providers. C-suite appointment at a top-50 GP.
 0.6–0.7  Fund launch/close without size. Executive move (MD+ level) at a known fund manager. Regulatory enforcement action naming a fund/GP. LP commitment announcement with amount.
 0.4–0.5  Industry analysis from a credible source about fund trends. Partnership or JV between fund-related firms. Capital raise progress update. New office/geography expansion by a GP.
-0.2–0.3  General market commentary about PE/VC/credit markets. Awards/rankings. Conference recaps. Thought leadership from a fund manager.
-0.0–0.1  Not about investment funds, GPs, LPs, or fund service providers.
+0.2–0.3  General market commentary about PE/VC/credit markets that specifically discusses fund vehicles, LP allocations, or GP strategy. Awards/rankings of fund managers. Conference recaps focused on fund industry.
+0.0–0.1  EVERYTHING ELSE. If it is not DIRECTLY about investment funds, GPs, LPs, or fund service providers → 0.0. There is NO middle ground.
 
-CLASSIFICATION RULES:
-1. CORE TEST: Is this about an investment fund vehicle (LP fund), a fund manager (GP), an institutional investor (LP), or a fund service provider? If NO → "other" with relevance 0.0.
+CRITICAL CLASSIFICATION RULES:
+1. BINARY CORE TEST: Is this article DIRECTLY about an investment fund vehicle (LP fund), a fund manager (GP), an institutional investor (LP), or a fund service provider performing fund-related work? If NO → "other" with relevance 0.0. Do NOT give 0.2 to articles that tangentially mention a fund or real estate firm but are really about something else.
 2. Startup fundraising (Series A/B/C/D, seed rounds) = portfolio company investment, NOT a fund launch. → "other", relevance 0.0.
-3. Public stock purchases/sales, 13F filings, "shares purchased by LLC" reports → "market_commentary", relevance 0.1.
-4. Hedge fund performance reports, monthly returns → "market_commentary", relevance 0.2.
-5. Non-English articles → "other", relevance 0.0.
+3. Public stock purchases/sales, 13F filings, "shares purchased by LLC" reports → "other", relevance 0.0.
+4. Hedge fund performance reports, monthly returns → "market_commentary", relevance 0.3.
+5. Non-English articles (German, French, Spanish, etc.) → "other", relevance 0.0.
 6. Medical, pharma, biotech, clinical trials, health/wellness → "other", relevance 0.0.
 7. Sports, entertainment, politics (unless fund regulation), weather, crypto token launches → "other", relevance 0.0.
 8. Podcast summaries, listicles, generic opinion pieces, self-help → "other", relevance 0.0.
 9. Patent/invention/product announcements unrelated to financial services → "other", relevance 0.0.
 10. For fund_categories: only tag categories with a DIRECT connection. A PE firm launching a credit fund = ["PE","credit"]. A general article mentioning PE once in passing = [].
+11. Real estate PROPERTY SALES, brokerage listings, individual building transactions, disaster relief, construction projects → "other", relevance 0.0. Only tag "real_estate" when the article is about a real estate INVESTMENT FUND or fund manager.
+12. Securities fraud class actions, shareholder lawsuit solicitations, "Investors Have Opportunity to Lead" → "other", relevance 0.0. These are ambulance-chaser ads, not real legal news.
+13. FIRM NAME EXTRACTION: Always extract firm_name when a fund manager, GP, or investment firm is mentioned in the headline or first paragraph. Examples: "BNP Paribas bets on European private credit" → firm_name: "BNP Paribas". "Jana Partners presses Six Flags" → firm_name: "Jana Partners" (the fund manager, not the portfolio company). Prefer the GP/fund manager over the portfolio company or counterparty.
 
 Return ONLY a JSON array in the same order as input. No markdown, no explanation.`;
 
