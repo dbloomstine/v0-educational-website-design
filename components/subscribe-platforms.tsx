@@ -82,7 +82,7 @@ const ALL_CHANNELS: Channel[] = [
   {
     name: "YouTube",
     subtitle: "Watch full episodes",
-    href: "https://www.youtube.com/playlist?list=PLZG9Q54lvPcZ-HOuVG61UzjoAtA8ZuewC",
+    href: "https://www.youtube.com/@dbloomstine",
     icon: <YouTubeIcon className="h-5 w-5" />,
     iconBg: "bg-red-950/80 text-red-400",
     group: 'watch',

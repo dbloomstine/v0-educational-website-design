@@ -50,7 +50,7 @@ const organizationJsonLd = {
   },
   sameAs: [
     'https://www.linkedin.com/in/danny-bloomstine/',
-    'https://www.youtube.com/playlist?list=PLZG9Q54lvPcZ-HOuVG61UzjoAtA8ZuewC',
+    'https://www.youtube.com/@dbloomstine',
     'https://www.tiktok.com/@dannybloomstine',
   ],
   contactPoint: {
