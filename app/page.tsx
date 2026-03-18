@@ -97,61 +97,60 @@ export default async function HomePage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* ─── Hero: compact personal brand intro ─── */}
+        {/* ─── Hero + Subscribe Hub: two-column on desktop, stacked on mobile ─── */}
         <section className="border-b border-border/50 bg-background">
-          <div className="container mx-auto px-4 pt-12 pb-10 sm:pt-16 sm:pb-12">
-            <div className="max-w-2xl mx-auto text-center">
-              <AnimateOnScroll delay={0} direction="none">
-                <div className="mb-5 flex flex-col items-center gap-3">
-                  <Image
-                    src="/danny-headshot.png"
-                    alt="Danny Bloomstine"
-                    width={80}
-                    height={80}
-                    className="rounded-full border-2 border-border/60 object-cover"
-                    priority
-                  />
-                  <Logo height={28} className="text-foreground" />
-                </div>
-              </AnimateOnScroll>
+          <div className="container mx-auto px-4 py-12 sm:py-16 lg:py-20">
+            <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-start max-w-5xl mx-auto">
+              {/* Left: Brand intro */}
+              <div className="text-center lg:text-left lg:sticky lg:top-24">
+                <AnimateOnScroll delay={0} direction="none">
+                  <div className="mb-6 flex flex-col items-center lg:items-start gap-4">
+                    <Image
+                      src="/danny-headshot.png"
+                      alt="Danny Bloomstine"
+                      width={88}
+                      height={88}
+                      className="rounded-full border-2 border-border/60 object-cover"
+                      priority
+                    />
+                    <Logo height={30} className="text-foreground" />
+                  </div>
+                </AnimateOnScroll>
 
-              <AnimateOnScroll delay={100}>
-                <p className="text-sm font-medium text-muted-foreground/70 mb-3 tracking-wide">
-                  with Danny Bloomstine
-                </p>
-              </AnimateOnScroll>
+                <AnimateOnScroll delay={100}>
+                  <p className="text-sm font-medium text-muted-foreground/70 mb-3 tracking-wide">
+                    with Danny Bloomstine
+                  </p>
+                </AnimateOnScroll>
 
-              <AnimateOnScroll delay={200}>
-                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight leading-snug mb-4" style={{ letterSpacing: '-0.02em' }}>
-                  Conversations on fund operations—from the people who do it
-                </h1>
-              </AnimateOnScroll>
+                <AnimateOnScroll delay={200}>
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight leading-snug mb-4" style={{ letterSpacing: '-0.02em' }}>
+                    Conversations on fund operations—from the people who do it
+                  </h1>
+                </AnimateOnScroll>
 
-              <AnimateOnScroll delay={300}>
-                <p className="text-muted-foreground text-base leading-relaxed max-w-lg mx-auto">
-                  Weekly interviews with professionals across the investment funds industry. Watch, listen, and subscribe below.
-                </p>
-              </AnimateOnScroll>
-            </div>
-          </div>
-        </section>
+                <AnimateOnScroll delay={300}>
+                  <p className="text-muted-foreground text-base lg:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
+                    Weekly interviews with professionals across the investment funds industry. Watch, listen, and subscribe.
+                  </p>
+                </AnimateOnScroll>
+              </div>
 
-        {/* ─── Subscribe Hub: the main event ─── */}
-        <section className="py-10 sm:py-14">
-          <div className="container mx-auto px-4">
-            <div className="max-w-md mx-auto">
-              <AnimateOnScroll delay={100}>
-                <SubscribePlatforms variant="hub" />
-              </AnimateOnScroll>
+              {/* Right: Subscribe hub */}
+              <div>
+                <AnimateOnScroll delay={200}>
+                  <SubscribePlatforms variant="hub" />
+                </AnimateOnScroll>
+              </div>
             </div>
           </div>
         </section>
 
         {/* ─── Latest Episode ─── */}
         {videos.length > 0 && (
-          <section className="py-10 sm:py-14 border-t border-border/50">
+          <section className="py-10 sm:py-14 border-b border-border/50">
             <div className="container mx-auto px-4">
-              <div className="max-w-2xl mx-auto">
+              <div className="max-w-3xl mx-auto">
                 <AnimateOnScroll>
                   <div className="flex items-end justify-between mb-5">
                     <div>
@@ -181,16 +180,16 @@ export default async function HomePage() {
         )}
 
         {/* ─── Explore: quick links to site sections ─── */}
-        <section className="py-10 sm:py-14 border-t border-border/50">
+        <section className="py-10 sm:py-14">
           <div className="container mx-auto px-4">
-            <div className="max-w-md mx-auto">
+            <div className="max-w-3xl mx-auto">
               <AnimateOnScroll>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-3">
                   Explore
                 </p>
               </AnimateOnScroll>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {EXPLORE_LINKS.map((link, i) => {
                   const Icon = link.icon
                   const isExternal = 'external' in link && link.external
