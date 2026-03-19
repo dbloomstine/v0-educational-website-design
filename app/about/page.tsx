@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Mic2, Users, Newspaper, TrendingUp, Linkedin, Building2, ArrowRight, CheckCircle2, Play, Calendar } from 'lucide-react'
 import { PageHero, SectionCTA } from '@/components/layout'
 import { SubscribePlatforms } from '@/components/subscribe-platforms'
+import { ReachOut } from '@/components/reach-out'
 
 export const metadata: Metadata = {
   title: 'About FundOpsHQ',
@@ -324,6 +325,8 @@ export default function AboutPage() {
             </Link>
           </Button>
         </SectionCTA>
+
+        <ReachOut />
       </main>
 
       <SiteFooter />

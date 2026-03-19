@@ -10,6 +10,7 @@ import { fetchPlaylistVideos } from "@/lib/youtube"
 import { FeaturedEpisode } from "@/components/featured-episode"
 import { SubscribePlatforms } from "@/components/subscribe-platforms"
 import { Logo } from "@/components/logo"
+import { ReachOut } from "@/components/reach-out"
 
 export const metadata: Metadata = {
   title: 'FundOpsHQ | Fund Operations Conversations with Industry Experts',
@@ -229,6 +230,8 @@ export default async function HomePage() {
             </div>
           </div>
         </section>
+
+        <ReachOut />
       </main>
 
       <SiteFooter />

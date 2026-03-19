@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { NewsFeed } from '@/components/news/NewsFeed'
+import { ReachOut } from '@/components/reach-out'
 import { Suspense } from 'react'
 
 export const metadata: Metadata = {
@@ -45,6 +46,7 @@ export default function NewsPage() {
             <NewsFeed />
           </Suspense>
         </div>
+        <ReachOut />
       </main>
 
       <SiteFooter />
