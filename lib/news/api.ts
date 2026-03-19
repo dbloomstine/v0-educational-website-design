@@ -33,6 +33,8 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
     .select('id, title, source_url, source_name, published_date, article_type, fund_categories, is_high_signal, relevance_score, tldr, extracted_data, event_type')
     .eq('classification_status', 'complete')
     .eq('is_duplicate', false)
+    .neq('title', '')
+    .not('title', 'is', null)
     .gte('published_date', cutoff.split('T')[0])
     .order('published_date', { ascending: false })
     .order('relevance_score', { ascending: false })
@@ -105,7 +107,7 @@ function mapRowToArticle(row: any): NewsArticle {
 
   return {
     id: row.id,
-    title: row.title,
+    title: row.title || row.tldr || 'Untitled article',
     sourceUrl: row.source_url,
     sourceName: row.source_name,
     publishedDate: row.published_date,
