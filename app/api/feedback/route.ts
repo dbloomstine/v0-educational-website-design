@@ -76,8 +76,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Failed to submit feedback' }, { status: 500 })
     }
 
-    // Fire-and-forget — don't block the response on email delivery
-    sendNotification(category, trimmedMessage, trimmedEmail, feedbackPage)
+    // Await so Vercel doesn't kill the function before the email sends
+    await sendNotification(category, trimmedMessage, trimmedEmail, feedbackPage)
 
     return NextResponse.json({ success: true })
   } catch {
