@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Search, X, Loader2, ChevronDown, SlidersHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ArticleRow } from './ArticleRow'
+import { FeedbackButton } from './FeedbackButton'
 import type { ArticleFeedResponse, NewsArticle, FacetCounts } from '@/lib/news/types'
 
 // ── Filter constants ──────────────────────────────────────────────
@@ -331,6 +332,9 @@ export function NewsFeed() {
             <span className="rounded-full bg-blue-600 px-1.5 text-[9px] text-white">{pillFilterCount}</span>
           )}
         </button>
+
+        {/* Suggest / Feedback */}
+        <FeedbackButton />
 
         {/* Clear */}
         {activeFilterCount > 0 && (
