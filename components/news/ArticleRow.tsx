@@ -296,17 +296,17 @@ export function ArticleRow({ article }: ArticleRowProps) {
             )}
 
             {/* Source link + time */}
-            <div className="flex items-center justify-between text-[11px] text-muted-foreground/60 border-t border-border/50 pt-2">
+            <div className="flex items-center justify-between border-t border-border/50 pt-3">
               <a
                 href={article.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-muted/40 px-3 py-1.5 text-[11px] font-semibold text-foreground/80 hover:text-foreground hover:bg-accent hover:border-foreground/20 transition-colors"
               >
-                <ExternalLink className="h-3 w-3 shrink-0 opacity-50" />
-                <span className="font-semibold">{article.sourceName || 'Source'}</span>
+                Read full article
+                <ExternalLink className="h-3 w-3 shrink-0" />
               </a>
-              <span>{article.publishedDate ? formatRelativeDate(article.publishedDate) : ''}</span>
+              <span className="text-[11px] text-muted-foreground/50">{article.sourceName}{article.publishedDate ? ` · ${formatRelativeDate(article.publishedDate)}` : ''}</span>
             </div>
           </div>
         </div>,
