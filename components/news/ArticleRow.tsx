@@ -200,7 +200,7 @@ export function ArticleRow({ article }: ArticleRowProps) {
           onMouseLeave={handleRowLeave}
           className="flex items-center"
         >
-          <span className="inline-flex rounded-full border border-border/40 px-2 py-0.5 text-[10px] font-medium text-muted-foreground/40 hover:text-foreground hover:border-foreground/30 hover:bg-accent/60 transition-all cursor-pointer whitespace-nowrap select-none">
+          <span className="inline-flex rounded-full border border-border/60 bg-muted/40 px-2.5 py-1 text-[11px] font-medium text-muted-foreground/60 hover:text-foreground hover:border-foreground/30 hover:bg-accent transition-all cursor-pointer whitespace-nowrap select-none">
             Details
           </span>
         </div>
