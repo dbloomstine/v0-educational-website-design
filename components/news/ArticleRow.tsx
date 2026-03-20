@@ -13,6 +13,7 @@ import {
   formatRelativeDate,
 } from '@/lib/news/constants'
 import type { NewsArticle } from '@/lib/news/types'
+import { getFirmDomain } from '@/lib/news/firm-logos'
 
 // ─── Firm Logo ───────────────────────────────────────────────────────────────
 
@@ -44,17 +45,24 @@ function FirmLogo({
   sourceName?: string | null
   size?: number
 }) {
-  const [imgError, setImgError] = useState(false)
+  // 1. Check curated map first (fixes wrong domains from classification)
+  // 2. Fall back to domain from classification pipeline
+  const resolvedDomain = getFirmDomain(firmName) ?? domain
 
-  // If we have a domain, fetch the favicon via Google's reliable service
-  if (domain && !imgError) {
+  const [imgError, setImgError] = useState<string | null>(null)
+
+  // Reset error state when the resolved domain changes
+  const domainFailed = imgError === resolvedDomain
+
+  if (resolvedDomain && !domainFailed) {
     return (
       <img
-        src={`https://www.google.com/s2/favicons?domain=${domain}&sz=128`}
-        alt=""
+        src={`https://www.google.com/s2/favicons?domain=${resolvedDomain}&sz=128`}
+        alt={firmName || ''}
+        loading="lazy"
         className="rounded-full object-contain bg-white shrink-0"
         style={{ width: size, height: size }}
-        onError={() => setImgError(true)}
+        onError={() => setImgError(resolvedDomain)}
       />
     )
   }
@@ -66,6 +74,8 @@ function FirmLogo({
     <div
       className={cn('rounded-full flex items-center justify-center text-[10px] font-bold shrink-0', getInitialColor(displayName))}
       style={{ width: size, height: size }}
+      role="img"
+      aria-label={displayName}
     >
       {initial}
     </div>
