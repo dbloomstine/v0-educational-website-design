@@ -36,7 +36,7 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
     .neq('title', '')
     .not('title', 'is', null)
     .gte('published_date', cutoff.split('T')[0])
-    .order('published_date', { ascending: false })
+    .order('updated_at', { ascending: false })
     .order('relevance_score', { ascending: false })
     .range(offset, offset + limit)
 

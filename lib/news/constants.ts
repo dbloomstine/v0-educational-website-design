@@ -66,8 +66,16 @@ export function formatCompactTime(date: string): string {
     const normalized = /^\d{4}-\d{2}-\d{2}$/.test(date) ? `${date}T12:00:00` : date
     const d = new Date(normalized)
 
-    // Same calendar day: "Today"
-    if (d.toDateString() === now.toDateString()) return 'Today'
+    const diffMs = now.getTime() - d.getTime()
+    const diffMin = Math.floor(diffMs / 60_000)
+    const diffHr = Math.floor(diffMs / 3_600_000)
+
+    // Same calendar day: show relative time
+    if (d.toDateString() === now.toDateString()) {
+      if (diffMin < 1) return 'Just now'
+      if (diffMin < 60) return `${diffMin}m ago`
+      return `${diffHr}h ago`
+    }
 
     // Yesterday
     const yesterday = new Date(now)
@@ -75,7 +83,6 @@ export function formatCompactTime(date: string): string {
     if (d.toDateString() === yesterday.toDateString()) return 'Yesterday'
 
     // Within 7 days: show day name
-    const diffMs = now.getTime() - d.getTime()
     const diffDay = Math.floor(diffMs / (1000 * 60 * 60 * 24))
     if (diffDay < 7) return d.toLocaleDateString('en-US', { weekday: 'long' })
 
