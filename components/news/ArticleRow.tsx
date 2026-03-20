@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, Info } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   EVENT_LABELS,
@@ -136,13 +136,10 @@ export function ArticleRow({ article }: ArticleRowProps) {
 
   return (
     <>
-      {/* Grid row: type | category | size | headline | date | source */}
+      {/* Grid row: type | category | size | headline | date | source | info */}
       <div
-        onMouseEnter={handleRowEnter}
-        onMouseMove={handleRowMove}
-        onMouseLeave={handleRowLeave}
         className={cn(
-          'grid items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[56px_140px_1fr_56px] lg:grid-cols-[56px_140px_72px_1fr_56px_150px]',
+          'group grid items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[56px_140px_1fr_56px_24px] lg:grid-cols-[56px_140px_72px_1fr_56px_150px_24px]',
           article.isHighSignal && 'shadow-[inset_3px_0_0_0_rgba(245,158,11,0.6)]'
         )}
       >
@@ -205,6 +202,16 @@ export function ArticleRow({ article }: ArticleRowProps) {
         <span className="hidden lg:block text-[12px] text-muted-foreground/60 truncate">
           {article.sourceName || ''}
         </span>
+
+        {/* Col 7: Info icon — hover trigger for detail card */}
+        <div
+          onMouseEnter={handleRowEnter}
+          onMouseMove={handleRowMove}
+          onMouseLeave={handleRowLeave}
+          className="flex items-center justify-center"
+        >
+          <Info className="h-3.5 w-3.5 text-muted-foreground/0 group-hover:text-muted-foreground/40 hover:!text-foreground transition-colors cursor-pointer" />
+        </div>
       </div>
 
       {/* Hover preview card — portaled, positioned near cursor */}
