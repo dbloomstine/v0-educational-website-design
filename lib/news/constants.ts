@@ -60,21 +60,27 @@ export function formatRelativeDate(date: string): string {
 export function formatCompactTime(date: string): string {
   try {
     const now = new Date()
-    // Date-only strings (YYYY-MM-DD) are parsed as UTC midnight, which shifts
-    // backward in local timezones west of UTC. Append T12:00:00 to keep the
-    // correct calendar day regardless of timezone.
-    const normalized = /^\d{4}-\d{2}-\d{2}$/.test(date) ? `${date}T12:00:00` : date
+    // Date-only strings (YYYY-MM-DD) have no time component — we can't show
+    // granular relative times like "9m ago" because we don't know the real time.
+    const isDateOnly = /^\d{4}-\d{2}-\d{2}$/.test(date)
+
+    // Append T12:00:00 to date-only strings to keep the correct calendar day
+    // regardless of timezone (UTC midnight shifts backward in western zones).
+    const normalized = isDateOnly ? `${date}T12:00:00` : date
     const d = new Date(normalized)
 
-    const diffMs = now.getTime() - d.getTime()
-    const diffMin = Math.floor(diffMs / 60_000)
-    const diffHr = Math.floor(diffMs / 3_600_000)
-
-    // Same calendar day: show relative time
+    // Same calendar day
     if (d.toDateString() === now.toDateString()) {
-      if (diffMin < 1) return 'Just now'
-      if (diffMin < 60) return `${diffMin}m ago`
-      return `${diffHr}h ago`
+      // Only show granular relative times when we have an actual timestamp
+      if (!isDateOnly) {
+        const diffMs = now.getTime() - d.getTime()
+        const diffMin = Math.floor(diffMs / 60_000)
+        const diffHr = Math.floor(diffMs / 3_600_000)
+        if (diffMin < 1) return 'Just now'
+        if (diffMin < 60) return `${diffMin}m ago`
+        return `${diffHr}h ago`
+      }
+      return 'Today'
     }
 
     // Yesterday
@@ -83,6 +89,7 @@ export function formatCompactTime(date: string): string {
     if (d.toDateString() === yesterday.toDateString()) return 'Yesterday'
 
     // Within 7 days: show day name
+    const diffMs = now.getTime() - d.getTime()
     const diffDay = Math.floor(diffMs / (1000 * 60 * 60 * 24))
     if (diffDay < 7) return d.toLocaleDateString('en-US', { weekday: 'long' })
 
