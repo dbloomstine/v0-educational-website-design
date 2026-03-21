@@ -101,7 +101,7 @@ const EVENT_TYPE_GROUPS = [
   },
 ] as const
 
-const PAGE_SIZE = 60
+const PAGE_SIZE = 100
 
 // Multi-select helpers for comma-separated filter strings
 function toggleFilter(current: string, value: string): string {
