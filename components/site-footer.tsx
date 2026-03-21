@@ -1,6 +1,5 @@
 import Link from "next/link"
 import { Logo } from "@/components/logo"
-import { ExternalLink } from "lucide-react"
 
 export function SiteFooter() {
   return (
@@ -93,12 +92,7 @@ export function SiteFooter() {
                   Contact
                 </Link>
               </li>
-              <li>
-                <a href="https://fundopshq-shop.myshopify.com/collections/all" className="text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1" target="_blank" rel="noopener noreferrer">
-                  Shop
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              </li>
+              {/* Shop — hidden for now */}
             </ul>
           </div>
 

@@ -315,16 +315,7 @@ export function SiteHeader() {
             About
           </Link>
 
-          {/* Shop Link */}
-          <a
-            href="https://fundopshq-shop.myshopify.com/collections/all"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex h-9 w-max items-center gap-1 justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-          >
-            Shop
-            <ExternalLink className="h-3 w-3" />
-          </a>
+          {/* Shop Link — hidden for now */}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -514,25 +505,7 @@ export function SiteHeader() {
               </Link>
             </div>
 
-            {/* Shop */}
-            <div className="pt-4 border-t border-border">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Shop
-              </h3>
-              <a
-                href="https://fundopshq-shop.myshopify.com/collections/all"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-              >
-                <span className="font-medium text-foreground flex items-center gap-1">
-                  FundOpsHQ Merch
-                  <ExternalLink className="h-3 w-3" />
-                </span>
-                <span className="block text-xs text-muted-foreground mt-0.5">Gear for fund operations professionals</span>
-              </a>
-            </div>
+            {/* Shop — hidden for now */}
 
           </div>
         </nav>
