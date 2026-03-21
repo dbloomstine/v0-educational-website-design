@@ -277,35 +277,86 @@ export function NewsFeed() {
   return (
     <div className="space-y-3">
       {/* ── Compact toolbar ──────────────────────────────────── */}
-      <div className="flex items-center gap-2">
-        {/* Search */}
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-          <input
-            type="text"
-            placeholder="Search fund news..."
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            className="w-full rounded-lg border border-border bg-muted py-1.5 pl-9 pr-8 text-xs text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
-          />
-          {searchInput && (
+      <div className="space-y-2">
+        {/* Row 1: Search (full width on mobile, flex-1 on desktop) */}
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search fund news..."
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              className="w-full rounded-lg border border-border bg-muted py-1.5 pl-9 pr-8 text-xs text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
+            />
+            {searchInput && (
+              <button
+                onClick={() => { setSearchInput(''); setQuery('') }}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+
+          {/* Date range — hidden on mobile, shown inline on desktop */}
+          <div className="hidden sm:flex items-center rounded-lg border border-border bg-muted p-0.5">
+            {DATE_RANGES.map((range) => (
+              <button
+                key={range.value}
+                onClick={() => setDateRange(range.value)}
+                className={cn(
+                  'rounded-md px-2 py-1 text-[11px] font-medium transition-colors',
+                  dateRange === range.value
+                    ? 'bg-foreground text-background'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {range.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Filters toggle */}
+          <button
+            onClick={() => setFiltersOpen(!filtersOpen)}
+            className={cn(
+              'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-medium transition-colors shrink-0',
+              filtersOpen || pillFilterCount > 0
+                ? 'bg-blue-900/50 text-blue-300 border-blue-700'
+                : 'bg-muted text-muted-foreground border-border hover:bg-accent'
+            )}
+          >
+            <SlidersHorizontal className="h-3 w-3" />
+            <span className="hidden sm:inline">Filters</span>
+            {pillFilterCount > 0 && (
+              <span className="rounded-full bg-blue-600 px-1.5 text-[9px] text-white">{pillFilterCount}</span>
+            )}
+          </button>
+
+          {/* Suggest / Feedback */}
+          <FeedbackButton />
+
+          {/* Clear */}
+          {activeFilterCount > 0 && (
             <button
-              onClick={() => { setSearchInput(''); setQuery('') }}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+              onClick={clearFilters}
+              className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors shrink-0"
             >
-              <X className="h-3.5 w-3.5" />
+              <X className="h-3 w-3" />
+              <span className="hidden sm:inline">Clear</span>
             </button>
           )}
         </div>
 
-        {/* Date range */}
-        <div className="flex items-center rounded-lg border border-border bg-muted p-0.5">
+        {/* Row 2: Date range on mobile only (below sm) */}
+        <div className="flex sm:hidden items-center rounded-lg border border-border bg-muted p-0.5 w-fit">
           {DATE_RANGES.map((range) => (
             <button
               key={range.value}
               onClick={() => setDateRange(range.value)}
               className={cn(
-                'rounded-md px-2 py-1 text-[11px] font-medium transition-colors',
+                'rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors',
                 dateRange === range.value
                   ? 'bg-foreground text-background'
                   : 'text-muted-foreground hover:text-foreground'
@@ -315,37 +366,6 @@ export function NewsFeed() {
             </button>
           ))}
         </div>
-
-        {/* Filters toggle */}
-        <button
-          onClick={() => setFiltersOpen(!filtersOpen)}
-          className={cn(
-            'inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-medium transition-colors',
-            filtersOpen || pillFilterCount > 0
-              ? 'bg-blue-900/50 text-blue-300 border-blue-700'
-              : 'bg-muted text-muted-foreground border-border hover:bg-accent'
-          )}
-        >
-          <SlidersHorizontal className="h-3 w-3" />
-          Filters
-          {pillFilterCount > 0 && (
-            <span className="rounded-full bg-blue-600 px-1.5 text-[9px] text-white">{pillFilterCount}</span>
-          )}
-        </button>
-
-        {/* Suggest / Feedback */}
-        <FeedbackButton />
-
-        {/* Clear */}
-        {activeFilterCount > 0 && (
-          <button
-            onClick={clearFilters}
-            className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <X className="h-3 w-3" />
-            Clear
-          </button>
-        )}
       </div>
 
       {/* ── Collapsible filter panel ─────────────────────────── */}
@@ -522,15 +542,15 @@ export function NewsFeed() {
         <>
           {/* Dense article list */}
           <div className="rounded-lg border border-border bg-card overflow-hidden">
-            {/* Column headers */}
-            <div className="grid items-center gap-x-2 px-4 py-1.5 border-b border-border bg-muted/50 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 grid-cols-[56px_140px_1fr_auto_56px] lg:grid-cols-[56px_140px_72px_1fr_auto_56px_150px]">
+            {/* Column headers — desktop only */}
+            <div className="hidden lg:grid items-center gap-x-2 px-4 py-1.5 border-b border-border bg-muted/50 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 grid-cols-[56px_140px_72px_1fr_auto_56px_150px]">
               <span>Type</span>
               <span>Category</span>
-              <span className="hidden lg:block">Size</span>
+              <span>Size</span>
               <span className="pl-7">Headline</span>
               <span />
               <span>Date</span>
-              <span className="hidden lg:block">Source</span>
+              <span>Source</span>
             </div>
             {articles.map((article) => (
               <ArticleRow key={article.id} article={article} />

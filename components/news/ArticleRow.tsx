@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { ExternalLink } from 'lucide-react'
+import { ExternalLink, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   EVENT_LABELS,
@@ -92,11 +92,15 @@ export function ArticleRow({ article }: ArticleRowProps) {
   const eventLabel = article.eventType ? EVENT_LABELS[article.eventType] : null
   const fundSize = formatFundSize(article.fundSizeUsd)
 
+  // Desktop hover card state
   const [visible, setVisible] = useState(false)
   const [coords, setCoords] = useState({ x: 0, y: 0 })
   const openTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const cardRef = useRef<HTMLDivElement>(null)
+
+  // Mobile expand state
+  const [mobileExpanded, setMobileExpanded] = useState(false)
 
   const clearTimers = useCallback(() => {
     if (openTimer.current) { clearTimeout(openTimer.current); openTimer.current = null }
@@ -146,10 +150,10 @@ export function ArticleRow({ article }: ArticleRowProps) {
 
   return (
     <>
-      {/* Grid row: type | category | size | headline | details | date | source */}
+      {/* ─── Desktop: Grid row (lg and up) ─── */}
       <div
         className={cn(
-          'group grid items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[56px_140px_1fr_auto_56px] lg:grid-cols-[56px_140px_72px_1fr_auto_56px_150px]',
+          'hidden lg:grid group items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[56px_140px_72px_1fr_auto_56px_150px]',
           article.isHighSignal && 'shadow-[inset_3px_0_0_0_rgba(245,158,11,0.6)]'
         )}
       >
@@ -185,8 +189,8 @@ export function ArticleRow({ article }: ArticleRowProps) {
           })}
         </div>
 
-        {/* Col 3: Fund size — lg only */}
-        <span className="hidden lg:block text-[11px] font-mono font-medium text-muted-foreground whitespace-nowrap">
+        {/* Col 3: Fund size */}
+        <span className="text-[11px] font-mono font-medium text-muted-foreground whitespace-nowrap">
           {fundSize || ''}
         </span>
 
@@ -220,13 +224,130 @@ export function ArticleRow({ article }: ArticleRowProps) {
           {article.publishedDate ? formatCompactTime(article.publishedDate) : ''}
         </span>
 
-        {/* Col 7: Source name — lg only, left-aligned */}
-        <span className="hidden lg:block text-[12px] text-muted-foreground/60 truncate">
+        {/* Col 7: Source name */}
+        <span className="text-[12px] text-muted-foreground/60 truncate">
           {article.sourceName || ''}
         </span>
       </div>
 
-      {/* Hover preview card — portaled, positioned near cursor */}
+      {/* ─── Mobile: Card layout (below lg) ─── */}
+      <div
+        className={cn(
+          'lg:hidden border-b border-border/40 transition-colors',
+          article.isHighSignal && 'shadow-[inset_3px_0_0_0_rgba(245,158,11,0.6)]'
+        )}
+      >
+        {/* Tappable main area */}
+        <button
+          type="button"
+          onClick={() => setMobileExpanded(!mobileExpanded)}
+          className="w-full text-left px-3 py-2.5 active:bg-accent/30 transition-colors"
+        >
+          {/* Row 1: Badges + Date */}
+          <div className="flex items-center gap-1.5 mb-1.5">
+            {eventLabel && (
+              <span
+                className={cn(
+                  'inline-flex rounded border px-1.5 py-0.5 text-[10px] font-semibold leading-none whitespace-nowrap',
+                  eventLabel.color
+                )}
+              >
+                {eventLabel.short}
+              </span>
+            )}
+            {article.fundCategories.slice(0, 2).map((cat) => {
+              const catInfo = CATEGORY_LABELS[cat]
+              return (
+                <span
+                  key={cat}
+                  className={cn(
+                    'inline-flex rounded px-1.5 py-0.5 text-[10px] font-semibold leading-none whitespace-nowrap',
+                    catInfo?.color || 'bg-muted text-muted-foreground'
+                  )}
+                >
+                  {catInfo?.label || cat}
+                </span>
+              )
+            })}
+            {fundSize && (
+              <span className="text-[10px] font-mono font-medium text-muted-foreground/60">
+                {fundSize}
+              </span>
+            )}
+            <span className="ml-auto text-[10px] text-muted-foreground/50 tabular-nums whitespace-nowrap">
+              {article.publishedDate ? formatCompactTime(article.publishedDate) : ''}
+            </span>
+            <ChevronDown className={cn('h-3 w-3 text-muted-foreground/40 shrink-0 transition-transform', mobileExpanded && 'rotate-180')} />
+          </div>
+
+          {/* Row 2: Logo + Firm + Headline */}
+          <div className="flex items-start gap-2 min-w-0">
+            <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} size={24} />
+            <div className="min-w-0 flex-1">
+              {article.firmName && (
+                <span className="text-[10px] font-medium text-muted-foreground/60 block leading-tight mb-0.5">
+                  {article.firmName}
+                </span>
+              )}
+              <span className={cn(
+                'text-[13px] font-medium text-foreground leading-snug',
+                mobileExpanded ? 'line-clamp-none' : 'line-clamp-2'
+              )}>
+                {decodeHtmlEntities(article.title)}
+              </span>
+            </div>
+          </div>
+        </button>
+
+        {/* Expanded detail panel */}
+        {mobileExpanded && (
+          <div className="px-3 pb-3 space-y-2.5 animate-in fade-in-0 slide-in-from-top-1 duration-150">
+            {/* Firm / Fund / Person details */}
+            {(article.firmName || article.fundName || article.personName) && (
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+                {article.fundName && (
+                  <span><span className="text-muted-foreground/50">Fund:</span> <span className="font-medium text-foreground/80">{article.fundName}</span></span>
+                )}
+                {article.personName && (
+                  <span><span className="text-muted-foreground/50">{article.personTitle || 'Person'}:</span> <span className="font-medium text-foreground/80">{article.personName}</span></span>
+                )}
+                {article.fundStrategy && (
+                  <span><span className="text-muted-foreground/50">Strategy:</span> <span className="font-medium text-foreground/80 capitalize">{article.fundStrategy}</span></span>
+                )}
+                {article.geography.length > 0 && (
+                  <span><span className="text-muted-foreground/50">Geo:</span> <span className="font-medium text-foreground/80">{article.geography.join(', ')}</span></span>
+                )}
+              </div>
+            )}
+
+            {/* TLDR */}
+            {article.tldr && (
+              <p className="text-[12px] text-muted-foreground leading-relaxed">
+                {article.tldr}
+              </p>
+            )}
+
+            {/* Source link + meta */}
+            <div className="flex items-center justify-between pt-1.5 border-t border-border/40">
+              <a
+                href={article.sourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-muted/40 px-3 py-1.5 text-[11px] font-semibold text-foreground/80 active:bg-accent transition-colors"
+              >
+                Read article
+                <ExternalLink className="h-3 w-3 shrink-0" />
+              </a>
+              <span className="text-[10px] text-muted-foreground/50">
+                {article.sourceName}{article.publishedDate ? ` · ${formatRelativeDate(article.publishedDate)}` : ''}
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ─── Desktop hover preview card — portaled ─── */}
       {visible && typeof document !== 'undefined' && createPortal(
         <div
           ref={cardRef}
