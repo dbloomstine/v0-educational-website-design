@@ -60,12 +60,6 @@ const MailIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
   </svg>
 )
 
-const ShoppingBagIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/>
-  </svg>
-)
-
 const NewspaperIcon = ({ className = "h-4 w-4" }: { className?: string }) => (
   <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
@@ -81,7 +75,7 @@ interface Channel {
   href: string
   icon: React.ReactNode
   iconBg: string
-  group: 'watch' | 'follow' | 'read' | 'shop'
+  group: 'watch' | 'follow' | 'read'
 }
 
 const ALL_CHANNELS: Channel[] = [
@@ -165,14 +159,6 @@ const ALL_CHANNELS: Channel[] = [
     iconBg: "bg-cyan-950/80 text-cyan-400",
     group: 'read',
   },
-  {
-    name: "FundOpsHQ Shop",
-    subtitle: "Merch & gear",
-    href: "https://fundopshq-shop.myshopify.com/collections/all",
-    icon: <ShoppingBagIcon className="h-5 w-5" />,
-    iconBg: "bg-emerald-950/80 text-emerald-400",
-    group: 'shop',
-  },
 ]
 
 // Compact inline set (for hero or footer use)
@@ -242,7 +228,6 @@ function SubscribeHub({ className }: { className?: string }) {
     { key: 'watch', label: 'Watch & Listen' },
     { key: 'follow', label: 'Follow' },
     { key: 'read', label: 'Newsletters' },
-    { key: 'shop', label: 'Shop' },
   ] as const
 
   return (
