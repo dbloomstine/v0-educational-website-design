@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { AnimateOnScroll } from "@/components/animate-on-scroll"
 import { BackToTop } from "@/components/back-to-top"
 import Image from "next/image"
-import { ArrowRight, ExternalLink, Newspaper, Headphones, Users, Info, Rss } from "lucide-react"
+import { ArrowRight, Newspaper, Headphones, Users, Info, Rss } from "lucide-react"
 import { fetchPlaylistVideos } from "@/lib/youtube"
 import { FeaturedEpisode } from "@/components/featured-episode"
 import { SubscribePlatforms } from "@/components/subscribe-platforms"
@@ -192,36 +192,24 @@ export default async function HomePage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {EXPLORE_LINKS.map((link, i) => {
                   const Icon = link.icon
-                  const isExternal = 'external' in link && link.external
-
-                  const content = (
-                    <div className="group flex items-center gap-3 rounded-lg border border-border/60 bg-card/40 px-3.5 py-3 transition-all duration-200 hover:bg-card/80 hover:border-foreground/15">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted/50 text-muted-foreground transition-colors group-hover:text-foreground">
-                        <Icon className="h-4 w-4" />
-                      </div>
-                      <div className="min-w-0">
-                        <div className="text-[13px] font-semibold text-foreground/90 leading-tight flex items-center gap-1">
-                          {link.name}
-                          {isExternal && <ExternalLink className="h-2.5 w-2.5 text-muted-foreground/50" />}
-                        </div>
-                        <div className="text-[11px] text-muted-foreground/50 mt-0.5 leading-tight">
-                          {link.description}
-                        </div>
-                      </div>
-                    </div>
-                  )
 
                   return (
                     <AnimateOnScroll key={link.name} delay={50 + i * 30}>
-                      {isExternal ? (
-                        <a href={link.href} target="_blank" rel="noopener noreferrer">
-                          {content}
-                        </a>
-                      ) : (
-                        <Link href={link.href}>
-                          {content}
-                        </Link>
-                      )}
+                      <Link href={link.href}>
+                        <div className="group flex items-center gap-3 rounded-lg border border-border/60 bg-card/40 px-3.5 py-3 transition-all duration-200 hover:bg-card/80 hover:border-foreground/15">
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted/50 text-muted-foreground transition-colors group-hover:text-foreground">
+                            <Icon className="h-4 w-4" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="text-[13px] font-semibold text-foreground/90 leading-tight">
+                              {link.name}
+                            </div>
+                            <div className="text-[11px] text-muted-foreground/50 mt-0.5 leading-tight">
+                              {link.description}
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
                     </AnimateOnScroll>
                   )
                 })}
