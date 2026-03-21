@@ -271,7 +271,8 @@ async function processFeed(
     }
 
     // Pre-filter obviously irrelevant content at ingest time to save classification costs
-    const classificationStatus = isIrrelevantAtIngest(article.title, article.sourceName)
+    // Pass both the article sourceName AND the feed name for wire service detection
+    const classificationStatus = isIrrelevantAtIngest(article.title, article.sourceName, feed.name)
       ? 'filtered'
       : 'pending';
 
@@ -464,6 +465,9 @@ const WIRE_SERVICE_KEYWORD_GATE = /\b(fund|capital|private equity|private credit
 const WIRE_SERVICE_SOURCES = new Set([
   'pr newswire financial',
   'pr newswire',
+  'businesswire pe/buyout',
+  'businesswire financial services',
+  'globenewswire financial services',
 ]);
 
 /**
@@ -479,7 +483,7 @@ const NON_ENGLISH_PATTERNS = [
   /\b(anuncia|presenta|inversión|resultados|adquisición|desarrollo|tecnología|compañía|sociedad|gestión|informe|estrategia|crecimiento|comunicado)\b/i,
 ];
 
-function isIrrelevantAtIngest(title: string, sourceName?: string): boolean {
+function isIrrelevantAtIngest(title: string, sourceName?: string, feedName?: string): boolean {
   // Non-English detection: >30% non-Latin characters
   // eslint-disable-next-line no-control-regex
   const nonLatin = title.replace(/[\x00-\x7F\u00C0-\u024F\u1E00-\u1EFF]/g, '').length;
@@ -490,7 +494,11 @@ function isIrrelevantAtIngest(title: string, sourceName?: string): boolean {
 
   // Wire service keyword gate: PR Newswire produces ~2,000 articles/week
   // but only ~2% are relevant. Require fund-related keywords to ingest.
-  if (sourceName && WIRE_SERVICE_SOURCES.has(sourceName.toLowerCase())) {
+  // Check both the article sourceName and the feed name for robust matching.
+  const isWireService =
+    (sourceName && WIRE_SERVICE_SOURCES.has(sourceName.toLowerCase())) ||
+    (feedName && WIRE_SERVICE_SOURCES.has(feedName.toLowerCase()));
+  if (isWireService) {
     if (!WIRE_SERVICE_KEYWORD_GATE.test(title)) return true;
   }
 
