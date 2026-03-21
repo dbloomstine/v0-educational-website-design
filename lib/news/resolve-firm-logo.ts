@@ -1,21 +1,23 @@
 /**
- * Resolve firm names to website domains using Clearbit Autocomplete API.
- * Free, no API key needed. Results are cached in-memory per run.
+ * Resolve firm names to website domains using curated map + Clearbit Autocomplete API.
+ * Checks the curated FIRM_DOMAIN_MAP first, then falls back to Clearbit.
  */
+
+import { getFirmDomain } from './firm-logos';
 
 const firmDomainCache = new Map<string, string | null>();
 
 /** Strip corporate suffixes that cause Clearbit lookups to fail */
 function normalizeFirmName(name: string): string {
   return name
-    .replace(/,?\s*(Inc\.?|LLC|Ltd\.?|L\.?P\.?|PLC|Corp\.?|Co\.?|S\.?A\.?|AG|GmbH|N\.?V\.?)$/i, '')
+    .replace(/,?\s*(Inc\.?|LLC|Ltd\.?|L\.?P\.?|PLC|Corp\.?|Co\.?|S\.?A\.?|AG|GmbH|N\.?V\.?|Group)$/i, '')
     .trim();
 }
 
 /**
- * Resolve a firm name to its website domain via Clearbit autocomplete.
+ * Resolve a firm name to its website domain.
+ * First checks the curated domain map, then falls back to Clearbit autocomplete.
  * Returns the domain (e.g. "carlyle.com") or null if not found.
- * Uses a 3-second timeout to avoid slowing down classification.
  */
 export async function resolveFirmDomain(firmName: string): Promise<string | null> {
   if (!firmName) return null;
@@ -23,7 +25,14 @@ export async function resolveFirmDomain(firmName: string): Promise<string | null
   const cached = firmDomainCache.get(firmName);
   if (cached !== undefined) return cached;
 
-  // Try the original name first, then the normalized version without suffixes
+  // Check curated domain map first (instant, no API call)
+  const curated = getFirmDomain(firmName) || getFirmDomain(normalizeFirmName(firmName));
+  if (curated) {
+    firmDomainCache.set(firmName, curated);
+    return curated;
+  }
+
+  // Fall back to Clearbit autocomplete
   const namesToTry = [firmName];
   const normalized = normalizeFirmName(firmName);
   if (normalized !== firmName) namesToTry.push(normalized);

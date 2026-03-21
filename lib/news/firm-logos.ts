@@ -124,6 +124,7 @@ export const FIRM_DOMAIN_MAP: Record<string, string> = {
   'brookfield': 'brookfield.com',
   'brookfield asset management': 'brookfield.com',
   'starwood capital': 'starwoodcapital.com',
+  'starwood capital group': 'starwoodcapital.com',
   'starwood': 'starwoodcapital.com',
   'gaw capital': 'gawcapital.com',
 
@@ -231,9 +232,19 @@ export const FIRM_DOMAIN_MAP: Record<string, string> = {
 
 /**
  * Look up the correct domain for a firm name.
+ * Tries exact match first, then strips common suffixes (Group, Capital, Partners, etc.).
  * Returns the curated domain if found, otherwise null.
  */
 export function getFirmDomain(firmName: string | null): string | null {
   if (!firmName) return null
-  return FIRM_DOMAIN_MAP[firmName.toLowerCase().trim()] ?? null
+  const key = firmName.toLowerCase().trim()
+  if (FIRM_DOMAIN_MAP[key]) return FIRM_DOMAIN_MAP[key]
+
+  // Try stripping trailing suffixes
+  const stripped = key
+    .replace(/,?\s*(inc\.?|llc|ltd\.?|l\.?p\.?|plc|corp\.?|co\.?|s\.?a\.?|ag|gmbh|n\.?v\.?|group|partners|management|advisors?)$/i, '')
+    .trim()
+  if (stripped !== key && FIRM_DOMAIN_MAP[stripped]) return FIRM_DOMAIN_MAP[stripped]
+
+  return null
 }
