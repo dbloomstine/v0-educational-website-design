@@ -1,6 +1,37 @@
 {
-  "generated_at": "2026-03-20T13:33:08.359086Z",
+  "generated_at": "2026-03-21T10:05:14.012635Z",
   "funds": [
+    {
+      "fund_name": "EU Cleantech Fund",
+      "firm": "European Commission",
+      "firm_slug": "european-commission",
+      "amount": "\u20ac30 billion",
+      "amount_usd_millions": 30000.0,
+      "category": "Infrastructure",
+      "location": "Brussels, Belgium",
+      "city": "Brussels",
+      "state": "",
+      "country": "Belgium",
+      "stage": "Launch",
+      "announcement_date": "2026-03-20",
+      "source_url": "https://www.esgtoday.com/eus-von-der-leyen-pledges-to-revise-carbon-pricing-system-introduce-e30-billion-cleantech-fund/?utm_source=rss&utm_medium=rss&utm_campaign=eus-von-der-leyen-pledges-to-revise-carbon-pricing-system-introduce-e30-billion-cleantech-fund",
+      "source_name": "ESG Today",
+      "description_notes": "supports clean technology and green infrastructure projects across the European Union as part of the EU's climate and sustainability commitments. Announced by European Commission President Ursula von der Leyen alongside a revised carbon pricing system to accelerate the continent's decarbonization efforts.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-03-21T10:01:19",
+      "articles": [
+        {
+          "title": "EU\u2019s von der Leyen Pledges to Revise Carbon Pricing System, Introduce \u20ac30 Billion Cleantech Fund",
+          "url": "https://www.esgtoday.com/eus-von-der-leyen-pledges-to-revise-carbon-pricing-system-introduce-e30-billion-cleantech-fund/?utm_source=rss&utm_medium=rss&utm_campaign=eus-von-der-leyen-pledges-to-revise-carbon-pricing-system-introduce-e30-billion-cleantech-fund",
+          "source_name": "ESG Today",
+          "source_domain": "esgtoday.com",
+          "published_date": "2026-03-20",
+          "summary": "European Commission President Ursula von der Leyen unveiled a series of commitments aimed at addressing [&#8230;]",
+          "feed_name": "ESG Today"
+        }
+      ]
+    },
     {
       "fund_name": "Jefferies Middle-Market CLO",
       "firm": "Jefferies",
@@ -47,7 +78,7 @@
       "announcement_date": "2026-03-20",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/audeo-ventures-eyes-65m-fund-ii-close-by-end-of-month.html",
       "source_name": "AltAssets",
-      "description_notes": "close $65M for early-stage venture fund, exceeding its $50M initial target. Audeo Ventures Fund II represents a 30% increase over the firm's inaugural fund, signaling strong LP confidence in the early-stage investment thesis.",
+      "description_notes": "raise $65M for its second early-stage venture fund, exceeding the initial $50M target by 30% and signaling strong LP demand for the firm's strategy. Audeo Ventures' Fund II closed above its hard cap, demonstrating investor confidence in the firm's early-stage investing approach, though specific sector focus and LP names were not disclosed.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-20T13:28:39",
@@ -109,7 +140,7 @@
       "announcement_date": "2026-03-20",
       "source_url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxOaDRuNFVKWWIxYWh6UHRvWmlqUndQRVBmTExNUkNtcW9rWEZOanAzRndmSTRWRmxEbGR0eFVXSlgxOUF6ajdUVWRZVjZMR0VNSndZbkJLelVNRUNFeW5Id1NraUE4SkRHZUEtZXpDY1RTblBIRThRYk9EWWdUdWZTYTZYWkwxY2FUVmRVWU03R2lKRVRjcXNFaVYxUEM5S04zZzV2eUdqNmpicmpNUzN0bmVRbDF2MmZkRkN2aGhVSGV1RWlQ?oc=5",
       "source_name": "Solarquarter",
-      "description_notes": "launch a $50M infrastructure fund targeting mid-market assets in emerging markets and developing economies. AIIM's debut vehicle focuses on essential infrastructure projects including energy, transport, and utilities, leveraging the firm's expertise in impact-oriented infrastructure investing. The fund represents AIIM's initial institutional offering in the dedicated infrastructure space.",
+      "description_notes": "launch a $50 million infrastructure fund focused on acquiring and operating essential assets in underserved markets. ATAF represents AIIM's entry into the infrastructure category, targeting opportunities that generate stable, long-term cash flows. The fund size and inaugural status suggest a focused strategy, likely emphasizing smaller-to-mid-market infrastructure assets with meaningful operational improvement potential.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-20T13:28:39",
@@ -402,7 +433,7 @@
       "announcement_date": "2026-03-19",
       "source_url": "https://www.pehub.com/bindley-capital-backed-guardian-prices-synthetic-secondary-offering/",
       "source_name": "PE Hub",
-      "description_notes": "launch a synthetic secondary fund backed by Bindley Capital, offering LP access to secondaries and GP-stakes through a structured product rather than traditional secondary acquisitions. The offering represents Guardian's entry into the synthetic secondaries market, a growing niche that packages secondary exposure without direct fund stakes.",
+      "description_notes": "launches a synthetic secondary fund backed by Bindley Capital, offering exposure to secondary LP stakes and GP-led continuation vehicles without direct secondaries portfolio acquisitions. the strategy targets investors seeking alternative liquidity mechanisms in the secondaries market, positioning Guardian as an emerging player in the structured secondaries space.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-20T13:28:39",
@@ -965,7 +996,7 @@
       "announcement_date": "2026-03-16",
       "source_url": "https://www.infrastructureinvestor.com/the-pipeline-data-centres-to-lower-electricity-prices-ecp-vi-reaches-3-7bn-eqt-wades-into-uk-water/",
       "source_name": "Infrastructure Investor",
-      "description_notes": "raise $3.7B for its sixth infrastructure fund at interim close, targeting core and core-plus assets across sectors including energy transition, transportation, and digital infrastructure. ECP VI represents a significant growth from prior vintages, reflecting strong LP demand for stabilized infrastructure assets with long-duration cash flows.",
+      "description_notes": "close ECP VI, a $3.7B infrastructure fund at interim close, targeting mid-market and large-scale infrastructure assets across energy, utilities, transport, and digital sectors. The fund represents ECP's sixth vintage and continues the firm's institutional-grade infrastructure investment strategy, though specific LP anchor commitments and size comparison to ECP V are not detailed in available materials.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-18T18:03:39",
@@ -1089,7 +1120,7 @@
       "announcement_date": "2026-03-16",
       "source_url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxNTnBGQ2pPVjd4by1tRlREcmc4UW9kRzBZUGVhc1JpY1drMEFjOE5fWVNIUlloSzNtRkRIOXNYZ2dXWWxaNldpX01JSGU2TWxSaUo5VzRac1FNNW1BNG1nUTU2Mm1fN1o3anhFdnhKLVN4UzlWUlhZYWxzRV9UMl9aYzZxZ1JUblBHMGt5aVpUeFNtQ0JGemZIbm5FNnd2OXRYYWZzS0hMcmNMTWdROGJ2VE5MR0pCSmF1aGY4LXZNY3JLWGtJcHU3S0dLb2h3VlRHdVU0b2RPb1FyVU1CbnhWNVBqNlg?oc=5",
       "source_name": "Business Wire",
-      "description_notes": "closes first fund focused on early-stage venture investments in Latin America and the Caribbean, targeting seed to Series A companies in technology and digital infrastructure sectors. The fund marks VIDA's entry into dedicated venture capital deployment across underserved markets in the region, positioning itself to capture growth opportunities in emerging tech ecosystems with limited institutional capital access.",
+      "description_notes": "close a debut venture fund focused on early-stage investments in Latin America and the Caribbean, targeting founders building companies in underserved markets across the region. VIDA's first fund reflects growing institutional appetite for LatAm tech investing, though the fund size remains undisclosed at final close. The inaugural vehicle positions VIDA to compete with established regional VCs while capturing deal flow in a market historically undersupplied with dedicated venture capital.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-18T18:03:39",
@@ -1293,7 +1324,7 @@
       "announcement_date": "2026-03-13",
       "source_url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOdDhxeF9Wb3BGSHJxaUNTOUdVMGZRdmdDNlFRaGJwN1dlMXdZcU11VXhLZWk0bUZwOTNrSFBnRzdrdmhUbUZpYWdZc1phZHRnVFBUVkJvYmtPWWNURzdHc0JCYTA3T2x3cWU3el9SMlFNQU9nOUw0bWJPQlBhM2JWRjRPS1VQU0M5MzMxeld0eVNZalZZM2RBQWpORHRDcjVtWTZjVkQ1LV94VThSZGotX9IBtgFBVV95cUxOREdCUmhuOVJ0ejFYWDYzR0YzQmVPajVLTkRrckdIVFZOM1pXZzZROVJVR3NyZUZyLTVpbDhLdUloNno1QlpERFNCWmg5ckMtY1JadkVDTzF5ZlFKODZGbkNOVEpPOXJRRUNoWU5Mc1FvVHRXZUFRVVR6dEdNRWlITnZRZHh3SlltVDBvQjVwcl9ZZ280TTJuaTZaanNrYk5aODNFOTJWTXV4VzZlRWVTYkZlSGYtQQ?oc=5",
       "source_name": "Livemint",
-      "description_notes": "closes $100 million for its third vintage, targeting private equity investments across India and Oman with backing from State General Reserve Fund of Oman and Indian institutional investors. The fund maintains its bilateral investment mandate focusing on mid-market opportunities in consumer, healthcare, and financial services sectors. OIJIF III represents continued confidence in the Oman-India investment corridor, building on prior vintages' track records.",
+      "description_notes": "close a $100 million third fund targeting private equity investments across Oman and India, marking continued expansion of the bilateral investment partnership between the two nations. The fund focuses on mid-market opportunities in both countries, leveraging the strategic relationship between Omani and Indian institutional investors and development entities. OIJIF III represents growth from prior vintages, building on the established track record of the joint investment vehicle in cross-border emerging market deals.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-18T18:03:39",
@@ -1623,6 +1654,15 @@
       "date_added": "2026-03-13T13:32:01",
       "articles": [
         {
+          "title": "$48 Million First Close for Aqua-Spark Africa Aquaculture Fund - nextbillion.net",
+          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxPUkxBUWJrdTduNnFuc0xlQUNDOTkxck1DMXdvdHJfUElySDZ5MGdqaFJhVlphLUFNVWtzT2M3V1UtSGNHd2J0YWE5UHVyQ05feDRaTVBybVVZYmlfa2V1STVJeHdRY012MzMzeFpOZm1kVHp0TnQ1NTk5dzdrM1NzLUJBNVBiQWx6eTlxV09BLXVYOXdsMFE?oc=5",
+          "source_name": "nextbillion.net",
+          "source_domain": "nextbillion.net",
+          "published_date": "2026-03-20",
+          "summary": "$48 Million First Close for Aqua-Spark Africa Aquaculture Fund&nbsp;&nbsp;nextbillion.net",
+          "feed_name": "search:First/final close"
+        },
+        {
           "title": "Aqua-Spark reaches \u20ac42.3m first close on African aquaculture fund \u2014 article includes a paywall - Impact Investor",
           "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxQM3NzM0xNZ1ZtSzVzcVRjUS1OdzAyVllFMDBjSFpvbVJoTGxFY0RUY19OcVlVN3lCNXN5QWpjRkk4ZVNyWmRpbUU5SzRxckJKWGdQbUlBamRMSXk2d2hZbG41Zi1VaVRnTzRjbGhmUFNjVUs1U19HdkwxdUFsOTc0ZGd1RldOSnowdVRnSFBHWmRwU2pLdjFpMWxR?oc=5",
           "source_name": "Impact Investor",
@@ -1737,7 +1777,7 @@
       "announcement_date": "2026-03-12",
       "source_url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQNGhuSGlSa3hKcjVqWTZKVTRkZE1mUXU5UlZtdlJDNXlLcEp6YU1rX3ljNDdEdWU5bXk4dHhsVlpmbkJJTUI1TkRTVVVVNjN3QnByM1VGUmVXS0g4N05Xc0xpbEFyQTZVeEF3aWNrU3h1c0R5NG9fRGwwLTFfMlRoRGZEdmF4RkFhdDJnUkNpN1FTdTVFeUs0?oc=5",
       "source_name": "Yourstory",
-      "description_notes": "close first tranche of Green Frontier Capital's India-focused venture fund, targeting early to growth-stage companies in the South Asian market. The firm leverages deep networks across India's startup ecosystem to back entrepreneurs in sectors including fintech, climate tech, and enterprise software. This inaugural fund marks Green Frontier Capital's dedicated vehicle for Indian investments following successful follow-on participation in regional deals.",
+      "description_notes": "closes first tranche of an undisclosed venture fund targeting early-stage climate tech and sustainability startups across India, marking the firm's debut India-focused vehicle as it expands beyond its core markets. the fund aims to back founders building solutions for renewable energy, green agriculture, and circular economy models in South Asia's fastest-growing startup ecosystem. green frontier capital is betting on india's regulatory tailwinds and rising climate finance flows to drive returns in a market where sustainability-focused startups have historically struggled to access early-stage capital.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-13T13:32:01",
@@ -3021,7 +3061,7 @@
       "announcement_date": "2026-03-09",
       "source_url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxNQ3JoZ3dFY04yZWJIRHdoZURwSUhUU05Pd05LWDJ2QWJGSmJnRWFINGZsVHRvQjRCeGFpTUQ2d1B2MDEydnhfQThndXlNMVJ0eWJTSS1ES1ZLb08tTFYyU2JkYzZXam5kcjlhUmpvaGNoOWhQS19lZ3JwTnNablZqS2dBZG55N1JrMWYwYVN1OA?oc=5",
       "source_name": "BetaKit",
-      "description_notes": "close $50M second venture fund targeting early-stage startups in underserved markets with a focus on founder diversity and operational support. Staircase Ventures II represents growth from the firm's inaugural fund, doubling down on its thesis of backing overlooked founders through hands-on mentorship and community-driven resources. The fund's final close signals strong LP confidence in the firm's differentiated model of pairing capital with practical business-building infrastructure.",
+      "description_notes": "close a $50M second fund focused on early-stage venture investments, building on the momentum of its inaugural fund. Staircase Ventures targets seed and Series A companies, typically in enterprise software and B2B verticals, with a strategy emphasizing founder-friendly terms and hands-on operational support. The fund's growth to $50M from its predecessor signals strong LP confidence and positions it to increase check sizes while maintaining its core thesis around underserved founder segments.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-11T13:05:41",
@@ -3243,7 +3283,7 @@
       "announcement_date": "2026-03-06",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/ex-nfl-players-terrence-c-murphy-sr-reggie-bush-eye-150m-for-debut-sports-fund.html",
       "source_name": "AltAssets",
-      "description_notes": "raise $150m for a debut sports-focused private equity fund targeting controlling stakes in emerging leagues and related sports ecosystem assets. Co-founded by ex-NFL wide receiver Terrence C. Murphy Sr. and former NFL running back Reggie Bush, the fund represents a first-time entry into sports PE by the two former players, leveraging their industry credibility to pursue a sector largely underexplored by traditional buyout firms.",
+      "description_notes": "raise $150M for a debut sports-focused private equity fund targeting controlling stakes in emerging leagues and related sports ecosystem assets. The fund is co-founded by former NFL wide receiver Terrence C. Murphy Sr. and ex-NFL running back Reggie Bush, marking an athlete-led entry into sports infrastructure investing. This inaugural vehicle leverages the founders' NFL pedigree and industry networks to identify consolidation opportunities in a fragmented sports marketplace.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-08T10:01:35",
@@ -4291,7 +4331,7 @@
       "announcement_date": "2026-03-03",
       "source_url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxPSEwyeGNNTUFlcGRCN2VKWU02Wm55eUo5U1hZSG1SemJBZnY2WS1mcjZTZG1FRGJRUUdpTURGOUp6VnVaQ2IwbldWZU4tNnhjWW9HV2lFVkRpRDBybFVtOG9MOG9ZZERwZmkwc0loVlozdWc4Z25GSXg2YUt6b2Rzdi1tM25ITzZSS0dsZEZJZW5fek0?oc=5",
       "source_name": "Citywire",
-      "description_notes": "launch an evergreen secondaries fund designed to provide continuous capital for buying LP stakes and portfolio company secondary positions across mid-market funds. the structure targets institutional allocators seeking liquidity and diversification without vintage-year constraints, competing against closed-end secondaries vehicles by offering perpetual deployment flexibility. Altaroc enters a crowded secondaries market where evergreen structures have gained traction among mega-managers like Blackstone and Carlyle.",
+      "description_notes": "launch an evergreen secondaries fund targeting GP-led secondaries and continuation vehicles in the mid-market and lower mid-market segments. Altaroc, a specialist in secondary investments, is expanding its product offerings beyond traditional fund vintages with this perpetual-life vehicle designed to provide LPs with ongoing exposure to secondary opportunities without fixed commitment periods. The evergreen structure allows for continuous deployment and recycling of capital in a market increasingly dominated by sponsor-led restructurings and continuation funds.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-03T11:20:53",
@@ -4963,6 +5003,15 @@
       "covered_date": null,
       "date_added": "2026-02-26T13:57:09",
       "articles": [
+        {
+          "title": "France\u2019s InfraVia preps \u20ac8bn warchest for digital infra - TelcoTitans.com",
+          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxOQXdxanU1UDJrbElEbHI2VmVhZWY1THlLalVvUXBJYkdSQURlNlpWRk0tNS1zekJIb1dTQlFQYmo4b3R5WVMxSHdMaEstb203cTdjajduaWktT3FfUkNyUS1zcEpudmt5aGJGNkFlcmtZb0tqN0hZaUYtZElLdnJ0ZXdVc2ItNGZUSnc3WmpTbUV4UzZSS0w2Um1NcmVyVm1yMkdwTVIxWlNtdw?oc=5",
+          "source_name": "TelcoTitans.com",
+          "source_domain": "telcotitans.com",
+          "published_date": "2026-03-20",
+          "summary": "France\u2019s InfraVia preps \u20ac8bn warchest for digital infra&nbsp;&nbsp;TelcoTitans.com",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
+        },
         {
           "title": "InfraVia continues powerful fund size increases with \u20ac8bn flagship Europe vehicle",
           "url": "https://www.altassets.net/private-equity-news/by-region/europe-by-region/western-europe-europe-by-region/france-western-europe-europe-by-region/100207503.html",
@@ -6588,6 +6637,15 @@
           "published_date": "2026-02-20",
           "summary": "",
           "feed_name": "AltAssets"
+        },
+        {
+          "title": "Frist Cressey Ventures Closes Oversubscribed $425 Million Fund IV To Advance Tech-Enabled Care Delivery - Pulse 2.0",
+          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNSDM0TTZHamcxNWdsb3plZnpUUDZhNFNDejhiSFYwYU0xLTFTcFE3V3doeGNkVjBndGp1SkpGMlZoeFp5a3FMdVlsdkVaal9VZzNMZ2c2VTJqdzZoU20yVENGWm02WUpudnFyOEJZcENFZzVwbjdOMW1aVlQ0VDhLaWVNSTlfTDBfVk5kbkYtRkFROU56ODhUQ3Q4YmJjbXhJNWhheU53Sm5jWk9rdmFQWWN1Q3M0Ql9LTkNqdVlNd9IBxAFBVV95cUxPdklpRUFnVVpfVGw3ZXN6bWR4NC1uTWViVTYzWFFWUkFKaTFwQXh5bWw1SV8wY2gyYzJ4TFVDMXctVWRUbHpvbUd6UDUxdGw5eTZWN3NNM1JSNkp4b0x5VjFDZ0p4cTltVjN4UXBQTGtkcUFFek1Sc2hqa0FPdGZaeEZDc1FTcjFIVF94S0haOUVOckZEMk5VVzRUQnZqSDhQblJXQkZVMjZVb0JxS0ZyYmtNZm81TDhtVWRvbzh0YUx6TzFX?oc=5",
+          "source_name": "Pulse 2.0",
+          "source_domain": "pulse2.com",
+          "published_date": "2026-02-19",
+          "summary": "Frist Cressey Ventures Closes Oversubscribed $425 Million Fund IV To Advance Tech-Enabled Care Delivery&nbsp;&nbsp;Pulse 2.0",
+          "feed_name": "search:Oversubscribed funds"
         },
         {
           "title": "Frist Cressey Ventures Announces Oversubscribed $425M Fund IV to Reshape Care Delivery - Morningstar",
@@ -14717,7 +14775,7 @@
       "announcement_date": "2026-01-16",
       "source_url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxObDFTSmJaRU1KdHZZR1kya1ZjZURFbGtZekQyY0ZzNTlQMENMREsxMWxLU2FrNmF0d0FuM0g2Q2lSNktXMEVxRXY5OHJiVTZ3eEFMOVVfMjhBZi13R09LanBrUUg0X0ItcU55ZS14N2JlanJLTVl0amVMUUxkR0NfSUQ4dHFGRFE3QkZCMDd5VEZnZU5IRk95NURIWHBXbVpUeHVGR1BiR1NoR2lVY0k4dGkxWGk?oc=5",
       "source_name": "Business Green",
-      "description_notes": "closes $25.9M to invest in early-stage companies developing biodiversity monitoring, conservation technology, and nature-based solutions, positioning itself in the underserved intersection of climate tech and biological science. The fund targets founders building tools for ecosystem assessment, species tracking, and habitat restoration across both developed and emerging markets. Superorganism's debut vehicle reflects growing LP appetite for climate-adjacent strategies with measurable environmental outcomes alongside financial returns.",
+      "description_notes": "deploy $25.9M to support early-stage companies focused on biodiversity conservation, ecosystem restoration, and nature-based solutions to environmental challenges. The fund targets entrepreneurs developing technology, business models, and services that measurably protect or restore biodiversity across sectors including agriculture, marine conservation, and land management. Superorganism positions itself as a specialized venture player in the emerging climate-tech and nature-tech ecosystem, filling a niche between traditional VC and impact-focused investors.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-02-08T01:42:03",
@@ -16298,10 +16356,10 @@
       "amount": "\u20ac500M",
       "amount_usd_millions": 500.0,
       "category": "Real Estate",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "London, UK",
+      "city": "London",
       "state": "",
-      "country": "",
+      "country": "UK",
       "stage": "Launch",
       "announcement_date": "2026-01-12",
       "source_url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxPX2lzY2FMQ0xmWmRxTmI4Y0J3eFpkOTc0TEFkWFFnZnhBeEtfVFZvTXlTLU84RXVvQ3VORUhfV0YxdHVPb2UzdUVTZWRWRGEzdk9FdTg2TWpPVjhNY2xmNXp5LVlKSmJ2SmcxbFR5Y0c0ajg0b2Vjd216RUFLOFdvY19memNJMGlVRFlYOU1MQmpnYlBkNmZ2MzNaS2Y2M3NLc2NmM2MwV01TXzlNR3ZYdlJrS2RBUDlGeFVXTXpMWE1Zem51YkFCV21aRzdvdUxEc1Y2T0xoNA?oc=5",
@@ -19690,7 +19748,7 @@
       "announcement_date": "2025-10-02",
       "source_url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOa2lvVFhncmV1WElTcVNsMWY1M210OUJSQnlKMzRXUnZtS0FmYmh2c3hibi1mQnJVQVpldnNBblFweUR5S3pJSlU5MENzRDc4eFFOTjg0dzh2YUZzNWs2d0xoc29mdmNPcF9iWTlTeDJEM24tbEtDRm9iUU80ak9VMFlGV3NRYUhpWjZzbTlRNjNNNUZKeDlWR2p3cGpuek5OX2VXXzVUWUZlYmw3c1BiOWJYUQ?oc=5",
       "source_name": "The Quantum Insider",
-      "description_notes": "close \u20ac300M first close for quantum technology-focused venture fund targeting early-stage and growth companies developing quantum computing hardware, software, and applications across Europe and North America. 55 North's debut quantum-dedicated vehicle reflects growing LP appetite for deep-tech investing in the quantum sector, positioning it to lead rounds in a space historically dominated by corporate venture arms and specialized physics-focused funds. The fund's first close suggests strong anchor investor backing in a nascent but increasingly capital-rich segment.",
+      "description_notes": "close \u20ac300M first close for quantum technology-focused venture fund targeting early-stage and growth companies in the quantum computing, quantum software, and quantum sensing sectors across Europe and North America. 55 North is a newly established firm dedicated to quantum technology investments, positioning itself as a specialist in an emerging deep-tech category with significant institutional LP interest. the fund's initial close reflects growing appetite for dedicated quantum venture vehicles as the sector matures beyond university spinouts toward commercial applications.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-02-08T01:55:38",
@@ -19840,6 +19898,17 @@
       ],
       "city": "Washington",
       "country": "US"
+    },
+    {
+      "firm": "European Commission",
+      "firm_slug": "european-commission",
+      "fund_count": 1,
+      "total_aum_millions": 30000.0,
+      "categories": [
+        "Infrastructure"
+      ],
+      "city": "Brussels",
+      "country": "Belgium"
     },
     {
       "firm": "Clayton Dubilier & Rice (CD&R)",
@@ -21697,8 +21766,8 @@
       "categories": [
         "Real Estate"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "London",
+      "country": "UK"
     },
     {
       "firm": "Greykite and Arax",
@@ -25201,8 +25270,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-03-20T08:58:27.658778",
-      "last_success": "2026-03-20T08:58:27.658877",
+      "last_fetch": "2026-03-21T06:00:28.406073",
+      "last_success": "2026-03-21T06:00:28.406080",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -25211,8 +25280,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-03-20T08:32:57.375874",
-      "last_success": "2026-03-20T08:32:57.375878",
+      "last_fetch": "2026-03-21T06:00:26.139472",
+      "last_success": "2026-03-21T06:00:26.139478",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -25251,8 +25320,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-03-20T08:58:32.861071",
-      "last_success": "2026-03-20T08:58:32.861085",
+      "last_fetch": "2026-03-21T06:00:33.709630",
+      "last_success": "2026-03-21T06:00:33.709636",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -25261,8 +25330,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-03-20T06:20:22.980375",
-      "last_success": "2026-03-20T06:20:22.980391",
+      "last_fetch": "2026-03-21T06:00:09.451361",
+      "last_success": "2026-03-21T06:00:09.451364",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -25271,8 +25340,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-03-20T06:10:01.495111",
-      "last_success": "2026-03-20T06:10:01.495118",
+      "last_fetch": "2026-03-21T06:00:06.895776",
+      "last_success": "2026-03-21T06:00:06.895786",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -25281,8 +25350,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-03-20T08:32:55.662645",
-      "last_success": "2026-03-20T08:32:55.662653",
+      "last_fetch": "2026-03-21T06:00:24.502125",
+      "last_success": "2026-03-21T06:00:24.502135",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -25291,8 +25360,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-03-20T07:27:34.001111",
-      "last_success": "2026-03-20T07:27:34.001127",
+      "last_fetch": "2026-03-21T06:00:12.104408",
+      "last_success": "2026-03-21T06:00:12.104418",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -25301,8 +25370,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-03-20T08:58:30.321593",
-      "last_success": "2026-03-20T08:58:30.321696",
+      "last_fetch": "2026-03-21T06:00:31.339436",
+      "last_success": "2026-03-21T06:00:31.339441",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -25311,8 +25380,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-03-20T08:00:11.224939",
-      "last_success": "2026-03-20T08:00:11.224960",
+      "last_fetch": "2026-03-21T06:00:14.869388",
+      "last_success": "2026-03-21T06:00:14.869398",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -25321,8 +25390,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-03-20T06:09:59.517199",
-      "last_success": "2026-03-20T06:09:59.517240",
+      "last_fetch": "2026-03-21T06:00:05.160792",
+      "last_success": "2026-03-21T06:00:05.160794",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -25331,8 +25400,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-03-20T08:17:01.733195",
-      "last_success": "2026-03-20T08:17:01.733242",
+      "last_fetch": "2026-03-21T06:00:22.189322",
+      "last_success": "2026-03-21T06:00:22.189330",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -25341,8 +25410,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-03-20T08:00:14.682803",
-      "last_success": "2026-03-20T08:00:14.682817",
+      "last_fetch": "2026-03-21T06:00:19.581037",
+      "last_success": "2026-03-21T06:00:19.581049",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -25351,8 +25420,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-03-20T06:10:02.663998",
-      "last_success": "2026-03-20T06:10:02.664003",
+      "last_fetch": "2026-03-21T06:00:08.058268",
+      "last_success": "2026-03-21T06:00:08.058274",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -25360,21 +25429,21 @@
     }
   ],
   "stats": {
-    "total_funds": 540,
+    "total_funds": 541,
     "total_covered": 52,
-    "total_uncovered": 488,
-    "total_aum_millions": 4968574.7,
+    "total_uncovered": 489,
+    "total_aum_millions": 4998574.7,
     "by_category": {
+      "Infrastructure": 73,
       "Credit Funds": 112,
       "Venture Capital": 135,
-      "Infrastructure": 72,
       "Real Estate": 58,
       "Secondaries & GP-Stakes": 36,
       "Private Equity": 126,
       "N/A": 1
     },
     "by_stage": {
-      "Launch": 205,
+      "Launch": 206,
       "Final Close": 148,
       "First Close": 98,
       "Other": 80,
