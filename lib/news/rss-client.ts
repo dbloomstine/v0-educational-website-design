@@ -103,12 +103,31 @@ function rssItemToArticle(
   item: Record<string, unknown>,
   sourceName: string
 ): RssArticle {
+  // Google News RSS includes a <source> element with the actual publisher name.
+  // Use it instead of the feed name (e.g., "Bloomberg.com" instead of "GNews: Private Credit").
+  let resolvedSource = sourceName;
+  const sourceEl = item.source;
+  if (sourceEl) {
+    if (typeof sourceEl === 'string') {
+      resolvedSource = sourceEl;
+    } else if (typeof sourceEl === 'object' && sourceEl !== null) {
+      const src = sourceEl as Record<string, unknown>;
+      resolvedSource = String(src['#text'] ?? src['@_url'] ?? sourceName);
+    }
+  }
+
+  let title = stripHtml(String(item.title ?? ''));
+  // Google News titles often end with " - Publisher". Strip it when we know the source.
+  if (sourceEl && resolvedSource !== sourceName) {
+    title = title.replace(/\s*[-–—]\s*[^-–—]+$/, '').trim() || title;
+  }
+
   return {
-    title: stripHtml(String(item.title ?? '')),
+    title,
     link: String(item.link ?? ''),
     description: stripHtml(String(item.description ?? '')),
     pubDate: parseDate(item.pubDate),
-    sourceName,
+    sourceName: resolvedSource,
   };
 }
 
