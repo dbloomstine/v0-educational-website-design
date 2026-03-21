@@ -5,7 +5,7 @@ import { SiteFooter } from "@/components/site-footer"
 import { AnimateOnScroll } from "@/components/animate-on-scroll"
 import { BackToTop } from "@/components/back-to-top"
 import Image from "next/image"
-import { ArrowRight, ExternalLink, Newspaper, Headphones, ShoppingBag, Users, Info, Rss } from "lucide-react"
+import { ArrowRight, ExternalLink, Newspaper, Headphones, Users, Info, Rss } from "lucide-react"
 import { fetchPlaylistVideos } from "@/lib/youtube"
 import { FeaturedEpisode } from "@/components/featured-episode"
 import { SubscribePlatforms } from "@/components/subscribe-platforms"
@@ -79,7 +79,6 @@ const EXPLORE_LINKS = [
   { name: 'News Feed', href: '/news', icon: Rss, description: 'Fund industry news' },
   { name: 'Newsletters', href: '/newsletter', icon: Newspaper, description: 'Subscribe to updates' },
   { name: 'About', href: '/about', icon: Info, description: 'The FundOpsHQ story' },
-  { name: 'Shop', href: 'https://fundopshq-shop.myshopify.com/collections/all', icon: ShoppingBag, description: 'Merch & gear', external: true },
 ] as const
 
 export default async function HomePage() {
