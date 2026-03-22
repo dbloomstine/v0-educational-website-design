@@ -7,6 +7,7 @@
 
 import type { ArticleGroup } from './query-articles'
 import { getEventTypeLabel, formatFundSize } from './query-articles'
+import { getFirmDomain } from '@/lib/news/firm-logos'
 
 interface TemplateParams {
   introText: string
@@ -47,23 +48,40 @@ function formatDate(dateStr: string): string {
   })
 }
 
+function renderFirmLogo(article: ArticleGroup['articles'][0]): string {
+  // Use curated domain map first, then fall back to pipeline domain, then letter initial
+  const resolvedDomain = getFirmDomain(article.firmName) ?? article.firmDomain
+  if (resolvedDomain) {
+    const initial = (article.firmName ?? '?')[0].toUpperCase()
+    // Use Google Favicons API with a letter-initial fallback via alt text
+    return `<img src="https://www.google.com/s2/favicons?domain=${escapeHtml(resolvedDomain)}&sz=128" alt="${escapeHtml(initial)}" width="20" height="20" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;background:#334155;" />`
+  }
+  // No domain — show letter initial in a circle
+  const initial = (article.firmName ?? '?')[0].toUpperCase()
+  return `<span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:#334155;color:#94a3b8;font-size:11px;font-weight:600;line-height:20px;text-align:center;vertical-align:middle;">${escapeHtml(initial)}</span>`
+}
+
 function renderArticle(article: ArticleGroup['articles'][0]): string {
   const badge = EVENT_BADGE_COLORS[article.eventType ?? ''] ?? { bg: '#374151', text: '#d1d5db' }
   const label = getEventTypeLabel(article.eventType)
   const size = formatFundSize(article.fundSizeUsdMillions)
-  const firm = article.firmName ? `<span style="color:#94a3b8;font-size:12px;">${escapeHtml(article.firmName)}</span> ` : ''
+  const logo = renderFirmLogo(article)
+  const firmLabel = article.firmName ? `<span style="color:#94a3b8;font-size:12px;">${escapeHtml(article.firmName)}</span> ` : ''
 
   return `
     <tr>
       <td style="padding:10px 0;border-bottom:1px solid #2d3748;">
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
           <tr>
-            <td style="vertical-align:top;padding-right:10px;width:70px;">
+            <td style="vertical-align:top;padding-right:8px;width:60px;">
               ${label ? `<span style="display:inline-block;background:${badge.bg};color:${badge.text};font-size:11px;font-weight:600;padding:2px 6px;border-radius:3px;white-space:nowrap;">${escapeHtml(label)}</span>` : ''}
+            </td>
+            <td style="vertical-align:top;padding-right:8px;width:24px;">
+              ${logo}
             </td>
             <td style="vertical-align:top;">
               <div>
-                ${firm}<a href="${escapeHtml(article.sourceUrl)}" style="color:#e2e8f0;text-decoration:none;font-size:14px;font-weight:500;" target="_blank">${escapeHtml(article.title)}</a>${size ? ` <span style="color:#94a3b8;font-size:12px;">(${escapeHtml(size)})</span>` : ''}
+                ${firmLabel}<a href="${escapeHtml(article.sourceUrl)}" style="color:#e2e8f0;text-decoration:none;font-size:14px;font-weight:500;" target="_blank">${escapeHtml(article.title)}</a>${size ? ` <span style="color:#94a3b8;font-size:12px;">(${escapeHtml(size)})</span>` : ''}
               </div>
               ${article.tldr ? `<div style="color:#94a3b8;font-size:12px;margin-top:3px;line-height:1.4;">${escapeHtml(article.tldr)}</div>` : ''}
               <div style="color:#64748b;font-size:11px;margin-top:3px;">${escapeHtml(article.sourceName ?? '')}</div>
@@ -133,18 +151,6 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                   </td>
                 </tr>
               </table>
-            </td>
-          </tr>
-
-          <!-- Intro -->
-          <tr>
-            <td style="padding:20px 24px;background-color:#1e293b;border-bottom:1px solid #2d3748;">
-              <p style="margin:0;color:#cbd5e1;font-size:15px;line-height:1.6;">
-                ${escapeHtml(introText)}
-              </p>
-              <p style="margin:12px 0 0;color:#64748b;font-size:12px;">
-                ${totalArticles} stories across ${groups.length} categories
-              </p>
             </td>
           </tr>
 

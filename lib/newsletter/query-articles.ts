@@ -53,6 +53,7 @@ export interface NewsletterArticle {
   relevanceScore: number | null
   tldr: string | null
   firmName: string | null
+  firmDomain: string | null
   fundName: string | null
   fundSizeUsdMillions: number | null
   fundStrategy: string | null
@@ -126,6 +127,7 @@ export async function queryNewsletterArticles(
       relevanceScore: row.relevance_score,
       tldr: row.tldr,
       firmName,
+      firmDomain: (extractedData?.firm_domain as string) ?? null,
       fundName: (extractedData?.fund_name as string) ?? null,
       fundSizeUsdMillions: fundSizeMillions,
       fundStrategy: (extractedData?.fund_strategy as string) ?? null,
