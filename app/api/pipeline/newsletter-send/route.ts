@@ -21,10 +21,15 @@ export async function GET(req: Request) {
   }
 
   try {
+    // Allow overriding lookback window for testing (e.g. ?hoursBack=72)
+    const url = new URL(req.url)
+    const hoursBack = Number(url.searchParams.get('hoursBack')) || 26
+
     const result = await sendDailyNewsletter(
       getSupabaseAdmin(),
       anthropicApiKey,
-      resendApiKey
+      resendApiKey,
+      hoursBack
     )
 
     return NextResponse.json(result)

@@ -33,7 +33,8 @@ function todayDateET(): string {
 export async function sendDailyNewsletter(
   supabase: DbClient,
   anthropicApiKey: string,
-  resendApiKey: string
+  resendApiKey: string,
+  hoursBack: number = 26
 ): Promise<SendResult> {
   const editionDate = todayDateET()
 
@@ -49,7 +50,7 @@ export async function sendDailyNewsletter(
   }
 
   // ─── 2. Query articles ────────────────────────────────────────────────────
-  const content = await queryNewsletterArticles(supabase, 26)
+  const content = await queryNewsletterArticles(supabase, hoursBack)
 
   if (content.totalArticles < 3) {
     await supabase.from('newsletter_editions').upsert({
