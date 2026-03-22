@@ -44,10 +44,10 @@ export function SubscribeWidget() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-3 rounded-lg border border-border/40 bg-card/50 px-4 py-2.5">
-      <div className="flex items-center gap-2 shrink-0">
-        <Mail className="h-4 w-4 text-blue-400" />
-        <span className="text-sm text-muted-foreground whitespace-nowrap">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:gap-3 rounded-lg border border-border/40 bg-card/50 px-4 py-2.5 overflow-hidden">
+      <div className="flex items-center gap-2 min-w-0">
+        <Mail className="h-4 w-4 text-blue-400 shrink-0" />
+        <span className="text-sm text-muted-foreground">
           <span className="font-medium text-foreground">FundOps Daily</span> — Top fund news in your inbox every morning
         </span>
       </div>
