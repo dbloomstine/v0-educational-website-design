@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { NewsFeed } from '@/components/news/NewsFeed'
+import { SubscribeWidget } from '@/components/news/SubscribeWidget'
 import { ReachOut } from '@/components/reach-out'
 import { Suspense } from 'react'
 
@@ -41,6 +42,9 @@ export default function NewsPage() {
             <p className="text-xs text-muted-foreground">
               Real-time fund activity, executive moves &amp; market developments
             </p>
+          </div>
+          <div className="mb-3">
+            <SubscribeWidget />
           </div>
           <Suspense fallback={<NewsFeedSkeleton />}>
             <NewsFeed />
