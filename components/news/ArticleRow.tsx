@@ -153,8 +153,7 @@ export function ArticleRow({ article }: ArticleRowProps) {
       {/* ─── Desktop: Grid row (lg and up) ─── */}
       <div
         className={cn(
-          'hidden lg:grid group items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[56px_140px_72px_1fr_auto_56px_150px]',
-          article.isHighSignal && 'shadow-[inset_3px_0_0_0_rgba(245,158,11,0.6)]'
+          'hidden lg:grid group items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[56px_140px_72px_1fr_auto_56px_150px]'
         )}
       >
         {/* Col 1: Event type badge */}
@@ -233,8 +232,7 @@ export function ArticleRow({ article }: ArticleRowProps) {
       {/* ─── Mobile: Card layout (below lg) ─── */}
       <div
         className={cn(
-          'lg:hidden border-b border-border/40 transition-colors',
-          article.isHighSignal && 'shadow-[inset_3px_0_0_0_rgba(245,158,11,0.6)]'
+          'lg:hidden border-b border-border/40 transition-colors'
         )}
       >
         {/* Tappable main area */}
