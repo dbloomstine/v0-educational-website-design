@@ -20,7 +20,7 @@
     },
     {
       "path": "/api/pipeline/newsletter-send",
-      "schedule": "30 11 * * *"
+      "schedule": "30 9 * * *"
     }
   ]
 }
