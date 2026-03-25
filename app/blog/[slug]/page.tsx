@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { Breadcrumb } from '@/components/breadcrumb'
@@ -30,7 +31,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
   }
 
   return {
-    title: `${post.title} | FundWatch Briefing`,
+    title: `${post.title} | FundOps Daily`,
     description: post.summary,
     openGraph: {
       title: post.title,
@@ -91,7 +92,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     },
     isPartOf: {
       '@type': 'Blog',
-      name: 'FundWatch Briefing',
+      name: 'FundOps Daily',
       url: 'https://fundops.com/blog',
     },
   }
@@ -113,7 +114,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <div className="mb-8">
                 <Breadcrumb
                   items={[
-                    { label: 'FundWatch Briefing', href: '/blog' },
+                    { label: 'FundOps Daily', href: '/blog' },
                     { label: post.title },
                   ]}
                 />
@@ -147,13 +148,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <div className="mt-16 rounded-lg border border-border bg-accent/30 p-8">
                 <h3 className="mb-3 text-2xl font-semibold text-center">Enjoyed this briefing?</h3>
                 <p className="mb-6 text-center text-muted-foreground text-balance">
-                  Get FundWatch Briefing delivered to your inbox every week. Curated industry news, regulatory updates, and actionable insights for fund operations professionals across all asset classes.
+                  Get FundOps Daily delivered to your inbox every morning. Curated industry news, regulatory updates, and actionable insights for fund operations professionals across all asset classes.
                 </p>
                 <div className="flex justify-center">
                   <Button asChild size="lg">
-                    <a href="https://fundwatch-briefing.beehiiv.com/" target="_blank" rel="noopener noreferrer">
-                      Subscribe to Newsletter
-                    </a>
+                    <Link href="/news">
+                      Subscribe to FundOps Daily
+                    </Link>
                   </Button>
                 </div>
               </div>

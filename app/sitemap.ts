@@ -42,20 +42,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   //   })
   // })
 
-  // Newsletter pages
-  const newsletters = [
-    'fundopshq-insights',
-    'fundwatch-briefing',
-  ]
-
-  newsletters.forEach((slug) => {
-    routes.push({
-      url: `${baseUrl}/newsletter/${slug}`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.7,
-    })
-  })
+  // Old newsletter pages removed — FundOps Daily is on /news
 
   // Fund type pages — hidden until articles are public
   // const fundTypes = getAllFundTypes()

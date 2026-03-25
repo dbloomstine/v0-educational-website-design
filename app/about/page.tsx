@@ -311,7 +311,7 @@ export default function AboutPage() {
 
         <SectionCTA
           title="Ready to dive in?"
-          description="Watch the latest episodes or subscribe to the newsletters to stay in the loop."
+          description="Watch the latest episodes or subscribe to FundOps Daily to stay in the loop."
         >
           <Button asChild size="lg">
             <Link href="/interviews">
@@ -320,8 +320,8 @@ export default function AboutPage() {
             </Link>
           </Button>
           <Button variant="outline" asChild size="lg">
-            <Link href="/newsletter">
-              Newsletters
+            <Link href="/news">
+              FundOps Daily
             </Link>
           </Button>
         </SectionCTA>

@@ -73,13 +73,8 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/newsletter" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Newsletters
-                </Link>
-              </li>
-              <li>
                 <Link href="/news" className="text-muted-foreground hover:text-foreground transition-colors">
-                  News
+                  News & Newsletter
                 </Link>
               </li>
               <li>

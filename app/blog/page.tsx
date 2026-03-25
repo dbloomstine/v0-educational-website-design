@@ -9,13 +9,13 @@ import { PageHero, SectionCTA } from '@/components/layout'
 import { createPageMetadata } from '@/lib/seo'
 
 export const metadata = createPageMetadata({
-  title: 'FundWatch Briefing - Weekly Private Fund Operations Newsletter | FundOpsHQ',
-  description: 'The weekly newsletter for private fund professionals. Get curated insights on operations, compliance, regulatory updates, and industry trends delivered to your inbox.',
+  title: 'FundOps Daily - Fund Operations Newsletter | FundOpsHQ',
+  description: 'The daily newsletter for private fund professionals. Get curated insights on operations, compliance, regulatory updates, and industry trends delivered to your inbox.',
   path: '/blog',
-  ogTitle: 'FundWatch Briefing - Weekly Private Fund Operations Newsletter',
+  ogTitle: 'FundOps Daily - Fund Operations Newsletter',
   ogDescription: 'Curated insights for fund operations professionals across all asset classes',
-  twitterTitle: 'FundWatch Briefing',
-  twitterDescription: 'Weekly private fund operations insights and industry news',
+  twitterTitle: 'FundOps Daily',
+  twitterDescription: 'Daily private fund operations insights and industry news',
 })
 
 export default async function BlogPage() {
@@ -27,14 +27,14 @@ export default async function BlogPage() {
 
       <main id="main-content" className="flex-1">
         <PageHero
-          title="FundWatch Briefing"
-          subtitle="Your weekly dose of fund operations intel. Curated industry news, regulatory updates, and actionable insights for PE, VC, credit, hedge funds, and beyond."
+          title="FundOps Daily"
+          subtitle="Your daily dose of fund operations intel. Curated industry news, regulatory updates, and actionable insights for PE, VC, credit, hedge funds, and beyond."
           background="gradient-b"
         >
           <Button asChild size="lg">
-            <a href="https://fundwatch-briefing.beehiiv.com/" target="_blank" rel="noopener noreferrer">
-              Subscribe to Newsletter
-            </a>
+            <Link href="/news">
+              Subscribe to FundOps Daily
+            </Link>
           </Button>
         </PageHero>
 
@@ -45,7 +45,7 @@ export default async function BlogPage() {
               {posts.length === 0 ? (
                 <div className="text-center py-12">
                   <p className="text-lg text-muted-foreground">
-                    No posts yet. Check back soon for the latest FundWatch Briefing!
+                    No posts yet. Check back soon for the latest FundOps Daily!
                   </p>
                 </div>
               ) : (
@@ -79,16 +79,16 @@ export default async function BlogPage() {
         </section>
 
         <SectionCTA
-          title="Get FundWatch Briefing in Your Inbox"
-          description="Join fund operations professionals across PE, VC, credit, and hedge funds. Get curated industry news, regulatory updates, and actionable insights delivered every week."
+          title="Get FundOps Daily in Your Inbox"
+          description="Join fund operations professionals across PE, VC, credit, and hedge funds. Get curated industry news, regulatory updates, and actionable insights delivered every morning."
           background="accent"
           maxWidth="lg"
           className="py-20"
         >
           <Button asChild size="lg">
-            <a href="https://fundwatch-briefing.beehiiv.com/" target="_blank" rel="noopener noreferrer">
-              Subscribe to Newsletter
-            </a>
+            <Link href="/news">
+              Subscribe to FundOps Daily
+            </Link>
           </Button>
         </SectionCTA>
       </main>

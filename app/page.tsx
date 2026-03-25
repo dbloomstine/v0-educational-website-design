@@ -77,7 +77,7 @@ const EXPLORE_LINKS = [
   { name: 'Episodes', href: '/interviews', icon: Headphones, description: 'Full video conversations' },
   { name: 'Guests', href: '/guests', icon: Users, description: 'Industry experts' },
   { name: 'News Feed', href: '/news', icon: Rss, description: 'Fund industry news' },
-  { name: 'Newsletters', href: '/newsletter', icon: Newspaper, description: 'Subscribe to updates' },
+  { name: 'Newsletter', href: '/news', icon: Newspaper, description: 'FundOps Daily — subscribe free' },
   { name: 'About', href: '/about', icon: Info, description: 'The FundOpsHQ story' },
 ] as const
 

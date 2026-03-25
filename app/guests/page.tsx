@@ -179,7 +179,7 @@ export default async function GuestsPage() {
                   <Link href="/interviews">All Episodes</Link>
                 </Button>
                 <Button variant="outline" size="sm" asChild>
-                  <Link href="/newsletter">Newsletters</Link>
+                  <Link href="/news">Newsletter</Link>
                 </Button>
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/news">News</Link>

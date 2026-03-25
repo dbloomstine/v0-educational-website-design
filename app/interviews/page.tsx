@@ -317,7 +317,7 @@ export default async function InterviewsPage() {
                   <Link href="/guests">Guests</Link>
                 </Button>
                 <Button variant="outline" size="sm" asChild>
-                  <Link href="/newsletter">Newsletters</Link>
+                  <Link href="/news">Newsletter</Link>
                 </Button>
                 <Button variant="outline" size="sm" asChild>
                   <Link href="/news">News</Link>

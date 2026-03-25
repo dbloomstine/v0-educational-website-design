@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Logo } from "@/components/logo"
-import { Menu, X, ChevronDown, ExternalLink } from "lucide-react"
+import { Menu, X, ChevronDown } from "lucide-react"
 import { getAllFundTypes } from "@/lib/content/fund-types"
 import { getAllTools } from "@/lib/content/tools"
 import { getAllRoles } from "@/lib/content/roles"
@@ -200,67 +200,13 @@ export function SiteHeader() {
             </div>
           </Dropdown> */}
 
-          {/* Newsletters Dropdown */}
-          <Dropdown
-            trigger="Newsletters"
-            id="newsletters"
-            isOpen={openDropdown === 'newsletter'}
-            onOpenChange={handleDropdownOpen('newsletter')}
+          {/* Newsletter Link */}
+          <Link
+            href="/news"
+            className="inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
           >
-            <div className="w-[300px] p-3">
-              <div className="space-y-1">
-                <div className="rounded-md px-3 py-2 hover:bg-accent/50 transition-colors">
-                  <Link
-                    href="/newsletter/fundopshq-insights"
-                    onClick={() => setOpenDropdown(null)}
-                    className="block"
-                  >
-                    <div className="text-sm font-medium text-foreground">FundOpsHQ Insights</div>
-                    <div className="text-xs text-muted-foreground">Deep dives & frameworks</div>
-                  </Link>
-                  <a
-                    href="https://dannybloomstine.beehiiv.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 mt-1.5 text-[11px] font-medium text-foreground/70 hover:text-foreground transition-colors"
-                    onClick={() => setOpenDropdown(null)}
-                  >
-                    Subscribe
-                    <ExternalLink className="h-2.5 w-2.5" />
-                  </a>
-                </div>
-                <div className="rounded-md px-3 py-2 hover:bg-accent/50 transition-colors">
-                  <Link
-                    href="/newsletter/fundwatch-briefing"
-                    onClick={() => setOpenDropdown(null)}
-                    className="block"
-                  >
-                    <div className="text-sm font-medium text-foreground">FundWatch Briefing</div>
-                    <div className="text-xs text-muted-foreground">Weekly news & updates</div>
-                  </Link>
-                  <a
-                    href="https://fundwatch-briefing.beehiiv.com/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 mt-1.5 text-[11px] font-medium text-foreground/70 hover:text-foreground transition-colors"
-                    onClick={() => setOpenDropdown(null)}
-                  >
-                    Subscribe
-                    <ExternalLink className="h-2.5 w-2.5" />
-                  </a>
-                </div>
-              </div>
-              <div className="pt-2 mt-2 border-t border-border">
-                <Link
-                  href="/newsletter"
-                  onClick={() => setOpenDropdown(null)}
-                  className="block rounded-md px-3 py-1.5 text-xs text-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                >
-                  View All
-                </Link>
-              </div>
-            </div>
-          </Dropdown>
+            Newsletter
+          </Link>
 
           {/* Tools Dropdown — hidden until ready for public */}
           {/* <Dropdown
@@ -431,36 +377,19 @@ export function SiteHeader() {
               </div>
             </div> */}
 
-            {/* Newsletters */}
+            {/* Newsletter */}
             <div className="pt-4 border-t border-border">
               <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Newsletters
+                Newsletter
               </h3>
-              <div className="space-y-2">
-                <Link
-                  href="/newsletter/fundopshq-insights"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-                >
-                  <span className="font-medium text-foreground">FundOpsHQ Insights</span>
-                  <span className="block text-xs text-muted-foreground mt-0.5">Danny Bloomstine</span>
-                </Link>
-                <Link
-                  href="/newsletter/fundwatch-briefing"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-                >
-                  <span className="font-medium text-foreground">FundWatch Briefing</span>
-                  <span className="block text-xs text-muted-foreground mt-0.5">Weekly fund operations intel</span>
-                </Link>
-                <Link
-                  href="/newsletter"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-accent transition-colors text-center"
-                >
-                  View All Newsletters
-                </Link>
-              </div>
+              <Link
+                href="/news"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
+              >
+                <span className="font-medium text-foreground">FundOps Daily</span>
+                <span className="block text-xs text-muted-foreground mt-0.5">Top fund news in your inbox every morning</span>
+              </Link>
             </div>
 
             {/* Tools — hidden until ready for public */}

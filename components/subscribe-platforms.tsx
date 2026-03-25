@@ -144,19 +144,11 @@ const ALL_CHANNELS: Channel[] = [
     group: 'follow',
   },
   {
-    name: "FundOpsHQ Insights",
-    subtitle: "Deep dives on fund ops topics",
-    href: "https://dannybloomstine.beehiiv.com/",
-    icon: <MailIcon className="h-5 w-5" />,
-    iconBg: "bg-amber-950/80 text-amber-400",
-    group: 'read',
-  },
-  {
-    name: "FundWatch Briefing",
-    subtitle: "Weekly fund news roundup",
-    href: "https://fundwatch-briefing.beehiiv.com/",
+    name: "FundOps Daily",
+    subtitle: "Top fund news in your inbox every morning",
+    href: "/news",
     icon: <NewspaperIcon className="h-5 w-5" />,
-    iconBg: "bg-cyan-950/80 text-cyan-400",
+    iconBg: "bg-blue-950/80 text-blue-400",
     group: 'read',
   },
 ]
