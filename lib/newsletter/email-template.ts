@@ -84,7 +84,7 @@ function renderArticle(article: ArticleGroup['articles'][0]): string {
                 ${firmLabel}<a href="${escapeHtml(article.sourceUrl)}" style="color:#e2e8f0;text-decoration:none;font-size:14px;font-weight:500;" target="_blank">${escapeHtml(article.title)}</a>${size ? ` <span style="color:#94a3b8;font-size:12px;">(${escapeHtml(size)})</span>` : ''}
               </div>
               ${article.tldr ? `<div style="color:#94a3b8;font-size:12px;margin-top:3px;line-height:1.4;">${escapeHtml(article.tldr)}</div>` : ''}
-              <div style="color:#64748b;font-size:11px;margin-top:3px;">${escapeHtml(article.sourceName ?? '')}</div>
+              <div style="color:#64748b;font-size:11px;margin-top:3px;">${escapeHtml(article.sourceName ?? '')}${article.alsoCoveredBy && article.alsoCoveredBy.length > 0 ? ` &middot; Also: ${article.alsoCoveredBy.slice(0, 3).map(escapeHtml).join(', ')}` : ''}</div>
             </td>
           </tr>
         </table>

@@ -1,8 +1,9 @@
 /**
  * Query high-value articles for the daily newsletter.
  *
- * Extracted from /api/admin/newsletter-prep to be reusable
- * by both the prep endpoint and the automated daily send.
+ * Includes story-level dedup (pick best source per story),
+ * prior-edition exclusion, minimum fund size filtering,
+ * and a max article cap for curated output.
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js'
@@ -40,6 +41,37 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
   executive_departure: 'Departure',
 }
 
+/** Minimum fund size in USD millions to include in newsletter (filters noise like student funds) */
+const MIN_FUND_SIZE_MILLIONS = 25
+
+/** Maximum articles in a single newsletter edition */
+const MAX_NEWSLETTER_ARTICLES = 15
+
+/**
+ * Source tier ranking for picking the best article per story.
+ * Lower number = higher priority. Sources not listed default to tier 50.
+ */
+const SOURCE_TIER: Record<string, number> = {
+  'Bloomberg.com': 1, 'bloomberg.com': 1, 'WSJ': 1, 'Reuters': 2,
+  'Financial Times': 2, 'Pensions & Investments': 3,
+  'PitchBook': 3, 'Buyouts': 3, 'Buyouts Insider': 3,
+  'PE Hub': 4, 'Institutional Investor': 4,
+  'TechCrunch': 5, 'TechCrunch VC': 5, 'Venture Capital Journal': 5,
+  'Private Equity International': 5, 'Private Equity International | PEI': 5,
+  'Secondaries Investor': 5, 'Infrastructure Investor': 5,
+  'Private Debt Investor': 5, 'PERE': 5, 'Private Equity Wire': 5,
+  'Hedge Week': 6, 'Alternative Credit Investor': 6,
+  'AltAssets': 7, 'AltAssets Private Equity News': 7,
+  'Commercial Observer': 8, 'ESG Today': 8,
+  'Business Wire': 10, 'PR Newswire': 10, 'PR Newswire Financial': 10,
+  'Alternatives Watch': 10, 'Crain\'s Chicago Business': 10,
+  'The Business Journals': 12,
+  'Yahoo Finance': 15, 'MSN': 15, 'msn.com': 15,
+  'Digital Journal': 20, 'citybiz': 20, 'Pulse 2.0': 20,
+  'The Tech Buzz': 25, 'HedgeCo.Net': 25,
+  'mexc.co': 40, 'The Manila Times': 40, 'National Today': 40, 'USA Today': 30,
+}
+
 export interface NewsletterArticle {
   id: string
   title: string
@@ -60,6 +92,8 @@ export interface NewsletterArticle {
   geography: string[]
   personName: string | null
   personTitle: string | null
+  /** Other sources that also covered this story (populated by story dedup) */
+  alsoCoveredBy: string[]
 }
 
 export interface ArticleGroup {
@@ -82,6 +116,9 @@ export async function queryNewsletterArticles(
 ): Promise<NewsletterContent> {
   const since = new Date(Date.now() - hoursBack * 60 * 60 * 1000).toISOString()
 
+  // ─── Fetch prior edition's article IDs to exclude cross-day repeats ────
+  const excludeIds = await getPriorEditionArticleIds(supabase)
+
   const { data: rows, error } = await supabase
     .from('news_items')
     .select('id, title, source_url, source_name, published_date, article_type, fund_categories, is_high_signal, relevance_score, tldr, entities_raw, extracted_data, event_type')
@@ -100,6 +137,9 @@ export async function queryNewsletterArticles(
   // Filter to North America / Global / unknown geography
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const filtered = (rows ?? []).filter((row: any) => {
+    // Exclude articles from prior edition
+    if (excludeIds.has(row.id)) return false
+
     const geo = (row.extracted_data as Record<string, unknown> | null)?.geography as string[] | null
     if (!geo || geo.length === 0) return true
     return geo.some((g) => ALLOWED_GEO.includes(g))
@@ -134,12 +174,36 @@ export async function queryNewsletterArticles(
       geography: (extractedData?.geography as string[]) ?? [],
       personName: (extractedData?.person_name as string) ?? null,
       personTitle: (extractedData?.person_title as string) ?? null,
+      alsoCoveredBy: [],
     }
   })
 
+  // ─── Story-level dedup: group articles about the same story ────────────
+  const deduped = deduplicateByStory(articles)
+
+  // ─── Apply minimum fund size filter for fund activity articles ─────────
+  const sizeFiltered = deduped.filter((a) => {
+    // Only apply size filter to fund activity types, not exec moves
+    const isFundActivity = ['fund_launch', 'fund_close', 'capital_raise'].includes(a.eventType ?? '')
+    if (!isFundActivity) return true
+    // Keep if no size info (don't penalize missing data)
+    if (a.fundSizeUsdMillions == null) return true
+    return a.fundSizeUsdMillions >= MIN_FUND_SIZE_MILLIONS
+  })
+
+  // ─── Cap total articles ────────────────────────────────────────────────
+  // Sort globally by relevance/size to pick the best articles if over cap
+  const ranked = [...sizeFiltered].sort((a, b) => {
+    // Fund activity with size > fund activity without > exec moves
+    const aScore = articlePriorityScore(a)
+    const bScore = articlePriorityScore(b)
+    return bScore - aScore
+  })
+  const capped = ranked.slice(0, MAX_NEWSLETTER_ARTICLES)
+
   // Group by primary category
   const grouped: Record<string, NewsletterArticle[]> = {}
-  for (const article of articles) {
+  for (const article of capped) {
     const primaryCat = article.fundCategories[0] ?? 'other'
     if (!grouped[primaryCat]) grouped[primaryCat] = []
     grouped[primaryCat].push(article)
@@ -172,9 +236,154 @@ export async function queryNewsletterArticles(
 
   return {
     groups,
-    totalArticles: articles.length,
-    articleIds: articles.map((a) => a.id),
+    totalArticles: capped.length,
+    articleIds: capped.map((a) => a.id),
   }
+}
+
+// ─── Story-level dedup ──────────────────────────────────────────────────────
+
+/**
+ * Group articles that cover the same story and pick the best source.
+ * Two articles are about the same story if they share the same firmName
+ * AND have similar titles (normalized Jaccard similarity > 0.4) or
+ * share the same fundName.
+ */
+function deduplicateByStory(articles: NewsletterArticle[]): NewsletterArticle[] {
+  const stories: NewsletterArticle[][] = []
+
+  for (const article of articles) {
+    let matched = false
+
+    for (const story of stories) {
+      if (isSameStory(story[0], article)) {
+        story.push(article)
+        matched = true
+        break
+      }
+    }
+
+    if (!matched) {
+      stories.push([article])
+    }
+  }
+
+  // For each story group, pick the best article and note other sources
+  return stories.map((group) => {
+    // Sort by source tier (lower = better), then by tldr length (more detail = better)
+    group.sort((a, b) => {
+      const tierA = SOURCE_TIER[a.sourceName ?? ''] ?? 50
+      const tierB = SOURCE_TIER[b.sourceName ?? ''] ?? 50
+      if (tierA !== tierB) return tierA - tierB
+      return (b.tldr?.length ?? 0) - (a.tldr?.length ?? 0)
+    })
+
+    const best = group[0]
+    // Collect other source names (deduped)
+    const otherSources = Array.from(new Set(
+      group.slice(1)
+        .map((a) => a.sourceName)
+        .filter((name): name is string => !!name && name !== best.sourceName)
+    ))
+    best.alsoCoveredBy = otherSources
+
+    // Use the highest fund size found across all articles in the group
+    const maxSize = Math.max(...group.map((a) => a.fundSizeUsdMillions ?? 0))
+    if (maxSize > 0 && (best.fundSizeUsdMillions ?? 0) === 0) {
+      best.fundSizeUsdMillions = maxSize
+    }
+
+    // Use the best tldr (longest, most detailed)
+    const bestTldr = group
+      .map((a) => a.tldr)
+      .filter((t): t is string => !!t)
+      .sort((a, b) => b.length - a.length)[0]
+    if (bestTldr && bestTldr.length > (best.tldr?.length ?? 0)) {
+      best.tldr = bestTldr
+    }
+
+    return best
+  })
+}
+
+/**
+ * Check if two articles are about the same underlying story.
+ */
+function isSameStory(a: NewsletterArticle, b: NewsletterArticle): boolean {
+  // Must share a firm name (normalized)
+  if (!a.firmName || !b.firmName) return false
+  if (normalizeFirmName(a.firmName) !== normalizeFirmName(b.firmName)) return false
+
+  // If both have a fund name and they match, it's the same story
+  if (a.fundName && b.fundName) {
+    if (normalizeFirmName(a.fundName) === normalizeFirmName(b.fundName)) return true
+  }
+
+  // If both have the same fund size, very likely the same story
+  if (a.fundSizeUsdMillions && b.fundSizeUsdMillions &&
+      a.fundSizeUsdMillions === b.fundSizeUsdMillions) {
+    return true
+  }
+
+  // Fall back to title similarity
+  return titleSimilarity(a.title, b.title) > 0.4
+}
+
+function normalizeFirmName(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\b(llc|inc|corp|ltd|lp|group|partners|capital|management|investment|investments|advisors|advisory)\b/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+/**
+ * Jaccard similarity of word sets from two titles.
+ */
+function titleSimilarity(a: string, b: string): number {
+  const wordsA = new Set(a.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter((w) => w.length > 2))
+  const wordsB = new Set(b.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter((w) => w.length > 2))
+  if (wordsA.size === 0 || wordsB.size === 0) return 0
+  let intersection = 0
+  wordsA.forEach((w) => {
+    if (wordsB.has(w)) intersection++
+  })
+  return intersection / (wordsA.size + wordsB.size - intersection)
+}
+
+// ─── Prior edition exclusion ────────────────────────────────────────────────
+
+async function getPriorEditionArticleIds(supabase: DbClient): Promise<Set<string>> {
+  const { data } = await supabase
+    .from('newsletter_editions')
+    .select('article_ids')
+    .eq('status', 'sent')
+    .order('edition_date', { ascending: false })
+    .limit(1)
+    .single()
+
+  if (!data?.article_ids) return new Set()
+  return new Set(data.article_ids as string[])
+}
+
+// ─── Article priority scoring for cap ───────────────────────────────────────
+
+function articlePriorityScore(a: NewsletterArticle): number {
+  let score = a.relevanceScore ?? 0
+
+  // Boost fund activity with size
+  if (['fund_launch', 'fund_close', 'capital_raise'].includes(a.eventType ?? '')) {
+    score += 0.3
+    if (a.fundSizeUsdMillions) {
+      // Log scale bonus: $100M=0.1, $1B=0.2, $10B=0.3
+      score += Math.min(0.3, Math.log10(a.fundSizeUsdMillions / 100 + 1) * 0.15)
+    }
+  }
+
+  if (a.isHighSignal) score += 0.2
+
+  return score
 }
 
 export function getEventTypeLabel(type: string | null): string {

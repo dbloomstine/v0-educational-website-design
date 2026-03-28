@@ -122,6 +122,11 @@ export async function sendDailyNewsletter(
         'List-Unsubscribe': `<${unsubscribeUrl}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
+      // Track opens and link clicks for engagement analysis
+      tracking: {
+        opens: true,
+        clicks: true,
+      },
     }
   })
 
@@ -195,9 +200,38 @@ export async function sendDailyNewsletter(
   }
 }
 
-function buildSubject(content: { groups: { label: string; articles: { title: string; firmName: string | null }[] }[]; totalArticles: number }): string {
-  // Pick the top story's firm name for the subject line
-  const topArticle = content.groups[0]?.articles[0]
-  const firmHint = topArticle?.firmName ? ` — ${topArticle.firmName}` : ''
-  return `FundOps Daily${firmHint} + ${content.totalArticles - 1} more`
+function buildSubject(content: { groups: { label: string; articles: { title: string; firmName: string | null; fundSizeUsdMillions: number | null }[] }[]; totalArticles: number }): string {
+  // Find the article with the largest fund size across all groups for the subject
+  let bestArticle: { firmName: string | null; fundSizeUsdMillions: number | null } | null = null
+  let bestSize = 0
+
+  for (const group of content.groups) {
+    for (const article of group.articles) {
+      const size = article.fundSizeUsdMillions ?? 0
+      if (size > bestSize) {
+        bestSize = size
+        bestArticle = article
+      }
+    }
+  }
+
+  // Fall back to first article if none have a fund size
+  if (!bestArticle) {
+    bestArticle = content.groups[0]?.articles[0] ?? null
+  }
+
+  if (!bestArticle?.firmName) {
+    return `FundOps Daily — ${content.totalArticles} stories`
+  }
+
+  // Format the size hint
+  let sizeHint = ''
+  if (bestSize >= 1000) {
+    sizeHint = ` $${(bestSize / 1000).toFixed(1).replace(/\.0$/, '')}B`
+  } else if (bestSize > 0) {
+    sizeHint = ` $${bestSize}M`
+  }
+
+  const remaining = content.totalArticles - 1
+  return `FundOps Daily — ${bestArticle.firmName}${sizeHint} + ${remaining} more`
 }

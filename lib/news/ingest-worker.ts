@@ -211,9 +211,20 @@ async function processFeed(
 
   let currentTotal = (currentFeed?.total_articles_ingested as number) ?? 0;
 
+  // Resolve Google News redirect URLs to actual destinations (batch, max 5 concurrent)
+  const articlesWithLinks = feedResult.articles.filter((article) => !!article.link);
+  for (let ri = 0; ri < articlesWithLinks.length; ri += 5) {
+    const batch = articlesWithLinks.slice(ri, ri + 5);
+    const resolved = await Promise.all(
+      batch.map((article) => resolveGoogleNewsUrl(article.link!))
+    );
+    for (let j = 0; j < batch.length; j++) {
+      batch[j].link = resolved[j];
+    }
+  }
+
   // Pre-compute hashes for all articles
-  const articlesWithHashes = feedResult.articles
-    .filter((article) => !!article.link)
+  const articlesWithHashes = articlesWithLinks
     .map((article) => {
       const normalizedUrl = normalizeUrl(article.link!);
       const urlHash = hashString(normalizedUrl);
@@ -360,6 +371,41 @@ async function updateFeedFailure(supabase: DbClient, feedId: string): Promise<vo
     .eq('id', feedId);
 }
 
+// ─── Google News URL resolution ─────────────────────────────────────────────
+
+const GOOGLE_NEWS_PREFIX = 'https://news.google.com/rss/articles/';
+
+/**
+ * Resolve a Google News redirect URL to its actual destination.
+ * Returns the original URL if resolution fails or it's not a Google News URL.
+ */
+async function resolveGoogleNewsUrl(url: string): Promise<string> {
+  if (!url.startsWith(GOOGLE_NEWS_PREFIX)) return url;
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+
+    const res = await fetch(url, {
+      method: 'HEAD',
+      redirect: 'follow',
+      signal: controller.signal,
+      headers: { 'User-Agent': 'FundOpsHQ-NewsBot/1.0' },
+    });
+
+    clearTimeout(timeout);
+
+    // The final URL after redirects is the real article URL
+    if (res.url && res.url !== url && !res.url.startsWith('https://news.google.com/')) {
+      return res.url;
+    }
+  } catch {
+    // Resolution failed — keep original URL
+  }
+
+  return url;
+}
+
 // ─── Utility functions ──────────────────────────────────────────────────────
 
 /** Normalize a URL for deduplication: strip tracking params, utm_, fragment */
@@ -458,8 +504,12 @@ const INGEST_IRRELEVANT_PATTERNS = [
  * Keywords that must appear in PR Newswire / wire service titles
  * to be worth ingesting. Without one of these, the article is almost
  * certainly irrelevant (beverage companies, pharma, tech products, etc.).
+ *
+ * Tightened: removed overly broad terms like "capital", "fund", "investment manage"
+ * that match too many irrelevant press releases. Now requires more specific
+ * fund-industry language.
  */
-const WIRE_SERVICE_KEYWORD_GATE = /\b(fund|capital|private equity|private credit|venture|hedge|real estate invest|infrastructure invest|secondaries|gp.?stakes|lp commitment|buyout|growth equity|direct lending|mezzanine|co.?invest|continuation vehicle|nav lend|limited partner|general partner|fund.?of.?funds|asset manage|investment manage|portfolio manage|alternative.?invest|institutional invest|pension fund|endowment|sovereign wealth|family office|fund admin|fund service|fund launch|fund close|fund raise|fundrais|first close|final close|hard cap|dry powder|carry|waterfall|capital call|distribution|placement agent|investor relation|aum|assets under)\b/i;
+const WIRE_SERVICE_KEYWORD_GATE = /\b(private equity|private credit|venture capital|venture fund|hedge fund|real estate invest|real estate fund|infrastructure fund|infrastructure invest|secondaries|gp.?stakes|lp commitment|buyout fund|growth equity fund|direct lending|mezzanine fund|co.?invest|continuation vehicle|nav lend|limited partner|general partner|fund.?of.?funds|asset manage|alternative.?invest|institutional invest|pension fund|endowment|sovereign wealth|family office|fund admin|fund service|fund launch|fund close|fund raise|fundrais|first close|final close|hard cap|dry powder|carry calculation|waterfall|capital call|distribution notice|placement agent|investor relation|assets under manage|credit fund|debt fund|real asset|closed.?end fund|open.?end fund|interval fund|drawdown)\b/i;
 
 /** Source names that require keyword-gating to be worth ingesting */
 const WIRE_SERVICE_SOURCES = new Set([

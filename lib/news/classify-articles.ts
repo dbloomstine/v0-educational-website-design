@@ -77,7 +77,7 @@ For each article, return a JSON object with exactly these fields:
   "is_high_signal": boolean,       // true for: fund launch/close with named firm, C-suite/partner hire at fund manager, regulatory enforcement, M&A between GPs or service providers
   "signal_reason": string | null,  // brief reason if is_high_signal
   "relevance_score": number,       // 0.0–1.0 — use scoring guide below
-  "summary_ai": string,            // 2-sentence summary. Include firm names, fund names, dollar amounts, people names. Write for a BD professional selling services to fund managers.
+  "summary_ai": string,            // 1-2 sentence data-forward summary. Lead with specific facts: fund size, strategy, LP base, close type, key terms. NO filler phrases like "demonstrates", "represents a significant", "marks the firm's entry", "reflects institutional investor confidence". If the article lacks specific details beyond the headline, write ONE short sentence. Write for a senior BD professional who reads 50 of these a day — every word must earn its place.
   "entities": [
     { "name": string, "type": "firm"|"fund"|"person", "role": string | null, "confidence": number }
   ],
@@ -225,6 +225,29 @@ export async function classifyPendingArticles(
       );
     }
   }
+
+  // ─── Post-classification cleanup: reset stuck 'processing' articles ──────
+  // Articles stuck in 'processing' for >10 min were likely from a crashed run
+  await supabase
+    .from('news_items')
+    .update({ classification_status: 'pending', updated_at: new Date().toISOString() })
+    .eq('classification_status', 'processing')
+    .lt('updated_at', new Date(Date.now() - 10 * 60 * 1000).toISOString());
+
+  // ─── Cleanup: mark old 'complete' articles with NULL event_type as 'other' ─
+  // These passed classification but got a null event_type — set them to 'other'
+  // so they don't accumulate and pollute queries
+  await supabase
+    .from('news_items')
+    .update({
+      event_type: 'other',
+      article_type: 'other',
+      relevance_score: 0,
+      updated_at: new Date().toISOString(),
+    })
+    .eq('classification_status', 'complete')
+    .is('event_type', null)
+    .lt('created_at', new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString());
 
   return result;
 }
