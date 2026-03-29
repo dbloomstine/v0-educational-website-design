@@ -15,6 +15,10 @@ import {
 import type { NewsArticle } from '@/lib/news/types'
 import { getFirmDomain } from '@/lib/news/firm-logos'
 
+const CURRENCY_SYMBOLS: Record<string, string> = {
+  EUR: '€', GBP: '£', JPY: '¥', CHF: 'CHF ', CNY: '¥', KRW: '₩', AUD: 'A$', CAD: 'C$',
+}
+
 // ─── Firm Logo ───────────────────────────────────────────────────────────────
 
 const LOGO_COLORS = [
@@ -86,11 +90,21 @@ function FirmLogo({
 
 interface ArticleRowProps {
   article: NewsArticle
+  dateRange?: string
 }
 
-export function ArticleRow({ article }: ArticleRowProps) {
+export function ArticleRow({ article, dateRange }: ArticleRowProps) {
   const eventLabel = article.eventType ? EVENT_LABELS[article.eventType] : null
   const fundSize = formatFundSize(article.fundSizeUsd)
+
+  // Detect converted currency (from classification data or headline heuristic)
+  const isConverted = article.originalCurrency
+    ? article.originalCurrency !== 'USD'
+    : !!(article.fundSizeUsd && /[€£¥]|EUR |GBP |CHF /i.test(article.title))
+  const displaySize = fundSize ? (isConverted ? `≈${fundSize}` : fundSize) : null
+  const sizeTooltip = isConverted && article.originalAmountMillions && article.originalCurrency
+    ? `Converted from ${CURRENCY_SYMBOLS[article.originalCurrency] ?? article.originalCurrency}${article.originalAmountMillions >= 1000 ? `${(article.originalAmountMillions / 1000).toFixed(1)}B` : `${article.originalAmountMillions.toFixed(0)}M`}`
+    : isConverted ? 'Converted to USD' : undefined
 
   // Desktop hover card state
   const [visible, setVisible] = useState(false)
@@ -189,8 +203,8 @@ export function ArticleRow({ article }: ArticleRowProps) {
         </div>
 
         {/* Col 3: Fund size */}
-        <span className="text-[11px] font-mono font-medium text-muted-foreground whitespace-nowrap">
-          {fundSize || ''}
+        <span className="text-[11px] font-mono font-medium text-muted-foreground whitespace-nowrap" title={sizeTooltip}>
+          {displaySize || ''}
         </span>
 
         {/* Col 4: Logo + Firm pill + Headline */}
@@ -220,7 +234,7 @@ export function ArticleRow({ article }: ArticleRowProps) {
 
         {/* Col 6: Date */}
         <span className="text-[11px] text-muted-foreground/50 tabular-nums whitespace-nowrap">
-          {article.publishedDate ? formatCompactTime(article.publishedDate) : ''}
+          {article.publishedDate ? formatCompactTime(article.publishedDate, dateRange) : ''}
         </span>
 
         {/* Col 7: Source name */}
@@ -267,13 +281,13 @@ export function ArticleRow({ article }: ArticleRowProps) {
                 </span>
               )
             })}
-            {fundSize && (
-              <span className="text-[10px] font-mono font-medium text-muted-foreground/60">
-                {fundSize}
+            {displaySize && (
+              <span className="text-[10px] font-mono font-medium text-muted-foreground/60" title={sizeTooltip}>
+                {displaySize}
               </span>
             )}
             <span className="ml-auto text-[10px] text-muted-foreground/50 tabular-nums whitespace-nowrap">
-              {article.publishedDate ? formatCompactTime(article.publishedDate) : ''}
+              {article.publishedDate ? formatCompactTime(article.publishedDate, dateRange) : ''}
             </span>
             <ChevronDown className={cn('h-3 w-3 text-muted-foreground/40 shrink-0 transition-transform', mobileExpanded && 'rotate-180')} />
           </div>
@@ -376,9 +390,9 @@ export function ArticleRow({ article }: ArticleRowProps) {
                   </span>
                 )
               })}
-              {fundSize && (
-                <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">
-                  {fundSize}
+              {displaySize && (
+                <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground" title={sizeTooltip}>
+                  {displaySize}
                 </span>
               )}
             </div>

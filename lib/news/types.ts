@@ -18,6 +18,15 @@ export interface NewsArticle {
   personName: string | null
   personTitle: string | null
   firmDomain: string | null
+  originalCurrency: string | null
+  originalAmountMillions: number | null
+  storyClusterId: string | null
+}
+
+export interface ArticleGroup {
+  primaryArticle: NewsArticle
+  relatedArticles: NewsArticle[]
+  clusterSize: number
 }
 
 export interface FacetCounts {
@@ -29,6 +38,7 @@ export interface FacetCounts {
 
 export interface ArticleFeedResponse {
   articles: NewsArticle[]
+  groups: ArticleGroup[]
   facets: FacetCounts
   hasMore: boolean
   offset: number

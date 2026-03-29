@@ -15,6 +15,7 @@ export async function GET(req: Request) {
       type: params.get('type') || undefined,
       fundSizeMin: params.get('fundSizeMin') || undefined,
       fundSizeMax: params.get('fundSizeMax') || undefined,
+      sort: params.get('sort') || undefined,
       offset: params.get('offset') ? Number(params.get('offset')) : undefined,
       limit: params.get('limit') ? Number(params.get('limit')) : undefined,
     })

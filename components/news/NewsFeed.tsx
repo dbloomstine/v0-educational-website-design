@@ -5,8 +5,9 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { Search, X, Loader2, ChevronDown, SlidersHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ArticleRow } from './ArticleRow'
+import { ClusterExpander } from './ClusterExpander'
 import { FeedbackButton } from './FeedbackButton'
-import type { ArticleFeedResponse, NewsArticle, FacetCounts } from '@/lib/news/types'
+import type { ArticleFeedResponse, ArticleGroup, NewsArticle, FacetCounts } from '@/lib/news/types'
 
 // ── Filter constants ──────────────────────────────────────────────
 
@@ -157,11 +158,13 @@ export function NewsFeed() {
   const [eventType, setEventType] = useState(searchParams.get('type') || '')
   const [fundSizeMin, setFundSizeMin] = useState(searchParams.get('fundSizeMin') || '')
   const [fundSizeMax, setFundSizeMax] = useState(searchParams.get('fundSizeMax') || '')
+  const [sort, setSort] = useState(searchParams.get('sort') || 'latest')
   const [fundSizeOpen, setFundSizeOpen] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
 
   // Data state
   const [articles, setArticles] = useState<NewsArticle[]>([])
+  const [groups, setGroups] = useState<ArticleGroup[]>([])
   const [facets, setFacets] = useState<FacetCounts | null>(null)
   const [hasMore, setHasMore] = useState(false)
   const [offset, setOffset] = useState(0)
@@ -176,6 +179,7 @@ export function NewsFeed() {
     fundSizeMin,
     fundSizeMax,
     dateRange !== '7d',
+    sort !== 'latest',
   ].filter(Boolean).length
 
   // Build params
@@ -190,9 +194,10 @@ export function NewsFeed() {
       if (eventType) params.set('type', eventType)
       if (fundSizeMin) params.set('fundSizeMin', fundSizeMin)
       if (fundSizeMax) params.set('fundSizeMax', fundSizeMax)
+      if (sort && sort !== 'latest') params.set('sort', sort)
       return params
     },
-    [query, dateRange, category, eventType, fundSizeMin, fundSizeMax]
+    [query, dateRange, category, eventType, fundSizeMin, fundSizeMax, sort]
   )
 
   // Sync URL
@@ -204,9 +209,10 @@ export function NewsFeed() {
     if (eventType) params.set('type', eventType)
     if (fundSizeMin) params.set('fundSizeMin', fundSizeMin)
     if (fundSizeMax) params.set('fundSizeMax', fundSizeMax)
+    if (sort && sort !== 'latest') params.set('sort', sort)
     const qs = params.toString()
     router.replace(qs ? `/news?${qs}` : '/news', { scroll: false })
-  }, [router, query, dateRange, category, eventType, fundSizeMin, fundSizeMax])
+  }, [router, query, dateRange, category, eventType, fundSizeMin, fundSizeMax, sort])
 
   // Fetch feed
   const fetchFeed = useCallback(
@@ -225,8 +231,10 @@ export function NewsFeed() {
 
         if (append) {
           setArticles((prev) => [...prev, ...data.articles])
+          setGroups((prev) => [...prev, ...(data.groups ?? [])])
         } else {
           setArticles(data.articles)
+          setGroups(data.groups ?? [])
           setFacets(data.facets)
         }
         setHasMore(data.hasMore)
@@ -246,7 +254,7 @@ export function NewsFeed() {
     fetchFeed(0, false)
     syncUrl()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, dateRange, category, eventType, fundSizeMin, fundSizeMax])
+  }, [query, dateRange, category, eventType, fundSizeMin, fundSizeMax, sort])
 
   // Search debounce
   const [searchInput, setSearchInput] = useState(query)
@@ -264,6 +272,7 @@ export function NewsFeed() {
     setEventType('')
     setFundSizeMin('')
     setFundSizeMax('')
+    setSort('latest')
   }
 
   // Load more
@@ -317,6 +326,24 @@ export function NewsFeed() {
             ))}
           </div>
 
+          {/* Sort toggle */}
+          <div className="hidden sm:flex items-center rounded-lg border border-border bg-muted p-0.5">
+            {([{ label: 'Latest', value: 'latest' }, { label: 'Biggest', value: 'biggest' }] as const).map((s) => (
+              <button
+                key={s.value}
+                onClick={() => setSort(s.value)}
+                className={cn(
+                  'rounded-md px-2 py-1 text-[11px] font-medium transition-colors',
+                  sort === s.value
+                    ? 'bg-foreground text-background'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
+
           {/* Filters toggle */}
           <button
             onClick={() => setFiltersOpen(!filtersOpen)}
@@ -349,22 +376,40 @@ export function NewsFeed() {
           )}
         </div>
 
-        {/* Row 2: Date range on mobile only (below sm) */}
-        <div className="flex sm:hidden items-center rounded-lg border border-border bg-muted p-0.5 w-fit">
-          {DATE_RANGES.map((range) => (
-            <button
-              key={range.value}
-              onClick={() => setDateRange(range.value)}
-              className={cn(
-                'rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors',
-                dateRange === range.value
-                  ? 'bg-foreground text-background'
-                  : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              {range.label}
-            </button>
-          ))}
+        {/* Row 2: Date range + sort on mobile only (below sm) */}
+        <div className="flex sm:hidden items-center gap-2">
+          <div className="flex items-center rounded-lg border border-border bg-muted p-0.5 w-fit">
+            {DATE_RANGES.map((range) => (
+              <button
+                key={range.value}
+                onClick={() => setDateRange(range.value)}
+                className={cn(
+                  'rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors',
+                  dateRange === range.value
+                    ? 'bg-foreground text-background'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {range.label}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center rounded-lg border border-border bg-muted p-0.5">
+            {([{ label: 'Latest', value: 'latest' }, { label: 'Biggest', value: 'biggest' }] as const).map((s) => (
+              <button
+                key={s.value}
+                onClick={() => setSort(s.value)}
+                className={cn(
+                  'rounded-md px-2 py-1 text-[11px] font-medium transition-colors',
+                  sort === s.value
+                    ? 'bg-foreground text-background'
+                    : 'text-muted-foreground hover:text-foreground'
+                )}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -552,9 +597,23 @@ export function NewsFeed() {
               <span>Date</span>
               <span>Source</span>
             </div>
-            {articles.map((article) => (
-              <ArticleRow key={article.id} article={article} />
-            ))}
+            {groups.length > 0
+              ? groups.map((group) => (
+                  <div key={group.primaryArticle.id}>
+                    <ArticleRow article={group.primaryArticle} dateRange={dateRange} />
+                    {group.clusterSize > 1 && (
+                      <ClusterExpander
+                        relatedArticles={group.relatedArticles}
+                        clusterSize={group.clusterSize}
+                        dateRange={dateRange}
+                      />
+                    )}
+                  </div>
+                ))
+              : articles.map((article) => (
+                  <ArticleRow key={article.id} article={article} dateRange={dateRange} />
+                ))
+            }
           </div>
 
           {/* Load more */}

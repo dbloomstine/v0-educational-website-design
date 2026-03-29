@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from '@/lib/supabase/client'
-import type { NewsArticle, FacetCounts, ArticleFeedResponse } from './types'
+import { normalizeSourceName } from './constants'
+import type { NewsArticle, ArticleGroup, FacetCounts, ArticleFeedResponse } from './types'
 
 export interface QueryParams {
   q?: string
@@ -8,6 +9,7 @@ export interface QueryParams {
   type?: string
   fundSizeMin?: string
   fundSizeMax?: string
+  sort?: string
   offset?: number
   limit?: number
 }
@@ -17,6 +19,21 @@ const RANGE_TO_DAYS: Record<string, number> = {
   '7d': 7,
   '30d': 30,
   '90d': 90,
+}
+
+// Press-release syndication and stock-screener sites that add noise.
+// Articles from these sources are kept only if relevance >= 0.6.
+const LOW_QUALITY_SOURCES = new Set([
+  'marketbeat', 'quiver quantitative', 'stock titan', 'defense world',
+  'national today', 'mexc.co', 'mexc', 'waya.media', 'the malone telegram',
+  'usa today', 'citybiz',
+])
+
+function filterLowQualitySources(article: NewsArticle): boolean {
+  if (!article.sourceName) return true
+  const src = article.sourceName.trim().toLowerCase()
+  if (LOW_QUALITY_SOURCES.has(src) && (article.relevanceScore ?? 0) < 0.6) return false
+  return true
 }
 
 export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeedResponse> {
@@ -30,7 +47,7 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
   // --- Main articles query ---
   let query = getSupabaseAdmin()
     .from('news_items')
-    .select('id, title, source_url, source_name, published_date, article_type, fund_categories, is_high_signal, relevance_score, tldr, extracted_data, event_type')
+    .select('id, title, source_url, source_name, published_date, article_type, fund_categories, is_high_signal, relevance_score, tldr, extracted_data, event_type, story_cluster_id')
     .eq('classification_status', 'complete')
     .eq('is_duplicate', false)
     .neq('title', '')
@@ -84,20 +101,69 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
 
   // Supabase .range() is inclusive on both ends, so we get limit+1 rows.
   // If we got the full range, there are likely more results.
-  const allRows = (rows ?? []).map(mapRowToArticle)
+  const allRows = (rows ?? []).map(mapRowToArticle).filter(filterLowQualitySources)
+
+  // Sort by deal size when requested (client-side to avoid Supabase JSONB ordering issues)
+  if (params.sort === 'biggest') {
+    allRows.sort((a, b) => (b.fundSizeUsd ?? 0) - (a.fundSizeUsd ?? 0))
+  }
+
   const articles = allRows.slice(0, limit)
   const hasMore = allRows.length > limit
+
+  // --- Group articles by story cluster ---
+  const groups = buildArticleGroups(articles)
 
   // --- Facet counts query ---
   const facets = await queryFacets(cutoff.split('T')[0])
 
   return {
     articles,
+    groups,
     facets,
     hasMore,
     offset,
     limit,
   }
+}
+
+function buildArticleGroups(articles: NewsArticle[]): ArticleGroup[] {
+  const clusterMap = new Map<string, NewsArticle[]>()
+  const groups: ArticleGroup[] = []
+
+  for (const article of articles) {
+    if (article.storyClusterId) {
+      const list = clusterMap.get(article.storyClusterId)
+      if (list) {
+        list.push(article)
+      } else {
+        clusterMap.set(article.storyClusterId, [article])
+      }
+    } else {
+      // Unclustered articles are standalone groups
+      groups.push({ primaryArticle: article, relatedArticles: [], clusterSize: 1 })
+    }
+  }
+
+  // Build cluster groups — primary is highest relevance, rest are related
+  for (const [, clusterArticles] of clusterMap) {
+    const sorted = [...clusterArticles].sort(
+      (a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)
+    )
+    groups.push({
+      primaryArticle: sorted[0],
+      relatedArticles: sorted.slice(1),
+      clusterSize: sorted.length,
+    })
+  }
+
+  // Maintain original feed order: sort groups by first appearance in the articles array
+  const orderMap = new Map(articles.map((a, i) => [a.id, i]))
+  groups.sort((a, b) =>
+    (orderMap.get(a.primaryArticle.id) ?? 0) - (orderMap.get(b.primaryArticle.id) ?? 0)
+  )
+
+  return groups
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -109,7 +175,7 @@ function mapRowToArticle(row: any): NewsArticle {
     id: row.id,
     title: row.title || row.tldr || 'Untitled article',
     sourceUrl: row.source_url,
-    sourceName: row.source_name,
+    sourceName: normalizeSourceName(row.source_name),
     publishedDate: row.published_date,
     articleType: row.article_type,
     fundCategories: row.fund_categories ?? [],
@@ -125,6 +191,9 @@ function mapRowToArticle(row: any): NewsArticle {
     personName: (extractedData?.person_name as string) ?? null,
     personTitle: (extractedData?.person_title as string) ?? null,
     firmDomain: (extractedData?.firm_domain as string) ?? null,
+    originalCurrency: (extractedData?.original_currency as string) ?? null,
+    originalAmountMillions: (extractedData?.original_amount_millions as number) ?? null,
+    storyClusterId: row.story_cluster_id ?? null,
   }
 }
 

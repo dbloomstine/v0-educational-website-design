@@ -50,6 +50,8 @@ interface ClassificationOutput {
     confidence: number;
   }>;
   fund_size_usd_millions: number | null;
+  original_currency: string | null;
+  original_amount_millions: number | null;
   close_type: string | null;
   firm_name: string | null;
   fund_name: string | null;
@@ -84,6 +86,8 @@ For each article, return a JSON object with exactly these fields:
   "firm_name": string | null,      // ALWAYS extract the primary fund manager / GP / investment firm mentioned. For exec moves, the firm they joined or left. For M&A, the acquirer. For market commentary, the most prominent fund manager discussed. Extract aggressively — if ANY fund manager is named in the headline, extract it.
   "fund_name": string | null,      // specific fund vehicle name (e.g. "Apollo Fund X", "Blackstone Real Estate Partners IX"). null if no specific fund named.
   "fund_size_usd_millions": number | null,  // fund size in USD millions. Convert: $3B = 3000, €500M ≈ 550, £200M ≈ 255. null if not mentioned.
+  "original_currency": string | null,      // if fund size was NOT originally in USD, the original currency code (e.g. "EUR", "GBP", "JPY", "CHF"). null if USD or no size mentioned.
+  "original_amount_millions": number | null, // the original amount in millions BEFORE USD conversion. e.g. if article says "€500M", this is 500. null if USD or no size.
   "close_type": string | null,     // "final_close" | "first_close" | "interim_close" | "hard_cap" | "target" | "launch" if mentioned
   "fund_strategy": string | null,  // e.g. "buyout", "growth equity", "venture", "direct lending", "distressed", "mezzanine", "opportunistic", "core-plus", "value-add", "multi-strategy", "secondaries", "co-investment", "fund-of-funds", "continuation vehicle", "NAV lending"
   "geography": string[],           // where the fund invests or firm is headquartered: ["North America"], ["Europe"], ["Asia-Pacific"], ["Global"], ["Middle East"], ["Latin America"]. Empty array if unclear.
@@ -191,6 +195,8 @@ export async function classifyPendingArticles(
             // Store extracted fund data in existing extracted_data column
             extracted_data: {
               fund_size_usd_millions: classification.fund_size_usd_millions,
+              original_currency: classification.original_currency,
+              original_amount_millions: classification.original_amount_millions,
               close_type: classification.close_type,
               entities: classification.entities,
               source_type: classification.source_type,

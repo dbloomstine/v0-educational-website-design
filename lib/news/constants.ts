@@ -12,7 +12,7 @@ export const EVENT_LABELS: Record<string, { label: string; short: string; color:
   regulatory_action: { label: 'Regulatory', short: 'Reg', color: 'bg-amber-900/50 text-amber-300 border-amber-800' },
   legal_alert: { label: 'Legal Alert', short: 'Legal', color: 'bg-amber-900/50 text-amber-300 border-amber-800' },
   market_commentary: { label: 'Analysis', short: 'Analysis', color: 'bg-muted text-muted-foreground border-border' },
-  industry_analysis: { label: 'Industry', short: 'Ind', color: 'bg-muted text-muted-foreground border-border' },
+  industry_analysis: { label: 'Industry', short: 'Industry', color: 'bg-muted text-muted-foreground border-border' },
   press_release: { label: 'Press Release', short: 'Press', color: 'bg-muted text-muted-foreground border-border' },
   award: { label: 'Award', short: 'Award', color: 'bg-muted text-muted-foreground border-border' },
   other: { label: 'Other', short: 'Other', color: 'bg-muted text-muted-foreground border-border' },
@@ -27,6 +27,32 @@ export const CATEGORY_LABELS: Record<string, { label: string; color: string }> =
   infrastructure: { label: 'Infra', color: 'bg-sky-900/50 text-sky-300' },
   secondaries: { label: 'Secondaries', color: 'bg-rose-900/50 text-rose-300' },
   gp_stakes: { label: 'GP-Stakes', color: 'bg-teal-900/50 text-teal-300' },
+}
+
+// Normalize variant source names to canonical forms.
+// Only collapses true duplicates (e.g. "Bloomberg.com" → "Bloomberg"),
+// not legitimately different publications (e.g. "Bloomberg Law" stays distinct).
+export const SOURCE_NAME_MAP: Record<string, string> = {
+  'bloomberg.com': 'Bloomberg',
+  'news.bloombergtax.com': 'Bloomberg Tax',
+  'bloomberg law news': 'Bloomberg Law',
+  'msn.com': 'MSN',
+  'pr newswire financial': 'PR Newswire',
+  'pr newswire - financial services': 'PR Newswire',
+  'pr newswire uk': 'PR Newswire',
+  'pr newswire asia': 'PR Newswire',
+  'prnewswire.com': 'PR Newswire',
+  'globenewswire financial services': 'GlobeNewswire',
+  'business wire india': 'Business Wire',
+  'the wall street journal': 'WSJ',
+  'newswire.com': 'Newswire.com',
+  'www.newswire.com': 'Newswire.com',
+  'newswire': 'Newswire.com',
+}
+
+export function normalizeSourceName(raw: string | null): string | null {
+  if (!raw) return null
+  return SOURCE_NAME_MAP[raw.toLowerCase().trim()] ?? raw
 }
 
 export function decodeHtmlEntities(text: string): string {
@@ -57,7 +83,7 @@ export function formatRelativeDate(date: string): string {
   }
 }
 
-export function formatCompactTime(date: string): string {
+export function formatCompactTime(date: string, dateRange?: string): string {
   try {
     const now = new Date()
     // Date-only strings (YYYY-MM-DD) have no time component — we can't show
@@ -88,12 +114,15 @@ export function formatCompactTime(date: string): string {
     yesterday.setDate(yesterday.getDate() - 1)
     if (d.toDateString() === yesterday.toDateString()) return 'Yesterday'
 
-    // Within 7 days: show day name
-    const diffMs = now.getTime() - d.getTime()
-    const diffDay = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-    if (diffDay < 7) return d.toLocaleDateString('en-US', { weekday: 'long' })
+    // Within 7 days: show day name only for 24h view (unambiguous).
+    // For 7d/30d/90d views, "Friday" is ambiguous — use "Mar 28" instead.
+    if (!dateRange || dateRange === '24h') {
+      const diffMs = now.getTime() - d.getTime()
+      const diffDay = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+      if (diffDay < 7) return d.toLocaleDateString('en-US', { weekday: 'long' })
+    }
 
-    // Older: show date
+    // Older (or non-24h view): show date
     return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   } catch {
     return ''
