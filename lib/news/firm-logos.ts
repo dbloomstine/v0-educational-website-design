@@ -228,6 +228,164 @@ export const FIRM_DOMAIN_MAP: Record<string, string> = {
   'quilter': 'quilter.com',
   'persistent systems': 'persistent.com',
   'adenia partners': 'adeniapartners.com',
+
+  // ── Credit / Lending / CLO ─────────────────────────────────────────
+  'tikehau capital': 'tikehaucapital.com',
+  'tikehau': 'tikehaucapital.com',
+  'goldentree': 'goldentreeim.com',
+  'goldentree asset management': 'goldentreeim.com',
+  'muzinich': 'muzinich.com',
+  'muzinich & co': 'muzinich.com',
+  'monroe capital': 'monroecap.com',
+  'burford capital': 'burfordcapital.com',
+  'burford': 'burfordcapital.com',
+  'bonaccord': 'bonaccordcapital.com',
+  'bonaccord capital': 'bonaccordcapital.com',
+  'pccp': 'pfreim.com',
+  'pccp llc': 'pfreim.com',
+
+  // ── European PE / VC ───────────────────────────────────────────────
+  'pictet': 'am.pictet',
+  'pictet alternative advisors': 'am.pictet',
+  'pictet asset management': 'am.pictet',
+  'astorg': 'astorg.com',
+  'astorg partners': 'astorg.com',
+  'alantra': 'alantra.com',
+  'ldc': 'ldc.co.uk',
+  'credo ventures': 'credoventures.com',
+  'ysios capital': 'ysioscapital.com',
+  'ysios': 'ysioscapital.com',
+  'invenio partners': 'inveniopartners.com',
+  'invenio': 'inveniopartners.com',
+
+  // ── Infra / Real Estate / Climate ──────────────────────────────────
+  'climate investment': 'climateinvestment.com',
+  'lasalle investment management': 'lasalle.com',
+  'lasalle im': 'lasalle.com',
+  'lasalle': 'lasalle.com',
+  'gladstone management': 'gladstonefunds.com',
+  'gladstone': 'gladstonefunds.com',
+  'london stock exchange': 'lseg.com',
+  'lseg': 'lseg.com',
+
+  // ── Investment Banks / Advisors ────────────────────────────────────
+  'evercore': 'evercore.com',
+  'bnp paribas': 'bnpparibas.com',
+  'bnp': 'bnpparibas.com',
+  'jp morgan chase': 'jpmorgan.com',
+
+  // ── Crypto / Digital Assets ────────────────────────────────────────
+  'parafi capital': 'parafi.com',
+  'parafi': 'parafi.com',
+
+  // ── Pension Funds / Public Allocators ──────────────────────────────
+  'south carolina retirement': 'rsic.sc.gov',
+  'south carolina retirement system': 'rsic.sc.gov',
+  'illinois municipal retirement': 'imrf.org',
+  'illinois municipal retirement fund': 'imrf.org',
+  'marin county employees\' retirement': 'mcera.org',
+  'marin county employees': 'mcera.org',
+  'boston retirement': 'boston.gov',
+  'boston retirement system': 'boston.gov',
+  'national pension service': 'nps.or.kr',
+
+  // ── Mid-market / Specialty ─────────────────────────────────────────
+  'bankinter': 'bankinter.com',
+  'elm capital': 'elmcapital.com',
+  'forward consumer': 'forwardconsumer.com',
+  'midpoint capital partners': 'midpointcp.com',
+  'midpoint capital': 'midpointcp.com',
+  'first in': 'firstin.vc',
+  'broad street development': 'broadstreet.com',
+}
+
+/**
+ * Map source publication names to their domains for favicon lookup.
+ * Used as a final fallback when no firm is identified for an article.
+ */
+export const SOURCE_DOMAIN_MAP: Record<string, string> = {
+  'bloomberg': 'bloomberg.com',
+  'bloomberg.com': 'bloomberg.com',
+  'bloomberg tax': 'bloomberg.com',
+  'bloomberg law': 'bloomberg.com',
+  'reuters': 'reuters.com',
+  'wsj': 'wsj.com',
+  'the wall street journal': 'wsj.com',
+  'financial times': 'ft.com',
+  'cnbc': 'cnbc.com',
+  'business insider': 'businessinsider.com',
+  'fortune': 'fortune.com',
+  'axios': 'axios.com',
+  'techcrunch': 'techcrunch.com',
+  'techcrunch vc': 'techcrunch.com',
+  'msn': 'msn.com',
+  'msn.com': 'msn.com',
+  'yahoo finance': 'finance.yahoo.com',
+
+  // Industry publications
+  'pensions & investments': 'pionline.com',
+  'pitchbook': 'pitchbook.com',
+  'pe hub': 'pehub.com',
+  'private equity wire': 'privateequitywire.co.uk',
+  'private equity international': 'privateequityinternational.com',
+  'private equity international | pei': 'privateequityinternational.com',
+  'private debt investor': 'privatedebtinvestor.com',
+  'alternative credit investor': 'alternativecreditinvestor.com',
+  'infrastructure investor': 'infrastructureinvestor.com',
+  'secondaries investor': 'secondariesinvestor.com',
+  'pere': 'perenews.com',
+  'hedge week': 'hedgeweek.com',
+  'hedgeweek': 'hedgeweek.com',
+  'institutional investor': 'institutionalinvestor.com',
+  'investment week': 'investmentweek.co.uk',
+  'investmentnews': 'investmentnews.com',
+  'altassets': 'altassets.net',
+  'altassets private equity news': 'altassets.net',
+  'esg today': 'esgtoday.com',
+  'agri investor': 'agriinvestor.com',
+  'buyouts': 'buyoutsinsider.com',
+  'buyouts insider': 'buyoutsinsider.com',
+  'venture capital journal': 'venturecapitaljournal.com',
+  'alternatives watch': 'alternativeswatch.com',
+  'commercial observer': 'commercialobserver.com',
+
+  // News wires
+  'pr newswire': 'prnewswire.com',
+  'pr newswire financial': 'prnewswire.com',
+  'pr newswire - financial services': 'prnewswire.com',
+  'business wire': 'businesswire.com',
+  'globenewswire': 'globenewswire.com',
+  'globenewswire financial services': 'globenewswire.com',
+
+  // Other sources
+  'benzinga': 'benzinga.com',
+  'thestreet.com': 'thestreet.com',
+  'the street': 'thestreet.com',
+  'tradingview': 'tradingview.com',
+  'hedgeco.net': 'hedgeco.net',
+  'pulse 2.0': 'pulse2.com',
+  'the recursive': 'therecursive.com',
+  'eu-startups.com': 'eu-startups.com',
+  'launch base africa': 'launchbaseafrica.com',
+  'partnerships bulletin': 'partnershipsbulletin.com',
+  'eurasia review': 'eurasiareview.com',
+  'everycrsreport.com': 'everycrsreport.com',
+  'theglobeandmail.com': 'theglobeandmail.com',
+  'the globe and mail': 'theglobeandmail.com',
+
+  // Broadcast / general
+  'usa today': 'usatoday.com',
+  '24/7 wall street': '247wallst.com',
+  '24/7 wall st.': '247wallst.com',
+}
+
+/**
+ * Look up the domain for a source publication name.
+ */
+export function getSourceDomain(sourceName: string | null): string | null {
+  if (!sourceName) return null
+  const key = sourceName.toLowerCase().trim()
+  return SOURCE_DOMAIN_MAP[key] ?? null
 }
 
 /**

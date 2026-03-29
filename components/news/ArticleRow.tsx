@@ -13,7 +13,7 @@ import {
   formatRelativeDate,
 } from '@/lib/news/constants'
 import type { NewsArticle } from '@/lib/news/types'
-import { getFirmDomain } from '@/lib/news/firm-logos'
+import { getFirmDomain, getSourceDomain } from '@/lib/news/firm-logos'
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   EUR: '€', GBP: '£', JPY: '¥', CHF: 'CHF ', CNY: '¥', KRW: '₩', AUD: 'A$', CAD: 'C$',
@@ -51,7 +51,8 @@ function FirmLogo({
 }) {
   // 1. Check curated map first (fixes wrong domains from classification)
   // 2. Fall back to domain from classification pipeline
-  const resolvedDomain = getFirmDomain(firmName) ?? domain
+  // 3. Fall back to source publication domain (so Bloomberg articles show Bloomberg's icon)
+  const resolvedDomain = getFirmDomain(firmName) ?? domain ?? getSourceDomain(sourceName ?? null)
 
   const [imgError, setImgError] = useState<string | null>(null)
 
@@ -64,7 +65,7 @@ function FirmLogo({
         src={`https://www.google.com/s2/favicons?domain=${resolvedDomain}&sz=128`}
         alt={firmName || ''}
         loading="lazy"
-        className="rounded-full object-contain bg-white shrink-0"
+        className="rounded-full object-contain bg-slate-700 shrink-0"
         style={{ width: size, height: size }}
         onError={() => setImgError(resolvedDomain)}
       />
