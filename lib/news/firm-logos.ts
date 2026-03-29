@@ -453,7 +453,7 @@ export const FIRM_DOMAIN_MAP: Record<string, string> = {
   'revelation partners': 'revelation-partners.com',
   'lexington partners': 'lexingtonpartners.com',
   'lexington': 'lexingtonpartners.com',
-  'ardian': 'ardian.com',
+  'ardian': 'www.ardian.com',
   'coller capital': 'collercapital.com',
   'coller': 'collercapital.com',
   'neuberger berman': 'nb.com',
