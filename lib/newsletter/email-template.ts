@@ -18,21 +18,21 @@ interface TemplateParams {
 }
 
 const EVENT_BADGE_COLORS: Record<string, { bg: string; text: string }> = {
-  fund_launch: { bg: '#065f46', text: '#6ee7b7' },
-  fund_close: { bg: '#7c2d12', text: '#fdba74' },
-  capital_raise: { bg: '#1e3a5f', text: '#93c5fd' },
-  executive_hire: { bg: '#581c87', text: '#c4b5fd' },
-  executive_change: { bg: '#4a1d6e', text: '#d8b4fe' },
-  executive_departure: { bg: '#6b2121', text: '#fca5a5' },
+  fund_launch: { bg: '#7f1d1d', text: '#fca5a5' },
+  fund_close: { bg: '#7f1d1d', text: '#fca5a5' },
+  capital_raise: { bg: '#7c2d12', text: '#fdba74' },
+  executive_hire: { bg: '#4c1d95', text: '#c4b5fd' },
+  executive_change: { bg: '#4c1d95', text: '#c4b5fd' },
+  executive_departure: { bg: '#4c1d95', text: '#c4b5fd' },
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-  PE: '#3b82f6',
+  PE: '#6366f1',
   VC: '#10b981',
   credit: '#f59e0b',
   hedge: '#8b5cf6',
-  real_estate: '#ef4444',
-  infrastructure: '#6366f1',
+  real_estate: '#f97316',
+  infrastructure: '#0ea5e9',
   secondaries: '#ec4899',
   gp_stakes: '#14b8a6',
 }
