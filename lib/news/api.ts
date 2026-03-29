@@ -21,17 +21,23 @@ const RANGE_TO_DAYS: Record<string, number> = {
   '90d': 90,
 }
 
-// Press-release syndication and stock-screener sites that add noise.
-// Articles from these sources are kept only if relevance >= 0.6.
+// Pure syndication / press-release reprint sites — always blocked regardless of relevance.
+// These never add original reporting; high relevance scores reflect the story, not the source.
+const BLOCKED_SOURCES = new Set([
+  'mexc.co', 'mexc', 'waya.media', 'the malone telegram', 'national today',
+  'the manila times',
+])
+
+// Stock-screener and low-quality aggregators — allowed only if highly relevant.
 const LOW_QUALITY_SOURCES = new Set([
   'marketbeat', 'quiver quantitative', 'stock titan', 'defense world',
-  'national today', 'mexc.co', 'mexc', 'waya.media', 'the malone telegram',
   'usa today', 'citybiz',
 ])
 
 function filterLowQualitySources(article: NewsArticle): boolean {
   if (!article.sourceName) return true
   const src = article.sourceName.trim().toLowerCase()
+  if (BLOCKED_SOURCES.has(src)) return false
   if (LOW_QUALITY_SOURCES.has(src) && (article.relevanceScore ?? 0) < 0.6) return false
   return true
 }
@@ -53,7 +59,7 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
     .neq('title', '')
     .not('title', 'is', null)
     .gte('published_date', cutoff.split('T')[0])
-    .order('updated_at', { ascending: false })
+    .order('published_date', { ascending: false })
     .order('relevance_score', { ascending: false })
     .range(offset, offset + limit)
 
@@ -129,8 +135,9 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
 
 function buildArticleGroups(articles: NewsArticle[]): ArticleGroup[] {
   const clusterMap = new Map<string, NewsArticle[]>()
-  const groups: ArticleGroup[] = []
+  const assigned = new Set<string>()
 
+  // Layer 1: group by story_cluster_id (from embedding pipeline, if available)
   for (const article of articles) {
     if (article.storyClusterId) {
       const list = clusterMap.get(article.storyClusterId)
@@ -139,13 +146,38 @@ function buildArticleGroups(articles: NewsArticle[]): ArticleGroup[] {
       } else {
         clusterMap.set(article.storyClusterId, [article])
       }
-    } else {
-      // Unclustered articles are standalone groups
-      groups.push({ primaryArticle: article, relatedArticles: [], clusterSize: 1 })
+      assigned.add(article.id)
     }
   }
 
-  // Build cluster groups — primary is highest relevance, rest are related
+  // Layer 2: group unclustered articles by firm name + fund size (same story, different sources)
+  const firmSizeMap = new Map<string, NewsArticle[]>()
+  for (const article of articles) {
+    if (assigned.has(article.id)) continue
+    // Only group if we have a firm name AND fund size — both needed to avoid false matches
+    if (article.firmName && article.fundSizeUsd) {
+      const key = `${article.firmName.toLowerCase().trim()}|${article.fundSizeUsd}`
+      const list = firmSizeMap.get(key)
+      if (list) {
+        list.push(article)
+      } else {
+        firmSizeMap.set(key, [article])
+      }
+      assigned.add(article.id)
+    }
+  }
+
+  // Merge firm-size groups into clusterMap
+  for (const [key, groupArticles] of firmSizeMap) {
+    if (groupArticles.length > 1) {
+      clusterMap.set(`firm:${key}`, groupArticles)
+    }
+  }
+
+  // Build final groups
+  const groups: ArticleGroup[] = []
+
+  // Add cluster groups — primary is highest relevance
   for (const [, clusterArticles] of clusterMap) {
     const sorted = [...clusterArticles].sort(
       (a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)
@@ -155,6 +187,23 @@ function buildArticleGroups(articles: NewsArticle[]): ArticleGroup[] {
       relatedArticles: sorted.slice(1),
       clusterSize: sorted.length,
     })
+  }
+
+  // Add standalone articles (not in any cluster or firm-size group)
+  for (const article of articles) {
+    if (assigned.has(article.id)) {
+      // Check if it was a firm-size singleton (only 1 article with that firm+size)
+      const firmKey = article.firmName && article.fundSizeUsd
+        ? `${article.firmName.toLowerCase().trim()}|${article.fundSizeUsd}`
+        : null
+      const firmGroup = firmKey ? firmSizeMap.get(firmKey) : null
+      if (firmGroup && firmGroup.length === 1) {
+        groups.push({ primaryArticle: article, relatedArticles: [], clusterSize: 1 })
+      }
+      // Multi-article groups already added above
+    } else {
+      groups.push({ primaryArticle: article, relatedArticles: [], clusterSize: 1 })
+    }
   }
 
   // Maintain original feed order: sort groups by first appearance in the articles array
