@@ -54,7 +54,7 @@ function renderFirmLogo(article: ArticleGroup['articles'][0]): string {
   if (resolvedDomain) {
     const initial = (article.firmName ?? '?')[0].toUpperCase()
     // Use Google Favicons API with a letter-initial fallback via alt text
-    return `<img src="https://www.google.com/s2/favicons?domain=${escapeHtml(resolvedDomain)}&sz=128" alt="${escapeHtml(initial)}" width="20" height="20" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;background:#334155;" />`
+    return `<img src="https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${escapeHtml(resolvedDomain)}&size=128" alt="${escapeHtml(initial)}" width="20" height="20" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;background:#334155;" />`
   }
   // No domain — show letter initial in a circle
   const initial = (article.firmName ?? '?')[0].toUpperCase()

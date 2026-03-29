@@ -62,7 +62,7 @@ function FirmLogo({
   if (resolvedDomain && !domainFailed) {
     return (
       <img
-        src={`https://www.google.com/s2/favicons?domain=${resolvedDomain}&sz=128`}
+        src={`https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${resolvedDomain}&size=128`}
         alt={firmName || ''}
         loading="lazy"
         className="rounded-full object-contain bg-white shrink-0"
