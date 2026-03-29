@@ -65,7 +65,7 @@ function FirmLogo({
         src={`https://www.google.com/s2/favicons?domain=${resolvedDomain}&sz=128`}
         alt={firmName || ''}
         loading="lazy"
-        className="rounded-full object-contain bg-slate-700 shrink-0"
+        className="rounded-full object-contain bg-white shrink-0"
         style={{ width: size, height: size }}
         onError={() => setImgError(resolvedDomain)}
       />
