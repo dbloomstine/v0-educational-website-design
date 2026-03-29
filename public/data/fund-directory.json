@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-03-28T18:00:34.830087Z",
+  "generated_at": "2026-03-29T16:45:24.037133Z",
   "funds": [
     {
       "fund_name": "GoldenTree AM CLO 37",
@@ -77,6 +77,15 @@
           "source_domain": "sg.finance.yahoo.com",
           "published_date": "2026-03-27",
           "summary": "MidPoint Capital Partners, LLC Announces $500 Million Private Real Estate Lending Fund&nbsp;&nbsp;Yahoo Finance Singapore",
+          "feed_name": "search:Credit/Real estate"
+        },
+        {
+          "title": "MidPoint Capital Partners, LLC Announces $500 Million Private Real Estate Lending Fund - TechBullion",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPZ0tmLUhIcWNBUEg0TUVqZEtCQkR3SVBWTlVfLThzQ1A5VDgyQUpWRG1uTE53N0FMbDRLWkEtalFyNzItMlRPZVpFRXlyUHhwTEVEVFFMUmpWSzRQRkhBcjE1em5lcUVZS1BQV1dPd0FnWHp3bTVZMnNlLTRCY0NTLU9vdG1xRHpaNUFTWFplMm9VNVlnc0EyZXVqaUM1Ykp6cFROR2dUUndHV3hxVnc?oc=5",
+          "source_name": "TechBullion",
+          "source_domain": "techbullion.com",
+          "published_date": "2026-03-27",
+          "summary": "MidPoint Capital Partners, LLC Announces $500 Million Private Real Estate Lending Fund&nbsp;&nbsp;TechBullion",
           "feed_name": "search:Credit/Real estate"
         }
       ]
@@ -229,7 +238,7 @@
       "announcement_date": "2026-03-27",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/100207669.html",
       "source_name": "AltAssets",
-      "description_notes": "close $148M for its oversubscribed third fund focused on early-stage critical technology ventures, bolstered by SBIC (Small Business Investment Company) designation approval that expands its investor base. The fund targets hard-tech and defense-adjacent sectors, marking growth from prior vintages as demand for U.S.-backed critical tech investing accelerates.",
+      "description_notes": "raise $148M for oversubscribed third fund backed by SBIC critical tech designation, positioning First In as an early-stage venture capital firm focused on critical technology sectors. The fund's oversubscription and SBIC approval underscore LP confidence in the firm's track record across prior vintages. The critical tech SBIC designation signals focus on defense-adjacent or national security-relevant technology investments.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-28T11:45:14",
@@ -358,6 +367,15 @@
       "covered_date": null,
       "date_added": "2026-03-26T15:59:52",
       "articles": [
+        {
+          "title": "Forward Consumer Partners: $500 Million Closed For Second Fund - Pulse 2.0",
+          "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTE9ycE5zZ2x3eVp6dXhUWmtoQzFyOTV4ZVNNazlpczZoLTFEVk1MdjhTMG40cFZlOHNMckhVbnNBSmJsYTdrMS1BNmpabWwwVF8tSVBiZG1ZMW5rc1FqdHFBN2FudEJjVXBscVFSa0tMZDl2NE1ralllNNIBfkFVX3lxTE4wUTRKVWRtUUNsWEFPem1kV2ZnMDBRUEtKT2hucERSTGlSbXkxQmU1Q3VWN1VEeTlPcm5UeVhpVXkzRHlBUHR5cnBSU2Nqd21oNEk3c3NTaHlpZ2lySDlaaWU0OWszbDlreW01ZzNlVEhJd3FBeUlhZGpBcXlCUQ?oc=5",
+          "source_name": "Pulse 2.0",
+          "source_domain": "pulse2.com",
+          "published_date": "2026-03-28",
+          "summary": "Forward Consumer Partners: $500 Million Closed For Second Fund&nbsp;&nbsp;Pulse 2.0",
+          "feed_name": "search:Oversubscribed funds"
+        },
         {
           "title": "Forward Consumer Partners Closes Fund II at $500 Million Hard Cap - Business Wire",
           "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxPZDk1bHp6blJlOGhmS3NpTzR4enJSVUFkM3lLZVNUMktSUWx6WXFNSnc1NG5ESXBVeUtrNVRfTEdjaVRoRS1XTm9YM0Q3YXZzOGlncHlRbzF6S3dOOFRScXV3UUpDNjlHT3oteE1vekZNZ1hVdkgyMXE2UWVmWFRpTHBONzdOeXFwdWZjekZjS29oWFNaWDNEVEZrSUFub3RpTm9WUGlyZlhDWUVJdjBOUHIzeVJFQVpDMEdoUGJzSGF2UQ?oc=5",
@@ -650,7 +668,7 @@
       "announcement_date": "2026-03-25",
       "source_url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTE5Dc19ldlc1b3AtaTgyeS03UU91NXpjYXVYXzZ3WE8wYUpqS2NqajB4TU83Xzl6allkZ1NoM2pfemRlWWxsQ3NtREViYnR6bnJhTktn?oc=5",
       "source_name": "Arabnews",
-      "description_notes": "raise $190M+ for opportunistic and value-add real estate investments across residential, commercial, and mixed-use assets. The fund targets core-plus and value-add strategies in primary and secondary markets, positioning itself as a growth vehicle for the firm's real estate platform. This is the fund's inaugural close, establishing Waterway's dedicated real estate investment vehicle.",
+      "description_notes": "raise $190M+ for a new real estate fund focused on opportunistic and value-add investments across commercial and residential properties. The fund represents Waterway's entry or expansion into dedicated real estate vehicles, targeting institutional LPs seeking exposure to real estate fundamentals. Without confirmed track record details, this launch-stage vehicle will likely compete on market timing, management expertise, or specific geographic/asset class focus.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-25T13:41:37",
@@ -771,15 +789,15 @@
       "amount": "$3B",
       "amount_usd_millions": 3000.0,
       "category": "Secondaries & GP-Stakes",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "London, UK",
+      "city": "London",
       "state": "",
-      "country": "",
+      "country": "UK",
       "stage": "Launch",
       "announcement_date": "2026-03-24",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/100207606.html",
       "source_name": "AltAssets",
-      "description_notes": "launch a $3bn fund of funds platform through a joint venture between Hybrid Advisors and Faithstone Capital Partners, targeting secondaries and GP-stakes investments. The partnership scales Hybrid Advisors' existing platform over an 18-month timeline, combining both firms' expertise in alternative asset management. The master venture, Hybrid Faithstone, represents a significant expansion for both managers in the fund of funds space.",
+      "description_notes": "raise $3B for a secondaries and GP-stakes fund-of-funds platform combining Hybrid Advisors' and Faithstone Capital's expertise in secondary investments and direct GP partnerships. The platform targets institutional investors seeking exposure to private market continuation funds, minority stakes in general partners, and secondary transactions across mid-market and large-cap funds. This launch represents a significant consolidation in the secondaries space, pooling the resources of two established players to compete with larger platforms in an increasingly competitive market for LP capital.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-26T15:59:52",
@@ -1191,6 +1209,15 @@
           "published_date": "2026-03-23",
           "summary": "Somerset Indus closes $288 mn fund, eyes larger healthcare investments&nbsp;&nbsp;Business Standard",
           "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "Somerset Closes $288M Fund for India Healthcare, Exceeding Target - Whalesbook",
+          "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxQUW0tSmhuaGNSdGlBTVY2dHpMN0xweFB0b3J2TlVnZ0MwZ0NwVnJNZnR5d3M4SlVnQnNJaUUzNGxSdmFWRGxYem5SbE5hTC1fcHZkb3N4bXpwbnplcUNGU0dDaWJ3RXZ0bFVvRTNXZ1dOM3R1ZksyZ1ZJaE1HRDAxeHpHLVNheThhcFpvZ3d4WGpRcXRaYWJZaTZqUnUtMjByU0NRSmQxZ3Y1QzEtcWEyNTV1bXJPY1RVUGRMVEJtY003RkhNLXRFWGZmRGZHb1E1LTIzWUdIOWJXMDFvX2c?oc=5",
+          "source_name": "Whalesbook",
+          "source_domain": "whalesbook.com",
+          "published_date": "2026-03-23",
+          "summary": "Somerset Closes $288M Fund for India Healthcare, Exceeding Target&nbsp;&nbsp;Whalesbook",
+          "feed_name": "search:Oversubscribed funds"
         }
       ]
     },
@@ -2704,7 +2731,7 @@
       "announcement_date": "2026-03-13",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/europe-by-region/western-europe-europe-by-region/samaipata-launches-e110m-targeting-fund-iii-to-tap-into-next-wave-of-european-ai-advancement.html",
       "source_name": "AltAssets",
-      "description_notes": "raise \u20ac110m for its third venture fund focused on European AI-enabled startups, positioning Samaipata to capitalize on the continent's acceleration in artificial intelligence development. Fund III marks the firm's continued bet on early-stage European tech, building on prior vintages as AI becomes a defining investment thesis across the region.",
+      "description_notes": "raise \u20ac110m for its third venture fund targeting European AI-focused startups, positioning itself to capture the next wave of artificial intelligence advancement across the continent. The fund represents Samaipata's continued focus on early-stage European tech innovation, though specific LP commitments and comparison to prior vintage sizes were not disclosed.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-13T13:32:01",
@@ -3219,7 +3246,7 @@
       "announcement_date": "2026-03-12",
       "source_url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPSEdlTXF6UTRmZWFxNmYzb3ZERG4tYlpsTVlDM2hpZUU0ZklTdUdKNFRyTTR3a0xGbXBfc29YQ0lLTy13U0NTLW9rbU1lRkk2R0VsTXAzRXk0NVBHRTJyblNaem1ldk50R1MybUpjRW03YTN4a000T3hIcTEzUk1JMmlZanM4SXlOdWVsdnM2dnhvM051WTBCZVRLMDQ4WThIbl9IeWJjWWROcHBxc2hWc2N1TGt3ZmFHUGZTYWRpWWZUMEU?oc=5",
       "source_name": "Agfundernews",
-      "description_notes": "backs early-stage artificial intelligence companies focused on food distribution and supply chain optimization, targeting founders building logistics and inventory management solutions for the sector. The fund represents Anchr's specialized play in agritech and foodtech, narrowing its investment thesis to a vertical where AI can drive measurable efficiency gains. Details on LP composition and fund size remain undisclosed, though the focused strategy suggests a smaller vehicle designed to capitalize on underinvestment in food distribution automation.",
+      "description_notes": "back a venture fund focused on artificial intelligence applications in food distribution, targeting early-stage and growth companies building logistics, supply chain, and market-access software for the sector. the fund operates within anchr's broader food-tech investment thesis, leveraging the firm's existing portfolio and sector expertise to identify automation and efficiency opportunities across cold chain and last-mile delivery. the undisclosed fund size suggests anchr is scaling its food-tech focus beyond prior generalist or broader agtech efforts.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-15T22:21:38",
@@ -5258,7 +5285,7 @@
       "announcement_date": "2026-03-05",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/highbrook-investors-raises-266m-date-centre-fund-to-capitalise-on-compelling-time-sensitive-opportunity.html",
       "source_name": "AltAssets",
-      "description_notes": "raise $266m for HighBrook Investors' inaugural data centre fund, completed on an accelerated timeline to capitalize on what the firm calls a \"compelling, time-sensitive opportunity\" in the AI-driven infrastructure boom. The debut fund marks the private equity real estate firm's entry into the data centre sector, positioning it to acquire and operate facilities amid surging demand from cloud providers and generative AI workloads.",
+      "description_notes": "raise $266m for HighBrook Investors' inaugural data centre fund, completing the offering on an accelerated timeline to capitalize on what the firm characterized as a 'compelling, time-sensitive opportunity' in core infrastructure assets. The first-time fund targets the US data centre market amid surging demand from AI and cloud computing workloads, positioning HighBrook as a new entrant in the competitive real estate infrastructure space.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-06T11:01:30",
@@ -11956,6 +11983,15 @@
           "published_date": "2026-03-24",
           "summary": "",
           "feed_name": "Infrastructure Investor"
+        },
+        {
+          "title": "KKR approaches first close of around $5bn for third APAC infra fund \u2013 exclusive - Infrastructure Investor",
+          "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNYW1lRmpTSzZLd3lpVU9QLUJrRGxCUjQ3V2VsazFqZkxfaG9ITjdiS2dNWmVuWnJselBCVlpXTThyeGxKb19ZeXZEY1VvRDQyTlJZaF9xZkw2TUtNcGtFd1RyX2xQcDBWbGZfR0tLRXh0OHpjMW5TbW5oYVpRS2pkeER1ZmxPREtDTnpCSEgyRzdTSHdGN21OeGdpejFMcEFFdGttZTAyNDhvNmNQRXB0THlvbnlLYjA?oc=5",
+          "source_name": "Infrastructure Investor",
+          "source_domain": "infrastructureinvestor.com",
+          "published_date": "2026-03-24",
+          "summary": "KKR approaches first close of around $5bn for third APAC infra fund \u2013 exclusive&nbsp;&nbsp;Infrastructure Investor",
+          "feed_name": "search:First/final close"
         },
         {
           "title": "Blueprint: Iran war\u2019s potential spillover effects; Morgan Stanley\u2019s fundraise milestone; KKR\u2019s real estate repositioning",
@@ -19348,10 +19384,10 @@
       "amount": "\u20ac500m",
       "amount_usd_millions": 500.0,
       "category": "Real Estate",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "London, UK",
+      "city": "London",
       "state": "",
-      "country": "Germany",
+      "country": "UK",
       "stage": "Launch",
       "announcement_date": "2026-01-05",
       "source_url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPYVQtRk1HQ0UwSERRc3o1cFBzeXhNUDM0X2lSLTRVdkh0S0ZXd1RWMUlyVVdkOWRWSWs2ZzcxblVWdzNlTUdOYWFuZ2dKMHBHeEZ6R0wtREF2Vmx3THFVd0FDakZGdjM0ZDdOZW9aVFNTSW0tQjlSNXZCMk54MDhBNFhjcnR0RXQwRlA5Q3ZXaGFSTy0tVjMycTNKNTBOeE1oQXdJR3A1VEd5Ync?oc=5",
@@ -20392,7 +20428,7 @@
       "announcement_date": "2025-12-03",
       "source_url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxNS0ZJTWlmdXJkQUFuc0hYaVNaLTV5ejdyMDBkS1ktZ2YtdG1MX2lGcnNuZmNmejNoVlBqNjFpakpQMmxfYldQWURyQkN4aXM1TElUQ05DWUQ2NXJENHkzMENIemdyWlFpNmEtSTIxTlZuaWVLVFBJUFJlQjdYazFwZVAyZUhXMXM?oc=5",
       "source_name": "Yahoo Finance",
-      "description_notes": "Unable to provide accurate enrichment. Anti Fund is not a widely recognized venture capital firm in public databases or industry records. Without verified information about the firm's headquarters, investment strategy, target market, or LP base, providing specific details risks inaccuracy. Recommend verifying firm details through Crunchbase, PitchBook, or direct firm contact.",
+      "description_notes": "Unable to generate description \u2014 Anti Fund is not a widely recognized venture capital firm in public databases. The $30M fund size suggests early-stage or emerging manager positioning, but without confirmed strategy details, LP roster, or vintage comparison data, a reliable briefing cannot be produced. Recommend verifying firm background and fund positioning before publication.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-01T11:02:00",
@@ -22230,8 +22266,8 @@
       "categories": [
         "Secondaries & GP-Stakes"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "London",
+      "country": "UK"
     },
     {
       "firm": "ArcLight Capital Partners",
@@ -23704,8 +23740,8 @@
       "categories": [
         "Real Estate"
       ],
-      "city": "N/A",
-      "country": "Germany"
+      "city": "London",
+      "country": "UK"
     },
     {
       "firm": "Goldman Sachs",
@@ -27582,8 +27618,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-03-28T06:57:24.383607",
-      "last_success": "2026-03-28T06:57:24.383611",
+      "last_fetch": "2026-03-29T09:32:22.666684",
+      "last_success": "2026-03-29T09:32:22.666694",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -27592,8 +27628,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-03-28T06:41:01.674437",
-      "last_success": "2026-03-28T06:41:01.674449",
+      "last_fetch": "2026-03-29T09:32:20.219306",
+      "last_success": "2026-03-29T09:32:20.219315",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -27632,8 +27668,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-03-28T07:36:37.783172",
-      "last_success": "2026-03-28T07:36:37.783180",
+      "last_fetch": "2026-03-29T09:50:10.275447",
+      "last_success": "2026-03-29T09:50:10.275456",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -27642,8 +27678,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-03-28T06:20:57.008150",
-      "last_success": "2026-03-28T06:20:57.008161",
+      "last_fetch": "2026-03-29T06:28:30.506907",
+      "last_success": "2026-03-29T06:28:30.506913",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -27652,8 +27688,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-03-28T06:12:54.699297",
-      "last_success": "2026-03-28T06:12:54.699304",
+      "last_fetch": "2026-03-29T06:11:56.236371",
+      "last_success": "2026-03-29T06:11:56.236377",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -27662,8 +27698,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-03-28T06:23:18.195864",
-      "last_success": "2026-03-28T06:23:18.195875",
+      "last_fetch": "2026-03-29T09:32:18.372582",
+      "last_success": "2026-03-29T09:32:18.372590",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -27672,8 +27708,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-03-28T06:20:59.934721",
-      "last_success": "2026-03-28T06:20:59.934732",
+      "last_fetch": "2026-03-29T06:28:33.876504",
+      "last_success": "2026-03-29T06:28:33.876514",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -27682,8 +27718,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-03-28T07:36:35.602659",
-      "last_success": "2026-03-28T07:36:35.602667",
+      "last_fetch": "2026-03-29T09:50:07.500015",
+      "last_success": "2026-03-29T09:50:07.500021",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -27692,8 +27728,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-03-28T06:21:02.856024",
-      "last_success": "2026-03-28T06:21:02.856034",
+      "last_fetch": "2026-03-29T07:30:57.063416",
+      "last_success": "2026-03-29T07:30:57.063429",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -27702,8 +27738,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-03-28T06:12:52.841947",
-      "last_success": "2026-03-28T06:12:52.841989",
+      "last_fetch": "2026-03-29T06:11:54.377710",
+      "last_success": "2026-03-29T06:11:54.377717",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -27712,8 +27748,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-03-28T06:23:16.059131",
-      "last_success": "2026-03-28T06:23:16.059142",
+      "last_fetch": "2026-03-29T08:38:41.919534",
+      "last_success": "2026-03-29T08:38:41.919539",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -27722,8 +27758,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-03-28T06:23:13.319382",
-      "last_success": "2026-03-28T06:23:13.319393",
+      "last_fetch": "2026-03-29T07:48:41.845787",
+      "last_success": "2026-03-29T07:48:41.845797",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -27732,8 +27768,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-03-28T06:12:55.973282",
-      "last_success": "2026-03-28T06:12:55.973288",
+      "last_fetch": "2026-03-29T06:11:57.538499",
+      "last_success": "2026-03-29T06:11:57.538508",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
