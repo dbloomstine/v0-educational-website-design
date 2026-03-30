@@ -600,7 +600,7 @@ export function NewsFeed() {
             {groups.length > 0
               ? groups.map((group) => (
                   <div key={group.primaryArticle.id}>
-                    <ArticleRow article={group.primaryArticle} dateRange={dateRange} />
+                    <ArticleRow article={group.primaryArticle} dateRange={dateRange} clusterSize={group.clusterSize} />
                     {group.clusterSize > 1 && (
                       <ClusterExpander
                         relatedArticles={group.relatedArticles}

@@ -92,9 +92,10 @@ function FirmLogo({
 interface ArticleRowProps {
   article: NewsArticle
   dateRange?: string
+  clusterSize?: number
 }
 
-export function ArticleRow({ article, dateRange }: ArticleRowProps) {
+export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps) {
   const eventLabel = article.eventType ? EVENT_LABELS[article.eventType] : null
   const fundSize = formatFundSize(article.fundSizeUsd)
 
@@ -238,10 +239,17 @@ export function ArticleRow({ article, dateRange }: ArticleRowProps) {
           {article.publishedDate ? formatCompactTime(article.publishedDate, dateRange) : ''}
         </span>
 
-        {/* Col 7: Source name */}
-        <span className="text-[12px] text-muted-foreground/60 truncate">
-          {article.sourceName || ''}
-        </span>
+        {/* Col 7: Source name + cluster badge */}
+        <div className="flex items-center gap-1.5 min-w-0">
+          <span className="text-[12px] text-muted-foreground/60 truncate">
+            {article.sourceName || ''}
+          </span>
+          {clusterSize && clusterSize > 1 && (
+            <span className="shrink-0 inline-flex items-center gap-0.5 rounded-full bg-muted/60 border border-border/50 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground/70 leading-none">
+              {clusterSize} sources
+            </span>
+          )}
+        </div>
       </div>
 
       {/* ─── Mobile: Card layout (below lg) ─── */}
@@ -285,6 +293,11 @@ export function ArticleRow({ article, dateRange }: ArticleRowProps) {
             {displaySize && (
               <span className="text-[10px] font-mono font-medium text-muted-foreground/60" title={sizeTooltip}>
                 {displaySize}
+              </span>
+            )}
+            {clusterSize && clusterSize > 1 && (
+              <span className="inline-flex items-center rounded-full bg-muted/60 border border-border/50 px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground/70 leading-none">
+                {clusterSize} sources
               </span>
             )}
             <span className="ml-auto text-[10px] text-muted-foreground/50 tabular-nums whitespace-nowrap">
