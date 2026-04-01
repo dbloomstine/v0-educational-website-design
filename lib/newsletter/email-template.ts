@@ -18,27 +18,29 @@ interface TemplateParams {
 }
 
 const EVENT_BADGE_COLORS: Record<string, { bg: string; text: string }> = {
-  fund_launch: { bg: '#7f1d1d', text: '#fca5a5' },
-  fund_close: { bg: '#7f1d1d', text: '#fca5a5' },
-  capital_raise: { bg: '#7c2d12', text: '#fdba74' },
-  executive_hire: { bg: '#4c1d95', text: '#c4b5fd' },
-  executive_change: { bg: '#4c1d95', text: '#c4b5fd' },
-  executive_departure: { bg: '#4c1d95', text: '#c4b5fd' },
+  fund_launch: { bg: '#dbeafe', text: '#1e40af' },
+  fund_close: { bg: '#fce7f3', text: '#9d174d' },
+  capital_raise: { bg: '#dcfce7', text: '#166534' },
+  executive_hire: { bg: '#ede9fe', text: '#5b21b6' },
+  executive_change: { bg: '#ede9fe', text: '#5b21b6' },
+  executive_departure: { bg: '#ede9fe', text: '#5b21b6' },
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
-  PE: '#6366f1',
-  VC: '#10b981',
-  credit: '#f59e0b',
-  hedge: '#8b5cf6',
-  real_estate: '#f97316',
-  infrastructure: '#0ea5e9',
-  secondaries: '#ec4899',
-  gp_stakes: '#14b8a6',
+  PE: '#4f46e5',
+  VC: '#059669',
+  credit: '#d97706',
+  hedge: '#7c3aed',
+  real_estate: '#ea580c',
+  infrastructure: '#0284c7',
+  secondaries: '#db2777',
+  gp_stakes: '#0d9488',
 }
 
 function formatDate(dateStr: string): string {
-  const d = new Date(dateStr)
+  // Append noon UTC to prevent date-string parsing (midnight UTC) from
+  // rolling back a day when converted to America/New_York.
+  const d = new Date(dateStr + 'T12:00:00Z')
   return d.toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
@@ -54,23 +56,23 @@ function renderFirmLogo(article: ArticleGroup['articles'][0]): string {
   if (resolvedDomain) {
     const initial = (article.firmName ?? '?')[0].toUpperCase()
     // Use Google Favicons API with a letter-initial fallback via alt text
-    return `<img src="https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${escapeHtml(resolvedDomain)}&size=128" alt="${escapeHtml(initial)}" width="20" height="20" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;background:#334155;" />`
+    return `<img src="https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${escapeHtml(resolvedDomain)}&size=128" alt="${escapeHtml(initial)}" width="20" height="20" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;background:#e2e8f0;" />`
   }
   // No domain — show letter initial in a circle
   const initial = (article.firmName ?? '?')[0].toUpperCase()
-  return `<span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:#334155;color:#94a3b8;font-size:11px;font-weight:600;line-height:20px;text-align:center;vertical-align:middle;">${escapeHtml(initial)}</span>`
+  return `<span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:#e2e8f0;color:#475569;font-size:11px;font-weight:600;line-height:20px;text-align:center;vertical-align:middle;">${escapeHtml(initial)}</span>`
 }
 
 function renderArticle(article: ArticleGroup['articles'][0]): string {
-  const badge = EVENT_BADGE_COLORS[article.eventType ?? ''] ?? { bg: '#374151', text: '#d1d5db' }
+  const badge = EVENT_BADGE_COLORS[article.eventType ?? ''] ?? { bg: '#f1f5f9', text: '#475569' }
   const label = getEventTypeLabel(article.eventType)
   const size = formatFundSize(article.fundSizeUsdMillions)
   const logo = renderFirmLogo(article)
-  const firmLabel = article.firmName ? `<span style="color:#94a3b8;font-size:12px;">${escapeHtml(article.firmName)}</span> ` : ''
+  const firmLabel = article.firmName ? `<span style="color:#64748b;font-size:12px;">${escapeHtml(article.firmName)}</span> ` : ''
 
   return `
     <tr>
-      <td style="padding:10px 0;border-bottom:1px solid #2d3748;">
+      <td style="padding:10px 0;border-bottom:1px solid #e2e8f0;">
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
           <tr>
             <td style="vertical-align:top;padding-right:8px;width:60px;">
@@ -81,9 +83,9 @@ function renderArticle(article: ArticleGroup['articles'][0]): string {
             </td>
             <td style="vertical-align:top;">
               <div>
-                ${firmLabel}<a href="${escapeHtml(article.sourceUrl)}" style="color:#e2e8f0;text-decoration:none;font-size:14px;font-weight:500;" target="_blank">${escapeHtml(article.title)}</a>${size ? ` <span style="color:#94a3b8;font-size:12px;">(${escapeHtml(size)})</span>` : ''}
+                ${firmLabel}<a href="${escapeHtml(article.sourceUrl)}" style="color:#1e293b;text-decoration:none;font-size:14px;font-weight:600;" target="_blank">${escapeHtml(article.title)}</a>${size ? ` <span style="color:#64748b;font-size:12px;">(${escapeHtml(size)})</span>` : ''}
               </div>
-              ${article.tldr ? `<div style="color:#94a3b8;font-size:12px;margin-top:3px;line-height:1.4;">${escapeHtml(article.tldr)}</div>` : ''}
+              ${article.tldr ? `<div style="color:#475569;font-size:13px;margin-top:3px;line-height:1.5;">${escapeHtml(article.tldr)}</div>` : ''}
               <div style="color:#64748b;font-size:11px;margin-top:3px;">${escapeHtml(article.sourceName ?? '')}${article.alsoCoveredBy && article.alsoCoveredBy.length > 0 ? ` &middot; Also: ${article.alsoCoveredBy.slice(0, 3).map(escapeHtml).join(', ')}` : ''}</div>
             </td>
           </tr>
@@ -101,7 +103,7 @@ function renderCategory(group: ArticleGroup): string {
       <tr>
         <td style="padding-bottom:8px;">
           <span style="display:inline-block;background:${color};color:#ffffff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:0.5px;text-transform:uppercase;">${escapeHtml(group.label)}</span>
-          <span style="color:#64748b;font-size:12px;margin-left:8px;">${group.articles.length} ${group.articles.length === 1 ? 'story' : 'stories'}</span>
+          <span style="color:#94a3b8;font-size:12px;margin-left:8px;">${group.articles.length} ${group.articles.length === 1 ? 'story' : 'stories'}</span>
         </td>
       </tr>
       ${articleRows}
@@ -132,8 +134,8 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   <style>table{border-collapse:collapse;}td{font-family:Arial,sans-serif;}</style>
   <![endif]-->
 </head>
-<body style="margin:0;padding:0;background-color:#0f172a;font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
-  <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#0f172a;">
+<body style="margin:0;padding:0;background-color:#f1f5f9;font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+  <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f1f5f9;">
     <tr>
       <td align="center" style="padding:20px 10px;">
         <table cellpadding="0" cellspacing="0" border="0" width="640" style="max-width:640px;width:100%;">
@@ -144,9 +146,9 @@ export function renderNewsletterEmail(params: TemplateParams): string {
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
                   <td>
-                    <span style="font-size:22px;font-weight:700;color:#f8fafc;letter-spacing:-0.5px;">FundOps</span><span style="font-size:22px;font-weight:700;color:#3b82f6;letter-spacing:-0.5px;">Daily</span>
+                    <span style="font-size:22px;font-weight:700;color:#f8fafc;letter-spacing:-0.5px;">FundOps</span><span style="font-size:22px;font-weight:700;color:#60a5fa;letter-spacing:-0.5px;">Daily</span>
                   </td>
-                  <td align="right" style="color:#64748b;font-size:12px;">
+                  <td align="right" style="color:#94a3b8;font-size:12px;">
                     ${escapeHtml(formattedDate)}
                   </td>
                 </tr>
@@ -156,26 +158,26 @@ export function renderNewsletterEmail(params: TemplateParams): string {
 
           <!-- Articles by category -->
           <tr>
-            <td style="padding:24px;background-color:#1e293b;">
+            <td style="padding:24px;background-color:#ffffff;">
               ${categoryBlocks}
             </td>
           </tr>
 
           <!-- CTA -->
           <tr>
-            <td style="padding:16px 24px 24px;background-color:#1e293b;text-align:center;">
+            <td style="padding:16px 24px 24px;background-color:#ffffff;text-align:center;">
               <a href="https://fundopshq.com/news" style="display:inline-block;background-color:#3b82f6;color:#ffffff;font-size:14px;font-weight:600;padding:10px 24px;border-radius:6px;text-decoration:none;">View All News on FundOpsHQ</a>
             </td>
           </tr>
 
           <!-- Footer -->
           <tr>
-            <td style="padding:20px 24px;background-color:#0f172a;border-radius:0 0 8px 8px;">
+            <td style="padding:20px 24px;background-color:#f8fafc;border-top:1px solid #e2e8f0;border-radius:0 0 8px 8px;">
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
-                  <td style="color:#475569;font-size:11px;line-height:1.6;">
+                  <td style="color:#64748b;font-size:11px;line-height:1.6;">
                     <p style="margin:0;">
-                      <strong style="color:#64748b;">FundOps Daily</strong> by <a href="https://fundopshq.com" style="color:#64748b;text-decoration:none;">FundOpsHQ</a>
+                      <strong style="color:#475569;">FundOps Daily</strong> by <a href="https://fundopshq.com" style="color:#475569;text-decoration:none;">FundOpsHQ</a>
                     </p>
                     <p style="margin:6px 0 0;">
                       You're receiving this because you subscribed at fundopshq.com.
