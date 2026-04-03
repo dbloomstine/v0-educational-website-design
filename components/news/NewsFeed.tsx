@@ -102,6 +102,15 @@ const EVENT_TYPE_GROUPS = [
   },
 ] as const
 
+const GEOGRAPHY_OPTIONS = [
+  { label: 'North America', value: 'North America' },
+  { label: 'Europe', value: 'Europe' },
+  { label: 'Asia-Pacific', value: 'Asia-Pacific' },
+  { label: 'Global', value: 'Global' },
+  { label: 'Middle East', value: 'Middle East' },
+  { label: 'Africa', value: 'Africa' },
+] as const
+
 const PAGE_SIZE = 100
 
 // Multi-select helpers for comma-separated filter strings
@@ -158,6 +167,7 @@ export function NewsFeed() {
   const [eventType, setEventType] = useState(searchParams.get('type') || '')
   const [fundSizeMin, setFundSizeMin] = useState(searchParams.get('fundSizeMin') || '')
   const [fundSizeMax, setFundSizeMax] = useState(searchParams.get('fundSizeMax') || '')
+  const [geography, setGeography] = useState(searchParams.get('geography') || '')
   const [sort, setSort] = useState(searchParams.get('sort') || 'latest')
   const [fundSizeOpen, setFundSizeOpen] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -178,6 +188,7 @@ export function NewsFeed() {
     eventType,
     fundSizeMin,
     fundSizeMax,
+    geography,
     dateRange !== '7d',
     sort !== 'latest',
   ].filter(Boolean).length
@@ -194,10 +205,11 @@ export function NewsFeed() {
       if (eventType) params.set('type', eventType)
       if (fundSizeMin) params.set('fundSizeMin', fundSizeMin)
       if (fundSizeMax) params.set('fundSizeMax', fundSizeMax)
+      if (geography) params.set('geography', geography)
       if (sort && sort !== 'latest') params.set('sort', sort)
       return params
     },
-    [query, dateRange, category, eventType, fundSizeMin, fundSizeMax, sort]
+    [query, dateRange, category, eventType, fundSizeMin, fundSizeMax, geography, sort]
   )
 
   // Sync URL
@@ -209,10 +221,11 @@ export function NewsFeed() {
     if (eventType) params.set('type', eventType)
     if (fundSizeMin) params.set('fundSizeMin', fundSizeMin)
     if (fundSizeMax) params.set('fundSizeMax', fundSizeMax)
+    if (geography) params.set('geography', geography)
     if (sort && sort !== 'latest') params.set('sort', sort)
     const qs = params.toString()
     router.replace(qs ? `/news?${qs}` : '/news', { scroll: false })
-  }, [router, query, dateRange, category, eventType, fundSizeMin, fundSizeMax, sort])
+  }, [router, query, dateRange, category, eventType, fundSizeMin, fundSizeMax, geography, sort])
 
   // Fetch feed
   const fetchFeed = useCallback(
@@ -254,7 +267,7 @@ export function NewsFeed() {
     fetchFeed(0, false)
     syncUrl()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, dateRange, category, eventType, fundSizeMin, fundSizeMax, sort])
+  }, [query, dateRange, category, eventType, fundSizeMin, fundSizeMax, geography, sort])
 
   // Search debounce
   const [searchInput, setSearchInput] = useState(query)
@@ -272,6 +285,7 @@ export function NewsFeed() {
     setEventType('')
     setFundSizeMin('')
     setFundSizeMax('')
+    setGeography('')
     setSort('latest')
   }
 
@@ -281,7 +295,7 @@ export function NewsFeed() {
   }
 
   // Pill filter count (category/type filters only, not search/date)
-  const pillFilterCount = [category, eventType].filter(Boolean).length
+  const pillFilterCount = [category, eventType, geography].filter(Boolean).length
 
   return (
     <div className="space-y-3">
@@ -557,6 +571,27 @@ export function NewsFeed() {
               })}
             </div>
           </div>
+
+          {/* Geography pills */}
+          <div>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">Geography</span>
+            <div className="flex flex-wrap gap-1">
+              {GEOGRAPHY_OPTIONS.map((geo) => (
+                <button
+                  key={geo.value}
+                  onClick={() => setGeography(toggleFilter(geography, geo.value))}
+                  className={cn(
+                    'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors',
+                    hasFilter(geography, geo.value)
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
+                  )}
+                >
+                  {geo.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 
@@ -618,19 +653,19 @@ export function NewsFeed() {
 
           {/* Load more */}
           {hasMore && (
-            <div className="flex justify-center pt-2">
+            <div className="flex justify-center pt-4 pb-2">
               <button
                 onClick={loadMore}
                 disabled={loadingMore}
-                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-6 py-2.5 text-sm font-medium text-foreground hover:bg-accent transition-colors disabled:opacity-50"
               >
                 {loadingMore ? (
                   <>
-                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     Loading...
                   </>
                 ) : (
-                  'Load more articles'
+                  'Show more results'
                 )}
               </button>
             </div>

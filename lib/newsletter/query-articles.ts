@@ -11,9 +11,27 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>
 
-const FUND_RELEVANT_TYPES = [
+const FUND_ACTIVITY_TYPES = [
   'fund_launch', 'fund_close', 'capital_raise',
+]
+
+const PEOPLE_TYPES = [
   'executive_hire', 'executive_change', 'executive_departure',
+]
+
+const DEALS_TYPES = [
+  'acquisition', 'merger',
+]
+
+const REGULATORY_TYPES = [
+  'regulatory_action',
+]
+
+const ALL_NEWSLETTER_TYPES = [
+  ...FUND_ACTIVITY_TYPES,
+  ...PEOPLE_TYPES,
+  ...DEALS_TYPES,
+  ...REGULATORY_TYPES,
 ]
 
 const CATEGORY_ORDER = [
@@ -30,6 +48,9 @@ const CATEGORY_LABELS: Record<string, string> = {
   infrastructure: 'Infrastructure',
   secondaries: 'Secondaries',
   gp_stakes: 'GP Stakes',
+  people_moves: 'People Moves',
+  deals: 'Deals',
+  regulatory: 'Regulatory',
 }
 
 const EVENT_TYPE_LABELS: Record<string, string> = {
@@ -39,13 +60,13 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
   executive_hire: 'Hire',
   executive_change: 'Exec Move',
   executive_departure: 'Departure',
+  acquisition: 'M&A',
+  merger: 'M&A',
+  regulatory_action: 'Reg',
 }
 
 /** Minimum fund size in USD millions to include in newsletter (filters noise like student funds) */
 const MIN_FUND_SIZE_MILLIONS = 25
-
-/** Maximum articles in a single newsletter edition */
-const MAX_NEWSLETTER_ARTICLES = 15
 
 /**
  * Source tier ranking for picking the best article per story.
@@ -108,8 +129,6 @@ export interface NewsletterContent {
   articleIds: string[]
 }
 
-const ALLOWED_GEO = ['North America', 'Global']
-
 export async function queryNewsletterArticles(
   supabase: DbClient,
   hoursBack: number = 26
@@ -126,7 +145,7 @@ export async function queryNewsletterArticles(
     .eq('is_duplicate', false)
     .gte('published_date', since)
     .or('is_high_signal.eq.true,relevance_score.gte.0.5')
-    .in('article_type', FUND_RELEVANT_TYPES)
+    .in('article_type', ALL_NEWSLETTER_TYPES)
     .order('published_date', { ascending: false })
     .limit(500)
 
@@ -134,15 +153,9 @@ export async function queryNewsletterArticles(
     throw new Error(`Failed to query articles: ${error.message}`)
   }
 
-  // Filter to North America / Global / unknown geography
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const filtered = (rows ?? []).filter((row: any) => {
-    // Exclude articles from prior edition
-    if (excludeIds.has(row.id)) return false
-
-    const geo = (row.extracted_data as Record<string, unknown> | null)?.geography as string[] | null
-    if (!geo || geo.length === 0) return true
-    return geo.some((g) => ALLOWED_GEO.includes(g))
+    return !excludeIds.has(row.id)
   })
 
   // Map to newsletter article shape
@@ -191,30 +204,35 @@ export async function queryNewsletterArticles(
     return a.fundSizeUsdMillions >= MIN_FUND_SIZE_MILLIONS
   })
 
-  // ─── Cap total articles ────────────────────────────────────────────────
-  // Sort globally by relevance/size to pick the best articles if over cap
-  const ranked = [...sizeFiltered].sort((a, b) => {
-    // Fund activity with size > fund activity without > exec moves
-    const aScore = articlePriorityScore(a)
-    const bScore = articlePriorityScore(b)
-    return bScore - aScore
-  })
-  const capped = ranked.slice(0, MAX_NEWSLETTER_ARTICLES)
+  // ─── Split into sections and cap each independently ────────────────────
+  const fundActivity = sizeFiltered.filter(a => FUND_ACTIVITY_TYPES.includes(a.eventType ?? ''))
+  const peopleMoves = sizeFiltered.filter(a => PEOPLE_TYPES.includes(a.eventType ?? ''))
+  const deals = sizeFiltered.filter(a => DEALS_TYPES.includes(a.eventType ?? ''))
+  const regulatory = sizeFiltered.filter(a => REGULATORY_TYPES.includes(a.eventType ?? ''))
 
-  // Group by primary category
+  // Rank and cap each section
+  const sortByPriority = (arr: NewsletterArticle[]) =>
+    [...arr].sort((a, b) => articlePriorityScore(b) - articlePriorityScore(a))
+
+  const cappedFundActivity = sortByPriority(fundActivity).slice(0, 30)
+  const cappedPeople = sortByPriority(peopleMoves).slice(0, 5)
+  const cappedDeals = sortByPriority(deals).slice(0, 5)
+  const cappedRegulatory = sortByPriority(regulatory).slice(0, 3)
+
+  // Group fund activity by category (as before)
   const grouped: Record<string, NewsletterArticle[]> = {}
-  for (const article of capped) {
+  for (const article of cappedFundActivity) {
     const primaryCat = article.fundCategories[0] ?? 'other'
     if (!grouped[primaryCat]) grouped[primaryCat] = []
     grouped[primaryCat].push(article)
   }
 
-  // Sort each group by fund size desc (nulls last)
+  // Sort each fund activity group by fund size desc
   for (const cat of Object.keys(grouped)) {
     grouped[cat].sort((a, b) => (b.fundSizeUsdMillions ?? 0) - (a.fundSizeUsdMillions ?? 0))
   }
 
-  // Order categories
+  // Build ordered groups: fund categories first
   const groups: ArticleGroup[] = CATEGORY_ORDER
     .filter((cat) => grouped[cat]?.length > 0)
     .map((cat) => ({
@@ -223,7 +241,7 @@ export async function queryNewsletterArticles(
       articles: grouped[cat],
     }))
 
-  // Add any categories not in the predefined order
+  // Add remaining fund categories not in predefined order
   for (const cat of Object.keys(grouped)) {
     if (!CATEGORY_ORDER.includes(cat)) {
       groups.push({
@@ -234,10 +252,39 @@ export async function queryNewsletterArticles(
     }
   }
 
+  // Add People Moves section
+  if (cappedPeople.length > 0) {
+    groups.push({
+      category: 'people_moves',
+      label: 'People Moves',
+      articles: cappedPeople,
+    })
+  }
+
+  // Add Deals section
+  if (cappedDeals.length > 0) {
+    groups.push({
+      category: 'deals',
+      label: 'Deals',
+      articles: cappedDeals,
+    })
+  }
+
+  // Add Regulatory section
+  if (cappedRegulatory.length > 0) {
+    groups.push({
+      category: 'regulatory',
+      label: 'Regulatory',
+      articles: cappedRegulatory,
+    })
+  }
+
+  const allCapped = [...cappedFundActivity, ...cappedPeople, ...cappedDeals, ...cappedRegulatory]
+
   return {
     groups,
-    totalArticles: capped.length,
-    articleIds: capped.map((a) => a.id),
+    totalArticles: allCapped.length,
+    articleIds: allCapped.map((a) => a.id),
   }
 }
 

@@ -9,6 +9,7 @@ export interface QueryParams {
   type?: string
   fundSizeMin?: string
   fundSizeMax?: string
+  geography?: string
   sort?: string
   offset?: number
   limit?: number
@@ -61,7 +62,7 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
     .gte('published_date', cutoff.split('T')[0])
     .order('published_date', { ascending: false })
     .order('relevance_score', { ascending: false })
-    .range(offset, offset + limit)
+    .range(offset, offset + limit + 10)
 
   // Category filter (fund_categories is a text[] column)
   if (params.category) {
@@ -105,17 +106,24 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
     throw new Error('Failed to query articles')
   }
 
-  // Supabase .range() is inclusive on both ends, so we get limit+1 rows.
-  // If we got the full range, there are likely more results.
   const allRows = (rows ?? []).map(mapRowToArticle).filter(filterLowQualitySources)
+
+  // Apply geography filter (client-side since it's in JSONB)
+  const geoFiltered = params.geography
+    ? allRows.filter((a) => {
+        if (a.geography.length === 0) return false
+        const geos = params.geography!.split(',')
+        return a.geography.some((g) => geos.includes(g))
+      })
+    : allRows
 
   // Sort by deal size when requested (client-side to avoid Supabase JSONB ordering issues)
   if (params.sort === 'biggest') {
-    allRows.sort((a, b) => (b.fundSizeUsd ?? 0) - (a.fundSizeUsd ?? 0))
+    geoFiltered.sort((a, b) => (b.fundSizeUsd ?? 0) - (a.fundSizeUsd ?? 0))
   }
 
-  const articles = allRows.slice(0, limit)
-  const hasMore = allRows.length > limit
+  const articles = geoFiltered.slice(0, limit)
+  const hasMore = geoFiltered.length > limit
 
   // --- Group articles by story cluster ---
   const groups = buildArticleGroups(articles)

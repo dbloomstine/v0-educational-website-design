@@ -24,6 +24,9 @@ const EVENT_BADGE_COLORS: Record<string, { bg: string; text: string }> = {
   executive_hire: { bg: '#ede9fe', text: '#5b21b6' },
   executive_change: { bg: '#ede9fe', text: '#5b21b6' },
   executive_departure: { bg: '#ede9fe', text: '#5b21b6' },
+  acquisition: { bg: '#dbeafe', text: '#1e40af' },
+  merger: { bg: '#dbeafe', text: '#1e40af' },
+  regulatory_action: { bg: '#fef2f2', text: '#991b1b' },
 }
 
 const CATEGORY_COLORS: Record<string, string> = {
@@ -35,6 +38,9 @@ const CATEGORY_COLORS: Record<string, string> = {
   infrastructure: '#0284c7',
   secondaries: '#db2777',
   gp_stakes: '#0d9488',
+  people_moves: '#8b5cf6',
+  deals: '#0891b2',
+  regulatory: '#dc2626',
 }
 
 function formatDate(dateStr: string): string {
