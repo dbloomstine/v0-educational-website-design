@@ -144,7 +144,7 @@ export async function queryNewsletterArticles(
     .eq('classification_status', 'complete')
     .eq('is_duplicate', false)
     .gte('published_date', since)
-    .or('is_high_signal.eq.true,relevance_score.gte.0.5')
+    .or('is_high_signal.eq.true,relevance_score.gte.0.3')
     .in('article_type', ALL_NEWSLETTER_TYPES)
     .order('published_date', { ascending: false })
     .limit(500)
