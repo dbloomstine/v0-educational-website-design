@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-04T16:07:09.338863Z",
+  "generated_at": "2026-04-05T13:41:28.062509Z",
   "funds": [
     {
       "fund_name": "Align Capital Partners Fund",
@@ -8,10 +8,10 @@
       "amount": "$405M",
       "amount_usd_millions": 405.0,
       "category": "Private Equity",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "",
+      "location": "Chicago, IL",
+      "city": "Chicago",
+      "state": "IL",
+      "country": "US",
       "stage": "Final Close",
       "announcement_date": "2026-04-03",
       "source_url": "https://news.google.com/rss/articles/CBMitAFBVV95cUxPTlFKWVVSeWxzRnI3QWFRX3V0MVpzR1lhMXRPT2pGQ2hnOGxHeExseVlXYlEweE1NX2VPUVJQMzhlWHJYa1FQakhCRFpMNlhTbkJ2ZjYzRXJrTEJXN2h5TmtCOG5QN25ZOHVXWnVRQzNhak9RanczbGNYNjU0LWpBVTBEb2Fod3dvaHprSG5fRE9zQ0VRUVpBbjhVWEhqYzJYVEZfYTBRUDdhSHZxaWVwNE80YUs?oc=5",
@@ -47,7 +47,7 @@
       "announcement_date": "2026-04-03",
       "source_url": "https://www.secondariesinvestor.com/lead-edges-latest-flagship-taps-secondaries-amid-ai-driven-shifts/",
       "source_name": "Secondaries Investor",
-      "description_notes": "targets secondaries investments with a focus on AI-driven shifts in the market. The flagship fund represents Lead Edge's latest vehicle in the secondaries space, positioning the firm to capitalize on portfolio company transitions driven by artificial intelligence trends.",
+      "description_notes": "launch a flagship secondaries and GP-stakes fund with an undisclosed target, positioning Lead Edge to capitalize on the secondary market's continued growth as LPs seek liquidity and GPs pursue continuation vehicles. the firm enters a crowded secondaries space dominated by established players like Lexington, Coller, and Partners Group, though specific LP anchors and final fund size remain unannounced.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-04T12:31:22",
@@ -117,6 +117,15 @@
           "source_domain": "finance.yahoo.com",
           "published_date": "2026-04-02",
           "summary": "KKR Closes $23 Billion North America Private Equity Fund&nbsp;&nbsp;Yahoo Finance",
+          "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "KKR: $23 Billion North America Private Equity Fund Closed For Regional Investments - Pulse 2.0",
+          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPZl8wRHZPX2VjU2RDUktkR0F6SGVleTFmR1Z2S0xicjJCa1M0X01Tcmpkc3NpbzV2RG9uaUROcS1YYWo0ZTZPSHFlaVBOS3VUd0JmUnBRajRScWd1RTFuX0dOVTBpWF9WREJuSS1CNl9ZTEw1R2lEMEZXaE1vY2hINWpMQlhOTWRNNms5TWpYekxuM3pSUHVKUHlyTXZKZERRaGfSAacBQVVfeXFMTUwzWjBuS2JwUnl2Q3M1eUl5eC1rZUN2MG9LNXNFU1dZSWJfMktMNkxoaV94OXEtaTVLcHVFbTlqRTU3N1VSbEtvSG1qRk00UmZfaDZFQWhQOG41bWE2TTlGc2hvUE1OeGEzTVY2M2lRbkcwRlh2cXVSVnl6cXlIZkRZNEJHNE9FLVdYNU92c1hsSi16SlFSbnJmMjV5cDhkbE55OGxEUkk?oc=5",
+          "source_name": "Pulse 2.0",
+          "source_domain": "pulse2.com",
+          "published_date": "2026-04-02",
+          "summary": "KKR: $23 Billion North America Private Equity Fund Closed For Regional Investments&nbsp;&nbsp;Pulse 2.0",
           "feed_name": "search:PE/VC fund closes"
         }
       ]
@@ -207,7 +216,7 @@
       "announcement_date": "2026-04-02",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/oceansound-soars-past-fund-iii-target-to-reach-2-9bn-hard-cap-final-close.html",
       "source_name": "AltAssets",
-      "description_notes": "raise $2.9bn for OceanSound Fund III, exceeding its $2bn target by 45% at final close, reflecting strong LP demand for the tech-focused PE manager. The third flagship fund surpassed its hard cap, signaling confidence in OceanSound's track record and positioning in the technology investment space.",
+      "description_notes": "raise $2.9bn for its third flagship private equity fund, exceeding its initial $2bn target by nearly 50% and hitting a hard cap at final close. OceanSound Partners, a tech-focused investor, has demonstrated strong LP demand for its latest vintage, signaling robust appetite for its sector-specific strategy in the current fundraising environment.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-03T13:48:38",
@@ -287,6 +296,15 @@
           "published_date": "2026-04-02",
           "summary": "L Squared Capital Partners Closes Fifth Fund at $2.0 Billion Hard Cap&nbsp;&nbsp;Yahoo Finance",
           "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "L Squared Capital Partners Closes Fifth Fund at $2.0 Billion Hard Cap - Business Wire",
+          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOcWZiN1hSOERLSzVwVnV3YnBzUHdyUXBMbVIzN2JNbll1VlNuR0liYWZoRHVOLUZvdUxlejEtakdHX19JMU1PLUxzTlJKUjR6amlERF9XNXF2QmNSTWdlOWk0U2R5Y0duQUJUd2YwaUswb1NRdTFmckN5eE1vblRpcWllVzNsbE90cWNhd3lJNVdXNTU0d0VwM3V3R24zLTR1S2p0SF8xcWZWX3lrOVMzQjRSeTZFdVhKZjFqMGpNN1ZmejM4SUVZ?oc=5",
+          "source_name": "Business Wire",
+          "source_domain": "businesswire.com",
+          "published_date": "2026-04-02",
+          "summary": "L Squared Capital Partners Closes Fifth Fund at $2.0 Billion Hard Cap&nbsp;&nbsp;Business Wire",
+          "feed_name": "search:Press release fund closes"
         }
       ]
     },
@@ -518,7 +536,7 @@
       "announcement_date": "2026-04-02",
       "source_url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQWWdlZEZIVmM0YkQ4R2FqLUp1LXJKdU10YV9FclNiZlpVajB0Z2ZBVXRhTWVUX01EQlRoT0RuSGlNeEVaUEJpN09XZG83M0FsTmhZaGI0TUZxQVFjNVlXenFPaEZLWnMwT3VsOHZYdHk5Y0lET3hFSGotdkEtbjRBY3otcXhHcGpMbGFfOXZudw?oc=5",
       "source_name": "Ministryofsport",
-      "description_notes": "launch a new venture capital fund focused on early-stage energy and sustainability technology companies. EnTrust Global, known for its expertise in the energy sector, is deploying capital into startups addressing climate transition and decarbonization across power generation, industrial processes, and energy infrastructure. The fund marks the firm's entry into dedicated venture investing, complementing its existing private equity and infrastructure investment platforms.",
+      "description_notes": "launch a venture capital fund focused on energy transition and sustainability technologies across early to growth stages. EnTrust Global, known for its energy sector expertise, is deploying capital into climate tech and renewable energy companies, targeting founders addressing decarbonization across industrial, power, and mobility verticals. The fund represents the firm's expansion into dedicated venture capital, complementing its existing private equity and infrastructure investment platforms.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-03T13:48:38",
@@ -541,9 +559,9 @@
       "amount": "Undisclosed",
       "amount_usd_millions": null,
       "category": "Venture Capital",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
+      "location": "Bangalore, India",
+      "city": "Bangalore",
+      "state": "KA",
       "country": "India",
       "stage": "Launch",
       "announcement_date": "2026-04-02",
@@ -580,7 +598,7 @@
       "announcement_date": "2026-04-02",
       "source_url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxQaElOMGV5ZnFLWXJMM1AzU01vQlJZZndoU1Q3Z2l6Q0pjS0QyVGtjMFZveVNPOUoydWFRTDMzVDNyWWhNQUtabHg5VEJ1VnZITXc4amx6SVVWNjJNekxxaW1yaFZXNDFDc041NTRfYTJBaFVhVElGLWY4a3BUS0F5eUV2ZDVUZDBKc3VIMTNQN1ozRTRJVTVPRmpLTVlOYXFGcmFwN2Q0akRacEpVeURhYXNtNUlpSW1vTnZqdFAtTFZDUndUaWxOdU1uRFBRV1pJbnkwZXAycThXc3FfZUR5Snk4dGY?oc=5",
       "source_name": "Accessnewswire",
-      "description_notes": "close first institutional capital for AIF Fund II, a venture capital vehicle focused on early-stage technology and software investments. The fund builds on the firm's established track record deploying capital into promising startups, though the specific target market and LP composition remain undisclosed at this stage.",
+      "description_notes": "close first close on its second venture fund focused on early-stage technology investments, though the specific strategy and target sectors remain undisclosed. The fund size has not been publicly announced, limiting comparison to AIF Fund I's scale and performance trajectory. without additional details on LP composition or distinctive positioning, this fund appears to represent AIF's continued commitment to early-stage venture investing.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-03T13:48:39",
@@ -1326,7 +1344,7 @@
       "announcement_date": "2026-03-30",
       "source_url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxObVh5LWpKZ1F4NVBlR2N5OE5GVFhlQUNuLVJYUGllUHpDdGdKRWdSbkRYYVRoTVNfYXlNZjY3bGVWbW9UTWxJc3JBZlk1eUw0cllTZmJfYXhaUTZ3UW1OWjhUWnplYmhMNjMzWE5Ya3VEdEZmOWpiOUZZTXBrTm04REJQSkVEUDJkR0g5N0RINURMX05IbEE?oc=5",
       "source_name": "Realdeals",
-      "description_notes": "close a small-cap buyout fund focused on lower mid-market acquisitions, targeting founder-led and family-owned businesses in North America. Abenex has built a track record in this segment with prior vintages, and this final close reflects continued LP confidence in the lower mid-market thesis as mega-funds retreat upmarket. The firm leverages operational expertise and add-on acquisition strategies typical of the small-cap PE playbook.",
+      "description_notes": "close final round of fundraising for small-cap buyout fund targeting lower-middle-market companies in North America. Abenex's strategy focuses on operational improvements and organic growth at portfolio companies, positioning itself as a hands-on operator in the $10\u201350M EBITDA range. Fund size and LP roster remain undisclosed, though the final close suggests strong demand for small-cap PE in a market increasingly crowded by mega-funds.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-01T12:56:34",
@@ -2320,7 +2338,7 @@
       "announcement_date": "2026-03-24",
       "source_url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxNTVVqT19fcDU4VmROZS1nbWt2bnJBSE9BeWJjS1Y3YWxDZnRhZTNuUDAtQ1dVd3lYV2d0VzZrVllKVFBHSFhlNnZPWGJfQ0FjdE1zejRBM0E3YVA3MFdJaGRXeVZuSkNuNU9janM1c0JaWGlJVkdCeTZfeVpMdlFsM3M0bkROTlhBbFZZSGRCNUxDd20tNjNFdHhxWjFETmY5cThCZXR3QjR0Nm4wajZOMDJwb2dKUHlxVUFhRzNFVTlWYzlIcHpUQXFB?oc=5",
       "source_name": "Businessday",
-      "description_notes": "close a $50M venture capital fund targeting early-stage companies in the Southeast region, marking the development commission's entry into institutional venture investing. The fund focuses on seed and Series A companies across the Southeast, aiming to address regional funding gaps and support local entrepreneurial ecosystems. This inaugural fund represents an expansion beyond the commission's traditional economic development mandate into direct venture capital deployment.",
+      "description_notes": "deploy $50M to back early-stage companies across Southeast markets, targeting founders in underserved regions outside traditional coastal venture hubs. The fund represents a regional development-focused approach to venture capital, likely emphasizing economic diversification and local ecosystem building rather than high-growth technology exits. This inaugural fund positions the Southeast Development Commission as a place-based investor bridging development finance and venture capital.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-25T13:41:37",
@@ -2688,6 +2706,15 @@
           "published_date": "2026-03-23",
           "summary": "BKR Capital Announces the First Close for its $50M Fund II After Top-Quartile Performance of Debut Fund&nbsp;&nbsp;Yahoo Finance",
           "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "BKR Capital announces $20M initial close of $50M targeted fund II - Private Capital Journal",
+          "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPYkdwX1psWDRqUU1RNTF3TEFHNUZ2Mm13TmVFcUlfbHBmX2gzSHZpNnV3dEVEb3pjUzBxS3dTOFRDdzNOME1ZRnNHbmtGMk1QMWxlMU8zemowNjRnTXQ3YThZZmxjcmFaNFZLTDlXSGl0TnNnTlAwTlRmanpKbU5zUXp4LVRNbFB5elBuYlpyOEZubThoUG5jeDJpRUV6MEk?oc=5",
+          "source_name": "Private Capital Journal",
+          "source_domain": "privatecapitaljournal.com",
+          "published_date": "2026-03-23",
+          "summary": "BKR Capital announces $20M initial close of $50M targeted fund II&nbsp;&nbsp;Private Capital Journal",
+          "feed_name": "search:First/final close"
         }
       ]
     },
@@ -5156,6 +5183,15 @@
           "published_date": "2026-03-11",
           "summary": "",
           "feed_name": "TechCrunch - Venture"
+        },
+        {
+          "title": "VC mega-funds are back with General Catalyst, Spark rumored to be raising billions - TechCrunch",
+          "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQbG5yT2pYX29NQl8yLWh3UEhyVks1eEU4TDEtaWJZVmY5ZUtDSEZlUGR1VmdXMkE0NldGaXF0S1I2VVJBQ1Bpc3BiTFNoaVJvakFKV0NTdVNrLV9wTzJLLUMzaDlDYndPa0ZzQ1hUMThHRXpJckM1VFdTZTF0bWJhZU9TLTdkWldvWFBTN0VPSS03a2Z3S2MtT2tieF84SVdHVk04SkhJTlN4bmdmbkczdmwwck5xSVU?oc=5",
+          "source_name": "TechCrunch",
+          "source_domain": "techcrunch.com",
+          "published_date": "2026-03-11",
+          "summary": "VC mega-funds are back with General Catalyst, Spark rumored to be raising billions&nbsp;&nbsp;TechCrunch",
+          "feed_name": "search:PE/VC fund closes"
         }
       ]
     },
@@ -5187,6 +5223,15 @@
           "published_date": "2026-03-11",
           "summary": "",
           "feed_name": "TechCrunch - Venture"
+        },
+        {
+          "title": "VC mega-funds are back with General Catalyst, Spark rumored to be raising billions - TechCrunch",
+          "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQbG5yT2pYX29NQl8yLWh3UEhyVks1eEU4TDEtaWJZVmY5ZUtDSEZlUGR1VmdXMkE0NldGaXF0S1I2VVJBQ1Bpc3BiTFNoaVJvakFKV0NTdVNrLV9wTzJLLUMzaDlDYndPa0ZzQ1hUMThHRXpJckM1VFdTZTF0bWJhZU9TLTdkWldvWFBTN0VPSS03a2Z3S2MtT2tieF84SVdHVk04SkhJTlN4bmdmbkczdmwwck5xSVU?oc=5",
+          "source_name": "TechCrunch",
+          "source_domain": "techcrunch.com",
+          "published_date": "2026-03-11",
+          "summary": "VC mega-funds are back with General Catalyst, Spark rumored to be raising billions&nbsp;&nbsp;TechCrunch",
+          "feed_name": "search:PE/VC fund closes"
         }
       ]
     },
@@ -5342,6 +5387,15 @@
           "source_domain": "law360.com",
           "published_date": "2026-03-10",
           "summary": "Kirkland-Led Truelink Capital Wraps $2B Fund Above Target&nbsp;&nbsp;Law360",
+          "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "Truelink Capital Closes Oversubscribed Fund II at $2.0 Billion Hard Cap - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQVzBNMzJaS1dTTnd4aUg2ZlJZaEVOOWFYcm15Snpnek45R1F3T1ppTWRwT2ZYS1Q1SWFhTExrdkM3RThxOVNTcHJWX2N6ZGE1MEs2V2dGZlJzMnlsSlpYdWpwYXJ3amVfVzhiYkFsLXBqUEhwaHVnUURRd3RXSER3blJ1T3FBNGpwemZmWEhEWDZobjg?oc=5",
+          "source_name": "Yahoo Finance",
+          "source_domain": "finance.yahoo.com",
+          "published_date": "2026-03-10",
+          "summary": "Truelink Capital Closes Oversubscribed Fund II at $2.0 Billion Hard Cap&nbsp;&nbsp;Yahoo Finance",
           "feed_name": "search:Oversubscribed funds"
         }
       ]
@@ -5757,7 +5811,7 @@
       "announcement_date": "2026-03-10",
       "source_url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE90VW45anp5bF8wOGpVV0Ftc0xPZnEwR25PZWJnS1dvZ0pRWUNndWN4U2t0LUY3eVh0Nm1iODhRWnpoZTRFbmpUYmNYVkZIdkNyd0wtQUtSQWVYSUE2NGk0bEdVNXBubkcwZl9HNnVpWlhkLWlJNFpDT1V0aXZuZw?oc=5",
       "source_name": "Dealstreetasia",
-      "description_notes": "closes its inaugural fund-of-funds vehicle focused on secondaries and GP-stakes investments, targeting exposure to mid-market and lower-middle-market buyout funds across North America. The debut offering marks Cross Capital's expansion beyond direct investing into the secondary and continuation fund space, positioning LPs for diversified exposure across multiple vintage years and manager relationships. First-time fund vehicles in the secondaries space typically attract institutional capital seeking experienced GP selection and portfolio construction amid a competitive fundraising environment.",
+      "description_notes": "close a secondaries and GP-stakes fund targeting exposure to established private equity, venture capital, and infrastructure managers through direct fund investments and secondary positions. the inaugural fund from Cross Capital aims to provide diversified exposure across multiple asset classes and vintage years, with a focus on sourcing opportunities in mid-market and large-cap fund vintages. this first-time fund represents Cross Capital's entry into the competitive fund-of-funds market, where it competes against established players by targeting smaller institutional and family office capital.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-10T12:07:57",
@@ -8067,6 +8121,15 @@
           "published_date": "2026-02-26",
           "summary": "Greenbriar Equity Group: $5.4 Billion Raised For Oversubscribed Seventh Private Equity Fund&nbsp;&nbsp;Pulse 2.0",
           "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "Greenbriar Raises $5.4 Billion in Oversubscribed Seventh Fund - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxQRjFTdnZqdlgxWl9LXzVvR3R2Q2E2Z0JyS0MycVFCbjNFbTRkMlJTd1hFdHJEd2JYZVBIQ0RxWS1YQUhwbWpXYVdvWDVLOEZ4a09BZ1pZT0lmRVFILU9nVXZOaG8tekJCRUU4dUpGcnM2RmVvRTFKTjVSbmtaQXRHbA?oc=5",
+          "source_name": "Yahoo Finance",
+          "source_domain": "finance.yahoo.com",
+          "published_date": "2026-02-26",
+          "summary": "Greenbriar Raises $5.4 Billion in Oversubscribed Seventh Fund&nbsp;&nbsp;Yahoo Finance",
+          "feed_name": "search:Oversubscribed funds"
         }
       ]
     },
@@ -10280,6 +10343,15 @@
           "source_domain": "secondariesinvestor.com",
           "published_date": "2026-02-18",
           "summary": "Tikehau latest manager to close credit secondaries fund as market fires on all cylinders&nbsp;&nbsp;Secondaries Investor",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
+        },
+        {
+          "title": "Tikehau raises $1bn for latest private debt secondaries fund - Alternative Credit Investor",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPZjhKZFpidnpycUtYMDM5cmpOcW5oRGdRblQzSVU0cnktX0pJdE9GeVY2UExJTzl3d0RmaUJLSzN6Tl9TNTFWNWFHdWktcXVzcGV6blpuN0otX20zV3FqSV9BRnBrejNzbHZrSGtHNndodVpaaGxFYzdxa1Jrb1hITjQ4ZkxrZVFValBEdHVYaGNVNkdLdnhyWDhSaHVqbm9vVmdZUUZHX0puRXdmZlE?oc=5",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-02-17",
+          "summary": "Tikehau raises $1bn for latest private debt secondaries fund&nbsp;&nbsp;Alternative Credit Investor",
           "feed_name": "search:Secondaries/Infra/GP-stakes"
         },
         {
@@ -12859,6 +12931,15 @@
           "published_date": "2026-02-13",
           "summary": "",
           "feed_name": "Alternative Credit Investor"
+        },
+        {
+          "title": "Oaktree raises $2.4bn for latest special situations fund - Alternative Credit Investor",
+          "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQdmlfVjl5aDF2RUx5NVE3ZkZlay1BS3MtS2hjVWlST1JCODhWRUdIR1NNNUZBUDNpbUt1QWM5LXM2dlVFTXc1dWlpUV9uWll4aGNaaW1GaEJTQWowdDlNdVNDNzlRZElWdVdNOHNSSDJ3WlM5ckdnb19zN2xmM0pKTlFRdm9Tc29Fal8wekJyemNpc3lFSnJlUTcydndmbUJXT3ZGR3NHMlk?oc=5",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-02-13",
+          "summary": "Oaktree raises $2.4bn for latest special situations fund&nbsp;&nbsp;Alternative Credit Investor",
+          "feed_name": "search:First/final close"
         },
         {
           "title": "Oaktree Raises Record $2.4 Billion at First Close for Special Situations Fund - Bloomberg.com",
@@ -15546,10 +15627,10 @@
       "amount": "$575M",
       "amount_usd_millions": 575.0,
       "category": "Credit Funds",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "London, UK",
+      "city": "London",
       "state": "",
-      "country": "",
+      "country": "UK",
       "stage": "Final Close",
       "announcement_date": "2026-02-02",
       "source_url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNV29yX29XRWphOWVjY0hTMlNVTVFwQWVEeURaYW9xd1cxcXR3VnlMQUplR3VhY0VrYlBxTzVaOVBTenBWTlNSb0RJNWhldGhCRHV4SVNWUkxpS1dZWkVvc3B3MXhsNEhwVjQwR3RDUUJiT1ljamlIdXplYmwzNHoyRG9ma2o2cERPaGhDVGNDTTlCWVA1RE5Ta01DV2RESTdBRG93QW0tN3g5dksteUhEeUMyaDVRVG8?oc=5",
@@ -17521,6 +17602,37 @@
       ]
     },
     {
+      "fund_name": "Lendable Private Credit Fund 1",
+      "firm": "Lendable",
+      "firm_slug": "lendable",
+      "amount": "$150M",
+      "amount_usd_millions": 150.0,
+      "category": "Credit Funds",
+      "location": "London, UK",
+      "city": "London",
+      "state": "",
+      "country": "UK",
+      "stage": "Launch",
+      "announcement_date": "2026-01-21",
+      "source_url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPcDlkdzFDcjN3dXRRa2lxNkpOY1pTQ2J1bUh5R1JZOXJSY25OR3BIVzNacHgwMHRUU09CWWRwaFN1TnNqUDBLbS0yWEJMUnBkbExWdnYwYnBXWmhkQnBqTFplbVJwNmx3OW5kdVFfeEE1bkY4UXNOOTNMNXU0cURRNHNqN053OURZZjdZd0RTME9wWXhIZ0xsRnBFbkFwbXk3TVE?oc=5",
+      "source_name": "Alternative Credit Investor",
+      "description_notes": "closes inaugural $150M private credit fund targeting mid-market lending opportunities across corporate and alternative asset classes. Lendable, a fintech-enabled credit platform, leverages its origination infrastructure and underwriting technology to source direct lending deals, positioning the debut fund as an alternative to traditional bank financing for borrowers in the $10M\u2013$100M+ range. The launch marks the firm's expansion from its marketplace lending roots into institutional private credit management.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-05T11:53:15",
+      "articles": [
+        {
+          "title": "Lendable secures $300m for two private credit funds - Alternative Credit Investor",
+          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPcDlkdzFDcjN3dXRRa2lxNkpOY1pTQ2J1bUh5R1JZOXJSY25OR3BIVzNacHgwMHRUU09CWWRwaFN1TnNqUDBLbS0yWEJMUnBkbExWdnYwYnBXWmhkQnBqTFplbVJwNmx3OW5kdVFfeEE1bkY4UXNOOTNMNXU0cURRNHNqN053OURZZjdZd0RTME9wWXhIZ0xsRnBFbkFwbXk3TVE?oc=5",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-01-21",
+          "summary": "Lendable secures $300m for two private credit funds&nbsp;&nbsp;Alternative Credit Investor",
+          "feed_name": "search:First/final close"
+        }
+      ]
+    },
+    {
       "fund_name": "Unnamed Galaxy Digital Crypto Hedge Fund",
       "firm": "Galaxy Digital",
       "firm_slug": "galaxy-digital",
@@ -18838,6 +18950,15 @@
           "published_date": "2026-01-15",
           "summary": "H.I.G. Capital Announces Closing of Oversubscribed European Lower Middle Market Private Equity Fund | Corporate&nbsp;&nbsp;eqs-news.com",
           "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "H.I.G. Capital Announces Closing of Oversubscribed European Lower Middle Market Private Equity Fund - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNLUVFQ0FsNndKd2FXZ3czLThYS19oeUlmT1hPemVTWXFCQ2trUGdBTTZManlyY0Q0UE1ra19JNXh6T2U3LWRpc3NqemVCX0phWnd2Zk14eTVnY2ZDZ1dON3drTTdBMnF4SlhIWkVuNnkzR0J3eGNISjF5elY0ZUtFbg?oc=5",
+          "source_name": "Yahoo Finance",
+          "source_domain": "finance.yahoo.com",
+          "published_date": "2026-01-15",
+          "summary": "H.I.G. Capital Announces Closing of Oversubscribed European Lower Middle Market Private Equity Fund&nbsp;&nbsp;Yahoo Finance",
+          "feed_name": "search:PE/VC fund closes"
         }
       ]
     },
@@ -21163,7 +21284,17 @@
       "is_covered": true,
       "covered_date": "2026-01-30",
       "date_added": "2026-02-07T16:53:32",
-      "articles": []
+      "articles": [
+        {
+          "title": "Catalio Capital Management Raises More than $325M in its Oversubscribed Second Credit Fund to Enable Healthcare Innovation Through Structured Credit - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNSVU5aThiOTlSM3JrVkozUXJPX21IWEI0clQ5bjZ3Ym1RN0J6ZWp1SWQxNFhGLXU0T0JkYmpvcDc5bnNXNGh4ZmZzLXo5YnRjb252dTdwWWt4T1Uxbm9lTXNQaWRMQ3ZQdGVlUEljT25XMFYtaTJLYVk5R0RSTm1xR2xDMFBoRU5sbldkaw?oc=5",
+          "source_name": "Yahoo Finance",
+          "source_domain": "finance.yahoo.com",
+          "published_date": "2026-01-07",
+          "summary": "Catalio Capital Management Raises More than $325M in its Oversubscribed Second Credit Fund to Enable Healthcare Innovation Through Structured Credit&nbsp;&nbsp;Yahoo Finance",
+          "feed_name": "search:Oversubscribed funds"
+        }
+      ]
     },
     {
       "fund_name": "HDFC AMC Private Credit Fund",
@@ -25582,8 +25713,8 @@
       "categories": [
         "Credit Funds"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "London",
+      "country": "UK"
     },
     {
       "firm": "Voyager Ventures",
@@ -25852,6 +25983,17 @@
       "country": "US"
     },
     {
+      "firm": "Lendable",
+      "firm_slug": "lendable",
+      "fund_count": 2,
+      "total_aum_millions": 450.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "London",
+      "country": "UK"
+    },
+    {
       "firm": "Obra Capital",
       "firm_slug": "obra-capital",
       "fund_count": 1,
@@ -25969,8 +26111,8 @@
       "categories": [
         "Private Equity"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "Chicago",
+      "country": "US"
     },
     {
       "firm": "Jefferies",
@@ -26409,17 +26551,6 @@
       "total_aum_millions": 300.0,
       "categories": [
         "Real Estate"
-      ],
-      "city": "London",
-      "country": "UK"
-    },
-    {
-      "firm": "Lendable",
-      "firm_slug": "lendable",
-      "fund_count": 1,
-      "total_aum_millions": 300.0,
-      "categories": [
-        "Credit Funds"
       ],
       "city": "London",
       "country": "UK"
@@ -28105,7 +28236,7 @@
       "categories": [
         "Venture Capital"
       ],
-      "city": "N/A",
+      "city": "Bangalore",
       "country": "India"
     },
     {
@@ -29880,8 +30011,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-04-04T08:14:47.025954",
-      "last_success": "2026-04-04T08:14:47.025962",
+      "last_fetch": "2026-04-05T06:10:25.650946",
+      "last_success": "2026-04-05T06:10:25.650958",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -29890,8 +30021,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-04-04T08:14:44.744558",
-      "last_success": "2026-04-04T08:14:44.744564",
+      "last_fetch": "2026-04-05T06:10:23.437707",
+      "last_success": "2026-04-05T06:10:23.437713",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -29930,8 +30061,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-04-04T08:14:54.097890",
-      "last_success": "2026-04-04T08:14:54.097900",
+      "last_fetch": "2026-04-05T06:10:34.055632",
+      "last_success": "2026-04-05T06:10:34.055642",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -29940,8 +30071,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-04-04T06:21:24.841466",
-      "last_success": "2026-04-04T06:21:24.841469",
+      "last_fetch": "2026-04-05T06:10:06.360462",
+      "last_success": "2026-04-05T06:10:06.360464",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -29950,8 +30081,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-04-04T06:06:01.928202",
-      "last_success": "2026-04-04T06:06:01.928204",
+      "last_fetch": "2026-04-05T06:10:03.657866",
+      "last_success": "2026-04-05T06:10:03.657874",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -29960,8 +30091,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-04-04T08:14:42.292188",
-      "last_success": "2026-04-04T08:14:42.292201",
+      "last_fetch": "2026-04-05T06:10:21.526758",
+      "last_success": "2026-04-05T06:10:21.526766",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -29970,8 +30101,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-04-04T07:11:38.357050",
-      "last_success": "2026-04-04T07:11:38.357058",
+      "last_fetch": "2026-04-05T06:10:08.815711",
+      "last_success": "2026-04-05T06:10:08.815721",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -29980,8 +30111,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-04-04T08:14:50.000502",
-      "last_success": "2026-04-04T08:14:50.000513",
+      "last_fetch": "2026-04-05T06:10:29.213261",
+      "last_success": "2026-04-05T06:10:29.213270",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -29990,8 +30121,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-04-04T08:10:34.614570",
-      "last_success": "2026-04-04T08:10:34.614579",
+      "last_fetch": "2026-04-05T06:10:12.753002",
+      "last_success": "2026-04-05T06:10:12.753011",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -30000,8 +30131,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-04-04T06:06:00.098740",
-      "last_success": "2026-04-04T06:06:00.098741",
+      "last_fetch": "2026-04-05T06:10:01.453468",
+      "last_success": "2026-04-05T06:10:01.453473",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -30010,8 +30141,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-04-04T08:14:40.080398",
-      "last_success": "2026-04-04T08:14:40.080403",
+      "last_fetch": "2026-04-05T06:10:19.492019",
+      "last_success": "2026-04-05T06:10:19.492029",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -30020,8 +30151,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-04-04T08:14:37.472079",
-      "last_success": "2026-04-04T08:14:37.472087",
+      "last_fetch": "2026-04-05T06:10:15.827030",
+      "last_success": "2026-04-05T06:10:15.827040",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -30030,8 +30161,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-04-04T06:06:03.175803",
-      "last_success": "2026-04-04T06:06:03.175809",
+      "last_fetch": "2026-04-05T06:10:04.917603",
+      "last_success": "2026-04-05T06:10:04.917612",
       "error_count": 0,
       "article_count": 17,
       "last_error": "",
@@ -30039,22 +30170,22 @@
     }
   ],
   "stats": {
-    "total_funds": 631,
+    "total_funds": 632,
     "total_covered": 52,
-    "total_uncovered": 579,
-    "total_aum_millions": 5090852.3,
+    "total_uncovered": 580,
+    "total_aum_millions": 5091002.3,
     "by_category": {
       "Private Equity": 156,
       "Secondaries & GP-Stakes": 41,
       "Real Estate": 68,
-      "Credit Funds": 127,
+      "Credit Funds": 128,
       "Venture Capital": 160,
       "Infrastructure": 78,
       "N/A": 1
     },
     "by_stage": {
       "Final Close": 174,
-      "Launch": 243,
+      "Launch": 244,
       "Other": 85,
       "First Close": 119,
       "Interim Close": 10
