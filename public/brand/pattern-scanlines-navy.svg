@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+  <defs>
+    <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="#FFFFFF" fill-opacity="0.08"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="1000" fill="#1E3A5F"/>
+  <rect width="1600" height="1000" fill="url(#scan)"/>
+</svg>

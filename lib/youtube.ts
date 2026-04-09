@@ -18,7 +18,8 @@ const VIDEOS: YouTubeVideo[] = [
   {
     videoId: "YuAG_UZ7mOQ",
     title: "Javad Mostofizadeh, WilmerHale: What GPs Get Wrong About Side Letters, Fees & Compliance",
-    thumbnail: "https://img.youtube.com/vi/YuAG_UZ7mOQ/hqdefault.jpg",
+    // Custom interview-view frame extracted from the actual broadcast (both host + guest visible)
+    thumbnail: "/thumbnails/javad-mostofizadeh-wilmerhale.jpg",
     publishedAt: "2026-03-09",
     guest: {
       name: "Javad Mostofizadeh",

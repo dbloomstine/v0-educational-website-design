@@ -1,0 +1,354 @@
+#!/usr/bin/env node
+/**
+ * Generates the FundOpsHQ brand asset SVG files into /public/brand/.
+ *
+ * Run with:  node scripts/generate-brand-assets.mjs
+ *
+ * This script is the source of truth for every wordmark, monogram, pattern,
+ * and background SVG that appears on the /brand page. To add a new asset:
+ *  1. Add a new entry below
+ *  2. Run this script
+ *  3. Reference the new file from app/brand/page.tsx
+ */
+
+import { writeFileSync, mkdirSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+const OUT = resolve(__dirname, '..', 'public', 'brand')
+mkdirSync(OUT, { recursive: true })
+
+// ─── Brand colors ───────────────────────────────────────────────────────────
+const COLORS = {
+  navy: '#1E3A5F',         // brand background
+  navyDark: '#13243C',     // card / deeper navy
+  navyDeep: '#0B1726',     // broadcast black
+  white: '#FFFFFF',
+  cream: '#F8F5EC',        // editorial off-white
+  amber: '#E6B045',        // accent (oklch 0.85 0.12 85)
+  amberSoft: '#F2D38B',
+  red: '#EF4444',          // live broadcast red
+  slate: '#64748B',        // muted text
+  slateLight: '#94A3B8',   // caption gray
+  border: '#2A4666',
+}
+
+// ─── Wordmark path data (extracted from components/logo.tsx) ────────────────
+// Two paths combined into a single SVG. Original viewBox: 0 0 279 46.
+const WORDMARK_PATH_FUNDOPS = 'M3.8147e-06 34.56V0.959995H21.888V6.192H6.48V15.168H18.816V20.256H6.48V34.56H3.8147e-06ZM35.5519 35.136C33.5999 35.136 31.9199 34.736 30.5119 33.936C29.1359 33.104 28.0799 31.904 27.3439 30.336C26.6079 28.736 26.2399 26.768 26.2399 24.432V10.368H32.7199V23.76C32.7199 25.712 33.1199 27.184 33.9199 28.176C34.7519 29.168 36.0159 29.664 37.7119 29.664C38.7999 29.664 39.7599 29.424 40.5919 28.944C41.4239 28.432 42.0799 27.712 42.5599 26.784C43.0719 25.824 43.3279 24.656 43.3279 23.28V10.368H49.7599V34.56H44.0959L43.5679 30.624C42.8639 32 41.8239 33.104 40.4479 33.936C39.0719 34.736 37.4399 35.136 35.5519 35.136ZM56.106 34.56V10.368H61.818L62.298 14.304C63.034 12.96 64.074 11.872 65.418 11.04C66.794 10.208 68.426 9.792 70.314 9.792C72.33 9.792 74.026 10.208 75.402 11.04C76.778 11.872 77.818 13.088 78.522 14.688C79.258 16.288 79.626 18.256 79.626 20.592V34.56H73.194V21.216C73.194 19.296 72.778 17.824 71.946 16.8C71.146 15.776 69.898 15.264 68.202 15.264C67.114 15.264 66.138 15.52 65.274 16.032C64.442 16.544 63.786 17.28 63.306 18.24C62.826 19.168 62.586 20.304 62.586 21.648V34.56H56.106ZM96.483 35.136C94.275 35.136 92.291 34.592 90.531 33.504C88.803 32.416 87.443 30.912 86.451 28.992C85.459 27.072 84.963 24.912 84.963 22.512C84.963 20.048 85.459 17.872 86.451 15.984C87.475 14.064 88.867 12.56 90.627 11.472C92.419 10.352 94.419 9.792 96.627 9.792C98.355 9.792 99.875 10.112 101.187 10.752C102.499 11.392 103.555 12.304 104.355 13.488V-3.8147e-06H110.835V34.56H105.075L104.355 31.248C103.875 31.92 103.267 32.56 102.531 33.168C101.827 33.776 100.979 34.256 99.987 34.608C98.995 34.96 97.827 35.136 96.483 35.136ZM98.019 29.472C99.299 29.472 100.419 29.184 101.379 28.608C102.371 28 103.139 27.168 103.683 26.112C104.227 25.056 104.499 23.84 104.499 22.464C104.499 21.088 104.227 19.872 103.683 18.816C103.139 17.76 102.371 16.944 101.379 16.368C100.419 15.76 99.299 15.456 98.019 15.456C96.803 15.456 95.699 15.76 94.707 16.368C93.715 16.944 92.931 17.76 92.355 18.816C91.811 19.872 91.539 21.072 91.539 22.416C91.539 23.824 91.811 25.056 92.355 26.112C92.931 27.168 93.699 28 94.659 28.608C95.651 29.184 96.771 29.472 98.019 29.472ZM132.832 35.136C129.568 35.136 126.688 34.4 124.192 32.928C121.696 31.456 119.744 29.424 118.336 26.832C116.928 24.208 116.224 21.184 116.224 17.76C116.224 14.336 116.928 11.328 118.336 8.736C119.744 6.112 121.696 4.064 124.192 2.592C126.688 1.12 129.568 0.383997 132.832 0.383997C136.128 0.383997 139.024 1.12 141.52 2.592C144.016 4.064 145.952 6.112 147.328 8.736C148.736 11.328 149.44 14.336 149.44 17.76C149.44 21.184 148.736 24.208 147.328 26.832C145.952 29.424 144.016 31.456 141.52 32.928C139.024 34.4 136.128 35.136 132.832 35.136ZM132.832 29.328C134.88 29.328 136.64 28.864 138.112 27.936C139.616 26.976 140.784 25.632 141.616 23.904C142.448 22.176 142.864 20.128 142.864 17.76C142.864 15.36 142.448 13.312 141.616 11.616C140.784 9.888 139.616 8.56 138.112 7.632C136.64 6.704 134.88 6.24 132.832 6.24C130.816 6.24 129.056 6.704 127.552 7.632C126.048 8.56 124.88 9.888 124.048 11.616C123.216 13.312 122.8 15.36 122.8 17.76C122.8 20.128 123.216 22.176 124.048 23.904C124.88 25.632 126.048 26.976 127.552 27.936C129.056 28.864 130.816 29.328 132.832 29.328ZM154.825 45.12V10.368H160.585L161.305 13.728C161.817 13.024 162.425 12.384 163.129 11.808C163.833 11.2 164.665 10.72 165.625 10.368C166.617 9.984 167.769 9.792 169.081 9.792C171.353 9.792 173.353 10.352 175.081 11.472C176.809 12.592 178.169 14.112 179.161 16.032C180.185 17.92 180.697 20.08 180.697 22.512C180.697 24.944 180.185 27.12 179.161 29.04C178.137 30.928 176.761 32.416 175.033 33.504C173.305 34.592 171.337 35.136 169.129 35.136C167.337 35.136 165.785 34.816 164.473 34.176C163.193 33.504 162.137 32.592 161.305 31.44V45.12H154.825ZM167.593 29.472C168.873 29.472 169.993 29.184 170.953 28.608C171.945 28.032 172.713 27.216 173.257 26.16C173.801 25.104 174.073 23.888 174.073 22.512C174.073 21.136 173.801 19.92 173.257 18.864C172.713 17.776 171.945 16.944 170.953 16.368C169.993 15.76 168.873 15.456 167.593 15.456C166.345 15.456 165.225 15.76 164.233 16.368C163.273 16.944 162.505 17.76 161.929 18.816C161.385 19.872 161.113 21.088 161.113 22.464C161.113 23.84 161.385 25.072 161.929 26.16C162.505 27.216 163.273 28.032 164.233 28.608C165.225 29.184 166.345 29.472 167.593 29.472ZM196.166 35.136C193.958 35.136 192.038 34.784 190.406 34.08C188.774 33.376 187.494 32.4 186.566 31.152C185.638 29.904 185.11 28.496 184.982 26.928H191.414C191.574 27.536 191.846 28.096 192.23 28.608C192.614 29.088 193.126 29.472 193.766 29.76C194.406 30.048 195.174 30.192 196.07 30.192C196.934 30.192 197.638 30.08 198.182 29.856C198.726 29.6 199.126 29.264 199.382 28.848C199.67 28.432 199.814 28 199.814 27.552C199.814 26.88 199.622 26.368 199.238 26.016C198.854 25.632 198.294 25.328 197.558 25.104C196.822 24.88 195.926 24.656 194.87 24.432C193.718 24.208 192.582 23.936 191.462 23.616C190.374 23.264 189.398 22.832 188.534 22.32C187.67 21.808 186.982 21.152 186.47 20.352C185.958 19.552 185.702 18.56 185.702 17.376C185.702 15.936 186.086 14.656 186.854 13.536C187.622 12.384 188.742 11.472 190.214 10.8C191.686 10.128 193.462 9.792 195.542 9.792C198.454 9.792 200.758 10.448 202.454 11.76C204.15 13.072 205.158 14.88 205.478 17.184H199.382C199.19 16.448 198.758 15.872 198.086 15.456C197.446 15.008 196.582 14.784 195.494 14.784C194.342 14.784 193.462 14.992 192.854 15.408C192.246 15.824 191.942 16.368 191.942 17.04C191.942 17.488 192.134 17.888 192.518 18.24C192.934 18.592 193.51 18.896 194.246 19.152C194.982 19.376 195.878 19.6 196.934 19.824C198.79 20.208 200.422 20.656 201.83 21.168C203.238 21.648 204.342 22.352 205.142 23.28C205.942 24.176 206.342 25.488 206.342 27.216C206.342 28.752 205.926 30.128 205.094 31.344C204.262 32.528 203.078 33.456 201.542 34.128C200.038 34.8 198.246 35.136 196.166 35.136Z'
+
+const WORDMARK_PATH_HQ = 'M233.137 34.56V0.959995H239.617V34.56H233.137ZM211.969 34.56V0.959995H218.449V34.56H211.969ZM217.537 20.016V14.784H234.241V20.016H217.537ZM269.658 39.84L257.418 20.592H264.858L277.386 39.84H269.658ZM261.738 35.136C258.474 35.136 255.594 34.4 253.098 32.928C250.602 31.456 248.65 29.424 247.242 26.832C245.834 24.208 245.13 21.184 245.13 17.76C245.13 14.336 245.834 11.328 247.242 8.736C248.65 6.112 250.602 4.064 253.098 2.592C255.594 1.12 258.474 0.383997 261.738 0.383997C265.034 0.383997 267.93 1.12 270.426 2.592C272.922 4.064 274.858 6.112 276.234 8.736C277.642 11.328 278.346 14.336 278.346 17.76C278.346 21.184 277.642 24.208 276.234 26.832C274.858 29.424 272.922 31.456 270.426 32.928C267.93 34.4 265.034 35.136 261.738 35.136ZM261.738 29.328C263.786 29.328 265.546 28.864 267.018 27.936C268.522 26.976 269.69 25.632 270.522 23.904C271.354 22.176 271.77 20.128 271.77 17.76C271.77 15.36 271.354 13.312 270.522 11.616C269.69 9.888 268.522 8.56 267.018 7.632C265.546 6.704 263.786 6.24 261.738 6.24C259.722 6.24 257.962 6.704 256.458 7.632C254.954 8.56 253.786 9.888 252.954 11.616C252.122 13.312 251.706 15.36 251.706 17.76C251.706 20.128 252.122 22.176 252.954 23.904C253.786 25.632 254.954 26.976 256.458 27.936C257.962 28.864 259.722 29.328 261.738 29.328Z'
+
+const wordmark = (fill, bg) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 279 46" width="558" height="92">
+${bg ? `<rect width="279" height="46" fill="${bg}"/>` : ''}
+<g fill="${fill}">
+<path d="${WORDMARK_PATH_FUNDOPS}"/>
+<path d="${WORDMARK_PATH_HQ}"/>
+</g>
+</svg>`
+
+const wordmarkPadded = (fill, bg, padX = 60, padY = 40) => {
+  const w = 279 + padX * 2
+  const h = 46 + padY * 2
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w * 2}" height="${h * 2}">
+${bg ? `<rect width="${w}" height="${h}" fill="${bg}"/>` : ''}
+<g transform="translate(${padX}, ${padY})" fill="${fill}">
+<path d="${WORDMARK_PATH_FUNDOPS}"/>
+<path d="${WORDMARK_PATH_HQ}"/>
+</g>
+</svg>`
+}
+
+// ─── Wordmark variants ──────────────────────────────────────────────────────
+const variants = [
+  ['wordmark-light',   wordmark(COLORS.white, null)],
+  ['wordmark-dark',    wordmark(COLORS.navy, null)],
+  ['wordmark-amber',   wordmark(COLORS.amber, null)],
+  ['wordmark-cream',   wordmark(COLORS.cream, null)],
+  ['wordmark-on-navy',     wordmarkPadded(COLORS.white, COLORS.navy)],
+  ['wordmark-on-cream',    wordmarkPadded(COLORS.navy, COLORS.cream)],
+  ['wordmark-on-black',    wordmarkPadded(COLORS.white, '#000000')],
+  ['wordmark-on-broadcast', wordmarkPadded(COLORS.white, COLORS.navyDeep)],
+  ['wordmark-amber-on-navy', wordmarkPadded(COLORS.amber, COLORS.navy)],
+]
+
+variants.forEach(([name, svg]) => writeFileSync(`${OUT}/${name}.svg`, svg))
+
+// ─── Stacked wordmark with tagline ──────────────────────────────────────────
+const stacked = (fill, bg) => {
+  const w = 600
+  const h = 240
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+${bg ? `<rect width="${w}" height="${h}" fill="${bg}"/>` : ''}
+<g transform="translate(${(w - 279 * 1.4) / 2}, 60) scale(1.4)" fill="${fill}">
+<path d="${WORDMARK_PATH_FUNDOPS}"/>
+<path d="${WORDMARK_PATH_HQ}"/>
+</g>
+<g transform="translate(${w / 2}, 175)" text-anchor="middle">
+  <line x1="-180" y1="0" x2="-100" y2="0" stroke="${fill}" stroke-opacity="0.4" stroke-width="1"/>
+  <line x1="100" y1="0" x2="180" y2="0" stroke="${fill}" stroke-opacity="0.4" stroke-width="1"/>
+  <text x="0" y="5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" letter-spacing="3" fill="${fill}" fill-opacity="0.7">
+    THE DAILY BRIEF FOR FUND OPERATORS
+  </text>
+</g>
+</svg>`
+}
+writeFileSync(`${OUT}/wordmark-stacked-light.svg`, stacked(COLORS.white, null))
+writeFileSync(`${OUT}/wordmark-stacked-on-navy.svg`, stacked(COLORS.white, COLORS.navy))
+writeFileSync(`${OUT}/wordmark-stacked-on-cream.svg`, stacked(COLORS.navy, COLORS.cream))
+
+// ─── Editorial lockup with date ─────────────────────────────────────────────
+const lockup = (fill, bg) => {
+  const w = 720
+  const h = 200
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
+${bg ? `<rect width="${w}" height="${h}" fill="${bg}"/>` : ''}
+<g transform="translate(50, 38)">
+  <text x="0" y="0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="2.5" fill="${fill}" fill-opacity="0.5">VOL. I · EST. 2025 · THE DAILY BRIEF FOR FUND OPERATORS</text>
+  <line x1="0" y1="14" x2="${w - 100}" y2="14" stroke="${fill}" stroke-opacity="0.3" stroke-width="1"/>
+</g>
+<g transform="translate(50, 80) scale(1.6)" fill="${fill}">
+<path d="${WORDMARK_PATH_FUNDOPS}"/>
+<path d="${WORDMARK_PATH_HQ}"/>
+</g>
+<g transform="translate(50, 168)">
+  <line x1="0" y1="0" x2="${w - 100}" y2="0" stroke="${fill}" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="0" y="18" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10" font-weight="700" letter-spacing="2" fill="${fill}" fill-opacity="0.5">NEWS · NEWSLETTER · LIVE SHOW · FUNDOPSHQ.COM</text>
+</g>
+</svg>`
+}
+writeFileSync(`${OUT}/lockup-editorial-light.svg`, lockup(COLORS.white, null))
+writeFileSync(`${OUT}/lockup-editorial-on-navy.svg`, lockup(COLORS.white, COLORS.navy))
+writeFileSync(`${OUT}/lockup-editorial-on-cream.svg`, lockup(COLORS.navy, COLORS.cream))
+
+// ─── Monogram: square (the existing icon, refined) ──────────────────────────
+const monogramSquare = (bg, fg, accent) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="400" height="400">
+  <rect width="200" height="200" rx="32" fill="${bg}"/>
+  <text x="100" y="142" font-family="serif" font-style="italic" font-size="150" font-weight="700" fill="${fg}" text-anchor="middle">F</text>
+  <circle cx="148" cy="100" r="6" fill="${accent}"/>
+</svg>`
+writeFileSync(`${OUT}/monogram-square-navy.svg`, monogramSquare(COLORS.navy, COLORS.white, COLORS.amber))
+writeFileSync(`${OUT}/monogram-square-cream.svg`, monogramSquare(COLORS.cream, COLORS.navy, COLORS.amber))
+writeFileSync(`${OUT}/monogram-square-amber.svg`, monogramSquare(COLORS.amber, COLORS.navy, COLORS.navy))
+
+// ─── Monogram: roundel (publisher's seal) ───────────────────────────────────
+const roundel = (bg, fg, accent) => {
+  const r = 100
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" width="440" height="440">
+  <defs>
+    <path id="circ" d="M 110, 110 m -78, 0 a 78,78 0 1,1 156,0 a 78,78 0 1,1 -156,0"/>
+  </defs>
+  <circle cx="110" cy="110" r="${r}" fill="${bg}"/>
+  <circle cx="110" cy="110" r="${r - 4}" fill="none" stroke="${fg}" stroke-opacity="0.3" stroke-width="1"/>
+  <circle cx="110" cy="110" r="${r - 12}" fill="none" stroke="${fg}" stroke-opacity="0.25" stroke-width="1"/>
+  <text font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="3" fill="${fg}" fill-opacity="0.7">
+    <textPath href="#circ" startOffset="0">
+      ★ FUNDOPSHQ ★ EST. 2025 ★ FUNDOPSHQ ★ EST. 2025 ★
+    </textPath>
+  </text>
+  <text x="110" y="125" font-family="serif" font-style="italic" font-size="68" font-weight="700" fill="${fg}" text-anchor="middle">F</text>
+  <line x1="60" y1="138" x2="160" y2="138" stroke="${accent}" stroke-width="1"/>
+  <text x="110" y="155" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="9" font-weight="700" letter-spacing="2" fill="${fg}" fill-opacity="0.6" text-anchor="middle">FUND OPERATIONS</text>
+</svg>`
+}
+writeFileSync(`${OUT}/roundel-navy.svg`, roundel(COLORS.navy, COLORS.white, COLORS.amber))
+writeFileSync(`${OUT}/roundel-cream.svg`, roundel(COLORS.cream, COLORS.navy, COLORS.amber))
+writeFileSync(`${OUT}/roundel-amber.svg`, roundel(COLORS.amber, COLORS.navy, COLORS.navy))
+
+// ─── Italic display "F" mark ────────────────────────────────────────────────
+const italicMark = (bg, fg) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="400" height="400">
+  <rect width="200" height="200" fill="${bg}"/>
+  <text x="100" y="155" font-family="serif" font-style="italic" font-size="200" font-weight="900" fill="${fg}" text-anchor="middle" font-stretch="condensed">F</text>
+</svg>`
+writeFileSync(`${OUT}/italic-mark-navy.svg`, italicMark(COLORS.navy, COLORS.amber))
+writeFileSync(`${OUT}/italic-mark-cream.svg`, italicMark(COLORS.cream, COLORS.navy))
+writeFileSync(`${OUT}/italic-mark-broadcast.svg`, italicMark(COLORS.navyDeep, COLORS.white))
+
+// ─── Patterns ───────────────────────────────────────────────────────────────
+
+// Hairline grid pattern
+const gridPattern = (bg, fg, opacity = 0.08) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+  <defs>
+    <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M 80 0 L 0 0 0 80" fill="none" stroke="${fg}" stroke-opacity="${opacity}" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="1000" fill="${bg}"/>
+  <rect width="1600" height="1000" fill="url(#grid)"/>
+</svg>`
+writeFileSync(`${OUT}/pattern-grid-navy.svg`, gridPattern(COLORS.navy, COLORS.white, 0.08))
+writeFileSync(`${OUT}/pattern-grid-cream.svg`, gridPattern(COLORS.cream, COLORS.navy, 0.08))
+writeFileSync(`${OUT}/pattern-grid-broadcast.svg`, gridPattern(COLORS.navyDeep, COLORS.white, 0.06))
+
+// Wordmark watermark pattern
+const wordmarkPattern = (bg, fill, opacity = 0.07) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+  <rect width="1600" height="1000" fill="${bg}"/>
+  <g transform="translate(100, 600) scale(5.5)" fill="${fill}" fill-opacity="${opacity}" font-style="italic">
+    <path d="${WORDMARK_PATH_FUNDOPS}"/>
+    <path d="${WORDMARK_PATH_HQ}"/>
+  </g>
+</svg>`
+writeFileSync(`${OUT}/pattern-wordmark-navy.svg`, wordmarkPattern(COLORS.navy, COLORS.white, 0.06))
+writeFileSync(`${OUT}/pattern-wordmark-cream.svg`, wordmarkPattern(COLORS.cream, COLORS.navy, 0.07))
+
+// Scan lines (broadcast)
+const scanlines = (bg, fg, opacity = 0.12) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+  <defs>
+    <pattern id="scan" width="4" height="4" patternUnits="userSpaceOnUse">
+      <rect width="4" height="2" fill="${fg}" fill-opacity="${opacity}"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="1000" fill="${bg}"/>
+  <rect width="1600" height="1000" fill="url(#scan)"/>
+</svg>`
+writeFileSync(`${OUT}/pattern-scanlines-broadcast.svg`, scanlines(COLORS.navyDeep, COLORS.white, 0.1))
+writeFileSync(`${OUT}/pattern-scanlines-navy.svg`, scanlines(COLORS.navy, COLORS.white, 0.08))
+
+// Color bars (broadcast)
+const colorBars = () => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 80" width="1200" height="160">
+  <rect x="0" y="0" width="120" height="80" fill="${COLORS.red}"/>
+  <rect x="120" y="0" width="120" height="80" fill="${COLORS.amber}"/>
+  <rect x="240" y="0" width="120" height="80" fill="#10B981"/>
+  <rect x="360" y="0" width="120" height="80" fill="#06B6D4"/>
+  <rect x="480" y="0" width="120" height="80" fill="#8B5CF6"/>
+</svg>`
+writeFileSync(`${OUT}/pattern-colorbars.svg`, colorBars())
+
+// Corner ticks (newsroom registration marks)
+const cornerTicks = (size = 400, color) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}">
+  <g stroke="${color}" stroke-width="2" fill="none">
+    <path d="M 8 24 L 8 8 L 24 8"/>
+    <path d="M ${size - 24} 8 L ${size - 8} 8 L ${size - 8} 24"/>
+    <path d="M 8 ${size - 24} L 8 ${size - 8} L 24 ${size - 8}"/>
+    <path d="M ${size - 24} ${size - 8} L ${size - 8} ${size - 8} L ${size - 8} ${size - 24}"/>
+  </g>
+</svg>`
+writeFileSync(`${OUT}/pattern-cornerticks-amber.svg`, cornerTicks(400, COLORS.amber))
+writeFileSync(`${OUT}/pattern-cornerticks-white.svg`, cornerTicks(400, COLORS.white))
+
+// Editorial rules
+const rules = (color) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" width="800" height="200">
+  <line x1="0" y1="20" x2="800" y2="20" stroke="${color}" stroke-width="3"/>
+  <line x1="0" y1="30" x2="800" y2="30" stroke="${color}" stroke-width="1"/>
+  <line x1="0" y1="80" x2="800" y2="80" stroke="${color}" stroke-width="1"/>
+  <line x1="0" y1="84" x2="800" y2="84" stroke="${color}" stroke-width="1" stroke-dasharray="2 4"/>
+  <line x1="0" y1="130" x2="800" y2="130" stroke="${color}" stroke-width="1" stroke-dasharray="6 4"/>
+  <line x1="0" y1="170" x2="800" y2="170" stroke="${color}" stroke-width="1"/>
+  <line x1="0" y1="180" x2="800" y2="180" stroke="${color}" stroke-width="3"/>
+</svg>`
+writeFileSync(`${OUT}/pattern-editorial-rules.svg`, rules(COLORS.navy))
+writeFileSync(`${OUT}/pattern-editorial-rules-light.svg`, rules(COLORS.white))
+
+// ─── Backgrounds ────────────────────────────────────────────────────────────
+
+// Solid navy
+const solid = (color) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+  <rect width="1600" height="1000" fill="${color}"/>
+</svg>`
+writeFileSync(`${OUT}/bg-solid-navy.svg`, solid(COLORS.navy))
+writeFileSync(`${OUT}/bg-solid-cream.svg`, solid(COLORS.cream))
+writeFileSync(`${OUT}/bg-solid-broadcast.svg`, solid(COLORS.navyDeep))
+writeFileSync(`${OUT}/bg-solid-amber.svg`, solid(COLORS.amber))
+
+// Vignette
+const vignette = (bg, deep) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+  <defs>
+    <radialGradient id="vig" cx="50%" cy="40%" r="80%">
+      <stop offset="0%" stop-color="${bg}"/>
+      <stop offset="100%" stop-color="${deep}"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#vig)"/>
+</svg>`
+writeFileSync(`${OUT}/bg-vignette-navy.svg`, vignette(COLORS.navy, COLORS.navyDeep))
+
+// Gradient navy
+const gradient = (top, bottom) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="${top}"/>
+      <stop offset="100%" stop-color="${bottom}"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#grad)"/>
+</svg>`
+writeFileSync(`${OUT}/bg-gradient-navy.svg`, gradient(COLORS.navy, COLORS.navyDeep))
+writeFileSync(`${OUT}/bg-gradient-broadcast.svg`, gradient('#1A1F2E', COLORS.navyDeep))
+
+// Editorial poster (combines wordmark + grid + amber accent)
+const poster = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" width="1200" height="1500">
+  <defs>
+    <pattern id="pgrid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="${COLORS.white}" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+    <radialGradient id="pvig" cx="50%" cy="40%" r="90%">
+      <stop offset="0%" stop-color="${COLORS.navy}"/>
+      <stop offset="100%" stop-color="${COLORS.navyDeep}"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="1500" fill="url(#pvig)"/>
+  <rect width="1200" height="1500" fill="url(#pgrid)"/>
+  <!-- Top masthead bar -->
+  <line x1="60" y1="60" x2="1140" y2="60" stroke="${COLORS.white}" stroke-opacity="0.2" stroke-width="1"/>
+  <text x="60" y="100" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700" letter-spacing="3" fill="${COLORS.white}" fill-opacity="0.6">VOL. I · EST. 2025</text>
+  <text x="1140" y="100" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700" letter-spacing="3" fill="${COLORS.amber}" text-anchor="end">THE DAILY BRIEF</text>
+  <line x1="60" y1="120" x2="1140" y2="120" stroke="${COLORS.white}" stroke-opacity="0.2" stroke-width="1"/>
+  <!-- Giant italic wordmark -->
+  <g transform="translate(100, 550) scale(3.2)" fill="${COLORS.white}">
+    <path d="${WORDMARK_PATH_FUNDOPS}"/>
+    <path d="${WORDMARK_PATH_HQ}"/>
+  </g>
+  <!-- Faded background "F" -->
+  <text x="600" y="1300" font-family="serif" font-style="italic" font-size="900" font-weight="900" fill="${COLORS.amber}" fill-opacity="0.08" text-anchor="middle">F</text>
+  <!-- Bottom credit -->
+  <line x1="60" y1="1380" x2="1140" y2="1380" stroke="${COLORS.white}" stroke-opacity="0.2" stroke-width="1"/>
+  <text x="60" y="1430" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700" letter-spacing="3" fill="${COLORS.white}" fill-opacity="0.6">FUNDOPSHQ.COM</text>
+  <text x="1140" y="1430" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700" letter-spacing="3" fill="${COLORS.white}" fill-opacity="0.6" text-anchor="end">NEWS · NEWSLETTER · LIVE SHOW</text>
+</svg>`
+writeFileSync(`${OUT}/poster-editorial.svg`, poster)
+
+// Social card (1200x630 OG image)
+const ogCard = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <radialGradient id="og-vig" cx="50%" cy="40%" r="90%">
+      <stop offset="0%" stop-color="${COLORS.navy}"/>
+      <stop offset="100%" stop-color="${COLORS.navyDeep}"/>
+    </radialGradient>
+    <pattern id="og-grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="${COLORS.white}" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#og-vig)"/>
+  <rect width="1200" height="630" fill="url(#og-grid)"/>
+  <!-- Faded italic wordmark behind -->
+  <text x="600" y="600" font-family="serif" font-style="italic" font-size="520" font-weight="900" fill="${COLORS.white}" fill-opacity="0.04" text-anchor="middle">FundOpsHQ</text>
+  <!-- Top bar -->
+  <line x1="60" y1="60" x2="1140" y2="60" stroke="${COLORS.white}" stroke-opacity="0.2" stroke-width="1"/>
+  <text x="60" y="100" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700" letter-spacing="3" fill="${COLORS.white}" fill-opacity="0.6">VOL. I · THE DAILY BRIEF FOR FUND OPERATORS</text>
+  <text x="1140" y="100" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700" letter-spacing="3" fill="${COLORS.amber}" text-anchor="end">FUNDOPSHQ.COM</text>
+  <!-- Wordmark -->
+  <g transform="translate(60, 220) scale(2.2)" fill="${COLORS.white}">
+    <path d="${WORDMARK_PATH_FUNDOPS}"/>
+    <path d="${WORDMARK_PATH_HQ}"/>
+  </g>
+  <!-- Tagline -->
+  <text x="60" y="430" font-family="serif" font-style="italic" font-size="56" fill="${COLORS.amber}">A daily newsroom for fund operators.</text>
+  <!-- Bottom -->
+  <line x1="60" y1="540" x2="1140" y2="540" stroke="${COLORS.white}" stroke-opacity="0.2" stroke-width="1"/>
+  <text x="60" y="585" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" letter-spacing="3" fill="${COLORS.white}" fill-opacity="0.5">NEWS · NEWSLETTER · LIVE SHOW</text>
+  <g transform="translate(1100, 555)">
+    <circle cx="10" cy="10" r="6" fill="${COLORS.red}"/>
+    <text x="22" y="14" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" letter-spacing="2" fill="${COLORS.red}">LIVE</text>
+  </g>
+</svg>`
+writeFileSync(`${OUT}/social-og-card.svg`, ogCard)
+
+// Favicon-style mark
+const faviconMark = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="128" height="128">
+  <rect width="64" height="64" rx="12" fill="${COLORS.navy}"/>
+  <text x="32" y="46" font-family="serif" font-style="italic" font-size="46" font-weight="900" fill="${COLORS.white}" text-anchor="middle">F</text>
+</svg>`
+writeFileSync(`${OUT}/favicon-mark.svg`, faviconMark)
+
+console.log(`✓ Generated ${variants.length + 25}+ brand assets in public/brand/`)

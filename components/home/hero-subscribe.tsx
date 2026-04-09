@@ -137,9 +137,9 @@ export function HeroSubscribe() {
                 fontVariationSettings: '"opsz" 144, "SOFT" 30',
               }}
             >
-              The operating
+              News, newsletter
               <br />
-              system for{' '}
+              and the{' '}
               <span
                 className="italic"
                 style={{
@@ -148,24 +148,24 @@ export function HeroSubscribe() {
                   color: 'oklch(0.85 0.12 85)',
                 }}
               >
-                fund&nbsp;ops.
+                live&nbsp;show.
               </span>
             </h1>
 
             <p className="mt-6 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-              Real-time news on every fund launch, exec move, and capital raise across PE, VC and credit — plus a
-              weekly broadcast with the people building it.
+              Real-time fund news, a morning briefing in your inbox, and a weekly broadcast with the people running
+              the back office of PE, VC and credit.
             </p>
 
-            {/* Stats strip */}
+            {/* Channels strip — News · Newsletter · Show */}
             <dl className="mt-8 grid grid-cols-3 gap-4 max-w-md border-y border-foreground/10 py-4">
               <div>
-                <dt className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">Sources</dt>
-                <dd className="mt-1 font-display text-2xl text-foreground tabular-nums">200+</dd>
+                <dt className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">News</dt>
+                <dd className="mt-1 font-display text-2xl text-foreground">Hourly</dd>
               </div>
               <div className="border-l border-foreground/10 pl-4">
-                <dt className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">Updated</dt>
-                <dd className="mt-1 font-display text-2xl text-foreground">Hourly</dd>
+                <dt className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">Newsletter</dt>
+                <dd className="mt-1 font-display text-2xl text-foreground">Daily</dd>
               </div>
               <div className="border-l border-foreground/10 pl-4">
                 <dt className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">Show</dt>
