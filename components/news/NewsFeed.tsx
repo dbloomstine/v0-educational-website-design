@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import { Search, X, Loader2, ChevronDown, SlidersHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ArticleRow } from './ArticleRow'
@@ -159,6 +159,7 @@ function groupHasAll(current: string, values: readonly string[]): boolean {
 export function NewsFeed() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const pathname = usePathname()
 
   // Filter state from URL
   const [query, setQuery] = useState(searchParams.get('q') || '')
@@ -212,7 +213,7 @@ export function NewsFeed() {
     [query, dateRange, category, eventType, fundSizeMin, fundSizeMax, geography, sort]
   )
 
-  // Sync URL
+  // Sync URL — preserve whichever page the feed is mounted on (e.g. / or /news)
   const syncUrl = useCallback(() => {
     const params = new URLSearchParams()
     if (query) params.set('q', query)
@@ -224,8 +225,9 @@ export function NewsFeed() {
     if (geography) params.set('geography', geography)
     if (sort && sort !== 'latest') params.set('sort', sort)
     const qs = params.toString()
-    router.replace(qs ? `/news?${qs}` : '/news', { scroll: false })
-  }, [router, query, dateRange, category, eventType, fundSizeMin, fundSizeMax, geography, sort])
+    const base = pathname || '/news'
+    router.replace(qs ? `${base}?${qs}` : base, { scroll: false })
+  }, [router, pathname, query, dateRange, category, eventType, fundSizeMin, fundSizeMax, geography, sort])
 
   // Fetch feed
   const fetchFeed = useCallback(

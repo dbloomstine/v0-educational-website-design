@@ -1,11 +1,15 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, DM_Sans } from "next/font/google"
+import { Inter, DM_Sans, Fraunces, JetBrains_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "sonner"
 import "./globals.css"
 
-// FundOpsHQ Brand Fonts: DM Sans for headings, Inter for body
+// FundOpsHQ Brand Fonts:
+// - Inter        → body
+// - DM Sans      → secondary headings (kept for backwards compat)
+// - Fraunces     → editorial display (variable serif w/ optical sizing)
+// - JetBrains Mono → financial-ticker numerals, timestamps, eyebrows
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter"
@@ -15,6 +19,19 @@ const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
   variable: "--font-dm-sans"
+})
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+  style: ["normal", "italic"],
+  axes: ["opsz", "SOFT"],
+})
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+  weight: ["400", "500", "600", "700"],
 })
 
 export const metadata: Metadata = {
@@ -110,7 +127,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} ${dmSans.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${dmSans.variable} ${fraunces.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-background focus:text-foreground focus:border focus:border-border focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring"

@@ -1,441 +1,135 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { Logo } from "@/components/logo"
-import { Menu, X, ChevronDown } from "lucide-react"
-import { getAllFundTypes } from "@/lib/content/fund-types"
-import { getAllTools } from "@/lib/content/tools"
-import { getAllRoles } from "@/lib/content/roles"
+import { Menu, X, ArrowRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 
-const fundTypes = getAllFundTypes().map((fundType) => ({
-  name: fundType.name,
-  href: `/funds/${fundType.slug}`,
-  color: fundType.color,
-}))
-
-const tools = getAllTools().filter(tool => tool.status === 'active')
-
-const roles = getAllRoles().map((role) => ({
-  name: role.shortTitle,
-  fullName: role.title,
-  href: `/roles/${role.slug}`,
-}))
-
-interface DropdownProps {
-  trigger: React.ReactNode
-  children: React.ReactNode
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  id: string
-}
-
-function Dropdown({ trigger, children, isOpen, onOpenChange, id }: DropdownProps) {
-  const dropdownRef = useRef<HTMLDivElement>(null)
-  const buttonRef = useRef<HTMLButtonElement>(null)
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        onOpenChange(false)
-      }
-    }
-
-    function handleEscapeKey(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        onOpenChange(false)
-        buttonRef.current?.focus()
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-      document.addEventListener('keydown', handleEscapeKey)
-      return () => {
-        document.removeEventListener('mousedown', handleClickOutside)
-        document.removeEventListener('keydown', handleEscapeKey)
-      }
-    }
-  }, [isOpen, onOpenChange])
-
-  return (
-    <div ref={dropdownRef} className="relative">
-      <button
-        ref={buttonRef}
-        onClick={() => onOpenChange(!isOpen)}
-        aria-expanded={isOpen}
-        aria-haspopup="true"
-        aria-controls={isOpen ? `${id}-menu` : undefined}
-        className={cn(
-          "group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors",
-          "hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-          isOpen && "bg-accent/50"
-        )}
-      >
-        {trigger}
-        <ChevronDown
-          className={cn(
-            "ml-1 h-3 w-3 transition-transform duration-200",
-            isOpen && "rotate-180"
-          )}
-          aria-hidden="true"
-        />
-      </button>
-      {isOpen && (
-        <div
-          id={`${id}-menu`}
-          role="menu"
-          aria-label={`${trigger} menu`}
-          className="absolute top-full mt-2 z-50 rounded-lg border border-border bg-popover text-popover-foreground shadow-lg animate-in fade-in-0 zoom-in-95 duration-300 left-1/2 -translate-x-1/2"
-        >
-          {children}
-        </div>
-      )}
-    </div>
-  )
-}
+const NAV_ITEMS = [
+  { label: "News", href: "/", match: ["/", "/news"] },
+  { label: "Show", href: "/#show", match: ["/show"] },
+  { label: "About", href: "/about", match: ["/about"] },
+] as const
 
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const pathname = usePathname() || "/"
 
-  const handleDropdownOpen = (name: string) => (open: boolean) => {
-    setOpenDropdown(open ? name : null)
-  }
+  const isActive = (matches: readonly string[]) =>
+    matches.some((m) => (m === "/" ? pathname === "/" : pathname.startsWith(m)))
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <Link href="/" className="flex items-center" aria-label="FundOpsHQ - Home">
-          <Logo height={28} className="text-foreground" />
+    <header className="sticky top-0 z-50 w-full border-b-2 border-foreground/15 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75">
+      <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
+        {/* Brand mark */}
+        <Link href="/" className="flex items-center" aria-label="FundOpsHQ — Home">
+          <Logo height={26} className="text-foreground" />
         </Link>
 
-        {/* Desktop Navigation */}
+        {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-1">
-          {/* News Link */}
-          <Link
-            href="/news"
-            className="inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+          {NAV_ITEMS.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={cn(
+                "relative inline-flex h-9 items-center justify-center px-3 font-mono text-[11px] font-bold uppercase tracking-[0.2em] transition-colors",
+                isActive(item.match)
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              {item.label}
+              {isActive(item.match) && (
+                <span className="absolute -bottom-[1px] left-3 right-3 h-px bg-amber-400/80" aria-hidden="true" />
+              )}
+            </Link>
+          ))}
+
+          {/* Live show indicator link */}
+          <a
+            href="https://www.youtube.com/@dbloomstine/streams"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-2 inline-flex h-9 items-center gap-2 rounded-sm border border-red-700/50 bg-red-950/30 px-3 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-red-300 transition-colors hover:border-red-500/70 hover:bg-red-950/60 hover:text-red-200"
+            aria-label="Watch FundOpsHQ Live on YouTube"
           >
-            News
-          </Link>
-
-          {/* Podcast Dropdown */}
-          <Dropdown
-            trigger="Podcast"
-            id="podcast"
-            isOpen={openDropdown === 'podcast'}
-            onOpenChange={handleDropdownOpen('podcast')}
-          >
-            <div className="w-[240px] p-3">
-              <Link
-                href="/interviews"
-                onClick={() => setOpenDropdown(null)}
-                className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
-              >
-                <div className="text-sm font-medium text-foreground">Episodes</div>
-                <div className="text-xs text-muted-foreground">Watch and listen to interviews</div>
-              </Link>
-              <Link
-                href="/guests"
-                onClick={() => setOpenDropdown(null)}
-                className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
-              >
-                <div className="text-sm font-medium text-foreground">Guests</div>
-                <div className="text-xs text-muted-foreground">Meet the fund ops experts</div>
-              </Link>
-            </div>
-          </Dropdown>
-
-          {/* FundWatch Tracker Link — hidden until ready */}
-          {/* <Link
-            href="/fund-watch"
-            className="inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-          >
-            FundWatch Tracker
-          </Link> */}
-
-          {/* Articles Dropdown — hidden for now, content quality TBD */}
-          {/* <Dropdown
-            trigger="Articles"
-            id="articles"
-            isOpen={openDropdown === 'articles'}
-            onOpenChange={handleDropdownOpen('articles')}
-          >
-            <div className="w-[460px] p-4">
-              <div className="mb-2">
-                <p className="px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">By Fund Type</p>
-              </div>
-              <ul className="grid grid-cols-2 gap-1">
-                {fundTypes.map((fund) => (
-                  <li key={fund.name}>
-                    <Link
-                      href={fund.href}
-                      onClick={() => setOpenDropdown(null)}
-                      className="group flex items-center gap-2.5 rounded-md px-3 py-2 text-foreground transition-colors hover:bg-accent/50"
-                    >
-                      <div className="h-2 w-2 rounded-full" style={{ backgroundColor: fund.color }} />
-                      <span className="text-sm font-medium">{fund.name}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-3 pt-3 border-t border-border">
-                <p className="px-3 mb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">By Role</p>
-                <ul className="grid grid-cols-2 gap-1">
-                  {roles.map((role) => (
-                    <li key={role.name}>
-                      <Link
-                        href={role.href}
-                        onClick={() => setOpenDropdown(null)}
-                        className="block rounded-md px-3 py-2 transition-colors hover:bg-accent/50"
-                      >
-                        <span className="text-sm font-medium text-foreground">{role.fullName}</span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </Dropdown> */}
-
-          {/* Newsletter Link */}
-          <Link
-            href="/news"
-            className="inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-          >
-            Newsletter
-          </Link>
-
-          {/* Tools Dropdown — hidden until ready for public */}
-          {/* <Dropdown
-            trigger="Tools"
-            id="tools"
-            isOpen={openDropdown === 'tools'}
-            onOpenChange={handleDropdownOpen('tools')}
-          >
-            <div className="w-[380px] p-4">
-              <div className="space-y-1">
-                {tools.map((tool) => (
-                  <Link
-                    key={tool.slug}
-                    href={`/tools/${tool.slug}`}
-                    onClick={() => setOpenDropdown(null)}
-                    className="flex items-start gap-3 rounded-md px-2 py-2 transition-colors hover:bg-accent/50"
-                  >
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-accent/60 mt-0.5">
-                      {tool.icon === 'Rocket' && <Rocket className="h-4 w-4 text-foreground" />}
-                      {tool.icon === 'DollarSign' && <DollarSign className="h-4 w-4 text-foreground" />}
-                      {tool.icon === 'Building' && <Building className="h-4 w-4 text-foreground" />}
-                      {tool.icon === 'TrendingUp' && <TrendingUp className="h-4 w-4 text-foreground" />}
-                      {tool.icon === 'LineChart' && <LineChart className="h-4 w-4 text-foreground" />}
-                      {tool.icon === 'Split' && <Split className="h-4 w-4 text-foreground" />}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-foreground">{tool.title}</div>
-                      <div className="text-xs text-muted-foreground line-clamp-1">{tool.shortDescription}</div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-
-              <div className="pt-3 mt-3 border-t border-border">
-                <Link
-                  href="/tools"
-                  onClick={() => setOpenDropdown(null)}
-                  className="flex items-center justify-center gap-1 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                >
-                  View All {tools.length} Tools
-                  <span className="text-xs">→</span>
-                </Link>
-              </div>
-            </div>
-          </Dropdown> */}
-
-          {/* About Link */}
-          <Link
-            href="/about"
-            className="inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
-          >
-            About
-          </Link>
-
-          {/* Shop Link — hidden for now */}
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-500" />
+            </span>
+            Live
+          </a>
         </nav>
 
-        <div className="flex items-center gap-3">
-          {/* Mobile Menu Button */}
+        {/* Right-side actions */}
+        <div className="flex items-center gap-2">
+          {/* Primary subscribe CTA */}
+          <Link
+            href="/#subscribe"
+            className="group hidden sm:inline-flex h-9 items-center gap-2 rounded-sm bg-foreground px-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-background transition-all hover:bg-amber-400 hover:text-background"
+          >
+            Subscribe
+            <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+
+          {/* Mobile menu toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-foreground hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-inset focus:ring-accent"
+            className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-sm border border-foreground/20 text-foreground hover:bg-accent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-ring"
             aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-menu"
           >
-            {mobileMenuOpen ? <X className="h-6 w-6" aria-hidden="true" /> : <Menu className="h-6 w-6" aria-hidden="true" />}
+            {mobileMenuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
           </button>
-
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile menu */}
       {mobileMenuOpen && (
         <nav
           id="mobile-menu"
           role="navigation"
           aria-label="Mobile navigation"
-          className="md:hidden border-t border-border bg-background max-h-[calc(100vh-4rem)] overflow-y-auto"
+          className="md:hidden border-t border-foreground/10 bg-background"
         >
-          <div className="container mx-auto px-4 py-4 space-y-4">
-            {/* News */}
-            <div>
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                News
-              </h3>
+          <div className="container mx-auto px-4 py-4 space-y-1">
+            {NAV_ITEMS.map((item) => (
               <Link
-                href="/news"
+                key={item.label}
+                href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
+                className="block rounded-sm px-3 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-foreground hover:bg-accent/60"
               >
-                <span className="font-medium text-foreground">Fund Operations News</span>
-                <span className="block text-xs text-muted-foreground mt-0.5">Real-time fund activity & market intelligence</span>
+                {item.label}
               </Link>
-            </div>
+            ))}
 
-            {/* Podcast */}
-            <div>
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Podcast
-              </h3>
-              <div className="space-y-2">
-                <Link
-                  href="/interviews"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-                >
-                  <span className="font-medium text-foreground">Episodes</span>
-                  <span className="block text-xs text-muted-foreground mt-0.5">Watch and listen to interviews</span>
-                </Link>
-                <Link
-                  href="/guests"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-                >
-                  <span className="font-medium text-foreground">Guests</span>
-                  <span className="block text-xs text-muted-foreground mt-0.5">Meet the fund ops experts</span>
-                </Link>
-              </div>
-            </div>
+            <a
+              href="https://www.youtube.com/@dbloomstine/streams"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center gap-2 rounded-sm border border-red-700/50 bg-red-950/30 px-3 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-red-300"
+            >
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-500" />
+              </span>
+              Watch Live on YouTube
+            </a>
 
-            {/* FundWatch Tracker — hidden until ready */}
-            {/* <div className="pt-4 border-t border-border">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                FundWatch Tracker
-              </h3>
-              <Link
-                href="/fund-watch"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-              >
-                <span className="font-medium text-foreground">FundWatch Tracker</span>
-                <span className="block text-xs text-muted-foreground mt-0.5">Browse all tracked funds</span>
-              </Link>
-            </div> */}
-
-            {/* Articles — hidden for now, content quality TBD */}
-            {/* <div className="pt-4 border-t border-border">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Articles
-              </h3>
-              <p className="mb-2 text-xs font-medium text-muted-foreground px-1">By Fund Type</p>
-              <div className="grid grid-cols-2 gap-2">
-                {fundTypes.map((fund) => (
-                  <Link
-                    key={fund.name}
-                    href={fund.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2 rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-                  >
-                    <div className="h-2 w-2 rounded-full flex-shrink-0" style={{ backgroundColor: fund.color }} />
-                    <span className="font-medium text-foreground">{fund.name}</span>
-                  </Link>
-                ))}
-              </div>
-              <p className="mt-4 mb-2 text-xs font-medium text-muted-foreground px-1">By Role</p>
-              <div className="grid grid-cols-2 gap-2">
-                {roles.map((role) => (
-                  <Link
-                    key={role.name}
-                    href={role.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block rounded-md border border-border bg-card p-2.5 text-sm transition-all hover:border-accent hover:bg-accent/50"
-                  >
-                    <span className="font-medium text-foreground text-xs">{role.fullName}</span>
-                  </Link>
-                ))}
-              </div>
-            </div> */}
-
-            {/* Newsletter */}
-            <div className="pt-4 border-t border-border">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Newsletter
-              </h3>
-              <Link
-                href="/news"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-              >
-                <span className="font-medium text-foreground">FundOps Daily</span>
-                <span className="block text-xs text-muted-foreground mt-0.5">Top fund news in your inbox every morning</span>
-              </Link>
-            </div>
-
-            {/* Tools — hidden until ready for public */}
-            {/* <div className="pt-4 border-t border-border">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                Tools
-              </h3>
-              <div className="space-y-2">
-                {tools.slice(0, 6).map((tool) => (
-                  <Link
-                    key={tool.slug}
-                    href={`/tools/${tool.slug}`}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-                  >
-                    <span className="font-medium text-foreground">{tool.title}</span>
-                    <span className="block text-xs text-muted-foreground mt-0.5 line-clamp-1">{tool.shortDescription}</span>
-                  </Link>
-                ))}
-                <Link
-                  href="/tools"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-md border border-dashed border-border px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent hover:border-accent transition-colors text-center"
-                >
-                  View All {tools.length} Tools →
-                </Link>
-              </div>
-            </div> */}
-
-            {/* About */}
-            <div className="pt-4 border-t border-border">
-              <h3 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-                About
-              </h3>
-              <Link
-                href="/about"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-md border border-border bg-card p-3 text-sm transition-all hover:border-accent hover:bg-accent/50"
-              >
-                <span className="font-medium text-foreground">About FundOpsHQ</span>
-                <span className="block text-xs text-muted-foreground mt-0.5">The person and mission behind the site</span>
-              </Link>
-            </div>
-
-            {/* Shop — hidden for now */}
-
+            <Link
+              href="/#subscribe"
+              onClick={() => setMobileMenuOpen(false)}
+              className="mt-3 flex items-center justify-center gap-2 rounded-sm bg-foreground px-4 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-background"
+            >
+              Subscribe to FundOps Daily
+              <ArrowRight className="h-3 w-3" />
+            </Link>
           </div>
         </nav>
       )}

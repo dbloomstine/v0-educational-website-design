@@ -1,64 +1,53 @@
 import { Metadata } from 'next'
-import Link from "next/link"
-import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
-import { AnimateOnScroll } from "@/components/animate-on-scroll"
-import { BackToTop } from "@/components/back-to-top"
-import Image from "next/image"
-import { ArrowRight, Newspaper, Headphones, Users, Info, Rss } from "lucide-react"
-import { fetchPlaylistVideos } from "@/lib/youtube"
-import { FeaturedEpisode } from "@/components/featured-episode"
-import { SubscribePlatforms } from "@/components/subscribe-platforms"
-import { Logo } from "@/components/logo"
-import { ReachOut } from "@/components/reach-out"
+import { Suspense } from 'react'
+import { SiteHeader } from '@/components/site-header'
+import { SiteFooter } from '@/components/site-footer'
+import { BackToTop } from '@/components/back-to-top'
+import { HeroSubscribe } from '@/components/home/hero-subscribe'
+import { LiveShowFeature } from '@/components/home/live-show-feature'
+import { NewsFeed } from '@/components/news/NewsFeed'
+import { fetchPlaylistVideos } from '@/lib/youtube'
 
 export const metadata: Metadata = {
-  title: 'FundOpsHQ | Fund Operations Conversations with Industry Experts',
-  description: 'Weekly conversations with professionals across the investment funds industry sharing what they\'ve learned. Watch on YouTube or listen on Spotify and Apple Podcasts.',
+  title: 'FundOpsHQ | Fund Operations News, Newsletter & Live Show',
+  description:
+    'The daily news feed and weekly live show for fund operations. Real-time fund launches, exec moves, and capital raises across PE, VC, and credit. Subscribe to FundOps Daily.',
   openGraph: {
-    title: 'FundOpsHQ | Fund Operations Conversations with Industry Experts',
-    description: 'Weekly episodes with fund operations experts. Watch on YouTube or listen on your favorite podcast app.',
+    title: 'FundOpsHQ | Fund Operations News, Newsletter & Live Show',
+    description:
+      'The daily news feed and weekly live show for fund operations. Subscribe to FundOps Daily.',
     type: 'website',
     url: 'https://fundops.com',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FundOpsHQ | Fund Operations Conversations',
-    description: 'Weekly conversations with professionals across the investment funds industry sharing what they\'ve learned.',
+    title: 'FundOpsHQ | Fund Operations News, Newsletter & Live Show',
+    description:
+      'The daily news feed and weekly live show for fund operations. Subscribe to FundOps Daily.',
   },
   alternates: {
     canonical: 'https://fundops.com',
   },
 }
 
-// Organization structured data for homepage
 const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'FundOpsHQ',
   url: 'https://fundops.com',
   logo: 'https://fundops.com/icon.svg',
-  description: 'Weekly conversations with fund operations experts covering PE, VC, credit, and alternative asset operations. Plus articles and tools to help you learn.',
+  description:
+    'Daily fund operations news and a weekly live show covering PE, VC, credit, and alternative asset operations.',
   founder: {
     '@type': 'Person',
     name: 'Danny Bloomstine',
     url: 'https://www.linkedin.com/in/danny-bloomstine/',
-    jobTitle: 'Managing Director',
-    worksFor: {
-      '@type': 'Organization',
-      name: 'IQ-EQ',
-    },
   },
   sameAs: [
     'https://www.linkedin.com/in/danny-bloomstine/',
     'https://www.youtube.com/@dbloomstine',
     'https://www.tiktok.com/@dannybloomstine',
   ],
-  contactPoint: {
-    '@type': 'ContactPoint',
-    contactType: 'customer service',
-    url: 'https://fundops.com/contact',
-  },
 }
 
 const websiteJsonLd = {
@@ -66,23 +55,17 @@ const websiteJsonLd = {
   '@type': 'WebSite',
   name: 'FundOpsHQ',
   url: 'https://fundops.com',
-  description: 'Fund operations conversations with industry experts, plus articles and tools to help you learn.',
+  description:
+    'Real-time fund operations news, the FundOps Daily newsletter, and the weekly FundOpsHQ Live show.',
   publisher: {
     '@type': 'Organization',
     name: 'FundOpsHQ',
   },
 }
 
-const EXPLORE_LINKS = [
-  { name: 'Episodes', href: '/interviews', icon: Headphones, description: 'Full video conversations' },
-  { name: 'Guests', href: '/guests', icon: Users, description: 'Industry experts' },
-  { name: 'News Feed', href: '/news', icon: Rss, description: 'Fund industry news' },
-  { name: 'Newsletter', href: '/news', icon: Newspaper, description: 'FundOps Daily — subscribe free' },
-  { name: 'About', href: '/about', icon: Info, description: 'The FundOpsHQ story' },
-] as const
-
 export default async function HomePage() {
   const videos = await fetchPlaylistVideos()
+  const latestVideo = videos[0] ?? null
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -97,132 +80,96 @@ export default async function HomePage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* ─── Hero + Subscribe Hub: two-column on desktop, stacked on mobile ─── */}
-        <section className="border-b border-border/50 bg-background">
-          <div className="container mx-auto px-4 py-12 sm:py-16 lg:py-20">
-            <div className="grid gap-12 lg:grid-cols-2 lg:gap-16 items-start max-w-5xl mx-auto">
-              {/* Left: Brand intro */}
-              <div className="text-center lg:text-left lg:sticky lg:top-24">
-                <AnimateOnScroll delay={0} direction="none">
-                  <div className="mb-6 flex flex-col items-center lg:items-start gap-4">
-                    <Image
-                      src="/danny-headshot.png"
-                      alt="Danny Bloomstine"
-                      width={88}
-                      height={88}
-                      className="rounded-full border-2 border-border/60 object-cover"
-                      priority
-                    />
-                    <Logo height={30} className="text-foreground" />
-                  </div>
-                </AnimateOnScroll>
+        {/* ─── Hero: subscribe + live show CTA over massive wordmark ─── */}
+        <HeroSubscribe />
 
-                <AnimateOnScroll delay={100}>
-                  <p className="text-sm font-medium text-muted-foreground/70 mb-3 tracking-wide">
-                    with Danny Bloomstine
-                  </p>
-                </AnimateOnScroll>
-
-                <AnimateOnScroll delay={200}>
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight leading-snug mb-4" style={{ letterSpacing: '-0.02em' }}>
-                    Conversations on fund operations—from the people who do it
-                  </h1>
-                </AnimateOnScroll>
-
-                <AnimateOnScroll delay={300}>
-                  <p className="text-muted-foreground text-base lg:text-lg leading-relaxed max-w-lg mx-auto lg:mx-0">
-                    Weekly interviews with professionals across the investment funds industry. Watch, listen, and subscribe.
-                  </p>
-                </AnimateOnScroll>
-              </div>
-
-              {/* Right: Subscribe hub */}
-              <div>
-                <AnimateOnScroll delay={200}>
-                  <SubscribePlatforms variant="hub" />
-                </AnimateOnScroll>
+        {/* ─── News Feed ─── */}
+        <section id="news" className="relative border-t-2 border-foreground/15 bg-background">
+          {/* Editorial section masthead */}
+          <div className="border-b border-foreground/10">
+            <div className="container mx-auto max-w-[1400px] px-4">
+              <div className="flex items-center justify-between gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+                <span className="flex items-center gap-3">
+                  <span className="text-foreground/80">Section A</span>
+                  <span aria-hidden="true" className="text-foreground/20">·</span>
+                  <span>The Wire</span>
+                </span>
+                <span className="flex items-center gap-2">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  </span>
+                  <span className="text-emerald-400/90">Updating Live</span>
+                </span>
               </div>
             </div>
           </div>
-        </section>
 
-        {/* ─── Latest Episode ─── */}
-        {videos.length > 0 && (
-          <section className="py-10 sm:py-14 border-b border-border/50">
-            <div className="container mx-auto px-4">
-              <div className="max-w-3xl mx-auto">
-                <AnimateOnScroll>
-                  <div className="flex items-end justify-between mb-5">
-                    <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-1.5">
-                        Latest Episode
-                      </p>
-                      <h2 className="text-xl font-bold" style={{ letterSpacing: '-0.01em' }}>
-                        Watch Now
-                      </h2>
-                    </div>
-                    <Link
-                      href="/interviews"
-                      className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors inline-flex items-center gap-1"
-                    >
-                      All episodes
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
-                  </div>
-                </AnimateOnScroll>
-
-                <AnimateOnScroll delay={100}>
-                  <FeaturedEpisode video={videos[0]} />
-                </AnimateOnScroll>
+          <div className="container mx-auto max-w-[1400px] px-4 py-10 sm:py-14">
+            <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-end">
+              <div className="lg:col-span-8">
+                <h2
+                  className="font-display text-foreground"
+                  style={{
+                    fontSize: 'clamp(36px, 5vw, 64px)',
+                    lineHeight: 0.95,
+                    letterSpacing: '-0.03em',
+                    fontWeight: 500,
+                    fontVariationSettings: '"opsz" 144',
+                  }}
+                >
+                  Fund operations news,
+                  <br />
+                  <span
+                    className="italic"
+                    style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
+                  >
+                    in real time.
+                  </span>
+                </h2>
               </div>
-            </div>
-          </section>
-        )}
-
-        {/* ─── Explore: quick links to site sections ─── */}
-        <section className="py-10 sm:py-14">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl mx-auto">
-              <AnimateOnScroll>
-                <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-muted-foreground/60 mb-3">
-                  Explore
+              <div className="lg:col-span-4">
+                <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground/60 leading-relaxed">
+                  Fund launches · Capital raises<br />
+                  Exec moves · M&amp;A · Reg actions<br />
+                  <span className="text-foreground/70">Sourced from 200+ publications.</span>
                 </p>
-              </AnimateOnScroll>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {EXPLORE_LINKS.map((link, i) => {
-                  const Icon = link.icon
-
-                  return (
-                    <AnimateOnScroll key={link.name} delay={50 + i * 30}>
-                      <Link href={link.href}>
-                        <div className="group flex items-center gap-3 rounded-lg border border-border/60 bg-card/40 px-3.5 py-3 transition-all duration-200 hover:bg-card/80 hover:border-foreground/15">
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted/50 text-muted-foreground transition-colors group-hover:text-foreground">
-                            <Icon className="h-4 w-4" />
-                          </div>
-                          <div className="min-w-0">
-                            <div className="text-[13px] font-semibold text-foreground/90 leading-tight">
-                              {link.name}
-                            </div>
-                            <div className="text-[11px] text-muted-foreground/50 mt-0.5 leading-tight">
-                              {link.description}
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-                    </AnimateOnScroll>
-                  )
-                })}
               </div>
             </div>
+
+            <Suspense fallback={<NewsFeedSkeleton />}>
+              <NewsFeed />
+            </Suspense>
           </div>
         </section>
 
-        <ReachOut />
+        {/* ─── Live Show Feature ─── */}
+        <LiveShowFeature latestVideo={latestVideo} />
       </main>
 
       <SiteFooter />
       <BackToTop />
+    </div>
+  )
+}
+
+function NewsFeedSkeleton() {
+  return (
+    <div className="space-y-3 animate-pulse">
+      <div className="flex items-center gap-2">
+        <div className="h-8 flex-1 rounded-lg bg-muted" />
+        <div className="h-8 w-32 rounded-lg bg-muted" />
+        <div className="h-8 w-20 rounded-lg bg-muted" />
+      </div>
+      <div className="overflow-hidden rounded-lg border border-border bg-card">
+        {Array.from({ length: 12 }).map((_, i) => (
+          <div key={i} className="flex items-center gap-2 border-b border-border/40 px-3 py-2">
+            <div className="h-4 w-10 rounded bg-muted" />
+            <div className="h-4 flex-1 rounded bg-muted" />
+            <div className="h-4 w-16 rounded bg-muted" />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
