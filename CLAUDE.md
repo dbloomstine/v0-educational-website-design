@@ -4,7 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-FundOpsHQ is the central hub for the investment funds industry. It ties together three products under one brand: the **FundOps Daily** news feed and email newsletter, the weekly **FundOpsHQ Live** broadcast, and reference content covering 8 alternative asset fund types (PE, VC, Private Credit, Hedge, Real Estate, Infrastructure, Secondaries, GP-Stakes). It serves GPs, LPs, fund operators, and service providers working in and around private markets — not just fund ops professionals, and not positioned as "educational." Built with Next.js 16 (App Router) + React 19, TypeScript, and Tailwind CSS. Deployed on Vercel and synced with v0.app.
+FundOpsHQ is the central hub for the investment funds industry. It ties together three products under one brand:
+
+1. **FundOps Daily** — daily news feed (on the site) and morning email newsletter (sent via Resend)
+2. **FundOpsHQ Live** — weekly broadcast show streamed on YouTube (Thursdays 11am ET)
+3. Long-form reference content across private markets
+
+Audience: GPs, LPs, fund operators, and service providers working in and around private markets. Do **not** frame it as "educational" or "for fund ops professionals" — the site is a brand landing zone for the Daily + Live + newsletter products.
+
+Stack: Next.js 16 (App Router, Turbopack) + React 19, TypeScript, Tailwind CSS, Supabase, Resend, Vercel.
+
+> **Heads up on the directory name:** the repo still lives at `v0-educational-website-design/` because it started as a v0.app scaffold. The "educational" framing is dead — rename later; don't let it shape decisions now.
 
 ## Commands
 
@@ -15,66 +25,115 @@ npm run lint     # Run ESLint
 npm run start    # Start production server
 ```
 
-Note: No test suite is configured. TypeScript build errors are ignored in next.config.mjs.
+Note: no Jest/Vitest suite is configured. TypeScript build errors are ignored in `next.config.mjs` — rely on `next build` for type validation.
 
-## Architecture
+## Routing (post-cleanup, April 2026)
 
-### Content System
-
-All content is defined in TypeScript files under `lib/content/`:
-
-- **Fund Types** (`fund-types.ts`): 8 fund types, each with associated "pillars" (operational areas like CFO, Compliance, Tax, etc.)
-- **Pillars** (`pillars.ts`): Operational topic areas that vary by fund type
-- **Articles** (`articles.ts`): Registry that imports individual article files from `lib/content/articles/`. Each article belongs to one fund type + one pillar. Article IDs follow pattern: `{fundType}-{pillar}-{slug}`
-- **Tools** (`tools.ts`): 6 interactive calculators/visualizers
-- **Types** (`types.ts`): Core interfaces for FundType, Pillar, Article, Tool
-
-### Routing Structure
+The site was aggressively consolidated on 2026-04-10. There are only six public routes plus an admin tool:
 
 ```
-/                              → Homepage
-/funds/[fundType]              → Fund type landing (e.g., /funds/private-equity)
-/funds/[fundType]/[pillar]     → Pillar page with article content
-/tools/[toolSlug]              → Tool pages (dynamic route for most tools)
-/tools/fund-launch-guide       → Dedicated page (not dynamic route)
-/roles/[role]                  → Career guidance by role
-/help/[topic]                  → Static help pages (not dynamic, each is its own file)
-/newsletter/[newsletterSlug]/[postSlug] → Newsletter posts
+/                       → Editorial newsroom homepage
+                           · HeroSubscribe (hero + newsletter signup, anchor #subscribe)
+                           · NewsFeed (section #news — the daily news feed)
+                           · LiveShowFeature (section #show — latest broadcast)
+/about                  → About page (rebuilt 2026-04-09)
+/brand                  → Brand kit — logos, monograms, backgrounds (added 2026-04-09)
+/privacy, /terms        → Legal
+/admin/newsletter       → Internal newsletter prep UI (not in sitemap/robots)
 ```
 
-### Interactive Tools
+Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/news`, `/contact`, `/episodes/*`, `/fund-watch/*`, `/newsletter/*`, `/articles/*`, `/tools/*`, `/funds/*`, `/roles/*`. Do not recreate them without an explicit ask.
 
-Six tools under `components/tools/`:
+## API Routes
 
-1. **fund-launch-guide/** - Multi-phase checklist with progress tracking, localStorage persistence
-2. **management-fee-calculator/** - Fee schedule modeling with charts
-3. **management-company-budget/** - Burn rate/runway calculator with sensitivity analysis
-4. **distribution-waterfall/** - LP/GP economics visualization
-5. **subscription-credit-line/** - IRR/MOIC impact modeling
-6. **fund-expense-allocation/** - Expense classification helper
+```
+/api/news/feed                          → Homepage NewsFeed data source
+/api/newsletter/subscribe               → Email signup (used by HeroSubscribe + SubscribeWidget)
+/api/newsletter/confirm                 → Double-opt-in confirmation
+/api/newsletter/unsubscribe             → One-click unsubscribe
+/api/feedback                           → Inline feedback button on the news feed
+/api/admin/newsletter-prep              → Admin-only newsletter preview
+/api/pipeline/news-ingest               → Cron: RSS fetch + store (3-tier by frequency)
+/api/pipeline/news-process              → Cron: Claude-API classification + clustering
+/api/pipeline/newsletter-send           → Cron: assemble + send FundOps Daily via Resend
+/api/pipeline/backfill-domains          → One-shot: backfill firm domains for logos
+```
 
-Each tool has its own subdirectory with components like onboarding wizards, charts, export functionality, glossaries, and FAQs.
+Cron schedules live in `vercel.json`.
 
-### Shared Tool Components
+## Data Layer
 
-`components/tools/shared/` contains reusable tool infrastructure:
+**Supabase project** `reolugphmfmlwelnnvet` — only 5 tables are still in use after the intel platform was deleted (2026-04-09):
 
-- `tool-page-layout.tsx` - Standard layout wrapper
-- `export-toolbar.tsx` - PDF/Excel/CSV export buttons
-- `disclaimer-block.tsx`, `methodology-block.tsx` - Standard disclosures
+| Table                    | Purpose                                                      |
+| ------------------------ | ------------------------------------------------------------ |
+| `news_items`             | Articles from all ingested RSS feeds (the live content pool) |
+| `feed_sources`           | RSS feed configs and ingest tier                             |
+| `newsletter_editions`    | Sent newsletter records                                      |
+| `newsletter_subscribers` | Double-opt-in email list                                     |
+| `feedback`               | Inline feedback submissions                                  |
 
-### Export System
+`news_items` still carries orphan FK columns (`cluster_id`, `story_cluster_id`, `gp_id`, `fund_id`, `firm_id`, `embedding`) from the old architecture — they hold nil/orphan values and should be ignored.
 
-`lib/exports/` provides PDF, Excel, and CSV export utilities used by tools.
+## `lib/` layout
 
-### UI Components
+```
+lib/
+├── news/            # RSS ingestion, classification, clustering, firm logo resolution
+├── newsletter/      # Email template, Resend sender, query-articles, sponsors, confirmation email
+├── pipeline/        # Shared orchestration utilities for the cron routes
+├── supabase/        # Supabase client singleton
+├── utils/           # Misc helpers (content-slug, content-clean, etc.)
+├── youtube.ts       # YouTube API wrapper — fetches latest videos for LiveShowFeature
+└── utils.ts         # cn() + friends
+```
 
-`components/ui/` contains Radix UI-based primitives (shadcn/ui pattern). Use these instead of creating custom form elements.
+Anything you read about `lib/content/`, `lib/hooks/`, `lib/seo/`, `lib/exports/`, `lib/newsletters.ts`, `lib/blog.ts` is stale — those were deleted in the 2026-04-10 cleanup.
+
+## Components worth knowing
+
+```
+components/
+├── site-header.tsx          # Sticky top nav — News / Show / About / Live / Subscribe
+├── site-footer.tsx          # Editorial "Colophon" footer — brand + CTA + nav + socials
+├── home/
+│   ├── hero-subscribe.tsx   # Homepage hero + inline subscribe form
+│   └── live-show-feature.tsx # "Channel 02" broadcast section with latest video
+├── news/
+│   ├── NewsFeed.tsx         # Main news feed (client component, filters, clusters)
+│   ├── ArticleRow.tsx       # Single row in the feed
+│   ├── ClusterExpander.tsx  # "Also covering" multi-outlet cluster
+│   ├── SubscribeWidget.tsx  # Inline subscribe CTA inside the feed
+│   └── FeedbackButton.tsx   # Inline feedback button
+├── layout/
+│   └── page-hero.tsx        # Shared hero used by /privacy and /terms only
+├── ui/                      # shadcn/ui primitives — use these, don't roll your own
+├── logo.tsx                 # FundOpsHQ wordmark
+├── video-lightbox.tsx       # Modal YouTube player
+├── back-to-top.tsx
+└── theme-provider.tsx
+```
+
+## Fund Watch data pipeline (scripts, not a page)
+
+`scripts/fund-watch/` + `.github/workflows/fund-watch-update.yml` run on a GitHub Actions cron and refresh `public/data/fund-directory.json`. **Nothing on the live site reads this file** — the old `/fund-watch` page was deleted. It's kept alive because Danny uses it for show prep and LinkedIn post generation. Don't touch it unless that workflow changes.
 
 ## Key Patterns
 
-- Articles are Markdown content stored in individual `.ts` files, not MDX
-- Tool state often uses localStorage for persistence and URL params for shareability (see `lib/hooks/use-url-state.ts`)
-- Dark mode only (hardcoded in `app/layout.tsx` as `className="dark"`)
-- Fonts: DM Sans for headings, Inter for body
-- Colors use OKLCH format in fund-types for brand consistency
+- **Dark mode only.** Hardcoded `className="dark"` on the root `<html>` in `app/layout.tsx`. Light theme happens inside individual sections, not via the theme switcher.
+- **Fonts:** Fraunces (editorial display, variable optical sizing), Inter (body), JetBrains Mono (eyebrows, timestamps, ticker numerals). DM Sans is loaded for backwards compat but prefer the other three.
+- **Colors:** OKLCH for brand colors; semantic Tailwind tokens (`foreground`, `muted-foreground`, `border`, `card`, etc.) for everything else.
+- **Mono eyebrows everywhere.** The editorial aesthetic leans on monospace uppercase tracking — 10-11px, `tracking-[0.18em]` to `tracking-[0.22em]`. Match existing patterns when adding new sections.
+- **No React testing beyond a single logo snapshot.** Don't assume a full test harness exists.
+
+## Deployment
+
+- Vercel project: `v0-educational-website-design-zo2m`
+- Canonical domain: `https://fundopshq.com` (not `fundops.com`)
+- Syncs with v0.app — edits made in v0.app land here automatically, so expect occasional unfamiliar commits from the v0 bot
+
+## Before making changes
+
+1. If the change touches the news pipeline, check what's currently running in `vercel.json` crons before editing schedules.
+2. If the change touches the newsletter email template, remember it's inline CSS only (Gmail/Outlook/Apple Mail). Don't introduce external stylesheets.
+3. If you're tempted to recreate a page that was deleted, check first — the 2026-04-10 cleanup was deliberate, not a bug.

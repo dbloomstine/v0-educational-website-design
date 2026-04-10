@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     title: 'Privacy Policy - FundOpsHQ',
     description: 'Privacy Policy for FundOpsHQ. Learn how we collect, use, and protect your information.',
     type: 'website',
-    url: 'https://fundops.com/privacy',
+    url: 'https://fundopshq.com/privacy',
   },
   twitter: {
     card: 'summary',
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     description: 'Privacy Policy for FundOpsHQ. Learn how we collect, use, and protect your information.',
   },
   alternates: {
-    canonical: 'https://fundops.com/privacy',
+    canonical: 'https://fundopshq.com/privacy',
   },
 }
 
@@ -48,7 +48,7 @@ export default function PrivacyPolicyPage() {
                   <p className="text-muted-foreground leading-relaxed">
                     FundOpsHQ (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;) is committed to protecting your privacy.
                     This Privacy Policy explains how we collect, use, and safeguard your information when you visit
-                    our website at fundops.com (the &quot;Site&quot;). We believe in minimal data collection and transparency
+                    our website at fundopshq.com (the &quot;Site&quot;). We believe in minimal data collection and transparency
                     about the data we do collect.
                   </p>
                 </div>

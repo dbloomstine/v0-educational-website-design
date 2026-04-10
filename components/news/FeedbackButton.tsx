@@ -57,7 +57,7 @@ export function FeedbackButton() {
       const res = await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category, message, email, page: '/news' }),
+        body: JSON.stringify({ category, message, email, page: '/' }),
       })
 
       if (!res.ok) {

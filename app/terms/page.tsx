@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     title: 'Terms of Service - FundOpsHQ',
     description: 'Terms of Service for FundOpsHQ.',
     type: 'website',
-    url: 'https://fundops.com/terms',
+    url: 'https://fundopshq.com/terms',
   },
   twitter: {
     card: 'summary_large_image',
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     description: 'Terms of Service for FundOpsHQ.',
   },
   alternates: {
-    canonical: 'https://fundops.com/terms',
+    canonical: 'https://fundopshq.com/terms',
   },
 }
 

@@ -9,24 +9,24 @@ import { NewsFeed } from '@/components/news/NewsFeed'
 import { fetchPlaylistVideos } from '@/lib/youtube'
 
 export const metadata: Metadata = {
-  title: 'FundOpsHQ | Fund Operations News, Newsletter & Live Show',
+  title: 'FundOpsHQ | News, Newsletter & Live Show for the Investment Funds Industry',
   description:
-    'The daily news feed and weekly live show for fund operations. Real-time fund launches, exec moves, and capital raises across PE, VC, and credit. Subscribe to FundOps Daily.',
+    'The hub for the investment funds industry. Real-time fund launches, capital raises, exec moves, and regulatory news across PE, VC, private credit, real estate, and infrastructure — plus the FundOpsHQ Live weekly show. Subscribe to FundOps Daily.',
   openGraph: {
-    title: 'FundOpsHQ | Fund Operations News, Newsletter & Live Show',
+    title: 'FundOpsHQ | News, Newsletter & Live Show for the Investment Funds Industry',
     description:
-      'The daily news feed and weekly live show for fund operations. Subscribe to FundOps Daily.',
+      'The hub for the investment funds industry. Real-time fund news, a morning newsletter, and the FundOpsHQ Live weekly show — built for GPs, LPs, and operators in private markets.',
     type: 'website',
-    url: 'https://fundops.com',
+    url: 'https://fundopshq.com',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FundOpsHQ | Fund Operations News, Newsletter & Live Show',
+    title: 'FundOpsHQ | News, Newsletter & Live Show for the Investment Funds Industry',
     description:
-      'The daily news feed and weekly live show for fund operations. Subscribe to FundOps Daily.',
+      'The hub for the investment funds industry. Built for GPs, LPs, and operators in private markets. Subscribe to FundOps Daily.',
   },
   alternates: {
-    canonical: 'https://fundops.com',
+    canonical: 'https://fundopshq.com',
   },
 }
 
@@ -34,10 +34,10 @@ const organizationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'FundOpsHQ',
-  url: 'https://fundops.com',
-  logo: 'https://fundops.com/icon.svg',
+  url: 'https://fundopshq.com',
+  logo: 'https://fundopshq.com/icon.svg',
   description:
-    'Daily fund operations news and a weekly live show covering PE, VC, credit, and alternative asset operations.',
+    'FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed and newsletter, and the FundOpsHQ Live weekly broadcast show. Built for GPs, LPs, and operators in private markets.',
   founder: {
     '@type': 'Person',
     name: 'Danny Bloomstine',
@@ -54,9 +54,9 @@ const websiteJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'FundOpsHQ',
-  url: 'https://fundops.com',
+  url: 'https://fundopshq.com',
   description:
-    'Real-time fund operations news, the FundOps Daily newsletter, and the weekly FundOpsHQ Live show.',
+    'Real-time fund news, the FundOps Daily newsletter, and the weekly FundOpsHQ Live show — the hub for the investment funds industry.',
   publisher: {
     '@type': 'Organization',
     name: 'FundOpsHQ',

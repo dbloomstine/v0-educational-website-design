@@ -35,24 +35,30 @@ const jetbrainsMono = JetBrains_Mono({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://fundops.com'),
+  metadataBase: new URL('https://fundopshq.com'),
   title: {
-    default: "FundOpsHQ - Conversations on Fund Operations",
+    default: "FundOpsHQ — News, Newsletter & Live Show for the Investment Funds Industry",
     template: "%s | FundOpsHQ"
   },
   description:
-    "Weekly conversations with professionals across the investment funds industry sharing what they've learned. Watch on YouTube or listen on Spotify and Apple Podcasts.",
+    "FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed, the morning newsletter, and the FundOpsHQ Live weekly show. Built for GPs, LPs, and operators in and around private markets.",
   keywords: [
-    "fund operations",
-    "private equity operations",
-    "fund administration",
-    "CFO",
-    "fund compliance",
-    "investor relations",
-    "fund accounting",
-    "venture capital operations",
-    "hedge fund operations",
-    "real estate fund operations"
+    "investment funds",
+    "private markets",
+    "fund news",
+    "fund launches",
+    "capital raises",
+    "private equity",
+    "venture capital",
+    "private credit",
+    "real estate funds",
+    "infrastructure funds",
+    "secondaries",
+    "GP stakes",
+    "LPs",
+    "GPs",
+    "FundOps Daily",
+    "FundOpsHQ Live",
   ],
   authors: [{ name: "FundOpsHQ" }],
   creator: "FundOpsHQ",
@@ -65,23 +71,23 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://fundops.com',
+    url: 'https://fundopshq.com',
     siteName: 'FundOpsHQ',
-    title: 'FundOpsHQ - Conversations on Fund Operations',
-    description: 'Weekly conversations with professionals across the investment funds industry sharing what they\'ve learned.',
+    title: 'FundOpsHQ — News, Newsletter & Live Show for the Investment Funds Industry',
+    description: 'The hub for the investment funds industry. Home to FundOps Daily, the morning newsletter, and the FundOpsHQ Live weekly show — built for GPs, LPs, and operators in private markets.',
     images: [
       {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'FundOpsHQ - Conversations on Fund Operations',
+        alt: 'FundOpsHQ — News, Newsletter & Live Show for the Investment Funds Industry',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FundOpsHQ - Conversations on Fund Operations',
-    description: 'Weekly conversations with professionals across the investment funds industry.',
+    title: 'FundOpsHQ — News, Newsletter & Live Show for the Investment Funds Industry',
+    description: 'The hub for the investment funds industry. Built for GPs, LPs, and operators in private markets.',
     images: ['/og-image.png'],
   },
   robots: {

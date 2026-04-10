@@ -9,20 +9,20 @@ import { ArrowRight, Linkedin, Youtube, Mail, Newspaper, Radio, Building2 } from
 export const metadata: Metadata = {
   title: 'About FundOpsHQ',
   description:
-    'FundOpsHQ is a daily news feed, morning newsletter, and weekly live show for fund operators — by Danny Bloomstine.',
+    'FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed, the morning newsletter, and the FundOpsHQ Live weekly show. By Danny Bloomstine.',
   openGraph: {
     title: 'About FundOpsHQ',
-    description: 'A daily feed, morning newsletter, and weekly live show for fund operations.',
+    description: 'The hub for the investment funds industry. Home to FundOps Daily, the newsletter, and the FundOpsHQ Live weekly show.',
     type: 'website',
-    url: 'https://fundops.com/about',
+    url: 'https://fundopshq.com/about',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'About FundOpsHQ',
-    description: 'A daily feed, morning newsletter, and weekly live show for fund operations.',
+    description: 'The hub for the investment funds industry. Home to FundOps Daily, the newsletter, and the FundOpsHQ Live weekly show.',
   },
   alternates: {
-    canonical: 'https://fundops.com/about',
+    canonical: 'https://fundopshq.com/about',
   },
 }
 

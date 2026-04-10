@@ -8,8 +8,8 @@ import { Menu, X, ArrowRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const NAV_ITEMS = [
-  { label: "News", href: "/", match: ["/", "/news"] },
-  { label: "Show", href: "/#show", match: ["/show"] },
+  { label: "News", href: "/#news", match: ["/"] },
+  { label: "Show", href: "/#show", match: [] },
   { label: "About", href: "/about", match: ["/about"] },
 ] as const
 
