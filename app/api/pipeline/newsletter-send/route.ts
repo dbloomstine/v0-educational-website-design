@@ -10,12 +10,11 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const anthropicApiKey = process.env.ANTHROPIC_API_KEY
   const resendApiKey = process.env.RESEND_API_KEY
 
-  if (!anthropicApiKey || !resendApiKey) {
+  if (!resendApiKey) {
     return NextResponse.json(
-      { error: 'Missing ANTHROPIC_API_KEY or RESEND_API_KEY' },
+      { error: 'Missing RESEND_API_KEY' },
       { status: 500 }
     )
   }
@@ -27,7 +26,6 @@ export async function GET(req: Request) {
 
     const result = await sendDailyNewsletter(
       getSupabaseAdmin(),
-      anthropicApiKey,
       resendApiKey,
       hoursBack
     )

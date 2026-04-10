@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-FundOpsHQ is an educational resource hub for fund operations professionals, covering 8 alternative asset fund types (Private Equity, Venture Capital, Private Credit, Hedge Funds, Real Estate, Infrastructure, Secondaries, GP-Stakes). Built with Next.js 16 (App Router) + React 19, TypeScript, and Tailwind CSS. Deployed on Vercel and synced with v0.app.
+FundOpsHQ is the central hub for the investment funds industry. It ties together three products under one brand: the **FundOps Daily** news feed and email newsletter, the weekly **FundOpsHQ Live** broadcast, and reference content covering 8 alternative asset fund types (PE, VC, Private Credit, Hedge, Real Estate, Infrastructure, Secondaries, GP-Stakes). It serves GPs, LPs, fund operators, and service providers working in and around private markets — not just fund ops professionals, and not positioned as "educational." Built with Next.js 16 (App Router) + React 19, TypeScript, and Tailwind CSS. Deployed on Vercel and synced with v0.app.
 
 ## Commands
 
@@ -58,6 +58,7 @@ Each tool has its own subdirectory with components like onboarding wizards, char
 ### Shared Tool Components
 
 `components/tools/shared/` contains reusable tool infrastructure:
+
 - `tool-page-layout.tsx` - Standard layout wrapper
 - `export-toolbar.tsx` - PDF/Excel/CSV export buttons
 - `disclaimer-block.tsx`, `methodology-block.tsx` - Standard disclosures

@@ -131,12 +131,15 @@ export interface NewsletterContent {
 
 export async function queryNewsletterArticles(
   supabase: DbClient,
-  hoursBack: number = 26
+  hoursBack: number = 26,
+  opts: { excludePriorEdition?: boolean } = {}
 ): Promise<NewsletterContent> {
   const since = new Date(Date.now() - hoursBack * 60 * 60 * 1000).toISOString()
 
   // ─── Fetch prior edition's article IDs to exclude cross-day repeats ────
-  const excludeIds = await getPriorEditionArticleIds(supabase)
+  const excludeIds = opts.excludePriorEdition === false
+    ? new Set<string>()
+    : await getPriorEditionArticleIds(supabase)
 
   const { data: rows, error } = await supabase
     .from('news_items')

@@ -8,13 +8,14 @@
 import type { ArticleGroup } from './query-articles'
 import { getEventTypeLabel, formatFundSize } from './query-articles'
 import { getFirmDomain } from '@/lib/news/firm-logos'
+import { DEFAULT_SPONSOR, type Sponsor } from './sponsors'
 
 interface TemplateParams {
-  introText: string
   groups: ArticleGroup[]
   totalArticles: number
   editionDate: string
   unsubscribeUrl: string
+  sponsor?: Sponsor
 }
 
 const EVENT_BADGE_COLORS: Record<string, { bg: string; text: string }> = {
@@ -124,10 +125,68 @@ function escapeHtml(str: string): string {
     .replace(/"/g, '&quot;')
 }
 
+/**
+ * Render the sponsor's brand mark: either a pre-styled HTML wordmark or an
+ * image logo. Used by both the top and bottom sponsor blocks.
+ */
+function renderSponsorMark(sponsor: Sponsor, logoHeightPx: number): string {
+  if (sponsor.wordmarkHtml) return sponsor.wordmarkHtml
+  if (sponsor.logoUrl) {
+    const width = sponsor.logoWidth ?? logoHeightPx
+    return `<img src="${escapeHtml(sponsor.logoUrl)}" alt="${escapeHtml(sponsor.name)}" width="${width}" style="width:${width}px;height:auto;vertical-align:middle;" />`
+  }
+  return `<span style="display:inline-block;font-size:${logoHeightPx}px;font-weight:800;color:#1e293b;letter-spacing:-0.3px;line-height:1;">${escapeHtml(sponsor.name)}</span>`
+}
+
+/**
+ * Compact sponsor block rendered under the header. Left-aligned, label +
+ * wordmark + 2-sentence blurb stacked vertically. Bordered bottom to feel
+ * structural rather than promotional.
+ */
+function renderSponsorTop(sponsor: Sponsor): string {
+  const mark = renderSponsorMark(sponsor, 20)
+  return `
+    <tr>
+      <td style="padding:18px 24px 16px;background-color:#ffffff;border-bottom:1px solid #e2e8f0;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;color:#94a3b8;margin-bottom:6px;">${escapeHtml(sponsor.label)}</div>
+        <div style="margin-bottom:8px;">
+          <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:inherit;display:inline-block;">${mark}</a>
+        </div>
+        <p style="margin:0;color:#475569;font-size:13px;line-height:1.55;">${escapeHtml(sponsor.blurb)}</p>
+      </td>
+    </tr>`
+}
+
+/**
+ * Expanded sponsor block above the footer. Same content as the top, but
+ * with a CTA button and a short "want this spot?" tease to invite future
+ * sponsors.
+ */
+function renderSponsorBottom(sponsor: Sponsor): string {
+  const mark = renderSponsorMark(sponsor, 24)
+  return `
+    <tr>
+      <td style="padding:24px;background-color:#ffffff;border-top:1px solid #e2e8f0;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;color:#94a3b8;margin-bottom:8px;">${escapeHtml(sponsor.label)}</div>
+        <div style="margin-bottom:10px;">
+          <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:inherit;display:inline-block;">${mark}</a>
+        </div>
+        <p style="margin:0 0 14px;color:#475569;font-size:13px;line-height:1.6;">${escapeHtml(sponsor.blurb)}</p>
+        ${sponsor.ctaText ? `
+        <div style="margin-bottom:14px;">
+          <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="display:inline-block;font-size:12px;font-weight:600;color:#1e293b;text-decoration:none;border:1px solid #cbd5e1;padding:8px 16px;border-radius:4px;letter-spacing:0.2px;">${escapeHtml(sponsor.ctaText)} &rarr;</a>
+        </div>` : ''}
+        <p style="margin:0;color:#94a3b8;font-size:11px;font-style:italic;">Want this spot? <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:#64748b;text-decoration:underline;">Reach out</a>.</p>
+      </td>
+    </tr>`
+}
+
 export function renderNewsletterEmail(params: TemplateParams): string {
-  const { introText, groups, totalArticles, editionDate, unsubscribeUrl } = params
+  const { groups, editionDate, unsubscribeUrl, sponsor = DEFAULT_SPONSOR } = params
   const formattedDate = formatDate(editionDate)
   const categoryBlocks = groups.map(renderCategory).join('')
+  const sponsorTop = renderSponsorTop(sponsor)
+  const sponsorBottom = renderSponsorBottom(sponsor)
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -162,6 +221,9 @@ export function renderNewsletterEmail(params: TemplateParams): string {
             </td>
           </tr>
 
+          <!-- Sponsor: top (compact) -->
+          ${sponsorTop}
+
           <!-- Articles by category -->
           <tr>
             <td style="padding:24px;background-color:#ffffff;">
@@ -172,9 +234,12 @@ export function renderNewsletterEmail(params: TemplateParams): string {
           <!-- CTA -->
           <tr>
             <td style="padding:16px 24px 24px;background-color:#ffffff;text-align:center;">
-              <a href="https://fundopshq.com/news" style="display:inline-block;background-color:#3b82f6;color:#ffffff;font-size:14px;font-weight:600;padding:10px 24px;border-radius:6px;text-decoration:none;">View All News on FundOpsHQ</a>
+              <a href="https://fundopshq.com/" style="display:inline-block;background-color:#3b82f6;color:#ffffff;font-size:14px;font-weight:600;padding:10px 24px;border-radius:6px;text-decoration:none;">Read the full feed on FundOpsHQ</a>
             </td>
           </tr>
+
+          <!-- Sponsor: bottom (expanded) -->
+          ${sponsorBottom}
 
           <!-- Footer -->
           <tr>

@@ -3,15 +3,13 @@
  *
  * 1. Check idempotency (skip if today's edition already sent)
  * 2. Query last 26h of high-value articles
- * 3. Generate Claude intro
- * 4. Render HTML email
- * 5. Send via Resend to all confirmed subscribers
- * 6. Store edition record
+ * 3. Render HTML email
+ * 4. Send via Resend to all confirmed subscribers
+ * 5. Store edition record
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles } from './query-articles'
-import { generateNewsletterIntro } from './generate-intro'
 import { renderNewsletterEmail } from './email-template'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,7 +30,6 @@ function todayDateET(): string {
 
 export async function sendDailyNewsletter(
   supabase: DbClient,
-  anthropicApiKey: string,
   resendApiKey: string,
   hoursBack: number = 26
 ): Promise<SendResult> {
@@ -67,13 +64,7 @@ export async function sendDailyNewsletter(
     return { ok: true, skipped: 'insufficient_articles', editionDate, articleCount: content.totalArticles }
   }
 
-  // ─── 3. Generate intro ────────────────────────────────────────────────────
-  const allHeadlines = content.groups.flatMap((g) =>
-    g.articles.map((a) => a.title)
-  )
-  const introText = await generateNewsletterIntro(allHeadlines, anthropicApiKey)
-
-  // ─── 4. Get subscribers ───────────────────────────────────────────────────
+  // ─── 3. Get subscribers ───────────────────────────────────────────────────
   const { data: subscribers, error: subError } = await supabase
     .from('newsletter_subscribers')
     .select('email, unsubscribe_token')
@@ -87,7 +78,7 @@ export async function sendDailyNewsletter(
     await supabase.from('newsletter_editions').upsert({
       edition_date: editionDate,
       subject: `FundOps Daily — ${editionDate}`,
-      intro_text: introText,
+      intro_text: '',
       html_body: '',
       article_count: content.totalArticles,
       recipient_count: 0,
@@ -98,7 +89,7 @@ export async function sendDailyNewsletter(
     return { ok: true, skipped: 'no_subscribers', editionDate }
   }
 
-  // ─── 5. Render & send ─────────────────────────────────────────────────────
+  // ─── 4. Render & send ─────────────────────────────────────────────────────
   const subject = buildSubject(content)
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
 
@@ -106,7 +97,6 @@ export async function sendDailyNewsletter(
   const emails = subscribers.map((sub) => {
     const unsubscribeUrl = `https://fundopshq.com/api/newsletter/unsubscribe?token=${sub.unsubscribe_token}`
     const html = renderNewsletterEmail({
-      introText,
       groups: content.groups,
       totalArticles: content.totalArticles,
       editionDate,
@@ -163,9 +153,8 @@ export async function sendDailyNewsletter(
     }
   }
 
-  // ─── 6. Store edition record ──────────────────────────────────────────────
+  // ─── 5. Store edition record ──────────────────────────────────────────────
   const placeholderHtml = renderNewsletterEmail({
-    introText,
     groups: content.groups,
     totalArticles: content.totalArticles,
     editionDate,
@@ -177,7 +166,7 @@ export async function sendDailyNewsletter(
   await supabase.from('newsletter_editions').upsert({
     edition_date: editionDate,
     subject,
-    intro_text: introText,
+    intro_text: '',
     html_body: placeholderHtml,
     article_count: content.totalArticles,
     recipient_count: totalSent,
