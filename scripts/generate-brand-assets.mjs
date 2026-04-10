@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* global console */
 /**
  * Generates the FundOpsHQ brand asset SVG files into /public/brand/.
  *
