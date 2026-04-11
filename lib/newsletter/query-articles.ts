@@ -205,8 +205,17 @@ export interface NewsletterContent {
 
 function isLpCommitment(article: NewsletterArticle): boolean {
   if (article.eventType !== 'capital_raise') return false
-  if (!article.firmName) return false
-  return LP_NAME_PATTERNS.some((p) => p.test(article.firmName!))
+  // Primary path: firm_name is the LP (e.g. "Arkansas Teacher Retirement System")
+  if (article.firmName && LP_NAME_PATTERNS.some((p) => p.test(article.firmName!))) {
+    return true
+  }
+  // Fallback: Claude sometimes extracts the underlying GP as firm_name on
+  // stories like "Arkansas Teacher commits $200M to Ares Credit Fund". If
+  // an LP pattern appears in the title, treat it as an LP commitment.
+  if (LP_NAME_PATTERNS.some((p) => p.test(article.title))) {
+    return true
+  }
+  return false
 }
 
 function isGovtProgram(article: NewsletterArticle): boolean {
@@ -308,7 +317,7 @@ export async function queryNewsletterArticles(
 
   // ─── Cross-edition fingerprint dedup ───────────────────────────────────
   const afterCrossDay = deduped.filter((a) => {
-    const fp = storyFingerprint(a.firmName, a.fundName, a.fundSizeUsdMillions, a.eventType)
+    const fp = storyFingerprint(a.firmName, a.fundName, a.eventType)
     return !fp || !priorExclusions.fingerprints.has(fp)
   })
 
@@ -477,24 +486,21 @@ function deduplicateByStory(articles: NewsletterArticle[]): NewsletterArticle[] 
 
 /**
  * Fingerprint used to suppress cross-day repeats.
- * Same firm + same fund name (or same size bucket) means the story
- * already ran in the last CROSS_EDITION_LOOKBACK editions.
+ * Same firm + same fund name means the story already ran in the last
+ * CROSS_EDITION_LOOKBACK editions. When there's no fund name, fall back
+ * to firm + event type — coarser but catches most exec-move and
+ * regulatory repeats. Size is deliberately NOT used in the fingerprint:
+ * the tolerance band math is awkward and firm+fund is strong enough.
  */
 function storyFingerprint(
   firmName: string | null,
   fundName: string | null,
-  fundSizeUsdMillions: number | null,
   eventType: string | null
 ): string | null {
   const firm = normalizeFirmName(firmName)
   if (!firm) return null
   const fund = normalizeFirmName(fundName)
   if (fund) return `${firm}|${fund}`
-  if (fundSizeUsdMillions) {
-    // 10% bucket via log — tolerates currency conversion drift.
-    const bucket = Math.round(Math.log(fundSizeUsdMillions) * 10)
-    return `${firm}|sz${bucket}`
-  }
   return `${firm}|${eventType ?? ''}`
 }
 
@@ -535,9 +541,8 @@ async function getPriorEditionExclusions(
           const firmEntity = entitiesRaw?.find((e) => e.type === 'firm')
           const firmName = (extractedData?.firm_name as string) ?? firmEntity?.name ?? null
           const fundName = (extractedData?.fund_name as string) ?? null
-          const fundSize = (extractedData?.fund_size_usd_millions as number) ?? null
           const eventType = row.event_type ?? row.article_type ?? null
-          const fp = storyFingerprint(firmName, fundName, fundSize, eventType)
+          const fp = storyFingerprint(firmName, fundName, eventType)
           if (fp) fingerprints.add(fp)
         }
       }

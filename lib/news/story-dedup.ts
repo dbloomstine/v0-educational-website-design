@@ -14,6 +14,7 @@
 const FIRM_SUFFIX_NOISE = new Set([
   'llc', 'inc', 'corp', 'corporation', 'ltd', 'limited',
   'lp', 'llp', 'plc', 'ag', 'sa', 'nv', 'bv',
+  'co', 'company',
   'group', 'partners', 'capital', 'management', 'mgmt',
   'investment', 'investments', 'advisors', 'advisory',
   'ventures', 'venture', 'holdings', 'holding',
@@ -90,27 +91,34 @@ export function isSameStory(a: StoryCandidate, b: StoryCandidate): boolean {
 
   const firmA = normalizeFirmName(a.firmName)
   const firmB = normalizeFirmName(b.firmName)
+  const fundA = normalizeFirmName(a.fundName)
+  const fundB = normalizeFirmName(b.fundName)
+
+  // Asymmetric firm extraction: one side has firm, other doesn't, but both
+  // reference the same fund name. Claude's firm extraction is occasionally
+  // null on stories where the fund name is the primary handle (e.g. "Zero
+  // Shot Fund"). Matching fund names is strong enough to cluster these.
+  if (fundA.length > 0 && fundA === fundB) {
+    if (!firmA || !firmB) return true
+  }
+
   const firmMatch = firmA.length > 0 && firmA === firmB
 
   if (!firmMatch) {
-    // Both missing firm but share a fund name — likely same underlying fund.
-    if (!firmA && !firmB) {
-      const fundA = normalizeFirmName(a.fundName)
-      const fundB = normalizeFirmName(b.fundName)
-      if (fundA.length > 0 && fundA === fundB) return true
-    }
+    // Both missing firm but share a fund name — already handled above.
     return false
   }
 
-  // Same firm: fund name match is a strong signal.
-  const fundA = normalizeFirmName(a.fundName)
-  const fundB = normalizeFirmName(b.fundName)
-  if (fundA.length > 0 && fundA === fundB) return true
+  // Same firm, both have fund names: they must match. Different fund names
+  // at the same firm are different stories (e.g. Apollo Infrastructure vs
+  // Apollo Credit closing on the same day) and must never dedup together.
+  if (fundA.length > 0 && fundB.length > 0) {
+    return fundA === fundB
+  }
 
-  // Same firm: fund sizes within tolerance band.
+  // Same firm, at most one has a fund name. Fall back to size tolerance
+  // then title similarity.
   if (fundSizesMatch(a.fundSizeUsdMillions, b.fundSizeUsdMillions)) return true
-
-  // Same firm: title similarity threshold.
   if (titleJaccard(a.title, b.title) >= 0.3) return true
 
   return false
