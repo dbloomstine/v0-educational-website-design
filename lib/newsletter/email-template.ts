@@ -160,8 +160,8 @@ function renderSponsorTop(sponsor: Sponsor): string {
 
 /**
  * Expanded sponsor block above the footer. Same content as the top, but
- * with a CTA button and a short "want this spot?" tease to invite future
- * sponsors.
+ * with a CTA button and a short audience-forward sponsorship pitch for
+ * future presenting sponsors.
  */
 function renderSponsorBottom(sponsor: Sponsor): string {
   const mark = renderSponsorMark(sponsor, 24)
@@ -177,7 +177,7 @@ function renderSponsorBottom(sponsor: Sponsor): string {
         <div style="margin-bottom:14px;">
           <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="display:inline-block;font-size:12px;font-weight:600;color:#1e293b;text-decoration:none;border:1px solid #cbd5e1;padding:8px 16px;border-radius:4px;letter-spacing:0.2px;">${escapeHtml(sponsor.ctaText)} &rarr;</a>
         </div>` : ''}
-        <p style="margin:0;color:#94a3b8;font-size:11px;font-style:italic;">Want this spot? <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:#64748b;text-decoration:underline;">Reach out</a>.</p>
+        <p style="margin:0;color:#94a3b8;font-size:11px;font-style:italic;">Reach GPs, LPs, and fund operators every morning. <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:#64748b;text-decoration:underline;">Sponsor FundOps Daily &rarr;</a></p>
       </td>
     </tr>`
 }
