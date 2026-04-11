@@ -262,13 +262,16 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
   line-height: 1.65;
   font-family: ${FONT_SANS};
 }
+/* CTA buttons — color + background-color MUST also be inlined on
+   the anchor elements. Classes lose to Gmail's a:link specificity,
+   and Gmail Desktop occasionally strips background-* from <style>. */
 .fops-cta-outline {
   display: inline-block;
   font-size: 10px;
   font-weight: 700;
-  color: ${INK};
-  text-decoration: none;
-  border: 1px solid ${INK};
+  border-width: 1px;
+  border-style: solid;
+  border-color: ${INK};
   padding: 6px 12px;
   border-radius: 2px;
   letter-spacing: 1.5px;
@@ -279,9 +282,6 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
   display: inline-block;
   font-size: 11px;
   font-weight: 700;
-  color: ${CREAM};
-  background: ${INK};
-  text-decoration: none;
   padding: 10px 18px;
   border-radius: 2px;
   letter-spacing: 1.5px;
@@ -423,7 +423,7 @@ function renderArticle(article: ArticleGroup['articles'][0]): string {
       <td class="fops-row">
         ${metaRow}
         <div class="fops-title-wrap">
-          <a href="${escapeHtml(article.sourceUrl)}" class="fops-title" target="_blank">${escapeHtml(article.title)}</a>${sizeHtml}
+          <a href="${escapeHtml(article.sourceUrl)}" class="fops-title" style="color:${INK};text-decoration:none;" target="_blank">${escapeHtml(article.title)}</a>${sizeHtml}
         </div>
         ${article.tldr ? `<div class="fops-blurb">${escapeHtml(article.tldr)}</div>` : ''}
         <div class="fops-source">${escapeHtml(article.sourceName ?? '')}${alsoCoveredBy}</div>
@@ -471,10 +471,10 @@ function renderSponsorCardTop(sponsor: Sponsor, isFirst: boolean): string {
   return `
     <div style="padding:${isFirst ? '6px 0 18px' : '18px 0'};${isFirst ? '' : `border-top:1px solid ${HAIRLINE};`}">
       <div style="margin-bottom:10px;">
-        <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:inherit;display:inline-block;">${mark}</a>
+        <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;">${mark}</a>
       </div>
       <p class="fops-sponsor-blurb">${escapeHtml(sponsor.blurb)}</p>
-      ${sponsor.ctaText ? `<div><a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-outline">${escapeHtml(sponsor.ctaText)} &rarr;</a></div>` : ''}
+      ${sponsor.ctaText ? `<div><a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-outline" style="color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a></div>` : ''}
     </div>`
 }
 
@@ -483,10 +483,10 @@ function renderSponsorCardBottom(sponsor: Sponsor, isFirst: boolean): string {
   return `
     <div style="padding:${isFirst ? '6px 0 22px' : '22px 0'};${isFirst ? '' : `border-top:1px solid ${HAIRLINE};`}">
       <div style="margin-bottom:12px;">
-        <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:inherit;display:inline-block;">${mark}</a>
+        <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;">${mark}</a>
       </div>
       <p class="fops-sponsor-blurb-lg">${escapeHtml(sponsor.blurb)}</p>
-      ${sponsor.ctaText ? `<div><a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-solid">${escapeHtml(sponsor.ctaText)} &rarr;</a></div>` : ''}
+      ${sponsor.ctaText ? `<div><a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-solid" style="color:${CREAM};background-color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a></div>` : ''}
     </div>`
 }
 
@@ -514,7 +514,7 @@ function renderSponsorBottom(slate: SponsorSlate): string {
       <td class="fops-bg-cream" style="padding:28px 32px 28px;background-color:${CREAM};border-top:1px solid ${HAIRLINE};">
         <div class="fops-eyebrow" style="margin-bottom:6px;">${escapeHtml(slate.label)}</div>
         ${cards}
-        <p class="fops-house-cta">Reach GPs, LPs, and fund service providers every morning. <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" class="fops-ink" style="text-decoration:none;font-weight:600;font-style:normal;">Sponsor FundOps Daily &rarr;</a></p>
+        <p class="fops-house-cta">Reach GPs, LPs, and fund service providers every morning. <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:${INK};text-decoration:none;font-weight:600;font-style:normal;">Sponsor FundOps Daily &rarr;</a></p>
       </td>
     </tr>`
 }
