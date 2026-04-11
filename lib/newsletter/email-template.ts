@@ -1,7 +1,13 @@
 /**
  * HTML email template for FundOps Daily newsletter.
  *
+ * Editorial newsroom treatment matching the fundopshq.com brand:
+ * deep navy header with a newspaper masthead strip, cream editorial
+ * body, amber accent on the daily mark, Georgia for display serif,
+ * monospace eyebrows for dates and categories.
+ *
  * Uses inline CSS only — email clients strip external stylesheets.
+ * System fonts only — Google Fonts and @font-face are unreliable.
  * Tested for Gmail, Outlook, Apple Mail compatibility.
  */
 
@@ -18,31 +24,64 @@ interface TemplateParams {
   sponsorSlate?: SponsorSlate
 }
 
-const EVENT_BADGE_COLORS: Record<string, { bg: string; text: string }> = {
-  fund_launch: { bg: '#dbeafe', text: '#1e40af' },
-  fund_close: { bg: '#fce7f3', text: '#9d174d' },
-  capital_raise: { bg: '#dcfce7', text: '#166534' },
-  executive_hire: { bg: '#ede9fe', text: '#5b21b6' },
-  executive_change: { bg: '#ede9fe', text: '#5b21b6' },
-  executive_departure: { bg: '#ede9fe', text: '#5b21b6' },
-  acquisition: { bg: '#dbeafe', text: '#1e40af' },
-  merger: { bg: '#dbeafe', text: '#1e40af' },
-  regulatory_action: { bg: '#fef2f2', text: '#991b1b' },
+// ─── Brand palette ──────────────────────────────────────────────────────────
+// These match the canonical brand colors exposed in app/brand/page.tsx.
+
+const NAVY = '#1E3A5F'
+const NAVY_DEEP = '#0F1E33'
+const CREAM = '#F8F5EC'
+const AMBER = '#E6B045'
+const INK = '#1E3A5F' // body text on cream
+const INK_MUTED = '#5A6B82' // secondary text on cream
+const HAIRLINE = '#D8D0BC' // divider line on cream
+const HAIRLINE_DARK = 'rgba(248,245,236,0.18)' // divider on navy
+
+// ─── Typography stacks ─────────────────────────────────────────────────────
+// All system fonts — nothing that needs to load from the web.
+
+const FONT_SERIF = `Georgia, 'Times New Roman', Times, serif`
+const FONT_SANS = `-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, Helvetica, sans-serif`
+const FONT_MONO = `ui-monospace, Menlo, Consolas, 'Courier New', monospace`
+
+// ─── Event type badges (editorial, muted) ──────────────────────────────────
+
+const EVENT_BADGE_COLORS: Record<string, string> = {
+  fund_launch: '#3B6BA5',
+  fund_close: '#9D3B5F',
+  capital_raise: '#3E7A4E',
+  executive_hire: '#6B5B8A',
+  executive_change: '#6B5B8A',
+  executive_departure: '#6B5B8A',
+  acquisition: '#3B6BA5',
+  merger: '#3B6BA5',
+  regulatory_action: '#B13B2E',
 }
 
+// ─── Category accent bars ──────────────────────────────────────────────────
+
 const CATEGORY_COLORS: Record<string, string> = {
-  PE: '#4f46e5',
+  PE: '#4F46E5',
   VC: '#059669',
-  credit: '#d97706',
-  hedge: '#7c3aed',
-  real_estate: '#ea580c',
-  infrastructure: '#0284c7',
-  secondaries: '#db2777',
-  gp_stakes: '#0d9488',
-  lp_commitments: '#0f766e',
-  people_moves: '#8b5cf6',
-  deals: '#0891b2',
-  regulatory: '#dc2626',
+  credit: '#D97706',
+  hedge: '#7C3AED',
+  real_estate: '#EA580C',
+  infrastructure: '#0284C7',
+  secondaries: '#DB2777',
+  gp_stakes: '#0D9488',
+  lp_commitments: AMBER,
+  people_moves: '#8B5CF6',
+  deals: '#0891B2',
+  regulatory: '#DC2626',
+}
+
+// ─── Helpers ───────────────────────────────────────────────────────────────
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
 }
 
 function formatDate(dateStr: string): string {
@@ -58,6 +97,21 @@ function formatDate(dateStr: string): string {
   })
 }
 
+function formatMastheadDate(dateStr: string): string {
+  const d = new Date(dateStr + 'T12:00:00Z')
+  return d
+    .toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+      timeZone: 'America/New_York',
+    })
+    .toUpperCase()
+}
+
+// ─── Firm logos (circular favicon with cream tile) ─────────────────────────
+
 function renderFirmLogo(article: ArticleGroup['articles'][0]): string {
   const resolvedDomain = resolveLogoDomain(
     article.firmName,
@@ -68,35 +122,43 @@ function renderFirmLogo(article: ArticleGroup['articles'][0]): string {
   const initial = displayName[0].toUpperCase()
   if (resolvedDomain) {
     const logoUrl = getPrimaryLogoUrl(resolvedDomain)
-    return `<img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(initial)}" width="20" height="20" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;background:#ffffff;object-fit:contain;" />`
+    return `<img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(initial)}" width="22" height="22" style="width:22px;height:22px;border-radius:50%;vertical-align:middle;background:${CREAM};object-fit:contain;border:1px solid ${HAIRLINE};" />`
   }
-  return `<span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:#e2e8f0;color:#475569;font-size:11px;font-weight:600;line-height:20px;text-align:center;vertical-align:middle;">${escapeHtml(initial)}</span>`
+  return `<span style="display:inline-block;width:22px;height:22px;border-radius:50%;background:${CREAM};border:1px solid ${HAIRLINE};color:${INK};font-size:11px;font-weight:700;line-height:20px;text-align:center;vertical-align:middle;font-family:${FONT_SERIF};">${escapeHtml(initial)}</span>`
 }
 
+// ─── Single story row ──────────────────────────────────────────────────────
+
 function renderArticle(article: ArticleGroup['articles'][0]): string {
-  const badge = EVENT_BADGE_COLORS[article.eventType ?? ''] ?? { bg: '#f1f5f9', text: '#475569' }
+  const badgeColor = EVENT_BADGE_COLORS[article.eventType ?? ''] ?? INK_MUTED
   const label = getEventTypeLabel(article.eventType)
   const size = formatFundSize(article.fundSizeUsdMillions)
   const logo = renderFirmLogo(article)
-  const firmLabel = article.firmName ? `<span style="color:#64748b;font-size:12px;">${escapeHtml(article.firmName)}</span> ` : ''
+  const firmLabel = article.firmName
+    ? `<span style="color:${INK_MUTED};font-size:12px;font-family:${FONT_SANS};">${escapeHtml(article.firmName)}</span> `
+    : ''
+
+  const badge = label
+    ? `<span style="display:inline-block;font-size:9px;font-weight:700;padding:2px 6px;border:1px solid ${badgeColor};color:${badgeColor};letter-spacing:1.2px;text-transform:uppercase;font-family:${FONT_MONO};border-radius:2px;white-space:nowrap;background:${CREAM};">${escapeHtml(label)}</span>`
+    : ''
 
   return `
     <tr>
-      <td style="padding:10px 0;border-bottom:1px solid #e2e8f0;">
+      <td style="padding:14px 0;border-bottom:1px solid ${HAIRLINE};">
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
           <tr>
-            <td style="vertical-align:top;padding-right:8px;width:60px;">
-              ${label ? `<span style="display:inline-block;background:${badge.bg};color:${badge.text};font-size:11px;font-weight:600;padding:2px 6px;border-radius:3px;white-space:nowrap;">${escapeHtml(label)}</span>` : ''}
+            <td style="vertical-align:top;padding-right:10px;width:62px;">
+              ${badge}
             </td>
-            <td style="vertical-align:top;padding-right:8px;width:24px;">
+            <td style="vertical-align:top;padding-right:10px;width:26px;">
               ${logo}
             </td>
             <td style="vertical-align:top;">
-              <div>
-                ${firmLabel}<a href="${escapeHtml(article.sourceUrl)}" style="color:#1e293b;text-decoration:none;font-size:14px;font-weight:600;" target="_blank">${escapeHtml(article.title)}</a>${size ? ` <span style="color:#64748b;font-size:12px;">(${escapeHtml(size)})</span>` : ''}
+              <div style="margin-bottom:4px;">
+                ${firmLabel}<a href="${escapeHtml(article.sourceUrl)}" style="color:${INK};text-decoration:none;font-size:15px;font-weight:700;font-family:${FONT_SERIF};line-height:1.35;" target="_blank">${escapeHtml(article.title)}</a>${size ? ` <span style="color:${INK_MUTED};font-size:12px;font-family:${FONT_MONO};font-weight:600;">(${escapeHtml(size)})</span>` : ''}
               </div>
-              ${article.tldr ? `<div style="color:#475569;font-size:13px;margin-top:3px;line-height:1.5;">${escapeHtml(article.tldr)}</div>` : ''}
-              <div style="color:#64748b;font-size:11px;margin-top:3px;">${escapeHtml(article.sourceName ?? '')}${article.alsoCoveredBy && article.alsoCoveredBy.length > 0 ? ` &middot; Also: ${article.alsoCoveredBy.slice(0, 3).map(escapeHtml).join(', ')}` : ''}</div>
+              ${article.tldr ? `<div style="color:${INK_MUTED};font-size:13px;margin-top:4px;line-height:1.55;font-family:${FONT_SANS};">${escapeHtml(article.tldr)}</div>` : ''}
+              <div style="color:${INK_MUTED};font-size:10px;margin-top:6px;font-family:${FONT_MONO};letter-spacing:0.5px;text-transform:uppercase;">${escapeHtml(article.sourceName ?? '')}${article.alsoCoveredBy && article.alsoCoveredBy.length > 0 ? ` &nbsp;·&nbsp; ALSO: ${article.alsoCoveredBy.slice(0, 3).map(escapeHtml).join(', ')}` : ''}</div>
             </td>
           </tr>
         </table>
@@ -104,88 +166,75 @@ function renderArticle(article: ArticleGroup['articles'][0]): string {
     </tr>`
 }
 
+// ─── Category section head ─────────────────────────────────────────────────
+
 function renderCategory(group: ArticleGroup): string {
-  const color = CATEGORY_COLORS[group.category] ?? '#6b7280'
+  const color = CATEGORY_COLORS[group.category] ?? INK
   const articleRows = group.articles.map(renderArticle).join('')
+  const count = group.articles.length
+  const countLabel = `${count} ${count === 1 ? 'STORY' : 'STORIES'}`
 
   return `
-    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:24px;">
+    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:28px;">
       <tr>
-        <td style="padding-bottom:8px;">
-          <span style="display:inline-block;background:${color};color:#ffffff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:0.5px;text-transform:uppercase;">${escapeHtml(group.label)}</span>
-          <span style="color:#94a3b8;font-size:12px;margin-left:8px;">${group.articles.length} ${group.articles.length === 1 ? 'story' : 'stories'}</span>
+        <td style="padding-bottom:10px;border-bottom:2px solid ${color};">
+          <table cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+              <td style="vertical-align:middle;">
+                <span style="font-family:${FONT_MONO};font-size:12px;font-weight:700;letter-spacing:2px;color:${INK};text-transform:uppercase;">${escapeHtml(group.label)}</span>
+              </td>
+              <td align="right" style="vertical-align:middle;">
+                <span style="font-family:${FONT_MONO};font-size:10px;color:${INK_MUTED};letter-spacing:1.5px;">${countLabel}</span>
+              </td>
+            </tr>
+          </table>
         </td>
       </tr>
       ${articleRows}
     </table>`
 }
 
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-}
+// ─── Sponsor marks ─────────────────────────────────────────────────────────
 
-/**
- * Render a sponsor's brand treatment — wordmark HTML if supplied,
- * otherwise a logo image, otherwise a plain text fallback.
- */
 function renderSponsorMark(sponsor: Sponsor, logoHeightPx: number): string {
   if (sponsor.wordmarkHtml) return sponsor.wordmarkHtml
   if (sponsor.logoUrl) {
     const width = sponsor.logoWidth ?? logoHeightPx * 5
     return `<img src="${escapeHtml(sponsor.logoUrl)}" alt="${escapeHtml(sponsor.name)}" width="${width}" style="width:${width}px;height:auto;display:block;" />`
   }
-  return `<span style="display:inline-block;font-size:${logoHeightPx}px;font-weight:800;color:#1e293b;letter-spacing:-0.3px;line-height:1;">${escapeHtml(sponsor.name)}</span>`
+  return `<span style="display:inline-block;font-size:${logoHeightPx}px;font-weight:800;color:${INK};letter-spacing:-0.3px;line-height:1;font-family:${FONT_SERIF};">${escapeHtml(sponsor.name)}</span>`
 }
 
-/**
- * Render one sponsor as a compact top-block card: wordmark + short
- * blurb + tight CTA button. No label (the slate renders the shared
- * label once). Cards are separated by a hairline divider when stacked.
- * The top button is intentionally smaller than the bottom one so it
- * reads as a secondary click target without competing with the logo.
- */
 function renderSponsorCardTop(sponsor: Sponsor, isFirst: boolean): string {
   const mark = renderSponsorMark(sponsor, 20)
   return `
-    <div style="padding:${isFirst ? '4px 0 16px' : '16px 0'};${isFirst ? '' : 'border-top:1px solid #e2e8f0;'}">
-      <div style="margin-bottom:8px;">
-        <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:inherit;display:inline-block;">${mark}</a>
-      </div>
-      <p style="margin:0 0 10px;color:#475569;font-size:13px;line-height:1.55;">${escapeHtml(sponsor.blurb)}</p>
-      ${sponsor.ctaText ? `
-      <div>
-        <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="display:inline-block;font-size:11px;font-weight:600;color:#1e293b;text-decoration:none;border:1px solid #cbd5e1;padding:5px 11px;border-radius:3px;letter-spacing:0.2px;">${escapeHtml(sponsor.ctaText)} &rarr;</a>
-      </div>` : ''}
-    </div>`
-}
-
-/**
- * Render one sponsor as an expanded bottom-block card: wordmark +
- * blurb + optional CTA button. Same divider treatment as top.
- */
-function renderSponsorCardBottom(sponsor: Sponsor, isFirst: boolean): string {
-  const mark = renderSponsorMark(sponsor, 24)
-  return `
-    <div style="padding:${isFirst ? '4px 0 20px' : '20px 0'};${isFirst ? '' : 'border-top:1px solid #e2e8f0;'}">
+    <div style="padding:${isFirst ? '6px 0 18px' : '18px 0'};${isFirst ? '' : `border-top:1px solid ${HAIRLINE};`}">
       <div style="margin-bottom:10px;">
         <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:inherit;display:inline-block;">${mark}</a>
       </div>
-      <p style="margin:0 0 14px;color:#475569;font-size:13px;line-height:1.6;">${escapeHtml(sponsor.blurb)}</p>
+      <p style="margin:0 0 12px;color:${INK};font-size:13px;line-height:1.6;font-family:${FONT_SANS};">${escapeHtml(sponsor.blurb)}</p>
       ${sponsor.ctaText ? `
       <div>
-        <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="display:inline-block;font-size:12px;font-weight:600;color:#1e293b;text-decoration:none;border:1px solid #cbd5e1;padding:8px 16px;border-radius:4px;letter-spacing:0.2px;">${escapeHtml(sponsor.ctaText)} &rarr;</a>
+        <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="display:inline-block;font-size:10px;font-weight:700;color:${INK};text-decoration:none;border:1px solid ${INK};padding:6px 12px;border-radius:2px;letter-spacing:1.5px;text-transform:uppercase;font-family:${FONT_MONO};">${escapeHtml(sponsor.ctaText)} &rarr;</a>
       </div>` : ''}
     </div>`
 }
 
-/**
- * Compact sponsor block rendered under the header. Single slate-level
- * label, then stacked cards with hairline dividers between.
- */
+function renderSponsorCardBottom(sponsor: Sponsor, isFirst: boolean): string {
+  const mark = renderSponsorMark(sponsor, 24)
+  return `
+    <div style="padding:${isFirst ? '6px 0 22px' : '22px 0'};${isFirst ? '' : `border-top:1px solid ${HAIRLINE};`}">
+      <div style="margin-bottom:12px;">
+        <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:inherit;display:inline-block;">${mark}</a>
+      </div>
+      <p style="margin:0 0 16px;color:${INK};font-size:14px;line-height:1.65;font-family:${FONT_SANS};">${escapeHtml(sponsor.blurb)}</p>
+      ${sponsor.ctaText ? `
+      <div>
+        <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="display:inline-block;font-size:11px;font-weight:700;color:${CREAM};background:${INK};text-decoration:none;padding:10px 18px;border-radius:2px;letter-spacing:1.5px;text-transform:uppercase;font-family:${FONT_MONO};">${escapeHtml(sponsor.ctaText)} &rarr;</a>
+      </div>` : ''}
+    </div>`
+}
+
 function renderSponsorTop(slate: SponsorSlate): string {
   if (slate.sponsors.length === 0) return ''
   const cards = slate.sponsors
@@ -193,18 +242,13 @@ function renderSponsorTop(slate: SponsorSlate): string {
     .join('')
   return `
     <tr>
-      <td style="padding:18px 24px 16px;background-color:#ffffff;border-bottom:1px solid #e2e8f0;">
-        <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;color:#94a3b8;margin-bottom:4px;">${escapeHtml(slate.label)}</div>
+      <td style="padding:20px 32px 18px;background-color:${CREAM};border-bottom:1px solid ${HAIRLINE};">
+        <div style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:2px;color:${INK_MUTED};margin-bottom:6px;text-transform:uppercase;">${escapeHtml(slate.label)}</div>
         ${cards}
       </td>
     </tr>`
 }
 
-/**
- * Expanded sponsor block above the footer. Single slate-level label,
- * per-sponsor cards with CTA buttons, followed by the house CTA
- * inviting new sponsors.
- */
 function renderSponsorBottom(slate: SponsorSlate): string {
   if (slate.sponsors.length === 0) return ''
   const cards = slate.sponsors
@@ -212,17 +256,20 @@ function renderSponsorBottom(slate: SponsorSlate): string {
     .join('')
   return `
     <tr>
-      <td style="padding:24px 24px 24px;background-color:#ffffff;border-top:1px solid #e2e8f0;">
-        <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;color:#94a3b8;margin-bottom:4px;">${escapeHtml(slate.label)}</div>
+      <td style="padding:28px 32px 28px;background-color:${CREAM};border-top:1px solid ${HAIRLINE};">
+        <div style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:2px;color:${INK_MUTED};margin-bottom:6px;text-transform:uppercase;">${escapeHtml(slate.label)}</div>
         ${cards}
-        <p style="margin:22px 0 0;padding-top:16px;border-top:1px solid #e2e8f0;color:#94a3b8;font-size:11px;font-style:italic;">Reach GPs, LPs, and fund service providers every morning. <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:#64748b;text-decoration:underline;">Sponsor FundOps Daily &rarr;</a></p>
+        <p style="margin:26px 0 0;padding-top:18px;border-top:1px solid ${HAIRLINE};color:${INK_MUTED};font-size:11px;line-height:1.55;font-family:${FONT_SANS};font-style:italic;">Reach GPs, LPs, and fund service providers every morning. <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:${INK};text-decoration:none;font-weight:600;font-style:normal;">Sponsor FundOps Daily &rarr;</a></p>
       </td>
     </tr>`
 }
 
+// ─── Main render ───────────────────────────────────────────────────────────
+
 export function renderNewsletterEmail(params: TemplateParams): string {
   const { groups, editionDate, unsubscribeUrl, sponsorSlate = DEFAULT_SPONSOR_SLATE } = params
   const formattedDate = formatDate(editionDate)
+  const mastheadDate = formatMastheadDate(editionDate)
   const categoryBlocks = groups.map(renderCategory).join('')
   const sponsorTop = renderSponsorTop(sponsorSlate)
   const sponsorBottom = renderSponsorBottom(sponsorSlate)
@@ -235,65 +282,117 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>FundOps Daily — ${formattedDate}</title>
   <!--[if mso]>
-  <style>table{border-collapse:collapse;}td{font-family:Arial,sans-serif;}</style>
+  <style>table{border-collapse:collapse;}td{font-family:Georgia,serif;}</style>
   <![endif]-->
 </head>
-<body style="margin:0;padding:0;background-color:#f1f5f9;font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
-  <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f1f5f9;">
+<body style="margin:0;padding:0;background-color:${NAVY_DEEP};font-family:${FONT_SANS};-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+  <table cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:${NAVY_DEEP};">
     <tr>
-      <td align="center" style="padding:20px 10px;">
-        <table cellpadding="0" cellspacing="0" border="0" width="640" style="max-width:640px;width:100%;">
+      <td align="center" style="padding:24px 10px;">
+        <table cellpadding="0" cellspacing="0" border="0" width="680" style="max-width:680px;width:100%;">
 
-          <!-- Header -->
+          <!-- ─── Masthead ─── -->
           <tr>
-            <td style="padding:24px 24px 16px;background-color:#1e293b;border-radius:8px 8px 0 0;">
+            <td style="padding:0;background-color:${NAVY};">
+
+              <!-- Top eyebrow strip -->
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
-                  <td>
-                    <span style="font-size:22px;font-weight:700;color:#f8fafc;letter-spacing:-0.5px;">FundOps</span><span style="font-size:22px;font-weight:700;color:#60a5fa;letter-spacing:-0.5px;">Daily</span>
-                  </td>
-                  <td align="right" style="color:#94a3b8;font-size:12px;">
-                    ${escapeHtml(formattedDate)}
+                  <td style="padding:14px 32px 12px;border-bottom:1px solid ${HAIRLINE_DARK};">
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                      <tr>
+                        <td style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:2px;color:${CREAM};color-opacity:0.7;text-transform:uppercase;">
+                          <span style="color:rgba(248,245,236,0.85);">VOL. I</span>
+                          <span style="color:rgba(248,245,236,0.35);"> &nbsp;·&nbsp; </span>
+                          <span style="color:rgba(248,245,236,0.7);">${escapeHtml(mastheadDate)}</span>
+                        </td>
+                        <td align="right" style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:2px;color:rgba(248,245,236,0.7);text-transform:uppercase;">
+                          THE DAILY BRIEF
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
               </table>
+
+              <!-- Wordmark row -->
+              <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td style="padding:26px 32px 24px;text-align:left;">
+                    <span style="font-family:${FONT_SERIF};font-size:36px;font-weight:700;color:${CREAM};letter-spacing:-0.5px;line-height:1;">FundOps</span><span style="font-family:${FONT_SERIF};font-size:36px;font-weight:700;font-style:italic;color:${AMBER};letter-spacing:-0.5px;line-height:1;">Daily</span>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Bottom eyebrow strip -->
+              <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                <tr>
+                  <td style="padding:14px 32px;border-top:1px solid ${HAIRLINE_DARK};">
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                      <tr>
+                        <td style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:2.5px;color:rgba(248,245,236,0.6);text-transform:uppercase;">
+                          NEWS &nbsp;·&nbsp; NEWSLETTER &nbsp;·&nbsp; LIVE SHOW
+                        </td>
+                        <td align="right" style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:2px;color:${AMBER};text-transform:uppercase;">
+                          FUNDOPSHQ.COM
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
             </td>
           </tr>
 
-          <!-- Sponsor: top (compact) -->
+          <!-- ─── Sponsor: top ─── -->
           ${sponsorTop}
 
-          <!-- Articles by category -->
+          <!-- ─── Content ─── -->
           <tr>
-            <td style="padding:24px;background-color:#ffffff;">
+            <td style="padding:32px 32px 16px;background-color:${CREAM};">
+              <!-- Section eyebrow -->
+              <div style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:2px;color:${INK_MUTED};text-transform:uppercase;margin-bottom:6px;">
+                Section A &nbsp;·&nbsp; The Wire
+              </div>
+              <div style="font-family:${FONT_SERIF};font-size:22px;font-weight:700;color:${INK};line-height:1.2;margin-bottom:24px;">
+                This morning&rsquo;s <span style="font-style:italic;color:${AMBER};">top stories.</span>
+              </div>
               ${categoryBlocks}
             </td>
           </tr>
 
-          <!-- CTA -->
+          <!-- ─── Main CTA ─── -->
           <tr>
-            <td style="padding:16px 24px 24px;background-color:#ffffff;text-align:center;">
-              <a href="https://fundopshq.com/" style="display:inline-block;background-color:#3b82f6;color:#ffffff;font-size:14px;font-weight:600;padding:10px 24px;border-radius:6px;text-decoration:none;">Read the full feed on FundOpsHQ</a>
+            <td style="padding:8px 32px 32px;background-color:${CREAM};text-align:center;">
+              <a href="https://fundopshq.com/#news" style="display:inline-block;background-color:${INK};color:${CREAM};font-family:${FONT_MONO};font-size:11px;font-weight:700;padding:14px 28px;border-radius:2px;text-decoration:none;letter-spacing:2px;text-transform:uppercase;">Read the full feed &rarr;</a>
             </td>
           </tr>
 
-          <!-- Sponsor: bottom (expanded) -->
+          <!-- ─── Sponsor: bottom ─── -->
           ${sponsorBottom}
 
-          <!-- Footer -->
+          <!-- ─── Footer ─── -->
           <tr>
-            <td style="padding:20px 24px;background-color:#f8fafc;border-top:1px solid #e2e8f0;border-radius:0 0 8px 8px;">
+            <td style="padding:24px 32px;background-color:${NAVY};">
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
-                  <td style="color:#64748b;font-size:11px;line-height:1.6;">
+                  <td style="padding-bottom:10px;border-bottom:1px solid ${HAIRLINE_DARK};">
+                    <span style="font-family:${FONT_SERIF};font-size:18px;font-weight:700;color:${CREAM};letter-spacing:-0.3px;">FundOps</span><span style="font-family:${FONT_SERIF};font-size:18px;font-weight:700;font-style:italic;color:${AMBER};letter-spacing:-0.3px;">Daily</span>
+                    <span style="font-family:${FONT_MONO};font-size:10px;color:rgba(248,245,236,0.5);letter-spacing:1.5px;margin-left:10px;text-transform:uppercase;">by FundOpsHQ</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-top:14px;font-family:${FONT_SANS};font-size:11px;color:rgba(248,245,236,0.55);line-height:1.65;">
                     <p style="margin:0;">
-                      <strong style="color:#475569;">FundOps Daily</strong> by <a href="https://fundopshq.com" style="color:#475569;text-decoration:none;">FundOpsHQ</a>
+                      You&rsquo;re receiving this because you subscribed at <a href="https://fundopshq.com" style="color:rgba(248,245,236,0.75);text-decoration:none;">fundopshq.com</a>.
                     </p>
                     <p style="margin:6px 0 0;">
-                      You're receiving this because you subscribed at fundopshq.com.
-                    </p>
-                    <p style="margin:6px 0 0;">
-                      <a href="${escapeHtml(unsubscribeUrl)}" style="color:#64748b;text-decoration:underline;">Unsubscribe</a>
+                      <a href="${escapeHtml(unsubscribeUrl)}" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Unsubscribe</a>
+                      &nbsp;·&nbsp;
+                      <a href="https://fundopshq.com" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Visit FundOpsHQ</a>
+                      &nbsp;·&nbsp;
+                      <a href="https://www.youtube.com/@dbloomstine/streams" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Live Show</a>
                     </p>
                   </td>
                 </tr>
