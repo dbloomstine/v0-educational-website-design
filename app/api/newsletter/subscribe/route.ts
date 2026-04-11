@@ -84,7 +84,11 @@ export async function POST(req: Request) {
         body: JSON.stringify({
           from: `FundOps Daily <${from}>`,
           to: trimmed,
-          subject: "You're in — FundOps Daily",
+          // Replies land in Danny's personal gmail. fundopshq.com has
+          // no MX records, so @fundopshq.com addresses can't receive
+          // mail — reply_to is the zero-infrastructure workaround.
+          reply_to: 'dbloomstine@gmail.com',
+          subject: 'Welcome to FundOps Daily — a note from Danny',
           html: renderWelcomeEmail(unsubscribeUrl),
           headers: {
             'List-Unsubscribe': `<${unsubscribeUrl}>`,

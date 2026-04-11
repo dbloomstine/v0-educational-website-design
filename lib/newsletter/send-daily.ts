@@ -110,6 +110,13 @@ export async function sendDailyNewsletter(
     return {
       from: `FundOps Daily <${fromEmail}>`,
       to: sub.email,
+      // Replies route to Danny's personal gmail. fundopshq.com has no
+      // MX records (Vercel DNS is name-service only), so any address
+      // at @fundopshq.com bounces inbound mail. Reply-To is the
+      // zero-infrastructure fix: mail still originates from
+      // feedback@fundopshq.com (Resend-authenticated), but hitting
+      // reply in any mail client addresses the response to dbloomstine.
+      reply_to: 'dbloomstine@gmail.com',
       subject,
       html,
       headers: {

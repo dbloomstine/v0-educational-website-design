@@ -95,6 +95,7 @@ async function main() {
     body: JSON.stringify({
       from: `FundOps Daily <${from}>`,
       to,
+      reply_to: 'dbloomstine@gmail.com',
       subject,
       html,
     }),
