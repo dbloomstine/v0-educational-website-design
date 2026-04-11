@@ -1,25 +1,24 @@
 /**
  * Sponsor configuration for the FundOps Daily newsletter.
  *
- * Each sponsor gets a full card in both the top and bottom blocks:
- * eyebrow label, wordmark or logo, and a 2–3 sentence blurb. The
- * bottom block adds a CTA button per sponsor, plus the house "Sponsor
- * FundOps Daily" invitation at the very bottom.
+ * A SponsorSlate carries one shared label ("PRESENTED BY") rendered
+ * once at the top of each sponsor block, plus a list of sponsor cards
+ * stacked underneath. Each card has a wordmark (or hosted logo) and a
+ * 2–3 sentence blurb. The bottom block adds a CTA button per card,
+ * plus the house "Sponsor FundOps Daily" invitation below the stack.
  *
  * Sponsors can supply either a hosted PNG logo (reliable across all
  * email clients — SVG and WebP are NOT) or a pre-styled inline HTML
  * wordmark. Our own FundOpsHQ entry uses the wordmark path so the
  * brand treatment matches the header.
  *
- * For co-sponsorship, the template stacks multiple Sponsor cards in
- * sequence. Keep the slate between 1 and 5 entries — more than 5 and
- * each brand's share of attention starts to suffer.
+ * Keep the slate between 1 and 5 sponsors — more than 5 and each
+ * brand's share of attention starts to suffer.
  */
 
+/** A single sponsor card inside a slate. */
 export interface Sponsor {
-  /** Uppercase label above the brand, e.g. "PRESENTED BY" / "SUPPORTED BY". */
-  label: string
-  /** Brand name — used for alt text, click targets, and the fallback label. */
+  /** Brand name — used for alt text and click targets. */
   name: string
   /** Pre-styled inline HTML wordmark. Takes precedence over logoUrl. */
   wordmarkHtml?: string
@@ -35,12 +34,13 @@ export interface Sponsor {
   ctaText?: string
 }
 
-/**
- * A slate is just an ordered list of sponsor cards to stack. Type
- * alias rather than an object wrapper because there's no shared slate
- * metadata (each sponsor owns its own label).
- */
-export type SponsorSlate = Sponsor[]
+/** A slate of co-sponsors shown together under a shared label. */
+export interface SponsorSlate {
+  /** Uppercase label rendered once at the top of the sponsor block. */
+  label: string
+  /** The sponsor cards to stack. */
+  sponsors: Sponsor[]
+}
 
 /**
  * FundOpsHQ two-tone wordmark matching the header treatment
@@ -57,7 +57,6 @@ const FUNDOPSHQ_WORDMARK_HTML =
  * land; drop or reorder as needed.
  */
 export const FUNDOPSHQ_SPONSOR: Sponsor = {
-  label: 'PRESENTED BY',
   name: 'FundOpsHQ',
   wordmarkHtml: FUNDOPSHQ_WORDMARK_HTML,
   blurb:
@@ -68,7 +67,10 @@ export const FUNDOPSHQ_SPONSOR: Sponsor = {
 
 /**
  * Default slate used when no paid sponsors are configured for an
- * edition. Contains only the house entry. Add paid sponsor cards
- * above or below FUNDOPSHQ_SPONSOR once they're booked.
+ * edition. Contains only the house entry. Add paid sponsor cards to
+ * the `sponsors` array once they're booked.
  */
-export const DEFAULT_SPONSOR_SLATE: SponsorSlate = [FUNDOPSHQ_SPONSOR]
+export const DEFAULT_SPONSOR_SLATE: SponsorSlate = {
+  label: 'PRESENTED BY',
+  sponsors: [FUNDOPSHQ_SPONSOR],
+}

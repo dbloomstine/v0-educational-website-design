@@ -50,19 +50,21 @@ function publicFileAsDataUri(relativePath: string): string {
  * so we can tweak the visual before pitching real sponsors.
  */
 function buildSampleSlate(): SponsorSlate {
-  return [
-    FUNDOPSHQ_SPONSOR,
-    {
-      label: 'PRESENTED BY',
-      name: 'Fidelity Careers',
-      logoUrl: publicFileAsDataUri('sponsors/fidelity-careers.png'),
-      logoWidth: 200,
-      blurb:
-        'Fidelity is hiring across fund operations, fund accounting, investor reporting, and technology. Join a team supporting trillions in assets and the teams running private markets at scale.',
-      ctaUrl: 'https://jobs.fidelity.com',
-      ctaText: 'See open roles',
-    },
-  ]
+  return {
+    label: 'PRESENTED BY',
+    sponsors: [
+      FUNDOPSHQ_SPONSOR,
+      {
+        name: 'Fidelity Careers',
+        logoUrl: publicFileAsDataUri('sponsors/fidelity-careers.png'),
+        logoWidth: 200,
+        blurb:
+          'Fidelity is hiring across fund operations, fund accounting, investor reporting, and technology. Join a team supporting trillions in assets and the teams running private markets at scale.',
+        ctaUrl: 'https://jobs.fidelity.com',
+        ctaText: 'See open roles',
+      },
+    ],
+  }
 }
 
 async function main() {

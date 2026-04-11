@@ -140,15 +140,15 @@ function renderSponsorMark(sponsor: Sponsor, logoHeightPx: number): string {
 }
 
 /**
- * Render one sponsor as a compact top-block card: eyebrow + wordmark
- * + short blurb. No CTA button at the top. When multiple cards are
- * stacked in the same block, they're separated by a hairline divider.
+ * Render one sponsor as a compact top-block card: wordmark + short
+ * blurb. No label (the slate renders the shared label once), no CTA
+ * button at the top. Cards are separated by a hairline divider when
+ * stacked.
  */
-function renderSponsorCardTop(sponsor: Sponsor, isLast: boolean): string {
+function renderSponsorCardTop(sponsor: Sponsor, isFirst: boolean): string {
   const mark = renderSponsorMark(sponsor, 20)
   return `
-    <div style="padding:${isLast ? '16px 0 0' : '16px 0'};${isLast ? '' : 'border-bottom:1px solid #e2e8f0;'}">
-      <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;color:#94a3b8;margin-bottom:6px;">${escapeHtml(sponsor.label)}</div>
+    <div style="padding:${isFirst ? '4px 0 16px' : '16px 0'};${isFirst ? '' : 'border-top:1px solid #e2e8f0;'}">
       <div style="margin-bottom:8px;">
         <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:inherit;display:inline-block;">${mark}</a>
       </div>
@@ -157,15 +157,13 @@ function renderSponsorCardTop(sponsor: Sponsor, isLast: boolean): string {
 }
 
 /**
- * Render one sponsor as an expanded bottom-block card: eyebrow +
- * wordmark + blurb + optional CTA button. Same divider treatment as
- * the top cards.
+ * Render one sponsor as an expanded bottom-block card: wordmark +
+ * blurb + optional CTA button. Same divider treatment as top.
  */
-function renderSponsorCardBottom(sponsor: Sponsor, isLast: boolean): string {
+function renderSponsorCardBottom(sponsor: Sponsor, isFirst: boolean): string {
   const mark = renderSponsorMark(sponsor, 24)
   return `
-    <div style="padding:${isLast ? '20px 0 0' : '20px 0'};${isLast ? '' : 'border-bottom:1px solid #e2e8f0;'}">
-      <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;color:#94a3b8;margin-bottom:8px;">${escapeHtml(sponsor.label)}</div>
+    <div style="padding:${isFirst ? '4px 0 20px' : '20px 0'};${isFirst ? '' : 'border-top:1px solid #e2e8f0;'}">
       <div style="margin-bottom:10px;">
         <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:inherit;display:inline-block;">${mark}</a>
       </div>
@@ -178,35 +176,37 @@ function renderSponsorCardBottom(sponsor: Sponsor, isLast: boolean): string {
 }
 
 /**
- * Compact sponsor block rendered under the header. Stacks one card
- * per sponsor with a hairline divider between.
+ * Compact sponsor block rendered under the header. Single slate-level
+ * label, then stacked cards with hairline dividers between.
  */
 function renderSponsorTop(slate: SponsorSlate): string {
-  if (slate.length === 0) return ''
-  const cards = slate
-    .map((sponsor, i) => renderSponsorCardTop(sponsor, i === slate.length - 1))
+  if (slate.sponsors.length === 0) return ''
+  const cards = slate.sponsors
+    .map((sponsor, i) => renderSponsorCardTop(sponsor, i === 0))
     .join('')
   return `
     <tr>
-      <td style="padding:8px 24px 16px;background-color:#ffffff;border-bottom:1px solid #e2e8f0;">
+      <td style="padding:18px 24px 16px;background-color:#ffffff;border-bottom:1px solid #e2e8f0;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;color:#94a3b8;margin-bottom:4px;">${escapeHtml(slate.label)}</div>
         ${cards}
       </td>
     </tr>`
 }
 
 /**
- * Expanded sponsor block above the footer. Same per-sponsor cards as
- * the top block, but with CTA buttons, followed by the house CTA
+ * Expanded sponsor block above the footer. Single slate-level label,
+ * per-sponsor cards with CTA buttons, followed by the house CTA
  * inviting new sponsors.
  */
 function renderSponsorBottom(slate: SponsorSlate): string {
-  if (slate.length === 0) return ''
-  const cards = slate
-    .map((sponsor, i) => renderSponsorCardBottom(sponsor, i === slate.length - 1))
+  if (slate.sponsors.length === 0) return ''
+  const cards = slate.sponsors
+    .map((sponsor, i) => renderSponsorCardBottom(sponsor, i === 0))
     .join('')
   return `
     <tr>
-      <td style="padding:4px 24px 24px;background-color:#ffffff;border-top:1px solid #e2e8f0;">
+      <td style="padding:24px 24px 24px;background-color:#ffffff;border-top:1px solid #e2e8f0;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;color:#94a3b8;margin-bottom:4px;">${escapeHtml(slate.label)}</div>
         ${cards}
         <p style="margin:22px 0 0;padding-top:16px;border-top:1px solid #e2e8f0;color:#94a3b8;font-size:11px;font-style:italic;">Reach GPs, LPs, and fund operators every morning. <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:#64748b;text-decoration:underline;">Sponsor FundOps Daily &rarr;</a></p>
       </td>
