@@ -1,33 +1,45 @@
 /**
  * Sponsor configuration for the FundOps Daily newsletter.
  *
- * Renders at the top (compact) and bottom (with CTA + "want this spot?"
- * tease) of every edition. Swap DEFAULT_SPONSOR to rotate sponsors without
- * touching the template.
+ * FundOps Daily uses a co-sponsor model: 3–5 brands per edition appear
+ * together on equal footing in a "SUPPORTED BY" logo strip at the top
+ * and bottom of the brief — PBS NewsHour-style funder recognition, not
+ * a single-brand takeover.
  *
- * Sponsors can supply either a hosted PNG logo (reliable across all email
- * clients — SVG is NOT) or a pre-styled inline HTML wordmark. Our own
- * FundOpsHQ entry uses the wordmark path so the brand treatment matches
- * the header.
+ * Each mark can supply either a hosted PNG logo (reliable across all
+ * email clients — SVG is NOT) or a pre-styled inline HTML wordmark.
+ * Our own FundOpsHQ entry uses the wordmark path so the brand
+ * treatment matches the header.
  */
 
-export interface Sponsor {
-  /** Uppercase label above the brand, e.g. "PRESENTED BY" / "SUPPORTED BY" */
-  label: string
-  /** Brand name — used for alt text, click targets, and the fallback label */
+/** A single sponsor mark in the slate. */
+export interface SponsorMark {
+  /** Brand name — used for alt text and the fallback text label. */
   name: string
+  /** Click-through URL for the logo. */
+  ctaUrl: string
   /** Pre-styled inline HTML wordmark. Takes precedence over logoUrl. */
   wordmarkHtml?: string
   /** Absolute URL to a PNG logo. ~80px tall source recommended. */
   logoUrl?: string
-  /** Rendered display width in px (height auto). Required if logoUrl set. */
-  logoWidth?: number
-  /** 2-3 sentence blurb shown in both the top and bottom blocks. */
-  blurb: string
-  /** Click-through URL for the wordmark and CTA. */
-  ctaUrl: string
-  /** Optional CTA button text in the bottom block. */
-  ctaText?: string
+  /**
+   * Per-mark max display width override in px. Defaults vary by block
+   * (top strip is more compact than the bottom strip). Use only when a
+   * specific brand's aspect ratio makes the default look off.
+   */
+  maxWidth?: number
+}
+
+/**
+ * A slate of co-sponsors shown together. Keep between 1 and 5 marks —
+ * more than 5 makes the strip feel cluttered and each brand gets
+ * diminishing visual weight.
+ */
+export interface SponsorSlate {
+  /** Uppercase eyebrow rendered above the logo strip. */
+  label: string
+  /** The brands to display, left-to-right. */
+  marks: SponsorMark[]
 }
 
 /**
@@ -39,12 +51,18 @@ const FUNDOPSHQ_WORDMARK_HTML =
   '<span style="color:#1e293b;">FundOps</span><span style="color:#3b82f6;">HQ</span>' +
   '</span>'
 
-export const DEFAULT_SPONSOR: Sponsor = {
-  label: 'PRESENTED BY',
-  name: 'FundOpsHQ',
-  wordmarkHtml: FUNDOPSHQ_WORDMARK_HTML,
-  blurb:
-    'FundOpsHQ is the hub for the investment funds industry — home to the daily news feed, this newsletter, and FundOpsHQ Live every Thursday. Built for the GPs, LPs, and operators working in and around private markets.',
-  ctaUrl: 'https://fundopshq.com',
-  ctaText: 'Visit FundOpsHQ',
+/**
+ * Default slate used when no paid sponsors are configured for an
+ * edition. Contains a single FundOpsHQ self-recognition mark so the
+ * block is never empty — swap this out once real sponsors are booked.
+ */
+export const DEFAULT_SPONSOR_SLATE: SponsorSlate = {
+  label: 'SUPPORTED BY',
+  marks: [
+    {
+      name: 'FundOpsHQ',
+      wordmarkHtml: FUNDOPSHQ_WORDMARK_HTML,
+      ctaUrl: 'https://fundopshq.com',
+    },
+  ],
 }

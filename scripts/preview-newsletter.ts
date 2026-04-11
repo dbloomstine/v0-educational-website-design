@@ -18,9 +18,45 @@ import { execSync } from 'node:child_process'
 import { createClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles } from '../lib/newsletter/query-articles'
 import { renderNewsletterEmail } from '../lib/newsletter/email-template'
+import type { SponsorSlate } from '../lib/newsletter/sponsors'
 
 const OUTPUT_PATH = '/tmp/fundops-newsletter-preview.html'
 const HOURS_BACK = 72
+
+/**
+ * A sample multi-brand slate for visually checking how the co-sponsor
+ * logo strip renders. Opt in with `SAMPLE_SLATE=1` in the env. Uses
+ * text wordmarks so no external assets are required.
+ */
+const SAMPLE_SPONSOR_SLATE: SponsorSlate = {
+  label: 'SUPPORTED BY',
+  marks: [
+    {
+      name: 'Juniper Square',
+      ctaUrl: 'https://junipersquare.com',
+      wordmarkHtml:
+        '<span style="font-size:15px;font-weight:700;color:#1e293b;letter-spacing:-0.2px;line-height:1;">Juniper Square</span>',
+    },
+    {
+      name: 'Petra Funds',
+      ctaUrl: 'https://petrafundsgroup.com',
+      wordmarkHtml:
+        '<span style="font-size:15px;font-weight:700;color:#1e293b;letter-spacing:-0.2px;line-height:1;">Petra Funds</span>',
+    },
+    {
+      name: 'DLA Piper',
+      ctaUrl: 'https://dlapiper.com',
+      wordmarkHtml:
+        '<span style="font-size:15px;font-weight:700;color:#1e293b;letter-spacing:-0.2px;line-height:1;">DLA Piper</span>',
+    },
+    {
+      name: 'SVB',
+      ctaUrl: 'https://svb.com',
+      wordmarkHtml:
+        '<span style="font-size:15px;font-weight:700;color:#1e293b;letter-spacing:-0.2px;line-height:1;">SVB</span>',
+    },
+  ],
+}
 
 async function main() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -43,11 +79,17 @@ async function main() {
     timeZone: 'America/New_York',
   })
 
+  const useSampleSlate = process.env.SAMPLE_SLATE === '1'
+  if (useSampleSlate) {
+    console.log('  Using SAMPLE_SLATE — 4-brand co-sponsor preview.')
+  }
+
   const html = renderNewsletterEmail({
     groups: content.groups,
     totalArticles: content.totalArticles,
     editionDate,
     unsubscribeUrl: 'https://fundopshq.com/api/newsletter/unsubscribe?token=PREVIEW',
+    sponsorSlate: useSampleSlate ? SAMPLE_SPONSOR_SLATE : undefined,
   })
 
   writeFileSync(OUTPUT_PATH, html, 'utf8')

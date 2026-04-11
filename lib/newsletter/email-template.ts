@@ -8,14 +8,14 @@
 import type { ArticleGroup } from './query-articles'
 import { getEventTypeLabel, formatFundSize } from './query-articles'
 import { getFirmDomain } from '@/lib/news/firm-logos'
-import { DEFAULT_SPONSOR, type Sponsor } from './sponsors'
+import { DEFAULT_SPONSOR_SLATE, type SponsorMark, type SponsorSlate } from './sponsors'
 
 interface TemplateParams {
   groups: ArticleGroup[]
   totalArticles: number
   editionDate: string
   unsubscribeUrl: string
-  sponsor?: Sponsor
+  sponsorSlate?: SponsorSlate
 }
 
 const EVENT_BADGE_COLORS: Record<string, { bg: string; text: string }> = {
@@ -127,67 +127,87 @@ function escapeHtml(str: string): string {
 }
 
 /**
- * Render the sponsor's brand mark: either a pre-styled HTML wordmark or an
- * image logo. Used by both the top and bottom sponsor blocks.
+ * Render a single sponsor mark as an anchored wordmark or logo image,
+ * sized to fit within a fixed height band. Used inside the logo strip.
  */
-function renderSponsorMark(sponsor: Sponsor, logoHeightPx: number): string {
-  if (sponsor.wordmarkHtml) return sponsor.wordmarkHtml
-  if (sponsor.logoUrl) {
-    const width = sponsor.logoWidth ?? logoHeightPx
-    return `<img src="${escapeHtml(sponsor.logoUrl)}" alt="${escapeHtml(sponsor.name)}" width="${width}" style="width:${width}px;height:auto;vertical-align:middle;" />`
+function renderSponsorMark(mark: SponsorMark, logoHeightPx: number): string {
+  const href = escapeHtml(mark.ctaUrl)
+  const alt = escapeHtml(mark.name)
+
+  let inner: string
+  if (mark.wordmarkHtml) {
+    inner = mark.wordmarkHtml
+  } else if (mark.logoUrl) {
+    const maxWidth = mark.maxWidth ?? 140
+    inner = `<img src="${escapeHtml(mark.logoUrl)}" alt="${alt}" height="${logoHeightPx}" style="height:${logoHeightPx}px;max-width:${maxWidth}px;width:auto;display:block;margin:0 auto;" />`
+  } else {
+    inner = `<span style="display:inline-block;font-size:${Math.round(logoHeightPx * 0.82)}px;font-weight:700;color:#1e293b;letter-spacing:-0.2px;line-height:1;">${alt}</span>`
   }
-  return `<span style="display:inline-block;font-size:${logoHeightPx}px;font-weight:800;color:#1e293b;letter-spacing:-0.3px;line-height:1;">${escapeHtml(sponsor.name)}</span>`
+
+  return `<a href="${href}" target="_blank" style="text-decoration:none;color:inherit;display:inline-block;">${inner}</a>`
 }
 
 /**
- * Compact sponsor block rendered under the header. Left-aligned, label +
- * wordmark + 2-sentence blurb stacked vertically. Bordered bottom to feel
- * structural rather than promotional.
+ * Render the logo strip — a horizontal row of equal-footing sponsor
+ * marks. Uses a fixed N-column table so email clients distribute width
+ * evenly without flexbox.
  */
-function renderSponsorTop(sponsor: Sponsor): string {
-  const mark = renderSponsorMark(sponsor, 20)
+function renderSponsorStrip(marks: SponsorMark[], logoHeightPx: number): string {
+  const cellWidth = Math.floor(100 / Math.max(marks.length, 1))
+  const cells = marks
+    .map(
+      (mark) => `
+            <td align="center" valign="middle" width="${cellWidth}%" style="padding:6px 10px;">
+              ${renderSponsorMark(mark, logoHeightPx)}
+            </td>`
+    )
+    .join('')
+
+  return `
+      <table cellpadding="0" cellspacing="0" border="0" width="100%" role="presentation">
+        <tr>${cells}
+        </tr>
+      </table>`
+}
+
+/**
+ * Compact sponsor block rendered under the header. Eyebrow label + an
+ * equal-footing logo strip. No blurbs, no individual CTAs — this is
+ * recognition real estate, PBS NewsHour-style.
+ */
+function renderSponsorTop(slate: SponsorSlate): string {
+  if (slate.marks.length === 0) return ''
   return `
     <tr>
-      <td style="padding:18px 24px 16px;background-color:#ffffff;border-bottom:1px solid #e2e8f0;">
-        <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;color:#94a3b8;margin-bottom:6px;">${escapeHtml(sponsor.label)}</div>
-        <div style="margin-bottom:8px;">
-          <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:inherit;display:inline-block;">${mark}</a>
-        </div>
-        <p style="margin:0;color:#475569;font-size:13px;line-height:1.55;">${escapeHtml(sponsor.blurb)}</p>
+      <td style="padding:16px 24px 18px;background-color:#ffffff;border-bottom:1px solid #e2e8f0;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;color:#94a3b8;margin-bottom:10px;text-align:center;">${escapeHtml(slate.label)}</div>
+        ${renderSponsorStrip(slate.marks, 22)}
       </td>
     </tr>`
 }
 
 /**
- * Expanded sponsor block above the footer. Same content as the top, but
- * with a CTA button and a short audience-forward sponsorship pitch for
- * future presenting sponsors.
+ * Expanded sponsor block above the footer. Same logo strip, slightly
+ * larger marks, followed by the house CTA inviting new sponsors.
  */
-function renderSponsorBottom(sponsor: Sponsor): string {
-  const mark = renderSponsorMark(sponsor, 24)
+function renderSponsorBottom(slate: SponsorSlate): string {
+  if (slate.marks.length === 0) return ''
   return `
     <tr>
-      <td style="padding:24px;background-color:#ffffff;border-top:1px solid #e2e8f0;">
-        <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;color:#94a3b8;margin-bottom:8px;">${escapeHtml(sponsor.label)}</div>
-        <div style="margin-bottom:10px;">
-          <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:inherit;display:inline-block;">${mark}</a>
-        </div>
-        <p style="margin:0 0 14px;color:#475569;font-size:13px;line-height:1.6;">${escapeHtml(sponsor.blurb)}</p>
-        ${sponsor.ctaText ? `
-        <div style="margin-bottom:14px;">
-          <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="display:inline-block;font-size:12px;font-weight:600;color:#1e293b;text-decoration:none;border:1px solid #cbd5e1;padding:8px 16px;border-radius:4px;letter-spacing:0.2px;">${escapeHtml(sponsor.ctaText)} &rarr;</a>
-        </div>` : ''}
-        <p style="margin:0;color:#94a3b8;font-size:11px;font-style:italic;">Reach GPs, LPs, and fund operators every morning. <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:#64748b;text-decoration:underline;">Sponsor FundOps Daily &rarr;</a></p>
+      <td style="padding:28px 24px;background-color:#ffffff;border-top:1px solid #e2e8f0;text-align:center;">
+        <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;color:#94a3b8;margin-bottom:14px;">${escapeHtml(slate.label)}</div>
+        ${renderSponsorStrip(slate.marks, 28)}
+        <p style="margin:20px 0 0;color:#94a3b8;font-size:11px;font-style:italic;">Reach GPs, LPs, and fund operators every morning. <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:#64748b;text-decoration:underline;">Sponsor FundOps Daily &rarr;</a></p>
       </td>
     </tr>`
 }
 
 export function renderNewsletterEmail(params: TemplateParams): string {
-  const { groups, editionDate, unsubscribeUrl, sponsor = DEFAULT_SPONSOR } = params
+  const { groups, editionDate, unsubscribeUrl, sponsorSlate = DEFAULT_SPONSOR_SLATE } = params
   const formattedDate = formatDate(editionDate)
   const categoryBlocks = groups.map(renderCategory).join('')
-  const sponsorTop = renderSponsorTop(sponsor)
-  const sponsorBottom = renderSponsorBottom(sponsor)
+  const sponsorTop = renderSponsorTop(sponsorSlate)
+  const sponsorBottom = renderSponsorBottom(sponsorSlate)
 
   return `<!DOCTYPE html>
 <html lang="en">

@@ -49,7 +49,11 @@ export async function sendDailyNewsletter(
   // ─── 2. Query articles ────────────────────────────────────────────────────
   const content = await queryNewsletterArticles(supabase, hoursBack)
 
-  if (content.totalArticles < 3) {
+  // Floor of 1 — a literally-empty brief never ships, but quiet weekend
+  // days with even a single story still send. Consistency is the main
+  // driver of newsletter retention and a fully-empty send is the only
+  // true failure mode the pipeline protects against.
+  if (content.totalArticles < 1) {
     await supabase.from('newsletter_editions').upsert({
       edition_date: editionDate,
       subject: `FundOps Daily — ${editionDate}`,
@@ -58,7 +62,7 @@ export async function sendDailyNewsletter(
       article_count: content.totalArticles,
       recipient_count: 0,
       status: 'skipped',
-      error_message: `Only ${content.totalArticles} articles found (minimum 3)`,
+      error_message: 'No qualifying articles found',
     }, { onConflict: 'edition_date' })
 
     return { ok: true, skipped: 'insufficient_articles', editionDate, articleCount: content.totalArticles }
