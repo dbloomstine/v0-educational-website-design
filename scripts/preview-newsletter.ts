@@ -35,6 +35,21 @@ const HOURS_BACK = 72
  * first — and so the generated HTML can be forwarded to a prospect as
  * a self-contained mockup with no broken images.
  */
+/**
+ * Replace external favicon <img> tags in the rendered HTML with offline
+ * initial tiles. Used only by the preview script so the saved mockup
+ * file is self-contained and renders correctly when forwarded to a
+ * prospect or opened locally on a phone with strict content policies.
+ */
+function stripExternalFaviconsForOfflinePreview(html: string): string {
+  return html.replace(
+    /<img src="https:\/\/t1\.gstatic\.com[^"]*" alt="([^"]+)"[^>]*\/>/g,
+    (_match, altChar) => {
+      return `<span style="display:inline-block;width:22px;height:22px;border-radius:50%;background:#F8F5EC;border:1px solid #D8D0BC;color:#1E3A5F;font-size:11px;font-weight:700;line-height:20px;text-align:center;vertical-align:middle;font-family:Georgia,'Times New Roman',Times,serif;">${altChar}</span>`
+    },
+  )
+}
+
 function publicFileAsDataUri(relativePath: string): string {
   const abs = join(PROJECT_ROOT, 'public', relativePath)
   const buf = readFileSync(abs)
@@ -93,13 +108,22 @@ async function main() {
     console.log('  Using SAMPLE_SLATE — co-sponsor preview (FundOpsHQ + Fidelity Careers).')
   }
 
-  const html = renderNewsletterEmail({
+  let html = renderNewsletterEmail({
     groups: content.groups,
     totalArticles: content.totalArticles,
     editionDate,
     unsubscribeUrl: 'https://fundopshq.com/api/newsletter/unsubscribe?token=PREVIEW',
     sponsorSlate: useSampleSlate ? buildSampleSlate() : undefined,
   })
+
+  // Offline mode for local previews + forwarded mockups: strip any external
+  // favicon images (Google's favicon service) and replace each with a
+  // self-contained initial tile. Keeps the mockup file renderable without
+  // a network connection and prevents iOS Safari from showing broken-image
+  // icons when a prospect double-clicks the HTML attachment locally. The
+  // real newsletter send keeps the favicon <img> tags — Gmail proxies them
+  // through its own image cache and they render fine inline.
+  html = stripExternalFaviconsForOfflinePreview(html)
 
   writeFileSync(OUTPUT_PATH, html, 'utf8')
   console.log(`Wrote ${OUTPUT_PATH}`)
