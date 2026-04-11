@@ -30,25 +30,83 @@ const OUTPUT_PATH = '/tmp/fundops-newsletter-preview.html'
 const HOURS_BACK = 72
 
 /**
+ * Fetch every external favicon referenced in the rendered HTML and
+ * inline each one as a base64 data URI. Runs only in the preview
+ * script so the saved mockup file stays self-contained — no broken
+ * images when the HTML is opened locally or forwarded as an
+ * attachment — while still showing the real firm logos that the
+ * production resolver surfaces.
+ *
+ * Any favicon that 404s, times out, or returns an empty body falls
+ * back to a cream initial tile using the existing alt letter.
+ */
+async function inlineExternalFaviconsForOfflinePreview(html: string): Promise<string> {
+  const FAVICON_URL_RE = /https:\/\/t1\.gstatic\.com\/faviconV2[^"]+/g
+  // The URLs live inside HTML attributes, so ampersands are entity-encoded.
+  // Decode before handing to fetch(); re-encode when substituting back in.
+  const decode = (s: string) => s.replace(/&amp;/g, '&')
+
+  const encodedUrls = Array.from(new Set(html.match(FAVICON_URL_RE) ?? []))
+  if (encodedUrls.length === 0) return html
+
+  console.log(`  Inlining ${encodedUrls.length} favicon(s)…`)
+
+  const dataUris = new Map<string, string>() // keyed by encoded URL, matching the HTML
+  const BATCH = 10
+  for (let i = 0; i < encodedUrls.length; i += BATCH) {
+    const batch = encodedUrls.slice(i, i + BATCH)
+    const results = await Promise.all(
+      batch.map(async (encoded): Promise<[string, string | null]> => {
+        const fetchUrl = decode(encoded)
+        try {
+          const res = await fetch(fetchUrl, {
+            signal: AbortSignal.timeout(8000),
+            headers: {
+              'User-Agent':
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15',
+              Accept: 'image/png,image/*,*/*;q=0.8',
+              Referer: 'https://fundopshq.com/',
+            },
+          })
+          if (!res.ok) return [encoded, null]
+          const buf = Buffer.from(await res.arrayBuffer())
+          if (buf.length === 0) return [encoded, null]
+          const ct = res.headers.get('content-type') || 'image/png'
+          return [encoded, `data:${ct};base64,${buf.toString('base64')}`]
+        } catch {
+          return [encoded, null]
+        }
+      }),
+    )
+    for (const [encoded, dataUri] of results) {
+      if (dataUri) dataUris.set(encoded, dataUri)
+    }
+  }
+
+  const fetched = dataUris.size
+  const failed = encodedUrls.length - fetched
+  console.log(
+    `  Inlined ${fetched} favicon(s)${failed > 0 ? ` — ${failed} fell back to initials` : ''}.`,
+  )
+
+  return html.replace(
+    /<img src="(https:\/\/t1\.gstatic\.com\/faviconV2[^"]+)" alt="([^"]+)"([^>]*)\/>/g,
+    (_match, url: string, altChar: string, rest: string) => {
+      const dataUri = dataUris.get(url)
+      if (dataUri) {
+        return `<img src="${dataUri}" alt="${altChar}"${rest}/>`
+      }
+      return `<span style="display:inline-block;width:22px;height:22px;border-radius:50%;background:#F8F5EC;border:1px solid #D8D0BC;color:#1E3A5F;font-size:11px;font-weight:700;line-height:20px;text-align:center;vertical-align:middle;font-family:Georgia,'Times New Roman',Times,serif;">${altChar}</span>`
+    },
+  )
+}
+
+/**
  * Read a file from public/ and return a data URI. Used by the sample
  * slate so local previews render hosted logos without needing a deploy
  * first — and so the generated HTML can be forwarded to a prospect as
  * a self-contained mockup with no broken images.
  */
-/**
- * Replace external favicon <img> tags in the rendered HTML with offline
- * initial tiles. Used only by the preview script so the saved mockup
- * file is self-contained and renders correctly when forwarded to a
- * prospect or opened locally on a phone with strict content policies.
- */
-function stripExternalFaviconsForOfflinePreview(html: string): string {
-  return html.replace(
-    /<img src="https:\/\/t1\.gstatic\.com[^"]*" alt="([^"]+)"[^>]*\/>/g,
-    (_match, altChar) => {
-      return `<span style="display:inline-block;width:22px;height:22px;border-radius:50%;background:#F8F5EC;border:1px solid #D8D0BC;color:#1E3A5F;font-size:11px;font-weight:700;line-height:20px;text-align:center;vertical-align:middle;font-family:Georgia,'Times New Roman',Times,serif;">${altChar}</span>`
-    },
-  )
-}
 
 function publicFileAsDataUri(relativePath: string): string {
   const abs = join(PROJECT_ROOT, 'public', relativePath)
@@ -116,14 +174,13 @@ async function main() {
     sponsorSlate: useSampleSlate ? buildSampleSlate() : undefined,
   })
 
-  // Offline mode for local previews + forwarded mockups: strip any external
-  // favicon images (Google's favicon service) and replace each with a
-  // self-contained initial tile. Keeps the mockup file renderable without
-  // a network connection and prevents iOS Safari from showing broken-image
-  // icons when a prospect double-clicks the HTML attachment locally. The
-  // real newsletter send keeps the favicon <img> tags — Gmail proxies them
-  // through its own image cache and they render fine inline.
-  html = stripExternalFaviconsForOfflinePreview(html)
+  // Fetch every external favicon the template references and inline
+  // each one as a base64 data URI so the saved mockup file is fully
+  // self-contained — real firm logos, no broken-image icons when the
+  // HTML is opened locally or forwarded as an attachment. The real
+  // newsletter send keeps the live favicon URLs intact since Gmail
+  // and Apple Mail proxy them through their own image caches.
+  html = await inlineExternalFaviconsForOfflinePreview(html)
 
   writeFileSync(OUTPUT_PATH, html, 'utf8')
   console.log(`Wrote ${OUTPUT_PATH}`)
