@@ -11,30 +11,16 @@
  *   TO=dbloomstine@gmail.com npx tsx --env-file=.env.local scripts/send-test-email.ts
  */
 
-import { readFileSync } from 'node:fs'
-import { join, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles } from '../lib/newsletter/query-articles'
 import { renderNewsletterEmail } from '../lib/newsletter/email-template'
 import { FUNDOPSHQ_SPONSOR, type SponsorSlate } from '../lib/newsletter/sponsors'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const PROJECT_ROOT = join(__dirname, '..')
-
-function publicFileAsDataUri(relativePath: string): string {
-  const abs = join(PROJECT_ROOT, 'public', relativePath)
-  const buf = readFileSync(abs)
-  const ext = relativePath.split('.').pop()?.toLowerCase() ?? 'png'
-  const mime =
-    ext === 'svg'
-      ? 'image/svg+xml'
-      : ext === 'jpg' || ext === 'jpeg'
-        ? 'image/jpeg'
-        : `image/${ext}`
-  return `data:${mime};base64,${buf.toString('base64')}`
-}
+// Hosted asset URLs. Gmail strips base64 data: URIs in <img src>, so
+// test emails must reference the deployed copies on fundopshq.com.
+// These PNGs are committed in public/sponsors/ and served by Vercel.
+const FUNDOPSHQ_LOGO_URL = 'https://fundopshq.com/sponsors/fundopshq-wordmark.png'
+const FIDELITY_LOGO_URL = 'https://fundopshq.com/sponsors/fidelity-careers.png'
 
 function buildSampleSlate(): SponsorSlate {
   return {
@@ -42,11 +28,11 @@ function buildSampleSlate(): SponsorSlate {
     sponsors: [
       {
         ...FUNDOPSHQ_SPONSOR,
-        logoUrl: publicFileAsDataUri('sponsors/fundopshq-wordmark.png'),
+        logoUrl: FUNDOPSHQ_LOGO_URL,
       },
       {
         name: 'Fidelity Careers',
-        logoUrl: publicFileAsDataUri('sponsors/fidelity-careers.png'),
+        logoUrl: FIDELITY_LOGO_URL,
         logoWidth: 200,
         blurb:
           'Fidelity is hiring across fund operations, fund accounting, investor reporting, and technology. Join a team supporting trillions in assets and the teams running private markets at scale.',
