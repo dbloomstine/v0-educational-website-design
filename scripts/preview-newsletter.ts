@@ -13,49 +13,56 @@
  * Re-run after every template tweak — the browser tab just needs Cmd+R.
  */
 
-import { writeFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { execSync } from 'node:child_process'
+import { join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles } from '../lib/newsletter/query-articles'
 import { renderNewsletterEmail } from '../lib/newsletter/email-template'
-import type { SponsorSlate } from '../lib/newsletter/sponsors'
+import { FUNDOPSHQ_SPONSOR, type SponsorSlate } from '../lib/newsletter/sponsors'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+const PROJECT_ROOT = join(__dirname, '..')
 
 const OUTPUT_PATH = '/tmp/fundops-newsletter-preview.html'
 const HOURS_BACK = 72
 
 /**
- * A sample multi-brand slate for visually checking how the co-sponsor
- * logo strip renders. Opt in with `SAMPLE_SLATE=1` in the env. Uses
- * text wordmarks so no external assets are required.
+ * Read a file from public/ and return a data URI. Used by the sample
+ * slate so local previews render hosted logos without needing a deploy
+ * first — and so the generated HTML can be forwarded to a prospect as
+ * a self-contained mockup with no broken images.
  */
-const SAMPLE_SPONSOR_SLATE: SponsorSlate = {
-  label: 'SUPPORTED BY',
-  marks: [
+function publicFileAsDataUri(relativePath: string): string {
+  const abs = join(PROJECT_ROOT, 'public', relativePath)
+  const buf = readFileSync(abs)
+  const ext = relativePath.split('.').pop()?.toLowerCase() ?? 'png'
+  const mime =
+    ext === 'svg' ? 'image/svg+xml' : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : `image/${ext}`
+  return `data:${mime};base64,${buf.toString('base64')}`
+}
+
+/**
+ * A sample co-sponsor slate used by the SAMPLE_SLATE=1 preview mode.
+ * Currently demonstrates FundOpsHQ + a Fidelity Careers mockup card
+ * so we can tweak the visual before pitching real sponsors.
+ */
+function buildSampleSlate(): SponsorSlate {
+  return [
+    FUNDOPSHQ_SPONSOR,
     {
-      name: 'Juniper Square',
-      ctaUrl: 'https://junipersquare.com',
-      wordmarkHtml:
-        '<span style="font-size:15px;font-weight:700;color:#1e293b;letter-spacing:-0.2px;line-height:1;">Juniper Square</span>',
+      label: 'PRESENTED BY',
+      name: 'Fidelity Careers',
+      logoUrl: publicFileAsDataUri('sponsors/fidelity-careers.png'),
+      logoWidth: 200,
+      blurb:
+        'Fidelity is hiring across fund operations, fund accounting, investor reporting, and technology. Join a team supporting trillions in assets and the teams running private markets at scale.',
+      ctaUrl: 'https://jobs.fidelity.com',
+      ctaText: 'See open roles',
     },
-    {
-      name: 'Petra Funds',
-      ctaUrl: 'https://petrafundsgroup.com',
-      wordmarkHtml:
-        '<span style="font-size:15px;font-weight:700;color:#1e293b;letter-spacing:-0.2px;line-height:1;">Petra Funds</span>',
-    },
-    {
-      name: 'DLA Piper',
-      ctaUrl: 'https://dlapiper.com',
-      wordmarkHtml:
-        '<span style="font-size:15px;font-weight:700;color:#1e293b;letter-spacing:-0.2px;line-height:1;">DLA Piper</span>',
-    },
-    {
-      name: 'SVB',
-      ctaUrl: 'https://svb.com',
-      wordmarkHtml:
-        '<span style="font-size:15px;font-weight:700;color:#1e293b;letter-spacing:-0.2px;line-height:1;">SVB</span>',
-    },
-  ],
+  ]
 }
 
 async function main() {
@@ -81,7 +88,7 @@ async function main() {
 
   const useSampleSlate = process.env.SAMPLE_SLATE === '1'
   if (useSampleSlate) {
-    console.log('  Using SAMPLE_SLATE — 4-brand co-sponsor preview.')
+    console.log('  Using SAMPLE_SLATE — co-sponsor preview (FundOpsHQ + Fidelity Careers).')
   }
 
   const html = renderNewsletterEmail({
@@ -89,7 +96,7 @@ async function main() {
     totalArticles: content.totalArticles,
     editionDate,
     unsubscribeUrl: 'https://fundopshq.com/api/newsletter/unsubscribe?token=PREVIEW',
-    sponsorSlate: useSampleSlate ? SAMPLE_SPONSOR_SLATE : undefined,
+    sponsorSlate: useSampleSlate ? buildSampleSlate() : undefined,
   })
 
   writeFileSync(OUTPUT_PATH, html, 'utf8')

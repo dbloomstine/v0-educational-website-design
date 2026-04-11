@@ -1,46 +1,46 @@
 /**
  * Sponsor configuration for the FundOps Daily newsletter.
  *
- * FundOps Daily uses a co-sponsor model: 3–5 brands per edition appear
- * together on equal footing in a "SUPPORTED BY" logo strip at the top
- * and bottom of the brief — PBS NewsHour-style funder recognition, not
- * a single-brand takeover.
+ * Each sponsor gets a full card in both the top and bottom blocks:
+ * eyebrow label, wordmark or logo, and a 2–3 sentence blurb. The
+ * bottom block adds a CTA button per sponsor, plus the house "Sponsor
+ * FundOps Daily" invitation at the very bottom.
  *
- * Each mark can supply either a hosted PNG logo (reliable across all
- * email clients — SVG is NOT) or a pre-styled inline HTML wordmark.
- * Our own FundOpsHQ entry uses the wordmark path so the brand
- * treatment matches the header.
+ * Sponsors can supply either a hosted PNG logo (reliable across all
+ * email clients — SVG and WebP are NOT) or a pre-styled inline HTML
+ * wordmark. Our own FundOpsHQ entry uses the wordmark path so the
+ * brand treatment matches the header.
+ *
+ * For co-sponsorship, the template stacks multiple Sponsor cards in
+ * sequence. Keep the slate between 1 and 5 entries — more than 5 and
+ * each brand's share of attention starts to suffer.
  */
 
-/** A single sponsor mark in the slate. */
-export interface SponsorMark {
-  /** Brand name — used for alt text and the fallback text label. */
+export interface Sponsor {
+  /** Uppercase label above the brand, e.g. "PRESENTED BY" / "SUPPORTED BY". */
+  label: string
+  /** Brand name — used for alt text, click targets, and the fallback label. */
   name: string
-  /** Click-through URL for the logo. */
-  ctaUrl: string
   /** Pre-styled inline HTML wordmark. Takes precedence over logoUrl. */
   wordmarkHtml?: string
-  /** Absolute URL to a PNG logo. ~80px tall source recommended. */
+  /** Absolute URL (or data URI) to a PNG logo. ~80–120px tall source recommended. */
   logoUrl?: string
-  /**
-   * Per-mark max display width override in px. Defaults vary by block
-   * (top strip is more compact than the bottom strip). Use only when a
-   * specific brand's aspect ratio makes the default look off.
-   */
-  maxWidth?: number
+  /** Rendered display width in px (height auto). Required if logoUrl is set. */
+  logoWidth?: number
+  /** 2–3 sentence blurb shown in both the top and bottom cards. */
+  blurb: string
+  /** Click-through URL for the wordmark and CTA button. */
+  ctaUrl: string
+  /** Optional CTA button text — only rendered in the bottom block. */
+  ctaText?: string
 }
 
 /**
- * A slate of co-sponsors shown together. Keep between 1 and 5 marks —
- * more than 5 makes the strip feel cluttered and each brand gets
- * diminishing visual weight.
+ * A slate is just an ordered list of sponsor cards to stack. Type
+ * alias rather than an object wrapper because there's no shared slate
+ * metadata (each sponsor owns its own label).
  */
-export interface SponsorSlate {
-  /** Uppercase eyebrow rendered above the logo strip. */
-  label: string
-  /** The brands to display, left-to-right. */
-  marks: SponsorMark[]
-}
+export type SponsorSlate = Sponsor[]
 
 /**
  * FundOpsHQ two-tone wordmark matching the header treatment
@@ -52,17 +52,23 @@ const FUNDOPSHQ_WORDMARK_HTML =
   '</span>'
 
 /**
- * Default slate used when no paid sponsors are configured for an
- * edition. Contains a single FundOpsHQ self-recognition mark so the
- * block is never empty — swap this out once real sponsors are booked.
+ * House entry — FundOpsHQ self-recognition so the sponsor block is
+ * never empty pre-revenue. Stays in the slate even once paid sponsors
+ * land; drop or reorder as needed.
  */
-export const DEFAULT_SPONSOR_SLATE: SponsorSlate = {
-  label: 'SUPPORTED BY',
-  marks: [
-    {
-      name: 'FundOpsHQ',
-      wordmarkHtml: FUNDOPSHQ_WORDMARK_HTML,
-      ctaUrl: 'https://fundopshq.com',
-    },
-  ],
+export const FUNDOPSHQ_SPONSOR: Sponsor = {
+  label: 'PRESENTED BY',
+  name: 'FundOpsHQ',
+  wordmarkHtml: FUNDOPSHQ_WORDMARK_HTML,
+  blurb:
+    'FundOpsHQ is the hub for the investment funds industry — home to the daily news feed, this newsletter, and FundOpsHQ Live every Thursday. Built for the GPs, LPs, and operators working in and around private markets.',
+  ctaUrl: 'https://fundopshq.com',
+  ctaText: 'Visit FundOpsHQ',
 }
+
+/**
+ * Default slate used when no paid sponsors are configured for an
+ * edition. Contains only the house entry. Add paid sponsor cards
+ * above or below FUNDOPSHQ_SPONSOR once they're booked.
+ */
+export const DEFAULT_SPONSOR_SLATE: SponsorSlate = [FUNDOPSHQ_SPONSOR]
