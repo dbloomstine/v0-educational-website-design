@@ -7,7 +7,7 @@
 
 import type { ArticleGroup } from './query-articles'
 import { getEventTypeLabel, formatFundSize } from './query-articles'
-import { getFirmDomain } from '@/lib/news/firm-logos'
+import { getPrimaryLogoUrl, resolveLogoDomain } from '@/lib/news/firm-logo-url'
 import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponsors'
 
 interface TemplateParams {
@@ -59,15 +59,17 @@ function formatDate(dateStr: string): string {
 }
 
 function renderFirmLogo(article: ArticleGroup['articles'][0]): string {
-  // Use curated domain map first, then fall back to pipeline domain, then letter initial
-  const resolvedDomain = getFirmDomain(article.firmName) ?? article.firmDomain
+  const resolvedDomain = resolveLogoDomain(
+    article.firmName,
+    article.firmDomain,
+    article.sourceName,
+  )
+  const displayName = article.firmName ?? article.sourceName ?? '?'
+  const initial = displayName[0].toUpperCase()
   if (resolvedDomain) {
-    const initial = (article.firmName ?? '?')[0].toUpperCase()
-    // Use Google Favicons API with a letter-initial fallback via alt text
-    return `<img src="https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${escapeHtml(resolvedDomain)}&size=128" alt="${escapeHtml(initial)}" width="20" height="20" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;background:#e2e8f0;" />`
+    const logoUrl = getPrimaryLogoUrl(resolvedDomain)
+    return `<img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(initial)}" width="20" height="20" style="width:20px;height:20px;border-radius:50%;vertical-align:middle;background:#ffffff;object-fit:contain;" />`
   }
-  // No domain — show letter initial in a circle
-  const initial = (article.firmName ?? '?')[0].toUpperCase()
   return `<span style="display:inline-block;width:20px;height:20px;border-radius:50%;background:#e2e8f0;color:#475569;font-size:11px;font-weight:600;line-height:20px;text-align:center;vertical-align:middle;">${escapeHtml(initial)}</span>`
 }
 
@@ -141,9 +143,10 @@ function renderSponsorMark(sponsor: Sponsor, logoHeightPx: number): string {
 
 /**
  * Render one sponsor as a compact top-block card: wordmark + short
- * blurb. No label (the slate renders the shared label once), no CTA
- * button at the top. Cards are separated by a hairline divider when
- * stacked.
+ * blurb + tight CTA button. No label (the slate renders the shared
+ * label once). Cards are separated by a hairline divider when stacked.
+ * The top button is intentionally smaller than the bottom one so it
+ * reads as a secondary click target without competing with the logo.
  */
 function renderSponsorCardTop(sponsor: Sponsor, isFirst: boolean): string {
   const mark = renderSponsorMark(sponsor, 20)
@@ -152,7 +155,11 @@ function renderSponsorCardTop(sponsor: Sponsor, isFirst: boolean): string {
       <div style="margin-bottom:8px;">
         <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:inherit;display:inline-block;">${mark}</a>
       </div>
-      <p style="margin:0;color:#475569;font-size:13px;line-height:1.55;">${escapeHtml(sponsor.blurb)}</p>
+      <p style="margin:0 0 10px;color:#475569;font-size:13px;line-height:1.55;">${escapeHtml(sponsor.blurb)}</p>
+      ${sponsor.ctaText ? `
+      <div>
+        <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="display:inline-block;font-size:11px;font-weight:600;color:#1e293b;text-decoration:none;border:1px solid #cbd5e1;padding:5px 11px;border-radius:3px;letter-spacing:0.2px;">${escapeHtml(sponsor.ctaText)} &rarr;</a>
+      </div>` : ''}
     </div>`
 }
 
