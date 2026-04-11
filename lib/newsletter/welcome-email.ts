@@ -40,7 +40,7 @@ export function renderWelcomeEmail(unsubscribeUrl: string): string {
             <td style="padding:32px 28px;background-color:#1e293b;">
               <h1 style="margin:0 0 16px;color:#f8fafc;font-size:22px;font-weight:600;line-height:1.3;">You're in.</h1>
               <p style="margin:0 0 16px;color:#cbd5e1;font-size:15px;line-height:1.6;">
-                Welcome to <strong style="color:#f8fafc;">FundOps Daily</strong> — the morning brief for private markets operators. Starting tomorrow, you'll get a concise rundown of fund closes, launches, LP commitments, exec moves, and deals every weekday before 6am ET.
+                Welcome to <strong style="color:#f8fafc;">FundOps Daily</strong> — the morning brief for GPs, LPs, and fund service providers. Starting tomorrow, you'll get a concise rundown of fund closes, launches, LP commitments, exec moves, and deals every weekday before 6am ET.
               </p>
               <p style="margin:0 0 16px;color:#cbd5e1;font-size:15px;line-height:1.6;">
                 What to expect:

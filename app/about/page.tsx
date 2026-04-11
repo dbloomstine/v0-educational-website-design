@@ -174,13 +174,14 @@ export default function AboutPage() {
                   newsroom
                 </span>
                 <br />
-                for fund operators.
+                for private markets.
               </h1>
 
               <p className="mt-8 max-w-2xl text-lg sm:text-xl text-muted-foreground leading-relaxed">
-                FundOpsHQ is the news desk, morning briefing, and weekly broadcast for the people running funds —
-                covering PE, VC, credit, hedge, real estate and the rest of the alternative investment industry.
-                Built and edited by <span className="text-foreground font-medium">Danny Bloomstine</span>.
+                FundOpsHQ is the news desk, morning briefing, and weekly broadcast for GPs, LPs, and the fund
+                service providers working around them — covering PE, VC, credit, hedge, real estate and the
+                rest of the alternative investment industry. Built and edited by{' '}
+                <span className="text-foreground font-medium">Danny Bloomstine</span>.
               </p>
             </div>
           </div>

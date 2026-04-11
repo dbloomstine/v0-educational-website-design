@@ -60,7 +60,7 @@ export const FUNDOPSHQ_SPONSOR: Sponsor = {
   name: 'FundOpsHQ',
   wordmarkHtml: FUNDOPSHQ_WORDMARK_HTML,
   blurb:
-    'FundOpsHQ is the hub for the investment funds industry — home to the daily news feed, this newsletter, and FundOpsHQ Live every Thursday. Built for the GPs, LPs, and operators working in and around private markets.',
+    'FundOpsHQ is the hub for the investment funds industry — home to the daily news feed, this newsletter, and FundOpsHQ Live every Thursday. Built for GPs, LPs, and the fund service providers working in and around private markets.',
   ctaUrl: 'https://fundopshq.com',
   ctaText: 'Visit FundOpsHQ',
 }

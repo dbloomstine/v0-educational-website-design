@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     template: "%s | FundOpsHQ"
   },
   description:
-    "FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed, the morning newsletter, and the FundOpsHQ Live weekly show. Built for GPs, LPs, and operators in and around private markets.",
+    "FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed, the morning newsletter, and the FundOpsHQ Live weekly show. Built for GPs, LPs, and the fund service providers working in and around private markets.",
   keywords: [
     "investment funds",
     "private markets",
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
     url: 'https://fundopshq.com',
     siteName: 'FundOpsHQ',
     title: 'FundOpsHQ — News, Newsletter & Live Show for the Investment Funds Industry',
-    description: 'The hub for the investment funds industry. Home to FundOps Daily, the morning newsletter, and the FundOpsHQ Live weekly show — built for GPs, LPs, and operators in private markets.',
+    description: 'The hub for the investment funds industry. Home to FundOps Daily, the morning newsletter, and the FundOpsHQ Live weekly show — built for GPs, LPs, and fund service providers across private markets.',
     images: [
       {
         url: '/og-image.png',
@@ -87,7 +87,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'FundOpsHQ — News, Newsletter & Live Show for the Investment Funds Industry',
-    description: 'The hub for the investment funds industry. Built for GPs, LPs, and operators in private markets.',
+    description: 'The hub for the investment funds industry. Built for GPs, LPs, and fund service providers across private markets.',
     images: ['/og-image.png'],
   },
   robots: {

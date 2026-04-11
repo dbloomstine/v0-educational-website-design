@@ -90,7 +90,7 @@ ${bg ? `<rect width="${w}" height="${h}" fill="${bg}"/>` : ''}
   <line x1="-180" y1="0" x2="-100" y2="0" stroke="${fill}" stroke-opacity="0.4" stroke-width="1"/>
   <line x1="100" y1="0" x2="180" y2="0" stroke="${fill}" stroke-opacity="0.4" stroke-width="1"/>
   <text x="0" y="5" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" letter-spacing="3" fill="${fill}" fill-opacity="0.7">
-    THE DAILY BRIEF FOR FUND OPERATORS
+    THE DAILY BRIEF FOR PRIVATE MARKETS
   </text>
 </g>
 </svg>`
@@ -106,7 +106,7 @@ const lockup = (fill, bg) => {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">
 ${bg ? `<rect width="${w}" height="${h}" fill="${bg}"/>` : ''}
 <g transform="translate(50, 38)">
-  <text x="0" y="0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="2.5" fill="${fill}" fill-opacity="0.5">VOL. I · EST. 2025 · THE DAILY BRIEF FOR FUND OPERATORS</text>
+  <text x="0" y="0" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="2.5" fill="${fill}" fill-opacity="0.5">VOL. I · EST. 2025 · THE DAILY BRIEF FOR PRIVATE MARKETS</text>
   <line x1="0" y1="14" x2="${w - 100}" y2="14" stroke="${fill}" stroke-opacity="0.3" stroke-width="1"/>
 </g>
 <g transform="translate(50, 80) scale(1.6)" fill="${fill}">
@@ -326,7 +326,7 @@ const ogCard = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" w
   <text x="600" y="600" font-family="serif" font-style="italic" font-size="520" font-weight="900" fill="${COLORS.white}" fill-opacity="0.04" text-anchor="middle">FundOpsHQ</text>
   <!-- Top bar -->
   <line x1="60" y1="60" x2="1140" y2="60" stroke="${COLORS.white}" stroke-opacity="0.2" stroke-width="1"/>
-  <text x="60" y="100" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700" letter-spacing="3" fill="${COLORS.white}" fill-opacity="0.6">VOL. I · THE DAILY BRIEF FOR FUND OPERATORS</text>
+  <text x="60" y="100" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700" letter-spacing="3" fill="${COLORS.white}" fill-opacity="0.6">VOL. I · THE DAILY BRIEF FOR PRIVATE MARKETS</text>
   <text x="1140" y="100" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700" letter-spacing="3" fill="${COLORS.amber}" text-anchor="end">FUNDOPSHQ.COM</text>
   <!-- Wordmark -->
   <g transform="translate(60, 220) scale(2.2)" fill="${COLORS.white}">
@@ -334,7 +334,7 @@ const ogCard = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" w
     <path d="${WORDMARK_PATH_HQ}"/>
   </g>
   <!-- Tagline -->
-  <text x="60" y="430" font-family="serif" font-style="italic" font-size="56" fill="${COLORS.amber}">A daily newsroom for fund operators.</text>
+  <text x="60" y="430" font-family="serif" font-style="italic" font-size="56" fill="${COLORS.amber}">A daily newsroom for private markets.</text>
   <!-- Bottom -->
   <line x1="60" y1="540" x2="1140" y2="540" stroke="${COLORS.white}" stroke-opacity="0.2" stroke-width="1"/>
   <text x="60" y="585" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" letter-spacing="3" fill="${COLORS.white}" fill-opacity="0.5">NEWS · NEWSLETTER · LIVE SHOW</text>

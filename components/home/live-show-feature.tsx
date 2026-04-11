@@ -108,8 +108,9 @@ export function LiveShowFeature({ latestVideo }: LiveShowFeatureProps) {
             </h2>
 
             <p className="mt-6 max-w-md text-base sm:text-lg text-muted-foreground leading-relaxed">
-              The weekly broadcast for fund operators. Two guests from the front lines of fund administration,
-              compliance, tax, and operations — plus the week&rsquo;s biggest stories. Streamed live on YouTube.
+              The weekly broadcast for GPs, LPs, and fund service providers. Two guests from the front lines
+              of fund administration, compliance, tax, and operations — plus the week&rsquo;s biggest stories.
+              Streamed live on YouTube.
             </p>
 
             {/* CTAs */}

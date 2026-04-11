@@ -1,11 +1,13 @@
 # FundOpsHQ Content Audit Framework
 
 ## Audit Objective
-Ensure all 84 articles meet brand standards, provide maximum value to fund operations professionals, and cannot be criticized by industry experts.
+
+Ensure all 84 articles meet brand standards, provide maximum value to GPs, LPs, and fund service providers, and cannot be criticized by industry experts.
 
 ## Total Article Count: 84
 
 ### By Fund Type:
+
 - Private Equity: 10 articles
 - Private Credit: 11 articles
 - Venture Capital: 10 articles
@@ -18,6 +20,7 @@ Ensure all 84 articles meet brand standards, provide maximum value to fund opera
 ## Audit Criteria
 
 ### 1. **Content Depth & Accuracy** (Critical)
+
 - [ ] Minimum 3,500 words (10-15 minute read) for comprehensive coverage
 - [ ] Technically accurate with current industry practices (2024-2025)
 - [ ] Specific, actionable information (not generic platitudes)
@@ -27,6 +30,7 @@ Ensure all 84 articles meet brand standards, provide maximum value to fund opera
 - [ ] No factual errors or outdated information
 
 ### 2. **Brand Voice & Tone**
+
 - [ ] Professional but accessible (not overly academic)
 - [ ] Authoritative without being condescending
 - [ ] Practical and implementation-focused
@@ -35,6 +39,7 @@ Ensure all 84 articles meet brand standards, provide maximum value to fund opera
 - [ ] Balanced perspective (acknowledges trade-offs and nuances)
 
 ### 3. **Structure & Readability**
+
 - [ ] Clear, descriptive H2 and H3 headings
 - [ ] Logical flow and organization
 - [ ] Appropriate use of lists for scanability
@@ -44,12 +49,14 @@ Ensure all 84 articles meet brand standards, provide maximum value to fund opera
 - [ ] Actionable "Key Takeaways" section
 
 ### 4. **Internal Linking Opportunities**
+
 - [ ] Link to relevant tools/calculators on the site
 - [ ] Cross-reference related articles (same pillar, different fund types)
 - [ ] Link to other relevant pillars within same fund type
 - [ ] Strategic anchor text for SEO
 
 ### 5. **External Linking to Trusted Sources**
+
 - [ ] Regulatory bodies (SEC, FINRA, ILPA, etc.)
 - [ ] Industry associations (AIMA, CAIA, etc.)
 - [ ] Authoritative publications (PEI, Institutional Investor, etc.)
@@ -57,6 +64,7 @@ Ensure all 84 articles meet brand standards, provide maximum value to fund opera
 - [ ] Official documentation and guidance
 
 ### 6. **SEO & Discoverability**
+
 - [ ] Meta title is compelling and keyword-rich
 - [ ] Meta description is persuasive (155 characters)
 - [ ] Natural keyword integration in content
@@ -64,6 +72,7 @@ Ensure all 84 articles meet brand standards, provide maximum value to fund opera
 - [ ] Rich snippets opportunities
 
 ### 7. **Value-Add & Differentiation**
+
 - [ ] Provides insights not easily found elsewhere
 - [ ] Includes proprietary frameworks or approaches
 - [ ] Addresses common pain points
@@ -73,16 +82,19 @@ Ensure all 84 articles meet brand standards, provide maximum value to fund opera
 ## Article Quality Tiers (Based on Initial Review)
 
 ### Tier A: Comprehensive (Target Standard)
+
 - **Size**: 40KB+ (12,000+ words)
 - **Example**: Hedge Funds CFO (45KB)
 - **Characteristics**: Deep, detailed, multiple subtopics, extensive examples
 
 ### Tier B: Adequate
+
 - **Size**: 15-40KB (5,000-12,000 words)
 - **Example**: Private Equity CFO (~15KB)
 - **Characteristics**: Good coverage, could use more depth and examples
 
 ### Tier C: Underdeveloped (Needs Significant Work)
+
 - **Size**: <10KB (<3,000 words)
 - **Example**: GP-Stakes articles (~4-5KB), Secondaries articles (~4KB)
 - **Characteristics**: Superficial coverage, lacks detail, feels like placeholder content
@@ -92,6 +104,7 @@ Ensure all 84 articles meet brand standards, provide maximum value to fund opera
 ### Internal Links to Add:
 
 **Tools to Link From Articles:**
+
 - CFO articles → Management Company Budget Planner
 - CFO articles → Management Fee Calculator
 - Fund Admin articles → Fund Admin Pricing Estimator, Audit Fee Estimator
@@ -103,6 +116,7 @@ Ensure all 84 articles meet brand standards, provide maximum value to fund opera
 - CFO/Fund Admin articles → Distribution Waterfall Visualizer, Fund Expense Allocation Helper
 
 **Cross-Article Linking:**
+
 - Same pillar, different fund types (e.g., "Learn how CFO responsibilities differ in Venture Capital funds")
 - Related pillars (e.g., CFO article links to Compliance, Tax, Audit within same fund)
 - Foundational concepts (e.g., specific articles link back to broader overview articles)
@@ -110,6 +124,7 @@ Ensure all 84 articles meet brand standards, provide maximum value to fund opera
 ### External Authoritative Sources:
 
 **Regulatory & Standards:**
+
 - SEC.gov (Investment Advisers Act, Form ADV, Form PF)
 - ILPA.org (Institutional Limited Partners Association best practices)
 - AICPA.org (Accounting and audit guidance)
@@ -117,18 +132,21 @@ Ensure all 84 articles meet brand standards, provide maximum value to fund opera
 - IRS.gov (Tax regulations and guidance)
 
 **Industry Associations:**
+
 - AIMA.org (Alternative Investment Management Association)
 - CAIA.org (Chartered Alternative Investment Analyst)
 - PreqinPro.com (Market data - use sparingly, commercial)
 - PitchBook.com (Market data - use sparingly, commercial)
 
 **Publications:**
+
 - Institutional Investor
 - Private Equity International (PEI)
 - CFO.com
 - The Wall Street Journal (sparingly, for major developments)
 
 **Service Provider Guidance:**
+
 - Big 4 accounting firms (public thought leadership only)
 - Major fund administrators (for procedural standards)
 - Legal firms (for regulatory analysis - be selective)
@@ -136,6 +154,7 @@ Ensure all 84 articles meet brand standards, provide maximum value to fund opera
 ## Audit Process
 
 ### Phase 1: Assess Current State
+
 1. Read full article
 2. Classify into Tier A/B/C based on depth
 3. Identify factual errors or outdated information
@@ -143,7 +162,9 @@ Ensure all 84 articles meet brand standards, provide maximum value to fund opera
 5. Flag weak brand voice or unclear writing
 
 ### Phase 2: Develop Recommendations
+
 For each article, document:
+
 1. **Current tier** and **target tier**
 2. **Length gap** (current vs. target word count)
 3. **Missing topics** to cover
@@ -153,6 +174,7 @@ For each article, document:
 7. **Priority** (High/Medium/Low based on traffic potential and importance)
 
 ### Phase 3: Implement Improvements
+
 - Start with High priority Tier C articles (biggest impact)
 - Work systematically through each fund type
 - Validate all links work correctly
@@ -161,6 +183,7 @@ For each article, document:
 ## Success Criteria
 
 An article passes audit when:
+
 - ✅ 10+ minute read time (3,500+ words)
 - ✅ No factual errors or outdated information
 - ✅ Includes 5+ internal links to tools/related articles
@@ -169,4 +192,3 @@ An article passes audit when:
 - ✅ Written in strong brand voice
 - ✅ Would withstand scrutiny from industry expert
 - ✅ Offers unique value not easily found elsewhere
-

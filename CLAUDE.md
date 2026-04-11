@@ -10,7 +10,7 @@ FundOpsHQ is the central hub for the investment funds industry. It ties together
 2. **FundOpsHQ Live** — weekly broadcast show streamed on YouTube (Thursdays 11am ET)
 3. Long-form reference content across private markets
 
-Audience: GPs, LPs, fund operators, and service providers working in and around private markets. Do **not** frame it as "educational" or "for fund ops professionals" — the site is a brand landing zone for the Daily + Live + newsletter products.
+Audience: **GPs, LPs, and fund service providers** working in and around private markets — the people inside those firms (operations, finance, accounting, compliance, legal, BD, product). Family offices are covered under LPs. Do **not** frame it as "educational", "for fund ops professionals", or "for fund operators" — the site is a brand landing zone for the Daily + Live + newsletter products, and the canonical audience phrase is "GPs, LPs, and fund service providers."
 
 Stack: Next.js 16 (App Router, Turbopack) + React 19, TypeScript, Tailwind CSS, Supabase, Resend, Vercel.
 

@@ -99,7 +99,7 @@ export function HeroSubscribe() {
             <span>{today}</span>
           </span>
           <span className="flex items-center gap-3">
-            <span className="hidden sm:inline">The Daily Brief for Fund Operators</span>
+            <span className="hidden sm:inline">The Daily Brief for Private Markets</span>
             <span aria-hidden="true" className="hidden sm:inline text-foreground/20">·</span>
             <a
               href="https://www.youtube.com/@dbloomstine/streams"

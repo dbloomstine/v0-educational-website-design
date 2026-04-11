@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'FundOpsHQ | News, Newsletter & Live Show for the Investment Funds Industry',
     description:
-      'The hub for the investment funds industry. Real-time fund news, a morning newsletter, and the FundOpsHQ Live weekly show — built for GPs, LPs, and operators in private markets.',
+      'The hub for the investment funds industry. Real-time fund news, a morning newsletter, and the FundOpsHQ Live weekly show — built for GPs, LPs, and fund service providers across private markets.',
     type: 'website',
     url: 'https://fundopshq.com',
   },
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'FundOpsHQ | News, Newsletter & Live Show for the Investment Funds Industry',
     description:
-      'The hub for the investment funds industry. Built for GPs, LPs, and operators in private markets. Subscribe to FundOps Daily.',
+      'The hub for the investment funds industry. Built for GPs, LPs, and fund service providers across private markets. Subscribe to FundOps Daily.',
   },
   alternates: {
     canonical: 'https://fundopshq.com',
@@ -37,7 +37,7 @@ const organizationJsonLd = {
   url: 'https://fundopshq.com',
   logo: 'https://fundopshq.com/icon.svg',
   description:
-    'FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed and newsletter, and the FundOpsHQ Live weekly broadcast show. Built for GPs, LPs, and operators in private markets.',
+    'FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed and newsletter, and the FundOpsHQ Live weekly broadcast show. Built for GPs, LPs, and fund service providers across private markets.',
   founder: {
     '@type': 'Person',
     name: 'Danny Bloomstine',

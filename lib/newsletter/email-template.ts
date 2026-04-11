@@ -208,7 +208,7 @@ function renderSponsorBottom(slate: SponsorSlate): string {
       <td style="padding:24px 24px 24px;background-color:#ffffff;border-top:1px solid #e2e8f0;">
         <div style="font-size:10px;font-weight:600;letter-spacing:1.5px;color:#94a3b8;margin-bottom:4px;">${escapeHtml(slate.label)}</div>
         ${cards}
-        <p style="margin:22px 0 0;padding-top:16px;border-top:1px solid #e2e8f0;color:#94a3b8;font-size:11px;font-style:italic;">Reach GPs, LPs, and fund operators every morning. <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:#64748b;text-decoration:underline;">Sponsor FundOps Daily &rarr;</a></p>
+        <p style="margin:22px 0 0;padding-top:16px;border-top:1px solid #e2e8f0;color:#94a3b8;font-size:11px;font-style:italic;">Reach GPs, LPs, and fund service providers every morning. <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:#64748b;text-decoration:underline;">Sponsor FundOps Daily &rarr;</a></p>
       </td>
     </tr>`
 }

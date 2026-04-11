@@ -14,7 +14,7 @@
   <text x="600" y="600" font-family="serif" font-style="italic" font-size="520" font-weight="900" fill="#FFFFFF" fill-opacity="0.04" text-anchor="middle">FundOpsHQ</text>
   <!-- Top bar -->
   <line x1="60" y1="60" x2="1140" y2="60" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1"/>
-  <text x="60" y="100" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700" letter-spacing="3" fill="#FFFFFF" fill-opacity="0.6">VOL. I · THE DAILY BRIEF FOR FUND OPERATORS</text>
+  <text x="60" y="100" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700" letter-spacing="3" fill="#FFFFFF" fill-opacity="0.6">VOL. I · THE DAILY BRIEF FOR PRIVATE MARKETS</text>
   <text x="1140" y="100" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" font-weight="700" letter-spacing="3" fill="#E6B045" text-anchor="end">FUNDOPSHQ.COM</text>
   <!-- Wordmark -->
   <g transform="translate(60, 220) scale(2.2)" fill="#FFFFFF">
@@ -22,7 +22,7 @@
     <path d="M233.137 34.56V0.959995H239.617V34.56H233.137ZM211.969 34.56V0.959995H218.449V34.56H211.969ZM217.537 20.016V14.784H234.241V20.016H217.537ZM269.658 39.84L257.418 20.592H264.858L277.386 39.84H269.658ZM261.738 35.136C258.474 35.136 255.594 34.4 253.098 32.928C250.602 31.456 248.65 29.424 247.242 26.832C245.834 24.208 245.13 21.184 245.13 17.76C245.13 14.336 245.834 11.328 247.242 8.736C248.65 6.112 250.602 4.064 253.098 2.592C255.594 1.12 258.474 0.383997 261.738 0.383997C265.034 0.383997 267.93 1.12 270.426 2.592C272.922 4.064 274.858 6.112 276.234 8.736C277.642 11.328 278.346 14.336 278.346 17.76C278.346 21.184 277.642 24.208 276.234 26.832C274.858 29.424 272.922 31.456 270.426 32.928C267.93 34.4 265.034 35.136 261.738 35.136ZM261.738 29.328C263.786 29.328 265.546 28.864 267.018 27.936C268.522 26.976 269.69 25.632 270.522 23.904C271.354 22.176 271.77 20.128 271.77 17.76C271.77 15.36 271.354 13.312 270.522 11.616C269.69 9.888 268.522 8.56 267.018 7.632C265.546 6.704 263.786 6.24 261.738 6.24C259.722 6.24 257.962 6.704 256.458 7.632C254.954 8.56 253.786 9.888 252.954 11.616C252.122 13.312 251.706 15.36 251.706 17.76C251.706 20.128 252.122 22.176 252.954 23.904C253.786 25.632 254.954 26.976 256.458 27.936C257.962 28.864 259.722 29.328 261.738 29.328Z"/>
   </g>
   <!-- Tagline -->
-  <text x="60" y="430" font-family="serif" font-style="italic" font-size="56" fill="#E6B045">A daily newsroom for fund operators.</text>
+  <text x="60" y="430" font-family="serif" font-style="italic" font-size="56" fill="#E6B045">A daily newsroom for private markets.</text>
   <!-- Bottom -->
   <line x1="60" y1="540" x2="1140" y2="540" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1"/>
   <text x="60" y="585" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" letter-spacing="3" fill="#FFFFFF" fill-opacity="0.5">NEWS · NEWSLETTER · LIVE SHOW</text>
