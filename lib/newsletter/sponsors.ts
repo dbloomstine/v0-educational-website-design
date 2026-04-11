@@ -43,22 +43,16 @@ export interface SponsorSlate {
 }
 
 /**
- * FundOpsHQ two-tone wordmark matching the header treatment
- * ("FundOps" dark slate + "HQ" blue accent).
- */
-const FUNDOPSHQ_WORDMARK_HTML =
-  '<span style="display:inline-block;font-size:20px;font-weight:800;letter-spacing:-0.4px;line-height:1;">' +
-  '<span style="color:#1e293b;">FundOps</span><span style="color:#3b82f6;">HQ</span>' +
-  '</span>'
-
-/**
  * House entry — FundOpsHQ self-recognition so the sponsor block is
- * never empty pre-revenue. Stays in the slate even once paid sponsors
- * land; drop or reorder as needed.
+ * never empty pre-revenue. Uses the canonical brand wordmark PNG
+ * (rendered from public/brand/wordmark-dark.svg) so it matches the
+ * rest of the brand system. Stays in the slate even once paid
+ * sponsors land; drop or reorder as needed.
  */
 export const FUNDOPSHQ_SPONSOR: Sponsor = {
   name: 'FundOpsHQ',
-  wordmarkHtml: FUNDOPSHQ_WORDMARK_HTML,
+  logoUrl: 'https://fundopshq.com/sponsors/fundopshq-wordmark.png',
+  logoWidth: 180,
   blurb:
     'FundOpsHQ is the hub for the investment funds industry — home to the daily news feed, this newsletter, and FundOpsHQ Live every Thursday. Built for GPs, LPs, and the fund service providers working in and around private markets.',
   ctaUrl: 'https://fundopshq.com',

@@ -126,7 +126,13 @@ function buildSampleSlate(): SponsorSlate {
   return {
     label: 'PRESENTED BY',
     sponsors: [
-      FUNDOPSHQ_SPONSOR,
+      // Override FUNDOPSHQ_SPONSOR's hosted logoUrl with a data URI
+      // so the local preview renders the wordmark without requiring
+      // a deploy.
+      {
+        ...FUNDOPSHQ_SPONSOR,
+        logoUrl: publicFileAsDataUri('sponsors/fundopshq-wordmark.png'),
+      },
       {
         name: 'Fidelity Careers',
         logoUrl: publicFileAsDataUri('sponsors/fidelity-careers.png'),
