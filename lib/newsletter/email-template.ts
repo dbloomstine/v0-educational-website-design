@@ -39,6 +39,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   infrastructure: '#0284c7',
   secondaries: '#db2777',
   gp_stakes: '#0d9488',
+  lp_commitments: '#0f766e',
   people_moves: '#8b5cf6',
   deals: '#0891b2',
   regulatory: '#dc2626',

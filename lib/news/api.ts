@@ -1,5 +1,6 @@
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { normalizeSourceName } from './constants'
+import { isSameStory, type StoryCandidate } from './story-dedup'
 import type { NewsArticle, ArticleGroup, FacetCounts, ArticleFeedResponse } from './types'
 
 export interface QueryParams {
@@ -141,11 +142,21 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
   }
 }
 
+function toStoryCandidate(a: NewsArticle): StoryCandidate {
+  return {
+    title: a.title,
+    firmName: a.firmName,
+    fundName: a.fundName,
+    fundSizeUsdMillions: a.fundSizeUsd ? a.fundSizeUsd / 1_000_000 : null,
+    personName: a.personName,
+  }
+}
+
 function buildArticleGroups(articles: NewsArticle[]): ArticleGroup[] {
+  // Layer 1: group by story_cluster_id when populated upstream.
   const clusterMap = new Map<string, NewsArticle[]>()
   const assigned = new Set<string>()
 
-  // Layer 1: group by story_cluster_id (from embedding pipeline, if available)
   for (const article of articles) {
     if (article.storyClusterId) {
       const list = clusterMap.get(article.storyClusterId)
@@ -158,34 +169,30 @@ function buildArticleGroups(articles: NewsArticle[]): ArticleGroup[] {
     }
   }
 
-  // Layer 2: group unclustered articles by firm name + fund size (same story, different sources)
-  const firmSizeMap = new Map<string, NewsArticle[]>()
+  // Layer 2: group unclustered articles using the shared story-dedup helper.
+  // This handles firm-name normalization, fund-size tolerance bands, title
+  // similarity, and exec-move person matching — same logic as the newsletter.
+  const stories: NewsArticle[][] = []
   for (const article of articles) {
     if (assigned.has(article.id)) continue
-    // Only group if we have a firm name AND fund size — both needed to avoid false matches
-    if (article.firmName && article.fundSizeUsd) {
-      const key = `${article.firmName.toLowerCase().trim()}|${article.fundSizeUsd}`
-      const list = firmSizeMap.get(key)
-      if (list) {
-        list.push(article)
-      } else {
-        firmSizeMap.set(key, [article])
+    const candidate = toStoryCandidate(article)
+    let matched = false
+    for (const story of stories) {
+      if (isSameStory(toStoryCandidate(story[0]), candidate)) {
+        story.push(article)
+        matched = true
+        break
       }
-      assigned.add(article.id)
     }
+    if (!matched) {
+      stories.push([article])
+    }
+    assigned.add(article.id)
   }
 
-  // Merge firm-size groups into clusterMap
-  for (const [key, groupArticles] of firmSizeMap) {
-    if (groupArticles.length > 1) {
-      clusterMap.set(`firm:${key}`, groupArticles)
-    }
-  }
-
-  // Build final groups
   const groups: ArticleGroup[] = []
 
-  // Add cluster groups — primary is highest relevance
+  // Layer 1 clusters
   for (const [, clusterArticles] of clusterMap) {
     const sorted = [...clusterArticles].sort(
       (a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)
@@ -197,21 +204,16 @@ function buildArticleGroups(articles: NewsArticle[]): ArticleGroup[] {
     })
   }
 
-  // Add standalone articles (not in any cluster or firm-size group)
-  for (const article of articles) {
-    if (assigned.has(article.id)) {
-      // Check if it was a firm-size singleton (only 1 article with that firm+size)
-      const firmKey = article.firmName && article.fundSizeUsd
-        ? `${article.firmName.toLowerCase().trim()}|${article.fundSizeUsd}`
-        : null
-      const firmGroup = firmKey ? firmSizeMap.get(firmKey) : null
-      if (firmGroup && firmGroup.length === 1) {
-        groups.push({ primaryArticle: article, relatedArticles: [], clusterSize: 1 })
-      }
-      // Multi-article groups already added above
-    } else {
-      groups.push({ primaryArticle: article, relatedArticles: [], clusterSize: 1 })
-    }
+  // Layer 2 story groups — primary is highest relevance
+  for (const story of stories) {
+    const sorted = [...story].sort(
+      (a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)
+    )
+    groups.push({
+      primaryArticle: sorted[0],
+      relatedArticles: sorted.slice(1),
+      clusterSize: sorted.length,
+    })
   }
 
   // Maintain original feed order: sort groups by first appearance in the articles array

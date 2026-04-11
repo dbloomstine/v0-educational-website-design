@@ -73,13 +73,19 @@ Cron schedules live in `vercel.json`.
 | `newsletter_subscribers` | Double-opt-in email list                                     |
 | `feedback`               | Inline feedback submissions                                  |
 
-`news_items` still carries orphan FK columns (`cluster_id`, `story_cluster_id`, `gp_id`, `fund_id`, `firm_id`, `embedding`) from the old architecture — they hold nil/orphan values and should be ignored.
+`news_items` still carries orphan FK columns (`cluster_id`, `story_cluster_id`, `gp_id`, `fund_id`, `firm_id`, `embedding`) from the old architecture. Nothing populates them, so they're always null. `lib/news/api.ts` has a Layer-1 clustering path that keys on `story_cluster_id` but it's effectively dormant — all feed grouping runs through the Layer-2 path that uses `isSameStory`.
 
 ## `lib/` layout
 
 ```
 lib/
-├── news/            # RSS ingestion, classification, clustering, firm logo resolution
+├── news/            # RSS ingestion, classification, firm logo resolution
+│   ├── story-dedup.ts   # Shared story-clustering — isSameStory, normalizeFirmName,
+│   │                    # fundSizesMatch, titleJaccard. Used by both the newsletter
+│   │                    # assembly and the feed UI grouping. Single source of truth
+│   │                    # for "are these two articles the same underlying story?".
+│   └── rss-client.ts    # Entity-decoding stripHtml — decodeEntities is exported
+│                        # for the backfill script and handles named + numeric refs.
 ├── newsletter/      # Email template, Resend sender, query-articles, sponsors, confirmation email
 ├── pipeline/        # Shared orchestration utilities for the cron routes
 ├── supabase/        # Supabase client singleton
@@ -132,8 +138,32 @@ components/
 - Canonical domain: `https://fundopshq.com` (not `fundops.com`)
 - Syncs with v0.app — edits made in v0.app land here automatically, so expect occasional unfamiliar commits from the v0 bot
 
+## FundOps Daily newsletter pipeline
+
+The morning send is assembled in `lib/newsletter/query-articles.ts` and runs these stages in order:
+
+1. Pull last 26h of classified articles with `article_type` in the newsletter allowlist
+2. Drop govt/NGO program announcements and blocked sources (facebook.com, x.com, etc.)
+3. Same-day story dedup via `isSameStory` from `lib/news/story-dedup.ts`
+4. Cross-edition dedup — a firm+fund fingerprint is computed for every article in the last 3 sent editions and used to filter repeats (so ArcLight Fund VIII doesn't show up two days in a row)
+5. Quality gate — drops articles with no firm and no fund, or with placeholder tldrs like "amounts not disclosed"
+6. Minimum fund size filter ($25M) for fund activity
+7. Section split: fund activity grouped by fund category, LP Commitments as its own dedicated section (pension/teachers/SERS/PERS patterns in firm name), then People Moves / Deals / Regulatory
+8. `secondaries` with <2 stories rolls up into PE; `other` is suppressed entirely
+
+The subject line is chosen by `buildSubject` in `lib/newsletter/send-daily.ts` — it picks the biggest GP fund event, preferring `fund_close` > `fund_launch` > `capital_raise`, and excludes LP commitments + exec moves (where extracted "size" is usually firm AUM, not a fund).
+
+Preview the current feed at any time:
+
+```bash
+npx tsx --env-file=.env.local scripts/preview-newsletter.ts
+```
+
+`scripts/backfill-decode-entities.ts` is a one-shot utility that scans `news_items` for HTML entities left over from older ingests and rewrites the titles/descriptions. Run with `--apply`; re-run until changes stabilize at 0 (the offset-based paging shifts as rows leave the filter, so it takes 3–4 passes).
+
 ## Before making changes
 
 1. If the change touches the news pipeline, check what's currently running in `vercel.json` crons before editing schedules.
 2. If the change touches the newsletter email template, remember it's inline CSS only (Gmail/Outlook/Apple Mail). Don't introduce external stylesheets.
-3. If you're tempted to recreate a page that was deleted, check first — the 2026-04-10 cleanup was deliberate, not a bug.
+3. If you're adjusting dedup logic, edit `lib/news/story-dedup.ts` — don't add a second copy inside query-articles or api.ts.
+4. If you're tempted to recreate a page that was deleted, check first — the 2026-04-10 cleanup was deliberate, not a bug.

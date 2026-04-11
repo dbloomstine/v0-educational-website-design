@@ -377,6 +377,11 @@ const GOOGLE_NEWS_PREFIX = 'https://news.google.com/rss/articles/';
 
 /**
  * Resolve a Google News redirect URL to its actual destination.
+ * Google News no longer serves a 3xx redirect — it returns HTML with
+ * the target URL embedded. We GET the URL (HEAD gets nothing useful),
+ * follow any server-side redirects, and as a fallback scan the body
+ * for the real link.
+ *
  * Returns the original URL if resolution fails or it's not a Google News URL.
  */
 async function resolveGoogleNewsUrl(url: string): Promise<string> {
@@ -384,26 +389,52 @@ async function resolveGoogleNewsUrl(url: string): Promise<string> {
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    const timeout = setTimeout(() => controller.abort(), 8000);
 
     const res = await fetch(url, {
-      method: 'HEAD',
+      method: 'GET',
       redirect: 'follow',
       signal: controller.signal,
-      headers: { 'User-Agent': 'FundOpsHQ-NewsBot/1.0' },
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+      },
     });
 
     clearTimeout(timeout);
 
-    // The final URL after redirects is the real article URL
+    // If the final URL after redirects is already the real article, use it.
     if (res.url && res.url !== url && !res.url.startsWith('https://news.google.com/')) {
       return res.url;
     }
+
+    // Otherwise scan the body for the target URL. Google embeds it in a
+    // data-n-au attribute on an <a> tag, in a meta refresh, or in a JS redirect.
+    const body = await res.text();
+
+    const dataNau = body.match(/data-n-au="([^"]+)"/);
+    if (dataNau?.[1]) return decodeEmbeddedUrl(dataNau[1]);
+
+    const metaRefresh = body.match(
+      /<meta[^>]+http-equiv=["']refresh["'][^>]+url=([^"'>\s]+)/i
+    );
+    if (metaRefresh?.[1]) return decodeEmbeddedUrl(metaRefresh[1]);
+
+    const jsRedirect = body.match(/location\.replace\(["']([^"']+)["']\)/);
+    if (jsRedirect?.[1]) return decodeEmbeddedUrl(jsRedirect[1]);
   } catch {
     // Resolution failed — keep original URL
   }
 
   return url;
+}
+
+function decodeEmbeddedUrl(url: string): string {
+  return url
+    .replace(/&amp;/g, '&')
+    .replace(/&#39;/g, "'")
+    .replace(/&quot;/g, '"');
 }
 
 // ─── Utility functions ──────────────────────────────────────────────────────

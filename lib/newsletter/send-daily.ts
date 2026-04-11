@@ -189,31 +189,59 @@ export async function sendDailyNewsletter(
   }
 }
 
-function buildSubject(content: { groups: { label: string; articles: { title: string; firmName: string | null; fundSizeUsdMillions: number | null }[] }[]; totalArticles: number }): string {
-  // Find the article with the largest fund size across all groups for the subject
-  let bestArticle: { firmName: string | null; fundSizeUsdMillions: number | null } | null = null
+/**
+ * Pick the subject-line headline: biggest GP fund event of the day,
+ * preferring closes over launches over raises. Excludes LP commitments
+ * (which are allocation news, not "fund X landed Y") and exec moves
+ * (where the extracted size is usually firm AUM, not a fund size).
+ */
+function buildSubject(content: {
+  groups: {
+    category: string
+    label: string
+    articles: {
+      title: string
+      firmName: string | null
+      fundSizeUsdMillions: number | null
+      eventType: string | null
+    }[]
+  }[]
+  totalArticles: number
+}): string {
+  const typePriority: Record<string, number> = {
+    fund_close: 3,
+    fund_launch: 2,
+    capital_raise: 1,
+  }
+
+  let bestArticle: {
+    firmName: string | null
+    fundSizeUsdMillions: number | null
+  } | null = null
   let bestSize = 0
+  let bestPriority = -1
 
   for (const group of content.groups) {
+    if (group.category === 'lp_commitments') continue
     for (const article of group.articles) {
+      if (!article.firmName) continue
+      const prio = typePriority[article.eventType ?? ''] ?? -1
+      if (prio < 0) continue
       const size = article.fundSizeUsdMillions ?? 0
-      if (size > bestSize) {
+      if (size <= 0) continue
+
+      if (prio > bestPriority || (prio === bestPriority && size > bestSize)) {
+        bestPriority = prio
         bestSize = size
         bestArticle = article
       }
     }
   }
 
-  // Fall back to first article if none have a fund size
-  if (!bestArticle) {
-    bestArticle = content.groups[0]?.articles[0] ?? null
-  }
-
   if (!bestArticle?.firmName) {
     return `FundOps Daily — ${content.totalArticles} stories`
   }
 
-  // Format the size hint
   let sizeHint = ''
   if (bestSize >= 1000) {
     sizeHint = ` $${(bestSize / 1000).toFixed(1).replace(/\.0$/, '')}B`

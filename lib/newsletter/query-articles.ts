@@ -1,12 +1,20 @@
 /**
  * Query high-value articles for the daily newsletter.
  *
- * Includes story-level dedup (pick best source per story),
- * prior-edition exclusion, minimum fund size filtering,
- * and a max article cap for curated output.
+ * Pipeline:
+ *   1. Pull last 26h of classified articles
+ *   2. Drop govt/NGO program announcements and blocked sources
+ *   3. Same-day story dedup (shared helpers in lib/news/story-dedup)
+ *   4. Cross-edition firm+fund fingerprint dedup (last 3 editions)
+ *   5. Quality gate — drop articles with no firm/fund identity or
+ *      placeholder "not disclosed" tldrs
+ *   6. Minimum fund size filter for fund activity
+ *   7. Split into sections, including dedicated LP Commitments
+ *   8. Rank, cap, order
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js'
+import { isSameStory, normalizeFirmName } from '@/lib/news/story-dedup'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>
@@ -48,6 +56,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   infrastructure: 'Infrastructure',
   secondaries: 'Secondaries',
   gp_stakes: 'GP Stakes',
+  lp_commitments: 'LP Commitments',
   people_moves: 'People Moves',
   deals: 'Deals',
   regulatory: 'Regulatory',
@@ -65,33 +74,98 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
   regulatory_action: 'Reg',
 }
 
-/** Minimum fund size in USD millions to include in newsletter (filters noise like student funds) */
+/** Minimum fund size in USD millions to include in newsletter (filters noise). */
 const MIN_FUND_SIZE_MILLIONS = 25
+
+/** Look back this many recent editions for cross-day firm-level dedup. */
+const CROSS_EDITION_LOOKBACK = 3
 
 /**
  * Source tier ranking for picking the best article per story.
- * Lower number = higher priority. Sources not listed default to tier 50.
+ * Lower number = higher priority. Matched case-insensitively.
  */
-const SOURCE_TIER: Record<string, number> = {
-  'Bloomberg.com': 1, 'bloomberg.com': 1, 'WSJ': 1, 'Reuters': 2,
+const SOURCE_TIER_RAW: Record<string, number> = {
+  'Bloomberg.com': 1, WSJ: 1, Reuters: 2,
   'Financial Times': 2, 'Pensions & Investments': 3,
-  'PitchBook': 3, 'Buyouts': 3, 'Buyouts Insider': 3,
+  PitchBook: 3, Buyouts: 3, 'Buyouts Insider': 3,
   'PE Hub': 4, 'Institutional Investor': 4,
-  'TechCrunch': 5, 'TechCrunch VC': 5, 'Venture Capital Journal': 5,
+  TechCrunch: 5, 'TechCrunch VC': 5, 'Venture Capital Journal': 5,
   'Private Equity International': 5, 'Private Equity International | PEI': 5,
   'Secondaries Investor': 5, 'Infrastructure Investor': 5,
-  'Private Debt Investor': 5, 'PERE': 5, 'Private Equity Wire': 5,
+  'Private Debt Investor': 5, PERE: 5, 'Private Equity Wire': 5,
   'Hedge Week': 6, 'Alternative Credit Investor': 6,
-  'AltAssets': 7, 'AltAssets Private Equity News': 7,
+  AltAssets: 7, 'AltAssets Private Equity News': 7,
   'Commercial Observer': 8, 'ESG Today': 8,
   'Business Wire': 10, 'PR Newswire': 10, 'PR Newswire Financial': 10,
-  'Alternatives Watch': 10, 'Crain\'s Chicago Business': 10,
+  'Alternatives Watch': 10, "Crain's Chicago Business": 10,
   'The Business Journals': 12,
-  'Yahoo Finance': 15, 'MSN': 15, 'msn.com': 15,
-  'Digital Journal': 20, 'citybiz': 20, 'Pulse 2.0': 20,
+  'Yahoo Finance': 15, MSN: 15,
+  'Digital Journal': 20, citybiz: 20, 'Pulse 2.0': 20,
   'The Tech Buzz': 25, 'HedgeCo.Net': 25,
+  'news.google.com': 30,
   'mexc.co': 40, 'The Manila Times': 40, 'National Today': 40, 'USA Today': 30,
 }
+
+const SOURCE_TIER: Record<string, number> = Object.fromEntries(
+  Object.entries(SOURCE_TIER_RAW).map(([k, v]) => [k.toLowerCase(), v])
+)
+
+function sourceTier(name: string | null | undefined): number {
+  if (!name) return 50
+  return SOURCE_TIER[name.toLowerCase()] ?? 50
+}
+
+/** Sources dropped outright — social platforms, low-quality aggregators. */
+const BLOCKED_SOURCES = new Set<string>([
+  'facebook.com',
+  'twitter.com',
+  'x.com',
+  'reddit.com',
+  'youtube.com',
+  't.me',
+])
+
+/** Title patterns that indicate government / NGO / municipal programs. */
+const GOVT_PROGRAM_PATTERNS = [
+  /\bkementerian\b/i,
+  /\bministry of\b/i,
+  /\bfederation of (canadian|american|european) municipalit/i,
+  /\bwelcomes launch of\b/i,
+  /\bmunicipal fund\b/i,
+  /\bpublic[- ]private partnership fund\b/i,
+  /\bbuild communities strong\b/i,
+  /\beuropean investment bank\b.*\bprogramme\b/i,
+]
+
+/** Placeholder tldr markers — stories with no real information. */
+const PLACEHOLDER_TLDR_PATTERNS = [
+  /not (detailed|disclosed|specified|publicly|available)/i,
+  /not provided/i,
+  /amounts? not disclosed/i,
+  /no (fund )?size .* specified/i,
+]
+
+/** LP name patterns for pension/institutional allocators. */
+const LP_NAME_PATTERNS = [
+  /\bteachers?\b/i,
+  /\bemployees?\b/i,
+  /\bpension\b/i,
+  /\bretirement\b/i,
+  /\bendowment\b/i,
+  /\bsovereign wealth\b/i,
+  /\bfire\s*(and|&)?\s*police\b/i,
+  /\buniversity of\b/i,
+  /\bfoundation\b/i,
+  /\b(county|city|state) of [a-z]/i,
+  /\bSERS\b/,
+  /\bPERS\b/,
+  /\bCERS\b/,
+  /\bSJCERA\b/i,
+  /\bCalPERS\b/i,
+  /\bCalSTRS\b/i,
+  /\bTRS\b/,
+  /\bLGPS\b/i,
+]
 
 export interface NewsletterArticle {
   id: string
@@ -129,6 +203,41 @@ export interface NewsletterContent {
   articleIds: string[]
 }
 
+function isLpCommitment(article: NewsletterArticle): boolean {
+  if (article.eventType !== 'capital_raise') return false
+  if (!article.firmName) return false
+  return LP_NAME_PATTERNS.some((p) => p.test(article.firmName!))
+}
+
+function isGovtProgram(article: NewsletterArticle): boolean {
+  const src = article.sourceName?.toLowerCase() ?? ''
+  if (BLOCKED_SOURCES.has(src)) return true
+  return GOVT_PROGRAM_PATTERNS.some((p) => p.test(article.title))
+}
+
+/**
+ * Quality gate: drop articles with no identifiable entity or real info.
+ * - No firm AND no fund → unknown issuer
+ * - Placeholder tldr AND no fund size → no real information
+ */
+function passesQualityGate(article: NewsletterArticle): boolean {
+  if (!article.firmName && !article.fundName) return false
+  if (!article.fundSizeUsdMillions && article.tldr) {
+    if (PLACEHOLDER_TLDR_PATTERNS.some((p) => p.test(article.tldr!))) {
+      return false
+    }
+  }
+  return true
+}
+
+/** Pick primary fund category, skipping 'other' when possible. */
+function primaryCategoryFor(article: NewsletterArticle): string {
+  for (const cat of article.fundCategories) {
+    if (cat && cat !== 'other') return cat
+  }
+  return article.fundCategories[0] ?? 'other'
+}
+
 export async function queryNewsletterArticles(
   supabase: DbClient,
   hoursBack: number = 26,
@@ -136,10 +245,10 @@ export async function queryNewsletterArticles(
 ): Promise<NewsletterContent> {
   const since = new Date(Date.now() - hoursBack * 60 * 60 * 1000).toISOString()
 
-  // ─── Fetch prior edition's article IDs to exclude cross-day repeats ────
-  const excludeIds = opts.excludePriorEdition === false
-    ? new Set<string>()
-    : await getPriorEditionArticleIds(supabase)
+  // ─── Fetch prior editions' article IDs + firm/fund fingerprints ────────
+  const priorExclusions = opts.excludePriorEdition === false
+    ? { ids: new Set<string>(), fingerprints: new Set<string>() }
+    : await getPriorEditionExclusions(supabase)
 
   const { data: rows, error } = await supabase
     .from('news_items')
@@ -157,13 +266,10 @@ export async function queryNewsletterArticles(
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const filtered = (rows ?? []).filter((row: any) => {
-    return !excludeIds.has(row.id)
-  })
+  const filtered = (rows ?? []).filter((row: any) => !priorExclusions.ids.has(row.id))
 
-  // Map to newsletter article shape
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const articles = filtered.map((row: any) => {
+  const articles: NewsletterArticle[] = filtered.map((row: any) => {
     const extractedData = row.extracted_data as Record<string, unknown> | null
     const entitiesRaw = row.entities_raw as Array<{ name: string; type: string; role: string | null }> | null
     const firmEntity = entitiesRaw?.find((e) => e.type === 'firm')
@@ -194,48 +300,69 @@ export async function queryNewsletterArticles(
     }
   })
 
-  // ─── Story-level dedup: group articles about the same story ────────────
-  const deduped = deduplicateByStory(articles)
+  // ─── Drop govt/NGO announcements and blocked sources ───────────────────
+  const afterGovtFilter = articles.filter((a) => !isGovtProgram(a))
 
-  // ─── Apply minimum fund size filter for fund activity articles ─────────
-  const sizeFiltered = deduped.filter((a) => {
-    // Only apply size filter to fund activity types, not exec moves
-    const isFundActivity = ['fund_launch', 'fund_close', 'capital_raise'].includes(a.eventType ?? '')
+  // ─── Same-day story dedup ──────────────────────────────────────────────
+  const deduped = deduplicateByStory(afterGovtFilter)
+
+  // ─── Cross-edition fingerprint dedup ───────────────────────────────────
+  const afterCrossDay = deduped.filter((a) => {
+    const fp = storyFingerprint(a.firmName, a.fundName, a.fundSizeUsdMillions, a.eventType)
+    return !fp || !priorExclusions.fingerprints.has(fp)
+  })
+
+  // ─── Quality gate ──────────────────────────────────────────────────────
+  const gated = afterCrossDay.filter(passesQualityGate)
+
+  // ─── Minimum fund size filter for fund activity ────────────────────────
+  const sizeFiltered = gated.filter((a) => {
+    const isFundActivity = FUND_ACTIVITY_TYPES.includes(a.eventType ?? '')
     if (!isFundActivity) return true
-    // Keep if no size info (don't penalize missing data)
     if (a.fundSizeUsdMillions == null) return true
     return a.fundSizeUsdMillions >= MIN_FUND_SIZE_MILLIONS
   })
 
-  // ─── Split into sections and cap each independently ────────────────────
-  const fundActivity = sizeFiltered.filter(a => FUND_ACTIVITY_TYPES.includes(a.eventType ?? ''))
-  const peopleMoves = sizeFiltered.filter(a => PEOPLE_TYPES.includes(a.eventType ?? ''))
-  const deals = sizeFiltered.filter(a => DEALS_TYPES.includes(a.eventType ?? ''))
-  const regulatory = sizeFiltered.filter(a => REGULATORY_TYPES.includes(a.eventType ?? ''))
+  // ─── Split into sections ───────────────────────────────────────────────
+  const lpCommitments = sizeFiltered.filter(isLpCommitment)
+  const lpIds = new Set(lpCommitments.map((a) => a.id))
+  const fundActivity = sizeFiltered.filter(
+    (a) => FUND_ACTIVITY_TYPES.includes(a.eventType ?? '') && !lpIds.has(a.id)
+  )
+  const peopleMoves = sizeFiltered.filter((a) => PEOPLE_TYPES.includes(a.eventType ?? ''))
+  const deals = sizeFiltered.filter((a) => DEALS_TYPES.includes(a.eventType ?? ''))
+  const regulatory = sizeFiltered.filter((a) => REGULATORY_TYPES.includes(a.eventType ?? ''))
 
-  // Rank and cap each section
   const sortByPriority = (arr: NewsletterArticle[]) =>
     [...arr].sort((a, b) => articlePriorityScore(b) - articlePriorityScore(a))
 
   const cappedFundActivity = sortByPriority(fundActivity).slice(0, 30)
+  const cappedLp = sortByPriority(lpCommitments).slice(0, 6)
   const cappedPeople = sortByPriority(peopleMoves).slice(0, 5)
   const cappedDeals = sortByPriority(deals).slice(0, 5)
   const cappedRegulatory = sortByPriority(regulatory).slice(0, 3)
 
-  // Group fund activity by category (as before)
+  // Group fund activity by primary category
   const grouped: Record<string, NewsletterArticle[]> = {}
   for (const article of cappedFundActivity) {
-    const primaryCat = article.fundCategories[0] ?? 'other'
+    const primaryCat = primaryCategoryFor(article)
     if (!grouped[primaryCat]) grouped[primaryCat] = []
     grouped[primaryCat].push(article)
   }
 
-  // Sort each fund activity group by fund size desc
+  // Rollup: if "secondaries" has only 1 story, merge it into PE.
+  if (grouped.secondaries && grouped.secondaries.length < 2) {
+    grouped.PE = [...(grouped.PE ?? []), ...grouped.secondaries]
+    delete grouped.secondaries
+  }
+  // Suppress "other" entirely — classification orphans that pass the
+  // quality gate should be reclassified upstream, not leaked to readers.
+  delete grouped.other
+
   for (const cat of Object.keys(grouped)) {
     grouped[cat].sort((a, b) => (b.fundSizeUsdMillions ?? 0) - (a.fundSizeUsdMillions ?? 0))
   }
 
-  // Build ordered groups: fund categories first
   const groups: ArticleGroup[] = CATEGORY_ORDER
     .filter((cat) => grouped[cat]?.length > 0)
     .map((cat) => ({
@@ -244,67 +371,57 @@ export async function queryNewsletterArticles(
       articles: grouped[cat],
     }))
 
-  // Add remaining fund categories not in predefined order
-  for (const cat of Object.keys(grouped)) {
-    if (!CATEGORY_ORDER.includes(cat)) {
-      groups.push({
-        category: cat,
-        label: CATEGORY_LABELS[cat] ?? cat,
-        articles: grouped[cat],
-      })
-    }
+  if (cappedLp.length > 0) {
+    groups.push({
+      category: 'lp_commitments',
+      label: CATEGORY_LABELS.lp_commitments,
+      articles: cappedLp,
+    })
   }
 
-  // Add People Moves section
   if (cappedPeople.length > 0) {
     groups.push({
       category: 'people_moves',
-      label: 'People Moves',
+      label: CATEGORY_LABELS.people_moves,
       articles: cappedPeople,
     })
   }
 
-  // Add Deals section
   if (cappedDeals.length > 0) {
     groups.push({
       category: 'deals',
-      label: 'Deals',
+      label: CATEGORY_LABELS.deals,
       articles: cappedDeals,
     })
   }
 
-  // Add Regulatory section
   if (cappedRegulatory.length > 0) {
     groups.push({
       category: 'regulatory',
-      label: 'Regulatory',
+      label: CATEGORY_LABELS.regulatory,
       articles: cappedRegulatory,
     })
   }
 
-  const allCapped = [...cappedFundActivity, ...cappedPeople, ...cappedDeals, ...cappedRegulatory]
+  const includedIds = new Set<string>()
+  for (const g of groups) {
+    for (const a of g.articles) includedIds.add(a.id)
+  }
 
   return {
     groups,
-    totalArticles: allCapped.length,
-    articleIds: allCapped.map((a) => a.id),
+    totalArticles: includedIds.size,
+    articleIds: Array.from(includedIds),
   }
 }
 
-// ─── Story-level dedup ──────────────────────────────────────────────────────
+// ─── Story-level dedup (same day) ───────────────────────────────────────────
 
-/**
- * Group articles that cover the same story and pick the best source.
- * Two articles are about the same story if they share the same firmName
- * AND have similar titles (normalized Jaccard similarity > 0.4) or
- * share the same fundName.
- */
 function deduplicateByStory(articles: NewsletterArticle[]): NewsletterArticle[] {
   const stories: NewsletterArticle[][] = []
 
   for (const article of articles) {
     let matched = false
-
     for (const story of stories) {
       if (isSameStory(story[0], article)) {
         story.push(article)
@@ -312,24 +429,20 @@ function deduplicateByStory(articles: NewsletterArticle[]): NewsletterArticle[] 
         break
       }
     }
-
     if (!matched) {
       stories.push([article])
     }
   }
 
-  // For each story group, pick the best article and note other sources
   return stories.map((group) => {
-    // Sort by source tier (lower = better), then by tldr length (more detail = better)
     group.sort((a, b) => {
-      const tierA = SOURCE_TIER[a.sourceName ?? ''] ?? 50
-      const tierB = SOURCE_TIER[b.sourceName ?? ''] ?? 50
+      const tierA = sourceTier(a.sourceName)
+      const tierB = sourceTier(b.sourceName)
       if (tierA !== tierB) return tierA - tierB
       return (b.tldr?.length ?? 0) - (a.tldr?.length ?? 0)
     })
 
     const best = group[0]
-    // Collect other source names (deduped)
     const otherSources = Array.from(new Set(
       group.slice(1)
         .map((a) => a.sourceName)
@@ -337,13 +450,11 @@ function deduplicateByStory(articles: NewsletterArticle[]): NewsletterArticle[] 
     ))
     best.alsoCoveredBy = otherSources
 
-    // Use the highest fund size found across all articles in the group
     const maxSize = Math.max(...group.map((a) => a.fundSizeUsdMillions ?? 0))
     if (maxSize > 0 && (best.fundSizeUsdMillions ?? 0) === 0) {
       best.fundSizeUsdMillions = maxSize
     }
 
-    // Use the best tldr (longest, most detailed)
     const bestTldr = group
       .map((a) => a.tldr)
       .filter((t): t is string => !!t)
@@ -352,87 +463,101 @@ function deduplicateByStory(articles: NewsletterArticle[]): NewsletterArticle[] 
       best.tldr = bestTldr
     }
 
+    // Promote a non-null firm name from other versions if the best one is missing it.
+    if (!best.firmName) {
+      const alt = group.find((a) => a.firmName)
+      if (alt) best.firmName = alt.firmName
+    }
+
     return best
   })
 }
 
-/**
- * Check if two articles are about the same underlying story.
- */
-function isSameStory(a: NewsletterArticle, b: NewsletterArticle): boolean {
-  // Must share a firm name (normalized)
-  if (!a.firmName || !b.firmName) return false
-  if (normalizeFirmName(a.firmName) !== normalizeFirmName(b.firmName)) return false
-
-  // If both have a fund name and they match, it's the same story
-  if (a.fundName && b.fundName) {
-    if (normalizeFirmName(a.fundName) === normalizeFirmName(b.fundName)) return true
-  }
-
-  // If both have the same fund size, very likely the same story
-  if (a.fundSizeUsdMillions && b.fundSizeUsdMillions &&
-      a.fundSizeUsdMillions === b.fundSizeUsdMillions) {
-    return true
-  }
-
-  // Fall back to title similarity
-  return titleSimilarity(a.title, b.title) > 0.4
-}
-
-function normalizeFirmName(name: string): string {
-  return name
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, '')
-    .replace(/\b(llc|inc|corp|ltd|lp|group|partners|capital|management|investment|investments|advisors|advisory)\b/g, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-}
+// ─── Cross-edition fingerprint dedup ────────────────────────────────────────
 
 /**
- * Jaccard similarity of word sets from two titles.
+ * Fingerprint used to suppress cross-day repeats.
+ * Same firm + same fund name (or same size bucket) means the story
+ * already ran in the last CROSS_EDITION_LOOKBACK editions.
  */
-function titleSimilarity(a: string, b: string): number {
-  const wordsA = new Set(a.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter((w) => w.length > 2))
-  const wordsB = new Set(b.toLowerCase().replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter((w) => w.length > 2))
-  if (wordsA.size === 0 || wordsB.size === 0) return 0
-  let intersection = 0
-  wordsA.forEach((w) => {
-    if (wordsB.has(w)) intersection++
-  })
-  return intersection / (wordsA.size + wordsB.size - intersection)
+function storyFingerprint(
+  firmName: string | null,
+  fundName: string | null,
+  fundSizeUsdMillions: number | null,
+  eventType: string | null
+): string | null {
+  const firm = normalizeFirmName(firmName)
+  if (!firm) return null
+  const fund = normalizeFirmName(fundName)
+  if (fund) return `${firm}|${fund}`
+  if (fundSizeUsdMillions) {
+    // 10% bucket via log — tolerates currency conversion drift.
+    const bucket = Math.round(Math.log(fundSizeUsdMillions) * 10)
+    return `${firm}|sz${bucket}`
+  }
+  return `${firm}|${eventType ?? ''}`
 }
 
-// ─── Prior edition exclusion ────────────────────────────────────────────────
-
-async function getPriorEditionArticleIds(supabase: DbClient): Promise<Set<string>> {
-  const { data } = await supabase
+async function getPriorEditionExclusions(
+  supabase: DbClient
+): Promise<{ ids: Set<string>; fingerprints: Set<string> }> {
+  const { data: editions } = await supabase
     .from('newsletter_editions')
     .select('article_ids')
     .eq('status', 'sent')
     .order('edition_date', { ascending: false })
-    .limit(1)
-    .single()
+    .limit(CROSS_EDITION_LOOKBACK)
 
-  if (!data?.article_ids) return new Set()
-  return new Set(data.article_ids as string[])
+  const ids = new Set<string>()
+  if (editions && editions.length > 0) {
+    for (const ed of editions) {
+      const arr = (ed as { article_ids: string[] | null }).article_ids
+      if (arr) {
+        for (const id of arr) ids.add(id)
+      }
+    }
+  }
+
+  const fingerprints = new Set<string>()
+  if (ids.size > 0) {
+    const idList = Array.from(ids)
+    for (let i = 0; i < idList.length; i += 200) {
+      const chunk = idList.slice(i, i + 200)
+      const { data: rowsData } = await supabase
+        .from('news_items')
+        .select('title, article_type, event_type, extracted_data, entities_raw')
+        .in('id', chunk)
+      if (rowsData) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        for (const row of rowsData as any[]) {
+          const extractedData = row.extracted_data as Record<string, unknown> | null
+          const entitiesRaw = row.entities_raw as Array<{ name: string; type: string }> | null
+          const firmEntity = entitiesRaw?.find((e) => e.type === 'firm')
+          const firmName = (extractedData?.firm_name as string) ?? firmEntity?.name ?? null
+          const fundName = (extractedData?.fund_name as string) ?? null
+          const fundSize = (extractedData?.fund_size_usd_millions as number) ?? null
+          const eventType = row.event_type ?? row.article_type ?? null
+          const fp = storyFingerprint(firmName, fundName, fundSize, eventType)
+          if (fp) fingerprints.add(fp)
+        }
+      }
+    }
+  }
+
+  return { ids, fingerprints }
 }
 
 // ─── Article priority scoring for cap ───────────────────────────────────────
 
 function articlePriorityScore(a: NewsletterArticle): number {
   let score = a.relevanceScore ?? 0
-
-  // Boost fund activity with size
-  if (['fund_launch', 'fund_close', 'capital_raise'].includes(a.eventType ?? '')) {
+  if (FUND_ACTIVITY_TYPES.includes(a.eventType ?? '')) {
     score += 0.3
     if (a.fundSizeUsdMillions) {
-      // Log scale bonus: $100M=0.1, $1B=0.2, $10B=0.3
       score += Math.min(0.3, Math.log10(a.fundSizeUsdMillions / 100 + 1) * 0.15)
     }
   }
-
   if (a.isHighSignal) score += 0.2
-
   return score
 }
 
