@@ -48,8 +48,8 @@ Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/news
 
 ```
 /api/news/feed                          → Homepage NewsFeed data source
-/api/newsletter/subscribe               → Email signup (used by HeroSubscribe + SubscribeWidget)
-/api/newsletter/confirm                 → Double-opt-in confirmation
+/api/newsletter/subscribe               → Email signup — single opt-in, sends welcome email
+/api/newsletter/confirm                 → Legacy endpoint, kept alive for old confirmation links
 /api/newsletter/unsubscribe             → One-click unsubscribe
 /api/feedback                           → Inline feedback button on the news feed
 /api/admin/newsletter-prep              → Admin-only newsletter preview
@@ -58,6 +58,8 @@ Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/news
 /api/pipeline/newsletter-send           → Cron: assemble + send FundOps Daily via Resend
 /api/pipeline/backfill-domains          → One-shot: backfill firm domains for logos
 ```
+
+FundOps Daily flipped to **single opt-in** on 2026-04-10. The `subscribe` route now sets `status = 'confirmed'` + `confirmed_at = now()` on insert and fires a welcome email via `lib/newsletter/welcome-email.ts`. The `confirm` route is still wired up so any stale confirmation-email links already in inboxes land on the homepage instead of 404ing. Don't reintroduce double opt-in without an explicit ask — we measured ~36% drop-off on the confirmation step before the flip.
 
 Cron schedules live in `vercel.json`.
 

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
-import { renderConfirmationEmail } from '@/lib/newsletter/confirmation-email'
+import { renderWelcomeEmail } from '@/lib/newsletter/welcome-email'
 
 export async function POST(req: Request) {
   try {
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     // Check if subscriber already exists
     const { data: existing } = await supabase
       .from('newsletter_subscribers')
-      .select('id, status, confirmation_token')
+      .select('id, status, unsubscribe_token')
       .eq('email', trimmed)
       .single()
 
@@ -30,16 +30,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, message: 'Already subscribed' })
     }
 
-    let confirmationToken: string
+    let unsubscribeToken: string
+
+    const nowIso = new Date().toISOString()
 
     if (existing) {
-      // Re-subscribe or resend confirmation
+      // Re-subscribe: flip straight to confirmed
       const { error } = await supabase
         .from('newsletter_subscribers')
         .update({
-          status: 'pending_confirmation',
+          status: 'confirmed',
+          confirmed_at: nowIso,
           unsubscribed_at: null,
-          updated_at: new Date().toISOString(),
+          updated_at: nowIso,
         })
         .eq('id', existing.id)
 
@@ -47,27 +50,31 @@ export async function POST(req: Request) {
         console.error('Failed to update subscriber:', error)
         return NextResponse.json({ error: 'Failed to subscribe' }, { status: 500 })
       }
-      confirmationToken = existing.confirmation_token
+      unsubscribeToken = existing.unsubscribe_token
     } else {
-      // New subscriber
+      // New subscriber — single opt-in, confirmed immediately
       const { data: inserted, error } = await supabase
         .from('newsletter_subscribers')
-        .insert({ email: trimmed })
-        .select('confirmation_token')
+        .insert({
+          email: trimmed,
+          status: 'confirmed',
+          confirmed_at: nowIso,
+        })
+        .select('unsubscribe_token')
         .single()
 
       if (error) {
         console.error('Failed to insert subscriber:', error)
         return NextResponse.json({ error: 'Failed to subscribe' }, { status: 500 })
       }
-      confirmationToken = inserted.confirmation_token
+      unsubscribeToken = inserted.unsubscribe_token
     }
 
-    // Send confirmation email
-    const confirmUrl = `https://fundopshq.com/api/newsletter/confirm?token=${confirmationToken}`
+    // Fire-and-forget welcome email
     const apiKey = process.env.RESEND_API_KEY
     if (apiKey) {
       const from = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
+      const unsubscribeUrl = `https://fundopshq.com/api/newsletter/unsubscribe?token=${unsubscribeToken}`
       await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -77,10 +84,14 @@ export async function POST(req: Request) {
         body: JSON.stringify({
           from: `FundOps Daily <${from}>`,
           to: trimmed,
-          subject: 'Confirm your FundOps Daily subscription',
-          html: renderConfirmationEmail(confirmUrl),
+          subject: "You're in — FundOps Daily",
+          html: renderWelcomeEmail(unsubscribeUrl),
+          headers: {
+            'List-Unsubscribe': `<${unsubscribeUrl}>`,
+            'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+          },
         }),
-      }).catch((err) => console.error('Failed to send confirmation email:', err))
+      }).catch((err) => console.error('Failed to send welcome email:', err))
     }
 
     return NextResponse.json({ success: true })
