@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ExternalLink, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -13,7 +13,7 @@ import {
   formatRelativeDate,
 } from '@/lib/news/constants'
 import type { NewsArticle } from '@/lib/news/types'
-import { getFirmDomain, getSourceDomain } from '@/lib/news/firm-logos'
+import { getLogoCandidates, resolveLogoDomain } from '@/lib/news/firm-logo-url'
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   EUR: '€', GBP: '£', JPY: '¥', CHF: 'CHF ', CNY: '¥', KRW: '₩', AUD: 'A$', CAD: 'C$',
@@ -49,36 +49,53 @@ function FirmLogo({
   sourceName?: string | null
   size?: number
 }) {
-  // 1. Check curated map first (fixes wrong domains from classification)
-  // 2. Fall back to domain from classification pipeline
-  // 3. Fall back to source publication domain (so Bloomberg articles show Bloomberg's icon)
-  const resolvedDomain = getFirmDomain(firmName) ?? domain ?? getSourceDomain(sourceName ?? null)
+  const resolvedDomain = resolveLogoDomain(firmName, domain, sourceName ?? null)
+  const candidates = useMemo(
+    () => (resolvedDomain ? getLogoCandidates(resolvedDomain) : []),
+    [resolvedDomain],
+  )
 
-  const [imgError, setImgError] = useState<string | null>(null)
+  // Walk the candidate list on each img load failure. Reset when the
+  // resolved domain changes so a re-render with different props starts
+  // over from the primary source.
+  const [candidateIdx, setCandidateIdx] = useState(0)
+  useEffect(() => {
+    setCandidateIdx(0)
+  }, [resolvedDomain])
 
-  // Reset error state when the resolved domain changes
-  const domainFailed = imgError === resolvedDomain
+  const currentUrl = candidates[candidateIdx]
 
-  if (resolvedDomain && !domainFailed) {
+  if (currentUrl) {
     return (
       <img
-        src={`https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://${resolvedDomain}&size=128`}
+        key={resolvedDomain ?? ''}
+        src={currentUrl}
         alt={firmName || ''}
         loading="lazy"
-        className="rounded-full object-contain bg-white shrink-0"
+        className="rounded-full object-contain bg-white shrink-0 ring-1 ring-black/5"
         style={{ width: size, height: size }}
-        onError={() => setImgError(resolvedDomain)}
+        onError={() => setCandidateIdx((i) => i + 1)}
       />
     )
   }
 
-  // Fallback: letter initial from firmName, or sourceName if no firm
+  // Final fallback: letter initial from firmName, or sourceName if no firm.
+  // Font size scales with the container so the initial looks right whether
+  // the row renders at 20px, 24px, or 28px.
   const displayName = firmName || sourceName || '?'
   const initial = displayName[0].toUpperCase()
   return (
     <div
-      className={cn('rounded-full flex items-center justify-center text-[10px] font-bold shrink-0', getInitialColor(displayName))}
-      style={{ width: size, height: size }}
+      className={cn(
+        'rounded-full flex items-center justify-center font-bold shrink-0 ring-1 ring-white/5',
+        getInitialColor(displayName),
+      )}
+      style={{
+        width: size,
+        height: size,
+        fontSize: Math.max(9, Math.round(size * 0.46)),
+        lineHeight: 1,
+      }}
       role="img"
       aria-label={displayName}
     >
