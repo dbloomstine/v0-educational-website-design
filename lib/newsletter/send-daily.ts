@@ -123,11 +123,6 @@ export async function sendDailyNewsletter(
         'List-Unsubscribe': `<${unsubscribeUrl}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
-      // Track opens and link clicks for engagement analysis
-      tracking: {
-        opens: true,
-        clicks: true,
-      },
     }
   })
 
@@ -135,6 +130,8 @@ export async function sendDailyNewsletter(
   let totalSent = 0
   let batchId = ''
   const errors: string[] = []
+  // Map subscriber email → Resend email ID for per-email stat lookups
+  const emailIdMap: Record<string, string> = {}
 
   for (let i = 0; i < emails.length; i += 100) {
     const batch = emails.slice(i, i + 100)
@@ -154,9 +151,15 @@ export async function sendDailyNewsletter(
       } else {
         const data = (await res.json()) as { data?: Array<{ id?: string }> }
         totalSent += batch.length
-        // Resend batch API returns { data: [{ id }, ...] }
-        if (Array.isArray(data?.data) && data.data[0]?.id) {
-          batchId = data.data[0].id
+        // Resend batch API returns { data: [{ id }, ...] } in same order as input
+        if (Array.isArray(data?.data)) {
+          for (let j = 0; j < data.data.length; j++) {
+            const resendId = data.data[j]?.id
+            if (resendId) {
+              emailIdMap[batch[j].to] = resendId
+              if (!batchId) batchId = resendId
+            }
+          }
         }
       }
     } catch (err) {
@@ -184,6 +187,7 @@ export async function sendDailyNewsletter(
     status,
     sent_at: totalSent > 0 ? new Date().toISOString() : null,
     resend_batch_id: batchId || null,
+    resend_email_ids: Object.keys(emailIdMap).length > 0 ? emailIdMap : null,
     error_message: errors.length > 0 ? errors.join('; ') : null,
     article_ids: content.articleIds,
   }, { onConflict: 'edition_date' })
@@ -261,5 +265,8 @@ function buildSubject(content: {
   }
 
   const remaining = content.totalArticles - 1
+  if (remaining === 0) {
+    return `FundOps Daily — ${bestArticle.firmName}${sizeHint}`
+  }
   return `FundOps Daily — ${bestArticle.firmName}${sizeHint} + ${remaining} more`
 }

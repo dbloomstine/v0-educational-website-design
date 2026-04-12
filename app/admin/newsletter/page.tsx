@@ -2,6 +2,35 @@
 
 import { useState } from 'react'
 
+type Tab = 'prep' | 'stats'
+
+interface RecipientStat {
+  email: string
+  resend_id: string
+  last_event: string | null
+  error: string | null
+}
+
+interface EditionStats {
+  edition_date: string
+  subject: string
+  recipient_count: number
+  article_count: number
+  sent_at: string | null
+  tracking_available: boolean
+  summary?: {
+    total: number
+    delivered: number
+    opened: number
+    clicked: number
+    bounced: number
+    complained: number
+    open_rate: number
+    click_rate: number
+  }
+  recipients: RecipientStat[]
+}
+
 interface ArticleItem {
   id: string
   title: string
@@ -54,6 +83,7 @@ function formatSize(millions: number | null): string {
 }
 
 export default function NewsletterPrepPage() {
+  const [tab, setTab] = useState<Tab>('prep')
   const [start, setStart] = useState(() => {
     const d = new Date()
     d.setDate(d.getDate() - 7)
@@ -65,6 +95,32 @@ export default function NewsletterPrepPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+
+  // Stats state
+  const [statsData, setStatsData] = useState<EditionStats[] | null>(null)
+  const [statsLoading, setStatsLoading] = useState(false)
+  const [statsError, setStatsError] = useState<string | null>(null)
+
+  const pullStats = async () => {
+    setStatsLoading(true)
+    setStatsError(null)
+    setStatsData(null)
+    try {
+      const res = await fetch(
+        `/api/admin/newsletter-stats?password=${encodeURIComponent(password)}`
+      )
+      const json = await res.json()
+      if (!res.ok) {
+        setStatsError(json.error || 'Failed to fetch stats')
+        return
+      }
+      setStatsData(json.editions)
+    } catch (err) {
+      setStatsError(err instanceof Error ? err.message : 'Network error')
+    } finally {
+      setStatsLoading(false)
+    }
+  }
 
   const setQuickRange = (days: number) => {
     const e = new Date()
@@ -157,8 +213,130 @@ export default function NewsletterPrepPage() {
   return (
     <div className="min-h-screen bg-gray-950 text-gray-100 p-6">
       <div className="max-w-4xl mx-auto space-y-6">
-        <h1 className="text-2xl font-bold">Newsletter Prep</h1>
+        <div className="flex items-center gap-6">
+          <h1 className="text-2xl font-bold">Newsletter</h1>
+          <div className="flex gap-1 rounded-lg bg-gray-900 p-1">
+            <button
+              onClick={() => setTab('prep')}
+              className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
+                tab === 'prep' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              Prep
+            </button>
+            <button
+              onClick={() => setTab('stats')}
+              className={`rounded-md px-3 py-1 text-sm font-medium transition-colors ${
+                tab === 'stats' ? 'bg-gray-700 text-white' : 'text-gray-400 hover:text-gray-200'
+              }`}
+            >
+              Stats
+            </button>
+          </div>
+        </div>
 
+        {tab === 'stats' && (
+          <div className="space-y-6">
+            <div className="flex items-end gap-4 rounded-lg border border-gray-800 bg-gray-900 p-4">
+              <div>
+                <label htmlFor="stats-password" className="block text-xs text-gray-400 mb-1">Password</label>
+                <input
+                  id="stats-password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="rounded border border-gray-700 bg-gray-800 px-3 py-1.5 text-sm text-gray-100"
+                  placeholder="Admin password"
+                />
+              </div>
+              <button
+                onClick={pullStats}
+                disabled={statsLoading || !password}
+                className="rounded bg-blue-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-blue-500 disabled:opacity-50"
+              >
+                {statsLoading ? 'Loading...' : 'Pull Stats'}
+              </button>
+            </div>
+
+            {statsError && (
+              <div className="rounded border border-red-800 bg-red-950 px-4 py-2 text-sm text-red-300">
+                {statsError}
+              </div>
+            )}
+
+            {statsData && statsData.length === 0 && (
+              <p className="text-sm text-gray-400">No sent editions found.</p>
+            )}
+
+            {statsData && statsData.map((edition) => (
+              <div key={edition.edition_date} className="rounded-lg border border-gray-800 bg-gray-900 p-4 space-y-4">
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-100">{edition.edition_date}</h2>
+                    <p className="text-sm text-gray-400 mt-0.5">{edition.subject}</p>
+                  </div>
+                  <div className="text-right text-xs text-gray-500">
+                    <p>{edition.recipient_count} recipients</p>
+                    <p>{edition.article_count} articles</p>
+                  </div>
+                </div>
+
+                {!edition.tracking_available ? (
+                  <p className="text-sm text-amber-400">
+                    No email IDs stored for this edition. Stats will be available for future sends.
+                  </p>
+                ) : edition.summary ? (
+                  <>
+                    <div className="grid grid-cols-3 gap-3 sm:grid-cols-6">
+                      {[
+                        { label: 'Sent', value: edition.summary.total, color: 'text-gray-100' },
+                        { label: 'Delivered', value: edition.summary.delivered, color: 'text-emerald-400' },
+                        { label: 'Opened', value: edition.summary.opened, color: 'text-blue-400' },
+                        { label: 'Clicked', value: edition.summary.clicked, color: 'text-purple-400' },
+                        { label: 'Bounced', value: edition.summary.bounced, color: 'text-red-400' },
+                        { label: 'Complained', value: edition.summary.complained, color: 'text-orange-400' },
+                      ].map((stat) => (
+                        <div key={stat.label} className="rounded-md bg-gray-800 px-3 py-2 text-center">
+                          <p className={`text-xl font-bold ${stat.color}`}>{stat.value}</p>
+                          <p className="text-[11px] text-gray-500 mt-0.5">{stat.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex gap-4 text-sm">
+                      <span className="text-gray-400">
+                        Open rate: <span className="font-mono text-blue-400">{edition.summary.open_rate}%</span>
+                      </span>
+                      <span className="text-gray-400">
+                        Click rate: <span className="font-mono text-purple-400">{edition.summary.click_rate}%</span>
+                      </span>
+                    </div>
+
+                    <div className="space-y-1">
+                      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Per Recipient</p>
+                      {edition.recipients.map((r) => (
+                        <div key={r.resend_id} className="flex items-center justify-between rounded bg-gray-800/50 px-3 py-1.5 text-sm">
+                          <span className="text-gray-300 font-mono text-xs">{r.email}</span>
+                          <span className={`text-xs font-medium ${
+                            r.last_event === 'clicked' ? 'text-purple-400' :
+                            r.last_event === 'opened' ? 'text-blue-400' :
+                            r.last_event === 'delivered' ? 'text-emerald-400' :
+                            r.last_event === 'bounced' ? 'text-red-400' :
+                            r.last_event === 'complained' ? 'text-orange-400' :
+                            'text-gray-500'
+                          }`}>
+                            {r.last_event ?? r.error ?? 'unknown'}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : null}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {tab === 'prep' && <>
         {/* Controls */}
         <div className="flex flex-wrap items-end gap-4 rounded-lg border border-gray-800 bg-gray-900 p-4">
           <div>
@@ -282,6 +460,7 @@ export default function NewsletterPrepPage() {
             ))}
           </>
         )}
+        </>}
       </div>
     </div>
   )
