@@ -62,7 +62,7 @@ export async function POST(req: Request) {
     const supabase = getSupabaseAdmin()
     const trimmedMessage = message.trim()
     const trimmedEmail = email?.trim() || null
-    const feedbackPage = page || '/news'
+    const feedbackPage = page || '/'
 
     const { error } = await supabase.from('feedback').insert({
       category,

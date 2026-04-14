@@ -225,7 +225,7 @@ export function NewsFeed() {
     if (geography) params.set('geography', geography)
     if (sort && sort !== 'latest') params.set('sort', sort)
     const qs = params.toString()
-    const base = pathname || '/news'
+    const base = pathname || '/'
     router.replace(qs ? `${base}?${qs}` : base, { scroll: false })
   }, [router, pathname, query, dateRange, category, eventType, fundSizeMin, fundSizeMax, geography, sort])
 
