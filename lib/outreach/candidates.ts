@@ -48,17 +48,31 @@ const MEGA_FUND_PATTERNS: string[] = [
 ]
 
 // ─── Hard Block B — Public pensions / state LPs / sovereign / endowments ────
-// Note: "sovereign" alone was too aggressive (false-positive Sovereign Capital
-// Partners and Sovereign Partners in the smoke test). Use "sovereign wealth"
-// / "swf" only for the sovereign pattern.
+// Rule: only use patterns that are multi-word or ≥6 characters. Short
+// abbreviations like 'pers', 'sers', 'swf', 'cpp' create substring false
+// positives on legitimate firm names — confirmed in production dry-run data
+// on 2026-04-14 (Pershing Square → 'pers' match). Every pattern below is
+// either a full phrase or a unique acronym unlikely to appear inside a firm
+// name.
 const PUBLIC_LP_PATTERNS: string[] = [
-  'pension', 'retirement system', 'teachers', 'sers', 'pers', 'strs', 'psers',
-  "employees' retirement", 'employees retirement',
-  'state investment board', 'state investment council',
-  'sovereign wealth', 'swf',
+  'pension',
+  'retirement system',
+  "employees' retirement",
+  'employees retirement',
+  'teachers retirement',
+  "teachers' retirement",
+  'teachers pension',
+  "teachers' pension",
+  'ontario teachers',
+  'state investment board',
+  'state investment council',
+  'sovereign wealth',
   'endowment',
-  'calpers', 'calstrs', 'ny common', 'nyc retirement',
-  'cpp', 'cppib', 'otpp', 'oppf', 'healthcare of ontario',
+  // Specific, unambiguous identifiers:
+  'calpers',
+  'calstrs',
+  'cppib',
+  'healthcare of ontario',
 ]
 
 // ─── Hard Block D — Media outlets ────────────────────────────────────────────
@@ -107,6 +121,34 @@ function matchesAny(firmName: string, patterns: string[]): boolean {
 }
 
 // ─── Bad-news event filter (Hard Block F) ────────────────────────────────────
+// Keyword scan over title+tldr for shutdown/failure language. The classifier's
+// close_type/event_type fields aren't reliable enough on their own — confirmed
+// on 2026-04-14 with Alua Hedge Fund being tagged close_type='fund_close'
+// despite the article title explicitly saying "Shutter $2 Billion Alua Hedge
+// Fund". Sending a celebratory "Saw X closed at $Y today!" to a fund that's
+// actually dying is the worst possible failure mode, so we scan text too.
+const BAD_NEWS_TEXT_PATTERNS: RegExp[] = [
+  /\bshutter(s|ed|ing)?\b/i,
+  /\bwind(ing|ed|s)?[-\s]?down\b/i,
+  /\bwound[-\s]?down\b/i,
+  /\bclosing down\b/i,
+  /\bliquidat(e|es|ed|ing|ion)\b/i,
+  /\bdissolv(e|es|ed|ing)\b/i,
+  /\bcollapse(d|s)?\b/i,
+  /\bbankrupt(cy)?\b/i,
+  /\binsolven(t|cy)\b/i,
+  /\bfraud\b/i,
+  /\bscandal\b/i,
+  /\bindicted?\b/i,
+  /\benforcement action\b/i,
+  /\bfine(d|s)?\b(?=[^.]*regulat)/i, // "fined by regulator" but not "fine print" / "finely tuned"
+]
+
+function hasBadNewsLanguage(article: Article): boolean {
+  const haystack = `${article.title} ${article.tldr ?? ''}`
+  return BAD_NEWS_TEXT_PATTERNS.some((re) => re.test(haystack))
+}
+
 function isBadNewsEvent(article: Article): boolean {
   // Wind-downs are awkward to congratulate on.
   if (article.closeType === 'wind_down') return true
@@ -116,6 +158,9 @@ function isBadNewsEvent(article: Article): boolean {
   // Regulatory actions where the firm is the subject (not the commenter) are
   // usually enforcement news. The article_type signals this.
   if (article.articleType === 'regulatory_action') return true
+  // Title/tldr keyword scan — catches Alua-style "Shutter" language that the
+  // classifier's structured fields miss.
+  if (hasBadNewsLanguage(article)) return true
   return false
 }
 
