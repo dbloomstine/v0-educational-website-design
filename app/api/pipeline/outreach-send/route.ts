@@ -1,0 +1,401 @@
+/**
+ * Outreach cron handler — Path B automation pipeline.
+ *
+ * Runs daily on the Vercel cron schedule defined in vercel.json. Every
+ * weekday at 13:00 UTC it:
+ *
+ *   1. Gates on auth + OUTREACH_ENABLED env flag
+ *   2. Verifies today's newsletter has actually sent
+ *   3. Pulls the articles that went out
+ *   4. Builds candidate firms through the hard-block filters
+ *   5. Runs firm-level dedup against cold_outreach_sent
+ *   6. Enriches a senior contact per firm via Apollo
+ *   7. Runs email-level dedup against subscribers + prior outreach
+ *   8. Caps to OUTREACH_DAILY_CAP (default 10)
+ *   9. For each surviving candidate: generate hook, compose email, quality gate, send via Gmail
+ *  10. Logs every row (sent + skipped) to cold_outreach_sent
+ *  11. Emails Danny a summary
+ *
+ * Kill switches:
+ *   - OUTREACH_ENABLED=true required (default off)
+ *   - OUTREACH_DAILY_CAP enforced in code (default 10)
+ *   - Idempotency guard via countTodaysRuns()
+ */
+
+import { NextResponse } from 'next/server'
+import { getSupabaseAdmin } from '@/lib/supabase/client'
+import { isAuthorizedPipelineRequest } from '@/lib/pipeline/auth'
+import { buildCandidates } from '@/lib/outreach/candidates'
+import { firmLevelDedup, emailLevelDedup, countTodaysRuns } from '@/lib/outreach/dedup'
+import { findContactForFirm } from '@/lib/outreach/apollo-client'
+import { generateHook } from '@/lib/outreach/anthropic-client'
+import { composeEmail, qualityGate } from '@/lib/outreach/template'
+import { sendGmail } from '@/lib/outreach/gmail-client'
+import type { Article, Contact, OutreachRunResult } from '@/lib/outreach/types'
+
+export const maxDuration = 300 // 5 minutes — Apollo + Anthropic + Gmail for 10 candidates
+
+interface NewsletterEditionRow {
+  id: string
+  edition_date: string
+  subject: string
+  status: string
+  article_ids: string[] | null
+}
+
+function todayDateET(): string {
+  return new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+}
+
+// Convert a raw news_items row (with jsonb extracted_data) into our Article type.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function toArticle(row: any): Article {
+  const ed = row.extracted_data ?? {}
+  return {
+    articleId: row.id,
+    title: row.title ?? '',
+    tldr: row.tldr ?? null,
+    articleType: row.article_type ?? null,
+    eventType: row.event_type ?? null,
+    fundCategories: row.fund_categories ?? null,
+    firmName: ed.firm_name ?? null,
+    firmDomain: ed.firm_domain ?? null,
+    fundName: ed.fund_name ?? null,
+    fundNumber: ed.fund_number ?? null,
+    fundSizeUsdMillions:
+      ed.fund_size_usd_millions != null ? Number(ed.fund_size_usd_millions) : null,
+    fundStrategy: ed.fund_strategy ?? null,
+    closeType: ed.close_type ?? null,
+    personName: ed.person_name ?? null,
+    personTitle: ed.person_title ?? null,
+    geography: ed.geography ?? null,
+    sourceName: row.source_name ?? null,
+  }
+}
+
+export async function GET(req: Request) {
+  const startedAt = Date.now()
+
+  // ─── 1. Auth ────────────────────────────────────────────────────────────
+  if (!isAuthorizedPipelineRequest(req)) {
+    return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 })
+  }
+
+  // ─── 2. Kill switch ─────────────────────────────────────────────────────
+  if (process.env.OUTREACH_ENABLED !== 'true') {
+    return NextResponse.json({
+      ok: true,
+      skipped: 'outreach_disabled',
+      note: 'Set OUTREACH_ENABLED=true in Vercel env to activate',
+    })
+  }
+
+  const dailyCap = Number(process.env.OUTREACH_DAILY_CAP ?? '10')
+  if (!Number.isFinite(dailyCap) || dailyCap <= 0) {
+    return NextResponse.json(
+      { ok: false, error: 'Invalid OUTREACH_DAILY_CAP' },
+      { status: 500 },
+    )
+  }
+
+  const supabase = getSupabaseAdmin()
+
+  try {
+    // ─── 3. Idempotency guard ─────────────────────────────────────────────
+    const existingCount = await countTodaysRuns(supabase)
+    if (existingCount >= dailyCap) {
+      return NextResponse.json({
+        ok: true,
+        skipped: 'already_ran_today',
+        existingCount,
+        dailyCap,
+      })
+    }
+
+    // ─── 4. Verify newsletter sent today ──────────────────────────────────
+    const editionDate = todayDateET()
+    const { data: edition, error: editionErr } = await supabase
+      .from('newsletter_editions')
+      .select('id, edition_date, subject, status, article_ids')
+      .eq('edition_date', editionDate)
+      .eq('status', 'sent')
+      .single<NewsletterEditionRow>()
+
+    if (editionErr || !edition) {
+      return NextResponse.json({
+        ok: true,
+        skipped: 'newsletter_not_sent',
+        editionDate,
+        note: 'Outreach anchors on the morning newsletter. If newsletter_editions has no sent row, outreach aborts.',
+      })
+    }
+
+    if (!edition.article_ids || edition.article_ids.length === 0) {
+      return NextResponse.json({
+        ok: true,
+        skipped: 'no_articles',
+        editionDate,
+      })
+    }
+
+    // ─── 5. Pull articles ─────────────────────────────────────────────────
+    const { data: newsRows, error: newsErr } = await supabase
+      .from('news_items')
+      .select('id, title, tldr, article_type, event_type, fund_categories, extracted_data, source_name')
+      .in('id', edition.article_ids)
+
+    if (newsErr) {
+      throw new Error(`Failed to fetch articles: ${newsErr.message}`)
+    }
+
+    const articles: Article[] = (newsRows ?? []).map(toArticle)
+
+    // ─── 6. Hard-block filters + candidate build ──────────────────────────
+    const allCandidates = buildCandidates(articles)
+
+    // ─── 7. Firm-level dedup (name + domain, 120d + permanent blocks) ──────
+    const dedupedFirms = await firmLevelDedup(supabase, allCandidates)
+
+    // ─── 8. Apollo enrichment, capped at CAP + headroom ───────────────────
+    // Enrich up to CAP * 2 candidates so we have headroom for Apollo misses
+    // and email-level dedup attrition. Stop early once we have CAP verified
+    // contacts to minimize credit spend.
+    const enrichmentTarget = dailyCap * 2
+    const apolloCounters = { searchCalls: 0, matchCalls: 0 }
+    const contacts: Contact[] = []
+    const apolloMisses: Array<{ firm: string; reason: string }> = []
+
+    for (const candidate of dedupedFirms) {
+      if (contacts.length >= enrichmentTarget) break
+      try {
+        const contact = await findContactForFirm(candidate.article, apolloCounters)
+        if (contact) {
+          contacts.push(contact)
+        } else {
+          apolloMisses.push({
+            firm: candidate.firmName,
+            reason: 'no_verified_email',
+          })
+        }
+      } catch (err) {
+        console.error(`Apollo lookup failed for ${candidate.firmName}:`, err)
+        apolloMisses.push({
+          firm: candidate.firmName,
+          reason: err instanceof Error ? err.message : 'unknown',
+        })
+      }
+    }
+
+    // ─── 9. Email-level dedup ─────────────────────────────────────────────
+    const dedupedContacts = await emailLevelDedup(supabase, contacts)
+
+    // ─── 10. Cap to daily limit ───────────────────────────────────────────
+    const remainingCapSlots = Math.max(0, dailyCap - existingCount)
+    const batch = dedupedContacts.slice(0, remainingCapSlots)
+
+    // ─── 11. Generate hooks, compose, gate, send, log ─────────────────────
+    const sentDetails: OutreachRunResult['sentDetails'] = []
+    const skipped: Record<string, number> = {}
+    const dropped: Array<{ firm: string; reason: string }> = [...apolloMisses]
+    const gmailFailures: string[] = []
+
+    for (const contact of batch) {
+      // Short-circuit if we've hit 3 consecutive Gmail failures — likely
+      // auth or rate-limit issue, bail before burning more Anthropic calls.
+      if (gmailFailures.length >= 3) {
+        const recentThree = gmailFailures.slice(-3)
+        if (recentThree.every((f) => f === 'fail')) {
+          dropped.push({
+            firm: contact.firmName,
+            reason: 'bailed_after_3_gmail_failures',
+          })
+          skipped.gmail_failed = (skipped.gmail_failed ?? 0) + 1
+          continue
+        }
+      }
+
+      // Generate hook via Anthropic.
+      let hook: string
+      try {
+        hook = await generateHook(contact.article)
+      } catch (err) {
+        console.error(`Hook generation failed for ${contact.firmName}:`, err)
+        dropped.push({
+          firm: contact.firmName,
+          reason: `hook_generation: ${err instanceof Error ? err.message : 'unknown'}`,
+        })
+        skipped.hook_generation_failed = (skipped.hook_generation_failed ?? 0) + 1
+        await logSkipped(contact, 'hook_generation_failed')
+        continue
+      }
+
+      // Compose email.
+      const { subject, body } = composeEmail({
+        firstName: contact.firstName,
+        firmName: contact.firmName,
+        hook,
+      })
+
+      // Quality gate.
+      const gateResult = qualityGate(body, subject)
+      if (!gateResult.ok) {
+        dropped.push({
+          firm: contact.firmName,
+          reason: `quality_gate: ${gateResult.reason}`,
+        })
+        skipped[`quality_${gateResult.reason}`] =
+          (skipped[`quality_${gateResult.reason}`] ?? 0) + 1
+        await logSkipped(contact, `quality_${gateResult.reason}`)
+        continue
+      }
+
+      // Send via Gmail.
+      try {
+        const { messageId } = await sendGmail({ to: contact.email, subject, body })
+        gmailFailures.push('ok')
+        sentDetails.push({
+          firm: contact.firmName,
+          email: contact.email,
+          subject,
+          messageId,
+        })
+
+        // Log successful send.
+        await supabase.from('cold_outreach_sent').insert({
+          email: contact.email,
+          first_name: contact.firstName || null,
+          last_name: contact.lastName || null,
+          firm_name: contact.firmName,
+          firm_domain: contact.firmDomain,
+          person_title: contact.title || null,
+          article_id: contact.article.articleId,
+          story_type: contact.article.eventType ?? contact.article.articleType ?? 'unknown',
+          subject,
+          draft_id: messageId,
+          status: 'sent',
+          sent_at: new Date().toISOString(),
+          notes: `auto-sent via outreach-send cron, run=${startedAt}`,
+        })
+      } catch (err) {
+        console.error(`Gmail send failed for ${contact.email}:`, err)
+        gmailFailures.push('fail')
+        dropped.push({
+          firm: contact.firmName,
+          reason: `gmail_send: ${err instanceof Error ? err.message : 'unknown'}`,
+        })
+        skipped.gmail_send_failed = (skipped.gmail_send_failed ?? 0) + 1
+      }
+    }
+
+    // ─── 12. Summary email to Danny ──────────────────────────────────────
+    const result: OutreachRunResult = {
+      ok: true,
+      sent: sentDetails.length,
+      cap: dailyCap,
+      skipped,
+      dropped,
+      sentDetails,
+      apolloSearchCalls: apolloCounters.searchCalls,
+      apolloMatchCalls: apolloCounters.matchCalls,
+      runtimeMs: Date.now() - startedAt,
+    }
+
+    try {
+      await sendSummaryEmail(result, editionDate, edition.subject)
+    } catch (err) {
+      console.error('Summary email send failed:', err)
+      // Don't fail the whole run on summary email failure — the actual
+      // outreach already happened.
+    }
+
+    return NextResponse.json(result)
+  } catch (err) {
+    console.error('Outreach cron failed:', err)
+    const errorMessage = err instanceof Error ? err.message : 'unknown'
+
+    // Attempt to alert Danny via the same Gmail send path.
+    try {
+      await sendGmail({
+        to: process.env.GMAIL_SENDER_EMAIL ?? 'dbloomstine@gmail.com',
+        subject: `⚠️ Outreach cron failed ${todayDateET()}`,
+        body: `The /api/pipeline/outreach-send cron failed at ${new Date().toISOString()}.\n\nError: ${errorMessage}\n\nRuntime so far: ${Date.now() - startedAt}ms\n\nCheck Vercel function logs for the full stack trace.`,
+      })
+    } catch (alertErr) {
+      console.error('Failure alert email also failed:', alertErr)
+    }
+
+    return NextResponse.json(
+      { ok: false, error: errorMessage, runtimeMs: Date.now() - startedAt },
+      { status: 500 },
+    )
+  }
+
+  // Helper: log a skipped row so dedup still protects this contact.
+  async function logSkipped(contact: Contact, reason: string) {
+    await supabase.from('cold_outreach_sent').insert({
+      email: contact.email,
+      first_name: contact.firstName || null,
+      last_name: contact.lastName || null,
+      firm_name: contact.firmName,
+      firm_domain: contact.firmDomain,
+      person_title: contact.title || null,
+      article_id: contact.article.articleId,
+      story_type: contact.article.eventType ?? contact.article.articleType ?? 'unknown',
+      subject: `[skipped: ${reason}]`,
+      draft_id: null,
+      status: 'skipped',
+      notes: `${reason} | run=${startedAt}`,
+    })
+  }
+}
+
+async function sendSummaryEmail(
+  result: OutreachRunResult,
+  editionDate: string,
+  editionSubject: string,
+) {
+  const to = process.env.GMAIL_SENDER_EMAIL ?? 'dbloomstine@gmail.com'
+  const subject = `Outreach summary ${editionDate} — ${result.sent} sent`
+
+  const lines: string[] = []
+  lines.push(`FundOpsHQ outreach cron — ${editionDate}`)
+  lines.push('')
+  lines.push(`Anchored on: ${editionSubject}`)
+  lines.push(`Sent: ${result.sent} of ${result.cap} (cap)`)
+  lines.push(`Runtime: ${(result.runtimeMs / 1000).toFixed(1)}s`)
+  lines.push(`Apollo calls: ${result.apolloSearchCalls} search + ${result.apolloMatchCalls} match`)
+  lines.push('')
+
+  if (result.sentDetails.length > 0) {
+    lines.push('Recipients:')
+    for (const s of result.sentDetails) {
+      lines.push(`  - ${s.firm} — ${s.email}`)
+    }
+    lines.push('')
+  }
+
+  if (result.dropped.length > 0) {
+    lines.push('Dropped:')
+    for (const d of result.dropped) {
+      lines.push(`  - ${d.firm}: ${d.reason}`)
+    }
+    lines.push('')
+  }
+
+  if (Object.keys(result.skipped).length > 0) {
+    lines.push('Skipped counts:')
+    for (const [reason, count] of Object.entries(result.skipped)) {
+      lines.push(`  - ${reason}: ${count}`)
+    }
+    lines.push('')
+  }
+
+  lines.push('Next run: tomorrow, 13:00 UTC (weekdays only)')
+  lines.push(`Kill switch: set OUTREACH_ENABLED=false in Vercel env to pause.`)
+
+  await sendGmail({
+    to,
+    subject,
+    body: lines.join('\n'),
+  })
+}

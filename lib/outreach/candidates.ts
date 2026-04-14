@@ -1,0 +1,209 @@
+/**
+ * Candidate firm builder for the daily outreach pipeline.
+ *
+ * Takes the raw article list from today's newsletter edition and applies
+ * the hard-block filters (mega-funds, public pensions, non-NA geography,
+ * media outlets, fund admin service providers, bad-news events), then
+ * emits a deduped list of candidate firms ready for Apollo enrichment.
+ *
+ * This is a direct port of the `grow-newsletter` skill's Step 3 with the
+ * post-smoke-test additions Danny approved on 2026-04-14:
+ *   - Hard Block B "sovereign" substring collapsed to "sovereign wealth" / "swf"
+ *   - Hard Block A expanded with Thoma Bravo, Vista, Silver Lake, H&F, Adams Street
+ *   - New Hard Block E for fund admin service providers
+ *   - New Hard Block F for bad-news events (wind-downs, bankruptcies, regulatory actions)
+ *   - "Global" geography accepted as NA-inclusive
+ *
+ * The same rules should eventually be synced back into the skill file. For
+ * now this file is the canonical source because Path B ships first.
+ */
+
+import type { Article, Candidate } from './types'
+
+// ─── Hard Block A — Mega-fund GPs (case-insensitive substring match) ────────
+const MEGA_FUND_PATTERNS: string[] = [
+  'blackstone', 'blackstone group', 'blackstone inc',
+  'kkr', 'kkr & co', 'kohlberg kravis roberts',
+  'apollo global management', 'apollo management', 'apollo asset management',
+  'carlyle', 'the carlyle group',
+  'tpg capital', 'tpg inc',
+  'bain capital',
+  'advent international',
+  'warburg pincus',
+  'cvc capital partners',
+  'eqt group', 'eqt ab', 'eqt partners',
+  'permira',
+  'cinven',
+  'brookfield asset management',
+  'ares management', 'ares capital',
+  'oaktree capital',
+  'goldman sachs asset management', 'goldman sachs merchant banking',
+  'morgan stanley investment management',
+  // Post-smoke-test additions (2026-04-14)
+  'thoma bravo',
+  'vista equity partners',
+  'silver lake',
+  'hellman & friedman',
+  'adams street partners', // $65B AUM — Danny flagged for block list
+]
+
+// ─── Hard Block B — Public pensions / state LPs / sovereign / endowments ────
+// Note: "sovereign" alone was too aggressive (false-positive Sovereign Capital
+// Partners and Sovereign Partners in the smoke test). Use "sovereign wealth"
+// / "swf" only for the sovereign pattern.
+const PUBLIC_LP_PATTERNS: string[] = [
+  'pension', 'retirement system', 'teachers', 'sers', 'pers', 'strs', 'psers',
+  "employees' retirement", 'employees retirement',
+  'state investment board', 'state investment council',
+  'sovereign wealth', 'swf',
+  'endowment',
+  'calpers', 'calstrs', 'ny common', 'nyc retirement',
+  'cpp', 'cppib', 'otpp', 'oppf', 'healthcare of ontario',
+]
+
+// ─── Hard Block D — Media outlets ────────────────────────────────────────────
+const MEDIA_OUTLET_PATTERNS: string[] = [
+  'bloomberg', 'reuters', 'wall street journal', 'wsj',
+  'financial times', 'ft',
+  'pitchbook', 'pe hub', 'private equity international', 'pei', 'buyouts',
+  'private equity news', 'axios', 'business insider', 'cnbc', 'the information',
+  'institutional investor', 'hedgeweek', 'alt credit',
+]
+
+// ─── Hard Block E — Fund admin service providers + actuarial consulting ─────
+// Added 2026-04-14 per Danny's rule: "we don't want to reach out to other
+// fund admin service providers." Apex, Mercer got dropped manually in the
+// smoke test — codify here.
+const FUND_ADMIN_PATTERNS: string[] = [
+  'apex group', 'apex fund services',
+  'alter domus',
+  'citco',
+  'gen ii fund services', 'gen ii',
+  'ss&c', 'ss&c technologies',
+  'sei investments', 'sei ',
+  'mercer', // Marsh subsidiary, actuarial consulting
+  'aon ',
+  'intertrust',
+  'vistra',
+]
+
+// ─── Geography filter helper ─────────────────────────────────────────────────
+function hasNorthAmericaGeography(geography: string[] | null): boolean {
+  if (!geography || geography.length === 0) return false
+  const normalized = geography.map((g) => g.toLowerCase())
+  // Accept explicit "North America" OR "Global" (the firm is likely NA-based
+  // for most global firms we cover, and the GDPR risk is about actually
+  // emailing EU contacts, not about tagging).
+  return normalized.includes('north america') || normalized.includes('global')
+}
+
+// ─── Substring-match helper ──────────────────────────────────────────────────
+function matchesAny(firmName: string, patterns: string[]): boolean {
+  const lower = firmName.toLowerCase()
+  return patterns.some((p) => lower.includes(p))
+}
+
+// ─── Bad-news event filter (Hard Block F) ────────────────────────────────────
+function isBadNewsEvent(article: Article): boolean {
+  // Wind-downs are awkward to congratulate on.
+  if (article.closeType === 'wind_down') return true
+  // Bankruptcies or similar failure events.
+  const evt = article.eventType?.toLowerCase() ?? ''
+  if (evt.includes('bankruptcy') || evt.includes('insolvency') || evt.includes('liquidation')) return true
+  // Regulatory actions where the firm is the subject (not the commenter) are
+  // usually enforcement news. The article_type signals this.
+  if (article.articleType === 'regulatory_action') return true
+  return false
+}
+
+/**
+ * Build the candidate firm list from today's articles. Applies all hard
+ * blocks, drops duplicates (one candidate per firm per day), and returns
+ * a list sized for downstream Apollo enrichment.
+ *
+ * The caller is responsible for running firm-level dedup against
+ * cold_outreach_sent (see `lib/outreach/dedup.ts`).
+ */
+export function buildCandidates(articles: Article[]): Candidate[] {
+  const seenFirms = new Set<string>()
+  const candidates: Candidate[] = []
+
+  for (const article of articles) {
+    const firmName = article.firmName?.trim()
+    if (!firmName) continue
+
+    // Hard Block C — geography
+    if (!hasNorthAmericaGeography(article.geography)) continue
+
+    // Hard Block D — media outlets
+    if (matchesAny(firmName, MEDIA_OUTLET_PATTERNS)) continue
+
+    // Hard Block A — mega-fund GPs
+    if (matchesAny(firmName, MEGA_FUND_PATTERNS)) continue
+
+    // Hard Block B — public pensions / sovereign / endowments
+    if (matchesAny(firmName, PUBLIC_LP_PATTERNS)) continue
+
+    // Hard Block E — fund admin service providers / actuarial consulting
+    if (matchesAny(firmName, FUND_ADMIN_PATTERNS)) continue
+
+    // Hard Block F — bad-news events
+    if (isBadNewsEvent(article)) continue
+
+    // One candidate per firm per day
+    const firmKey = firmName.toLowerCase()
+    if (seenFirms.has(firmKey)) continue
+    seenFirms.add(firmKey)
+
+    candidates.push({
+      article,
+      firmName,
+      firmDomain: article.firmDomain,
+      storyType: article.eventType ?? article.articleType ?? 'unknown',
+      hasNamedPerson: !!article.personName,
+      personName: article.personName,
+      personTitle: article.personTitle,
+    })
+  }
+
+  return candidates
+}
+
+/**
+ * Shortened firm name for the email subject line. Drops trailing
+ * corporate suffixes like "Capital", "Partners", "Management" so
+ * "Court Square Capital Partners LP" becomes "Court Square".
+ *
+ * Rule: if the shortened form is <5 chars or generic, keep the full name.
+ */
+export function shortenFirmName(firmName: string): string {
+  const trimmed = firmName.trim()
+  const suffixesToStrip = [
+    ' Capital Partners LP',
+    ' Capital Partners',
+    ' Capital Management',
+    ' Asset Management',
+    ' Investment Management',
+    ' Capital',
+    ' Partners',
+    ' Management',
+    ' Holdings',
+    ' Group',
+    ' LLC',
+    ' LP',
+    ' Inc',
+  ]
+
+  let shortened = trimmed
+  for (const suffix of suffixesToStrip) {
+    if (shortened.toLowerCase().endsWith(suffix.toLowerCase())) {
+      shortened = shortened.slice(0, -suffix.length).trim()
+      break // only strip the longest matching suffix once
+    }
+  }
+
+  // Sanity check: if stripping produced something too short or generic,
+  // fall back to the full name.
+  if (shortened.length < 4) return trimmed
+  return shortened
+}

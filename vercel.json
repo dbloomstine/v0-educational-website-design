@@ -21,6 +21,14 @@
     {
       "path": "/api/pipeline/newsletter-send",
       "schedule": "30 9 * * *"
+    },
+    {
+      "path": "/api/pipeline/outreach-send",
+      "schedule": "0 13 * * 1-5"
+    },
+    {
+      "path": "/api/pipeline/outreach-monitor",
+      "schedule": "15 * * * *"
     }
   ]
 }
