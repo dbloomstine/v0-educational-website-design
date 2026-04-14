@@ -87,8 +87,8 @@ async function searchPeople(params: {
   titles?: string[]
   domain?: string | null
 }): Promise<ApolloSearchPerson[]> {
-  const apiKey = process.env.APOLLO_API_KEY
-  if (!apiKey) throw new Error('Missing APOLLO_API_KEY')
+  const apiKey = process.env.OUTREACH_APOLLO_API_KEY
+  if (!apiKey) throw new Error('Missing OUTREACH_APOLLO_API_KEY')
 
   const body: Record<string, unknown> = {
     q_keywords: params.firmName,
@@ -131,8 +131,8 @@ async function matchPerson(params: {
   organizationName?: string
   domain?: string | null
 }): Promise<ApolloMatchPerson | null> {
-  const apiKey = process.env.APOLLO_API_KEY
-  if (!apiKey) throw new Error('Missing APOLLO_API_KEY')
+  const apiKey = process.env.OUTREACH_APOLLO_API_KEY
+  if (!apiKey) throw new Error('Missing OUTREACH_APOLLO_API_KEY')
 
   const body: Record<string, unknown> = {}
   if (params.personId) body.id = params.personId
