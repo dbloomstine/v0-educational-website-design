@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { CheckCircle2, Loader2, ArrowRight, Mail } from 'lucide-react'
@@ -9,6 +9,23 @@ export function HeroSubscribe() {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  const emailInputRef = useRef<HTMLInputElement>(null)
+
+  // Focus the email input whenever the URL lands on #subscribe — covers cross-page
+  // navigation from /about etc. and hash-change clicks from the header/footer.
+  // Same-hash repeat clicks are handled imperatively in site-header.tsx.
+  useEffect(() => {
+    const focusIfTargeted = () => {
+      if (window.location.hash === '#subscribe') {
+        requestAnimationFrame(() => {
+          emailInputRef.current?.focus({ preventScroll: true })
+        })
+      }
+    }
+    focusIfTargeted()
+    window.addEventListener('hashchange', focusIfTargeted)
+    return () => window.removeEventListener('hashchange', focusIfTargeted)
+  }, [])
 
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
@@ -230,13 +247,15 @@ export function HeroSubscribe() {
                 {status === 'success' ? (
                   <div className="flex items-center gap-2.5 rounded-sm border border-emerald-500/30 bg-emerald-500/10 px-4 py-3.5">
                     <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
-                    <span className="text-sm text-emerald-300">Check your inbox to confirm.</span>
+                    <span className="text-sm text-emerald-300">You&apos;re subscribed. Your first edition lands tomorrow morning.</span>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-2.5">
                     <div className="relative">
                       <Mail className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
                       <input
+                        ref={emailInputRef}
+                        id="newsletter-email"
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}

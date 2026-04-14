@@ -20,6 +20,25 @@ export function SiteHeader() {
   const isActive = (matches: readonly string[]) =>
     matches.some((m) => (m === "/" ? pathname === "/" : pathname.startsWith(m)))
 
+  // Clicking Subscribe in the header scrolls to the hero signup card AND
+  // focuses the email input (otherwise a repeat click from /#subscribe is a
+  // no-op and users think the button is broken). On non-home pages we let
+  // the Link navigate normally — hero-subscribe.tsx's mount effect picks up
+  // the #subscribe hash and focuses the input on landing.
+  const handleSubscribeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (pathname !== "/") return
+    e.preventDefault()
+    setMobileMenuOpen(false)
+    document.getElementById("subscribe")?.scrollIntoView({ behavior: "smooth", block: "start" })
+    // Delay slightly so smooth-scroll doesn't yank focus mid-animation.
+    window.setTimeout(() => {
+      document.getElementById("newsletter-email")?.focus({ preventScroll: true })
+    }, 450)
+    if (window.location.hash !== "#subscribe") {
+      window.history.pushState(null, "", "/#subscribe")
+    }
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b-2 border-foreground/15 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75">
       <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
@@ -69,6 +88,7 @@ export function SiteHeader() {
           {/* Primary subscribe CTA */}
           <Link
             href="/#subscribe"
+            onClick={handleSubscribeClick}
             className="group hidden sm:inline-flex h-9 items-center gap-2 rounded-sm bg-foreground px-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-background transition-all hover:bg-amber-400 hover:text-background"
           >
             Subscribe
@@ -124,7 +144,7 @@ export function SiteHeader() {
 
             <Link
               href="/#subscribe"
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={handleSubscribeClick}
               className="mt-3 flex items-center justify-center gap-2 rounded-sm bg-foreground px-4 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-background"
             >
               Subscribe to FundOps Daily
