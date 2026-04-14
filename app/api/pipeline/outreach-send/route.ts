@@ -189,17 +189,24 @@ export async function GET(req: Request) {
     // ─── 9. Email-level dedup ─────────────────────────────────────────────
     const dedupedContacts = await emailLevelDedup(supabase, contacts)
 
-    // ─── 10. Cap to daily limit ───────────────────────────────────────────
+    // ─── 10. Determine remaining cap slots ────────────────────────────────
     const remainingCapSlots = Math.max(0, dailyCap - existingCount)
-    const batch = dedupedContacts.slice(0, remainingCapSlots)
 
     // ─── 11. Generate hooks, compose, gate, send, log ─────────────────────
+    // Iterate the full deduped contact list and break when we've SENT the
+    // remaining-cap count. Quality-gate drops and hook-generation failures
+    // do NOT consume cap slots — we keep going until we hit the cap or run
+    // out of candidates. This is important because Danny wants a reliable
+    // daily send volume even when some candidates fail quality checks.
     const sentDetails: OutreachRunResult['sentDetails'] = []
     const skipped: Record<string, number> = {}
     const dropped: Array<{ firm: string; reason: string }> = [...apolloMisses]
     const gmailFailures: string[] = []
 
-    for (const contact of batch) {
+    for (const contact of dedupedContacts) {
+      // Hit the cap — stop iterating.
+      if (sentDetails.length >= remainingCapSlots) break
+
       // Short-circuit if we've hit 3 consecutive Gmail failures — likely
       // auth or rate-limit issue, bail before burning more Anthropic calls.
       if (gmailFailures.length >= 3) {

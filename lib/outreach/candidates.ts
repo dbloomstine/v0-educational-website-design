@@ -62,10 +62,13 @@ const PUBLIC_LP_PATTERNS: string[] = [
 ]
 
 // ─── Hard Block D — Media outlets ────────────────────────────────────────────
+// Note: avoid bare 2-char patterns like 'ft' — they false-positive on firm
+// names like "Soft", "Draft", "Lyft Ventures". Use the full outlet name or
+// skip the abbreviation.
 const MEDIA_OUTLET_PATTERNS: string[] = [
   'bloomberg', 'reuters', 'wall street journal', 'wsj',
-  'financial times', 'ft',
-  'pitchbook', 'pe hub', 'private equity international', 'pei', 'buyouts',
+  'financial times',
+  'pitchbook', 'pe hub', 'private equity international', 'buyouts',
   'private equity news', 'axios', 'business insider', 'cnbc', 'the information',
   'institutional investor', 'hedgeweek', 'alt credit',
 ]

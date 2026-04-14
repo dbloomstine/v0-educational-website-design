@@ -232,9 +232,14 @@ export async function findContactForFirm(
   if (person.email_status !== 'verified') return null
   if (!person.email) return null
 
+  // Empty first name produces "Hi ," in the greeting which looks broken.
+  // Drop the contact rather than send a malformed email. The quality gate
+  // has a redundant check for belt + suspenders.
+  if (!person.first_name || !person.first_name.trim()) return null
+
   return {
     email: person.email,
-    firstName: person.first_name ?? '',
+    firstName: person.first_name,
     lastName: person.last_name ?? '',
     title: person.title ?? '',
     firmName: person.organization?.name ?? article.firmName,

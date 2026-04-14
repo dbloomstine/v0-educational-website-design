@@ -31,15 +31,10 @@ export async function firmLevelDedup(
 ): Promise<Candidate[]> {
   if (candidates.length === 0) return []
 
-  const firmNamesLower = candidates.map((c) => c.firmName.toLowerCase())
-  const firmDomains = candidates
-    .map((c) => c.firmDomain)
-    .filter((d): d is string => !!d)
-
-  // Fetch all rows where either firm_name (lowered) or firm_domain match
-  // within 120 days OR are permanently blocked. Supabase's .or() with
-  // nested filters is awkward, so we do two queries and union the result
-  // sets. Cheap on small batch sizes.
+  // MVP approach: fetch all rows in the 120-day window + permanent blocks,
+  // then filter the candidate list client-side. At small table sizes (we
+  // expect <5k rows for the first year), this is simpler than Supabase's
+  // awkward .or() filter chain. Revisit if cold_outreach_sent grows large.
 
   const { data: byName, error: nameErr } = await supabase
     .from('cold_outreach_sent')
@@ -90,8 +85,6 @@ export async function emailLevelDedup(
   contacts: Contact[],
 ): Promise<Contact[]> {
   if (contacts.length === 0) return []
-
-  const emailsLower = contacts.map((c) => c.email.toLowerCase())
 
   // 1. newsletter_subscribers check — any status (confirmed, unsubscribed, etc.).
   const { data: subs, error: subErr } = await supabase

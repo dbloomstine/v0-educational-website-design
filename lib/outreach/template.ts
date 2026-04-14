@@ -82,8 +82,8 @@ export function qualityGate(body: string, subject: string): QualityGateResult {
     return { ok: false, reason: 'disingenuous_phrasing' }
   }
 
-  // 7. Greeting present.
-  if (!body.startsWith('Hi ')) {
+  // 7. Greeting present — and not the empty-first-name "Hi ," form.
+  if (!body.startsWith('Hi ') || body.startsWith('Hi ,')) {
     return { ok: false, reason: 'missing_greeting' }
   }
 
