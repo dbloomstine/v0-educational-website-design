@@ -341,6 +341,7 @@ export async function GET(req: Request) {
         const composed = composeForwardEmail({
           firstName: contact.firstName,
           firmName: contact.firmName,
+          article: contact.article,
           newsletter,
         })
         subject = composed.subject

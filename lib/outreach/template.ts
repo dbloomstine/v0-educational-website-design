@@ -23,7 +23,7 @@
  * substitution.
  */
 
-import type { ComposedEmail, QualityGateResult } from './types'
+import type { Article, ComposedEmail, QualityGateResult } from './types'
 import type { NewsletterPayload } from './newsletter-fetch'
 import { shortenFirmName } from './candidates'
 
@@ -123,10 +123,17 @@ export function wordCount(text: string): number {
 export function composeForwardEmail(params: {
   firstName: string
   firmName: string
+  article: Article
   newsletter: NewsletterPayload
 }): ComposedEmail {
-  const { firstName, firmName, newsletter } = params
+  const { firstName, firmName, article, newsletter } = params
   const firmShort = shortenFirmName(firmName)
+
+  // Derive the newsletter section the firm appears in, so the intro
+  // can tell the recipient where to scroll to find their story. When
+  // the section can't be determined, fall back to no parenthetical.
+  const section = sectionForArticle(article)
+  const sectionParenthetical = section ? ` (${section} section)` : ''
 
   // Subject: firm-specific rather than echoing the newsletter's generic
   // subject. The newsletter's own subject line features whichever story
@@ -144,7 +151,7 @@ export function composeForwardEmail(params: {
   const textIntro = [
     `Hi ${firstName},`,
     '',
-    `${firmShort} came up in today's FundOps Daily. Forwarding the full brief so you can see it. If this is up your alley, you can subscribe daily at fundopshq.com.`,
+    `${firmShort} came up in today's FundOps Daily${sectionParenthetical}. Forwarding the full brief so you can see it. If this is up your alley, you can subscribe daily at fundopshq.com.`,
     '',
     'Danny',
     'Founder & Host, FundOpsHQ',
@@ -174,7 +181,7 @@ export function composeForwardEmail(params: {
     "BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;" +
     'font-size:15px;line-height:1.55;color:#202124;">' +
     `<p style="margin:0 0 14px 0;">Hi ${escapeHtml(firstName)},</p>` +
-    `<p style="margin:0 0 14px 0;">${escapeHtml(firmShort)} came up in today's FundOps Daily. Forwarding the full brief so you can see it. If this is up your alley, you can subscribe daily at <a href="https://fundopshq.com" style="color:#1a73e8;text-decoration:underline;">fundopshq.com</a>.</p>` +
+    `<p style="margin:0 0 14px 0;">${escapeHtml(firmShort)} came up in today's FundOps Daily${escapeHtml(sectionParenthetical)}. Forwarding the full brief so you can see it. If this is up your alley, you can subscribe daily at <a href="https://fundopshq.com" style="color:#1a73e8;text-decoration:underline;">fundopshq.com</a>.</p>` +
     '<p style="margin:0 0 18px 0;">Danny<br>Founder &amp; Host, FundOpsHQ</p>' +
     '<p style="margin:0;color:#80868b;font-size:12px;font-family:monospace;">' +
     `---------- Forwarded message ----------<br>` +
@@ -209,6 +216,81 @@ function escapeHtml(s: string): string {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;')
+}
+
+/**
+ * Map an article to its FundOps Daily newsletter section name, so the
+ * forward-mode intro can tell the recipient where to scroll. Returns
+ * null when we can't determine the section confidently — the intro
+ * then omits the parenthetical rather than guess wrong.
+ *
+ * Mapping rules (in priority order):
+ *   1. M&A events (acquisition/merger) → "Deals"
+ *   2. Executive moves → "People Moves" (unreachable today because
+ *      Block G drops person-move articles before they reach Apollo,
+ *      but left in place in case the block is ever relaxed).
+ *   3. Firm name matches LP/pension language → "LP Commitments"
+ *   4. fund_categories asset class → Credit / VC / PE / Hedge Funds /
+ *      Real Estate / Infrastructure
+ *   5. Unknown → null (no parenthetical in the intro)
+ *
+ * fund_categories values in Supabase are capitalized acronyms (PE, VC)
+ * and lowercase words (credit, real_estate, hedge, infrastructure).
+ * See the distinct-values query in the newsletter-fetch notes.
+ */
+function sectionForArticle(article: Article): string | null {
+  const evt = (article.eventType ?? article.articleType ?? '').toLowerCase()
+
+  // Deals section: M&A events take priority over asset class.
+  if (evt === 'acquisition' || evt === 'merger') return 'Deals'
+
+  // People Moves section: executive events. Unreachable via Block G.
+  if (
+    evt.startsWith('executive_') ||
+    evt === 'hire' ||
+    evt === 'appointment' ||
+    evt === 'departure'
+  ) {
+    return 'People Moves'
+  }
+
+  // LP Commitments section: firm name heuristic for pensions,
+  // sovereign wealth, retirement systems, state investment boards.
+  // The classifier's article_type for these is usually 'capital_raise'
+  // so we can't rely on it — match the firm name directly.
+  const firm = (article.firmName ?? '').toLowerCase()
+  if (
+    firm.includes('pension') ||
+    firm.includes('retirement') ||
+    firm.includes('sovereign wealth') ||
+    firm.includes('teachers') ||
+    firm.includes('endowment') ||
+    firm.includes('state investment board') ||
+    firm.includes('state investment council') ||
+    firm === 'calpers' ||
+    firm === 'calstrs' ||
+    firm === 'cppib'
+  ) {
+    return 'LP Commitments'
+  }
+
+  // Asset class from fund_categories. Real Supabase values as of
+  // 2026-04-15: "PE", "VC", "credit", "real_estate", "hedge",
+  // "infrastructure", "secondaries", "gp_stakes".
+  const cats = (article.fundCategories ?? []).map((c) => c.toLowerCase())
+  if (cats.includes('credit')) return 'Credit'
+  if (cats.includes('vc')) return 'Venture Capital'
+  if (cats.includes('pe')) return 'Private Equity'
+  if (cats.includes('hedge')) return 'Hedge Funds'
+  if (cats.includes('real_estate')) return 'Real Estate'
+  if (cats.includes('infrastructure')) return 'Infrastructure'
+  // Secondaries and gp_stakes don't have dedicated sections — they're
+  // typically grouped under Private Equity in the newsletter layout.
+  if (cats.includes('secondaries') || cats.includes('gp_stakes')) {
+    return 'Private Equity'
+  }
+
+  return null
 }
 
 /**
