@@ -43,11 +43,14 @@ export async function GET(req: Request) {
     // 2. Pattern scan on the raw HTML — gives us visibility into what
     //    sorts of junk we should be stripping.
     const patterns: Array<{ name: string; regex: RegExp }> = [
-      { name: 'resend tracking domain', regex: /trk\.resend\.com|link\.resend\.com/gi },
-      { name: '1x1 img tags', regex: /<img[^>]*(?:width=["']?1["']?|height=["']?1["']?)[^>]*>/gi },
-      { name: 'track/pixel/beacon img srcs', regex: /<img[^>]*src=["'][^"']*(?:track|beacon|pixel|open)[^"']*["']/gi },
-      { name: 'unsubscribe-token URLs', regex: /\/api\/newsletter\/unsubscribe\?token=/gi },
-      { name: '"receiving this because"', regex: /You['\u2019]re receiving this because/gi },
+      { name: 'resend-clicks-a.com wrapper', regex: /resend-clicks-a\.com/gi },
+      { name: '1x1 img tags (attr)', regex: /<img[^>]*(?:width=["']?1["']?|height=["']?1["']?)[^>]*>/gi },
+      { name: '1x1 img tags (inline style)', regex: /<img[^>]*style=["'][^"']*(?:width\s*:\s*1px|height\s*:\s*1px)/gi },
+      { name: 'unsubscribe raw URL', regex: /\/api\/newsletter\/unsubscribe\?token=/gi },
+      { name: 'unsubscribe URL-encoded', regex: /%2Fapi%2Fnewsletter%2Funsubscribe/gi },
+      { name: 'receiving this because (plain apos)', regex: /You['\u2019]re receiving this because/gi },
+      { name: 'receiving this because (HTML entity)', regex: /You&(?:rsquo|#8217|#x2019|apos);re receiving this because/gi },
+      { name: 'token=<uuid>', regex: /token=[0-9a-f]{8}-[0-9a-f]{4}/gi },
       { name: 'Unsubscribe word occurrences', regex: /\bUnsubscribe\b/gi },
       { name: 'fundopshq.com href/text', regex: /fundopshq\.com/gi },
     ]

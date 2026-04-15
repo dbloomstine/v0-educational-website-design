@@ -123,44 +123,63 @@ export function cleanNewsletterContent(content: GmailMessageContent): {
 function cleanHtml(html: string): string {
   let cleaned = html
 
-  // 1. Remove any 1x1 tracking pixel images. Common patterns:
-  //    - <img width="1" height="1" ...>
-  //    - <img ... style="width:1px;height:1px">
-  //    - <img ... alt=""> with tiny dimensions
+  // 1. Unwrap Resend click-tracking redirect links BEFORE any other
+  //    cleaning — otherwise downstream regexes won't recognize the real
+  //    URLs (e.g., the unsubscribe URL is wrapped and URL-encoded, so
+  //    a plain /api/newsletter/unsubscribe match would miss it).
+  //
+  //    Resend wraps every link as:
+  //      https://<customer-hash>.us-east-1.resend-clicks-a.com/CL0/
+  //        <url-encoded-target>/<count>/<run-id>/<verify-token>=<digits>
+  //
+  //    The target is URL-encoded (%2F for slash, %3F for ?) so the first
+  //    raw `/` after `/CL0/` delimits the target from the path suffix.
   cleaned = cleaned.replace(
-    /<img\b[^>]*(?:width=["']?1["']?|height=["']?1["']?)[^>]*>/gi,
-    '',
+    /https?:\/\/[a-z0-9]+\.us-east-1\.resend-clicks-a\.com\/CL0\/([^/\s"'<>]+)\/\d+\/[a-f0-9-]+\/[^\s"'<>]+/gi,
+    (_match, encodedTarget: string) => {
+      try {
+        return decodeURIComponent(encodedTarget)
+      } catch {
+        // If decode fails (bad percent-escape), return a safe homepage
+        // rather than leaving the tracking wrapper in place.
+        return 'https://fundopshq.com'
+      }
+    },
   )
+
+  // 2. Remove the hidden Resend open-tracking pixel at the bottom of
+  //    the message. Two orthogonal patterns so we catch variants:
+  //    (a) inline style with width:1px / height:1px, and
+  //    (b) attribute form width="1" / height="1".
   cleaned = cleaned.replace(
     /<img\b[^>]*style=["'][^"']*(?:width\s*:\s*1px|height\s*:\s*1px)[^"']*["'][^>]*>/gi,
     '',
   )
-
-  // 2. Remove <img> tags whose src looks like a tracking endpoint.
   cleaned = cleaned.replace(
-    /<img\b[^>]*src=["'][^"']*(?:\/track\/|\/beacon\/|\/pixel\/|\/open\/|tracking\.|\.gif\?)[^"']*["'][^>]*>/gi,
+    /<img\b[^>]*(?:width=["']?1["']?|height=["']?1["']?)[^>]*>/gi,
+    '',
+  )
+  // (c) Any img whose src points at the Resend tracking domain —
+  //     catches beacon pixels that don't declare 1px dimensions.
+  cleaned = cleaned.replace(
+    /<img\b[^>]*src=["']https?:\/\/[a-z0-9]+\.us-east-1\.resend-clicks-a\.com\/[^"']*["'][^>]*>/gi,
     '',
   )
 
   // 3. Remove the unsubscribe footer block. The newsletter ends with:
   //    "You're receiving this because you subscribed at fundopshq.com."
   //    "Unsubscribe · Visit FundOpsHQ · Live Show"
-  //    Plus an unsubscribe link with a recipient-specific token.
+  //    Plus an unsubscribe link with a recipient-specific token (Danny's
+  //    own token, since the pipeline fetches from his personal inbox).
   //
-  //    We match from the "receiving this because" marker through the
-  //    end of the enclosing block-level element. Regex is more robust
-  //    than DOM parsing for the specific template we have.
-  //
-  //    Strategy: find the "receiving this because" text and walk
-  //    backwards to the nearest <table>/<td>/<div> start tag, delete
-  //    from there to the matching close tag. Implemented as a
-  //    targeted regex for the specific block shape Resend produces.
+  //    The "You're" in the HTML is usually `You&rsquo;re` (HTML entity),
+  //    not a Unicode apostrophe. Match all plausible forms.
   const footerMarkers = [
-    /You['\u2019]re receiving this because/i,
-    /subscribed at fundopshq\.com/i,
+    /You(?:&rsquo;|&#8217;|&#x2019;|&apos;|['\u2019])re receiving this because/i,
+    // After step 1, Resend-wrapped unsubscribe URLs have been decoded
+    // back to plain /api/newsletter/unsubscribe?token=... so this matches.
     /\/api\/newsletter\/unsubscribe\?token=/i,
   ]
-  // Find the earliest footer marker position.
   let earliestFooterIdx = -1
   for (const re of footerMarkers) {
     const match = re.exec(cleaned)
@@ -172,8 +191,7 @@ function cleanHtml(html: string): string {
   if (earliestFooterIdx !== -1) {
     // Walk backwards from the marker to find the nearest enclosing block.
     // Common block containers in Resend templates: <table>, <tr>, <td>,
-    // <div>, <p>. We look for the most recent opening of any of these
-    // before the marker.
+    // <div>, <p>.
     const before = cleaned.slice(0, earliestFooterIdx)
     const containerRe = /<(table|tr|td|div|p)\b[^>]*>/gi
     let lastOpen: { start: number; tag: string } | null = null
@@ -183,13 +201,9 @@ function cleanHtml(html: string): string {
     }
 
     if (lastOpen) {
-      // From lastOpen.start, find the matching closing tag AFTER the
-      // footer marker by counting nested open/close tags of the same kind.
       const tag = lastOpen.tag
       const openRe = new RegExp(`<${tag}\\b[^>]*>`, 'gi')
       const closeRe = new RegExp(`</${tag}>`, 'gi')
-      openRe.lastIndex = lastOpen.start
-      closeRe.lastIndex = lastOpen.start
       let depth = 0
       let pos = lastOpen.start
       let closeEnd = -1
@@ -217,25 +231,26 @@ function cleanHtml(html: string): string {
           '\n<!-- unsubscribe/footer block stripped for forward -->\n' +
           cleaned.slice(closeEnd)
       } else {
-        // Fallback: couldn't balance tags — strip from the marker to end
-        // of document rather than leave recipient-specific tokens behind.
         cleaned =
           cleaned.slice(0, earliestFooterIdx) +
           '\n<!-- unsubscribe/footer block stripped (fallback: to EOF) -->\n'
       }
     } else {
-      // No container found before marker — strip from marker to EOF.
       cleaned =
         cleaned.slice(0, earliestFooterIdx) +
         '\n<!-- unsubscribe/footer block stripped (fallback: to EOF) -->\n'
     }
   }
 
-  // 4. Belt-and-suspenders: remove any lingering unsubscribe-token URLs
-  //    that might have escaped the block strip (e.g., if the footer is
-  //    structured differently than expected).
+  // 4. Belt-and-suspenders: after all above, nuke any lingering
+  //    unsubscribe-token URLs in case the block strip missed a variant.
+  //    Matches both raw and URL-encoded forms.
   cleaned = cleaned.replace(
     /https?:\/\/[^"'\s<>]*\/api\/newsletter\/unsubscribe\?token=[^"'\s<>]*/gi,
+    'https://fundopshq.com',
+  )
+  cleaned = cleaned.replace(
+    /https?:\/\/[^"'\s<>]*%2Fapi%2Fnewsletter%2Funsubscribe[^"'\s<>]*/gi,
     'https://fundopshq.com',
   )
 
