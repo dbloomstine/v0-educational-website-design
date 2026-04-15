@@ -15,7 +15,7 @@
  * thinner batch does.
  */
 
-import type { Article, Contact } from './types'
+import type { Article, Contact, FindContactResult } from './types'
 
 const APOLLO_BASE = 'https://api.apollo.io/api/v1'
 
@@ -72,48 +72,67 @@ const TARGET_TITLES = [
   'Portfolio Manager',
 ]
 
-// Junior / non-relevant title fragments — hard exclude.
-const JUNIOR_TITLE_FRAGMENTS = [
-  'analyst', 'associate', 'assistant', 'intern', 'coordinator',
-  'admin', 'executive assistant', 'hr ', 'human resources',
-  'recruiter', 'receptionist', 'office manager',
+// Junior / non-relevant title patterns — hard exclude. Word-boundary
+// regex instead of substring match so we don't false-positive on
+// "International Partner" (matching 'intern'), "Administrative Partner"
+// (matching 'admin'), etc. The 2026-04-15 Inflexion incident surfaced
+// the same class of bug at the positive-whitelist layer.
+const JUNIOR_TITLE_PATTERNS: RegExp[] = [
+  /\banalyst/i,              // analyst, analysts, analytical
+  /\bassociate/i,            // associate, associated
+  /\bassistant/i,            // assistant, assisting
+  /\bintern\b/i,             // word boundary — NOT 'international'
+  /\bcoordinator/i,
+  /\badmin\b/i,              // word boundary — NOT 'administrative'
+  /\badministrator/i,
+  /\bexecutive\s+assistant/i,
+  /\bhr\b/i,                 // word boundary — NOT 'chair'
+  /\bhuman\s+resources/i,
+  /\brecruiter/i,
+  /\breceptionist/i,
+  /\boffice\s+manager/i,
 ]
 
-// Investment-function whitelist — a returned contact's title MUST contain
-// at least one of these keywords to count as relevant. Added 2026-04-15
-// after the Stellex "Chief Talent Officer" miss, where Apollo returned a
-// c-suite contact who passed the seniority filter but had the wrong
-// function (HR, not investment). Positive whitelist is easier to reason
-// about than a negative blocklist — if we can't identify an investment
-// angle in the title, drop the candidate.
-const INVESTMENT_TITLE_KEYWORDS = [
-  'invest',           // investment, investor, investor relations
-  'portfolio',
-  'capital',          // head of capital formation, capital markets
-  'partner',          // managing partner, general partner, partner
-  'principal',
-  'managing director',
-  'cfo',
-  'chief financial',
-  'chief operating',
-  'coo',
-  'chief compliance', // CCO at PE firms typically wears a finance hat
-  'fund',             // fund manager, fund director
-  'origination',
-  'fundraising',
-  'acquisition',      // head of acquisitions
+// Investment-function whitelist — a returned contact's title MUST match
+// at least one of these patterns to count as relevant. All patterns use
+// word boundaries where needed to avoid false positives. The 2026-04-15
+// Inflexion incident ("Director of Partnership Development" passed because
+// `.includes('partner')` matched the substring inside 'partnership') drove
+// the conversion from substring matching to word-boundary regex.
+//
+// Pattern design:
+//   - /\bX/i is a word-boundary prefix match ("X" or "X_suffix_letters")
+//   - /\bX\b/i is an exact-word match (X surrounded by non-word boundaries)
+//   - /\bX\s+Y/i is an exact-phrase prefix match
+const INVESTMENT_TITLE_PATTERNS: RegExp[] = [
+  /\binvest/i,                  // invest, investment, investor, investor relations, investing
+  /\bportfolio/i,               // portfolio, portfolios
+  /\bcapital\b/i,               // capital (word) — capital formation, capital markets
+  /\bpartner\b/i,               // partner (word) — NOT 'partnership'
+  /\bpartners\b/i,              // partners (plural word)
+  /\bprincipal\b/i,             // principal (word)
+  /\bmanaging\s+director/i,     // managing director
+  /\bmanaging\s+partner/i,      // managing partner
+  /\bgeneral\s+partner/i,       // general partner
+  /\bcfo\b/i,                   // CFO (word) — NOT inside longer acronyms
+  /\bchief\s+financial/i,       // chief financial officer
+  /\bchief\s+operating/i,       // chief operating officer
+  /\bchief\s+investment/i,      // chief investment officer
+  /\bchief\s+compliance/i,      // chief compliance officer
+  /\bcoo\b/i,                   // COO (word) — NOT 'cook', 'cool'
+  /\bfund/i,                    // fund*, fundraising, funds — NOT 'refund'
+  /\borigination/i,             // origination, originations
+  /\bacquisit/i,                // acquisition, acquisitions
 ]
 
 function titleIsJunior(title: string | undefined | null): boolean {
   if (!title) return true // empty title = skip
-  const lower = title.toLowerCase()
-  return JUNIOR_TITLE_FRAGMENTS.some((f) => lower.includes(f))
+  return JUNIOR_TITLE_PATTERNS.some((re) => re.test(title))
 }
 
 function titleIsInvestmentFunction(title: string | undefined | null): boolean {
   if (!title) return false
-  const lower = title.toLowerCase()
-  return INVESTMENT_TITLE_KEYWORDS.some((kw) => lower.includes(kw))
+  return INVESTMENT_TITLE_PATTERNS.some((re) => re.test(title))
 }
 
 function titleIsAcceptable(title: string | undefined | null): boolean {
@@ -205,20 +224,24 @@ async function matchPerson(params: {
 
 /**
  * Top-level helper. Takes an article (with firm name, story type, optional
- * named person) and returns a single verified Contact or null.
+ * named person) and returns either a verified Contact or a typed drop
+ * reason. The reason taxonomy (see ContactDropReason in types.ts) tells
+ * the caller WHICH guard fired — useful for diagnosing pipeline drops
+ * beyond the generic "no_verified_email" label we had before 2026-04-15.
  *
  * Branch A (named person): executive moves where person_name is present.
- *   Direct name match via matchPerson() — one API call.
+ *   Direct name match via matchPerson() — one API call. Mostly dead code
+ *   now because Block G drops person-move articles before they get here.
  *
  * Branch B (title-based): everything else.
- *   Search by firm + title → pick top non-junior candidate → match by ID.
- *   Two API calls.
+ *   Search by firm + TARGET_TITLES → pick top non-junior + investment-
+ *   function candidate → match by ID. Two API calls.
  */
 export async function findContactForFirm(
   article: Article,
   counters?: { searchCalls: number; matchCalls: number },
-): Promise<Contact | null> {
-  if (!article.firmName) return null
+): Promise<FindContactResult> {
+  if (!article.firmName) return { ok: false, reason: 'empty_firm_name' }
 
   const storyType = article.eventType ?? article.articleType ?? 'default'
   const execMoveTypes = ['executive_hire', 'executive_change', 'executive_departure']
@@ -244,11 +267,12 @@ export async function findContactForFirm(
       domain: article.firmDomain,
     })
 
-    // Pick the first candidate whose title is both non-junior AND contains
-    // an investment-function keyword. Both checks are required — we've seen
-    // Apollo return a "Chief Talent Officer" under c_suite seniority
-    // filtering that passes the non-junior check but has no investment
-    // function. See INVESTMENT_TITLE_KEYWORDS for the whitelist.
+    // Pick the first candidate whose title is both non-junior AND matches
+    // an investment-function pattern. Both checks are required — Apollo
+    // occasionally returns a "Chief Talent Officer" under c_suite seniority
+    // filtering, or a "Director of Partnership Development" matching the
+    // TARGET_TITLES 'Partner' filter via substring. The word-boundary
+    // regex in titleIsAcceptable catches these.
     const picked = searchResults.find(
       (p) => p.has_email && titleIsAcceptable(p.title),
     )
@@ -256,9 +280,8 @@ export async function findContactForFirm(
     if (!picked) {
       // Fallback: retry without the title filter — sometimes Apollo doesn't
       // honor the title filter on smaller firms. Still requires verified
-      // email_status AND a title matching the investment-function whitelist,
-      // so a fallback won't blindly grab whoever's at the firm regardless
-      // of role.
+      // email_status AND titleIsAcceptable, so the fallback won't blindly
+      // grab whoever's at the firm regardless of role.
       if (counters) counters.searchCalls++
       const fallback = await searchPeople({
         firmName: article.firmName,
@@ -267,7 +290,7 @@ export async function findContactForFirm(
       const pickedFallback = fallback.find(
         (p) => p.has_email && titleIsAcceptable(p.title),
       )
-      if (!pickedFallback) return null
+      if (!pickedFallback) return { ok: false, reason: 'apollo_no_match' }
 
       if (counters) counters.matchCalls++
       person = await matchPerson({ personId: pickedFallback.id })
@@ -277,28 +300,27 @@ export async function findContactForFirm(
     }
   }
 
-  if (!person) return null
+  if (!person) return { ok: false, reason: 'apollo_no_match' }
 
-  // Verified-only rule. Drop anyone whose email isn't a verified match.
-  if (person.email_status !== 'verified') return null
-  if (!person.email) return null
+  // Verified-only rule.
+  if (person.email_status !== 'verified' || !person.email) {
+    return { ok: false, reason: 'no_verified_email' }
+  }
 
-  // Empty first name produces "Hi ," in the greeting which looks broken.
-  // Drop the contact rather than send a malformed email. The quality gate
-  // has a redundant check for belt + suspenders.
-  if (!person.first_name || !person.first_name.trim()) return null
+  // Empty first name produces "Hi ," in the greeting.
+  if (!person.first_name || !person.first_name.trim()) {
+    return { ok: false, reason: 'empty_first_name' }
+  }
 
-  // ─── Guard 0: final matched person must have an investment title ─────
+  // ─── Guard 0: final matched person must have an acceptable title ─────
   // The matchPerson() response title can differ from the search result
-  // title (Apollo occasionally returns a different "current" title on
-  // enrichment). Re-check the title on the returned record so Branch A
-  // and any search→match drift are both covered.
+  // title. Re-check so Branch A and any search→match drift are covered.
   if (!titleIsAcceptable(person.title)) {
     console.warn(
-      `[outreach] title not investment-function — dropped ${person.email}: ` +
+      `[outreach] title not acceptable — dropped ${person.email}: ` +
         `title="${person.title ?? '<empty>'}"`,
     )
-    return null
+    return { ok: false, reason: 'title_not_acceptable' }
   }
 
   // ─── Guard 1: Apollo org name must match article firm ────────────────
@@ -320,7 +342,7 @@ export async function findContactForFirm(
         `[outreach] org-name mismatch — dropped ${person.email}: ` +
           `article.firm="${article.firmName}" vs apollo.org="${person.organization.name}"`,
       )
-      return null
+      return { ok: false, reason: 'org_name_mismatch' }
     }
   }
 
@@ -330,20 +352,17 @@ export async function findContactForFirm(
   // email is at the portco domain. The 2026-04-15 Olympus Partners /
   // Onsite Mammography incident: Apollo returned Heather Deng with
   // organization.name="Olympus Partners" (portco tagging) but
-  // email="heatherdeng@onsitemammography.com". The org-name guard
-  // happily passed; she got an email with subject "Covered Olympus
-  // today" despite working at a medical imaging company.
+  // email="heatherdeng@onsitemammography.com".
   //
-  // New rule: the email's domain MUST match article.firmDomain (exact
-  // match or subdomain either way). If article.firmDomain is missing we
-  // have no source of truth to compare against, so drop the contact
-  // rather than trust Apollo's primary_domain which has the same portco-
-  // tagging problem.
+  // Rule: the email's domain MUST match article.firmDomain (exact match
+  // or subdomain either way). If article.firmDomain is missing, drop —
+  // don't trust Apollo's primary_domain which has the same portco-tagging
+  // problem.
   if (!article.firmDomain) {
     console.warn(
-      `[outreach] no article firm domain — dropped ${person.email} (can't verify domain match)`,
+      `[outreach] no article firm domain — dropped ${person.email}`,
     )
-    return null
+    return { ok: false, reason: 'missing_firm_domain' }
   }
   const emailDom = emailDomain(person.email)
   const targetDom = normalizeDomain(article.firmDomain)
@@ -352,13 +371,13 @@ export async function findContactForFirm(
       `[outreach] email-domain mismatch — dropped ${person.email}: ` +
         `target="${targetDom}" emailDom="${emailDom}"`,
     )
-    return null
+    return { ok: false, reason: 'email_domain_mismatch' }
   }
 
   // Source-of-truth rule: the Contact's firm is ALWAYS the article's firm.
   // Apollo's organization record is used for the match checks above but
   // never overrides downstream subject/body composition.
-  return {
+  const contact: Contact = {
     email: person.email,
     firstName: person.first_name,
     lastName: person.last_name ?? '',
@@ -368,6 +387,7 @@ export async function findContactForFirm(
     personId: person.id,
     article,
   }
+  return { ok: true, contact }
 }
 
 /**

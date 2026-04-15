@@ -57,6 +57,30 @@ export interface Contact {
 }
 
 /**
+ * Per-guard drop reasons from findContactForFirm. Used for diagnostic
+ * visibility into WHICH guard fired on each dropped candidate. Previously
+ * every drop was logged as generic "no_verified_email" which made tuning
+ * the pipeline hard.
+ */
+export type ContactDropReason =
+  | 'empty_firm_name'        // article had no firm_name to search
+  | 'apollo_no_match'        // Apollo search/match returned nothing
+  | 'no_verified_email'      // Apollo returned a person but no verified email
+  | 'empty_first_name'       // returned person had empty first_name
+  | 'title_not_acceptable'   // titleIsAcceptable() failed (junior or non-investment-function)
+  | 'org_name_mismatch'      // Apollo org.name didn't match article.firmName
+  | 'missing_firm_domain'    // article.firmDomain was null/empty — can't verify domain match
+  | 'email_domain_mismatch'  // returned email domain didn't match article.firmDomain
+
+/**
+ * findContactForFirm result. Either a contact was found, or a typed
+ * reason explaining which guard rejected the candidate.
+ */
+export type FindContactResult =
+  | { ok: true; contact: Contact }
+  | { ok: false; reason: ContactDropReason }
+
+/**
  * The composed email ready to hand to the Gmail API.
  */
 export interface ComposedEmail {
@@ -107,11 +131,23 @@ export interface OutreachRunResult {
   ok: boolean
   sent: number
   cap: number
+  /**
+   * Total number of firms that survived candidate filters AND firm-level
+   * dedup — i.e. the pool that was passed to the Apollo enrichment loop.
+   * Useful for diagnosing "why so few sends today" questions.
+   */
+  candidatesConsidered: number
   skipped: Record<string, number>
   dropped: Array<{ firm: string; reason: string }>
   sentDetails: Array<{ firm: string; email: string; subject: string; messageId: string }>
   apolloSearchCalls: number
   apolloMatchCalls: number
+  /**
+   * Per-guard drop counters. Each key is one of ContactDropReason (from
+   * findContactForFirm) plus `apollo_exception` and `email_dedup`. Tells
+   * us which guard layers are firing most often on each run.
+   */
+  guardDrops: Record<string, number>
   runtimeMs: number
   error?: string
 }

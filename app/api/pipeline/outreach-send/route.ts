@@ -174,30 +174,39 @@ export async function GET(req: Request) {
     const apolloCounters = { searchCalls: 0, matchCalls: 0 }
     const contacts: Contact[] = []
     const apolloMisses: Array<{ firm: string; reason: string }> = []
+    // Per-guard drop counters for diagnostic visibility. Previously every
+    // drop was logged as generic "no_verified_email" which made tuning the
+    // pipeline hard. Now we know which guard fired on each candidate.
+    const guardDrops: Record<string, number> = {}
 
     for (const candidate of dedupedFirms) {
       if (contacts.length >= enrichmentTarget) break
       try {
-        const contact = await findContactForFirm(candidate.article, apolloCounters)
-        if (contact) {
-          contacts.push(contact)
+        const result = await findContactForFirm(candidate.article, apolloCounters)
+        if (result.ok) {
+          contacts.push(result.contact)
         } else {
           apolloMisses.push({
             firm: candidate.firmName,
-            reason: 'no_verified_email',
+            reason: result.reason,
           })
+          guardDrops[result.reason] = (guardDrops[result.reason] ?? 0) + 1
         }
       } catch (err) {
         console.error(`Apollo lookup failed for ${candidate.firmName}:`, err)
-        apolloMisses.push({
-          firm: candidate.firmName,
-          reason: err instanceof Error ? err.message : 'unknown',
-        })
+        const reason = err instanceof Error ? err.message : 'unknown'
+        apolloMisses.push({ firm: candidate.firmName, reason })
+        guardDrops.apollo_exception = (guardDrops.apollo_exception ?? 0) + 1
       }
     }
 
     // ─── 9. Email-level dedup ─────────────────────────────────────────────
+    const beforeEmailDedup = contacts.length
     const dedupedContacts = await emailLevelDedup(supabase, contacts)
+    const emailDedupDropped = beforeEmailDedup - dedupedContacts.length
+    if (emailDedupDropped > 0) {
+      guardDrops.email_dedup = emailDedupDropped
+    }
 
     // ─── 10. Determine remaining cap slots ────────────────────────────────
     // When force=true, treat dailyCap as a fresh send budget independent of
@@ -304,6 +313,8 @@ export async function GET(req: Request) {
       apolloSearchCalls: apolloCounters.searchCalls,
       apolloMatchCalls: apolloCounters.matchCalls,
       runtimeMs: Date.now() - startedAt,
+      guardDrops,
+      candidatesConsidered: dedupedFirms.length,
     }
 
     try {
@@ -371,6 +382,7 @@ async function sendSummaryEmail(
   lines.push('')
   lines.push(`Anchored on: ${editionSubject}`)
   lines.push(`Sent: ${result.sent} of ${result.cap} (cap)`)
+  lines.push(`Candidates considered: ${result.candidatesConsidered}`)
   lines.push(`Runtime: ${(result.runtimeMs / 1000).toFixed(1)}s`)
   lines.push(`Apollo calls: ${result.apolloSearchCalls} search + ${result.apolloMatchCalls} match`)
   lines.push('')
@@ -383,8 +395,16 @@ async function sendSummaryEmail(
     lines.push('')
   }
 
+  if (Object.keys(result.guardDrops).length > 0) {
+    lines.push('Guard drops (candidates rejected by which filter):')
+    for (const [reason, count] of Object.entries(result.guardDrops)) {
+      lines.push(`  - ${reason}: ${count}`)
+    }
+    lines.push('')
+  }
+
   if (result.dropped.length > 0) {
-    lines.push('Dropped:')
+    lines.push('Dropped firms:')
     for (const d of result.dropped) {
       lines.push(`  - ${d.firm}: ${d.reason}`)
     }
@@ -392,7 +412,7 @@ async function sendSummaryEmail(
   }
 
   if (Object.keys(result.skipped).length > 0) {
-    lines.push('Skipped counts:')
+    lines.push('Skipped counts (post-Apollo):')
     for (const [reason, count] of Object.entries(result.skipped)) {
       lines.push(`  - ${reason}: ${count}`)
     }
