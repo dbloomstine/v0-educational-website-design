@@ -128,17 +128,23 @@ export function composeForwardEmail(params: {
   const { firstName, firmName, newsletter } = params
   const firmShort = shortenFirmName(firmName)
 
-  // Subject: "Fwd: " + original newsletter subject. Recipients' mail
-  // clients recognize the Fwd: prefix and treat the message as a forward.
-  const subject = `Fwd: ${newsletter.subject}`
+  // Subject: firm-specific rather than echoing the newsletter's generic
+  // subject. The newsletter's own subject line features whichever story
+  // topped the edition ("Adams Street Partners $7.5B + 25 more"), which
+  // the recipient doesn't care about. A firm-specific subject speaks
+  // directly to them in the inbox preview. Retains "Fwd:" prefix for
+  // authentic forward framing.
+  const subject = `Fwd: Covered ${firmShort} in FundOps Daily today`
 
   // ─── text/plain version ───────────────────────────────────────────
+  // Three sentences, one paragraph + signature. No em dashes (Danny's
+  // rule). Drops the tagline ("my morning brief for GPs, LPs, and fund
+  // service providers") because the newsletter's own sponsor block
+  // below already explains the product.
   const textIntro = [
     `Hi ${firstName},`,
     '',
-    `Noticed an article about ${firmShort} in today's edition of FundOps Daily, my morning brief for GPs, LPs, and fund service providers. Forwarding the full brief below so you can see it.`,
-    '',
-    `If you'd like to get this daily, you can subscribe at fundopshq.com.`,
+    `${firmShort} came up in today's FundOps Daily. Forwarding the full brief so you can see it. If this is up your alley, you can subscribe daily at fundopshq.com.`,
     '',
     'Danny',
     'Founder & Host, FundOpsHQ',
@@ -154,22 +160,23 @@ export function composeForwardEmail(params: {
   const textBody = textIntro + newsletter.cleanedText
 
   // ─── text/html version ────────────────────────────────────────────
-  // Build a table-based intro block styled to match the newsletter's
-  // cream/navy palette. Tables are the canonical email-compatible
-  // layout container — divs render inconsistently across Outlook.
+  // Lighter visual: no cream background, no heavy double border. Plain
+  // white table container with a light 1px grey bottom border just to
+  // separate the intro from the newsletter header. Feels more like a
+  // real Gmail forward, less like a branded banner. Still uses a table
+  // for cross-client compatibility — divs render inconsistently on
+  // Outlook.
   const htmlIntro =
     '<!-- injected forward intro from FundOpsHQ outreach pipeline -->\n' +
     '<table cellpadding="0" cellspacing="0" border="0" width="100%" ' +
-    'style="background:#F8F5EC;border-bottom:3px double #E6E0C8;margin:0;">' +
-    '<tr><td style="padding:28px 32px;font-family:-apple-system,' +
+    'style="background:#ffffff;margin:0;">' +
+    '<tr><td style="padding:24px 32px 16px 32px;font-family:-apple-system,' +
     "BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;" +
-    'font-size:15px;line-height:1.55;color:#1E3A5F;">' +
+    'font-size:15px;line-height:1.55;color:#202124;">' +
     `<p style="margin:0 0 14px 0;">Hi ${escapeHtml(firstName)},</p>` +
-    `<p style="margin:0 0 14px 0;">Noticed an article about ${escapeHtml(firmShort)} in today's edition of FundOps Daily, my morning brief for GPs, LPs, and fund service providers. Forwarding the full brief below so you can see it.</p>` +
-    `<p style="margin:0 0 14px 0;">If you'd like to get this daily, you can subscribe at <a href="https://fundopshq.com" style="color:#1E3A5F;text-decoration:underline;">fundopshq.com</a>.</p>` +
-    '<p style="margin:0 0 20px 0;">Danny<br>Founder &amp; Host, FundOpsHQ</p>' +
-    '<hr style="border:none;border-top:1px solid #E6E0C8;margin:0 0 14px 0;">' +
-    '<p style="margin:0;color:#8C7D54;font-size:12px;font-family:monospace;">' +
+    `<p style="margin:0 0 14px 0;">${escapeHtml(firmShort)} came up in today's FundOps Daily. Forwarding the full brief so you can see it. If this is up your alley, you can subscribe daily at <a href="https://fundopshq.com" style="color:#1a73e8;text-decoration:underline;">fundopshq.com</a>.</p>` +
+    '<p style="margin:0 0 18px 0;">Danny<br>Founder &amp; Host, FundOpsHQ</p>' +
+    '<p style="margin:0;color:#80868b;font-size:12px;font-family:monospace;">' +
     `---------- Forwarded message ----------<br>` +
     `From: ${escapeHtml(newsletter.fromName)} &lt;${escapeHtml(newsletter.fromEmail)}&gt;<br>` +
     `Date: ${escapeHtml(newsletter.date)}<br>` +
@@ -219,9 +226,14 @@ export function qualityGateForward(
 ): QualityGateResult {
   const { subject, body, html } = composed
 
-  // 1. Subject shape: must start with "Fwd: ".
-  if (!subject.startsWith('Fwd: ')) {
+  // 1. Subject shape: firm-specific "Fwd: Covered {firmShort} in FundOps
+  //    Daily today" form. Checks prefix AND suffix so we know the
+  //    template rendered correctly.
+  if (!subject.startsWith('Fwd: Covered ')) {
     return { ok: false, reason: 'wrong_subject_prefix' }
+  }
+  if (!subject.endsWith(' in FundOps Daily today')) {
+    return { ok: false, reason: 'wrong_subject_suffix' }
   }
 
   // 2. Text body must start with "Hi <name>," — no empty first name.
@@ -269,12 +281,12 @@ export function qualityGateForward(
     }
   }
 
-  // 7. No em/en dashes in the WRAPPER text (not the newsletter content).
-  // The newsletter uses em dashes freely — that's Danny's own content,
-  // we trust it. Only check our intro block, which is the first ~600
-  // chars of the body before the "Forwarded message" separator.
-  const introOnly = body.split('---------- Forwarded message ----------')[0]
-  if (introOnly.includes('\u2014') || introOnly.includes('\u2013')) {
+  // 7. No em/en dashes in the TEXT intro — Danny's rule applies to his
+  //    own wrapper copy. (The newsletter body is his own content and is
+  //    allowed to have them; the HTML intro uses &mdash; which is an
+  //    entity, not a Unicode dash, so it doesn't trip this check.)
+  const textIntroOnly = body.split('---------- Forwarded message ----------')[0]
+  if (textIntroOnly.includes('\u2014') || textIntroOnly.includes('\u2013')) {
     return { ok: false, reason: 'em_dash' }
   }
 
