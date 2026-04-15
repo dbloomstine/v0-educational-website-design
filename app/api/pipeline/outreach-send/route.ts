@@ -28,7 +28,15 @@ import { isAuthorizedPipelineRequest } from '@/lib/pipeline/auth'
 import { buildCandidates } from '@/lib/outreach/candidates'
 import { firmLevelDedup, emailLevelDedup, countTodaysRuns } from '@/lib/outreach/dedup'
 import { findContactsForFirm } from '@/lib/outreach/apollo-client'
-import { composeEmail, qualityGate } from '@/lib/outreach/template'
+import {
+  composeEmail,
+  qualityGate,
+  composeForwardEmail,
+  qualityGateForward,
+} from '@/lib/outreach/template'
+import { fetchTodaysNewsletter } from '@/lib/outreach/newsletter-fetch'
+import type { NewsletterPayload } from '@/lib/outreach/newsletter-fetch'
+import type { TemplateMode } from '@/lib/outreach/types'
 import { sendGmail } from '@/lib/outreach/gmail-client'
 import type { Article, Contact, OutreachRunResult } from '@/lib/outreach/types'
 
@@ -99,6 +107,9 @@ export async function GET(req: Request) {
   const editionDateOverride = url.searchParams.get('editionDate') // YYYY-MM-DD
   const contactsPerFirmOverride = url.searchParams.get('contactsPerFirm')
   const skipFirmDedup = url.searchParams.get('skipFirmDedup') === 'true'
+  const templateModeParam = url.searchParams.get('templateMode')
+  const templateMode: TemplateMode =
+    templateModeParam === 'forward' ? 'forward' : 'short'
 
   // Default: 5 contacts per firm PER RUN. This is the per-run quota,
   // NOT a 120-day limit. A firm that gets hit today can still be hit
@@ -257,6 +268,30 @@ export async function GET(req: Request) {
       ? dailyCap
       : Math.max(0, dailyCap - existingCount)
 
+    // ─── 10b. Forward-mode: fetch today's newsletter once for the run ─────
+    // When templateMode=forward, we compose each outbound email as a
+    // forwarded copy of today's FundOps Daily newsletter (with a personal
+    // note at the top). Fetch the newsletter once at the start of the
+    // send loop — it's identical for all recipients, so we pay one Gmail
+    // inbox search + one getMessageContent per run regardless of send
+    // count. The payload is cached in `newsletter` for the send loop.
+    let newsletter: NewsletterPayload | null = null
+    if (templateMode === 'forward' && dedupedContacts.length > 0) {
+      try {
+        newsletter = await fetchTodaysNewsletter()
+      } catch (err) {
+        console.error('fetchTodaysNewsletter failed:', err)
+        return NextResponse.json(
+          {
+            ok: false,
+            error: `newsletter fetch failed: ${err instanceof Error ? err.message : 'unknown'}`,
+            hint: 'Forward mode requires today\'s FundOps Daily newsletter to be in the pipeline Gmail inbox.',
+          },
+          { status: 500 },
+        )
+      }
+    }
+
     // ─── 11. Generate hooks, compose, gate, send, log ─────────────────────
     // Iterate the full deduped contact list and break when we've SENT the
     // remaining-cap count. Quality-gate drops and hook-generation failures
@@ -286,14 +321,45 @@ export async function GET(req: Request) {
         }
       }
 
-      // Compose email — v4 static template, no LLM hook generator.
-      const { subject, body } = composeEmail({
-        firstName: contact.firstName,
-        firmName: contact.firmName,
-      })
+      // Compose email — short-mode (v4 static) or forward-mode.
+      let subject: string
+      let body: string
+      let htmlBody: string | undefined
+      let gateResult: { ok: boolean; reason?: string }
 
-      // Quality gate.
-      const gateResult = qualityGate(body, subject)
+      if (templateMode === 'forward') {
+        if (!newsletter) {
+          // Shouldn't happen — the earlier fetch would have failed the run.
+          dropped.push({
+            firm: contact.firmName,
+            reason: 'forward_mode_no_newsletter',
+          })
+          skipped.forward_mode_no_newsletter =
+            (skipped.forward_mode_no_newsletter ?? 0) + 1
+          continue
+        }
+        const composed = composeForwardEmail({
+          firstName: contact.firstName,
+          firmName: contact.firmName,
+          newsletter,
+        })
+        subject = composed.subject
+        body = composed.body
+        htmlBody = composed.html
+        gateResult = qualityGateForward(composed, {
+          firstName: contact.firstName,
+          firmName: contact.firmName,
+        })
+      } else {
+        const composed = composeEmail({
+          firstName: contact.firstName,
+          firmName: contact.firmName,
+        })
+        subject = composed.subject
+        body = composed.body
+        gateResult = qualityGate(body, subject)
+      }
+
       if (!gateResult.ok) {
         dropped.push({
           firm: contact.firmName,
@@ -305,9 +371,15 @@ export async function GET(req: Request) {
         continue
       }
 
-      // Send via Gmail.
+      // Send via Gmail — html is passed through only when forward mode
+      // produced one; short mode sends text/plain as before.
       try {
-        const { messageId } = await sendGmail({ to: contact.email, subject, body })
+        const { messageId } = await sendGmail({
+          to: contact.email,
+          subject,
+          body,
+          html: htmlBody,
+        })
         gmailFailures.push('ok')
         sentDetails.push({
           firm: contact.firmName,

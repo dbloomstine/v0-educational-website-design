@@ -81,12 +81,27 @@ export type FindContactResult =
   | { ok: false; reason: ContactDropReason }
 
 /**
- * The composed email ready to hand to the Gmail API.
+ * The composed email ready to hand to the Gmail API. When `html` is
+ * present, the Gmail client sends multipart/alternative with both the
+ * text body and the HTML body; when absent, text-only. Used by
+ * template-mode=forward which produces both a text and HTML payload.
  */
 export interface ComposedEmail {
   subject: string
-  body: string
+  body: string // text/plain
+  html?: string // text/html, optional
 }
+
+/**
+ * Which composer produces the outbound email.
+ *
+ * - `short`: v4 static "Hi X, noticed your firm, visit fundopshq.com"
+ *   one-paragraph note. Text-only. Default for the scheduled cron.
+ * - `forward`: fetch today's FundOps Daily newsletter from Danny's
+ *   inbox, clean it, and forward it to the recipient with a personal
+ *   note at the top. Multipart/alternative (text + HTML).
+ */
+export type TemplateMode = 'short' | 'forward'
 
 export type QualityGateReason =
   | 'over_word_cap'
@@ -98,6 +113,10 @@ export type QualityGateReason =
   | 'missing_greeting'
   | 'wrong_subject_prefix'
   | 'wrong_subject_suffix'
+  // Forward-mode specific
+  | 'missing_firm_mention' // wrapper doesn't mention the target firm
+  | 'leaked_unsubscribe_token' // recipient-specific unsubscribe token survived cleaning
+  | 'leaked_resend_wrapper' // Resend click-tracking wrapper survived cleaning
 
 export interface QualityGateResult {
   ok: boolean
