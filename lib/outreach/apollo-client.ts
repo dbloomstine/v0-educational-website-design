@@ -240,16 +240,13 @@ export async function findContactForFirm(
   // has a redundant check for belt + suspenders.
   if (!person.first_name || !person.first_name.trim()) return null
 
-  // Org-match check. Apollo's person records can be stale when someone
-  // has just moved firms — the 2026-04-15 H.I.G./Infinedi collision was
-  // a Branch A matchPerson() call asking for "Rohan Arora at Infinedi
-  // Partners", and Apollo returned his prior record at H.I.G. Capital
-  // with email rarora@hig.com. If we trust Apollo's org over the
-  // article's firm, we end up emailing the wrong firm.
-  //
-  // New rule: verify Apollo's returned org matches the article's firm
-  // (punctuation-insensitive substring match either way). If it doesn't,
-  // drop the contact entirely — never send to a mismatched firm.
+  // ─── Guard 1: Apollo org name must match article firm ────────────────
+  // Apollo's person records can be stale when someone has just moved
+  // firms — the 2026-04-15 H.I.G./Infinedi collision was a Branch A
+  // matchPerson() call asking for "Rohan Arora at Infinedi Partners",
+  // and Apollo returned his prior record at H.I.G. Capital with email
+  // rarora@hig.com. If we trust Apollo's org over the article's firm,
+  // we end up emailing the wrong firm.
   if (person.organization?.name) {
     const apolloNorm = normalizeFirmName(person.organization.name)
     const articleNorm = normalizeFirmName(article.firmName)
@@ -259,15 +256,46 @@ export async function findContactForFirm(
       articleNorm.includes(apolloNorm)
     if (!orgMatches) {
       console.warn(
-        `[outreach] org mismatch — dropped Apollo person ${person.email}: ` +
+        `[outreach] org-name mismatch — dropped ${person.email}: ` +
           `article.firm="${article.firmName}" vs apollo.org="${person.organization.name}"`,
       )
       return null
     }
   }
 
+  // ─── Guard 2: email domain must match article firm domain ────────────
+  // The org-name guard isn't sufficient — Apollo tags portco executives
+  // under the parent PE firm's organization.name even when their actual
+  // email is at the portco domain. The 2026-04-15 Olympus Partners /
+  // Onsite Mammography incident: Apollo returned Heather Deng with
+  // organization.name="Olympus Partners" (portco tagging) but
+  // email="heatherdeng@onsitemammography.com". The org-name guard
+  // happily passed; she got an email with subject "Covered Olympus
+  // today" despite working at a medical imaging company.
+  //
+  // New rule: the email's domain MUST match article.firmDomain (exact
+  // match or subdomain either way). If article.firmDomain is missing we
+  // have no source of truth to compare against, so drop the contact
+  // rather than trust Apollo's primary_domain which has the same portco-
+  // tagging problem.
+  if (!article.firmDomain) {
+    console.warn(
+      `[outreach] no article firm domain — dropped ${person.email} (can't verify domain match)`,
+    )
+    return null
+  }
+  const emailDom = emailDomain(person.email)
+  const targetDom = normalizeDomain(article.firmDomain)
+  if (!domainsMatch(emailDom, targetDom)) {
+    console.warn(
+      `[outreach] email-domain mismatch — dropped ${person.email}: ` +
+        `target="${targetDom}" emailDom="${emailDom}"`,
+    )
+    return null
+  }
+
   // Source-of-truth rule: the Contact's firm is ALWAYS the article's firm.
-  // Apollo's organization record is used for the match check above but
+  // Apollo's organization record is used for the match checks above but
   // never overrides downstream subject/body composition.
   return {
     email: person.email,
@@ -275,10 +303,47 @@ export async function findContactForFirm(
     lastName: person.last_name ?? '',
     title: person.title ?? '',
     firmName: article.firmName,
-    firmDomain: article.firmDomain ?? person.organization?.primary_domain ?? null,
+    firmDomain: article.firmDomain,
     personId: person.id,
     article,
   }
+}
+
+/**
+ * Extract the domain from an email address, lowercased and with any
+ * leading "www." stripped. Returns empty string if the email is
+ * malformed.
+ */
+function emailDomain(email: string): string {
+  const at = email.lastIndexOf('@')
+  if (at < 0) return ''
+  return email.slice(at + 1).toLowerCase().replace(/^www\./, '')
+}
+
+/**
+ * Normalize a firm domain for comparison: lowercase, strip "www.",
+ * strip any trailing slash or path component.
+ */
+function normalizeDomain(domain: string): string {
+  return domain
+    .toLowerCase()
+    .replace(/^https?:\/\//, '')
+    .replace(/^www\./, '')
+    .split('/')[0]
+    .trim()
+}
+
+/**
+ * Domain match check. Exact match, or email domain is a subdomain of
+ * target (or vice versa). Used to verify that Apollo's returned person
+ * actually reads email at the firm we're targeting.
+ */
+function domainsMatch(emailDom: string, targetDom: string): boolean {
+  if (!emailDom || !targetDom) return false
+  if (emailDom === targetDom) return true
+  if (emailDom.endsWith('.' + targetDom)) return true
+  if (targetDom.endsWith('.' + emailDom)) return true
+  return false
 }
 
 /**
