@@ -50,33 +50,13 @@ const MEGA_FUND_PATTERNS: string[] = [
   'blue owl',
 ]
 
-// ─── Hard Block B — Public pensions / state LPs / sovereign / endowments ────
-// Rule: only use patterns that are multi-word or ≥6 characters. Short
-// abbreviations like 'pers', 'sers', 'swf', 'cpp' create substring false
-// positives on legitimate firm names — confirmed in production dry-run data
-// on 2026-04-14 (Pershing Square → 'pers' match). Every pattern below is
-// either a full phrase or a unique acronym unlikely to appear inside a firm
-// name.
-const PUBLIC_LP_PATTERNS: string[] = [
-  'pension',
-  'retirement system',
-  "employees' retirement",
-  'employees retirement',
-  'teachers retirement',
-  "teachers' retirement",
-  'teachers pension',
-  "teachers' pension",
-  'ontario teachers',
-  'state investment board',
-  'state investment council',
-  'sovereign wealth',
-  'endowment',
-  // Specific, unambiguous identifiers:
-  'calpers',
-  'calstrs',
-  'cppib',
-  'healthcare of ontario',
-]
+// ─── Hard Block B — REMOVED 2026-04-15 ──────────────────────────────────────
+// Previously blocked public pensions / state LPs / sovereign wealth /
+// endowments. Relaxed per Danny: LPs are in-ecosystem and valid outreach
+// targets when they're in the news. The only true no-fly list is fund
+// admins (Block E), media (Block D), bad-news events (Block F), and
+// person-moves (Block G). Mega-funds (Block A) still blocked for the
+// ramp-up phase while we protect sender reputation.
 
 // ─── Hard Block D — Media outlets ────────────────────────────────────────────
 // Note: avoid bare 2-char patterns like 'ft' — they false-positive on firm
@@ -132,27 +112,6 @@ function hasAcceptableGeography(geography: string[] | null): boolean {
 
   // Explicitly non-NA (Europe-only, Asia-Pacific-only, etc.) → drop.
   return false
-}
-
-// ─── Pension text scan (supplement to Block B firm-name patterns) ────────────
-// Catches public-pension LPs whose firm_name doesn't trigger the Block B
-// patterns but whose article text makes the identity obvious. Added
-// 2026-04-15 after "Nest" (UK pension scheme) slipped through — the firm
-// name was too short to match any pattern, but the article title started
-// with "UK pension scheme Nest commits..."
-const PENSION_TEXT_PATTERNS: RegExp[] = [
-  /\bpension scheme\b/i,
-  /\bpension fund\b/i,
-  /\bpension plan\b/i,
-  /\bretirement fund\b/i,
-  /\bsuperannuation\b/i,
-  /\bworkplace pension\b/i,
-  /\bstate pension\b/i,
-]
-
-function hasPensionLanguage(article: Article): boolean {
-  const text = `${article.title ?? ''} ${article.tldr ?? ''}`
-  return PENSION_TEXT_PATTERNS.some((re) => re.test(text))
 }
 
 // ─── Substring-match helper ──────────────────────────────────────────────────
@@ -262,12 +221,8 @@ export function buildCandidates(articles: Article[]): Candidate[] {
     // Hard Block A — mega-fund GPs
     if (matchesAny(firmName, MEGA_FUND_PATTERNS)) continue
 
-    // Hard Block B — public pensions / sovereign / endowments (firm-name match)
-    if (matchesAny(firmName, PUBLIC_LP_PATTERNS)) continue
-
-    // Hard Block B (text scan) — catches pensions where firm_name doesn't
-    // match but article text makes it obvious ("UK pension scheme Nest ...").
-    if (hasPensionLanguage(article)) continue
+    // Block B removed 2026-04-15 — LPs/pensions/sovereign wealth are valid
+    // outreach targets when they're in the news.
 
     // Hard Block E — fund admin service providers / actuarial consulting
     if (matchesAny(firmName, FUND_ADMIN_PATTERNS)) continue
