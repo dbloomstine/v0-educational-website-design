@@ -20,43 +20,21 @@
 
 import type { Article, Candidate } from './types'
 
-// ─── Hard Block A — Mega-fund GPs (case-insensitive substring match) ────────
-const MEGA_FUND_PATTERNS: string[] = [
-  'blackstone', 'blackstone group', 'blackstone inc',
-  'kkr', 'kkr & co', 'kohlberg kravis roberts',
-  'apollo global management', 'apollo management', 'apollo asset management',
-  'carlyle', 'the carlyle group',
-  'tpg', 'tpg capital', 'tpg inc', 'tpg angelo gordon',
-  'bain capital',
-  'advent international',
-  'warburg pincus',
-  'cvc capital partners',
-  'eqt group', 'eqt ab', 'eqt partners',
-  'permira',
-  'cinven',
-  'brookfield asset management',
-  'ares management', 'ares capital',
-  'oaktree capital',
-  'goldman sachs asset management', 'goldman sachs merchant banking',
-  'morgan stanley investment management',
-  // Post-smoke-test additions (2026-04-14)
-  'thoma bravo',
-  'vista equity partners',
-  'silver lake',
-  'hellman & friedman',
-  'adams street partners', // $65B AUM — Danny flagged for block list
-  // First-live-run additions (2026-04-15)
-  'blue owl capital', // ~$200B AUM
-  'blue owl',
-]
+// ─── Hard Block A — REMOVED 2026-04-15 ──────────────────────────────────────
+// Previously blocked the top ~25 mega-fund GPs (Blackstone, KKR, Apollo,
+// Carlyle, TPG, Bain, Advent, Warburg, CVC, EQT, Permira, Cinven,
+// Brookfield, Ares, Oaktree, Goldman SAM, Thoma Bravo, Vista, Silver Lake,
+// H&F, Adams Street, Blue Owl, etc.). Removed per Danny: given the 4-layer
+// defense now in place on the sending side (v4 static template, Apollo
+// org-name guard, email-domain guard, investment-title whitelist), the
+// "weird email to a mega-fund inbox" risk is low, and the throughput cost
+// of blocking them was 5 firms / ~19% of today's 26-article edition.
 
 // ─── Hard Block B — REMOVED 2026-04-15 ──────────────────────────────────────
 // Previously blocked public pensions / state LPs / sovereign wealth /
 // endowments. Relaxed per Danny: LPs are in-ecosystem and valid outreach
-// targets when they're in the news. The only true no-fly list is fund
-// admins (Block E), media (Block D), bad-news events (Block F), and
-// person-moves (Block G). Mega-funds (Block A) still blocked for the
-// ramp-up phase while we protect sender reputation.
+// targets when they're in the news. Fund admins (Block E), media (Block D),
+// bad-news events (Block F), and person-moves (Block G) remain blocked.
 
 // ─── Hard Block D — Media outlets ────────────────────────────────────────────
 // Note: avoid bare 2-char patterns like 'ft' — they false-positive on firm
@@ -87,32 +65,14 @@ const FUND_ADMIN_PATTERNS: string[] = [
   'vistra',
 ]
 
-// ─── Geography filter helper ─────────────────────────────────────────────────
-// The classifier frequently leaves geography empty on clearly-US firms — this
-// was over-rotated as a "definitely non-NA, drop" signal in the original build
-// and dropped ~14 of 26 legitimate NA-based candidates on 2026-04-15 (Stellex,
-// Dominus, THL Partners, Newmark, Olympus, Costanoa, etc.). New rule: empty
-// or null passes through, and we trust downstream Apollo + verified-email
-// rules to filter bad matches. Only drop when geography is explicitly and
-// exclusively non-NA / non-Global.
-function hasAcceptableGeography(geography: string[] | null): boolean {
-  // Empty/null → pass through.
-  if (!geography || geography.length === 0) return true
-
-  const normalized = geography.map((g) => g.toLowerCase())
-
-  // Contains NA or Global → accept (even if mixed with other regions).
-  if (
-    normalized.some(
-      (g) => g.includes('north america') || g === 'global' || g.includes('worldwide'),
-    )
-  ) {
-    return true
-  }
-
-  // Explicitly non-NA (Europe-only, Asia-Pacific-only, etc.) → drop.
-  return false
-}
+// ─── Hard Block C — REMOVED 2026-04-15 ──────────────────────────────────────
+// Previously required article geography to include "North America" or
+// "Global" to pass. Removed per Danny: audience is "GPs, LPs, and fund
+// service providers" globally, not NA-focused. The geography field also
+// tracks the DEAL's geography, not the FIRM's — I Squared Capital got
+// tagged Europe-only because its specific deal was for a German target,
+// even though the firm itself is US-headquartered. Europe/APAC/other
+// regions are now all valid outreach targets.
 
 // ─── Substring-match helper ──────────────────────────────────────────────────
 function matchesAny(firmName: string, patterns: string[]): boolean {
@@ -212,17 +172,13 @@ export function buildCandidates(articles: Article[]): Candidate[] {
     const firmName = article.firmName?.trim()
     if (!firmName) continue
 
-    // Hard Block C — geography (relaxed 2026-04-15: empty passes through)
-    if (!hasAcceptableGeography(article.geography)) continue
+    // Block A, B, C removed 2026-04-15 — mega-funds, LPs/pensions, and
+    // non-NA geography are all valid outreach targets. The four layers of
+    // defense on the sending side (template + Apollo org guard +
+    // email-domain guard + investment-title whitelist) carry the load.
 
     // Hard Block D — media outlets
     if (matchesAny(firmName, MEDIA_OUTLET_PATTERNS)) continue
-
-    // Hard Block A — mega-fund GPs
-    if (matchesAny(firmName, MEGA_FUND_PATTERNS)) continue
-
-    // Block B removed 2026-04-15 — LPs/pensions/sovereign wealth are valid
-    // outreach targets when they're in the news.
 
     // Hard Block E — fund admin service providers / actuarial consulting
     if (matchesAny(firmName, FUND_ADMIN_PATTERNS)) continue
