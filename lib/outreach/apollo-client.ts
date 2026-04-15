@@ -223,98 +223,122 @@ async function matchPerson(params: {
 }
 
 /**
- * Top-level helper. Takes an article (with firm name, story type, optional
- * named person) and returns either a verified Contact or a typed drop
- * reason. The reason taxonomy (see ContactDropReason in types.ts) tells
- * the caller WHICH guard fired — useful for diagnosing pipeline drops
- * beyond the generic "no_verified_email" label we had before 2026-04-15.
+ * Top-level helper. Takes an article and returns up to `maxContacts`
+ * verified contacts at that firm, or a typed drop reason per attempted
+ * contact. Supports the 5-10-per-firm scale goal without requiring
+ * multiple Apollo searches — we pull the top 10 search results in one
+ * call and enrich up to `maxContacts` of them with matchPerson.
  *
- * Branch A (named person): executive moves where person_name is present.
- *   Direct name match via matchPerson() — one API call. Mostly dead code
- *   now because Block G drops person-move articles before they get here.
+ * Credit discipline: 1 search call per firm, up to `maxContacts` match
+ * calls per firm. The old singular implementation burned 2 search calls
+ * per firm (title-filtered + no-title fallback); this one only falls
+ * back if the title-filtered search returned zero people at all.
  *
- * Branch B (title-based): everything else.
- *   Search by firm + TARGET_TITLES → pick top non-junior + investment-
- *   function candidate → match by ID. Two API calls.
+ * Branch A (named-person direct match) is gone — Block G in candidates.ts
+ * drops all person-move articles before they reach Apollo, so the
+ * named-person code path was unreachable dead code.
+ */
+export async function findContactsForFirm(
+  article: Article,
+  maxContacts: number,
+  counters?: { searchCalls: number; matchCalls: number },
+): Promise<FindContactResult[]> {
+  if (!article.firmName) {
+    return [{ ok: false, reason: 'empty_firm_name' }]
+  }
+  if (maxContacts <= 0) return []
+
+  // Search for senior people at the firm (up to 10 results per call).
+  if (counters) counters.searchCalls++
+  let searchResults = await searchPeople({
+    firmName: article.firmName,
+    titles: TARGET_TITLES,
+    domain: article.firmDomain,
+  })
+
+  // Fallback: retry without the title filter if the title-filtered
+  // search returned nothing. Sometimes Apollo doesn't honor the title
+  // filter on smaller firms. Still post-filtered by titleIsAcceptable.
+  if (searchResults.length === 0) {
+    if (counters) counters.searchCalls++
+    searchResults = await searchPeople({
+      firmName: article.firmName,
+      domain: article.firmDomain,
+    })
+  }
+
+  // Pre-filter at the search layer: must have an email AND a title that
+  // passes both junior-exclusion and investment-function whitelist.
+  const viableSearchHits = searchResults.filter(
+    (p) => p.has_email && titleIsAcceptable(p.title),
+  )
+
+  if (viableSearchHits.length === 0) {
+    return [{ ok: false, reason: 'apollo_no_match' }]
+  }
+
+  // Iterate through viable search hits, enriching each via matchPerson
+  // and applying all post-match guards, until we hit `maxContacts`
+  // successes or exhaust the search results. Failures accumulate into
+  // the results array too so the caller can log each drop reason.
+  const results: FindContactResult[] = []
+  let successCount = 0
+  for (const searchPerson of viableSearchHits) {
+    if (successCount >= maxContacts) break
+    if (counters) counters.matchCalls++
+    const person = await matchPerson({ personId: searchPerson.id })
+    const result = applyPostMatchGuards(article, person)
+    results.push(result)
+    if (result.ok) successCount++
+  }
+
+  return results
+}
+
+/**
+ * Backwards-compatible singular wrapper. Returns the first successful
+ * contact from findContactsForFirm, or the first failure reason if
+ * nothing succeeded.
  */
 export async function findContactForFirm(
   article: Article,
   counters?: { searchCalls: number; matchCalls: number },
 ): Promise<FindContactResult> {
-  if (!article.firmName) return { ok: false, reason: 'empty_firm_name' }
+  const results = await findContactsForFirm(article, 1, counters)
+  const success = results.find((r) => r.ok)
+  if (success) return success
+  return results[0] ?? { ok: false, reason: 'apollo_no_match' }
+}
 
-  const storyType = article.eventType ?? article.articleType ?? 'default'
-  const execMoveTypes = ['executive_hire', 'executive_change', 'executive_departure']
-  const isNamedPersonStory =
-    execMoveTypes.includes(storyType) && !!article.personName
-
-  let person: ApolloMatchPerson | null = null
-
-  if (isNamedPersonStory) {
-    // Branch A — direct name match.
-    if (counters) counters.matchCalls++
-    person = await matchPerson({
-      name: article.personName!,
-      organizationName: article.firmName,
-      domain: article.firmDomain,
-    })
-  } else {
-    // Branch B — search then match.
-    if (counters) counters.searchCalls++
-    const searchResults = await searchPeople({
-      firmName: article.firmName,
-      titles: TARGET_TITLES,
-      domain: article.firmDomain,
-    })
-
-    // Pick the first candidate whose title is both non-junior AND matches
-    // an investment-function pattern. Both checks are required — Apollo
-    // occasionally returns a "Chief Talent Officer" under c_suite seniority
-    // filtering, or a "Director of Partnership Development" matching the
-    // TARGET_TITLES 'Partner' filter via substring. The word-boundary
-    // regex in titleIsAcceptable catches these.
-    const picked = searchResults.find(
-      (p) => p.has_email && titleIsAcceptable(p.title),
-    )
-
-    if (!picked) {
-      // Fallback: retry without the title filter — sometimes Apollo doesn't
-      // honor the title filter on smaller firms. Still requires verified
-      // email_status AND titleIsAcceptable, so the fallback won't blindly
-      // grab whoever's at the firm regardless of role.
-      if (counters) counters.searchCalls++
-      const fallback = await searchPeople({
-        firmName: article.firmName,
-        domain: article.firmDomain,
-      })
-      const pickedFallback = fallback.find(
-        (p) => p.has_email && titleIsAcceptable(p.title),
-      )
-      if (!pickedFallback) return { ok: false, reason: 'apollo_no_match' }
-
-      if (counters) counters.matchCalls++
-      person = await matchPerson({ personId: pickedFallback.id })
-    } else {
-      if (counters) counters.matchCalls++
-      person = await matchPerson({ personId: picked.id })
-    }
-  }
-
+/**
+ * Run all post-match guards on an Apollo person record and either
+ * return a verified Contact or a typed drop reason. Extracted from
+ * findContactForFirm so findContactsForFirm can iterate over multiple
+ * search results and run the same guard stack on each.
+ *
+ * Guards (in order):
+ *   - null person (Apollo returned nothing)
+ *   - email_status !== 'verified' or email missing
+ *   - empty first_name
+ *   - title not acceptable (junior or non-investment-function)
+ *   - org_name_mismatch (Apollo's org.name doesn't normalize-match article firm)
+ *   - missing_firm_domain (article had no firm_domain — can't verify)
+ *   - email_domain_mismatch (returned email domain != article firm domain)
+ */
+function applyPostMatchGuards(
+  article: Article,
+  person: ApolloMatchPerson | null,
+): FindContactResult {
   if (!person) return { ok: false, reason: 'apollo_no_match' }
 
-  // Verified-only rule.
   if (person.email_status !== 'verified' || !person.email) {
     return { ok: false, reason: 'no_verified_email' }
   }
 
-  // Empty first name produces "Hi ," in the greeting.
   if (!person.first_name || !person.first_name.trim()) {
     return { ok: false, reason: 'empty_first_name' }
   }
 
-  // ─── Guard 0: final matched person must have an acceptable title ─────
-  // The matchPerson() response title can differ from the search result
-  // title. Re-check so Branch A and any search→match drift are covered.
   if (!titleIsAcceptable(person.title)) {
     console.warn(
       `[outreach] title not acceptable — dropped ${person.email}: ` +
@@ -323,16 +347,9 @@ export async function findContactForFirm(
     return { ok: false, reason: 'title_not_acceptable' }
   }
 
-  // ─── Guard 1: Apollo org name must match article firm ────────────────
-  // Apollo's person records can be stale when someone has just moved
-  // firms — the 2026-04-15 H.I.G./Infinedi collision was a Branch A
-  // matchPerson() call asking for "Rohan Arora at Infinedi Partners",
-  // and Apollo returned his prior record at H.I.G. Capital with email
-  // rarora@hig.com. If we trust Apollo's org over the article's firm,
-  // we end up emailing the wrong firm.
   if (person.organization?.name) {
     const apolloNorm = normalizeFirmName(person.organization.name)
-    const articleNorm = normalizeFirmName(article.firmName)
+    const articleNorm = normalizeFirmName(article.firmName!)
     const orgMatches =
       apolloNorm === articleNorm ||
       apolloNorm.includes(articleNorm) ||
@@ -346,18 +363,6 @@ export async function findContactForFirm(
     }
   }
 
-  // ─── Guard 2: email domain must match article firm domain ────────────
-  // The org-name guard isn't sufficient — Apollo tags portco executives
-  // under the parent PE firm's organization.name even when their actual
-  // email is at the portco domain. The 2026-04-15 Olympus Partners /
-  // Onsite Mammography incident: Apollo returned Heather Deng with
-  // organization.name="Olympus Partners" (portco tagging) but
-  // email="heatherdeng@onsitemammography.com".
-  //
-  // Rule: the email's domain MUST match article.firmDomain (exact match
-  // or subdomain either way). If article.firmDomain is missing, drop —
-  // don't trust Apollo's primary_domain which has the same portco-tagging
-  // problem.
   if (!article.firmDomain) {
     console.warn(
       `[outreach] no article firm domain — dropped ${person.email}`,
@@ -382,7 +387,7 @@ export async function findContactForFirm(
     firstName: person.first_name,
     lastName: person.last_name ?? '',
     title: person.title ?? '',
-    firmName: article.firmName,
+    firmName: article.firmName!,
     firmDomain: article.firmDomain,
     personId: person.id,
     article,

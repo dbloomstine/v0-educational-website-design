@@ -27,7 +27,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { isAuthorizedPipelineRequest } from '@/lib/pipeline/auth'
 import { buildCandidates } from '@/lib/outreach/candidates'
 import { firmLevelDedup, emailLevelDedup, countTodaysRuns } from '@/lib/outreach/dedup'
-import { findContactForFirm } from '@/lib/outreach/apollo-client'
+import { findContactsForFirm } from '@/lib/outreach/apollo-client'
 import { composeEmail, qualityGate } from '@/lib/outreach/template'
 import { sendGmail } from '@/lib/outreach/gmail-client'
 import type { Article, Contact, OutreachRunResult } from '@/lib/outreach/types'
@@ -90,14 +90,25 @@ export async function GET(req: Request) {
   }
 
   // Authenticated query-param overrides — let a trusted caller (us, with
-  // the CRON_SECRET) bump the cap, bypass the idempotency guard, and point
-  // at a specific edition date on a per-invocation basis without touching
+  // the CRON_SECRET) tune the pipeline per-invocation without touching
   // Vercel env vars. The scheduled cron passes no query params, so its
   // behavior is unchanged.
   const url = new URL(req.url)
   const capOverride = url.searchParams.get('cap')
   const force = url.searchParams.get('force') === 'true'
   const editionDateOverride = url.searchParams.get('editionDate') // YYYY-MM-DD
+  const contactsPerFirmOverride = url.searchParams.get('contactsPerFirm')
+  const skipFirmDedup = url.searchParams.get('skipFirmDedup') === 'true'
+
+  const contactsPerFirm = contactsPerFirmOverride != null
+    ? Number(contactsPerFirmOverride)
+    : 1 // default: 1 contact per firm (preserves cron behavior)
+  if (!Number.isFinite(contactsPerFirm) || contactsPerFirm <= 0) {
+    return NextResponse.json(
+      { ok: false, error: 'Invalid ?contactsPerFirm (must be > 0)' },
+      { status: 500 },
+    )
+  }
 
   const dailyCap = capOverride != null
     ? Number(capOverride)
@@ -166,7 +177,13 @@ export async function GET(req: Request) {
     const allCandidates = buildCandidates(articles)
 
     // ─── 7. Firm-level dedup (name + domain, 120d + permanent blocks) ──────
-    const dedupedFirms = await firmLevelDedup(supabase, allCandidates)
+    // `?skipFirmDedup=true` bypasses this for multi-contact-per-firm tests
+    // where we want to hit the same firm with new people. The email-level
+    // dedup (step 9) still catches individual re-contacts in the 120d
+    // window, so nobody gets the same email twice.
+    const dedupedFirms = skipFirmDedup
+      ? allCandidates
+      : await firmLevelDedup(supabase, allCandidates)
 
     // ─── 8. Apollo enrichment, capped at CAP + headroom ───────────────────
     // Enrich up to CAP * 2 candidates so we have headroom for Apollo misses
@@ -184,15 +201,22 @@ export async function GET(req: Request) {
     for (const candidate of dedupedFirms) {
       if (contacts.length >= enrichmentTarget) break
       try {
-        const result = await findContactForFirm(candidate.article, apolloCounters)
-        if (result.ok) {
-          contacts.push(result.contact)
-        } else {
-          apolloMisses.push({
-            firm: candidate.firmName,
-            reason: result.reason,
-          })
-          guardDrops[result.reason] = (guardDrops[result.reason] ?? 0) + 1
+        const results = await findContactsForFirm(
+          candidate.article,
+          contactsPerFirm,
+          apolloCounters,
+        )
+        for (const result of results) {
+          if (contacts.length >= enrichmentTarget) break
+          if (result.ok) {
+            contacts.push(result.contact)
+          } else {
+            apolloMisses.push({
+              firm: candidate.firmName,
+              reason: result.reason,
+            })
+            guardDrops[result.reason] = (guardDrops[result.reason] ?? 0) + 1
+          }
         }
       } catch (err) {
         console.error(`Apollo lookup failed for ${candidate.firmName}:`, err)
