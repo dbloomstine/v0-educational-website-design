@@ -46,26 +46,62 @@ interface ApolloMatchPerson {
   }
 }
 
-interface TitleTable {
-  [storyType: string]: string[]
-}
+// Unified target title list — passed to Apollo as `person_titles`. We don't
+// specialize by story type anymore because the v4 email template is fully
+// static and firm-name agnostic ("noticed an article about your firm"), so
+// there's no story-specific matching to optimize for. The only thing that
+// matters is the returned contact has an investment/finance function at a
+// senior level.
+const TARGET_TITLES = [
+  'Managing Partner',
+  'Managing Director',
+  'General Partner',
+  'Partner',
+  'Principal',
+  'Chief Investment Officer',
+  'Chief Financial Officer',
+  'CFO',
+  'Chief Operating Officer',
+  'COO',
+  'Head of Investor Relations',
+  'Investor Relations',
+  'Director of Investor Relations',
+  'Head of Capital Formation',
+  'Head of Fundraising',
+  'Head of Origination',
+  'Portfolio Manager',
+]
 
-// Story-type → preferred-title priority list. Mirrors the skill's Step 7 table.
-const TITLE_PRIORITY: TitleTable = {
-  fund_close: ['Head of Investor Relations', 'Investor Relations', 'Partner', 'Managing Partner', 'CFO'],
-  fund_launch: ['Head of Investor Relations', 'Investor Relations', 'Partner', 'Managing Partner', 'CFO'],
-  capital_raise: ['Head of Investor Relations', 'Investor Relations', 'CFO', 'Partner'],
-  acquisition: ['Partner', 'Head of Business Development', 'Head of M&A'],
-  merger: ['Partner', 'Head of Business Development', 'Head of M&A'],
-  lp_commitments: ['Head of Investor Relations', 'Investor Relations'],
-  default: ['Head of Investor Relations', 'Partner', 'Managing Partner', 'CFO'],
-}
-
-// Junior / non-relevant titles to drop from search results.
+// Junior / non-relevant title fragments — hard exclude.
 const JUNIOR_TITLE_FRAGMENTS = [
   'analyst', 'associate', 'assistant', 'intern', 'coordinator',
   'admin', 'executive assistant', 'hr ', 'human resources',
   'recruiter', 'receptionist', 'office manager',
+]
+
+// Investment-function whitelist — a returned contact's title MUST contain
+// at least one of these keywords to count as relevant. Added 2026-04-15
+// after the Stellex "Chief Talent Officer" miss, where Apollo returned a
+// c-suite contact who passed the seniority filter but had the wrong
+// function (HR, not investment). Positive whitelist is easier to reason
+// about than a negative blocklist — if we can't identify an investment
+// angle in the title, drop the candidate.
+const INVESTMENT_TITLE_KEYWORDS = [
+  'invest',           // investment, investor, investor relations
+  'portfolio',
+  'capital',          // head of capital formation, capital markets
+  'partner',          // managing partner, general partner, partner
+  'principal',
+  'managing director',
+  'cfo',
+  'chief financial',
+  'chief operating',
+  'coo',
+  'chief compliance', // CCO at PE firms typically wears a finance hat
+  'fund',             // fund manager, fund director
+  'origination',
+  'fundraising',
+  'acquisition',      // head of acquisitions
 ]
 
 function titleIsJunior(title: string | undefined | null): boolean {
@@ -74,8 +110,14 @@ function titleIsJunior(title: string | undefined | null): boolean {
   return JUNIOR_TITLE_FRAGMENTS.some((f) => lower.includes(f))
 }
 
-function titlesForStoryType(storyType: string): string[] {
-  return TITLE_PRIORITY[storyType] ?? TITLE_PRIORITY.default
+function titleIsInvestmentFunction(title: string | undefined | null): boolean {
+  if (!title) return false
+  const lower = title.toLowerCase()
+  return INVESTMENT_TITLE_KEYWORDS.some((kw) => lower.includes(kw))
+}
+
+function titleIsAcceptable(title: string | undefined | null): boolean {
+  return !titleIsJunior(title) && titleIsInvestmentFunction(title)
 }
 
 /**
@@ -198,26 +240,32 @@ export async function findContactForFirm(
     if (counters) counters.searchCalls++
     const searchResults = await searchPeople({
       firmName: article.firmName,
-      titles: titlesForStoryType(storyType),
+      titles: TARGET_TITLES,
       domain: article.firmDomain,
     })
 
-    // Pick the first non-junior candidate.
+    // Pick the first candidate whose title is both non-junior AND contains
+    // an investment-function keyword. Both checks are required — we've seen
+    // Apollo return a "Chief Talent Officer" under c_suite seniority
+    // filtering that passes the non-junior check but has no investment
+    // function. See INVESTMENT_TITLE_KEYWORDS for the whitelist.
     const picked = searchResults.find(
-      (p) => p.has_email && !titleIsJunior(p.title),
+      (p) => p.has_email && titleIsAcceptable(p.title),
     )
 
     if (!picked) {
       // Fallback: retry without the title filter — sometimes Apollo doesn't
       // honor the title filter on smaller firms. Still requires verified
-      // email_status from the search filter.
+      // email_status AND a title matching the investment-function whitelist,
+      // so a fallback won't blindly grab whoever's at the firm regardless
+      // of role.
       if (counters) counters.searchCalls++
       const fallback = await searchPeople({
         firmName: article.firmName,
         domain: article.firmDomain,
       })
       const pickedFallback = fallback.find(
-        (p) => p.has_email && !titleIsJunior(p.title),
+        (p) => p.has_email && titleIsAcceptable(p.title),
       )
       if (!pickedFallback) return null
 
@@ -239,6 +287,19 @@ export async function findContactForFirm(
   // Drop the contact rather than send a malformed email. The quality gate
   // has a redundant check for belt + suspenders.
   if (!person.first_name || !person.first_name.trim()) return null
+
+  // ─── Guard 0: final matched person must have an investment title ─────
+  // The matchPerson() response title can differ from the search result
+  // title (Apollo occasionally returns a different "current" title on
+  // enrichment). Re-check the title on the returned record so Branch A
+  // and any search→match drift are both covered.
+  if (!titleIsAcceptable(person.title)) {
+    console.warn(
+      `[outreach] title not investment-function — dropped ${person.email}: ` +
+        `title="${person.title ?? '<empty>'}"`,
+    )
+    return null
+  }
 
   // ─── Guard 1: Apollo org name must match article firm ────────────────
   // Apollo's person records can be stale when someone has just moved
