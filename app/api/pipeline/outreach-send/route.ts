@@ -90,10 +90,20 @@ export async function GET(req: Request) {
     })
   }
 
-  const dailyCap = Number(process.env.OUTREACH_DAILY_CAP ?? '10')
+  // Authenticated query-param overrides — let a trusted caller (us, with
+  // the CRON_SECRET) bump the cap and bypass the idempotency guard on a
+  // per-invocation basis without touching Vercel env vars. The scheduled
+  // cron passes no query params, so its behavior is unchanged.
+  const url = new URL(req.url)
+  const capOverride = url.searchParams.get('cap')
+  const force = url.searchParams.get('force') === 'true'
+
+  const dailyCap = capOverride != null
+    ? Number(capOverride)
+    : Number(process.env.OUTREACH_DAILY_CAP ?? '10')
   if (!Number.isFinite(dailyCap) || dailyCap <= 0) {
     return NextResponse.json(
-      { ok: false, error: 'Invalid OUTREACH_DAILY_CAP' },
+      { ok: false, error: 'Invalid cap (env OUTREACH_DAILY_CAP or ?cap= query param)' },
       { status: 500 },
     )
   }
@@ -103,12 +113,13 @@ export async function GET(req: Request) {
   try {
     // ─── 3. Idempotency guard ─────────────────────────────────────────────
     const existingCount = await countTodaysRuns(supabase)
-    if (existingCount >= dailyCap) {
+    if (!force && existingCount >= dailyCap) {
       return NextResponse.json({
         ok: true,
         skipped: 'already_ran_today',
         existingCount,
         dailyCap,
+        hint: 'pass ?force=true to bypass',
       })
     }
 
@@ -190,7 +201,12 @@ export async function GET(req: Request) {
     const dedupedContacts = await emailLevelDedup(supabase, contacts)
 
     // ─── 10. Determine remaining cap slots ────────────────────────────────
-    const remainingCapSlots = Math.max(0, dailyCap - existingCount)
+    // When force=true, treat dailyCap as a fresh send budget independent of
+    // what's already gone out today — otherwise subtract existingCount so
+    // the daily cron still respects the rolling daily total.
+    const remainingCapSlots = force
+      ? dailyCap
+      : Math.max(0, dailyCap - existingCount)
 
     // ─── 11. Generate hooks, compose, gate, send, log ─────────────────────
     // Iterate the full deduped contact list and break when we've SENT the
