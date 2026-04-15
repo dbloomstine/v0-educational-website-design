@@ -100,14 +100,17 @@ export async function GET(req: Request) {
   const contactsPerFirmOverride = url.searchParams.get('contactsPerFirm')
   const skipFirmDedup = url.searchParams.get('skipFirmDedup') === 'true'
 
-  // Default: 3 contacts per firm. First step toward the 5-10 per firm
-  // scale goal. Scheduled cron picks this up with no env var required.
-  // Set `OUTREACH_CONTACTS_PER_FIRM` in Vercel to override the code
-  // default without a redeploy. Query param still overrides both.
+  // Default: 5 contacts per firm PER RUN. This is the per-run quota,
+  // NOT a 120-day limit. A firm that gets hit today can still be hit
+  // tomorrow with different people — firmLevelDedup only blocks on
+  // permanent failures (bounced/opted_out), and emailLevelDedup is the
+  // per-person 120-day safety net. Set OUTREACH_CONTACTS_PER_FIRM in
+  // Vercel to override the code default without a redeploy. Query param
+  // still overrides both.
   const envContactsPerFirm = process.env.OUTREACH_CONTACTS_PER_FIRM
   const baseContactsPerFirm = envContactsPerFirm
     ? Number(envContactsPerFirm)
-    : 3
+    : 5
   const contactsPerFirm = contactsPerFirmOverride != null
     ? Number(contactsPerFirmOverride)
     : baseContactsPerFirm
@@ -184,20 +187,18 @@ export async function GET(req: Request) {
     // ─── 6. Hard-block filters + candidate build ──────────────────────────
     const allCandidates = buildCandidates(articles)
 
-    // ─── 7. Firm-level dedup (count-based rolling window + permanent blocks) ──
-    // `firmLevelDedup` now accepts contactsPerFirm as the rolling-window
-    // allowance. Firms get dropped only when we've already hit that
-    // many contacts in the 120-day window (OR on permanent block from
-    // opted_out/bounced). With contactsPerFirm=3 and rolling-window
-    // counting, we can reach 3 distinct people per firm in any 120-day
-    // window across multiple cron runs.
+    // ─── 7. Firm-level dedup (permanent blocks only) ─────────────────────
+    // Drops firms that have ever bounced or opted out. Does NOT drop
+    // firms with prior sends — we WANT to cycle through new people at
+    // the same firm over time as news comes up. The per-run quota is
+    // enforced downstream by findContactsForFirm(maxContacts), and
+    // individual re-contacts are blocked by emailLevelDedup (step 9).
     //
-    // `?skipFirmDedup=true` bypasses entirely for manual tests. The
-    // email-level dedup (step 9) still catches individual re-contacts
-    // either way, so nobody gets the same email twice.
+    // `?skipFirmDedup=true` bypasses even the permanent blocks, for
+    // manual tests only. Never use in production.
     const dedupedFirms = skipFirmDedup
       ? allCandidates
-      : await firmLevelDedup(supabase, allCandidates, contactsPerFirm)
+      : await firmLevelDedup(supabase, allCandidates)
 
     // ─── 8. Apollo enrichment, capped at CAP + headroom ───────────────────
     // Enrich up to CAP * 2 candidates so we have headroom for Apollo misses
