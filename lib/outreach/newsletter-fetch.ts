@@ -189,11 +189,15 @@ function cleanHtml(html: string): string {
   }
 
   if (earliestFooterIdx !== -1) {
-    // Walk backwards from the marker to find the nearest enclosing block.
-    // Common block containers in Resend templates: <table>, <tr>, <td>,
-    // <div>, <p>.
+    // Walk backwards from the marker to find the nearest enclosing
+    // table-cell container. Only `table`/`tr`/`td` — intentionally NOT
+    // `<p>` or `<div>`, because the footer "You're receiving this..."
+    // text lives inside a `<p>` that's a SIBLING of another `<p>` with
+    // the "Unsubscribe / Visit / Live Show" links. Walking back to the
+    // innermost `<p>` would only strip one of the two paragraphs.
+    // Walking back to the enclosing `<td>` catches both.
     const before = cleaned.slice(0, earliestFooterIdx)
-    const containerRe = /<(table|tr|td|div|p)\b[^>]*>/gi
+    const containerRe = /<(table|tr|td)\b[^>]*>/gi
     let lastOpen: { start: number; tag: string } | null = null
     let m
     while ((m = containerRe.exec(before)) !== null) {
@@ -228,17 +232,17 @@ function cleanHtml(html: string): string {
       if (closeEnd !== -1) {
         cleaned =
           cleaned.slice(0, lastOpen.start) +
-          '\n<!-- unsubscribe/footer block stripped for forward -->\n' +
+          '\n<!-- subscribe footer stripped for forward -->\n' +
           cleaned.slice(closeEnd)
       } else {
         cleaned =
           cleaned.slice(0, earliestFooterIdx) +
-          '\n<!-- unsubscribe/footer block stripped (fallback: to EOF) -->\n'
+          '\n<!-- subscribe footer stripped (fallback: to EOF) -->\n'
       }
     } else {
       cleaned =
         cleaned.slice(0, earliestFooterIdx) +
-        '\n<!-- unsubscribe/footer block stripped (fallback: to EOF) -->\n'
+        '\n<!-- subscribe footer stripped (fallback: to EOF) -->\n'
     }
   }
 
