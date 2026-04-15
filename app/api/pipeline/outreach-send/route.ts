@@ -28,7 +28,6 @@ import { isAuthorizedPipelineRequest } from '@/lib/pipeline/auth'
 import { buildCandidates } from '@/lib/outreach/candidates'
 import { firmLevelDedup, emailLevelDedup, countTodaysRuns } from '@/lib/outreach/dedup'
 import { findContactForFirm } from '@/lib/outreach/apollo-client'
-import { generateHook } from '@/lib/outreach/anthropic-client'
 import { composeEmail, qualityGate } from '@/lib/outreach/template'
 import { sendGmail } from '@/lib/outreach/gmail-client'
 import type { Article, Contact, OutreachRunResult } from '@/lib/outreach/types'
@@ -237,26 +236,10 @@ export async function GET(req: Request) {
         }
       }
 
-      // Generate hook via Anthropic.
-      let hook: string
-      try {
-        hook = await generateHook(contact.article)
-      } catch (err) {
-        console.error(`Hook generation failed for ${contact.firmName}:`, err)
-        dropped.push({
-          firm: contact.firmName,
-          reason: `hook_generation: ${err instanceof Error ? err.message : 'unknown'}`,
-        })
-        skipped.hook_generation_failed = (skipped.hook_generation_failed ?? 0) + 1
-        await logSkipped(contact, 'hook_generation_failed')
-        continue
-      }
-
-      // Compose email.
+      // Compose email — v4 static template, no LLM hook generator.
       const { subject, body } = composeEmail({
         firstName: contact.firstName,
         firmName: contact.firmName,
-        hook,
       })
 
       // Quality gate.

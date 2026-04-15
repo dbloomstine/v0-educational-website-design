@@ -190,6 +190,38 @@ function hasBadNewsLanguage(article: Article): boolean {
   return BAD_NEWS_TEXT_PATTERNS.some((re) => re.test(haystack))
 }
 
+// ─── Hard Block G — Person-move events ──────────────────────────────────────
+// Executive hires, departures, changes, and appointments are high-collision
+// risk: Apollo's current-employer records can be stale when someone has
+// just moved firms, and the 2026-04-15 H.I.G./Infinedi incident proved the
+// failure mode out (Branch A matchPerson for "Rohan Arora at Infinedi"
+// returned his prior record at H.I.G. Capital, and we sent a hook about
+// Infinedi to rarora@hig.com).
+//
+// Even with the Apollo-side org-mismatch guard in place, person-move stories
+// are awkward to hook on: the "news" is someone leaving or joining, and the
+// right audience is the receiving firm's colleagues, not the person
+// themselves or their old firm. Easier to drop the whole class than to
+// differentiate.
+const PERSON_MOVE_EVENT_TYPES = new Set([
+  'executive_hire',
+  'executive_change',
+  'executive_departure',
+  'executive_appointment',
+  'hire',
+  'appointment',
+  'departure',
+  'promotion',
+])
+
+function isPersonMoveEvent(article: Article): boolean {
+  const evt = article.eventType?.toLowerCase() ?? ''
+  if (PERSON_MOVE_EVENT_TYPES.has(evt)) return true
+  const atype = article.articleType?.toLowerCase() ?? ''
+  if (PERSON_MOVE_EVENT_TYPES.has(atype)) return true
+  return false
+}
+
 function isBadNewsEvent(article: Article): boolean {
   // Wind-downs are awkward to congratulate on.
   if (article.closeType === 'wind_down') return true
@@ -242,6 +274,9 @@ export function buildCandidates(articles: Article[]): Candidate[] {
 
     // Hard Block F — bad-news events
     if (isBadNewsEvent(article)) continue
+
+    // Hard Block G — person-move events (hires, departures, promotions)
+    if (isPersonMoveEvent(article)) continue
 
     // One candidate per firm per day
     const firmKey = firmName.toLowerCase()

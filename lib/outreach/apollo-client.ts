@@ -240,14 +240,54 @@ export async function findContactForFirm(
   // has a redundant check for belt + suspenders.
   if (!person.first_name || !person.first_name.trim()) return null
 
+  // Org-match check. Apollo's person records can be stale when someone
+  // has just moved firms — the 2026-04-15 H.I.G./Infinedi collision was
+  // a Branch A matchPerson() call asking for "Rohan Arora at Infinedi
+  // Partners", and Apollo returned his prior record at H.I.G. Capital
+  // with email rarora@hig.com. If we trust Apollo's org over the
+  // article's firm, we end up emailing the wrong firm.
+  //
+  // New rule: verify Apollo's returned org matches the article's firm
+  // (punctuation-insensitive substring match either way). If it doesn't,
+  // drop the contact entirely — never send to a mismatched firm.
+  if (person.organization?.name) {
+    const apolloNorm = normalizeFirmName(person.organization.name)
+    const articleNorm = normalizeFirmName(article.firmName)
+    const orgMatches =
+      apolloNorm === articleNorm ||
+      apolloNorm.includes(articleNorm) ||
+      articleNorm.includes(apolloNorm)
+    if (!orgMatches) {
+      console.warn(
+        `[outreach] org mismatch — dropped Apollo person ${person.email}: ` +
+          `article.firm="${article.firmName}" vs apollo.org="${person.organization.name}"`,
+      )
+      return null
+    }
+  }
+
+  // Source-of-truth rule: the Contact's firm is ALWAYS the article's firm.
+  // Apollo's organization record is used for the match check above but
+  // never overrides downstream subject/body composition.
   return {
     email: person.email,
     firstName: person.first_name,
     lastName: person.last_name ?? '',
     title: person.title ?? '',
-    firmName: person.organization?.name ?? article.firmName,
-    firmDomain: person.organization?.primary_domain ?? article.firmDomain,
+    firmName: article.firmName,
+    firmDomain: article.firmDomain ?? person.organization?.primary_domain ?? null,
     personId: person.id,
     article,
   }
+}
+
+/**
+ * Strip whitespace and punctuation and lowercase a firm name for
+ * mismatch comparison. "H.I.G. Capital" → "higcapital". Tolerates
+ * differences like "HIG Capital" vs "H.I.G. Capital" (both normalize
+ * to "higcapital") while still catching true mismatches like
+ * "Infinedi Partners" vs "H.I.G. Capital".
+ */
+function normalizeFirmName(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]/g, '')
 }
