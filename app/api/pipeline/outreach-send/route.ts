@@ -312,7 +312,10 @@ export async function GET(req: Request) {
     } catch (err) {
       console.error('Summary email send failed:', err)
       // Don't fail the whole run on summary email failure — the actual
-      // outreach already happened.
+      // outreach already happened. But DO surface the error in the
+      // response so diagnosis doesn't require Vercel log access.
+      ;(result as OutreachRunResult & { summaryEmailError?: string }).summaryEmailError =
+        err instanceof Error ? err.message : String(err)
     }
 
     return NextResponse.json(result)

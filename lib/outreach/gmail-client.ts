@@ -115,6 +115,12 @@ function buildMimeMessage(params: {
     return s
   }
 
+  // Normalize any bare \n in the body to \r\n. Gmail's MIME parser is
+  // strict about line endings in some contexts, and the rest of the
+  // message uses CRLF — mixing line-ending styles inside a single message
+  // can cause the API to reject the payload.
+  const normalizedBody = params.body.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n')
+
   const lines = [
     `From: "${params.fromName}" <${params.from}>`,
     `To: ${params.to}`,
@@ -123,7 +129,7 @@ function buildMimeMessage(params: {
     'Content-Type: text/plain; charset=utf-8',
     'Content-Transfer-Encoding: 8bit',
     '',
-    params.body,
+    normalizedBody,
   ]
 
   return lines.join('\r\n')

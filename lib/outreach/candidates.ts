@@ -45,6 +45,9 @@ const MEGA_FUND_PATTERNS: string[] = [
   'silver lake',
   'hellman & friedman',
   'adams street partners', // $65B AUM — Danny flagged for block list
+  // First-live-run additions (2026-04-15)
+  'blue owl capital', // ~$200B AUM
+  'blue owl',
 ]
 
 // ─── Hard Block B — Public pensions / state LPs / sovereign / endowments ────

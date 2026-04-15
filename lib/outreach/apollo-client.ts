@@ -103,7 +103,10 @@ async function searchPeople(params: {
     body.q_organization_domains_list = [params.domain]
   }
 
-  const res = await fetch(`${APOLLO_BASE}/mixed_people/search`, {
+  // Apollo deprecated the /mixed_people/search endpoint for REST API callers
+  // in 2026. The replacement is /mixed_people/api_search. Error surfaced in
+  // first live run on 2026-04-15.
+  const res = await fetch(`${APOLLO_BASE}/mixed_people/api_search`, {
     method: 'POST',
     headers: {
       'x-api-key': apiKey,
