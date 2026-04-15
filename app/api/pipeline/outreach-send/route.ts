@@ -100,12 +100,20 @@ export async function GET(req: Request) {
   const contactsPerFirmOverride = url.searchParams.get('contactsPerFirm')
   const skipFirmDedup = url.searchParams.get('skipFirmDedup') === 'true'
 
+  // Default: 3 contacts per firm. First step toward the 5-10 per firm
+  // scale goal. Scheduled cron picks this up with no env var required.
+  // Set `OUTREACH_CONTACTS_PER_FIRM` in Vercel to override the code
+  // default without a redeploy. Query param still overrides both.
+  const envContactsPerFirm = process.env.OUTREACH_CONTACTS_PER_FIRM
+  const baseContactsPerFirm = envContactsPerFirm
+    ? Number(envContactsPerFirm)
+    : 3
   const contactsPerFirm = contactsPerFirmOverride != null
     ? Number(contactsPerFirmOverride)
-    : 1 // default: 1 contact per firm (preserves cron behavior)
+    : baseContactsPerFirm
   if (!Number.isFinite(contactsPerFirm) || contactsPerFirm <= 0) {
     return NextResponse.json(
-      { ok: false, error: 'Invalid ?contactsPerFirm (must be > 0)' },
+      { ok: false, error: 'Invalid contactsPerFirm (env OUTREACH_CONTACTS_PER_FIRM or ?contactsPerFirm= query param)' },
       { status: 500 },
     )
   }
@@ -176,14 +184,20 @@ export async function GET(req: Request) {
     // ─── 6. Hard-block filters + candidate build ──────────────────────────
     const allCandidates = buildCandidates(articles)
 
-    // ─── 7. Firm-level dedup (name + domain, 120d + permanent blocks) ──────
-    // `?skipFirmDedup=true` bypasses this for multi-contact-per-firm tests
-    // where we want to hit the same firm with new people. The email-level
-    // dedup (step 9) still catches individual re-contacts in the 120d
-    // window, so nobody gets the same email twice.
+    // ─── 7. Firm-level dedup (count-based rolling window + permanent blocks) ──
+    // `firmLevelDedup` now accepts contactsPerFirm as the rolling-window
+    // allowance. Firms get dropped only when we've already hit that
+    // many contacts in the 120-day window (OR on permanent block from
+    // opted_out/bounced). With contactsPerFirm=3 and rolling-window
+    // counting, we can reach 3 distinct people per firm in any 120-day
+    // window across multiple cron runs.
+    //
+    // `?skipFirmDedup=true` bypasses entirely for manual tests. The
+    // email-level dedup (step 9) still catches individual re-contacts
+    // either way, so nobody gets the same email twice.
     const dedupedFirms = skipFirmDedup
       ? allCandidates
-      : await firmLevelDedup(supabase, allCandidates)
+      : await firmLevelDedup(supabase, allCandidates, contactsPerFirm)
 
     // ─── 8. Apollo enrichment, capped at CAP + headroom ───────────────────
     // Enrich up to CAP * 2 candidates so we have headroom for Apollo misses
@@ -317,6 +331,16 @@ export async function GET(req: Request) {
           sent_at: new Date().toISOString(),
           notes: `auto-sent via outreach-send cron, run=${startedAt}`,
         })
+
+        // Throttle between successful sends: random 3-7 second delay
+        // so a batch of 30 doesn't all hit recipient inboxes in the same
+        // second. Looks more like a human sending in sequence than a
+        // spambot blasting from a queue. Only sleeps if more sends are
+        // still expected — no wasted time on the last iteration.
+        if (sentDetails.length < remainingCapSlots) {
+          const jitterMs = 3000 + Math.floor(Math.random() * 4000)
+          await new Promise((resolve) => setTimeout(resolve, jitterMs))
+        }
       } catch (err) {
         console.error(`Gmail send failed for ${contact.email}:`, err)
         gmailFailures.push('fail')

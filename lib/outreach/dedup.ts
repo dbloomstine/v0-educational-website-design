@@ -4,15 +4,24 @@
  * Two stages of dedup run in the cron pipeline:
  *
  * 1. firmLevelDedup() — runs after candidate building, BEFORE Apollo.
- *    Drops firms we've contacted in the last 120 days or permanently
- *    blocked. Matches on BOTH firm_name (lowered) AND firm_domain —
- *    either one hit means drop, because firm-name drift is common
- *    ("Court Square Capital Partners" vs "Court Square Capital").
+ *    Two rules:
+ *      a. Permanent block. If any row in cold_outreach_sent has status
+ *         'opted_out' or 'bounced' for this firm's name or domain, the
+ *         firm is off-limits forever. Don't burn sender reputation on a
+ *         firm that's already filtering us.
+ *      b. Rolling-window count. If we've already sent >= maxContactsPerFirm
+ *         contacts to this firm within the last 120 days (any status in
+ *         draft_created/sent/replied/replied_positive), drop the firm.
+ *         Otherwise allow it — leaves room for multi-contact-per-firm
+ *         across runs when maxContactsPerFirm > 1.
  *
  * 2. emailLevelDedup() — runs after Apollo returns verified contacts.
  *    Drops anyone who (a) is already a FundOps Daily subscriber in any
  *    status, or (b) was contacted via cold_outreach_sent in the last
  *    120 days, or (c) is permanently blocked (status opted_out/bounced).
+ *    This is the per-person safety net — guarantees nobody gets the
+ *    same email twice even when firmLevelDedup allows the firm through
+ *    for a multi-contact run.
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js'
@@ -23,33 +32,34 @@ type DbClient = SupabaseClient<any, any>
 
 /**
  * Drop candidate firms that match the rolling-window or permanent-block
- * rules in cold_outreach_sent. Returns the filtered candidate list.
+ * rules in cold_outreach_sent. `maxContactsPerFirm` is the rolling-window
+ * allowance — firms get blocked when their 120-day contact count reaches
+ * or exceeds this value.
  */
 export async function firmLevelDedup(
   supabase: DbClient,
   candidates: Candidate[],
+  maxContactsPerFirm: number,
 ): Promise<Candidate[]> {
   if (candidates.length === 0) return []
+  if (maxContactsPerFirm <= 0) return []
 
   // MVP approach: fetch all rows in the 120-day window + permanent blocks,
   // then filter the candidate list client-side. At small table sizes (we
   // expect <5k rows for the first year), this is simpler than Supabase's
   // awkward .or() filter chain. Revisit if cold_outreach_sent grows large.
 
-  const { data: byName, error: nameErr } = await supabase
+  const { data: windowRows, error: winErr } = await supabase
     .from('cold_outreach_sent')
     .select('firm_name, firm_domain, status, created_at')
-    .in('status', ['draft_created', 'sent', 'replied', 'replied_positive', 'opted_out', 'bounced'])
-    // Supabase doesn't support lower() on the select-side of .in(), so we
-    // pull matching rows by firm_name using ilike with OR. Simpler approach:
-    // fetch a wider set filtered by status, then filter client-side.
+    .in('status', ['draft_created', 'sent', 'replied', 'replied_positive'])
     .gte('created_at', new Date(Date.now() - 120 * 24 * 60 * 60 * 1000).toISOString())
 
-  if (nameErr) {
-    throw new Error(`firmLevelDedup name query failed: ${nameErr.message}`)
+  if (winErr) {
+    throw new Error(`firmLevelDedup window query failed: ${winErr.message}`)
   }
 
-  // Also fetch permanent blocks regardless of date (opted_out, bounced).
+  // Permanent blocks — any row ever with status opted_out or bounced.
   const { data: blocked, error: blockedErr } = await supabase
     .from('cold_outreach_sent')
     .select('firm_name, firm_domain, status')
@@ -59,19 +69,34 @@ export async function firmLevelDedup(
     throw new Error(`firmLevelDedup blocked query failed: ${blockedErr.message}`)
   }
 
-  // Build a set of blocked keys from both queries.
-  const blockedFirmNames = new Set<string>()
-  const blockedDomains = new Set<string>()
-
-  for (const row of [...(byName ?? []), ...(blocked ?? [])]) {
-    if (row.firm_name) blockedFirmNames.add(row.firm_name.toLowerCase())
-    if (row.firm_domain) blockedDomains.add(row.firm_domain)
+  // Permanent block sets — firm name OR domain match = drop forever.
+  const permBlockedFirmNames = new Set<string>()
+  const permBlockedDomains = new Set<string>()
+  for (const row of blocked ?? []) {
+    if (row.firm_name) permBlockedFirmNames.add(row.firm_name.toLowerCase())
+    if (row.firm_domain) permBlockedDomains.add(row.firm_domain)
   }
 
-  // Drop candidates whose firm_name OR firm_domain is in the block set.
+  // Rolling-window counts, keyed by lowercased firm name. Firm-name drift
+  // ("Court Square" vs "Court Square Capital Partners") can undercount in
+  // edge cases, but at the current scale that's acceptable — the email-
+  // level dedup catches individual-level re-contacts regardless.
+  const contactsByFirm: Record<string, number> = {}
+  for (const row of windowRows ?? []) {
+    if (row.firm_name) {
+      const key = row.firm_name.toLowerCase()
+      contactsByFirm[key] = (contactsByFirm[key] ?? 0) + 1
+    }
+  }
+
   return candidates.filter((c) => {
-    if (blockedFirmNames.has(c.firmName.toLowerCase())) return false
-    if (c.firmDomain && blockedDomains.has(c.firmDomain)) return false
+    const nameKey = c.firmName.toLowerCase()
+    // Permanent blocks — immediate drop.
+    if (permBlockedFirmNames.has(nameKey)) return false
+    if (c.firmDomain && permBlockedDomains.has(c.firmDomain)) return false
+    // Rolling-window count — drop if we've hit the per-firm allowance.
+    const existingCount = contactsByFirm[nameKey] ?? 0
+    if (existingCount >= maxContactsPerFirm) return false
     return true
   })
 }

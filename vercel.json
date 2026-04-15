@@ -24,7 +24,7 @@
     },
     {
       "path": "/api/pipeline/outreach-send",
-      "schedule": "0 13 * * 1-5"
+      "schedule": "30 12 * * 1-5"
     },
     {
       "path": "/api/pipeline/outreach-monitor",
