@@ -26,7 +26,7 @@ const MEGA_FUND_PATTERNS: string[] = [
   'kkr', 'kkr & co', 'kohlberg kravis roberts',
   'apollo global management', 'apollo management', 'apollo asset management',
   'carlyle', 'the carlyle group',
-  'tpg capital', 'tpg inc',
+  'tpg', 'tpg capital', 'tpg inc', 'tpg angelo gordon',
   'bain capital',
   'advent international',
   'warburg pincus',
@@ -108,13 +108,51 @@ const FUND_ADMIN_PATTERNS: string[] = [
 ]
 
 // ─── Geography filter helper ─────────────────────────────────────────────────
-function hasNorthAmericaGeography(geography: string[] | null): boolean {
-  if (!geography || geography.length === 0) return false
+// The classifier frequently leaves geography empty on clearly-US firms — this
+// was over-rotated as a "definitely non-NA, drop" signal in the original build
+// and dropped ~14 of 26 legitimate NA-based candidates on 2026-04-15 (Stellex,
+// Dominus, THL Partners, Newmark, Olympus, Costanoa, etc.). New rule: empty
+// or null passes through, and we trust downstream Apollo + verified-email
+// rules to filter bad matches. Only drop when geography is explicitly and
+// exclusively non-NA / non-Global.
+function hasAcceptableGeography(geography: string[] | null): boolean {
+  // Empty/null → pass through.
+  if (!geography || geography.length === 0) return true
+
   const normalized = geography.map((g) => g.toLowerCase())
-  // Accept explicit "North America" OR "Global" (the firm is likely NA-based
-  // for most global firms we cover, and the GDPR risk is about actually
-  // emailing EU contacts, not about tagging).
-  return normalized.includes('north america') || normalized.includes('global')
+
+  // Contains NA or Global → accept (even if mixed with other regions).
+  if (
+    normalized.some(
+      (g) => g.includes('north america') || g === 'global' || g.includes('worldwide'),
+    )
+  ) {
+    return true
+  }
+
+  // Explicitly non-NA (Europe-only, Asia-Pacific-only, etc.) → drop.
+  return false
+}
+
+// ─── Pension text scan (supplement to Block B firm-name patterns) ────────────
+// Catches public-pension LPs whose firm_name doesn't trigger the Block B
+// patterns but whose article text makes the identity obvious. Added
+// 2026-04-15 after "Nest" (UK pension scheme) slipped through — the firm
+// name was too short to match any pattern, but the article title started
+// with "UK pension scheme Nest commits..."
+const PENSION_TEXT_PATTERNS: RegExp[] = [
+  /\bpension scheme\b/i,
+  /\bpension fund\b/i,
+  /\bpension plan\b/i,
+  /\bretirement fund\b/i,
+  /\bsuperannuation\b/i,
+  /\bworkplace pension\b/i,
+  /\bstate pension\b/i,
+]
+
+function hasPensionLanguage(article: Article): boolean {
+  const text = `${article.title ?? ''} ${article.tldr ?? ''}`
+  return PENSION_TEXT_PATTERNS.some((re) => re.test(text))
 }
 
 // ─── Substring-match helper ──────────────────────────────────────────────────
@@ -183,8 +221,8 @@ export function buildCandidates(articles: Article[]): Candidate[] {
     const firmName = article.firmName?.trim()
     if (!firmName) continue
 
-    // Hard Block C — geography
-    if (!hasNorthAmericaGeography(article.geography)) continue
+    // Hard Block C — geography (relaxed 2026-04-15: empty passes through)
+    if (!hasAcceptableGeography(article.geography)) continue
 
     // Hard Block D — media outlets
     if (matchesAny(firmName, MEDIA_OUTLET_PATTERNS)) continue
@@ -192,8 +230,12 @@ export function buildCandidates(articles: Article[]): Candidate[] {
     // Hard Block A — mega-fund GPs
     if (matchesAny(firmName, MEGA_FUND_PATTERNS)) continue
 
-    // Hard Block B — public pensions / sovereign / endowments
+    // Hard Block B — public pensions / sovereign / endowments (firm-name match)
     if (matchesAny(firmName, PUBLIC_LP_PATTERNS)) continue
+
+    // Hard Block B (text scan) — catches pensions where firm_name doesn't
+    // match but article text makes it obvious ("UK pension scheme Nest ...").
+    if (hasPensionLanguage(article)) continue
 
     // Hard Block E — fund admin service providers / actuarial consulting
     if (matchesAny(firmName, FUND_ADMIN_PATTERNS)) continue
