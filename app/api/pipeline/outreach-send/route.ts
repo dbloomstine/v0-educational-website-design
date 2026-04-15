@@ -107,9 +107,22 @@ export async function GET(req: Request) {
   const editionDateOverride = url.searchParams.get('editionDate') // YYYY-MM-DD
   const contactsPerFirmOverride = url.searchParams.get('contactsPerFirm')
   const skipFirmDedup = url.searchParams.get('skipFirmDedup') === 'true'
+  // Template mode resolution order:
+  //   1. ?templateMode=short|forward query param (highest priority — lets
+  //      us test either mode manually regardless of env/default).
+  //   2. OUTREACH_TEMPLATE_MODE env var (production toggle — lets Danny
+  //      flip from forward back to short via Vercel env without a
+  //      code deploy if anything looks wrong tomorrow morning).
+  //   3. Code default — 'forward'. Shipping as default after validating
+  //      forward mode end-to-end on 2026-04-15 (cleaned HTML, section
+  //      pointer, multi-contact sends to TPG/Ares/Blue Owl). Short mode
+  //      is still fully functional, just opt-in.
   const templateModeParam = url.searchParams.get('templateMode')
+  const envTemplateMode = process.env.OUTREACH_TEMPLATE_MODE
+  const resolvedMode =
+    templateModeParam ?? envTemplateMode ?? 'forward'
   const templateMode: TemplateMode =
-    templateModeParam === 'forward' ? 'forward' : 'short'
+    resolvedMode === 'short' ? 'short' : 'forward'
 
   // Default: 5 contacts per firm PER RUN. This is the per-run quota,
   // NOT a 120-day limit. A firm that gets hit today can still be hit
