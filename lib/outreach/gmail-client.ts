@@ -93,45 +93,89 @@ function base64UrlEncode(input: string): string {
 }
 
 // ─── MIME message construction ──────────────────────────────────────────────
+
+// eslint-disable-next-line no-control-regex
+const NON_ASCII_RE = /[^\x00-\x7F]/
+
+function encodeHeaderIfNeeded(s: string): string {
+  // RFC 2047 encoded-word for non-ASCII subject/header values.
+  if (NON_ASCII_RE.test(s)) {
+    return `=?UTF-8?B?${Buffer.from(s, 'utf-8').toString('base64')}?=`
+  }
+  return s
+}
+
+function normalizeLineEndings(body: string): string {
+  // Normalize any bare \n to \r\n. Gmail's MIME parser is strict about
+  // line endings in some contexts.
+  return body.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n')
+}
+
+function randomBoundary(): string {
+  // Fresh boundary per message. Must not appear inside any part body;
+  // 128 bits of randomness makes collision effectively impossible.
+  return '----=_Part_' + Math.random().toString(36).slice(2) + Date.now().toString(36)
+}
+
 function buildMimeMessage(params: {
   from: string
   fromName: string
   to: string
   subject: string
   body: string
+  html?: string
 }): string {
   // Gmail's send API expects an RFC 2822 message, base64url-encoded.
-  // We keep it simple: text/plain UTF-8, 7bit encoding for ASCII-clean
-  // bodies, with a quoted display name on the From header.
   //
-  // Subject encoding: if the subject contains non-ASCII, encode it as
-  // RFC 2047 encoded-word. For our "Covered [Firm] today" format this
-  // is rarely needed, but the helper is cheap.
-  const encodeHeaderIfNeeded = (s: string): string => {
-    // eslint-disable-next-line no-control-regex
-    if (/[^\x00-\x7F]/.test(s)) {
-      return `=?UTF-8?B?${Buffer.from(s, 'utf-8').toString('base64')}?=`
-    }
-    return s
-  }
+  // Two modes:
+  //   - text only: single text/plain part (backwards compatible, short template)
+  //   - text + html: multipart/alternative with both parts (forward mode)
 
-  // Normalize any bare \n in the body to \r\n. Gmail's MIME parser is
-  // strict about line endings in some contexts, and the rest of the
-  // message uses CRLF — mixing line-ending styles inside a single message
-  // can cause the API to reject the payload.
-  const normalizedBody = params.body.replace(/\r\n/g, '\n').replace(/\n/g, '\r\n')
-
-  const lines = [
+  const headers = [
     `From: "${params.fromName}" <${params.from}>`,
     `To: ${params.to}`,
     `Subject: ${encodeHeaderIfNeeded(params.subject)}`,
     'MIME-Version: 1.0',
+  ]
+
+  const normalizedText = normalizeLineEndings(params.body)
+
+  if (!params.html) {
+    // Text only
+    const lines = [
+      ...headers,
+      'Content-Type: text/plain; charset=utf-8',
+      'Content-Transfer-Encoding: 8bit',
+      '',
+      normalizedText,
+    ]
+    return lines.join('\r\n')
+  }
+
+  // Multipart/alternative: text + html bodies, recipient's mail client
+  // picks whichever it supports (modern clients always html).
+  const boundary = randomBoundary()
+  const normalizedHtml = normalizeLineEndings(params.html)
+
+  const lines = [
+    ...headers,
+    `Content-Type: multipart/alternative; boundary="${boundary}"`,
+    '',
+    `--${boundary}`,
     'Content-Type: text/plain; charset=utf-8',
     'Content-Transfer-Encoding: 8bit',
     '',
-    normalizedBody,
+    normalizedText,
+    '',
+    `--${boundary}`,
+    'Content-Type: text/html; charset=utf-8',
+    'Content-Transfer-Encoding: 8bit',
+    '',
+    normalizedHtml,
+    '',
+    `--${boundary}--`,
+    '',
   ]
-
   return lines.join('\r\n')
 }
 
@@ -140,6 +184,7 @@ export async function sendGmail(params: {
   to: string
   subject: string
   body: string
+  html?: string // Optional HTML body — when provided, sends multipart/alternative
   from?: string
   fromName?: string
 }): Promise<{ messageId: string }> {
@@ -154,8 +199,13 @@ export async function sendGmail(params: {
     to: params.to,
     subject: params.subject,
     body: params.body,
+    html: params.html,
   })
 
+  // Base64url encoding of binary data — for HTML bodies we need to treat
+  // the input as UTF-8 bytes, not a JS string, so Buffer.from('utf-8')
+  // correctly encodes any multi-byte characters. The existing helper
+  // already handles this.
   const encoded = base64UrlEncode(raw)
 
   const res = await fetch(`${GMAIL_API_BASE}/messages/send`, {
@@ -176,6 +226,112 @@ export async function sendGmail(params: {
   if (!data.id) throw new Error('Gmail send succeeded but returned no message ID')
 
   return { messageId: data.id }
+}
+
+// ─── Public: fetch an inbox message's HTML and text parts ─────────────────
+/**
+ * Fetch a Gmail message and extract both text/plain and text/html parts
+ * from the multipart payload. Used by the newsletter forward feature to
+ * grab today's FundOps Daily newsletter from Danny's inbox so we can
+ * forward it with a personal note.
+ *
+ * Returns both parts when present. If the message is not multipart, the
+ * single body is returned in whichever field its mimeType indicates, and
+ * the other field is empty.
+ */
+export interface GmailMessageContent {
+  id: string
+  threadId: string
+  subject: string
+  fromName: string
+  fromEmail: string
+  date: string // RFC 2822 date header as sent
+  text: string
+  html: string
+}
+
+export async function getMessageContent(messageId: string): Promise<GmailMessageContent> {
+  const accessToken = await getAccessToken()
+  const url = new URL(`${GMAIL_API_BASE}/messages/${messageId}`)
+  url.searchParams.set('format', 'full')
+
+  const res = await fetch(url.toString(), {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  })
+
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Gmail getMessageContent failed ${res.status}: ${text.slice(0, 200)}`)
+  }
+
+  // Gmail API payload shape for format=full. Parts can nest arbitrarily
+  // (multipart/mixed → multipart/alternative → text/plain + text/html).
+  interface MimePart {
+    mimeType?: string
+    headers?: Array<{ name: string; value: string }>
+    body?: { size?: number; data?: string }
+    parts?: MimePart[]
+  }
+  interface GmailMessage {
+    id: string
+    threadId: string
+    payload?: MimePart
+  }
+  const data = (await res.json()) as GmailMessage
+
+  const headers = data.payload?.headers ?? []
+  const getHeader = (name: string) =>
+    headers.find((h) => h.name.toLowerCase() === name.toLowerCase())?.value ?? ''
+
+  const subject = getHeader('Subject')
+  const date = getHeader('Date')
+  const fromRaw = getHeader('From')
+
+  // Parse "Display Name <email@host>" or bare "email@host"
+  const angleMatch = fromRaw.match(/^(.*?)\s*<([^>]+)>\s*$/)
+  let fromName = ''
+  let fromEmail = ''
+  if (angleMatch) {
+    fromName = angleMatch[1].trim().replace(/^"|"$/g, '')
+    fromEmail = angleMatch[2].trim().toLowerCase()
+  } else {
+    fromEmail = fromRaw.trim().toLowerCase()
+  }
+
+  // Walk the MIME tree and collect the first text/plain and first text/html
+  // parts we encounter. Gmail can nest parts deep in multipart/mixed +
+  // multipart/related trees; we use a DFS.
+  let textBody = ''
+  let htmlBody = ''
+
+  function decode(base64UrlData: string): string {
+    return Buffer.from(base64UrlData, 'base64url').toString('utf-8')
+  }
+
+  function walk(part: MimePart) {
+    if (part.mimeType === 'text/plain' && part.body?.data && !textBody) {
+      textBody = decode(part.body.data)
+    }
+    if (part.mimeType === 'text/html' && part.body?.data && !htmlBody) {
+      htmlBody = decode(part.body.data)
+    }
+    if (part.parts) {
+      for (const child of part.parts) walk(child)
+    }
+  }
+
+  if (data.payload) walk(data.payload)
+
+  return {
+    id: data.id,
+    threadId: data.threadId,
+    subject,
+    fromName,
+    fromEmail,
+    date,
+    text: textBody,
+    html: htmlBody,
+  }
 }
 
 // ─── Public: list inbox messages (for the monitor route) ───────────────────
