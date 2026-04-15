@@ -90,12 +90,14 @@ export async function GET(req: Request) {
   }
 
   // Authenticated query-param overrides — let a trusted caller (us, with
-  // the CRON_SECRET) bump the cap and bypass the idempotency guard on a
-  // per-invocation basis without touching Vercel env vars. The scheduled
-  // cron passes no query params, so its behavior is unchanged.
+  // the CRON_SECRET) bump the cap, bypass the idempotency guard, and point
+  // at a specific edition date on a per-invocation basis without touching
+  // Vercel env vars. The scheduled cron passes no query params, so its
+  // behavior is unchanged.
   const url = new URL(req.url)
   const capOverride = url.searchParams.get('cap')
   const force = url.searchParams.get('force') === 'true'
+  const editionDateOverride = url.searchParams.get('editionDate') // YYYY-MM-DD
 
   const dailyCap = capOverride != null
     ? Number(capOverride)
@@ -122,8 +124,8 @@ export async function GET(req: Request) {
       })
     }
 
-    // ─── 4. Verify newsletter sent today ──────────────────────────────────
-    const editionDate = todayDateET()
+    // ─── 4. Verify newsletter sent (today by default, or override) ───────
+    const editionDate = editionDateOverride ?? todayDateET()
     const { data: edition, error: editionErr } = await supabase
       .from('newsletter_editions')
       .select('id, edition_date, subject, status, article_ids')
