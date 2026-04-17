@@ -1,6 +1,108 @@
 {
-  "generated_at": "2026-04-16T11:53:43.842501Z",
+  "generated_at": "2026-04-17T13:23:51.719313Z",
   "funds": [
+    {
+      "fund_name": "Partners Group Secondary Opportunities",
+      "firm": "Partners Group",
+      "firm_slug": "partners-group",
+      "amount": "$9B+",
+      "amount_usd_millions": 9000.0,
+      "category": "Secondaries & GP-Stakes",
+      "location": "Baar, Switzerland",
+      "city": "Baar",
+      "state": "",
+      "country": "Switzerland",
+      "stage": "Final Close",
+      "announcement_date": "2026-04-17",
+      "source_url": "https://www.secondariesinvestor.com/partners-group-closes-latest-pe-secondaries-programme-on-9bn/",
+      "source_name": "Secondaries Investor",
+      "description_notes": "closes latest PE secondaries programme exceeding $9 billion in commitments. The fund targets secondary private equity investments and GP-stakes globally. Partners Group continues to expand its secondaries platform with this latest vehicle, demonstrating sustained LP demand for secondary market exposure.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-17T13:18:21",
+      "articles": [
+        {
+          "title": "Partners Group closes latest PE secondaries programme on $9bn+",
+          "url": "https://www.secondariesinvestor.com/partners-group-closes-latest-pe-secondaries-programme-on-9bn/",
+          "source_name": "Secondaries Investor",
+          "source_domain": "secondariesinvestor.com",
+          "published_date": "2026-04-17",
+          "summary": "",
+          "feed_name": "Secondaries Investor"
+        }
+      ]
+    },
+    {
+      "fund_name": "Topspin Consumer Partners",
+      "firm": "Topspin Consumer Partners",
+      "firm_slug": "topspin-consumer-partners",
+      "amount": "$328M",
+      "amount_usd_millions": 328.0,
+      "category": "Private Equity",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Final Close",
+      "announcement_date": "2026-04-17",
+      "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/topspin-consumer-partners-beats-hard-cap-for-328m-fundraise.html",
+      "source_name": "AltAssets",
+      "description_notes": "closed its third flagship consumer-focused buyout fund at $328m, surpassing its hard cap in a competitive fundraise. The oversubscribed vehicle demonstrates continued LP appetite for Topspin's consumer strategy, marking growth from prior vintages.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-17T13:18:21",
+      "articles": [
+        {
+          "title": "Topspin Consumer Partners beats hard cap for $328m fundraise",
+          "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/topspin-consumer-partners-beats-hard-cap-for-328m-fundraise.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-04-17",
+          "summary": "",
+          "feed_name": "AltAssets"
+        },
+        {
+          "title": "Topspin Consumer Partners Closes $328M Fund III - Ventureburn",
+          "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNOHU4bkpva010M240LXBJcWw0MlNuWF9QVlVFa3h0bl9pN3R6djlQQld6RVFPVWY5Zl9GcDlwdWV1ZkcxcmxRWll0anVtSkx4UFpzZTF3UmhtMFZJd0R3emRJX1NITG83d2tPcW5iLTdLR09tR2M4b2pQQUN4SVR0V3diRdIBgwFBVV95cUxNOHU4bkpva010M240LXBJcWw0MlNuWF9QVlVFa3h0bl9pN3R6djlQQld6RVFPVWY5Zl9GcDlwdWV1ZkcxcmxRWll0anVtSkx4UFpzZTF3UmhtMFZJd0R3emRJX1NITG83d2tPcW5iLTdLR09tR2M4b2pQQUN4SVR0V3diRQ?oc=5",
+          "source_name": "Ventureburn",
+          "source_domain": "ventureburn.com",
+          "published_date": "2026-04-16",
+          "summary": "Topspin Consumer Partners Closes $328M Fund III&nbsp;&nbsp;Ventureburn",
+          "feed_name": "search:Oversubscribed funds"
+        }
+      ]
+    },
+    {
+      "fund_name": "Sequoia AI Fund",
+      "firm": "Sequoia Capital",
+      "firm_slug": "sequoia-capital",
+      "amount": "$7B",
+      "amount_usd_millions": 7000.0,
+      "category": "Venture Capital",
+      "location": "Menlo Park, CA",
+      "city": "Menlo Park",
+      "state": "CA",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2026-04-16",
+      "source_url": "https://techcrunch.com/2026/04/16/new-leaders-new-fund-sequoia-has-raised-7b-to-expand-its-ai-bets/",
+      "source_name": "TechCrunch",
+      "description_notes": "expands Sequoia's artificial intelligence investment strategy with a dedicated $7B vehicle under new leadership. The fund represents a significant commitment to AI-focused startups and represents a notable increase from prior venture vehicles. New fund leadership signals a strategic shift in how Sequoia will deploy capital across emerging AI opportunities.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-17T13:18:21",
+      "articles": [
+        {
+          "title": "New leaders, new fund: Sequoia has raised $7B to expand its AI bets",
+          "url": "https://techcrunch.com/2026/04/16/new-leaders-new-fund-sequoia-has-raised-7b-to-expand-its-ai-bets/",
+          "source_name": "TechCrunch",
+          "source_domain": "techcrunch.com",
+          "published_date": "2026-04-17",
+          "summary": "",
+          "feed_name": "TechCrunch - Venture"
+        }
+      ]
+    },
     {
       "fund_name": "GoldenTree Tactical Opportunities Credit Fund",
       "firm": "GoldenTree Asset Management",
@@ -33,6 +135,37 @@
       ]
     },
     {
+      "fund_name": "Comvest Partners Flagship Credit Strategy",
+      "firm": "Comvest Partners",
+      "firm_slug": "comvest-partners",
+      "amount": "$2.63B",
+      "amount_usd_millions": 2630.0,
+      "category": "Credit Funds",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Other",
+      "announcement_date": "2026-04-16",
+      "source_url": "https://www.privatedebtinvestor.com/comvest-partners-raises-2-63bn-for-flagship-credit-strategy/",
+      "source_name": "Private Debt Investor",
+      "description_notes": "close a $2.63B flagship credit strategy fund focused on direct lending and structured credit across the middle market. The fund represents Comvest Partners' largest deployment of capital to date in the credit space, targeting institutional investors seeking yield in a diversified portfolio of senior and subordinated debt instruments.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-17T13:18:21",
+      "articles": [
+        {
+          "title": "Comvest Partners raises $2.63bn for flagship credit strategy",
+          "url": "https://www.privatedebtinvestor.com/comvest-partners-raises-2-63bn-for-flagship-credit-strategy/",
+          "source_name": "Private Debt Investor",
+          "source_domain": "privatedebtinvestor.com",
+          "published_date": "2026-04-16",
+          "summary": "",
+          "feed_name": "Private Debt Investor"
+        }
+      ]
+    },
+    {
       "fund_name": "Alt Capital Office and Warehousing Fund",
       "firm": "Alt Capital",
       "firm_slug": "alt-capital",
@@ -47,7 +180,7 @@
       "announcement_date": "2026-04-16",
       "source_url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxOMzk1b2xTVGhxS1RkYjFmREM1elV2ZUp5T1RJZHZkSnhrS1U2cFl2OG0zZ29kN1pJclJ5ZmxiRVJ5RWplemtpV3dmU0FSMVdvbGVGWExzZkNxZDB4U1g2TnRRSU94WXVIVm1xMFRsS1U4dEZWR1hfUXhGUjhac0oySVhLM2hmcUpzd3Y3MnBmNkNWTFZwaGxGM1NHS0R6SGJuWjN4ZmJLMWx3QmNaWHJjbzcxdnZwS1NsLTVwNmpjMzhYZ3U1Rll3dmcxREg5Wk5rWkFLSWZrTFVQQXlTQ09jb0k2UkZlLUk?oc=5",
       "source_name": "Whalesbook",
-      "description_notes": "launch a \u20b91,000 crore real estate fund focused on office and warehousing assets in India, targeting institutional investors seeking exposure to India's growing logistics and corporate real estate sectors. The fund enters a competitive market as e-commerce and supply chain modernization drive demand for modern warehouse and flex office spaces across tier-1 and emerging cities.",
+      "description_notes": "launch a \u20b91,000 crore real estate fund targeting office and warehousing assets in India, betting on demand for logistics infrastructure and Grade-A office space as e-commerce and corporate expansion accelerate. the fund focuses on institutional-quality properties in major metros and emerging logistics hubs, competing in India's fragmented commercial real estate market where institutional capital remains underdeployed. this is Alt Capital's entry into dedicated real estate vehicles after building a track record in private markets.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-16T11:48:21",
@@ -60,6 +193,117 @@
           "published_date": "2026-04-16",
           "summary": "Alt Capital Launches \u20b91,000 Cr Fund for Office, Warehousing Assets&nbsp;&nbsp;Whalesbook",
           "feed_name": "search:Credit/Real estate"
+        }
+      ]
+    },
+    {
+      "fund_name": "Dominus Fund IV",
+      "firm": "Dominus",
+      "firm_slug": "dominus",
+      "amount": "$640M",
+      "amount_usd_millions": 640.0,
+      "category": "Private Equity",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Final Close",
+      "announcement_date": "2026-04-16",
+      "source_url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNbmtWbWh0amxKMi1Qb3hSMVAyaDVCX1ZGTU8zeUNVT2I1OFFrV3dqTzVwME80aTczcFN4bTY3WTZXay1SdkZPOEhVcXQwblAydzNPMXVWZzJ6UnotU2R5bmxidGIwWE9Qb0hTNUZ1OHlvaU1lYm1MS2xwYU9GOHVpblB1VE5WMjRvVXU0VHZTY2REWHM?oc=5",
+      "source_name": "PE Professional",
+      "description_notes": "close $640M for its fourth institutional private equity fund, targeting mid-market buyouts in North America with a focus on operational value creation and platform building. The fund represents growth from prior vintages, reflecting continued LP confidence in Dominus's sector-agnostic approach and hands-on management model.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-17T13:18:21",
+      "articles": [
+        {
+          "title": "Dominus Surpasses Target in $640 Million Fund IV Close - Private Equity Professional",
+          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNbmtWbWh0amxKMi1Qb3hSMVAyaDVCX1ZGTU8zeUNVT2I1OFFrV3dqTzVwME80aTczcFN4bTY3WTZXay1SdkZPOEhVcXQwblAydzNPMXVWZzJ6UnotU2R5bmxidGIwWE9Qb0hTNUZ1OHlvaU1lYm1MS2xwYU9GOHVpblB1VE5WMjRvVXU0VHZTY2REWHM?oc=5",
+          "source_name": "Private Equity Professional",
+          "source_domain": "peprofessional.com",
+          "published_date": "2026-04-16",
+          "summary": "Dominus Surpasses Target in $640 Million Fund IV Close&nbsp;&nbsp;Private Equity Professional",
+          "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "Dominus Capital hits target-beating $640m final close for fourth flagship PE fund",
+          "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/dominus-capital-hits-target-beating-640m-final-close-for-fourth-flagship-pe-fund.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-04-14",
+          "summary": "",
+          "feed_name": "AltAssets"
+        },
+        {
+          "title": "Dominus Capital Closes Oversubscribed Fund IV - PR Newswire",
+          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNd3cwcWxpVlFERGltZU1zVi1pSklJZTFWNWxLVE00czRmUkFnQnEzdzc4X011UXhLZkEtWGpiZUVnamdCODltdW9BUUgyQTc5UWppendZMFM2NHptM0hJaUdvVHdieUZRQlo3WEtrdUVEUmNKbnBZWTVKcXN2U0JpNmdRc2xDcXZlMHVfTG1XeEFoNGlUUFFqR1R3SDZYS2hSMHc0?oc=5",
+          "source_name": "PR Newswire",
+          "source_domain": "prnewswire.com",
+          "published_date": "2026-04-13",
+          "summary": "Dominus Capital Closes Oversubscribed Fund IV&nbsp;&nbsp;PR Newswire",
+          "feed_name": "search:Press release fund closes"
+        }
+      ]
+    },
+    {
+      "fund_name": "GPT Shopping Centre Fund",
+      "firm": "GPT",
+      "firm_slug": "gpt",
+      "amount": "A$610m",
+      "amount_usd_millions": 610.0,
+      "category": "Real Estate",
+      "location": "Sydney, Australia",
+      "city": "Sydney",
+      "state": "NSW",
+      "country": "Australia",
+      "stage": "First Close",
+      "announcement_date": "2026-04-16",
+      "source_url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPQTZKa2tmdWRVR25nMk40UXRneDJaUUNzWEhZTG5EbmhFUmhTRGVtQWJXSFkyMlVQUW9TZTF3VHdQRG9XVkdlMy1waU44djVYdTByemdGT2tkVlE1czZLWUM2WlE4cHhqQ3VLUVh0RTJ6LTZIZFJKTHVTc2VRVUxYdUFaelRHemxBamVfckpVU1dxYy1EeGc1cTBjTzZhY1pFaTN1NlpWMUlOWEVKOXN1bg?oc=5",
+      "source_name": "Realassets",
+      "description_notes": "close first tranche of A$610m for a real estate fund focused on shopping centre assets, marking GPT's continued expansion in retail property investment across Australia. The fund targets value-add and core-plus opportunities in the shopping centre sector, leveraging GPT's operational expertise in managing and repositioning retail properties. This deployment reflects ongoing institutional capital demand for diversified real estate exposure despite sector headwinds.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-17T13:18:21",
+      "articles": [
+        {
+          "title": "GPT shopping centre fund raises A$610m in oversubscribed equity - IPE Real Assets",
+          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPQTZKa2tmdWRVR25nMk40UXRneDJaUUNzWEhZTG5EbmhFUmhTRGVtQWJXSFkyMlVQUW9TZTF3VHdQRG9XVkdlMy1waU44djVYdTByemdGT2tkVlE1czZLWUM2WlE4cHhqQ3VLUVh0RTJ6LTZIZFJKTHVTc2VRVUxYdUFaelRHemxBamVfckpVU1dxYy1EeGc1cTBjTzZhY1pFaTN1NlpWMUlOWEVKOXN1bg?oc=5",
+          "source_name": "IPE Real Assets",
+          "source_domain": "realassets.ipe.com",
+          "published_date": "2026-04-16",
+          "summary": "GPT shopping centre fund raises A$610m in oversubscribed equity&nbsp;&nbsp;IPE Real Assets",
+          "feed_name": "search:Oversubscribed funds"
+        }
+      ]
+    },
+    {
+      "fund_name": "Unconventional Ventures Fund II",
+      "firm": "Unconventional Ventures",
+      "firm_slug": "unconventional-ventures",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Interim Close",
+      "announcement_date": "2026-04-16",
+      "source_url": "https://news.google.com/rss/articles/CBMia0FVX3lxTFB0OXdrZnlwVTBjaHhQcUFVdHM2WVJOYmYycTM2NGZzYld1Vnh1N0hndXVReEtZenBSMjIxMWFPY21HbUVUR0tVeFNXUl9kRjFVNV9fVnZUZzJQY1dWN2dFUmZmdlRZejQwNnVV?oc=5",
+      "source_name": "Afrotech",
+      "description_notes": "close a second institutional venture fund focused on non-traditional founders and underrepresented entrepreneurs in tech and deep tech sectors. The fund builds on Unconventional Ventures' thesis of backing overlooked talent pools and non-conventional career paths, likely targeting seed to Series A stage companies. Details on LP composition and fund size remain undisclosed at this interim close.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-17T13:18:21",
+      "articles": [
+        {
+          "title": "Unconventional Ventures Announces Second Close Of Fund II To Support Diverse Founders Building Impact Tech Companies - afrotech.com",
+          "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTFB0OXdrZnlwVTBjaHhQcUFVdHM2WVJOYmYycTM2NGZzYld1Vnh1N0hndXVReEtZenBSMjIxMWFPY21HbUVUR0tVeFNXUl9kRjFVNV9fVnZUZzJQY1dWN2dFUmZmdlRZejQwNnVV?oc=5",
+          "source_name": "afrotech.com",
+          "source_domain": "afrotech.com",
+          "published_date": "2026-04-16",
+          "summary": "Unconventional Ventures Announces Second Close Of Fund II To Support Diverse Founders Building Impact Tech Companies&nbsp;&nbsp;afrotech.com",
+          "feed_name": "search:PE/VC fund closes"
         }
       ]
     },
@@ -109,7 +353,7 @@
       "announcement_date": "2026-04-15",
       "source_url": "https://www.buyoutsinsider.com/kingswood-goes-bigger-with-2-25bn-target-for-latest-complexity-focused-fund/",
       "source_name": "Buyouts Insider",
-      "description_notes": "launches a $2.25B private equity fund focused on complexity-driven investment opportunities, marking the firm's entry into a specialized strategy segment. The fund's debut represents Kingswood's positioning in the market, though LP anchor investors and specific portfolio thesis details remain undisclosed at launch.",
+      "description_notes": "launch a $2.25B private equity fund focused on complexity-driven investment opportunities. Kingswood's latest fund represents a significant capital commitment to a strategy targeting operationally complex mid-market and growth-stage assets, though LP roster and comparison to prior vintage details remain undisclosed.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-16T11:48:21",
@@ -171,7 +415,7 @@
       "announcement_date": "2026-04-15",
       "source_url": "https://www.prnewswire.com/news-releases/ace--company-closes-q1-2026-fundraise-above-target-with-228-million-in-new-commitments-302742406.html",
       "source_name": "PR Newswire",
-      "description_notes": "close ACE & Company's Q1 2026 flagship fund at $228 million, exceeding its target with commitments from institutional investors. the firm manages multiple flagship vehicles focused on private equity opportunities, demonstrating strong fundraising momentum in the first quarter.",
+      "description_notes": "close its Q1 2026 flagship fund at $228 million, exceeding its target with commitments from institutional investors. The firm manages private equity strategies focused on mid-market opportunities, with this vintage representing strong LP confidence in ACE & Company's investment approach. The oversubscribed close underscores continued institutional appetite for the firm's core buyout strategy.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-15T13:00:13",
@@ -220,6 +464,15 @@
           "published_date": "2026-04-15",
           "summary": "ACE & Company Closes Q1 2026 Fundraise Above Target with $228 Million in New Commitments | Corporate&nbsp;&nbsp;EQS News",
           "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "ACE & Company Closes Q1 2026 Fundraise Above Target with $228 Million in New Commitments | Corporate - EQS News",
+          "url": "https://news.google.com/rss/articles/CBMijAJBVV95cUxPQl9SQ0RyQUdGdkN2MHRKNF9BandadTEtWVVxc2dCblNDVnFSSDlpZFhfUkcwYjRPRkM3Q2dUeUZKV0RPeWViNXd5aUhfaVprS2djQ1UxRUNKVjFXd2syNWRvYmt3V3FaYmZyQi11SE5UWlJpbXM2VGxNQURYald2R1N6Y3ItQV9BMFoxNk1reE5PQnZyOEowWUJvYnpuWEthb0dTR2V5YkJRcVNISjNRaFprOTIwZ3ZXMVFkLWpCZnREZllYU3ZzYmx1Z0RlQ1lvRk5CVnFnSlpWTVp3OEN1UjNWMjdseUFLYXdGUUpsdm0zMWFuUWE1cXItbUNGdWhpc3RJcmtpNUZobHpG?oc=5",
+          "source_name": "EQS News",
+          "source_domain": "eqs-news.com",
+          "published_date": "2026-04-15",
+          "summary": "ACE & Company Closes Q1 2026 Fundraise Above Target with $228 Million in New Commitments | Corporate&nbsp;&nbsp;EQS News",
+          "feed_name": "search:PE/VC fund closes"
         }
       ]
     },
@@ -269,7 +522,7 @@
       "announcement_date": "2026-04-15",
       "source_url": "https://www.pehub.com/exclusive-topspin-targets-founder-led-consumer-businesses-after-closing-third-fund/",
       "source_name": "PE Hub",
-      "description_notes": "closes third fund targeting founder-led consumer businesses, marking Topspin's continued focus on early-stage consumer investing. The fund reaches final close with an undisclosed amount, building on the firm's track record in the consumer sector.",
+      "description_notes": "closes third fund targeting founder-led consumer businesses, marking Topspin's continued focus on early-stage consumer investing. The fund reaches final close with an undisclosed amount, building on the firm's track record of backing founder-centric consumer brands.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-15T13:00:13",
@@ -402,6 +655,15 @@
           "published_date": "2026-04-14",
           "summary": "Lightyear Capital Closes Fund VI At Hard Cap with $2.5 Billion in Commitments&nbsp;&nbsp;Bluefield Daily Telegraph",
           "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "Lightyear Capital hits $2.5bn hard cap for sixth fund - Alternatives Watch",
+          "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNQk9SYUpqbml6LVp0OTUyakY4Y2QzR3pQOWczTlk1UkZUdXllVXR4dk11V2lRaWNONWk5aVpCakN2TnZfMWgzZkZXLUJBRURsUXNtbk5ETlVhem5GaTFwWVdOZU9xbEdjVV8zQ0dBUUxKckl2dXpGc1NnQWNlUXNsbG0ySEE2MXhOVENR?oc=5",
+          "source_name": "Alternatives Watch",
+          "source_domain": "alternativeswatch.com",
+          "published_date": "2026-04-14",
+          "summary": "Lightyear Capital hits $2.5bn hard cap for sixth fund&nbsp;&nbsp;Alternatives Watch",
+          "feed_name": "search:Oversubscribed funds"
         }
       ]
     },
@@ -456,6 +718,15 @@
       "covered_date": null,
       "date_added": "2026-04-14T11:42:22",
       "articles": [
+        {
+          "title": "Vesper Infrastructure Partners picks up over \u20ac1bn at hard cap close of next-gen fund",
+          "url": "https://www.altassets.net/private-equity-news/by-region/europe-by-region/western-europe-europe-by-region/italy-western-europe-europe-by-region/vesper-infrastructure-partners-picks-up-over-e1bn-at-hard-cap-close-of-next-gen-fund.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-04-16",
+          "summary": "",
+          "feed_name": "AltAssets"
+        },
         {
           "title": "Vesper Infrastructure raises \u20ac1bn for European mid-market fund - IPE Real Assets",
           "url": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNSzlaOHVHVkhkb1BYdUZUOEZHVk4zV1I4emFsV1dyWW9iOVZxS1hZeU1YNFlkSG9SOXdPM0s5SmxWdWFkTDkxZnJaREpwaEJuOG8xcjB0MGlMM19nT0JTX19YbjBqSGRTZWZoUDJEbFJUdUdEM3NSZTZ5allYQXk3M2JVYlNCVUdHMTJoLUgwbVY3RFNuNklycHRNVlBOMGNmWDdPbGFlTk93WEN6YjY4?oc=5",
@@ -513,7 +784,7 @@
       "announcement_date": "2026-04-14",
       "source_url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQVWp0cnZJT0FtNHAxc1lEN01jTEFLUVpKbG5pLXRtVDNvWjNMeGl3NlJMNDd0TmVjX1A0clVQaFQ2d1FxNWtUVDFLaUhwX1R6ZnZHREhTRXRnMElsUERRbHdwQ3p2WXI1VnBEWVl5MHQ3a2lQTWlyMVEwQzJCMkVZTWo1VzlIei1GOUp6OENwWlU1amU2MUE?oc=5",
       "source_name": "Wamda",
-      "description_notes": "closes $22.8M for debut venture fund targeting early-stage companies in underserved markets. The fund represents Homegrown Ventures' first institutional offering, focusing on founder-led businesses outside traditional tech hubs. First close and final close timing suggest strong LP demand for the emerging manager's thesis.",
+      "description_notes": "close $22.8M debut fund targeting early-stage startups in underserved markets with a focus on founder diversity and community-driven investing. Homegrown Ventures' first vehicle marks the firm's entry into the broader venture ecosystem after establishing itself in local investment networks. The final close suggests strong LP conviction despite the modest fund size relative to institutional venture peers.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-14T11:42:22",
@@ -589,6 +860,15 @@
       "covered_date": null,
       "date_added": "2026-04-15T13:00:13",
       "articles": [
+        {
+          "title": "CapVest said to clear target for sixth flagship fund, reaching \u20ac4.5bn",
+          "url": "https://www.altassets.net/private-equity-news/by-region/europe-by-region/western-europe-europe-by-region/united-kingdom-western-europe-europe-by-region/100207998.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-04-17",
+          "summary": "",
+          "feed_name": "AltAssets"
+        },
         {
           "title": "CapVest hits EUR 4.5bn final close on sixth flagship fund - ION Analytics",
           "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPQ29wcmZLNEN2TGZsN3hSanNJM0RJWXk0ZXYtbElocGJpQWhucEx3NVFsMF9XNnBreHZwSU0tMHpyXzczaWQxWDk5bExsekFkdnd2ZDQ3SVFoNi1yRFBydHhBT3ZOUGUwY2Jtb2lGUnYzVU93b08yd25sTzZMUkw3S2gtamRjcTF4UTFCNDRQVXhyc3ZlTzdFSnh1WnR5dGxfek9rRDFRTDc?oc=5",
@@ -686,6 +966,24 @@
           "published_date": "2026-04-13",
           "summary": "26North Wraps $5.9B Debut PE Fund Above Target&nbsp;&nbsp;Law360",
           "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "26North Raises $5.9 Billion for Debut PE Fund - Ventureburn",
+          "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTE9FRFVmNkJFR0hmUzlNSmo2V2RjOHVtNWZlXzdiZDRWUzQ4X19hZkhhNEc3TGh2MXZYRE1hQW1BcTJSOU8zRlRqcmtlWlNLLVBxWUI3S05mdEppVzBjOGtnM1VMaHJHVnVsNHNwX3Vua1k4SlJIb1JYSdIBeEFVX3lxTE9FRFVmNkJFR0hmUzlNSmo2V2RjOHVtNWZlXzdiZDRWUzQ4X19hZkhhNEc3TGh2MXZYRE1hQW1BcTJSOU8zRlRqcmtlWlNLLVBxWUI3S05mdEppVzBjOGtnM1VMaHJHVnVsNHNwX3Vua1k4SlJIb1JYSQ?oc=5",
+          "source_name": "Ventureburn",
+          "source_domain": "ventureburn.com",
+          "published_date": "2026-04-13",
+          "summary": "26North Raises $5.9 Billion for Debut PE Fund&nbsp;&nbsp;Ventureburn",
+          "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "26North Wraps $5.9B Debut PE Fund Above Target - Law360",
+          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNV092Y0ZRN1hUbk9HZE50WHB3ekREYWJGbHFFVk4wUE5lbXJaNHRWNW1ZNUJRbVBMMG1ydVZaZzBIdEV4ckpRZ0FWaEphbFFfWUZwSW5CVW1jeVJkX1JGdkdoaW5iaXdUM2NKTW5UN1A1amVQSm9URkhDUHRPRFFmejdPQTRnUkFMSEtjbDlB0gFWQVVfeXFMTVV3N1Noa3NQSXBjalpJbzN3RnAyQW5udlhWcWVqeEpTc0RCclBnenh5U1NrN0g4OFRQNTlEbTVjR0dTck9Bd0pHZGhuVkZjYWdxbUdUY0E?oc=5",
+          "source_name": "Law360",
+          "source_domain": "law360.com",
+          "published_date": "2026-04-13",
+          "summary": "26North Wraps $5.9B Debut PE Fund Above Target&nbsp;&nbsp;Law360",
+          "feed_name": "search:Oversubscribed funds"
         }
       ]
     },
@@ -709,6 +1007,15 @@
       "covered_date": null,
       "date_added": "2026-04-14T11:42:22",
       "articles": [
+        {
+          "title": "Court Square Raises $3.8 Billion - Private Equity Professional",
+          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxQSFJNM3Zydmx6UzJPQ2JSdEh1emN1UHpOck51R0o1Ymp6Qks5eHdpZGZoNWd5dWZzRnIwQV9DSlpFNDZ1cXVWa0pZSHdNU0dDVGtfMDBuX20xQVAwaC13RFJKeDVlcmltQXNnbW55eGpRdlcycG9rOGV6UU5wVHBiZHRUWHBFQTZJTmFFMklhMlo1dTJyd2hOUm9kSlRsUzFXa3c?oc=5",
+          "source_name": "Private Equity Professional",
+          "source_domain": "peprofessional.com",
+          "published_date": "2026-04-14",
+          "summary": "Court Square Raises $3.8 Billion&nbsp;&nbsp;Private Equity Professional",
+          "feed_name": "search:Oversubscribed funds"
+        },
         {
           "title": "Court Square Capital hits $3.8bn for oversubscribed Fund V, first vehicle since 2022 succession changes",
           "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/100207910.html",
@@ -970,7 +1277,7 @@
       "announcement_date": "2026-04-13",
       "source_url": "https://alternativecreditinvestor.com/2026/04/13/sycamore-tree-capital-launches-credit-secondaries-investment-platform/",
       "source_name": "Alternative Credit Investor",
-      "description_notes": "launch a credit secondaries platform targeting opportunities in the broadly syndicated loan and middle-market credit markets. The fund focuses on acquiring secondary positions and GP stakes in credit portfolios, positioning itself in the growing secondaries asset class as dry powder in traditional PE secondaries remains elevated. Details on anchor LPs and final fund size remain undisclosed at launch.",
+      "description_notes": "launches a new credit secondaries platform targeting opportunistic investments in secondary debt positions and GP-stakes, with an undisclosed initial fund size marking the firm's entry into the lower mid-market secondaries space. the platform capitalizes on dislocations in the credit markets where sellers face liquidity pressures, positioning sycamore tree capital to source off-market deals with asymmetric return profiles.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-14T11:42:22",
@@ -983,6 +1290,15 @@
           "published_date": "2026-04-13",
           "summary": "",
           "feed_name": "Alternative Credit Investor"
+        },
+        {
+          "title": "Sycamore Tree Capital Partners Launches Credit Secondaries Investment Platform - Business Wire",
+          "url": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxQMVpjenJrV25WRWQyYldZR1NsNGxoYXZoVWVTREZvbW9nclhva2tYdzlibGl3am9CUUdGeXdtTkx0bC1IMmJVRUxWYUIxNnNrRWNHckVMNE5JTmN4cDdmTTIxYTRMbkZ3WElPWFR6SWFCcDJqdjZHOU0xQ1BTdzJteHNUckk5bnRCaXNudGxvR3luemgzUDZ6NnlUUWkxR1kxTUFWSzhaZDBvd1ExcFdfRFJYbGFZV2I1TjJUdkVqN3NJVmFHeVBOc290WDgtN3lf?oc=5",
+          "source_name": "Business Wire",
+          "source_domain": "businesswire.com",
+          "published_date": "2026-04-13",
+          "summary": "Sycamore Tree Capital Partners Launches Credit Secondaries Investment Platform&nbsp;&nbsp;Business Wire",
+          "feed_name": "search:Press release fund closes"
         }
       ]
     },
@@ -1076,46 +1392,6 @@
           "published_date": "2026-04-13",
           "summary": "",
           "feed_name": "PE Hub"
-        }
-      ]
-    },
-    {
-      "fund_name": "Dominus Capital Fund IV",
-      "firm": "Dominus Capital",
-      "firm_slug": "dominus-capital",
-      "amount": "Undisclosed",
-      "amount_usd_millions": null,
-      "category": "Private Equity",
-      "location": "New York, NY",
-      "city": "New York",
-      "state": "NY",
-      "country": "US",
-      "stage": "Final Close",
-      "announcement_date": "2026-04-13",
-      "source_url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNd3cwcWxpVlFERGltZU1zVi1pSklJZTFWNWxLVE00czRmUkFnQnEzdzc4X011UXhLZkEtWGpiZUVnamdCODltdW9BUUgyQTc5UWppendZMFM2NHptM0hJaUdvVHdieUZRQlo3WEtrdUVEUmNKbnBZWTVKcXN2U0JpNmdRc2xDcXZlMHVfTG1XeEFoNGlUUFFqR1R3SDZYS2hSMHc0?oc=5",
-      "source_name": "PR Newswire",
-      "description_notes": "closes its fourth flagship private equity fund focused on mid-market buyouts in North America, building on the firm's track record across prior vintages. The fund targets control investments in established companies with enterprise values typically between $50M\u2013$500M, with a focus on operational improvements and value creation. Dominus Capital, known for its hands-on operational approach and sector expertise, continues to attract institutional LPs and family offices seeking differentiated mid-market exposure.",
-      "is_covered": false,
-      "covered_date": null,
-      "date_added": "2026-04-14T11:42:23",
-      "articles": [
-        {
-          "title": "Dominus Capital hits target-beating $640m final close for fourth flagship PE fund",
-          "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/dominus-capital-hits-target-beating-640m-final-close-for-fourth-flagship-pe-fund.html",
-          "source_name": "AltAssets",
-          "source_domain": "altassets.net",
-          "published_date": "2026-04-14",
-          "summary": "",
-          "feed_name": "AltAssets"
-        },
-        {
-          "title": "Dominus Capital Closes Oversubscribed Fund IV - PR Newswire",
-          "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNd3cwcWxpVlFERGltZU1zVi1pSklJZTFWNWxLVE00czRmUkFnQnEzdzc4X011UXhLZkEtWGpiZUVnamdCODltdW9BUUgyQTc5UWppendZMFM2NHptM0hJaUdvVHdieUZRQlo3WEtrdUVEUmNKbnBZWTVKcXN2U0JpNmdRc2xDcXZlMHVfTG1XeEFoNGlUUFFqR1R3SDZYS2hSMHc0?oc=5",
-          "source_name": "PR Newswire",
-          "source_domain": "prnewswire.com",
-          "published_date": "2026-04-13",
-          "summary": "Dominus Capital Closes Oversubscribed Fund IV&nbsp;&nbsp;PR Newswire",
-          "feed_name": "search:Press release fund closes"
         }
       ]
     },
@@ -1245,6 +1521,15 @@
           "published_date": "2026-04-10",
           "summary": "Leeds Equity Partners Closes $1.4B Fund VII Above Target&nbsp;&nbsp;citybiz",
           "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "Leeds Equity Partners Closes Latest Private Equity Fund at $1.9 Billion, Surpassing its Fund Target - PR Newswire",
+          "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxNYmxnelVzcXNqYXdtQ3BVdkcybVBBWmxYQ0dUQTRicExwVWM2b3ZfNWFLQmxSQ29NVXU0dVBzZ1FUblM3QWxzcVhrSXVMYi1ERGRWNEpfOEpyblRPUFJVb1RVcFJwZmNydmFrZjlLWWljTG5iOUhxVnlpb1ZfTU0xNjFYX1k2SFd0LTY5UU1FdWo5VF9mdmRWR2dvZFJUelU0UzYtVFUyTS00S3pwOVRmLTNUcS0yaElkUkxXX1pGSGh5RmNaZkFoOGxULVNXNXhhQS1zdndSWk1HeWRLSlVrR0pIZVhHNVRr?oc=5",
+          "source_name": "PR Newswire",
+          "source_domain": "prnewswire.com",
+          "published_date": "2026-04-10",
+          "summary": "Leeds Equity Partners Closes Latest Private Equity Fund at $1.9 Billion, Surpassing its Fund Target&nbsp;&nbsp;PR Newswire",
+          "feed_name": "search:Press release fund closes"
         }
       ]
     },
@@ -1330,6 +1615,15 @@
       "covered_date": null,
       "date_added": "2026-04-10T10:29:31",
       "articles": [
+        {
+          "title": "Percheron Capital: $3.1 Billion Fund III Closes At Hard Cap To Invest In Essential Services - Pulse 2.0",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNR1BCU2FZNEJmR0JtaFloLTJ4NVY1U2RkRnlpMkl5SzNqX3lrRVpDNkJfdVktY2h2MTJ0VjVXTDBKS1FScU5LS2xnZE5DbXNjS1JBQ3J0S204UmhUdi1DT3RUMFladzRGbENUTjQwakN2S1NMdzBuVXVUUmF0RUNTWnZnODZCZGZLcWlKU3UwN1ZtMDNtb0p0YjctazlBTmlvT09Cdm0xS0U1VnB2LWfSAbMBQVVfeXFMTUV5YXV5aE5iRXpWZUtsbTBhRmZKTl9RMWVfVE5TSDdaWTd2TU1XVjJ2SzJNLTNkdDVZRWRhOUJXU01yT2E1Y1dVZHBEQ2dXSm5JVEtQX1pHblQ3ZDM3R0FnaVpWYW1wek1HUk9GOG5pOUtxVHhmeHE5SDRUeTdTLXRYU0R4U3VObGZIMWYzZk9Ed282dmJYbWctRnh1ZkJKNXF5aTBSMVJoOXVKazFsckRQTkk?oc=5",
+          "source_name": "Pulse 2.0",
+          "source_domain": "pulse2.com",
+          "published_date": "2026-04-12",
+          "summary": "Percheron Capital: $3.1 Billion Fund III Closes At Hard Cap To Invest In Essential Services&nbsp;&nbsp;Pulse 2.0",
+          "feed_name": "search:Oversubscribed funds"
+        },
         {
           "title": "Percheron Capital pulls in $3.1bn for hard cap Fund III close, double its Fund II total",
           "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/percheron-capital-pulls-in-3-1bn-for-hard-cap-fund-iii-close-double-its-fund-ii-total.html",
@@ -2534,15 +2828,15 @@
       "amount": "Undisclosed",
       "amount_usd_millions": null,
       "category": "Credit Funds",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "N/A",
+      "location": "Boston, MA",
+      "city": "Boston",
+      "state": "MA",
+      "country": "US",
       "stage": "Launch",
       "announcement_date": "2026-04-07",
       "source_url": "https://alternativecreditinvestor.com/2026/04/07/saudis-pif-anchors-king-street-credit-fund-targeting-middle-east/",
       "source_name": "Alternative Credit Investor",
-      "description_notes": "launching a credit fund with an undisclosed target, King Street is entering the credit market as a new strategy for the firm. without publicly available details on LP anchors, strategy focus (broadly syndicated loans, middle-market debt, distressed credit), or how it sizes relative to prior vehicles, the fund's positioning remains limited.",
+      "description_notes": "launching a credit fund with an undisclosed target size to provide debt financing across the capital structure. King Street's entry into dedicated credit management marks an expansion beyond its traditional asset servicing and administration business, positioning the fund to compete in the mid-market lending space where institutional capital demand remains robust.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-09T12:11:15",
@@ -4272,6 +4566,15 @@
       "date_added": "2026-03-27T12:57:55",
       "articles": [
         {
+          "title": "MidPoint Capital Partners, LLC Announces $500 Million Private Real Estate Lending Fund - USA Today",
+          "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxNcUZtUF9jVk1JVTk1Unh5b0FFWXBjbW5raTU0ZktySUZIYVMtNXdOclFXekpvcko2SEVhVjlyVTZES08xX0Q3Z3dmWXE0UDg4UHNJVjNrWGxuRF9wQ2dmWTZLR2RFNlNVOFpOeWs1eHBUb05JOVRBS3hOTGZOTklidkFELVdETDl5bXZieDloMG9JSWY4cTlVZzV4OUw1TXNxdGNRZk4wQ05sQlRpMjZ0Q09oRUFlU0dQQ3E1VDFDOVNNOWlPNlppZWl6eGd0aEhUSkE?oc=5",
+          "source_name": "USA Today",
+          "source_domain": "usatoday.com",
+          "published_date": "2026-03-28",
+          "summary": "MidPoint Capital Partners, LLC Announces $500 Million Private Real Estate Lending Fund&nbsp;&nbsp;USA Today",
+          "feed_name": "search:Credit/Real estate"
+        },
+        {
           "title": "MidPoint Capital Partners, LLC Announces $500 Million Private Real Estate Lending Fund - Yahoo Finance Singapore",
           "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxNcHZLSnBpdW0xZ0hSNGtqOUNWQk50cC10S19mSGlDRzZYZU1uV2FjV1MxMWdOclpQTExIcmdQVnU3Xy1hMi1VS1lfaVZhdlRWLUU1Y183b3EwTVNQdjBQX2pzVFFpMmZHNlNLOGNlRnNQQlRCeUtCWlpiaXJoQng4R1RFa2FwZ0NtdXJ0VjhoUmd4dw?oc=5",
           "source_name": "Yahoo Finance Singapore",
@@ -4559,7 +4862,7 @@
       "announcement_date": "2026-03-27",
       "source_url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOUFBpaDRBTjhVMWVMSUE3eV9ySzBsbzEwNUU5N21TWUFNdkd2NmFnNzB4NExpUm9zdVdxalBvdkxWYURyXzlWM05aVnlvcVhzWU8xY1YtNGx1d1N0ME9sQXBrLVd1SnlzX2pKcUJEZTN0QzhhZDQ0alVWZktFbE1qeERtVG1aQTlmbjcxMTZJY2ZyWnhUd0xSOUVoRzBXNEZDdzh5WmlaV0tRV2p2bGZndQ?oc=5",
       "source_name": "N24",
-      "description_notes": "close a \u20ac50M debut venture fund targeting early-stage European tech startups with a focus on B2B software and deep tech. Time4 VC's first institutional fund marks the firm's expansion from angel investing, backed by a mix of family offices and strategic LPs across continental Europe. The fund size positions it as a seed-to-Series A player in the competitive European venture market.",
+      "description_notes": "close a \u20ac50M venture capital fund targeting early-stage European tech startups with a focus on B2B software and deep-tech sectors. Time4 VC, a first-time fund, has secured backing from a mix of institutional and angel investors across Continental Europe. The fund's inaugural close positions it competitively within the mid-sized European VC space, emphasizing hands-on founder support and operational expertise.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-28T11:45:14",
@@ -4715,6 +5018,15 @@
       "covered_date": null,
       "date_added": "2026-03-27T12:57:55",
       "articles": [
+        {
+          "title": "Overmatch Ventures raises $250m for oversubscribed Fund II - Venture Capital Journal",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNRUVfbm9NNGlyZ3FQWG5iaExoajljbUhyWWx4SlF6MFlpR0lxUmRyU0xNbEh0alhoNkgwR1J2dG1MVjUtbzR0NTZVS3F6T0lOMHhRN000ekZfVm1BUHNJeXlTd196UVpiaDRQdk85VmJGYk9ZMXg5OUJhRG5QYlE2TnVnRWJoOTVpc21KUGhQRHloV1lzblN1amVvYzE?oc=5",
+          "source_name": "Venture Capital Journal",
+          "source_domain": "venturecapitaljournal.com",
+          "published_date": "2026-04-02",
+          "summary": "Overmatch Ventures raises $250m for oversubscribed Fund II&nbsp;&nbsp;Venture Capital Journal",
+          "feed_name": "search:Oversubscribed funds"
+        },
         {
           "title": "\u201cFounders hold the keys to America\u2019s victory\u201d: Overmatch Ventures raises $250m second fund",
           "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/founders-hold-the-keys-to-americas-victory-overmatch-ventures-raises-250m-second-fund.html",
@@ -8481,6 +8793,15 @@
           "published_date": "2026-03-10",
           "summary": "Energy infrastructure investment manager Copenhagen Infrastructure Partners (CIP) announced today that it has raised \u20ac1.3 [&#8230;]",
           "feed_name": "ESG Today"
+        },
+        {
+          "title": "Copenhagen Infrastructure Partners raises EUR 1.3 bn for the 2nd vintage of its flagship credit strategy at first close - The Globe and Mail",
+          "url": "https://news.google.com/rss/articles/CBMirAJBVV95cUxQVmMxbmM1V2R5N3ZZSG5YWkVTZHIwSUk3VW5OWFBPd0RPb1BOVm9TbzNpQlBhQ3Y3YU5fODN2TjNYWnNCUXQ1eFpZV2pGc2FSY2trR19YMzN1WVp6VV9QcTJoTmJMa2hUbEYyQnliLUZ3Y3FrUjlVbnQ0aTZhMzN1MExZcFNVdlNJNF83YjZqRlc1cTRYMjdrZktibXowTWpUSWtycXJYMWMtdHNsVXI4M3o5STRHSXQwTUZtSjJ4R2VsenAzVjlSVFNUZ2hDTTJZYVduUktYVTNJekpfUEZjT3hJS2NJNF9nZ21EMUFwZVR2NHBiQU9mOGp2elBtRHlYU1RqN3hPbjBTNnRIVW1ONWdFcDNMMFpzbFU4bHNjSEFrSzJVYnNmS1BSSUI?oc=5",
+          "source_name": "The Globe and Mail",
+          "source_domain": "theglobeandmail.com",
+          "published_date": "2026-03-10",
+          "summary": "Copenhagen Infrastructure Partners raises EUR 1.3 bn for the 2nd vintage of its flagship credit strategy at first close&nbsp;&nbsp;The Globe and Mail",
+          "feed_name": "search:First/final close"
         }
       ]
     },
@@ -8859,7 +9180,7 @@
       "announcement_date": "2026-03-10",
       "source_url": "https://news.google.com/rss/articles/CBMifkFVX3lxTE90VW45anp5bF8wOGpVV0Ftc0xPZnEwR25PZWJnS1dvZ0pRWUNndWN4U2t0LUY3eVh0Nm1iODhRWnpoZTRFbmpUYmNYVkZIdkNyd0wtQUtSQWVYSUE2NGk0bEdVNXBubkcwZl9HNnVpWlhkLWlJNFpDT1V0aXZuZw?oc=5",
       "source_name": "Dealstreetasia",
-      "description_notes": "close a secondaries and GP-stakes fund targeting exposure to established private equity, venture capital, and infrastructure managers through direct fund investments and secondary positions. the inaugural fund from Cross Capital aims to provide diversified exposure across multiple asset classes and vintage years, with a focus on sourcing opportunities in mid-market and large-cap fund vintages. this first-time fund represents Cross Capital's entry into the competitive fund-of-funds market, where it competes against established players by targeting smaller institutional and family office capital.",
+      "description_notes": "close a secondaries and GP-stakes fund targeting exposure to mid-market and lower mid-market buyout platforms through direct secondary acquisitions and continuation vehicles. The inaugural fund from Cross Capital focuses on acquiring LP positions in established platforms at a discount to net asset value, offering LPs diversified exposure across multiple GPs and geographies without traditional fund-of-funds drag. This first-time vehicle represents Cross Capital's entry into the competitive secondaries market, positioning the firm to capitalize on LP portfolio rebalancing and GP continuation fund activity.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-10T12:07:57",
@@ -10023,7 +10344,7 @@
       "announcement_date": "2026-03-05",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/highbrook-investors-raises-266m-date-centre-fund-to-capitalise-on-compelling-time-sensitive-opportunity.html",
       "source_name": "AltAssets",
-      "description_notes": "raise $266M for HighBrook Investors' inaugural data centre fund, completing the close on an accelerated timeframe to capture what the firm characterized as a 'compelling, time-sensitive opportunity' in real estate infrastructure. The debut fund marks HighBrook's entry into the data centre sector, capitalizing on surging AI and cloud computing demand. No prior vintage exists for comparison, positioning this as a fresh strategy bet by the private equity real estate manager.",
+      "description_notes": "close inaugural $266m data centre fund on an accelerated timeline to capitalize on rising demand for AI and cloud infrastructure capacity. HighBrook Investors, a private equity real estate firm, positioned the offering as a response to what it termed a \"compelling, time-sensitive opportunity\" in the hyperscale data centre sector. The fund represents the firm's entry into specialized real estate infrastructure, a category benefiting from structural tailwinds in enterprise cloud adoption and generative AI compute demands.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-06T11:01:30",
@@ -12606,7 +12927,7 @@
       "announcement_date": "2026-02-23",
       "source_url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQSkhyb21idWtMa083ZkZiRGlweF9FS3VmdUpaSW44a095eDhFSWd1ZW5PSjZidEhJWDZ6bml0QkhNdE5LQkRFTTJOYnd2dEplcFp4d3hCZEEzc3JoUTY2VENENGlNMUt4RFNXTVQ1X2tXaHcyQ1VFaVM5ckNiTE0tZGlzLThpeXZLNXBlbTVkaU8xYnFwVjBJNU9zUnpQa3QxVTZIb0lLN3Mwbk1lNkxoMm1MTnYzeEo1?oc=5",
       "source_name": "Africa",
-      "description_notes": "Unable to provide enriched data for this fund. The firm name, fund name, and capital amount are all undisclosed, preventing verification of strategy, LP composition, market positioning, or comparison to prior vintages. Without publicly available information or article context, a substantive briefing cannot be generated.",
+      "description_notes": "Unable to provide enriched data for this fund entry. The fund name, firm, and amount are all undisclosed, and no article text is available. Without identifying information about the specific venture capital fund or its managing firm, it is not possible to accurately determine headquarters location, compare to prior vintages, identify LPs, or describe strategy and target market.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-02-23T11:01:11",
@@ -14612,6 +14933,37 @@
       ]
     },
     {
+      "fund_name": "African Innovation Fund 3",
+      "firm": "HAVA\u00cdC",
+      "firm_slug": "hava-c",
+      "amount": "$50 million",
+      "amount_usd_millions": 50.0,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Interim Close",
+      "announcement_date": "2026-02-16",
+      "source_url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPN0dGemlRNUx2T1ZjazhBMGJDUElBZE85emdaNjNJbVFoYjBSMmN3UW8yVV95VlZCSW9tUmRrOGpqUFQ0NHNTSS1wZ3ZQYWRodXEyeGY0aVVwaFM5R3NCSjVaN1JnTlQzX0xhVFJLUHlUa0NuNGpkNkdwbXFtMGFhZm5fTmZUY1NhU3U2U1ktczN0ZWxuVkVaNVF3NGJyaWp2YUdmTlROYzZ4M1AyS0FNaEI3elN0Tmpz?oc=5",
+      "source_name": "Africabusinesscommunities",
+      "description_notes": "close a $50 million third fund targeting early-stage technology and innovation companies across Africa, following the firm's prior ventures focused on the continent's startup ecosystem. The interim close suggests strong LP demand for HAVA\u00cdC's Africa-focused strategy, which seeks to deploy capital into founders building solutions for African markets. The fund size represents the firm's continued commitment to African venture capital, positioning it among dedicated emerging-market VC investors.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-17T13:18:21",
+      "articles": [
+        {
+          "title": "HAVA\u00cdC\u2019s $50 million African Innovation Fund 3 achieves third close - Africa Business Communities",
+          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPN0dGemlRNUx2T1ZjazhBMGJDUElBZE85emdaNjNJbVFoYjBSMmN3UW8yVV95VlZCSW9tUmRrOGpqUFQ0NHNTSS1wZ3ZQYWRodXEyeGY0aVVwaFM5R3NCSjVaN1JnTlQzX0xhVFJLUHlUa0NuNGpkNkdwbXFtMGFhZm5fTmZUY1NhU3U2U1ktczN0ZWxuVkVaNVF3NGJyaWp2YUdmTlROYzZ4M1AyS0FNaEI3elN0Tmpz?oc=5",
+          "source_name": "Africa Business Communities",
+          "source_domain": "africabusinesscommunities.com",
+          "published_date": "2026-02-16",
+          "summary": "HAVA\u00cdC\u2019s $50 million African Innovation Fund 3 achieves third close&nbsp;&nbsp;Africa Business Communities",
+          "feed_name": "search:PE/VC fund closes"
+        }
+      ]
+    },
+    {
       "fund_name": "Igneo Infrastructure Partners Fund",
       "firm": "Igneo",
       "firm_slug": "igneo",
@@ -14795,6 +15147,15 @@
       "covered_date": null,
       "date_added": "2026-02-17T01:03:56",
       "articles": [
+        {
+          "title": "Startup India Fund of Funds 2.0 Scheme - usthadian.com",
+          "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTFBLZTNoeTIyalJlbGpUQVN0elRvMXR6eWkyZkZ0STZCbE1abkx2eU85UWFnaGtFT21PUXdhdGhiY2I0WmlCbVdmQ2YxWW9wSXZHR0FyLV9mMWRKWWlFcDlkMkJ0NGFWdm0yc2JyOXpIbjNCRXc?oc=5",
+          "source_name": "usthadian.com",
+          "source_domain": "usthadian.com",
+          "published_date": "2026-04-17",
+          "summary": "Startup India Fund of Funds 2.0 Scheme&nbsp;&nbsp;usthadian.com",
+          "feed_name": "search:PE/VC fund closes"
+        },
         {
           "title": "Cabinet approves Startup India Fund of Funds 2.0 to Mobilize Venture Capital for India\u2019s Startup Ecosystem - PM India",
           "url": "https://news.google.com/rss/articles/CBMi-AFBVV95cUxOU3FRQUZkdnQ4ODNUS2lVV3FMbmoxTjhmRXRtRHA3aUU1dDVwUzZ4OTZtZXdMbjRuNTI3d3M1WE1TYU41QW9UdndBT1NDZmttS2FldkFLaHlDYU9talB6X3FJSFNPaksteXN4VXp0OFZDUkljSTBkajRLTDB0UTZQbUJodGI1Y1R0bEs1WjhLUFJqUktHYzd3cDQ5aUFDalF4dDBfUE4tQlRMQUFDYUtGMW5YWUxiMEFjMUw1b3E3MHU4ZzBJTy1rWC1FRzFNRkJ6WEVNcTJEWjUyNF8zall2UVRXR3Izc1U3NjNmeWd6N1BUSTdfLTQyTw?oc=5",
@@ -19590,6 +19951,15 @@
       "date_added": "2026-02-08T01:36:55",
       "articles": [
         {
+          "title": "Eka Ventures brings AUM to $200m with sophomore health, wellbeing and sustainability VC fund close",
+          "url": "https://www.altassets.net/private-equity-news/by-region/europe-by-region/western-europe-europe-by-region/united-kingdom-western-europe-europe-by-region/eka-ventures-brings-aum-to-200m-with-sophomore-health-wellbeing-and-sustainability-vc-fund-close.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-04-16",
+          "summary": "",
+          "feed_name": "AltAssets"
+        },
+        {
           "title": "Impact VC Investor Eka Raises $107 Million for Fund Targeting Consumer Health, Decarbonization Solutions",
           "url": "https://www.esgtoday.com/impact-vc-investor-eka-raises-107-million-for-fund-targeting-consumer-health-decarbonization-solutions/?utm_source=rss&utm_medium=rss&utm_campaign=impact-vc-investor-eka-raises-107-million-for-fund-targeting-consumer-health-decarbonization-solutions",
           "source_name": "ESG Today",
@@ -22003,6 +22373,15 @@
       "covered_date": "2026-01-16",
       "date_added": "2026-02-07T16:53:32",
       "articles": [
+        {
+          "title": "KKR completes $2.5bn Asia private credit fundraise - Fund Selector Asia",
+          "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNQlJaNmZJb056QTN3NmVHM1Q3dTZIZ2h5TTFlVW03azdRSk1TSktpZW5LcU1xX2o0OFNXMnVlRlhVeXJpNjdGbW5NME95M3VQSkhFSFFFUXpFVW9Ldmk2YlMwVy1aQ2FaaGpwZDVxT2VSLW9kRDhPMDdBLWl4TTVGanViNWJnUQ?oc=5",
+          "source_name": "Fund Selector Asia",
+          "source_domain": "fundselectorasia.com",
+          "published_date": "2026-01-19",
+          "summary": "KKR completes $2.5bn Asia private credit fundraise&nbsp;&nbsp;Fund Selector Asia",
+          "feed_name": "search:Credit/Real estate"
+        },
         {
           "title": "KKR raises $2.5b for second Asia private credit fund - DealStreetAsia",
           "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxPUHV6LVJMc0M3QnV2RHQ3cEhMR25aaDIxcEI3bUtPYXFKMFJrNHlqSmRicjlZS2ktS2g5RXcycDV6dXFESl9rSjhlMG1Kcl9KWmUzT0RiQmRDZnp5WUlaemJlX3YxQlhlVW5IUW5KVGxuSUtVYTc5M0hIVTFkMXBmMW9ZczFYam84MXh4WjJoRFRkR2RqcGZoVWNzMTgzdw?oc=5",
@@ -27285,6 +27664,17 @@
       "country": "US"
     },
     {
+      "firm": "Partners Group",
+      "firm_slug": "partners-group",
+      "fund_count": 1,
+      "total_aum_millions": 9000.0,
+      "categories": [
+        "Secondaries & GP-Stakes"
+      ],
+      "city": "Baar",
+      "country": "Switzerland"
+    },
+    {
       "firm": "Blue Owl",
       "firm_slug": "blue-owl",
       "fund_count": 3,
@@ -27375,6 +27765,17 @@
       ],
       "city": "London",
       "country": "UK"
+    },
+    {
+      "firm": "Sequoia Capital",
+      "firm_slug": "sequoia-capital",
+      "fund_count": 1,
+      "total_aum_millions": 7000.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "Menlo Park",
+      "country": "US"
     },
     {
       "firm": "ArcLight Capital Partners",
@@ -27843,6 +28244,17 @@
       ],
       "city": "Mumbai",
       "country": "India"
+    },
+    {
+      "firm": "Comvest Partners",
+      "firm_slug": "comvest-partners",
+      "fund_count": 1,
+      "total_aum_millions": 2630.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "N/A",
+      "country": ""
     },
     {
       "firm": "Lightyear Capital",
@@ -29306,6 +29718,17 @@
       "country": "Australia"
     },
     {
+      "firm": "Dominus",
+      "firm_slug": "dominus",
+      "fund_count": 1,
+      "total_aum_millions": 640.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "N/A",
+      "country": ""
+    },
+    {
       "firm": "SolarWind",
       "firm_slug": "solarwind",
       "fund_count": 1,
@@ -29359,6 +29782,17 @@
       ],
       "city": "Boston",
       "country": "US"
+    },
+    {
+      "firm": "GPT",
+      "firm_slug": "gpt",
+      "fund_count": 1,
+      "total_aum_millions": 610.0,
+      "categories": [
+        "Real Estate"
+      ],
+      "city": "Sydney",
+      "country": "Australia"
     },
     {
       "firm": "IITM & UIV",
@@ -30177,6 +30611,17 @@
       ],
       "city": "Toronto",
       "country": "Canada"
+    },
+    {
+      "firm": "Topspin Consumer Partners",
+      "firm_slug": "topspin-consumer-partners",
+      "fund_count": 1,
+      "total_aum_millions": 328.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "N/A",
+      "country": ""
     },
     {
       "firm": "CAVU Consumer Partners",
@@ -31753,6 +32198,17 @@
       "country": "Germany"
     },
     {
+      "firm": "HAVA\u00cdC",
+      "firm_slug": "hava-c",
+      "fund_count": 1,
+      "total_aum_millions": 50.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
       "firm": "SNAK Venture Partners",
       "firm_slug": "snak-venture-partners",
       "fund_count": 1,
@@ -32072,6 +32528,17 @@
       "country": "N/A"
     },
     {
+      "firm": "Unconventional Ventures",
+      "firm_slug": "unconventional-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": ""
+    },
+    {
       "firm": "EIG",
       "firm_slug": "eig",
       "fund_count": 1,
@@ -32169,17 +32636,6 @@
       ],
       "city": "Copenhagen",
       "country": "Denmark"
-    },
-    {
-      "firm": "Dominus Capital",
-      "firm_slug": "dominus-capital",
-      "fund_count": 1,
-      "total_aum_millions": 0.0,
-      "categories": [
-        "Private Equity"
-      ],
-      "city": "New York",
-      "country": "US"
     },
     {
       "firm": "La Trobe",
@@ -34064,8 +34520,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-04-16T07:47:20.199734",
-      "last_success": "2026-04-16T07:47:20.199743",
+      "last_fetch": "2026-04-17T09:17:20.406011",
+      "last_success": "2026-04-17T09:17:20.406021",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34074,8 +34530,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-04-16T07:47:17.787095",
-      "last_success": "2026-04-16T07:47:17.787105",
+      "last_fetch": "2026-04-17T09:17:17.702925",
+      "last_success": "2026-04-17T09:17:17.702936",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34114,8 +34570,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-04-16T07:47:27.136169",
-      "last_success": "2026-04-16T07:47:27.136178",
+      "last_fetch": "2026-04-17T09:17:27.076566",
+      "last_success": "2026-04-17T09:17:27.076576",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34124,8 +34580,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-04-16T06:33:30.109612",
-      "last_success": "2026-04-16T06:33:30.109619",
+      "last_fetch": "2026-04-17T06:02:22.426881",
+      "last_success": "2026-04-17T06:02:22.426887",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34134,8 +34590,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-04-16T06:15:52.188046",
-      "last_success": "2026-04-16T06:15:52.188054",
+      "last_fetch": "2026-04-17T06:02:19.567677",
+      "last_success": "2026-04-17T06:02:19.567684",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -34144,18 +34600,18 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-04-16T07:47:16.347279",
-      "last_success": "2026-04-16T07:47:16.347289",
+      "last_fetch": "2026-04-17T09:17:16.029295",
+      "last_success": "2026-04-17T09:17:16.029304",
       "error_count": 0,
-      "article_count": 10,
+      "article_count": 9,
       "last_error": "",
       "enabled": true
     },
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-04-16T06:33:33.893869",
-      "last_success": "2026-04-16T06:33:33.893878",
+      "last_fetch": "2026-04-17T07:04:30.297574",
+      "last_success": "2026-04-17T07:04:30.297584",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34164,8 +34620,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-04-16T07:47:22.948452",
-      "last_success": "2026-04-16T07:47:22.948460",
+      "last_fetch": "2026-04-17T09:17:23.187664",
+      "last_success": "2026-04-17T09:17:23.187674",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34174,18 +34630,18 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-04-16T06:39:31.068441",
-      "last_success": "2026-04-16T06:39:31.068451",
-      "error_count": 0,
-      "article_count": 10,
-      "last_error": "",
+      "last_fetch": "2026-04-17T08:59:28.527218",
+      "last_success": null,
+      "error_count": 1,
+      "article_count": 0,
+      "last_error": "[Errno 54] Connection reset by peer",
       "enabled": true
     },
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-04-16T06:15:50.490095",
-      "last_success": "2026-04-16T06:15:50.490098",
+      "last_fetch": "2026-04-17T06:02:17.836376",
+      "last_success": "2026-04-17T06:02:17.836381",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -34194,18 +34650,18 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-04-16T07:47:14.299221",
-      "last_success": null,
-      "error_count": 1,
-      "article_count": 0,
-      "last_error": "[Errno 54] Connection reset by peer",
+      "last_fetch": "2026-04-17T09:17:13.887769",
+      "last_success": "2026-04-17T09:17:13.887780",
+      "error_count": 0,
+      "article_count": 10,
+      "last_error": "",
       "enabled": true
     },
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-04-16T06:39:33.772346",
-      "last_success": "2026-04-16T06:39:33.772356",
+      "last_fetch": "2026-04-17T08:59:31.166739",
+      "last_success": "2026-04-17T08:59:31.166746",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34214,8 +34670,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-04-16T06:15:53.426207",
-      "last_success": "2026-04-16T06:15:53.426213",
+      "last_fetch": "2026-04-17T06:02:21.005414",
+      "last_success": "2026-04-17T06:02:21.005422",
       "error_count": 0,
       "article_count": 19,
       "last_error": "",
@@ -34223,32 +34679,32 @@
     }
   ],
   "stats": {
-    "total_funds": 710,
+    "total_funds": 717,
     "total_covered": 52,
-    "total_uncovered": 658,
-    "total_aum_millions": 5191568.6,
+    "total_uncovered": 665,
+    "total_aum_millions": 5211826.6,
     "by_category": {
-      "Credit Funds": 149,
-      "Real Estate": 74,
-      "Venture Capital": 170,
-      "Private Equity": 179,
+      "Secondaries & GP-Stakes": 45,
+      "Private Equity": 180,
+      "Venture Capital": 173,
+      "Credit Funds": 150,
+      "Real Estate": 75,
       "Infrastructure": 92,
-      "Secondaries & GP-Stakes": 44,
       "Other": 1,
       "N/A": 1
     },
     "by_stage": {
-      "Other": 89,
-      "Launch": 282,
-      "First Close": 125,
-      "Final Close": 203,
-      "Interim Close": 11
+      "Final Close": 205,
+      "Launch": 283,
+      "Other": 90,
+      "First Close": 126,
+      "Interim Close": 13
     },
-    "article_count": 158,
+    "article_count": 157,
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-04-16"
+      "latest": "2026-04-17"
     }
   }
 }
