@@ -230,7 +230,8 @@ async function processFeed(
       const urlHash = hashString(normalizedUrl);
       const contentText = `${article.title} ${(article.description || '').slice(0, 500)}`;
       const contentHash = hashString(normalizeText(contentText));
-      return { article, urlHash, contentHash };
+      const titleKey = titleSourceKey(article.title, article.sourceName);
+      return { article, urlHash, contentHash, titleKey };
     });
 
   if (articlesWithHashes.length === 0) {
@@ -238,12 +239,21 @@ async function processFeed(
     return result;
   }
 
-  // Batch dedup: fetch all existing url_hashes, content_hashes, and legacy source_urls in parallel
+  // Batch dedup: fetch all existing url_hashes, content_hashes, legacy source_urls,
+  // and (title_norm, source_name) pairs in parallel. The title+source layer
+  // catches the common case where the same publisher's article reaches the
+  // pipeline via two different URLs (e.g. direct feed + Google News redirect
+  // that failed to resolve) — both url_hash and content_hash differ, but
+  // the normalized title + source_name collide. See the Partners Group
+  // Pensions & Investments dup on 2026-04-17 for the real-world case.
   const allUrlHashes = articlesWithHashes.map((a) => a.urlHash);
   const allContentHashes = articlesWithHashes.map((a) => a.contentHash);
   const allSourceUrls = articlesWithHashes.map((a) => a.article.link!);
+  const allTitles = Array.from(new Set(
+    articlesWithHashes.map((a) => a.article.title).filter((t): t is string => !!t)
+  ));
 
-  const [{ data: urlHashMatches }, { data: contentHashMatches }, { data: legacyMatches }] = await Promise.all([
+  const [{ data: urlHashMatches }, { data: contentHashMatches }, { data: legacyMatches }, { data: titleMatches }] = await Promise.all([
     supabase
       .from('news_items')
       .select('url_hash')
@@ -256,6 +266,10 @@ async function processFeed(
       .from('news_items')
       .select('source_url')
       .in('source_url', allSourceUrls),
+    supabase
+      .from('news_items')
+      .select('title, source_name')
+      .in('title', allTitles),
   ]);
 
   const existingUrlHashes = new Set(
@@ -267,16 +281,41 @@ async function processFeed(
   const existingSourceUrls = new Set(
     (legacyMatches ?? []).map((m: { source_url: string }) => m.source_url)
   );
+  const existingTitleKeys = new Set(
+    (titleMatches ?? [])
+      .map((m: { title: string | null; source_name: string | null }) =>
+        titleSourceKey(m.title, m.source_name))
+      .filter((k): k is string => !!k)
+  );
+
+  // Track keys inserted during THIS feed's loop. The DB-level SELECTs
+  // above only see already-committed rows, so if a single feed's xml
+  // lists the same article twice (rare) or two successive articles
+  // normalize to the same title-source key, the second one would slip
+  // past without this local set.
+  const insertedUrlHashes = new Set<string>();
+  const insertedContentHashes = new Set<string>();
+  const insertedTitleKeys = new Set<string>();
 
   // Process each article using pre-fetched dedup sets
-  for (const { article, urlHash, contentHash } of articlesWithHashes) {
-    // Check for duplicate using batch-loaded sets
-    if (existingUrlHashes.has(urlHash) || existingContentHashes.has(contentHash)) {
+  for (const { article, urlHash, contentHash, titleKey } of articlesWithHashes) {
+    // Check for duplicate using batch-loaded sets AND this-run sets
+    if (existingUrlHashes.has(urlHash) || insertedUrlHashes.has(urlHash)) {
+      result.duplicate++;
+      continue;
+    }
+
+    if (existingContentHashes.has(contentHash) || insertedContentHashes.has(contentHash)) {
       result.duplicate++;
       continue;
     }
 
     if (existingSourceUrls.has(article.link!)) {
+      result.duplicate++;
+      continue;
+    }
+
+    if (titleKey && (existingTitleKeys.has(titleKey) || insertedTitleKeys.has(titleKey))) {
       result.duplicate++;
       continue;
     }
@@ -312,6 +351,12 @@ async function processFeed(
       }
       continue;
     }
+
+    // Record keys so other articles in this same batch (and concurrent
+    // feed runs within the same ingestion tick) dedup against them.
+    insertedUrlHashes.add(urlHash);
+    insertedContentHashes.add(contentHash);
+    if (titleKey) insertedTitleKeys.add(titleKey);
 
     result.inserted++;
     currentTotal++;
@@ -468,6 +513,25 @@ function normalizeText(text: string): string {
     .replace(/[^a-z0-9\s]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+/**
+ * Dedup key for the "same article, same publisher, different URL" case.
+ * Returns `title_lower + '|' + source_lower` or null if either piece
+ * is missing. Source is required so two articles with identical titles
+ * from different outlets (both titled "Q1 Markets Recap" etc.) aren't
+ * collapsed. Title is normalized via the same rules as content_hash so
+ * minor formatting drift doesn't defeat the match.
+ */
+export function titleSourceKey(
+  title: string | null,
+  sourceName: string | null
+): string | null {
+  if (!title || !sourceName) return null;
+  const t = normalizeText(title);
+  const s = sourceName.trim().toLowerCase();
+  if (!t || !s) return null;
+  return `${t}|${s}`;
 }
 
 /** SHA-256 hash of a string */

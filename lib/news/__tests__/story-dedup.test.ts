@@ -34,6 +34,26 @@ describe('normalizeFirmName', () => {
     expect(normalizeFirmName(undefined)).toBe('')
     expect(normalizeFirmName('')).toBe('')
   })
+
+  it('falls back to descriptive tokens when every token is noise', () => {
+    // Regression for 2026-04-18 "Partners Group $9B" quad-clone. Both
+    // "partners" and "group" are in the descriptive-noise set, so the
+    // aggressive pass stripped them all and the function returned "".
+    // firmMatch in isSameStory then false-negatived and the same story
+    // ran 4×. The two-pass normalizer keeps them when there's nothing
+    // else left.
+    expect(normalizeFirmName('Partners Group')).toBe('partners group')
+    // Legal-form tokens always strip, so "Corporation" drops but the
+    // distinctive pair survives.
+    expect(normalizeFirmName('International Finance Corporation')).toBe(
+      'international finance'
+    )
+    expect(normalizeFirmName('International Finance Corp')).toBe('international finance')
+    expect(normalizeFirmName('International Finance Inc')).toBe('international finance')
+    // Case and legal-form variations still collapse to the same key.
+    expect(normalizeFirmName('Partners Group')).toBe(normalizeFirmName('PARTNERS GROUP'))
+    expect(normalizeFirmName('Partners Group')).toBe(normalizeFirmName('Partners Group LLC'))
+  })
 })
 
 // ─── fundSizesMatch ─────────────────────────────────────────────────────────
@@ -163,6 +183,34 @@ describe('isSameStory', () => {
       fundSizeUsdMillions: 10000,
     })
     expect(isSameStory(a, b)).toBe(false)
+  })
+
+  it('clusters the Partners Group quad-clone from 2026-04-18', () => {
+    // Regression: all four rows had firm="Partners Group", fund=null,
+    // size=$9B, event=capital_raise|fund_close. Before the empty-string
+    // fallback in normalizeFirmName, the firm normalized to "" on both
+    // sides and firmMatch went false. Now all four collapse.
+    const a = candidate({
+      title: 'Partners Group raises over $9 billion for private equity secondaries',
+      firmName: 'Partners Group',
+      fundName: null,
+      fundSizeUsdMillions: 9000,
+    })
+    const b = candidate({
+      title: 'Partners Group hits $9bn close for flagship secondaries programme - pe',
+      firmName: 'Partners Group',
+      fundName: null,
+      fundSizeUsdMillions: 9000,
+    })
+    const c = candidate({
+      title: 'Partners Group closes latest PE secondaries programme on $9bn+',
+      firmName: 'Partners Group',
+      fundName: null,
+      fundSizeUsdMillions: 9000,
+    })
+    expect(isSameStory(a, b)).toBe(true)
+    expect(isSameStory(a, c)).toBe(true)
+    expect(isSameStory(b, c)).toBe(true)
   })
 })
 

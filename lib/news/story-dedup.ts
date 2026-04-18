@@ -11,28 +11,53 @@
  *   5. Both missing firm, but same normalized fund name
  */
 
-const FIRM_SUFFIX_NOISE = new Set([
+/**
+ * Legal-form / stop-word tokens — always safe to strip. An all-caps firm
+ * name like "BLACKSTONE INC" and the plain "Blackstone" should collapse.
+ * These never carry descriptive meaning about the firm.
+ */
+const LEGAL_FORM_NOISE = new Set([
   'llc', 'inc', 'corp', 'corporation', 'ltd', 'limited',
   'lp', 'llp', 'plc', 'ag', 'sa', 'nv', 'bv',
   'co', 'company',
+  'and', 'the',
+])
+
+/**
+ * Descriptive / generic firm-industry tokens. Stripped AFTER legal-form
+ * tokens, but only when removing them leaves at least one distinctive
+ * token standing. "Apollo Global Management" → "apollo"; but "Partners
+ * Group" would otherwise collapse to "", so we keep the descriptive
+ * tokens in that case. See normalizeFirmName for the two-pass logic.
+ */
+const DESCRIPTIVE_NOISE = new Set([
   'group', 'partners', 'capital', 'management', 'mgmt',
   'investment', 'investments', 'advisors', 'advisory',
   'ventures', 'venture', 'holdings', 'holding',
   'enterprises', 'industries', 'asset', 'assets',
   'fund', 'funds', 'finance', 'financial', 'equity',
   'international', 'global', 'worldwide',
-  'and', 'the',
 ])
 
 export function normalizeFirmName(name: string | null | undefined): string {
   if (!name) return ''
-  const words = name
+  const tokens = name
     .toLowerCase()
     .replace(/&/g, ' and ')
     .replace(/[^a-z0-9\s]/g, ' ')
     .split(/\s+/)
-    .filter((w) => w.length > 0 && !FIRM_SUFFIX_NOISE.has(w))
-  return words.join(' ').trim()
+    .filter((w) => w.length > 0)
+
+  // Pass 1: always strip legal-form tokens.
+  const afterLegal = tokens.filter((w) => !LEGAL_FORM_NOISE.has(w))
+
+  // Pass 2: also strip descriptive tokens — but only if some distinctive
+  // token remains. Without the conditional, "Partners Group" and
+  // "International Finance Corporation" would collapse to "" and every
+  // story about them would evade same-day and cross-edition dedup.
+  const afterDescriptive = afterLegal.filter((w) => !DESCRIPTIVE_NOISE.has(w))
+  const result = afterDescriptive.length > 0 ? afterDescriptive : afterLegal
+  return result.join(' ').trim()
 }
 
 /**

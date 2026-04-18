@@ -317,8 +317,9 @@ export async function queryNewsletterArticles(
 
   // ─── Cross-edition fingerprint dedup ───────────────────────────────────
   const afterCrossDay = deduped.filter((a) => {
-    const fp = storyFingerprint(a.firmName, a.fundName, a.eventType)
-    return !fp || !priorExclusions.fingerprints.has(fp)
+    const fps = storyFingerprints(a.firmName, a.fundName, a.eventType, a.fundSizeUsdMillions)
+    if (fps.length === 0) return true
+    return !fps.some((fp) => priorExclusions.fingerprints.has(fp))
   })
 
   // ─── Quality gate ──────────────────────────────────────────────────────
@@ -485,23 +486,42 @@ function deduplicateByStory(articles: NewsletterArticle[]): NewsletterArticle[] 
 // ─── Cross-edition fingerprint dedup ────────────────────────────────────────
 
 /**
- * Fingerprint used to suppress cross-day repeats.
- * Same firm + same fund name means the story already ran in the last
- * CROSS_EDITION_LOOKBACK editions. When there's no fund name, fall back
- * to firm + event type — coarser but catches most exec-move and
- * regulatory repeats. Size is deliberately NOT used in the fingerprint:
- * the tolerance band math is awkward and firm+fund is strong enough.
+ * Fingerprints used to suppress cross-day repeats. Returns 1-2 keys per
+ * article — the dedup filter rejects the new article if ANY key matches
+ * any article from the CROSS_EDITION_LOOKBACK window.
+ *
+ * Emitted keys, by what the article carries:
+ *   - fund name + size  →  [`firm|fund`, `firm|event|size-bucket`]
+ *   - fund name only    →  [`firm|fund`]
+ *   - size only         →  [`firm|event|size-bucket`]
+ *   - neither           →  [`firm|event`]  (exec moves, regulatory)
+ *
+ * Size is bucketed into $500M bands so currency drift and rounding
+ * don't break the match. The old single-key version lost Adams Street
+ * on 4/14→4/15 because one edition's fingerprint was
+ * `adams street|private credit iii` and the other was
+ * `adams street|fund_close`; the size-bucketed key gives both sides a
+ * common `adams street|fund_close|7500` to collide on.
  */
-function storyFingerprint(
+export function storyFingerprints(
   firmName: string | null,
   fundName: string | null,
-  eventType: string | null
-): string | null {
+  eventType: string | null,
+  fundSizeUsdMillions: number | null
+): string[] {
   const firm = normalizeFirmName(firmName)
-  if (!firm) return null
+  if (!firm) return []
   const fund = normalizeFirmName(fundName)
-  if (fund) return `${firm}|${fund}`
-  return `${firm}|${eventType ?? ''}`
+  const evt = eventType ?? ''
+  const out: string[] = []
+  if (fund) out.push(`${firm}|${fund}`)
+  if (fundSizeUsdMillions && fundSizeUsdMillions > 0) {
+    const bucket = Math.round(fundSizeUsdMillions / 500) * 500
+    out.push(`${firm}|${evt}|${bucket}`)
+  } else if (!fund) {
+    out.push(`${firm}|${evt}`)
+  }
+  return out
 }
 
 async function getPriorEditionExclusions(
@@ -541,9 +561,10 @@ async function getPriorEditionExclusions(
           const firmEntity = entitiesRaw?.find((e) => e.type === 'firm')
           const firmName = (extractedData?.firm_name as string) ?? firmEntity?.name ?? null
           const fundName = (extractedData?.fund_name as string) ?? null
+          const fundSize = (extractedData?.fund_size_usd_millions as number | null) ?? null
           const eventType = row.event_type ?? row.article_type ?? null
-          const fp = storyFingerprint(firmName, fundName, eventType)
-          if (fp) fingerprints.add(fp)
+          const fps = storyFingerprints(firmName, fundName, eventType, fundSize)
+          for (const fp of fps) fingerprints.add(fp)
         }
       }
     }

@@ -210,13 +210,14 @@ export async function sendDailyNewsletter(
  * (which are allocation news, not "fund X landed Y") and exec moves
  * (where the extracted size is usually firm AUM, not a fund size).
  */
-function buildSubject(content: {
+export function buildSubject(content: {
   groups: {
     category: string
     label: string
     articles: {
       title: string
       firmName: string | null
+      fundName?: string | null
       fundSizeUsdMillions: number | null
       eventType: string | null
     }[]
@@ -228,6 +229,14 @@ function buildSubject(content: {
     fund_launch: 2,
     capital_raise: 1,
   }
+
+  // AUM safety rail: single-fund sizes >$30B are extremely rare and are
+  // always named. Any candidate above that without a fund_name is almost
+  // certainly firm AUM leaking into fund_size_usd_millions from the
+  // classifier (see 4/10 "Ares Management Corp $623B" exec-hire leak and
+  // 4/9 "Lemssouguer Fund $20B" career-profile leak). Drop from subject
+  // candidates rather than risk another headline blowup.
+  const FUND_SIZE_SANITY_CEILING_MILLIONS = 30000
 
   let bestArticle: {
     firmName: string | null
@@ -244,6 +253,9 @@ function buildSubject(content: {
       if (prio < 0) continue
       const size = article.fundSizeUsdMillions ?? 0
       if (size <= 0) continue
+
+      // Drop AUM leaks
+      if (size > FUND_SIZE_SANITY_CEILING_MILLIONS && !article.fundName) continue
 
       if (prio > bestPriority || (prio === bestPriority && size > bestSize)) {
         bestPriority = prio
