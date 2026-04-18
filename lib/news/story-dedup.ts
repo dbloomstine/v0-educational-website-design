@@ -106,6 +106,31 @@ export interface StoryCandidate {
   personName?: string | null
 }
 
+/**
+ * Token-prefix relationship between two normalized firm names.
+ * True when the shorter name's tokens are the leading tokens of the
+ * longer name (e.g. "btg pactual" ⊂ "btg pactual tig", "vesper" ⊂
+ * "vesper infrastructure"). Used in isSameStory as a softer firm-match
+ * signal to survive classifier variance ("BTG Pactual" vs "BTG Pactual
+ * TIG", "Vesper" vs "Vesper Infrastructure Partners"). Always paired
+ * with another corroborating signal (exact fund name or tight size
+ * match) to avoid collapsing distinct parent/subsidiary arms like KKR
+ * and KKR Credit Advisors.
+ */
+function firmsSharePrefix(firmA: string, firmB: string): boolean {
+  if (!firmA || !firmB || firmA === firmB) return false
+  const tokensA = firmA.split(' ').filter((t) => t.length > 0)
+  const tokensB = firmB.split(' ').filter((t) => t.length > 0)
+  if (tokensA.length === tokensB.length) return false
+  const [shorter, longer] =
+    tokensA.length < tokensB.length ? [tokensA, tokensB] : [tokensB, tokensA]
+  if (shorter.length === 0) return false
+  for (let i = 0; i < shorter.length; i++) {
+    if (shorter[i] !== longer[i]) return false
+  }
+  return true
+}
+
 export function isSameStory(a: StoryCandidate, b: StoryCandidate): boolean {
   // Exec-move fallback: same person = same story regardless of firm extraction.
   if (a.personName && b.personName) {
@@ -128,6 +153,21 @@ export function isSameStory(a: StoryCandidate, b: StoryCandidate): boolean {
   }
 
   const firmMatch = firmA.length > 0 && firmA === firmB
+
+  // Prefix-firm match: classifier variance on parent/subsidiary naming.
+  // 2026-04-18 incidents: "BTG Pactual" vs "BTG Pactual TIG" on the
+  // $370M LatAm timber fund; "Vesper" vs "Vesper Infrastructure
+  // Partners" on the €1bn Next Gen Infrastructure Fund. Both ran
+  // twice in the same edition because firmA !== firmB. We accept
+  // prefix match only when paired with a strong independent signal
+  // (exact fund name match OR tight ≤5% size match) to keep KKR vs
+  // KKR Credit Advisors distinct when their deals happen to align.
+  const prefixFirmMatch = !firmMatch && firmsSharePrefix(firmA, firmB)
+  if (prefixFirmMatch) {
+    if (fundA.length > 0 && fundA === fundB) return true
+    if (fundSizesMatch(a.fundSizeUsdMillions, b.fundSizeUsdMillions, 0.05)) return true
+    return false
+  }
 
   if (!firmMatch) {
     // Both missing firm but share a fund name — already handled above.

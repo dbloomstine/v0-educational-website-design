@@ -14,7 +14,12 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { isSameStory, normalizeFirmName } from '@/lib/news/story-dedup'
+import {
+  isSameStory,
+  normalizeFirmName,
+  fundSizesMatch,
+  titleJaccard,
+} from '@/lib/news/story-dedup'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>
@@ -413,6 +418,8 @@ export async function queryNewsletterArticles(
     })
   }
 
+  deduplicateAcrossSections(groups)
+
   const includedIds = new Set<string>()
   for (const g of groups) {
     for (const a of g.articles) includedIds.add(a.id)
@@ -422,6 +429,61 @@ export async function queryNewsletterArticles(
     groups,
     totalArticles: includedIds.size,
     articleIds: Array.from(includedIds),
+  }
+}
+
+// ─── Cross-section dedup ────────────────────────────────────────────────────
+
+/**
+ * Cross-section dedup pass. Runs AFTER sectioning to catch the rare
+ * case where classifier variance put the same story into two different
+ * section groups. Example: 2026-04-18 sovereign-funds consortium
+ * ("Sovereign funds from China, Indonesia, Azerbaijan team up to
+ * launch $1B PE fund" classified as Private Equity with firm "China
+ * Sovereign Fund", and "Wealth funds of China, Indonesia, Azerbaijan
+ * launch $1b PE platform" classified as LP Commitments with firm
+ * "China State Pension Fund" — completely different firm extractions
+ * so isSameStory correctly refused to merge them within the same-day
+ * pre-section dedup).
+ *
+ * Uses a deliberately looser matcher than isSameStory: fund sizes
+ * within 10% AND title Jaccard >= 0.4. Cross-section collisions are
+ * rare in practice (most classifier noise clusters within one section),
+ * so the broader matcher's false-positive blast radius is small.
+ *
+ * Keeps the article in the earlier group (fund_activity > lp_commitments
+ * > people_moves > deals > regulatory, matching the order of pushes
+ * above) and drops the later. alsoCoveredBy is carried over so the
+ * reader still sees the duplicate source attribution.
+ */
+export function deduplicateAcrossSections(groups: ArticleGroup[]): void {
+  for (let i = 0; i < groups.length; i++) {
+    const keepers = groups[i].articles
+    for (let j = i + 1; j < groups.length; j++) {
+      const droppers = groups[j].articles
+      const toRemove = new Set<string>()
+
+      for (const k of keepers) {
+        for (const d of droppers) {
+          if (k.id === d.id) continue
+          if (toRemove.has(d.id)) continue
+          if (!fundSizesMatch(k.fundSizeUsdMillions, d.fundSizeUsdMillions)) continue
+          if (titleJaccard(k.title, d.title) < 0.4) continue
+
+          const merged = new Set(k.alsoCoveredBy)
+          if (d.sourceName && d.sourceName !== k.sourceName) merged.add(d.sourceName)
+          for (const src of d.alsoCoveredBy) {
+            if (src !== k.sourceName) merged.add(src)
+          }
+          k.alsoCoveredBy = Array.from(merged)
+          toRemove.add(d.id)
+        }
+      }
+
+      if (toRemove.size > 0) {
+        groups[j].articles = droppers.filter((d) => !toRemove.has(d.id))
+      }
+    }
   }
 }
 
@@ -596,4 +658,25 @@ export function formatFundSize(millions: number | null): string {
   if (!millions) return ''
   if (millions >= 1000) return `$${(millions / 1000).toFixed(1).replace(/\.0$/, '')}B`
   return `$${millions}M`
+}
+
+/**
+ * Single-fund sizes above $30B are extremely rare and always named.
+ * Any candidate above this without a fund_name is almost certainly firm
+ * AUM leaking into fund_size_usd_millions from the classifier — real
+ * incidents: 4/10 "Ares Management Corp $623B" exec-hire leak,
+ * 4/9 "Lemssouguer Fund $20B" career-profile leak, 4/18 "Nest
+ * $81B" private-credit-mandate leak (£60bn AUM misattributed).
+ *
+ * Used as a sanity rail in both buildSubject (kills AUM-leak headlines)
+ * and the row-pill renderer (kills AUM-leak pills in story rows).
+ */
+export const FUND_SIZE_SANITY_CEILING_MILLIONS = 30000
+
+export function isLikelyAumLeak(
+  sizeMillions: number | null | undefined,
+  fundName: string | null | undefined
+): boolean {
+  if (!sizeMillions) return false
+  return sizeMillions > FUND_SIZE_SANITY_CEILING_MILLIONS && !fundName
 }

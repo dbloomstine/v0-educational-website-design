@@ -9,7 +9,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { queryNewsletterArticles } from './query-articles'
+import { queryNewsletterArticles, isLikelyAumLeak } from './query-articles'
 import { renderNewsletterEmail } from './email-template'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -230,14 +230,8 @@ export function buildSubject(content: {
     capital_raise: 1,
   }
 
-  // AUM safety rail: single-fund sizes >$30B are extremely rare and are
-  // always named. Any candidate above that without a fund_name is almost
-  // certainly firm AUM leaking into fund_size_usd_millions from the
-  // classifier (see 4/10 "Ares Management Corp $623B" exec-hire leak and
-  // 4/9 "Lemssouguer Fund $20B" career-profile leak). Drop from subject
-  // candidates rather than risk another headline blowup.
-  const FUND_SIZE_SANITY_CEILING_MILLIONS = 30000
-
+  // AUM safety rail — see isLikelyAumLeak() in query-articles.ts. Drop
+  // from subject candidates rather than risk another $623B-style headline.
   let bestArticle: {
     firmName: string | null
     fundSizeUsdMillions: number | null
@@ -255,7 +249,7 @@ export function buildSubject(content: {
       if (size <= 0) continue
 
       // Drop AUM leaks
-      if (size > FUND_SIZE_SANITY_CEILING_MILLIONS && !article.fundName) continue
+      if (isLikelyAumLeak(size, article.fundName)) continue
 
       if (prio > bestPriority || (prio === bestPriority && size > bestSize)) {
         bestPriority = prio

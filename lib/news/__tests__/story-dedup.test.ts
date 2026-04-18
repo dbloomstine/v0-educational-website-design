@@ -185,6 +185,56 @@ describe('isSameStory', () => {
     expect(isSameStory(a, b)).toBe(false)
   })
 
+  it('clusters "BTG Pactual" with "BTG Pactual TIG" at matching size (2026-04-18)', () => {
+    // Regression: classifier extracted firm differently on two articles
+    // about the same $370M Latin America Timberland close.
+    const a = candidate({
+      title: 'BTG Pactual TIG Raises $370 Million for Latin America Timberland Strategy',
+      firmName: 'BTG Pactual TIG',
+      fundSizeUsdMillions: 370,
+    })
+    const b = candidate({
+      title: 'BTG TIG reaches $370m first close for LatAm timber fund',
+      firmName: 'BTG Pactual',
+      fundSizeUsdMillions: 370,
+    })
+    expect(isSameStory(a, b)).toBe(true)
+  })
+
+  it('clusters "Vesper" with "Vesper Infrastructure Partners" at matching size (2026-04-18)', () => {
+    // Regression: same €1bn Next Gen Infrastructure Fund close, firm
+    // extracted as "Vesper" by one outlet and "Vesper Infrastructure
+    // Partners" by another.
+    const a = candidate({
+      title: 'Vesper Next Generation Infrastructure Fund I reaches final close surpassing €1b of total AUM',
+      firmName: 'Vesper',
+      fundSizeUsdMillions: 1100,
+    })
+    const b = candidate({
+      title: 'Vesper Infrastructure Partners picks up over €1bn at hard cap close of next-gen fund',
+      firmName: 'Vesper Infrastructure Partners',
+      fundSizeUsdMillions: 1100,
+    })
+    expect(isSameStory(a, b)).toBe(true)
+  })
+
+  it('keeps KKR distinct from KKR Credit Advisors when sizes diverge', () => {
+    // Prefix-firm match is gated on a tight (≤5%) size match. Distinct
+    // parent/subsidiary arms with their own independently-sized deals
+    // must stay separate stories.
+    const a = candidate({
+      title: 'KKR raises $23bn for North America Fund XIV',
+      firmName: 'KKR',
+      fundSizeUsdMillions: 23000,
+    })
+    const b = candidate({
+      title: 'KKR Credit Advisors closes $2bn direct lending fund',
+      firmName: 'KKR Credit Advisors',
+      fundSizeUsdMillions: 2000,
+    })
+    expect(isSameStory(a, b)).toBe(false)
+  })
+
   it('clusters the Partners Group quad-clone from 2026-04-18', () => {
     // Regression: all four rows had firm="Partners Group", fund=null,
     // size=$9B, event=capital_raise|fund_close. Before the empty-string

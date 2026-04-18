@@ -17,7 +17,7 @@
  */
 
 import type { ArticleGroup } from './query-articles'
-import { getEventTypeLabel, formatFundSize } from './query-articles'
+import { getEventTypeLabel, formatFundSize, isLikelyAumLeak } from './query-articles'
 import { getPrimaryLogoUrl, resolveLogoDomain } from '@/lib/news/firm-logo-url'
 import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponsors'
 
@@ -388,7 +388,12 @@ function renderArticle(article: ArticleGroup['articles'][0]): string {
   const badgeClass =
     EVENT_BADGE_CLASS[article.eventType ?? ''] ?? 'fops-b-default'
   const label = getEventTypeLabel(article.eventType)
-  const size = formatFundSize(article.fundSizeUsdMillions)
+  // Suppress size pill on likely AUM leaks (e.g. 4/18 "Nest $81B" where
+  // classifier put £60bn firm AUM into fund_size_usd_millions on an
+  // unnamed private-credit mandate). Same rail as buildSubject.
+  const size = isLikelyAumLeak(article.fundSizeUsdMillions, article.fundName)
+    ? ''
+    : formatFundSize(article.fundSizeUsdMillions)
   const logo = renderFirmLogo(article)
 
   const badgeHtml = label
