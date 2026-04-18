@@ -47,9 +47,12 @@ const NEWSLETTER_SUBJECT_PREFIX = 'FundOps Daily'
 export async function fetchTodaysNewsletter(): Promise<NewsletterPayload> {
   // Search query — find by sender + subject prefix, limited to the last
   // 24 hours so we don't accidentally pick up yesterday's when today's
-  // hasn't landed yet. If the query returns nothing, the cron wasn't
-  // able to read Danny's morning newsletter and we fail the run.
-  const query = `from:${NEWSLETTER_FROM} subject:"${NEWSLETTER_SUBJECT_PREFIX}" newer_than:1d`
+  // hasn't landed yet. Excludes `[TEST]`-prefixed subjects so that
+  // test previews sent via scripts/send-test-email.ts can't hijack
+  // forward-mode outreach if they land in the inbox before the real
+  // newsletter. If the query returns nothing, the cron wasn't able to
+  // read Danny's morning newsletter and we fail the run.
+  const query = `from:${NEWSLETTER_FROM} subject:"${NEWSLETTER_SUBJECT_PREFIX}" -subject:"[TEST]" newer_than:1d`
   const messages = await listInboxMessages({ query, maxResults: 5 })
 
   if (messages.length === 0) {

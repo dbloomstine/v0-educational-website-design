@@ -470,67 +470,42 @@ function renderCategory(group: ArticleGroup): string {
 
 // ─── Sponsor marks ─────────────────────────────────────────────────────────
 
-// Sponsor cards use a side-by-side layout (logo left, text right) to
-// save vertical space. The logo column is fixed-width; images/PNGs
-// get capped at the column width and scale down with max-width:100%
-// so oversized source logos don't break the grid. Column is sized to
-// accommodate the "FundOpsHQ Live" wordmark on a single line at 18px
-// without wrapping — narrower columns caused the amber "Live" italic
-// to orphan to the next line in Gmail.
-const SPONSOR_LOGO_COL_TOP = 160
-const SPONSOR_LOGO_COL_BOTTOM = 170
-
-function renderSponsorMark(
-  sponsor: Sponsor,
-  logoHeightPx: number,
-  maxWidthPx?: number,
-): string {
+// Sponsor cards stack vertically: logo on top, blurb + CTA below. An
+// earlier side-by-side (logo-left / text-right) layout saved ~40px of
+// vertical space but compressed the blurb into a ~200px column on
+// mobile, causing each word to wrap to its own line. Vertical stack
+// renders cleanly on desktop Gmail AND narrow mobile widths without
+// needing media queries (which Outlook strips).
+function renderSponsorMark(sponsor: Sponsor, logoHeightPx: number): string {
   if (sponsor.wordmarkHtml) return sponsor.wordmarkHtml
   if (sponsor.logoUrl) {
-    let width = sponsor.logoWidth ?? logoHeightPx * 5
-    if (maxWidthPx && width > maxWidthPx) width = maxWidthPx
+    const width = sponsor.logoWidth ?? logoHeightPx * 5
     return `<img src="${escapeHtml(sponsor.logoUrl)}" alt="${escapeHtml(sponsor.name)}" width="${width}" style="width:${width}px;height:auto;display:block;max-width:100%;" />`
   }
   return `<span class="fops-serif fops-ink" style="display:inline-block;font-size:${logoHeightPx}px;font-weight:800;letter-spacing:-0.3px;line-height:1;">${escapeHtml(sponsor.name)}</span>`
 }
 
 function renderSponsorCardTop(sponsor: Sponsor, isFirst: boolean): string {
-  const mark = renderSponsorMark(sponsor, 18, SPONSOR_LOGO_COL_TOP)
+  const mark = renderSponsorMark(sponsor, 18)
   const padTopBottom = isFirst ? '6px 0 14px' : '14px 0'
   const borderTop = isFirst ? '' : `border-top:1px solid ${HAIRLINE};`
   return `
     <div style="padding:${padTopBottom};${borderTop}">
-      <table cellpadding="0" cellspacing="0" border="0" width="100%">
-        <tr>
-          <td width="${SPONSOR_LOGO_COL_TOP}" style="width:${SPONSOR_LOGO_COL_TOP}px;vertical-align:top;padding-right:14px;white-space:nowrap;">
-            <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;white-space:nowrap;">${mark}</a>
-          </td>
-          <td style="vertical-align:top;">
-            <p class="fops-sponsor-blurb" style="margin:0 0 8px;">${escapeHtml(sponsor.blurb)}</p>
-            ${sponsor.ctaText ? `<a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-outline" style="color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a>` : ''}
-          </td>
-        </tr>
-      </table>
+      <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;margin:0 0 10px;">${mark}</a>
+      <p class="fops-sponsor-blurb" style="margin:0 0 8px;">${escapeHtml(sponsor.blurb)}</p>
+      ${sponsor.ctaText ? `<a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-outline" style="color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a>` : ''}
     </div>`
 }
 
 function renderSponsorCardBottom(sponsor: Sponsor, isFirst: boolean): string {
-  const mark = renderSponsorMark(sponsor, 20, SPONSOR_LOGO_COL_BOTTOM)
+  const mark = renderSponsorMark(sponsor, 20)
   const padTopBottom = isFirst ? '6px 0 18px' : '18px 0'
   const borderTop = isFirst ? '' : `border-top:1px solid ${HAIRLINE};`
   return `
     <div style="padding:${padTopBottom};${borderTop}">
-      <table cellpadding="0" cellspacing="0" border="0" width="100%">
-        <tr>
-          <td width="${SPONSOR_LOGO_COL_BOTTOM}" style="width:${SPONSOR_LOGO_COL_BOTTOM}px;vertical-align:top;padding-right:16px;white-space:nowrap;">
-            <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;white-space:nowrap;">${mark}</a>
-          </td>
-          <td style="vertical-align:top;">
-            <p class="fops-sponsor-blurb-lg" style="margin:0 0 12px;">${escapeHtml(sponsor.blurb)}</p>
-            ${sponsor.ctaText ? `<a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-solid" style="color:${CREAM};background-color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a>` : ''}
-          </td>
-        </tr>
-      </table>
+      <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;margin:0 0 12px;">${mark}</a>
+      <p class="fops-sponsor-blurb-lg" style="margin:0 0 12px;">${escapeHtml(sponsor.blurb)}</p>
+      ${sponsor.ctaText ? `<a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-solid" style="color:${CREAM};background-color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a>` : ''}
     </div>`
 }
 
