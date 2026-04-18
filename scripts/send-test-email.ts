@@ -69,6 +69,13 @@ async function main() {
   const content = await queryNewsletterArticles(supabase, 72, { excludePriorEdition: false })
   console.log(`  ${content.totalArticles} articles across ${content.groups.length} groups`)
 
+  // Fetch the live confirmed-subscriber count so the test preview shows
+  // the same social-proof eyebrow the production send will render.
+  const { count: subscriberCount } = await supabase
+    .from('newsletter_subscribers')
+    .select('id', { count: 'exact', head: true })
+    .eq('status', 'confirmed')
+
   const editionDate = new Date().toLocaleDateString('en-CA', {
     timeZone: 'America/New_York',
   })
@@ -79,6 +86,7 @@ async function main() {
     editionDate,
     unsubscribeUrl: 'https://fundopshq.com/api/newsletter/unsubscribe?token=TEST',
     sponsorSlate: buildSampleSlate(),
+    subscriberCount: subscriberCount ?? undefined,
   })
 
   const from = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'

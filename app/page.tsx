@@ -6,6 +6,7 @@ import { BackToTop } from '@/components/back-to-top'
 import { HeroSubscribe } from '@/components/home/hero-subscribe'
 import { LiveShowFeature } from '@/components/home/live-show-feature'
 import { NewsFeed } from '@/components/news/NewsFeed'
+import { StickySubscribeBar } from '@/components/news/StickySubscribeBar'
 import { fetchPlaylistVideos } from '@/lib/youtube'
 
 export const metadata: Metadata = {
@@ -149,6 +150,7 @@ export default async function HomePage() {
 
       <SiteFooter />
       <BackToTop />
+      <StickySubscribeBar />
     </div>
   )
 }

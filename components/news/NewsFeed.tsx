@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { ArticleRow } from './ArticleRow'
 import { ClusterExpander } from './ClusterExpander'
 import { FeedbackButton } from './FeedbackButton'
+import { MidFeedSubscribeCTA } from './MidFeedSubscribeCTA'
 import type { ArticleFeedResponse, ArticleGroup, NewsArticle, FacetCounts } from '@/lib/news/types'
 
 // ── Filter constants ──────────────────────────────────────────────
@@ -635,7 +636,7 @@ export function NewsFeed() {
               <span>Source</span>
             </div>
             {groups.length > 0
-              ? groups.map((group) => (
+              ? groups.map((group, idx) => (
                   <div key={group.primaryArticle.id}>
                     <ArticleRow article={group.primaryArticle} dateRange={dateRange} clusterSize={group.clusterSize} />
                     {group.clusterSize > 1 && (
@@ -645,6 +646,12 @@ export function NewsFeed() {
                         dateRange={dateRange}
                       />
                     )}
+                    {/* Mid-feed CTA — lands after the 8th story group so
+                        users who are reading deep into the feed get a
+                        subscribe prompt without it interrupting the first
+                        page of content. Only shown when we have enough
+                        groups that it wouldn't push past the "show more". */}
+                    {idx === 7 && groups.length > 10 && <MidFeedSubscribeCTA />}
                   </div>
                 ))
               : articles.map((article) => (

@@ -27,6 +27,14 @@ interface TemplateParams {
   editionDate: string
   unsubscribeUrl: string
   sponsorSlate?: SponsorSlate
+  /**
+   * Confirmed subscriber count at send time. Renders into the masthead
+   * eyebrow as social proof ("Read by 97 GPs, LPs, and fund service
+   * providers") and gently motivates forwards — people are more likely
+   * to share a newsletter that a peer group is already reading. Defaults
+   * to undefined for test-send contexts where the count is unavailable.
+   */
+  subscriberCount?: number
 }
 
 // ─── Brand palette ──────────────────────────────────────────────────────────
@@ -527,12 +535,37 @@ function renderSponsorBottom(slate: SponsorSlate): string {
 // ─── Main render ───────────────────────────────────────────────────────────
 
 export function renderNewsletterEmail(params: TemplateParams): string {
-  const { groups, editionDate, unsubscribeUrl, sponsorSlate = DEFAULT_SPONSOR_SLATE } = params
+  const {
+    groups,
+    editionDate,
+    unsubscribeUrl,
+    sponsorSlate = DEFAULT_SPONSOR_SLATE,
+    subscriberCount,
+  } = params
   const formattedDate = formatDate(editionDate)
   const mastheadDate = formatMastheadDate(editionDate)
   const categoryBlocks = groups.map(renderCategory).join('')
   const sponsorTop = renderSponsorTop(sponsorSlate)
   const sponsorBottom = renderSponsorBottom(sponsorSlate)
+
+  // Social-proof eyebrow fragment. Omitted when count is unavailable
+  // (test sends) or absurdly small.
+  const socialProof =
+    subscriberCount && subscriberCount >= 25
+      ? `READ BY ${subscriberCount} PROS`
+      : 'THE DAILY BRIEF'
+
+  // Biggest story of the day for the bottom share block. Falls back to
+  // the first group's first article when category ordering lands deals
+  // below the wire. Used only as a suggested share prompt.
+  const topStory = groups[0]?.articles[0]
+  const topStoryHeadline = topStory?.title ?? 'today\'s top fund news'
+  const shareText = `Top fund news today: "${topStoryHeadline}" — from FundOps Daily`
+  const shareUrl = 'https://fundopshq.com/?ref=share'
+  const mailtoBody = `${shareText}\n\nSubscribe: ${shareUrl}`
+  const shareMailto = `mailto:?subject=${encodeURIComponent('Thought this was worth passing along')}&body=${encodeURIComponent(mailtoBody)}`
+  const shareLinkedIn = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
+  const shareX = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`
 
   const html = `<!DOCTYPE html>
 <html lang="en" style="color-scheme:only light;supported-color-schemes:only light;">
@@ -554,6 +587,20 @@ export function renderNewsletterEmail(params: TemplateParams): string {
       <td align="center" style="padding:24px 10px;">
         <table cellpadding="0" cellspacing="0" border="0" width="680" style="max-width:680px;width:100%;">
 
+          <!-- ─── Forwarded-to-you strip ─── -->
+          <!-- Shown at the very top of every edition. Readers who got
+               the email forwarded by a peer see a direct "subscribe"
+               path. Near-zero cost to people who are already subscribers
+               (they scroll past) but a meaningful conversion path for
+               the (harder-to-measure) forwards. -->
+          <tr>
+            <td class="fops-bg-cream" style="padding:10px 32px;background-color:${CREAM};border-bottom:1px solid rgba(30,58,95,0.08);">
+              <div class="fops-mono" style="font-size:10px;color:rgba(30,58,95,0.7);letter-spacing:1.5px;text-transform:uppercase;text-align:center;">
+                Forwarded to you? &nbsp;<a href="https://fundopshq.com/?ref=fwd" style="color:${INK};text-decoration:underline;font-weight:700;">Subscribe to FundOps Daily &rarr;</a>
+              </div>
+            </td>
+          </tr>
+
           <!-- ─── Masthead ─── -->
           <tr>
             <td class="fops-bg-navy" style="padding:0;background-color:${NAVY};">
@@ -570,7 +617,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                           <span>${escapeHtml(mastheadDate)}</span>
                         </td>
                         <td align="right" class="fops-eyebrow-light">
-                          THE DAILY BRIEF
+                          ${escapeHtml(socialProof)}
                         </td>
                       </tr>
                     </table>
@@ -633,6 +680,27 @@ export function renderNewsletterEmail(params: TemplateParams): string {
 
           <!-- ─── Sponsor: bottom ─── -->
           ${sponsorBottom}
+
+          <!-- ─── Share this edition ─── -->
+          <!-- Sits between the sponsor slot and the footer so it reads as
+               a friendly closer rather than a CTA blast. mailto pre-fills
+               the subject + the top story headline + the subscribe URL,
+               so the recipient can click-forward in one move. LinkedIn
+               and X links go through their share intents; readers hit
+               their own composer, nothing auto-posts. -->
+          <tr>
+            <td class="fops-bg-cream" style="padding:8px 32px 28px;background-color:${CREAM};text-align:center;">
+              <div class="fops-eyebrow" style="margin-bottom:10px;">Share this edition</div>
+              <div class="fops-sans" style="font-size:13px;color:rgba(30,58,95,0.75);line-height:1.5;margin-bottom:14px;max-width:460px;margin-left:auto;margin-right:auto;">
+                If today&rsquo;s brief was useful, forward it to a peer &mdash; that&rsquo;s how this list grows.
+              </div>
+              <div>
+                <a href="${escapeHtml(shareMailto)}" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Forward by email</a>
+                <a href="${escapeHtml(shareLinkedIn)}" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Post to LinkedIn</a>
+                <a href="${escapeHtml(shareX)}" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Share on X</a>
+              </div>
+            </td>
+          </tr>
 
           <!-- ─── Footer ─── -->
           <tr>

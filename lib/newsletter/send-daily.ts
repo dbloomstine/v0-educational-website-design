@@ -123,6 +123,7 @@ export async function sendDailyNewsletter(
     totalArticles: content.totalArticles,
     editionDate,
     unsubscribeUrl: UNSUB_SENTINEL,
+    subscriberCount: subscribers.length,
   })
 
   const emails = subscribers.map((sub) => {
