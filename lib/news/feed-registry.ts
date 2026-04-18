@@ -339,24 +339,29 @@ export const FEED_REGISTRY: FeedSource[] = [
     sourceType: 'trade_press',
     notes: 'Fund operations focused — COO/CFO audience',
   },
-  {
-    name: 'With Intelligence',
-    url: 'https://www.withintelligence.com/feed/',
-    tier: 1,
-    categories: ['PE', 'hedge', 'credit'],
-    fetchIntervalMinutes: 120,
-    sourceType: 'trade_press',
-    notes: 'Formerly Pageant Media — PE/hedge/credit intelligence',
-  },
-  {
-    name: 'Allocator Intel',
-    url: 'https://allocatorintel.com/feed/',
-    tier: 1,
-    categories: ['PE', 'hedge', 'credit'],
-    fetchIntervalMinutes: 120,
-    sourceType: 'trade_press',
-    notes: 'LP allocation decisions and manager searches',
-  },
+  // With Intelligence — DEACTIVATED 2026-04-18. RSS returns 200 + a valid
+  // channel header with ZERO <item> entries (paywalled; feed is a shell).
+  // Re-enable only if the feed starts emitting items.
+  // {
+  //   name: 'With Intelligence',
+  //   url: 'https://www.withintelligence.com/feed/',
+  //   tier: 1,
+  //   categories: ['PE', 'hedge', 'credit'],
+  //   fetchIntervalMinutes: 120,
+  //   sourceType: 'trade_press',
+  //   notes: 'Formerly Pageant Media — PE/hedge/credit intelligence',
+  // },
+  // Allocator Intel — DEACTIVATED 2026-04-18. RSS returns 405 + JS redirect
+  // to /lander; endpoint is no longer a feed.
+  // {
+  //   name: 'Allocator Intel',
+  //   url: 'https://allocatorintel.com/feed/',
+  //   tier: 1,
+  //   categories: ['PE', 'hedge', 'credit'],
+  //   fetchIntervalMinutes: 120,
+  //   sourceType: 'trade_press',
+  //   notes: 'LP allocation decisions and manager searches',
+  // },
   {
     name: 'Responsible Investor',
     url: 'https://www.responsible-investor.com/feed/',
@@ -793,15 +798,17 @@ export const FEED_REGISTRY: FeedSource[] = [
     sourceType: 'press_release',
     notes: 'Major fund admin — URL may need verification',
   },
-  {
-    name: 'Maples Group',
-    url: 'https://maples.com/feed/',
-    tier: 5,
-    categories: ['PE', 'credit', 'hedge'],
-    fetchIntervalMinutes: 240,
-    sourceType: 'press_release',
-    notes: 'Fund services and legal — URL may need verification',
-  },
+  // Maples Group — DEACTIVATED 2026-04-18. Feed URL returns 403 Forbidden
+  // (server-side block). Restore only if Maples starts publishing RSS.
+  // {
+  //   name: 'Maples Group',
+  //   url: 'https://maples.com/feed/',
+  //   tier: 5,
+  //   categories: ['PE', 'credit', 'hedge'],
+  //   fetchIntervalMinutes: 240,
+  //   sourceType: 'press_release',
+  //   notes: 'Fund services and legal — URL may need verification',
+  // },
   {
     name: 'Ocorian',
     url: 'https://www.ocorian.com/feed/',
@@ -811,15 +818,18 @@ export const FEED_REGISTRY: FeedSource[] = [
     sourceType: 'press_release',
     notes: 'Fund admin and corporate services — URL may need verification',
   },
-  {
-    name: 'Aztec Group',
-    url: 'https://www.aztecgroup.co.uk/feed/',
-    tier: 5,
-    categories: ['PE', 'credit', 'real_estate'],
-    fetchIntervalMinutes: 240,
-    sourceType: 'press_release',
-    notes: 'Fund admin — URL may need verification',
-  },
+  // Aztec Group — DEACTIVATED 2026-04-18. Old URL 301s to aztec.group/us/feed/
+  // which returns a valid channel header with zero items. Firm publishes no
+  // articles via RSS.
+  // {
+  //   name: 'Aztec Group',
+  //   url: 'https://www.aztecgroup.co.uk/feed/',
+  //   tier: 5,
+  //   categories: ['PE', 'credit', 'real_estate'],
+  //   fetchIntervalMinutes: 240,
+  //   sourceType: 'press_release',
+  //   notes: 'Fund admin — URL may need verification',
+  // },
   {
     name: 'Waystone',
     url: 'https://www.waystone.com/feed/',
