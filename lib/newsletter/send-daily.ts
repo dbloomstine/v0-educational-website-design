@@ -47,7 +47,20 @@ export async function sendDailyNewsletter(
   }
 
   // ─── 2. Query articles ────────────────────────────────────────────────────
-  const content = await queryNewsletterArticles(supabase, hoursBack)
+  let content = await queryNewsletterArticles(supabase, hoursBack)
+
+  // Weekend rescue: 2026-04-12 and 2026-04-13 shipped with 1 and 2 articles
+  // respectively because Saturday/Sunday feeds are quiet. Subscribers got a
+  // thin brief and nearly-empty sections. When the Monday–Friday 26h window
+  // is dry, expand to 48h on weekend days. Cross-edition fingerprinting in
+  // query-articles already suppresses anything we ran in the prior 3
+  // editions, so this cleanly backfills without re-showing Adams-Street-
+  // style cross-day dupes.
+  const dayOfWeek = new Date(`${editionDate}T12:00:00-05:00`).getUTCDay()
+  const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
+  if (isWeekend && content.totalArticles < 5 && hoursBack < 48) {
+    content = await queryNewsletterArticles(supabase, 48)
+  }
 
   // Floor of 1 — a literally-empty brief never ships, but quiet weekend
   // days with even a single story still send. Consistency is the main
@@ -97,15 +110,24 @@ export async function sendDailyNewsletter(
   const subject = buildSubject(content)
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
 
-  // Build individual emails with personalized unsubscribe links
+  // Render the full HTML body once with a sentinel token, then per-subscriber
+  // string-replace the sentinel with the personalized unsubscribe URL. This
+  // is load-bearing at scale: at 97 subs either approach is fine, but
+  // renderNewsletterEmail allocates thousands of strings per call and the
+  // body is otherwise byte-identical across recipients. Keeping the render
+  // O(1) in subscriber count is a cheap win now and prevents the send cron
+  // from running long as the list grows.
+  const UNSUB_SENTINEL = '__FUNDOPS_UNSUB_URL_SENTINEL__'
+  const templateHtml = renderNewsletterEmail({
+    groups: content.groups,
+    totalArticles: content.totalArticles,
+    editionDate,
+    unsubscribeUrl: UNSUB_SENTINEL,
+  })
+
   const emails = subscribers.map((sub) => {
     const unsubscribeUrl = `https://fundopshq.com/api/newsletter/unsubscribe?token=${sub.unsubscribe_token}`
-    const html = renderNewsletterEmail({
-      groups: content.groups,
-      totalArticles: content.totalArticles,
-      editionDate,
-      unsubscribeUrl,
-    })
+    const html = templateHtml.replaceAll(UNSUB_SENTINEL, unsubscribeUrl)
 
     return {
       from: `FundOps Daily <${fromEmail}>`,
@@ -168,12 +190,10 @@ export async function sendDailyNewsletter(
   }
 
   // ─── 5. Store edition record ──────────────────────────────────────────────
-  const placeholderHtml = renderNewsletterEmail({
-    groups: content.groups,
-    totalArticles: content.totalArticles,
-    editionDate,
-    unsubscribeUrl: '#',
-  })
+  // Stored body is the rendered template with the unsub URL replaced by a
+  // harmless anchor — same bytes as what recipients got, minus a per-user
+  // token. Skips a redundant second render.
+  const placeholderHtml = templateHtml.replaceAll(UNSUB_SENTINEL, '#')
 
   const status = totalSent > 0 ? 'sent' : 'failed'
 
