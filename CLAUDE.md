@@ -80,24 +80,35 @@ Path B is the automated path.
 ### Daily flow (`app/api/pipeline/outreach-send`)
 
 ```
-Cron: 0 13 * * 1-5 (13:00 UTC weekdays = 9 AM EDT / 8 AM EST)
+Cron: two-wave split, M-F (vercel.json crons[].path carries ?cap=…):
+  Wave 1: 12:30 UTC (8:30 AM EDT / 7:30 AM EST) — ?cap=25
+  Wave 2: 17:00 UTC (1:00 PM EDT / 12:00 PM EST) — ?cap=50
+  (wave 2 subtracts wave 1's sent count from its 50 cap → up to 25 more)
   1. Auth (isAuthorizedPipelineRequest)
   2. Kill switch (OUTREACH_ENABLED env flag — absolute off)
-  3. Idempotency guard (count of today's cold_outreach_sent rows vs cap)
+  3. Idempotency guard — countTodaysRuns() counts status=sent rows;
+     if >= wave cap, exit cleanly (no-op for already-full waves).
   4. Confirm today's newsletter_editions row is status='sent'
   5. Pull articles (join newsletter_editions.article_ids → news_items)
   6. buildCandidates() — hard blocks A through F
   7. firmLevelDedup() — by lower(firm_name) OR firm_domain, 120d + permanent
   8. Apollo enrichment (verified emails only, no fallback to catch-all)
   9. emailLevelDedup() — vs newsletter_subscribers + cold_outreach_sent
-  10. Cap to OUTREACH_DAILY_CAP (default 10)
+  10. Cap to wave's cap (from ?cap= query param, falls back to OUTREACH_DAILY_CAP)
   11. For each surviving candidate:
         generateHook() (Anthropic Haiku 4.5 — one-sentence news anchor)
         composeEmail() (static template, only firstName + hook vary)
         qualityGate() — 9 hard checks, fail → log skipped, try next
         sendGmail() via raw fetch + OAuth2 refresh + MIME base64url
-        insert into cold_outreach_sent (status='sent')
+        insert into cold_outreach_sent (status='sent', template_variant=v5)
+        sleep 3–7s jitter between sends (human-pacing)
   12. Summary email to dbloomstine@gmail.com
+
+Two-wave rationale: splitting daily volume across AM + PM windows makes
+the send pattern look less robotic to Gmail's spam-heuristics, and caps
+exposure on any single burst. Bumping `OUTREACH_DAILY_CAP` in env does
+nothing — the cron URLs hardcode the caps via `?cap=`. To ramp, edit
+vercel.json.
 ```
 
 **Quality gate checks (all must pass before Gmail send):** ≤110 words,
@@ -177,7 +188,9 @@ GMAIL_OAUTH_REFRESH_TOKEN   — generated once via OAuth Playground, never expir
 GMAIL_SENDER_EMAIL          — defaults to dbloomstine@gmail.com
 OUTREACH_APOLLO_API_KEY     — Apollo.io REST API key (separate from other
                               Apollo keys Danny may use elsewhere)
-OUTREACH_DAILY_CAP          — numeric, default 10, hard cap enforced in code
+OUTREACH_DAILY_CAP          — numeric fallback (default 10) when the cron URL
+                              doesn't pass ?cap=. Production URLs hardcode caps
+                              (see vercel.json). Change there to ramp volume.
 OUTREACH_ENABLED            — string 'true' to activate; any other value = off
 ANTHROPIC_API_KEY           — reused from news-process
 CRON_SECRET + PIPELINE_API_KEY — reused auth via lib/pipeline/auth.ts

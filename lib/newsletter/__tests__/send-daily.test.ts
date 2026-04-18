@@ -47,7 +47,7 @@ describe('buildSubject', () => {
         ]),
       ],
     })
-    expect(subject).toBe('FundOps Daily — Adams Street Partners $7.5B + 4 more')
+    expect(subject).toBe('Adams Street Partners $7.5B · + 4 more moves')
   })
 
   it('drops AUM-leak candidates (>$30B, no fund name) from subject selection', () => {
@@ -140,6 +140,6 @@ describe('buildSubject', () => {
         ]),
       ],
     })
-    expect(subject).toBe('FundOps Daily — 7 stories')
+    expect(subject).toBe('7 moves across private markets')
   })
 })

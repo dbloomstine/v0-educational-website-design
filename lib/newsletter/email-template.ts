@@ -450,7 +450,7 @@ function renderCategory(group: ArticleGroup): string {
   const categoryClass = CATEGORY_CLASS[group.category] ?? 'fops-c-default'
   const articleRows = group.articles.map(renderArticle).join('')
   const count = group.articles.length
-  const countLabel = `${count} ${count === 1 ? 'STORY' : 'STORIES'}`
+  const countLabel = `${count} ${count === 1 ? 'MOVE' : 'MOVES'}`
 
   return `
     <table cellpadding="0" cellspacing="0" border="0" width="100%" class="fops-cat">
@@ -470,36 +470,67 @@ function renderCategory(group: ArticleGroup): string {
 
 // ─── Sponsor marks ─────────────────────────────────────────────────────────
 
-function renderSponsorMark(sponsor: Sponsor, logoHeightPx: number): string {
+// Sponsor cards use a side-by-side layout (logo left, text right) to
+// save vertical space. The logo column is fixed-width; images/PNGs
+// get capped at the column width and scale down with max-width:100%
+// so oversized source logos don't break the grid. Column is sized to
+// accommodate the "FundOpsHQ Live" wordmark on a single line at 18px
+// without wrapping — narrower columns caused the amber "Live" italic
+// to orphan to the next line in Gmail.
+const SPONSOR_LOGO_COL_TOP = 160
+const SPONSOR_LOGO_COL_BOTTOM = 170
+
+function renderSponsorMark(
+  sponsor: Sponsor,
+  logoHeightPx: number,
+  maxWidthPx?: number,
+): string {
   if (sponsor.wordmarkHtml) return sponsor.wordmarkHtml
   if (sponsor.logoUrl) {
-    const width = sponsor.logoWidth ?? logoHeightPx * 5
-    return `<img src="${escapeHtml(sponsor.logoUrl)}" alt="${escapeHtml(sponsor.name)}" width="${width}" style="width:${width}px;height:auto;display:block;" />`
+    let width = sponsor.logoWidth ?? logoHeightPx * 5
+    if (maxWidthPx && width > maxWidthPx) width = maxWidthPx
+    return `<img src="${escapeHtml(sponsor.logoUrl)}" alt="${escapeHtml(sponsor.name)}" width="${width}" style="width:${width}px;height:auto;display:block;max-width:100%;" />`
   }
   return `<span class="fops-serif fops-ink" style="display:inline-block;font-size:${logoHeightPx}px;font-weight:800;letter-spacing:-0.3px;line-height:1;">${escapeHtml(sponsor.name)}</span>`
 }
 
 function renderSponsorCardTop(sponsor: Sponsor, isFirst: boolean): string {
-  const mark = renderSponsorMark(sponsor, 20)
+  const mark = renderSponsorMark(sponsor, 18, SPONSOR_LOGO_COL_TOP)
+  const padTopBottom = isFirst ? '6px 0 14px' : '14px 0'
+  const borderTop = isFirst ? '' : `border-top:1px solid ${HAIRLINE};`
   return `
-    <div style="padding:${isFirst ? '6px 0 18px' : '18px 0'};${isFirst ? '' : `border-top:1px solid ${HAIRLINE};`}">
-      <div style="margin-bottom:10px;">
-        <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;">${mark}</a>
-      </div>
-      <p class="fops-sponsor-blurb">${escapeHtml(sponsor.blurb)}</p>
-      ${sponsor.ctaText ? `<div><a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-outline" style="color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a></div>` : ''}
+    <div style="padding:${padTopBottom};${borderTop}">
+      <table cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tr>
+          <td width="${SPONSOR_LOGO_COL_TOP}" style="width:${SPONSOR_LOGO_COL_TOP}px;vertical-align:top;padding-right:14px;white-space:nowrap;">
+            <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;white-space:nowrap;">${mark}</a>
+          </td>
+          <td style="vertical-align:top;">
+            <p class="fops-sponsor-blurb" style="margin:0 0 8px;">${escapeHtml(sponsor.blurb)}</p>
+            ${sponsor.ctaText ? `<a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-outline" style="color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a>` : ''}
+          </td>
+        </tr>
+      </table>
     </div>`
 }
 
 function renderSponsorCardBottom(sponsor: Sponsor, isFirst: boolean): string {
-  const mark = renderSponsorMark(sponsor, 24)
+  const mark = renderSponsorMark(sponsor, 20, SPONSOR_LOGO_COL_BOTTOM)
+  const padTopBottom = isFirst ? '6px 0 18px' : '18px 0'
+  const borderTop = isFirst ? '' : `border-top:1px solid ${HAIRLINE};`
   return `
-    <div style="padding:${isFirst ? '6px 0 22px' : '22px 0'};${isFirst ? '' : `border-top:1px solid ${HAIRLINE};`}">
-      <div style="margin-bottom:12px;">
-        <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;">${mark}</a>
-      </div>
-      <p class="fops-sponsor-blurb-lg">${escapeHtml(sponsor.blurb)}</p>
-      ${sponsor.ctaText ? `<div><a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-solid" style="color:${CREAM};background-color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a></div>` : ''}
+    <div style="padding:${padTopBottom};${borderTop}">
+      <table cellpadding="0" cellspacing="0" border="0" width="100%">
+        <tr>
+          <td width="${SPONSOR_LOGO_COL_BOTTOM}" style="width:${SPONSOR_LOGO_COL_BOTTOM}px;vertical-align:top;padding-right:16px;white-space:nowrap;">
+            <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;white-space:nowrap;">${mark}</a>
+          </td>
+          <td style="vertical-align:top;">
+            <p class="fops-sponsor-blurb-lg" style="margin:0 0 12px;">${escapeHtml(sponsor.blurb)}</p>
+            ${sponsor.ctaText ? `<a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-solid" style="color:${CREAM};background-color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a>` : ''}
+          </td>
+        </tr>
+      </table>
     </div>`
 }
 
@@ -532,16 +563,62 @@ function renderSponsorBottom(slate: SponsorSlate): string {
     </tr>`
 }
 
+// ─── Preheader (inbox preview text) ────────────────────────────────────────
+// Most important piece of copy in the email after the subject line: it's
+// what Gmail / iOS Mail show as the preview next to the subject. Without an
+// explicit preheader, clients fall back to the first visible text in <body>
+// (in our case the "Forwarded to you?" strip) — a wasted first impression.
+// We build it from the top 2 size-led GP fund events, same rail as
+// buildSubject in send-daily.ts.
+
+function buildPreheader(groups: ArticleGroup[], totalArticles: number): string {
+  const typePriority: Record<string, number> = {
+    fund_close: 3,
+    fund_launch: 2,
+    capital_raise: 1,
+  }
+  type Candidate = { firm: string; sizeStr: string; size: number; priority: number }
+  const candidates: Candidate[] = []
+  for (const group of groups) {
+    if (group.category === 'lp_commitments') continue
+    for (const article of group.articles) {
+      if (!article.firmName) continue
+      const prio = typePriority[article.eventType ?? ''] ?? -1
+      if (prio < 0) continue
+      const size = article.fundSizeUsdMillions ?? 0
+      if (size <= 0) continue
+      if (isLikelyAumLeak(size, article.fundName)) continue
+      const sizeStr =
+        size >= 1000
+          ? `$${(size / 1000).toFixed(1).replace(/\.0$/, '')}B`
+          : `$${size}M`
+      candidates.push({ firm: article.firmName, sizeStr, size, priority: prio })
+    }
+  }
+  candidates.sort((a, b) => b.priority - a.priority || b.size - a.size)
+  const top = candidates.slice(0, 2)
+  if (top.length === 0) {
+    return `${totalArticles} moves across private markets this morning — fund launches, closes, exec changes, regulatory actions.`
+  }
+  const headlines = top.map((c) => `${c.firm} ${c.sizeStr}`).join(' · ')
+  const remaining = totalArticles - top.length
+  return remaining > 0
+    ? `${headlines} · + ${remaining} more moves across private markets.`
+    : `${headlines}.`
+}
+
 // ─── Main render ───────────────────────────────────────────────────────────
 
 export function renderNewsletterEmail(params: TemplateParams): string {
   const {
     groups,
+    totalArticles,
     editionDate,
     unsubscribeUrl,
     sponsorSlate = DEFAULT_SPONSOR_SLATE,
     subscriberCount,
   } = params
+  const preheader = buildPreheader(groups, totalArticles)
   const formattedDate = formatDate(editionDate)
   const mastheadDate = formatMastheadDate(editionDate)
   const categoryBlocks = groups.map(renderCategory).join('')
@@ -549,10 +626,12 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   const sponsorBottom = renderSponsorBottom(sponsorSlate)
 
   // Social-proof eyebrow fragment. Omitted when count is unavailable
-  // (test sends) or absurdly small.
+  // (test sends) or absurdly small. "In private markets" is the
+  // canonical short-form audience phrase (per workspace CLAUDE.md) —
+  // covers GPs, LPs, and fund service providers without overclaiming.
   const socialProof =
     subscriberCount && subscriberCount >= 25
-      ? `READ BY ${subscriberCount} PROS`
+      ? `READ BY ${subscriberCount} IN PRIVATE MARKETS`
       : 'THE DAILY BRIEF'
 
   // Biggest story of the day for the bottom share block. Falls back to
@@ -582,6 +661,14 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   <![endif]-->
 </head>
 <body class="body fops-sans" style="margin:0;padding:0;background-color:${NAVY_DEEP};-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;">
+  <!-- Preheader: inbox preview text. Hidden in the rendered email,
+       shown by Gmail/iOS Mail next to the subject line. Zero-width
+       whitespace padding prevents the next visible text (the
+       "Forwarded to you?" strip) from bleeding into the preview. -->
+  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;visibility:hidden;opacity:0;color:transparent;height:0;width:0;font-size:1px;line-height:1px;">
+    ${escapeHtml(preheader)}
+    &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+  </div>
   <table cellpadding="0" cellspacing="0" border="0" width="100%" class="fops-bg-navy-deep" style="background-color:${NAVY_DEEP};">
     <tr>
       <td align="center" style="padding:24px 10px;">

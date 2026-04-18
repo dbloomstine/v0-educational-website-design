@@ -562,7 +562,7 @@ async function sendSummaryEmail(
     lines.push('')
   }
 
-  lines.push('Next run: tomorrow, 13:00 UTC (weekdays only)')
+  lines.push('Next run: next weekday 12:30 UTC (wave 1, cap 25) and 17:00 UTC (wave 2, cap 50 total).')
   lines.push(`Kill switch: set OUTREACH_ENABLED=false in Vercel env to pause.`)
 
   await sendGmail({

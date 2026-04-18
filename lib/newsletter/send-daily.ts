@@ -230,6 +230,10 @@ export async function sendDailyNewsletter(
  * preferring closes over launches over raises. Excludes LP commitments
  * (which are allocation news, not "fund X landed Y") and exec moves
  * (where the extracted size is usually firm AUM, not a fund size).
+ *
+ * No "FundOps Daily —" prefix — the From: name already carries the
+ * brand, so leading the subject with the news gives the inbox preview
+ * more signal. Format: "{Firm} {size} · + {N} more moves".
  */
 export function buildSubject(content: {
   groups: {
@@ -281,7 +285,7 @@ export function buildSubject(content: {
   }
 
   if (!bestArticle?.firmName) {
-    return `FundOps Daily — ${content.totalArticles} stories`
+    return `${content.totalArticles} moves across private markets`
   }
 
   let sizeHint = ''
@@ -293,7 +297,7 @@ export function buildSubject(content: {
 
   const remaining = content.totalArticles - 1
   if (remaining === 0) {
-    return `FundOps Daily — ${bestArticle.firmName}${sizeHint}`
+    return `${bestArticle.firmName}${sizeHint}`
   }
-  return `FundOps Daily — ${bestArticle.firmName}${sizeHint} + ${remaining} more`
+  return `${bestArticle.firmName}${sizeHint} · + ${remaining} more moves`
 }

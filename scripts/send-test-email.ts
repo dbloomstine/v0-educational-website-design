@@ -3,18 +3,20 @@
  * Send a one-off test email of the FundOps Daily preview to a
  * specific recipient so the design can be validated inside a real
  * email client (Gmail, Apple Mail, Outlook) before pitching to a
- * sponsor. Uses the SAMPLE_SLATE (FundOpsHQ + Fidelity Careers
- * mockup) by default so the recipient sees the co-sponsor layout
- * with real brand marks.
+ * sponsor. Defaults to the production DEFAULT_SPONSOR_SLATE so the
+ * test mirrors what real subscribers see. Set MOCK_SPONSORS=1 to
+ * render a co-sponsor sample (FundOpsHQ + Fidelity Careers) for
+ * sponsor pitches.
  *
  * Usage:
  *   TO=dbloomstine@gmail.com npx tsx --env-file=.env.local scripts/send-test-email.ts
+ *   MOCK_SPONSORS=1 TO=… npx tsx … scripts/send-test-email.ts
  */
 
 import { createClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles } from '../lib/newsletter/query-articles'
 import { renderNewsletterEmail } from '../lib/newsletter/email-template'
-import { FUNDOPSHQ_SPONSOR, type SponsorSlate } from '../lib/newsletter/sponsors'
+import { DEFAULT_SPONSOR_SLATE, FUNDOPSHQ_SPONSOR, type SponsorSlate } from '../lib/newsletter/sponsors'
 
 // Hosted asset URLs. Gmail strips base64 data: URIs in <img src>, so
 // test emails must reference the deployed copies on fundopshq.com.
@@ -80,12 +82,15 @@ async function main() {
     timeZone: 'America/New_York',
   })
 
+  const sponsorSlate =
+    process.env.MOCK_SPONSORS === '1' ? buildSampleSlate() : DEFAULT_SPONSOR_SLATE
+
   const html = renderNewsletterEmail({
     groups: content.groups,
     totalArticles: content.totalArticles,
     editionDate,
     unsubscribeUrl: 'https://fundopshq.com/api/newsletter/unsubscribe?token=TEST',
-    sponsorSlate: buildSampleSlate(),
+    sponsorSlate,
     subscriberCount: subscriberCount ?? undefined,
   })
 
