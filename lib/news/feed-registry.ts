@@ -394,14 +394,19 @@ export const FEED_REGISTRY: FeedSource[] = [
     fetchIntervalMinutes: 30,
     sourceType: 'news_wire',
   },
-  {
-    name: 'PR Newswire Financial',
-    url: 'https://www.prnewswire.com/rss/financial-services-latest-news.rss',
-    tier: 2,
-    categories: ['PE', 'VC', 'credit', 'hedge'],
-    fetchIntervalMinutes: 30,
-    sourceType: 'news_wire',
-  },
+  // PR Newswire Financial — DEACTIVATED 2026-04-18 in DB. Produced 10,812 rows
+  // lifetime, 52% of all ingested volume, but only 0.1% high-signal. The wire-
+  // service keyword gate in ingest-worker.ts already filters ~98% of these
+  // pre-classification, but what survives is still noise. Re-enable in DB
+  // (is_active=true) only if a specific use case emerges.
+  // {
+  //   name: 'PR Newswire Financial',
+  //   url: 'https://www.prnewswire.com/rss/financial-services-latest-news.rss',
+  //   tier: 2,
+  //   categories: ['PE', 'VC', 'credit', 'hedge'],
+  //   fetchIntervalMinutes: 30,
+  //   sourceType: 'news_wire',
+  // },
   {
     name: 'GlobeNewsWire Financial Services',
     url: 'https://www.globenewswire.com/RssFeed/subjectcode/25-Private+Equity/feedTitle/GlobeNewswire+-+Private+Equity',

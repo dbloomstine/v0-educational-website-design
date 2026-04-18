@@ -85,7 +85,7 @@ For each article, return a JSON object with exactly these fields:
   ],
   "firm_name": string | null,      // ALWAYS extract the primary fund manager / GP / investment firm mentioned. For exec moves, the firm they joined or left. For M&A, the acquirer. For market commentary, the most prominent fund manager discussed. Extract aggressively — if ANY fund manager is named in the headline, extract it.
   "fund_name": string | null,      // specific fund vehicle name (e.g. "Apollo Fund X", "Blackstone Real Estate Partners IX"). null if no specific fund named.
-  "fund_size_usd_millions": number | null,  // fund size in USD millions. Convert: $3B = 3000, €500M ≈ 550, £200M ≈ 255. null if not mentioned.
+  "fund_size_usd_millions": number | null,  // size of the SPECIFIC fund vehicle being raised, launched, or closed — in USD millions. Convert: $3B = 3000, €500M ≈ 550, £200M ≈ 255. null if not mentioned, OR if the article is not announcing a specific named fund's capital raise. See FUND SIZE RULES below — this field is frequently confused with firm AUM or sector aggregates, which must be null.
   "original_currency": string | null,      // if fund size was NOT originally in USD, the original currency code (e.g. "EUR", "GBP", "JPY", "CHF"). null if USD or no size mentioned.
   "original_amount_millions": number | null, // the original amount in millions BEFORE USD conversion. e.g. if article says "€500M", this is 500. null if USD or no size.
   "close_type": string | null,     // "final_close" | "first_close" | "interim_close" | "hard_cap" | "target" | "launch" if mentioned
@@ -122,6 +122,18 @@ CRITICAL CLASSIFICATION RULES:
 15. DEAL-FINANCING DEBT IS NOT A CAPITAL RAISE: If the article is about a BANK arranging a LOAN or FACILITY for a PE-backed acquisition (e.g. "RBC leads $1.1bn loan for Energy Capital Partners' deal"), that is NOT article_type: "capital_raise". It is "other" with relevance ≤ 0.2. A "capital raise" means an LP fund vehicle raising commitments from limited partners.
 16. SINGLE-PROPERTY REAL ESTATE FINANCINGS ARE NOT FUND ACTIVITY: "X Capital lends $80M for Baltimore apartment portfolio" is a one-off commercial real estate loan, NOT a fund launch/close/raise. → "other", relevance ≤ 0.1.
 17. GOVERNMENT / MUNICIPAL / NGO FUND ANNOUNCEMENTS: Articles about government ministry fund launches (e.g. "Ministry of Finance launches Regional Connectivity Fund"), municipal programs (e.g. "FCM welcomes launch of Build Communities Strong Fund"), or federation/association announcements about public infrastructure programs are NOT private fund activity. → "other", relevance ≤ 0.1.
+
+FUND SIZE RULES (CRITICAL — the classifier has historically leaked firm AUM and sector totals into this field, which then ran as newsletter subject lines):
+A. fund_size_usd_millions must describe a SPECIFIC named fund vehicle raising, launching, or closing capital. If the article is not about a specific fund's capital event, return null — even if a dollar figure is mentioned.
+B. Firm AUM is NEVER a fund size. "Ares has $623B in AUM", "Nest manages £60bn", "BlackRock's $10T platform" → fund_size_usd_millions: null. The total assets a firm manages is not the size of any one fund.
+C. Sector / market aggregates are NEVER a fund size. "$1.8T private credit market", "$86B in hedge fund inflows", "$400B BDC sector", "$200bn of private debt raised this year" → fund_size_usd_millions: null. These are industry-wide totals, not a single fund.
+D. LP / pension fund total AUM is NEVER a fund size. "NYC's $316B system", "CalPERS' $500B portfolio" → fund_size_usd_millions: null. An LP's total pool is not a fund vehicle.
+E. By event type — for these article_types, fund_size_usd_millions should almost always be null:
+   - market_commentary, industry_analysis, press_release, award, other: null unless the article is ALSO announcing a specific named fund close/launch.
+   - regulatory_action, legal_alert: null unless the action targets a specific named fund vehicle with a stated size.
+   - executive_hire, executive_change, executive_departure: null. Do NOT put the firm's AUM here. A person joining Ares does not "have" Ares' $623B.
+F. Acquisitions / M&A — fund_size_usd_millions holds the DEAL VALUE (purchase price), which is acceptable for our pipeline. "EQT $11bn takeover of Intertek" → 11000.
+G. LP commitments (article_type: capital_raise where firm_name is a pension/LP) — fund_size_usd_millions is the COMMITMENT AMOUNT, not the LP's total AUM. "Arkansas Teachers commits $900M to alternatives" → 900.
 
 Return ONLY a JSON array in the same order as input. No markdown, no explanation.`;
 
