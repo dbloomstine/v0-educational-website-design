@@ -80,7 +80,7 @@ Path B is the automated path.
 ### Daily flow (`app/api/pipeline/outreach-send`)
 
 ```
-Cron: two-wave split, M-F (vercel.json crons[].path carries ?cap=…):
+Cron: two-wave split, 7 days/week (vercel.json crons[].path carries ?cap=…):
   Wave 1: 12:30 UTC (8:30 AM EDT / 7:30 AM EST) — ?cap=25
   Wave 2: 17:00 UTC (1:00 PM EDT / 12:00 PM EST) — ?cap=50
   (wave 2 subtracts wave 1's sent count from its 50 cap → up to 25 more)
