@@ -1,23 +1,30 @@
 /**
  * Email template + quality gate for the outreach pipeline.
  *
- * v4 template (2026-04-15 iteration #2, after two failure modes hit
- * production on the first live test):
+ * v5 template (2026-04-18):
  *
+ *   - Drops the 2-line "Founder & Host, FundOpsHQ" signature. Personal-
+ *     style cold outreach converts better when it looks like a 1:1 note,
+ *     not a marketing signature block. Signature is just "Danny" now.
+ *   - Hook in the body is now story-type-specific, built from structured
+ *     extracted_data (fund name, size, event type). Pure template
+ *     substitution — no LLM, inherits v4's anti-hallucination posture.
+ *   - Subscribe URL carries a base64(email) query param so clicking
+ *     lands on the homepage with the form pre-filled and a one-click
+ *     confirm button.
+ *
+ * v4 history (2026-04-15, kept for context):
  *   1. H.I.G. / Infinedi collision — stale Apollo record sent a hook
  *      about one firm to a contact at a different firm with the same
  *      person name. Fixed at the Apollo layer and here by dropping the
  *      hook parameter entirely.
- *
  *   2. Stellex "falling short of target" — Haiku-generated hook was
- *      factually true but read as negative framing ("closed $2.37B,
- *      falling short of $2.5B target"). Killed the class of risk by
- *      removing the LLM entirely.
+ *      factually true but read as negative framing. Killed the class of
+ *      risk by removing the LLM entirely.
  *
- * v4 is fully STATIC. Zero LLM. Every email is identical except the
- * first name and firm name. No hallucinated dollar amounts, no wrong-
- * firm cross-wiring, no em-dash surprises (line-break greeting avoids
- * Gmail's web renderer visually "improving" ` - ` to ` — `).
+ * v5 remains fully STATIC. No LLM. All hook generation is switch-
+ * statement over extracted_data fields the classifier already populated
+ * and the AUM-leak safety rail has already cleaned.
  *
  * Apollo still provides the person + firm. Everything else is template
  * substitution.
@@ -27,23 +34,139 @@ import type { Article, ComposedEmail, QualityGateResult } from './types'
 import type { NewsletterPayload } from './newsletter-fetch'
 import { shortenFirmName } from './candidates'
 
+/**
+ * Version tag stamped on every row we insert into cold_outreach_sent so
+ * the post-change reply rate can be cleanly separated from the pre-v5
+ * baseline. If we ever run a true A/B, add more values here and split
+ * the candidate pool before composition.
+ */
+export const TEMPLATE_VARIANT = 'forward_v5'
+
+/**
+ * Max fund_size_usd_millions we trust as a real fund size. Mirrors the
+ * safety rail in lib/newsletter/query-articles.ts (isLikelyAumLeak).
+ * Duplicated here to avoid cross-dependency between outreach and
+ * newsletter libs. Classifier backfill on 2026-04-18 cleaned historical
+ * leaks in the DB, and the prompt rewrite prevents new ones — but
+ * belt-and-suspenders: if a value slips through, we don't want it in
+ * the hook of an email going to the firm's staff.
+ */
+const FUND_SIZE_SANITY_CEILING_MILLIONS = 30000
+
+function formatFundSize(millions: number | null | undefined): string | null {
+  if (!millions || millions <= 0) return null
+  if (millions >= 1000) {
+    return `$${(millions / 1000).toFixed(1).replace(/\.0$/, '')}B`
+  }
+  return `$${Math.round(millions)}M`
+}
+
+/**
+ * Build a one-line hook describing what happened to the firm today.
+ * Source of specificity is the classifier's extracted_data — no LLM.
+ * Always returns a safe, generic fallback if the structured data is
+ * insufficient to name the event concretely.
+ */
+function buildStoryHook(article: Article, firmShort: string): string {
+  const evt = (article.eventType ?? article.articleType ?? '').toLowerCase()
+
+  // Drop any fund-size that smells like an AUM leak (belt-and-suspenders
+  // on top of the backfilled DB + prompt rewrite).
+  const rawSize = article.fundSizeUsdMillions
+  const isLikelyAumLeak =
+    !!rawSize && rawSize > FUND_SIZE_SANITY_CEILING_MILLIONS && !article.fundName
+  const size = isLikelyAumLeak ? null : formatFundSize(rawSize)
+
+  // Prefer a concrete fund label when present: "Fund VII" > "Apollo
+  // Infrastructure Fund III" > generic "a new fund". Skip the label if
+  // it's just the firm name again ("Apollo" for firm=Apollo). Strip the
+  // firm name from the front of the fund name when the classifier
+  // prefixed it ("Partners Group Secondaries VIII" + firmShort=Partners
+  // Group → just "Secondaries VIII" in the hook).
+  let fundLabel: string | null = null
+  if (article.fundName) {
+    let fn = article.fundName.trim()
+    const firmFull = article.firmName?.trim() ?? ''
+    if (firmFull && fn.toLowerCase().startsWith(firmFull.toLowerCase() + ' ')) {
+      fn = fn.slice(firmFull.length).trim()
+    } else if (firmShort && fn.toLowerCase().startsWith(firmShort.toLowerCase() + ' ')) {
+      fn = fn.slice(firmShort.length).trim()
+    }
+    if (fn && fn.toLowerCase() !== firmShort.toLowerCase()) {
+      fundLabel = fn
+    }
+  } else if (article.fundNumber) {
+    fundLabel = `Fund ${article.fundNumber}`
+  }
+
+  switch (evt) {
+    case 'fund_close':
+      if (fundLabel && size) return `Saw ${firmShort} close ${fundLabel} at ${size} today`
+      if (size) return `Saw ${firmShort} wrap a ${size} close today`
+      if (fundLabel) return `Saw ${firmShort}'s ${fundLabel} close today`
+      return `Saw ${firmShort} in today's FundOps Daily`
+
+    case 'fund_launch':
+      if (fundLabel && size) return `Saw ${firmShort} launch ${fundLabel} targeting ${size} today`
+      if (fundLabel) return `Saw ${firmShort} launch ${fundLabel} today`
+      if (size) return `Saw ${firmShort} launch a ${size} fund today`
+      return `Saw ${firmShort} launch a new fund today`
+
+    case 'capital_raise':
+      if (fundLabel && size) return `Saw ${firmShort} raise ${size} for ${fundLabel} today`
+      if (size) return `Saw ${firmShort}'s ${size} raise today`
+      if (fundLabel) return `Saw ${firmShort}'s ${fundLabel} raise today`
+      return `Saw ${firmShort}'s fundraise in today's FundOps Daily`
+
+    case 'acquisition':
+    case 'merger':
+      if (size) return `Saw ${firmShort}'s ${size} deal today`
+      return `Saw ${firmShort}'s deal in today's FundOps Daily`
+
+    case 'regulatory_action':
+      return `Saw the regulatory news on ${firmShort} today`
+
+    default:
+      return `Saw ${firmShort} in today's FundOps Daily`
+  }
+}
+
+/**
+ * Encode the recipient email as a URL-safe base64 deep-link parameter.
+ * The homepage's HeroSubscribe reads ?e=<token>, decodes, and pre-fills
+ * the subscribe form + swaps the button to a one-click "Subscribe <email>".
+ * Using base64url (not raw email) to keep the URL clean and keep emails
+ * with special chars (+, %) out of the visible URL in link previews.
+ */
+function encodeEmailForDeepLink(email: string): string {
+  // Node 18+ supports the `base64url` encoding directly.
+  return Buffer.from(email, 'utf8').toString('base64url')
+}
+
+function subscribeDeepLink(recipientEmail: string): string {
+  return `fundopshq.com/?e=${encodeEmailForDeepLink(recipientEmail)}`
+}
+
 export function composeEmail(params: {
   firstName: string
   firmName: string
+  recipientEmail: string
+  article: Article
 }): ComposedEmail {
-  const { firstName, firmName } = params
+  const { firstName, firmName, recipientEmail, article } = params
   const firmShort = shortenFirmName(firmName)
   const subject = `Covered ${firmShort} today`
+  const hook = buildStoryHook(article, firmShort)
+  const deepLink = subscribeDeepLink(recipientEmail)
 
   const body = [
     `Hi ${firstName},`,
     '',
-    `Noticed an article about ${firmShort} today and figured I'd reach out. It made today's edition of FundOps Daily, my morning brief for GPs, LPs, and fund service providers.`,
+    `${hook}. It's my morning brief for GPs, LPs, and fund service providers in private markets.`,
     '',
-    `If you're interested in seeing more news like this or subscribing to the newsletter, you can visit fundopshq.com.`,
+    `If you want it daily, one-click subscribe at ${deepLink}.`,
     '',
     'Danny',
-    'Founder & Host, FundOpsHQ',
   ].join('\n')
 
   return { subject, body }
@@ -69,8 +192,10 @@ export function qualityGate(body: string, subject: string): QualityGateResult {
     return { ok: false, reason: 'missing_link' }
   }
 
-  // 3. Required content — signature block with title.
-  if (!body.includes('Founder & Host, FundOpsHQ')) {
+  // 3. Required content — "Danny" signature on its own line. v5 dropped
+  // the "Founder & Host, FundOpsHQ" second line to read as a 1:1 note
+  // rather than a marketing signature block.
+  if (!/\nDanny\s*$/.test(body)) {
     return { ok: false, reason: 'missing_signature' }
   }
 
@@ -125,8 +250,9 @@ export function composeForwardEmail(params: {
   firmName: string
   article: Article
   newsletter: NewsletterPayload
+  recipientEmail: string
 }): ComposedEmail {
-  const { firstName, firmName, article, newsletter } = params
+  const { firstName, firmName, article, newsletter, recipientEmail } = params
   const firmShort = shortenFirmName(firmName)
 
   // Derive the newsletter section the firm appears in, so the intro
@@ -134,6 +260,15 @@ export function composeForwardEmail(params: {
   // the section can't be determined, fall back to no parenthetical.
   const section = sectionForArticle(article)
   const sectionParenthetical = section ? ` (${section} section)` : ''
+
+  // Story-type-specific hook from extracted_data — no LLM. See
+  // buildStoryHook for the full switch table.
+  const hook = buildStoryHook(article, firmShort)
+
+  // Homepage deep-link with recipient email pre-encoded, so clicking
+  // lands in a pre-filled one-click subscribe state.
+  const subscribeUrl = subscribeDeepLink(recipientEmail)
+  const subscribeUrlWithScheme = `https://${subscribeUrl}`
 
   // Subject: firm-specific rather than echoing the newsletter's generic
   // subject. The newsletter's own subject line features whichever story
@@ -144,17 +279,14 @@ export function composeForwardEmail(params: {
   const subject = `Fwd: Covered ${firmShort} in FundOps Daily today`
 
   // ─── text/plain version ───────────────────────────────────────────
-  // Three sentences, one paragraph + signature. No em dashes (Danny's
-  // rule). Drops the tagline ("my morning brief for GPs, LPs, and fund
-  // service providers") because the newsletter's own sponsor block
-  // below already explains the product.
+  // Two-sentence intro + signature. v5: specific hook replaces the
+  // generic "came up" line; signature collapses to just "Danny".
   const textIntro = [
     `Hi ${firstName},`,
     '',
-    `${firmShort} came up in today's FundOps Daily${sectionParenthetical}. Forwarding the full brief so you can see it. If this is up your alley, you can subscribe daily at fundopshq.com.`,
+    `${hook}${sectionParenthetical}. Forwarding the full brief so you can see it. If this is up your alley, one-click subscribe at ${subscribeUrl}.`,
     '',
     'Danny',
-    'Founder & Host, FundOpsHQ',
     '',
     '---------- Forwarded message ----------',
     `From: ${newsletter.fromName} <${newsletter.fromEmail}>`,
@@ -181,8 +313,8 @@ export function composeForwardEmail(params: {
     "BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;" +
     'font-size:15px;line-height:1.55;color:#202124;">' +
     `<p style="margin:0 0 14px 0;">Hi ${escapeHtml(firstName)},</p>` +
-    `<p style="margin:0 0 14px 0;">${escapeHtml(firmShort)} came up in today's FundOps Daily${escapeHtml(sectionParenthetical)}. Forwarding the full brief so you can see it. If this is up your alley, you can subscribe daily at <a href="https://fundopshq.com" style="color:#1a73e8;text-decoration:underline;">fundopshq.com</a>.</p>` +
-    '<p style="margin:0 0 18px 0;">Danny<br>Founder &amp; Host, FundOpsHQ</p>' +
+    `<p style="margin:0 0 14px 0;">${escapeHtml(hook)}${escapeHtml(sectionParenthetical)}. Forwarding the full brief so you can see it. If this is up your alley, <a href="${escapeHtml(subscribeUrlWithScheme)}" style="color:#1a73e8;text-decoration:underline;">one-click subscribe here</a>.</p>` +
+    '<p style="margin:0 0 18px 0;">Danny</p>' +
     '<p style="margin:0;color:#80868b;font-size:12px;font-family:monospace;">' +
     `---------- Forwarded message ----------<br>` +
     `From: ${escapeHtml(newsletter.fromName)} &lt;${escapeHtml(newsletter.fromEmail)}&gt;<br>` +
@@ -340,11 +472,14 @@ export function qualityGateForward(
     return { ok: false, reason: 'missing_link' }
   }
 
-  // 5. Signature block present.
-  if (!body.includes('Founder & Host, FundOpsHQ')) {
+  // 5. Signature present — v5 just "Danny" on its own line (drops the
+  // title block which read like a marketing footer in 1:1 notes).
+  // Text body: "Danny" on a line followed by a forwarded-message marker.
+  if (!/\nDanny\n/.test(body)) {
     return { ok: false, reason: 'missing_signature' }
   }
-  if (html && !html.includes('Founder &amp; Host, FundOpsHQ')) {
+  // HTML intro paragraph: `<p ...>Danny</p>`.
+  if (html && !/>Danny<\/p>/.test(html)) {
     return { ok: false, reason: 'missing_signature' }
   }
 

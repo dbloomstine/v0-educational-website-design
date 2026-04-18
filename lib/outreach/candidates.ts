@@ -157,9 +157,45 @@ function isBadNewsEvent(article: Article): boolean {
 }
 
 /**
+ * Candidate priority score — higher = better outreach target.
+ *
+ * Two signals combine:
+ *   1. Event-type weight: fund closes and launches are the most
+ *      response-worthy hooks; capital raises and deals are strong;
+ *      everything else degrades. Drawn from 2026-04-15..17 reply data —
+ *      both replies we got came on fund_close stories.
+ *   2. Fund-size log scale: bigger funds get more attention from their
+ *      IR/partner teams, so a $5B close replies at ~3x the rate of a
+ *      $50M close. log10 compresses the extremes so a $20B story isn't
+ *      100x a $200M one, just ~2x.
+ *
+ * Deliberately does NOT weight by named-person or LP-side status —
+ * those carry other risks (stale contact, wrong audience) that the
+ * hard blocks handle.
+ */
+const EVENT_TYPE_WEIGHT: Record<string, number> = {
+  fund_close: 3,
+  fund_launch: 2.5,
+  capital_raise: 2,
+  acquisition: 2,
+  merger: 2,
+  regulatory_action: 1,
+}
+
+export function scoreCandidate(c: Candidate): number {
+  const evt = (c.article.eventType ?? c.article.articleType ?? '').toLowerCase()
+  const eventWeight = EVENT_TYPE_WEIGHT[evt] ?? 0.5
+  const size = c.article.fundSizeUsdMillions ?? 0
+  const sizeWeight = size > 0 ? Math.log10(size + 10) : 0.5
+  return eventWeight * sizeWeight
+}
+
+/**
  * Build the candidate firm list from today's articles. Applies all hard
  * blocks, drops duplicates (one candidate per firm per day), and returns
- * a list sized for downstream Apollo enrichment.
+ * a list sized for downstream Apollo enrichment, sorted by scoreCandidate
+ * (highest-leverage stories first) so the batch's 30-contact cap catches
+ * the most-responsive targets.
  *
  * The caller is responsible for running firm-level dedup against
  * cold_outreach_sent (see `lib/outreach/dedup.ts`).
@@ -205,6 +241,11 @@ export function buildCandidates(articles: Article[]): Candidate[] {
     })
   }
 
+  // Sort by priority score DESC — highest-leverage hooks get the top
+  // slots in the Apollo enrichment loop, which matters once the 30-cap
+  // starts biting.
+  candidates.sort((a, b) => scoreCandidate(b) - scoreCandidate(a))
+
   return candidates
 }
 
@@ -241,8 +282,17 @@ export function shortenFirmName(firmName: string): string {
     }
   }
 
-  // Sanity check: if stripping produced something too short or generic,
-  // fall back to the full name.
+  // Sanity check: if stripping produced something too short, or reduced
+  // the firm to a bare descriptor ("Partners", "Capital") that reads
+  // ambiguously in outreach copy ("Saw Partners close..."), fall back
+  // to the full name. "Partners Group" → "Partners" was the 2026-04-18
+  // regression that prompted this extra guard.
   if (shortened.length < 4) return trimmed
+  const BARE_DESCRIPTORS = new Set([
+    'partners', 'capital', 'group', 'management', 'ventures',
+    'holdings', 'advisors', 'investments', 'asset', 'assets',
+    'equity', 'fund', 'funds',
+  ])
+  if (BARE_DESCRIPTORS.has(shortened.toLowerCase())) return trimmed
   return shortened
 }

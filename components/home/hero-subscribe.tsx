@@ -5,11 +5,47 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { CheckCircle2, Loader2, ArrowRight, Mail } from 'lucide-react'
 
+/**
+ * Decode the `?e=<base64url>` query param that the outreach pipeline
+ * appends to the subscribe deep-link. Returns null on any failure —
+ * invalid base64, non-email string, garbage from a mangled share — so
+ * the form falls back to the empty state gracefully.
+ */
+function decodePrefillEmail(): string | null {
+  if (typeof window === 'undefined') return null
+  try {
+    const token = new URLSearchParams(window.location.search).get('e')
+    if (!token) return null
+    // Browser atob uses standard base64. Convert base64url back (- → +, _ → /).
+    const b64 = token.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = b64 + '==='.slice(0, (4 - (b64.length % 4)) % 4)
+    const decoded = atob(padded)
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(decoded)) return null
+    return decoded
+  } catch {
+    return null
+  }
+}
+
 export function HeroSubscribe() {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState('')
+  const [prefilled, setPrefilled] = useState(false)
   const emailInputRef = useRef<HTMLInputElement>(null)
+
+  // On mount: if ?e=<base64url-email> is in the URL, pre-fill the form
+  // and flip into a one-click state. This is the landing for clicks
+  // from the outreach pipeline (see subscribeDeepLink in
+  // lib/outreach/template.ts) — the recipient sees their own email in
+  // the input and a button that says "Subscribe you@example.com".
+  useEffect(() => {
+    const prefill = decodePrefillEmail()
+    if (prefill) {
+      setEmail(prefill)
+      setPrefilled(true)
+    }
+  }, [])
 
   // Focus the email input whenever the URL lands on #subscribe — covers cross-page
   // navigation from /about etc. and hash-change clicks from the header/footer.
@@ -272,6 +308,11 @@ export function HeroSubscribe() {
                     >
                       {status === 'loading' ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : prefilled && email ? (
+                        <>
+                          Subscribe {email}
+                          <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                        </>
                       ) : (
                         <>
                           Subscribe Free

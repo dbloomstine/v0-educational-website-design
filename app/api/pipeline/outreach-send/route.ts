@@ -33,6 +33,7 @@ import {
   qualityGate,
   composeForwardEmail,
   qualityGateForward,
+  TEMPLATE_VARIANT,
 } from '@/lib/outreach/template'
 import { fetchTodaysNewsletter } from '@/lib/outreach/newsletter-fetch'
 import type { NewsletterPayload } from '@/lib/outreach/newsletter-fetch'
@@ -356,6 +357,7 @@ export async function GET(req: Request) {
           firmName: contact.firmName,
           article: contact.article,
           newsletter,
+          recipientEmail: contact.email,
         })
         subject = composed.subject
         body = composed.body
@@ -368,6 +370,8 @@ export async function GET(req: Request) {
         const composed = composeEmail({
           firstName: contact.firstName,
           firmName: contact.firmName,
+          recipientEmail: contact.email,
+          article: contact.article,
         })
         subject = composed.subject
         body = composed.body
@@ -417,6 +421,7 @@ export async function GET(req: Request) {
           status: 'sent',
           sent_at: new Date().toISOString(),
           notes: `auto-sent via outreach-send cron, run=${startedAt}`,
+          template_variant: TEMPLATE_VARIANT,
         })
 
         // Throttle between successful sends: random 3-7 second delay
@@ -502,6 +507,7 @@ export async function GET(req: Request) {
       draft_id: null,
       status: 'skipped',
       notes: `${reason} | run=${startedAt}`,
+      template_variant: TEMPLATE_VARIANT,
     })
   }
 }
