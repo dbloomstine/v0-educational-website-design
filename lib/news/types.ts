@@ -20,7 +20,6 @@ export interface NewsArticle {
   firmDomain: string | null
   originalCurrency: string | null
   originalAmountMillions: number | null
-  storyClusterId: string | null
 }
 
 export interface ArticleGroup {

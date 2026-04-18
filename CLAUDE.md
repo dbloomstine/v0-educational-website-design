@@ -232,7 +232,7 @@ with the server-side rules — needs a patch before the next manual run.
 | `feedback`               | Inline feedback submissions                                           |
 | `cold_outreach_sent`     | Append-only log of outreach drafts + sends (Path B + grow-newsletter) |
 
-`news_items` still carries orphan FK columns (`cluster_id`, `story_cluster_id`, `gp_id`, `fund_id`, `firm_id`, `embedding`) from the old architecture. Nothing populates them, so they're always null. `lib/news/api.ts` has a Layer-1 clustering path that keys on `story_cluster_id` but it's effectively dormant — all feed grouping runs through the Layer-2 path that uses `isSameStory`.
+`news_items` still carries orphan FK columns (`cluster_id`, `gp_id`, `fund_id`, `firm_id`, `embedding`) from the old architecture. Nothing populates them, so they're always null. (The `story_cluster_id` column and its dormant Layer-1 clustering path were dropped 2026-04-18 — all feed grouping now runs through `isSameStory` in `lib/news/story-dedup.ts`.)
 
 ## `lib/` layout
 

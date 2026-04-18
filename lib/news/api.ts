@@ -55,7 +55,7 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
   // --- Main articles query ---
   let query = getSupabaseAdmin()
     .from('news_items')
-    .select('id, title, source_url, source_name, published_date, article_type, fund_categories, is_high_signal, relevance_score, tldr, extracted_data, event_type, story_cluster_id')
+    .select('id, title, source_url, source_name, published_date, article_type, fund_categories, is_high_signal, relevance_score, tldr, extracted_data, event_type')
     .eq('classification_status', 'complete')
     .eq('is_duplicate', false)
     .neq('title', '')
@@ -153,28 +153,11 @@ function toStoryCandidate(a: NewsArticle): StoryCandidate {
 }
 
 function buildArticleGroups(articles: NewsArticle[]): ArticleGroup[] {
-  // Layer 1: group by story_cluster_id when populated upstream.
-  const clusterMap = new Map<string, NewsArticle[]>()
-  const assigned = new Set<string>()
-
-  for (const article of articles) {
-    if (article.storyClusterId) {
-      const list = clusterMap.get(article.storyClusterId)
-      if (list) {
-        list.push(article)
-      } else {
-        clusterMap.set(article.storyClusterId, [article])
-      }
-      assigned.add(article.id)
-    }
-  }
-
-  // Layer 2: group unclustered articles using the shared story-dedup helper.
-  // This handles firm-name normalization, fund-size tolerance bands, title
-  // similarity, and exec-move person matching — same logic as the newsletter.
+  // Group articles using the shared story-dedup helper. Handles firm-name
+  // normalization, fund-size tolerance bands, title similarity, and exec-move
+  // person matching — same logic as the newsletter.
   const stories: NewsArticle[][] = []
   for (const article of articles) {
-    if (assigned.has(article.id)) continue
     const candidate = toStoryCandidate(article)
     let matched = false
     for (const story of stories) {
@@ -187,24 +170,11 @@ function buildArticleGroups(articles: NewsArticle[]): ArticleGroup[] {
     if (!matched) {
       stories.push([article])
     }
-    assigned.add(article.id)
   }
 
   const groups: ArticleGroup[] = []
 
-  // Layer 1 clusters
-  for (const [, clusterArticles] of clusterMap) {
-    const sorted = [...clusterArticles].sort(
-      (a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)
-    )
-    groups.push({
-      primaryArticle: sorted[0],
-      relatedArticles: sorted.slice(1),
-      clusterSize: sorted.length,
-    })
-  }
-
-  // Layer 2 story groups — primary is highest relevance
+  // Story groups — primary is highest relevance
   for (const story of stories) {
     const sorted = [...story].sort(
       (a, b) => (b.relevanceScore ?? 0) - (a.relevanceScore ?? 0)
@@ -252,7 +222,6 @@ function mapRowToArticle(row: any): NewsArticle {
     firmDomain: (extractedData?.firm_domain as string) ?? null,
     originalCurrency: (extractedData?.original_currency as string) ?? null,
     originalAmountMillions: (extractedData?.original_amount_millions as number) ?? null,
-    storyClusterId: row.story_cluster_id ?? null,
   }
 }
 
