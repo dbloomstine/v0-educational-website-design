@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
-import { ArrowRight, Mail, Check, Newspaper } from 'lucide-react'
+import { ArrowRight, Mail, Check, Newspaper, Download } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Sponsor FundOps Daily | FundOpsHQ',
@@ -296,6 +296,15 @@ export default function SponsorPage() {
                 >
                   <Newspaper className="h-4 w-4" />
                   See a sample
+                </a>
+                <a
+                  href="/sponsor-fundops-daily.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-sm border-2 border-foreground/20 bg-card/40 px-6 py-3.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-foreground transition-colors hover:border-foreground/40 hover:bg-card/70"
+                >
+                  <Download className="h-4 w-4" />
+                  Download PDF
                 </a>
               </div>
             </div>
