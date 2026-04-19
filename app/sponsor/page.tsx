@@ -96,8 +96,8 @@ const TIERS = [
     no: '01',
     name: 'One week',
     cadence: '7 editions',
-    price: '$500',
-    perEdition: '$71 / edition',
+    price: '$2,000',
+    perEdition: '$286 / edition',
     descriptor: 'Seven consecutive mornings. Good for testing a launch or an offer.',
     highlights: [
       'Logo + 60 words + CTA link, top AND bottom of every edition',
@@ -110,9 +110,9 @@ const TIERS = [
     no: '02',
     name: 'One month',
     cadence: '30 editions',
-    price: '$1,500',
-    perEdition: '$50 / edition',
-    descriptor: 'Thirty consecutive mornings. Saves $500 vs. weekly.',
+    price: '$6,000',
+    perEdition: '$200 / edition',
+    descriptor: 'Thirty consecutive mornings. Saves $2,000 vs. weekly.',
     highlights: [
       'Logo + 60 words + CTA link, top AND bottom of every edition',
       'Shared slate (max 5 sponsors) — locked dates',
@@ -124,9 +124,9 @@ const TIERS = [
     no: '03',
     name: 'One quarter',
     cadence: '90 editions',
-    price: '$4,000',
-    perEdition: '$44 / edition',
-    descriptor: 'Ninety consecutive mornings. Saves $2,000 vs. monthly.',
+    price: '$15,000',
+    perEdition: '$167 / edition',
+    descriptor: 'Ninety consecutive mornings. Saves $3,000 vs. monthly.',
     highlights: [
       'Logo + 60 words + CTA link, top AND bottom of every edition',
       'Shared slate (max 5 sponsors) — locked dates',
@@ -167,7 +167,7 @@ const FAQS = [
   },
   {
     q: 'Is there an exclusive / single-sponsor option?',
-    a: 'Not right now. Keeping the slate shared lets the launch rates stay this low. If your firm needs solo placement, email us and we will quote it separately.',
+    a: 'Not right now. The shared slate keeps every card at the top AND bottom of every send, which is where attention actually lives. If your firm needs solo placement, email us and we will quote it separately.',
   },
   {
     q: 'Can I swap creative mid-run?',
@@ -494,8 +494,8 @@ export default function SponsorPage() {
                 </span>
               </h2>
               <p className="mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-                Launch rates. These go up as the list grows. One card at the top AND one at the
-                bottom of every edition. Shared slate, up to five sponsors per send.
+                One card at the top AND one at the bottom of every edition. Shared slate, up to
+                five sponsors per send. No single-sponsor exclusivity.
               </p>
             </div>
 
@@ -580,40 +580,25 @@ export default function SponsorPage() {
               Half-year and year-long packages available. Email for quote.
             </p>
 
-            {/* Launch-rates disclosure — anchors future increases as expected, not a rug-pull */}
-            <div className="mt-12 grid gap-6 lg:grid-cols-2 lg:gap-8">
-              <div className="border-l-2 border-amber-400/60 bg-card/30 p-6 sm:p-8">
-                <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400">
-                  A note on launch rates
-                </p>
-                <p className="text-base text-foreground/90 leading-relaxed">
-                  These are the numbers while the list is new — 98 subscribers, growing weekly.
-                  As the audience grows, rates grow with it. Sponsors who come in now lock their
-                  rate for the full run and get first refusal on renewals before new pricing
-                  takes effect. We&rsquo;d rather tell you that up front than surprise you later.
-                </p>
-              </div>
-
-              {/* Trust box — sets editorial boundaries visibly, not buried in FAQ */}
-              <div className="border-l-2 border-foreground/40 bg-card/30 p-6 sm:p-8">
-                <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-foreground/70">
-                  What sponsorship is not
-                </p>
-                <ul className="space-y-2 text-base text-foreground/90 leading-relaxed">
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40" />
-                    <span>No sponsored articles. Editorial coverage is never for sale.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40" />
-                    <span>No influence on what we cover, how we frame it, or who we quote.</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40" />
-                    <span>No sponsor-only emails or dedicated sends. Daily cadence, shared slate.</span>
-                  </li>
-                </ul>
-              </div>
+            {/* Trust box — sets editorial boundaries visibly, not buried in FAQ */}
+            <div className="mt-12 border-l-2 border-foreground/40 bg-card/30 p-6 sm:p-8">
+              <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-foreground/70">
+                What sponsorship is not
+              </p>
+              <ul className="space-y-2 text-base text-foreground/90 leading-relaxed max-w-3xl">
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40" />
+                  <span>No sponsored articles. Editorial coverage is never for sale.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40" />
+                  <span>No influence on what we cover, how we frame it, or who we quote.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40" />
+                  <span>No sponsor-only emails or dedicated sends. Daily cadence, shared slate.</span>
+                </li>
+              </ul>
             </div>
           </div>
         </section>

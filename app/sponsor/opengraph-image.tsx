@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og'
 
 export const alt =
-  'Sponsor the morning brief for private markets — FundOps Daily launch rates'
+  'Sponsor the morning brief for private markets — FundOps Daily rate card'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -109,7 +109,7 @@ export default async function OG() {
           <div style={{ display: 'flex', gap: 56 }}>
             <Stat kpi="98" label="Confirmed subscribers" />
             <Stat kpi="56%" label="7-day open rate" />
-            <Stat kpi="$500" label="Launch rate / week" />
+            <Stat kpi="$2K" label="Starts at / week" />
           </div>
           <div
             style={{
