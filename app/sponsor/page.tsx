@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
-import { ArrowRight, Mail, Check, Newspaper, Download } from 'lucide-react'
+import { ArrowRight, Mail, Check, Newspaper } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Sponsor FundOps Daily | FundOpsHQ',
@@ -297,15 +297,6 @@ export default function SponsorPage() {
                   <Newspaper className="h-4 w-4" />
                   See a sample
                 </a>
-                <a
-                  href="/sponsor-fundops-daily.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-sm border-2 border-foreground/20 bg-card/40 px-6 py-3.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-foreground transition-colors hover:border-foreground/40 hover:bg-card/70"
-                >
-                  <Download className="h-4 w-4" />
-                  Download PDF
-                </a>
               </div>
             </div>
           </div>
@@ -578,6 +569,19 @@ export default function SponsorPage() {
             <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/50">
               Half-year and year-long packages available. Email for quote.
             </p>
+
+            {/* Launch-rates disclosure — anchors future increases as expected, not a rug-pull */}
+            <div className="mt-12 border-l-2 border-amber-400/60 bg-card/30 p-6 sm:p-8">
+              <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400">
+                A note on launch rates
+              </p>
+              <p className="max-w-2xl text-base text-foreground/90 leading-relaxed">
+                These are the numbers while the list is new — 98 subscribers, growing weekly. As
+                the audience grows, rates grow with it. Sponsors who come in now lock their rate
+                for the full run and get first refusal on renewals before new pricing takes
+                effect. We&rsquo;d rather tell you that up front than surprise you later.
+              </p>
+            </div>
           </div>
         </section>
 
