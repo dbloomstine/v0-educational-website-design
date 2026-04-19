@@ -438,10 +438,10 @@ export default function SponsorPage() {
               </blockquote>
               <figcaption className="mt-8 border-t border-foreground/10 pt-6">
                 <p className="font-display text-lg text-foreground" style={{ fontVariationSettings: '"opsz" 60', fontWeight: 500 }}>
-                  Paul Pisani
+                  Senior Director, Alternative Investments
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Senior Director, Alternative Investments &middot; KPMG LLP
+                  KPMG LLP
                 </p>
               </figcaption>
             </figure>
