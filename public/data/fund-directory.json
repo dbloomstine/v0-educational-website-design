@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-18T13:09:05.526925Z",
+  "generated_at": "2026-04-19T16:03:02.838917Z",
   "funds": [
     {
       "fund_name": "Partners Group Secondary Opportunities",
@@ -78,7 +78,7 @@
       "announcement_date": "2026-04-17",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/topspin-consumer-partners-beats-hard-cap-for-328m-fundraise.html",
       "source_name": "AltAssets",
-      "description_notes": "closed its third flagship fund at $328m, exceeding its hard cap in a consumer-focused private equity strategy. the oversubscribed raise demonstrates continued investor appetite for the firm's consumer-sector expertise, building on momentum from prior vintages.",
+      "description_notes": "close Topspin Consumer Partners' third flagship fund at $328M, exceeding its hard cap and demonstrating sustained LP appetite for the consumer-focused buyout strategy. The oversubscribed raise underscores investor confidence in the firm's track record across consumer brands and retail investments.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-17T13:18:21",
@@ -305,10 +305,10 @@
       "amount": "$640M",
       "amount_usd_millions": 640.0,
       "category": "Private Equity",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "",
+      "location": "Toronto, Canada",
+      "city": "Toronto",
+      "state": "ON",
+      "country": "Canada",
       "stage": "Final Close",
       "announcement_date": "2026-04-16",
       "source_url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNbmtWbWh0amxKMi1Qb3hSMVAyaDVCX1ZGTU8zeUNVT2I1OFFrV3dqTzVwME80aTczcFN4bTY3WTZXay1SdkZPOEhVcXQwblAydzNPMXVWZzJ6UnotU2R5bmxidGIwWE9Qb0hTNUZ1OHlvaU1lYm1MS2xwYU9GOHVpblB1VE5WMjRvVXU0VHZTY2REWHM?oc=5",
@@ -1277,6 +1277,15 @@
           "published_date": "2026-04-13",
           "summary": "Blackstone alum Blitzer leads 154 Partners' $400m push into sports investments&nbsp;&nbsp;facilitiesmanagement-now.com",
           "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "154 Partners: $400 Million Debut Fund Closes At Hard Cap To Target Lower-Middle Market Acquisitions - Pulse 2.0",
+          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxQOXhvX3ZwOWhfRVhqS3FVYmFyQW9iTzFzX2ZFRTZGdlU0bTU0UFlKQzNaUzZOZzhIbkdGNXd5UjFFQjFvdEFleFdSeU9FcmpkeEs1OUtIS0NBZ2U0YTFtN0dEcjFmMVJoNXBFdEJnQlFOQUs0RTVpRzBzQmRMR3ozSmxYcmt4SmZtYlVJdVRzbVBFSjdmVE5NYWJwQUcyMkxfYlpyTHQ4UldNQmY1YlpsejRxTUY1VzNK0gG-AUFVX3lxTE5TY1RPTHB1Sm9zNVZka0VBb0gzTzloSmQ2V1ZNRG9xZnZMMVQyb3dMcXQzMlZPWm1jNXdkYVpYRjNiWTJadWpQTUpKWUF0RkVRVUV2azJ1bkRpTWtsazg2NzBtdHNqajRPSDFxbTB6VThuVXNGS2V3VGN4T3g0ZWwzZklVLVBRWnhXLWRZSkppZDZTS01XdEJZN0w0aUF2NEF0WEdDNUlEdzhuQlhYNVQ5dVNHT0lKdWF2TlFrTXc?oc=5",
+          "source_name": "Pulse 2.0",
+          "source_domain": "pulse2.com",
+          "published_date": "2026-04-12",
+          "summary": "154 Partners: $400 Million Debut Fund Closes At Hard Cap To Target Lower-Middle Market Acquisitions&nbsp;&nbsp;Pulse 2.0",
+          "feed_name": "search:Oversubscribed funds"
         }
       ]
     },
@@ -2054,6 +2063,24 @@
         {
           "title": "ASEAN, ADB Launch US$25m Regional Connectivity Fund For Energy - Bernama",
           "url": "https://news.google.com/rss/articles/CBMiXEFVX3lxTE1sN3F2TjV5LVEyd3NYT1dSazBOT2dodzNHWUljcm9FeWx4QW5MNThrbmZDbTVhVTBPU1NLekJiVTg2cDNmcEx6dE9PV0U4UG1SRXFkbVMxRHBCRHgz?oc=5",
+          "source_name": "Bernama",
+          "source_domain": "bernama.com",
+          "published_date": "2026-04-09",
+          "summary": "ASEAN, ADB Launch US$25m Regional Connectivity Fund For Energy&nbsp;&nbsp;Bernama",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
+        },
+        {
+          "title": "ASEAN, ADB Launch US$25m Regional Connectivity Fund For Energy - Bernama",
+          "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE9ucm5KMS0tVG56bFZiUWJrWXk1SU9aOTFrZjZfaHM3UFFidUVPSVoxMWs3S202M1dCOGZzc2s0eld3dFVoM2VWYnVzNHJzbXpDUzNrdlowRWlFZUNxUUJHcFJqelZGTmd5YjF1ZkIxcm9PTEtUQ2xLMmM5MXJLYnM?oc=5",
+          "source_name": "Bernama",
+          "source_domain": "bernama.com",
+          "published_date": "2026-04-09",
+          "summary": "ASEAN, ADB Launch US$25m Regional Connectivity Fund For Energy&nbsp;&nbsp;Bernama",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
+        },
+        {
+          "title": "ASEAN, ADB Launch US$25m Regional Connectivity Fund For Energy - Bernama",
+          "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE1IMDVfT3dGdXdpeVZwTFFMZEdQeWptcWpzYXU0WGxEQlIteHVwYmh6MFhuM1RqMDR0UTRxUFp4ZjdLNnFzWV9jVzVCZlZ2a3JneDBrVkRmSHVXZXAtLVE?oc=5",
           "source_name": "Bernama",
           "source_domain": "bernama.com",
           "published_date": "2026-04-09",
@@ -3463,7 +3490,7 @@
       "announcement_date": "2026-04-02",
       "source_url": "https://www.altassets.net/private-equity-news/by-news-type/fund-news/funds-closed/fremman-capital-flies-past-fund-ii-target-to-reach-e808m-final-close.html",
       "source_name": "AltAssets",
-      "description_notes": "close a pan-European private equity fund that exceeded its \u20ac750m target, raising \u20ac808m in less than 18 months for Fremman Capital's second flagship vehicle. the oversubscribed sophomore fund demonstrates strong LP demand for the firm's continental European strategy. Fremman Capital has increased its fundraising capacity relative to its debut fund, signaling confidence from existing and new institutional backers.",
+      "description_notes": "raise \u20ac808m for its second fund, exceeding its \u20ac750m target in under 18 months, demonstrating strong LP confidence in the pan-European private equity manager's platform. Fremman Capital II targets buyout investments across continental Europe with a strategy focused on mid-market opportunities. The oversubscribed close reflects robust investor appetite for the firm's established track record and pan-European investment thesis.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-03T13:48:38",
@@ -5000,7 +5027,7 @@
       "announcement_date": "2026-03-27",
       "source_url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxOUFBpaDRBTjhVMWVMSUE3eV9ySzBsbzEwNUU5N21TWUFNdkd2NmFnNzB4NExpUm9zdVdxalBvdkxWYURyXzlWM05aVnlvcVhzWU8xY1YtNGx1d1N0ME9sQXBrLVd1SnlzX2pKcUJEZTN0QzhhZDQ0alVWZktFbE1qeERtVG1aQTlmbjcxMTZJY2ZyWnhUd0xSOUVoRzBXNEZDdzh5WmlaV0tRV2p2bGZndQ?oc=5",
       "source_name": "N24",
-      "description_notes": "close a \u20ac50M venture capital fund targeting early-stage European tech startups with a focus on B2B software and deep-tech sectors. Time4 VC, a first-time fund, has secured backing from a mix of institutional and angel investors across Continental Europe. The fund's inaugural close positions it competitively within the mid-sized European VC space, emphasizing hands-on founder support and operational expertise.",
+      "description_notes": "close \u20ac50M debut fund targeting early-stage European tech startups with a focus on founder-led teams and product-market fit validation. Time4 VC's first close marks the firm's entry into the competitive seed and Series A landscape, positioning itself as a stage-agnostic operator in underserved European markets. The fund size and inaugural status suggest a lean, hands-on approach typical of emerging VC platforms building differentiated sourcing networks.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-28T11:45:14",
@@ -5666,7 +5693,7 @@
       "announcement_date": "2026-03-24",
       "source_url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxNTVVqT19fcDU4VmROZS1nbWt2bnJBSE9BeWJjS1Y3YWxDZnRhZTNuUDAtQ1dVd3lYV2d0VzZrVllKVFBHSFhlNnZPWGJfQ0FjdE1zejRBM0E3YVA3MFdJaGRXeVZuSkNuNU9janM1c0JaWGlJVkdCeTZfeVpMdlFsM3M0bkROTlhBbFZZSGRCNUxDd20tNjNFdHhxWjFETmY5cThCZXR3QjR0Nm4wajZOMDJwb2dKUHlxVUFhRzNFVTlWYzlIcHpUQXFB?oc=5",
       "source_name": "Businessday",
-      "description_notes": "deploy $50M to back early-stage companies across Southeast markets, targeting founders in underserved regions outside traditional coastal venture hubs. The fund represents a regional development-focused approach to venture capital, likely emphasizing economic diversification and local ecosystem building rather than high-growth technology exits. This inaugural fund positions the Southeast Development Commission as a place-based investor bridging development finance and venture capital.",
+      "description_notes": "launch a $50M venture capital fund targeting early-stage companies in the Southeast region, focusing on underserved markets and emerging founders in the fund's geographic footprint. The fund represents the Southeast Development Commission's entry into formal venture investing, aiming to catalyze innovation and economic development across multiple Southeast states. This inaugural vehicle positions the organization to deploy capital alongside its traditional economic development mandate.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-25T13:41:37",
@@ -7176,7 +7203,7 @@
       "announcement_date": "2026-03-17",
       "source_url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOQ1F3YU03Q1BibFQxSEZwbHdMT1h6OV85Z292MlpGU3RVUUtxRWM3ZkFwM21uRHg4djRKZ3dZRTlpNm8yYlBRd2VMY0oyY0xxQXExSElPYVNYa3daZEFpLUZOdE1OZi1fWG91SWNHZDI1Nm5jdTZfSFEtc1ZCcG5jUlhFUERIaFNMMVpseEVCdDU1dGdteUM1bXI3YVlLak9oMHlWczVR?oc=5",
       "source_name": "Citybiz",
-      "description_notes": "close a $100M credit fund targeting middle-market companies with stable cash flows and structured financing needs. AWH Partners is deploying its first dedicated credit vehicle at first close, marking an expansion from its historical buyout focus into the wider credit market where it can leverage its operational expertise across portfolio companies. The fund size suggests a concentrated strategy focused on larger middle-market sponsors and borrowers rather than broad-based lending.",
+      "description_notes": "raise $100M for a credit-focused strategy targeting middle-market borrowers seeking flexible financing solutions outside traditional banking channels. The fund represents AWH Partners' entry into the strategic income space, leveraging the firm's experience in alternative credit to build a diversified portfolio of senior and subordinated debt instruments. This inaugural close positions the firm to compete in the underserved segment of sponsor-backed and corporate credit opportunities.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-18T18:03:39",
@@ -29890,8 +29917,8 @@
       "categories": [
         "Private Equity"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "Toronto",
+      "country": "Canada"
     },
     {
       "firm": "SolarWind",
@@ -34718,8 +34745,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-04-18T06:22:49.309972",
-      "last_success": "2026-04-18T06:22:49.309982",
+      "last_fetch": "2026-04-19T06:45:12.797053",
+      "last_success": "2026-04-19T06:45:12.797062",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34728,8 +34755,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-04-18T06:22:46.897248",
-      "last_success": "2026-04-18T06:22:46.897254",
+      "last_fetch": "2026-04-19T06:45:09.932878",
+      "last_success": "2026-04-19T06:45:09.932883",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34768,18 +34795,18 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-04-18T06:22:56.241724",
-      "last_success": "2026-04-18T06:22:56.241734",
-      "error_count": 0,
-      "article_count": 10,
-      "last_error": "",
+      "last_fetch": "2026-04-19T08:56:14.972830",
+      "last_success": null,
+      "error_count": 1,
+      "article_count": 0,
+      "last_error": "[Errno 54] Connection reset by peer",
       "enabled": true
     },
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-04-18T06:22:25.698976",
-      "last_success": "2026-04-18T06:22:25.698984",
+      "last_fetch": "2026-04-19T06:01:50.301097",
+      "last_success": "2026-04-19T06:01:50.301103",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34788,8 +34815,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-04-18T06:15:41.222837",
-      "last_success": "2026-04-18T06:15:41.222847",
+      "last_fetch": "2026-04-19T06:01:47.586766",
+      "last_success": "2026-04-19T06:01:47.586776",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -34798,8 +34825,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-04-18T06:22:41.593278",
-      "last_success": "2026-04-18T06:22:41.593287",
+      "last_fetch": "2026-04-19T06:45:07.996587",
+      "last_success": "2026-04-19T06:45:07.996595",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34808,28 +34835,28 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-04-18T06:22:29.834482",
-      "last_success": "2026-04-18T06:22:29.834493",
-      "error_count": 0,
-      "article_count": 10,
-      "last_error": "",
+      "last_fetch": "2026-04-19T06:17:21.910353",
+      "last_success": null,
+      "error_count": 1,
+      "article_count": 0,
+      "last_error": "[Errno 54] Connection reset by peer",
       "enabled": true
     },
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-04-18T06:22:53.817459",
-      "last_success": "2026-04-18T06:22:53.817470",
-      "error_count": 0,
-      "article_count": 10,
-      "last_error": "",
+      "last_fetch": "2026-04-19T08:25:47.310799",
+      "last_success": null,
+      "error_count": 1,
+      "article_count": 0,
+      "last_error": "[Errno 54] Connection reset by peer",
       "enabled": true
     },
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-04-18T06:22:32.449476",
-      "last_success": "2026-04-18T06:22:32.449486",
+      "last_fetch": "2026-04-19T06:44:21.126962",
+      "last_success": "2026-04-19T06:44:21.126972",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34838,8 +34865,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-04-18T06:15:39.605578",
-      "last_success": "2026-04-18T06:15:39.605581",
+      "last_fetch": "2026-04-19T06:01:45.935843",
+      "last_success": "2026-04-19T06:01:45.935846",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -34848,8 +34875,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-04-18T06:22:39.328112",
-      "last_success": "2026-04-18T06:22:39.328120",
+      "last_fetch": "2026-04-19T06:44:26.587040",
+      "last_success": "2026-04-19T06:44:26.587050",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34858,8 +34885,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-04-18T06:22:36.746851",
-      "last_success": "2026-04-18T06:22:36.746860",
+      "last_fetch": "2026-04-19T06:44:24.052062",
+      "last_success": "2026-04-19T06:44:24.052069",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34868,8 +34895,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-04-18T06:15:42.427187",
-      "last_success": "2026-04-18T06:15:42.427196",
+      "last_fetch": "2026-04-19T06:01:48.945873",
+      "last_success": "2026-04-19T06:01:48.945882",
       "error_count": 0,
       "article_count": 19,
       "last_error": "",
@@ -34898,7 +34925,7 @@
       "First Close": 126,
       "Interim Close": 13
     },
-    "article_count": 168,
+    "article_count": 138,
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
