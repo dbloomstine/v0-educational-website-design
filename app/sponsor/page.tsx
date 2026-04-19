@@ -148,6 +148,16 @@ const SPECS = [
   { label: 'Payment', value: 'Invoiced net-15. Wire or card.' },
 ] as const
 
+// ─── How it works (5-step flow from email to first send) ────────────────────
+
+const STEPS = [
+  { t: 'You email', d: 'Reply within one business day with dates and any questions.' },
+  { t: 'We confirm dates', d: 'Lock your run on the calendar. Invoice goes out the same day.' },
+  { t: 'You send creative', d: 'Logo, 60 words, one CTA link — 48 hours before first send.' },
+  { t: 'We proof', d: 'Live preview in your inbox. You sign off before anything ships.' },
+  { t: 'Live', d: 'Top AND bottom of every edition for your run. Weekly open-rate report.' },
+] as const
+
 // ─── FAQ ─────────────────────────────────────────────────────────────────────
 
 const FAQS = [
@@ -571,16 +581,39 @@ export default function SponsorPage() {
             </p>
 
             {/* Launch-rates disclosure — anchors future increases as expected, not a rug-pull */}
-            <div className="mt-12 border-l-2 border-amber-400/60 bg-card/30 p-6 sm:p-8">
-              <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400">
-                A note on launch rates
-              </p>
-              <p className="max-w-2xl text-base text-foreground/90 leading-relaxed">
-                These are the numbers while the list is new — 98 subscribers, growing weekly. As
-                the audience grows, rates grow with it. Sponsors who come in now lock their rate
-                for the full run and get first refusal on renewals before new pricing takes
-                effect. We&rsquo;d rather tell you that up front than surprise you later.
-              </p>
+            <div className="mt-12 grid gap-6 lg:grid-cols-2 lg:gap-8">
+              <div className="border-l-2 border-amber-400/60 bg-card/30 p-6 sm:p-8">
+                <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400">
+                  A note on launch rates
+                </p>
+                <p className="text-base text-foreground/90 leading-relaxed">
+                  These are the numbers while the list is new — 98 subscribers, growing weekly.
+                  As the audience grows, rates grow with it. Sponsors who come in now lock their
+                  rate for the full run and get first refusal on renewals before new pricing
+                  takes effect. We&rsquo;d rather tell you that up front than surprise you later.
+                </p>
+              </div>
+
+              {/* Trust box — sets editorial boundaries visibly, not buried in FAQ */}
+              <div className="border-l-2 border-foreground/40 bg-card/30 p-6 sm:p-8">
+                <p className="mb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-foreground/70">
+                  What sponsorship is not
+                </p>
+                <ul className="space-y-2 text-base text-foreground/90 leading-relaxed">
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40" />
+                    <span>No sponsored articles. Editorial coverage is never for sale.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40" />
+                    <span>No influence on what we cover, how we frame it, or who we quote.</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40" />
+                    <span>No sponsor-only emails or dedicated sends. Daily cadence, shared slate.</span>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </section>
@@ -644,6 +677,58 @@ export default function SponsorPage() {
                   ))}
                 </ul>
               </div>
+            </div>
+
+            {/* How it works — 5-step flow */}
+            <div className="mt-20 border-t border-foreground/10 pt-12">
+              <div className="mb-10 flex flex-wrap items-baseline justify-between gap-3">
+                <h3
+                  className="font-display text-foreground"
+                  style={{
+                    fontSize: 'clamp(28px, 3.6vw, 40px)',
+                    lineHeight: 1,
+                    letterSpacing: '-0.02em',
+                    fontWeight: 500,
+                    fontVariationSettings: '"opsz" 144',
+                  }}
+                >
+                  How it{' '}
+                  <span
+                    className="italic"
+                    style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
+                  >
+                    works.
+                  </span>
+                </h3>
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground/60">
+                  Email &rarr; live in about 72 hours
+                </p>
+              </div>
+
+              <ol className="grid gap-px bg-foreground/10 border border-foreground/15 md:grid-cols-5">
+                {STEPS.map((step, i) => (
+                  <li key={step.t} className="flex flex-col bg-background p-6">
+                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400 tabular-nums">
+                      Step {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <p
+                      className="mt-4 font-display text-foreground"
+                      style={{
+                        fontSize: '20px',
+                        lineHeight: 1.1,
+                        letterSpacing: '-0.01em',
+                        fontWeight: 500,
+                        fontVariationSettings: '"opsz" 60',
+                      }}
+                    >
+                      {step.t}
+                    </p>
+                    <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
+                      {step.d}
+                    </p>
+                  </li>
+                ))}
+              </ol>
             </div>
           </div>
         </section>
