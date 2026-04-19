@@ -89,3 +89,26 @@ export const DEFAULT_SPONSOR_SLATE: SponsorSlate = {
   label: 'ALSO FROM FUNDOPSHQ',
   sponsors: [LIVE_SHOW_HOUSE_SPONSOR],
 }
+
+/**
+ * Placeholder slate used ONLY by the /newsletter/sample preview route
+ * that sponsor prospects see from the /sponsor rate-card page. Renders
+ * a dashed-border "YOUR LOGO HERE" card so the prospect can visualise
+ * exactly where their brand sits in a real edition. Never used in
+ * production sends — real subscribers continue to see the Live Show
+ * cross-promo via DEFAULT_SPONSOR_SLATE.
+ */
+export const PLACEHOLDER_SPONSOR: Sponsor = {
+  name: 'Your brand here',
+  wordmarkHtml:
+    `<span style="display:inline-block;padding:14px 32px;border:2px dashed #B8AF99;background:#FFFFFF;border-radius:3px;font-family:Georgia,'Times New Roman',Times,serif;font-size:22px;font-weight:700;letter-spacing:-0.3px;line-height:1.1;color:#5A6B82;text-align:center;white-space:nowrap;">YOUR LOGO HERE</span>`,
+  blurb:
+    'Up to 60 words of sponsor copy right here. Your CTA link, your voice. Top placement, every morning, seen by 98 confirmed readers at GPs, LPs, and fund service providers across PE, VC, credit, hedge, real estate, and infrastructure.',
+  ctaUrl: 'mailto:sponsor@fundopshq.com?subject=FundOps%20Daily%20sponsorship',
+  ctaText: 'Book this slot',
+}
+
+export const PLACEHOLDER_SPONSOR_SLATE: SponsorSlate = {
+  label: 'PRESENTED BY',
+  sponsors: [PLACEHOLDER_SPONSOR],
+}
