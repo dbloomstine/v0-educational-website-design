@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles } from '@/lib/newsletter/query-articles'
 import { renderNewsletterEmail } from '@/lib/newsletter/email-template'
-import { PLACEHOLDER_SPONSOR_SLATE } from '@/lib/newsletter/sponsors'
+import { SAMPLE_SPONSOR_SLATE } from '@/lib/newsletter/sponsors'
 
 /**
  * Public sample of the most-recent FundOps Daily edition.
@@ -63,9 +63,11 @@ export async function GET() {
       editionDate,
       unsubscribeUrl: 'https://fundopshq.com/sponsor',
       subscriberCount: count ?? undefined,
-      // Preview uses a "YOUR LOGO HERE" placeholder so prospects see
-      // exactly where their brand would land in a real edition.
-      sponsorSlate: PLACEHOLDER_SPONSOR_SLATE,
+      // Preview uses a shared slate (1 FundOpsHQ house card + 4
+      // placeholder firms with dashed "YOUR LOGO HERE" boxes) so
+      // prospects see up front that sponsorship is a shared slate,
+      // not an exclusive-sponsor arrangement.
+      sponsorSlate: SAMPLE_SPONSOR_SLATE,
     })
 
     return new Response(html, {

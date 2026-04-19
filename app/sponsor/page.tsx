@@ -94,41 +94,43 @@ const READER_GROUPS = [
 const TIERS = [
   {
     no: '01',
-    name: 'Single day',
-    cadence: '1 edition',
+    name: 'One week',
+    cadence: '7 editions',
     price: '$500',
-    descriptor: 'Primary sponsor slot on one morning edition.',
+    perEdition: '$71 / edition',
+    descriptor: 'Seven consecutive mornings. Good for testing a launch or an offer.',
     highlights: [
-      'Top placement above the fold',
-      'Logo, 60-word blurb, CTA link',
-      'Good for testing an offer or a launch',
+      'Logo + 60 words + CTA link, top AND bottom of every edition',
+      'Shared slate (max 5 sponsors) — you pick your preferred dates',
+      'Weekly delivery + open report',
     ],
     accent: false,
   },
   {
     no: '02',
-    name: 'One week',
-    cadence: '7 editions',
-    price: '$2,000',
-    descriptor: 'Seven consecutive mornings. Saves $1,500 versus daily.',
+    name: 'One month',
+    cadence: '30 editions',
+    price: '$1,500',
+    perEdition: '$50 / edition',
+    descriptor: 'Thirty consecutive mornings. Saves $500 vs. weekly.',
     highlights: [
-      'Top placement above the fold, every day',
-      'Logo, 60-word blurb, CTA link',
-      'One read on FundOpsHQ Live that week',
+      'Logo + 60 words + CTA link, top AND bottom of every edition',
+      'Shared slate (max 5 sponsors) — locked dates',
+      'Monthly delivery + open report, swap creative with 48h notice',
     ],
     accent: true,
   },
   {
     no: '03',
-    name: 'One month',
-    cadence: '30 editions',
-    price: '$6,000',
-    descriptor: 'Thirty consecutive mornings. Saves $9,000 versus daily.',
+    name: 'One quarter',
+    cadence: '90 editions',
+    price: '$4,000',
+    perEdition: '$44 / edition',
+    descriptor: 'Ninety consecutive mornings. Saves $2,000 vs. monthly.',
     highlights: [
-      'Top placement above the fold, every day',
-      'Logo, 60-word blurb, CTA link',
-      'Four reads on FundOpsHQ Live',
-      'One LinkedIn post from Danny',
+      'Logo + 60 words + CTA link, top AND bottom of every edition',
+      'Shared slate (max 5 sponsors) — locked dates',
+      'Monthly delivery + open report, rotate up to three creatives',
     ],
     accent: false,
   },
@@ -137,12 +139,50 @@ const TIERS = [
 // ─── Placement specs ─────────────────────────────────────────────────────────
 
 const SPECS = [
+  { label: 'Placement', value: 'Top AND bottom of every edition. Same slot, every day of your run.' },
   { label: 'Format', value: 'Hosted PNG logo + up to 60 words of copy + one CTA link' },
   { label: 'Logo', value: 'PNG, ~400–600 px wide, navy-safe (we render on cream)' },
   { label: 'Copy', value: 'You write it. We proofread. No edits without approval.' },
+  { label: 'Slate', value: 'Shared — up to five sponsors per edition. No single-sponsor exclusivity.' },
   { label: 'Delivery', value: '48 hours before the first send' },
-  { label: 'Exclusivity', value: 'Primary sponsor slot is exclusive for your run' },
   { label: 'Payment', value: 'Invoiced net-15. Wire or card.' },
+] as const
+
+// ─── FAQ ─────────────────────────────────────────────────────────────────────
+
+const FAQS = [
+  {
+    q: 'How many sponsors are in each edition?',
+    a: 'Up to five. You share the slate with up to four other sponsors at the top AND bottom of the newsletter. Every card gets the same treatment — logo, 60 words, and a CTA.',
+  },
+  {
+    q: 'Is there an exclusive / single-sponsor option?',
+    a: 'Not right now. Keeping the slate shared lets the launch rates stay this low. If your firm needs solo placement, email us and we will quote it separately.',
+  },
+  {
+    q: 'Can I swap creative mid-run?',
+    a: 'Yes. One free swap on weekly, unlimited swaps on monthly and quarterly with 48 hours notice. No charge to update copy, logo, or CTA link.',
+  },
+  {
+    q: 'What reporting do I get?',
+    a: 'A delivery and open-rate report after each cycle (weekly, monthly, or monthly-of-quarter). Raw CSV available on request.',
+  },
+  {
+    q: 'Do you accept any advertiser?',
+    a: 'We say no to anything off-topic for GPs, LPs, or fund service providers. No retail crypto, no gambling, no generic B2B. We also decline competitors to existing sponsors for the run.',
+  },
+  {
+    q: 'What if my firm is mentioned in the news that day?',
+    a: 'We disclose the sponsorship in the footer of that edition. Editorial stays editorial — coverage is not traded for ad dollars and never will be.',
+  },
+  {
+    q: 'When do I need to get creative in?',
+    a: '48 hours before your first send. Send us a PNG logo (400–600 px wide), up to 60 words of copy, and one CTA URL. We lay it out and send a proof for approval.',
+  },
+  {
+    q: 'Can I cancel?',
+    a: 'Weekly runs are non-refundable once creative is approved. Monthly and quarterly runs can be cancelled at the cycle boundary — email us and we will prorate the remaining cycle if it has not yet started.',
+  },
 ] as const
 
 // ─── Page ────────────────────────────────────────────────────────────────────
@@ -305,11 +345,12 @@ export default function SponsorPage() {
             </div>
 
             {/* Quick stats */}
-            <div className="mb-12 grid gap-px bg-foreground/10 sm:grid-cols-3 border border-foreground/15">
+            <div className="mb-12 grid gap-px bg-foreground/10 sm:grid-cols-2 lg:grid-cols-4 border border-foreground/15">
               {[
                 { kpi: '98', label: 'Confirmed subscribers' },
+                { kpi: '56%', label: '7-day open rate' },
+                { kpi: '15%', label: '7-day click rate' },
                 { kpi: '7×', label: 'Sends per week' },
-                { kpi: '60+', label: 'Firms represented' },
               ].map((s) => (
                 <div key={s.label} className="bg-background p-8">
                   <div
@@ -364,13 +405,56 @@ export default function SponsorPage() {
           </div>
         </section>
 
+        {/* ─── Reader note (testimonial) ─── */}
+        <section className="relative border-b-2 border-foreground/15 bg-card/30">
+          <div className="border-b border-foreground/10">
+            <div className="container mx-auto px-4">
+              <div className="flex items-center gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+                <span className="text-foreground/80">Section E.2</span>
+                <span aria-hidden="true" className="text-foreground/20">·</span>
+                <span>Reader Note</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="container mx-auto px-4 py-16 sm:py-20">
+            <figure className="mx-auto max-w-3xl">
+              <div className="mb-6 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400">
+                Unsolicited · April 2026
+              </div>
+              <blockquote
+                className="font-display italic text-foreground"
+                style={{
+                  fontSize: 'clamp(28px, 3.8vw, 44px)',
+                  lineHeight: 1.15,
+                  letterSpacing: '-0.02em',
+                  fontWeight: 500,
+                  fontVariationSettings: '"opsz" 144, "SOFT" 100',
+                }}
+              >
+                &ldquo;I&rsquo;ve enjoyed the newsletter. It&rsquo;s a great aggregated news space
+                relevant for us. You&rsquo;re doing great with it, and it&rsquo;s been valuable to
+                people like me and our teams.&rdquo;
+              </blockquote>
+              <figcaption className="mt-8 border-t border-foreground/10 pt-6">
+                <p className="font-display text-lg text-foreground" style={{ fontVariationSettings: '"opsz" 60', fontWeight: 500 }}>
+                  Paul Pisani
+                </p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Senior Director, Alternative Investments &middot; KPMG LLP
+                </p>
+              </figcaption>
+            </figure>
+          </div>
+        </section>
+
         {/* ─── Rate card ─── */}
         <section className="relative border-b-2 border-foreground/15 bg-background">
           <div className="border-b border-foreground/10">
             <div className="container mx-auto px-4">
               <div className="flex items-center justify-between gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
                 <span className="flex items-center gap-3">
-                  <span className="text-foreground/80">Section E.2</span>
+                  <span className="text-foreground/80">Section E.3</span>
                   <span aria-hidden="true" className="text-foreground/20">·</span>
                   <span>Rate Card</span>
                 </span>
@@ -400,8 +484,8 @@ export default function SponsorPage() {
                 </span>
               </h2>
               <p className="mt-6 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-                Launch rates. These go up as the list grows. No minimum commitment after the first
-                run. Primary sponsor slot is exclusive for your dates.
+                Launch rates. These go up as the list grows. One card at the top AND one at the
+                bottom of every edition. Shared slate, up to five sponsors per send.
               </p>
             </div>
 
@@ -452,7 +536,7 @@ export default function SponsorPage() {
                       {tier.price}
                     </span>
                     <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/60">
-                      flat
+                      {tier.perEdition}
                     </span>
                   </div>
 
@@ -483,7 +567,7 @@ export default function SponsorPage() {
             </div>
 
             <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/50">
-              Multi-month commitments and custom packages available. Email for quote.
+              Half-year and year-long packages available. Email for quote.
             </p>
           </div>
         </section>
@@ -493,7 +577,7 @@ export default function SponsorPage() {
           <div className="border-b border-foreground/10">
             <div className="container mx-auto px-4">
               <div className="flex items-center gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-                <span className="text-foreground/80">Section E.3</span>
+                <span className="text-foreground/80">Section E.4</span>
                 <span aria-hidden="true" className="text-foreground/20">·</span>
                 <span>Placement &amp; Delivery</span>
               </div>
@@ -546,6 +630,77 @@ export default function SponsorPage() {
                     </li>
                   ))}
                 </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ─── FAQ ─── */}
+        <section className="relative border-b-2 border-foreground/15 bg-background">
+          <div className="border-b border-foreground/10">
+            <div className="container mx-auto px-4">
+              <div className="flex items-center gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+                <span className="text-foreground/80">Section E.5</span>
+                <span aria-hidden="true" className="text-foreground/20">·</span>
+                <span>Frequently Asked</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="container mx-auto px-4 py-16 sm:py-20">
+            <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+              <div className="lg:col-span-4">
+                <h2
+                  className="font-display text-foreground"
+                  style={{
+                    fontSize: 'clamp(36px, 5vw, 64px)',
+                    lineHeight: 0.95,
+                    letterSpacing: '-0.03em',
+                    fontWeight: 500,
+                    fontVariationSettings: '"opsz" 144',
+                  }}
+                >
+                  Common{' '}
+                  <span
+                    className="italic"
+                    style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
+                  >
+                    questions.
+                  </span>
+                </h2>
+                <p className="mt-6 text-base text-muted-foreground leading-relaxed">
+                  If something&rsquo;s not answered here, email{' '}
+                  <a
+                    href="mailto:sponsor@fundopshq.com"
+                    className="text-foreground underline decoration-foreground/30 underline-offset-4 hover:decoration-amber-400"
+                  >
+                    sponsor@fundopshq.com
+                  </a>{' '}
+                  and we&rsquo;ll reply within the business day.
+                </p>
+              </div>
+
+              <div className="lg:col-span-8">
+                <dl>
+                  {FAQS.map((f, i) => (
+                    <div
+                      key={f.q}
+                      className="grid grid-cols-[auto_1fr] items-baseline gap-6 border-b border-foreground/10 py-6"
+                    >
+                      <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground/50 tabular-nums">
+                        {String(i + 1).padStart(2, '0')}
+                      </dt>
+                      <div>
+                        <p className="font-display text-lg text-foreground" style={{ fontVariationSettings: '"opsz" 60', fontWeight: 500, letterSpacing: '-0.01em' }}>
+                          {f.q}
+                        </p>
+                        <dd className="mt-2 text-base text-muted-foreground leading-relaxed">
+                          {f.a}
+                        </dd>
+                      </div>
+                    </div>
+                  ))}
+                </dl>
               </div>
             </div>
           </div>
