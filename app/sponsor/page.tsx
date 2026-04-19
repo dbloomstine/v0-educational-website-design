@@ -808,12 +808,12 @@ export default function SponsorPage() {
                   fontVariationSettings: '"opsz" 144',
                 }}
               >
-                Say hello to{' '}
+                Say{' '}
                 <span
                   className="italic"
                   style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
                 >
-                  Danny.
+                  hello.
                 </span>
               </h2>
               <p className="mx-auto mt-6 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed">
