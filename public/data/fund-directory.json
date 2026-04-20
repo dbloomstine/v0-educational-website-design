@@ -1,6 +1,192 @@
 {
-  "generated_at": "2026-04-19T16:03:02.838917Z",
+  "generated_at": "2026-04-20T17:54:31.716363Z",
   "funds": [
+    {
+      "fund_name": "Fengate Fund V",
+      "firm": "Fengate",
+      "firm_slug": "fengate",
+      "amount": "$1bn",
+      "amount_usd_millions": 1000.0,
+      "category": "Infrastructure",
+      "location": "London, UK",
+      "city": "London",
+      "state": "",
+      "country": "UK",
+      "stage": "First Close",
+      "announcement_date": "2026-04-20",
+      "source_url": "https://www.infrastructureinvestor.com/fengate-reaches-1bn-first-close-for-fund-v-exclusive/",
+      "source_name": "Infrastructure Investor",
+      "description_notes": "close $1bn infrastructure fund targeting long-duration assets across developed markets, with first close reached on Fengate Fund V. The fund represents the firm's fifth vintage and signals continued institutional appetite for infrastructure debt and equity despite macroeconomic headwinds.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-20T17:38:11",
+      "articles": [
+        {
+          "title": "Fengate reaches $1bn first close for fund V \u2013 exclusive",
+          "url": "https://www.infrastructureinvestor.com/fengate-reaches-1bn-first-close-for-fund-v-exclusive/",
+          "source_name": "Infrastructure Investor",
+          "source_domain": "infrastructureinvestor.com",
+          "published_date": "2026-04-20",
+          "summary": "",
+          "feed_name": "Infrastructure Investor"
+        }
+      ]
+    },
+    {
+      "fund_name": "I Squared $650m gas deal",
+      "firm": "I Squared",
+      "firm_slug": "i-squared",
+      "amount": "$650M",
+      "amount_usd_millions": 650.0,
+      "category": "Infrastructure",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Other",
+      "announcement_date": "2026-04-20",
+      "source_url": "https://www.infrastructureinvestor.com/the-pipeline-vespers-final-close-albrecht-joins-gcm-grosvenor-i-squareds-650m-gas-deal/",
+      "source_name": "Infrastructure Investor",
+      "description_notes": "deploy $650M for natural gas infrastructure assets, targeting mid-market opportunities in energy transition and essential utility infrastructure. The fund represents I Squared's continued focus on hard infrastructure investments, though limited public details are available on anchor LPs or how this vintage compares to prior fundraises.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-20T17:38:11",
+      "articles": [
+        {
+          "title": "The Pipeline: Vesper\u2019s final close, Albrecht joins GCM Grosvenor, I Squared\u2019s $650m gas deal",
+          "url": "https://www.infrastructureinvestor.com/the-pipeline-vespers-final-close-albrecht-joins-gcm-grosvenor-i-squareds-650m-gas-deal/",
+          "source_name": "Infrastructure Investor",
+          "source_domain": "infrastructureinvestor.com",
+          "published_date": "2026-04-20",
+          "summary": "",
+          "feed_name": "Infrastructure Investor"
+        }
+      ]
+    },
+    {
+      "fund_name": "Sideline Group Debut Fund",
+      "firm": "Sideline Group",
+      "firm_slug": "sideline-group",
+      "amount": "$155M",
+      "amount_usd_millions": 155.0,
+      "category": "Private Equity",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "First Close",
+      "announcement_date": "2026-04-20",
+      "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/100208016.html",
+      "source_name": "AltAssets",
+      "description_notes": "raise $155m for its debut fund, substantially exceeding its initial target, with a focus on 'offline economy' investments in North America. The first-time fund from Sideline Group targets companies in sectors less exposed to digital disruption, representing a contrarian bet against the venture-heavy PE landscape.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-20T17:38:11",
+      "articles": [
+        {
+          "title": "Sideline Group sees \u2018offline economy\u2019 opportunity, beats target with $155m debut fund",
+          "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/100208016.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-04-20",
+          "summary": "",
+          "feed_name": "AltAssets"
+        }
+      ]
+    },
+    {
+      "fund_name": "Crossbay Logistics Fund III",
+      "firm": "MARK",
+      "firm_slug": "mark",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Private Equity",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "First Close",
+      "announcement_date": "2026-04-20",
+      "source_url": "https://www.perenews.com/mark-holds-first-close-for-third-crossbay-logistics-fund/",
+      "source_name": "PERE",
+      "description_notes": "close Crossbay Logistics Fund III, a third vintage focused on logistics and supply chain infrastructure investments in the mid-market sector. The fund has reached its first close with an undisclosed amount committed, signaling investor appetite for infrastructure-adjacent private equity strategies.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-20T17:38:11",
+      "articles": [
+        {
+          "title": "MARK holds first close for third Crossbay logistics fund",
+          "url": "https://www.perenews.com/mark-holds-first-close-for-third-crossbay-logistics-fund/",
+          "source_name": "PERE",
+          "source_domain": "perenews.com",
+          "published_date": "2026-04-20",
+          "summary": "",
+          "feed_name": "PERE"
+        }
+      ]
+    },
+    {
+      "fund_name": "Vesper",
+      "firm": "Vesper",
+      "firm_slug": "vesper",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Infrastructure",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Final Close",
+      "announcement_date": "2026-04-20",
+      "source_url": "https://www.infrastructureinvestor.com/the-pipeline-vespers-final-close-albrecht-joins-gcm-grosvenor-i-squareds-650m-gas-deal/",
+      "source_name": "Infrastructure Investor",
+      "description_notes": "manage infrastructure assets through a fund that has reached final close, though specific strategy focus, ticket size, and LP composition remain undisclosed. without additional details on sector specialization, geography, or fund size, vesper's positioning within the infrastructure investment landscape cannot be fully assessed.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-20T17:38:11",
+      "articles": [
+        {
+          "title": "The Pipeline: Vesper\u2019s final close, Albrecht joins GCM Grosvenor, I Squared\u2019s $650m gas deal",
+          "url": "https://www.infrastructureinvestor.com/the-pipeline-vespers-final-close-albrecht-joins-gcm-grosvenor-i-squareds-650m-gas-deal/",
+          "source_name": "Infrastructure Investor",
+          "source_domain": "infrastructureinvestor.com",
+          "published_date": "2026-04-20",
+          "summary": "",
+          "feed_name": "Infrastructure Investor"
+        }
+      ]
+    },
+    {
+      "fund_name": "Cordatus Loan Fund XIX",
+      "firm": "CVC Credit",
+      "firm_slug": "cvc-credit",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "location": "London, UK",
+      "city": "London",
+      "state": "",
+      "country": "UK",
+      "stage": "Other",
+      "announcement_date": "2026-04-20",
+      "source_url": "https://alternativecreditinvestor.com/2026/04/20/cvc-credit-prices-reset-of-cordatus-loan-fund-xix/",
+      "source_name": "Alternative Credit Investor",
+      "description_notes": "close a XIX-vintage continuation fund targeting European middle-market leveraged loans across the credit spectrum. CVC Credit, a specialist credit manager, is leveraging its established platform and track record to deploy capital into broadly syndicated and mid-market loan opportunities, though the fund size remains undisclosed.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-04-20T17:38:11",
+      "articles": [
+        {
+          "title": "CVC Credit prices reset of Cordatus Loan Fund XIX",
+          "url": "https://alternativecreditinvestor.com/2026/04/20/cvc-credit-prices-reset-of-cordatus-loan-fund-xix/",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-04-20",
+          "summary": "",
+          "feed_name": "Alternative Credit Investor"
+        }
+      ]
+    },
     {
       "fund_name": "Partners Group Secondary Opportunities",
       "firm": "Partners Group",
@@ -78,7 +264,7 @@
       "announcement_date": "2026-04-17",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/topspin-consumer-partners-beats-hard-cap-for-328m-fundraise.html",
       "source_name": "AltAssets",
-      "description_notes": "close Topspin Consumer Partners' third flagship fund at $328M, exceeding its hard cap and demonstrating sustained LP appetite for the consumer-focused buyout strategy. The oversubscribed raise underscores investor confidence in the firm's track record across consumer brands and retail investments.",
+      "description_notes": "close Topspin Consumer Partners' third flagship fund at $328M, surpassing its hard cap in a consumer-focused buyout strategy. The oversubscribed fundraise demonstrates continued LP confidence in the firm's consumer sector expertise, though prior vintage sizes and specific LP commitments were not disclosed in available reporting.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-17T13:18:21",
@@ -95,6 +281,15 @@
         {
           "title": "Topspin Consumer Partners Closes $328M Fund III - Ventureburn",
           "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNOHU4bkpva010M240LXBJcWw0MlNuWF9QVlVFa3h0bl9pN3R6djlQQld6RVFPVWY5Zl9GcDlwdWV1ZkcxcmxRWll0anVtSkx4UFpzZTF3UmhtMFZJd0R3emRJX1NITG83d2tPcW5iLTdLR09tR2M4b2pQQUN4SVR0V3diRdIBgwFBVV95cUxNOHU4bkpva010M240LXBJcWw0MlNuWF9QVlVFa3h0bl9pN3R6djlQQld6RVFPVWY5Zl9GcDlwdWV1ZkcxcmxRWll0anVtSkx4UFpzZTF3UmhtMFZJd0R3emRJX1NITG83d2tPcW5iLTdLR09tR2M4b2pQQUN4SVR0V3diRQ?oc=5",
+          "source_name": "Ventureburn",
+          "source_domain": "ventureburn.com",
+          "published_date": "2026-04-16",
+          "summary": "Topspin Consumer Partners Closes $328M Fund III&nbsp;&nbsp;Ventureburn",
+          "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "Topspin Consumer Partners Closes $328M Fund III - Ventureburn",
+          "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE1yUnk0WEoyTEJtT3ZUWUREMXMxYWJYbEZTcU9LMTJCdkhvUlVwRWNiRWdSQUNNWC1GbHBrZ2Z1NEpWMXpvSGltN1laQ2hiM09UM3BsQkYwZnBydlJVLXNTdXVFbUNmV2pDdUJtY0stcXJNTWkwdkJwRmEza9IBe0FVX3lxTE1yUnk0WEoyTEJtT3ZUWUREMXMxYWJYbEZTcU9LMTJCdkhvUlVwRWNiRWdSQUNNWC1GbHBrZ2Z1NEpWMXpvSGltN1laQ2hiM09UM3BsQkYwZnBydlJVLXNTdXVFbUNmV2pDdUJtY0stcXJNTWkwdkJwRmEzaw?oc=5",
           "source_name": "Ventureburn",
           "source_domain": "ventureburn.com",
           "published_date": "2026-04-16",
@@ -149,7 +344,7 @@
       "announcement_date": "2026-04-17",
       "source_url": "https://www.prnewswire.com/news-releases/akemona-to-power-upcoming-tokenized-offering-for-industrialized-innovation-impact-portfolio-i-302746361.html",
       "source_name": "PR Newswire",
-      "description_notes": "launch a venture capital fund using tokenized offering infrastructure powered by Akemona, a digital asset issuance platform. The Industrialized Innovation Impact Portfolio I targets industrialized innovation with a blockchain-native fundraising approach, distinguishing itself through tokenization mechanics rather than traditional fund structures.",
+      "description_notes": "launch a venture capital fund using tokenized offerings and digital asset infrastructure to invest in industrialized innovation companies. Akemona, a tokenization and digital asset issuance platform, is powering the offering for this impact-focused portfolio, marking a distinctive blockchain-enabled approach to venture fund distribution. The undisclosed-size fund represents an emerging model blending traditional VC strategies with Web3 infrastructure.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-18T10:39:19",
@@ -242,7 +437,7 @@
       "announcement_date": "2026-04-16",
       "source_url": "https://www.privatedebtinvestor.com/comvest-partners-raises-2-63bn-for-flagship-credit-strategy/",
       "source_name": "Private Debt Investor",
-      "description_notes": "close a $2.63B flagship credit strategy fund focused on direct lending and structured credit across the middle market. The fund represents Comvest Partners' largest deployment of capital to date in the credit space, targeting institutional investors seeking yield in a diversified portfolio of senior and subordinated debt instruments.",
+      "description_notes": "raise $2.63B for a flagship credit strategy focused on middle-market lending and structured credit opportunities. The fund represents a significant vehicle for Comvest Partners' credit investing mandate, though specific LP anchors and comparison to prior vintage sizes are not disclosed in available materials. The strategy targets credit-oriented opportunities across the capital structure.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-17T13:18:21",
@@ -393,7 +588,7 @@
       "announcement_date": "2026-04-16",
       "source_url": "https://news.google.com/rss/articles/CBMia0FVX3lxTFB0OXdrZnlwVTBjaHhQcUFVdHM2WVJOYmYycTM2NGZzYld1Vnh1N0hndXVReEtZenBSMjIxMWFPY21HbUVUR0tVeFNXUl9kRjFVNV9fVnZUZzJQY1dWN2dFUmZmdlRZejQwNnVV?oc=5",
       "source_name": "Afrotech",
-      "description_notes": "close a second institutional venture fund focused on non-traditional founders and underrepresented entrepreneurs in tech and deep tech sectors. The fund builds on Unconventional Ventures' thesis of backing overlooked talent pools and non-conventional career paths, likely targeting seed to Series A stage companies. Details on LP composition and fund size remain undisclosed at this interim close.",
+      "description_notes": "closes second fund to back early-stage founders operating outside traditional venture ecosystems, targeting underrepresented entrepreneurs and non-coastal markets. The firm focuses on pre-seed and seed-stage companies across underserved geographies, leveraging a thesis around demographic and geographic arbitrage in venture capital. Fund II's interim close signals continued LP confidence in Unconventional Ventures' contrarian approach to sourcing and supporting unconventional founders.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-17T13:18:21",
@@ -430,6 +625,15 @@
       "date_added": "2026-04-16T11:48:21",
       "articles": [
         {
+          "title": "Accel scores $5bn of new late-stage capital aimed at leveraging AI revolution",
+          "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/100208011.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-04-20",
+          "summary": "",
+          "feed_name": "AltAssets"
+        },
+        {
           "title": "Accel raises $5B to back late-stage bets",
           "url": "https://techcrunch.com/2026/04/15/accel-raises-5b-to-back-late-stage-bets/",
           "source_name": "TechCrunch",
@@ -455,7 +659,7 @@
       "announcement_date": "2026-04-15",
       "source_url": "https://www.buyoutsinsider.com/kingswood-goes-bigger-with-2-25bn-target-for-latest-complexity-focused-fund/",
       "source_name": "Buyouts Insider",
-      "description_notes": "launch a $2.25B private equity fund focused on complexity-driven investment opportunities. Kingswood's latest fund represents a significant capital commitment to a strategy targeting operationally complex mid-market and growth-stage assets, though LP roster and comparison to prior vintage details remain undisclosed.",
+      "description_notes": "launches a $2.25B private equity fund focused on complexity-driven investment opportunities, marking the firm's entry into this specialized segment. The fund targets operational and strategic challenges that require sophisticated problem-solving, positioning it as a differentiated approach within the broader mid-market PE landscape.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-16T11:48:21",
@@ -525,6 +729,15 @@
         {
           "title": "ACE & Company Closes Q1 2026 Fundraise Above Target with $228 Million in New Commitments | Corporate - EQS News",
           "url": "https://news.google.com/rss/articles/CBMiiAJBVV95cUxPWk1yTWQxOFNUdHppdjV1MTV4bkRjaklIS1ZEWnUwamxkY2ZrQU8wWVBBY01SV2ZURm41enVaV09BYnRvSENZekpCZlNONHZnczFUQWcyQnBXVjVEWkNhd2dvWEdsSjlyOVluWU84YmpWcUpiNFNiOVdONXJfZVk2VnktX21PbjhCRFN1OWs5bGV5TC04Ql9tOTdRcU5LTFV1TlpZNDV1eUFrY1FrZUJSTF9iUFhCV1lXbnRyT2ZmYm14eDlaMnZrTm1WbEJxT05vMVdJUTM0cXVjcnl2OE9wSlZjaWJwbkRmUzB3TzE1eW9CLTFiUlVDbHRtd0hqSnhsMTFXWVVZcFA?oc=5",
+          "source_name": "EQS News",
+          "source_domain": "eqs-news.com",
+          "published_date": "2026-04-16",
+          "summary": "ACE & Company Closes Q1 2026 Fundraise Above Target with $228 Million in New Commitments | Corporate&nbsp;&nbsp;EQS News",
+          "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "ACE & Company Closes Q1 2026 Fundraise Above Target with $228 Million in New Commitments | Corporate - EQS News",
+          "url": "https://news.google.com/rss/articles/CBMigAJBVV95cUxQQ2NTY1NaOWJ6dkc2U09uX3pXNW5GRFdXejVCWFR1Z2s4b3IzcGF0bkNPOVBwdGJVeXVUWThyLVNCU0VHTTBvZmVTR2JSTEdpZGlzUnJxeUlnUkFNemtsbGptNmN5Z1NXejJvYUx5TmlKbzk5b1FPMTlzQl96cHFXU3NsY1J5UndxNUVEbnBOZHBoRWJwSDNUNnpOVjY3YzkweWl5WU5Ud3hENHA1QW1iQXVNNENuTnpFMU52RnJ0d0pLUjdsREJLMGxtQ1BQSGxnZHc4WXBZY1ZqWHFGRjBMcUZkbHM4eUtmTllPdUdjLW9qajJncXdPVm9sdkhJTXNf?oc=5",
           "source_name": "EQS News",
           "source_domain": "eqs-news.com",
           "published_date": "2026-04-16",
@@ -2517,7 +2730,7 @@
       "announcement_date": "2026-04-08",
       "source_url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxOYTVvanZfODQ1RmIxXzFsam52SHpGUU5jZ2tDVTBDOUVKSTUzQW10V25IZ1JqMDdRMlB3VUgwSWdxTF9NTWYtSTVJWlMwR29fRDVYRnBXeXEtemdaX0V5QkVwbWd6Yzl1U3RyR1Y5dDRyWWctajdrOHQ2Q1JkZUprMlFYbFU3ZjBWNkpxQ3hwdWZicTRmZEl0a0p2OFEydTJxYmV0R0dCRThFSEpSQ1h4NnFaQndOQ0lIenFEdzlsRlpyd29O?oc=5",
       "source_name": "Structuredcreditinvestor",
-      "description_notes": "close an infrastructure credit fund targeting debt investments in essential infrastructure assets across developed markets. The fund focuses on providing senior and subordinated lending to mid-market infrastructure projects, a strategy that has gained traction among LPs seeking stable, inflation-hedged returns in the current rate environment. OIC's infrastructure credit offering expands its portfolio beyond traditional equity strategies, positioning it competitively within the growing infrastructure debt segment.",
+      "description_notes": "close an infrastructure credit fund targeting senior secured and mezzanine debt investments in core and core-plus infrastructure assets across North America and Europe. The fund focuses on essential infrastructure sectors including energy transition, digital, and social infrastructure, leveraging OIC's established relationships with institutional sponsors and infrastructure operators. This represents OIC's continued expansion in the credit space, building on its track record in infrastructure investing with a debt-focused strategy designed for institutional LPs seeking stable, contracted cash flows.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-12T12:28:14",
@@ -5827,10 +6040,10 @@
       "amount": "CAD 20M",
       "amount_usd_millions": null,
       "category": "Private Equity",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "Canada",
+      "location": "Toronto, CA",
+      "city": "Toronto",
+      "state": "ON",
+      "country": "CA",
       "stage": "First Close",
       "announcement_date": "2026-03-24",
       "source_url": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE1PWHlvQjQ5djNFSGZsaXg5d1BXU19pb093MGxYdTRpbkY5OVN6c0F5bm9Fek43U0dqcU5CR0RJRFJ2OGxYN3IyQlFTRUVneDdsZ1QybmFZdkNxZ1k?oc=5",
@@ -11340,6 +11553,15 @@
           "published_date": "2026-03-02",
           "summary": "Kirkland-Led Bregal Sagemount's 5th Fund Hits $3.5B Limit&nbsp;&nbsp;Law360",
           "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "Bregal Sagemount Closes Fund V at $3.5 Billion Hard Cap - citybiz",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQSjFRTDIxbGQyczdMU0FXbndoVmttbUFnM3FvMUtRUzlSdXNYajE2OTdacFRJTVNMMmVaYlFaYS13bERQdjBwUThEOUNvYlBUb0g1NGFxSjdRVGhNU1ZxMXdEaDVOcDNKM0d6Wmt6X3I1N2xkaDVsOFU1RVZkVURTMzgtS0djTkdxSVRUMWlGblRLQnN1TEhUMg?oc=5",
+          "source_name": "citybiz",
+          "source_domain": "citybiz.co",
+          "published_date": "2026-03-02",
+          "summary": "Bregal Sagemount Closes Fund V at $3.5 Billion Hard Cap&nbsp;&nbsp;citybiz",
+          "feed_name": "search:Oversubscribed funds"
         }
       ]
     },
@@ -12203,6 +12425,15 @@
         {
           "title": "Vesper Next Generation Infrastructure Fund I, and co-investment initiatives, reach final close surpassing in aggregate EUR 1bn of total AuM, the most successful debut mid-market infrastructure funds since 2023 | Corporate - EQS News",
           "url": "https://news.google.com/rss/articles/CBMioANBVV95cUxNVXJUQXJubVBRSHpyNW1BTmJEcmdreUJJQy01OG5ZczZ4Y2RvT3VuSXBhWmk4ZE5lVUIwY3N1cEQtU1lpWXhlajhrRWwxTnpKaF9NdmhITUhoRzBUQUFISUJqd28xMVIwcW9hLU80OEJuVUdBN29YZm93bFkyRHk4WElJUThpT1BvMGs2R2RFYkpMa1JvTjNpc3c4WmQwQ2YzUHVia3RLSjNxY3JkWkpaeExrV01GMjF2MUZtXzdPcGlITTNRY29VMjE4SWFBOGJoU1dYVm1WX2ZpVUthdHVIOHRDRzFSaDd6Q0hoX0lXR1owZkgxc2VUMm1vbThObU9nZXBuVHRPenczaDlrMjhnYnJuZVAxWmFsVTRFbXYzQnVIOHRXUzFlR05DdmVPM0VvbEgyajdlSDEwaDhIVnFjYzcyVDRpQlNnaF82LU9qbkRPaUZ1STZKMEJGcUtsaUlXTGR2NVFkci01V0o4YjV4N0FFZjF6bmlTc3NDdUNHNERnc2RzWnhJbFpFdzU0U1BHbGxyUklJZzl3ZEYtOVc0Rw?oc=5",
+          "source_name": "EQS News",
+          "source_domain": "eqs-news.com",
+          "published_date": "2026-04-14",
+          "summary": "Vesper Next Generation Infrastructure Fund I, and co-investment initiatives, reach final close surpassing in aggregate EUR 1bn of total AuM, the most successful debut mid-market infrastructure funds since 2023 | Corporate&nbsp;&nbsp;EQS News",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Vesper Next Generation Infrastructure Fund I, and co-investment initiatives, reach final close surpassing in aggregate EUR 1bn of total AuM, the most successful debut mid-market infrastructure funds since 2023 | Corporate - EQS News",
+          "url": "https://news.google.com/rss/articles/CBMijgNBVV95cUxQY1RBRWtBV1R5c2tNSnRpQ0lWRXprQU1idWZocm5ZdWhmVjZLVFBSX3licGt4cXl4TDFxbi1YcDNfRVJaQW96YmprUkpreXhZdjRaTC1mZlgweDFoTnNMUExGVGx6akhUM3BpZU1TODdnT0wwVnZiazFSQndhVzB3a0dFVWFCWEpBS2J6Yld3cTBCbEhEUHhzTE5DR2F4bzBLSnBDV2pUdTN2M1ZVU2NMalJUVl9rTnFiZjJkdjhNTkNYRnZVOFNRUk1PN1lBd0VlMlVldmZhN09yemU3dnQyQnNRTGlBU24zZ29lTU1KQzZuSERQeWRlY194S090a21DQXNKRl9hQTRYSGdZZFU0dXdycHBmSF9CUE5sX0E0Wjd6ODZOU1duYndHdkxPYTg5WEpRcUkzcklqWHNQazJZNUZONHRXOEVPRHlvMGItZkdncDdUdlNDeEgzR2dCc3lvTEpfYURXRTNEd3dXSVNRamZxSkozYi04c2xJQVR2Z0dzUlNTc1o4QjJGNjlVZw?oc=5",
           "source_name": "EQS News",
           "source_domain": "eqs-news.com",
           "published_date": "2026-04-14",
@@ -15246,9 +15477,9 @@
       "amount": "$10M",
       "amount_usd_millions": 10.0,
       "category": "Credit Funds",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
+      "location": "Phoenix, AZ",
+      "city": "Phoenix",
+      "state": "AZ",
       "country": "US",
       "stage": "Launch",
       "announcement_date": "2026-02-15",
@@ -29380,6 +29611,28 @@
       "country": "India"
     },
     {
+      "firm": "Fengate",
+      "firm_slug": "fengate",
+      "fund_count": 1,
+      "total_aum_millions": 1000.0,
+      "categories": [
+        "Infrastructure"
+      ],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "Vesper",
+      "firm_slug": "vesper",
+      "fund_count": 2,
+      "total_aum_millions": 1000.0,
+      "categories": [
+        "Infrastructure"
+      ],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
       "firm": "Vesper Infrastructure",
       "firm_slug": "vesper-infrastructure",
       "fund_count": 1,
@@ -29416,17 +29669,6 @@
       "firm": "AlbaCore",
       "firm_slug": "albacore",
       "fund_count": 2,
-      "total_aum_millions": 1000.0,
-      "categories": [
-        "Infrastructure"
-      ],
-      "city": "N/A",
-      "country": "N/A"
-    },
-    {
-      "firm": "Vesper",
-      "firm_slug": "vesper",
-      "fund_count": 1,
       "total_aum_millions": 1000.0,
       "categories": [
         "Infrastructure"
@@ -29875,6 +30117,17 @@
       ],
       "city": "N/A",
       "country": "US"
+    },
+    {
+      "firm": "I Squared",
+      "firm_slug": "i-squared",
+      "fund_count": 1,
+      "total_aum_millions": 650.0,
+      "categories": [
+        "Infrastructure"
+      ],
+      "city": "N/A",
+      "country": ""
     },
     {
       "firm": "Dragonfly Capital",
@@ -31609,6 +31862,17 @@
       "country": "UK"
     },
     {
+      "firm": "Sideline Group",
+      "firm_slug": "sideline-group",
+      "fund_count": 1,
+      "total_aum_millions": 155.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "N/A",
+      "country": ""
+    },
+    {
       "firm": "Hayfin",
       "firm_slug": "hayfin",
       "fund_count": 1,
@@ -32716,7 +32980,7 @@
       "categories": [
         "Credit Funds"
       ],
-      "city": "N/A",
+      "city": "Phoenix",
       "country": "US"
     },
     {
@@ -32740,6 +33004,28 @@
       ],
       "city": "N/A",
       "country": "N/A"
+    },
+    {
+      "firm": "MARK",
+      "firm_slug": "mark",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "CVC Credit",
+      "firm_slug": "cvc-credit",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "London",
+      "country": "UK"
     },
     {
       "firm": "Akemona",
@@ -33134,8 +33420,8 @@
       "categories": [
         "Private Equity"
       ],
-      "city": "N/A",
-      "country": "Canada"
+      "city": "Toronto",
+      "country": "CA"
     },
     {
       "firm": "SEDC",
@@ -34745,8 +35031,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-04-19T06:45:12.797053",
-      "last_success": "2026-04-19T06:45:12.797062",
+      "last_fetch": "2026-04-20T09:17:26.774349",
+      "last_success": "2026-04-20T09:17:26.774357",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34755,8 +35041,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-04-19T06:45:09.932878",
-      "last_success": "2026-04-19T06:45:09.932883",
+      "last_fetch": "2026-04-20T09:17:24.256367",
+      "last_success": "2026-04-20T09:17:24.256376",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34795,18 +35081,18 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-04-19T08:56:14.972830",
-      "last_success": null,
-      "error_count": 1,
-      "article_count": 0,
-      "last_error": "[Errno 54] Connection reset by peer",
+      "last_fetch": "2026-04-20T09:26:23.753301",
+      "last_success": "2026-04-20T09:26:23.753310",
+      "error_count": 0,
+      "article_count": 10,
+      "last_error": "",
       "enabled": true
     },
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-04-19T06:01:50.301097",
-      "last_success": "2026-04-19T06:01:50.301103",
+      "last_fetch": "2026-04-20T06:23:40.122141",
+      "last_success": "2026-04-20T06:23:40.122148",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34815,8 +35101,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-04-19T06:01:47.586766",
-      "last_success": "2026-04-19T06:01:47.586776",
+      "last_fetch": "2026-04-20T06:07:30.807012",
+      "last_success": "2026-04-20T06:07:30.807021",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -34825,8 +35111,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-04-19T06:45:07.996587",
-      "last_success": "2026-04-19T06:45:07.996595",
+      "last_fetch": "2026-04-20T09:02:18.428017",
+      "last_success": "2026-04-20T09:02:18.428025",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34835,28 +35121,28 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-04-19T06:17:21.910353",
-      "last_success": null,
-      "error_count": 1,
-      "article_count": 0,
-      "last_error": "[Errno 54] Connection reset by peer",
+      "last_fetch": "2026-04-20T07:16:34.235328",
+      "last_success": "2026-04-20T07:16:34.235340",
+      "error_count": 0,
+      "article_count": 10,
+      "last_error": "",
       "enabled": true
     },
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-04-19T08:25:47.310799",
-      "last_success": null,
-      "error_count": 1,
-      "article_count": 0,
-      "last_error": "[Errno 54] Connection reset by peer",
+      "last_fetch": "2026-04-20T09:17:30.052830",
+      "last_success": "2026-04-20T09:17:30.052840",
+      "error_count": 0,
+      "article_count": 10,
+      "last_error": "",
       "enabled": true
     },
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-04-19T06:44:21.126962",
-      "last_success": "2026-04-19T06:44:21.126972",
+      "last_fetch": "2026-04-20T07:34:09.535654",
+      "last_success": "2026-04-20T07:34:09.535662",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34865,8 +35151,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-04-19T06:01:45.935843",
-      "last_success": "2026-04-19T06:01:45.935846",
+      "last_fetch": "2026-04-20T06:07:28.925905",
+      "last_success": "2026-04-20T06:07:28.925906",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -34875,8 +35161,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-04-19T06:44:26.587040",
-      "last_success": "2026-04-19T06:44:26.587050",
+      "last_fetch": "2026-04-20T09:02:16.318644",
+      "last_success": "2026-04-20T09:02:16.318651",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34885,8 +35171,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-04-19T06:44:24.052062",
-      "last_success": "2026-04-19T06:44:24.052069",
+      "last_fetch": "2026-04-20T08:45:35.766995",
+      "last_success": "2026-04-20T08:45:35.767007",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -34895,8 +35181,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-04-19T06:01:48.945873",
-      "last_success": "2026-04-19T06:01:48.945882",
+      "last_fetch": "2026-04-20T06:07:32.052752",
+      "last_success": "2026-04-20T06:07:32.052758",
       "error_count": 0,
       "article_count": 19,
       "last_error": "",
@@ -34904,32 +35190,32 @@
     }
   ],
   "stats": {
-    "total_funds": 720,
+    "total_funds": 726,
     "total_covered": 52,
-    "total_uncovered": 668,
-    "total_aum_millions": 5212346.6,
+    "total_uncovered": 674,
+    "total_aum_millions": 5214151.6,
     "by_category": {
+      "Infrastructure": 96,
+      "Private Equity": 182,
+      "Credit Funds": 152,
       "Secondaries & GP-Stakes": 45,
-      "Infrastructure": 93,
-      "Private Equity": 180,
-      "Credit Funds": 151,
       "Venture Capital": 174,
       "Real Estate": 75,
       "Other": 1,
       "N/A": 1
     },
     "by_stage": {
-      "Final Close": 205,
-      "Other": 91,
+      "First Close": 129,
+      "Other": 93,
+      "Final Close": 206,
       "Launch": 285,
-      "First Close": 126,
       "Interim Close": 13
     },
-    "article_count": 138,
+    "article_count": 168,
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-04-17"
+      "latest": "2026-04-20"
     }
   }
 }
