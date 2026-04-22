@@ -38,7 +38,7 @@ export function SubscribeWidget() {
     return (
       <div className="flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5">
         <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-        <span className="text-sm text-emerald-300">Check your inbox to confirm your subscription.</span>
+        <span className="text-sm text-emerald-300">You&apos;re subscribed. Your first edition lands tomorrow morning.</span>
       </div>
     )
   }

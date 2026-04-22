@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1500" width="1500" height="1500">
+  <defs>
+    <radialGradient id="pc1Bg" cx="50%" cy="45%" r="75%">
+      <stop offset="0%" stop-color="#1E3A5F"/>
+      <stop offset="100%" stop-color="#0B1726"/>
+    </radialGradient>
+    <pattern id="pc1Grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#FFFFFF" stroke-opacity="0.05" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1500" height="1500" fill="url(#pc1Bg)"/>
+  <rect width="1500" height="1500" fill="url(#pc1Grid)"/>
+
+  <!-- Amber rule strips -->
+  <rect x="0" y="0" width="1500" height="8" fill="#E6B045"/>
+  <rect x="0" y="1492" width="1500" height="8" fill="#E6B045"/>
+
+  <!-- Editorial frame -->
+  <rect x="60" y="60" width="1380" height="1380" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="2"/>
+
+  <!-- Corner ticks -->
+  <g stroke="#E6B045" stroke-width="3">
+    <line x1="60" y1="140" x2="140" y2="140"/>
+    <line x1="140" y1="60" x2="140" y2="140"/>
+    <line x1="1360" y1="140" x2="1440" y2="140"/>
+    <line x1="1360" y1="60" x2="1360" y2="140"/>
+    <line x1="60" y1="1360" x2="140" y2="1360"/>
+    <line x1="140" y1="1360" x2="140" y2="1440"/>
+    <line x1="1360" y1="1360" x2="1440" y2="1360"/>
+    <line x1="1360" y1="1360" x2="1360" y2="1440"/>
+  </g>
+
+  <!-- Top ledger -->
+  <text x="120" y="125" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" font-weight="700" letter-spacing="5" fill="#FFFFFF" fill-opacity="0.7">VOL. I · EST. 2025</text>
+  <text x="1380" y="125" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" font-weight="700" letter-spacing="5" fill="#E6B045" text-anchor="end">SECTION A</text>
+
+  <!-- Giant italic F, centered -->
+  <text x="750" y="1080" font-family="serif" font-style="italic" font-size="1350" font-weight="900" fill="#E6B045" text-anchor="middle">F</text>
+
+  <!-- Inner tagline block -->
+  <g transform="translate(750, 1180)">
+    <line x1="-220" y1="0" x2="220" y2="0" stroke="#FFFFFF" stroke-opacity="0.35" stroke-width="1"/>
+    <text x="0" y="50" font-family="serif" font-style="italic" font-size="64" fill="#FFFFFF" text-anchor="middle">FundOpsHQ</text>
+    <text x="0" y="100" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" font-weight="700" letter-spacing="5" fill="#E6B045" text-anchor="middle">A DAILY NEWSROOM FOR PRIVATE MARKETS</text>
+  </g>
+
+  <!-- Bottom ledger -->
+  <text x="120" y="1395" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" font-weight="700" letter-spacing="5" fill="#FFFFFF" fill-opacity="0.55">FUNDOPSHQ.COM</text>
+  <text x="1380" y="1395" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="20" font-weight="700" letter-spacing="5" fill="#FFFFFF" fill-opacity="0.55" text-anchor="end">THE DAILY BRIEF</text>
+</svg>

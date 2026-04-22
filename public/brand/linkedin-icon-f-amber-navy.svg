@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="li1Bg" cx="50%" cy="45%" r="70%">
+      <stop offset="0%" stop-color="#1E3A5F"/>
+      <stop offset="100%" stop-color="#0B1726"/>
+    </radialGradient>
+  </defs>
+  <circle cx="200" cy="200" r="200" fill="url(#li1Bg)"/>
+  <circle cx="200" cy="200" r="186" fill="none" stroke="#E6B045" stroke-opacity="0.4" stroke-width="2"/>
+  <circle cx="200" cy="200" r="170" fill="none" stroke="#FFFFFF" stroke-opacity="0.12" stroke-width="1"/>
+  <text x="200" y="318" font-family="serif" font-style="italic" font-size="380" font-weight="900" fill="#E6B045" text-anchor="middle">F</text>
+  <line x1="120" y1="338" x2="280" y2="338" stroke="#E6B045" stroke-width="1.5"/>
+  <text x="200" y="362" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" letter-spacing="3" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">FUNDOPSHQ</text>
+</svg>

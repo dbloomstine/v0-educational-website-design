@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <radialGradient id="li3Bg" cx="50%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#13243C"/>
+      <stop offset="100%" stop-color="#050B14"/>
+    </radialGradient>
+    <pattern id="li3Scan" width="1" height="3" patternUnits="userSpaceOnUse">
+      <rect width="1" height="1" fill="#FFFFFF" fill-opacity="0.06"/>
+    </pattern>
+  </defs>
+  <circle cx="200" cy="200" r="200" fill="url(#li3Bg)"/>
+  <circle cx="200" cy="200" r="200" fill="url(#li3Scan)"/>
+  <circle cx="200" cy="200" r="186" fill="none" stroke="#E6B045" stroke-opacity="0.6" stroke-width="2"/>
+  <!-- Red LIVE dot at top -->
+  <circle cx="200" cy="60" r="7" fill="#EF4444"/>
+  <text x="215" y="66" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" font-weight="700" letter-spacing="3" fill="#EF4444">LIVE</text>
+  <text x="200" y="320" font-family="serif" font-style="italic" font-size="370" font-weight="900" fill="#E6B045" text-anchor="middle">F</text>
+  <line x1="120" y1="340" x2="280" y2="340" stroke="#E6B045" stroke-width="1.5"/>
+  <text x="200" y="364" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" letter-spacing="3" fill="#FFFFFF" fill-opacity="0.7" text-anchor="middle">FUNDOPSHQ</text>
+</svg>

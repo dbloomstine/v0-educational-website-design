@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1500" width="1500" height="1500">
+  <defs>
+    <pattern id="pc2Grid" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M 60 0 L 0 0 0 60" fill="none" stroke="#1E3A5F" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="1500" height="1500" fill="#F8F5EC"/>
+  <rect width="1500" height="1500" fill="url(#pc2Grid)"/>
+
+  <!-- Navy top/bottom bars -->
+  <rect x="0" y="0" width="1500" height="120" fill="#1E3A5F"/>
+  <rect x="0" y="1380" width="1500" height="120" fill="#1E3A5F"/>
+  <rect x="0" y="124" width="1500" height="4" fill="#E6B045"/>
+  <rect x="0" y="1372" width="1500" height="4" fill="#E6B045"/>
+
+  <text x="80" y="78" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="700" letter-spacing="5" fill="#F8F5EC">VOL. I · EST. 2025</text>
+  <text x="1420" y="78" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="700" letter-spacing="5" fill="#E6B045" text-anchor="end">SECTION A</text>
+
+  <text x="80" y="1445" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="700" letter-spacing="5" fill="#F8F5EC">FUNDOPSHQ.COM</text>
+  <text x="1420" y="1445" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="22" font-weight="700" letter-spacing="5" fill="#E6B045" text-anchor="end">DAILY BRIEF</text>
+
+  <!-- Giant italic amber F -->
+  <text x="750" y="1080" font-family="serif" font-style="italic" font-size="1380" font-weight="900" fill="#E6B045" text-anchor="middle">F</text>
+
+  <!-- Navy serif italic callout inside the F bowl area -->
+  <g transform="translate(750, 1200)">
+    <line x1="-240" y1="0" x2="240" y2="0" stroke="#1E3A5F" stroke-opacity="0.5" stroke-width="1"/>
+    <text x="0" y="60" font-family="serif" font-style="italic" font-size="72" fill="#1E3A5F" text-anchor="middle">FundOpsHQ</text>
+    <text x="0" y="115" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="18" font-weight="700" letter-spacing="5" fill="#1E3A5F" fill-opacity="0.75" text-anchor="middle">A DAILY NEWSROOM FOR PRIVATE MARKETS</text>
+  </g>
+</svg>

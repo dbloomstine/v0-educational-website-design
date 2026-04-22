@@ -99,6 +99,33 @@ const POSTERS: Asset[] = [
   { src: '/brand/social-og-card.svg',   name: 'Social · OG Card', format: 'SVG · 1200×630',  surface: 'navy', span: 4, fit: 'cover' },
 ]
 
+const YOUTUBE_BANNERS: Asset[] = [
+  { src: '/brand/youtube-banner-editorial-navy.svg', name: 'YouTube · Editorial Navy', format: 'SVG · 2560×1440', surface: 'navy',      span: 2 },
+  { src: '/brand/youtube-banner-broadcast-live.svg', name: 'YouTube · Broadcast Live', format: 'SVG · 2560×1440', surface: 'broadcast', span: 2 },
+  { src: '/brand/youtube-banner-amber-poster.svg',   name: 'YouTube · Amber Poster',   format: 'SVG · 2560×1440', surface: 'cream',     span: 2 },
+  { src: '/brand/youtube-banner-minimal-navy.svg',   name: 'YouTube · Minimal Navy',   format: 'SVG · 2560×1440', surface: 'navy',      span: 2 },
+]
+
+const PODCAST_COVERS: Asset[] = [
+  { src: '/brand/podcast-cover-italic-f-navy.svg',  name: 'Podcast · Italic F Navy',  format: 'SVG · 1500×1500', surface: 'navy'      },
+  { src: '/brand/podcast-cover-italic-f-cream.svg', name: 'Podcast · Italic F Cream', format: 'SVG · 1500×1500', surface: 'cream'     },
+  { src: '/brand/podcast-cover-roundel-amber.svg',  name: 'Podcast · Amber Roundel',  format: 'SVG · 1500×1500', surface: 'amber'     },
+  { src: '/brand/podcast-cover-broadcast-live.svg', name: 'Podcast · Broadcast Live', format: 'SVG · 1500×1500', surface: 'broadcast' },
+  { src: '/brand/podcast-cover-stacked-navy.svg',   name: 'Podcast · Stacked Navy',   format: 'SVG · 1500×1500', surface: 'navy'      },
+]
+
+const LINKEDIN_ICONS: Asset[] = [
+  { src: '/brand/linkedin-icon-f-amber-navy.svg', name: 'LinkedIn · Amber F on Navy', format: 'SVG · 400×400', surface: 'navy'      },
+  { src: '/brand/linkedin-icon-f-navy-amber.svg', name: 'LinkedIn · Navy F on Amber', format: 'SVG · 400×400', surface: 'amber'     },
+  { src: '/brand/linkedin-icon-f-broadcast.svg',  name: 'LinkedIn · Broadcast',       format: 'SVG · 400×400', surface: 'broadcast' },
+  { src: '/brand/linkedin-icon-f-cream.svg',      name: 'LinkedIn · Cream',           format: 'SVG · 400×400', surface: 'cream'     },
+  { src: '/brand/linkedin-icon-roundel-seal.svg', name: 'LinkedIn · Roundel Seal',    format: 'SVG · 400×400', surface: 'navy'      },
+]
+
+const LINKEDIN_COVERS: Asset[] = [
+  { src: '/brand/linkedin-cover-editorial-navy.svg', name: 'LinkedIn · Editorial Navy', format: 'SVG · 2256×382', surface: 'navy', span: 4, fit: 'cover' },
+]
+
 // ─── Color palette ───────────────────────────────────────────────────────────
 
 const COLORS = [
@@ -328,6 +355,7 @@ export default function BrandPage() {
                 ['#wordmarks', 'Wordmarks'],
                 ['#stacked', 'Stacked Lockups'],
                 ['#marks', 'Marks & Monograms'],
+                ['#social', 'Social & Channel Art'],
                 ['#patterns', 'Patterns'],
                 ['#backgrounds', 'Backgrounds'],
                 ['#typography', 'Typography'],
@@ -642,6 +670,74 @@ export default function BrandPage() {
               {POSTERS.map((a) => (
                 <AssetTile key={a.src} asset={a} />
               ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── Social & Channel Art ─── */}
+        <SectionMasthead id="social" no="Section D.10" label="Social & Channel Art" right="YouTube · Podcast · LinkedIn" />
+        <section className="border-b-2 border-foreground/15 bg-background">
+          <div className="container mx-auto px-4 py-16 sm:py-20">
+            <SectionHeadline
+              left="Channel art for the"
+              italic="feed."
+              right="YouTube banners, square podcast covers, and LinkedIn company icons. All built around the italic F and amber accent — navy, cream, broadcast and gold variants."
+            />
+
+            {/* YouTube Banners */}
+            <div className="mb-14">
+              <div className="mb-5 flex flex-wrap items-center gap-3 border-b border-foreground/10 pb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400">
+                <span className="h-px w-8 bg-amber-400/60" />
+                <span>YouTube Channel Banners</span>
+                <span className="text-muted-foreground/50">· 2560 × 1440 · Safe-area tested</span>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-4">
+                {YOUTUBE_BANNERS.map((a) => (
+                  <AssetTile key={a.src} asset={a} />
+                ))}
+              </div>
+            </div>
+
+            {/* Podcast Covers */}
+            <div className="mb-14">
+              <div className="mb-5 flex flex-wrap items-center gap-3 border-b border-foreground/10 pb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400">
+                <span className="h-px w-8 bg-amber-400/60" />
+                <span>Podcast Covers</span>
+                <span className="text-muted-foreground/50">· 1500 × 1500 · Square · Apple/Spotify-ready</span>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-4 lg:grid-cols-5">
+                {PODCAST_COVERS.map((a) => (
+                  <AssetTile key={a.src} asset={a} />
+                ))}
+              </div>
+            </div>
+
+            {/* LinkedIn Icons */}
+            <div className="mb-14">
+              <div className="mb-5 flex flex-wrap items-center gap-3 border-b border-foreground/10 pb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400">
+                <span className="h-px w-8 bg-amber-400/60" />
+                <span>LinkedIn Company Icons</span>
+                <span className="text-muted-foreground/50">· 400 × 400 · Round-crop safe</span>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-4 lg:grid-cols-5">
+                {LINKEDIN_ICONS.map((a) => (
+                  <AssetTile key={a.src} asset={a} />
+                ))}
+              </div>
+            </div>
+
+            {/* LinkedIn Covers */}
+            <div>
+              <div className="mb-5 flex flex-wrap items-center gap-3 border-b border-foreground/10 pb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400">
+                <span className="h-px w-8 bg-amber-400/60" />
+                <span>LinkedIn Cover Banners</span>
+                <span className="text-muted-foreground/50">· 2256 × 382 · Company-page header</span>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-4">
+                {LINKEDIN_COVERS.map((a) => (
+                  <AssetTile key={a.src} asset={a} />
+                ))}
+              </div>
             </div>
           </div>
         </section>

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <pattern id="li4Grid" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1E3A5F" stroke-opacity="0.08" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <circle cx="200" cy="200" r="200" fill="#F8F5EC"/>
+  <circle cx="200" cy="200" r="200" fill="url(#li4Grid)"/>
+  <circle cx="200" cy="200" r="186" fill="none" stroke="#1E3A5F" stroke-opacity="0.7" stroke-width="2"/>
+  <circle cx="200" cy="200" r="170" fill="none" stroke="#E6B045" stroke-opacity="0.8" stroke-width="1.5"/>
+  <text x="200" y="320" font-family="serif" font-style="italic" font-size="380" font-weight="900" fill="#1E3A5F" text-anchor="middle">F</text>
+  <!-- Amber dot accent -->
+  <circle cx="272" cy="188" r="10" fill="#E6B045"/>
+  <line x1="120" y1="340" x2="280" y2="340" stroke="#1E3A5F" stroke-width="1.5"/>
+  <text x="200" y="364" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" font-weight="700" letter-spacing="3" fill="#1E3A5F" fill-opacity="0.8" text-anchor="middle">FUNDOPSHQ</text>
+</svg>
