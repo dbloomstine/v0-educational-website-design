@@ -89,25 +89,17 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 })
   }
 
-  // ─── 2. Kill switch ─────────────────────────────────────────────────────
-  if (process.env.OUTREACH_ENABLED !== 'true') {
-    return NextResponse.json({
-      ok: true,
-      skipped: 'outreach_disabled',
-      note: 'Set OUTREACH_ENABLED=true in Vercel env to activate',
-    })
-  }
-
-  // Authenticated query-param overrides — let a trusted caller (us, with
-  // the CRON_SECRET) tune the pipeline per-invocation without touching
-  // Vercel env vars. The scheduled cron passes no query params, so its
-  // behavior is unchanged.
+  // Parse query params up front so we can label the wave in every status
+  // email. The cron schedule in vercel.json passes ?cap=25 for wave 1
+  // (12:30 UTC) and ?cap=50 for wave 2 (17:00 UTC); any other cap value
+  // is a manual trigger.
   const url = new URL(req.url)
   const capOverride = url.searchParams.get('cap')
   const force = url.searchParams.get('force') === 'true'
   const editionDateOverride = url.searchParams.get('editionDate') // YYYY-MM-DD
   const contactsPerFirmOverride = url.searchParams.get('contactsPerFirm')
   const skipFirmDedup = url.searchParams.get('skipFirmDedup') === 'true'
+  const waveLabel = waveFromCap(capOverride)
   // Template mode resolution order:
   //   1. ?templateMode=short|forward query param (highest priority — lets
   //      us test either mode manually regardless of env/default).
@@ -125,43 +117,93 @@ export async function GET(req: Request) {
   const templateMode: TemplateMode =
     resolvedMode === 'short' ? 'short' : 'forward'
 
-  // Default: 5 contacts per firm PER RUN. This is the per-run quota,
-  // NOT a 120-day limit. A firm that gets hit today can still be hit
-  // tomorrow with different people — firmLevelDedup only blocks on
-  // permanent failures (bounced/opted_out), and emailLevelDedup is the
-  // per-person 120-day safety net. Set OUTREACH_CONTACTS_PER_FIRM in
-  // Vercel to override the code default without a redeploy. Query param
-  // still overrides both.
-  const envContactsPerFirm = process.env.OUTREACH_CONTACTS_PER_FIRM
-  const baseContactsPerFirm = envContactsPerFirm
-    ? Number(envContactsPerFirm)
-    : 5
-  const contactsPerFirm = contactsPerFirmOverride != null
-    ? Number(contactsPerFirmOverride)
-    : baseContactsPerFirm
-  if (!Number.isFinite(contactsPerFirm) || contactsPerFirm <= 0) {
-    return NextResponse.json(
-      { ok: false, error: 'Invalid contactsPerFirm (env OUTREACH_CONTACTS_PER_FIRM or ?contactsPerFirm= query param)' },
-      { status: 500 },
-    )
-  }
-
-  const dailyCap = capOverride != null
-    ? Number(capOverride)
-    : Number(process.env.OUTREACH_DAILY_CAP ?? '10')
-  if (!Number.isFinite(dailyCap) || dailyCap <= 0) {
-    return NextResponse.json(
-      { ok: false, error: 'Invalid cap (env OUTREACH_DAILY_CAP or ?cap= query param)' },
-      { status: 500 },
-    )
-  }
-
+  // Everything else runs inside the try/catch below so any crash produces
+  // a failure-alert email instead of a silent 500. Previously the kill
+  // switch and param validation lived outside try, which meant a crash
+  // there (or a kill-switch-off state) produced zero signal — the cron
+  // silently no-op'd and nobody noticed for hours.
+  const editionDate = editionDateOverride ?? todayDateET()
   const supabase = getSupabaseAdmin()
 
   try {
+    // ─── 2. Kill switch ───────────────────────────────────────────────────
+    // Tolerant comparison — a stray space or wrong casing in Vercel env
+    // UI would otherwise silently disable outreach. We ALSO emit a status
+    // email on skip so absence of any email today unambiguously means
+    // "Vercel cron did not fire," not "env var was flipped."
+    const rawEnabled = process.env.OUTREACH_ENABLED ?? ''
+    if (rawEnabled.trim().toLowerCase() !== 'true') {
+      await sendStatusEmail({
+        wave: waveLabel,
+        editionDate,
+        reason: 'outreach_disabled',
+        details: [
+          `OUTREACH_ENABLED value seen: ${JSON.stringify(rawEnabled)}`,
+          'Set OUTREACH_ENABLED=true in Vercel env to activate.',
+        ],
+      })
+      return NextResponse.json({
+        ok: true,
+        skipped: 'outreach_disabled',
+        note: 'Set OUTREACH_ENABLED=true in Vercel env to activate',
+      })
+    }
+
+    // ─── 2b. Param validation ─────────────────────────────────────────────
+    const envContactsPerFirm = process.env.OUTREACH_CONTACTS_PER_FIRM
+    const baseContactsPerFirm = envContactsPerFirm
+      ? Number(envContactsPerFirm)
+      : 5
+    const contactsPerFirm = contactsPerFirmOverride != null
+      ? Number(contactsPerFirmOverride)
+      : baseContactsPerFirm
+    if (!Number.isFinite(contactsPerFirm) || contactsPerFirm <= 0) {
+      await sendStatusEmail({
+        wave: waveLabel,
+        editionDate,
+        reason: 'invalid_contacts_per_firm',
+        details: [
+          `env OUTREACH_CONTACTS_PER_FIRM=${JSON.stringify(envContactsPerFirm)}`,
+          `query ?contactsPerFirm=${JSON.stringify(contactsPerFirmOverride)}`,
+        ],
+      })
+      return NextResponse.json(
+        { ok: false, error: 'Invalid contactsPerFirm' },
+        { status: 500 },
+      )
+    }
+
+    const dailyCap = capOverride != null
+      ? Number(capOverride)
+      : Number(process.env.OUTREACH_DAILY_CAP ?? '10')
+    if (!Number.isFinite(dailyCap) || dailyCap <= 0) {
+      await sendStatusEmail({
+        wave: waveLabel,
+        editionDate,
+        reason: 'invalid_cap',
+        details: [
+          `env OUTREACH_DAILY_CAP=${JSON.stringify(process.env.OUTREACH_DAILY_CAP)}`,
+          `query ?cap=${JSON.stringify(capOverride)}`,
+        ],
+      })
+      return NextResponse.json(
+        { ok: false, error: 'Invalid cap' },
+        { status: 500 },
+      )
+    }
+
     // ─── 3. Idempotency guard ─────────────────────────────────────────────
     const existingCount = await countTodaysRuns(supabase)
     if (!force && existingCount >= dailyCap) {
+      await sendStatusEmail({
+        wave: waveLabel,
+        editionDate,
+        reason: 'already_ran_today',
+        details: [
+          `existingCount=${existingCount}, dailyCap=${dailyCap}`,
+          'Pass ?force=true to bypass.',
+        ],
+      })
       return NextResponse.json({
         ok: true,
         skipped: 'already_ran_today',
@@ -172,7 +214,6 @@ export async function GET(req: Request) {
     }
 
     // ─── 4. Verify newsletter sent (today by default, or override) ───────
-    const editionDate = editionDateOverride ?? todayDateET()
     const { data: edition, error: editionErr } = await supabase
       .from('newsletter_editions')
       .select('id, edition_date, subject, status, article_ids')
@@ -181,6 +222,15 @@ export async function GET(req: Request) {
       .single<NewsletterEditionRow>()
 
     if (editionErr || !edition) {
+      await sendStatusEmail({
+        wave: waveLabel,
+        editionDate,
+        reason: 'newsletter_not_sent',
+        details: [
+          `No newsletter_editions row with status=sent for ${editionDate}.`,
+          editionErr ? `Supabase error: ${editionErr.message}` : 'Query returned no rows.',
+        ],
+      })
       return NextResponse.json({
         ok: true,
         skipped: 'newsletter_not_sent',
@@ -190,6 +240,12 @@ export async function GET(req: Request) {
     }
 
     if (!edition.article_ids || edition.article_ids.length === 0) {
+      await sendStatusEmail({
+        wave: waveLabel,
+        editionDate,
+        reason: 'no_articles',
+        details: [`Edition ${edition.id} has no article_ids.`],
+      })
       return NextResponse.json({
         ok: true,
         skipped: 'no_articles',
@@ -570,4 +626,49 @@ async function sendSummaryEmail(
     subject,
     body: lines.join('\n'),
   })
+}
+
+// Derive a human-readable wave label from the ?cap= query param so every
+// status/summary email subject tells Danny at a glance which cron hit.
+// Cron schedule in vercel.json: wave 1 passes ?cap=25, wave 2 passes ?cap=50.
+function waveFromCap(capOverride: string | null): 'wave 1' | 'wave 2' | 'manual' {
+  if (capOverride === '25') return 'wave 1'
+  if (capOverride === '50') return 'wave 2'
+  return 'manual'
+}
+
+// Emit a brief status email on every early-return / skip path. The whole
+// point is observability: without this, any of the skip branches (kill
+// switch, already-ran, newsletter-not-sent, no-articles, invalid-param)
+// silently no-op with zero signal to Danny, and an actual Vercel cron
+// miss looks identical to a kill-switched run. With this, absence of any
+// email for a given wave unambiguously means "cron did not fire."
+//
+// Wrapped in its own try/catch so a Gmail failure here never blocks the
+// HTTP response — we'd rather return 200 cleanly than throw and
+// double-alert.
+async function sendStatusEmail(params: {
+  wave: 'wave 1' | 'wave 2' | 'manual'
+  editionDate: string
+  reason: string
+  details: string[]
+}) {
+  try {
+    const to = process.env.GMAIL_SENDER_EMAIL ?? 'dbloomstine@gmail.com'
+    const subject = `Outreach ${params.wave} ${params.editionDate} — skipped: ${params.reason}`
+    const body = [
+      `FundOpsHQ outreach cron — ${params.editionDate} (${params.wave})`,
+      '',
+      `Skipped: ${params.reason}`,
+      '',
+      ...params.details,
+      '',
+      'This is a heartbeat email from the skip path — the cron DID fire,',
+      'it just returned early. If you did not receive this AND did not',
+      'receive a full send summary, Vercel cron missed the window.',
+    ].join('\n')
+    await sendGmail({ to, subject, body })
+  } catch (err) {
+    console.error('sendStatusEmail failed:', err)
+  }
 }
