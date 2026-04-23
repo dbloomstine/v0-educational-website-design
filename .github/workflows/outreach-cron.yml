@@ -1,0 +1,109 @@
+name: Outreach Cron (external trigger)
+
+# Why this exists:
+# Between 2026-04-22 and 2026-04-23 Vercel cron silently stopped firing
+# `/api/pipeline/outreach-send` four times in a row (two waves x two days),
+# including one day after we split the endpoints into dedicated wave paths
+# to rule out query-param handling. Other crons on the same vercel.json
+# (news-ingest, newsletter-send, outreach-monitor) kept firing normally,
+# and the wave-N routes are confirmed alive (401 JSON on unauth probe).
+# The observability fix in app/api/pipeline/outreach-send/route.ts would
+# have emitted a status email on any skip path — zero emails means the
+# cron genuinely did not fire. Root cause on Vercel's side unknown; we
+# couldn't extract invocation history from their API.
+#
+# So: GitHub Actions is now the primary scheduler for outreach. It curls
+# the Vercel endpoint on a schedule from outside, bypassing Vercel's cron
+# entirely. Vercel only runs the function code. This workflow replaces
+# the two outreach-send-wave-* cron entries that used to live in
+# vercel.json (kept alongside for a few weeks before either re-enabling
+# Vercel crons or permanently retiring them).
+#
+# Required repo secret: CRON_SECRET (same value as Vercel env var)
+#   gh secret set CRON_SECRET  # paste value from website/.env.local
+#
+# Schedule in GitHub Actions cron is UTC. Deliberately identical to the
+# old vercel.json schedules so Danny's mental model (wave 1 at 8:30 ET,
+# wave 2 at 1 PM ET) stays the same.
+
+on:
+  schedule:
+    - cron: '30 12 * * *' # wave 1 — 12:30 UTC / 8:30 AM EDT (7:30 EST)
+    - cron: '0 17 * * *' # wave 2 — 17:00 UTC / 1:00 PM EDT (12:00 EST)
+  workflow_dispatch:
+    inputs:
+      wave:
+        description: 'Wave (1 or 2) for manual runs'
+        required: true
+        type: choice
+        options: ['1', '2']
+        default: '1'
+      force:
+        description: 'Bypass idempotency guard (?force=true)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Resolve wave from event
+        id: which
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            WAVE="${{ github.event.inputs.wave }}"
+            FORCE="${{ github.event.inputs.force }}"
+          else
+            case "${{ github.event.schedule }}" in
+              "30 12 * * *") WAVE="1" ;;
+              "0 17 * * *")  WAVE="2" ;;
+              *) echo "::error::unrecognized cron schedule ${{ github.event.schedule }}" ; exit 1 ;;
+            esac
+            FORCE="false"
+          fi
+          echo "wave=$WAVE" >> $GITHUB_OUTPUT
+          echo "force=$FORCE" >> $GITHUB_OUTPUT
+          echo "Firing wave $WAVE (force=$FORCE) at $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+
+      - name: Hit Vercel outreach endpoint
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$CRON_SECRET" ]; then
+            echo "::error::CRON_SECRET secret not set on this repo — run: gh secret set CRON_SECRET"
+            exit 1
+          fi
+          WAVE="${{ steps.which.outputs.wave }}"
+          FORCE="${{ steps.which.outputs.force }}"
+          URL="https://fundopshq.com/api/pipeline/outreach-send-wave-${WAVE}"
+          if [[ "$FORCE" == "true" ]]; then
+            URL="${URL}?force=true"
+          fi
+          echo "GET $URL"
+          HTTP=$(curl -sS -o /tmp/resp.txt -w "%{http_code}" \
+            --max-time 300 \
+            -H "Authorization: Bearer ${CRON_SECRET}" \
+            -H "User-Agent: github-actions-outreach-cron" \
+            "$URL")
+          echo "HTTP status: $HTTP"
+          echo "--- response body (first 2KB) ---"
+          head -c 2048 /tmp/resp.txt
+          echo
+          echo "---"
+          if [[ "$HTTP" != "200" ]]; then
+            echo "::error::outreach-send-wave-${WAVE} returned HTTP ${HTTP}"
+            exit 1
+          fi
+
+      - name: Summary
+        if: always()
+        run: |
+          echo "## Outreach Cron Trigger" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Wave: **${{ steps.which.outputs.wave }}**" >> $GITHUB_STEP_SUMMARY
+          echo "- Time: $(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> $GITHUB_STEP_SUMMARY
+          echo "- Force: ${{ steps.which.outputs.force }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The actual outreach summary email lands in dbloomstine@gmail.com after the run finishes." >> $GITHUB_STEP_SUMMARY
