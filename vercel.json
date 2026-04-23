@@ -23,11 +23,11 @@
       "schedule": "30 11 * * *"
     },
     {
-      "path": "/api/pipeline/outreach-send?cap=25",
+      "path": "/api/pipeline/outreach-send-wave-1",
       "schedule": "30 12 * * *"
     },
     {
-      "path": "/api/pipeline/outreach-send?cap=50",
+      "path": "/api/pipeline/outreach-send-wave-2",
       "schedule": "0 17 * * *"
     },
     {
