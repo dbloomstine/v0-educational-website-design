@@ -1,25 +1,35 @@
 /**
  * Outreach cron handler — Path B automation pipeline.
  *
- * Runs daily on the Vercel cron schedule defined in vercel.json. Every
- * weekday at 13:00 UTC it:
+ * This is the SHARED handler. Vercel cron no longer hits it directly —
+ * as of 2026-04-23 (commit 78d024dd) the two daily fires come through
+ * `outreach-send-wave-1` (12:30 UTC, cap 25) and `outreach-send-wave-2`
+ * (17:00 UTC, cap 50 running total), which forward to this route with
+ * the appropriate `?cap=` query param. This route is still reachable
+ * directly and is useful for ad-hoc manual curl triggers (e.g.
+ * `curl -H "Authorization: Bearer $CRON_SECRET" \
+ *   '<host>/api/pipeline/outreach-send?cap=10&force=true'`).
  *
- *   1. Gates on auth + OUTREACH_ENABLED env flag
- *   2. Verifies today's newsletter has actually sent
- *   3. Pulls the articles that went out
- *   4. Builds candidate firms through the hard-block filters
- *   5. Runs firm-level dedup against cold_outreach_sent
- *   6. Enriches a senior contact per firm via Apollo
- *   7. Runs email-level dedup against subscribers + prior outreach
- *   8. Caps to OUTREACH_DAILY_CAP (default 10)
- *   9. For each surviving candidate: generate hook, compose email, quality gate, send via Gmail
- *  10. Logs every row (sent + skipped) to cold_outreach_sent
- *  11. Emails Danny a summary
+ * Per invocation it:
  *
- * Kill switches:
- *   - OUTREACH_ENABLED=true required (default off)
- *   - OUTREACH_DAILY_CAP enforced in code (default 10)
- *   - Idempotency guard via countTodaysRuns()
+ *   1. Auth + OUTREACH_ENABLED kill switch
+ *   2. Param validation (cap, contactsPerFirm)
+ *   3. Idempotency guard vs countTodaysRuns()
+ *   4. Verifies today's newsletter has actually sent
+ *   5. Pulls the articles that went out
+ *   6. Builds candidate firms through the hard-block filters
+ *   7. Runs firm-level dedup against cold_outreach_sent (permanent blocks only)
+ *   8. Enriches up to cap*2 contacts via Apollo (5-layer guard stack)
+ *   9. Runs email-level dedup against subscribers + prior outreach
+ *  10. For each surviving candidate: compose (forward or short) → quality gate → sendGmail → log
+ *  11. Emails Danny a summary (or a skip-status email from any of the early-return paths)
+ *
+ * Kill switches / knobs:
+ *   - OUTREACH_ENABLED=true required (defaults to disabled)
+ *   - Cap resolves from ?cap= query param → OUTREACH_DAILY_CAP env → 10
+ *   - Idempotency guard via countTodaysRuns(); ?force=true bypasses it
+ *   - Every skip path emits a status email (2026-04-22 observability fix)
+ *     so absence of any email for a given wave means Vercel cron did not fire
  */
 
 import { NextResponse } from 'next/server'
@@ -90,9 +100,9 @@ export async function GET(req: Request) {
   }
 
   // Parse query params up front so we can label the wave in every status
-  // email. The cron schedule in vercel.json passes ?cap=25 for wave 1
-  // (12:30 UTC) and ?cap=50 for wave 2 (17:00 UTC); any other cap value
-  // is a manual trigger.
+  // email. The wave wrappers (../outreach-send-wave-1, ../outreach-send-wave-2)
+  // set ?cap=25 or ?cap=50 before forwarding; any other cap value is a
+  // manual ad-hoc trigger.
   const url = new URL(req.url)
   const capOverride = url.searchParams.get('cap')
   const force = url.searchParams.get('force') === 'true'
@@ -630,7 +640,8 @@ async function sendSummaryEmail(
 
 // Derive a human-readable wave label from the ?cap= query param so every
 // status/summary email subject tells Danny at a glance which cron hit.
-// Cron schedule in vercel.json: wave 1 passes ?cap=25, wave 2 passes ?cap=50.
+// The wave wrappers forward cap=25 (wave 1) and cap=50 (wave 2) before
+// calling this handler; anything else is a manual ad-hoc trigger.
 function waveFromCap(capOverride: string | null): 'wave 1' | 'wave 2' | 'manual' {
   if (capOverride === '25') return 'wave 1'
   if (capOverride === '50') return 'wave 2'
