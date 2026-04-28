@@ -784,7 +784,13 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                       &nbsp;·&nbsp;
                       <a href="https://fundopshq.com" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Visit FundOpsHQ</a>
                       &nbsp;·&nbsp;
-                      <a href="https://www.youtube.com/@dbloomstine/streams" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Live Show</a>
+                      <a href="https://www.youtube.com/@dbloomstine/streams" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Live Show</a>${
+                        process.env.NEXT_PUBLIC_CHROME_EXTENSION_URL
+                          ? `
+                      &nbsp;·&nbsp;
+                      <a href="${escapeHtml(process.env.NEXT_PUBLIC_CHROME_EXTENSION_URL)}" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Chrome extension</a>`
+                          : ''
+                      }
                     </p>
                   </td>
                 </tr>

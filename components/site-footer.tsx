@@ -2,14 +2,25 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Logo } from "@/components/logo"
 
-const NAV_LINKS = [
-  { label: "News", href: "/#news" },
-  { label: "Show", href: "/#show" },
-  { label: "About", href: "/about" },
-  { label: "Brand", href: "/brand" },
-  { label: "Privacy", href: "/privacy" },
-  { label: "Terms", href: "/terms" },
+const BASE_NAV_LINKS = [
+  { label: "News", href: "/#news", external: false },
+  { label: "Show", href: "/#show", external: false },
+  { label: "About", href: "/about", external: false },
+  { label: "Brand", href: "/brand", external: false },
+  { label: "Privacy", href: "/privacy", external: false },
+  { label: "Terms", href: "/terms", external: false },
 ] as const
+
+const CHROME_EXTENSION_URL = process.env.NEXT_PUBLIC_CHROME_EXTENSION_URL
+
+type NavLink = { label: string; href: string; external: boolean }
+
+const NAV_LINKS: NavLink[] = CHROME_EXTENSION_URL
+  ? [
+      ...BASE_NAV_LINKS,
+      { label: "Chrome extension", href: CHROME_EXTENSION_URL, external: true },
+    ]
+  : [...BASE_NAV_LINKS]
 
 const SOCIAL_LINKS = [
   {
@@ -90,15 +101,27 @@ export function SiteFooter() {
         {/* Bottom row: nav + socials */}
         <div className="flex flex-col-reverse gap-8 md:flex-row md:items-center md:justify-between">
           <nav aria-label="Footer" className="flex flex-wrap items-center gap-x-5 gap-y-2">
-            {NAV_LINKS.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {NAV_LINKS.map((item) =>
+              item.external ? (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {item.label}
+                </a>
+              ) : (
+                <Link
+                  key={item.label}
+                  href={item.href}
+                  className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {item.label}
+                </Link>
+              ),
+            )}
           </nav>
 
           <div className="flex items-center gap-2">
