@@ -1,22 +1,17 @@
 import { ArrowRight } from "lucide-react"
+import { CHROME_EXTENSION_URL } from "@/lib/chrome-extension"
 
 /**
  * Slim top-of-page banner that surfaces the Chrome extension above the
- * sticky site header. Renders only when NEXT_PUBLIC_CHROME_EXTENSION_URL
- * is set, so previews and the legacy site (pre-launch) are unaffected.
- *
- * Not sticky — sits at the top of the document and scrolls away with the
- * rest of the page. The sticky SiteHeader takes over on scroll. This is a
- * one-impression-per-visit pattern: visible to everyone landing fresh, out
- * of the way once they engage.
+ * sticky site header. Not sticky — sits at the top of the document and
+ * scrolls away with the rest of the page. The sticky SiteHeader takes
+ * over on scroll. One-impression-per-visit pattern: visible to everyone
+ * landing fresh, out of the way once they engage.
  */
 export function TopAnnouncementBar() {
-  const url = process.env.NEXT_PUBLIC_CHROME_EXTENSION_URL
-  if (!url) return null
-
   return (
     <a
-      href={url}
+      href={CHROME_EXTENSION_URL}
       target="_blank"
       rel="noopener noreferrer"
       className="group relative block w-full border-b border-foreground/15 bg-foreground text-background"

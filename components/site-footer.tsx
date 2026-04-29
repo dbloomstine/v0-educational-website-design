@@ -1,26 +1,19 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Logo } from "@/components/logo"
+import { CHROME_EXTENSION_URL } from "@/lib/chrome-extension"
 
-const BASE_NAV_LINKS = [
+type NavLink = { label: string; href: string; external: boolean }
+
+const NAV_LINKS: NavLink[] = [
   { label: "News", href: "/#news", external: false },
   { label: "Show", href: "/#show", external: false },
   { label: "About", href: "/about", external: false },
   { label: "Brand", href: "/brand", external: false },
   { label: "Privacy", href: "/privacy", external: false },
   { label: "Terms", href: "/terms", external: false },
-] as const
-
-const CHROME_EXTENSION_URL = process.env.NEXT_PUBLIC_CHROME_EXTENSION_URL
-
-type NavLink = { label: string; href: string; external: boolean }
-
-const NAV_LINKS: NavLink[] = CHROME_EXTENSION_URL
-  ? [
-      ...BASE_NAV_LINKS,
-      { label: "Chrome extension", href: CHROME_EXTENSION_URL, external: true },
-    ]
-  : [...BASE_NAV_LINKS]
+  { label: "Chrome extension", href: CHROME_EXTENSION_URL, external: true },
+]
 
 const SOCIAL_LINKS = [
   {

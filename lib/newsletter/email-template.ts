@@ -19,6 +19,7 @@
 import type { ArticleGroup } from './query-articles'
 import { getEventTypeLabel, formatFundSize, isLikelyAumLeak } from './query-articles'
 import { getPrimaryLogoUrl, resolveLogoDomain } from '@/lib/news/firm-logo-url'
+import { CHROME_EXTENSION_URL } from '@/lib/chrome-extension'
 import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponsors'
 
 interface TemplateParams {
@@ -469,15 +470,14 @@ function renderCategory(group: ArticleGroup): string {
 }
 
 // ─── One-time top-of-issue announcements ──────────────────────────────────
-// Gated by env var (CHROME_EXTENSION_ANNOUNCE=1) so the announcement can be
-// dropped above the lead story for one issue and then quietly disabled by
-// clearing the var. Server-side only, so a regular env var (no NEXT_PUBLIC)
-// avoids a client-bundle rebuild when toggled.
+// Date-gated so the announcement appears only on tomorrow's edition (the
+// first send after the Chrome extension went live) and then quietly stops
+// rendering on its own — no env-var dance, no follow-up commit needed.
 
-function renderChromeExtensionAnnouncement(): string {
-  if (process.env.CHROME_EXTENSION_ANNOUNCE !== '1') return ''
-  const url = process.env.NEXT_PUBLIC_CHROME_EXTENSION_URL
-  if (!url) return ''
+const CHROME_ANNOUNCEMENT_LAST_DATE = '2026-04-30'
+
+function renderChromeExtensionAnnouncement(editionDate: string): string {
+  if (editionDate > CHROME_ANNOUNCEMENT_LAST_DATE) return ''
   const ANNOUNCE_RED = '#dc2626'
   return `
     <tr>
@@ -486,7 +486,7 @@ function renderChromeExtensionAnnouncement(): string {
           <div class="fops-mono" style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${ANNOUNCE_RED};margin-bottom:8px;">A small thing we shipped</div>
           <p class="fops-serif" style="font-size:16px;line-height:1.6;color:${INK};margin:0;">
             If you&rsquo;d like the news the second it lands instead of waiting for tomorrow morning&rsquo;s brief, the <strong>FundOpsHQ Chrome extension</strong> is now live. Red badge on your toolbar when a fund close, capital raise, or M&amp;A story hits the feed. Filter by asset class, fund size, signal strength &mdash; your call. Polls quietly every 10 minutes; no account, no tracking, no inbox clutter.
-            <strong><a href="${escapeHtml(url)}" target="_blank" style="color:${INK};font-weight:700;text-decoration:underline;">Get it on the Chrome Web Store &rarr;</a></strong>
+            <strong><a href="${escapeHtml(CHROME_EXTENSION_URL)}" target="_blank" style="color:${INK};font-weight:700;text-decoration:underline;">Get it on the Chrome Web Store &rarr;</a></strong>
           </p>
         </div>
       </td>
@@ -624,7 +624,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   const categoryBlocks = groups.map(renderCategory).join('')
   const sponsorTop = renderSponsorTop(sponsorSlate)
   const sponsorBottom = renderSponsorBottom(sponsorSlate)
-  const chromeAnnouncement = renderChromeExtensionAnnouncement()
+  const chromeAnnouncement = renderChromeExtensionAnnouncement(editionDate)
 
   // Social-proof eyebrow fragment. Omitted when count is unavailable
   // (test sends) or absurdly small. "In private markets" is the
@@ -813,13 +813,9 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                       &nbsp;·&nbsp;
                       <a href="https://fundopshq.com" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Visit FundOpsHQ</a>
                       &nbsp;·&nbsp;
-                      <a href="https://www.youtube.com/@dbloomstine/streams" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Live Show</a>${
-                        process.env.NEXT_PUBLIC_CHROME_EXTENSION_URL
-                          ? `
+                      <a href="https://www.youtube.com/@dbloomstine/streams" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Live Show</a>
                       &nbsp;·&nbsp;
-                      <a href="${escapeHtml(process.env.NEXT_PUBLIC_CHROME_EXTENSION_URL)}" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Chrome extension</a>`
-                          : ''
-                      }
+                      <a href="${escapeHtml(CHROME_EXTENSION_URL)}" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Chrome extension</a>
                     </p>
                   </td>
                 </tr>
