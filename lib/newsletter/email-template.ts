@@ -468,6 +468,31 @@ function renderCategory(group: ArticleGroup): string {
     </table>`
 }
 
+// ─── One-time top-of-issue announcements ──────────────────────────────────
+// Gated by env var (CHROME_EXTENSION_ANNOUNCE=1) so the announcement can be
+// dropped above the lead story for one issue and then quietly disabled by
+// clearing the var. Server-side only, so a regular env var (no NEXT_PUBLIC)
+// avoids a client-bundle rebuild when toggled.
+
+function renderChromeExtensionAnnouncement(): string {
+  if (process.env.CHROME_EXTENSION_ANNOUNCE !== '1') return ''
+  const url = process.env.NEXT_PUBLIC_CHROME_EXTENSION_URL
+  if (!url) return ''
+  const ANNOUNCE_RED = '#dc2626'
+  return `
+    <tr>
+      <td class="fops-bg-cream" style="background-color:${CREAM};padding:0;">
+        <div style="border-left:4px solid ${ANNOUNCE_RED};border-bottom:4px solid ${AMBER};padding:22px 32px;background-color:${CREAM};">
+          <div class="fops-mono" style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${ANNOUNCE_RED};margin-bottom:8px;">A small thing we shipped</div>
+          <p class="fops-serif" style="font-size:16px;line-height:1.6;color:${INK};margin:0;">
+            If you&rsquo;d like the news the second it lands instead of waiting for tomorrow morning&rsquo;s brief, the <strong>FundOpsHQ Chrome extension</strong> is now live. Red badge on your toolbar when a fund close, capital raise, or M&amp;A story hits the feed. Filter by asset class, fund size, signal strength &mdash; your call. Polls quietly every 10 minutes; no account, no tracking, no inbox clutter.
+            <strong><a href="${escapeHtml(url)}" target="_blank" style="color:${INK};font-weight:700;text-decoration:underline;">Get it on the Chrome Web Store &rarr;</a></strong>
+          </p>
+        </div>
+      </td>
+    </tr>`
+}
+
 // ─── Sponsor marks ─────────────────────────────────────────────────────────
 
 // Sponsor cards stack vertically: logo on top, blurb + CTA below. An
@@ -599,6 +624,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   const categoryBlocks = groups.map(renderCategory).join('')
   const sponsorTop = renderSponsorTop(sponsorSlate)
   const sponsorBottom = renderSponsorBottom(sponsorSlate)
+  const chromeAnnouncement = renderChromeExtensionAnnouncement()
 
   // Social-proof eyebrow fragment. Omitted when count is unavailable
   // (test sends) or absurdly small. "In private markets" is the
@@ -719,6 +745,9 @@ export function renderNewsletterEmail(params: TemplateParams): string {
 
           <!-- ─── Sponsor: top ─── -->
           ${sponsorTop}
+
+          <!-- ─── One-time announcement (env-gated) ─── -->
+          ${chromeAnnouncement}
 
           <!-- ─── Content ─── -->
           <tr>
