@@ -295,5 +295,5 @@ export function buildSubject(content: {
   if (remaining === 0) {
     return `${bestArticle.firmName}${sizeHint}`
   }
-  return `${bestArticle.firmName}${sizeHint} · + ${remaining} more moves`
+  return `${bestArticle.firmName}${sizeHint} · + ${remaining} more move${remaining === 1 ? '' : 's'}`
 }
