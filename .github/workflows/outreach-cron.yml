@@ -26,10 +26,18 @@ name: Outreach Cron (external trigger)
 # old vercel.json schedules so Danny's mental model (wave 1 at 8:30 ET,
 # wave 2 at 1 PM ET) stays the same.
 
+# PAUSED 2026-06-06: the twice-daily schedule was silently burning Apollo
+# enrichment credits (~137 since the monthly renewal) — outreach-send hits
+# Apollo's /people/match for up to cap*2 people per run, and that step runs
+# BEFORE the Gmail send loop, so it spent credits daily even while auto-send
+# was effectively dormant (broken outreach Gmail OAuth). Schedule disabled
+# until outreach is intentionally resumed. `workflow_dispatch` is kept so the
+# pipeline can still be fired manually on demand.
+# To resume: uncomment the `schedule:` block below.
 on:
-  schedule:
-    - cron: '30 12 * * *' # wave 1 — 12:30 UTC / 8:30 AM EDT (7:30 EST)
-    - cron: '0 17 * * *' # wave 2 — 17:00 UTC / 1:00 PM EDT (12:00 EST)
+  # schedule:
+  #   - cron: '30 12 * * *' # wave 1 — 12:30 UTC / 8:30 AM EDT (7:30 EST)
+  #   - cron: '0 17 * * *' # wave 2 — 17:00 UTC / 1:00 PM EDT (12:00 EST)
   workflow_dispatch:
     inputs:
       wave:
