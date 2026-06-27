@@ -49,17 +49,18 @@ export async function sendDailyNewsletter(
   // ─── 2. Query articles ────────────────────────────────────────────────────
   let content = await queryNewsletterArticles(supabase, hoursBack)
 
-  // Weekend rescue: 2026-04-12 and 2026-04-13 shipped with 1 and 2 articles
-  // respectively because Saturday/Sunday feeds are quiet. Subscribers got a
-  // thin brief and nearly-empty sections. When the Monday–Friday 26h window
-  // is dry, expand to 48h on weekend days. Cross-edition fingerprinting in
-  // query-articles already suppresses anything we ran in the prior 3
-  // editions, so this cleanly backfills without re-showing Adams-Street-
-  // style cross-day dupes.
+  // Weekend rescue: Saturday/Sunday feeds are quiet, so the standard 26h
+  // window routinely produces a thin brief — a 2026-06 performance review
+  // found 6 of the 7 thinnest editions were Sundays, several with 1–3
+  // articles even though the <5 / 48h rescue was already in place. Widen
+  // both knobs: trigger at <8 articles and expand to a 72h window. Cross-
+  // edition fingerprinting in query-articles suppresses anything we ran in
+  // the recent editions (and now holds fund closes/launches for ~14
+  // editions), so this backfills cleanly without re-showing cross-day dupes.
   const dayOfWeek = new Date(`${editionDate}T12:00:00-05:00`).getUTCDay()
   const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
-  if (isWeekend && content.totalArticles < 5 && hoursBack < 48) {
-    content = await queryNewsletterArticles(supabase, 48)
+  if (isWeekend && content.totalArticles < 8 && hoursBack < 72) {
+    content = await queryNewsletterArticles(supabase, 72)
   }
 
   // Floor of 1 — a literally-empty brief never ships, but quiet weekend

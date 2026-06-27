@@ -173,7 +173,7 @@ function cleanHtml(html: string): string {
 
   // 3. Remove the unsubscribe footer block. The newsletter ends with:
   //    "You're receiving this because you subscribed at fundopshq.com."
-  //    "Unsubscribe · Visit FundOpsHQ · Live Show"
+  //    "Unsubscribe · Visit FundOpsHQ · Chrome extension"
   //    Plus an unsubscribe link with a recipient-specific token (Danny's
   //    own token, since the pipeline fetches from his personal inbox).
   //
@@ -198,7 +198,7 @@ function cleanHtml(html: string): string {
     // table-cell container. Only `table`/`tr`/`td` — intentionally NOT
     // `<p>` or `<div>`, because the footer "You're receiving this..."
     // text lives inside a `<p>` that's a SIBLING of another `<p>` with
-    // the "Unsubscribe / Visit / Live Show" links. Walking back to the
+    // the "Unsubscribe / Visit / Chrome extension" links. Walking back to the
     // innermost `<p>` would only strip one of the two paragraphs.
     // Walking back to the enclosing `<td>` catches both.
     const before = cleaned.slice(0, earliestFooterIdx)

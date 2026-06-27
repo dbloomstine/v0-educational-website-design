@@ -9,7 +9,6 @@ import { cn } from "@/lib/utils"
 
 const NAV_ITEMS = [
   { label: "News", href: "/#news", match: ["/"] },
-  { label: "Show", href: "/#show", match: [] },
   { label: "About", href: "/about", match: ["/about"] },
 ] as const
 
@@ -66,21 +65,6 @@ export function SiteHeader() {
               )}
             </Link>
           ))}
-
-          {/* Live show indicator link */}
-          <a
-            href="https://www.youtube.com/@dbloomstine/streams"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="ml-2 inline-flex h-9 items-center gap-2 rounded-sm border border-red-700/50 bg-red-950/30 px-3 font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-red-300 transition-colors hover:border-red-500/70 hover:bg-red-950/60 hover:text-red-200"
-            aria-label="Watch FundOpsHQ Live on YouTube"
-          >
-            <span className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-500" />
-            </span>
-            Live
-          </a>
         </nav>
 
         {/* Right-side actions */}
@@ -127,20 +111,6 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-
-            <a
-              href="https://www.youtube.com/@dbloomstine/streams"
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center gap-2 rounded-sm border border-red-700/50 bg-red-950/30 px-3 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-red-300"
-            >
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-500" />
-              </span>
-              Watch Live on YouTube
-            </a>
 
             <Link
               href="/#subscribe"

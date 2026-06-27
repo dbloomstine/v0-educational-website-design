@@ -39,7 +39,7 @@ export default function PrivacyPolicyPage() {
             <div className="mx-auto max-w-3xl">
               <div className="prose prose-invert prose-lg max-w-none">
                 <p className="text-sm text-muted-foreground mb-12">
-                  Last updated: January 6, 2025
+                  Last updated: June 27, 2026
                 </p>
 
                 {/* Introduction */}
@@ -126,7 +126,7 @@ export default function PrivacyPolicyPage() {
                     If you subscribe to our newsletter:
                   </p>
                   <ul className="list-disc list-inside text-muted-foreground space-y-2">
-                    <li>We will only send you content related to fund operations and Site updates</li>
+                    <li>We will only send you content related to fund news and Site updates</li>
                     <li>We will never sell, rent, or share your email address with third parties for marketing purposes</li>
                     <li>Every email includes an unsubscribe link to opt out at any time</li>
                     <li>You can request deletion of your email from our list at any time by contacting us</li>

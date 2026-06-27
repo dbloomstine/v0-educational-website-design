@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { CheckCircle2, Loader2, ArrowRight, Mail } from 'lucide-react'
+import { CHROME_EXTENSION_URL } from '@/lib/chrome-extension'
 
 /**
  * Decode the `?e=<base64url>` query param that the outreach pipeline
@@ -155,16 +156,16 @@ export function HeroSubscribe() {
             <span className="hidden sm:inline">The Daily Brief for Private Markets</span>
             <span aria-hidden="true" className="hidden sm:inline text-foreground/20">·</span>
             <a
-              href="https://www.youtube.com/@dbloomstine/streams"
+              href={CHROME_EXTENSION_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-red-400 hover:text-red-300 transition-colors"
+              className="inline-flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors"
             >
               <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-red-500" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
+                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-400" />
               </span>
-              Live Show on YouTube
+              Get the Chrome extension
             </a>
           </span>
         </div>
@@ -190,9 +191,8 @@ export function HeroSubscribe() {
                 fontVariationSettings: '"opsz" 144, "SOFT" 30',
               }}
             >
-              News, newsletter
+              Fund news and a
               <br />
-              and the{' '}
               <span
                 className="italic"
                 style={{
@@ -201,16 +201,16 @@ export function HeroSubscribe() {
                   color: 'oklch(0.85 0.12 85)',
                 }}
               >
-                live&nbsp;show.
+                morning&nbsp;newsletter.
               </span>
             </h1>
 
             <p className="mt-6 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-              Real-time fund news, a morning briefing in your inbox, and a weekly broadcast with the people running
-              the back office of PE, VC and credit.
+              Real-time fund news and a morning briefing in your inbox — for the GPs, LPs, and fund service
+              providers across PE, VC, credit and the rest of private markets.
             </p>
 
-            {/* Channels strip — News · Newsletter · Show */}
+            {/* Channels strip — News · Newsletter · Sources */}
             <dl className="mt-8 grid grid-cols-3 gap-4 max-w-md border-y border-foreground/10 py-4">
               <div>
                 <dt className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">News</dt>
@@ -221,8 +221,8 @@ export function HeroSubscribe() {
                 <dd className="mt-1 font-display text-2xl text-foreground">Daily</dd>
               </div>
               <div className="border-l border-foreground/10 pl-4">
-                <dt className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">Show</dt>
-                <dd className="mt-1 font-display text-2xl text-foreground">Weekly</dd>
+                <dt className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">Sources</dt>
+                <dd className="mt-1 font-display text-2xl text-foreground">200+</dd>
               </div>
             </dl>
           </div>

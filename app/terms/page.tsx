@@ -38,7 +38,7 @@ export default function TermsPage() {
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl">
               <p className="text-sm text-muted-foreground mb-12">
-                Last Updated: January 6, 2025
+                Last Updated: June 27, 2026
               </p>
 
               <div className="prose prose-invert prose-lg max-w-none space-y-12">
@@ -57,14 +57,14 @@ export default function TermsPage() {
                   </div>
                 </div>
 
-                {/* Educational Purpose Disclaimer */}
+                {/* Informational Purpose Disclaimer */}
                 <div>
-                  <h2 className="text-2xl font-bold tracking-tight mb-4">2. Educational Purpose Disclaimer</h2>
+                  <h2 className="text-2xl font-bold tracking-tight mb-4">2. Informational Purpose Disclaimer</h2>
                   <div className="space-y-4 text-muted-foreground leading-relaxed">
                     <p>
                       <strong className="text-foreground">FundOpsHQ is for informational purposes only.</strong> All content,
-                      including video episodes, podcasts, newsletters, news coverage, and other materials provided
-                      on this Site are intended solely for general informational and educational purposes.
+                      including the FundOps Daily newsletter, news coverage, and other materials provided
+                      on this Site, is intended solely for general informational purposes.
                     </p>
                     <p>
                       The information on this Site does NOT constitute:
@@ -91,9 +91,9 @@ export default function TermsPage() {
                   <h2 className="text-2xl font-bold tracking-tight mb-4">3. Use of Content</h2>
                   <div className="space-y-4 text-muted-foreground leading-relaxed">
                     <p>
-                      FundOpsHQ provides video episodes, podcast content, newsletters, and news coverage
-                      (collectively, &quot;Content&quot;) for informational and educational purposes only. This Content
-                      is designed to share perspectives and experiences related to fund operations and is not
+                      FundOpsHQ provides the FundOps Daily newsletter and news coverage
+                      (collectively, &quot;Content&quot;) for informational purposes only. This Content
+                      is designed to share news and perspectives related to fund operations and is not
                       intended to serve as professional guidance for specific business decisions.
                     </p>
                     <p>
@@ -101,13 +101,14 @@ export default function TermsPage() {
                     </p>
                     <ul className="list-disc pl-6 space-y-2">
                       <li>
-                        Views expressed by guests are their own and do not necessarily reflect the views of FundOpsHQ
+                        Views expressed by third parties or sources featured or quoted in the Content are their own
+                        and do not necessarily reflect the views of FundOpsHQ
                       </li>
                       <li>
                         Content may reflect the specific experiences of individuals and may not apply to your circumstances
                       </li>
                       <li>
-                        Information shared in episodes, newsletters, or news coverage should not be relied upon for
+                        Information shared in the newsletter or news coverage should not be relied upon for
                         actual financial planning, reporting, or decision-making
                       </li>
                     </ul>

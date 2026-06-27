@@ -38,11 +38,11 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://fundopshq.com'),
   title: {
-    default: "FundOpsHQ — News, Newsletter & Live Show for the Investment Funds Industry",
+    default: "FundOpsHQ — News & Daily Newsletter for the Investment Funds Industry",
     template: "%s | FundOpsHQ"
   },
   description:
-    "FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed, the morning newsletter, and the FundOpsHQ Live weekly show. Built for GPs, LPs, and the fund service providers working in and around private markets.",
+    "FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed and morning newsletter. Built for GPs, LPs, and the fund service providers working in and around private markets.",
   keywords: [
     "investment funds",
     "private markets",
@@ -59,7 +59,6 @@ export const metadata: Metadata = {
     "LPs",
     "GPs",
     "FundOps Daily",
-    "FundOpsHQ Live",
   ],
   authors: [{ name: "FundOpsHQ" }],
   creator: "FundOpsHQ",
@@ -74,22 +73,13 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://fundopshq.com',
     siteName: 'FundOpsHQ',
-    title: 'FundOpsHQ — News, Newsletter & Live Show for the Investment Funds Industry',
-    description: 'The hub for the investment funds industry. Home to FundOps Daily, the morning newsletter, and the FundOpsHQ Live weekly show — built for GPs, LPs, and fund service providers across private markets.',
-    images: [
-      {
-        url: '/og-image.png',
-        width: 1200,
-        height: 630,
-        alt: 'FundOpsHQ — News, Newsletter & Live Show for the Investment Funds Industry',
-      },
-    ],
+    title: 'FundOpsHQ — News & Daily Newsletter for the Investment Funds Industry',
+    description: 'The hub for the investment funds industry. Home to the FundOps Daily news feed and morning newsletter — built for GPs, LPs, and fund service providers across private markets.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FundOpsHQ — News, Newsletter & Live Show for the Investment Funds Industry',
+    title: 'FundOpsHQ — News & Daily Newsletter for the Investment Funds Industry',
     description: 'The hub for the investment funds industry. Built for GPs, LPs, and fund service providers across private markets.',
-    images: ['/og-image.png'],
   },
   robots: {
     index: true,
@@ -124,7 +114,6 @@ export const metadata: Metadata = {
     // google: 'your-google-verification-code',
     // yandex: 'your-yandex-verification-code',
   },
-    generator: 'v0.app'
 }
 
 export default function RootLayout({

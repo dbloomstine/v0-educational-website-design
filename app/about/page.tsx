@@ -4,22 +4,23 @@ import Image from 'next/image'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
-import { ArrowRight, Linkedin, Youtube, Mail, Newspaper, Radio, Building2 } from 'lucide-react'
+import { ArrowRight, Linkedin, Mail, Newspaper, Chrome, Building2 } from 'lucide-react'
+import { CHROME_EXTENSION_URL } from '@/lib/chrome-extension'
 
 export const metadata: Metadata = {
   title: 'About FundOpsHQ',
   description:
-    'FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed, the morning newsletter, and the FundOpsHQ Live weekly show. By Danny Bloomstine.',
+    'FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed and morning newsletter. By Danny Bloomstine.',
   openGraph: {
     title: 'About FundOpsHQ',
-    description: 'The hub for the investment funds industry. Home to FundOps Daily, the newsletter, and the FundOpsHQ Live weekly show.',
+    description: 'The hub for the investment funds industry. Home to the FundOps Daily news feed and morning newsletter.',
     type: 'website',
     url: 'https://fundopshq.com/about',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'About FundOpsHQ',
-    description: 'The hub for the investment funds industry. Home to FundOps Daily, the newsletter, and the FundOpsHQ Live weekly show.',
+    description: 'The hub for the investment funds industry. Home to the FundOps Daily news feed and morning newsletter.',
   },
   alternates: {
     canonical: 'https://fundopshq.com/about',
@@ -56,13 +57,14 @@ const PILLARS = [
   },
   {
     no: '03',
-    eyebrow: 'The Broadcast',
-    title: 'FundOpsHQ Live',
+    eyebrow: 'In Your Browser',
+    title: 'Chrome extension',
     body:
-      'A weekly live show on YouTube. Two guests from the front lines of fund administration, compliance, tax and operations — plus the week\'s biggest stories.',
-    icon: Radio,
-    href: '/#show',
-    cta: 'Watch the show',
+      'FundOpsHQ in a single click from any tab. Scan the latest fund news without leaving what you\'re working on — the wire, wherever you are.',
+    icon: Chrome,
+    href: CHROME_EXTENSION_URL,
+    cta: 'Install free',
+    external: true,
   },
 ] as const
 
@@ -178,7 +180,7 @@ export default function AboutPage() {
               </h1>
 
               <p className="mt-8 max-w-2xl text-lg sm:text-xl text-muted-foreground leading-relaxed">
-                FundOpsHQ is the news desk, morning briefing, and weekly broadcast for GPs, LPs, and the fund
+                FundOpsHQ is the news desk and morning briefing for GPs, LPs, and the fund
                 service providers working around them — covering PE, VC, credit, hedge, real estate and the
                 rest of the alternative investment industry. Built and edited by{' '}
                 <span className="text-foreground font-medium">Danny Bloomstine</span>.
@@ -197,7 +199,7 @@ export default function AboutPage() {
                   <span aria-hidden="true" className="text-foreground/20">·</span>
                   <span>Three Channels</span>
                 </span>
-                <span className="hidden sm:inline">News · Newsletter · Show</span>
+                <span className="hidden sm:inline">News · Newsletter · Extension</span>
               </div>
             </div>
           </div>
@@ -227,12 +229,9 @@ export default function AboutPage() {
             <div className="grid gap-px bg-foreground/10 md:grid-cols-3 border border-foreground/15">
               {PILLARS.map((pillar) => {
                 const Icon = pillar.icon
-                return (
-                  <Link
-                    key={pillar.no}
-                    href={pillar.href}
-                    className="group relative flex flex-col bg-background p-8 transition-colors hover:bg-card/40"
-                  >
+                const isExternal = pillar.href.startsWith('http')
+                const inner = (
+                  <>
                     <div className="mb-6 flex items-start justify-between">
                       <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground/60">
                         No. {pillar.no} · {pillar.eyebrow}
@@ -261,6 +260,23 @@ export default function AboutPage() {
                       {pillar.cta}
                       <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
                     </div>
+                  </>
+                )
+                const className =
+                  'group relative flex flex-col bg-background p-8 transition-colors hover:bg-card/40'
+                return isExternal ? (
+                  <a
+                    key={pillar.no}
+                    href={pillar.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={className}
+                  >
+                    {inner}
+                  </a>
+                ) : (
+                  <Link key={pillar.no} href={pillar.href} className={className}>
+                    {inner}
                   </Link>
                 )
               })}
@@ -350,7 +366,7 @@ export default function AboutPage() {
                   </p>
                   <p>
                     He started FundOpsHQ to bring more visibility to the operational side of the industry — through
-                    real-time news, a daily briefing, and conversations with the people doing the work.
+                    real-time news and a daily briefing for the people doing the work.
                   </p>
                 </div>
 
@@ -363,15 +379,6 @@ export default function AboutPage() {
                   >
                     <Linkedin className="h-4 w-4" />
                     Connect on LinkedIn
-                  </a>
-                  <a
-                    href="https://www.youtube.com/@dbloomstine/streams"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-sm bg-red-600 px-5 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-white transition-colors hover:bg-red-500"
-                  >
-                    <Youtube className="h-4 w-4" />
-                    Watch the show
                   </a>
                   <span className="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/60">
                     <Building2 className="h-3.5 w-3.5" />
@@ -492,8 +499,8 @@ export default function AboutPage() {
                 </span>
               </h2>
               <p className="mx-auto mt-6 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-                The FundOps Daily newsletter lands in your inbox before the open. The wire updates continuously. The
-                show streams weekly.
+                The FundOps Daily newsletter lands in your inbox before the open, and the wire updates
+                continuously throughout the day.
               </p>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
                 <Link

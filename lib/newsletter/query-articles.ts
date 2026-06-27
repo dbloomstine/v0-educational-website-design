@@ -86,6 +86,21 @@ const MIN_FUND_SIZE_MILLIONS = 25
 const CROSS_EDITION_LOOKBACK = 3
 
 /**
+ * Extended lookback applied ONLY to fund closes/launches, which are one-time
+ * events that should never reappear. A 2026-06 review caught Conifer
+ * Infrastructure's $900M close running on 6/18 and again 9 editions later as
+ * the 6/27 subject line — well beyond the 3-edition window. For these event
+ * types we suppress on the *size-bucketed* fingerprint only (firm|event|size),
+ * so a genuinely distinct event at a different size — e.g. a $400M first close
+ * followed weeks later by a $900M final close of the same fund — is NOT
+ * collapsed. The bare firm|fund key is intentionally left to the 3-edition
+ * window so legitimate follow-on news isn't lost.
+ */
+const EXTENDED_CLOSE_LOOKBACK = 14
+
+const EXTENDED_FINGERPRINT_TYPES = new Set(['fund_close', 'fund_launch'])
+
+/**
  * Source tier ranking for picking the best article per story.
  * Lower number = higher priority. Matched case-insensitively.
  */
@@ -365,11 +380,10 @@ export async function queryNewsletterArticles(
     grouped[primaryCat].push(article)
   }
 
-  // Rollup: if "secondaries" has only 1 story, merge it into PE.
-  if (grouped.secondaries && grouped.secondaries.length < 2) {
-    grouped.PE = [...(grouped.PE ?? []), ...grouped.secondaries]
-    delete grouped.secondaries
-  }
+  // Secondaries stands as its own section, consistent with every other
+  // asset class. (It was previously rolled into PE whenever it had <2
+  // stories on a given day; a 2026-06 review found that quietly hid the
+  // category even on days it had supply, so the rollup was removed.)
   // Suppress "other" entirely — classification orphans that pass the
   // quality gate should be reclassified upstream, not leaked to readers.
   delete grouped.other
@@ -586,49 +600,106 @@ export function storyFingerprints(
   return out
 }
 
+/**
+ * The single "strong" fingerprint used for the EXTENDED_CLOSE_LOOKBACK window:
+ * `firm|event|size-bucket`. Matches the size-bucketed key that storyFingerprints
+ * emits, so a new fund close collides with the same firm/event/size from up to
+ * 14 editions ago (the Conifer repeat) — but a different size does not (a $400M
+ * first close vs a $900M final close stay distinct). Returns null when there's
+ * no firm or no usable size, in which case the recent 3-edition window still
+ * applies via storyFingerprints.
+ */
+export function closeEventFingerprint(
+  firmName: string | null,
+  eventType: string | null,
+  fundSizeUsdMillions: number | null
+): string | null {
+  const firm = normalizeFirmName(firmName)
+  if (!firm) return null
+  if (!fundSizeUsdMillions || fundSizeUsdMillions <= 0) return null
+  const bucket = Math.round(fundSizeUsdMillions / 500) * 500
+  return `${firm}|${eventType ?? ''}|${bucket}`
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function extractFingerprintFields(row: any): {
+  firmName: string | null
+  fundName: string | null
+  fundSize: number | null
+  eventType: string | null
+} {
+  const extractedData = row.extracted_data as Record<string, unknown> | null
+  const entitiesRaw = row.entities_raw as Array<{ name: string; type: string }> | null
+  const firmEntity = entitiesRaw?.find((e) => e.type === 'firm')
+  const firmName = (extractedData?.firm_name as string) ?? firmEntity?.name ?? null
+  const fundName = (extractedData?.fund_name as string) ?? null
+  const fundSize = (extractedData?.fund_size_usd_millions as number | null) ?? null
+  const eventType = row.event_type ?? row.article_type ?? null
+  return { firmName, fundName, fundSize, eventType }
+}
+
 async function getPriorEditionExclusions(
   supabase: DbClient
 ): Promise<{ ids: Set<string>; fingerprints: Set<string> }> {
+  // Pull the extended window once (newest first). The most recent
+  // CROSS_EDITION_LOOKBACK editions contribute full fingerprints + the
+  // exact-id exclusion; the older editions in the window contribute only the
+  // strong close/launch fingerprint (see EXTENDED_CLOSE_LOOKBACK).
   const { data: editions } = await supabase
     .from('newsletter_editions')
     .select('article_ids')
     .eq('status', 'sent')
     .order('edition_date', { ascending: false })
-    .limit(CROSS_EDITION_LOOKBACK)
+    .limit(EXTENDED_CLOSE_LOOKBACK)
 
-  const ids = new Set<string>()
-  if (editions && editions.length > 0) {
-    for (const ed of editions) {
+  const recentIds = new Set<string>()
+  const extendedIds = new Set<string>()
+  if (editions) {
+    editions.forEach((ed, idx) => {
       const arr = (ed as { article_ids: string[] | null }).article_ids
-      if (arr) {
-        for (const id of arr) ids.add(id)
+      if (!arr) return
+      const target = idx < CROSS_EDITION_LOOKBACK ? recentIds : extendedIds
+      for (const id of arr) target.add(id)
+    })
+  }
+
+  // Exact-id exclusion stays scoped to the recent window — an article that ran
+  // days ago won't re-enter the 26h query anyway, and the extended window is
+  // meant to soft-suppress by size, not hard-block by id.
+  const ids = recentIds
+  const fingerprints = new Set<string>()
+
+  // Recent window: full fingerprints for every article.
+  const recentList = Array.from(recentIds)
+  for (let i = 0; i < recentList.length; i += 200) {
+    const chunk = recentList.slice(i, i + 200)
+    const { data: rowsData } = await supabase
+      .from('news_items')
+      .select('title, article_type, event_type, extracted_data, entities_raw')
+      .in('id', chunk)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    for (const row of (rowsData ?? []) as any[]) {
+      const { firmName, fundName, fundSize, eventType } = extractFingerprintFields(row)
+      for (const fp of storyFingerprints(firmName, fundName, eventType, fundSize)) {
+        fingerprints.add(fp)
       }
     }
   }
 
-  const fingerprints = new Set<string>()
-  if (ids.size > 0) {
-    const idList = Array.from(ids)
-    for (let i = 0; i < idList.length; i += 200) {
-      const chunk = idList.slice(i, i + 200)
-      const { data: rowsData } = await supabase
-        .from('news_items')
-        .select('title, article_type, event_type, extracted_data, entities_raw')
-        .in('id', chunk)
-      if (rowsData) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        for (const row of rowsData as any[]) {
-          const extractedData = row.extracted_data as Record<string, unknown> | null
-          const entitiesRaw = row.entities_raw as Array<{ name: string; type: string }> | null
-          const firmEntity = entitiesRaw?.find((e) => e.type === 'firm')
-          const firmName = (extractedData?.firm_name as string) ?? firmEntity?.name ?? null
-          const fundName = (extractedData?.fund_name as string) ?? null
-          const fundSize = (extractedData?.fund_size_usd_millions as number | null) ?? null
-          const eventType = row.event_type ?? row.article_type ?? null
-          const fps = storyFingerprints(firmName, fundName, eventType, fundSize)
-          for (const fp of fps) fingerprints.add(fp)
-        }
-      }
+  // Extended window: only fund closes/launches, only the strong size key.
+  const extendedOnly = Array.from(extendedIds).filter((id) => !recentIds.has(id))
+  for (let i = 0; i < extendedOnly.length; i += 200) {
+    const chunk = extendedOnly.slice(i, i + 200)
+    const { data: rowsData } = await supabase
+      .from('news_items')
+      .select('article_type, event_type, extracted_data, entities_raw')
+      .in('id', chunk)
+      .in('article_type', Array.from(EXTENDED_FINGERPRINT_TYPES))
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    for (const row of (rowsData ?? []) as any[]) {
+      const { firmName, fundSize, eventType } = extractFingerprintFields(row)
+      const fp = closeEventFingerprint(firmName, eventType, fundSize)
+      if (fp) fingerprints.add(fp)
     }
   }
 

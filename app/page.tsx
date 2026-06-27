@@ -4,25 +4,23 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { HeroSubscribe } from '@/components/home/hero-subscribe'
-import { LiveShowFeature } from '@/components/home/live-show-feature'
 import { NewsFeed } from '@/components/news/NewsFeed'
 import { StickySubscribeBar } from '@/components/news/StickySubscribeBar'
-import { fetchPlaylistVideos } from '@/lib/youtube'
 
 export const metadata: Metadata = {
-  title: 'FundOpsHQ | News, Newsletter & Live Show for the Investment Funds Industry',
+  title: 'FundOpsHQ | News & Daily Newsletter for the Investment Funds Industry',
   description:
-    'The hub for the investment funds industry. Real-time fund launches, capital raises, exec moves, and regulatory news across PE, VC, private credit, real estate, and infrastructure — plus the FundOpsHQ Live weekly show. Subscribe to FundOps Daily.',
+    'The hub for the investment funds industry. Real-time fund launches, capital raises, exec moves, and regulatory news across PE, VC, private credit, real estate, and infrastructure. Subscribe to the FundOps Daily newsletter.',
   openGraph: {
-    title: 'FundOpsHQ | News, Newsletter & Live Show for the Investment Funds Industry',
+    title: 'FundOpsHQ | News & Daily Newsletter for the Investment Funds Industry',
     description:
-      'The hub for the investment funds industry. Real-time fund news, a morning newsletter, and the FundOpsHQ Live weekly show — built for GPs, LPs, and fund service providers across private markets.',
+      'The hub for the investment funds industry. Real-time fund news and a morning newsletter — built for GPs, LPs, and fund service providers across private markets.',
     type: 'website',
     url: 'https://fundopshq.com',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FundOpsHQ | News, Newsletter & Live Show for the Investment Funds Industry',
+    title: 'FundOpsHQ | News & Daily Newsletter for the Investment Funds Industry',
     description:
       'The hub for the investment funds industry. Built for GPs, LPs, and fund service providers across private markets. Subscribe to FundOps Daily.',
   },
@@ -38,7 +36,7 @@ const organizationJsonLd = {
   url: 'https://fundopshq.com',
   logo: 'https://fundopshq.com/icon.svg',
   description:
-    'FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed and newsletter, and the FundOpsHQ Live weekly broadcast show. Built for GPs, LPs, and fund service providers across private markets.',
+    'FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed and morning newsletter. Built for GPs, LPs, and fund service providers across private markets.',
   founder: {
     '@type': 'Person',
     name: 'Danny Bloomstine',
@@ -46,8 +44,6 @@ const organizationJsonLd = {
   },
   sameAs: [
     'https://www.linkedin.com/in/danny-bloomstine/',
-    'https://www.youtube.com/@dbloomstine',
-    'https://www.tiktok.com/@dannybloomstine',
   ],
 }
 
@@ -57,17 +53,14 @@ const websiteJsonLd = {
   name: 'FundOpsHQ',
   url: 'https://fundopshq.com',
   description:
-    'Real-time fund news, the FundOps Daily newsletter, and the weekly FundOpsHQ Live show — the hub for the investment funds industry.',
+    'Real-time fund news and the FundOps Daily newsletter — the hub for the investment funds industry.',
   publisher: {
     '@type': 'Organization',
     name: 'FundOpsHQ',
   },
 }
 
-export default async function HomePage() {
-  const videos = await fetchPlaylistVideos()
-  const latestVideo = videos[0] ?? null
-
+export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col">
       <script
@@ -81,7 +74,7 @@ export default async function HomePage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* ─── Hero: subscribe + live show CTA over massive wordmark ─── */}
+        {/* ─── Hero: subscribe CTA over massive wordmark ─── */}
         <HeroSubscribe />
 
         {/* ─── News Feed ─── */}
@@ -143,9 +136,6 @@ export default async function HomePage() {
             </Suspense>
           </div>
         </section>
-
-        {/* ─── Live Show Feature ─── */}
-        <LiveShowFeature latestVideo={latestVideo} />
       </main>
 
       <SiteFooter />

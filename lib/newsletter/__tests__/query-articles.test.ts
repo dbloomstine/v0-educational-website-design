@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   storyFingerprints,
+  closeEventFingerprint,
   isLikelyAumLeak,
   FUND_SIZE_SANITY_CEILING_MILLIONS,
   deduplicateAcrossSections,
@@ -201,5 +202,43 @@ describe('deduplicateAcrossSections', () => {
 
     expect(groups[0].articles).toHaveLength(1)
     expect(groups[1].articles).toHaveLength(1)
+  })
+})
+
+describe('closeEventFingerprint (extended close/launch lookback)', () => {
+  it('matches the size-bucketed key storyFingerprints emits for the same close', () => {
+    // The extended-window dedup works only if a NEW article (fingerprinted via
+    // storyFingerprints) collides with the strong key stored from an older
+    // edition via closeEventFingerprint. They must agree byte-for-byte.
+    const strong = closeEventFingerprint('Conifer Infrastructure', 'fund_close', 900)
+    expect(strong).not.toBeNull()
+    expect(strong!.endsWith('|fund_close|1000')).toBe(true) // 900 → $1000M band
+    // The new article's full fingerprint set must include the strong key.
+    expect(storyFingerprints('Conifer Infrastructure', null, 'fund_close', 900)).toContain(strong!)
+  })
+
+  it('catches the Conifer $900M close re-running ~9 editions later', () => {
+    // Regression: the same $900M close ran on 6/18 and again as the 6/27
+    // subject line — beyond the 3-edition window. The 14-edition close/launch
+    // window keys both runs to the same fingerprint.
+    const firstRun = closeEventFingerprint('Conifer Infrastructure', 'fund_close', 900)
+    const secondRun = closeEventFingerprint('Conifer Infrastructure', 'fund_close', 900)
+    expect(secondRun).toBe(firstRun)
+  })
+
+  it('keeps a first close and a final close of the same fund distinct by size', () => {
+    // A $400M first close followed weeks later by a $900M final close are
+    // genuinely different events and must NOT be collapsed — they land in
+    // different $500M bands.
+    const firstClose = closeEventFingerprint('Acme Capital', 'fund_close', 400) // → 500 band
+    const finalClose = closeEventFingerprint('Acme Capital', 'fund_close', 900) // → 1000 band
+    expect(firstClose).not.toBe(finalClose)
+  })
+
+  it('returns null without a usable firm or size (the recent window covers those)', () => {
+    expect(closeEventFingerprint('Acme Capital', 'fund_close', null)).toBeNull()
+    expect(closeEventFingerprint('Acme Capital', 'fund_close', 0)).toBeNull()
+    expect(closeEventFingerprint(null, 'fund_close', 900)).toBeNull()
+    expect(closeEventFingerprint('', 'fund_close', 900)).toBeNull()
   })
 })

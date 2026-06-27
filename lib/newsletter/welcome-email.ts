@@ -15,6 +15,8 @@
  *    user-agent `a:link` cascade.
  */
 
+import { CHROME_EXTENSION_URL } from '@/lib/chrome-extension'
+
 const NAVY = '#1E3A5F'
 const NAVY_DEEP = '#0F1E33'
 const CREAM = '#F8F5EC'
@@ -120,11 +122,11 @@ export function renderWelcomeEmail(unsubscribeUrl: string): string {
               </p>
 
               <p style="margin:0 0 16px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
-                Thanks for signing up for <strong>FundOps Daily</strong>. A quick note from me before the first edition lands in your inbox tomorrow morning.
+                Thanks for subscribing to <strong>FundOps Daily</strong> — glad you&rsquo;re here. A quick note from me before your first edition lands tomorrow morning.
               </p>
 
               <p style="margin:0 0 16px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
-                I built FundOpsHQ because I wanted one place to keep up with what&rsquo;s actually happening across the funds industry — fund launches, closes, LP commitments, exec moves, regulatory shifts, and deals — without hopping between twelve trade publications every morning. Starting tomorrow you&rsquo;ll get a concise rundown of the biggest stories before 6am ET, every day.
+                I built FundOpsHQ because I wanted one place to keep up with what&rsquo;s actually happening across the funds industry — fund launches, closes, LP commitments, exec moves, regulatory shifts and deals — without hopping between a dozen trade publications every morning. Starting tomorrow, you&rsquo;ll get a tight rundown of the biggest stories in your inbox every morning, before the market opens.
               </p>
 
               <p style="margin:24px 0 10px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};font-weight:700;">
@@ -138,7 +140,7 @@ export function renderWelcomeEmail(unsubscribeUrl: string): string {
               </ul>
 
               <p style="margin:0 0 16px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
-                Beyond the morning brief, FundOpsHQ is also home to a live news feed at <a href="https://fundopshq.com/#news" style="color:${INK};text-decoration:underline;font-weight:600;">fundopshq.com</a> and <strong>FundOpsHQ Live</strong> — our weekly broadcast every Thursday at 11am ET on <a href="https://www.youtube.com/@dbloomstine/streams" style="color:${INK};text-decoration:underline;font-weight:600;">YouTube</a>.
+                Don&rsquo;t want to wait until morning? The full newsroom updates all day at <a href="https://fundopshq.com/#news" style="color:${INK};text-decoration:underline;font-weight:600;">fundopshq.com</a> — and you can keep it one click away with the free <a href="${escapeHtml(CHROME_EXTENSION_URL)}" style="color:${INK};text-decoration:underline;font-weight:600;">Chrome extension</a>, so you can scan the latest fund news from any tab.
               </p>
 
               <!-- Feedback callout -->
@@ -192,7 +194,7 @@ export function renderWelcomeEmail(unsubscribeUrl: string): string {
                       &nbsp;&middot;&nbsp;
                       <a href="https://fundopshq.com" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Visit FundOpsHQ</a>
                       &nbsp;&middot;&nbsp;
-                      <a href="https://www.youtube.com/@dbloomstine/streams" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Live Show</a>
+                      <a href="${escapeHtml(CHROME_EXTENSION_URL)}" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Chrome extension</a>
                     </p>
                   </td>
                 </tr>

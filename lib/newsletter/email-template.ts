@@ -729,7 +729,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                       <tr>
                         <td class="fops-eyebrow-light" style="letter-spacing:2.5px;">
-                          NEWS &nbsp;·&nbsp; NEWSLETTER &nbsp;·&nbsp; LIVE SHOW
+                          PE &nbsp;·&nbsp; VC &nbsp;·&nbsp; CREDIT &nbsp;·&nbsp; REAL ESTATE &nbsp;·&nbsp; INFRA
                         </td>
                         <td align="right" class="fops-eyebrow-amber">
                           FUNDOPSHQ.COM
@@ -812,8 +812,6 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                       <a href="${escapeHtml(unsubscribeUrl)}" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Unsubscribe</a>
                       &nbsp;·&nbsp;
                       <a href="https://fundopshq.com" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Visit FundOpsHQ</a>
-                      &nbsp;·&nbsp;
-                      <a href="https://www.youtube.com/@dbloomstine/streams" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Live Show</a>
                       &nbsp;·&nbsp;
                       <a href="${escapeHtml(CHROME_EXTENSION_URL)}" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Chrome extension</a>
                     </p>
