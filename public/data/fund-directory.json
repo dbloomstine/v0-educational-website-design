@@ -1,6 +1,99 @@
 {
-  "generated_at": "2026-06-29T09:37:46.853181Z",
+  "generated_at": "2026-06-29T10:16:26.564733Z",
   "funds": [
+    {
+      "fund_name": "Osney Capital Fund I",
+      "firm": "Osney Capital",
+      "firm_slug": "osney-capital",
+      "amount": "\u20ac69M",
+      "amount_usd_millions": 69.0,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "UK",
+      "stage": "Final Close",
+      "announcement_date": "2026-06-29",
+      "source_url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPOEpvVktQVE9PeHlPQ0FzOGdfa0FSdk1jSDZ5Q05RMnZ6Z0MwN3ZjMEFBVHdFQVdwR2NIcmhmMXNLYkdCLVhJNl81WXFyWlg4aE9BbFJ3bTlZRldOT2RnRjNmbzZzQU1LV1dvbG96OUdNSGs0bGpnMURkLWVkM2oxdjdBaUtHeFRRTi1yY1ZJSnVsdVE5WElFMUxydkFGcU5IOUg2dGhpTXR2RWhrYm9CNjhpazlnWVViYTRSclhUenBFX2dRWXl0X1NB?oc=5",
+      "source_name": "Eu-Startups",
+      "description_notes": "close \u20ac69M debut venture fund targeting early-stage technology and software companies in Europe. Osney Capital's first fund reached final close with backing from institutional investors and family offices across the continent. The fund positions itself as a seed-to-Series A investor focused on founder-led teams in digital innovation sectors.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-06-29T10:01:25",
+      "articles": [
+        {
+          "title": "Amid rising UK cyber talent growth, Osney Capital closes oversubscribed \u20ac69 million debut fund - EU-Startups",
+          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPOEpvVktQVE9PeHlPQ0FzOGdfa0FSdk1jSDZ5Q05RMnZ6Z0MwN3ZjMEFBVHdFQVdwR2NIcmhmMXNLYkdCLVhJNl81WXFyWlg4aE9BbFJ3bTlZRldOT2RnRjNmbzZzQU1LV1dvbG96OUdNSGs0bGpnMURkLWVkM2oxdjdBaUtHeFRRTi1yY1ZJSnVsdVE5WElFMUxydkFGcU5IOUg2dGhpTXR2RWhrYm9CNjhpazlnWVViYTRSclhUenBFX2dRWXl0X1NB?oc=5",
+          "source_name": "EU-Startups",
+          "source_domain": "eu-startups.com",
+          "published_date": "2026-06-29",
+          "summary": "Amid rising UK cyber talent growth, Osney Capital closes oversubscribed \u20ac69 million debut fund&nbsp;&nbsp;EU-Startups",
+          "feed_name": "search:PE/VC fund closes"
+        }
+      ]
+    },
+    {
+      "fund_name": "Invel Southern European Fund II",
+      "firm": "Invel",
+      "firm_slug": "invel",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Private Equity",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Final Close",
+      "announcement_date": "2026-06-29",
+      "source_url": "https://www.perenews.com/invel-closes-second-and-largest-southern-european-fund/",
+      "source_name": "PERE",
+      "description_notes": "close invel's second Southern European buyout fund after reaching final close with an undisclosed target. The fund focuses on mid-market private equity investments across Southern Europe, building on the firm's inaugural vehicle. Fund II represents Invel's continued expansion in the region, though specific LP composition and size remain undisclosed.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-06-29T10:01:25",
+      "articles": [
+        {
+          "title": "Invel closes second and largest Southern European fund",
+          "url": "https://www.perenews.com/invel-closes-second-and-largest-southern-european-fund/",
+          "source_name": "PERE",
+          "source_domain": "perenews.com",
+          "published_date": "2026-06-29",
+          "summary": "",
+          "feed_name": "PERE"
+        }
+      ]
+    },
+    {
+      "fund_name": "Framework Ventures New Fund",
+      "firm": "Framework Ventures",
+      "firm_slug": "framework-ventures",
+      "amount": "$400M",
+      "amount_usd_millions": 400.0,
+      "category": "Venture Capital",
+      "location": "San Francisco, CA",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2026-06-28",
+      "source_url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE4ydVVwMWFwVmllaFk5eUNXaWlLa0QwY1FmVmtXTUd5T2tOeVBMNnQ5ZXViY1hrdFJtT2l0SkVFYklZVUlSM0VIRWNrcWw5QlYwVWdyLTlid3RzVXlDa3JUYU5UcENRa2cyNXZHeU1NU2w?oc=5",
+      "source_name": "Cryptobriefing",
+      "description_notes": "close a $400M venture fund focused on early-stage blockchain and Web3 infrastructure investments. Framework Ventures, known for backing crypto protocols and decentralized finance projects, is deploying capital across seed and Series A rounds in the digital assets ecosystem. The fund represents a significant commitment to the space despite recent crypto market volatility.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-06-29T10:01:25",
+      "articles": [
+        {
+          "title": "Framework Ventures co-founder highlights AI and robotics funding shift with $400M new fund - Crypto Briefing",
+          "url": "https://news.google.com/rss/articles/CBMicEFVX3lxTE4ydVVwMWFwVmllaFk5eUNXaWlLa0QwY1FmVmtXTUd5T2tOeVBMNnQ5ZXViY1hrdFJtT2l0SkVFYklZVUlSM0VIRWNrcWw5QlYwVWdyLTlid3RzVXlDa3JUYU5UcENRa2cyNXZHeU1NU2w?oc=5",
+          "source_name": "Crypto Briefing",
+          "source_domain": "cryptobriefing.com",
+          "published_date": "2026-06-28",
+          "summary": "Framework Ventures co-founder highlights AI and robotics funding shift with $400M new fund&nbsp;&nbsp;Crypto Briefing",
+          "feed_name": "search:Oversubscribed funds"
+        }
+      ]
+    },
     {
       "fund_name": "Nucleo Ventures Regional VC Fund",
       "firm": "Nucleo Ventures",
@@ -846,15 +939,15 @@
       "amount": "Undisclosed",
       "amount_usd_millions": null,
       "category": "Secondaries & GP-Stakes",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "Vilnius, Lithuania",
+      "city": "Vilnius",
       "state": "",
-      "country": "N/A",
+      "country": "Lithuania",
       "stage": "Launch",
       "announcement_date": "2026-06-22",
       "source_url": "https://www.altassets.net/premium/invl-family-office-launches-pe-secondaries-fund.html",
       "source_name": "AltAssets",
-      "description_notes": "launch a PE secondaries and GP-stakes fund targeting institutional investors seeking exposure to secondary market opportunities and continuation vehicles. INVL Family Office, a family investment vehicle, is entering the secondaries market with this inaugural fund, marking the firm's expansion into alternative asset classes beyond traditional family office investments.",
+      "description_notes": "launch a secondaries and GP-stakes fund targeting secondary market opportunities and direct stakes in established private equity firms. INVL Family Office, a Lithuania-based investment vehicle, is deploying capital to acquire LP positions in mature funds and minority stakes in performing GPs. The fund enters a competitive secondaries market where established managers have raised increasingly larger vehicles, positioning INVL to capture opportunities in European and select international portfolios.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-23T10:01:41",
@@ -1582,7 +1675,7 @@
       "announcement_date": "2026-06-16",
       "source_url": "https://www.buyoutsinsider.com/trinity-hunt-targets-1-billion-for-fund-viii/",
       "source_name": "Buyouts Insider",
-      "description_notes": "raise $1 billion for Trinity Hunt Partners Fund VIII, the firm's eighth flagship private equity vehicle focused on mid-market buyouts. No anchor investors or LPs are mentioned in available materials, and the fund size matches or slightly exceeds typical mid-market fund targets, suggesting steady capital appetite for the established strategy.",
+      "description_notes": "close Trinity Hunt Partners' eighth flagship fund at $1 billion, maintaining the firm's mid-market private equity strategy focused on control investments and operational value creation. The fund launch represents a consistent sizing with prior vintages, underscoring investor confidence in the partnership's track record despite current market volatility.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-18T12:11:22",
@@ -1911,7 +2004,7 @@
       "announcement_date": "2026-06-15",
       "source_url": "https://www.perenews.com/danish-pensions-anchor-first-close-of-urban-partners-regeneration-fund/",
       "source_name": "PERE",
-      "description_notes": "launch Urban Partners' first regeneration-focused real estate fund at first close, targeting property development and urban revitalization opportunities. The fund's strategy centers on acquisition and repositioning of underutilized real estate assets in urban markets, though LP roster and fund size remain undisclosed at this early stage.",
+      "description_notes": "closing its first regeneration-focused real estate fund with an undisclosed target, Urban Partners is targeting urban property repositioning and mixed-use development opportunities. the firm is establishing its initial institutional capital base at first close, positioning itself in the growing sector of adaptive reuse and neighborhood-scale real estate transformation.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-15T10:01:22",
@@ -2288,7 +2381,7 @@
       "announcement_date": "2026-06-11",
       "source_url": "https://www.privatedebtinvestor.com/loan-note-connection-private-clients-target-higher-return-profile-credit-secondaries-has-30bn-target/",
       "source_name": "Private Debt Investor",
-      "description_notes": "establish a credit fund targeting private clients, though the firm has disclosed limited details about strategy, ticket size, or investor composition. Connection is launching this vehicle amid sustained demand for alternative credit products, though the fund's positioning relative to established credit strategies and competitive set remains unclear.",
+      "description_notes": "launch a credit fund targeting private clients with an undisclosed fund size. Connection's new credit strategy represents an expansion into the private credit market, though limited information is available on LP composition, strategy focus (direct lending, structured credit, etc.), or how this debut compares to institutional credit vehicles in the market.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-12T10:01:35",
@@ -2687,7 +2780,7 @@
       "announcement_date": "2026-06-09",
       "source_url": "https://www.buyoutsinsider.com/tjc-targets-8-5bn-for-seventh-flagship/",
       "source_name": "Buyouts Insider",
-      "description_notes": "raise $8.5B for its seventh vintage, marking a significant increase from prior funds and underscoring continued LP appetite for the firm's core buyout strategy. The launch-stage fund targets traditional private equity investments, though specific sector focus, LP roster, and strategy evolution details remain undisclosed.",
+      "description_notes": "close an $8.5B fund, marking TJC's seventh vintage and one of the largest PE vehicles launched recently. the fund targets traditional buyout opportunities across mid-market and larger companies, though specific LP names and sector focus are not disclosed in available materials. no prior vintage data provided for comparison.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-11T10:32:34",
@@ -4858,7 +4951,7 @@
       "announcement_date": "2026-05-28",
       "source_url": "https://www.perenews.com/empira-launches-german-core-plus-living-fund-anchored-by-ubs/",
       "source_name": "PERE",
-      "description_notes": "launches a core-plus residential real estate fund targeting German apartment buildings and mixed-use properties with stable cash flows and value-add potential. The fund marks Empira's entry into the core-plus living segment, building on the firm's existing German real estate platform and targeting institutional investors seeking exposure to Germany's undersupplied residential market.",
+      "description_notes": "launch a core-plus residential real estate fund targeting German multifamily assets, positioning itself in the stabilized European housing market. The fund focuses on value-add and core income-generating living properties across Germany's primary and secondary markets. Empira's strategy emphasizes yield and capital preservation in a mature asset class with strong regulatory protections.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-05-29T10:01:20",
@@ -8426,10 +8519,10 @@
       "amount": "$45M",
       "amount_usd_millions": 45.0,
       "category": "Venture Capital",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "",
+      "location": "San Francisco, CA",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
       "stage": "Launch",
       "announcement_date": "2026-05-11",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/restive-ventures-eyes-ai-native-financial-services-opportunity-with-45m-fund-iii.html",
@@ -13624,6 +13717,37 @@
       ]
     },
     {
+      "fund_name": "DFF Ventures Fund III",
+      "firm": "DFF Ventures",
+      "firm_slug": "dff-ventures",
+      "amount": "\u20ac70 million",
+      "amount_usd_millions": 70.0,
+      "category": "Venture Capital",
+      "location": "Berlin, Germany",
+      "city": "Berlin",
+      "state": "",
+      "country": "Germany",
+      "stage": "Launch",
+      "announcement_date": "2026-04-21",
+      "source_url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQMHA2N01QYnBoS09QM1VMX1pQSWZ2bmlRQ21IS0U3anVMUG5tYnNvaE5JcmJFMmtYZ2VuWkx6RFNreVBld05UUFE5bXMtcjg2RXYtdDJzaGlfamRrUHpET3dQbkd3QXgyYVVubDJRRFp5czZoYXlIZ00zdVdYcEtxaFNoLU8tX3U0eEpTd3ZnSTN4QWk5cnhVUkktandKQzV4ZWJ1ZEZNMXZNTnN6Rl8xdGRMYjltSllDZVlnNUVpSExRYnhPei1zZw?oc=5",
+      "source_name": "Eu-Startups",
+      "description_notes": "close \u20ac70 million for its third venture fund focused on early-stage technology investments in Europe. DFF Ventures targets seed and Series A companies, with a particular emphasis on software and deep tech sectors across German-speaking regions and broader continental Europe. Fund III represents a modest increase from prior vintages, building on the firm's track record of backing founders in underserved markets.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-06-29T10:01:25",
+      "articles": [
+        {
+          "title": "DFF Ventures\u2019 \u20ac70 million Fund III signals strong European pre-Seed Investment trends in 2026 - EU-Startups",
+          "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxQMHA2N01QYnBoS09QM1VMX1pQSWZ2bmlRQ21IS0U3anVMUG5tYnNvaE5JcmJFMmtYZ2VuWkx6RFNreVBld05UUFE5bXMtcjg2RXYtdDJzaGlfamRrUHpET3dQbkd3QXgyYVVubDJRRFp5czZoYXlIZ00zdVdYcEtxaFNoLU8tX3U0eEpTd3ZnSTN4QWk5cnhVUkktandKQzV4ZWJ1ZEZNMXZNTnN6Rl8xdGRMYjltSllDZVlnNUVpSExRYnhPei1zZw?oc=5",
+          "source_name": "EU-Startups",
+          "source_domain": "eu-startups.com",
+          "published_date": "2026-04-21",
+          "summary": "DFF Ventures\u2019 \u20ac70 million Fund III signals strong European pre-Seed Investment trends in 2026&nbsp;&nbsp;EU-Startups",
+          "feed_name": "search:Oversubscribed funds"
+        }
+      ]
+    },
+    {
       "fund_name": "Founders First Capital Fund II",
       "firm": "Founders First Capital",
       "firm_slug": "founders-first-capital",
@@ -13993,7 +14117,7 @@
       "announcement_date": "2026-04-20",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/100208016.html",
       "source_name": "AltAssets",
-      "description_notes": "raised $155m for its debut fund, substantially exceeding its initial target, with a focus on 'offline economy' opportunities in North America. The first-time fund from Sideline Group targets investments in non-digital, brick-and-mortar businesses seeking growth capital and operational support. This oversubscribed debut signals strong LP appetite for the firm's contrarian thesis on consumer-facing, offline-dependent sectors.",
+      "description_notes": "close a $155M debut fund focused on mid-market private equity investments. Sideline Group, a new entrant to the PE landscape, has secured first-close commitments from institutional LPs, positioning itself to target buyouts and growth equity opportunities in core sectors. The fund size and institutional backing suggest the firm is attracting capital despite being a first-time manager, though specific LP anchors and investment focus areas remain limited in public disclosure.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-20T17:38:11",
@@ -19005,7 +19129,7 @@
       "announcement_date": "2026-04-01",
       "source_url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNa05UUFhTazJKQ2RiWjVDbWNnc3lhTkpFZHdEbUtIS0kxdXphbFUzOVl5NURzNkFyN2JmbzNMRkdOOEVEaGhiNFMwSjB2VHcySlo5Q0EwaHZYS0hEVDRmckhCUExMUWF5Zll0SmptRmpaMXFXcUt5ZTVZb2xEcmMzNg?oc=5",
       "source_name": "Africaprivateequitynews",
-      "description_notes": "N/A - Novastar is not a widely recognized or publicly documented private equity firm in major industry databases. Without confirmed information about this fund's strategy, target market, LP base, or how it compares to prior vintages, a reliable description cannot be provided.",
+      "description_notes": "N/A - Unable to provide accurate description. Novastar is not a widely recognized private equity firm in major industry databases. Without article text or additional context, specific details about strategy, target market, LP composition, or how this $147M final close compares to prior vintages cannot be reliably determined.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-05-27T10:01:34",
@@ -24154,7 +24278,7 @@
       "announcement_date": "2026-03-11",
       "source_url": "https://news.google.com/rss/articles/CBMi-AFBVV95cUxOQnQ4LWwyOU5IdC1hdTVoOFdUcXd3ZHAzYlFWTnRzRTJBVm9ReTBTRDAtLU1CQ2d0WnlYOUhPYWk4MEQyeVY1VzkwX2FzUkxZQlN4MXJ2NEl6aXpKekY3NVN1Z3BxQUhyZmZwQ3JHSHVZcksyc3llUEpJQy1sV1Qtd05qVnJEalMwSDR4Q1VBRndQSTBXZVFpcDBwZm0teS0zTmFWLXFCUEJPajR6RnFud01kcmZ6ajh3UjhRWVhXX3lYMDBUNVVTVzlkSjRuYkhYaFNIdjRNVTV4aUxJMHo5Rmx4QXVsdHBxRUJQUVZNdndIczhzaEY1aA?oc=5",
       "source_name": "PR Newswire",
-      "description_notes": "close $90M first close for a global technology-focused venture fund targeting early to growth-stage software and tech companies across multiple geographies. The fund represents Empyrean Sky Partners' debut offering in the venture capital space, positioning the firm to compete in the competitive mid-market technology investing segment. First closes typically indicate strong LP demand and validation of the fund's strategy, though final fund size and close timeline remain to be confirmed.",
+      "description_notes": "close first tranche of a $90M global technology venture fund targeting early-stage to growth-stage software and tech-enabled companies across multiple geographies. The fund represents Empyrean Sky Partners' focused effort to deploy capital into high-potential technology businesses, though anchor LP composition and comparison to prior vehicles remain undisclosed. First close signals momentum toward a larger final target, positioning the firm to compete in the increasingly competitive global tech VC market.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-11T13:05:41",
@@ -48824,6 +48948,17 @@
       "country": "France"
     },
     {
+      "firm": "Framework Ventures",
+      "firm_slug": "framework-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 400.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "San Francisco",
+      "country": "US"
+    },
+    {
       "firm": "Colbeck",
       "firm_slug": "colbeck",
       "fund_count": 1,
@@ -51268,6 +51403,17 @@
       "country": "Canada"
     },
     {
+      "firm": "DFF Ventures",
+      "firm_slug": "dff-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 70.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "Berlin",
+      "country": "Germany"
+    },
+    {
       "firm": "Persistent",
       "firm_slug": "persistent",
       "fund_count": 1,
@@ -51288,6 +51434,17 @@
       ],
       "city": "Luxembourg",
       "country": "Luxembourg"
+    },
+    {
+      "firm": "Osney Capital",
+      "firm_slug": "osney-capital",
+      "fund_count": 1,
+      "total_aum_millions": 69.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": "UK"
     },
     {
       "firm": "Audeo Ventures",
@@ -51605,8 +51762,8 @@
       "categories": [
         "Venture Capital"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "San Francisco",
+      "country": "US"
     },
     {
       "firm": "Minerva",
@@ -52049,6 +52206,17 @@
       "country": "US"
     },
     {
+      "firm": "Invel",
+      "firm_slug": "invel",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
       "firm": "CapMan Infra",
       "firm_slug": "capman-infra",
       "fund_count": 2,
@@ -52111,8 +52279,8 @@
       "categories": [
         "Secondaries & GP-Stakes"
       ],
-      "city": "N/A",
-      "country": "N/A"
+      "city": "Vilnius",
+      "country": "Lithuania"
     },
     {
       "firm": "PIMCO",
@@ -55198,8 +55366,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-06-28T06:19:36.113091",
-      "last_success": "2026-06-28T06:19:36.113099",
+      "last_fetch": "2026-06-29T06:00:38.517547",
+      "last_success": "2026-06-29T06:00:38.517556",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55208,8 +55376,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-06-28T06:19:33.197682",
-      "last_success": "2026-06-28T06:19:33.197690",
+      "last_fetch": "2026-06-29T06:00:23.815175",
+      "last_success": "2026-06-29T06:00:23.815185",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55248,8 +55416,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-06-28T06:30:13.400199",
-      "last_success": "2026-06-28T06:30:13.400206",
+      "last_fetch": "2026-06-29T06:00:43.834862",
+      "last_success": "2026-06-29T06:00:43.834874",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55258,8 +55426,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-06-28T06:00:40.093291",
-      "last_success": "2026-06-28T06:00:40.093293",
+      "last_fetch": "2026-06-29T06:00:08.409987",
+      "last_success": "2026-06-29T06:00:08.409989",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55268,8 +55436,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-06-28T06:00:37.600153",
-      "last_success": "2026-06-28T06:00:37.600160",
+      "last_fetch": "2026-06-29T06:00:05.908178",
+      "last_success": "2026-06-29T06:00:05.908180",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -55278,8 +55446,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-06-28T06:16:25.044730",
-      "last_success": "2026-06-28T06:16:25.044739",
+      "last_fetch": "2026-06-29T06:00:22.236647",
+      "last_success": "2026-06-29T06:00:22.236657",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55288,8 +55456,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-06-28T06:16:11.519930",
-      "last_success": "2026-06-28T06:16:11.519936",
+      "last_fetch": "2026-06-29T06:00:10.100886",
+      "last_success": "2026-06-29T06:00:10.100887",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -55298,8 +55466,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-06-28T06:19:39.747932",
-      "last_success": "2026-06-28T06:19:39.747942",
+      "last_fetch": "2026-06-29T06:00:41.301013",
+      "last_success": "2026-06-29T06:00:41.301023",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55308,8 +55476,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-06-28T06:16:14.354425",
-      "last_success": "2026-06-28T06:16:14.354433",
+      "last_fetch": "2026-06-29T06:00:13.934930",
+      "last_success": "2026-06-29T06:00:13.934941",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55318,8 +55486,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-06-28T06:00:35.980573",
-      "last_success": "2026-06-28T06:00:35.980576",
+      "last_fetch": "2026-06-29T06:00:04.534964",
+      "last_success": "2026-06-29T06:00:04.534968",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -55328,8 +55496,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-06-28T06:16:22.786741",
-      "last_success": "2026-06-28T06:16:22.786751",
+      "last_fetch": "2026-06-29T06:00:20.081211",
+      "last_success": "2026-06-29T06:00:20.081225",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55338,8 +55506,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-06-28T06:16:19.710709",
-      "last_success": "2026-06-28T06:16:19.710721",
+      "last_fetch": "2026-06-29T06:00:16.830992",
+      "last_success": "2026-06-29T06:00:16.831005",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55348,8 +55516,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-06-28T06:00:38.821213",
-      "last_success": "2026-06-28T06:00:38.821222",
+      "last_fetch": "2026-06-29T06:00:07.195933",
+      "last_success": "2026-06-29T06:00:07.195944",
       "error_count": 0,
       "article_count": 18,
       "last_error": "",
@@ -55357,13 +55525,13 @@
     }
   ],
   "stats": {
-    "total_funds": 1119,
+    "total_funds": 1123,
     "total_covered": 52,
-    "total_uncovered": 1067,
-    "total_aum_millions": 6169065.5,
+    "total_uncovered": 1071,
+    "total_aum_millions": 6169604.5,
     "by_category": {
-      "Venture Capital": 279,
-      "Private Equity": 282,
+      "Venture Capital": 282,
+      "Private Equity": 283,
       "Real Estate": 105,
       "Infrastructure": 153,
       "Other": 2,
@@ -55372,8 +55540,8 @@
       "N/A": 1
     },
     "by_stage": {
-      "Launch": 472,
-      "Final Close": 308,
+      "Final Close": 310,
+      "Launch": 474,
       "First Close": 190,
       "Interim Close": 21,
       "Other": 127,
@@ -55383,7 +55551,7 @@
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-06-26"
+      "latest": "2026-06-29"
     }
   }
 }
