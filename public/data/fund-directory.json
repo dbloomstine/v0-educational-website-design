@@ -1,6 +1,77 @@
 {
-  "generated_at": "2026-06-30T10:11:47.490619Z",
+  "generated_at": "2026-07-01T10:06:39.986694Z",
   "funds": [
+    {
+      "fund_name": "Tapestry VC Fund III",
+      "firm": "Tapestry VC",
+      "firm_slug": "tapestry-vc",
+      "amount": "\u20ac70 million",
+      "amount_usd_millions": 70.0,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Launch",
+      "announcement_date": "2026-07-01",
+      "source_url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOMWJ4c0RZdzdsX3h6MGZUN3RYcm5jcmhJWjRJQjdhYXFzTjVQYVRsbEZibmxGd0FDTi14cHRYNkJkQjFSZlQtN1FiV0RDemtUNEM2T09YekV0WjVEVDA4RFp6LU9fYmkwdFhxMF84cWVrU0lhNXZHbnphb3pqc3V3RE5NRlpDT0Q5S2NOUzJBajNhVFYyaC0zXzk0T0p1ay1BamoxOEtkLXI0SFQ0Tmw4Tm5qSkdNa3JIRGc?oc=5",
+      "source_name": "Eu-Startups",
+      "description_notes": "raises \u20ac70 million for its third fund with the British Business Bank as co-anchor investor. The fund targets early-stage ventures across Europe, building on Tapestry VC's track record with prior vintages.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-01T10:02:24",
+      "articles": [
+        {
+          "title": "Tapestry VC launches $80m third fund backed by British Business Bank",
+          "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/tapestry-vc-launches-80m-third-fund-backed-by-british-business-bank.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-07-01",
+          "summary": "",
+          "feed_name": "AltAssets"
+        },
+        {
+          "title": "Tapestry VC launches \u20ac70 million Fund III with British Business Bank as co-anchor - EU-Startups",
+          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOMWJ4c0RZdzdsX3h6MGZUN3RYcm5jcmhJWjRJQjdhYXFzTjVQYVRsbEZibmxGd0FDTi14cHRYNkJkQjFSZlQtN1FiV0RDemtUNEM2T09YekV0WjVEVDA4RFp6LU9fYmkwdFhxMF84cWVrU0lhNXZHbnphb3pqc3V3RE5NRlpDT0Q5S2NOUzJBajNhVFYyaC0zXzk0T0p1ay1BamoxOEtkLXI0SFQ0Tmw4Tm5qSkdNa3JIRGc?oc=5",
+          "source_name": "EU-Startups",
+          "source_domain": "eu-startups.com",
+          "published_date": "2026-07-01",
+          "summary": "Tapestry VC launches \u20ac70 million Fund III with British Business Bank as co-anchor&nbsp;&nbsp;EU-Startups",
+          "feed_name": "search:PE/VC fund closes"
+        }
+      ]
+    },
+    {
+      "fund_name": "Patria Investments Fifth Secondaries Fund",
+      "firm": "Patria Investments",
+      "firm_slug": "patria-investments",
+      "amount": "$677M",
+      "amount_usd_millions": 677.0,
+      "category": "Secondaries & GP-Stakes",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "Brazil",
+      "stage": "First Close",
+      "announcement_date": "2026-06-30",
+      "source_url": "https://www.altassets.net/private-equity-news/by-region/latin-america-by-region/patria-investments-picks-up-677m-for-fifth-secondaries-fund.html",
+      "source_name": "AltAssets",
+      "description_notes": "closes $677M for its fifth secondaries fund, focusing on secondary investments in Latin America. The fund represents continued growth for Patria's secondaries strategy, building on the success of prior vintages in the region.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-01T10:02:24",
+      "articles": [
+        {
+          "title": "Patria Investments picks up $677m for fifth secondaries fund",
+          "url": "https://www.altassets.net/private-equity-news/by-region/latin-america-by-region/patria-investments-picks-up-677m-for-fifth-secondaries-fund.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-06-30",
+          "summary": "",
+          "feed_name": "AltAssets"
+        }
+      ]
+    },
     {
       "fund_name": "Rgreen Invest Energy Transition Debt Fund",
       "firm": "Rgreen Invest",
@@ -29,6 +100,77 @@
           "published_date": "2026-06-30",
           "summary": "",
           "feed_name": "Alternative Credit Investor"
+        }
+      ]
+    },
+    {
+      "fund_name": "Generation IM Sustainable Transformation-Focused Private Equity Fund",
+      "firm": "Generation Investment Management",
+      "firm_slug": "generation-investment-management",
+      "amount": "Over $1 Billion",
+      "amount_usd_millions": null,
+      "category": "Private Equity",
+      "location": "London, UK",
+      "city": "London",
+      "state": "",
+      "country": "UK",
+      "stage": "Launch",
+      "announcement_date": "2026-06-30",
+      "source_url": "https://www.esgtoday.com/generation-im-raises-over-1-billion-for-sustainable-transformation-focused-private-equity-fund/?utm_source=rss&utm_medium=rss&utm_campaign=generation-im-raises-over-1-billion-for-sustainable-transformation-focused-private-equity-fund",
+      "source_name": "ESG Today",
+      "description_notes": "focuses on sustainable transformation through private equity investments, led by Generation Investment Management, a sustainability-focused firm chaired by former U.S. Vice President Al Gore. The fund represents the firm's commitment to combining financial returns with environmental and social impact objectives.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-01T10:02:24",
+      "articles": [
+        {
+          "title": "Generation IM Raises Over $1 Billion for Sustainable Transformation-Focused Private Equity Fund",
+          "url": "https://www.esgtoday.com/generation-im-raises-over-1-billion-for-sustainable-transformation-focused-private-equity-fund/?utm_source=rss&utm_medium=rss&utm_campaign=generation-im-raises-over-1-billion-for-sustainable-transformation-focused-private-equity-fund",
+          "source_name": "ESG Today",
+          "source_domain": "esgtoday.com",
+          "published_date": "2026-06-30",
+          "summary": "Generation Investment Management, a sustainability-focused investment firm chaired by former U.S. Vice President Al Gore, [&#8230;]",
+          "feed_name": "ESG Today"
+        }
+      ]
+    },
+    {
+      "fund_name": "Corporate Venture Capital Fund",
+      "firm": "Pegasus Tech Ventures",
+      "firm_slug": "pegasus-tech-ventures",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Launch",
+      "announcement_date": "2026-06-30",
+      "source_url": "https://news.google.com/rss/articles/CBMiowJBVV95cUxOSVdyXzdydmxxLW1XNVpCQm5EWW1qbml5MnNvXzVpUUppREpSOHdFZlZSRzdOUDBVZTdJYWZhdmxYdzVfXzhYN1VvclQwR2lBek5WZUo4V1B5bnNrLXd6SUJXUUN6UmNxaEI4YWpXMU1zYmRKd0RtbmgteHZNQW8ycmVGNGd2VUE5RkQ4WFRQcHNNcnNpcExscW9TVF92dWpFMlhUSllOdkZOc2RDVHNtRkhTc2dURnluOFpmUnd3TnNXZEZTZ1oyT1BiVXBWVldQdk1iSndsRFpGLVBmMERDX2NNa0N4Mi04WGpEMEdZT1NTcVZYZEhRRVZZWVlyR0I0azVkUTJEcWI2M3A5WWdXZDFwQm1nUUZJa0hpcmNLWnZrQW8?oc=5",
+      "source_name": "Caledonianrecord",
+      "description_notes": "advances global connectivity and innovation through a corporate venture partnership between Pegasus Tech Ventures and Asteria Corporation. The fund targets strategic investments aligned with both firms' growth priorities, though specific sector focus and fund size remain undisclosed.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-01T10:02:24",
+      "articles": [
+        {
+          "title": "Pegasus Tech Ventures and Asteria Corporation Launch Corporate Venture Capital Fund to Advance Global Connectivity and Innovation - Voice of Alexandria",
+          "url": "https://news.google.com/rss/articles/CBMiygJBVV95cUxQbm9KdzJka3RvN0p4ZG40RU05Q0ZRa0puRnVHaE10X2c0Uk9JeFVMTXZqeGlUZ2RKaE44aHJrOUFYaldMS0N2TExBVm4xSTNab2FTX0RmNUdCRWtueVdtVlZKZHlSb1JybzFzZmp6S205cTJpbms0Qm0wLXE5dlBVSlRlRTN1LWlQQlBFOWxqNmU2dk1FS3hGQ1d2U1Q3cUFhUmJ6dE41eV9DeXloVTJtYm1KZ1pWTC1tVzFrQmpkTFJDNVljUHBCWkRTMVIzSE5NRlFudEVtc0Q2UGlodzBaOTU3RFQwN002TjRfYUM0VVBHSkQ1d0FNdlpOZHhlZzZfQTVqWGhFNzl3T3RILTMyVGJlcDVzYkgwOUNpU2pZbHdJNTF1Y3R6OE8xTjBPWU5uSklzZ0N1OXhjTWJlYkFSb0NxeWZsU3ZpbGc?oc=5",
+          "source_name": "Voice of Alexandria",
+          "source_domain": "voiceofalexandria.com",
+          "published_date": "2026-06-30",
+          "summary": "Pegasus Tech Ventures and Asteria Corporation Launch Corporate Venture Capital Fund to Advance Global Connectivity and Innovation&nbsp;&nbsp;Voice of Alexandria",
+          "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "Pegasus Tech Ventures and Asteria Corporation Launch Corporate Venture Capital Fund to Advance Global Connectivity and Innovation - Caledonian Record",
+          "url": "https://news.google.com/rss/articles/CBMiowJBVV95cUxOSVdyXzdydmxxLW1XNVpCQm5EWW1qbml5MnNvXzVpUUppREpSOHdFZlZSRzdOUDBVZTdJYWZhdmxYdzVfXzhYN1VvclQwR2lBek5WZUo4V1B5bnNrLXd6SUJXUUN6UmNxaEI4YWpXMU1zYmRKd0RtbmgteHZNQW8ycmVGNGd2VUE5RkQ4WFRQcHNNcnNpcExscW9TVF92dWpFMlhUSllOdkZOc2RDVHNtRkhTc2dURnluOFpmUnd3TnNXZEZTZ1oyT1BiVXBWVldQdk1iSndsRFpGLVBmMERDX2NNa0N4Mi04WGpEMEdZT1NTcVZYZEhRRVZZWVlyR0I0azVkUTJEcWI2M3A5WWdXZDFwQm1nUUZJa0hpcmNLWnZrQW8?oc=5",
+          "source_name": "Caledonian Record",
+          "source_domain": "caledonianrecord.com",
+          "published_date": "2026-06-30",
+          "summary": "Pegasus Tech Ventures and Asteria Corporation Launch Corporate Venture Capital Fund to Advance Global Connectivity and Innovation&nbsp;&nbsp;Caledonian Record",
+          "feed_name": "search:PE/VC fund closes"
         }
       ]
     },
@@ -131,6 +273,15 @@
           "published_date": "2026-06-29",
           "summary": "Invel Real Estate raises \u20ac400m for southern Europe hospitality and living fund&nbsp;&nbsp;IPE Real Assets",
           "feed_name": "search:Credit/Real estate"
+        },
+        {
+          "title": "Invel Real Estate closes oversubscribed Eudora Fund 2 at \u20ac400M - Kathimerini.com.cy",
+          "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxNWVktNVo0T0VRSXoyTTIwZzdrSTlTNmQ0S3RfcHNvLTZWd1M3VjFkVHM2amhxNncySDVpZV9hdnp1VENKRTBadXdoZTREWUVTYTFCXzB0MjBfemlTOU5veU12NTlDZlhPZkpSOTFZM0cxVTZrQ0I1WmFrbTJDSktRNFJ5YXpJdGVDRS1GZUpmY3hYNUdCcm45MGpIVVhidldRQk5CeHBrZkpWT3JNWnJiYlNfRHR2UQ?oc=5",
+          "source_name": "Kathimerini.com.cy",
+          "source_domain": "knews.kathimerini.com.cy",
+          "published_date": "2026-06-29",
+          "summary": "Invel Real Estate closes oversubscribed Eudora Fund 2 at \u20ac400M&nbsp;&nbsp;Kathimerini.com.cy",
+          "feed_name": "search:Oversubscribed funds"
         }
       ]
     },
@@ -1097,6 +1248,37 @@
       ]
     },
     {
+      "fund_name": "INVL Family Office Private Equity Secondary Fund",
+      "firm": "INVL Family Office",
+      "firm_slug": "invl-family-office",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Secondaries & GP-Stakes",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Launch",
+      "announcement_date": "2026-06-22",
+      "source_url": "https://news.google.com/rss/articles/CBMihgJBVV95cUxNcjNRM0hDU09MVGFzd0N4cWNreEVpWVY4U1p1NzlVZTAtSzhGNTZTak1xVEQ1YXFwdThNT3V2VE81YTJobTVPbzVtdm16eTZFWnh5OHBHRnF1SFEyNGxYdjMwazYza19jUTVfR0FwTENVNFFoM0FKZDlXanlhWkVqenpQUUpKX1hJa1hCOFJiVUkzbklsdHBWdnctZlJyUzBMdXYwc0s1U090eDlycVdqczVtRTM3N053enRMQ2xKUmd5QnJOcVZWU0tmS2VrY292MUNTT3NDUmZKaEFTd3FmVURreXo1QjZoNkxJZzF5UjVpZ1cwVEhuRWk3RHRGYzkyT1FKNlBR0gGLAkFVX3lxTE9jMWVYTjB1al9KUHZyY3BqV1YzXzJrdTJYbnZ3NkZ3MzJ6MVNmWkRLZDZ1N0dMX0JkV3JnaUVMa3Z2Tlpyc1FFSDlBMzBrZHhNdUhGZFo4WUNaVU9WNzVmNE5rVFlVS0JLaGRzUzZtVERORGxFaTR1UXRFOS1qemZvbmt0NWJhXzdneWxFWXFPTm1Md1dYUE0tcndvcjhGNkN1c2h2SDVIQVhqdVNQT3k4M1otZnpiY24xMHdnZi1RNTQ0akMwSE5YVUVjdDFOWHZGUXFWUF9IMnBvaExCTkJ5d2txaTF6cDczblpMMmt3UnNmSG9wd0JqVjJmd3Q5cTY0WFYtVkNkVUh5MA?oc=5",
+      "source_name": "Manilatimes",
+      "description_notes": "invests in the private equity secondary market, targeting rapidly growing opportunities in secondary transactions. The fund represents INVL Family Office's entry into the secondaries space, focusing on acquiring mature fund positions and portfolio company stakes from existing investors.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-01T10:02:24",
+      "articles": [
+        {
+          "title": "INVL Family Office Introduces a Fund Investing in the Rapidly Growing Private Equity Secondary Market - The Manila Times",
+          "url": "https://news.google.com/rss/articles/CBMihgJBVV95cUxNcjNRM0hDU09MVGFzd0N4cWNreEVpWVY4U1p1NzlVZTAtSzhGNTZTak1xVEQ1YXFwdThNT3V2VE81YTJobTVPbzVtdm16eTZFWnh5OHBHRnF1SFEyNGxYdjMwazYza19jUTVfR0FwTENVNFFoM0FKZDlXanlhWkVqenpQUUpKX1hJa1hCOFJiVUkzbklsdHBWdnctZlJyUzBMdXYwc0s1U090eDlycVdqczVtRTM3N053enRMQ2xKUmd5QnJOcVZWU0tmS2VrY292MUNTT3NDUmZKaEFTd3FmVURreXo1QjZoNkxJZzF5UjVpZ1cwVEhuRWk3RHRGYzkyT1FKNlBR0gGLAkFVX3lxTE9jMWVYTjB1al9KUHZyY3BqV1YzXzJrdTJYbnZ3NkZ3MzJ6MVNmWkRLZDZ1N0dMX0JkV3JnaUVMa3Z2Tlpyc1FFSDlBMzBrZHhNdUhGZFo4WUNaVU9WNzVmNE5rVFlVS0JLaGRzUzZtVERORGxFaTR1UXRFOS1qemZvbmt0NWJhXzdneWxFWXFPTm1Md1dYUE0tcndvcjhGNkN1c2h2SDVIQVhqdVNQT3k4M1otZnpiY24xMHdnZi1RNTQ0akMwSE5YVUVjdDFOWHZGUXFWUF9IMnBvaExCTkJ5d2txaTF6cDczblpMMmt3UnNmSG9wd0JqVjJmd3Q5cTY0WFYtVkNkVUh5MA?oc=5",
+          "source_name": "The Manila Times",
+          "source_domain": "manilatimes.net",
+          "published_date": "2026-06-22",
+          "summary": "INVL Family Office Introduces a Fund Investing in the Rapidly Growing Private Equity Secondary Market&nbsp;&nbsp;The Manila Times",
+          "feed_name": "search:PE/VC fund closes"
+        }
+      ]
+    },
+    {
       "fund_name": "Fashion Entrepreneur Fund Season 2",
       "firm": "Fashion Entrepreneur Fund",
       "firm_slug": "fashion-entrepreneur-fund",
@@ -1244,6 +1426,15 @@
           "published_date": "2026-06-19",
           "summary": "",
           "feed_name": "AltAssets"
+        },
+        {
+          "title": "FPE Capital secures \u00a340m cornerstone commitment for Fund IV first close - EU.COM",
+          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPLURvb194ZnRhZDJIN01OZG9Cc2RBcXZrdVlsZ3ZQWkxNcnlTRjUxWUhZaGNEekRtTlBSaHgxd3J6UjJTaHJFakc4MlY3ODN6WjlvRjFpWmtrY1piVDZnV2otdXdNS1RFY2pUeWtfSnRLcXpyZTA4MWdDeG9PaXdFXy0zYVRsYnJybHN2Tno1TUNRWVNqTjVkcU16OE9RVlJSbDNqc3lB?oc=5",
+          "source_name": "EU.COM",
+          "source_domain": "realdeals.eu.com",
+          "published_date": "2026-06-19",
+          "summary": "FPE Capital secures \u00a340m cornerstone commitment for Fund IV first close&nbsp;&nbsp;EU.COM",
+          "feed_name": "search:First/final close"
         }
       ]
     },
@@ -1275,6 +1466,37 @@
           "published_date": "2026-06-19",
           "summary": "",
           "feed_name": "Alternative Credit Investor"
+        }
+      ]
+    },
+    {
+      "fund_name": "Undisclosed Infrastructure Fund",
+      "firm": "Ironbark",
+      "firm_slug": "ironbark",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Infrastructure",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Launch",
+      "announcement_date": "2026-06-19",
+      "source_url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPU1F3UkxEWmlld3liRU03aWRraEh0Q3pUY1ZYNm8zMUlDOHd1X24yU0VaQ2dsNzZXRHdDdlJPd05kUUNiYllQakl6WV9lZ3pqVFpaZXF1OWZidE5KY1VpZ01GZFpfdjE5bm5OS2RYcEl0RjIzdzRYbWthX3JUWEZiWEliNFVKQklETEcwdHhsTnQ3dXJMZ0ExRTFRaXctVUNFc0E?oc=5",
+      "source_name": "Investordaily",
+      "description_notes": "marks the first fund launch in a partnership between Ironbark and EQT focused on infrastructure investments. Limited details provided in the announcement regarding fund size, strategy specifics, or investor commitments.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-01T10:02:24",
+      "articles": [
+        {
+          "title": "Infrastructure marks first fund launch in Ironbark/EQT partnership - investordaily.com.au",
+          "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPU1F3UkxEWmlld3liRU03aWRraEh0Q3pUY1ZYNm8zMUlDOHd1X24yU0VaQ2dsNzZXRHdDdlJPd05kUUNiYllQakl6WV9lZ3pqVFpaZXF1OWZidE5KY1VpZ01GZFpfdjE5bm5OS2RYcEl0RjIzdzRYbWthX3JUWEZiWEliNFVKQklETEcwdHhsTnQ3dXJMZ0ExRTFRaXctVUNFc0E?oc=5",
+          "source_name": "investordaily.com.au",
+          "source_domain": "investordaily.com.au",
+          "published_date": "2026-06-19",
+          "summary": "Infrastructure marks first fund launch in Ironbark/EQT partnership&nbsp;&nbsp;investordaily.com.au",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
         }
       ]
     },
@@ -1560,6 +1782,15 @@
       "covered_date": null,
       "date_added": "2026-06-18T12:11:22",
       "articles": [
+        {
+          "title": "Texas Municipal among investors in Conifer\u2019s $900m infrastructure fund - IPE Real Assets",
+          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNaGR6WFdIZnZBMTZwcFpzVnhfeGE5M1JDdkJlNDFscEVVR3NDQzh2c3FpcDdpZ25pRDlSWWpmYzZGTUtiZldmaFRfTUp2bVRYQ2hTTUd1bUFITXk1dzl0X291VDFGNE1LM29ac1djSUJnaHNjaG9ncEFkckxjWnJQU2RSUXpSeTV6SnNnYWF5TE1YZlpMNTYyLW5NNEhmQ2Z2Nkhfa3JBSVZNZkJIdHdqZjRSNTVUaXhk?oc=5",
+          "source_name": "IPE Real Assets",
+          "source_domain": "realassets.ipe.com",
+          "published_date": "2026-06-30",
+          "summary": "Texas Municipal among investors in Conifer\u2019s $900m infrastructure fund&nbsp;&nbsp;IPE Real Assets",
+          "feed_name": "search:Oversubscribed funds"
+        },
         {
           "title": "Conifer raises $900m in oversubscribed debut fund close",
           "url": "https://www.altassets.net/premium/conifer-raises-900m-in-oversubscribed-debut-fund-close.html",
@@ -2041,6 +2272,15 @@
       "date_added": "2026-06-18T12:11:22",
       "articles": [
         {
+          "title": "Atom XVII launches Rs 75 crore consumer-focused fund to invest in early-stage brands - ET Retail",
+          "url": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxNT3RtWHV3b0hWRm9RX043OGhwOUNVbFVfSDhiSF96enJrMHRzM01IcERCSmpDTXhzcWlab0dzZTNXRzBMNzVDWDRLSmpURjBJbHZ5LTFpRG1qMWZ6MmVkamo2U2tIc1lhV1dWcnFvcTFRaU9YcWxicVdHMnk2a0NWMXhIVWNBVWVpR283bDMtdGhseEkwQ20yYkxVR252bmNHYUx4Y2ZKLVMxTm5ycjRVZ1VZaHRhcG1DVTRuOEhoZ09tYThqMFU3WUFtVXh6NDFvaWdZZ1I0clZZM25vQldHMDA2WWN3clJHeEREbQ?oc=5",
+          "source_name": "ET Retail",
+          "source_domain": "retail.economictimes.indiatimes.com",
+          "published_date": "2026-06-18",
+          "summary": "Atom XVII launches Rs 75 crore consumer-focused fund to invest in early-stage brands&nbsp;&nbsp;ET Retail",
+          "feed_name": "search:First/final close"
+        },
+        {
           "title": "Atom XVII launches Rs 75 crore consumer-focused AIF - Indiatimes",
           "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxONzV5Z3M4MGVqZ0NWcFpjeElHYWc1bUlIb3RRSGVDMklzNEdRRFItRGIyRTVKMExOQ2FQZkFjdWNjRHlFTThhQ2FnZ01EVURpcGhMTDk1TTUxWEVqZGdVd09YcTlZZXkxVGxJWERYclNjSFB0NHcxLUNHVFJ3cGpvaWk4VUxpR1ZMMDhnQy1ZYVdBdFExVHp6d0ZRcEgyX24tc1dyQUM0X3RBWFNGdTJQc0prcUJlUjZyV2NwSHpid1FZbU5KM1E?oc=5",
           "source_name": "Indiatimes",
@@ -2119,6 +2359,37 @@
           "published_date": "2026-06-15",
           "summary": "",
           "feed_name": "Secondaries Investor"
+        }
+      ]
+    },
+    {
+      "fund_name": "Gutter Capital Fund III",
+      "firm": "Gutter Capital",
+      "firm_slug": "gutter-capital",
+      "amount": "$75M",
+      "amount_usd_millions": 75.0,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Launch",
+      "announcement_date": "2026-06-15",
+      "source_url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxNazZDbDBuSGhsRVRETXZlVmFoY2RpdU5TVVlUdmg5akRzRzdvR19iWHFybW1lQzVwb2R2Tl9YTmtkX2hueHpSRE03V182YU1KWXA5UTdieFV2UlJXOUlxejFIUWg3Y1NCWUhwT1BnRVFBZkp5NEstVjliX09fRHcxbVBqUVRyRE9PWDlZS2F5WG5BZURXcVdiNTFkeENCSnZ6YVE2bkgyMFR5OGNhaU5RNDhfNWc0NWE3My02S1ZVZk1xYklhMVdHWGVDTjBtSW9HUnlnT0pvNDU?oc=5",
+      "source_name": "PR Newswire",
+      "description_notes": "raises $75M for its third fund focused on early-stage investments. Gutter Capital also announced the opening of applications for its Elbow Grease Accelerator program, expanding its support for portfolio companies and new ventures.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-01T10:02:24",
+      "articles": [
+        {
+          "title": "Gutter Capital Announces $75M Fund III, Opens Applications for Elbow Grease Accelerator - PR Newswire",
+          "url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxNazZDbDBuSGhsRVRETXZlVmFoY2RpdU5TVVlUdmg5akRzRzdvR19iWHFybW1lQzVwb2R2Tl9YTmtkX2hueHpSRE03V182YU1KWXA5UTdieFV2UlJXOUlxejFIUWg3Y1NCWUhwT1BnRVFBZkp5NEstVjliX09fRHcxbVBqUVRyRE9PWDlZS2F5WG5BZURXcVdiNTFkeENCSnZ6YVE2bkgyMFR5OGNhaU5RNDhfNWc0NWE3My02S1ZVZk1xYklhMVdHWGVDTjBtSW9HUnlnT0pvNDU?oc=5",
+          "source_name": "PR Newswire",
+          "source_domain": "prnewswire.com",
+          "published_date": "2026-06-15",
+          "summary": "Gutter Capital Announces $75M Fund III, Opens Applications for Elbow Grease Accelerator&nbsp;&nbsp;PR Newswire",
+          "feed_name": "search:Press release fund closes"
         }
       ]
     },
@@ -6341,6 +6612,15 @@
           "published_date": "2026-05-21",
           "summary": "",
           "feed_name": "AltAssets"
+        },
+        {
+          "title": "Barings' close of $19B direct-lending fundraise anchored by local leadership - The Business Journals",
+          "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxOVEthdnBzVnViaTNSb3BTWGdVVmVqR2JSOFV0Zkd5bU13ZTlFLXF3ZWdCUDJxXzk2YThGcUl3dDItd2Vib1c5aXB3cGRpNW9lRjZzU2tGWXZJa1A0MG5hZFEybkxnb2V2N3JQMWpyQUhXY0xOMmExbXEtNVlaa19iVEJyYWNkMDdYRGdOclpEMlBBT0R4YlZ6Ti1uS25sUQ?oc=5",
+          "source_name": "The Business Journals",
+          "source_domain": "bizjournals.com",
+          "published_date": "2026-05-21",
+          "summary": "Barings' close of $19B direct-lending fundraise anchored by local leadership&nbsp;&nbsp;The Business Journals",
+          "feed_name": "search:Credit/Real estate"
         },
         {
           "title": "Barings raises $19bn for global direct lending platform",
@@ -10735,6 +11015,15 @@
       "covered_date": null,
       "date_added": "2026-05-28T10:01:21",
       "articles": [
+        {
+          "title": "Secha Capital Nears $40M Target With Fund II Close - Serrari Group",
+          "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPYVNGSjdjZGRHbUxOeXo5RGhteExPMkw5NG1IUk5tQkplQWY4MFZQNUxiSldfWlRqdWk5U0wwUVdSTjdnS296c2I2N2ZPOUdYY3Z5ZmR0eUYwN0ZCazAzb2JQVTlXZklrWmh6TnRtd2pJcFBWUnRNV09FVEtXc2U5Mg?oc=5",
+          "source_name": "Serrari Group",
+          "source_domain": "serrarigroup.com",
+          "published_date": "2026-05-04",
+          "summary": "Secha Capital Nears $40M Target With Fund II Close&nbsp;&nbsp;Serrari Group",
+          "feed_name": "search:PE/VC fund closes"
+        },
         {
           "title": "South Africa's Secha Capital Reaches Second Close of $40M Impact Fund - Dabafinance",
           "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxPUWdzUVNDSURSM3ZDX2x4c3pmYUlzdXVJQnBFZXd1MC1oZzhuMkNvWjhReUdjc0RyTlBIT0lkOE9JU1pLSktGaThTaVZRYVdJVmlkbFVuOUdMZzhvYlNhRGhmTFNqS1VwVEFlSHFpQkwtZXVHbDJJSE1sZHdmdFRhVEJR?oc=5",
@@ -23453,6 +23742,15 @@
       "date_added": "2026-03-13T13:32:01",
       "articles": [
         {
+          "title": "Energy transition specialist RGreen Invest closes fourth infrastructure debt fund on \u20ac500m",
+          "url": "https://www.altassets.net/private-equity-news/by-region/europe-by-region/western-europe-europe-by-region/france-western-europe-europe-by-region/energy-transition-specialist-rgreen-invest-closes-fourth-infrastructure-debt-fund-on-e500m.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-06-30",
+          "summary": "",
+          "feed_name": "AltAssets"
+        },
+        {
           "title": "Energy transition specialist RGreen Invest seals more than \u20ac900m Fund V close",
           "url": "https://www.altassets.net/private-equity-news/by-region/europe-by-region/western-europe-europe-by-region/france-western-europe-europe-by-region/100207437.html",
           "source_name": "AltAssets",
@@ -34943,6 +35241,15 @@
       "covered_date": "2026-02-06",
       "date_added": "2026-02-08T01:29:20",
       "articles": [
+        {
+          "title": "Ruya Ventures closes oversubscribed $50m debut deep tech fund",
+          "url": "https://www.altassets.net/private-equity-news/by-region/europe-by-region/western-europe-europe-by-region/united-kingdom-western-europe-europe-by-region/ruya-ventures-closes-oversubscribed-50m-debut-deep-tech-fund.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-07-01",
+          "summary": "",
+          "feed_name": "AltAssets"
+        },
         {
           "title": "Former Pritzker Group execs seal $50m debut SNAK Venture Partners fund close",
           "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/former-pritzker-group-execs-seal-50m-debut-snak-venture-partners-fund-close.html",
@@ -48188,6 +48495,18 @@
       "country": "India"
     },
     {
+      "firm": "Patria Investments",
+      "firm_slug": "patria-investments",
+      "fund_count": 2,
+      "total_aum_millions": 677.0,
+      "categories": [
+        "Credit Funds",
+        "Secondaries & GP-Stakes"
+      ],
+      "city": "N/A",
+      "country": "Brazil"
+    },
+    {
       "firm": "O2 Investment Partners",
       "firm_slug": "o2-investment-partners",
       "fund_count": 1,
@@ -51562,6 +51881,17 @@
       "country": "South Africa"
     },
     {
+      "firm": "Gutter Capital",
+      "firm_slug": "gutter-capital",
+      "fund_count": 1,
+      "total_aum_millions": 75.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": ""
+    },
+    {
       "firm": "Canopy Real Estate Partners",
       "firm_slug": "canopy-real-estate-partners",
       "fund_count": 1,
@@ -51615,6 +51945,17 @@
       ],
       "city": "Mumbai",
       "country": "India"
+    },
+    {
+      "firm": "Tapestry VC",
+      "firm_slug": "tapestry-vc",
+      "fund_count": 1,
+      "total_aum_millions": 70.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": "N/A"
     },
     {
       "firm": "N49P",
@@ -52431,6 +52772,28 @@
       "country": "US"
     },
     {
+      "firm": "Generation Investment Management",
+      "firm_slug": "generation-investment-management",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "London",
+      "country": "UK"
+    },
+    {
+      "firm": "Pegasus Tech Ventures",
+      "firm_slug": "pegasus-tech-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": ""
+    },
+    {
       "firm": "Invel",
       "firm_slug": "invel",
       "fund_count": 1,
@@ -52499,7 +52862,7 @@
     {
       "firm": "INVL Family Office",
       "firm_slug": "invl-family-office",
-      "fund_count": 1,
+      "fund_count": 2,
       "total_aum_millions": 0.0,
       "categories": [
         "Secondaries & GP-Stakes"
@@ -52518,6 +52881,17 @@
       ],
       "city": "Newport Beach",
       "country": "US"
+    },
+    {
+      "firm": "Ironbark",
+      "firm_slug": "ironbark",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Infrastructure"
+      ],
+      "city": "N/A",
+      "country": ""
     },
     {
       "firm": "Capman Real Estate",
@@ -54832,17 +55206,6 @@
       "country": "US"
     },
     {
-      "firm": "Patria Investments",
-      "firm_slug": "patria-investments",
-      "fund_count": 1,
-      "total_aum_millions": 0.0,
-      "categories": [
-        "Credit Funds"
-      ],
-      "city": "S\u00e3o Paulo",
-      "country": "Brazil"
-    },
-    {
       "firm": "CardinalStone",
       "firm_slug": "cardinalstone",
       "fund_count": 1,
@@ -55602,8 +55965,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-06-30T06:00:34.378908",
-      "last_success": "2026-06-30T06:00:34.378917",
+      "last_fetch": "2026-07-01T06:00:34.489044",
+      "last_success": "2026-07-01T06:00:34.489049",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55612,8 +55975,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-06-30T06:00:31.637588",
-      "last_success": "2026-06-30T06:00:31.637600",
+      "last_fetch": "2026-07-01T06:00:32.165848",
+      "last_success": "2026-07-01T06:00:32.165858",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55652,8 +56015,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-06-30T06:00:40.929612",
-      "last_success": "2026-06-30T06:00:40.929623",
+      "last_fetch": "2026-07-01T06:00:42.598096",
+      "last_success": "2026-07-01T06:00:42.598107",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55662,8 +56025,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-06-30T06:00:09.553947",
-      "last_success": "2026-06-30T06:00:09.553948",
+      "last_fetch": "2026-07-01T06:00:10.154117",
+      "last_success": "2026-07-01T06:00:10.154119",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55672,8 +56035,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-06-30T06:00:06.970946",
-      "last_success": "2026-06-30T06:00:06.970948",
+      "last_fetch": "2026-07-01T06:00:07.668345",
+      "last_success": "2026-07-01T06:00:07.668348",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -55682,8 +56045,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-06-30T06:00:30.183149",
-      "last_success": "2026-06-30T06:00:30.183157",
+      "last_fetch": "2026-07-01T06:00:30.699139",
+      "last_success": "2026-07-01T06:00:30.699148",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55692,8 +56055,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-06-30T06:00:11.112863",
-      "last_success": "2026-06-30T06:00:11.112864",
+      "last_fetch": "2026-07-01T06:00:11.984569",
+      "last_success": "2026-07-01T06:00:11.984571",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -55702,8 +56065,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-06-30T06:00:37.345099",
-      "last_success": "2026-06-30T06:00:37.345111",
+      "last_fetch": "2026-07-01T06:00:39.094491",
+      "last_success": "2026-07-01T06:00:39.094501",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55712,8 +56075,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-06-30T06:00:18.502810",
-      "last_success": "2026-06-30T06:00:18.502823",
+      "last_fetch": "2026-07-01T06:00:17.589531",
+      "last_success": "2026-07-01T06:00:17.589541",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55722,8 +56085,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-06-30T06:00:05.533918",
-      "last_success": "2026-06-30T06:00:05.533919",
+      "last_fetch": "2026-07-01T06:00:06.242661",
+      "last_success": "2026-07-01T06:00:06.242663",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -55732,8 +56095,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-06-30T06:00:28.248928",
-      "last_success": "2026-06-30T06:00:28.248939",
+      "last_fetch": "2026-07-01T06:00:28.550492",
+      "last_success": "2026-07-01T06:00:28.550502",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55742,8 +56105,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-06-30T06:00:25.459770",
-      "last_success": "2026-06-30T06:00:25.459784",
+      "last_fetch": "2026-07-01T06:00:22.197344",
+      "last_success": "2026-07-01T06:00:22.197359",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -55752,8 +56115,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-06-30T06:00:08.212581",
-      "last_success": "2026-06-30T06:00:08.212590",
+      "last_fetch": "2026-07-01T06:00:08.968794",
+      "last_success": "2026-07-01T06:00:08.968805",
       "error_count": 0,
       "article_count": 18,
       "last_error": "",
@@ -55761,24 +56124,24 @@
     }
   ],
   "stats": {
-    "total_funds": 1128,
+    "total_funds": 1135,
     "total_covered": 52,
-    "total_uncovered": 1076,
-    "total_aum_millions": 6207504.5,
+    "total_uncovered": 1083,
+    "total_aum_millions": 6208326.5,
     "by_category": {
+      "Venture Capital": 285,
+      "Secondaries & GP-Stakes": 64,
       "Credit Funds": 237,
-      "Infrastructure": 154,
+      "Private Equity": 284,
+      "Infrastructure": 155,
       "Real Estate": 107,
-      "Venture Capital": 282,
-      "Private Equity": 283,
       "Other": 2,
-      "Secondaries & GP-Stakes": 62,
       "N/A": 1
     },
     "by_stage": {
-      "First Close": 191,
+      "Launch": 482,
+      "First Close": 192,
       "Other": 128,
-      "Launch": 476,
       "Final Close": 311,
       "Interim Close": 21,
       "Second Close": 1
@@ -55787,7 +56150,7 @@
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-06-30"
+      "latest": "2026-07-01"
     }
   }
 }
