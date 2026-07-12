@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-11T18:15:40.076696Z",
+  "generated_at": "2026-07-12T14:59:01.295710Z",
   "funds": [
     {
       "fund_name": "Fondo Panafricano del Cine",
@@ -1894,7 +1894,7 @@
       "announcement_date": "2026-07-02",
       "source_url": "https://techcrunch.com/2026/07/02/melinda-gates-venture-firm-backs-magnify-ventures-46-6m-fund-ii/",
       "source_name": "TechCrunch",
-      "description_notes": "raises $46.6M for early-stage venture fund backed by Pivotal Ventures (Melinda French Gates' firm) and other institutional LPs. Magnify Ventures Fund II focuses on the care economy, targeting founders addressing gaps in childcare, eldercare, and related sectors. The fund represents continued institutional validation for care-economy investing as a dedicated venture thesis.",
+      "description_notes": "raise $46.6M for early-stage venture investing with backing from Melinda French Gates' Pivotal Ventures and other institutional LPs. Fund II appears to maintain focus on care economy and social impact themes, building on momentum from the firm's debut fund. The backing from high-profile limited partners signals continued investor confidence in Magnify's thesis around underserved market segments.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-03T23:35:59",
@@ -2399,6 +2399,37 @@
       ]
     },
     {
+      "fund_name": "Harpoon Ventures Fund IV",
+      "firm": "Harpoon Ventures",
+      "firm_slug": "harpoon-ventures",
+      "amount": "$155M",
+      "amount_usd_millions": 155.0,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Final Close",
+      "announcement_date": "2026-06-30",
+      "source_url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxOVUJqMmZoamhpdndwNUhVWTFEUkR5MU81QW1yc0ZHUWdxN29OdUVIY3FfNTNpUTB6RHV6N284aWFyYTlCRGxpZ1dvaUVEV1B3YWZDeUttNmNHS1NrZEl5b0Nkd3ZGWWlmNDJZdlNkV1U3akI4VjluV1lZc3NJYWhGbTdvSTFvUEhkQjFqVEYzSGxtd1FnN2VUWmtzbU40V3h0bzg5MGs4eS1OUjlNa01SS3JsZnk1ZU0zUHlsd1VnT1pVRmpWUkV3WEJFbFFPbVFjTUNmX3VJdG1SeGxKeDctMHJYQzFSMkt0S2NsenBPbkZ0RXFwbXVoMnNucw?oc=5",
+      "source_name": "Morningstar",
+      "description_notes": "backs founders building critical technologies. The fund closed oversubscribed, indicating strong investor demand. Harpoon Ventures Fund IV represents the firm's continued focus on early-stage venture investing in strategic technology sectors.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-12T10:13:07",
+      "articles": [
+        {
+          "title": "Harpoon Ventures Closes Oversubscribed $155 Million Fund IV to Back Founders Building Critical Technologies - Morningstar",
+          "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxOVUJqMmZoamhpdndwNUhVWTFEUkR5MU81QW1yc0ZHUWdxN29OdUVIY3FfNTNpUTB6RHV6N284aWFyYTlCRGxpZ1dvaUVEV1B3YWZDeUttNmNHS1NrZEl5b0Nkd3ZGWWlmNDJZdlNkV1U3akI4VjluV1lZc3NJYWhGbTdvSTFvUEhkQjFqVEYzSGxtd1FnN2VUWmtzbU40V3h0bzg5MGs4eS1OUjlNa01SS3JsZnk1ZU0zUHlsd1VnT1pVRmpWUkV3WEJFbFFPbVFjTUNmX3VJdG1SeGxKeDctMHJYQzFSMkt0S2NsenBPbkZ0RXFwbXVoMnNucw?oc=5",
+          "source_name": "Morningstar",
+          "source_domain": "morningstar.com",
+          "published_date": "2026-06-30",
+          "summary": "Harpoon Ventures Closes Oversubscribed $155 Million Fund IV to Back Founders Building Critical Technologies&nbsp;&nbsp;Morningstar",
+          "feed_name": "search:Oversubscribed funds"
+        }
+      ]
+    },
+    {
       "fund_name": "Generation IM Sustainable Transformation-Focused Private Equity Fund",
       "firm": "Generation Investment Management",
       "firm_slug": "generation-investment-management",
@@ -2644,7 +2675,7 @@
       "announcement_date": "2026-06-29",
       "source_url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxPOEpvVktQVE9PeHlPQ0FzOGdfa0FSdk1jSDZ5Q05RMnZ6Z0MwN3ZjMEFBVHdFQVdwR2NIcmhmMXNLYkdCLVhJNl81WXFyWlg4aE9BbFJ3bTlZRldOT2RnRjNmbzZzQU1LV1dvbG96OUdNSGs0bGpnMURkLWVkM2oxdjdBaUtHeFRRTi1yY1ZJSnVsdVE5WElFMUxydkFGcU5IOUg2dGhpTXR2RWhrYm9CNjhpazlnWVViYTRSclhUenBFX2dRWXl0X1NB?oc=5",
       "source_name": "Eu-Startups",
-      "description_notes": "close \u20ac69M debut venture fund targeting early-stage technology and deep-tech investments in Europe. Osney Capital's first fund reached final close after securing commitments from institutional LPs focused on backing founders across seed through Series A stages. The fund positions the newly launched firm as a differentiated early-stage player in the European venture market.",
+      "description_notes": "close \u20ac69M debut venture fund targeting early-stage European tech companies, with a focus on seed and Series A investments across the continent. Osney Capital's inaugural vehicle represents the firm's entry into the competitive European VC market, though LP roster and sector specializations remain undisclosed. The fund's final close signals strong investor backing for the newly formed manager's European-focused thesis.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-29T10:01:25",
@@ -3273,6 +3304,15 @@
           "published_date": "2026-06-23",
           "summary": "",
           "feed_name": "Private Debt Investor"
+        },
+        {
+          "title": "AllianzGI in $744m first close of APAC fund - Private Debt Investor",
+          "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNWHFCTXlyOUFiRmN4SW12dFU2ZUNpQzlsdXBYR0dyYzA1QUZLbUxpSDBrbVowMVdqQkhid2FzM1JFQVdoWUhJWG9GTE85XzJZOGp1OHRzdWF0OHdORHJaSHhYUDJ6eEhwYTNWQlZqNW1sQm9KYUVBRDZaQlRKaFlqNEJDQWMxUQ?oc=5",
+          "source_name": "Private Debt Investor",
+          "source_domain": "privatedebtinvestor.com",
+          "published_date": "2026-06-23",
+          "summary": "AllianzGI in $744m first close of APAC fund&nbsp;&nbsp;Private Debt Investor",
+          "feed_name": "search:Credit/Real estate"
         }
       ]
     },
@@ -4028,7 +4068,7 @@
       "announcement_date": "2026-06-18",
       "source_url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPLVNCZ1Vxb2xlZEhWZkM3dnNIc01jQWlfZVluc2FLZ2xMOEw2ZDZCRTN0cGIxaFhhQ2RJQWtNX0xIaDBGd2ZxdDdFN1A1bHdOU3FhTldueXRzemVjQlFTeTEyNW9UUS1rTkhBM0hwNXVScS1ESnFTdkp0dGFheXBGWHZudXpSWi1BQ2dqQg?oc=5",
       "source_name": "Yahoo Finance",
-      "description_notes": "close $100M growth-stage venture fund focused on contrarian investment theses and undervalued opportunities in emerging technology sectors. The fund targets companies in mid-market growth phase with experienced management teams and defensible market positions. Anti Fund's strategy emphasizes thesis-driven investing with concentrated conviction bets, differentiating from traditional growth vehicles through deep research and operational value-add.",
+      "description_notes": "close $100 million debut venture fund targeting growth-stage companies, though specific sector focus and LP roster remain limited in public records. the fund represents anti fund's entry into institutional venture capital with a relatively modest initial commitment relative to broader market growth rounds. without additional details on strategy differentiation or anchor investors, this appears to be an emerging manager's first institutional vehicle.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-19T10:01:31",
@@ -4317,7 +4357,7 @@
       "announcement_date": "2026-06-16",
       "source_url": "https://alternativecreditinvestor.com/2026/06/16/ex-blackstone-exec-launches-trimontium-with-1-5bn-backing/",
       "source_name": "Alternative Credit Investor",
-      "description_notes": "raise $1.5B for a new credit fund strategy, marking Trimontium's entry into the credit markets with a significant debut vehicle. The launch-stage fund targets institutional investors seeking direct credit exposure, positioning itself in the competitive credit fund landscape without disclosed anchor LPs or sector-specific constraints mentioned.",
+      "description_notes": "launch a $1.5B credit fund targeting institutional investors seeking diversified fixed-income exposure across multiple credit strategies and geographies. Trimontium's debut vehicle marks the firm's entry into the competitive credit space, though the article provides limited details on LP composition, sector focus, or how this vintage positions against market comparables.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-18T12:11:22",
@@ -4775,7 +4815,7 @@
       "announcement_date": "2026-06-15",
       "source_url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxNazZDbDBuSGhsRVRETXZlVmFoY2RpdU5TVVlUdmg5akRzRzdvR19iWHFybW1lQzVwb2R2Tl9YTmtkX2hueHpSRE03V182YU1KWXA5UTdieFV2UlJXOUlxejFIUWg3Y1NCWUhwT1BnRVFBZkp5NEstVjliX09fRHcxbVBqUVRyRE9PWDlZS2F5WG5BZURXcVdiNTFkeENCSnZ6YVE2bkgyMFR5OGNhaU5RNDhfNWc0NWE3My02S1ZVZk1xYklhMVdHWGVDTjBtSW9HUnlnT0pvNDU?oc=5",
       "source_name": "PR Newswire",
-      "description_notes": "launch a $75M third venture fund focused on early-stage investments in underserved markets and non-traditional founder demographics. The fund represents growth from prior vintages, with Gutter Capital expanding its check sizes and geographic reach across North America. The firm targets pre-seed to Series A companies building resilient, mission-driven businesses outside traditional venture hubs.",
+      "description_notes": "close $75M for its third venture fund focused on early-stage investments in underserved market segments. Gutter Capital has established itself as a seed and Series A investor backing founders from non-traditional backgrounds and overlooked geographies outside major tech hubs. Fund III marks the firm's largest vehicle to date, signaling LP confidence in its contrarian sourcing model and track record of backing overlooked talent.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-01T10:02:24",
@@ -5054,6 +5094,15 @@
           "published_date": "2026-06-11",
           "summary": "Partners Group targets USD 1.5 billion for latest real estate secondaries program&nbsp;&nbsp;TradingView",
           "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Partners Group secures $650m for new real estate secondaries strategy - IPE Real Assets",
+          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNMFhPSXhZN21NRTBHRDFISDdtUTh4LTF5T2pKSGQ4bl80TXZRQzVOR3RPR3FfVTczaEtBOVFhWDhfb2tpQXU3VFVUbUk2U0Y3bTZXdVlLOXNyWVJOVXF6VHRhSUo1ckp1aEJtai1iSXJxbl90MUlVdEdOcEZ5cmkzbUsyNllfT24wWjVmRzdPY0NraEl5d3hjQWVMX1ZxVzYtWWFMcXhHYnpJNmt4dW51TkJuZ0hqbTJk?oc=5",
+          "source_name": "IPE Real Assets",
+          "source_domain": "realassets.ipe.com",
+          "published_date": "2026-06-11",
+          "summary": "Partners Group secures $650m for new real estate secondaries strategy&nbsp;&nbsp;IPE Real Assets",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
         }
       ]
     },
@@ -5103,7 +5152,7 @@
       "announcement_date": "2026-06-11",
       "source_url": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxOU1BYcHdzX1ZpUFpVRWQxa0YyYjRBT1hPQ1E2ZTk1UWNpQXJ6S243ZjJTWHFwWl92T0NnMGpJYnJvcVlkdVk2ZnU4MHVjS3Z5Z0Z6a18tNkg3MTVtOUxYWkI3R3ZDQ0FTLTZjdTBEUHFrc016d1AtbXRwMHIwaC03N2E0S2dNaHBCcnNXVm5QalA4LThoZk01UG5heGtEMW5wR2JYZXNYQ2p2cmZXeEtxeHpHdHFrYUc3Uk5KOEVlc2w0bk5iNlVzZlZDQU5rSk5qdTdRcC01OGFZR1Nmc0ZscGtQTHJhcE04b2tRaNIB8gFBVV95cUxNOVR3MEd6ZnVoa2NRR21TZUk3X3Q1cGE5dHBYOWNOZUpiWm04eWRPTUxPbmpNcDlDcjIyTnRFcmRWR2ZudVJMMldTSWJmNEJ6MTJzSHV6Mmd6TE9EdXhpa2ZOeG9zS2xJeVhnNG9PeFVlUHlJRGMyR04yaVQyYTdIYmN3c3NiRUhHNEJjM2NiUFBkcjJXZHNTTmEzVm9HV0VGM2xhWVNIRmtmd21qMGZrNXB0OXlKQk5ITmxLd2p0WHFReXpnU29SVnlhWU1EZWVPci13dl9NZ21YTHhyVGhDTHFpX3ZJOEQtTjBOalowWWg3UQ?oc=5",
       "source_name": "Manilatimes",
-      "description_notes": "close Angel Invest Fund III, an undisclosed venture capital fund focused on early-stage investments. The fund represents the firm's third institutional vehicle, though specific LP composition and sector focus remain limited in public disclosure. Without confirmed details on fund size relative to prior vintages or distinctive strategic positioning, this closing marks continued fundraising activity in the early-stage VC market.",
+      "description_notes": "closing Angel Invest Fund III, an early-stage venture vehicle focused on seed and Series A investments in technology and innovation-driven startups. The fund represents the firm's continued focus on identifying promising founders at the earliest stages, building on the track record established through prior vintages. Without disclosed LP details or comparative sizing data, the fund's final close marks another commitment to the angel and early-venture segment.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-11T10:32:34",
@@ -5254,7 +5303,7 @@
       "announcement_date": "2026-06-11",
       "source_url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxQc2lKLXZIbFJNX1ozY3pCYUhfX0NtV21yNkV2Z0NfQ29uakozUklIdld3VzRhUGdjcS1zMDVVTklEMzZ4U1lIb1A4VDZWcDd2RmlOaW9ZQUQ5TmlBVW5zem9CUlRvTlJScGdiZHNyNUgyelNoVVRIVjZGX3NvUWhpOVZSSTZIUm00ZzF1eDRiVGxKNGZzVTRlQnNIaWZjTVcyTm5TYVVrVDU2NERDWVNXXzVtTjB3RExWNVAtODd2cTN1aTdRUFQxVmp6REdiYlpQV2dQcEREaGVoeXJJcVA3TDBHaG8tX3o5QTdIT0xydG5SdGhN0gH6AUFVX3lxTE9ZdEN5MFZad0FTRFVmTDhXaF91VkZ4dThheU0tWF9IQVN5dWpGNDloZVRNQXVwYWZ6azBLam1teFV0dlViRVVSZG90RlQ2VTFDazlzdEFrbjBZbHhRQjhhZzBON1B3VkVudmpiQTFDWmdzN3M4dHNFWER1MDJrUUtmandIMGcwR3MtRnRBVmVqRTJCY2RlUEhUWXlNaUhFTXl4ZzNfTm5oMU9QcGxlNVdhc0Q1Ymd2ZDVYOGVIRy1nak1mN2pId212a1RlcTR0Sm9HSFJsOHdTSUR2R3MycVJYdko1R0hfUnVIWGtHVlVuWDg0ZnNKUk5COWc?oc=5",
       "source_name": "M",
-      "description_notes": "launch a real estate opportunities fund focused on identifying and capitalizing on dislocated or undervalued property assets across market cycles. The fund targets institutional and high-net-worth investors seeking differentiated real estate exposure through a opportunistic strategy. Prime Litmus Investment Management's debut real estate vehicle marks an expansion from the firm's existing investment platform.",
+      "description_notes": "launching a real estate opportunities fund to target value-add and opportunistic investments across commercial and residential properties. the fund aims to capitalize on market dislocations and off-market deal sourcing, though specific LP commitments and fund size remain undisclosed at launch. prime litmus is entering the real estate space with a strategy that emphasizes operational improvements and repositioning rather than core stabilized assets.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-30T10:01:25",
@@ -7288,7 +7337,7 @@
       "announcement_date": "2026-06-01",
       "source_url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxONWY1RUd4UUdPR1o0S3JDRUdCZDJKUEdMVl9FS1drS3VrQzRDVWxtdWZVbzVna0o3VElfMVhfaGwxb1JOVUZfd0tVa2xIaUtmdWgtQ20ydWd0aGk3OTJwcjFqVkIyXzB4dElYVmlXMGZjSTFodVljejU4dVlmUXdZRHJLY0c?oc=5",
       "source_name": "Dealstreetasia",
-      "description_notes": "launch a venture capital fund focused on direct-to-consumer consumer brands, targeting early and growth-stage companies selling primarily through digital channels. the fund invests in e-commerce, subscription, and digitally-native consumer businesses across sectors including food, beauty, apparel, and home goods. D2C Insider's debut fund arrives as consumer venture activity remains robust, with the firm leveraging its content platform and founder network to source and support portfolio companies.",
+      "description_notes": "launch a venture capital fund focused on direct-to-consumer consumer brands, targeting early to growth-stage companies in the e-commerce and digital retail space. the fund aims to provide capital and operational support to D2C founders scaling consumer brands across categories like beauty, food, fashion, and home goods. D2C Insider, known for its content platform and community for e-commerce entrepreneurs, is leveraging its founder network and market intelligence to identify and support portfolio companies.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-01T10:01:52",
@@ -8096,10 +8145,10 @@
       "amount": "Undisclosed",
       "amount_usd_millions": null,
       "category": "Venture Capital",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "Singapore, Singapore",
+      "city": "Singapore",
       "state": "",
-      "country": "",
+      "country": "Singapore",
       "stage": "Final Close",
       "announcement_date": "2026-05-27",
       "source_url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE5xOF91RVc1dkxHTk1pOGxCSFFuRnh5aXFYVnVRTGhkRXgtUE4zNnczcDd1MXV5eUdCaVhySnQxSUpXTzRqdndkX0l2RlRxcHNpOGI2V29zejloVGx3d2FlWUF3dHpndEZjZjludWZuS1phV1RoUmcyYVB4N2dlaG8?oc=5",
@@ -9144,6 +9193,15 @@
           "published_date": "2026-05-19",
           "summary": "",
           "feed_name": "Private Debt Investor"
+        },
+        {
+          "title": "Barings Closes Over $19 Billion for Global Direct Lending Strategy - Business Wire",
+          "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxQTURjMm9KWXk4SlJIeWtTVHZaeTNNRkZ6UjNabkEwM1NTTzEwQWh1SE9menp1M2tCN1d5bnpYNC0xbzJ6M0VUakFrRi1fam0wWURzZWxQeG40T3BsdkdjNmVMSFZodU9yWWpwTl9PeXZlaFZSY0tFV2YtN2VCdWx4dUx2SzM4WGpSU0hhWTU0VDJPWS1Cdy1DZVdyUnJ4RV9KNlNhcHdlZG00WEpqN01WLWRKX3RFWkVCMDlJRmxNYmxvQlk?oc=5",
+          "source_name": "Business Wire",
+          "source_domain": "businesswire.com",
+          "published_date": "2026-05-19",
+          "summary": "Barings Closes Over $19 Billion for Global Direct Lending Strategy&nbsp;&nbsp;Business Wire",
+          "feed_name": "search:Press release fund closes"
         }
       ]
     },
@@ -12814,7 +12872,7 @@
       "announcement_date": "2026-05-05",
       "source_url": "https://news.google.com/rss/articles/CBMihgJBVV95cUxNVEpRbGIwcG5scHRZNXNLT19KQU5ZRFhrWnV6dVdhNjNuMnNtSWRObjFyclhZLU9tcVJMekJYWnhRZ0dlWmNIZFh4RmNvWEhQUTl1Z1pMN0UxMlQtUy1oOUVqcWVWQmVYYnJrRkZLVnAwOXNuYUtST3plWm9RSU5taFRsOTRBRWZEUXlGQlk4WjI4NWJPRVhyVjNJVlVOQmsySlFZaWdlSjl3ME05TlRZVnh4dl9ZWEFrNTY1NlhoR0xGNDZNaHV2cnk1TnFPVjJ1V1VZT3c2QkhTN0JxcWNCSXc5NzhxbENQekFpMnVJQXpCMWlmbl80QkJuaW5TaGNxM1VJanFn?oc=5",
       "source_name": "PR Newswire",
-      "description_notes": "launches $100M debut venture fund targeting early-stage companies founded by or led by millennial entrepreneurs across technology, consumer, and fintech sectors. The fund positions itself at the intersection of generational wealth transfer and founder diversity, focusing on seed-to-Series A investments where millennial operators have demonstrated product-market fit. First closing represents a notable entry into the millennial-focused VC space, carving out differentiation through founder demographic alignment rather than traditional stage or sector thesis.",
+      "description_notes": "launch a $100M venture capital fund targeting millennial-founded and millennial-led companies across early to growth stages. The fund focuses on founders aged 25-45 who are building consumer, fintech, climate tech, and software businesses, positioning itself as an alternative to traditional venture capital with stated commitments to diversity and founder-friendly terms. Global Millennial Capital's debut vehicle represents an emerging thesis that generational experience and networks among millennial investors can unlock deal flow and support overlooked founders.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-05-06T10:01:30",
@@ -17054,7 +17112,7 @@
       "announcement_date": "2026-04-21",
       "source_url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxONlg5RWswUmVJWFNqbXYxeEZzRFVmaUZXU0NaSEltUzBGbzVaanJFQTBvQXZXbGJmelZ2aW9UWTJLaWQ4Qy1kbjQyS0ZqV3hEUjJXNU5JZmhlTU9Wa0VXY0RKQzFQZHkwellwZmptUXlUaURXNEhfdDNrWVNIWWQtQ3o3bGgzRm9OYkFWUE5WMS15cWVUQzlsY2FydXVMR183cTkwN3l2NHdDVUdIdlV3NFI3elZBdw?oc=5",
       "source_name": "Reuters",
-      "description_notes": "launch a debut evergreen private equity fund with an undisclosed target, positioning Azalea to deploy capital across multiple market cycles without fixed fund lifespans. the structure allows flexibility in investment horizons and exit timing, differentiating it from traditional finite-life PE funds. without publicly disclosed LP anchors or a defined strategy focus, the fund's positioning within the mid-market or lower-mid-market segment remains unclear.",
+      "description_notes": "launching an evergreen private equity fund with no fixed maturation date, allowing flexible capital deployment across multiple market cycles. the structure targets mid-market buyouts and growth investments, offering LPs continuous liquidity and reinvestment optionality rather than traditional closed-end fund constraints. azalea's evergreen model represents a growing shift among established pe managers seeking to differentiate from traditional vintage-year funds.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-15T10:01:23",
@@ -54026,6 +54084,17 @@
       "country": "Poland"
     },
     {
+      "firm": "Harpoon Ventures",
+      "firm_slug": "harpoon-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 155.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": ""
+    },
+    {
       "firm": "Sideline Group",
       "firm_slug": "sideline-group",
       "fund_count": 1,
@@ -56588,8 +56657,8 @@
       "categories": [
         "Venture Capital"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "Singapore",
+      "country": "Singapore"
     },
     {
       "firm": "Capital Group and KKR",
@@ -59255,8 +59324,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-07-11T08:00:00.472350",
-      "last_success": "2026-07-11T08:00:00.472357",
+      "last_fetch": "2026-07-12T06:06:14.288943",
+      "last_success": "2026-07-12T06:06:14.288950",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -59265,8 +59334,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-07-11T07:24:00.663755",
-      "last_success": "2026-07-11T07:24:00.663762",
+      "last_fetch": "2026-07-12T06:06:11.975396",
+      "last_success": "2026-07-12T06:06:11.975404",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -59305,8 +59374,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-07-11T08:00:07.217593",
-      "last_success": "2026-07-11T08:00:07.217603",
+      "last_fetch": "2026-07-12T06:06:23.018466",
+      "last_success": "2026-07-12T06:06:23.018476",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -59315,8 +59384,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-07-11T06:06:40.315032",
-      "last_success": "2026-07-11T06:06:40.315038",
+      "last_fetch": "2026-07-12T06:05:58.082622",
+      "last_success": "2026-07-12T06:05:58.082624",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -59325,8 +59394,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-07-11T06:06:37.371205",
-      "last_success": "2026-07-11T06:06:37.371209",
+      "last_fetch": "2026-07-12T06:05:55.466178",
+      "last_success": "2026-07-12T06:05:55.466186",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -59335,8 +59404,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-07-11T07:23:58.794019",
-      "last_success": "2026-07-11T07:23:58.794028",
+      "last_fetch": "2026-07-12T06:06:10.414130",
+      "last_success": "2026-07-12T06:06:10.414141",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -59345,8 +59414,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-07-11T06:06:42.131928",
-      "last_success": "2026-07-11T06:06:42.131931",
+      "last_fetch": "2026-07-12T06:05:59.847665",
+      "last_success": "2026-07-12T06:05:59.847671",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -59355,8 +59424,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-07-11T08:00:04.011694",
-      "last_success": "2026-07-11T08:00:04.011704",
+      "last_fetch": "2026-07-12T06:06:19.912341",
+      "last_success": "2026-07-12T06:06:19.912352",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -59365,8 +59434,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-07-11T06:22:14.415753",
-      "last_success": "2026-07-11T06:22:14.415760",
+      "last_fetch": "2026-07-12T06:06:03.166326",
+      "last_success": "2026-07-12T06:06:03.166336",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -59375,8 +59444,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-07-11T06:06:35.648480",
-      "last_success": "2026-07-11T06:06:35.648483",
+      "last_fetch": "2026-07-12T06:05:53.577043",
+      "last_success": "2026-07-12T06:05:53.577044",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -59385,8 +59454,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-07-11T07:23:56.778524",
-      "last_success": "2026-07-11T07:23:56.778532",
+      "last_fetch": "2026-07-12T06:06:08.286319",
+      "last_success": "2026-07-12T06:06:08.286327",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -59395,8 +59464,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-07-11T07:07:40.530922",
-      "last_success": "2026-07-11T07:07:40.530930",
+      "last_fetch": "2026-07-12T06:06:05.405335",
+      "last_success": "2026-07-12T06:06:05.405345",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -59405,8 +59474,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-07-11T06:06:38.997951",
-      "last_success": "2026-07-11T06:06:38.997962",
+      "last_fetch": "2026-07-12T06:05:56.908526",
+      "last_success": "2026-07-12T06:05:56.908533",
       "error_count": 0,
       "article_count": 17,
       "last_error": "",
@@ -59414,13 +59483,13 @@
     }
   ],
   "stats": {
-    "total_funds": 1201,
+    "total_funds": 1202,
     "total_covered": 52,
-    "total_uncovered": 1149,
-    "total_aum_millions": 1006370866.6,
+    "total_uncovered": 1150,
+    "total_aum_millions": 1006371021.6,
     "by_category": {
       "Private Equity": 300,
-      "Venture Capital": 307,
+      "Venture Capital": 308,
       "Real Estate": 115,
       "Secondaries & GP-Stakes": 66,
       "Credit Funds": 246,
@@ -59430,7 +59499,7 @@
     },
     "by_stage": {
       "Launch": 507,
-      "Final Close": 334,
+      "Final Close": 335,
       "First Close": 202,
       "Other": 134,
       "Interim Close": 23,
