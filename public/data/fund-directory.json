@@ -1,6 +1,68 @@
 {
-  "generated_at": "2026-07-16T16:05:00.579935Z",
+  "generated_at": "2026-07-17T10:13:28.593965Z",
   "funds": [
+    {
+      "fund_name": "FCMB-TLG Private Debt Fund Series II",
+      "firm": "FCMB",
+      "firm_slug": "fcmb",
+      "amount": "\u20a620.69bn",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "location": "Lagos, Nigeria",
+      "city": "Lagos",
+      "state": "",
+      "country": "Nigeria",
+      "stage": "Other",
+      "announcement_date": "2026-07-17",
+      "source_url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxPOFpibzVmQ3ZlWDc4cndFaW0yNjhQQk9pZ0ZOYVJQd2JJY0NTcThkNG0wS2p5ZkxvcnhsWF9vcTE4WTB2RzVsM3dXaUc1N09wYlZXV19scW5IUkRtdldYNzJfT3pZdkVhZVVlYkdPSmQ3V0FJNUM2c1E2WG9kY1R3MkNIYlZ0R0JxMzZqdy1oOUhiaWF2bXhGNnRjNnVmRXhKN0ptOFlLUE5pUUpiSkhqRjdqdU1uS2xvME5wYm84TTBsUTlJYUczSjdOSkhxbmtrejhMV010TnZYRHEzOVlFedIB5gFBVV95cUxNUHNhTm44MUFYaWZUOV8zV1RPWjQwak1uSnZoTl9YMjA0NGFNWDBwdWk5aWJsTWdpVFFyUldOREZrVW9Kd1ZTYXBSTzU2ZjIxZTQ4UDg0YW05ZGV0SWNhR3ZNVlZhZ2Eya2ZRaEtlSHAtamZ1bk43dEZISXFUTkJ6YU4zNE5xRTlwRFB3c3l4VmNndVBLMDdXUHJrTk9GanB6WjNVZ2RuUFA3SXU5TVVaTzhrOWIzaUd0VzZ3eDM4OThadjVIQnNMdG1EYWdjZUkwYnU1WnQyNmJPOGZlcnk5OWhQN2pudw?oc=5",
+      "source_name": "Vanguardngr",
+      "description_notes": "closes second series of a private debt fund focused on Nigerian opportunities. Nigerian Pension Funds anchored the oversubscribed issuance, signaling strong institutional demand for domestic credit vehicles in the West African market.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-17T10:01:22",
+      "articles": [
+        {
+          "title": "Nigerian Pension Funds Anchor oversubscribed \u20a620.69bn Series II issuance of FCMB-TLG private debt fund - Vanguard News",
+          "url": "https://news.google.com/rss/articles/CBMi4AFBVV95cUxPOFpibzVmQ3ZlWDc4cndFaW0yNjhQQk9pZ0ZOYVJQd2JJY0NTcThkNG0wS2p5ZkxvcnhsWF9vcTE4WTB2RzVsM3dXaUc1N09wYlZXV19scW5IUkRtdldYNzJfT3pZdkVhZVVlYkdPSmQ3V0FJNUM2c1E2WG9kY1R3MkNIYlZ0R0JxMzZqdy1oOUhiaWF2bXhGNnRjNnVmRXhKN0ptOFlLUE5pUUpiSkhqRjdqdU1uS2xvME5wYm84TTBsUTlJYUczSjdOSkhxbmtrejhMV010TnZYRHEzOVlFedIB5gFBVV95cUxNUHNhTm44MUFYaWZUOV8zV1RPWjQwak1uSnZoTl9YMjA0NGFNWDBwdWk5aWJsTWdpVFFyUldOREZrVW9Kd1ZTYXBSTzU2ZjIxZTQ4UDg0YW05ZGV0SWNhR3ZNVlZhZ2Eya2ZRaEtlSHAtamZ1bk43dEZISXFUTkJ6YU4zNE5xRTlwRFB3c3l4VmNndVBLMDdXUHJrTk9GanB6WjNVZ2RuUFA3SXU5TVVaTzhrOWIzaUd0VzZ3eDM4OThadjVIQnNMdG1EYWdjZUkwYnU1WnQyNmJPOGZlcnk5OWhQN2pudw?oc=5",
+          "source_name": "Vanguard News",
+          "source_domain": "vanguardngr.com",
+          "published_date": "2026-07-17",
+          "summary": "Nigerian Pension Funds Anchor oversubscribed \u20a620.69bn Series II issuance of FCMB-TLG private debt fund&nbsp;&nbsp;Vanguard News",
+          "feed_name": "search:Oversubscribed funds"
+        }
+      ]
+    },
+    {
+      "fund_name": "Carlyle AlpInvest Continuation Fund II",
+      "firm": "Carlyle",
+      "firm_slug": "carlyle",
+      "amount": "$1.7B",
+      "amount_usd_millions": 1700.0,
+      "category": "Secondaries & GP-Stakes",
+      "location": "Washington, DC",
+      "city": "Washington",
+      "state": "DC",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2026-07-16",
+      "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/carlyle-alpinvest-hits-1-7bn-hard-cap-for-second-dedicated-continuation-vehicle-fund.html",
+      "source_name": "AltAssets",
+      "description_notes": "hits hard cap at $1.7 billion for the second dedicated continuation vehicle investment fund. This represents the second continuation fund from Carlyle AlpInvest, focused on acquiring stakes in mature private equity portfolio companies to extend their holding periods and value creation.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-17T10:01:22",
+      "articles": [
+        {
+          "title": "Carlyle AlpInvest hits $1.7bn hard cap for second dedicated continuation vehicle investment fund",
+          "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/carlyle-alpinvest-hits-1-7bn-hard-cap-for-second-dedicated-continuation-vehicle-fund.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-07-16",
+          "summary": "",
+          "feed_name": "AltAssets"
+        }
+      ]
+    },
     {
       "fund_name": "Highground",
       "firm": "H.I.G. Realty",
@@ -64,6 +126,68 @@
       ]
     },
     {
+      "fund_name": "Preservation Capital Partners III",
+      "firm": "Preservation Capital Partners",
+      "firm_slug": "preservation-capital-partners",
+      "amount": "\u20ac877M",
+      "amount_usd_millions": 877.0,
+      "category": "Private Equity",
+      "location": "London, UK",
+      "city": "London",
+      "state": "",
+      "country": "UK",
+      "stage": "Final Close",
+      "announcement_date": "2026-07-16",
+      "source_url": "https://www.altassets.net/private-equity-news/by-region/europe-by-region/western-europe-europe-by-region/united-kingdom-western-europe-europe-by-region/preservation-capital-partners-closes-third-fund-at-e877m-hard-cap-doubling-predecessor-vehicle.html",
+      "source_name": "AltAssets",
+      "description_notes": "closed its third fund at \u20ac877m, doubling the size of its predecessor vehicle, after an oversubscribed fundraising completed in just six months. Preservation Capital Partners targets mid-market buyouts in European financial and business services, with the \u20ac877m hard cap reflecting strong institutional demand for the firm's sector-focused strategy.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-17T10:01:23",
+      "articles": [
+        {
+          "title": "Preservation Capital Partners closes third fund at \u20ac877m hard cap, doubling predecessor vehicle",
+          "url": "https://www.altassets.net/private-equity-news/by-region/europe-by-region/western-europe-europe-by-region/united-kingdom-western-europe-europe-by-region/preservation-capital-partners-closes-third-fund-at-e877m-hard-cap-doubling-predecessor-vehicle.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-07-16",
+          "summary": "",
+          "feed_name": "AltAssets"
+        }
+      ]
+    },
+    {
+      "fund_name": "IPF Healthcare Debt Fund",
+      "firm": "IPF",
+      "firm_slug": "ipf",
+      "amount": "\u20ac241m",
+      "amount_usd_millions": 241.0,
+      "category": "Credit Funds",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Final Close",
+      "announcement_date": "2026-07-16",
+      "source_url": "https://www.privatedebtinvestor.com/ipf-closes-on-e241m-for-healthcare-debt/",
+      "source_name": "Private Debt Investor",
+      "description_notes": "close \u20ac241m healthcare-focused credit fund targeting debt investments in mid-market healthcare companies across Europe. The fund, now at final close, represents IPF's specialized expansion into healthcare credit, positioning the firm to compete in the growing market for non-bank lending to medical device, pharmaceutical, and healthcare services providers.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-17T10:01:22",
+      "articles": [
+        {
+          "title": "IPF closes on \u20ac241m for healthcare debt",
+          "url": "https://www.privatedebtinvestor.com/ipf-closes-on-e241m-for-healthcare-debt/",
+          "source_name": "Private Debt Investor",
+          "source_domain": "privatedebtinvestor.com",
+          "published_date": "2026-07-16",
+          "summary": "",
+          "feed_name": "Private Debt Investor"
+        }
+      ]
+    },
+    {
       "fund_name": "LionLight Capital Debut Fund",
       "firm": "LionLight Capital",
       "firm_slug": "lionlight-capital",
@@ -99,6 +223,15 @@
           "source_domain": "citybiz.co",
           "published_date": "2026-07-15",
           "summary": "LionLight Capital Closes $215 Million Debut Private Equity Fund at Hard Cap&nbsp;&nbsp;citybiz",
+          "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "LionLight Capital Closes Inaugural Fund at $215 million Hard Cap - FinancialContent",
+          "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxON1Z5MUpYOURmaThCU0NCZDNRYzVJZEZFaXdmSkhtZWhiRmZVeFhKMzNpV3ctWUR3djNIUG5rVTFnOENiMU9ralZvR3BDV2NYZ1NHNUR1RUltYUVLdmpRZVFmRzc0VmYtNWhBTGNsN3ZpeWY4WGswc2R2VDBVVG9tbXJPZmhsRHlLNHRiUGcwTG0yZUtiVGltU2NlNWZ0X0ZiRFlWdWJIeHRKdjh0VFhjWk53UmpjbkRCZFMyUXNjUQ?oc=5",
+          "source_name": "FinancialContent",
+          "source_domain": "financialcontent.com",
+          "published_date": "2026-07-15",
+          "summary": "LionLight Capital Closes Inaugural Fund at $215 million Hard Cap&nbsp;&nbsp;FinancialContent",
           "feed_name": "search:Oversubscribed funds"
         }
       ]
@@ -149,7 +282,7 @@
       "announcement_date": "2026-07-16",
       "source_url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOUmFKR2NGTnRES0xOUUc1SGNLbXR5S1FnSVhfTmdVanBHTWdzSnViZ3VmbGdtaUxsRExYWm5lZkdyRVV0Uk9qMXlfd0tVcEpnOG1SRS1BSTkwTV9OcUthaXo3eGk3b1Fock9FbUZpMl9SSU11NXI0T1NXVjhHdlFEbjZmQzFCZHMyUWxoV2NxLVdISzBLdG1OeE4wUzI1bzlfN214Z1FFcnNTT3dXXzFZaVlObkIwWGw4dmJJOGxB?oc=5",
       "source_name": "Infrastructure Investor",
-      "description_notes": "launch a credit-focused infrastructure fund targeting opportunistic investments in essential assets and operations across developed markets. The fund leverages Clifford Capital's expertise in structured credit and infrastructure financing, positioning it to capture yield opportunities in a rising-rate environment where asset owners seek liquidity.",
+      "description_notes": "launch an infrastructure credit fund targeting opportunistic debt investments across core and non-core infrastructure assets. The fund focuses on providing flexible capital solutions to infrastructure sponsors and operators, positioning itself in the growing market for specialized infrastructure financing. Clifford Capital Asset Management enters this space with a dedicated credit strategy as institutional capital continues to flow toward infrastructure debt opportunities.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-16T10:11:21",
@@ -162,6 +295,99 @@
           "published_date": "2026-07-16",
           "summary": "Clifford Capital Asset Management plans opportunistic infra credit fund \u2013 exclusive&nbsp;&nbsp;Infrastructure Investor",
           "feed_name": "search:First/final close"
+        }
+      ]
+    },
+    {
+      "fund_name": "Oaktree Asia Private Credit Strategy",
+      "firm": "Oaktree Capital Management",
+      "firm_slug": "oaktree-capital-management",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "location": "Los Angeles, CA",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2026-07-16",
+      "source_url": "https://www.privatedebtinvestor.com/oaktree-adds-quartet-for-new-asia-private-credit-strategy/",
+      "source_name": "Private Debt Investor",
+      "description_notes": "launches new Asia-focused private credit strategy with the addition of four investment professionals to the region. The expansion signals Oaktree's effort to grow its credit platform in Asia-Pacific markets, tapping into growing demand for alternative credit solutions in the region.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-17T10:01:22",
+      "articles": [
+        {
+          "title": "Oaktree adds quartet for new Asia private credit strategy",
+          "url": "https://www.privatedebtinvestor.com/oaktree-adds-quartet-for-new-asia-private-credit-strategy/",
+          "source_name": "Private Debt Investor",
+          "source_domain": "privatedebtinvestor.com",
+          "published_date": "2026-07-16",
+          "summary": "",
+          "feed_name": "Private Debt Investor"
+        }
+      ]
+    },
+    {
+      "fund_name": "Creation Capital Private Credit Fund",
+      "firm": "Creation Capital",
+      "firm_slug": "creation-capital",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "South Africa",
+      "stage": "Launch",
+      "announcement_date": "2026-07-16",
+      "source_url": "https://alternativecreditinvestor.com/2026/07/16/creation-capital-launches-private-credit-fund-in-south-africa/",
+      "source_name": "Alternative Credit Investor",
+      "description_notes": "launching a credit fund with an undisclosed target, entering a competitive market for direct lending and structured credit strategies. the fund's size and specific LP commitments remain under wraps at the launch stage, making it unclear how it positions relative to established credit vehicles.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-17T10:01:22",
+      "articles": [
+        {
+          "title": "Creation Capital launches private credit fund in South Africa",
+          "url": "https://alternativecreditinvestor.com/2026/07/16/creation-capital-launches-private-credit-fund-in-south-africa/",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-07-16",
+          "summary": "",
+          "feed_name": "Alternative Credit Investor"
+        }
+      ]
+    },
+    {
+      "fund_name": "Oaktree Real Estate Partnership",
+      "firm": "Oaktree Capital Management",
+      "firm_slug": "oaktree-capital-management",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Real Estate",
+      "location": "Los Angeles, CA",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2026-07-16",
+      "source_url": "https://www.privatedebtinvestor.com/loan-note-credit-dominates-goldman-fundraising-numbers-oaktree-strikes-a-real-estate-partnership/",
+      "source_name": "Private Debt Investor",
+      "description_notes": "Oaktree Capital struck a new real estate partnership, marking an expansion into or deepening of the firm's real estate investment strategy, though fund size and specific terms were not detailed in the summary.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-17T10:01:23",
+      "articles": [
+        {
+          "title": "Loan Note: Credit dominates Goldman fundraising numbers; Oaktree strikes a real estate partnership",
+          "url": "https://www.privatedebtinvestor.com/loan-note-credit-dominates-goldman-fundraising-numbers-oaktree-strikes-a-real-estate-partnership/",
+          "source_name": "Private Debt Investor",
+          "source_domain": "privatedebtinvestor.com",
+          "published_date": "2026-07-16",
+          "summary": "",
+          "feed_name": "Private Debt Investor"
         }
       ]
     },
@@ -384,7 +610,7 @@
       "announcement_date": "2026-07-15",
       "source_url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQbzA5di0tZWxtMjRJck9BZElWQjQ2V0tFakNNeUhxekF4bTdlMVM0NkM2cmk5MzlMVEk5QmJjT2pMLTRVRkRBVTBTVmkzbWxGbUpZNmNsN29oTFlUNkctdFJmR21HalhNTEJRM3BXUXFrdjhEZDhIN3h0OEdNNHBhYUdXUllwWlpCRUhZT0Z2SkpkQkZDQlU5ZldtdFFUQTA?oc=5",
       "source_name": "Infrastructure Investor",
-      "description_notes": "launch a \u20ac1bn infrastructure fund focused on mobility assets and transportation infrastructure across Europe, targeting mid-market opportunities in transit, logistics, and smart mobility sectors. The fund represents Primevest's entry into dedicated European mobility infrastructure investing, positioning it to capitalize on accelerating decarbonization and urban mobility transition trends.",
+      "description_notes": "raise \u20ac1bn for infrastructure investments focused on mobility and transportation assets across Europe, targeting mid-market opportunities in sustainable transport, logistics, and urban mobility solutions. The fund represents Primevest's entry into the specialized mobility infrastructure sector, positioning it to capitalize on the continent's shift toward decarbonization and smart mobility infrastructure.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-16T10:11:21",
@@ -486,7 +712,7 @@
       "announcement_date": "2026-07-15",
       "source_url": "https://www.prnewswire.com/news-releases/ite-management-launches-ite-lending-to-provide-senior-secured-aviation-financing-302825764.html",
       "source_name": "PR Newswire",
-      "description_notes": "launch a senior secured aviation financing platform targeting industrial transportation and infrastructure assets. ITE Management, an alternative asset manager focused on the sector, is deploying the credit fund to provide specialized lending to aviation operators and related industrial transportation businesses, leveraging its existing expertise in infrastructure financing.",
+      "description_notes": "launch a senior secured aviation lending fund focused on industrial transportation and infrastructure assets. ITE Management, an established alternative asset manager in the industrial transportation sector, is deploying ITE Lending to provide debt financing solutions for aviation-related equipment and operations, marking the firm's expansion into specialized credit strategies.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-15T10:01:34",
@@ -891,15 +1117,15 @@
       "amount": "\u20ac900M",
       "amount_usd_millions": 900.0,
       "category": "Infrastructure",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "Luxembourg, Luxembourg",
+      "city": "Luxembourg",
       "state": "",
-      "country": "N/A",
+      "country": "Luxembourg",
       "stage": "Other",
       "announcement_date": "2026-07-13",
       "source_url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQRVM3d082cXM2ZDVEbkkwYTBjUndNbm5rM3BDWXo4Wl8wc1lWNWNRcHpTZTc1anZFWHlJdDJnaHFZcXBZX2R3WUZBTnhJTGo2YVlTd1FfZ0o5Uzg0ZVFUQjF2ZWZ5em9vVXpGeEkycG9lRmRkbGUwOTJIbWF5NFpsQmI3ejh2QmVISnlVY0VFUElwSmpGejFzN3hGVmUxMlJRTDhncjZlQTJYcnB6SVZnSFZuWlRuaUZEQkE?oc=5",
       "source_name": "Infrastructure Investor",
-      "description_notes": "closes \u20ac900M infrastructure fund targeting mid-market assets across Europe with focus on energy transition, digital infrastructure, and essential services. The fund represents a significant deployment vehicle for institutional capital seeking long-term, stable returns in regulated or quasi-regulated infrastructure assets.",
+      "description_notes": "closes \u20ac900M infrastructure fund targeting mid-market assets across Europe with focus on energy transition, digital infrastructure, and social assets. The fund represents a significant deployment vehicle for Rivage's infrastructure strategy, building on the firm's track record in acquiring and operating essential utility and transport assets.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-15T10:01:34",
@@ -1316,7 +1542,7 @@
       "announcement_date": "2026-07-09",
       "source_url": "https://www.prnewswire.com/news-releases/one-street-studios-named-by-afreximbank-and-fund-for-export-development-in-africa-feda-as-co-general-partner-of-the-pan-african-film-fund-aiming-to-mobilise-up-to-us-1-billion-826619200.html",
       "source_name": "PR Newswire",
-      "description_notes": "mobilize up to $1 billion to finance film production, distribution, and infrastructure across Africa, with Afreximbank and the Fund for Export Development in Africa (FEDA) as co-general partners alongside One Street Studios. The fund targets the pan-African film industry, leveraging development finance and private capital to support content creation and export across the continent. This marks a significant institutional commitment to African media and entertainment infrastructure through a public-private partnership model.",
+      "description_notes": "mobilize up to US$1 billion to finance film production, distribution, and related infrastructure across Africa, with Afreximbank and the Fund for Export Development in Africa (FEDA) as co-general partners alongside One Street Studios. The fund targets the continent's growing audiovisual sector, aiming to create a dedicated capital source for African filmmakers and studios while supporting export-oriented content production. This represents a first institutional vehicle specifically designed to scale Pan-African film financing at the megafund scale.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-09T23:25:00",
@@ -1938,6 +2164,15 @@
           "published_date": "2026-07-06",
           "summary": "B Capital Closes Oversubscribed Ascent Fund III at $500 Million Hard Cap&nbsp;&nbsp;Business Wire",
           "feed_name": "search:Press release fund closes"
+        },
+        {
+          "title": "B Capital Closes Oversubscribed Ascent Fund III at $500 Million Hard Cap - The Norfolk Daily News",
+          "url": "https://news.google.com/rss/articles/CBMijgJBVV95cUxNaFdBYVI5NzZTbEtERUZKTHN4eERjU1lfakZEdDByS21ZWU52VjE2RkdseXdOUmJqYXFVRXBhRzJhYlFDYWtHRGd0WWtvbklCS1FmTElFWEV2N3AtRUNfZVI4U1pVY1M2NjZCWW9UNl9STy1pQ0NIWGJqeUxkNWYxT1FKVXpQRmZwcTM3akE0elpkUHVnVnhiNXdQbHFQMmljYVVNd2pXOUx6eFNOcVhON1BJZjRMVURja0pHU3dWU2VjV1dmY0w4M3pnejcyOGl1S093Zmo4WktQZlFMMGs4SEhpamMxTnlITFJ0YlFDZHZNejdlMmsyd2EzRkJNTnpKNm55aWpsS3N6TG9QWXc?oc=5",
+          "source_name": "The Norfolk Daily News",
+          "source_domain": "norfolkdailynews.com",
+          "published_date": "2026-07-06",
+          "summary": "B Capital Closes Oversubscribed Ascent Fund III at $500 Million Hard Cap&nbsp;&nbsp;The Norfolk Daily News",
+          "feed_name": "search:Oversubscribed funds"
         }
       ]
     },
@@ -2032,6 +2267,15 @@
       "covered_date": null,
       "date_added": "2026-07-08T10:26:17",
       "articles": [
+        {
+          "title": "Kraken becomes a unicorn, Expeditions Fund II is oversubscribed, and Quantum Systems\u2019 Sven Kruck joins us at Resilience Conference London - Resilience Media",
+          "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxNZEFLdFpnSE5pRzNnYktiU0dtS3lXc1RmT1FuYjNnUXhLU0FYRnducENzLTV4TU5yMDNuT01ENlNkMHA3Z1A1ZXkyUTdmM2xORkF0VmhzbUZGQUx6aWhtZHAxVldCWXhaMHlTS0U4bGM1SGZLWEFUOHZpUkN3R1BYaTlkdnhFTk1YZkhQNmtFeEh1eEJtQnpsVTFKYVdQalBfdm5PUUdTaEJuR0p4SWZZTlJSajZDMjl1UXhmYWFZdXV4Qm9qVm9EbzdBdHZjWmloeHhnWnBOT2hSWUExX0pYY0UzN3laMzBweG9WTVlpXzQ2VUQy?oc=5",
+          "source_name": "Resilience Media",
+          "source_domain": "resiliencemedia.co",
+          "published_date": "2026-07-10",
+          "summary": "Kraken becomes a unicorn, Expeditions Fund II is oversubscribed, and Quantum Systems\u2019 Sven Kruck joins us at Resilience Conference London&nbsp;&nbsp;Resilience Media",
+          "feed_name": "search:Oversubscribed funds"
+        },
         {
           "title": "Warsaw VC Expeditions closes oversubscribed \u20ac197M Fund II - The Recursive",
           "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxQVmVCS0ttaXM0Y0FzMkZHUjFVVWZZYXRITjQ1RTUtaXZuTzhjMGVIM0dZRTZBdlh2WXg2WDRRLXJOc2hyUVF0R2Q5ZGRfc2R2Z05lY3p3S1FkaFhmcmZ6LWJHaG9WSlNDdmJMOGk2NTNNdExJaGRpSTkwNlpMOE4tWUNZY1RGV2IxVy13dXBIM29ldTg?oc=5",
@@ -5293,7 +5537,7 @@
       "announcement_date": "2026-06-18",
       "source_url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPLVNCZ1Vxb2xlZEhWZkM3dnNIc01jQWlfZVluc2FLZ2xMOEw2ZDZCRTN0cGIxaFhhQ2RJQWtNX0xIaDBGd2ZxdDdFN1A1bHdOU3FhTldueXRzemVjQlFTeTEyNW9UUS1rTkhBM0hwNXVScS1ESnFTdkp0dGFheXBGWHZudXpSWi1BQ2dqQg?oc=5",
       "source_name": "Yahoo Finance",
-      "description_notes": "close $100 million debut venture fund targeting growth-stage companies, though specific sector focus and LP roster remain limited in public records. the fund represents anti fund's entry into institutional venture capital with a relatively modest initial commitment relative to broader market growth rounds. without additional details on strategy differentiation or anchor investors, this appears to be an emerging manager's first institutional vehicle.",
+      "description_notes": "close $100M growth-stage venture fund focused on contrarian investment theses and undervalued opportunities in emerging technology sectors. The fund targets companies in mid-stage growth phase, typically post-Series B, with a thesis-driven approach that differentiates it from consensus market positioning. Anti Fund's growth vehicle represents the firm's expansion beyond early-stage deployment, though limited public information is available on LP composition or comparison to prior vintages.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-19T10:01:31",
@@ -6094,15 +6338,15 @@
       "amount": "Undisclosed",
       "amount_usd_millions": null,
       "category": "Real Estate",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "Copenhagen, Denmark",
+      "city": "Copenhagen",
       "state": "",
-      "country": "N/A",
+      "country": "Denmark",
       "stage": "First Close",
       "announcement_date": "2026-06-15",
       "source_url": "https://www.perenews.com/danish-pensions-anchor-first-close-of-urban-partners-regeneration-fund/",
       "source_name": "PERE",
-      "description_notes": "closing its first regeneration-focused real estate fund with an undisclosed target, Urban Partners is targeting urban property repositioning and mixed-use development opportunities. the firm is establishing its initial institutional capital base at first close, positioning itself in the growing sector of adaptive reuse and neighborhood-scale real estate transformation.",
+      "description_notes": "secure Danish pension funds as anchor investors for Urban Partners' inaugural regeneration fund, targeting urban mixed-use and hotel assets across Northern Europe. the fund focuses on repositioning underperforming real estate through adaptive reuse and sustainability upgrades, with the first close representing validation of the emerging manager's strategy in the European regeneration space.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-15T10:01:22",
@@ -6257,6 +6501,37 @@
           "published_date": "2026-06-12",
           "summary": "KKR\u2019s $10bn Helix vehicle points to a new model for funding AI infrastructure&nbsp;&nbsp;capacityglobal.com",
           "feed_name": "search:Secondaries/Infra/GP-stakes"
+        }
+      ]
+    },
+    {
+      "fund_name": "Astorg Mid-Cap II",
+      "firm": "Astorg",
+      "firm_slug": "astorg",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Private Equity",
+      "location": "Paris, France",
+      "city": "Paris",
+      "state": "",
+      "country": "France",
+      "stage": "Launch",
+      "announcement_date": "2026-06-12",
+      "source_url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQc3MwLXljNGJqeEczVUdHZTgtUW1ZSFVEMHBnLUFKWEYyLVN6eGJWcUxOS3N4OHl0bmxNcEtobTNkUU1NUEpmNzg4bHdELXQzazhoNDUzeFJGTkFDWnpob3dfUlV1TEpuaW14WDFXb2hYSV9ya1FHODAxbnpPVkV6al9fR041OWFOQUNXM0FTS19HbzczZ2VieA?oc=5",
+      "source_name": "Realdeals",
+      "description_notes": "close a second mid-market buyout fund focused on European companies with enterprise values between \u20ac50\u2013500 million, targeting operational improvements and add-on acquisitions across industrial, business services, and specialty retail sectors. Astorg, a Paris-based firm with \u20ac7+ billion in assets under management, is expanding its mid-market strategy following the successful deployment of its first mid-cap vehicle. The fund continues the firm's thesis of backing founder-led and family-owned businesses across France, Germany, Benelux, and the UK.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-17T10:01:23",
+      "articles": [
+        {
+          "title": "Astorg dismisses rumours as it prepares Mid-Cap II raise - EU.COM",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQc3MwLXljNGJqeEczVUdHZTgtUW1ZSFVEMHBnLUFKWEYyLVN6eGJWcUxOS3N4OHl0bmxNcEtobTNkUU1NUEpmNzg4bHdELXQzazhoNDUzeFJGTkFDWnpob3dfUlV1TEpuaW14WDFXb2hYSV9ya1FHODAxbnpPVkV6al9fR041OWFOQUNXM0FTS19HbzczZ2VieA?oc=5",
+          "source_name": "EU.COM",
+          "source_domain": "realdeals.eu.com",
+          "published_date": "2026-06-12",
+          "summary": "Astorg dismisses rumours as it prepares Mid-Cap II raise&nbsp;&nbsp;EU.COM",
+          "feed_name": "search:First/final close"
         }
       ]
     },
@@ -7162,6 +7437,15 @@
           "published_date": "2026-06-08",
           "summary": "",
           "feed_name": "Private Debt Investor"
+        },
+        {
+          "title": "Loan Note: Redemptions spread to private equity; PGIM launches wealth fund - Private Debt Investor",
+          "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxPUXp2a2MxQjBfMGswbnFFVkZuLU9JTzUtNmhjNjZXQVd1endMR2xfRXZrdU54cXl3ZS1nRDUtR3RobmJWVVJieUNlMzZ5TFItTlA2RXE1NzBYcVZNbnRmV08wbzhPMktGaVdLc2xBR3BXdlRmMVJpYUR4Ykt4SFA2OHYyNERlTzlaM2RCTDBEclZtTEZyYW9fRklfTjJnSnNCUkVMckxLalBtVEJtM3c?oc=5",
+          "source_name": "Private Debt Investor",
+          "source_domain": "privatedebtinvestor.com",
+          "published_date": "2026-06-08",
+          "summary": "Loan Note: Redemptions spread to private equity; PGIM launches wealth fund&nbsp;&nbsp;Private Debt Investor",
+          "feed_name": "search:PE/VC fund closes"
         }
       ]
     },
@@ -30609,7 +30893,7 @@
       "announcement_date": "2026-03-06",
       "source_url": "https://www.perenews.com/msrei-on-course-for-its-gxi-fundraising-target-after-major-first-close/",
       "source_name": "PERE",
-      "description_notes": "raise a real estate fund targeting institutional investors after achieving a significant first close on an undisclosed amount, positioning MSREI on track to meet its overall fundraising target. The fund marks the firm's continued focus on the real estate sector, though specific strategy details and investor composition remain limited in available information.",
+      "description_notes": "raise capital for a real estate investment fund targeting institutional investors after securing a major first close that puts the firm on track to meet its undisclosed fundraising target. MSREI's GXI fund represents the firm's continued focus on the private real estate market, with momentum from early anchor commitments suggesting strong LP appetite. The successful first close indicates positive market reception for the vehicle despite the broader economic environment.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-08T10:01:35",
@@ -46914,6 +47198,15 @@
       "date_added": "2026-03-01T11:02:00",
       "articles": [
         {
+          "title": "Loan Note: Credit dominates Goldman fundraising numbers; Oaktree strikes a real estate partnership",
+          "url": "https://www.privatedebtinvestor.com/loan-note-credit-dominates-goldman-fundraising-numbers-oaktree-strikes-a-real-estate-partnership/",
+          "source_name": "Private Debt Investor",
+          "source_domain": "privatedebtinvestor.com",
+          "published_date": "2026-07-16",
+          "summary": "",
+          "feed_name": "Private Debt Investor"
+        },
+        {
           "title": "Goldman Sachs partners with Apex Group and Archax to launch blockchain-native tokenized real estate fund - eciks.org",
           "url": "https://news.google.com/rss/articles/CBMieEFVX3lxTE9ueGdtWDlYcTRtc2IwQ1J0TXMwSDVsQVBwVDJmUzZPaDVtVzhGR2lvOGlhXzAtbGFjRGc3Szk4RnQtTDIzM1RoRmVwcHpreU5Ub3RPSUMxbWpZb2R2NkZSWUV4a2VXbGNKMnUxQkJ6OEkzRFFCV19lYQ?oc=5",
           "source_name": "eciks.org",
@@ -49308,10 +49601,11 @@
     {
       "firm": "Carlyle",
       "firm_slug": "carlyle",
-      "fund_count": 3,
-      "total_aum_millions": 65000.0,
+      "fund_count": 4,
+      "total_aum_millions": 66700.0,
       "categories": [
-        "Private Equity"
+        "Private Equity",
+        "Secondaries & GP-Stakes"
       ],
       "city": "Washington",
       "country": "US"
@@ -50759,6 +51053,19 @@
       "country": "US"
     },
     {
+      "firm": "Oaktree Capital Management",
+      "firm_slug": "oaktree-capital-management",
+      "fund_count": 3,
+      "total_aum_millions": 2400.0,
+      "categories": [
+        "Credit Funds",
+        "Private Equity",
+        "Real Estate"
+      ],
+      "city": "Los Angeles",
+      "country": "US"
+    },
+    {
       "firm": "Next Bharat Ventures",
       "firm_slug": "next-bharat-ventures",
       "fund_count": 1,
@@ -50812,17 +51119,6 @@
         "Private Equity"
       ],
       "city": "Boston",
-      "country": "US"
-    },
-    {
-      "firm": "Oaktree Capital Management",
-      "firm_slug": "oaktree-capital-management",
-      "fund_count": 1,
-      "total_aum_millions": 2400.0,
-      "categories": [
-        "Private Equity"
-      ],
-      "city": "Los Angeles",
       "country": "US"
     },
     {
@@ -52614,8 +52910,8 @@
       "categories": [
         "Infrastructure"
       ],
-      "city": "N/A",
-      "country": "N/A"
+      "city": "Luxembourg",
+      "country": "Luxembourg"
     },
     {
       "firm": "Conifer",
@@ -52682,6 +52978,17 @@
       ],
       "city": "Singapore",
       "country": "Singapore"
+    },
+    {
+      "firm": "Preservation Capital Partners",
+      "firm_slug": "preservation-capital-partners",
+      "fund_count": 1,
+      "total_aum_millions": 877.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "London",
+      "country": "UK"
     },
     {
       "firm": "Updata Partners",
@@ -55156,6 +55463,17 @@
       ],
       "city": "Copenhagen",
       "country": "Denmark"
+    },
+    {
+      "firm": "IPF",
+      "firm_slug": "ipf",
+      "fund_count": 1,
+      "total_aum_millions": 241.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "N/A",
+      "country": "N/A"
     },
     {
       "firm": "Wyser",
@@ -57690,6 +58008,17 @@
       "country": "US"
     },
     {
+      "firm": "FCMB",
+      "firm_slug": "fcmb",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "Lagos",
+      "country": "Nigeria"
+    },
+    {
       "firm": "Clifford Capital Asset Management",
       "firm_slug": "clifford-capital-asset-management",
       "fund_count": 1,
@@ -57699,6 +58028,17 @@
       ],
       "city": "N/A",
       "country": "N/A"
+    },
+    {
+      "firm": "Creation Capital",
+      "firm_slug": "creation-capital",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "N/A",
+      "country": "South Africa"
     },
     {
       "firm": "ITE Management",
@@ -57995,8 +58335,8 @@
       "categories": [
         "Real Estate"
       ],
-      "city": "N/A",
-      "country": "N/A"
+      "city": "Copenhagen",
+      "country": "Denmark"
     },
     {
       "firm": "Endeavor Catalyst",
@@ -58019,6 +58359,17 @@
       ],
       "city": "Miami",
       "country": "US"
+    },
+    {
+      "firm": "Astorg",
+      "firm_slug": "astorg",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "Paris",
+      "country": "France"
     },
     {
       "firm": "Angel Invest",
@@ -60993,8 +61344,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-07-16T06:08:32.110485",
-      "last_success": "2026-07-16T06:08:32.110495",
+      "last_fetch": "2026-07-17T06:00:24.564755",
+      "last_success": "2026-07-17T06:00:24.564765",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61003,8 +61354,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-07-16T06:08:29.115277",
-      "last_success": "2026-07-16T06:08:29.115286",
+      "last_fetch": "2026-07-17T06:00:21.995451",
+      "last_success": "2026-07-17T06:00:21.995461",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61043,8 +61394,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-07-16T06:08:39.868353",
-      "last_success": "2026-07-16T06:08:39.868363",
+      "last_fetch": "2026-07-17T06:00:29.923257",
+      "last_success": "2026-07-17T06:00:29.923266",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61053,8 +61404,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-07-16T06:08:15.434141",
-      "last_success": "2026-07-16T06:08:15.434149",
+      "last_fetch": "2026-07-17T06:00:09.110117",
+      "last_success": "2026-07-17T06:00:09.110127",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61063,8 +61414,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-07-16T06:08:12.697588",
-      "last_success": "2026-07-16T06:08:12.697597",
+      "last_fetch": "2026-07-17T06:00:06.602772",
+      "last_success": "2026-07-17T06:00:06.602781",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -61073,8 +61424,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-07-16T06:08:27.521291",
-      "last_success": "2026-07-16T06:08:27.521302",
+      "last_fetch": "2026-07-17T06:00:20.432311",
+      "last_success": "2026-07-17T06:00:20.432320",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61083,8 +61434,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-07-16T06:08:17.533909",
-      "last_success": "2026-07-16T06:08:17.533917",
+      "last_fetch": "2026-07-17T06:00:10.573072",
+      "last_success": "2026-07-17T06:00:10.573080",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -61093,8 +61444,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-07-16T06:08:35.755945",
-      "last_success": "2026-07-16T06:08:35.755957",
+      "last_fetch": "2026-07-17T06:00:27.224784",
+      "last_success": "2026-07-17T06:00:27.224794",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61103,8 +61454,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-07-16T06:08:19.759595",
-      "last_success": "2026-07-16T06:08:19.759602",
+      "last_fetch": "2026-07-17T06:00:12.305500",
+      "last_success": "2026-07-17T06:00:12.305503",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -61113,8 +61464,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-07-16T06:08:11.081537",
-      "last_success": "2026-07-16T06:08:11.081542",
+      "last_fetch": "2026-07-17T06:00:04.998474",
+      "last_success": "2026-07-17T06:00:04.998476",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -61123,8 +61474,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-07-16T06:08:25.496920",
-      "last_success": "2026-07-16T06:08:25.496931",
+      "last_fetch": "2026-07-17T06:00:18.080433",
+      "last_success": "2026-07-17T06:00:18.080443",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61133,8 +61484,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-07-16T06:08:22.635226",
-      "last_success": "2026-07-16T06:08:22.635235",
+      "last_fetch": "2026-07-17T06:00:15.303085",
+      "last_success": "2026-07-17T06:00:15.303094",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61143,8 +61494,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-07-16T06:08:13.965749",
-      "last_success": "2026-07-16T06:08:13.965756",
+      "last_fetch": "2026-07-17T06:00:07.812459",
+      "last_success": "2026-07-17T06:00:07.812469",
       "error_count": 0,
       "article_count": 17,
       "last_error": "",
@@ -61152,25 +61503,25 @@
     }
   ],
   "stats": {
-    "total_funds": 1237,
+    "total_funds": 1245,
     "total_covered": 52,
-    "total_uncovered": 1185,
-    "total_aum_millions": 1006396419.6,
+    "total_uncovered": 1193,
+    "total_aum_millions": 1006399237.6,
     "by_category": {
-      "Real Estate": 116,
-      "Credit Funds": 253,
-      "Private Equity": 312,
+      "Credit Funds": 257,
+      "Secondaries & GP-Stakes": 71,
+      "Real Estate": 117,
+      "Private Equity": 314,
       "Infrastructure": 170,
-      "Secondaries & GP-Stakes": 70,
       "Venture Capital": 313,
       "Other": 2,
       "N/A": 1
     },
     "by_stage": {
-      "Launch": 522,
+      "Other": 137,
+      "Final Close": 349,
+      "Launch": 526,
       "First Close": 208,
-      "Final Close": 346,
-      "Other": 136,
       "Close": 1,
       "Interim Close": 23,
       "Second Close": 1
@@ -61179,7 +61530,7 @@
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-07-16"
+      "latest": "2026-07-17"
     }
   }
 }
