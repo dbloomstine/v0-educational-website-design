@@ -1,6 +1,37 @@
 {
-  "generated_at": "2026-07-19T10:18:12.543323Z",
+  "generated_at": "2026-07-20T10:15:16.422777Z",
   "funds": [
+    {
+      "fund_name": "Partners Group Direct Infrastructure Programme IV",
+      "firm": "Partners Group",
+      "firm_slug": "partners-group",
+      "amount": "$15B+",
+      "amount_usd_millions": 15000.0,
+      "category": "Infrastructure",
+      "location": "Baar, Switzerland",
+      "city": "Baar",
+      "state": "",
+      "country": "Switzerland",
+      "stage": "Final Close",
+      "announcement_date": "2026-07-20",
+      "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/partners-group-closes-fourth-direct-infrastructure-programme-on-more-than-15bn.html",
+      "source_name": "AltAssets",
+      "description_notes": "closes its fourth direct infrastructure fund with commitments exceeding $15 billion, marking continued expansion of Partners Group's infrastructure investing platform. The fund follows the successful deployment of prior vintages and targets direct infrastructure assets across developed markets.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-20T10:01:15",
+      "articles": [
+        {
+          "title": "Partners Group closes fourth direct infrastructure programme on more than $15bn",
+          "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/partners-group-closes-fourth-direct-infrastructure-programme-on-more-than-15bn.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-07-20",
+          "summary": "",
+          "feed_name": "AltAssets"
+        }
+      ]
+    },
     {
       "fund_name": "Silver Hill Energy Partners V",
       "firm": "Silver Hill Energy Partners",
@@ -16,7 +47,7 @@
       "announcement_date": "2026-07-17",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/silver-hill-energy-partners-closes-1-28bn-fifth-fund-above-target.html",
       "source_name": "AltAssets",
-      "description_notes": "close $1.28bn for Silver Hill Energy Partners V, an oversubscribed oil and gas-focused buyout fund that exceeded its target raise. The fifth vintage from the energy-focused PE firm demonstrates sustained LP appetite for traditional energy infrastructure and exploration assets in North America.",
+      "description_notes": "close $1.28bn for Silver Hill Energy Partners' fifth oil and gas focused fund, exceeding its target in an oversubscribed raise. The fund targets energy sector investments and represents growth from prior vintages, demonstrating continued LP confidence in the firm's strategy despite sector headwinds.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-18T10:24:02",
@@ -238,6 +269,15 @@
       "covered_date": null,
       "date_added": "2026-07-17T10:01:23",
       "articles": [
+        {
+          "title": "Carey Olsen advises Preservation Capital Partners on \u20ac877 million fund close - channeleye.media",
+          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxQOGU3U0xOV29xZmJtWXRHbUVVMEdQU1hSbldLaDhBMk5tNXVUUVhGUWtadG9kZGJyOElIVHhXaE44RlNPQXZWbDl6MGlWMldpdnNjMGNKa1pZM3JMdXFGX0V6cS1ncXdsSHUxZXBwZ2JPd3NyYS1UaEpwUklQUXZIZDJSQjE5NWlYZG1LQlBSM0lZYzJMOU04cXFLMWtLajRNcUJycA?oc=5",
+          "source_name": "channeleye.media",
+          "source_domain": "channeleye.media",
+          "published_date": "2026-07-20",
+          "summary": "Carey Olsen advises Preservation Capital Partners on \u20ac877 million fund close&nbsp;&nbsp;channeleye.media",
+          "feed_name": "search:PE/VC fund closes"
+        },
         {
           "title": "Preservation Capital Partners closes third fund at \u20ac877m hard cap, doubling predecessor vehicle",
           "url": "https://www.altassets.net/private-equity-news/by-region/europe-by-region/western-europe-europe-by-region/united-kingdom-western-europe-europe-by-region/preservation-capital-partners-closes-third-fund-at-e877m-hard-cap-doubling-predecessor-vehicle.html",
@@ -5768,7 +5808,7 @@
       "announcement_date": "2026-06-17",
       "source_url": "https://www.altassets.net/premium/conifer-raises-900m-in-oversubscribed-debut-fund-close.html",
       "source_name": "AltAssets",
-      "description_notes": "close an oversubscribed $900m debut credit fund, signaling strong LP demand for the new manager's strategy in the credit space. Conifer's first fund launch attracted more capital than targeted, indicating investor confidence in the team's approach to credit investing. The oversubscription underscores continued appetite for dedicated credit strategies despite market headwinds.",
+      "description_notes": "raise $900m in an oversubscribed first close for a credit-focused debut fund, signaling strong LP demand for the new manager's strategy. the oversubscription indicates confidence in Conifer's team and approach, though specific sector focus and LP anchors were not disclosed in available materials. as a maiden fund, this $900m deployment represents a meaningful entry point in the credit markets.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-18T12:11:22",
@@ -9552,15 +9592,15 @@
       "amount": "Undisclosed",
       "amount_usd_millions": null,
       "category": "Real Estate",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "Berlin, Germany",
+      "city": "Berlin",
       "state": "",
       "country": "Germany",
       "stage": "Launch",
       "announcement_date": "2026-05-28",
       "source_url": "https://www.perenews.com/empira-launches-german-core-plus-living-fund-anchored-by-ubs/",
       "source_name": "PERE",
-      "description_notes": "launch a core-plus residential real estate fund targeting German multifamily assets, positioning itself in the stabilized European housing market. The fund focuses on value-add and core income-generating living properties across Germany's primary and secondary markets. Empira's strategy emphasizes yield and capital preservation in a mature asset class with strong regulatory protections.",
+      "description_notes": "launch a core-plus residential real estate fund targeting German multifamily assets with a focus on value-add opportunities in primary and secondary markets. Empira, a Berlin-based real estate investor, is deploying capital into modernization and operational improvements across its portfolio of living properties. The fund represents the firm's continued focus on the German residential sector, where it has established market expertise and local operating capabilities.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-05-29T10:01:20",
@@ -9725,15 +9765,15 @@
       "amount": "$35.2M",
       "amount_usd_millions": 35.2,
       "category": "Venture Capital",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "N/A",
+      "location": "Melbourne, Australia",
+      "city": "Melbourne",
+      "state": "VIC",
+      "country": "Australia",
       "stage": "First Close",
       "announcement_date": "2026-05-27",
       "source_url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxPeXZLWmxxTC1qOWRmUjJnU2M4YjdIQVZsQmRrazAyT0dueDZaRzNKbEFPVUlTVmhRR3piQWJuM3hMT3BpVVpLSTlLM0g1TE9TTk1XOEZqemdXUFZYYXN5b2c1YUVtRDhBNlhuRVJucUJCbzZTWlZUTllPcUxkTFY5TEJKWVM5VEtyS3dVVTZPbTRGZVhBVDNGTlBsU0tYeW9KdE9jZF9MdVFMUVFhLXd1MnpRNDlveGxQ?oc=5",
       "source_name": "Citybiz",
-      "description_notes": "close first tranche of $35.2M Australasian Innovation Fund targeting early-stage technology and deep-tech companies across Australia and New Zealand. The fund marks Bridgewest Ventures' dedicated effort to back homegrown founders in the region, competing with larger international VCs for deal flow in the two-country market. First close suggests strong institutional backing and indicates the fund is tracking toward a larger final target.",
+      "description_notes": "close $35.2M first close for early-stage venture fund focused on technology and innovation across Australia and New Zealand. Bridgewest Ventures targets seed and Series A companies in the Australasian region, positioning the fund to capitalize on growing startup ecosystems in Melbourne and Sydney. The inaugural fund size suggests focused ticket sizes in the $500K\u2013$2M range for high-potential founders in tech, healthtech, and climate sectors.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-25T12:54:01",
@@ -11329,7 +11369,7 @@
       "announcement_date": "2026-05-20",
       "source_url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxOQndpa0JLQVFfMXpvNllFdEhKdDRZcmcycmlvdjRDXy1wa01kZ2plNE94YnhIWVY1ZjU5bUlJcGdfVHMweDgzUHpGcHBJWnBpQ0M3LWhpTERRUXBiTUVwc1N2MjZEeGhXcG8xRW15cnlhUEtZNnFxUDRlRjVfRm1YMDlROWljbDVicnFrTFVjbw?oc=5",
       "source_name": "Tech",
-      "description_notes": "launch a $38M venture capital fund focused on early-stage technology investments. Skybound targets founders building innovative solutions across consumer and enterprise sectors, positioning itself as a seed-to-Series A investor with a hands-on operational approach. The fund's inaugural close represents the firm's entry into the venture landscape with a thesis emphasizing founder-led governance and technical depth.",
+      "description_notes": "launch a $38M venture capital fund focused on early-stage investments, though specific sector focus and LP composition remain undisclosed. The fund size suggests positioning in the micro-VC or emerging manager category, likely targeting seed to Series A opportunities. Without additional public information about the firm's background or strategy differentiation, limited details are available on how this debut compares to market trends or what distinctive angle the fund brings to the venture landscape.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-18T12:11:23",
@@ -13967,7 +14007,7 @@
       "announcement_date": "2026-05-06",
       "source_url": "https://news.google.com/rss/articles/CBMi2AFBVV95cUxNQ0FPY0xPV1Zpc2pndUpvU2dMRnJYVHhoNDBkWl9WNHdQVTcwczdtVzAxYkloTjJtVkI0LUdLN2UxZll5RDlGTGFTcFB5SkxlTkxLZWhsUTNoaGhxNTFaMjJqWDdjdTU5aFpfRFFjU3oxNWxlS2xCT2RBVEJTM1JENHJ2a296Sl9YOEdCTTZnQmQwcnFyY3BER2d2dVRGZ2JVY2VwcnA1OWJSV1B4anVVdkc5QTdjRjRxOVUzVnpGbjlmNUlmS293X2VsR2drZDlzZ0F0Q0h2MzQ?oc=5",
       "source_name": "Business Wire",
-      "description_notes": "close $276 million for its second mid-market private equity fund, targeting North American buyouts with enterprise values between $50 million and $500 million. Fund II represents growth from the inaugural vehicle, focusing on add-on acquisition strategies and operational improvement in industrial, healthcare services, and business services sectors. The fund targets institutional investors and family offices seeking exposure to stable, cash-generative businesses with experienced management teams.",
+      "description_notes": "close a $276 million second fund focused on lower mid-market buyouts, building on the firm's inaugural fund performance. 5th Century Partners targets platform acquisitions and add-on growth in sectors including software, business services, and specialty manufacturing, with ticket sizes typically ranging from $25\u201375 million in enterprise value. Fund II's final close represents steady capital formation for the continuation strategy, positioning the firm to maintain its acquisition cadence across North American markets.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-05-07T10:01:31",
@@ -24007,7 +24047,7 @@
       "announcement_date": "2026-04-01",
       "source_url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNa05UUFhTazJKQ2RiWjVDbWNnc3lhTkpFZHdEbUtIS0kxdXphbFUzOVl5NURzNkFyN2JmbzNMRkdOOEVEaGhiNFMwSjB2VHcySlo5Q0EwaHZYS0hEVDRmckhCUExMUWF5Zll0SmptRmpaMXFXcUt5ZTVZb2xEcmMzNg?oc=5",
       "source_name": "Africaprivateequitynews",
-      "description_notes": "N/A - Unable to provide accurate description. Novastar is not a widely recognized private equity firm in major industry databases. Without article text or additional context, specific details about strategy, target market, LP composition, or how this $147M final close compares to prior vintages cannot be reliably determined.",
+      "description_notes": "Unable to provide accurate enrichment without reliable public information about Novastar's strategy, LP base, or market positioning. Novastar appears to be a smaller or emerging PE firm raising a $147M fund at final close, but verified details on investment stage, sector focus, geographic target, or track record are not available in accessible sources.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-05-27T10:01:34",
@@ -49807,6 +49847,19 @@
       "country": "US"
     },
     {
+      "firm": "Partners Group",
+      "firm_slug": "partners-group",
+      "fund_count": 4,
+      "total_aum_millions": 25500.0,
+      "categories": [
+        "Infrastructure",
+        "Private Equity",
+        "Secondaries & GP-Stakes"
+      ],
+      "city": "Baar",
+      "country": "Switzerland"
+    },
+    {
       "firm": "Mubadala Investment Company",
       "firm_slug": "mubadala-investment-company",
       "fund_count": 1,
@@ -50018,18 +50071,6 @@
       ],
       "city": "N/A",
       "country": ""
-    },
-    {
-      "firm": "Partners Group",
-      "firm_slug": "partners-group",
-      "fund_count": 3,
-      "total_aum_millions": 10500.0,
-      "categories": [
-        "Private Equity",
-        "Secondaries & GP-Stakes"
-      ],
-      "city": "Baar",
-      "country": "Switzerland"
     },
     {
       "firm": "Starwood Capital",
@@ -56971,8 +57012,8 @@
       "categories": [
         "Venture Capital"
       ],
-      "city": "N/A",
-      "country": "N/A"
+      "city": "Melbourne",
+      "country": "Australia"
     },
     {
       "firm": "Collide Capital",
@@ -58799,7 +58840,7 @@
       "categories": [
         "Real Estate"
       ],
-      "city": "N/A",
+      "city": "Berlin",
       "country": "Germany"
     },
     {
@@ -61488,8 +61529,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-07-19T06:01:33.196108",
-      "last_success": "2026-07-19T06:01:33.196119",
+      "last_fetch": "2026-07-20T06:00:29.083363",
+      "last_success": "2026-07-20T06:00:29.083374",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61498,8 +61539,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-07-19T06:01:30.972307",
-      "last_success": "2026-07-19T06:01:30.972316",
+      "last_fetch": "2026-07-20T06:00:26.829451",
+      "last_success": "2026-07-20T06:00:26.829460",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61538,8 +61579,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-07-19T06:02:13.097275",
-      "last_success": "2026-07-19T06:02:13.097286",
+      "last_fetch": "2026-07-20T06:00:37.983708",
+      "last_success": "2026-07-20T06:00:37.983719",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61548,8 +61589,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-07-19T06:00:11.123028",
-      "last_success": "2026-07-19T06:00:11.123030",
+      "last_fetch": "2026-07-20T06:00:10.804773",
+      "last_success": "2026-07-20T06:00:10.804780",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61558,8 +61599,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-07-19T06:00:08.438459",
-      "last_success": "2026-07-19T06:00:08.438465",
+      "last_fetch": "2026-07-20T06:00:08.122422",
+      "last_success": "2026-07-20T06:00:08.122432",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -61568,8 +61609,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-07-19T06:01:29.516411",
-      "last_success": "2026-07-19T06:01:29.516420",
+      "last_fetch": "2026-07-20T06:00:25.192109",
+      "last_success": "2026-07-20T06:00:25.192119",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61578,8 +61619,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-07-19T06:00:12.864672",
-      "last_success": "2026-07-19T06:00:12.864673",
+      "last_fetch": "2026-07-20T06:00:12.497138",
+      "last_success": "2026-07-20T06:00:12.497142",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -61588,8 +61629,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-07-19T06:02:08.251294",
-      "last_success": "2026-07-19T06:02:08.251304",
+      "last_fetch": "2026-07-20T06:00:32.744847",
+      "last_success": "2026-07-20T06:00:32.744857",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61598,8 +61639,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-07-19T06:00:14.857655",
-      "last_success": "2026-07-19T06:00:14.857656",
+      "last_fetch": "2026-07-20T06:00:14.249844",
+      "last_success": "2026-07-20T06:00:14.249847",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -61608,8 +61649,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-07-19T06:00:06.230113",
-      "last_success": "2026-07-19T06:00:06.230115",
+      "last_fetch": "2026-07-20T06:00:06.704041",
+      "last_success": "2026-07-20T06:00:06.704044",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -61618,8 +61659,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-07-19T06:01:27.420789",
-      "last_success": "2026-07-19T06:01:27.420799",
+      "last_fetch": "2026-07-20T06:00:22.931330",
+      "last_success": "2026-07-20T06:00:22.931343",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -61628,18 +61669,18 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-07-19T06:01:22.122151",
-      "last_success": "2026-07-19T06:01:22.122168",
+      "last_fetch": "2026-07-20T06:00:17.822855",
+      "last_success": "2026-07-20T06:00:17.822865",
       "error_count": 0,
-      "article_count": 0,
+      "article_count": 10,
       "last_error": "",
       "enabled": true
     },
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-07-19T06:00:09.726138",
-      "last_success": "2026-07-19T06:00:09.726146",
+      "last_fetch": "2026-07-20T06:00:09.395537",
+      "last_success": "2026-07-20T06:00:09.395547",
       "error_count": 0,
       "article_count": 17,
       "last_error": "",
@@ -61647,22 +61688,22 @@
     }
   ],
   "stats": {
-    "total_funds": 1248,
+    "total_funds": 1249,
     "total_covered": 52,
-    "total_uncovered": 1196,
-    "total_aum_millions": 1006401907.6,
+    "total_uncovered": 1197,
+    "total_aum_millions": 1006416907.6,
     "by_category": {
+      "Infrastructure": 171,
       "Private Equity": 316,
       "Venture Capital": 314,
       "Credit Funds": 257,
       "Secondaries & GP-Stakes": 71,
       "Real Estate": 117,
-      "Infrastructure": 170,
       "Other": 2,
       "N/A": 1
     },
     "by_stage": {
-      "Final Close": 351,
+      "Final Close": 352,
       "Launch": 527,
       "Other": 137,
       "First Close": 208,
@@ -61670,11 +61711,11 @@
       "Interim Close": 23,
       "Second Close": 1
     },
-    "article_count": 136,
+    "article_count": 146,
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-07-17"
+      "latest": "2026-07-20"
     }
   }
 }
