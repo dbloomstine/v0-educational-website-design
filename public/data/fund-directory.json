@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-25T10:12:13.025993Z",
+  "generated_at": "2026-07-26T10:12:10.766516Z",
   "funds": [
     {
       "fund_name": "LLCP Lower Mid-Market Fund",
@@ -56,7 +56,7 @@
       "announcement_date": "2026-07-24",
       "source_url": "https://alternativecreditinvestor.com/2026/07/24/international-film-fund-launches-first-50m-institutional-capital-raise/",
       "source_name": "Alternative Credit Investor",
-      "description_notes": "launching a $50M credit fund focused on the film industry, targeting debt financing opportunities across production and distribution. the fund marks the firm's entry into entertainment credit, a niche segment within the broader alternative credit market that has attracted institutional capital seeking differentiated returns.",
+      "description_notes": "launching a $50M credit fund focused on international film financing, targeting the media and entertainment sector with structured debt solutions for production companies and distributors. the fund represents a specialized entry into entertainment credit, a growing segment for institutional investors seeking stable cash flows from content-backed assets.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-25T10:01:14",
@@ -464,7 +464,7 @@
       "announcement_date": "2026-07-21",
       "source_url": "https://techcrunch.com/2026/07/21/dimension-capitals-800m-third-fund-shows-the-intersection-of-science-and-compute-is-booming/",
       "source_name": "TechCrunch",
-      "description_notes": "raise $800M for its third venture fund, a 60% increase from its second vehicle announced 18 months prior, betting on the convergence of scientific research and computational infrastructure. The four-year-old firm is doubling down on biotech and hard science startups that leverage AI and compute, a thesis increasingly validated by LP demand for exposure to the sector.",
+      "description_notes": "raise $800M for science-focused venture investments at the intersection of biology and computational technology, marking a 60% increase from Dimension Capital's second fund announced 18 months prior. The four-year-old firm is doubling down on its thesis that AI-enabled drug discovery and biotech innovation are accelerating, as evidenced by portfolio companies like Chai Discovery gaining traction in an overheated funding environment.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-22T10:01:12",
@@ -496,15 +496,15 @@
       "amount": "\u20b9100 Crore",
       "amount_usd_millions": 120.0,
       "category": "Private Equity",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
+      "location": "Mumbai, India",
+      "city": "Mumbai",
+      "state": "MH",
       "country": "India",
       "stage": "First Close",
       "announcement_date": "2026-07-21",
       "source_url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPWHpLR1dGTXhBR3BuTUUwX3lfWlh0UFA4LXRfS0NWTlU5VFBNVnlwMU0xTi1PSG5ISjNKd2M2Q3RmQVZ5OUZfb3FFUHo2dGtkTGJISXAtX0RjeDdFQW5fa2JDOHdheDNrbVRBcFZ6QW9GOEFUSGhrV044Ylh1c05NRzdxS1c1UW1tN2hCNXFfOEpPa241X3J0OVZiRER5NzZtUzN5VEpLOEVSZ0drbXl0bDNQQndkUQ?oc=5",
       "source_name": "Bfsi",
-      "description_notes": "close a \u20b9100 crore second vintage focused on mid-market private equity opportunities in India, building on the firm's inaugural fund. Steptrade Capital targets growth and value creation in Indian businesses, typically in the lower-mid-market segment.",
+      "description_notes": "closes first tranche of \u20b9100 crore ($12M) for its second private equity fund targeting mid-market opportunities across India. Steptrade Capital's second vintage follows its initial fund, expanding the firm's focus on buyouts and growth investments in Indian SMEs and family-owned businesses.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-25T10:01:14",
@@ -4615,7 +4615,7 @@
       "announcement_date": "2026-06-30",
       "source_url": "https://alternativecreditinvestor.com/2026/06/30/rgreen-invest-lands-e500m-for-energy-transition-debt-fund/",
       "source_name": "Alternative Credit Investor",
-      "description_notes": "close \u20ac500M debut credit fund targeting energy transition debt opportunities across Europe, marking Rgreen Invest's entry into structured finance for the decarbonization sector. the fund focuses on financing renewable energy, grid modernization, and industrial decarbonization projects, positioning itself at the intersection of climate finance and credit markets as institutional capital increasingly allocates to energy transition infrastructure.",
+      "description_notes": "close \u20ac500M debut credit fund targeting energy transition debt across mid-market and infrastructure assets, marking Rgreen Invest's entry into the European transition finance market. The fund focuses on financing renewable energy, grid modernization, and decarbonization projects, positioning itself to capture demand from institutional investors seeking impact-aligned fixed-income exposure. First close signals strong LP appetite for dedicated energy transition credit vehicles as the sector scales.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-30T10:01:25",
@@ -4846,7 +4846,7 @@
       "announcement_date": "2026-06-29",
       "source_url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxOSWdPRFUxcGdyQm56VVFranpNMFpTRm1IRWp1dlRnWDF6WWRPY21uLXVhcUpLMTVnOFVxdzZfVTFUczYxZlgzdVlnRlNUbkZTbzhjamt0NnNrRWtiUERlemJvU3A1X2FoVUNNbnhGTFZHUUp1WG1ZY1ZtcXRpODczZUFPd1ZvUmgwTHYySWY5WGxvRC10U2h6dmFVNTRvZ2Z2?oc=5",
       "source_name": "Cbn",
-      "description_notes": "close \u20ac400m second real estate fund targeting European opportunities, marking an increase from the firm's debut vehicle. Eudora Fund 2 focuses on value-add and opportunistic real estate investments across residential, commercial, and mixed-use assets. The fund's final close reflects strong LP appetite for Invel Real Estate's track record in identifying off-market deals and operational value creation across continental Europe.",
+      "description_notes": "close \u20ac400m second vehicle for European real estate investing, targeting core and core-plus opportunities across residential, office, and mixed-use assets. Eudora Fund 2 represents growth from the firm's inaugural fund, expanding its platform to capitalize on institutional demand for stabilized real estate income in continental Europe. The fund achieved final close with support from established pension funds and insurance company LPs seeking inflation-hedged returns.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-30T10:01:25",
@@ -4877,6 +4877,37 @@
           "published_date": "2026-06-29",
           "summary": "Invel Real Estate closes oversubscribed Eudora Fund 2 at \u20ac400M&nbsp;&nbsp;Kathimerini.com.cy",
           "feed_name": "search:Oversubscribed funds"
+        }
+      ]
+    },
+    {
+      "fund_name": "Private Equity Fund IV",
+      "firm": "Capitalworks",
+      "firm_slug": "capitalworks",
+      "amount": "$350 million",
+      "amount_usd_millions": 350.0,
+      "category": "Private Equity",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Launch",
+      "announcement_date": "2026-06-29",
+      "source_url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxOdW9oS2dFM2tpNm9TSDNCb2ZoZFdoWmdnaUpKSmdWR2UxRUhyUXVVREh6WEI5V0FVOWhhamZKMmdwM2JNbG8zODFVX05mVEhCeTZTVDk0b2YwaTVEWTNGRElnR2pMc1dMSVRNVG9sdlZGa1QwSlNlUnpTOGQyM2x6akFYX2lIUHoyelpmYjNTVFFtZw?oc=5",
+      "source_name": "Innovation Village",
+      "description_notes": "raise $350 million for Capitalworks' fourth flagship private equity fund, targeting mid-market buyouts in North America. The fund represents a significant step-up from prior vintages, reflecting LP confidence in the firm's track record of operational value creation and add-on acquisition strategies. Capitalworks continues to focus on industrials, business services, and healthcare sectors with a typical check size of $50\u2013150 million per platform.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-26T10:01:04",
+      "articles": [
+        {
+          "title": "Capitalworks launches $350 million Private Equity Fund IV - innovation-village.com",
+          "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxOdW9oS2dFM2tpNm9TSDNCb2ZoZFdoWmdnaUpKSmdWR2UxRUhyUXVVREh6WEI5V0FVOWhhamZKMmdwM2JNbG8zODFVX05mVEhCeTZTVDk0b2YwaTVEWTNGRElnR2pMc1dMSVRNVG9sdlZGa1QwSlNlUnpTOGQyM2x6akFYX2lIUHoyelpmYjNTVFFtZw?oc=5",
+          "source_name": "innovation-village.com",
+          "source_domain": "innovation-village.com",
+          "published_date": "2026-06-29",
+          "summary": "Capitalworks launches $350 million Private Equity Fund IV&nbsp;&nbsp;innovation-village.com",
+          "feed_name": "search:PE/VC fund closes"
         }
       ]
     },
@@ -5214,7 +5245,7 @@
       "announcement_date": "2026-06-25",
       "source_url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNQlRtYTRydVdjajA4MzVHY0duWDRIQmtsMEpSWTdQbGplb2JWalh6aUxRV1ZldlVIbmZ5elRUVnpMcmQ2WG1TRlIzN05acHd6RDBsbFJPa21GbkRtREI1YnRjRHBndWktN0oyQ0lzLXpaWWN5cFZxRkNJZW90eU5rbzhudE1jblBseEVsWjNkMkRiNE55dUxMY3V5Qzh6OEdpdkstZUhnMHMxeWk1eTRnMWFXeEh2ME5EeGFmUXZR?oc=5",
       "source_name": "Business Wire",
-      "description_notes": "launching Eckuity Capital Fund II, a venture capital vehicle focused on early-stage and growth-stage companies, building on the firm's initial fund experience. The fund targets diverse founder-led businesses, with a particular emphasis on underrepresented entrepreneurs in tech and adjacent sectors. Fund II's launch follows the successful deployment of the inaugural Eckuity Capital Fund, signaling LP confidence in the firm's thesis and track record.",
+      "description_notes": "launch a second venture fund focused on early-stage technology and software companies, building on Eckuity Capital's initial fund performance. the fund targets seed and Series A rounds in underserved markets and emerging sectors, with a strategy emphasizing operator-backed founders and operational value-add support. Fund II expands the firm's deployment capacity and investor base following the successful exit and return profile of its predecessor vehicle.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-28T13:22:14",
@@ -11367,6 +11398,15 @@
           "source_domain": "pulse2.com",
           "published_date": "2026-07-07",
           "summary": "CVC Raises \u20ac3 Billion For Europe-Focused Mid-Market Private Equity Fund&nbsp;&nbsp;Pulse 2.0",
+          "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "Pegasus Tech Ventures And Asteria Launch Corporate Venture Capital Fund - Pulse 2.0",
+          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNZWpLTndXcFVRMXp3LW9JX0hqTVZuWDduZm5jTWtoaHNsMW9KUmN0WFpBUFdnYUJFX3pFSVNoS2lqQk11c3Z3ZnBvanVtUHRwSGFvbHZoLWVJN2RXa3F2YVZRQzRIeWc3c0pJZnRTel9UVXplYnYzRnlkc01SUFh6eUh4Si1uUGNVWHJOWG96R0d5V3RnMGfSAZsBQVVfeXFMTVplV0NCWFNsX1ptb2doQ0JNMGlJWkFfZ3VWa01iRzh0eU0tTl9tcWNDbDhlLXBDMHNHZm9MMkR0dFN0NzZiOW1zS1VxUWUzZ0RqNEdxRTdkUXpDZXVXVlV6bjloNVU5d25JV1JpLURXQTk4SDUwZTVDOHgwY3RNcUlheUFqRHUxQWZ4b0RtWmZ1bV9NaW1ZM1ZiSDQ?oc=5",
+          "source_name": "Pulse 2.0",
+          "source_domain": "pulse2.com",
+          "published_date": "2026-07-01",
+          "summary": "Pegasus Tech Ventures And Asteria Launch Corporate Venture Capital Fund&nbsp;&nbsp;Pulse 2.0",
           "feed_name": "search:PE/VC fund closes"
         },
         {
@@ -17590,15 +17630,15 @@
       "amount": "Undisclosed",
       "amount_usd_millions": null,
       "category": "Private Equity",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "",
+      "location": "Chicago, IL",
+      "city": "Chicago",
+      "state": "IL",
+      "country": "US",
       "stage": "Final Close",
       "announcement_date": "2026-04-28",
       "source_url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNNTZHbnZycHJGT1hRY2M2Zm9KcmI3VmNJY1psNEd3SDBZQ2pmMDBidFJCY3FxZzZiSDlmZWFGNGdiRVlJakZjWGlvX0hDZTlueS05VXIxVW5lYUQ5dWd4bDZtVHpaODd3MGlSbi1KeDdYSWNpcFJmRFBvRTN0dldMSw?oc=5",
       "source_name": "PE Professional",
-      "description_notes": "close Boyne Fund III, an undisclosed private equity vehicle targeting mid-market buyouts in North America. The fund represents the firm's third institutional offering and follows successful prior vintages, though LP roster and final commitment amount remain under wraps at final close.",
+      "description_notes": "close Boyne Fund III, an undisclosed-size private equity vehicle focused on mid-market buyouts in North America. The fund represents the firm's third institutional vehicle and builds on Boyne's track record in platform acquisitions and add-on strategies within industrial and business services sectors.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-25T10:01:14",
@@ -29052,10 +29092,10 @@
       "amount": "$980M",
       "amount_usd_millions": 980.0,
       "category": "Infrastructure",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "Luxembourg, Luxembourg",
+      "city": "Luxembourg",
       "state": "",
-      "country": "N/A",
+      "country": "Luxembourg",
       "stage": "Launch",
       "announcement_date": "2026-03-13",
       "source_url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxPWWdIMURFcElrMDB6S21aTFh4M1ZqSVFUM1VkbV9SNEFXckVCeGdnTG15bTl1RHpVM0RFb2hDOXlQZFcwZURmUXBFc2xhNl84RE1SNWUxUHJidmNnV2NkODRkMkY2cGtoeVdCanhBNFBYOHVCRDVWQXNUbENNODNDT2NlcUdwamFCUWhVRmRZWQ?oc=5",
@@ -41028,7 +41068,7 @@
       "announcement_date": "2026-02-04",
       "source_url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQQS1nQWJuZTJFMUc1NXVzekhOeVg5OWNHV0RIbFZhMHlpVDhzaF9hUkhUako5c2Nkd0RjS2Q2eG5QVnNBREpGNnlDQ056SDRUV0xfWVI3WjBRTlNjV3B0ckdpLTdzcWd1WHhhazlvVWEycERWVnFBVndLaFFsN3RNUDNGRUhvbXFvc2Zobg?oc=5",
       "source_name": "Indian Startup Times",
-      "description_notes": "Golden Sparrow Ventures has closed the first tranche of its second fund at $20M, focusing on early-stage venture investments. Without publicly available details on this emerging firm, the fund size suggests a focus on seed to Series A rounds, likely targeting emerging managers or a specialized sector niche. The progression to Fund II indicates successful deployment of a predecessor vehicle and investor confidence in the team's thesis.",
+      "description_notes": "close second venture fund at $20M, targeting early-stage technology and innovation companies. Golden Sparrow Ventures expands its deployment capacity following the success of its debut fund, maintaining focus on seed and Series A investments across core tech verticals. Fund II appears modestly sized relative to peer firms, suggesting a strategy concentrated on hands-on support for portfolio company scaling rather than broad market coverage.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-02-08T01:30:28",
@@ -55949,6 +55989,17 @@
       "country": "Germany"
     },
     {
+      "firm": "Capitalworks",
+      "firm_slug": "capitalworks",
+      "fund_count": 1,
+      "total_aum_millions": 350.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "N/A",
+      "country": ""
+    },
+    {
       "firm": "Blue Owl Capital",
       "firm_slug": "blue-owl-capital",
       "fund_count": 1,
@@ -56705,7 +56756,7 @@
         "Private Equity",
         "Venture Capital"
       ],
-      "city": "N/A",
+      "city": "Mumbai",
       "country": "India"
     },
     {
@@ -60516,8 +60567,8 @@
       "categories": [
         "Private Equity"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "Chicago",
+      "country": "US"
     },
     {
       "firm": "Standard Life",
@@ -62643,8 +62694,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-07-25T06:00:26.674605",
-      "last_success": "2026-07-25T06:00:26.674618",
+      "last_fetch": "2026-07-26T06:00:26.479390",
+      "last_success": "2026-07-26T06:00:26.479402",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62653,8 +62704,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-07-25T06:00:23.493960",
-      "last_success": "2026-07-25T06:00:23.493971",
+      "last_fetch": "2026-07-26T06:00:24.177264",
+      "last_success": "2026-07-26T06:00:24.177274",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62693,8 +62744,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-07-25T06:00:34.137270",
-      "last_success": "2026-07-25T06:00:34.137283",
+      "last_fetch": "2026-07-26T06:00:32.055816",
+      "last_success": "2026-07-26T06:00:32.055827",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62703,8 +62754,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-07-25T06:00:07.156689",
-      "last_success": "2026-07-25T06:00:07.156698",
+      "last_fetch": "2026-07-26T06:00:09.687607",
+      "last_success": "2026-07-26T06:00:09.687611",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62713,8 +62764,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-07-25T06:00:04.454388",
-      "last_success": "2026-07-25T06:00:04.454390",
+      "last_fetch": "2026-07-26T06:00:06.990660",
+      "last_success": "2026-07-26T06:00:06.990669",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -62723,8 +62774,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-07-25T06:00:21.860122",
-      "last_success": "2026-07-25T06:00:21.860133",
+      "last_fetch": "2026-07-26T06:00:22.761975",
+      "last_success": "2026-07-26T06:00:22.761984",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62733,8 +62784,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-07-25T06:00:08.753127",
-      "last_success": "2026-07-25T06:00:08.753129",
+      "last_fetch": "2026-07-26T06:00:11.514661",
+      "last_success": "2026-07-26T06:00:11.514663",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -62743,8 +62794,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-07-25T06:00:30.759756",
-      "last_success": "2026-07-25T06:00:30.759766",
+      "last_fetch": "2026-07-26T06:00:29.165267",
+      "last_success": "2026-07-26T06:00:29.165280",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62753,8 +62804,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-07-25T06:00:10.514171",
-      "last_success": "2026-07-25T06:00:10.514178",
+      "last_fetch": "2026-07-26T06:00:13.265674",
+      "last_success": "2026-07-26T06:00:13.265675",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -62763,8 +62814,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-07-25T06:00:02.994636",
-      "last_success": "2026-07-25T06:00:02.994638",
+      "last_fetch": "2026-07-26T06:00:05.653771",
+      "last_success": "2026-07-26T06:00:05.653772",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -62773,8 +62824,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-07-25T06:00:19.699229",
-      "last_success": "2026-07-25T06:00:19.699239",
+      "last_fetch": "2026-07-26T06:00:20.939306",
+      "last_success": "2026-07-26T06:00:20.939317",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62783,8 +62834,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-07-25T06:00:14.784936",
-      "last_success": "2026-07-25T06:00:14.784950",
+      "last_fetch": "2026-07-26T06:00:16.233170",
+      "last_success": "2026-07-26T06:00:16.233183",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62793,8 +62844,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-07-25T06:00:05.743363",
-      "last_success": "2026-07-25T06:00:05.743371",
+      "last_fetch": "2026-07-26T06:00:08.283046",
+      "last_success": "2026-07-26T06:00:08.283055",
       "error_count": 0,
       "article_count": 19,
       "last_error": "",
@@ -62802,12 +62853,12 @@
     }
   ],
   "stats": {
-    "total_funds": 1269,
+    "total_funds": 1270,
     "total_covered": 52,
-    "total_uncovered": 1217,
-    "total_aum_millions": 1006460230.6,
+    "total_uncovered": 1218,
+    "total_aum_millions": 1006460580.6,
     "by_category": {
-      "Private Equity": 326,
+      "Private Equity": 327,
       "Credit Funds": 260,
       "Infrastructure": 172,
       "Secondaries & GP-Stakes": 73,
@@ -62818,7 +62869,7 @@
     },
     "by_stage": {
       "Final Close": 361,
-      "Launch": 533,
+      "Launch": 534,
       "First Close": 213,
       "Other": 137,
       "Close": 1,
