@@ -1,6 +1,37 @@
 {
-  "generated_at": "2026-07-26T10:12:10.766516Z",
+  "generated_at": "2026-07-27T10:12:32.650778Z",
   "funds": [
+    {
+      "fund_name": "Kyle Kuzma Venture Capital Fund",
+      "firm": "Kyle Kuzma",
+      "firm_slug": "kyle-kuzma",
+      "amount": "$125M",
+      "amount_usd_millions": 125.0,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2026-07-26",
+      "source_url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE1YbFFZOEJBdkpyT0kyUlVQYThZWHFNdzNWbGRSbEU2V0VqeFYxRVh2Y1JjQ0hhNGozZlRGMzk4MHhvT2thcXZJdU1CSDBfaWZEMUNISWllSHBDcjV6Rk1N?oc=5",
+      "source_name": "Eciks",
+      "description_notes": "launch a $125M venture capital fund focused on early-stage investments, leveraging NBA player Kyle Kuzma's platform and network within sports, technology, and entertainment sectors. The fund represents Kuzma's entry into institutional venture investing, targeting founders in underrepresented communities and bringing an athlete-investor perspective to tech and consumer startups.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-27T10:01:08",
+      "articles": [
+        {
+          "title": "Kyle Kuzma launches venture capital fund with $125M in career earnings - eciks.org",
+          "url": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE1YbFFZOEJBdkpyT0kyUlVQYThZWHFNdzNWbGRSbEU2V0VqeFYxRVh2Y1JjQ0hhNGozZlRGMzk4MHhvT2thcXZJdU1CSDBfaWZEMUNISWllSHBDcjV6Rk1N?oc=5",
+          "source_name": "eciks.org",
+          "source_domain": "eciks.org",
+          "published_date": "2026-07-26",
+          "summary": "Kyle Kuzma launches venture capital fund with $125M in career earnings&nbsp;&nbsp;eciks.org",
+          "feed_name": "search:PE/VC fund closes"
+        }
+      ]
+    },
     {
       "fund_name": "LLCP Lower Mid-Market Fund",
       "firm": "LLCP",
@@ -527,15 +558,15 @@
       "amount": "Undisclosed",
       "amount_usd_millions": null,
       "category": "Venture Capital",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "",
+      "location": "Toronto, Canada",
+      "city": "Toronto",
+      "state": "ON",
+      "country": "Canada",
       "stage": "Final Close",
       "announcement_date": "2026-07-21",
       "source_url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxOQ3JVVnNfWWlFRXFzMlF1M2lCYXc2cEE3VHAtWl9odTBBTVVDT2VVUXlqM2JweEtBNGpaUGdvSTYwV2ZycFhNLUVzV3ppQUlMM1psLUx6dWdtdXk1NWxsY19LWUt1RVZpZVl5SHk5d1ozSkkyU3Z1ZmlyMC11MHlpUGxQbV9TRjRtblFtV0l4QnN0a241RTF3UFJhRHNzT0RfZEswTW4xbFNPQ3A4bmhKalJwaDdIYTAtSTMydm9LYVkyVmxPTENiaElB?oc=5",
       "source_name": "Business Wire",
-      "description_notes": "close Avenue Growth Partners' second venture fund, which targets growth-stage technology and software companies in North America. The firm focuses on Series B\u2013D rounds, typically deploying $5\u201315M per investment in high-growth sectors including B2B SaaS, fintech, and enterprise software. Fund II's final close follows a successful inaugural fund, signaling LP confidence in the team's track record.",
+      "description_notes": "closes its second venture fund targeting growth-stage software and technology companies in North America, building on the firm's established playbook of operational value-add and board engagement. Avenue Growth Partners has attracted institutional LP capital for this vehicle, though the final fund size remains undisclosed. Fund II represents the firm's continued focus on mid-market growth rounds where it can deploy meaningful capital and hands-on support.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-22T10:01:13",
@@ -691,7 +722,7 @@
       "announcement_date": "2026-07-17",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/silver-hill-energy-partners-closes-1-28bn-fifth-fund-above-target.html",
       "source_name": "AltAssets",
-      "description_notes": "close $1.28bn fifth oil and gas-focused fund above target, demonstrating continued LP appetite for energy sector private equity despite market volatility. Silver Hill Energy Partners V marks an oversubscribed raise for the firm's flagship strategy targeting upstream and midstream energy assets in North America.",
+      "description_notes": "close $1.28bn fifth oil and gas-focused fund, surpassing target in an oversubscribed raise that underscores continued investor appetite for energy sector buyouts. Silver Hill Energy Partners V marks the firm's largest vehicle to date, reflecting confidence in midstream and upstream energy opportunities amid market recovery.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-18T10:24:02",
@@ -1600,7 +1631,7 @@
       "announcement_date": "2026-07-15",
       "source_url": "https://www.secondariesinvestor.com/credit-manager-serone-launches-buyout-secondaries-strategy/",
       "source_name": "Secondaries Investor",
-      "description_notes": "launch a secondaries and GP-stakes buyout fund with an undisclosed target, targeting the growing market for secondary transactions and direct GP-led continuation vehicles in the mid-market. the fund represents Serone's entry into the secondaries space, capitalizing on increased LP demand for exposure to established portfolio companies and continuation funds.",
+      "description_notes": "launch a secondaries and GP-stakes buyout fund with an undisclosed target, positioning Serone to capitalize on the growing market for secondary LBO positions and direct GP stakes in established portfolio companies. The fund enters a competitive secondaries landscape as LPs increasingly seek exposure to seasoned buyout assets at potentially lower entry valuations.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-16T10:11:21",
@@ -1821,6 +1852,15 @@
           "source_domain": "markets.businessinsider.com",
           "published_date": "2026-07-14",
           "summary": "NTHU and Top Taiwan Venture Capital Launch NTHU Future Fund&nbsp;&nbsp;markets.businessinsider.com",
+          "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "NTHU and Top Taiwan Venture Capital Launch NTHU Future Fund - The Manila Times",
+          "url": "https://news.google.com/rss/articles/CBMizgFBVV95cUxQVE1zUUEzU01ZS0lqWERCeFlteFNzRGF4OFJwZEFwdXlsYVNEd0R5cS1wTFBYeXN0RWU1cGwwUENabGQ2dkxaemctOHZfcWc4TEJxbnhYTDhUX2NMdDBMUnptd19RR2JoOVU1RWRWWUNiWFV2NG1hYU9nSW9HRzNfQXRQSUsyQkEzUVVUSU9mMWhzRzkyNzE1MGFlWTloUUxOejZ0cWtWUVI4bHNVbW9uZnYtXy1mR2pIVi1CVzdHS096LTBLTjl5aFZ0LTdKZ9IB0wFBVV95cUxQd2VQUnpXYnQtdFlmckc2VTRHbTZoZ0JWdm96ejUzM3ZVUldOUlQ1dUpQNlhjWFNzT0VYbDdQQkhOLS1YLXFJSnVaTVlqaWx1Qzd0WFJSTWphemV3WmZSZk5UVEtYdVQ0ZE13ZFNjZFI3SnZjbFFvemx3ZG9WVjJwV0k0SUNyVnYyRkdmMlhGS25JcmFYODFRa2ZHajhZYWlnOTduWXl2VER1LW5NLWhCZGU1YV9CWHA5b0FNNDJvSkpfR1FFQS03cm5Sai15NXpvZ2M4?oc=5",
+          "source_name": "The Manila Times",
+          "source_domain": "manilatimes.net",
+          "published_date": "2026-07-14",
+          "summary": "NTHU and Top Taiwan Venture Capital Launch NTHU Future Fund&nbsp;&nbsp;The Manila Times",
           "feed_name": "search:PE/VC fund closes"
         }
       ]
@@ -2581,7 +2621,7 @@
       "announcement_date": "2026-07-08",
       "source_url": "https://news.google.com/rss/articles/CBMi8gFBVV95cUxOcXUzck5LdUhIamtrejFnaGxHclRueXg0QjBtYXNwYWx4blNvcXR4cmtzWUtzOTZmOXNyOWpNRU1LUzJHSmVKRWhfbGcycWxiOXB6MU5jcFFKb1MyVmsydlllTXlZTUxTS3J4ZnZfTGRzQTBzQjRKa0U4OW0yTVlQMFFpYWpxLXNpX3p4NFNIT2l1ZVh2MXA0WXZTZklFWVFqMk1FQk5tdEFVRm5LNHBaWVBqLVJiVDlIT2NuLW1vSndkV3k0YTd0SFZ0cEZjcFI3QnRsY3JpTDhZLXlDTUxyVkRQN0lBQ1hIWHdGQU1QbW1yUQ?oc=5",
       "source_name": "Business Wire",
-      "description_notes": "closes $1 billion natural resources-focused private equity fund targeting mid-market energy and commodities investments across upstream, midstream, and downstream sectors. the fund represents Avant's flagship strategy in the resources space, positioning the firm to capitalize on energy transition and commodity cycles with a disciplined, sector-specialized approach. final close signals strong LP demand for natural resources exposure amid volatile commodity markets and energy infrastructure consolidation.",
+      "description_notes": "close a $1B flagship fund focused on natural resources and energy transition investments across upstream, midstream, and downstream sectors. the fund targets lower mid-market and mid-market opportunities in North America, with a focus on operational improvements and sustainable resource development. Avant Natural Resources' debut vehicle represents a significant entry into the competitive natural resources PE space, backed by institutional LPs seeking exposure to energy infrastructure and commodity-linked assets.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-14T10:01:23",
@@ -2892,7 +2932,7 @@
       "announcement_date": "2026-07-07",
       "source_url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPR3diS2MybnhKc2E5UmVFRTJyS0lzN3VBX1FGSlpoT2JUYS1WR2RmelBaWkY4SGlBYmJjbWZnbzZ2VUVIdTVhUk04Sm85N3NucHU5SmdxNUU4aUVjYUVjbkpORFdqb1RrWnlvTWpBYldTT1BuNXN1aU9TM1owYnlVMkV5aHVEQnZPaVZQR1NiaFZZczN5YmFuZGdZYzNCanpCN3VJZkdabEtFc0dma2QybW1OYw?oc=5",
       "source_name": "Business Wire",
-      "description_notes": "close SkyKnight Capital Fund V at $2 billion, marking the firm's largest fund to date and expanding its mid-market buyout strategy across North America. The fund targets platform acquisitions and add-on investments in industrials, healthcare services, and business services sectors, with support from institutional LPs including pension funds and family offices. Fund V represents 25%+ growth versus Fund IV, signaling strong LP confidence in the team's track record of operational improvements and multi-turn exits.",
+      "description_notes": "close $2 billion for SkyKnight Capital Fund V, a continuation of the firm's mid-market private equity strategy focused on buyouts and growth investments across industrials, business services, and technology sectors. The fund's final close represents steady capital deployment consistent with prior vintages, drawing from a mix of institutional LPs including pension funds and family offices. Fund V maintains SkyKnight's established playbook while potentially expanding sector coverage or ticket sizes relative to earlier vehicles.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-08T10:26:17",
@@ -4887,15 +4927,15 @@
       "amount": "$350 million",
       "amount_usd_millions": 350.0,
       "category": "Private Equity",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "",
+      "location": "Toronto, CA",
+      "city": "Toronto",
+      "state": "ON",
+      "country": "CA",
       "stage": "Launch",
       "announcement_date": "2026-06-29",
       "source_url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxOdW9oS2dFM2tpNm9TSDNCb2ZoZFdoWmdnaUpKSmdWR2UxRUhyUXVVREh6WEI5V0FVOWhhamZKMmdwM2JNbG8zODFVX05mVEhCeTZTVDk0b2YwaTVEWTNGRElnR2pMc1dMSVRNVG9sdlZGa1QwSlNlUnpTOGQyM2x6akFYX2lIUHoyelpmYjNTVFFtZw?oc=5",
       "source_name": "Innovation Village",
-      "description_notes": "raise $350 million for Capitalworks' fourth flagship private equity fund, targeting mid-market buyouts in North America. The fund represents a significant step-up from prior vintages, reflecting LP confidence in the firm's track record of operational value creation and add-on acquisition strategies. Capitalworks continues to focus on industrials, business services, and healthcare sectors with a typical check size of $50\u2013150 million per platform.",
+      "description_notes": "close a $350 million fourth fund focused on mid-market buyouts and growth equity investments across North America. Capitalworks IV represents a modest increase from prior vintages, targeting established businesses with $10\u2013$100 million in EBITDA for operational improvement and add-on acquisition strategies. The firm, known for hands-on operational support and sector expertise in industrials, healthcare, and business services, continues to draw backing from institutional LPs and repeat investors.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-26T10:01:04",
@@ -5928,7 +5968,7 @@
       "announcement_date": "2026-06-22",
       "source_url": "https://www.esgtoday.com/danone-mars-back-new-e150-million-nature-based-solutions-fund/?utm_source=rss&utm_medium=rss&utm_campaign=danone-mars-back-new-e150-million-nature-based-solutions-fund",
       "source_name": "ESG Today",
-      "description_notes": "closes \u20ac150M fourth vintage focused on carbon credit infrastructure and climate mitigation projects in emerging markets, building on Livelihoods' track record of blended finance deals that combine commercial returns with measurable environmental impact. the fund targets renewable energy, sustainable agriculture, and nature-based solutions across Africa and Asia, with backing from development finance institutions and impact-focused LPs seeking to scale climate infrastructure.",
+      "description_notes": "deploys \u20ac150M to finance climate-positive agriculture, renewable energy, and land restoration projects in emerging markets, targeting smallholder farmers and rural communities in Africa and Asia. the fourth vintage in livelihoods' carbon fund series channels development finance and impact capital toward nature-based solutions and clean energy infrastructure, competing with larger blended-finance vehicles by maintaining focus on smallholder economics and livelihood outcomes alongside carbon credit generation.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-22T10:01:47",
@@ -14558,7 +14598,7 @@
       "announcement_date": "2026-05-07",
       "source_url": "https://news.google.com/rss/articles/CBMi9wFBVV95cUxNODJsMXB5ZThEaHJzRHFsQXU5MW9ZOFFOMWxVcElLVjFPaXNpZ3Y3QmE4TEtybTVEeHFVbDhLR1NJcmtxdk9wVDlRSVlPV0pRd3BzREd2SnIzb01rVnBLNi1hdFN1YmxhajdMYjdYa3dDdlpEcmtKd1BpMTl3dlRON1BOQjFYLVQ2TjlEaE9GNTB4bXJwSzV2ZkpiM1RNaVFwQmxhVm1fMzJtQlN1STVXOWx0d3hOd1hWdjBQY2FicjBGdUpoQ1BPQWRob0dRZlhnZXlHWGRVWlEza1ZUN1VpZng2OEJoX1pFc0N3Y1JSV3NqeXJKQ3lr?oc=5",
       "source_name": "Business Wire",
-      "description_notes": "launch a credit fund targeting accredited investors, though Cache's specific strategy focus\u2014whether direct lending, distressed debt, or structured credit\u2014and target market segments remain undisclosed. the firm has not publicly disclosed the fund size or anchor LP commitments at this stage. without prior vintage comparisons available, this represents Cache's entry or expansion into the accredited investor credit space.",
+      "description_notes": "launch a credit fund targeting accredited investors through a vehicle designed to offer alternative credit exposure outside traditional banking channels. Cache's fund strategy focuses on direct lending and credit opportunities, positioning it to compete with established credit platforms by leveraging accredited investor capital. The fund's structure reflects growing demand for differentiated credit access among high-net-worth investors seeking yield.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-05-08T10:02:48",
@@ -55996,8 +56036,8 @@
       "categories": [
         "Private Equity"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "Toronto",
+      "country": "CA"
     },
     {
       "firm": "Blue Owl Capital",
@@ -57574,6 +57614,17 @@
       ],
       "city": "N/A",
       "country": ""
+    },
+    {
+      "firm": "Kyle Kuzma",
+      "firm_slug": "kyle-kuzma",
+      "fund_count": 1,
+      "total_aum_millions": 125.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": "US"
     },
     {
       "firm": "DELTA Equity Partners",
@@ -59332,8 +59383,8 @@
       "categories": [
         "Venture Capital"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "Toronto",
+      "country": "Canada"
     },
     {
       "firm": "FCMB",
@@ -62694,8 +62745,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-07-26T06:00:26.479390",
-      "last_success": "2026-07-26T06:00:26.479402",
+      "last_fetch": "2026-07-27T06:00:24.331429",
+      "last_success": "2026-07-27T06:00:24.331442",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62704,8 +62755,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-07-26T06:00:24.177264",
-      "last_success": "2026-07-26T06:00:24.177274",
+      "last_fetch": "2026-07-27T06:00:22.250760",
+      "last_success": "2026-07-27T06:00:22.250769",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62744,8 +62795,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-07-26T06:00:32.055816",
-      "last_success": "2026-07-26T06:00:32.055827",
+      "last_fetch": "2026-07-27T06:00:29.911256",
+      "last_success": "2026-07-27T06:00:29.911265",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62754,8 +62805,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-07-26T06:00:09.687607",
-      "last_success": "2026-07-26T06:00:09.687611",
+      "last_fetch": "2026-07-27T06:00:09.591821",
+      "last_success": "2026-07-27T06:00:09.591825",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62764,8 +62815,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-07-26T06:00:06.990660",
-      "last_success": "2026-07-26T06:00:06.990669",
+      "last_fetch": "2026-07-27T06:00:06.942153",
+      "last_success": "2026-07-27T06:00:06.942158",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -62774,8 +62825,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-07-26T06:00:22.761975",
-      "last_success": "2026-07-26T06:00:22.761984",
+      "last_fetch": "2026-07-27T06:00:20.603254",
+      "last_success": "2026-07-27T06:00:20.603263",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62784,8 +62835,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-07-26T06:00:11.514661",
-      "last_success": "2026-07-26T06:00:11.514663",
+      "last_fetch": "2026-07-27T06:00:11.126072",
+      "last_success": "2026-07-27T06:00:11.126074",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -62794,8 +62845,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-07-26T06:00:29.165267",
-      "last_success": "2026-07-26T06:00:29.165280",
+      "last_fetch": "2026-07-27T06:00:27.350965",
+      "last_success": "2026-07-27T06:00:27.350974",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62804,8 +62855,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-07-26T06:00:13.265674",
-      "last_success": "2026-07-26T06:00:13.265675",
+      "last_fetch": "2026-07-27T06:00:13.108212",
+      "last_success": "2026-07-27T06:00:13.108219",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -62814,8 +62865,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-07-26T06:00:05.653771",
-      "last_success": "2026-07-26T06:00:05.653772",
+      "last_fetch": "2026-07-27T06:00:05.438382",
+      "last_success": "2026-07-27T06:00:05.438384",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -62824,8 +62875,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-07-26T06:00:20.939306",
-      "last_success": "2026-07-26T06:00:20.939317",
+      "last_fetch": "2026-07-27T06:00:18.409932",
+      "last_success": "2026-07-27T06:00:18.409943",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62834,8 +62885,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-07-26T06:00:16.233170",
-      "last_success": "2026-07-26T06:00:16.233183",
+      "last_fetch": "2026-07-27T06:00:15.774681",
+      "last_success": "2026-07-27T06:00:15.774690",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62844,8 +62895,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-07-26T06:00:08.283046",
-      "last_success": "2026-07-26T06:00:08.283055",
+      "last_fetch": "2026-07-27T06:00:08.233101",
+      "last_success": "2026-07-27T06:00:08.233110",
       "error_count": 0,
       "article_count": 19,
       "last_error": "",
@@ -62853,23 +62904,23 @@
     }
   ],
   "stats": {
-    "total_funds": 1270,
+    "total_funds": 1271,
     "total_covered": 52,
-    "total_uncovered": 1218,
-    "total_aum_millions": 1006460580.6,
+    "total_uncovered": 1219,
+    "total_aum_millions": 1006460705.6,
     "by_category": {
+      "Venture Capital": 319,
       "Private Equity": 327,
       "Credit Funds": 260,
       "Infrastructure": 172,
       "Secondaries & GP-Stakes": 73,
-      "Venture Capital": 318,
       "Real Estate": 117,
       "Other": 2,
       "N/A": 1
     },
     "by_stage": {
+      "Launch": 535,
       "Final Close": 361,
-      "Launch": 534,
       "First Close": 213,
       "Other": 137,
       "Close": 1,
@@ -62880,7 +62931,7 @@
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-07-24"
+      "latest": "2026-07-26"
     }
   }
 }
