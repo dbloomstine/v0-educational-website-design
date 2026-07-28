@@ -1,6 +1,201 @@
 {
-  "generated_at": "2026-07-27T10:12:32.650778Z",
+  "generated_at": "2026-07-28T14:48:36.322359Z",
   "funds": [
+    {
+      "fund_name": "Africa Green Transition PPP Fund",
+      "firm": "AUDA-NEPAD",
+      "firm_slug": "auda-nepad",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Infrastructure",
+      "location": "Addis Ababa, Ethiopia",
+      "city": "Addis Ababa",
+      "state": "",
+      "country": "Ethiopia",
+      "stage": "Launch",
+      "announcement_date": "2026-07-28",
+      "source_url": "https://news.google.com/rss/articles/CBMi_wFBVV95cUxQd3lwcFJhR2V5Q05BaXZaUTVSemxpNnpZdkotV1ZJZFpwbFRmNzRtUU1SY21ISXM3eG0xam92a1FTWFNVNGNablExZUs0Snp4VkxMRDBLZ3U5VEg5YnNHS2hQbVlJQmZFX3pjczJDZnBreUxYY0N6UGVRU2xWNFF1bW4wUVlEWDZReGFMY0JDR2VmU1NlMmFWSGtxNDd2Zy1feHREal9wNHNESmFZN0JWMkFHVUw5b28zMzhRMGNiYllraEdkM19LTlFTX3dydXFOTHljM2hJZUs5NlFqUHJxVkoxR1NCbi12SGZQUUpDMGt6TjI2SWpfMFRid1lPQVE?oc=5",
+      "source_name": "African",
+      "description_notes": "launch a public-private partnership infrastructure fund targeting green transition projects across Africa, mobilizing capital for renewable energy, climate resilience, and sustainable development initiatives on the continent. the fund leverages AUDA-NEPAD's position as the African Union's development agency to attract multilateral and institutional investors focused on decarbonization and adaptation in emerging African markets.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-28T14:36:44",
+      "articles": [
+        {
+          "title": "AUDA-NEPAD launches Africa Green Transition PPP Fund, a new investment platform to finance Africa's green industrial future - African Business",
+          "url": "https://news.google.com/rss/articles/CBMi_wFBVV95cUxQd3lwcFJhR2V5Q05BaXZaUTVSemxpNnpZdkotV1ZJZFpwbFRmNzRtUU1SY21ISXM3eG0xam92a1FTWFNVNGNablExZUs0Snp4VkxMRDBLZ3U5VEg5YnNHS2hQbVlJQmZFX3pjczJDZnBreUxYY0N6UGVRU2xWNFF1bW4wUVlEWDZReGFMY0JDR2VmU1NlMmFWSGtxNDd2Zy1feHREal9wNHNESmFZN0JWMkFHVUw5b28zMzhRMGNiYllraEdkM19LTlFTX3dydXFOTHljM2hJZUs5NlFqUHJxVkoxR1NCbi12SGZQUUpDMGt6TjI2SWpfMFRid1lPQVE?oc=5",
+          "source_name": "African Business",
+          "source_domain": "african.business",
+          "published_date": "2026-07-28",
+          "summary": "AUDA-NEPAD launches Africa Green Transition PPP Fund, a new investment platform to finance Africa's green industrial future&nbsp;&nbsp;African Business",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
+        }
+      ]
+    },
+    {
+      "fund_name": "PIF-anchored Middle East-Focused Fund",
+      "firm": "Brookfield",
+      "firm_slug": "brookfield",
+      "amount": "$2 Billion",
+      "amount_usd_millions": 2000.0,
+      "category": "Infrastructure",
+      "location": "Toronto, Canada",
+      "city": "Toronto",
+      "state": "ON",
+      "country": "Canada",
+      "stage": "First Close",
+      "announcement_date": "2026-07-27",
+      "source_url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxOLVh2M2MxQks3U2psNXBmUWFJOGU3TG91ZmEzMmEwdXpwdGJfWHNTMGtPcmhnWEZfXzlDcTdpekZ5MDNIM0RhOGVTQnZNMzhvRjhxcUNmckpFVGRjaE05d1luSUZnQ3VWRGZ4MmNZZ3VGQ21VZFpfeEkzbUs4U1lNZjVadXd5TzNuMWZXNlpqdW9tbi1EbnU2Q1VPYmMzNWhaY2JBNDYtd1Z0eTV4eUZhTFlka0d6cmJLekVZbW1lTkhtT200dU93OFJYdmlGdi1wdm1ScGdCbWtJWVQ0SXRWbDFFRlNqcUhsd0d5WUNHa0tzWWcy?oc=5",
+      "source_name": "Pif",
+      "description_notes": "targets Middle East investment opportunities with approximately $2 billion in commitments from the Public Investment Fund (PIF) of Saudi Arabia as anchor investor. The first close represents initial commitment to Brookfield's regional infrastructure strategy in the Middle East.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-28T14:36:44",
+      "articles": [
+        {
+          "title": "Brookfield Announces Approximately $2 Billion First Close of PIF-anchored Middle East-Focused Fund - Public Investment Fund",
+          "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxOLVh2M2MxQks3U2psNXBmUWFJOGU3TG91ZmEzMmEwdXpwdGJfWHNTMGtPcmhnWEZfXzlDcTdpekZ5MDNIM0RhOGVTQnZNMzhvRjhxcUNmckpFVGRjaE05d1luSUZnQ3VWRGZ4MmNZZ3VGQ21VZFpfeEkzbUs4U1lNZjVadXd5TzNuMWZXNlpqdW9tbi1EbnU2Q1VPYmMzNWhaY2JBNDYtd1Z0eTV4eUZhTFlka0d6cmJLekVZbW1lTkhtT200dU93OFJYdmlGdi1wdm1ScGdCbWtJWVQ0SXRWbDFFRlNqcUhsd0d5WUNHa0tzWWcy?oc=5",
+          "source_name": "Public Investment Fund",
+          "source_domain": "pif.gov.sa",
+          "published_date": "2026-07-27",
+          "summary": "Brookfield Announces Approximately $2 Billion First Close of PIF-anchored Middle East-Focused Fund&nbsp;&nbsp;Public Investment Fund",
+          "feed_name": "search:PE/VC fund closes"
+        }
+      ]
+    },
+    {
+      "fund_name": "GCM Grosvenor Credit Secondaries Fund",
+      "firm": "GCM Grosvenor",
+      "firm_slug": "gcm-grosvenor",
+      "amount": "$1.2B",
+      "amount_usd_millions": 1200.0,
+      "category": "Secondaries & GP-Stakes",
+      "location": "Chicago, IL",
+      "city": "Chicago",
+      "state": "IL",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2026-07-27",
+      "source_url": "https://www.privatedebtinvestor.com/gcm-grosvenor-closes-credit-secondaries-fund-on-1-2bn/",
+      "source_name": "Private Debt Investor",
+      "description_notes": "closes credit secondaries fund focused on secondary debt investments and GP-stakes in the credit space. The $1.2B fund represents GCM Grosvenor's continued expansion in the secondaries strategy, targeting distressed and non-performing credit assets across market cycles.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-28T14:36:44",
+      "articles": [
+        {
+          "title": "GCM Grosvenor closes credit secondaries fund on $1.2bn",
+          "url": "https://www.privatedebtinvestor.com/gcm-grosvenor-closes-credit-secondaries-fund-on-1-2bn/",
+          "source_name": "Private Debt Investor",
+          "source_domain": "privatedebtinvestor.com",
+          "published_date": "2026-07-27",
+          "summary": "",
+          "feed_name": "Private Debt Investor"
+        },
+        {
+          "title": "GCM Grosvenor Announces Final Close of Inaugural Credit Secondaries Fund, Raises $1.2 Billion - Quiver Quantitative",
+          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxNbm8tQkVDLUxnMjl6VXgza1lSRENXS0htTWZBYk5LUmd3RXlzNDVFc3hBMDhic2QzUHkxNlg1UFVYem50ckJfVUV4MUJoRE5ydzV6Q1M3cWl1Y3RUbEV3SFdUUmxqa3pBVXBDTC1PWFVSdkEwQ3d5U2pzbU5nb20xWXFqUlhtenBUZWtqNmNOVTZwRFphUW51QXpnZlVaZTY3TzdVS3BPTXY2cFFXWGRLTUd1UzZxc2s4MVJfbEN5cE9IMWRBVUZXTHZB?oc=5",
+          "source_name": "Quiver Quantitative",
+          "source_domain": "quiverquant.com",
+          "published_date": "2026-07-23",
+          "summary": "GCM Grosvenor Announces Final Close of Inaugural Credit Secondaries Fund, Raises $1.2 Billion&nbsp;&nbsp;Quiver Quantitative",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
+        }
+      ]
+    },
+    {
+      "fund_name": "Hines European Real Estate Fund (Latest Vehicle)",
+      "firm": "Hines",
+      "firm_slug": "hines",
+      "amount": "\u20ac500M",
+      "amount_usd_millions": 500.0,
+      "category": "Real Estate",
+      "location": "Houston, TX",
+      "city": "Houston",
+      "state": "TX",
+      "country": "US",
+      "stage": "First Close",
+      "announcement_date": "2026-07-27",
+      "source_url": "https://www.altassets.net/premium/hines-lands-e500m-first-close-as-europe-repricing-ends.html",
+      "source_name": "AltAssets",
+      "description_notes": "closes \u20ac500M in first close of its latest European real estate vehicle as the continent's market repricing cycle concludes. The fund targets opportunistic real estate investments across Europe during a period of market stabilization. Hines continues its strategy of deploying capital into European assets following recent market corrections.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-28T14:36:44",
+      "articles": [
+        {
+          "title": "Hines lands \u20ac500m in first close of its latest European vehicle",
+          "url": "https://www.altassets.net/premium/hines-lands-e500m-first-close-as-europe-repricing-ends.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-07-27",
+          "summary": "",
+          "feed_name": "AltAssets"
+        }
+      ]
+    },
+    {
+      "fund_name": "HAT SGR Fund 5",
+      "firm": "HAT SGR",
+      "firm_slug": "hat-sgr",
+      "amount": "\u20ac155M",
+      "amount_usd_millions": 155.0,
+      "category": "Private Equity",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Interim Close",
+      "announcement_date": "2026-07-27",
+      "source_url": "https://www.altassets.net/premium/hat-sgr-nears-e200m-target-as-fund-5-hits-e155m.html",
+      "source_name": "AltAssets",
+      "description_notes": "raise \u20ac155m at interim close toward a \u20ac200m target for HAT SGR's fifth private equity fund, which appears on track to exceed or match its hard cap. The fund is nearing its final close with strong LP demand, positioning it as a continuation of the firm's established investment program.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-28T14:36:44",
+      "articles": [
+        {
+          "title": "HAT SGR nears \u20ac200m target as Fund 5 hits \u20ac155m",
+          "url": "https://www.altassets.net/premium/hat-sgr-nears-e200m-target-as-fund-5-hits-e155m.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-07-27",
+          "summary": "",
+          "feed_name": "AltAssets"
+        }
+      ]
+    },
+    {
+      "fund_name": "MG Partners Benelux Healthcare Fund",
+      "firm": "MG Partners",
+      "firm_slug": "mg-partners",
+      "amount": "\u20ac80M",
+      "amount_usd_millions": 80.0,
+      "category": "Private Equity",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "First Close",
+      "announcement_date": "2026-07-27",
+      "source_url": "https://www.altassets.net/premium/mg-partners-hits-e80m-raise-for-benelux-healthcare-push.html",
+      "source_name": "AltAssets",
+      "description_notes": "close \u20ac80M debut fund targeting mid-market healthcare acquisitions across Belgium, Netherlands, and Luxembourg. The sector-specific vehicle marks MG Partners' first dedicated healthcare strategy in the Benelux region, focusing on European healthcare operators and service providers with consolidation potential.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-28T14:36:44",
+      "articles": [
+        {
+          "title": "MG Partners hits \u20ac80m raise for Benelux healthcare push",
+          "url": "https://www.altassets.net/premium/mg-partners-hits-e80m-raise-for-benelux-healthcare-push.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-07-27",
+          "summary": "",
+          "feed_name": "AltAssets"
+        }
+      ]
+    },
     {
       "fund_name": "Kyle Kuzma Venture Capital Fund",
       "firm": "Kyle Kuzma",
@@ -790,6 +985,15 @@
       "date_added": "2026-07-18T10:24:02",
       "articles": [
         {
+          "title": "Uplift Investors collects $670m for debut fund",
+          "url": "https://www.buyoutsinsider.com/uplift-collects-670-m-in-debut-fund/",
+          "source_name": "Buyouts Insider",
+          "source_domain": "buyoutsinsider.com",
+          "published_date": "2026-07-27",
+          "summary": "",
+          "feed_name": "Buyouts Insider"
+        },
+        {
           "title": "Ex-HIG Capital execs seal $670m hard cap close for debut Uplift Investors fund",
           "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/ex-hig-capital-execs-seal-670m-hard-cap-close-for-debut-uplift-investors-fund.html",
           "source_name": "AltAssets",
@@ -1152,7 +1356,7 @@
       "announcement_date": "2026-07-16",
       "source_url": "https://alternativecreditinvestor.com/2026/07/16/creation-capital-launches-private-credit-fund-in-south-africa/",
       "source_name": "Alternative Credit Investor",
-      "description_notes": "launch a credit fund focused on private lending opportunities, though specific strategy details, ticket size, and target borrower profile remain undisclosed at this stage. the fund represents Creation Capital's entry into the credit space, but information about anchor LPs, prior fund performance, or how this vintage compares to market peers is not available in current materials.",
+      "description_notes": "launch a private credit fund with an undisclosed target size, positioning Creation Capital to compete in the mid-market lending space as institutional capital continues to flow toward alternative credit strategies. the fund marks the firm's entry into dedicated credit management, complementing broader trends of GPs expanding beyond traditional buyouts into direct lending and structured credit.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-17T10:01:22",
@@ -1760,7 +1964,7 @@
       "announcement_date": "2026-07-14",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/lightspring-capital-closes-218m-second-fund-as-lower-mid-market-specialist-expands-sbic-platform.html",
       "source_name": "AltAssets",
-      "description_notes": "close $218M second flagship fund targeting lower mid-market buyouts in the US, expanding its SBIC lending platform to complement equity investments. Lightspring Capital has established itself as a specialist in this segment, with Fund II roughly on par with or modestly larger than its inaugural vehicle, positioning the firm to continue its focus on underserved smaller companies.",
+      "description_notes": "close $218M second flagship fund targeting lower mid-market buyouts in the US, expanding its SBIC platform to increase lending capacity and deal flow. Lightspring Capital strengthens its position as a specialist in the sub-$50M deal space, with Fund II roughly in line with or modestly above Fund I in size, leveraging Small Business Investment Company licenses to complement equity deployment.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-14T10:01:23",
@@ -3199,7 +3403,7 @@
       "announcement_date": "2026-07-07",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/deep-tech-investor-drumbeat-capital-launches-debut-fund-targeting-50m.html",
       "source_name": "AltAssets",
-      "description_notes": "launch a debut deep tech venture fund targeting $50M, marking Drumbeat Capital's entry into early-stage technology investing focused on physics-based and hard science startups. The first-time fund arrives as investor appetite for deep tech remains elevated, though the firm has not disclosed anchor LPs or revealed sector concentration within the deep tech thesis.",
+      "description_notes": "launch a debut deep tech venture fund targeting $50m, positioning Drumbeat Capital as a specialist in hardware, climate tech, and other capital-intensive innovation sectors. The first-time fund represents a new entrant focused on early-stage deep tech, a segment increasingly attractive to venture investors seeking exposure beyond traditional software and consumer internet plays.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-07T10:01:27",
@@ -5285,7 +5489,7 @@
       "announcement_date": "2026-06-25",
       "source_url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNQlRtYTRydVdjajA4MzVHY0duWDRIQmtsMEpSWTdQbGplb2JWalh6aUxRV1ZldlVIbmZ5elRUVnpMcmQ2WG1TRlIzN05acHd6RDBsbFJPa21GbkRtREI1YnRjRHBndWktN0oyQ0lzLXpaWWN5cFZxRkNJZW90eU5rbzhudE1jblBseEVsWjNkMkRiNE55dUxMY3V5Qzh6OEdpdkstZUhnMHMxeWk1eTRnMWFXeEh2ME5EeGFmUXZR?oc=5",
       "source_name": "Business Wire",
-      "description_notes": "launch a second venture fund focused on early-stage technology and software companies, building on Eckuity Capital's initial fund performance. the fund targets seed and Series A rounds in underserved markets and emerging sectors, with a strategy emphasizing operator-backed founders and operational value-add support. Fund II expands the firm's deployment capacity and investor base following the successful exit and return profile of its predecessor vehicle.",
+      "description_notes": "launch a second venture fund focused on early-stage technology and software companies, building on the strategy established in the inaugural Eckuity Capital Fund I. The fund targets founders and emerging companies in underserved markets, with a thesis centered on operational support and hands-on mentorship beyond capital deployment. Fund II's close follows strong performance from the predecessor vehicle, though specific LP roster and final capitalization remain undisclosed.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-28T13:22:14",
@@ -8321,6 +8525,73 @@
           "published_date": "2026-06-08",
           "summary": "ARM-Harith Secures $76 Million for Africa Climate Fund&nbsp;&nbsp;fundsforNGOs News",
           "feed_name": "search:First/final close"
+        }
+      ]
+    },
+    {
+      "fund_name": "Pictet Co-Investment Fund VI",
+      "firm": "Pictet",
+      "firm_slug": "pictet",
+      "amount": "$1.53B",
+      "amount_usd_millions": 1530.0,
+      "category": "Private Equity",
+      "location": "Geneva, Switzerland",
+      "city": "Geneva",
+      "state": "",
+      "country": "Switzerland",
+      "stage": "Final Close",
+      "announcement_date": "2026-06-08",
+      "source_url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPMUdIdW5nbkhZREV6blJRM3Fvd0NRQ3RlYUxhNE5hN2h6TVl6d3FhTHlla1A1RzV1Wk1EUEhTQjZFZEV0eGJ2dmcyREN4VlVwWWhaZDRrT1lwRURCMFNOZ0JpM3NIZllZZHAzWk5sdGF4bEY5UzBsc3h0NDUzREFIOUVXMUZ4NzBFUF9IZkxBTlhZYXpOcENCNkpn?oc=5",
+      "source_name": "Realdeals",
+      "description_notes": "closes sixth co-investment vehicle at $1.53 billion. Fund follows successful prior vintages and targets portfolio company investments alongside Pictet's primary private equity funds. Represents continued institutional appetite for co-investment opportunities in mid-market and large-cap deals.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-28T14:36:45",
+      "articles": [
+        {
+          "title": "Pictet hits final close of sixth co-investment fund at $1.53bn - EU.COM",
+          "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPMUdIdW5nbkhZREV6blJRM3Fvd0NRQ3RlYUxhNE5hN2h6TVl6d3FhTHlla1A1RzV1Wk1EUEhTQjZFZEV0eGJ2dmcyREN4VlVwWWhaZDRrT1lwRURCMFNOZ0JpM3NIZllZZHAzWk5sdGF4bEY5UzBsc3h0NDUzREFIOUVXMUZ4NzBFUF9IZkxBTlhZYXpOcENCNkpn?oc=5",
+          "source_name": "EU.COM",
+          "source_domain": "realdeals.eu.com",
+          "published_date": "2026-06-08",
+          "summary": "Pictet hits final close of sixth co-investment fund at $1.53bn&nbsp;&nbsp;EU.COM",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Pictet raises $467m for debut direct private equity fund - Citywire",
+          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNQXprMkp6SUwxMnhrTmNCOXNUUnE3MkJkRV9uaE95QnFJOHRYaGNoWE5zTGlxcVFKS25TZG5VNklOUm5GWldPYndkaVRFa0RpVElLSEE2M1FMZ2xOYlk5WFJuWXBsRWhoSHBrV3ZhWUtpcmNlS1VSTTA0bkx5R1FqbFQ2WUF2bnFmTEF2MzVBSWI3VzVYcmFXNHNLc0lGQnpEUERWWg?oc=5",
+          "source_name": "Citywire",
+          "source_domain": "citywire.com",
+          "published_date": "2026-03-26",
+          "summary": "Pictet raises $467m for debut direct private equity fund&nbsp;&nbsp;Citywire",
+          "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "Pictet raises $467m for debut direct private equity fund - Citywire",
+          "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNUWdmN1drYnl5clR1WEpTdDhjTXNVSWlaQmR3Yl9GX2ktb3lVa1MtMGNqeXpucVYyY2Q5blEwX29lMzhoUWtaNU5HdnJHNlhkQk5tVXNCdDJaWDlybHlEaU10bmNUcFgtcElqaVFsNkRvREdQTnhwTVF0RzJ4QUkwZ0VEYk1HelhTRDg1YkdwLVFHWjhKSm9wclpsVQ?oc=5",
+          "source_name": "Citywire",
+          "source_domain": "citywire.com",
+          "published_date": "2026-03-26",
+          "summary": "Pictet raises $467m for debut direct private equity fund&nbsp;&nbsp;Citywire",
+          "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "Pictet reaches final close for debut direct PE fund - EU.COM",
+          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQUkFjenBGUXB0ZW83VzFjOEFQSTNGbzdFWHZJN1pEa2FUU0JzN3dlbGlGR2lNM2xpRkNpT05DVGFfZDVWUmFXVXg4amtVTXAwNlFRay1SYk5VSFlua3hSM0FxTUFqTDVXaGJYcWQ1LUw0R2lBdGVvaDg5enFKWmZFSHVVZHVVVGNyeW1ZWA?oc=5",
+          "source_name": "EU.COM",
+          "source_domain": "realdeals.eu.com",
+          "published_date": "2026-03-25",
+          "summary": "Pictet reaches final close for debut direct PE fund&nbsp;&nbsp;EU.COM",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Pictet raises \u20ac400m for debut direct private equity fund - Citywire",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPSmt0c1puU2hGR3U1NHJWcUZ4Zk03UFI3SUV4dVFncHFMWTU1MGQwZFNzSDlSOFBkUXNSTmNRYVh2MUlzU0dLZ2I3aWNPTHZtR1ZGbGc0UnFsNmxBUUFKOXpxMGlVTjBiaFNELWk2VERqZk14aWNpQ0d1YkZFWFJkSzRMY1ZGQUl0YjVKdEpPc0VkbWpFVWhNMg?oc=5",
+          "source_name": "Citywire",
+          "source_domain": "citywire.com",
+          "published_date": "2026-03-25",
+          "summary": "Pictet raises \u20ac400m for debut direct private equity fund&nbsp;&nbsp;Citywire",
+          "feed_name": "search:PE/VC fund closes"
         }
       ]
     },
@@ -12785,7 +13056,7 @@
       "announcement_date": "2026-05-15",
       "source_url": "https://www.buyoutsinsider.com/ex-clearlake-execs-new-shop-halo-partners-gets-lp-attention-with-debut/",
       "source_name": "Buyouts Insider",
-      "description_notes": "launch a new private equity fund with an undisclosed amount under management. Limited information is available about Halo Partners' strategy, target market, LP base, or how Fund I compares to prior vehicles, as the article text provided contains only cookie consent and analytics code rather than substantive fund details.",
+      "description_notes": "launch a new private equity fund with an undisclosed target, entering a market where Halo Partners appears to be establishing its inaugural investment vehicle. without detailed article content or disclosed strategy specifics, the fund's target market, LP composition, and comparative positioning relative to similar debut vehicles remain unclear.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-05-16T10:01:16",
@@ -14385,6 +14656,24 @@
       "covered_date": null,
       "date_added": "2026-05-15T10:01:28",
       "articles": [
+        {
+          "title": "Brookfield\u2019s $2bn PIF-backed fund closes at around $2bn",
+          "url": "https://www.altassets.net/private-equity-news/brookfields-2bn-pif-backed-fund-closes-at-around-2bn.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-07-28",
+          "summary": "",
+          "feed_name": "AltAssets"
+        },
+        {
+          "title": "Brookfield raises $2bn in first close of PIF-anchored Middle East fund - Arab News",
+          "url": "https://news.google.com/rss/articles/CBMiU0FVX3lxTFBSZUNEX3B3X29EUGhDQ05GUHJjczJETFhIb2c4cEZWR0RpNFRWZ2ZsdnRGczJPZmhHSFlHUnRxZUdUQ2gxLUFweVdCbVVHYUV1ZTVR?oc=5",
+          "source_name": "Arab News",
+          "source_domain": "arabnews.com",
+          "published_date": "2026-07-27",
+          "summary": "Brookfield raises $2bn in first close of PIF-anchored Middle East fund&nbsp;&nbsp;Arab News",
+          "feed_name": "search:First/final close"
+        },
         {
           "title": "Brookfield raises $900m for second real estate solutions fund - IPE Real Assets",
           "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxOSzFvcEhHLVJYUV9YOTJscThPbHBxbzFzNmtOa3ZUM0FCc0xWVXVwSjBnQmxyOHBzUHV2LVNjZmFtM0VCbTJ1Zl9LeGZVd2NadUV0UGtQbU5oSDBZWkZyZU40dEQ1R0RuSnExVGltQTJTcjA1YjV5NXpncU5NRlB6anVOUy01Z01hNk1lUkZfcEJSV0ZlTTZ2VW5ESjE1WlZ2S243bFpXb3JYUF9vUkE?oc=5",
@@ -17353,7 +17642,7 @@
       "announcement_date": "2026-04-28",
       "source_url": "https://alternativecreditinvestor.com/2026/04/28/mountain-point-debuts-with-500m-clo/",
       "source_name": "Alternative Credit Investor",
-      "description_notes": "launch a $500M collateralized loan obligation (CLO) vehicle designed to aggregate and manage institutional credit assets. Mountain Point's CLO targets institutional investors seeking exposure to diversified loan portfolios with structured risk tranches. The fund represents the firm's entry into the CLO market, though limited details on LP anchors or differentiation versus competitors are available.",
+      "description_notes": "launching a $500M collateralized loan obligation fund to invest in leveraged loan portfolios across middle-market and institutional borrowers. the fund represents Mountain Point's entry into the structured credit market, targeting institutional and insurance company investors seeking diversified exposure to senior secured debt instruments. this is the firm's inaugural CLO vehicle, expanding beyond traditional credit strategies.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-29T10:01:16",
@@ -26709,64 +26998,6 @@
           "published_date": "2026-03-25",
           "summary": "Egypt\u2019s Waterway plans to launch a real estate fund exceeding $190m&nbsp;&nbsp;Arab News",
           "feed_name": "search:Credit/Real estate"
-        }
-      ]
-    },
-    {
-      "fund_name": "Pictet Direct PE Fund",
-      "firm": "Pictet",
-      "firm_slug": "pictet",
-      "amount": "Undisclosed",
-      "amount_usd_millions": null,
-      "category": "Private Equity",
-      "location": "Geneva, Switzerland",
-      "city": "Geneva",
-      "state": "",
-      "country": "Switzerland",
-      "stage": "Final Close",
-      "announcement_date": "2026-03-25",
-      "source_url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQUkFjenBGUXB0ZW83VzFjOEFQSTNGbzdFWHZJN1pEa2FUU0JzN3dlbGlGR2lNM2xpRkNpT05DVGFfZDVWUmFXVXg4amtVTXAwNlFRay1SYk5VSFlua3hSM0FxTUFqTDVXaGJYcWQ1LUw0R2lBdGVvaDg5enFKWmZFSHVVZHVVVGNyeW1ZWA?oc=5",
-      "source_name": "Realdeals",
-      "description_notes": "marks Pictet's debut direct private equity fund vehicle. The fund focuses on direct PE investments and represents the firm's expansion into the direct investment space.",
-      "is_covered": false,
-      "covered_date": null,
-      "date_added": "2026-03-25T13:41:37",
-      "articles": [
-        {
-          "title": "Pictet raises $467m for debut direct private equity fund - Citywire",
-          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNQXprMkp6SUwxMnhrTmNCOXNUUnE3MkJkRV9uaE95QnFJOHRYaGNoWE5zTGlxcVFKS25TZG5VNklOUm5GWldPYndkaVRFa0RpVElLSEE2M1FMZ2xOYlk5WFJuWXBsRWhoSHBrV3ZhWUtpcmNlS1VSTTA0bkx5R1FqbFQ2WUF2bnFmTEF2MzVBSWI3VzVYcmFXNHNLc0lGQnpEUERWWg?oc=5",
-          "source_name": "Citywire",
-          "source_domain": "citywire.com",
-          "published_date": "2026-03-26",
-          "summary": "Pictet raises $467m for debut direct private equity fund&nbsp;&nbsp;Citywire",
-          "feed_name": "search:PE/VC fund closes"
-        },
-        {
-          "title": "Pictet raises $467m for debut direct private equity fund - Citywire",
-          "url": "https://news.google.com/rss/articles/CBMimwFBVV95cUxNUWdmN1drYnl5clR1WEpTdDhjTXNVSWlaQmR3Yl9GX2ktb3lVa1MtMGNqeXpucVYyY2Q5blEwX29lMzhoUWtaNU5HdnJHNlhkQk5tVXNCdDJaWDlybHlEaU10bmNUcFgtcElqaVFsNkRvREdQTnhwTVF0RzJ4QUkwZ0VEYk1HelhTRDg1YkdwLVFHWjhKSm9wclpsVQ?oc=5",
-          "source_name": "Citywire",
-          "source_domain": "citywire.com",
-          "published_date": "2026-03-26",
-          "summary": "Pictet raises $467m for debut direct private equity fund&nbsp;&nbsp;Citywire",
-          "feed_name": "search:PE/VC fund closes"
-        },
-        {
-          "title": "Pictet reaches final close for debut direct PE fund - EU.COM",
-          "url": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQUkFjenBGUXB0ZW83VzFjOEFQSTNGbzdFWHZJN1pEa2FUU0JzN3dlbGlGR2lNM2xpRkNpT05DVGFfZDVWUmFXVXg4amtVTXAwNlFRay1SYk5VSFlua3hSM0FxTUFqTDVXaGJYcWQ1LUw0R2lBdGVvaDg5enFKWmZFSHVVZHVVVGNyeW1ZWA?oc=5",
-          "source_name": "EU.COM",
-          "source_domain": "realdeals.eu.com",
-          "published_date": "2026-03-25",
-          "summary": "Pictet reaches final close for debut direct PE fund&nbsp;&nbsp;EU.COM",
-          "feed_name": "search:First/final close"
-        },
-        {
-          "title": "Pictet raises \u20ac400m for debut direct private equity fund - Citywire",
-          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPSmt0c1puU2hGR3U1NHJWcUZ4Zk03UFI3SUV4dVFncHFMWTU1MGQwZFNzSDlSOFBkUXNSTmNRYVh2MUlzU0dLZ2I3aWNPTHZtR1ZGbGc0UnFsNmxBUUFKOXpxMGlVTjBiaFNELWk2VERqZk14aWNpQ0d1YkZFWFJkSzRMY1ZGQUl0YjVKdEpPc0VkbWpFVWhNMg?oc=5",
-          "source_name": "Citywire",
-          "source_domain": "citywire.com",
-          "published_date": "2026-03-25",
-          "summary": "Pictet raises \u20ac400m for debut direct private equity fund&nbsp;&nbsp;Citywire",
-          "feed_name": "search:PE/VC fund closes"
         }
       ]
     },
@@ -51383,6 +51614,17 @@
       "country": "US"
     },
     {
+      "firm": "Brookfield",
+      "firm_slug": "brookfield",
+      "fund_count": 4,
+      "total_aum_millions": 6000.0,
+      "categories": [
+        "Infrastructure"
+      ],
+      "city": "Toronto",
+      "country": "Canada"
+    },
+    {
       "firm": "Neo Alternative Asset Managers",
       "firm_slug": "neo-alternative-asset-managers",
       "fund_count": 1,
@@ -51731,17 +51973,6 @@
       ],
       "city": "New York",
       "country": "US"
-    },
-    {
-      "firm": "Brookfield",
-      "firm_slug": "brookfield",
-      "fund_count": 3,
-      "total_aum_millions": 4000.0,
-      "categories": [
-        "Infrastructure"
-      ],
-      "city": "Toronto",
-      "country": "Canada"
     },
     {
       "firm": "Silver Rock Capital Partners",
@@ -52891,6 +53122,17 @@
       "country": "UAE"
     },
     {
+      "firm": "Pictet",
+      "firm_slug": "pictet",
+      "fund_count": 1,
+      "total_aum_millions": 1530.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "Geneva",
+      "country": "Switzerland"
+    },
+    {
       "firm": "Greylock",
       "firm_slug": "greylock",
       "fund_count": 1,
@@ -53341,6 +53583,17 @@
       ],
       "city": "London",
       "country": "UK"
+    },
+    {
+      "firm": "GCM Grosvenor",
+      "firm_slug": "gcm-grosvenor",
+      "fund_count": 1,
+      "total_aum_millions": 1200.0,
+      "categories": [
+        "Secondaries & GP-Stakes"
+      ],
+      "city": "Chicago",
+      "country": "US"
     },
     {
       "firm": "TruArc Partners",
@@ -54958,6 +55211,17 @@
       ],
       "city": "Riyadh",
       "country": "Saudi Arabia"
+    },
+    {
+      "firm": "Hines",
+      "firm_slug": "hines",
+      "fund_count": 2,
+      "total_aum_millions": 500.0,
+      "categories": [
+        "Real Estate"
+      ],
+      "city": "Houston",
+      "country": "US"
     },
     {
       "firm": "Elevation Capital",
@@ -57285,6 +57549,17 @@
       "country": "Poland"
     },
     {
+      "firm": "HAT SGR",
+      "firm_slug": "hat-sgr",
+      "fund_count": 1,
+      "total_aum_millions": 155.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
       "firm": "Talde",
       "firm_slug": "talde",
       "fund_count": 1,
@@ -58285,6 +58560,17 @@
       ],
       "city": "San Francisco",
       "country": "US"
+    },
+    {
+      "firm": "MG Partners",
+      "firm_slug": "mg-partners",
+      "fund_count": 1,
+      "total_aum_millions": 80.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "N/A",
+      "country": "N/A"
     },
     {
       "firm": "Eka Ventures",
@@ -59363,6 +59649,17 @@
       ],
       "city": "N/A",
       "country": "US"
+    },
+    {
+      "firm": "AUDA-NEPAD",
+      "firm_slug": "auda-nepad",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Infrastructure"
+      ],
+      "city": "Addis Ababa",
+      "country": "Ethiopia"
     },
     {
       "firm": "GTCR",
@@ -61161,17 +61458,6 @@
       "country": "US"
     },
     {
-      "firm": "Pictet",
-      "firm_slug": "pictet",
-      "fund_count": 1,
-      "total_aum_millions": 0.0,
-      "categories": [
-        "Private Equity"
-      ],
-      "city": "Geneva",
-      "country": "Switzerland"
-    },
-    {
       "firm": "Phoenix Venture Partners",
       "firm_slug": "phoenix-venture-partners",
       "fund_count": 1,
@@ -62603,17 +62889,6 @@
       "country": "US"
     },
     {
-      "firm": "Hines",
-      "firm_slug": "hines",
-      "fund_count": 1,
-      "total_aum_millions": 0.0,
-      "categories": [
-        "Real Estate"
-      ],
-      "city": "Houston",
-      "country": "US"
-    },
-    {
       "firm": "Bridge Investment Group",
       "firm_slug": "bridge-investment-group",
       "fund_count": 1,
@@ -62745,8 +63020,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-07-27T06:00:24.331429",
-      "last_success": "2026-07-27T06:00:24.331442",
+      "last_fetch": "2026-07-28T06:20:40.578601",
+      "last_success": "2026-07-28T06:20:40.578610",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62755,8 +63030,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-07-27T06:00:22.250760",
-      "last_success": "2026-07-27T06:00:22.250769",
+      "last_fetch": "2026-07-28T06:20:38.411268",
+      "last_success": "2026-07-28T06:20:38.411278",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62795,8 +63070,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-07-27T06:00:29.911256",
-      "last_success": "2026-07-27T06:00:29.911265",
+      "last_fetch": "2026-07-28T06:35:13.719797",
+      "last_success": "2026-07-28T06:35:13.719809",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62805,8 +63080,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-07-27T06:00:09.591821",
-      "last_success": "2026-07-27T06:00:09.591825",
+      "last_fetch": "2026-07-28T06:05:43.067930",
+      "last_success": "2026-07-28T06:05:43.067936",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62815,8 +63090,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-07-27T06:00:06.942153",
-      "last_success": "2026-07-27T06:00:06.942158",
+      "last_fetch": "2026-07-28T06:05:40.480023",
+      "last_success": "2026-07-28T06:05:40.480029",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -62825,8 +63100,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-07-27T06:00:20.603254",
-      "last_success": "2026-07-27T06:00:20.603263",
+      "last_fetch": "2026-07-28T06:16:10.522090",
+      "last_success": "2026-07-28T06:16:10.522100",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62835,8 +63110,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-07-27T06:00:11.126072",
-      "last_success": "2026-07-27T06:00:11.126074",
+      "last_fetch": "2026-07-28T06:05:44.731132",
+      "last_success": "2026-07-28T06:05:44.731136",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -62845,8 +63120,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-07-27T06:00:27.350965",
-      "last_success": "2026-07-27T06:00:27.350974",
+      "last_fetch": "2026-07-28T06:20:43.771937",
+      "last_success": "2026-07-28T06:20:43.771947",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62855,18 +63130,18 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-07-27T06:00:13.108212",
-      "last_success": "2026-07-27T06:00:13.108219",
-      "error_count": 0,
+      "last_fetch": "2026-07-28T06:16:03.079359",
+      "last_success": null,
+      "error_count": 1,
       "article_count": 0,
-      "last_error": "",
+      "last_error": "Feed parse error for PERE: text/html; charset=utf-8 is not an XML media type",
       "enabled": true
     },
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-07-27T06:00:05.438382",
-      "last_success": "2026-07-27T06:00:05.438384",
+      "last_fetch": "2026-07-28T06:05:39.045149",
+      "last_success": "2026-07-28T06:05:39.045153",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -62875,8 +63150,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-07-27T06:00:18.409932",
-      "last_success": "2026-07-27T06:00:18.409943",
+      "last_fetch": "2026-07-28T06:16:08.523390",
+      "last_success": "2026-07-28T06:16:08.523398",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62885,8 +63160,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-07-27T06:00:15.774681",
-      "last_success": "2026-07-27T06:00:15.774690",
+      "last_fetch": "2026-07-28T06:16:05.559301",
+      "last_success": "2026-07-28T06:16:05.559309",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -62895,8 +63170,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-07-27T06:00:08.233101",
-      "last_success": "2026-07-27T06:00:08.233110",
+      "last_fetch": "2026-07-28T06:05:41.755550",
+      "last_success": "2026-07-28T06:05:41.755560",
       "error_count": 0,
       "article_count": 19,
       "last_error": "",
@@ -62904,34 +63179,34 @@
     }
   ],
   "stats": {
-    "total_funds": 1271,
+    "total_funds": 1277,
     "total_covered": 52,
-    "total_uncovered": 1219,
-    "total_aum_millions": 1006460705.6,
+    "total_uncovered": 1225,
+    "total_aum_millions": 1006466170.6,
     "by_category": {
+      "Infrastructure": 174,
+      "Secondaries & GP-Stakes": 74,
+      "Real Estate": 118,
+      "Private Equity": 329,
       "Venture Capital": 319,
-      "Private Equity": 327,
       "Credit Funds": 260,
-      "Infrastructure": 172,
-      "Secondaries & GP-Stakes": 73,
-      "Real Estate": 117,
       "Other": 2,
       "N/A": 1
     },
     "by_stage": {
-      "Launch": 535,
-      "Final Close": 361,
-      "First Close": 213,
+      "Launch": 536,
+      "First Close": 216,
+      "Final Close": 362,
+      "Interim Close": 24,
       "Other": 137,
       "Close": 1,
-      "Interim Close": 23,
       "Second Close": 1
     },
     "article_count": 148,
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-07-26"
+      "latest": "2026-07-28"
     }
   }
 }
