@@ -1,6 +1,99 @@
 {
-  "generated_at": "2026-07-29T10:13:25.911397Z",
+  "generated_at": "2026-07-30T10:13:22.380840Z",
   "funds": [
+    {
+      "fund_name": "Wind Point Partners Fund XI",
+      "firm": "Wind Point Partners",
+      "firm_slug": "wind-point-partners",
+      "amount": "$3.2B",
+      "amount_usd_millions": 3200.0,
+      "category": "Private Equity",
+      "location": "Milwaukee, WI",
+      "city": "Milwaukee",
+      "state": "WI",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2026-07-29",
+      "source_url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxNNHE3V1lVZDZudVMzZGFIUk16TnUyc2E5OFZYbVk0QzR4T0I2RHNIa1VudEtpMkhic2ZyRVp2bGhSVHJOb3dOOWlnSFJRRG5jdm9tVGpfeHZfUmhHUEVtSDdPWnd0RzRWZ1A3TUdfZnF1R3d4TGlOanZMamIydm1rcEpMVUJULXM0dEx4ZEQ4V3ZEUXUwT3NyTmk4b0FDdndQVWdueGFSTDRzSnRQN1FhMlBoTXdYVWc1WFlHRHQxTXdsUlE0eGJ3ZXF1c0RQWWxrZHZIRzlMOA?oc=5",
+      "source_name": "Financialcontent",
+      "description_notes": "close a $3.2B flagship buyout fund targeting middle-market companies in North America, marking Wind Point Partners' largest vehicle to date and reflecting strong investor demand for the Milwaukee-based firm's operationally intensive acquisition strategy. The fund continues Wind Point's focus on sectors including business services, healthcare, and industrials, with a typical deal size between $100M and $400M in enterprise value. Fund XI's size represents meaningful growth from prior vintages, underscoring LP confidence in the firm's track record of value creation through operational improvements and strategic add-on acquisitions.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-30T10:01:20",
+      "articles": [
+        {
+          "title": "Wind Point Partners Announces Final Close of Oversubscribed Fund XI at $3.2 Billion - FinancialContent",
+          "url": "https://news.google.com/rss/articles/CBMi1wFBVV95cUxNNHE3V1lVZDZudVMzZGFIUk16TnUyc2E5OFZYbVk0QzR4T0I2RHNIa1VudEtpMkhic2ZyRVp2bGhSVHJOb3dOOWlnSFJRRG5jdm9tVGpfeHZfUmhHUEVtSDdPWnd0RzRWZ1A3TUdfZnF1R3d4TGlOanZMamIydm1rcEpMVUJULXM0dEx4ZEQ4V3ZEUXUwT3NyTmk4b0FDdndQVWdueGFSTDRzSnRQN1FhMlBoTXdYVWc1WFlHRHQxTXdsUlE0eGJ3ZXF1c0RQWWxrZHZIRzlMOA?oc=5",
+          "source_name": "FinancialContent",
+          "source_domain": "financialcontent.com",
+          "published_date": "2026-07-29",
+          "summary": "Wind Point Partners Announces Final Close of Oversubscribed Fund XI at $3.2 Billion&nbsp;&nbsp;FinancialContent",
+          "feed_name": "search:Oversubscribed funds"
+        }
+      ]
+    },
+    {
+      "fund_name": "Jump Capital",
+      "firm": "Jump Capital",
+      "firm_slug": "jump-capital",
+      "amount": "$350M",
+      "amount_usd_millions": 350.0,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Launch",
+      "announcement_date": "2026-07-29",
+      "source_url": "https://www.altassets.net/private-equity-news/jump-capital-bets-bigger-on-crypto-with-record-350m-fund.html",
+      "source_name": "AltAssets",
+      "description_notes": "raise a record $350m crypto-focused venture fund, marking Jump Capital's largest deployment to date as digital assets regain investor appetite. the fund targets early- to growth-stage cryptocurrency and blockchain companies, positioning the firm as a significant player in the sector's comeback cycle.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-30T10:01:20",
+      "articles": [
+        {
+          "title": "Jump Capital bets bigger on crypto with record $350m fund",
+          "url": "https://www.altassets.net/private-equity-news/jump-capital-bets-bigger-on-crypto-with-record-350m-fund.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-07-29",
+          "summary": "",
+          "feed_name": "AltAssets"
+        }
+      ]
+    },
+    {
+      "fund_name": "Outrigger Impact Blue Economy Fund",
+      "firm": "Outrigger Impact",
+      "firm_slug": "outrigger-impact",
+      "amount": "$100M",
+      "amount_usd_millions": 100.0,
+      "category": "Infrastructure",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Launch",
+      "announcement_date": "2026-07-29",
+      "source_url": "https://www.altassets.net/private-equity-news/by-news-type/fund-news/outrigger-impact-unveils-100-vehicle-focused-on-the-blue-economy.html",
+      "source_name": "AltAssets",
+      "description_notes": "launch a $100M infrastructure fund targeting blue economy assets, including marine conservation, sustainable fisheries, and ocean-based renewable energy projects. The vehicle marks Outrigger Impact's entry into dedicated ocean-focused impact investing, positioning the firm to capitalize on growing institutional demand for climate and sustainability-linked infrastructure with measurable environmental returns.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-30T10:01:20",
+      "articles": [
+        {
+          "title": "Outrigger Impact unveils $100m vehicle focused on the blue economy",
+          "url": "https://www.altassets.net/private-equity-news/by-news-type/fund-news/outrigger-impact-unveils-100-vehicle-focused-on-the-blue-economy.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-07-29",
+          "summary": "",
+          "feed_name": "AltAssets"
+        }
+      ]
+    },
     {
       "fund_name": "GTCR Capital Solutions Fund I",
       "firm": "GTCR",
@@ -33,6 +126,46 @@
       ]
     },
     {
+      "fund_name": "FoxPath Credit Secondaries Fund I",
+      "firm": "FoxPath",
+      "firm_slug": "foxpath",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Secondaries & GP-Stakes",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Launch",
+      "announcement_date": "2026-07-29",
+      "source_url": "https://www.privatedebtinvestor.com/details-of-foxpaths-debut-credit-secondaries-fund-disclosed/",
+      "source_name": "Private Debt Investor",
+      "description_notes": "launch a secondaries and GP-stakes fund with an undisclosed target, entering a market focused on acquiring secondary positions and direct GP stakes in private equity portfolios. FoxPath is establishing its inaugural credit-focused secondaries vehicle, though specific LP backers and fund size remain private.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-30T10:01:20",
+      "articles": [
+        {
+          "title": "Details of FoxPath\u2019s debut credit secondaries fund disclosed",
+          "url": "https://www.secondariesinvestor.com/details-of-foxpaths-debut-credit-secondaries-fund-disclosed/",
+          "source_name": "Secondaries Investor",
+          "source_domain": "secondariesinvestor.com",
+          "published_date": "2026-07-29",
+          "summary": "",
+          "feed_name": "Secondaries Investor"
+        },
+        {
+          "title": "Details of FoxPath\u2019s debut credit secondaries fund disclosed",
+          "url": "https://www.privatedebtinvestor.com/details-of-foxpaths-debut-credit-secondaries-fund-disclosed/",
+          "source_name": "Private Debt Investor",
+          "source_domain": "privatedebtinvestor.com",
+          "published_date": "2026-07-29",
+          "summary": "",
+          "feed_name": "Private Debt Investor"
+        }
+      ]
+    },
+    {
       "fund_name": "ZQ Capital Flagship Fund",
       "firm": "ZQ Capital",
       "firm_slug": "zq-capital",
@@ -60,6 +193,37 @@
           "published_date": "2026-07-28",
           "summary": "",
           "feed_name": "AltAssets"
+        }
+      ]
+    },
+    {
+      "fund_name": "DGAM Canadian Private Real Estate Fund, L.P.",
+      "firm": "DGAM",
+      "firm_slug": "dgam",
+      "amount": "$292 million",
+      "amount_usd_millions": 292.0,
+      "category": "Real Estate",
+      "location": "Toronto, Canada",
+      "city": "Toronto",
+      "state": "ON",
+      "country": "Canada",
+      "stage": "Launch",
+      "announcement_date": "2026-07-28",
+      "source_url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNakl0bzFSd1pTNWs2S1RBOFBlN285dVZkSi1rUkl5Njc2NjZBQW9uQU1VS1dvd1FqZE53c1lsSUJfUTZ2V1o5YkRNVVRMQV8xSnp4bXc3bktwWlBLclFVQUlwODRRU3QxSTliSmhPVWttVTV4TFFsa2FZZ0NrYkpWVUtNaWE1Z0hSZ3hWOVl3?oc=5",
+      "source_name": "Yahoo Finance",
+      "description_notes": "closes $292 million for Canadian private real estate investing, marking DGAM's entry into the institutional real estate fund market with a strategy focused on core and value-add opportunities across Canadian office, industrial, and multifamily assets. the debut fund reflects growing LP appetite for Canadian real estate exposure amid favorable demographic trends and supply constraints in key markets.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-07-30T10:01:20",
+      "articles": [
+        {
+          "title": "BOARDWALK REIT AND DGAM CANADIAN PRIVATE REAL ESTATE FUND, L.P. ANNOUNCE STRATEGIC CO-OWNERSHIP TO EXPAND WESTERN CANADIAN MULTIFAMILY PLATFORM AND INITIAL $292 MILLION SEED PORTFOLIO - Yahoo Finance Singapore",
+          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNakl0bzFSd1pTNWs2S1RBOFBlN285dVZkSi1rUkl5Njc2NjZBQW9uQU1VS1dvd1FqZE53c1lsSUJfUTZ2V1o5YkRNVVRMQV8xSnp4bXc3bktwWlBLclFVQUlwODRRU3QxSTliSmhPVWttVTV4TFFsa2FZZ0NrYkpWVUtNaWE1Z0hSZ3hWOVl3?oc=5",
+          "source_name": "Yahoo Finance Singapore",
+          "source_domain": "sg.finance.yahoo.com",
+          "published_date": "2026-07-28",
+          "summary": "BOARDWALK REIT AND DGAM CANADIAN PRIVATE REAL ESTATE FUND, L.P. ANNOUNCE STRATEGIC CO-OWNERSHIP TO EXPAND WESTERN CANADIAN MULTIFAMILY PLATFORM AND INITIAL $292 MILLION SEED PORTFOLIO&nbsp;&nbsp;Yahoo Finance Singapore",
+          "feed_name": "search:Credit/Real estate"
         }
       ]
     },
@@ -278,7 +442,7 @@
       "announcement_date": "2026-07-27",
       "source_url": "https://www.altassets.net/premium/hat-sgr-nears-e200m-target-as-fund-5-hits-e155m.html",
       "source_name": "AltAssets",
-      "description_notes": "raise \u20ac155m at interim close toward a \u20ac200m target for HAT SGR's fifth private equity fund, which appears on track to exceed or match its hard cap. The fund is nearing its final close with strong LP demand, positioning it as a continuation of the firm's established investment program.",
+      "description_notes": "raise \u20ac155M at interim close toward a \u20ac200M target for HAT SGR Fund 5, its fifth private equity vehicle focused on mid-market European investments. The fund is 77.5% committed to its hard cap, signaling strong LP demand for the manager's buyout strategy in the current fundraising environment.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-28T14:36:44",
@@ -309,7 +473,7 @@
       "announcement_date": "2026-07-27",
       "source_url": "https://www.altassets.net/premium/mg-partners-hits-e80m-raise-for-benelux-healthcare-push.html",
       "source_name": "AltAssets",
-      "description_notes": "close \u20ac80m debut fund targeting mid-market healthcare acquisitions across Belgium, Netherlands, and Luxembourg, with a focus on buyouts and add-on consolidation in the Benelux region. the fund marks MG Partners' entry into dedicated healthcare investing and achieves first close, indicating strong LP demand for the firm's regional healthcare thesis.",
+      "description_notes": "close \u20ac80M debut healthcare-focused buyout fund targeting mid-market medical device, diagnostics, and healthcare services assets across Belgium, Netherlands, and Luxembourg. The first close marks MG Partners' entry into Benelux-specific healthcare investing, a sector-concentrated strategy that differentiates the firm from broader European healthcare platforms.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-28T14:36:44",
@@ -553,7 +717,7 @@
       "announcement_date": "2026-07-23",
       "source_url": "https://www.buyoutsinsider.com/realizations-spur-capital-constellations-2-bn-fund-v/",
       "source_name": "Buyouts Insider",
-      "description_notes": "launching a $2B private equity fund as the fifth vintage for Capital Constellation. Without article text providing strategy details, LP names, or comparative fund sizing, specific positioning cannot be determined; additional reporting needed on target market, sector focus, and investor composition.",
+      "description_notes": "closing a $2B fifth fund for mid-market private equity investments, marking a significant increase from prior vintages and demonstrating continued LP confidence in Capital Constellation's strategy. the fund launch comes as the firm expands its investment capacity, though specific sector focus and anchor LP details remain undisclosed.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-24T10:01:21",
@@ -596,6 +760,15 @@
           "source_domain": "morningstar.com",
           "published_date": "2026-07-23",
           "summary": "Savano Capital Partners Closes Oversubscribed $252 Million Fund IV&nbsp;&nbsp;Morningstar",
+          "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "Savano Capital Partners Closes Oversubscribed $252 Million Fund IV - Pulse 2.0",
+          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxQQVF0OENvR0loUHphTkJyS2pXOU5TbG1pT19IX0FuemkzamNyajZJT3VGMHoyOVBqS3kzVTBqdThrOUpLQVJQc05pSzlGU0pDeF80TzA5dlhBOEJpS0ZRRUZHd0dDNVJLNzFwS2xuVFphRzZkZzVlTTVBRWREcWxELTB5aDdYZ2NhODFXS09B0gGTAUFVX3lxTFBNT1lCNEplVzhnN1BPNzBibU1SWkFGS250MkNiVW1NeFpHRHlOMkJyQm04VVU5ejRFcFg1eVA2dDlIaUlsN21BYWNUbTFFVnVnV2tGVUFtdWx2YV9QYkJNcGY3Rl9hTWVFNllOUW1GQlhaSGFqTlI4WnpIaHJHNktyWndhUG5nY1ItZkFWUTRTemNnaw?oc=5",
+          "source_name": "Pulse 2.0",
+          "source_domain": "pulse2.com",
+          "published_date": "2026-07-23",
+          "summary": "Savano Capital Partners Closes Oversubscribed $252 Million Fund IV&nbsp;&nbsp;Pulse 2.0",
           "feed_name": "search:Oversubscribed funds"
         }
       ]
@@ -1055,7 +1228,7 @@
       "announcement_date": "2026-07-17",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/silver-hill-energy-partners-closes-1-28bn-fifth-fund-above-target.html",
       "source_name": "AltAssets",
-      "description_notes": "close $1.28bn fifth oil and gas-focused fund, surpassing target in an oversubscribed raise that underscores continued investor appetite for energy sector buyouts. Silver Hill Energy Partners V marks the firm's largest vehicle to date, reflecting confidence in midstream and upstream energy opportunities amid market recovery.",
+      "description_notes": "close $1.28bn fifth energy-focused fund oversubscribed, marking Silver Hill Energy Partners' largest vehicle to date and reflecting continued LP appetite for oil and gas midstream and upstream investments. The North American energy specialist expanded its fundraising target, drawing from institutional and family office capital amid an active market for fossil fuel-backed strategies.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-18T10:24:02",
@@ -9014,6 +9187,15 @@
           "published_date": "2026-06-05",
           "summary": "",
           "feed_name": "AltAssets"
+        },
+        {
+          "title": "Norvestor reaches \u20ac2bn final close on flagship Fund X - realdeals.eu.com",
+          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPN01yTS12MkhyMDN1NlhtWTJMOWdVM0FINTlHdHhOOFFUWDZIYk45VEtibnVPTnZRX01CM1gwUGVsWlhDbG4wSXpweDBCLV92Y2xmeU9xWXRPa3VkNjhhSUJFSzhDTnNHVHU5Y00yZVZsOXVxc3J1ZWViMGc0V3BvNHZ0SW9UZm9HcW90cXR3?oc=5",
+          "source_name": "realdeals.eu.com",
+          "source_domain": "realdeals.eu.com",
+          "published_date": "2026-06-05",
+          "summary": "Norvestor reaches \u20ac2bn final close on flagship Fund X&nbsp;&nbsp;realdeals.eu.com",
+          "feed_name": "search:First/final close"
         }
       ]
     },
@@ -14826,6 +15008,15 @@
       "date_added": "2026-05-15T10:01:28",
       "articles": [
         {
+          "title": "Brookfield Middle East Partners Fund Closes with $2B from PIF and Investors - News and Statistics - IndexBox",
+          "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxNNE5aS3pWcFJxMVFfZHpaa1lldGdISHN3cXVsZ0VnWFl3Q183Z1ZaaHE3SEtNUm5ZdEZqN2JJZXcxQU1ZOFpzWElXNU5xbjFZSWtldTRqMHFnUGJ5RXZkdHZYY1hGa1hRSy1UOHJnZzFadk1XWEhwc1Fmb29nWmp6aVJFYm5Ycld4S2JNQWM1SVBXYjF3NHJaXzUyai1SQk5tQjhkbFNoMVRTdnJfTkNpZ1Vad3c4TXVz?oc=5",
+          "source_name": "IndexBox",
+          "source_domain": "indexbox.io",
+          "published_date": "2026-07-30",
+          "summary": "Brookfield Middle East Partners Fund Closes with $2B from PIF and Investors - News and Statistics&nbsp;&nbsp;IndexBox",
+          "feed_name": "search:PE/VC fund closes"
+        },
+        {
           "title": "Brookfield Secures $2 Billion First Close for Middle East Fund - CairoScene",
           "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPTVFjQzV2VllMTjd3RDEzZmpER3lZalFZajBSUGZmakJqT0Nld0htNjdiOHBoVTBNdmh2aWFZV1RwOVhnX1hNVTJuZVI3cTdpNVN5ZmgzSndxQ3JHMEgyVXAtbGNlcHkxV2hvX1p4YjFwWWM5Ym1wUGk0SmV6cWl3UzJLZlJpQjVLTW11S0pZeHVlQ3ExR0Z0Qw?oc=5",
           "source_name": "CairoScene",
@@ -19466,7 +19657,7 @@
       "announcement_date": "2026-04-22",
       "source_url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQOEY1RmVLOW1icjRoUEdBblJPR2REcGxQWVkwNlRzbXR0VUFsald1dmZLWXZUdnNXUEZOZDFFTE9xQ0lpajZNMTN0YW1YS21iaG93bS1kY2xxaWRxVjlSNGlYMHl0V0N1NG9teXJ5V3M1X3JNZTVFVFlJcFBxQ2k0bTNVSlgtdXB1RnIwVGdJVlY2YjBYME1qbHJtQ1l2ZWVqaXBKUlVzb2ljdmkxa2FNN01zSDd4Y2hyVkp3Rk53?oc=5",
       "source_name": "Stocktitan",
-      "description_notes": "launch a $91M venture capital fund focused on early-stage technology investments. Mighty Capital targets founders building innovative solutions across consumer and enterprise sectors, positioning itself as a stage-agnostic investor willing to lead or follow rounds. The fund represents the firm's debut institutional vehicle, establishing its track record in a competitive venture landscape.",
+      "description_notes": "raise $91M for early-stage venture investments, marking Mighty Capital's debut fund focused on seed and Series A companies. The fund targets emerging technology sectors with an emphasis on founder-led teams and capital-efficient business models. Limited details on anchor LPs are publicly available, though the fund's launch size suggests institutional backing from established venture investors.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-25T12:58:56",
@@ -34965,7 +35156,7 @@
       "announcement_date": "2026-02-25",
       "source_url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE80YnEyTkRfU3ViOWZxYWhybVljb1Z1NnR3b3o1d2JRbG54MDhPOUl3TTRBd2RYeHpQdWY0V3FwOWN6dklSOGg3SGJ1QVFjMk5aRlJKOE5Ud1BXdy16VGFvaEtYOTJJVUY3RF80Rm1LelpIQjBja1JfdVBYXzAtRTg?oc=5",
       "source_name": "Iberianlawyer",
-      "description_notes": "launch a \u20ac25M real estate fund focused on housing opportunities across Europe. Creand, a European real estate investment firm, is deploying capital into residential assets, likely targeting mid-market acquisition and development opportunities in underserved housing markets. This inaugural fund represents the firm's entry into dedicated housing investment, positioning it to capitalize on persistent residential supply challenges across the continent.",
+      "description_notes": "close a \u20ac25M inaugural housing-focused real estate fund targeting residential or mixed-use development opportunities in Europe. Creand, a real estate investment firm, is launching its first dedicated housing vehicle as demand for residential assets remains elevated across institutional investor portfolios. The fund size and strategy suggest a focus on mid-market opportunities, likely positioning Creand to compete with larger pan-European housing specialists.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-02-25T11:51:02",
@@ -52354,6 +52545,17 @@
       "country": "Germany"
     },
     {
+      "firm": "Wind Point Partners",
+      "firm_slug": "wind-point-partners",
+      "fund_count": 1,
+      "total_aum_millions": 3200.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "Milwaukee",
+      "country": "US"
+    },
+    {
       "firm": "HGGC",
       "firm_slug": "hggc",
       "fund_count": 1,
@@ -56527,6 +56729,17 @@
       "country": "Germany"
     },
     {
+      "firm": "Jump Capital",
+      "firm_slug": "jump-capital",
+      "fund_count": 1,
+      "total_aum_millions": 350.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": ""
+    },
+    {
       "firm": "Capitalworks",
       "firm_slug": "capitalworks",
       "fund_count": 1,
@@ -56932,6 +57145,17 @@
       ],
       "city": "New York",
       "country": "US"
+    },
+    {
+      "firm": "DGAM",
+      "firm_slug": "dgam",
+      "fund_count": 1,
+      "total_aum_millions": 292.0,
+      "categories": [
+        "Real Estate"
+      ],
+      "city": "Toronto",
+      "country": "Canada"
     },
     {
       "firm": "Somerset Indus",
@@ -58387,6 +58611,17 @@
       ],
       "city": "Berlin",
       "country": "Germany"
+    },
+    {
+      "firm": "Outrigger Impact",
+      "firm_slug": "outrigger-impact",
+      "fund_count": 1,
+      "total_aum_millions": 100.0,
+      "categories": [
+        "Infrastructure"
+      ],
+      "city": "N/A",
+      "country": ""
     },
     {
       "firm": "100x100",
@@ -59917,6 +60152,17 @@
       ],
       "city": "Chicago",
       "country": "US"
+    },
+    {
+      "firm": "FoxPath",
+      "firm_slug": "foxpath",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Secondaries & GP-Stakes"
+      ],
+      "city": "N/A",
+      "country": ""
     },
     {
       "firm": "AUDA-NEPAD",
@@ -63277,8 +63523,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-07-29T06:00:33.741560",
-      "last_success": "2026-07-29T06:00:33.741570",
+      "last_fetch": "2026-07-30T06:00:27.769187",
+      "last_success": "2026-07-30T06:00:27.769199",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -63287,8 +63533,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-07-29T06:00:31.370838",
-      "last_success": "2026-07-29T06:00:31.370849",
+      "last_fetch": "2026-07-30T06:00:25.359431",
+      "last_success": "2026-07-30T06:00:25.359441",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -63327,8 +63573,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-07-29T06:00:42.030400",
-      "last_success": "2026-07-29T06:00:42.030411",
+      "last_fetch": "2026-07-30T06:00:35.288758",
+      "last_success": "2026-07-30T06:00:35.288768",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -63337,8 +63583,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-07-29T06:00:10.171216",
-      "last_success": "2026-07-29T06:00:10.171226",
+      "last_fetch": "2026-07-30T06:00:10.053206",
+      "last_success": "2026-07-30T06:00:10.053220",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -63347,8 +63593,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-07-29T06:00:07.567383",
-      "last_success": "2026-07-29T06:00:07.567388",
+      "last_fetch": "2026-07-30T06:00:07.642442",
+      "last_success": "2026-07-30T06:00:07.642452",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -63357,8 +63603,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-07-29T06:00:29.850784",
-      "last_success": "2026-07-29T06:00:29.850793",
+      "last_fetch": "2026-07-30T06:00:23.986732",
+      "last_success": "2026-07-30T06:00:23.986743",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -63367,8 +63613,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-07-29T06:00:11.828498",
-      "last_success": "2026-07-29T06:00:11.828505",
+      "last_fetch": "2026-07-30T06:00:11.657844",
+      "last_success": "2026-07-30T06:00:11.657852",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -63377,8 +63623,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-07-29T06:00:38.202103",
-      "last_success": "2026-07-29T06:00:38.202113",
+      "last_fetch": "2026-07-30T06:00:32.276359",
+      "last_success": "2026-07-30T06:00:32.276370",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -63387,8 +63633,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-07-29T06:00:13.581519",
-      "last_success": "2026-07-29T06:00:13.581526",
+      "last_fetch": "2026-07-30T06:00:13.318914",
+      "last_success": "2026-07-30T06:00:13.318923",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -63397,8 +63643,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-07-29T06:00:06.017346",
-      "last_success": "2026-07-29T06:00:06.017348",
+      "last_fetch": "2026-07-30T06:00:06.157883",
+      "last_success": "2026-07-30T06:00:06.157887",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -63407,8 +63653,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-07-29T06:00:27.899221",
-      "last_success": "2026-07-29T06:00:27.899233",
+      "last_fetch": "2026-07-30T06:00:22.088923",
+      "last_success": "2026-07-30T06:00:22.088934",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -63417,8 +63663,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-07-29T06:00:24.048028",
-      "last_success": "2026-07-29T06:00:24.048038",
+      "last_fetch": "2026-07-30T06:00:17.036878",
+      "last_success": "2026-07-30T06:00:17.036894",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -63427,39 +63673,39 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-07-29T06:00:08.856668",
-      "last_success": "2026-07-29T06:00:08.856678",
+      "last_fetch": "2026-07-30T06:00:08.811016",
+      "last_success": "2026-07-30T06:00:08.811027",
       "error_count": 0,
-      "article_count": 19,
+      "article_count": 18,
       "last_error": "",
       "enabled": true
     }
   ],
   "stats": {
-    "total_funds": 1281,
+    "total_funds": 1286,
     "total_covered": 52,
-    "total_uncovered": 1229,
-    "total_aum_millions": 1006467595.6,
+    "total_uncovered": 1234,
+    "total_aum_millions": 1006471537.6,
     "by_category": {
+      "Private Equity": 332,
+      "Venture Capital": 321,
+      "Infrastructure": 175,
       "Credit Funds": 261,
-      "Private Equity": 331,
-      "Venture Capital": 320,
-      "Infrastructure": 174,
-      "Secondaries & GP-Stakes": 74,
-      "Real Estate": 118,
+      "Secondaries & GP-Stakes": 75,
+      "Real Estate": 119,
       "Other": 2,
       "N/A": 1
     },
     "by_stage": {
-      "Final Close": 366,
-      "Launch": 536,
+      "Final Close": 367,
+      "Launch": 540,
       "First Close": 216,
       "Interim Close": 24,
       "Other": 137,
       "Close": 1,
       "Second Close": 1
     },
-    "article_count": 148,
+    "article_count": 147,
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
