@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-01T10:14:28.754585Z",
+  "generated_at": "2026-08-02T10:12:54.483026Z",
   "funds": [
     {
       "fund_name": "Index Ventures Fund",
@@ -150,10 +150,10 @@
       "amount": "$1B",
       "amount_usd_millions": 1000.0,
       "category": "Credit Funds",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
       "stage": "Final Close",
       "announcement_date": "2026-07-30",
       "source_url": "https://www.privatedebtinvestor.com/exclusive-slate-closes-1bn-sma-to-expand-senior-lending-platform/",
@@ -420,7 +420,7 @@
       "announcement_date": "2026-07-29",
       "source_url": "https://www.privatedebtinvestor.com/details-of-foxpaths-debut-credit-secondaries-fund-disclosed/",
       "source_name": "Private Debt Investor",
-      "description_notes": "launch a debut secondaries and GP-stakes fund with an undisclosed target, marking FoxPath's entry into the secondary market for acquiring LP positions and sponsor stakes in established private equity funds. The fund targets institutional investors seeking exposure to mature portfolio companies and continuation vehicles without deploying new capital into early-stage commitments.",
+      "description_notes": "launching a secondaries and GP-stakes fund with an undisclosed target, FoxPath is entering the market for purchasing secondary positions and sponsor stakes from existing investors and fund managers. The fund arrives as the secondaries asset class continues to attract capital from institutional investors seeking exposure to established portfolios and carried interest opportunities.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-30T10:01:20",
@@ -460,7 +460,7 @@
       "announcement_date": "2026-07-28",
       "source_url": "https://www.altassets.net/premium/zq-capital-closes-flagship-fund-at-300m-target.html",
       "source_name": "AltAssets",
-      "description_notes": "close flagship private equity fund at its $300m target, marking a successful final close for the firm's main investment vehicle. the fund focuses on traditional buyout opportunities, though specific sector or stage focus and LP composition details were not disclosed in available reporting.",
+      "description_notes": "close ZQ Capital's flagship private equity fund at its $300M target, marking a successful final close for the firm's core investment vehicle. The fund appears positioned for traditional mid-market buyouts, though specific strategy focus, LP composition, and comparison to prior vintages are not disclosed in available sources.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-29T10:01:31",
@@ -1391,6 +1391,15 @@
           "source_domain": "au.finance.yahoo.com",
           "published_date": "2026-07-21",
           "summary": "Avenue Growth Partners Announces the Close of Its Second Fund at Hard Cap&nbsp;&nbsp;Yahoo Finance Australia",
+          "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "Avenue Growth Partners Announces the Close of Its Second Fund at Hard Cap - Yahoo Finance",
+          "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQM1EweGtKTm9ieTZFd09SU1FZZTVwdzlsMjExU1k5SXpJN1ZjRUhIcEVmZkd6eGlROVdQckxucTVTMnBRZDBNcGh5eGdMbnBzaXBlWlc4eWY2R1Q3STF2UnZxZ1lvbmJOT0gyRy1ua3R0Q1lNUF9oU3dRbkVTaUg0NE9KWTA0MkgybDlOeWtxZGNKUXY1ZGRDLXRLckR4MjdP?oc=5",
+          "source_name": "Yahoo Finance",
+          "source_domain": "finance.yahoo.com",
+          "published_date": "2026-07-21",
+          "summary": "Avenue Growth Partners Announces the Close of Its Second Fund at Hard Cap&nbsp;&nbsp;Yahoo Finance",
           "feed_name": "search:Oversubscribed funds"
         }
       ]
@@ -2497,7 +2506,7 @@
       "announcement_date": "2026-07-15",
       "source_url": "https://www.secondariesinvestor.com/credit-manager-serone-launches-buyout-secondaries-strategy/",
       "source_name": "Secondaries Investor",
-      "description_notes": "launch a secondaries and GP-stakes buyout fund with an undisclosed target, positioning Serone to capitalize on the growing market for secondary acquisitions and direct stakes in established buyout platforms. the fund targets the secondaries segment, where LPs seek liquidity and GPs look to recycle capital, though specific LP anchors and prior vintage comparisons were not disclosed.",
+      "description_notes": "launch a secondaries and GP-stakes buyout fund with an undisclosed target amount, targeting the lower mid-market by acquiring secondary positions and managing partner stakes from mature or exiting funds. Serone is entering a competitive secondaries market as fund managers increasingly seek dedicated vehicles for these opportunities rather than managing them within primary buyout strategies.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-16T10:11:21",
@@ -5055,7 +5064,7 @@
       "announcement_date": "2026-07-02",
       "source_url": "https://techcrunch.com/2026/07/02/melinda-gates-venture-firm-backs-magnify-ventures-46-6m-fund-ii/",
       "source_name": "TechCrunch",
-      "description_notes": "raise $46.6M for early-stage venture investing with backing from Melinda French Gates' Pivotal Ventures and other institutional LPs. Fund II appears to maintain focus on care economy and social impact themes, building on momentum from the firm's debut fund. The backing from high-profile limited partners signals continued investor confidence in Magnify's thesis around underserved market segments.",
+      "description_notes": "raise a $46.6M second fund focused on early-stage ventures, with backing from Melinda French Gates' Pivotal Ventures and other institutional LPs. Magnify Ventures targets the care economy, a thematic focus that distinguishes it within the early-stage venture landscape. Fund II's close represents validation for the emerging manager's initial strategy, though the fund size suggests a modest scaling from typical first-time vehicles.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-03T23:35:59",
@@ -7029,6 +7038,37 @@
           "published_date": "2026-06-21",
           "summary": "INVL Family Office Introduces a Fund Investing in the Rapidly Growing Private Equity Secondary Market&nbsp;&nbsp;Yahoo Finance UK",
           "feed_name": "search:PE/VC fund closes"
+        }
+      ]
+    },
+    {
+      "fund_name": "Women Backing Women Fund of Funds",
+      "firm": "Bootstrap 4F",
+      "firm_slug": "bootstrap-4f",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "First Close",
+      "announcement_date": "2026-06-22",
+      "source_url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxOUDR4cGVha19odnA4ZFJCclFnQmlzYTVvbHctYkVTUVZDUURsNU1SZ0Z4UlpqRE9QbUl0UHdfRUJjYVJKcHE3V3hwX0ZFUm94R1RXY2loSlJEY1hIbXpnSzFxYUxMV1RvOG1ITG9UZFdPN1JDd0dLeWZiWV9vLXhEWWN1VnJUamVEN1Ftc05SSDRhamFrN3NRZjl6Um41d1dQY1llbEt0OA?oc=5",
+      "source_name": "Startupsmagazine",
+      "description_notes": "launch a fund-of-funds vehicle focused on backing venture capital managers with female leadership or significant female representation. Bootstrap 4F is deploying capital across a portfolio of underlying VC funds to address gender gaps in both fund management and startup founder support, though the firm has kept the total commitment undisclosed at first close. The strategy reflects growing LP demand for gender-lens investing and diverse GP exposure within venture allocations.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-02T10:01:30",
+      "articles": [
+        {
+          "title": "Bootstrap 4F deploys first capital from Women Backing Women Fund of Funds - Startups Magazine",
+          "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxOUDR4cGVha19odnA4ZFJCclFnQmlzYTVvbHctYkVTUVZDUURsNU1SZ0Z4UlpqRE9QbUl0UHdfRUJjYVJKcHE3V3hwX0ZFUm94R1RXY2loSlJEY1hIbXpnSzFxYUxMV1RvOG1ITG9UZFdPN1JDd0dLeWZiWV9vLXhEWWN1VnJUamVEN1Ftc05SSDRhamFrN3NRZjl6Um41d1dQY1llbEt0OA?oc=5",
+          "source_name": "Startups Magazine",
+          "source_domain": "startupsmagazine.co.uk",
+          "published_date": "2026-06-22",
+          "summary": "Bootstrap 4F deploys first capital from Women Backing Women Fund of Funds&nbsp;&nbsp;Startups Magazine",
+          "feed_name": "search:First/final close"
         }
       ]
     },
@@ -10435,7 +10475,7 @@
       "announcement_date": "2026-06-03",
       "source_url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPaTVNT1dSQ3o4RmhCZ1NqS1MzYThvQU5FdFpHYkF3N0xuandkekFyVTYzY1BJdlVSYTVtYmV1Sjd5dnlnWG04SWxfcHBaVnA2R0dRYUdoRi15cktKMnRWRlMyNnlQRUp0Q0cyeFFfZ1VMYTRlUHpHZmJNRzB6dXlrZk1saUh2Ynd2aWR0VUwwSFBWZ0VKZHhuOWlacngtdUd6RF9yZGEweU5TWFRLbmdPT1lYSTY2RW9WeU9VR0lQSDZMOHcy?oc=5",
       "source_name": "Gtreview",
-      "description_notes": "N/A - Insufficient publicly available information about Price Ridge Capital's strategy, target market, LP base, or fund positioning. This appears to be an emerging or newly launched credit fund with limited disclosed details.",
+      "description_notes": "N/A \u2014 insufficient public information available about Price Ridge Capital's strategy, target market, LP base, or fund positioning. If you have article text or additional details about this firm's focus (e.g., direct lending, distressed credit, CLOs), please provide them for accurate enrichment.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-01T10:03:02",
@@ -13749,7 +13789,7 @@
       "announcement_date": "2026-05-15",
       "source_url": "https://techcrunch.com/2026/05/15/meridian-ventures-launched-35m-fund-to-back-mba-deferred-founders/",
       "source_name": "TechCrunch",
-      "description_notes": "launched a $35M debut fund targeting MBA-deferred founders, positioning itself in an underserved segment of early-stage venture capital. The fund represents a distinctive thesis that bypasses traditional MBA gatekeeping to back founders who chose to launch companies instead of pursuing business school. Meridian Ventures is betting that founding experience and business acumen can outweigh formal credentials in identifying promising entrepreneurs.",
+      "description_notes": "launched a $35M debut fund targeting MBA-deferred founders building enterprise technology across fintech, logistics, healthcare, and AI sectors in the US. The fund represents a distinctive thesis around alternative founder profiles, backing early-stage companies without requiring traditional MBA credentials. Meridian is positioning itself as sector-agnostic within the enterprise tech space, distinguishing it from more vertically-focused competitors.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-05-16T10:01:16",
@@ -15834,6 +15874,15 @@
       "covered_date": null,
       "date_added": "2026-05-07T10:01:31",
       "articles": [
+        {
+          "title": "Capitol Meridian Partners Raises $1.9 Billion For Second Fund At Hard Cap - Pulse 2.0",
+          "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOT1ZnT2JPcEI0d2RaMjhZdU1CRC0zY3dxVVpNb1M3NklnbERtbzZOS01yMjZlLXRncm1jZkNzNHNjeEROMHJVTVJaOVJOY2RZdzJPV001STZCelB0bGZ2MG1HRmwyRVVBa0pGUDNkTV84dW15V1pOQVR3akdINEE5emItYktMeVVPYlQ1djN3ZENsTUpxQ3ZF0gGcAUFVX3lxTE9FSlNOaXV3aDYtcndDVEYwNDVtczdKWG90U0Z3b1p2U1dGN0NOTlB0cW04QVdKUVhUX2xUbFBUTTN4S0Z2N1hhQkpFYWxzRS1oc3FTM0MyQVN1azZ2S1Jhb1pZWUt1Z1BOQ0lMZWpJZm9qa1ZUeWpGWnZCRzZmb2tLS0R5c0xWVlJIUmFtVzJtU2tZSDVHY1pmb1dKNw?oc=5",
+          "source_name": "Pulse 2.0",
+          "source_domain": "pulse2.com",
+          "published_date": "2026-07-22",
+          "summary": "Capitol Meridian Partners Raises $1.9 Billion For Second Fund At Hard Cap&nbsp;&nbsp;Pulse 2.0",
+          "feed_name": "search:Oversubscribed funds"
+        },
         {
           "title": "Capitol Meridian Partners doubles flagship fund to $1.9bn as investor re-up rate nears 90%",
           "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/capitol-meridian-partners-doubles-flagship-fund-to-1-9bn-as-investor-re-up-rate-nears-90.html",
@@ -18736,7 +18785,7 @@
       "announcement_date": "2026-04-28",
       "source_url": "https://www.buyoutsinsider.com/stellex-spin-out-altair-industries-to-raise-debut-fund/",
       "source_name": "Buyouts Insider",
-      "description_notes": "launching Altair Industries Fund I, a debut private equity vehicle with an undisclosed fund size targeting industrial or specialized manufacturing investments. the fund's inaugural close marks Altair Industries' entry into direct investing, though limited details on LP backing, ticket size, or sector focus are currently available.",
+      "description_notes": "launching Altair Industries Fund I, a debut private equity vehicle focused on acquiring and operating industrial companies. The fund's strategy and target market remain undisclosed, as does its fundraising total, though the debut status suggests the GP is establishing its first institutional offering in the industrials buyout space.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-29T10:01:16",
@@ -34513,7 +34562,7 @@
       "announcement_date": "2026-03-02",
       "source_url": "https://www.altassets.net/market-news/seven-hills-capital-concludes-sophomore-fund-at-235m-hard-cap.html",
       "source_name": "AltAssets",
-      "description_notes": "close Seven Hills Capital's sophomore fund at its $235m hard cap, marking a successful exit from fundraising after achieving full commitments. The fund maintains the firm's mid-market private equity strategy, though specific sector focus and LP composition remain undisclosed in available reporting. Fund II's size is consistent with the firm's inaugural vehicle, suggesting a stable deployment thesis rather than significant growth or contraction between vintages.",
+      "description_notes": "close Seven Hills Capital's sophomore fund at its $235M hard cap, matching the firm's first vintage and signaling steady investor appetite for its strategy. the $235M fund II appears positioned in the mid-market or lower-middle market segment, though the article provides limited detail on sector focus, geographic targets, or LP composition. the successful final close on the second vintage suggests consistent performance or strong market positioning relative to fund I.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-03T11:20:53",
@@ -54826,8 +54875,8 @@
       "categories": [
         "Credit Funds"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "New York",
+      "country": "US"
     },
     {
       "firm": "H.I.G. Realty",
@@ -61083,6 +61132,17 @@
       "country": "Lithuania"
     },
     {
+      "firm": "Bootstrap 4F",
+      "firm_slug": "bootstrap-4f",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": ""
+    },
+    {
       "firm": "PIMCO",
       "firm_slug": "pimco",
       "fund_count": 2,
@@ -64144,8 +64204,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-08-01T06:01:43.769720",
-      "last_success": "2026-08-01T06:01:43.769729",
+      "last_fetch": "2026-08-02T06:00:48.706351",
+      "last_success": "2026-08-02T06:00:48.706361",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64154,8 +64214,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-08-01T06:01:41.483627",
-      "last_success": "2026-08-01T06:01:41.483638",
+      "last_fetch": "2026-08-02T06:00:46.547077",
+      "last_success": "2026-08-02T06:00:46.547086",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64194,8 +64254,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-08-01T06:01:50.005942",
-      "last_success": "2026-08-01T06:01:50.005952",
+      "last_fetch": "2026-08-02T06:00:54.577491",
+      "last_success": "2026-08-02T06:00:54.577502",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64204,8 +64264,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-08-01T06:01:26.533632",
-      "last_success": "2026-08-01T06:01:26.533639",
+      "last_fetch": "2026-08-02T06:00:32.953815",
+      "last_success": "2026-08-02T06:00:32.953823",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64214,8 +64274,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-08-01T06:01:23.936388",
-      "last_success": "2026-08-01T06:01:23.936401",
+      "last_fetch": "2026-08-02T06:00:30.404122",
+      "last_success": "2026-08-02T06:00:30.404130",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -64224,8 +64284,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-08-01T06:01:40.003043",
-      "last_success": "2026-08-01T06:01:40.003049",
+      "last_fetch": "2026-08-02T06:00:44.957853",
+      "last_success": "2026-08-02T06:00:44.957864",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64234,8 +64294,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-08-01T06:01:29.016796",
-      "last_success": "2026-08-01T06:01:29.016803",
+      "last_fetch": "2026-08-02T06:00:34.507362",
+      "last_success": "2026-08-02T06:00:34.507367",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -64244,8 +64304,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-08-01T06:01:46.878285",
-      "last_success": "2026-08-01T06:01:46.878294",
+      "last_fetch": "2026-08-02T06:00:51.816993",
+      "last_success": "2026-08-02T06:00:51.817004",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64254,8 +64314,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-08-01T06:01:30.814982",
-      "last_success": "2026-08-01T06:01:30.814988",
+      "last_fetch": "2026-08-02T06:00:36.516645",
+      "last_success": "2026-08-02T06:00:36.516651",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -64264,8 +64324,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-08-01T06:00:05.016820",
-      "last_success": "2026-08-01T06:00:05.016821",
+      "last_fetch": "2026-08-02T06:00:04.002073",
+      "last_success": "2026-08-02T06:00:04.002075",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -64274,8 +64334,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-08-01T06:01:37.925894",
-      "last_success": "2026-08-01T06:01:37.925905",
+      "last_fetch": "2026-08-02T06:00:42.599618",
+      "last_success": "2026-08-02T06:00:42.599627",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64284,8 +64344,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-08-01T06:01:33.453296",
-      "last_success": "2026-08-01T06:01:33.453306",
+      "last_fetch": "2026-08-02T06:00:39.841357",
+      "last_success": "2026-08-02T06:00:39.841365",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64294,8 +64354,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-08-01T06:01:25.219874",
-      "last_success": "2026-08-01T06:01:25.219884",
+      "last_fetch": "2026-08-02T06:00:31.666208",
+      "last_success": "2026-08-02T06:00:31.666218",
       "error_count": 0,
       "article_count": 18,
       "last_error": "",
@@ -64303,12 +64363,12 @@
     }
   ],
   "stats": {
-    "total_funds": 1298,
+    "total_funds": 1299,
     "total_covered": 52,
-    "total_uncovered": 1246,
+    "total_uncovered": 1247,
     "total_aum_millions": 1006478961.6,
     "by_category": {
-      "Venture Capital": 325,
+      "Venture Capital": 326,
       "Infrastructure": 178,
       "Private Equity": 333,
       "Credit Funds": 264,
@@ -64320,7 +64380,7 @@
     "by_stage": {
       "Launch": 544,
       "Final Close": 373,
-      "First Close": 217,
+      "First Close": 218,
       "Interim Close": 24,
       "Other": 138,
       "Close": 1,
