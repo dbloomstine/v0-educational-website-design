@@ -1,6 +1,37 @@
 {
-  "generated_at": "2026-08-02T10:12:54.483026Z",
+  "generated_at": "2026-08-03T10:13:40.649927Z",
   "funds": [
+    {
+      "fund_name": "Resonance Homelessness Housing Fund",
+      "firm": "Resonance",
+      "firm_slug": "resonance",
+      "amount": "\u00a3700m",
+      "amount_usd_millions": 700.0,
+      "category": "Real Estate",
+      "location": "London, UK",
+      "city": "London",
+      "state": "",
+      "country": "UK",
+      "stage": "Launch",
+      "announcement_date": "2026-08-03",
+      "source_url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOQVZ6MkV3TzN5bnowb09OeExPMVN4U0E2eVBVM040V2FWSEd1allmUG5HY09VUFBYc0JVQ25SVzMwSkpIZmxObzRKZlVHT1Q1YVpIa2RtMFlmWENIUW9ud2NGQ1ozSE9jdk5GbUZxLVV2X1FMd3FPZklMWnZMY012ZA?oc=5",
+      "source_name": "Funds-Europe",
+      "description_notes": "close a \u00a3700m fund targeting affordable housing and homelessness solutions across the UK, marking Resonance's largest vehicle to date and reflecting growing institutional capital flowing to social housing. the fund invests in residential real estate projects that combine commercial returns with measurable social impact, focusing on supportive housing, transitional accommodation, and permanent affordable homes for vulnerable populations. Resonance's track record in impact real estate and the fund's scale signal accelerating investor appetite for housing solutions that address critical social infrastructure gaps.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-03T10:01:12",
+      "articles": [
+        {
+          "title": "Resonance launches \u00a3700m homelessness housing fund - Funds Europe",
+          "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOQVZ6MkV3TzN5bnowb09OeExPMVN4U0E2eVBVM040V2FWSEd1allmUG5HY09VUFBYc0JVQ25SVzMwSkpIZmxObzRKZlVHT1Q1YVpIa2RtMFlmWENIUW9ud2NGQ1ozSE9jdk5GbUZxLVV2X1FMd3FPZklMWnZMY012ZA?oc=5",
+          "source_name": "Funds Europe",
+          "source_domain": "funds-europe.com",
+          "published_date": "2026-08-03",
+          "summary": "Resonance launches \u00a3700m homelessness housing fund&nbsp;&nbsp;Funds Europe",
+          "feed_name": "search:First/final close"
+        }
+      ]
+    },
     {
       "fund_name": "Index Ventures Fund",
       "firm": "Index Ventures",
@@ -47,7 +78,7 @@
       "announcement_date": "2026-07-31",
       "source_url": "https://news.google.com/rss/articles/CBMimAJBVV95cUxOVnU1VU1RUXZMSWFtb1FlVkhxVzgtWVoyYS1QT25iNkc2VWFqeWNJZzFsQk56ZkhLX0UzcWxyMzRzaEgyajdJSFQteGxQUWY2U3VqN3pubW9rWTkzN2stWmhnalpWOFlxQjhhbW1VV3dJSmdzTXFnZWc2QmRpM3h3S2gzSlBXNmtTN0ZhWnpPV3d4YnhJSTFWNnBNelJuTGV3Ukc3U2lhNmZ3R0p6SGxraE90ekd2eVBoSkExdUVBZ2p2T3FpaHU4Z1hlSkpETVZwRlBuMWk4QkpKOVcwaEV1UkE3XzhIWkV2cEEwdGhrWi1Fd0JHbThGYzg2cm1Cb290NHNIaHRPTnZwY0FWaEljSG4yZ3FVdmZi?oc=5",
       "source_name": "Business Wire",
-      "description_notes": "launch an infrastructure-focused fund under the Northampton Capital Partners banner, targeting core and core-plus assets with long-term, stable cash flows. The fund represents the firm's entry into dedicated infrastructure investing, expanding beyond its historical focus. Specific LP roster and final fund size remain undisclosed at launch.",
+      "description_notes": "launch a new infrastructure-focused fund under the Northampton Capital Partners banner, targeting core and core-plus infrastructure assets with an emphasis on essential utility and transportation networks. The firm brings established infrastructure investment experience to the strategy, though LP roster and fund size remain undisclosed at this early stage.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-01T10:03:01",
@@ -402,6 +433,15 @@
           "published_date": "2026-07-29",
           "summary": "",
           "feed_name": "Buyouts Insider"
+        },
+        {
+          "title": "GTCR Closes $1.25 Billion Capital Solutions Fund - PR Newswire",
+          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxPeUYzWFlkS0NyZHB1SDNtdjAzazFPdDZEbUxBUWhRZEhZRWplSFVmQURDa0hhakYwUGFnbGNzZ2ZrTXZ1SHhzX0R6MUJsbWlTa3IteXFvdVhBZ2U0SlJSdkVpTEpVWDNxSHBfTzRvQTNIN2Y0RFhpRmJ6TGRCdm0xcXB4MUdFSUZlcVl2M3E4QklpaXF2clBfWDRfM1FQM3RzNE9JSERn?oc=5",
+          "source_name": "PR Newswire",
+          "source_domain": "prnewswire.com",
+          "published_date": "2026-07-29",
+          "summary": "GTCR Closes $1.25 Billion Capital Solutions Fund&nbsp;&nbsp;PR Newswire",
+          "feed_name": "search:Press release fund closes"
         }
       ]
     },
@@ -3283,7 +3323,7 @@
       "announcement_date": "2026-07-09",
       "source_url": "https://www.prnewswire.com/news-releases/one-street-studios-named-by-afreximbank-and-fund-for-export-development-in-africa-feda-as-co-general-partner-of-the-pan-african-film-fund-aiming-to-mobilise-up-to-us-1-billion-826619200.html",
       "source_name": "PR Newswire",
-      "description_notes": "mobilize up to US$1 billion to finance film production, distribution, and related infrastructure across Africa, with Afreximbank and the Fund for Export Development in Africa (FEDA) as co-general partners alongside One Street Studios. The fund targets the continent's growing audiovisual sector, aiming to create a dedicated capital source for African filmmakers and studios while supporting export-oriented content production. This represents a first institutional vehicle specifically designed to scale Pan-African film financing at the megafund scale.",
+      "description_notes": "raise up to $1 billion for a pan-African film fund co-managed by One Street Studios alongside Afreximbank and the Fund for Export Development in Africa (FEDA), targeting content production and distribution across the continent. The fund represents a rare intersection of development finance and entertainment, with anchor support from Africa's premier trade bank, positioning it as a first institutional vehicle at scale for African film financing. This launch-stage fund marks a significant bet on African creative industries as an export and development asset class.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-09T23:25:00",
@@ -9015,8 +9055,8 @@
       "amount": "\u00a345 million",
       "amount_usd_millions": 45.0,
       "category": "Venture Capital",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "London, UK",
+      "city": "London",
       "state": "",
       "country": "UK",
       "stage": "First Close",
@@ -9319,6 +9359,15 @@
           "source_domain": "news.fundsforngos.org",
           "published_date": "2026-06-08",
           "summary": "ARM-Harith Secures $76 Million for Africa Climate Fund&nbsp;&nbsp;fundsforNGOs News",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "ARM-Harith Achieves US$76m First Close For Climate Transition Fund - Independent Newspaper Nigeria",
+          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxPNmRaNlFHcV9aa3ZDQjVQYjM2SEdhMkNjQjM5LXJRUGhxaFFLR0JnNENLMVNnYmQ0OENOcnotWDdIdjJaeHJoQ3NVS3VxbHhDWWpOX1ExS0RDZFdxaGMxMGotMVNVWFZ5UUlYc1E4b3RvenY4aHEzMzFYY2h1MHBGLVZreVQweGR4OFllVW1lTVhoc0U?oc=5",
+          "source_name": "Independent Newspaper Nigeria",
+          "source_domain": "independent.ng",
+          "published_date": "2026-06-08",
+          "summary": "ARM-Harith Achieves US$76m First Close For Climate Transition Fund&nbsp;&nbsp;Independent Newspaper Nigeria",
           "feed_name": "search:First/final close"
         }
       ]
@@ -10475,7 +10524,7 @@
       "announcement_date": "2026-06-03",
       "source_url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPaTVNT1dSQ3o4RmhCZ1NqS1MzYThvQU5FdFpHYkF3N0xuandkekFyVTYzY1BJdlVSYTVtYmV1Sjd5dnlnWG04SWxfcHBaVnA2R0dRYUdoRi15cktKMnRWRlMyNnlQRUp0Q0cyeFFfZ1VMYTRlUHpHZmJNRzB6dXlrZk1saUh2Ynd2aWR0VUwwSFBWZ0VKZHhuOWlacngtdUd6RF9yZGEweU5TWFRLbmdPT1lYSTY2RW9WeU9VR0lQSDZMOHcy?oc=5",
       "source_name": "Gtreview",
-      "description_notes": "N/A \u2014 insufficient public information available about Price Ridge Capital's strategy, target market, LP base, or fund positioning. If you have article text or additional details about this firm's focus (e.g., direct lending, distressed credit, CLOs), please provide them for accurate enrichment.",
+      "description_notes": "N/A - Insufficient public information available about Price Ridge Capital's strategy, target market, LP base, or distinctive positioning. The firm appears to be a credit-focused manager at launch stage, but specific details on sector focus, deal size, and investor composition are not publicly documented.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-01T10:03:02",
@@ -46840,7 +46889,7 @@
       "announcement_date": "2026-01-15",
       "source_url": "https://news.google.com/rss/articles/CBMi5AFBVV95cUxQZWdvX0hLLXdLZ29WR2FCS3Rra1ZzT0puQVZCWGpYanJ6dmZjbkZoR0wtYTJJRmtpanF1Y21uY0lEeEczUFJPb3laYUhDSFlfV25vQkdaZDdZZ213ckpaeWh0S0hvazFpUFByckhvSk5JOU1YZURPdEtKTllwRC1yaXo1QU1pR0g2NEdwSnBTbmI1R0hMRjZ4NHl4R3hvVkgyZkVGVDg5UkI1dnliRDhGdElzVEJVaDVCQm1NY0FRbk4wQmdGeFE2VjYzRWhvSnhNM29vZ1dEQ3lFd3hwWHowT24wQm4?oc=5",
       "source_name": "Greenvilleonline",
-      "description_notes": "launch a grocery-anchored real estate fund targeting stabilized and value-add commercial properties with essential retail tenants as primary income drivers. The fund focuses on defensive real estate strategies in inflationary environments, where grocery-anchored centers provide resilient cash flows due to non-discretionary consumer spending patterns. This inaugural vehicle from Concorde enters a competitive market segment dominated by established players, positioning itself around operational value creation and tenant diversification beyond traditional grocery anchors.",
+      "description_notes": "launches a grocery-anchored real estate fund targeting stabilized and value-add retail properties with essential-goods tenants designed to provide resilience during economic cycles. The fund focuses on acquiring convenience-anchored shopping centers in secondary and tertiary markets, capitalizing on the defensive characteristics of grocery-backed real estate and long-term tenant stability. This inaugural offering represents Concorde's entry into specialized retail real estate with a strategy emphasizing inflation-resistant cash flows and essential-service retail fundamentals.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-02-12T12:53:03",
@@ -55829,6 +55878,17 @@
       "country": "Netherlands"
     },
     {
+      "firm": "Resonance",
+      "firm_slug": "resonance",
+      "fund_count": 1,
+      "total_aum_millions": 700.0,
+      "categories": [
+        "Real Estate"
+      ],
+      "city": "London",
+      "country": "UK"
+    },
+    {
       "firm": "Patria Investments",
       "firm_slug": "patria-investments",
       "fund_count": 2,
@@ -60280,7 +60340,7 @@
       "categories": [
         "Venture Capital"
       ],
-      "city": "N/A",
+      "city": "London",
       "country": "UK"
     },
     {
@@ -64204,8 +64264,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-08-02T06:00:48.706351",
-      "last_success": "2026-08-02T06:00:48.706361",
+      "last_fetch": "2026-08-03T06:00:25.545185",
+      "last_success": "2026-08-03T06:00:25.545196",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64214,8 +64274,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-08-02T06:00:46.547077",
-      "last_success": "2026-08-02T06:00:46.547086",
+      "last_fetch": "2026-08-03T06:00:23.498514",
+      "last_success": "2026-08-03T06:00:23.498524",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64254,8 +64314,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-08-02T06:00:54.577491",
-      "last_success": "2026-08-02T06:00:54.577502",
+      "last_fetch": "2026-08-03T06:00:32.686442",
+      "last_success": "2026-08-03T06:00:32.686453",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64264,8 +64324,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-08-02T06:00:32.953815",
-      "last_success": "2026-08-02T06:00:32.953823",
+      "last_fetch": "2026-08-03T06:00:09.520816",
+      "last_success": "2026-08-03T06:00:09.520825",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64274,8 +64334,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-08-02T06:00:30.404122",
-      "last_success": "2026-08-02T06:00:30.404130",
+      "last_fetch": "2026-08-03T06:00:07.102131",
+      "last_success": "2026-08-03T06:00:07.102140",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -64284,8 +64344,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-08-02T06:00:44.957853",
-      "last_success": "2026-08-02T06:00:44.957864",
+      "last_fetch": "2026-08-03T06:00:22.098769",
+      "last_success": "2026-08-03T06:00:22.098780",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64294,8 +64354,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-08-02T06:00:34.507362",
-      "last_success": "2026-08-02T06:00:34.507367",
+      "last_fetch": "2026-08-03T06:00:11.012916",
+      "last_success": "2026-08-03T06:00:11.012924",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -64304,8 +64364,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-08-02T06:00:51.816993",
-      "last_success": "2026-08-02T06:00:51.817004",
+      "last_fetch": "2026-08-03T06:00:28.497341",
+      "last_success": "2026-08-03T06:00:28.497361",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64314,8 +64374,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-08-02T06:00:36.516645",
-      "last_success": "2026-08-02T06:00:36.516651",
+      "last_fetch": "2026-08-03T06:00:12.726438",
+      "last_success": "2026-08-03T06:00:12.726448",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -64324,8 +64384,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-08-02T06:00:04.002073",
-      "last_success": "2026-08-02T06:00:04.002075",
+      "last_fetch": "2026-08-03T06:00:05.713600",
+      "last_success": "2026-08-03T06:00:05.713602",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -64334,8 +64394,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-08-02T06:00:42.599618",
-      "last_success": "2026-08-02T06:00:42.599627",
+      "last_fetch": "2026-08-03T06:00:20.012869",
+      "last_success": "2026-08-03T06:00:20.012880",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64344,8 +64404,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-08-02T06:00:39.841357",
-      "last_success": "2026-08-02T06:00:39.841365",
+      "last_fetch": "2026-08-03T06:00:16.052922",
+      "last_success": "2026-08-03T06:00:16.052932",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64354,8 +64414,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-08-02T06:00:31.666208",
-      "last_success": "2026-08-02T06:00:31.666218",
+      "last_fetch": "2026-08-03T06:00:08.267118",
+      "last_success": "2026-08-03T06:00:08.267128",
       "error_count": 0,
       "article_count": 18,
       "last_error": "",
@@ -64363,22 +64423,22 @@
     }
   ],
   "stats": {
-    "total_funds": 1299,
+    "total_funds": 1300,
     "total_covered": 52,
-    "total_uncovered": 1247,
-    "total_aum_millions": 1006478961.6,
+    "total_uncovered": 1248,
+    "total_aum_millions": 1006479661.6,
     "by_category": {
+      "Real Estate": 120,
       "Venture Capital": 326,
       "Infrastructure": 178,
       "Private Equity": 333,
       "Credit Funds": 264,
       "Secondaries & GP-Stakes": 76,
-      "Real Estate": 119,
       "Other": 2,
       "N/A": 1
     },
     "by_stage": {
-      "Launch": 544,
+      "Launch": 545,
       "Final Close": 373,
       "First Close": 218,
       "Interim Close": 24,
@@ -64390,7 +64450,7 @@
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-07-31"
+      "latest": "2026-08-03"
     }
   }
 }
