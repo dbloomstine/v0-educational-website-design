@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-06T10:05:28.966675Z",
+  "generated_at": "2026-08-07T10:05:37.215547Z",
   "funds": [
     {
       "fund_name": "Star Mountain's first US direct lending CFO",
@@ -64671,8 +64671,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-08-06T06:00:27.780728",
-      "last_success": "2026-08-06T06:00:27.780738",
+      "last_fetch": "2026-08-07T06:00:28.420738",
+      "last_success": "2026-08-07T06:00:28.420747",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64681,8 +64681,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-08-06T06:00:25.639915",
-      "last_success": "2026-08-06T06:00:25.639924",
+      "last_fetch": "2026-08-07T06:00:24.670572",
+      "last_success": "2026-08-07T06:00:24.670583",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64721,8 +64721,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-08-06T06:00:35.564253",
-      "last_success": "2026-08-06T06:00:35.564259",
+      "last_fetch": "2026-08-07T06:00:37.085323",
+      "last_success": "2026-08-07T06:00:37.085334",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64731,8 +64731,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-08-06T06:00:07.995617",
-      "last_success": "2026-08-06T06:00:07.995624",
+      "last_fetch": "2026-08-07T06:00:10.867585",
+      "last_success": "2026-08-07T06:00:10.867587",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64741,8 +64741,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-08-06T06:00:05.401961",
-      "last_success": "2026-08-06T06:00:05.401963",
+      "last_fetch": "2026-08-07T06:00:07.841495",
+      "last_success": "2026-08-07T06:00:07.841497",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -64751,8 +64751,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-08-06T06:00:24.178000",
-      "last_success": "2026-08-06T06:00:24.178010",
+      "last_fetch": "2026-08-07T06:00:23.197490",
+      "last_success": "2026-08-07T06:00:23.197500",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64761,8 +64761,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-08-06T06:00:09.722279",
-      "last_success": "2026-08-06T06:00:09.722282",
+      "last_fetch": "2026-08-07T06:00:12.724356",
+      "last_success": "2026-08-07T06:00:12.724363",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -64771,8 +64771,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-08-06T06:00:32.103801",
-      "last_success": "2026-08-06T06:00:32.103812",
+      "last_fetch": "2026-08-07T06:00:32.740127",
+      "last_success": "2026-08-07T06:00:32.740137",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64781,8 +64781,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-08-06T06:00:11.465805",
-      "last_success": "2026-08-06T06:00:11.465813",
+      "last_fetch": "2026-08-07T06:00:14.772377",
+      "last_success": "2026-08-07T06:00:14.772383",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -64791,8 +64791,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-08-06T06:00:03.871618",
-      "last_success": "2026-08-06T06:00:03.871620",
+      "last_fetch": "2026-08-07T06:00:06.149218",
+      "last_success": "2026-08-07T06:00:06.149220",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -64801,8 +64801,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-08-06T06:00:22.115552",
-      "last_success": "2026-08-06T06:00:22.115567",
+      "last_fetch": "2026-08-07T06:00:21.244497",
+      "last_success": "2026-08-07T06:00:21.244503",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64811,8 +64811,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-08-06T06:00:17.717312",
-      "last_success": "2026-08-06T06:00:17.717323",
+      "last_fetch": "2026-08-07T06:00:18.269864",
+      "last_success": "2026-08-07T06:00:18.269875",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -64821,8 +64821,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-08-06T06:00:06.694131",
-      "last_success": "2026-08-06T06:00:06.694140",
+      "last_fetch": "2026-08-07T06:00:09.291266",
+      "last_success": "2026-08-07T06:00:09.291275",
       "error_count": 0,
       "article_count": 19,
       "last_error": "",
