@@ -122,9 +122,12 @@ const MAX_ARTICLES_PER_RUN = 100;
  * and its articles sit in 'processing' until the 10-minute reclaim. Stopping
  * cleanly instead leaves everything 'pending' for the next tick.
  *
- * 100s against a 120s limit leaves room for the two post-loop cleanup queries.
+ * The route now declares maxDuration = 300 (the Vercel Pro ceiling), so a full
+ * 100-article run fits with room to spare. The budget stays well under it to
+ * leave room for the two post-loop cleanup queries and any batch that runs
+ * unusually long. Keep this in step with maxDuration if that ever changes.
  */
-const RUN_BUDGET_MS = 100_000;
+const RUN_BUDGET_MS = 260_000;
 
 /**
  * Seed estimate for how long one batch takes, replaced by real measurements as

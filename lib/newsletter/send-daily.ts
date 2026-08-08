@@ -48,7 +48,12 @@ export async function sendDailyNewsletter(
   }
 
   // ─── 2. Query articles ────────────────────────────────────────────────────
-  let content = await queryNewsletterArticles(supabase, hoursBack)
+  // Widen the window to cover any gap since the last edition that actually
+  // shipped. Without this a missed day's news is lost permanently — the 26h
+  // window simply moves past it. The 2026-08 outage cost four editions and
+  // roughly 500 articles that no later edition could ever reach.
+  const effectiveHoursBack = await resolveLookback(supabase, editionDate, hoursBack)
+  let content = await queryNewsletterArticles(supabase, effectiveHoursBack)
 
   // Weekend rescue: Saturday/Sunday feeds are quiet, so the standard 26h
   // window routinely produces a thin brief — a 2026-06 performance review
@@ -60,7 +65,7 @@ export async function sendDailyNewsletter(
   // editions), so this backfills cleanly without re-showing cross-day dupes.
   const dayOfWeek = new Date(`${editionDate}T12:00:00-05:00`).getUTCDay()
   const isWeekend = dayOfWeek === 0 || dayOfWeek === 6
-  if (isWeekend && content.totalArticles < 8 && hoursBack < 72) {
+  if (isWeekend && content.totalArticles < 8 && effectiveHoursBack < 72) {
     content = await queryNewsletterArticles(supabase, 72)
   }
 
@@ -226,6 +231,53 @@ export async function sendDailyNewsletter(
     articleCount: content.totalArticles,
     recipientCount: totalSent,
   }
+}
+
+/**
+ * Hard ceiling on the catch-up window. Past a week a "daily" brief is running
+ * stale news, and the reader is better served by moving on.
+ */
+const MAX_CATCHUP_HOURS = 168
+
+/**
+ * Widen the article window to span any gap since the last edition that shipped.
+ *
+ * The standard 26h window assumes yesterday's edition went out. When one
+ * doesn't — an outage, a thin day, a bad deploy — that day's news falls out of
+ * range forever and no later edition can recover it. The 2026-08 credit lapse
+ * cost four editions this way.
+ *
+ * Returns the larger of the requested window and the gap, so an explicit
+ * override (`?hoursBack=120` for a manual catch-up) is never narrowed. Cross-
+ * edition dedup in query-articles is what makes widening safe: anything already
+ * published is suppressed by id and by firm/size fingerprint, so a wider window
+ * surfaces only what was genuinely missed.
+ */
+export async function resolveLookback(
+  supabase: DbClient,
+  editionDate: string,
+  requestedHours: number
+): Promise<number> {
+  const { data } = await supabase
+    .from('newsletter_editions')
+    .select('edition_date')
+    .eq('status', 'sent')
+    .lt('edition_date', editionDate)
+    .order('edition_date', { ascending: false })
+    .limit(1)
+
+  const lastSent = data?.[0]?.edition_date as string | undefined
+  if (!lastSent) return requestedHours
+
+  const gapDays = Math.round(
+    (Date.parse(`${editionDate}T12:00:00Z`) - Date.parse(`${lastSent}T12:00:00Z`)) / 86_400_000
+  )
+  // A 1-day gap is the normal daily cadence — nothing was missed.
+  if (gapDays <= 1) return requestedHours
+
+  // +2h of overlap so articles published near the boundary aren't clipped.
+  const widened = Math.min(gapDays * 24 + 2, MAX_CATCHUP_HOURS)
+  return Math.max(requestedHours, widened)
 }
 
 /**

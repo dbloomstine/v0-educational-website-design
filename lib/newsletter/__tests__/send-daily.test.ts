@@ -1,5 +1,42 @@
 import { describe, it, expect } from 'vitest'
-import { buildSubject } from '../send-daily'
+import { buildSubject, resolveLookback } from '../send-daily'
+
+/** Minimal supabase stub returning the given date as the last 'sent' edition. */
+function dbWithLastSent(lastSent: string | null) {
+  const chain = {
+    select: () => chain,
+    eq: () => chain,
+    lt: () => chain,
+    order: () => chain,
+    limit: () => Promise.resolve({ data: lastSent ? [{ edition_date: lastSent }] : [] }),
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return { from: () => chain } as any
+}
+
+describe('resolveLookback', () => {
+  it('leaves the normal daily cadence alone', async () => {
+    expect(await resolveLookback(dbWithLastSent('2026-08-07'), '2026-08-08', 26)).toBe(26)
+  })
+
+  it('widens to cover a multi-day gap', async () => {
+    // Regression: the 2026-08-04 → 08-08 outage. The next edition ran a 26h
+    // window and could never reach the four days of news it had missed.
+    expect(await resolveLookback(dbWithLastSent('2026-08-04'), '2026-08-09', 26)).toBe(5 * 24 + 2)
+  })
+
+  it('never narrows an explicit override', async () => {
+    expect(await resolveLookback(dbWithLastSent('2026-08-07'), '2026-08-08', 120)).toBe(120)
+  })
+
+  it('caps the catch-up window at a week', async () => {
+    expect(await resolveLookback(dbWithLastSent('2026-05-01'), '2026-08-08', 26)).toBe(168)
+  })
+
+  it('falls back to the requested window with no prior edition', async () => {
+    expect(await resolveLookback(dbWithLastSent(null), '2026-08-08', 26)).toBe(26)
+  })
+})
 
 function group(category: string, articles: Array<Record<string, unknown>>) {
   return {
