@@ -4,6 +4,7 @@ import {
   priorFundEvent,
   matchesPriorFundEvent,
   capPerFirm,
+  isLpCommitment,
   isLikelyAumLeak,
   FUND_SIZE_SANITY_CEILING_MILLIONS,
   deduplicateAcrossSections,
@@ -260,6 +261,46 @@ describe('extended fund-event lookback (relative size matching)', () => {
     expect(priorFundEvent(null, 'fund_close', 900)).toBeNull()
     expect(priorFundEvent('', 'fund_close', 900)).toBeNull()
     expect(matchesPriorFundEvent(null, [prior('Acme Capital', 'fund_close', 900)])).toBe(false)
+  })
+})
+
+describe('isLpCommitment — compound pension acronyms', () => {
+  const lp = (firmName: string, title = '') =>
+    isLpCommitment(makeArticle({ firmName, title, eventType: 'capital_raise' }))
+
+  it('recognizes acronyms welded onto a state or city prefix', () => {
+    // Regression 2026-08-08: "NYSTRS sets private debt pacing for 2027" was
+    // classified as Private Equity fund activity and ran as the subject line
+    // with a $1.3B pill — an LP pacing plan presented as a fund close. The
+    // bare \bSTRS\b pattern cannot match inside "NYSTRS".
+    expect(lp('NYSTRS')).toBe(true)
+    expect(lp('OPERS')).toBe(true)
+    expect(lp('MOSERS')).toBe(true)
+    expect(lp('LACERS')).toBe(true)
+    expect(lp('MassPRIM')).toBe(true)
+    expect(lp('STRS Ohio')).toBe(true)
+  })
+
+  it('still recognizes spelled-out and previously-covered names', () => {
+    expect(lp('Arkansas Teacher Retirement System')).toBe(true)
+    expect(lp('CalPERS')).toBe(true)
+    expect(lp('Illinois Teachers')).toBe(true)
+    expect(lp('Texas TRS')).toBe(true)
+  })
+
+  it('does not misread ordinary firm names ending in those letters', () => {
+    // The pattern is case-sensitive precisely to keep these out.
+    expect(lp('Developers Capital')).toBe(false)
+    expect(lp('Helpers Fund')).toBe(false)
+    expect(lp('Vipers Capital')).toBe(false)
+    expect(lp('KKR')).toBe(false)
+    expect(lp('Blackstone')).toBe(false)
+  })
+
+  it('only applies to capital_raise events', () => {
+    expect(
+      isLpCommitment(makeArticle({ firmName: 'NYSTRS', eventType: 'fund_close' }))
+    ).toBe(false)
   })
 })
 

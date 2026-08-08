@@ -233,11 +233,24 @@ const LP_NAME_PATTERNS = [
   /\bSERS\b/,
   /\bPERS\b/,
   /\bCERS\b/,
+  /\bSTRS\b/,
   /\bSJCERA\b/i,
   /\bCalPERS\b/i,
   /\bCalSTRS\b/i,
   /\bTRS\b/,
   /\bLGPS\b/i,
+  // Compound pension acronyms, where the system code is welded onto a state or
+  // city prefix: NYSTRS, OPERS, MOSERS, LACERS. Every bare pattern above misses
+  // these — there is no word boundary inside "NYSTRS" — so they were read as GP
+  // fund activity instead of LP allocations. Observed 2026-08-08: "NYSTRS sets
+  // private debt pacing for 2027" landed in Private Equity carrying a $1.3B
+  // pill and ran as the subject line, presenting an LP pacing plan as a close.
+  //
+  // Case-sensitive on purpose: a case-insensitive version would match ordinary
+  // words ending in these letters ("developers", "helpers"), and every real
+  // pension acronym is upper-case.
+  /\b[A-Z]{1,8}(?:STRS|SERS|PERS|CERS)\b/,
+  /\bMass ?PRIM\b/i,
 ]
 
 export interface NewsletterArticle {
@@ -276,7 +289,7 @@ export interface NewsletterContent {
   articleIds: string[]
 }
 
-function isLpCommitment(article: NewsletterArticle): boolean {
+export function isLpCommitment(article: NewsletterArticle): boolean {
   if (article.eventType !== 'capital_raise') return false
   // Primary path: firm_name is the LP (e.g. "Arkansas Teacher Retirement System")
   if (article.firmName && LP_NAME_PATTERNS.some((p) => p.test(article.firmName!))) {
