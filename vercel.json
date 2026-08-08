@@ -15,6 +15,10 @@
       "schedule": "0 */6 * * *"
     },
     {
+      "path": "/api/pipeline/news-enrich",
+      "schedule": "15 */2 * * *"
+    },
+    {
       "path": "/api/pipeline/news-process",
       "schedule": "30 */2 * * *"
     },
