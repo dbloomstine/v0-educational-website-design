@@ -78,6 +78,7 @@ const CATEGORY_CLASS: Record<string, string> = {
   infrastructure: 'fops-c-infra',
   secondaries: 'fops-c-sec',
   gp_stakes: 'fops-c-gp',
+  emerging_managers: 'fops-c-em',
   lp_commitments: 'fops-c-lp',
   people_moves: 'fops-c-ppl',
   deals: 'fops-c-deals',
@@ -204,6 +205,7 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 .fops-c-infra { border-bottom-color: #0284C7; }
 .fops-c-sec { border-bottom-color: #DB2777; }
 .fops-c-gp { border-bottom-color: #0D9488; }
+.fops-c-em { border-bottom-color: #65A30D; }
 .fops-c-lp { border-bottom-color: ${AMBER}; }
 .fops-c-ppl { border-bottom-color: #8B5CF6; }
 .fops-c-deals { border-bottom-color: #0891B2; }

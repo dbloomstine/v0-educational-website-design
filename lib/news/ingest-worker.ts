@@ -115,13 +115,17 @@ export async function runIngestion(config: IngestionConfig): Promise<IngestionRe
         result.articlesInserted += fr.inserted;
         result.articlesDuplicate += fr.duplicate;
 
-        // Update feed_sources with success
+        // Update feed_sources with success. is_active is set explicitly so a
+        // re-probe of an auto-disabled feed brings it back the moment the
+        // publisher recovers (see FEED_REPROBE_DAYS); it is already true for
+        // every normally-scheduled feed, so this is a no-op in the common case.
         await config.supabase
           .from('feed_sources')
           .update({
             last_fetched_at: new Date().toISOString(),
             last_success_at: new Date().toISOString(),
             consecutive_failures: 0,
+            is_active: true,
             total_articles_ingested: fr.totalIngested,
           })
           .eq('id', feed.id);
@@ -146,14 +150,26 @@ export async function runIngestion(config: IngestionConfig): Promise<IngestionRe
 
 // ─── Get due feeds ──────────────────────────────────────────────────────────
 
+/**
+ * How long a feed auto-disabled by consecutive failures waits before being
+ * re-probed. See getDueFeeds.
+ */
+const FEED_REPROBE_DAYS = 7;
+
 async function getDueFeeds(
   supabase: DbClient,
   tiers?: number[]
 ): Promise<FeedSourceRow[]> {
+  // Disabled feeds are pulled in too, then filtered below. updateFeedFailure
+  // flips is_active off after 3 consecutive failures and nothing ever flipped
+  // it back, so a publisher having a bad afternoon lost us its feed
+  // permanently. A 2026-08 audit found 6 feeds sitting dead this way — all 6
+  // genuinely gone, but only luck made that true rather than the design.
   let query = supabase
     .from('feed_sources')
-    .select('id, name, url, tier, category, fetch_interval_minutes, last_fetched_at, source_type')
-    .eq('is_active', true);
+    .select(
+      'id, name, url, tier, category, fetch_interval_minutes, last_fetched_at, source_type, is_active, consecutive_failures, last_failure_at'
+    );
 
   if (tiers && tiers.length > 0) {
     query = query.in('tier', tiers);
@@ -164,7 +180,23 @@ async function getDueFeeds(
   if (error || !data) return [];
 
   const now = Date.now();
-  return (data as FeedSourceRow[]).filter((feed) => {
+  const reprobeMs = FEED_REPROBE_DAYS * 24 * 60 * 60 * 1000;
+
+  return (data as (FeedSourceRow & {
+    is_active: boolean;
+    consecutive_failures: number | null;
+    last_failure_at: string | null;
+  })[]).filter((feed) => {
+    if (!feed.is_active) {
+      // Only auto-disabled feeds get re-probed. A feed switched off by hand
+      // (failures still at 0) stays off — that was an editorial decision.
+      if ((feed.consecutive_failures ?? 0) < 3) return false;
+      if (!feed.last_failure_at) return false;
+      // Each failed probe refreshes last_failure_at, so a permanently dead
+      // feed costs one request a week rather than one per run.
+      return now - new Date(feed.last_failure_at).getTime() >= reprobeMs;
+    }
+
     if (!feed.last_fetched_at) return true; // Never fetched
     const lastFetch = new Date(feed.last_fetched_at).getTime();
     const intervalMs = feed.fetch_interval_minutes * 60 * 1000;

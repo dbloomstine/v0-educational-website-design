@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import {
   storyFingerprints,
-  closeEventFingerprint,
+  priorFundEvent,
+  matchesPriorFundEvent,
+  capPerFirm,
   isLikelyAumLeak,
   FUND_SIZE_SANITY_CEILING_MILLIONS,
   deduplicateAcrossSections,
@@ -205,40 +207,111 @@ describe('deduplicateAcrossSections', () => {
   })
 })
 
-describe('closeEventFingerprint (extended close/launch lookback)', () => {
-  it('matches the size-bucketed key storyFingerprints emits for the same close', () => {
-    // The extended-window dedup works only if a NEW article (fingerprinted via
-    // storyFingerprints) collides with the strong key stored from an older
-    // edition via closeEventFingerprint. They must agree byte-for-byte.
-    const strong = closeEventFingerprint('Conifer Infrastructure', 'fund_close', 900)
-    expect(strong).not.toBeNull()
-    expect(strong!.endsWith('|fund_close|1000')).toBe(true) // 900 → $1000M band
-    // The new article's full fingerprint set must include the strong key.
-    expect(storyFingerprints('Conifer Infrastructure', null, 'fund_close', 900)).toContain(strong!)
-  })
+describe('extended fund-event lookback (relative size matching)', () => {
+  const prior = (firm: string, evt: string, size: number | null) =>
+    priorFundEvent(firm, evt, size)!
 
   it('catches the Conifer $900M close re-running ~9 editions later', () => {
     // Regression: the same $900M close ran on 6/18 and again as the 6/27
-    // subject line — beyond the 3-edition window. The 14-edition close/launch
-    // window keys both runs to the same fingerprint.
-    const firstRun = closeEventFingerprint('Conifer Infrastructure', 'fund_close', 900)
-    const secondRun = closeEventFingerprint('Conifer Infrastructure', 'fund_close', 900)
-    expect(secondRun).toBe(firstRun)
+    // subject line — beyond the 3-edition window.
+    const published = [prior('Conifer Infrastructure', 'fund_close', 900)]
+    const repeat = priorFundEvent('Conifer Infrastructure', 'fund_close', 900)
+    expect(matchesPriorFundEvent(repeat, published)).toBe(true)
+  })
+
+  it('catches the HarbourVest raise restated at a rounded-down size', () => {
+    // Regression, 2026-07: "$4.75 billion" close on 7/11 and "tops $4B" raise
+    // on 7/16 are the same vehicle. The old $500M buckets put them in the
+    // $5,000M and $4,000M bands respectively, so the repeat sailed through.
+    const published = [prior('HarbourVest', 'fund_close', 4750)]
+    const repeat = priorFundEvent('HarbourVest Partners', 'capital_raise', 4000)
+    expect(matchesPriorFundEvent(repeat, published)).toBe(true)
+  })
+
+  it('treats close, launch and raise as the same underlying event', () => {
+    const published = [prior('Acme Capital', 'fund_close', 1000)]
+    expect(
+      matchesPriorFundEvent(priorFundEvent('Acme Capital', 'capital_raise', 1000), published)
+    ).toBe(true)
+    expect(
+      matchesPriorFundEvent(priorFundEvent('Acme Capital', 'fund_launch', 1000), published)
+    ).toBe(true)
   })
 
   it('keeps a first close and a final close of the same fund distinct by size', () => {
     // A $400M first close followed weeks later by a $900M final close are
-    // genuinely different events and must NOT be collapsed — they land in
-    // different $500M bands.
-    const firstClose = closeEventFingerprint('Acme Capital', 'fund_close', 400) // → 500 band
-    const finalClose = closeEventFingerprint('Acme Capital', 'fund_close', 900) // → 1000 band
-    expect(firstClose).not.toBe(finalClose)
+    // genuinely different events (55% apart) and must NOT be collapsed.
+    const published = [prior('Acme Capital', 'fund_close', 400)]
+    const finalClose = priorFundEvent('Acme Capital', 'fund_close', 900)
+    expect(matchesPriorFundEvent(finalClose, published)).toBe(false)
   })
 
-  it('returns null without a usable firm or size (the recent window covers those)', () => {
-    expect(closeEventFingerprint('Acme Capital', 'fund_close', null)).toBeNull()
-    expect(closeEventFingerprint('Acme Capital', 'fund_close', 0)).toBeNull()
-    expect(closeEventFingerprint(null, 'fund_close', 900)).toBeNull()
-    expect(closeEventFingerprint('', 'fund_close', 900)).toBeNull()
+  it('does not collapse different firms at the same size', () => {
+    const published = [prior('Acme Capital', 'fund_close', 1000)]
+    expect(
+      matchesPriorFundEvent(priorFundEvent('Beta Partners', 'fund_close', 1000), published)
+    ).toBe(false)
+  })
+
+  it('ignores non-fund-activity events and unusable rows', () => {
+    expect(priorFundEvent('Acme Capital', 'executive_hire', 900)).toBeNull()
+    expect(priorFundEvent('Acme Capital', 'fund_close', null)).toBeNull()
+    expect(priorFundEvent('Acme Capital', 'fund_close', 0)).toBeNull()
+    expect(priorFundEvent(null, 'fund_close', 900)).toBeNull()
+    expect(priorFundEvent('', 'fund_close', 900)).toBeNull()
+    expect(matchesPriorFundEvent(null, [prior('Acme Capital', 'fund_close', 900)])).toBe(false)
+  })
+})
+
+describe('capPerFirm', () => {
+  const article = (id: string, firm: string | null, size: number | null) =>
+    ({
+      id,
+      title: `${firm ?? 'Unknown'} story ${id}`,
+      sourceUrl: '', sourceName: 'Test', publishedDate: null,
+      articleType: 'fund_close', eventType: 'fund_close',
+      fundCategories: ['PE'], isHighSignal: false, relevanceScore: 0.5,
+      tldr: null, firmName: firm, firmDomain: null, fundName: null,
+      fundSizeUsdMillions: size, fundStrategy: null, geography: [],
+      personName: null, personTitle: null, alsoCoveredBy: [],
+    }) as NewsletterArticle
+
+  it('keeps at most two stories per firm, highest priority first', () => {
+    const kept = capPerFirm([
+      article('a', 'KKR', 10000),
+      article('b', 'KKR', 5000),
+      article('c', 'KKR', 100),
+      article('d', 'KKR', 50),
+    ])
+    expect(kept).toHaveLength(2)
+    expect(kept.map((a) => a.id)).toEqual(['a', 'b'])
+  })
+
+  it('normalizes firm variants to the same cap bucket', () => {
+    const kept = capPerFirm([
+      article('a', 'HarbourVest', 4750),
+      article('b', 'HarbourVest Partners', 4000),
+      article('c', 'HarbourVest Partners LLC', 900),
+    ])
+    expect(kept).toHaveLength(2)
+  })
+
+  it('never caps articles with no extractable firm', () => {
+    const kept = capPerFirm([
+      article('a', null, 100),
+      article('b', null, 200),
+      article('c', null, 300),
+    ])
+    expect(kept).toHaveLength(3)
+  })
+
+  it('leaves other firms untouched', () => {
+    const kept = capPerFirm([
+      article('a', 'KKR', 10000),
+      article('b', 'KKR', 5000),
+      article('c', 'KKR', 100),
+      article('d', 'Small Manager', 40),
+    ])
+    expect(kept.map((a) => a.id).sort()).toEqual(['a', 'b', 'd'])
   })
 })

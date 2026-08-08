@@ -61,6 +61,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   infrastructure: 'Infrastructure',
   secondaries: 'Secondaries',
   gp_stakes: 'GP Stakes',
+  emerging_managers: 'Emerging Managers',
   lp_commitments: 'LP Commitments',
   people_moves: 'People Moves',
   deals: 'Deals',
@@ -79,26 +80,78 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
   regulatory_action: 'Reg',
 }
 
-/** Minimum fund size in USD millions to include in newsletter (filters noise). */
-const MIN_FUND_SIZE_MILLIONS = 25
+/**
+ * Minimum fund size in USD millions to include in newsletter (filters noise).
+ *
+ * Lowered from 25 to 10 in 2026-08. Debut and emerging-manager vehicles
+ * routinely land in the $10–25M band and the old floor silently deleted every
+ * one of them — a 30-day audit found 7 qualifying fund events dropped here and
+ * zero sub-$25M stories ever published.
+ */
+const MIN_FUND_SIZE_MILLIONS = 10
+
+/**
+ * Fund size at or below which a fund event is routed to Emerging Managers.
+ *
+ * A 30-day audit found the newsletter is not actually *rejecting* small funds
+ * — sub-$100M events had the highest inclusion rate of any size band (24 of 29
+ * ran, vs 90 of 180 for $1B+). The problem is placement: every category
+ * section sorts by size descending, so a $40M debut fund always sits beneath
+ * the megafunds and reads as an afterthought. Half of all published fund
+ * stories were $1B+, and KKR or Blackstone appeared in 19 of ~26 editions.
+ *
+ * Giving these stories their own section is placement, not preference — the
+ * megafund headlines stay exactly where they are.
+ */
+const EMERGING_MANAGER_CEILING_MILLIONS = 250
+
+/**
+ * Cap on stories from a single firm per edition. Without it one firm's news
+ * cycle can occupy several slots — KKR appeared 15 times across 10 editions in
+ * the 30-day audit — crowding out the smaller managers above.
+ */
+const MAX_ARTICLES_PER_FIRM = 2
 
 /** Look back this many recent editions for cross-day firm-level dedup. */
 const CROSS_EDITION_LOOKBACK = 3
 
 /**
- * Extended lookback applied ONLY to fund closes/launches, which are one-time
- * events that should never reappear. A 2026-06 review caught Conifer
- * Infrastructure's $900M close running on 6/18 and again 9 editions later as
- * the 6/27 subject line — well beyond the 3-edition window. For these event
- * types we suppress on the *size-bucketed* fingerprint only (firm|event|size),
- * so a genuinely distinct event at a different size — e.g. a $400M first close
- * followed weeks later by a $900M final close of the same fund — is NOT
- * collapsed. The bare firm|fund key is intentionally left to the 3-edition
- * window so legitimate follow-on news isn't lost.
+ * Extended lookback for fund-activity events, which are one-time happenings
+ * that should never reappear. A 2026-06 review caught Conifer Infrastructure's
+ * $900M close running on 6/18 and again 9 editions later as the 6/27 subject
+ * line — well beyond the 3-edition window.
  */
 const EXTENDED_CLOSE_LOOKBACK = 14
 
-const EXTENDED_FINGERPRINT_TYPES = new Set(['fund_close', 'fund_launch'])
+/**
+ * Event types treated as one underlying "a fund raised money" event for
+ * extended-window suppression.
+ *
+ * capital_raise is included deliberately. Outlets describe a single raise
+ * inconsistently — one writes "closes $4.75B fund" (fund_close), another
+ * "raises $4.75B" (capital_raise) — and the classifier faithfully mirrors
+ * whichever verb it sees. Keying on the raw event type therefore let the same
+ * raise through twice. Real case, 2026-07: HarbourVest's $4.75B co-investment
+ * vehicle ran on 7/11 as a fund_close and again on 7/16 as a capital_raise.
+ */
+const EXTENDED_FINGERPRINT_TYPES = new Set(['fund_close', 'fund_launch', 'capital_raise'])
+
+/**
+ * Relative tolerance for matching a candidate against a fund event already
+ * published in the extended window.
+ *
+ * This replaced a $500M-bucketed hash key, which failed on exactly the case it
+ * existed to catch. Bucket edges are absolute, so the same HarbourVest vehicle
+ * reported as "$4.75 billion" (→ $5,000M band) and later as "tops $4B" (→
+ * $4,000M band) hashed to different keys and evaded suppression, even though
+ * the figures are 16% apart and obviously the same raise.
+ *
+ * A relative comparison has no edges. 25% is wide enough to absorb rounding,
+ * currency drift and vague restatement, and still narrow enough to preserve
+ * the distinction the buckets were protecting: a $400M first close and a $900M
+ * final close of the same fund are 55% apart and stay separate stories.
+ */
+const EXTENDED_SIZE_TOLERANCE = 0.25
 
 /**
  * Source tier ranking for picking the best article per story.
@@ -276,7 +329,7 @@ export async function queryNewsletterArticles(
 
   // ─── Fetch prior editions' article IDs + firm/fund fingerprints ────────
   const priorExclusions = opts.excludePriorEdition === false
-    ? { ids: new Set<string>(), fingerprints: new Set<string>() }
+    ? { ids: new Set<string>(), fingerprints: new Set<string>(), priorEvents: [] as PriorFundEvent[] }
     : await getPriorEditionExclusions(supabase)
 
   const { data: rows, error } = await supabase
@@ -337,6 +390,16 @@ export async function queryNewsletterArticles(
 
   // ─── Cross-edition fingerprint dedup ───────────────────────────────────
   const afterCrossDay = deduped.filter((a) => {
+    // Extended window: same firm, same-sized fund event within ~25%.
+    if (
+      matchesPriorFundEvent(
+        priorFundEvent(a.firmName, a.eventType, a.fundSizeUsdMillions),
+        priorExclusions.priorEvents
+      )
+    ) {
+      return false
+    }
+    // Recent window: exact fingerprint keys.
     const fps = storyFingerprints(a.firmName, a.fundName, a.eventType, a.fundSizeUsdMillions)
     if (fps.length === 0) return true
     return !fps.some((fp) => priorExclusions.fingerprints.has(fp))
@@ -353,20 +416,37 @@ export async function queryNewsletterArticles(
     return a.fundSizeUsdMillions >= MIN_FUND_SIZE_MILLIONS
   })
 
+  // ─── Per-firm cap ──────────────────────────────────────────────────────
+  // Applied before sectioning so a single firm's news cycle can't consume
+  // slots across several sections at once.
+  const firmCapped = capPerFirm(sizeFiltered)
+
   // ─── Split into sections ───────────────────────────────────────────────
-  const lpCommitments = sizeFiltered.filter(isLpCommitment)
+  const lpCommitments = firmCapped.filter(isLpCommitment)
   const lpIds = new Set(lpCommitments.map((a) => a.id))
-  const fundActivity = sizeFiltered.filter(
+  const allFundActivity = firmCapped.filter(
     (a) => FUND_ACTIVITY_TYPES.includes(a.eventType ?? '') && !lpIds.has(a.id)
   )
-  const peopleMoves = sizeFiltered.filter((a) => PEOPLE_TYPES.includes(a.eventType ?? ''))
-  const deals = sizeFiltered.filter((a) => DEALS_TYPES.includes(a.eventType ?? ''))
-  const regulatory = sizeFiltered.filter((a) => REGULATORY_TYPES.includes(a.eventType ?? ''))
+
+  // Emerging managers are pulled out of the category groups entirely — see
+  // EMERGING_MANAGER_CEILING_MILLIONS. Only sized events qualify; an unsized
+  // fund event could be any size and stays in its asset-class section.
+  const emergingManagers = allFundActivity.filter(
+    (a) =>
+      a.fundSizeUsdMillions != null &&
+      a.fundSizeUsdMillions <= EMERGING_MANAGER_CEILING_MILLIONS
+  )
+  const emergingIds = new Set(emergingManagers.map((a) => a.id))
+  const fundActivity = allFundActivity.filter((a) => !emergingIds.has(a.id))
+  const peopleMoves = firmCapped.filter((a) => PEOPLE_TYPES.includes(a.eventType ?? ''))
+  const deals = firmCapped.filter((a) => DEALS_TYPES.includes(a.eventType ?? ''))
+  const regulatory = firmCapped.filter((a) => REGULATORY_TYPES.includes(a.eventType ?? ''))
 
   const sortByPriority = (arr: NewsletterArticle[]) =>
     [...arr].sort((a, b) => articlePriorityScore(b) - articlePriorityScore(a))
 
   const cappedFundActivity = sortByPriority(fundActivity).slice(0, 30)
+  const cappedEmerging = sortByPriority(emergingManagers).slice(0, 8)
   const cappedLp = sortByPriority(lpCommitments).slice(0, 6)
   const cappedPeople = sortByPriority(peopleMoves).slice(0, 5)
   const cappedDeals = sortByPriority(deals).slice(0, 5)
@@ -399,6 +479,14 @@ export async function queryNewsletterArticles(
       label: CATEGORY_LABELS[cat] ?? cat,
       articles: grouped[cat],
     }))
+
+  if (cappedEmerging.length > 0) {
+    groups.push({
+      category: 'emerging_managers',
+      label: CATEGORY_LABELS.emerging_managers,
+      articles: cappedEmerging,
+    })
+  }
 
   if (cappedLp.length > 0) {
     groups.push({
@@ -444,6 +532,39 @@ export async function queryNewsletterArticles(
     totalArticles: includedIds.size,
     articleIds: Array.from(includedIds),
   }
+}
+
+// ─── Per-firm cap ───────────────────────────────────────────────────────────
+
+/**
+ * Keep at most MAX_ARTICLES_PER_FIRM stories per firm, highest priority first.
+ *
+ * These are distinct stories that survived dedup, so this is an editorial
+ * choice rather than a correctness fix: on a day when one firm does four
+ * newsworthy things, the brief covers its two biggest and gives the rest of
+ * the space to other managers. Articles with no extractable firm are never
+ * capped — they'd all collide on the empty key.
+ */
+export function capPerFirm(articles: NewsletterArticle[]): NewsletterArticle[] {
+  const ranked = [...articles].sort(
+    (a, b) => articlePriorityScore(b) - articlePriorityScore(a)
+  )
+  const seen = new Map<string, number>()
+  const kept: NewsletterArticle[] = []
+
+  for (const article of ranked) {
+    const firm = normalizeFirmName(article.firmName)
+    if (!firm) {
+      kept.push(article)
+      continue
+    }
+    const count = seen.get(firm) ?? 0
+    if (count >= MAX_ARTICLES_PER_FIRM) continue
+    seen.set(firm, count + 1)
+    kept.push(article)
+  }
+
+  return kept
 }
 
 // ─── Cross-section dedup ────────────────────────────────────────────────────
@@ -600,25 +721,45 @@ export function storyFingerprints(
   return out
 }
 
+/** A fund-activity event already published in the extended lookback window. */
+export interface PriorFundEvent {
+  firm: string
+  sizeMillions: number
+}
+
 /**
- * The single "strong" fingerprint used for the EXTENDED_CLOSE_LOOKBACK window:
- * `firm|event|size-bucket`. Matches the size-bucketed key that storyFingerprints
- * emits, so a new fund close collides with the same firm/event/size from up to
- * 14 editions ago (the Conifer repeat) — but a different size does not (a $400M
- * first close vs a $900M final close stay distinct). Returns null when there's
- * no firm or no usable size, in which case the recent 3-edition window still
- * applies via storyFingerprints.
+ * Build the extended-window record for one article, or null if it can't
+ * participate (no firm, no usable size, or not a fund-activity event).
  */
-export function closeEventFingerprint(
+export function priorFundEvent(
   firmName: string | null,
   eventType: string | null,
   fundSizeUsdMillions: number | null
-): string | null {
+): PriorFundEvent | null {
+  if (!EXTENDED_FINGERPRINT_TYPES.has(eventType ?? '')) return null
   const firm = normalizeFirmName(firmName)
   if (!firm) return null
   if (!fundSizeUsdMillions || fundSizeUsdMillions <= 0) return null
-  const bucket = Math.round(fundSizeUsdMillions / 500) * 500
-  return `${firm}|${eventType ?? ''}|${bucket}`
+  return { firm, sizeMillions: fundSizeUsdMillions }
+}
+
+/**
+ * True when a candidate repeats a fund event already published in the extended
+ * window — same firm, and a size within EXTENDED_SIZE_TOLERANCE.
+ *
+ * Event type is intentionally not compared: close/launch/raise are the same
+ * underlying event wearing different verbs (see EXTENDED_FINGERPRINT_TYPES).
+ */
+export function matchesPriorFundEvent(
+  candidate: PriorFundEvent | null,
+  priorEvents: PriorFundEvent[]
+): boolean {
+  if (!candidate) return false
+  return priorEvents.some(
+    (prior) =>
+      prior.firm === candidate.firm &&
+      fundSizesMatch(prior.sizeMillions, candidate.sizeMillions, EXTENDED_SIZE_TOLERANCE)
+  )
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -640,7 +781,7 @@ function extractFingerprintFields(row: any): {
 
 async function getPriorEditionExclusions(
   supabase: DbClient
-): Promise<{ ids: Set<string>; fingerprints: Set<string> }> {
+): Promise<{ ids: Set<string>; fingerprints: Set<string>; priorEvents: PriorFundEvent[] }> {
   // Pull the extended window once (newest first). The most recent
   // CROSS_EDITION_LOOKBACK editions contribute full fingerprints + the
   // exact-id exclusion; the older editions in the window contribute only the
@@ -686,10 +827,14 @@ async function getPriorEditionExclusions(
     }
   }
 
-  // Extended window: only fund closes/launches, only the strong size key.
-  const extendedOnly = Array.from(extendedIds).filter((id) => !recentIds.has(id))
-  for (let i = 0; i < extendedOnly.length; i += 200) {
-    const chunk = extendedOnly.slice(i, i + 200)
+  // Extended window: fund-activity events, compared by relative size rather
+  // than a hashed bucket (see EXTENDED_SIZE_TOLERANCE). Every article in the
+  // window contributes, including those in the recent slice — a repeat two
+  // editions later should be caught by size as well as by exact id.
+  const allWindowIds = Array.from(new Set([...recentIds, ...extendedIds]))
+  const priorEvents: PriorFundEvent[] = []
+  for (let i = 0; i < allWindowIds.length; i += 200) {
+    const chunk = allWindowIds.slice(i, i + 200)
     const { data: rowsData } = await supabase
       .from('news_items')
       .select('article_type, event_type, extracted_data, entities_raw')
@@ -698,12 +843,12 @@ async function getPriorEditionExclusions(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     for (const row of (rowsData ?? []) as any[]) {
       const { firmName, fundSize, eventType } = extractFingerprintFields(row)
-      const fp = closeEventFingerprint(firmName, eventType, fundSize)
-      if (fp) fingerprints.add(fp)
+      const evt = priorFundEvent(firmName, eventType, fundSize)
+      if (evt) priorEvents.push(evt)
     }
   }
 
-  return { ids, fingerprints }
+  return { ids, fingerprints, priorEvents }
 }
 
 // ─── Article priority scoring for cap ───────────────────────────────────────
