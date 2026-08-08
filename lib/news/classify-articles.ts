@@ -37,7 +37,34 @@ type DbClient = SupabaseClient<any, any>;
 export interface ClassificationResult {
   articlesProcessed: number;
   articlesFailed: number;
+  /** True when the run aborted because the Claude API itself was unreachable. */
+  apiOutage: boolean;
+  /** Articles returned to 'pending' by an outage abort (no attempts burned). */
+  articlesDeferred: number;
+  /** Articles resurrected from a terminal 'failed' state by the recovery sweep. */
+  articlesRecovered: number;
   errors: string[];
+}
+
+/**
+ * Raised when the Claude API could not be reached or refused the request
+ * (credit exhaustion, bad key, rate limit, 5xx, network error).
+ *
+ * The distinction from a content-level failure is load-bearing. A 2026-08-04
+ * credit lapse ran for four days: every batch threw, markFailed() burned all
+ * three attempts on each article, and 510 articles landed in the terminal
+ * 'failed' state — which nothing in the codebase ever resets. The newsletter
+ * then skipped four consecutive editions with "No qualifying articles found".
+ *
+ * An API-level failure says nothing about the article, so it must never
+ * consume an attempt. It aborts the run instead, leaving everything 'pending'
+ * for the next cron tick.
+ */
+class ClassifierApiError extends Error {
+  constructor(message: string, readonly status: number | null) {
+    super(message);
+    this.name = 'ClassifierApiError';
+  }
 }
 
 interface ArticleForClassification {
@@ -163,8 +190,15 @@ export async function classifyPendingArticles(
   const result: ClassificationResult = {
     articlesProcessed: 0,
     articlesFailed: 0,
+    apiOutage: false,
+    articlesDeferred: 0,
+    articlesRecovered: 0,
     errors: [],
   };
+
+  // ─── Recovery sweep: resurrect articles stranded by a past outage ────────
+  // Runs before the main pass so recovered articles join this run's queue.
+  result.articlesRecovered = await recoverStrandedArticles(supabase);
 
   // Fetch pending articles
   const { data: pending, error: fetchError } = await supabase
@@ -178,15 +212,20 @@ export async function classifyPendingArticles(
     return result;
   }
 
+  let consecutiveBatchFailures = 0;
+
   // Process in batches
   for (let i = 0; i < pending.length; i += BATCH_SIZE) {
     const batch = pending.slice(i, i + BATCH_SIZE) as ArticleForClassification[];
 
     // Mark batch as processing
     const batchIds = batch.map((a) => a.id);
+    // updated_at is stamped here so the >10min stuck-in-'processing' reclaim
+    // below measures time since the batch actually started, not since the row
+    // was last touched by something else.
     await supabase
       .from('news_items')
-      .update({ classification_status: 'processing' })
+      .update({ classification_status: 'processing', updated_at: new Date().toISOString() })
       .in('id', batchIds);
 
     try {
@@ -250,15 +289,41 @@ export async function classifyPendingArticles(
         }
       }
     } catch (error) {
-      // Batch failed — mark all as failed but increment attempts (allow retry)
+      const message = error instanceof Error ? error.message : 'Unknown';
+      result.errors.push(`Batch ${i}-${i + batch.length}: ${message}`);
+
+      if (error instanceof ClassifierApiError) {
+        // The API is down, not the articles. Hand the batch back to 'pending'
+        // untouched and stop the run — every remaining batch would fail the
+        // same way, and burning attempts is what stranded 510 articles during
+        // the 2026-08 outage.
+        await supabase
+          .from('news_items')
+          .update({ classification_status: 'pending', updated_at: new Date().toISOString() })
+          .in('id', batchIds);
+
+        result.articlesDeferred += batch.length;
+        result.apiOutage = true;
+        break;
+      }
+
+      // Content-level failure (unparseable response): burn an attempt.
       for (const article of batch) {
         await markFailed(supabase, article.id);
       }
       result.articlesFailed += batch.length;
-      result.errors.push(
-        `Batch ${i}-${i + batch.length}: ${error instanceof Error ? error.message : 'Unknown'}`
-      );
+      consecutiveBatchFailures++;
+
+      // Circuit breaker — if the model is returning garbage for every batch,
+      // that is systemic too. Stop before chewing through the whole backlog.
+      if (consecutiveBatchFailures >= 3) {
+        result.errors.push('Aborting run: 3 consecutive batch failures');
+        break;
+      }
+      continue;
     }
+
+    consecutiveBatchFailures = 0;
   }
 
   // ─── Post-classification cleanup: reset stuck 'processing' articles ──────
@@ -300,7 +365,9 @@ async function classifyBatch(
     source: a.source_name,
   }));
 
-  const response = await fetch(ANTHROPIC_API_URL, {
+  let response: Response;
+  try {
+    response = await fetch(ANTHROPIC_API_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -329,11 +396,21 @@ async function classifyBatch(
         },
       ],
     }),
-  });
+    });
+  } catch (err) {
+    // DNS / TLS / socket failure — never the article's fault.
+    throw new ClassifierApiError(
+      `Claude API unreachable: ${err instanceof Error ? err.message : String(err)}`,
+      null
+    );
+  }
 
   if (!response.ok) {
     const body = await response.text();
-    throw new Error(`Claude API ${response.status}: ${body.slice(0, 200)}`);
+    throw new ClassifierApiError(
+      `Claude API ${response.status}: ${body.slice(0, 200)}`,
+      response.status
+    );
   }
 
   const data = (await response.json()) as {
@@ -361,6 +438,48 @@ async function classifyBatch(
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
+
+/**
+ * Return recently-failed articles to the queue.
+ *
+ * 'failed' was a one-way door: markFailed() sets it at 3 attempts and no code
+ * path ever set it back. Any transient upstream problem therefore became
+ * permanent data loss — the 2026-08 credit lapse buried 510 articles, four
+ * days of news that could never reach the newsletter or the site feed.
+ *
+ * Attempts are deliberately NOT reset. An article gets ~3 extra tries across
+ * later runs and then stays terminal, so genuinely unclassifiable content
+ * (garbled encoding, empty body) can't loop forever. The RECOVERY_LIMIT keeps
+ * a large backlog from crowding freshly-ingested articles out of the run.
+ */
+const RECOVERY_ATTEMPT_CEILING = 6;
+const RECOVERY_WINDOW_DAYS = 7;
+const RECOVERY_LIMIT = 50;
+
+async function recoverStrandedArticles(supabase: DbClient): Promise<number> {
+  const since = new Date(
+    Date.now() - RECOVERY_WINDOW_DAYS * 24 * 60 * 60 * 1000
+  ).toISOString();
+
+  const { data: stranded } = await supabase
+    .from('news_items')
+    .select('id')
+    .eq('classification_status', 'failed')
+    .lt('processing_attempts', RECOVERY_ATTEMPT_CEILING)
+    .gte('created_at', since)
+    .order('created_at', { ascending: false })
+    .limit(RECOVERY_LIMIT);
+
+  if (!stranded || stranded.length === 0) return 0;
+
+  const ids = stranded.map((a) => a.id as string);
+  const { error } = await supabase
+    .from('news_items')
+    .update({ classification_status: 'pending', updated_at: new Date().toISOString() })
+    .in('id', ids);
+
+  return error ? 0 : ids.length;
+}
 
 async function markFailed(supabase: DbClient, articleId: string): Promise<void> {
   // Get current attempts

@@ -178,7 +178,23 @@ export function isSameStory(a: StoryCandidate, b: StoryCandidate): boolean {
   // at the same firm are different stories (e.g. Apollo Infrastructure vs
   // Apollo Credit closing on the same day) and must never dedup together.
   if (fundA.length > 0 && fundB.length > 0) {
-    return fundA === fundB
+    if (fundA === fundB) return true
+
+    // ...unless the sizes are all but identical. This branch used to return
+    // false unconditionally, which let the same story run twice in one
+    // edition whenever two outlets named the vehicle differently. Real case,
+    // 2026-07-11: "HarbourVest Closes $4.75 Billion Co-Investment Fund" and
+    // "HarbourVest Partners Raises $4.75 Billion for Seventh Direct
+    // Co-Investment Program" both shipped — same firm, same $4,750M, but the
+    // extracted fund names differed so the hard return fired.
+    //
+    // The tolerance is deliberately tighter (2%) than the general size match
+    // (10%): two genuinely distinct funds from one firm landing within 2% of
+    // each other on the same day is essentially unheard of, while classifier
+    // naming variance on one story is routine.
+    if (fundSizesMatch(a.fundSizeUsdMillions, b.fundSizeUsdMillions, 0.02)) return true
+
+    return false
   }
 
   // Same firm, at most one has a fund name. Fall back to size tolerance

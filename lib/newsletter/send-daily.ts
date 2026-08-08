@@ -11,6 +11,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles, isLikelyAumLeak } from './query-articles'
 import { renderNewsletterEmail } from './email-template'
+import { sendPipelineAlert } from '@/lib/pipeline/alert'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>
@@ -78,6 +79,11 @@ export async function sendDailyNewsletter(
       status: 'skipped',
       error_message: 'No qualifying articles found',
     }, { onConflict: 'edition_date' })
+
+    // A skip reads as a quiet news day, which is why the 2026-08 outage went
+    // four editions unnoticed. Diagnose the likely cause before alerting so
+    // the email says which of the two very different problems this is.
+    await alertOnSkip(supabase, editionDate)
 
     return { ok: true, skipped: 'insufficient_articles', editionDate, articleCount: content.totalArticles }
   }
@@ -220,6 +226,55 @@ export async function sendDailyNewsletter(
     articleCount: content.totalArticles,
     recipientCount: totalSent,
   }
+}
+
+/**
+ * Alert on a skipped edition, distinguishing the two causes that look
+ * identical from the outside.
+ *
+ * A skip means "nothing qualified". That is either a genuinely thin news day
+ * (fine, happens on holidays and some Sundays) or the classifier is dead and
+ * every article is stuck unclassified (not fine — four editions were lost to
+ * this in 2026-08). The counts below tell them apart, so the email names the
+ * actual problem instead of making Danny go look.
+ */
+async function alertOnSkip(supabase: DbClient, editionDate: string): Promise<void> {
+  const since = new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString()
+
+  const counts: Record<string, number> = {}
+  for (const status of ['complete', 'failed', 'pending', 'processing']) {
+    const { count } = await supabase
+      .from('news_items')
+      .select('id', { count: 'exact', head: true })
+      .eq('classification_status', status)
+      .gte('created_at', since)
+    counts[status] = count ?? 0
+  }
+
+  const ingested = counts.complete + counts.failed + counts.pending + counts.processing
+  const classifierBroken = ingested > 0 && counts.complete === 0
+
+  const lines = classifierBroken
+    ? [
+        `No edition sent for ${editionDate} — and this is NOT a quiet news day.`,
+        `${ingested} articles were ingested in the last 26h but ZERO were classified successfully.`,
+        `Unclassified: ${counts.failed} failed, ${counts.pending} pending, ${counts.processing} processing.`,
+        'That points at the classifier: check the Anthropic credit balance and ANTHROPIC_API_KEY first.',
+      ]
+    : [
+        `No edition sent for ${editionDate}.`,
+        `Classification looks healthy (${counts.complete} articles classified in the last 26h) — nothing cleared the newsletter quality bar.`,
+        'Probably a genuinely thin news day, but worth a look if it repeats.',
+      ]
+
+  await sendPipelineAlert(
+    supabase,
+    'newsletter_skipped',
+    classifierBroken
+      ? 'Newsletter skipped — classifier appears down'
+      : 'Newsletter skipped — no qualifying articles',
+    lines
+  )
 }
 
 /**
