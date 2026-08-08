@@ -107,6 +107,31 @@ interface ClassificationOutput {
 
 const BATCH_SIZE = 15;
 const MAX_ARTICLES_PER_RUN = 100;
+
+/**
+ * Wall-clock budget for one run, in ms.
+ *
+ * The route declares maxDuration = 120s. A measured batch of 15 articles takes
+ * ~20s, so a full 100-article run needs ~141s and would be killed mid-flight.
+ * That had never happened in practice — normal ingest is ~130 articles/day, so
+ * a 2-hourly run only ever saw ~11 and the observed ceiling was 45 — but the
+ * 480-article backlog from the 2026-08 outage is the first time the cap is
+ * actually reachable.
+ *
+ * A killed run is not just slow: the in-flight batch is billed and thrown away,
+ * and its articles sit in 'processing' until the 10-minute reclaim. Stopping
+ * cleanly instead leaves everything 'pending' for the next tick.
+ *
+ * 100s against a 120s limit leaves room for the two post-loop cleanup queries.
+ */
+const RUN_BUDGET_MS = 100_000;
+
+/**
+ * Seed estimate for how long one batch takes, replaced by real measurements as
+ * the run proceeds. Deliberately above the ~20s observed so the first
+ * stop-or-continue decision errs toward stopping.
+ */
+const INITIAL_BATCH_ESTIMATE_MS = 25_000;
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 
 const SYSTEM_PROMPT = `You are classifying news articles about investment funds and alternative asset management for a professional intelligence database used by business development professionals.
@@ -213,10 +238,23 @@ export async function classifyPendingArticles(
   }
 
   let consecutiveBatchFailures = 0;
+  const runStart = Date.now();
+  let slowestBatchMs = INITIAL_BATCH_ESTIMATE_MS;
 
   // Process in batches
   for (let i = 0; i < pending.length; i += BATCH_SIZE) {
+    // Stop before starting a batch we probably can't finish (see
+    // RUN_BUDGET_MS). Leftovers stay 'pending' and the next tick picks them up.
+    if (Date.now() - runStart + slowestBatchMs > RUN_BUDGET_MS) {
+      result.articlesDeferred += pending.length - i;
+      result.errors.push(
+        `Stopped at ${i}/${pending.length} to stay inside the run budget; remainder stays pending`
+      );
+      break;
+    }
+
     const batch = pending.slice(i, i + BATCH_SIZE) as ArticleForClassification[];
+    const batchStart = Date.now();
 
     // Mark batch as processing
     const batchIds = batch.map((a) => a.id);
@@ -324,6 +362,7 @@ export async function classifyPendingArticles(
     }
 
     consecutiveBatchFailures = 0;
+    slowestBatchMs = Math.max(slowestBatchMs, Date.now() - batchStart);
   }
 
   // ─── Post-classification cleanup: reset stuck 'processing' articles ──────
