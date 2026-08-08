@@ -122,10 +122,19 @@ function rssItemToArticle(
     title = title.replace(/\s*[-–—]\s*[^-–—]+$/, '').trim() || title;
   }
 
+  // Prefer <content:encoded> over <description>. WordPress-backed feeds put the
+  // full post body in content:encoded and only a teaser (often nothing) in
+  // description. Measured 2026-08: Private Equity Wire ships 7,442 chars in
+  // content:encoded against 0 in description, Hedge Week 3,075 against 0 —
+  // roughly 25x the text we were storing, already in the feed and discarded at
+  // the parser. Falls back to description for feeds that only send a summary.
+  const encoded = stripHtml(String(item['content:encoded'] ?? ''));
+  const described = stripHtml(String(item.description ?? ''));
+
   return {
     title,
     link: String(item.link ?? ''),
-    description: stripHtml(String(item.description ?? '')),
+    description: encoded.length > described.length ? encoded : described,
     pubDate: parseDate(item.pubDate),
     sourceName: resolvedSource,
   };
