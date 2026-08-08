@@ -4,7 +4,12 @@ import { isAuthorizedPipelineRequest } from '@/lib/pipeline/auth'
 import { classifyPendingArticles } from '@/lib/news/classify-articles'
 import { sendPipelineAlert } from '@/lib/pipeline/alert'
 
-export const maxDuration = 120
+// 300s is the Vercel Pro ceiling for Node functions. A measured 15-article
+// batch takes ~20s, so the 100-article cap needs ~141s — that did not fit in
+// the previous 120s, and runs would have been killed mid-flight once the
+// backlog made the cap reachable. RUN_BUDGET_MS in classify-articles tracks
+// this value; change both together.
+export const maxDuration = 300
 
 export async function GET(req: Request) {
   if (!isAuthorizedPipelineRequest(req)) {
