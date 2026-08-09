@@ -209,6 +209,25 @@ async function enrichOne(
 
   const host = url.hostname.replace(/^www\./, '');
 
+  // Google News RSS items store a news.google.com redirect rather than the
+  // publisher's URL. resolveGoogleNewsUrl in the ingest worker is meant to
+  // convert these, but Google changed the scheme: the page is now ~591KB of
+  // JavaScript with the destination behind a batchexecute POST, and none of the
+  // three patterns that resolver matches (data-n-au, meta refresh,
+  // location.replace) appear. It silently returns the original URL.
+  //
+  // Fetching one costs a 591KB download and yields a single <p> tag. Measured
+  // 2026-08-09: 154 of 217 enrichment attempts — 71% of every cycle — were
+  // spent this way. Skip them; they can never produce an article body.
+  //
+  // These stories still reach the newsletter, summarised from their headline.
+  // The durable fix is a direct RSS feed for any publisher whose full text is
+  // worth having, not reverse-engineering Google's redirect scheme.
+  if (host === 'news.google.com') {
+    await markEnriched(supabase, article.id, null, 'google news redirect — no article to fetch');
+    return 'skipped';
+  }
+
   if (PAYWALLED_HOSTS.has(host)) {
     await markEnriched(supabase, article.id, null, 'paywalled publisher — not requested');
     return 'skipped';
