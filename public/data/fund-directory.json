@@ -1,6 +1,175 @@
 {
-  "generated_at": "2026-08-12T16:18:08.523205Z",
+  "generated_at": "2026-08-13T10:13:23.750528Z",
   "funds": [
+    {
+      "fund_name": "Venture Opportunity Fund II",
+      "firm": "Mirae Asset",
+      "firm_slug": "mirae-asset",
+      "amount": "Rs 1,125 Cr",
+      "amount_usd_millions": 1350.0,
+      "category": "Venture Capital",
+      "location": "Seoul, South Korea",
+      "city": "Seoul",
+      "state": "",
+      "country": "South Korea",
+      "stage": "First Close",
+      "announcement_date": "2026-08-13",
+      "source_url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNR3pjRzdlV3R0N2Z2WHFsejQ3ZVkzOXVadlA1SDBrY0cycjBMWVZkUHBUdnNRcGU5Rng5MWNNbmVveVM5OG5KMlljZHVraFNUOU53MjA4NkRldVhnMm5EZ2ZwZEJvRWFpdmVfd0tUTENrWHFabzlucVdtdkE2UVh0c0h3R1lJTUVFQ2dreUZR?oc=5",
+      "source_name": "Yourstory",
+      "description_notes": "close a second venture fund targeting Indian startups with Rs 1,125 crore ($135M+), building on Mirae Asset's established presence in early-stage tech and consumer investing across South Asia. The fund maintains the firm's thesis around high-growth opportunities in India's digital economy, with anchor backing from the Seoul-based asset manager's global LP base. Venture Opportunity Fund II represents continued conviction in the Indian market following the debut vintage.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-13T10:01:19",
+      "articles": [
+        {
+          "title": "Mirae Asset\u2019s MAVI raises Rs 1,125 Cr in first close of Venture Opportunity Fund II - YourStory.com",
+          "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNR3pjRzdlV3R0N2Z2WHFsejQ3ZVkzOXVadlA1SDBrY0cycjBMWVZkUHBUdnNRcGU5Rng5MWNNbmVveVM5OG5KMlljZHVraFNUOU53MjA4NkRldVhnMm5EZ2ZwZEJvRWFpdmVfd0tUTENrWHFabzlucVdtdkE2UVh0c0h3R1lJTUVFQ2dreUZR?oc=5",
+          "source_name": "YourStory.com",
+          "source_domain": "yourstory.com",
+          "published_date": "2026-08-13",
+          "summary": "Mirae Asset\u2019s MAVI raises Rs 1,125 Cr in first close of Venture Opportunity Fund II&nbsp;&nbsp;YourStory.com",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Mirae Asset Venture raises Rs 1,125 crore in first close of new India-dedicated fund - The Economic Times",
+          "url": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxQYUh4d25zbW1QUUdEcFl5ZTJNOWZUbmFJMUxlQ1pNcWpMb3FjNzc5UkRrNEEzYmZETXNWS2NyRnpwUkM1cm9zcEFjNmJnR1A0VTBSbkt0QndRWDBPZWZISDBuQzFtM25TbWl1YWxhaHE5bU5RWEZZeVdnemlsOHhMVlQ2bGRuTHMtQlFSMzZNaUlGekNYcS14ajhxMWhWMlVsVG85UEw0WWtIVklVQjAycnNQRkJkZWhrTGNfVnlxenRyejU0OWs1SW1tSVROSV9nV3c4dmZhMDBoNzJyb043bWRVSjlWRXIxYzhYX0pB0gHuAUFVX3lxTFBhSHh3bnNtbVBRR0RwWXllMk05ZlRuYUkxTGVDWk1xakxvcWM3NzlSRGs0QTNiZkRNc1ZLY3JGenBSQzVyb3NwQWM2YmdHUDRVMFJuS3RCd1FYME9lZkhIMG5DMW0zblNtaXVhbGFocTltTlFYRll5V2d6aWw4eExWVDZsZG5Mcy1CUVIzNk1pSUZ6Q1hxLXhqOHExaFYyVWxUbzlQTDRZa0hWSVVCMDJyc1BGQmRlaGtMY19WeXF6dHJ6NTQ5azVJbW1JVE5JX2dXdzh2ZmEwMGg3MnJvTjdtZFVKOVZFcjFjOFhfSkE?oc=5",
+          "source_name": "The Economic Times",
+          "source_domain": "m.economictimes.com",
+          "published_date": "2026-08-13",
+          "summary": "Mirae Asset Venture raises Rs 1,125 crore in first close of new India-dedicated fund&nbsp;&nbsp;The Economic Times",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Mirae Asset\u2019s venture fund raises \u20b91,125 crore in first close, targets \u20b91,800 crore corpus - CNBC TV18",
+          "url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxOdDIyLS1uTjVFTTRteWZKbFM5WEVscS10SXI0VnZVWDNYTVlncmdiMEJaOFJUeEFGWTY5NVFKSjlQUXBuVkg1cVpGd2NaY19Uei1fYzlXWXJNY1hyWU8xZXJNSVdEbGRMYkRMNEowa3ppU01zaHVRYVRoVVotWFNpUFpPVS1vV2V3UGlYTHJid0t4TUFaRm5nelFBLUVEVHpZOVNfdzFEbk1reXVadGZwemh3TUxESlIwcXdnd1psTzBkTUo0QndOY1UwTlk4aUR0RVp6V1k3a0lwenduWXfSAeMBQVVfeXFMUDF5TzhlUU00X1o3Q3NkLURCUTRDTG1rbXlpREpCQnBUTTlWdDFrOFlERzI4MG15ME9qMTR6V1dPVDgwOW9HQzF6Rm5kSmVJYmZUdWUwckZabVNuY1MxRXVtM0xXa3VBalg3RVFWc1JRczZJUW5SVmhEZzltbEp0N05aQXRWNm9oazlqMjhrTTVTTGdEdVVnd05NTjRhcWlMNVNjOFRlUmg0UlExQXlsWkZ3QUpZQnpSUTZrSW5iUDNwZTZKUThrWnZ4Rk1QYjRRTzZpd0xSYnROZ01FeDN3S1Qzemc?oc=5",
+          "source_name": "CNBC TV18",
+          "source_domain": "cnbctv18.com",
+          "published_date": "2026-08-13",
+          "summary": "Mirae Asset\u2019s venture fund raises \u20b91,125 crore in first close, targets \u20b91,800 crore corpus&nbsp;&nbsp;CNBC TV18",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Mirae Asset launches second early-growth fund; marks first close at \u20b91,125 crore - livemint.com",
+          "url": "https://news.google.com/rss/articles/CBMi8wFBVV95cUxNTG5TRzcxbFJheENmcGN0eUtIek53M0tGbmRoNk50S05KM2JwcFFnYWxEUV9FMVJwTm9Bb1Vrb29KczdpdnI4V0FUM2VvbWtGNTZickYtWHhjOVVVNDlFakVwUnpQbEdkSTNOWWJIYUlYX2o4cnZGWU8yaXNtemZVZzhIOTJvRkRXMEY0dnZrLWVfdXVuY3NKcmtrRDVQYXlHYmdwSDhoMGhwTzJrUW9TeDhNekJNTi00ekpOYkt4MG9ZSmxIYVFXVHdubGVmaHNxMG9nT1k2RDQtVDJ3VWd4SVRLLVpSQ1hWSlhtYjhMb19ISknSAfgBQVVfeXFMTTN4S3lEZjM3bXJseTV0ZXdMaE5zNWJ1ZC1UV1VXc01MSEN5SnlfMmVLMkVJaVI2aGJacVp0VnNtY0w4emF4YldXamlDYjBranNhVXFveWVVdTJTUEFEQnZuWTBsU0JyeFlyQy1SZXJRSUFWdEI0cTVSRUdDN19wbktZbWJGYjNLWnRZVmx4c29nSEhwZW44Tnh5dnh1VlBNWTJMdHFjeU8tRjZjSFhycFl6WGtVU2hxYll5eFJtR2l1eU9WVXJkVElwUnJLYndFV2YzeFZMX0p1OGZNRTlYMWJjUlpOTk12ZEFWMGRCS19CekVzSXhINW0?oc=5",
+          "source_name": "livemint.com",
+          "source_domain": "livemint.com",
+          "published_date": "2026-08-13",
+          "summary": "Mirae Asset launches second early-growth fund; marks first close at \u20b91,125 crore&nbsp;&nbsp;livemint.com",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Mirae Asset launches second early-stage fund; marks first close at \u20b91,125 crore - livemint.com",
+          "url": "https://news.google.com/rss/articles/CBMi-AFBVV95cUxNM3hLeURmMzdtcmx5NXRld0xoTnM1YnVkLVRXVVdzTUxIQ3lKeV8yZUsyRUlpUjZoYlpxWnRWc21jTDh6YXhiV1dqaUNiMGtqc2FVcW95ZVV1MlNQQURCdm5ZMGxTQnJ4WXJDLVJlclFJQVZ0QjRxNVJFR0M3X3BuS1ltYkZiM0tadFlWbHhzb2dISHBlbjhOeHl2eHVWUE1ZMkx0cWN5Ty1GNmNIWHJwWXpYa1VTaHFiWXl4Um1HaXV5T1ZVcmRUSXBScktid0VXZjN4VkxfSnU4Zk1FOVgxYmNSWk5OTXZkQVYwZEJLX0J6RXNJeEg1bdIB-AFBVV95cUxNM3hLeURmMzdtcmx5NXRld0xoTnM1YnVkLVRXVVdzTUxIQ3lKeV8yZUsyRUlpUjZoYlpxWnRWc21jTDh6YXhiV1dqaUNiMGtqc2FVcW95ZVV1MlNQQURCdm5ZMGxTQnJ4WXJDLVJlclFJQVZ0QjRxNVJFR0M3X3BuS1ltYkZiM0tadFlWbHhzb2dISHBlbjhOeHl2eHVWUE1ZMkx0cWN5Ty1GNmNIWHJwWXpYa1VTaHFiWXl4Um1HaXV5T1ZVcmRUSXBScktid0VXZjN4VkxfSnU4Zk1FOVgxYmNSWk5OTXZkQVYwZEJLX0J6RXNJeEg1bQ?oc=5",
+          "source_name": "livemint.com",
+          "source_domain": "livemint.com",
+          "published_date": "2026-08-13",
+          "summary": "Mirae Asset launches second early-stage fund; marks first close at \u20b91,125 crore&nbsp;&nbsp;livemint.com",
+          "feed_name": "search:First/final close"
+        }
+      ]
+    },
+    {
+      "fund_name": "Bluehill.vc Maiden Deeptech Fund",
+      "firm": "Bluehill.vc",
+      "firm_slug": "bluehill-vc",
+      "amount": "\u20b9400 crore",
+      "amount_usd_millions": 480.0,
+      "category": "Venture Capital",
+      "location": "Bangalore, India",
+      "city": "Bangalore",
+      "state": "KA",
+      "country": "India",
+      "stage": "Final Close",
+      "announcement_date": "2026-08-13",
+      "source_url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPd0Npc2dHZ3BhdEo3WEE0VTk5Wlg3czBpUkg0NTRIQ2VFYkxhSUNlMTlPUC1zaXpUdDlIaWpNb1laWXpXbnRFaGcxZndJcU1yMmNYSENfVHdITVA3MlVnN0JJeW9ZQ19EWEJpamppUW1oeXY4bkNHcmNEYUtwUF94cFY1SmJnVHZraVFuSUVRVlVkMDFjVFE1dkZWRzF3UnRWU2dSSmxYSVlGczZYSU11T9IBtgFBVV95cUxNWFFjZVhvMkZnZlpFYW9aZmNGR09OT1FyX0JvbGJSd1BvbE8tblowbmpqZFFGTkl5a2p4QU5ma1JhV0JVNVJfRjAzci11c2ZKMDdMZFFYOFJzNlVLR3JtRkZfZ0ZSR082d2lqZjRyX21lR2xKR1c1b1RaR0wtNTZVU1VCb0FSWVR6aV9fQWlDZkM4QXpUdWF1V1dJMG5UZjRjNnZiYkxHSmExRlRwaF90Q092TjVLZw?oc=5",
+      "source_name": "Livemint",
+      "description_notes": "close a \u20b9400 crore debut deeptech venture fund targeting early-stage scientific and hardware innovations in India, marking Bluehill.vc's first institutional vehicle in the sector. The maiden fund focuses on deep technology startups across areas like materials science, biotech, and advanced manufacturing, positioning itself in an underserved segment of India's venture ecosystem. This inaugural offering reflects growing LP appetite for India-focused deeptech investment.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-13T10:01:19",
+      "articles": [
+        {
+          "title": "Bluehill.vc marks final close of maiden deeptech fund at \u20b9400 crore; eyes 15-15 bets - livemint.com",
+          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPd0Npc2dHZ3BhdEo3WEE0VTk5Wlg3czBpUkg0NTRIQ2VFYkxhSUNlMTlPUC1zaXpUdDlIaWpNb1laWXpXbnRFaGcxZndJcU1yMmNYSENfVHdITVA3MlVnN0JJeW9ZQ19EWEJpamppUW1oeXY4bkNHcmNEYUtwUF94cFY1SmJnVHZraVFuSUVRVlVkMDFjVFE1dkZWRzF3UnRWU2dSSmxYSVlGczZYSU11T9IBtgFBVV95cUxNWFFjZVhvMkZnZlpFYW9aZmNGR09OT1FyX0JvbGJSd1BvbE8tblowbmpqZFFGTkl5a2p4QU5ma1JhV0JVNVJfRjAzci11c2ZKMDdMZFFYOFJzNlVLR3JtRkZfZ0ZSR082d2lqZjRyX21lR2xKR1c1b1RaR0wtNTZVU1VCb0FSWVR6aV9fQWlDZkM4QXpUdWF1V1dJMG5UZjRjNnZiYkxHSmExRlRwaF90Q092TjVLZw?oc=5",
+          "source_name": "livemint.com",
+          "source_domain": "livemint.com",
+          "published_date": "2026-08-13",
+          "summary": "Bluehill.vc marks final close of maiden deeptech fund at \u20b9400 crore; eyes 15-15 bets&nbsp;&nbsp;livemint.com",
+          "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "Bluehill.VC Announces INR 400 Crore Final Close of Maiden Frontier-Tech Fund - businessnewsthisweek.com",
+          "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPRkJCS0tkd2xhaVRZYmc1WENqTVNxOXdyMmM5WmtjOE9wQS1aYkUwSnFNSEhxTVMxWDM2OFo2MTJJTEFfd3J5Tjh6UlhaU0pqUk9iM3FIQ2NRVV9BUzVoVUxWay1uQmJQVGstRWJmeFFWQVNDeExGQ1NETndKRWJWM0pUZ0Z3NUt5LXhrQ3hIU2N2MXZaeG1ocXRnX0RrVml5SnMzSXh0OXotRm5kdXRCNWw5bFh2ZzVHbEI4?oc=5",
+          "source_name": "businessnewsthisweek.com",
+          "source_domain": "businessnewsthisweek.com",
+          "published_date": "2026-08-13",
+          "summary": "Bluehill.VC Announces INR 400 Crore Final Close of Maiden Frontier-Tech Fund&nbsp;&nbsp;businessnewsthisweek.com",
+          "feed_name": "search:First/final close"
+        }
+      ]
+    },
+    {
+      "fund_name": "Mirae Asset India-focused venture fund (Third)",
+      "firm": "Mirae Asset",
+      "firm_slug": "mirae-asset",
+      "amount": "$118m",
+      "amount_usd_millions": 118.0,
+      "category": "Venture Capital",
+      "location": "Seoul, South Korea",
+      "city": "Seoul",
+      "state": "",
+      "country": "South Korea",
+      "stage": "First Close",
+      "announcement_date": "2026-08-13",
+      "source_url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE15aHhaSTdEUW0xbnF4MWdTOWhSbEtpczNtN3VFMmpVby1pcmxRbzAwNHg1N1dlcjN5eXJOTDlSQnQteHRLYnQxbjFESnVqYXpXM2tlN3F6ZnFNMFNjRDNjQUlKaTNOcDRjWmk0Zm9rNE1XZGhvSE5N?oc=5",
+      "source_name": "Dealstreetasia",
+      "description_notes": "close $118m for its third India-focused venture fund, targeting early to growth-stage technology companies across sectors like fintech, SaaS, and digital commerce in the subcontinent. The fund represents Mirae Asset's continued commitment to India's startup ecosystem, building on the firm's existing venture platform and prior India-dedicated vehicles. This vintage reflects sustained institutional LP appetite for India venture despite recent market volatility in the broader emerging markets tech space.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-13T10:01:19",
+      "articles": [
+        {
+          "title": "Mirae Asset hits first close of third India-focused venture fund at $118m - DealStreetAsia",
+          "url": "https://news.google.com/rss/articles/CBMid0FVX3lxTE15aHhaSTdEUW0xbnF4MWdTOWhSbEtpczNtN3VFMmpVby1pcmxRbzAwNHg1N1dlcjN5eXJOTDlSQnQteHRLYnQxbjFESnVqYXpXM2tlN3F6ZnFNMFNjRDNjQUlKaTNOcDRjWmk0Zm9rNE1XZGhvSE5N?oc=5",
+          "source_name": "DealStreetAsia",
+          "source_domain": "dealstreetasia.com",
+          "published_date": "2026-08-13",
+          "summary": "Mirae Asset hits first close of third India-focused venture fund at $118m&nbsp;&nbsp;DealStreetAsia",
+          "feed_name": "search:First/final close"
+        }
+      ]
+    },
+    {
+      "fund_name": "BlackSoil AMC Credit Fund II",
+      "firm": "BlackSoil AMC",
+      "firm_slug": "blacksoil-amc",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "location": "Mumbai, India",
+      "city": "Mumbai",
+      "state": "",
+      "country": "India",
+      "stage": "Final Close",
+      "announcement_date": "2026-08-13",
+      "source_url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOOXVVN0ZDZklRaDZzdlF3WUQtczRVMUFPaG8zZXcyUkR2QUFnZ0diR2xCZVFfQ056TVVWWTBwVzFkZktlOG5tNHNmU24yd3hBTnkwUEFrMkR2c0VmcDhhZUhhZHVQbE9oOWpPdWtiOVloNDBWVTJQamVfNXBpUWtYOW50Ynd4Qm14aVE?oc=5",
+      "source_name": "Vccircle",
+      "description_notes": "close a second credit fund targeting alternative mortgage companies and specialty finance opportunities in India. BlackSoil AMC, which focuses on credit investing across the Indian mid-market, is expanding its playbook beyond its debut fund to capitalize on growing demand for structured lending in the non-bank finance sector. The fund's final close underscores investor appetite for credit strategies in high-growth emerging markets with limited institutional debt supply.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-13T10:01:19",
+      "articles": [
+        {
+          "title": "BlackSoil AMC hits final close of second credit fund - VCCircle",
+          "url": "https://news.google.com/rss/articles/CBMiigFBVV95cUxOOXVVN0ZDZklRaDZzdlF3WUQtczRVMUFPaG8zZXcyUkR2QUFnZ0diR2xCZVFfQ056TVVWWTBwVzFkZktlOG5tNHNmU24yd3hBTnkwUEFrMkR2c0VmcDhhZUhhZHVQbE9oOWpPdWtiOVloNDBWVTJQamVfNXBpUWtYOW50Ynd4Qm14aVE?oc=5",
+          "source_name": "VCCircle",
+          "source_domain": "vccircle.com",
+          "published_date": "2026-08-13",
+          "summary": "BlackSoil AMC hits final close of second credit fund&nbsp;&nbsp;VCCircle",
+          "feed_name": "search:First/final close"
+        }
+      ]
+    },
     {
       "fund_name": "Accel Global Fund (multiple vintages)",
       "firm": "Accel",
@@ -29,6 +198,37 @@
           "published_date": "2026-08-12",
           "summary": "Accel closes oversubscribed $550M India fund as part of $3.5B global raise&nbsp;&nbsp;CryptoRank",
           "feed_name": "search:Oversubscribed funds"
+        }
+      ]
+    },
+    {
+      "fund_name": "Aperture Litigation Credit Platform",
+      "firm": "Aperture",
+      "firm_slug": "aperture",
+      "amount": "$600m+",
+      "amount_usd_millions": 600.0,
+      "category": "Credit Funds",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Other",
+      "announcement_date": "2026-08-12",
+      "source_url": "https://alternativecreditinvestor.com/2026/08/12/aperture-expands-litigation-credit-platform-beyond-600m/",
+      "source_name": "Alternative Credit Investor",
+      "description_notes": "close $600m+ for a litigation credit platform that finances legal claims and disputes, targeting institutional investors seeking non-correlated returns in the alternative credit space. The fund represents Aperture's expansion into specialized credit investing, competing with established players like Burford Capital in a market driven by growing institutional appetite for litigation-backed assets.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-13T10:01:19",
+      "articles": [
+        {
+          "title": "Aperture expands litigation credit platform beyond $600m",
+          "url": "https://alternativecreditinvestor.com/2026/08/12/aperture-expands-litigation-credit-platform-beyond-600m/",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-08-12",
+          "summary": "",
+          "feed_name": "Alternative Credit Investor"
         }
       ]
     },
@@ -80,6 +280,15 @@
           "feed_name": "search:Oversubscribed funds"
         },
         {
+          "title": "Accel Closes India Fund Months Early Betting AI Wave Has No Lag This Time - Tech Times",
+          "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxQSC1ZVVo1SnlCang5bW1ST1pMNjNoYWFLOXhWckMtT0tOWlNfbktyLTlXazB2cXR0VW5OVUdWNm56TFU3dktCTnBRQWFna21vWU13T2NSSWp2NGwyeXJpMVJ3QUh0cnFmM1lhU1dKQ2dpZmtzTWVBWFpEYkRtaGNLakFnV3NYeUp0RDYwWTdpYkZtWVlJZE9sRmlaWGNqRFBJQVlKazcyZXZqUXpsbkNrd3JpVDlmbTA2MWVuRE9MTTJ3al8xSW1F?oc=5",
+          "source_name": "Tech Times",
+          "source_domain": "techtimes.com",
+          "published_date": "2026-08-12",
+          "summary": "Accel Closes India Fund Months Early Betting AI Wave Has No Lag This Time&nbsp;&nbsp;Tech Times",
+          "feed_name": "search:Oversubscribed funds"
+        },
+        {
           "title": "Accel closes oversubscribed $550M India fund within weeks, 19 months after its last",
           "url": "https://techcrunch.com/2026/08/11/accel-closes-oversubscribed-550m-india-fund-within-weeks-19-months-after-its-last/",
           "source_name": "TechCrunch",
@@ -105,6 +314,68 @@
           "published_date": "2026-08-11",
           "summary": "Accel Raises $550 Million for New India Venture Fund&nbsp;&nbsp;\u041c\u0435\u0436\u0430. \u041d\u043e\u0432\u0438\u043d\u0438 \u0423\u043a\u0440\u0430\u0457\u043d\u0438.",
           "feed_name": "search:Oversubscribed funds"
+        }
+      ]
+    },
+    {
+      "fund_name": "Churchill Capital Solutions Strategy",
+      "firm": "Churchill",
+      "firm_slug": "churchill",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Launch",
+      "announcement_date": "2026-08-12",
+      "source_url": "https://alternativecreditinvestor.com/2026/08/12/churchill-launches-capital-solutions-strategy-backed-by-tiaa/",
+      "source_name": "Alternative Credit Investor",
+      "description_notes": "launch a credit fund strategy targeting middle-market opportunities, though the fund size and LP roster remain undisclosed at this stage. Churchill's new credit offering enters a competitive market as the firm expands beyond its prior strategies. specific details on target sectors, ticket sizes, and differentiation versus peer credit vehicles are not yet available.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-13T10:01:19",
+      "articles": [
+        {
+          "title": "Churchill launches capital solutions strategy backed by TIAA",
+          "url": "https://alternativecreditinvestor.com/2026/08/12/churchill-launches-capital-solutions-strategy-backed-by-tiaa/",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-08-12",
+          "summary": "",
+          "feed_name": "Alternative Credit Investor"
+        }
+      ]
+    },
+    {
+      "fund_name": "Equiton First US Multifamily Fund",
+      "firm": "Equiton",
+      "firm_slug": "equiton",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Real Estate",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "US",
+      "stage": "Launch",
+      "announcement_date": "2026-08-12",
+      "source_url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPUHdzX1pkM09vZXE1ZHVtTWdVZF9wMV9XS09kRDJVWlFPWW5LZkpYQWJRX3pvSC00UUtSZml1S1VveGlram16eUFhWGRDTWI4YmlxWWpYaTNnWU9nRTJoWkYyVzBkQWQ2RVVrbVd1S1dPdTZmd3hBUHI2WDgzRWNXcnp4dHIzb3JSMDZmcWhnTmwxWjZBS3hV?oc=5",
+      "source_name": "Greenstreetnews",
+      "description_notes": "launch a multifamily real estate fund targeting US residential assets, with a strategy focused on value-add and core-plus apartment investments across primary and secondary markets. The fund represents Equiton's entry into dedicated US multifamily vehicles, building on the firm's broader real estate investment platform. Specific LP commitments and fund size remain undisclosed at launch.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-13T10:01:19",
+      "articles": [
+        {
+          "title": "Equiton confirms launch of first US multifamily fund - Green Street News",
+          "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPUHdzX1pkM09vZXE1ZHVtTWdVZF9wMV9XS09kRDJVWlFPWW5LZkpYQWJRX3pvSC00UUtSZml1S1VveGlram16eUFhWGRDTWI4YmlxWWpYaTNnWU9nRTJoWkYyVzBkQWQ2RVVrbVd1S1dPdTZmd3hBUHI2WDgzRWNXcnp4dHIzb3JSMDZmcWhnTmwxWjZBS3hV?oc=5",
+          "source_name": "Green Street News",
+          "source_domain": "greenstreetnews.com",
+          "published_date": "2026-08-12",
+          "summary": "Equiton confirms launch of first US multifamily fund&nbsp;&nbsp;Green Street News",
+          "feed_name": "search:Credit/Real estate"
         }
       ]
     },
@@ -825,7 +1096,7 @@
       "announcement_date": "2026-08-07",
       "source_url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxPMHFUb29Bb19lY0F3YURGeGdGNUNIeEVxSGlfeWZZQ19CRjhpZENQdS1JMDNQNC1QcW9iSGJFR1RBeVBIekdfSGc0TTFVOFlrTWxEY2pwbkhGQ1lxNkdNclQ5bmxVR2J3Vkt0Q1RsRmhfN0x2T1E3bVB2S1dkZ2lrM00wdFViMkRSM2pPSUpOVVpuWUZVRjRMQm9OeDMzUGxNMF9teGRjQQ?oc=5",
       "source_name": "Energynews",
-      "description_notes": "close a $182 million infrastructure fund focused on green hydrogen projects, targeting the energy transition and decarbonization of hard-to-abate sectors. The fund invests in hydrogen production, storage, and distribution infrastructure across the value chain, positioning itself in an emerging subsector of climate-focused infrastructure as demand for clean hydrogen grows among industrial and mobility end-users.",
+      "description_notes": "close a $182 million infrastructure fund focused on green hydrogen projects and decarbonization technologies. The fund targets mid-market investments in hydrogen production, storage, and distribution across developed markets, capitalizing on accelerating energy transition demand and government support. Climate Fund Managers' debut in dedicated hydrogen infrastructure marks a specialized pivot within the broader cleantech investment landscape.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-09T10:02:41",
@@ -941,6 +1212,15 @@
       "covered_date": null,
       "date_added": "2026-08-09T10:02:41",
       "articles": [
+        {
+          "title": "Continuim Equity closes Fund III in just 32 days",
+          "url": "https://www.buyoutsinsider.com/continuim-equity-closes-fund-iii-in-just-32-days/",
+          "source_name": "Buyouts Insider",
+          "source_domain": "buyoutsinsider.com",
+          "published_date": "2026-08-12",
+          "summary": "",
+          "feed_name": "Buyouts Insider"
+        },
         {
           "title": "Continuim Equity Partners Closes Oversubscribed Fund III at $548 Million \u2013 Bringing AUM to Over $1 Billion - FinanceFeeds",
           "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOWjlKejdjTnItWklWM25ZY2RSUjBsZ1dxT0VEZ3pYd09rQ3h4TnZFc2tUNnJqWW5WLXNDV2FZd3c1V0x0X3Q3bWFPQVFhcGJUSjhtNlEtcF93UUdBUHBjRTJMb1Nsci1JY2hhQVRhLUQyUFhmemFEUmJZSjJvVThXMmIzWHhpV2tlVzZRa2haU294RHNsblR6OHNOYkhDbW56NF8ycVJIZlphbkRkWWh5dDVNMEdZX1ZwVmRaT1pDa2xaWnRWVl9F?oc=5",
@@ -1084,10 +1364,10 @@
       "amount": "$58M",
       "amount_usd_millions": 58.0,
       "category": "Venture Capital",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "N/A",
+      "location": "San Francisco, CA",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
       "stage": "First Close",
       "announcement_date": "2026-08-06",
       "source_url": "https://news.google.com/rss/articles/CBMigwJBVV95cUxPQWdHREJRRXgxRVVJMmJqamJvWU1mRnh0QWpVT0pnT3JFWmxRWFUwSGlZaW85NTJpRV9lcHhjbFRqa0FFNTY1cGdQMTU5bmdEMDFlY192Um9rbTVDRlZ6UGhUY3o3STZPS041dHJlSVBXRk1NdkF2V01jRVVmeDNmYjJjUUZjVmpKSWdYbEJnMzh2OHVkeU1Zbk54TjFKNFlGeFRxTW1CR0QwTDBqQkJmSnpvWEg3Z2MtZldKa2RRWG5ua3paS0poQ2MzZmhocjNuWVhsdVFHY3dSVWJka2N6YUc5clc5dU1WeVBfbmx0bnF5TFdTb0ZtVFF1ZzNKd0IxR3Jv?oc=5",
@@ -1411,7 +1691,7 @@
       "announcement_date": "2026-08-05",
       "source_url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQeEdxUEtxYWZyLVV3a09ZS1RxZG1fSkFuS3FtcGw3ckVKdk9mSVVXMy10Q3RwM2hva3FSQ2NSLWtEYjJzUzYtbFNzSUpraGl5anN1ak9wcGh3Vm5oUl9LWS1tcDJadlRiMTdoa0o5OE5uMmxxUXB4clZ6aXVDYVNTeDZKRQ?oc=5",
       "source_name": "Realdeals",
-      "description_notes": "N/A \u2014 insufficient public information available about Nextalia Fund II's strategy, target market, LP base, or how it compares to prior vintages. Nextalia appears to be a lesser-known or newly established PE firm with limited disclosed details at first close.",
+      "description_notes": "N/A - insufficient publicly available information about Nextalia Fund II's strategy, target market, LP composition, or how it compares to prior vintages. Nextalia appears to be either an early-stage or lesser-known private equity firm with limited public disclosures.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-09T10:02:41",
@@ -1686,7 +1966,7 @@
       "announcement_date": "2026-08-04",
       "source_url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOcWhRQ0x0WWV4S1lXRENUR19hVm45MXpnb3FrVGJCcVpaVl9aSEJvdHNjeDIxN3VGSzl0a3k3MnRWVEFBRlBPUkU3YXF6VG9uYWNURTJQNmd2WWQ5Q1dtMDNNVmwwdF82VFZiU0s3ZXdfZVB0Zmw5RGxwU211VnNVbmZZeXpDa2lkUklUWVl2Nll3djhzemlQWjBpM0Q5cDFZdXExNGwzT2p5ZU9WWXVJeW9R?oc=5",
       "source_name": "Citybiz",
-      "description_notes": "launch a $200 million net-lease real estate fund focused on single-tenant properties with long-term tenant commitments and triple-net lease structures. The fund targets institutional investors seeking stable, inflation-hedged cash flows from essential-service retail, industrial, and office properties across North America. This debut offering from Orion and Secure Properties enters a competitive market dominated by established net-lease specialists, positioning itself on operational expertise and selective underwriting.",
+      "description_notes": "close a $200 million net-lease real estate fund targeting institutional and high-net-worth investors seeking stable, long-term cash flows from triple-net lease properties. The debut fund from Orion and Secure Properties marks the firms' entry into the net-lease market, a strategy typically focused on single-tenant, investment-grade properties with long-term tenant commitments. The fund size is moderate for the net-lease sector, positioning the partnership to build a focused portfolio while establishing track record in the space.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-09T10:02:42",
@@ -2116,7 +2396,7 @@
       "announcement_date": "2026-07-31",
       "source_url": "https://news.google.com/rss/articles/CBMimAJBVV95cUxOVnU1VU1RUXZMSWFtb1FlVkhxVzgtWVoyYS1QT25iNkc2VWFqeWNJZzFsQk56ZkhLX0UzcWxyMzRzaEgyajdJSFQteGxQUWY2U3VqN3pubW9rWTkzN2stWmhnalpWOFlxQjhhbW1VV3dJSmdzTXFnZWc2QmRpM3h3S2gzSlBXNmtTN0ZhWnpPV3d4YnhJSTFWNnBNelJuTGV3Ukc3U2lhNmZ3R0p6SGxraE90ekd2eVBoSkExdUVBZ2p2T3FpaHU4Z1hlSkpETVZwRlBuMWk4QkpKOVcwaEV1UkE3XzhIWkV2cEEwdGhrWi1Fd0JHbThGYzg2cm1Cb290NHNIaHRPTnZwY0FWaEljSG4yZ3FVdmZi?oc=5",
       "source_name": "Business Wire",
-      "description_notes": "launch an undisclosed infrastructure fund targeting mid-market assets in core sectors including utilities, transportation, and energy transition. Northampton Capital Partners, known for operational value-add strategies, is making its initial foray into dedicated infrastructure investing with this debut vehicle. The fund represents the firm's expansion beyond its traditional lower-middle-market buyout focus.",
+      "description_notes": "launch an infrastructure fund focused on mid-market assets and essential services across North America. Northampton Capital Partners, known for its disciplined infrastructure investing approach, is targeting institutional LPs seeking stable, inflation-protected returns in critical infrastructure sectors. The fund represents the firm's dedicated infrastructure strategy, building on its broader investment platform.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-01T10:03:01",
@@ -3426,7 +3706,7 @@
       "announcement_date": "2026-07-21",
       "source_url": "https://techcrunch.com/2026/07/21/dimension-capitals-800m-third-fund-shows-the-intersection-of-science-and-compute-is-booming/",
       "source_name": "TechCrunch",
-      "description_notes": "raise $800M for science-focused venture investments at the intersection of biotech and compute, marking a 60% increase from the firm's second fund announced 18 months prior. The four-year-old manager is betting on the expansion of AI-driven drug discovery and computational biology, as evidenced by portfolio company Chai Discovery. Dimension Capital's third vintage underscores growing LP appetite for deep-tech venture strategies bridging life sciences and software.",
+      "description_notes": "raise $800M for its third venture fund, a 60% increase from its second vehicle closed 18 months prior, targeting the intersection of scientific innovation and computational infrastructure\u2014a thesis that reflects surging LP appetite for deeptech and biotech startups leveraging AI and specialized compute. The four-year-old firm is doubling down on its core strategy of backing early-stage companies at the convergence of life sciences and machine learning, positioning Fund III as a bellwether for the science-compute boom.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-22T10:01:12",
@@ -6593,7 +6873,7 @@
       "announcement_date": "2026-07-06",
       "source_url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxONkVmbGZ1anVZZmk4VGZBZUt2ZW1pRGRzLW1GallPOHl5NGVyOGpCY3lMYUJfS1EzM0FSa3BQM0pmUFcwTjN4U1VhUW5HdXN4VlNkV1B2bFpOXzZZZ0dkd2JPUldWemxTbUFNR2VET19LYTFGRXI0MFRUU1RLOEE1c29DTm9UeV9FMkVKbkN0MVFyX0JndnRJaGFCdmVjVnlHcnI4?oc=5",
       "source_name": "Yahoo Finance",
-      "description_notes": "establish Omni Ventures' inaugural fund focused on early-stage venture investments, targeting emerging technology and innovation-driven companies. The fund closed at an undisclosed final close, marking the firm's entry into the venture capital market with a platform designed to support founders across seed and Series A stages. Limited details on LP composition and fund size are publicly available at this stage.",
+      "description_notes": "close omni Ventures' inaugural fund, a venture capital vehicle targeting early-stage companies, though the final fund size remains undisclosed. The firm's first institutional offering marks its entry into the formal VC market; without disclosed LP anchors or a public investment thesis, limited details are available on sector focus or geographic preference. Omni Ventures' launch timing and strategy positioning relative to the broader seed and Series A market remain unclear from public filings.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-07T10:01:27",
@@ -8559,7 +8839,7 @@
       "announcement_date": "2026-06-25",
       "source_url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOY0tPV09RSjRrWkZlanIwSWE5NmtYN21YTW5fRUtWa21wYWM4R25vV3Nmb01fSU5XWFhWLWdZalZsMk9aMlVnRFJyU2JRT1MxU3otQWlJeXJfcjB4OUhfYVJqZlRnTnVIZGhJR1NvUURGZnJoczhXb2dnelg3U0JuWnM5N3ZlS3U5T1JaTHVWQng0SWF1SjlaWlJZNEE?oc=5",
       "source_name": "Moneyweb",
-      "description_notes": "launch a R400m venture capital fund targeting university-connected technology startups and early-stage deep-tech companies across research commercialization and spin-out opportunities. The fund leverages Stocks & Strauss's established relationships with academic institutions and research networks to identify founders and technologies emerging from university labs. This inaugural vehicle represents the firm's entry into dedicated university tech investing, positioning it to capture deal flow at the intersection of academic research and commercial application.",
+      "description_notes": "raise R400m ($21m usd equivalent) for a new venture capital fund targeting early-stage technology companies emerging from university partnerships and research institutions. The fund focuses on deep-tech and academic spinouts, leveraging relationships with university technology transfer offices and research commercialization programs. This debut fund from Stocks & Strauss marks the firm's entry into dedicated university-linked venture investing, differentiating it from traditional early-stage VC by prioritizing intellectual property and research-backed founders.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-13T10:01:14",
@@ -9420,7 +9700,7 @@
       "announcement_date": "2026-06-20",
       "source_url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxQSlc5T1FDYTlkOXVFbjQ0elpTOGtqUVdybUpIdW5laktyWmU5SG94VktqTWg0WjUwaWluWmk4ZFcwXzRkR2dNampIMWFMcFM5V2ZCNUdXb2s4T1VBTndORmJ2NnEwVlBpYUVhZFV3azlfcDc5UGtFankxdGJJQWZiOUhXa0NPdzk3aEQzMmwtUjRIczRzLTdGaWxFeVkwNHJqSDNIMm5XRnd0WVQ2aDRzZGFEZE1EZ3dMUWphanAtUDhpZzVIMjJXM2FPOUw3T3BvbVNnNnN6MVFCenRQZUc1VTJ5T3Z1ajJ3cDVvSDB5XzYwLUhh?oc=5",
       "source_name": "Whalesbook",
-      "description_notes": "deploy \u20b9100 crore (~$12M USD) across early-stage fashion and apparel startups in India, marking the second vintage of a sector-focused venture fund targeting the subcontinent's growing D2C and manufacturing-tech opportunities. the fund targets founders building brands, supply chain innovation, or fashion tech rather than traditional retail, with typical check sizes suited to seed and Series A rounds. Season 2 represents a continuation strategy, suggesting validation from Season 1 but with limited public data on LP composition or specific strategy shifts.",
+      "description_notes": "launch a \u20b9100 crore ($12M+) second vintage focused on early-stage fashion and apparel entrepreneurs across India, following the initial fund's backing of emerging designers and direct-to-consumer brands. the fund targets pre-seed to Series A fashion tech and traditional apparel companies in the Indian subcontinent, with a distinctive focus on underserved fashion founders outside major metros. Season 2's larger corpus reflects demand from LPs for dedicated fashion venture capital in a market where apparel and fashion tech remain fragmented across generalist investors.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-23T10:01:41",
@@ -15884,6 +16164,46 @@
           "published_date": "2026-05-19",
           "summary": "British International Investment unveils $300 million platform to accelerate Indian renewable power generation&nbsp;&nbsp;British International Investment",
           "feed_name": "search:Secondaries/Infra/GP-stakes"
+        },
+        {
+          "title": "BII and Copenhagen Infrastructure Partners launch USD 300 Million Renewable Energy Platform in India - Energetica India Magazine",
+          "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxPaGR3eFF5Zks1dXNSaTI2djNKcW9vNzF3a0UyT09rZU15X2J0cF80dUNVbXN1WXZLSmZ2alhnc1ctNllRRUZlZE1pU24yVFZucEdET2drMVBEYzlneHNOX0xNVUk1eUlkVW1ScVI1a29qNUJFT0ozTFp1ZUtRMG5ZR0ZZM19rWXd4UGE4TzAxUXJrV1hHUzFRejJNRHprOF9FU182eGhhalNXbFF2WjdCOWVkVGtzU1ZGTDYweHdRallHUGx0bDRVOHhqRHFDYUNIVUZSMWp3?oc=5",
+          "source_name": "Energetica India Magazine",
+          "source_domain": "energetica-india.net",
+          "published_date": "2026-05-19",
+          "summary": "BII and Copenhagen Infrastructure Partners launch USD 300 Million Renewable Energy Platform in India&nbsp;&nbsp;Energetica India Magazine",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
+        }
+      ]
+    },
+    {
+      "fund_name": "Renewable Energy Platform in India",
+      "firm": "Copenhagen Infrastructure Partners",
+      "firm_slug": "copenhagen-infrastructure-partners",
+      "amount": "$300M",
+      "amount_usd_millions": 300.0,
+      "category": "Infrastructure",
+      "location": "Copenhagen, Denmark",
+      "city": "Copenhagen",
+      "state": "",
+      "country": "Denmark",
+      "stage": "Launch",
+      "announcement_date": "2026-05-19",
+      "source_url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxPaGR3eFF5Zks1dXNSaTI2djNKcW9vNzF3a0UyT09rZU15X2J0cF80dUNVbXN1WXZLSmZ2alhnc1ctNllRRUZlZE1pU24yVFZucEdET2drMVBEYzlneHNOX0xNVUk1eUlkVW1ScVI1a29qNUJFT0ozTFp1ZUtRMG5ZR0ZZM19rWXd4UGE4TzAxUXJrV1hHUzFRejJNRHprOF9FU182eGhhalNXbFF2WjdCOWVkVGtzU1ZGTDYweHdRallHUGx0bDRVOHhqRHFDYUNIVUZSMWp3?oc=5",
+      "source_name": "Energetica-India",
+      "description_notes": "raise $300M to invest in renewable energy infrastructure across India, targeting solar, wind, and energy storage assets in the subcontinent's fast-growing clean power market. Copenhagen Infrastructure Partners, a Denmark-based specialist in large-scale infrastructure, is leveraging its track record in Nordic renewables to expand into South Asia's high-growth opportunity set. The fund represents the firm's dedicated India strategy and deepens its presence in emerging markets beyond its traditional European focus.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-13T10:01:19",
+      "articles": [
+        {
+          "title": "BII and Copenhagen Infrastructure Partners launch USD 300 Million Renewable Energy Platform in India - Energetica India Magazine",
+          "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxPaGR3eFF5Zks1dXNSaTI2djNKcW9vNzF3a0UyT09rZU15X2J0cF80dUNVbXN1WXZLSmZ2alhnc1ctNllRRUZlZE1pU24yVFZucEdET2drMVBEYzlneHNOX0xNVUk1eUlkVW1ScVI1a29qNUJFT0ozTFp1ZUtRMG5ZR0ZZM19rWXd4UGE4TzAxUXJrV1hHUzFRejJNRHprOF9FU182eGhhalNXbFF2WjdCOWVkVGtzU1ZGTDYweHdRallHUGx0bDRVOHhqRHFDYUNIVUZSMWp3?oc=5",
+          "source_name": "Energetica India Magazine",
+          "source_domain": "energetica-india.net",
+          "published_date": "2026-05-19",
+          "summary": "BII and Copenhagen Infrastructure Partners launch USD 300 Million Renewable Energy Platform in India&nbsp;&nbsp;Energetica India Magazine",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
         }
       ]
     },
@@ -15964,7 +16284,7 @@
       "announcement_date": "2026-05-19",
       "source_url": "https://www.buyoutsinsider.com/cari-lodges-aqualis-sets-target-for-debut-secondaries-fund/",
       "source_name": "Buyouts Insider",
-      "description_notes": "launch a secondaries and GP-stakes fund with an undisclosed target amount, entering a crowded market where established players like Lexington Partners and Coller International dominate mid-market secondary investments. Aqualis's entry into the space suggests demand for additional dry powder in secondary transactions, though limited information is available on anchor LPs or the firm's distinctive positioning relative to larger, multi-billion-dollar competitors.",
+      "description_notes": "launch a secondaries and GP-stakes fund with an undisclosed target, entering a competitive market where established players like Lexington Partners and Coller dominate continuation and secondary strategies. Aqualis is building its inaugural vehicle in the secondaries space, targeting institutional LPs seeking exposure to mature portfolio companies and fund restructurings without disclosed anchor commitments or fund size benchmarks to compare against prior vintages.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-05-21T13:17:20",
@@ -21966,6 +22286,15 @@
       "date_added": "2026-04-23T11:12:06",
       "articles": [
         {
+          "title": "CVC Credit prices $550m CLO",
+          "url": "https://alternativecreditinvestor.com/2026/08/13/cvc-credit-prices-550m-clo/",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-08-13",
+          "summary": "",
+          "feed_name": "Alternative Credit Investor"
+        },
+        {
           "title": "CVC Credit prices first European CLO of 2026 at \u20ac406m",
           "url": "https://alternativecreditinvestor.com/2026/05/08/cvc-credit-prices-first-european-clo-of-2026-at-e406m/",
           "source_name": "Alternative Credit Investor",
@@ -23033,6 +23362,15 @@
       "covered_date": null,
       "date_added": "2026-04-23T11:12:06",
       "articles": [
+        {
+          "title": "HarbourVest reveals deployment strategy for $4.75bn flagship; Bain, Platinum Equity, Monogram lead recent beverage deals",
+          "url": "https://www.pehub.com/harbourvest-reveals-deployment-strategy-for-4-75bn-flagship-bain-platinum-equity-monogram-lead-recent-beverage-deals/",
+          "source_name": "PE Hub",
+          "source_domain": "pehub.com",
+          "published_date": "2026-08-12",
+          "summary": "",
+          "feed_name": "PE Hub"
+        },
         {
           "title": "HarbourVest closes $4.75bn co-invest fund after exceeding target",
           "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/harbourvest-closes-4-75bn-co-invest-fund-after-exceeding-target.html",
@@ -55919,6 +56257,18 @@
       "country": "US"
     },
     {
+      "firm": "Copenhagen Infrastructure Partners",
+      "firm_slug": "copenhagen-infrastructure-partners",
+      "fund_count": 3,
+      "total_aum_millions": 3100.0,
+      "categories": [
+        "Credit Funds",
+        "Infrastructure"
+      ],
+      "city": "Copenhagen",
+      "country": "Denmark"
+    },
+    {
       "firm": "EQT Real Estate",
       "firm_slug": "eqt-real-estate",
       "fund_count": 1,
@@ -56084,18 +56434,6 @@
       ],
       "city": "Miami",
       "country": "US"
-    },
-    {
-      "firm": "Copenhagen Infrastructure Partners",
-      "firm_slug": "copenhagen-infrastructure-partners",
-      "fund_count": 2,
-      "total_aum_millions": 2800.0,
-      "categories": [
-        "Credit Funds",
-        "Infrastructure"
-      ],
-      "city": "Copenhagen",
-      "country": "Denmark"
     },
     {
       "firm": "JF Lehman & Company",
@@ -57129,6 +57467,17 @@
       ],
       "city": "Singapore",
       "country": "Singapore"
+    },
+    {
+      "firm": "Mirae Asset",
+      "firm_slug": "mirae-asset",
+      "fund_count": 2,
+      "total_aum_millions": 1468.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "Seoul",
+      "country": "South Korea"
     },
     {
       "firm": "Nova Infrastructure",
@@ -58953,6 +59302,17 @@
       "country": "Australia"
     },
     {
+      "firm": "Aperture",
+      "firm_slug": "aperture",
+      "fund_count": 1,
+      "total_aum_millions": 600.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "N/A",
+      "country": ""
+    },
+    {
       "firm": "Oister Global",
       "firm_slug": "oister-global",
       "fund_count": 2,
@@ -59428,6 +59788,17 @@
       ],
       "city": "N/A",
       "country": "N/A"
+    },
+    {
+      "firm": "Bluehill.vc",
+      "firm_slug": "bluehill-vc",
+      "fund_count": 1,
+      "total_aum_millions": 480.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "Bangalore",
+      "country": "India"
     },
     {
       "firm": "YourNest",
@@ -63061,8 +63432,8 @@
       "categories": [
         "Venture Capital"
       ],
-      "city": "N/A",
-      "country": "N/A"
+      "city": "San Francisco",
+      "country": "US"
     },
     {
       "firm": "Develop North",
@@ -63874,6 +64245,39 @@
       "total_aum_millions": 2.0,
       "categories": [
         "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": "US"
+    },
+    {
+      "firm": "BlackSoil AMC",
+      "firm_slug": "blacksoil-amc",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "Mumbai",
+      "country": "India"
+    },
+    {
+      "firm": "Churchill",
+      "firm_slug": "churchill",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "N/A",
+      "country": ""
+    },
+    {
+      "firm": "Equiton",
+      "firm_slug": "equiton",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Real Estate"
       ],
       "city": "N/A",
       "country": "US"
@@ -67447,8 +67851,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-08-12T06:10:24.652012",
-      "last_success": "2026-08-12T06:10:24.652021",
+      "last_fetch": "2026-08-13T06:00:24.588382",
+      "last_success": "2026-08-13T06:00:24.588386",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -67457,8 +67861,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-08-12T06:10:22.247292",
-      "last_success": "2026-08-12T06:10:22.247302",
+      "last_fetch": "2026-08-13T06:00:22.134158",
+      "last_success": "2026-08-13T06:00:22.134169",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -67497,8 +67901,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-08-12T06:10:31.636901",
-      "last_success": "2026-08-12T06:10:31.636911",
+      "last_fetch": "2026-08-13T06:00:32.061683",
+      "last_success": "2026-08-13T06:00:32.061694",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -67507,8 +67911,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-08-12T06:10:09.846132",
-      "last_success": "2026-08-12T06:10:09.846139",
+      "last_fetch": "2026-08-13T06:00:08.373100",
+      "last_success": "2026-08-13T06:00:08.373104",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -67517,8 +67921,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-08-12T06:10:06.966893",
-      "last_success": "2026-08-12T06:10:06.966901",
+      "last_fetch": "2026-08-13T06:00:05.903778",
+      "last_success": "2026-08-13T06:00:05.903785",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -67527,8 +67931,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-08-12T06:10:20.700204",
-      "last_success": "2026-08-12T06:10:20.700214",
+      "last_fetch": "2026-08-13T06:00:20.500359",
+      "last_success": "2026-08-13T06:00:20.500368",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -67537,8 +67941,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-08-12T06:10:11.569509",
-      "last_success": "2026-08-12T06:10:11.569521",
+      "last_fetch": "2026-08-13T06:00:09.944599",
+      "last_success": "2026-08-13T06:00:09.944607",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -67547,8 +67951,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-08-12T06:10:27.838802",
-      "last_success": "2026-08-12T06:10:27.838810",
+      "last_fetch": "2026-08-13T06:00:28.672754",
+      "last_success": "2026-08-13T06:00:28.672759",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -67557,8 +67961,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-08-12T06:10:13.248947",
-      "last_success": "2026-08-12T06:10:13.248949",
+      "last_fetch": "2026-08-13T06:00:11.835151",
+      "last_success": "2026-08-13T06:00:11.835159",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -67567,8 +67971,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-08-12T06:10:05.216660",
-      "last_success": "2026-08-12T06:10:05.216667",
+      "last_fetch": "2026-08-13T06:00:04.479948",
+      "last_success": "2026-08-13T06:00:04.479950",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -67577,18 +67981,18 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-08-12T06:10:18.846265",
-      "last_success": "2026-08-12T06:10:18.846277",
+      "last_fetch": "2026-08-13T06:00:18.390739",
+      "last_success": "2026-08-13T06:00:18.390747",
       "error_count": 0,
-      "article_count": 10,
+      "article_count": 0,
       "last_error": "",
       "enabled": true
     },
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-08-12T06:10:16.127693",
-      "last_success": "2026-08-12T06:10:16.127703",
+      "last_fetch": "2026-08-13T06:00:16.747457",
+      "last_success": "2026-08-13T06:00:16.747467",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -67597,8 +68001,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-08-12T06:10:08.522735",
-      "last_success": "2026-08-12T06:10:08.522744",
+      "last_fetch": "2026-08-13T06:00:07.130571",
+      "last_success": "2026-08-13T06:00:07.130583",
       "error_count": 0,
       "article_count": 18,
       "last_error": "",
@@ -67606,34 +68010,34 @@
     }
   ],
   "stats": {
-    "total_funds": 1358,
+    "total_funds": 1366,
     "total_covered": 52,
-    "total_uncovered": 1306,
-    "total_aum_millions": 1006546602.2,
+    "total_uncovered": 1314,
+    "total_aum_millions": 1006549450.2,
     "by_category": {
-      "Venture Capital": 341,
+      "Venture Capital": 344,
+      "Credit Funds": 277,
+      "Real Estate": 130,
       "Private Equity": 350,
-      "Credit Funds": 274,
-      "Infrastructure": 181,
+      "Infrastructure": 182,
       "Secondaries & GP-Stakes": 80,
-      "Real Estate": 129,
       "Other": 2,
       "N/A": 1
     },
     "by_stage": {
-      "Other": 145,
-      "Launch": 564,
-      "First Close": 236,
-      "Final Close": 387,
+      "First Close": 238,
+      "Final Close": 389,
+      "Other": 146,
+      "Launch": 567,
       "Interim Close": 24,
       "Close": 1,
       "Second Close": 1
     },
-    "article_count": 147,
+    "article_count": 137,
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-08-12"
+      "latest": "2026-08-13"
     }
   }
 }
