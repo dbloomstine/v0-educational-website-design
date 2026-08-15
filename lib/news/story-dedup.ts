@@ -98,12 +98,37 @@ export function titleJaccard(a: string, b: string): number {
   return intersection / (A.size + B.size - intersection)
 }
 
+/**
+ * True when two titles cite a common significant figure ("₹1,125 Cr" /
+ * "Rs 1,125 crore", "$4.75 billion" / "$4.75bn"). Numbers are compared with
+ * separators stripped; 3+ digits required; four-digit year-like tokens
+ * excluded. Two same-day stories about prefix-related firms at the same
+ * close stage that also share a headline figure are one story — the shared
+ * number survives even when independent currency conversion has pushed the
+ * extracted sizes far apart (target vs close amount, spot FX vs rounded).
+ */
+export function titlesShareSignificantNumber(a: string, b: string): boolean {
+  const nums = (s: string) =>
+    new Set(
+      (s.match(/\d[\d,.]*/g) ?? [])
+        .map((n) => n.replace(/[,.]/g, ''))
+        .filter((n) => n.length >= 3 && !/^(19|20)\d{2}$/.test(n))
+    )
+  const A = nums(a)
+  const B = nums(b)
+  if (A.size === 0 || B.size === 0) return false
+  for (const n of A) if (B.has(n)) return true
+  return false
+}
+
 export interface StoryCandidate {
   title: string
   firmName: string | null
   fundName: string | null
   fundSizeUsdMillions: number | null
   personName?: string | null
+  /** close_type from extraction (first_close, final_close, …) when known. */
+  closeType?: string | null
 }
 
 /**
@@ -166,6 +191,28 @@ export function isSameStory(a: StoryCandidate, b: StoryCandidate): boolean {
   if (prefixFirmMatch) {
     if (fundA.length > 0 && fundA === fundB) return true
     if (fundSizesMatch(a.fundSizeUsdMillions, b.fundSizeUsdMillions, 0.05)) return true
+    // Same close stage + strongly similar titles: parent/arm naming variance
+    // ("Mirae Asset" vs "Mirae Asset Venture Investments India") combined
+    // with independent currency conversion puts the same first close outside
+    // the 5% size band. The title similarity is the corroborating signal.
+    if (
+      a.closeType &&
+      a.closeType === b.closeType &&
+      titleJaccard(a.title, b.title) >= 0.45
+    ) {
+      return true
+    }
+    // Same close stage + a shared headline figure ("Rs 1,800 crore" cited by
+    // both) — catches the target-vs-close-amount extraction split, where one
+    // outlet's headline led with the ₹1,800cr corpus and another's with the
+    // ₹1,125cr first close, and the extracted sizes disagreed by 60%.
+    if (
+      a.closeType &&
+      a.closeType === b.closeType &&
+      titlesShareSignificantNumber(a.title, b.title)
+    ) {
+      return true
+    }
     return false
   }
 
@@ -193,6 +240,37 @@ export function isSameStory(a: StoryCandidate, b: StoryCandidate): boolean {
     // each other on the same day is essentially unheard of, while classifier
     // naming variance on one story is routine.
     if (fundSizesMatch(a.fundSizeUsdMillions, b.fundSizeUsdMillions, 0.02)) return true
+
+    // Same close stage + sizes within 20%: currency drift defeats the 2%
+    // band when outlets convert independently. Real case, 2026-08-14: Mirae
+    // Asset's first close ran twice in one edition — DealStreetAsia used
+    // spot FX ("$118m") while the classifier converted ₹1,125 crore to
+    // $135M (12.6% apart), and every outlet invented a different fund name
+    // (India Fund III / Venture Opportunity Fund II / Fund II). Two
+    // genuinely distinct funds from one firm at the same close stage within
+    // 20% on the same day is rare enough to accept the merge.
+    if (
+      a.closeType &&
+      a.closeType === b.closeType &&
+      fundSizesMatch(a.fundSizeUsdMillions, b.fundSizeUsdMillions, 0.2)
+    ) {
+      return true
+    }
+
+    // Very similar titles are one story regardless of fund-name variance.
+    if (titleJaccard(a.title, b.title) >= 0.5) return true
+
+    // Same close stage + shared headline figure — the target-vs-close-amount
+    // split (one outlet leads with the ₹1,800cr corpus, another with the
+    // ₹1,125cr first close; extracted sizes disagree by 60% but both titles
+    // cite the same number).
+    if (
+      a.closeType &&
+      a.closeType === b.closeType &&
+      titlesShareSignificantNumber(a.title, b.title)
+    ) {
+      return true
+    }
 
     return false
   }

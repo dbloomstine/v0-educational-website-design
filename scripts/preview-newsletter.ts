@@ -96,7 +96,7 @@ async function inlineExternalFaviconsForOfflinePreview(html: string): Promise<st
       if (dataUri) {
         return `<img src="${dataUri}" alt="${altChar}"${rest}/>`
       }
-      return `<span style="display:inline-block;width:22px;height:22px;border-radius:50%;background:#F8F5EC;border:1px solid #D8D0BC;color:#1E3A5F;font-size:11px;font-weight:700;line-height:20px;text-align:center;vertical-align:middle;font-family:Georgia,'Times New Roman',Times,serif;">${altChar}</span>`
+      return `<span style="display:inline-block;width:18px;height:18px;border-radius:50%;background:#F8F5EC;border:1px solid #D8D0BC;color:#1E3A5F;font-size:10px;font-weight:700;line-height:16px;text-align:center;vertical-align:middle;margin-right:5px;font-family:Georgia,'Times New Roman',Times,serif;">${altChar}</span>`
     },
   )
 }
@@ -191,12 +191,16 @@ async function main() {
   writeFileSync(OUTPUT_PATH, html, 'utf8')
   console.log(`Wrote ${OUTPUT_PATH}`)
 
-  try {
-    execSync(`open "${OUTPUT_PATH}"`)
-    console.log('Opened in default browser. Refresh after each tweak.')
-  } catch {
-    console.log('Could not auto-open — paste this path in your browser:')
-    console.log(`  file://${OUTPUT_PATH}`)
+  if (process.env.NO_OPEN === '1') {
+    console.log(`Skipped auto-open (NO_OPEN=1): file://${OUTPUT_PATH}`)
+  } else {
+    try {
+      execSync(`open "${OUTPUT_PATH}"`)
+      console.log('Opened in default browser. Refresh after each tweak.')
+    } catch {
+      console.log('Could not auto-open — paste this path in your browser:')
+      console.log(`  file://${OUTPUT_PATH}`)
+    }
   }
 }
 

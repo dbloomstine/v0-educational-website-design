@@ -33,6 +33,8 @@ function makeArticle(overrides: Partial<NewsletterArticle>): NewsletterArticle {
     geography: [],
     personName: null,
     personTitle: null,
+    closeType: null,
+    coFirms: [],
     alsoCoveredBy: [],
     ...overrides,
   }
@@ -314,7 +316,8 @@ describe('capPerFirm', () => {
       fundCategories: ['PE'], isHighSignal: false, relevanceScore: 0.5,
       tldr: null, firmName: firm, firmDomain: null, fundName: null,
       fundSizeUsdMillions: size, fundStrategy: null, geography: [],
-      personName: null, personTitle: null, alsoCoveredBy: [],
+      personName: null, personTitle: null, closeType: null,
+      coFirms: [], alsoCoveredBy: [],
     }) as NewsletterArticle
 
   it('keeps at most two stories per firm, highest priority first', () => {

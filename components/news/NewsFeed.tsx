@@ -56,6 +56,7 @@ const FUND_CATEGORIES = [
   { label: 'Infra', value: 'infrastructure' },
   { label: 'Secondaries', value: 'secondaries' },
   { label: 'GP-Stakes', value: 'gp_stakes' },
+  { label: 'Service Providers', value: 'service_provider' },
 ] as const
 
 const EVENT_TYPE_GROUPS = [
@@ -626,9 +627,8 @@ export function NewsFeed() {
           {/* Dense article list */}
           <div className="rounded-lg border border-border bg-card overflow-hidden">
             {/* Column headers — desktop only */}
-            <div className="hidden lg:grid items-center gap-x-2 px-4 py-1.5 border-b border-border bg-muted/50 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 grid-cols-[56px_140px_72px_1fr_auto_56px_150px]">
+            <div className="hidden lg:grid items-center gap-x-2 px-4 py-1.5 border-b border-border bg-muted/50 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 grid-cols-[96px_72px_1fr_auto_56px_150px]">
               <span>Type</span>
-              <span>Category</span>
               <span>Size</span>
               <span className="pl-7">Headline</span>
               <span />

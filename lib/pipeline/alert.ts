@@ -26,6 +26,7 @@ export type AlertKey =
   | 'classification_api_outage'
   | 'newsletter_skipped'
   | 'classification_backlog_empty'
+  | 'feed_silent_zero'
 
 /** Cooldown per alert type, in hours. */
 const COOLDOWN_HOURS: Record<AlertKey, number> = {
@@ -35,6 +36,9 @@ const COOLDOWN_HOURS: Record<AlertKey, number> = {
   // At most one edition per day, so this only ever fires once per incident.
   newsletter_skipped: 20,
   classification_backlog_empty: 24,
+  // The silent-zero check runs on every hourly ingest and the condition
+  // persists until the feed is fixed — stay quiet between reminders.
+  feed_silent_zero: 72,
 }
 
 async function withinCooldown(
@@ -114,4 +118,57 @@ function escapeHtml(s: string): string {
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
+}
+
+/**
+ * Detect "silent zero" feeds: active, fetch reporting success, but zero
+ * articles ingested for a week. This is the failure mode RSS-removal
+ * migrations produce — the endpoint returns HTTP 200 with an HTML page,
+ * which parses as an empty feed, so last_success_at keeps advancing while
+ * coverage quietly dies. Real case: PEI Group's 2026 platform migration
+ * killed PERE, Infrastructure Investor, and Private Debt Investor for
+ * weeks with zero errors logged.
+ *
+ * Only tiers 1-3 are checked: a niche tier-6 Google News query can
+ * legitimately go a week without a match.
+ */
+export async function alertOnSilentZeroFeeds(supabase: DbClient): Promise<void> {
+  try {
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+
+    const { data: feeds } = await supabase
+      .from('feed_sources')
+      .select('id, name, url, last_success_at, created_at')
+      .eq('is_active', true)
+      .lte('tier', 3)
+      .gte('last_success_at', new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString())
+      .lt('created_at', weekAgo)
+
+    if (!feeds || feeds.length === 0) return
+
+    const stuck: string[] = []
+    for (const feed of feeds as Array<{ id: string; name: string }>) {
+      const { count } = await supabase
+        .from('news_items')
+        .select('id', { count: 'exact', head: true })
+        .eq('feed_source_id', feed.id)
+        .gte('created_at', weekAgo)
+      if ((count ?? 0) === 0) stuck.push(feed.name)
+    }
+
+    if (stuck.length === 0) return
+
+    await sendPipelineAlert(
+      supabase,
+      'feed_silent_zero',
+      `${stuck.length} feed(s) fetching OK but ingesting nothing`,
+      [
+        `These active tier 1-3 feeds report fetch success but produced zero articles in 7 days: ${stuck.join(', ')}.`,
+        'Likely cause: the publisher moved or removed its RSS feed and the endpoint now returns HTML that parses as an empty feed.',
+        'Check the feed URL in feed_sources, or replace it with a Google News site: mirror.',
+      ]
+    )
+  } catch {
+    // Monitoring must never break ingestion.
+  }
 }
