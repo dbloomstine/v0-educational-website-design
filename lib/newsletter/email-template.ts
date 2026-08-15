@@ -693,7 +693,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                       <tr>
                         <td class="fops-eyebrow-light" style="letter-spacing:2.5px;">
-                          PE &nbsp;·&nbsp; VC &nbsp;·&nbsp; CREDIT &nbsp;·&nbsp; REAL ESTATE &nbsp;·&nbsp; INFRA
+                          PE &nbsp;·&nbsp; VC &nbsp;·&nbsp; CREDIT &nbsp;·&nbsp; HEDGE &nbsp;·&nbsp; REAL ESTATE &nbsp;·&nbsp; INFRA
                         </td>
                         <td align="right" class="fops-eyebrow-amber">
                           FUNDOPSHQ.COM
