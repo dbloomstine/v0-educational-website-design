@@ -56,17 +56,15 @@ const PILLARS = [
   },
 ] as const
 
-const COVERAGE = [
-  'CFO & Finance',
-  'Compliance & Regulatory',
-  'Fund Administration',
-  'Investor Relations',
-  'Tax & K-1 Preparation',
-  'Banking & Treasury',
-  'Fundraising & Capital',
-  'Insurance & Risk',
-  'Audit & Reporting',
-  'Cybersecurity & IT',
+const STORY_TYPES = [
+  'Fund Launches',
+  'First & Final Closes',
+  'Capital Raises',
+  'LP Commitments',
+  'Executive Moves',
+  'M&A & Take-Privates',
+  'Regulatory Actions',
+  'Service Provider Moves',
 ] as const
 
 const FUND_TYPES = [
@@ -412,8 +410,8 @@ export default function AboutPage() {
                   </span>
                 </h2>
                 <p className="mt-6 max-w-md text-base text-muted-foreground leading-relaxed">
-                  Across every major alternative asset class and every operational function. From the back office to
-                  the C-suite, from launch to wind-down.
+                  Every major alternative asset class, and every move that matters — the capital, the people,
+                  and the firms working around the funds. From first close to wind-down.
                 </p>
               </div>
 
@@ -438,18 +436,18 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <p className="mb-4 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground/60">
-                    Operational areas
+                    Story types
                   </p>
                   <ul className="space-y-2.5">
-                    {COVERAGE.map((area, i) => (
+                    {STORY_TYPES.map((type, i) => (
                       <li
-                        key={area}
+                        key={type}
                         className="flex items-baseline gap-3 border-b border-foreground/10 pb-2.5 text-base text-foreground"
                       >
                         <span className="font-mono text-[10px] text-muted-foreground/40 tabular-nums">
                           {String(i + 1).padStart(2, '0')}
                         </span>
-                        <span>{area}</span>
+                        <span>{type}</span>
                       </li>
                     ))}
                   </ul>
