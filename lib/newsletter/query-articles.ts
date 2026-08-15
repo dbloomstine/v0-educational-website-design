@@ -61,8 +61,8 @@ const CATEGORY_LABELS: Record<string, string> = {
   infrastructure: 'Infrastructure',
   secondaries: 'Secondaries',
   gp_stakes: 'GP Stakes',
-  emerging_managers: 'Emerging Managers',
   lp_commitments: 'LP Commitments',
+  service_providers: 'Service Providers',
   people_moves: 'People Moves',
   deals: 'Deals',
   regulatory: 'Regulatory',
@@ -91,19 +91,12 @@ const EVENT_TYPE_LABELS: Record<string, string> = {
 const MIN_FUND_SIZE_MILLIONS = 10
 
 /**
- * Fund size at or below which a fund event is routed to Emerging Managers.
- *
- * A 30-day audit found the newsletter is not actually *rejecting* small funds
- * — sub-$100M events had the highest inclusion rate of any size band (24 of 29
- * ran, vs 90 of 180 for $1B+). The problem is placement: every category
- * section sorts by size descending, so a $40M debut fund always sits beneath
- * the megafunds and reads as an afterthought. Half of all published fund
- * stories were $1B+, and KKR or Blackstone appeared in 19 of ~26 editions.
- *
- * Giving these stories their own section is placement, not preference — the
- * megafund headlines stay exactly where they are.
+ * The Emerging Managers section was removed 2026-08-15 on reader feedback.
+ * It was a pure size split (any fund event ≤ $250M), which routinely filed
+ * multi-billion-AUM firms' smaller vehicles — Mirae Asset's $135M first
+ * close, an LP's RFP — under "Emerging Managers". Small fund events now
+ * stay in their asset-class section, sorted by size like everything else.
  */
-const EMERGING_MANAGER_CEILING_MILLIONS = 250
 
 /**
  * Cap on stories from a single firm per edition. Without it one firm's news
@@ -253,6 +246,62 @@ const LP_NAME_PATTERNS = [
   /\bMass ?PRIM\b/i,
 ]
 
+/**
+ * Service-provider detection for the dedicated Service Providers section
+ * (added 2026-08-15 on reader feedback — law firms, fund admins, auditors,
+ * valuation shops, fund finance and prime brokerage are core audience but
+ * had no home; a King & Spalding fund-finance team hire ran with no
+ * category at all).
+ *
+ * Two signals, either is enough:
+ *   1. The classifier tagged fund_categories: ['service_provider']
+ *      (added to the prompt the same day — only future articles carry it).
+ *   2. Title or firm name matches provider patterns / a known-provider list
+ *      (covers the existing backlog until reclassification).
+ */
+const SERVICE_PROVIDER_TITLE_PATTERNS = [
+  /\blaw firms?\b/i,
+  /\b(fund formation|funds? (counsel|lawyers?|attorneys?))\b/i,
+  /\bfund (administration|administrators?|admin)\b/i,
+  /\bfund financ(e|ing)\b/i,
+  /\b(subscription (line|credit)|NAV (loan|lending|facility))\b/i,
+  /\bprime broker(age|s)?\b/i,
+  /\b(custodian|custody|depositary|transfer agent)\b/i,
+  /\b(fund )?(audit(or|ors)?|assurance) (firm|practice|team)\b/i,
+  /\bvaluation (firm|services|practice|advisory)\b/i,
+  /\bplacement agent\b/i,
+  /\bfund tech(nology)?\b/i,
+]
+
+const KNOWN_SERVICE_PROVIDERS = [
+  // Law
+  'kirkland & ellis', 'latham & watkins', 'proskauer', 'ropes & gray',
+  'debevoise', 'simpson thacher', 'skadden', 'paul weiss', 'paul hastings',
+  'goodwin', 'dechert', 'willkie', 'akin gump', 'schulte roth',
+  'morgan lewis', 'gibson dunn', 'cleary gottlieb', 'king & spalding',
+  'fried frank', 'sidley austin', 'clifford chance', 'linklaters',
+  'travers smith', 'macfarlanes', 'maples group', 'walkers', 'ogier',
+  'carey olsen', 'mourant', 'appleby',
+  // Fund admin / services
+  'citco', 'ss&c', 'apex group', 'alter domus', 'gen ii', 'iq-eq',
+  'jtc group', 'csc global', 'ocorian', 'waystone', 'aztec group',
+  'northern trust', 'state street', 'bny mellon', 'sei investments',
+  'standish management', 'ultimus', 'juniper square', 'carta',
+  // Valuation / accounting / consulting
+  'kroll', 'houlihan lokey', 'lincoln international', 'stout',
+  'eisneramper', 'rsm us', 'grant thornton', 'bdo', 'cohen & company',
+  'deloitte', 'kpmg', 'ernst & young', 'pwc', 'pricewaterhousecoopers',
+  'aca group', 'accelex', 'mercer', 'cambridge associates', 'albourne',
+]
+
+function isServiceProvider(article: NewsletterArticle): boolean {
+  if (article.fundCategories.includes('service_provider')) return true
+  if (SERVICE_PROVIDER_TITLE_PATTERNS.some((p) => p.test(article.title))) return true
+  const firm = (article.firmName ?? '').toLowerCase()
+  if (firm && KNOWN_SERVICE_PROVIDERS.some((p) => firm.includes(p))) return true
+  return false
+}
+
 export interface NewsletterArticle {
   id: string
   title: string
@@ -273,6 +322,13 @@ export interface NewsletterArticle {
   geography: string[]
   personName: string | null
   personTitle: string | null
+  closeType: string | null
+  /**
+   * Other firms involved in the story (co-managers, acquirer/target,
+   * JV partners) from entity extraction — high-confidence firm entities
+   * distinct from firmName. Drives the multi-favicon rendering.
+   */
+  coFirms: string[]
   /** Other sources that also covered this story (populated by story dedup) */
   alsoCoveredBy: string[]
 }
@@ -342,7 +398,13 @@ export async function queryNewsletterArticles(
 
   // ─── Fetch prior editions' article IDs + firm/fund fingerprints ────────
   const priorExclusions = opts.excludePriorEdition === false
-    ? { ids: new Set<string>(), fingerprints: new Set<string>(), priorEvents: [] as PriorFundEvent[] }
+    ? {
+        ids: new Set<string>(),
+        fingerprints: new Set<string>(),
+        priorEvents: [] as PriorFundEvent[],
+        priorTitles: [] as PriorTitle[],
+        priorPeople: new Set<string>(),
+      }
     : await getPriorEditionExclusions(supabase)
 
   const { data: rows, error } = await supabase
@@ -366,10 +428,34 @@ export async function queryNewsletterArticles(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const articles: NewsletterArticle[] = filtered.map((row: any) => {
     const extractedData = row.extracted_data as Record<string, unknown> | null
-    const entitiesRaw = row.entities_raw as Array<{ name: string; type: string; role: string | null }> | null
-    const firmEntity = entitiesRaw?.find((e) => e.type === 'firm')
+    const entitiesRaw = row.entities_raw as Array<{ name: string; type: string; role: string | null; confidence?: number }> | null
+    // Entity fallback for a missing firm_name requires high confidence — a
+    // 0.6-confidence "related entity" once put "Siri" (Apple's assistant,
+    // mentioned in passing) on a story as the firm, paired with the news
+    // outlet's favicon.
+    const firmEntity = entitiesRaw?.find(
+      (e) => e.type === 'firm' && (e.confidence ?? 0) >= 0.8
+    )
     const firmName = (extractedData?.firm_name as string) ?? firmEntity?.name ?? null
     const fundSizeMillions = extractedData?.fund_size_usd_millions as number | null
+
+    // Additional high-confidence firms beyond the primary — co-managers,
+    // acquirer/target pairs, JV partners. Cap at 2 extras. Any token overlap
+    // with the primary firm means it's almost certainly the same org under a
+    // variant name ("Korea's National Pension Service" vs "Korea's NPS",
+    // "Goldman Sachs" vs "Goldman Sachs Alternatives") — skip those.
+    const primaryNorm = normalizeFirmName(firmName)
+    const primaryTokens = new Set(primaryNorm.split(' '))
+    const coFirms: string[] = []
+    for (const e of entitiesRaw ?? []) {
+      if (e.type !== 'firm' || (e.confidence ?? 0) < 0.8) continue
+      const norm = normalizeFirmName(e.name)
+      if (!norm || norm === primaryNorm) continue
+      if (norm.split(' ').some((t) => primaryTokens.has(t))) continue
+      if (coFirms.some((c) => normalizeFirmName(c) === norm)) continue
+      coFirms.push(e.name)
+      if (coFirms.length >= 2) break
+    }
 
     return {
       id: row.id,
@@ -391,6 +477,8 @@ export async function queryNewsletterArticles(
       geography: (extractedData?.geography as string[]) ?? [],
       personName: (extractedData?.person_name as string) ?? null,
       personTitle: (extractedData?.person_title as string) ?? null,
+      closeType: (extractedData?.close_type as string) ?? null,
+      coFirms,
       alsoCoveredBy: [],
     }
   })
@@ -411,6 +499,23 @@ export async function queryNewsletterArticles(
       )
     ) {
       return false
+    }
+    // Title memory: catches re-reports that carry no size or fund name and
+    // therefore evade every fingerprint. Real case, 2026-07-31→08-01: "CVC
+    // aims for Q3 close for 6th secondaries fund" ran twice on consecutive
+    // days because the second copy had null size and null fund name.
+    const candFirm = normalizeFirmName(a.firmName)
+    for (const prior of priorExclusions.priorTitles) {
+      const sim = titleJaccard(a.title, prior.title)
+      if (sim >= 0.85) return false
+      if (candFirm && prior.firm === candFirm && sim >= 0.55) return false
+    }
+    // Person memory: an exec move re-reported next day with a different firm
+    // extraction ("Blackstone" vs "BCRED") shares no firm fingerprint, but
+    // the person is the same. 2026-07-27→28: Jonathan Bock ran twice.
+    if (a.personName && PEOPLE_TYPES.includes(a.eventType ?? '')) {
+      const person = normalizeFirmName(a.personName)
+      if (person && priorExclusions.priorPeople.has(person)) return false
     }
     // Recent window: exact fingerprint keys.
     const fps = storyFingerprints(a.firmName, a.fundName, a.eventType, a.fundSizeUsdMillions)
@@ -435,34 +540,29 @@ export async function queryNewsletterArticles(
   const firmCapped = capPerFirm(sizeFiltered)
 
   // ─── Split into sections ───────────────────────────────────────────────
-  const lpCommitments = firmCapped.filter(isLpCommitment)
+  // Service providers first — a Kirkland fund-formation team move belongs in
+  // Service Providers, not People Moves, regardless of its event type.
+  const serviceProviders = firmCapped.filter(isServiceProvider)
+  const spIds = new Set(serviceProviders.map((a) => a.id))
+  const nonSp = firmCapped.filter((a) => !spIds.has(a.id))
+
+  const lpCommitments = nonSp.filter(isLpCommitment)
   const lpIds = new Set(lpCommitments.map((a) => a.id))
-  const allFundActivity = firmCapped.filter(
+  const fundActivity = nonSp.filter(
     (a) => FUND_ACTIVITY_TYPES.includes(a.eventType ?? '') && !lpIds.has(a.id)
   )
-
-  // Emerging managers are pulled out of the category groups entirely — see
-  // EMERGING_MANAGER_CEILING_MILLIONS. Only sized events qualify; an unsized
-  // fund event could be any size and stays in its asset-class section.
-  const emergingManagers = allFundActivity.filter(
-    (a) =>
-      a.fundSizeUsdMillions != null &&
-      a.fundSizeUsdMillions <= EMERGING_MANAGER_CEILING_MILLIONS
-  )
-  const emergingIds = new Set(emergingManagers.map((a) => a.id))
-  const fundActivity = allFundActivity.filter((a) => !emergingIds.has(a.id))
-  const peopleMoves = firmCapped.filter((a) => PEOPLE_TYPES.includes(a.eventType ?? ''))
-  const deals = firmCapped.filter((a) => DEALS_TYPES.includes(a.eventType ?? ''))
-  const regulatory = firmCapped.filter((a) => REGULATORY_TYPES.includes(a.eventType ?? ''))
+  const peopleMoves = nonSp.filter((a) => PEOPLE_TYPES.includes(a.eventType ?? ''))
+  const deals = nonSp.filter((a) => DEALS_TYPES.includes(a.eventType ?? ''))
+  const regulatory = nonSp.filter((a) => REGULATORY_TYPES.includes(a.eventType ?? ''))
 
   const sortByPriority = (arr: NewsletterArticle[]) =>
     [...arr].sort((a, b) => articlePriorityScore(b) - articlePriorityScore(a))
 
-  const cappedFundActivity = sortByPriority(fundActivity).slice(0, 30)
-  const cappedEmerging = sortByPriority(emergingManagers).slice(0, 8)
+  const cappedFundActivity = sortByPriority(fundActivity).slice(0, 36)
   const cappedLp = sortByPriority(lpCommitments).slice(0, 6)
-  const cappedPeople = sortByPriority(peopleMoves).slice(0, 5)
-  const cappedDeals = sortByPriority(deals).slice(0, 5)
+  const cappedSp = sortByPriority(serviceProviders).slice(0, 6)
+  const cappedPeople = sortByPriority(peopleMoves).slice(0, 6)
+  const cappedDeals = sortByPriority(deals).slice(0, 8)
   const cappedRegulatory = sortByPriority(regulatory).slice(0, 3)
 
   // Group fund activity by primary category
@@ -493,19 +593,19 @@ export async function queryNewsletterArticles(
       articles: grouped[cat],
     }))
 
-  if (cappedEmerging.length > 0) {
-    groups.push({
-      category: 'emerging_managers',
-      label: CATEGORY_LABELS.emerging_managers,
-      articles: cappedEmerging,
-    })
-  }
-
   if (cappedLp.length > 0) {
     groups.push({
       category: 'lp_commitments',
       label: CATEGORY_LABELS.lp_commitments,
       articles: cappedLp,
+    })
+  }
+
+  if (cappedSp.length > 0) {
+    groups.push({
+      category: 'service_providers',
+      label: CATEGORY_LABELS.service_providers,
+      articles: cappedSp,
     })
   }
 
@@ -643,7 +743,12 @@ function deduplicateByStory(articles: NewsletterArticle[]): NewsletterArticle[] 
   for (const article of articles) {
     let matched = false
     for (const story of stories) {
-      if (isSameStory(story[0], article)) {
+      // Compare against every member, not just the representative — story
+      // identity is not transitive through one member. Real case, 2026-08-15:
+      // nine outlets covered one Mirae first close; the ₹1,800cr-target
+      // variant matched the ₹1,125cr variant but not the cluster's $118M
+      // representative, so it escaped as a ninth "distinct" story.
+      if (story.some((member) => isSameStory(member, article))) {
         story.push(article)
         matched = true
         break
@@ -775,12 +880,19 @@ export function matchesPriorFundEvent(
   )
 }
 
+/** A title published in the recent-edition window, with its normalized firm. */
+export interface PriorTitle {
+  firm: string
+  title: string
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function extractFingerprintFields(row: any): {
   firmName: string | null
   fundName: string | null
   fundSize: number | null
   eventType: string | null
+  personName: string | null
 } {
   const extractedData = row.extracted_data as Record<string, unknown> | null
   const entitiesRaw = row.entities_raw as Array<{ name: string; type: string }> | null
@@ -789,12 +901,19 @@ function extractFingerprintFields(row: any): {
   const fundName = (extractedData?.fund_name as string) ?? null
   const fundSize = (extractedData?.fund_size_usd_millions as number | null) ?? null
   const eventType = row.event_type ?? row.article_type ?? null
-  return { firmName, fundName, fundSize, eventType }
+  const personName = (extractedData?.person_name as string) ?? null
+  return { firmName, fundName, fundSize, eventType, personName }
 }
 
 async function getPriorEditionExclusions(
   supabase: DbClient
-): Promise<{ ids: Set<string>; fingerprints: Set<string>; priorEvents: PriorFundEvent[] }> {
+): Promise<{
+  ids: Set<string>
+  fingerprints: Set<string>
+  priorEvents: PriorFundEvent[]
+  priorTitles: PriorTitle[]
+  priorPeople: Set<string>
+}> {
   // Pull the extended window once (newest first). The most recent
   // CROSS_EDITION_LOOKBACK editions contribute full fingerprints + the
   // exact-id exclusion; the older editions in the window contribute only the
@@ -823,7 +942,9 @@ async function getPriorEditionExclusions(
   const ids = recentIds
   const fingerprints = new Set<string>()
 
-  // Recent window: full fingerprints for every article.
+  // Recent window: full fingerprints, titles, and people for every article.
+  const priorTitles: PriorTitle[] = []
+  const priorPeople = new Set<string>()
   const recentList = Array.from(recentIds)
   for (let i = 0; i < recentList.length; i += 200) {
     const chunk = recentList.slice(i, i + 200)
@@ -833,9 +954,16 @@ async function getPriorEditionExclusions(
       .in('id', chunk)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     for (const row of (rowsData ?? []) as any[]) {
-      const { firmName, fundName, fundSize, eventType } = extractFingerprintFields(row)
+      const { firmName, fundName, fundSize, eventType, personName } = extractFingerprintFields(row)
       for (const fp of storyFingerprints(firmName, fundName, eventType, fundSize)) {
         fingerprints.add(fp)
+      }
+      if (row.title) {
+        priorTitles.push({ firm: normalizeFirmName(firmName), title: row.title as string })
+      }
+      if (personName && PEOPLE_TYPES.includes(eventType ?? '')) {
+        const person = normalizeFirmName(personName)
+        if (person) priorPeople.add(person)
       }
     }
   }
@@ -861,7 +989,7 @@ async function getPriorEditionExclusions(
     }
   }
 
-  return { ids, fingerprints, priorEvents }
+  return { ids, fingerprints, priorEvents, priorTitles, priorPeople }
 }
 
 // ─── Article priority scoring for cap ───────────────────────────────────────

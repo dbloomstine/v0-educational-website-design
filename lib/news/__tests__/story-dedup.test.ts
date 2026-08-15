@@ -3,6 +3,7 @@ import {
   normalizeFirmName,
   fundSizesMatch,
   titleJaccard,
+  titlesShareSignificantNumber,
   isSameStory,
   type StoryCandidate,
 } from '../story-dedup'
@@ -284,5 +285,120 @@ describe('titleJaccard', () => {
   it('filters out short words', () => {
     // "a is of to at" are all ≤2 chars — ignored.
     expect(titleJaccard('a is of to', 'at is a on')).toBe(0)
+  })
+})
+
+// ─── 2026-08-15 dedup hardening regressions ─────────────────────────────────
+
+describe('isSameStory — close-stage + currency-drift merges (2026-08-14 Mirae leak)', () => {
+  it('merges same firm, differing fund names, same close stage, sizes within 20%', () => {
+    // DealStreetAsia used spot FX ($118M) while the classifier converted
+    // ₹1,125 crore to $135M — 12.6% apart, outside the 2% band. Outlets also
+    // invented different fund names, so the fund-name-mismatch branch fired.
+    const a = candidate({
+      title: 'Mirae Asset hits first close of third India-focused venture fund at $118m',
+      firmName: 'Mirae Asset',
+      fundName: 'Mirae Asset India Fund III',
+      fundSizeUsdMillions: 118,
+      closeType: 'first_close',
+    })
+    const b = candidate({
+      title: 'Mirae Asset’s venture fund raises ₹1,125 crore in first close, targets ₹1,800 crore corpus',
+      firmName: 'Mirae Asset',
+      fundName: 'Mirae Asset Venture Opportunity Fund II',
+      fundSizeUsdMillions: 135,
+      closeType: 'first_close',
+    })
+    expect(isSameStory(a, b)).toBe(true)
+  })
+
+  it('still keeps two genuinely distinct funds from one firm separate', () => {
+    const a = candidate({
+      title: 'Apollo closes Infrastructure Fund IV at $10bn',
+      firmName: 'Apollo',
+      fundName: 'Apollo Infrastructure Fund IV',
+      fundSizeUsdMillions: 10000,
+      closeType: 'final_close',
+    })
+    const b = candidate({
+      title: 'Apollo wraps up credit vehicle at $4bn hard cap',
+      firmName: 'Apollo',
+      fundName: 'Apollo Credit Fund II',
+      fundSizeUsdMillions: 4000,
+      closeType: 'final_close',
+    })
+    expect(isSameStory(a, b)).toBe(false)
+  })
+
+  it('merges prefix-firm variants at the same close stage with similar titles', () => {
+    const a = candidate({
+      title: 'Mirae Asset Venture Investments Marks First Close Of Fund II At ₹1,125 Cr',
+      firmName: 'Mirae Asset Venture Investments',
+      fundName: 'Mirae Asset Venture Investments Fund II',
+      fundSizeUsdMillions: 135,
+      closeType: 'first_close',
+    })
+    const b = candidate({
+      title: 'Mirae Asset Venture makes first Close of Fund II at Rs 1,125 cr',
+      firmName: 'Mirae Asset Venture',
+      fundName: 'Mirae Asset Venture Fund II',
+      fundSizeUsdMillions: 135,
+      closeType: 'first_close',
+    })
+    expect(isSameStory(a, b)).toBe(true)
+  })
+
+  it('merges same firm with differing fund names when titles are near-identical', () => {
+    const a = candidate({
+      title: 'KKR closes $19.2 billion infrastructure fund for North America, Europe',
+      firmName: 'KKR',
+      fundName: 'KKR Global Infrastructure Investors V',
+      fundSizeUsdMillions: 19200,
+    })
+    const b = candidate({
+      title: 'KKR closes $19.2 billion infrastructure fund',
+      firmName: 'KKR',
+      fundName: 'KKR Infrastructure Fund',
+      fundSizeUsdMillions: 19200,
+    })
+    expect(isSameStory(a, b)).toBe(true)
+  })
+})
+
+describe('titlesShareSignificantNumber', () => {
+  it('matches the same figure across currency formats', () => {
+    expect(
+      titlesShareSignificantNumber(
+        'Mirae makes first close of Rs 1,800 crore India growth fund',
+        'Mirae Asset’s venture fund raises ₹1,125 crore in first close, targets ₹1,800 crore corpus'
+      )
+    ).toBe(true)
+  })
+
+  it('ignores years and short numbers', () => {
+    expect(
+      titlesShareSignificantNumber(
+        'Firm A targets 2026 close for Fund II',
+        'Firm B eyes 2026 vintage for debut vehicle'
+      )
+    ).toBe(false)
+  })
+
+  it('prefix-firm same-close-stage stories sharing a figure merge', () => {
+    const a = candidate({
+      title: 'Mirae makes first close of Rs 1,800 crore India growth fund',
+      firmName: 'Mirae',
+      fundName: 'Mirae India Growth Fund',
+      fundSizeUsdMillions: 216,
+      closeType: 'first_close',
+    })
+    const b = candidate({
+      title: 'Mirae Asset’s venture fund raises ₹1,125 crore in first close, targets ₹1,800 crore corpus',
+      firmName: 'Mirae Asset',
+      fundName: 'Mirae Asset Venture Opportunity Fund II',
+      fundSizeUsdMillions: 135,
+      closeType: 'first_close',
+    })
+    expect(isSameStory(a, b)).toBe(true)
   })
 })

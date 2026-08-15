@@ -17,8 +17,9 @@
  */
 
 import type { ArticleGroup } from './query-articles'
-import { getEventTypeLabel, formatFundSize, isLikelyAumLeak } from './query-articles'
-import { getPrimaryLogoUrl, resolveLogoDomain } from '@/lib/news/firm-logo-url'
+import { formatFundSize, isLikelyAumLeak } from './query-articles'
+import { getPrimaryLogoUrl, resolveFirmLogoDomain } from '@/lib/news/firm-logo-url'
+import { getFirmDomain } from '@/lib/news/firm-logos'
 import { CHROME_EXTENSION_URL } from '@/lib/chrome-extension'
 import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponsors'
 
@@ -54,20 +55,10 @@ const FONT_SERIF = `Georgia, 'Times New Roman', Times, serif`
 const FONT_SANS = `-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, Helvetica, sans-serif`
 const FONT_MONO = `ui-monospace, Menlo, Consolas, 'Courier New', monospace`
 
-// ─── Event type badge classes ──────────────────────────────────────────────
-// Semantic class names tied to the styles defined in STYLE_BLOCK below.
-
-const EVENT_BADGE_CLASS: Record<string, string> = {
-  fund_launch: 'fops-b-launch',
-  fund_close: 'fops-b-close',
-  capital_raise: 'fops-b-raise',
-  executive_hire: 'fops-b-exec',
-  executive_change: 'fops-b-exec',
-  executive_departure: 'fops-b-exec',
-  acquisition: 'fops-b-deal',
-  merger: 'fops-b-deal',
-  regulatory_action: 'fops-b-reg',
-}
+// ─── Category section-head classes ─────────────────────────────────────────
+// Event-type pills were removed 2026-08-15 on reader feedback ("the pills
+// are becoming distracting") — the classification survives in the data and
+// section placement; the row itself now leads with firm + headline.
 
 const CATEGORY_CLASS: Record<string, string> = {
   PE: 'fops-c-pe',
@@ -78,8 +69,8 @@ const CATEGORY_CLASS: Record<string, string> = {
   infrastructure: 'fops-c-infra',
   secondaries: 'fops-c-sec',
   gp_stakes: 'fops-c-gp',
-  emerging_managers: 'fops-c-em',
   lp_commitments: 'fops-c-lp',
+  service_providers: 'fops-c-sp',
   people_moves: 'fops-c-ppl',
   deals: 'fops-c-deals',
   regulatory: 'fops-c-reg',
@@ -109,76 +100,53 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 .fops-bg-navy { background-color: ${NAVY}; }
 .fops-bg-navy-deep { background-color: ${NAVY_DEEP}; }
 
-/* Story row */
-.fops-row { padding: 16px 0; border-bottom: 1px solid ${HAIRLINE}; }
-.fops-meta { margin-bottom: 8px; }
-.fops-meta td { vertical-align: middle; padding-right: 8px; }
-.fops-meta-badge { padding-right: 10px !important; }
-
-.fops-title-wrap { margin-bottom: 6px; }
+/* Story row — dense, executive-brief style. One compact meta line
+   (favicons + firm + size), headline, then a single truncated summary
+   line with the source folded onto its end. ~2x the stories per screen
+   vs the pre-2026-08 layout. */
+.fops-row { padding: 9px 0; border-bottom: 1px solid ${HAIRLINE}; }
+.fops-m { line-height: 18px; margin: 0 0 3px; }
 .fops-title {
   color: ${INK};
   text-decoration: none;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
   font-family: ${FONT_SERIF};
-  line-height: 1.3;
+  line-height: 1.35;
 }
 .fops-size {
-  color: ${INK_MUTED};
-  font-size: 13px;
+  color: ${INK};
+  font-size: 11px;
   font-family: ${FONT_MONO};
-  font-weight: 600;
+  font-weight: 700;
+  padding-left: 6px;
 }
 .fops-blurb {
   color: ${INK_MUTED};
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.5;
   font-family: ${FONT_SANS};
-  margin: 0 0 8px;
+  margin: 2px 0 0;
 }
 .fops-source {
-  color: ${INK_MUTED};
+  color: rgba(90,107,130,0.75);
   font-size: 10px;
   font-family: ${FONT_MONO};
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  line-height: 1.5;
 }
 .fops-firm {
-  color: ${INK_MUTED};
+  color: ${INK};
   font-size: 12px;
   font-family: ${FONT_SANS};
-  font-weight: 600;
-}
-
-/* Event badges */
-.fops-badge {
-  display: inline-block;
-  font-size: 9px;
   font-weight: 700;
-  padding: 3px 6px;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  font-family: ${FONT_MONO};
-  border-radius: 2px;
-  white-space: nowrap;
-  background: ${CREAM};
-  border-width: 1px;
-  border-style: solid;
+  vertical-align: middle;
 }
-.fops-b-launch { border-color: #3B6BA5; color: #3B6BA5; }
-.fops-b-close { border-color: #9D3B5F; color: #9D3B5F; }
-.fops-b-raise { border-color: #3E7A4E; color: #3E7A4E; }
-.fops-b-exec { border-color: #6B5B8A; color: #6B5B8A; }
-.fops-b-deal { border-color: #3B6BA5; color: #3B6BA5; }
-.fops-b-reg { border-color: #B13B2E; color: #B13B2E; }
-.fops-b-default { border-color: ${INK_MUTED}; color: ${INK_MUTED}; }
 
 /* Category section heads */
-.fops-cat { margin-bottom: 28px; }
+.fops-cat { margin-bottom: 16px; }
 .fops-cat-head {
-  padding-bottom: 10px;
+  padding-bottom: 5px;
   border-bottom-width: 2px;
   border-bottom-style: solid;
 }
@@ -205,29 +173,30 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 .fops-c-infra { border-bottom-color: #0284C7; }
 .fops-c-sec { border-bottom-color: #DB2777; }
 .fops-c-gp { border-bottom-color: #0D9488; }
-.fops-c-em { border-bottom-color: #65A30D; }
 .fops-c-lp { border-bottom-color: ${AMBER}; }
+.fops-c-sp { border-bottom-color: #475569; }
 .fops-c-ppl { border-bottom-color: #8B5CF6; }
 .fops-c-deals { border-bottom-color: #0891B2; }
 .fops-c-reg { border-bottom-color: #DC2626; }
 .fops-c-default { border-bottom-color: ${INK_MUTED}; }
 
-/* Firm logo */
+/* Firm logo — 18px inline favicon(s) on the meta line. */
 .fops-logo {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   vertical-align: middle;
-  background: ${CREAM};
+  background: #FFFFFF;
   border: 1px solid ${HAIRLINE};
+  margin-right: 5px;
 }
 .fops-logo-img { object-fit: contain; }
 .fops-logo-fallback {
   display: inline-block;
   color: ${INK};
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
-  line-height: 20px;
+  line-height: 16px;
   text-align: center;
   font-family: ${FONT_SERIF};
 }
@@ -376,73 +345,92 @@ function collapseTemplateWhitespace(html: string): string {
     .join('')
 }
 
-// ─── Firm logos (circular favicon with cream tile) ─────────────────────────
+// ─── Firm logos (circular favicon with white tile) ─────────────────────────
 
-function renderFirmLogo(article: ArticleGroup['articles'][0]): string {
-  const resolvedDomain = resolveLogoDomain(
-    article.firmName,
-    article.firmDomain,
-    article.sourceName,
-  )
-  const displayName = article.firmName ?? article.sourceName ?? '?'
-  const initial = displayName[0].toUpperCase()
-  if (resolvedDomain) {
-    const logoUrl = getPrimaryLogoUrl(resolvedDomain)
-    return `<img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(initial)}" width="22" height="22" class="fops-logo fops-logo-img" />`
+function logoImg(domain: string, alt: string): string {
+  const logoUrl = getPrimaryLogoUrl(domain)
+  return `<img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(alt)}" width="18" height="18" class="fops-logo fops-logo-img" />`
+}
+
+/**
+ * Favicon strip + firm names for the meta line. Renders the primary firm's
+ * favicon plus up to two co-firm favicons (M&A counterparties, co-managers).
+ *
+ * Accuracy rules:
+ *   - A favicon next to a firm name must come from THAT firm (curated map
+ *     or classify-time domain) — never from the news outlet.
+ *   - Co-firm favicons come from the curated map only; an unmapped co-firm
+ *     still shows its name, just without an icon.
+ *   - No firm at all → no favicon and no label (the headline carries it);
+ *     an outlet favicon would only mislead.
+ */
+function renderMetaIdentity(article: ArticleGroup['articles'][0]): string {
+  const parts: string[] = []
+  const names: string[] = []
+
+  if (article.firmName) {
+    const primaryDomain = resolveFirmLogoDomain(article.firmName, article.firmDomain)
+    if (primaryDomain) {
+      parts.push(logoImg(primaryDomain, article.firmName[0].toUpperCase()))
+    } else {
+      parts.push(
+        `<span class="fops-logo fops-logo-fallback">${escapeHtml(article.firmName[0].toUpperCase())}</span>`
+      )
+    }
+    names.push(article.firmName)
+
+    for (const coFirm of article.coFirms.slice(0, 2)) {
+      const coDomain = getFirmDomain(coFirm)
+      if (coDomain) parts.push(logoImg(coDomain, coFirm[0].toUpperCase()))
+      names.push(coFirm)
+    }
   }
-  return `<span class="fops-logo fops-logo-fallback">${escapeHtml(initial)}</span>`
+
+  if (names.length === 0) return ''
+  const nameHtml = `<span class="fops-firm">${names.map(escapeHtml).join(' <span style="color:rgba(90,107,130,0.5);font-weight:400;">·</span> ')}</span>`
+  return parts.join('') + nameHtml
+}
+
+/** Truncate a summary at a word boundary so the blurb stays ~one line. */
+function truncateBlurb(text: string, max = 150): string {
+  if (text.length <= max) return text
+  const cut = text.slice(0, max)
+  const lastSpace = cut.lastIndexOf(' ')
+  return `${cut.slice(0, lastSpace > max * 0.6 ? lastSpace : max).replace(/[,;:.\s]+$/, '')}…`
 }
 
 // ─── Single story row ──────────────────────────────────────────────────────
 
 function renderArticle(article: ArticleGroup['articles'][0]): string {
-  const badgeClass =
-    EVENT_BADGE_CLASS[article.eventType ?? ''] ?? 'fops-b-default'
-  const label = getEventTypeLabel(article.eventType)
-  // Suppress size pill on likely AUM leaks (e.g. 4/18 "Nest $81B" where
+  // Suppress size on likely AUM leaks (e.g. 4/18 "Nest $81B" where
   // classifier put £60bn firm AUM into fund_size_usd_millions on an
   // unnamed private-credit mandate). Same rail as buildSubject.
   const size = isLikelyAumLeak(article.fundSizeUsdMillions, article.fundName)
     ? ''
     : formatFundSize(article.fundSizeUsdMillions)
-  const logo = renderFirmLogo(article)
 
-  const badgeHtml = label
-    ? `<span class="fops-badge ${badgeClass}">${escapeHtml(label)}</span>`
+  const identity = renderMetaIdentity(article)
+  const sizeHtml = size ? `<span class="fops-size">${escapeHtml(size)}</span>` : ''
+  const metaLine =
+    identity || sizeHtml ? `<div class="fops-m">${identity}${sizeHtml}</div>` : ''
+
+  const extraSources = article.alsoCoveredBy?.length
+    ? ` +${article.alsoCoveredBy.length}`
+    : ''
+  const sourceHtml = article.sourceName
+    ? ` <span class="fops-source">&mdash; ${escapeHtml(article.sourceName)}${extraSources}</span>`
     : ''
 
-  const firmHtml = article.firmName
-    ? `<span class="fops-firm">${escapeHtml(article.firmName)}</span>`
-    : ''
-
-  // Compact inline meta row — badge + logo + firm name. Content-sized
-  // table so the cells hug the left edge and the full-width title/
-  // blurb/source below can breathe across the entire column.
-  const metaRow = `
-    <table cellpadding="0" cellspacing="0" border="0" class="fops-meta">
-      <tr>
-        ${badgeHtml ? `<td class="fops-meta-badge">${badgeHtml}</td>` : ''}
-        <td>${logo}</td>
-        ${firmHtml ? `<td>${firmHtml}</td>` : ''}
-      </tr>
-    </table>`
-
-  const alsoCoveredBy =
-    article.alsoCoveredBy && article.alsoCoveredBy.length > 0
-      ? ` &nbsp;·&nbsp; ALSO: ${article.alsoCoveredBy.slice(0, 3).map(escapeHtml).join(', ')}`
-      : ''
-
-  const sizeHtml = size ? ` <span class="fops-size">(${escapeHtml(size)})</span>` : ''
+  const blurbHtml = article.tldr
+    ? `<div class="fops-blurb">${escapeHtml(truncateBlurb(article.tldr))}${sourceHtml}</div>`
+    : `<div class="fops-blurb">${sourceHtml}</div>`
 
   return `
     <tr>
       <td class="fops-row">
-        ${metaRow}
-        <div class="fops-title-wrap">
-          <a href="${escapeHtml(article.sourceUrl)}" class="fops-title" style="color:${INK};text-decoration:none;" target="_blank">${escapeHtml(article.title)}</a>${sizeHtml}
-        </div>
-        ${article.tldr ? `<div class="fops-blurb">${escapeHtml(article.tldr)}</div>` : ''}
-        <div class="fops-source">${escapeHtml(article.sourceName ?? '')}${alsoCoveredBy}</div>
+        ${metaLine}
+        <div><a href="${escapeHtml(article.sourceUrl)}" class="fops-title" style="color:${INK};text-decoration:none;" target="_blank">${escapeHtml(article.title)}</a></div>
+        ${blurbHtml}
       </td>
     </tr>`
 }
@@ -754,10 +742,10 @@ export function renderNewsletterEmail(params: TemplateParams): string {
           <!-- ─── Content ─── -->
           <tr>
             <td class="fops-bg-cream" style="padding:32px 32px 16px;background-color:${CREAM};">
-              <div class="fops-eyebrow" style="margin-bottom:6px;">
+              <div class="fops-eyebrow" style="margin-bottom:4px;">
                 Section A &nbsp;·&nbsp; The Wire
               </div>
-              <div class="fops-serif fops-ink" style="font-size:22px;font-weight:700;line-height:1.2;margin-bottom:24px;">
+              <div class="fops-serif fops-ink" style="font-size:20px;font-weight:700;line-height:1.2;margin-bottom:16px;">
                 This morning&rsquo;s <span class="fops-amber" style="font-style:italic;">top stories.</span>
               </div>
               ${categoryBlocks}

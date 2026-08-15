@@ -20,6 +20,10 @@ export interface NewsArticle {
   firmDomain: string | null
   originalCurrency: string | null
   originalAmountMillions: number | null
+  /** Other high-confidence firms in the story (co-managers, M&A counterparties). */
+  coFirms: string[]
+  /** close_type from extraction (first_close, final_close, …) when known. */
+  closeType: string | null
 }
 
 export interface ArticleGroup {

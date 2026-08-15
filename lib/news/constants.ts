@@ -27,6 +27,7 @@ export const CATEGORY_LABELS: Record<string, { label: string; color: string }> =
   infrastructure: { label: 'Infra', color: 'bg-sky-900/50 text-sky-300' },
   secondaries: { label: 'Secondaries', color: 'bg-rose-900/50 text-rose-300' },
   gp_stakes: { label: 'GP-Stakes', color: 'bg-teal-900/50 text-teal-300' },
+  service_provider: { label: 'Services', color: 'bg-slate-800/60 text-slate-300' },
 }
 
 // Normalize variant source names to canonical forms.

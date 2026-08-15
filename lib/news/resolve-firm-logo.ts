@@ -14,6 +14,51 @@ function normalizeFirmName(name: string): string {
     .trim();
 }
 
+/** Tokens that don't distinguish one firm from another. */
+const GENERIC_TOKENS = new Set([
+  'inc', 'llc', 'ltd', 'lp', 'llp', 'plc', 'corp', 'co', 'company', 'group',
+  'partners', 'capital', 'management', 'advisors', 'advisers', 'ventures',
+  'holdings', 'asset', 'assets', 'fund', 'funds', 'investments', 'investment',
+  'global', 'international', 'the', 'and', 'vc', 'pe',
+]);
+
+function tokenize(s: string): string[] {
+  return s.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter(Boolean);
+}
+
+/**
+ * Accept a Clearbit suggestion only when its company name actually matches
+ * the firm we asked about. The unvalidated version took suggestion[0]
+ * verbatim, which resolved the fund manager "EMERGING" to emergingtravel.com
+ * (Emerging Travel Group) — a wrong favicon shipped to every subscriber. A
+ * missed lookup renders as an initial tile; a wrong match renders as another
+ * company's logo. The tile is the better failure.
+ */
+function isAcceptableSuggestion(query: string, suggestionName: string): boolean {
+  const q = tokenize(query);
+  const s = tokenize(suggestionName);
+  const qDistinct = q.filter((t) => !GENERIC_TOKENS.has(t));
+  const sDistinct = s.filter((t) => !GENERIC_TOKENS.has(t));
+
+  // All-generic query ("Capital Group"): require exact full-name match.
+  if (qDistinct.length === 0) return q.join(' ') === s.join(' ');
+
+  // Every distinctive query token must appear in the suggestion (prefix
+  // match tolerates plurals/possessives).
+  const inSuggestion = (t: string) => s.some((st) => st.startsWith(t) || t.startsWith(st));
+  if (!qDistinct.every(inSuggestion)) return false;
+
+  // Single-token queries are the dangerous case ("Emerging", "Meridian"):
+  // reject suggestions that add distinctive tokens of their own, since
+  // those are usually a different company that merely shares the word.
+  if (qDistinct.length === 1) {
+    const inQuery = (t: string) => q.some((qt) => qt.startsWith(t) || t.startsWith(qt));
+    if (sDistinct.some((t) => !inQuery(t))) return false;
+  }
+
+  return true;
+}
+
 /**
  * Resolve a firm name to its website domain.
  * First checks the curated domain map, then falls back to Clearbit autocomplete.
@@ -51,10 +96,12 @@ export async function resolveFirmDomain(firmName: string): Promise<string | null
       if (!res.ok) continue;
 
       const results = (await res.json()) as Array<{ name: string; domain: string; logo: string }>;
-      const domain = results?.[0]?.domain ?? null;
-      if (domain) {
-        firmDomainCache.set(firmName, domain);
-        return domain;
+      const match = (results ?? [])
+        .slice(0, 3)
+        .find((r) => r.domain && isAcceptableSuggestion(name, r.name));
+      if (match) {
+        firmDomainCache.set(firmName, match.domain);
+        return match.domain;
       }
     } catch {
       // Timeout or network error — try next variant

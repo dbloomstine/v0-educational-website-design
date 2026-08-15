@@ -13,7 +13,12 @@ import {
   formatRelativeDate,
 } from '@/lib/news/constants'
 import type { NewsArticle } from '@/lib/news/types'
-import { getLogoCandidates, resolveLogoDomain } from '@/lib/news/firm-logo-url'
+import {
+  getLogoCandidates,
+  resolveLogoDomain,
+  resolveFirmLogoDomain,
+} from '@/lib/news/firm-logo-url'
+import { getFirmDomain } from '@/lib/news/firm-logos'
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   EUR: '€', GBP: '£', JPY: '¥', CHF: 'CHF ', CNY: '¥', KRW: '₩', AUD: 'A$', CAD: 'C$',
@@ -49,7 +54,13 @@ function FirmLogo({
   sourceName?: string | null
   size?: number
 }) {
-  const resolvedDomain = resolveLogoDomain(firmName, domain, sourceName ?? null)
+  // When a firm is named, the icon must come from that firm — falling
+  // through to the publication's domain paired the outlet's favicon with
+  // the firm's name (the "Siri with Nikkei's logo" bug). With no firm at
+  // all, the source favicon is honest (the initial fallback labels it).
+  const resolvedDomain = firmName
+    ? resolveFirmLogoDomain(firmName, domain)
+    : resolveLogoDomain(firmName, domain, sourceName ?? null)
   const candidates = useMemo(
     () => (resolvedDomain ? getLogoCandidates(resolvedDomain) : []),
     [resolvedDomain],
@@ -101,6 +112,34 @@ function FirmLogo({
     >
       {initial}
     </div>
+  )
+}
+
+/**
+ * Extra favicons for co-firms (M&A counterparties, co-managers). Curated
+ * FIRM_DOMAIN_MAP only — a co-firm without a mapped domain renders no icon
+ * rather than a guessed (often wrong) one. Broken images hide themselves.
+ */
+function CoFirmLogos({ coFirms, size = 16 }: { coFirms: string[]; size?: number }) {
+  const entries = coFirms
+    .map((name) => ({ name, domain: getFirmDomain(name) }))
+    .filter((e): e is { name: string; domain: string } => !!e.domain)
+  if (entries.length === 0) return null
+  return (
+    <>
+      {entries.map((e) => (
+        <img
+          key={e.domain}
+          src={getLogoCandidates(e.domain)[0]}
+          alt={e.name}
+          title={e.name}
+          loading="lazy"
+          className="rounded-full object-contain bg-white shrink-0 ring-1 ring-black/5 -ml-1"
+          style={{ width: size, height: size }}
+          onError={(ev) => { (ev.target as HTMLImageElement).style.display = 'none' }}
+        />
+      ))}
+    </>
   )
 }
 
@@ -184,54 +223,38 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
   return (
     <>
       {/* ─── Desktop: Grid row (lg and up) ─── */}
+      {/* Event/category pills removed 2026-08-15 (reader feedback: pills
+          distracting). Classification renders as quiet mono text; the full
+          labels live on in the hover card. */}
       <div
         className={cn(
-          'hidden lg:grid group items-center gap-x-2 px-4 py-2.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[56px_140px_72px_1fr_auto_56px_150px]'
+          'hidden lg:grid group items-center gap-x-2 px-4 py-2 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[96px_72px_1fr_auto_56px_150px]'
         )}
       >
-        {/* Col 1: Event type badge */}
-        <div className="flex items-center">
-          {eventLabel ? (
-            <span
-              className={cn(
-                'inline-flex rounded border px-1.5 py-0.5 text-[11px] font-semibold leading-none whitespace-nowrap',
-                eventLabel.color
-              )}
-            >
-              {eventLabel.short}
-            </span>
-          ) : null}
-        </div>
+        {/* Col 1: Type · Category (muted text) */}
+        <span className="text-[10px] font-mono uppercase tracking-wide text-muted-foreground/60 truncate">
+          {[eventLabel?.short, article.fundCategories.slice(0, 1).map((c) => CATEGORY_LABELS[c]?.label || c).join('')]
+            .filter(Boolean)
+            .join(' · ')}
+        </span>
 
-        {/* Col 2: Category badges */}
-        <div className="flex items-center gap-1 overflow-hidden">
-          {article.fundCategories.slice(0, 2).map((cat) => {
-            const catInfo = CATEGORY_LABELS[cat]
-            return (
-              <span
-                key={cat}
-                className={cn(
-                  'inline-flex rounded px-1.5 py-0.5 text-[11px] font-semibold leading-none whitespace-nowrap',
-                  catInfo?.color || 'bg-muted text-muted-foreground'
-                )}
-              >
-                {catInfo?.label || cat}
-              </span>
-            )
-          })}
-        </div>
-
-        {/* Col 3: Fund size */}
+        {/* Col 2: Fund size */}
         <span className="text-[11px] font-mono font-medium text-muted-foreground whitespace-nowrap" title={sizeTooltip}>
           {displaySize || ''}
         </span>
 
-        {/* Col 4: Logo + Firm pill + Headline */}
+        {/* Col 3: Logo(s) + Firm + Headline */}
         <div className="flex items-center gap-1.5 min-w-0">
-          <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} />
+          <div className="flex items-center shrink-0">
+            <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} />
+            <CoFirmLogos coFirms={article.coFirms} />
+          </div>
           {article.firmName && (
-            <span className="inline-flex shrink-0 max-w-[100px] rounded bg-muted/50 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground truncate leading-none">
+            <span className="shrink-0 max-w-[140px] text-[11px] font-semibold text-muted-foreground truncate leading-none">
               {article.firmName}
+              {article.coFirms.length > 0 && (
+                <span className="font-normal text-muted-foreground/60"> + {article.coFirms.length}</span>
+              )}
             </span>
           )}
           <span className="text-[14px] font-medium text-foreground leading-snug truncate">
@@ -281,55 +304,37 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
           onClick={() => setMobileExpanded(!mobileExpanded)}
           className="w-full text-left px-3 py-2.5 active:bg-accent/30 transition-colors"
         >
-          {/* Row 1: Badges + Date */}
-          <div className="flex items-center gap-1.5 mb-1.5">
-            {eventLabel && (
-              <span
-                className={cn(
-                  'inline-flex rounded border px-1.5 py-0.5 text-[10px] font-semibold leading-none whitespace-nowrap',
-                  eventLabel.color
-                )}
-              >
-                {eventLabel.short}
-              </span>
-            )}
-            {article.fundCategories.slice(0, 2).map((cat) => {
-              const catInfo = CATEGORY_LABELS[cat]
-              return (
-                <span
-                  key={cat}
-                  className={cn(
-                    'inline-flex rounded px-1.5 py-0.5 text-[10px] font-semibold leading-none whitespace-nowrap',
-                    catInfo?.color || 'bg-muted text-muted-foreground'
-                  )}
-                >
-                  {catInfo?.label || cat}
-                </span>
-              )
-            })}
-            {displaySize && (
-              <span className="text-[10px] font-mono font-medium text-muted-foreground/60" title={sizeTooltip}>
-                {displaySize}
-              </span>
-            )}
-            {clusterSize && clusterSize > 1 && (
-              <span className="inline-flex items-center rounded-full bg-muted/60 border border-border/50 px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground/70 leading-none">
-                {clusterSize} sources
-              </span>
-            )}
+          {/* Row 1: quiet meta text + Date (pills removed 2026-08-15) */}
+          <div className="flex items-center gap-1.5 mb-1">
+            <span className="text-[9px] font-mono uppercase tracking-wide text-muted-foreground/50 truncate">
+              {[
+                eventLabel?.short,
+                article.fundCategories.slice(0, 1).map((c) => CATEGORY_LABELS[c]?.label || c).join(''),
+                displaySize ?? undefined,
+                clusterSize && clusterSize > 1 ? `${clusterSize} sources` : undefined,
+              ]
+                .filter(Boolean)
+                .join(' · ')}
+            </span>
             <span className="ml-auto text-[10px] text-muted-foreground/50 tabular-nums whitespace-nowrap">
               {article.publishedDate ? formatCompactTime(article.publishedDate, dateRange) : ''}
             </span>
             <ChevronDown className={cn('h-3 w-3 text-muted-foreground/40 shrink-0 transition-transform', mobileExpanded && 'rotate-180')} />
           </div>
 
-          {/* Row 2: Logo + Firm + Headline */}
+          {/* Row 2: Logo(s) + Firm + Headline */}
           <div className="flex items-start gap-2 min-w-0">
-            <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} size={24} />
+            <div className="flex items-center shrink-0">
+              <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} size={22} />
+              <CoFirmLogos coFirms={article.coFirms} size={16} />
+            </div>
             <div className="min-w-0 flex-1">
               {article.firmName && (
-                <span className="text-[10px] font-medium text-muted-foreground/60 block leading-tight mb-0.5">
+                <span className="text-[10px] font-semibold text-muted-foreground/70 block leading-tight mb-0.5">
                   {article.firmName}
+                  {article.coFirms.length > 0 && (
+                    <span className="font-normal text-muted-foreground/50"> · {article.coFirms.join(' · ')}</span>
+                  )}
                 </span>
               )}
               <span className={cn(
