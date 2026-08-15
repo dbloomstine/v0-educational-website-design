@@ -50,6 +50,21 @@ export function resolveLogoDomain(
 }
 
 /**
+ * Firm-only domain resolution — tiers 1-2 of resolveLogoDomain, with NO
+ * source-domain fallback. Use whenever the favicon renders next to a firm
+ * label: falling through to the publication's domain puts the outlet's icon
+ * next to the firm's name (real case: a row labeled "Siri" carrying Nikkei
+ * Asia's favicon). Returns null when nothing firm-derived resolves; callers
+ * should fall back to an initial tile, not a wrong logo.
+ */
+export function resolveFirmLogoDomain(
+  firmName: string | null,
+  firmDomain: string | null,
+): string | null {
+  return getFirmDomain(firmName) ?? firmDomain ?? null
+}
+
+/**
  * Ordered list of logo URLs to try for a given domain. The web renderer
  * walks this list via `onError`; each later entry is a fallback for when
  * the previous source has no logo for the domain.

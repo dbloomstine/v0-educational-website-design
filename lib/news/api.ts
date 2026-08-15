@@ -1,6 +1,6 @@
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { normalizeSourceName } from './constants'
-import { isSameStory, type StoryCandidate } from './story-dedup'
+import { isSameStory, normalizeFirmName, type StoryCandidate } from './story-dedup'
 import type { NewsArticle, ArticleGroup, FacetCounts, ArticleFeedResponse } from './types'
 
 export interface QueryParams {
@@ -149,6 +149,7 @@ function toStoryCandidate(a: NewsArticle): StoryCandidate {
     fundName: a.fundName,
     fundSizeUsdMillions: a.fundSizeUsd ? a.fundSizeUsd / 1_000_000 : null,
     personName: a.personName,
+    closeType: a.closeType,
   }
 }
 
@@ -161,7 +162,9 @@ function buildArticleGroups(articles: NewsArticle[]): ArticleGroup[] {
     const candidate = toStoryCandidate(article)
     let matched = false
     for (const story of stories) {
-      if (isSameStory(toStoryCandidate(story[0]), candidate)) {
+      // Any-member match — story identity is not transitive through one
+      // representative (see the same fix in newsletter query-articles).
+      if (story.some((member) => isSameStory(toStoryCandidate(member), candidate))) {
         story.push(article)
         matched = true
         break
@@ -200,6 +203,24 @@ function mapRowToArticle(row: any): NewsArticle {
   const extractedData = row.extracted_data as Record<string, unknown> | null
   const fundSizeMillions = extractedData?.fund_size_usd_millions as number | null
 
+  // Other high-confidence firms beyond the primary (same rules as the
+  // newsletter's coFirms): confidence >= 0.8, and no token overlap with the
+  // primary firm, which filters variant names of the same org.
+  const primaryFirm = (extractedData?.firm_name as string) ?? null
+  const primaryNorm = normalizeFirmName(primaryFirm)
+  const primaryTokens = new Set(primaryNorm.split(' '))
+  const entities = (extractedData?.entities as Array<{ name: string; type: string; confidence?: number }> | null) ?? []
+  const coFirms: string[] = []
+  for (const e of entities) {
+    if (e.type !== 'firm' || (e.confidence ?? 0) < 0.8) continue
+    const norm = normalizeFirmName(e.name)
+    if (!norm || norm === primaryNorm) continue
+    if (norm.split(' ').some((t) => primaryTokens.has(t))) continue
+    if (coFirms.some((c) => normalizeFirmName(c) === norm)) continue
+    coFirms.push(e.name)
+    if (coFirms.length >= 2) break
+  }
+
   return {
     id: row.id,
     title: row.title || row.tldr || 'Untitled article',
@@ -222,6 +243,8 @@ function mapRowToArticle(row: any): NewsArticle {
     firmDomain: (extractedData?.firm_domain as string) ?? null,
     originalCurrency: (extractedData?.original_currency as string) ?? null,
     originalAmountMillions: (extractedData?.original_amount_millions as number) ?? null,
+    coFirms,
+    closeType: (extractedData?.close_type as string) ?? null,
   }
 }
 

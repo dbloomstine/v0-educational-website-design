@@ -16,6 +16,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { alertOnSilentZeroFeeds } from '@/lib/pipeline/alert';
 import { fetchFeed } from './rss-client';
 import { createHash } from 'crypto';
 
@@ -143,6 +144,11 @@ export async function runIngestion(config: IngestionConfig): Promise<IngestionRe
       }
     }
   }
+
+  // Silent-zero watchdog: fires (throttled) when an active tier 1-3 feed
+  // keeps reporting fetch success while ingesting nothing for a week — the
+  // failure mode that quietly killed the PEI feeds in 2026-07/08.
+  await alertOnSilentZeroFeeds(config.supabase);
 
   result.durationMs = Date.now() - start;
   return result;
