@@ -1,7 +1,6 @@
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Logo } from "@/components/logo"
-import { CHROME_EXTENSION_URL } from "@/lib/chrome-extension"
 
 type NavLink = { label: string; href: string; external: boolean }
 
@@ -10,7 +9,6 @@ const NAV_LINKS: NavLink[] = [
   { label: "About", href: "/about", external: false },
   { label: "Privacy", href: "/privacy", external: false },
   { label: "Terms", href: "/terms", external: false },
-  { label: "Chrome extension", href: CHROME_EXTENSION_URL, external: true },
 ]
 
 const SOCIAL_LINKS = [

@@ -15,8 +15,6 @@
  *    user-agent `a:link` cascade.
  */
 
-import { CHROME_EXTENSION_URL } from '@/lib/chrome-extension'
-
 const NAVY = '#1E3A5F'
 const NAVY_DEEP = '#0F1E33'
 const CREAM = '#F8F5EC'
@@ -133,14 +131,14 @@ export function renderWelcomeEmail(unsubscribeUrl: string): string {
                 What to expect in each edition:
               </p>
               <ul style="margin:0 0 24px;padding-left:22px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
-                <li style="margin-bottom:8px;">Top fund news sorted by strategy — PE, VC, credit, real estate, infrastructure, hedge</li>
-                <li style="margin-bottom:8px;">A dedicated <strong>LP Commitments</strong> section tracking pension and institutional allocations</li>
+                <li style="margin-bottom:8px;">Fund news organized by strategy — PE, VC, credit, hedge, real estate, infrastructure, secondaries</li>
+                <li style="margin-bottom:8px;">Dedicated <strong>LP Commitments</strong> and <strong>Service Providers</strong> sections — pension and institutional allocations, plus the law firms, fund admins, and fund finance desks working around them</li>
                 <li style="margin-bottom:8px;">People Moves, M&amp;A, and regulatory news rounding out the brief</li>
-                <li>Links out to the original reporting from 200+ trade publications</li>
+                <li>Every story links to the original reporting, with duplicate coverage from 200+ publications collapsed into one line</li>
               </ul>
 
               <p style="margin:0 0 16px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
-                Don&rsquo;t want to wait until morning? The full newsroom updates all day at <a href="https://fundopshq.com/#news" style="color:${INK};text-decoration:underline;font-weight:600;">fundopshq.com</a> — and you can keep it one click away with the free <a href="${escapeHtml(CHROME_EXTENSION_URL)}" style="color:${INK};text-decoration:underline;font-weight:600;">Chrome extension</a>, so you can scan the latest fund news from any tab.
+                Don&rsquo;t want to wait until morning? The full newsroom updates all day at <a href="https://fundopshq.com/#news" style="color:${INK};text-decoration:underline;font-weight:600;">fundopshq.com</a>.
               </p>
 
               <!-- Feedback callout -->
@@ -148,7 +146,7 @@ export function renderWelcomeEmail(unsubscribeUrl: string): string {
                 <tr>
                   <td style="border-left:3px solid ${AMBER};padding:4px 0 4px 16px;">
                     <p style="margin:0;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
-                      One more thing — this is still a new product and I&rsquo;d love your feedback. Hit reply or email me directly at <a href="mailto:dbloomstine@gmail.com" style="color:${INK};text-decoration:underline;font-weight:700;">dbloomstine@gmail.com</a> any time — questions, story tips, things you&rsquo;d like to see covered, or (honestly) things you&rsquo;d rather see less of. I read everything.
+                      One more thing — I&rsquo;d love your feedback. Hit reply or email me directly at <a href="mailto:dbloomstine@gmail.com" style="color:${INK};text-decoration:underline;font-weight:700;">dbloomstine@gmail.com</a> any time — questions, story tips, things you&rsquo;d like to see covered, or (honestly) things you&rsquo;d rather see less of. I read everything.
                     </p>
                   </td>
                 </tr>
@@ -194,7 +192,7 @@ export function renderWelcomeEmail(unsubscribeUrl: string): string {
                       &nbsp;&middot;&nbsp;
                       <a href="https://fundopshq.com" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Visit FundOpsHQ</a>
                       &nbsp;&middot;&nbsp;
-                      <a href="${escapeHtml(CHROME_EXTENSION_URL)}" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Chrome extension</a>
+                      <a href="https://fundopshq.com/about" style="color:rgba(248,245,236,0.65);text-decoration:underline;">About</a>
                     </p>
                   </td>
                 </tr>

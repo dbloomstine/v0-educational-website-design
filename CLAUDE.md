@@ -236,14 +236,14 @@ with the server-side rules — needs a patch before the next manual run.
 
 **Supabase project** `reolugphmfmlwelnnvet` — 6 tables are in use after the intel platform was deleted (2026-04-09) and the cold outreach table was added (2026-04-14):
 
-| Table                    | Purpose                                                               |
-| ------------------------ | --------------------------------------------------------------------- |
-| `news_items`             | Articles from all ingested RSS feeds (the live content pool)          |
-| `feed_sources`           | RSS feed configs and ingest tier                                      |
-| `newsletter_editions`    | Sent newsletter records                                               |
-| `newsletter_subscribers` | Single opt-in email list (flipped from double opt-in 2026-04-11)      |
-| `feedback`               | Inline feedback submissions                                           |
-| `cold_outreach_sent`     | Append-only log of outreach drafts + sends (Path B + grow-newsletter) |
+| Table                    | Purpose                                                                                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `news_items`             | Articles from all ingested RSS feeds (the live content pool)                                                                              |
+| `feed_sources`           | RSS feed configs and ingest tier — the ONLY feed registry (the old `lib/news/feed-registry.ts` code copy was dead and deleted 2026-08-15) |
+| `newsletter_editions`    | Sent newsletter records                                                                                                                   |
+| `newsletter_subscribers` | Single opt-in email list (flipped from double opt-in 2026-04-11)                                                                          |
+| `feedback`               | Inline feedback submissions                                                                                                               |
+| `cold_outreach_sent`     | Append-only log of outreach drafts + sends (Path B + grow-newsletter)                                                                     |
 
 `news_items` still carries orphan FK columns (`cluster_id`, `gp_id`, `fund_id`, `firm_id`, `embedding`) from the old architecture. Nothing populates them, so they're always null. (The `story_cluster_id` column and its dormant Layer-1 clustering path were dropped 2026-04-18 — all feed grouping now runs through `isSameStory` in `lib/news/story-dedup.ts`.)
 
@@ -425,6 +425,8 @@ The subject line is chosen by `buildSubject` in `lib/newsletter/send-daily.ts` �
 `scripts/backfill-decode-entities.ts` is a one-shot utility that scans `news_items` for HTML entities left over from older ingests and rewrites titles/descriptions. Run with `--apply`; re-run until changes stabilize at 0 (the offset-based paging shifts as rows leave the filter, so it takes 3–4 passes).
 
 ## Before making changes
+
+0. **The Chrome extension is sunset (2026-08-15).** All promotion of it was removed from the site, newsletter, and welcome email. Do not re-add links to it. `/privacy/extension` stays up only while the Chrome Web Store listing exists (Google requires a live privacy-policy URL); it can be deleted once the listing is taken down.
 
 1. If the change touches the news pipeline, check what's currently running in `vercel.json` crons before editing schedules.
 2. **Newsletter template edits:** never add Google Fonts or `@font-face`. Never base64-inline sponsor logos in the live send path (fine in the preview script). Never remove the inline `color` style on an anchor tag even if you see a class that already sets color — the class will lose to Gmail's `a:link` pseudo-class cascade and the anchor will render bright blue. Never replace `.fops-cta-solid`'s `background-color` property with the `background` shorthand.

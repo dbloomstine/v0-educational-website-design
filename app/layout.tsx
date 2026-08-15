@@ -3,7 +3,6 @@ import type { Metadata } from "next"
 import { Inter, DM_Sans, Fraunces, JetBrains_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "sonner"
-import { TopAnnouncementBar } from "@/components/top-announcement-bar"
 import "./globals.css"
 
 // FundOpsHQ Brand Fonts:
@@ -130,7 +129,6 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <TopAnnouncementBar />
         {children}
         <Toaster
           position="bottom-right"
