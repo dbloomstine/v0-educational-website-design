@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { CheckCircle2, Loader2, ArrowRight, Mail } from 'lucide-react'
-import { CHROME_EXTENSION_URL } from '@/lib/chrome-extension'
 
 /**
  * Decode the `?e=<base64url>` query param that the outreach pipeline
@@ -155,18 +154,12 @@ export function HeroSubscribe() {
           <span className="flex items-center gap-3">
             <span className="hidden sm:inline">The Daily Brief for Private Markets</span>
             <span aria-hidden="true" className="hidden sm:inline text-foreground/20">·</span>
-            <a
-              href={CHROME_EXTENSION_URL}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/about"
               className="inline-flex items-center gap-1.5 text-amber-400 hover:text-amber-300 transition-colors"
             >
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-400" />
-              </span>
-              Get the Chrome extension
-            </a>
+              About the paper
+            </Link>
           </span>
         </div>
       </div>

@@ -4,8 +4,7 @@ import Image from 'next/image'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
-import { ArrowRight, Linkedin, Mail, Newspaper, Chrome, Building2 } from 'lucide-react'
-import { CHROME_EXTENSION_URL } from '@/lib/chrome-extension'
+import { ArrowRight, Linkedin, Mail, Newspaper, Building2 } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'About FundOpsHQ',
@@ -40,7 +39,7 @@ const PILLARS = [
     eyebrow: 'The Wire',
     title: 'Real-time fund news',
     body:
-      'A continuously updated feed of fund launches, capital raises, executive moves, M&A and regulatory actions across PE, VC, credit and alternatives — sourced from 200+ publications.',
+      'A continuously updated feed of fund launches, capital raises, LP commitments, executive moves, M&A and regulatory actions across PE, VC, credit, hedge and the rest of alternatives — sourced from 200+ publications and de-duplicated into single stories.',
     icon: Newspaper,
     href: '/',
     cta: 'Read the wire',
@@ -50,21 +49,10 @@ const PILLARS = [
     eyebrow: 'Morning Edition',
     title: 'FundOps Daily newsletter',
     body:
-      'Every morning before the open. The biggest fund moves, the briefing for the week ahead, and what every operator should be paying attention to — written like a newsroom desk note.',
+      'Every morning before the open. The day\'s fund moves organized by strategy, plus dedicated LP Commitments, Service Providers, People Moves and Deals sections — dense, scannable, written like a newsroom desk note.',
     icon: Mail,
     href: '/#subscribe',
     cta: 'Subscribe free',
-  },
-  {
-    no: '03',
-    eyebrow: 'In Your Browser',
-    title: 'Chrome extension',
-    body:
-      'FundOpsHQ in a single click from any tab. Scan the latest fund news without leaving what you\'re working on — the wire, wherever you are.',
-    icon: Chrome,
-    href: CHROME_EXTENSION_URL,
-    cta: 'Install free',
-    external: true,
   },
 ] as const
 
@@ -197,9 +185,9 @@ export default function AboutPage() {
                 <span className="flex items-center gap-3">
                   <span className="text-foreground/80">Section C.1</span>
                   <span aria-hidden="true" className="text-foreground/20">·</span>
-                  <span>Three Channels</span>
+                  <span>Two Channels</span>
                 </span>
-                <span className="hidden sm:inline">News · Newsletter · Extension</span>
+                <span className="hidden sm:inline">News · Newsletter</span>
               </div>
             </div>
           </div>
@@ -216,7 +204,7 @@ export default function AboutPage() {
                   fontVariationSettings: '"opsz" 144',
                 }}
               >
-                Three ways{' '}
+                Two ways{' '}
                 <span
                   className="italic"
                   style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
@@ -226,7 +214,7 @@ export default function AboutPage() {
               </h2>
             </div>
 
-            <div className="grid gap-px bg-foreground/10 md:grid-cols-3 border border-foreground/15">
+            <div className="grid gap-px bg-foreground/10 md:grid-cols-2 border border-foreground/15">
               {PILLARS.map((pillar) => {
                 const Icon = pillar.icon
                 const isExternal = pillar.href.startsWith('http')
