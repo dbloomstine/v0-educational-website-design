@@ -157,6 +157,13 @@ function firmsSharePrefix(firmA: string, firmB: string): boolean {
 }
 
 export function isSameStory(a: StoryCandidate, b: StoryCandidate): boolean {
+  // Near-identical titles are one story no matter what the classifier
+  // extracted. Real case, 2026-08-16: the same Hedgeweek article arrived
+  // via the direct feed and the Google News mirror, and the two copies
+  // extracted different firms ("L1 Group" vs "PXC Advisors") — every
+  // firm-keyed rule below therefore missed a verbatim duplicate.
+  if (titleJaccard(a.title, b.title) >= 0.85) return true
+
   // Exec-move fallback: same person = same story regardless of firm extraction.
   if (a.personName && b.personName) {
     if (normalizeFirmName(a.personName) === normalizeFirmName(b.personName)) {

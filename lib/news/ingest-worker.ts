@@ -567,7 +567,12 @@ export function titleSourceKey(
 ): string | null {
   if (!title || !sourceName) return null;
   const t = normalizeText(title);
-  const s = sourceName.trim().toLowerCase();
+  // Strip everything but alphanumerics from the source so spelling variants
+  // of one publication collide: the direct "Hedge Week" feed and the Google
+  // News mirror's "Hedgeweek" both key to "hedgeweek". Without this, the
+  // same article ingested via both paths carried two distinct keys and ran
+  // twice in the 2026-08-16 edition.
+  const s = sourceName.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
   if (!t || !s) return null;
   return `${t}|${s}`;
 }

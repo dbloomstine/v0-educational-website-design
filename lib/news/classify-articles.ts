@@ -106,7 +106,11 @@ interface ClassificationOutput {
 // ─── Constants ──────────────────────────────────────────────────────────────
 
 const BATCH_SIZE = 15;
-const MAX_ARTICLES_PER_RUN = 100;
+// Raised 100 -> 200 on 2026-08-16: the new feed sources (Law360, JD Supra,
+// GNews mirrors) roughly doubled ingestion volume and a 421-article backlog
+// built up in 36h at the old cap. RUN_BUDGET_MS still ends the run early if
+// batches are slow, so the ceiling is safe within maxDuration = 300.
+const MAX_ARTICLES_PER_RUN = 200;
 
 /**
  * Wall-clock budget for one run, in ms.
@@ -192,7 +196,7 @@ CRITICAL CLASSIFICATION RULES:
 17. GOVERNMENT / MUNICIPAL / NGO FUND ANNOUNCEMENTS: Articles about government ministry fund launches (e.g. "Ministry of Finance launches Regional Connectivity Fund"), municipal programs (e.g. "FCM welcomes launch of Build Communities Strong Fund"), or federation/association announcements about public infrastructure programs are NOT private fund activity. → "other", relevance ≤ 0.1.
 18. FIRM NAME CASING: Use the firm's official name casing, not the headline's styling. Trade press often SHOUTS the lead firm ("EMERGING, Promethean eye $300m…") or abbreviates it — return "Emerging Travel Group" / "Promethean Investments", not "EMERGING". Never return an all-caps word as firm_name unless the firm genuinely styles itself that way (KKR, EQT, CVC, TPG).
 19. ENTITY COMPLETENESS: In "entities", list EVERY firm with a real role in the story — co-managers, the acquirer AND the target, JV partners, the LP and the GP, the law firms advising. Give confidence ≥ 0.9 only to firms whose role is explicit; a firm mentioned in passing gets ≤ 0.6. Downstream rendering shows a favicon per high-confidence firm, so a wrong high-confidence entity puts a wrong logo in front of readers.
-20. SERVICE PROVIDER STORIES: Lateral partner moves between law firms' fund practices, fund administrator M&A or mandate wins, auditor/valuation-firm appointments, prime brokerage and fund finance news are all IN SCOPE (relevance 0.5-0.8, fund_categories includes "service_provider"), even though no fund vehicle is raising capital. The audience includes the service providers themselves.
+20. SERVICE PROVIDER STORIES: Lateral partner moves between law firms' fund practices, fund administrator M&A or mandate wins, auditor/valuation-firm appointments, prime brokerage and fund finance news are all IN SCOPE (relevance 0.5-0.8, fund_categories includes "service_provider"), even though no fund vehicle is raising capital. The audience includes the service providers themselves. CRITICAL: tag "service_provider" only when the PRIMARY firm is itself a service provider (law firm, fund administrator, auditor/CPA, valuation firm, insurance broker, fund finance lender, prime broker, placement agent, fund tech vendor). A fund manager hiring for capital formation, IR, or fundraising is NOT a service-provider story ("AEA Investors hires head of capital formation" → PE + executive_hire, no service_provider tag). An asset manager acquiring another asset manager (e.g. an ETF shop) is M&A between managers, not a service-provider story.
 
 FUND SIZE RULES (CRITICAL — the classifier has historically leaked firm AUM and sector totals into this field, which then ran as newsletter subject lines):
 A. fund_size_usd_millions must describe a SPECIFIC named fund vehicle raising, launching, or closing capital. If the article is not about a specific fund's capital event, return null — even if a dollar figure is mentioned.
