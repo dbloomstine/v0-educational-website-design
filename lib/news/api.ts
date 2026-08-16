@@ -223,7 +223,7 @@ function mapRowToArticle(row: any): NewsArticle {
 
   return {
     id: row.id,
-    title: row.title || row.tldr || 'Untitled article',
+    title: ((row.title || row.tldr || 'Untitled article') as string).replace(/\s*:\s*$/, ''),
     sourceUrl: row.source_url,
     sourceName: normalizeSourceName(row.source_name),
     publishedDate: row.published_date,
