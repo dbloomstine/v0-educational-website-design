@@ -6,6 +6,7 @@ import {
   capPerFirm,
   isLpCommitment,
   isStartupRound,
+  matchesPriorTitle,
   isLikelyAumLeak,
   FUND_SIZE_SANITY_CEILING_MILLIONS,
   deduplicateAcrossSections,
@@ -408,5 +409,46 @@ describe('isStartupRound (2026-08-16 Databricks leak)', () => {
         })
       )
     ).toBe(true)
+  })
+})
+
+describe('matchesPriorTitle (2026-08-16 third-day repeats)', () => {
+  const priors = [
+    {
+      firm: 'mirae',
+      title: 'Mirae Asset’s venture fund raises ₹1,125 crore in first close, targets ₹1,800 crore corpus',
+    },
+    {
+      firm: 'emerging',
+      title: 'EMERGING, Promethean eye $300m for hospitality tech fund built around $185m continuation portfolio',
+    },
+  ]
+
+  it('suppresses a same-firm repeat sharing a headline figure despite size drift', () => {
+    expect(
+      matchesPriorTitle('Mirae makes first close of Rs 1,800 crore India growth fund', 'Mirae', priors)
+    ).toBe(true)
+  })
+
+  it('suppresses a different-firm repeat whose firm is named in the prior headline', () => {
+    expect(
+      matchesPriorTitle(
+        'Promethean, Emerging Launch $300M Hospitality Tech Fund',
+        'Promethean Investments',
+        priors
+      )
+    ).toBe(true)
+  })
+
+  it('keeps a different firm closing a same-sized fund', () => {
+    expect(
+      matchesPriorTitle('Silverbridge closes $300M growth fund', 'Silverbridge', priors)
+    ).toBe(false)
+  })
+
+  it('keeps unrelated stories from the same firm', () => {
+    expect(
+      matchesPriorTitle('Mirae Asset opens Singapore office to expand APAC coverage', 'Mirae Asset', priors)
+    ).toBe(false)
   })
 })

@@ -402,3 +402,31 @@ describe('titlesShareSignificantNumber', () => {
     expect(isSameStory(a, b)).toBe(true)
   })
 })
+
+describe('isSameStory — identical titles with conflicting firm extraction (2026-08-16 L1 dupe)', () => {
+  it('merges verbatim duplicate titles even when extracted firms differ', () => {
+    const a = candidate({
+      title: 'L1 Group backs former analyst to launch new long-short hedge fund',
+      firmName: 'L1 Group',
+    })
+    const b = candidate({
+      title: 'L1 Group backs former analyst to launch new long-short hedge fund',
+      firmName: 'PXC Advisors',
+    })
+    expect(isSameStory(a, b)).toBe(true)
+  })
+
+  it('does not merge different stories with different firms', () => {
+    const a = candidate({
+      title: 'Blackstone closes $10bn credit fund',
+      firmName: 'Blackstone',
+      fundSizeUsdMillions: 10000,
+    })
+    const b = candidate({
+      title: 'Ares launches $2bn direct lending vehicle',
+      firmName: 'Ares',
+      fundSizeUsdMillions: 2000,
+    })
+    expect(isSameStory(a, b)).toBe(false)
+  })
+})

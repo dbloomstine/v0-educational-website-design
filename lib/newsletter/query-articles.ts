@@ -19,6 +19,7 @@ import {
   normalizeFirmName,
   fundSizesMatch,
   titleJaccard,
+  titlesShareSignificantNumber,
 } from '@/lib/news/story-dedup'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -531,11 +532,8 @@ export async function queryNewsletterArticles(
     // therefore evade every fingerprint. Real case, 2026-07-31→08-01: "CVC
     // aims for Q3 close for 6th secondaries fund" ran twice on consecutive
     // days because the second copy had null size and null fund name.
-    const candFirm = normalizeFirmName(a.firmName)
-    for (const prior of priorExclusions.priorTitles) {
-      const sim = titleJaccard(a.title, prior.title)
-      if (sim >= 0.85) return false
-      if (candFirm && prior.firm === candFirm && sim >= 0.55) return false
+    if (matchesPriorTitle(a.title, a.firmName, priorExclusions.priorTitles)) {
+      return false
     }
     // Person memory: an exec move re-reported next day with a different firm
     // extraction ("Blackstone" vs "BCRED") shares no firm fingerprint, but
@@ -911,6 +909,39 @@ export function matchesPriorFundEvent(
 export interface PriorTitle {
   firm: string
   title: string
+}
+
+/**
+ * True when a candidate headline repeats a story already published in the
+ * recent-edition window. Three tiers:
+ *   1. Near-verbatim title (Jaccard ≥ 0.85), any firm.
+ *   2. Same firm + similar title (Jaccard ≥ 0.55) — null-size re-reports.
+ *   3. Shared significant headline figure + moderate similarity (≥ 0.3) +
+ *      a firm-name link: either the same normalized firm (Mirae's first
+ *      close ran three straight days, 8/14-8/16, while size drift beat
+ *      every tolerance but every headline cited ₹1,800 crore), or the
+ *      candidate's firm named in the prior headline ("EMERGING, Promethean
+ *      eye $300m…" re-ran as "Promethean, Emerging Launch $300M…" under a
+ *      different extracted firm).
+ */
+export function matchesPriorTitle(
+  candidateTitle: string,
+  candidateFirmName: string | null,
+  priorTitles: PriorTitle[]
+): boolean {
+  const candFirm = normalizeFirmName(candidateFirmName)
+  const candFirmTokens = candFirm.split(' ').filter((t) => t.length > 2)
+  for (const prior of priorTitles) {
+    const sim = titleJaccard(candidateTitle, prior.title)
+    if (sim >= 0.85) return true
+    if (candFirm && prior.firm === candFirm && sim >= 0.55) return true
+    if (sim >= 0.3 && titlesShareSignificantNumber(candidateTitle, prior.title)) {
+      if (candFirm && prior.firm === candFirm) return true
+      const priorTitleLower = prior.title.toLowerCase()
+      if (candFirmTokens.some((t) => priorTitleLower.includes(t))) return true
+    }
+  }
+  return false
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
