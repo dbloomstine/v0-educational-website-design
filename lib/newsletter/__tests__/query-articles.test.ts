@@ -5,6 +5,7 @@ import {
   matchesPriorFundEvent,
   capPerFirm,
   isLpCommitment,
+  isStartupRound,
   isLikelyAumLeak,
   FUND_SIZE_SANITY_CEILING_MILLIONS,
   deduplicateAcrossSections,
@@ -357,5 +358,55 @@ describe('capPerFirm', () => {
       article('d', 'Small Manager', 40),
     ])
     expect(kept.map((a) => a.id).sort()).toEqual(['a', 'b', 'd'])
+  })
+})
+
+describe('isStartupRound (2026-08-16 Databricks leak)', () => {
+  it('drops company funding rounds that carry no fund name', () => {
+    expect(
+      isStartupRound(
+        makeArticle({
+          title: 'Databricks Closes $5 Billion Round at $190 Billion as Late-Stage AI Capital Sidelines the IPO',
+          eventType: 'capital_raise',
+          fundName: null,
+        })
+      )
+    ).toBe(true)
+  })
+
+  it('keeps real fund closes — "fund" in the title bails out', () => {
+    expect(
+      isStartupRound(
+        makeArticle({
+          title: 'Mirae makes first close of Rs 1,800 crore India growth fund',
+          eventType: 'fund_close',
+          fundName: null,
+        })
+      )
+    ).toBe(false)
+  })
+
+  it('keeps stories with an extracted fund name', () => {
+    expect(
+      isStartupRound(
+        makeArticle({
+          title: 'Hollyport closes $2.2bn secondaries raise',
+          eventType: 'fund_close',
+          fundName: 'Hollyport Secondary Opportunities VIII',
+        })
+      )
+    ).toBe(false)
+  })
+
+  it('drops Series rounds', () => {
+    expect(
+      isStartupRound(
+        makeArticle({
+          title: 'Anthropic raises $10B Series G led by Iconiq',
+          eventType: 'capital_raise',
+          fundName: null,
+        })
+      )
+    ).toBe(true)
   })
 })
