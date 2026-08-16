@@ -203,6 +203,30 @@ const GOVT_PROGRAM_PATTERNS = [
   /\beuropean investment bank\b.*\bprogramme\b/i,
 ]
 
+/**
+ * Startup funding-round patterns. Classifier rule 2 says Series A/B/C and
+ * venture rounds are portfolio-company news, not fund activity — but Haiku
+ * misses the big ones ("Databricks Closes $5 Billion Round at $190 Billion"
+ * ran as a Venture Capital move on 2026-08-16). Belt-and-suspenders filter:
+ * a fund-activity story with no extracted fund name whose title reads like a
+ * company round is dropped. Real fund events name a fund or say "fund".
+ */
+const STARTUP_ROUND_PATTERNS = [
+  /\bseries [a-k]\b/i,
+  /\b(seed|pre-seed) (round|funding)\b/i,
+  /\bfundraising round\b/i,
+  /\bfunding round\b/i,
+  /\bround (at|led by|values)\b/i,
+  /\b(closes?|raises?|secures?|lands) \$[\d.,]+\s?(billion|million|bn|mn|[bm])?\s?(round|in funding)\b/i,
+]
+
+export function isStartupRound(article: NewsletterArticle): boolean {
+  if (!FUND_ACTIVITY_TYPES.includes(article.eventType ?? '')) return false
+  if (article.fundName) return false
+  if (/\bfund\b/i.test(article.title)) return false
+  return STARTUP_ROUND_PATTERNS.some((p) => p.test(article.title))
+}
+
 /** Placeholder tldr markers — stories with no real information. */
 const PLACEHOLDER_TLDR_PATTERNS = [
   /not (detailed|disclosed|specified|publicly|available)/i,
@@ -459,7 +483,8 @@ export async function queryNewsletterArticles(
 
     return {
       id: row.id,
-      title: row.title,
+      // Some feeds (HedgeCo) end headlines with a dangling colon — trim it.
+      title: (row.title as string).replace(/\s*:\s*$/, ''),
       sourceUrl: row.source_url,
       sourceName: row.source_name,
       publishedDate: row.published_date,
@@ -483,8 +508,10 @@ export async function queryNewsletterArticles(
     }
   })
 
-  // ─── Drop govt/NGO announcements and blocked sources ───────────────────
-  const afterGovtFilter = articles.filter((a) => !isGovtProgram(a))
+  // ─── Drop govt/NGO announcements, blocked sources, startup rounds ──────
+  const afterGovtFilter = articles.filter(
+    (a) => !isGovtProgram(a) && !isStartupRound(a)
+  )
 
   // ─── Same-day story dedup ──────────────────────────────────────────────
   const deduped = deduplicateByStory(afterGovtFilter)

@@ -278,6 +278,18 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
   font-style: italic;
 }
 
+/* Mobile: reclaim horizontal space. Desktop keeps the 32px editorial
+   gutters; phones drop to 16px inner + 4px outer, worth ~36px of extra
+   content width per line. Gmail iOS/Android, Apple Mail, and Outlook
+   mobile all honor embedded media queries. */
+@media only screen and (max-width: 520px) {
+  .fops-shell { padding: 12px 4px !important; }
+  .fops-px {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+
 /* Dark-mode opt-out re-pinning — Gmail iOS/Android auto-invert otherwise. */
 @media (prefers-color-scheme: dark) {
   body, table, td, div { background-color: inherit !important; }
@@ -506,7 +518,7 @@ function renderSponsorTop(slate: SponsorSlate): string {
     .join('')
   return `
     <tr>
-      <td class="fops-bg-cream" style="padding:20px 32px 18px;background-color:${CREAM};border-bottom:1px solid ${HAIRLINE};">
+      <td class="fops-bg-cream fops-px" style="padding:20px 32px 18px;background-color:${CREAM};border-bottom:1px solid ${HAIRLINE};">
         <div class="fops-eyebrow" style="margin-bottom:6px;">${escapeHtml(slate.label)}</div>
         ${cards}
       </td>
@@ -520,7 +532,7 @@ function renderSponsorBottom(slate: SponsorSlate): string {
     .join('')
   return `
     <tr>
-      <td class="fops-bg-cream" style="padding:28px 32px 28px;background-color:${CREAM};border-top:1px solid ${HAIRLINE};">
+      <td class="fops-bg-cream fops-px" style="padding:28px 32px 28px;background-color:${CREAM};border-top:1px solid ${HAIRLINE};">
         <div class="fops-eyebrow" style="margin-bottom:6px;">${escapeHtml(slate.label)}</div>
         ${cards}
         <p class="fops-house-cta">Reach GPs, LPs, and fund service providers every morning. <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:${INK};text-decoration:none;font-weight:600;font-style:normal;">Sponsor FundOps Daily &rarr;</a></p>
@@ -636,7 +648,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   </div>
   <table cellpadding="0" cellspacing="0" border="0" width="100%" class="fops-bg-navy-deep" style="background-color:${NAVY_DEEP};">
     <tr>
-      <td align="center" style="padding:24px 10px;">
+      <td align="center" class="fops-shell" style="padding:24px 10px;">
         <table cellpadding="0" cellspacing="0" border="0" width="680" style="max-width:680px;width:100%;">
 
           <!-- ─── Forwarded-to-you strip ─── -->
@@ -646,7 +658,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                (they scroll past) but a meaningful conversion path for
                the (harder-to-measure) forwards. -->
           <tr>
-            <td class="fops-bg-cream" style="padding:10px 32px;background-color:${CREAM};border-bottom:1px solid rgba(30,58,95,0.08);">
+            <td class="fops-bg-cream fops-px" style="padding:10px 32px;background-color:${CREAM};border-bottom:1px solid rgba(30,58,95,0.08);">
               <div class="fops-mono" style="font-size:10px;color:rgba(30,58,95,0.7);letter-spacing:1.5px;text-transform:uppercase;text-align:center;">
                 Forwarded to you? &nbsp;<a href="https://fundopshq.com/?ref=fwd" style="color:${INK};text-decoration:underline;font-weight:700;">Subscribe to FundOps Daily &rarr;</a>
               </div>
@@ -660,7 +672,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
               <!-- Top eyebrow strip -->
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
-                  <td style="padding:14px 32px 12px;border-bottom:1px solid ${HAIRLINE_DARK};">
+                  <td class="fops-px" style="padding:14px 32px 12px;border-bottom:1px solid ${HAIRLINE_DARK};">
                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                       <tr>
                         <td class="fops-eyebrow-light">
@@ -680,7 +692,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
               <!-- Wordmark row -->
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
-                  <td style="padding:26px 32px 24px;text-align:left;">
+                  <td class="fops-px" style="padding:26px 32px 24px;text-align:left;">
                     <span class="fops-serif fops-cream" style="font-size:36px;font-weight:700;letter-spacing:-0.5px;line-height:1;">FundOps</span><span class="fops-serif fops-amber" style="font-size:36px;font-weight:700;font-style:italic;letter-spacing:-0.5px;line-height:1;">Daily</span>
                   </td>
                 </tr>
@@ -689,7 +701,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
               <!-- Bottom eyebrow strip -->
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
-                  <td style="padding:14px 32px;border-top:1px solid ${HAIRLINE_DARK};">
+                  <td class="fops-px" style="padding:14px 32px;border-top:1px solid ${HAIRLINE_DARK};">
                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                       <tr>
                         <td class="fops-eyebrow-light" style="letter-spacing:2.5px;">
@@ -712,7 +724,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
 
           <!-- ─── Content ─── -->
           <tr>
-            <td class="fops-bg-cream" style="padding:32px 32px 16px;background-color:${CREAM};">
+            <td class="fops-bg-cream fops-px" style="padding:32px 32px 16px;background-color:${CREAM};">
               <div class="fops-eyebrow" style="margin-bottom:4px;">
                 Section A &nbsp;·&nbsp; The Wire
               </div>
@@ -725,7 +737,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
 
           <!-- ─── Main CTA ─── -->
           <tr>
-            <td class="fops-bg-cream" style="padding:8px 32px 32px;background-color:${CREAM};text-align:center;">
+            <td class="fops-bg-cream fops-px" style="padding:8px 32px 32px;background-color:${CREAM};text-align:center;">
               <a href="https://fundopshq.com/#news" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:11px;font-weight:700;padding:14px 28px;border-radius:2px;text-decoration:none;letter-spacing:2px;text-transform:uppercase;">Read the full feed &rarr;</a>
             </td>
           </tr>
@@ -741,7 +753,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                and X links go through their share intents; readers hit
                their own composer, nothing auto-posts. -->
           <tr>
-            <td class="fops-bg-cream" style="padding:8px 32px 28px;background-color:${CREAM};text-align:center;">
+            <td class="fops-bg-cream fops-px" style="padding:8px 32px 28px;background-color:${CREAM};text-align:center;">
               <div class="fops-eyebrow" style="margin-bottom:10px;">Share this edition</div>
               <div class="fops-sans" style="font-size:13px;color:rgba(30,58,95,0.75);line-height:1.5;margin-bottom:14px;max-width:460px;margin-left:auto;margin-right:auto;">
                 If today&rsquo;s brief was useful, forward it to a peer &mdash; that&rsquo;s how this list grows.
@@ -756,7 +768,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
 
           <!-- ─── Footer ─── -->
           <tr>
-            <td class="fops-bg-navy" style="padding:24px 32px;background-color:${NAVY};">
+            <td class="fops-bg-navy fops-px" style="padding:24px 32px;background-color:${NAVY};">
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
                   <td style="padding-bottom:10px;border-bottom:1px solid ${HAIRLINE_DARK};">
