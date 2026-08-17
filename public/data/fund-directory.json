@@ -1,6 +1,99 @@
 {
-  "generated_at": "2026-08-16T10:11:52.600088Z",
+  "generated_at": "2026-08-17T10:13:16.210560Z",
   "funds": [
+    {
+      "fund_name": "BNPP AM Prime (current vintage)",
+      "firm": "BNP Paribas Asset Management",
+      "firm_slug": "bnp-paribas-asset-management",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Secondaries & GP-Stakes",
+      "location": "Paris, France",
+      "city": "Paris",
+      "state": "",
+      "country": "France",
+      "stage": "Other",
+      "announcement_date": "2026-08-17",
+      "source_url": "https://www.pehub.com/bnpp-am-prime-eyes-up-to-five-european-gp-stakes-from-current-vintage-providence-to-acquire-valuation-and-property-risk-data-biz/",
+      "source_name": "PE Hub",
+      "description_notes": "seeks to acquire up to five European GP stakes from its current vintage fund. BNPP AM is leveraging its secondary and direct investment capabilities to pursue minority or co-investment positions with established European general partners across the region.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-17T10:01:14",
+      "articles": [
+        {
+          "title": "BNPP AM Prime eyes up to five European GP stakes from current vintage; Providence to acquire valuation and property risk data biz",
+          "url": "https://www.pehub.com/bnpp-am-prime-eyes-up-to-five-european-gp-stakes-from-current-vintage-providence-to-acquire-valuation-and-property-risk-data-biz/",
+          "source_name": "PE Hub",
+          "source_domain": "pehub.com",
+          "published_date": "2026-08-17",
+          "summary": "",
+          "feed_name": "PE Hub"
+        }
+      ]
+    },
+    {
+      "fund_name": "GD1",
+      "firm": "GD1",
+      "firm_slug": "gd1",
+      "amount": "$56.7M",
+      "amount_usd_millions": 56.7,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Other",
+      "announcement_date": "2026-08-16",
+      "source_url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxORDF4MUNHODFYRWVlcEQ2QkM5VlhjNG9LLUhkYnNjWFBWY1RkRy11RFNUMW5oR3pteU5iYjZsSFpVbGdjZl95aU9ZRHNuM0pjUFVaaGkxaXJMSTNxWENqZ2NkQk9IWElJRGd5NzdHME4yTVFWUDNPQmtuN1RBM0NmMjNXbXE0Zw?oc=5",
+      "source_name": "B2Bnews",
+      "description_notes": "Unable to provide enriched description. GD1 appears to be an insufficiently documented or newly formed venture capital fund with $56.7M under management. Without verifiable information on the firm's headquarters location, LP base, investment strategy specifics, or track record, a reliable Axios-style briefing cannot be generated.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-17T10:01:14",
+      "articles": [
+        {
+          "title": "GD1 raises $56.7m as golden visa cash backs VC - b2bnews.co.nz",
+          "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxORDF4MUNHODFYRWVlcEQ2QkM5VlhjNG9LLUhkYnNjWFBWY1RkRy11RFNUMW5oR3pteU5iYjZsSFpVbGdjZl95aU9ZRHNuM0pjUFVaaGkxaXJMSTNxWENqZ2NkQk9IWElJRGd5NzdHME4yTVFWUDNPQmtuN1RBM0NmMjNXbXE0Zw?oc=5",
+          "source_name": "b2bnews.co.nz",
+          "source_domain": "b2bnews.co.nz",
+          "published_date": "2026-08-16",
+          "summary": "GD1 raises $56.7m as golden visa cash backs VC&nbsp;&nbsp;b2bnews.co.nz",
+          "feed_name": "search:PE/VC fund closes"
+        }
+      ]
+    },
+    {
+      "fund_name": "The Wealth Company Gift City Fund",
+      "firm": "The Wealth Company",
+      "firm_slug": "the-wealth-company",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "India",
+      "stage": "Launch",
+      "announcement_date": "2026-08-16",
+      "source_url": "https://www.prnewswire.com/news-releases/the-wealth-company-lance-un-fonds-a-gift-city-afin-doffrir-aux-nri-un-acces-unique-libelle-en-dollars-au-marche-des-fonds-communs-de-placement-de-linde-302852415.html",
+      "source_name": "PR Newswire",
+      "description_notes": "provides dollar-denominated access to Indian mutual funds for Non-Resident Indians (NRIs) through the GIFT City (Gujarat International Financial Tec-City) onshore financial center. the fund offers a unique investment vehicle enabling NRIs to invest in India's mutual fund market with currency denomination in US dollars, addressing a previously unavailable investment option for this diaspora segment.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-17T10:01:14",
+      "articles": [
+        {
+          "title": "The Wealth Company lance un fonds \u00e0 Gift City afin d'offrir aux NRI un acc\u00e8s unique, libell\u00e9 en dollars, au march\u00e9 des fonds communs de placement de l'Inde",
+          "url": "https://www.prnewswire.com/news-releases/the-wealth-company-lance-un-fonds-a-gift-city-afin-doffrir-aux-nri-un-acces-unique-libelle-en-dollars-au-marche-des-fonds-communs-de-placement-de-linde-302852415.html",
+          "source_name": "PR Newswire",
+          "source_domain": "prnewswire.com",
+          "published_date": "2026-08-16",
+          "summary": "",
+          "feed_name": "PR Newswire - Financial Services"
+        }
+      ]
+    },
     {
       "fund_name": "Fortress European CLO III",
       "firm": "Fortress Investment Group",
@@ -706,10 +799,10 @@
       "amount": "Undisclosed",
       "amount_usd_millions": null,
       "category": "Real Estate",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "London, UK",
+      "city": "London",
       "state": "",
-      "country": "US",
+      "country": "UK",
       "stage": "Launch",
       "announcement_date": "2026-08-12",
       "source_url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPUHdzX1pkM09vZXE1ZHVtTWdVZF9wMV9XS09kRDJVWlFPWW5LZkpYQWJRX3pvSC00UUtSZml1S1VveGlram16eUFhWGRDTWI4YmlxWWpYaTNnWU9nRTJoWkYyVzBkQWQ2RVVrbVd1S1dPdTZmd3hBUHI2WDgzRWNXcnp4dHIzb3JSMDZmcWhnTmwxWjZBS3hV?oc=5",
@@ -1750,6 +1843,15 @@
           "published_date": "2026-08-06",
           "summary": "Piper Serica marks first close of deeptech-focused VC fund&nbsp;&nbsp;VCCircle",
           "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "Deeptech backer Piper Serica raises Rs 300 crore in first close of new fund - The Economic Times",
+          "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxQUDVta3VYektyYzVJcjRDcjJ3M3NnZFpoQ2NKM2lSNjVTY29hU04yYkhXcWRJNzg5TXJZcndZYjJ5QnozZlU0WHVRYUgwek4zRnNUNFR0QnhGVWxoTFZybV9Fd1l4cXBjRm5ZSmk4eWNPZ3JUZ1BCVHpUb1NhRlhkVkhrRWxrY2xic2dsMkNCR2RfSzVmOHZxN2Q4V2tnejdMdVpWQ0syVWxaR1haT2F2WlBKTTZCa2ZvQWJKdFM1NTI4NTZyYWMwNGgtWkpWbTNrYXdTS0QxelFkUdIB3wFBVV95cUxPNTlOLUZMRnN3ZlF6d0s1WGp2WkttUjBLSGF5TDRvZHZGT2NQUVJCM2pmRlNERlhCMFZCZ3pDS05JRzJjVmhGR2MyOVZpaUhsSTRMOE1MQ2V5TVVSYUZDLUkwdEdfRlNJNG9rMjczUGVxNGUxS2RhWGd3a0k4eUtMVUZTTzBqckFFQlN0eVBoMy1lbXVYUFZiVHZJbXBPVlpnX2o0THc2N2JRY2QxNmhfdFVvd3NyNnlUQTNWcEZXNnl2dWRJc0JiVFRLb0ZVdlQwclh1ZDZMU1BHQmhnT05n?oc=5",
+          "source_name": "The Economic Times",
+          "source_domain": "m.economictimes.com",
+          "published_date": "2026-08-06",
+          "summary": "Deeptech backer Piper Serica raises Rs 300 crore in first close of new fund&nbsp;&nbsp;The Economic Times",
+          "feed_name": "search:First/final close"
         }
       ]
     },
@@ -2087,7 +2189,7 @@
       "announcement_date": "2026-08-05",
       "source_url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxQeEdxUEtxYWZyLVV3a09ZS1RxZG1fSkFuS3FtcGw3ckVKdk9mSVVXMy10Q3RwM2hva3FSQ2NSLWtEYjJzUzYtbFNzSUpraGl5anN1ak9wcGh3Vm5oUl9LWS1tcDJadlRiMTdoa0o5OE5uMmxxUXB4clZ6aXVDYVNTeDZKRQ?oc=5",
       "source_name": "Realdeals",
-      "description_notes": "close nextalia fund ii, an undisclosed private equity vehicle from nextalia that marks the firm's second institutional fund. lacking public disclosure on lp composition or strategy specifics, the fund's positioning relative to nextalia fund i remains unclear pending additional fundraising details.",
+      "description_notes": "closes first tranche of second fund focused on mid-market private equity investments, building on Nextalia's platform for operational improvements and value creation. fund size and LP roster remain undisclosed at initial close, though the second vintage suggests institutional demand for the firm's strategy.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-09T10:02:41",
@@ -3094,7 +3196,7 @@
       "announcement_date": "2026-07-29",
       "source_url": "https://www.altassets.net/private-equity-news/by-news-type/fund-news/outrigger-impact-unveils-100-vehicle-focused-on-the-blue-economy.html",
       "source_name": "AltAssets",
-      "description_notes": "launch a $100M infrastructure fund targeting blue economy assets, including marine conservation, sustainable fisheries, and ocean-based renewable energy projects. The vehicle marks Outrigger Impact's entry into dedicated ocean-focused impact investing, positioning the firm to capitalize on growing institutional demand for climate and sustainability-linked infrastructure with measurable environmental returns.",
+      "description_notes": "launch a $100M infrastructure fund targeting blue economy assets, including ocean-based renewable energy, sustainable marine resource management, and coastal resilience projects. The debut vehicle from Outrigger Impact reflects growing institutional appetite for climate-focused infrastructure in maritime sectors, positioning the firm to compete in an underserved intersection of impact investing and ocean sustainability.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-30T10:01:20",
@@ -4551,6 +4653,15 @@
           "published_date": "2026-07-17",
           "summary": "",
           "feed_name": "AltAssets"
+        },
+        {
+          "title": "Silver Hill Energy Partners Closes Oversubscribed $1.28B Fund Focused on Top US Basins - Hart Energy",
+          "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQZElUNFNpalZwNnVLVHZ1NTI1LXJLMlpNNXRLY2tPQjJ2MjM1OGNvdXZXVnZRdGFZbEdKMlZLVGJZc1pSbWRhSEl2NkhsNTB6QlRSX2N2bFFLTDNINEFaVDV2aDN1NFQ4ekxKQWR6LXladmdLMjJPMm9HbFFTcDFmbmRrRS1TMlQ0OXhxZ3VDbWh0ZFIzN1Rkb1piTXVQMWdTRDZXNnoxZw?oc=5",
+          "source_name": "Hart Energy",
+          "source_domain": "hartenergy.com",
+          "published_date": "2026-07-16",
+          "summary": "Silver Hill Energy Partners Closes Oversubscribed $1.28B Fund Focused on Top US Basins&nbsp;&nbsp;Hart Energy",
+          "feed_name": "search:Oversubscribed funds"
         }
       ]
     },
@@ -6082,7 +6193,7 @@
       "announcement_date": "2026-07-13",
       "source_url": "https://alternativecreditinvestor.com/2026/07/13/churchill-and-seviora-raise-400m-for-oversubscribed-cfo/",
       "source_name": "Alternative Credit Investor",
-      "description_notes": "close a $400M credit fund targeting CFO-related lending opportunities, marking Churchill and Seviora's entry into the credit space with a debut vehicle at first close. the fund aims to serve mid-market borrowers through structured credit solutions, though specific LP anchors and prior vintage comparisons were not disclosed in available materials.",
+      "description_notes": "close Churchill and Seviora's inaugural $400M credit fund targeting CFO-related lending and structured credit strategies. The fund marks the firm's entry into the credit space with institutional backing, though specific LP names and anchor investors were not disclosed in available materials. First close positioning suggests strong early demand for the strategy.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-13T10:01:14",
@@ -7894,6 +8005,15 @@
           "source_domain": "n24.com.tr",
           "published_date": "2026-07-06",
           "summary": "Climentum Capital Secures \u20ac60 Million for Climate HardTech Fund&nbsp;&nbsp;n24.com.tr",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Climentum Launches New Climate Tech Venture Fund with \u20ac60 Million First Close - ESG Today",
+          "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxQNUZJN2plVmJZZ3hxZlc1UG9yd2QwLVZnTnE2RXJKNVBvU2pBODNvQmE0Yjg4aVo1M1I3NHBYeGo3cEYtc0d6bzZWanZRSDJXX056TnNZRU1xS25BbXlmc05sZnRsc3I4TFlhN09lUUdHT2F2bk9XNUM2eV9NbUpkZTBmSjFtdEo1cWYybXZ6YUNjenE4YWsxWVg0NVFZc3ExVldkYXBn?oc=5",
+          "source_name": "ESG Today",
+          "source_domain": "esgtoday.com",
+          "published_date": "2026-07-06",
+          "summary": "Climentum Launches New Climate Tech Venture Fund with \u20ac60 Million First Close&nbsp;&nbsp;ESG Today",
           "feed_name": "search:First/final close"
         },
         {
@@ -12068,7 +12188,7 @@
       "announcement_date": "2026-06-11",
       "source_url": "https://www.privatedebtinvestor.com/loan-note-connection-private-clients-target-higher-return-profile-credit-secondaries-has-30bn-target/",
       "source_name": "Private Debt Investor",
-      "description_notes": "launch a credit fund targeting private clients with an undisclosed fund size. Connection's debut vehicle marks an entry into the credit strategy space, though limited details are available on LP composition, investment focus within credit (direct lending, structured credit, etc.), or how the fund's scope compares to competitor offerings in the private credit market.",
+      "description_notes": "launch a credit fund targeting higher-return private debt strategies for institutional clients, positioning Connection to compete in the broader credit secondaries market where firms are pursuing significantly larger fundraising targets of $80 billion or more. the fund represents Connection's entry into the private clients credit space with a focus on enhanced yield profiles.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-12T10:01:35",
@@ -12556,7 +12676,7 @@
       "announcement_date": "2026-06-09",
       "source_url": "https://www.buyoutsinsider.com/tjc-targets-8-5bn-for-seventh-flagship/",
       "source_name": "Buyouts Insider",
-      "description_notes": "close a $8.5B fund focused on mid-market leveraged buyouts and growth equity investments across North America. TJC Fund VII represents a significant increase from prior vintages, reflecting strong LP demand and the firm's track record in operational value creation. The fund targets companies with $50M\u2013$500M in EBITDA across industrials, healthcare, business services, and consumer sectors.",
+      "description_notes": "raise $8.5B for its seventh flagship private equity fund, marking a significant increase from prior vintages and underscoring continued LP confidence in TJC's investment platform. The fund targets traditional buyout opportunities across mid-market and large-cap segments, though specific sector focus and LP roster were not disclosed in available materials. At launch, TJC VII represents one of the larger PE funds in the current market cycle.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-11T10:32:34",
@@ -15622,15 +15742,15 @@
       "amount": "Rs 500 Crore",
       "amount_usd_millions": 600.0,
       "category": "Venture Capital",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
+      "location": "Bangalore, India",
+      "city": "Bangalore",
+      "state": "KA",
       "country": "India",
       "stage": "Launch",
       "announcement_date": "2026-05-25",
       "source_url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPSWNaa0RIUlhjSHdoMkxqZXVtUG13czBkaDlXSnplX09MT0FvbmdQdmlGbmdEMFljbHdHdTU2YjlBak1kcEVKTVZNV2tMclk4VUJMY1hRdkF0LXlwMEZQSHUzWHdlMTJVREtINHltTF9IbzQ3SWx3T0h4NWdfeG5sdEFOVU5hVFhqMGJhSmRKdWRqU2dt?oc=5",
       "source_name": "News",
-      "description_notes": "launch a Rs 500 crore ($60M) venture capital fund targeting early-stage and growth-stage companies across India and South Asia. Oister Global's third fund represents a continuation of its strategy to back ambitious founders in underserved markets, though specific LP commitments and comparisons to Fund II remain undisclosed. The fund arrives amid robust venture activity in India, where Oister has established a track record investing in software, fintech, and consumer platforms.",
+      "description_notes": "close third vintage for Oister Global's venture capital program, targeting Rs 500 crore ($60M equivalent) to invest in early-stage technology companies across India and South Asia. The fund focuses on seed to Series A rounds in sectors including SaaS, fintech, and enterprise software, building on the firm's track record across prior vintages. ACE Fund III represents continued momentum in Oister's strategy to back Indian tech founders during a period of consolidation in the venture market.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-06T10:01:37",
@@ -22120,7 +22240,7 @@
       "announcement_date": "2026-04-28",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/emerald-lake-seals-transition-from-deal-by-deal-with-heavily-oversubscribed-800m-debut-fund-close.html",
       "source_name": "AltAssets",
-      "description_notes": "raise $800M for its debut fund after transitioning from deal-by-deal investing, with the offering heavily oversubscribed among LPs seeking exposure to the firm's established track record. Emerald Lake Capital Management's first formal fund vehicle marks a significant scaling of its previous opportunistic investment model, consolidating years of successful deal sourcing and execution into an institutionalized structure.",
+      "description_notes": "raised $800m for its heavily oversubscribed debut fund, marking Emerald Lake Capital Management's transition from deal-by-deal investing to an institutionalized fund structure. The fund closed with strong demand from LPs, validating the firm's track record of successful opportunistic investments. This inaugural vehicle represents a significant milestone for the firm as it scales its operations and formalizes its investment approach.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-28T15:41:05",
@@ -22379,6 +22499,15 @@
       "covered_date": null,
       "date_added": "2026-04-29T10:01:16",
       "articles": [
+        {
+          "title": "JEN Partners closes oversubscribed Fund 9 on record amount - pei-privaterealestate.com",
+          "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQaV80ZlkyeDZpMkRWSjN3NlUyZkhqVWNCYnFYTUtBSGlseVVqaW5fLVJGTVNlQkQ0eG1iYlE5eE4xcEZVbWNtMU1TNU9aaVNpbkc0S0tUd0lGNUNjUy02Z3FZWXZIbjhfSlBLMkM0MW9Temw3ZEEzeS1rZGtFakZLNi1jcDFxbnJHdHp1NmtXcGtfTTBEMDBuWDFtTDl2REFoTWpRQS1wVQ?oc=5",
+          "source_name": "pei-privaterealestate.com",
+          "source_domain": "pei-privaterealestate.com",
+          "published_date": "2026-07-18",
+          "summary": "JEN Partners closes oversubscribed Fund 9 on record amount&nbsp;&nbsp;pei-privaterealestate.com",
+          "feed_name": "search:Oversubscribed funds"
+        },
         {
           "title": "Blueprint: CapitaLand\u2019s mandate from Income Insurance; JEN Partners\u2019 Fund 9; Women of Influence nominations open",
           "url": "https://www.perenews.com/blueprint-capitalands-mandate-from-income-insurance-jen-partners-fund-9-women-of-influence-nominations-open/",
@@ -24557,6 +24686,15 @@
           "published_date": "2026-07-03",
           "summary": "",
           "feed_name": "AltAssets"
+        },
+        {
+          "title": "Temasek-backed Azalea launches first private equity evergreen fund with $350M investment - TNGlobal",
+          "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPd2sxZDFIeDV4eWJlYU1LamYxWXZfOE9uWU1PY2wwT1FDMjV4Um5OMHFvMlZHeUJhdnh2UUp3U3R6SUF2YWloQ1JvUGhSZXlZRjliWlpxSEdPTGdzMUpEU1JZTHI3ZGM4UkdsZzBldmJQdkNYRWRVSEtMTUJXemZYRklNeGU4SFlhRkcxdnRUdmpjbTQ5alRSNTNFWG1peUNENHc5Tk5XdXRNNkJYRVIyN3ZqY1VqQ2NuOXAta0g5T1A?oc=5",
+          "source_name": "TNGlobal",
+          "source_domain": "technode.global",
+          "published_date": "2026-07-03",
+          "summary": "Temasek-backed Azalea launches first private equity evergreen fund with $350M investment&nbsp;&nbsp;TNGlobal",
+          "feed_name": "search:PE/VC fund closes"
         },
         {
           "title": "Temasek's Azalea plans evergreen private equity fund, CEO says - Reuters",
@@ -56920,7 +57058,7 @@
     {
       "firm": "BNP Paribas Asset Management",
       "firm_slug": "bnp-paribas-asset-management",
-      "fund_count": 3,
+      "fund_count": 4,
       "total_aum_millions": 4472.0,
       "categories": [
         "Credit Funds",
@@ -60251,7 +60389,7 @@
         "Secondaries & GP-Stakes",
         "Venture Capital"
       ],
-      "city": "N/A",
+      "city": "Bangalore",
       "country": "India"
     },
     {
@@ -64454,6 +64592,17 @@
       "country": "UK"
     },
     {
+      "firm": "GD1",
+      "firm_slug": "gd1",
+      "fund_count": 1,
+      "total_aum_millions": 56.7,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
       "firm": "SaaS Fuel",
       "firm_slug": "saas-fuel",
       "fund_count": 1,
@@ -65257,6 +65406,17 @@
       "country": "US"
     },
     {
+      "firm": "The Wealth Company",
+      "firm_slug": "the-wealth-company",
+      "fund_count": 1,
+      "total_aum_millions": 0.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": "India"
+    },
+    {
       "firm": "Star Mountain",
       "firm_slug": "star-mountain",
       "fund_count": 2,
@@ -65330,8 +65490,8 @@
       "categories": [
         "Real Estate"
       ],
-      "city": "N/A",
-      "country": "US"
+      "city": "London",
+      "country": "UK"
     },
     {
       "firm": "Polar Asset Management Partners",
@@ -68924,8 +69084,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-08-16T06:00:28.335943",
-      "last_success": "2026-08-16T06:00:28.335951",
+      "last_fetch": "2026-08-17T06:00:25.723997",
+      "last_success": "2026-08-17T06:00:25.724006",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -68934,8 +69094,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-08-16T06:00:26.197105",
-      "last_success": "2026-08-16T06:00:26.197115",
+      "last_fetch": "2026-08-17T06:00:22.446816",
+      "last_success": "2026-08-17T06:00:22.446824",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -68974,8 +69134,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-08-16T06:00:34.696228",
-      "last_success": "2026-08-16T06:00:34.696238",
+      "last_fetch": "2026-08-17T06:00:33.150677",
+      "last_success": "2026-08-17T06:00:33.150687",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -68984,8 +69144,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-08-16T06:00:10.351069",
-      "last_success": "2026-08-16T06:00:10.351078",
+      "last_fetch": "2026-08-17T06:00:10.249648",
+      "last_success": "2026-08-17T06:00:10.249657",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -68994,8 +69154,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-08-16T06:00:07.748299",
-      "last_success": "2026-08-16T06:00:07.748301",
+      "last_fetch": "2026-08-17T06:00:07.784462",
+      "last_success": "2026-08-17T06:00:07.784469",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -69004,8 +69164,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-08-16T06:00:24.609820",
-      "last_success": "2026-08-16T06:00:24.609829",
+      "last_fetch": "2026-08-17T06:00:20.927909",
+      "last_success": "2026-08-17T06:00:20.927919",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -69014,8 +69174,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-08-16T06:00:12.320161",
-      "last_success": "2026-08-16T06:00:12.320168",
+      "last_fetch": "2026-08-17T06:00:11.848045",
+      "last_success": "2026-08-17T06:00:11.848054",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -69024,8 +69184,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-08-16T06:00:31.827300",
-      "last_success": "2026-08-16T06:00:31.827310",
+      "last_fetch": "2026-08-17T06:00:29.975495",
+      "last_success": "2026-08-17T06:00:29.975505",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -69034,8 +69194,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-08-16T06:00:14.057108",
-      "last_success": "2026-08-16T06:00:14.057112",
+      "last_fetch": "2026-08-17T06:00:13.780176",
+      "last_success": "2026-08-17T06:00:13.780181",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -69044,8 +69204,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-08-16T06:00:06.002473",
-      "last_success": "2026-08-16T06:00:06.002477",
+      "last_fetch": "2026-08-17T06:00:06.409549",
+      "last_success": "2026-08-17T06:00:06.409551",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -69054,8 +69214,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-08-16T06:00:22.656149",
-      "last_success": "2026-08-16T06:00:22.656156",
+      "last_fetch": "2026-08-17T06:00:18.826250",
+      "last_success": "2026-08-17T06:00:18.826258",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -69064,8 +69224,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-08-16T06:00:20.707434",
-      "last_success": "2026-08-16T06:00:20.707445",
+      "last_fetch": "2026-08-17T06:00:16.700019",
+      "last_success": "2026-08-17T06:00:16.700029",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -69074,8 +69234,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-08-16T06:00:09.034025",
-      "last_success": "2026-08-16T06:00:09.034034",
+      "last_fetch": "2026-08-17T06:00:09.001903",
+      "last_success": "2026-08-17T06:00:09.001912",
       "error_count": 0,
       "article_count": 19,
       "last_error": "",
@@ -69083,14 +69243,14 @@
     }
   ],
   "stats": {
-    "total_funds": 1385,
+    "total_funds": 1388,
     "total_covered": 52,
-    "total_uncovered": 1333,
-    "total_aum_millions": 1006558746.2,
+    "total_uncovered": 1336,
+    "total_aum_millions": 1006558802.9,
     "by_category": {
+      "Secondaries & GP-Stakes": 82,
+      "Venture Capital": 349,
       "Credit Funds": 283,
-      "Venture Capital": 347,
-      "Secondaries & GP-Stakes": 81,
       "Private Equity": 352,
       "Infrastructure": 183,
       "Real Estate": 136,
@@ -69098,8 +69258,8 @@
       "N/A": 1
     },
     "by_stage": {
-      "Other": 148,
-      "Launch": 571,
+      "Other": 150,
+      "Launch": 572,
       "Final Close": 398,
       "First Close": 240,
       "Interim Close": 26,
@@ -69110,7 +69270,7 @@
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-08-14"
+      "latest": "2026-08-17"
     }
   }
 }
