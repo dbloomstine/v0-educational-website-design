@@ -1,6 +1,37 @@
 {
-  "generated_at": "2026-08-19T10:13:44.225951Z",
+  "generated_at": "2026-08-20T10:13:12.668887Z",
   "funds": [
+    {
+      "fund_name": "Prospect Ridge Second Debt Fund",
+      "firm": "Prospect Ridge",
+      "firm_slug": "prospect-ridge",
+      "amount": "$800M",
+      "amount_usd_millions": 800.0,
+      "category": "Credit Funds",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Final Close",
+      "announcement_date": "2026-08-19",
+      "source_url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNU2NxLU1Ra3p5UWlRVVdiQ0lNUTNMaFVpTDhRdEVwMEt3cFJ0SWR6RGJ4TkV4NFZ1WTc2eTlTLVRkYUE1Tm9mMHprR1JPYVVmeE5QSm0wRmRtd1AtRkttYkQ1MEpHeUU0UWc5VF9FRmU4eDBKbGptbkg2dTVqOUZtMkw3ZnBIR2Z6Y05zel8xNV9jby1mdXI5QzdRLXE1b1RLYlEtaA?oc=5",
+      "source_name": "Pei-Privaterealestate",
+      "description_notes": "close $800M second debt fund targeting middle-market lending opportunities with focus on senior secured and unitranche structures. The fund expands Prospect Ridge's credit platform following its inaugural debt vehicle, targeting borrowers in the $50M\u2013$250M EBITDA range across North America. Second vintage demonstrates LP confidence in the firm's credit origination and portfolio management capabilities.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-20T10:01:15",
+      "articles": [
+        {
+          "title": "Exclusive: Prospect Ridge closes second debt fund at $800m - pei-privaterealestate.com",
+          "url": "https://news.google.com/rss/articles/CBMipAFBVV95cUxNU2NxLU1Ra3p5UWlRVVdiQ0lNUTNMaFVpTDhRdEVwMEt3cFJ0SWR6RGJ4TkV4NFZ1WTc2eTlTLVRkYUE1Tm9mMHprR1JPYVVmeE5QSm0wRmRtd1AtRkttYkQ1MEpHeUU0UWc5VF9FRmU4eDBKbGptbkg2dTVqOUZtMkw3ZnBIR2Z6Y05zel8xNV9jby1mdXI5QzdRLXE1b1RLYlEtaA?oc=5",
+          "source_name": "pei-privaterealestate.com",
+          "source_domain": "pei-privaterealestate.com",
+          "published_date": "2026-08-19",
+          "summary": "Exclusive: Prospect Ridge closes second debt fund at $800m&nbsp;&nbsp;pei-privaterealestate.com",
+          "feed_name": "search:Credit/Real estate"
+        }
+      ]
+    },
     {
       "fund_name": "Northleaf Asset-Based Fund",
       "firm": "Northleaf",
@@ -78,6 +109,15 @@
           "published_date": "2026-08-18",
           "summary": "Broadwing Capital Closes Inaugural Fund at $440 Million&nbsp;&nbsp;citybiz",
           "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "Broadwing Capital Closes Oversubscribed Inaugural Fund at $440 Million - PR Newswire",
+          "url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxQLW1DVVBadElJUWhpTFZQakxLV0ItNUJzQjI5ZFNhTUpvV0pRY1hOazNtcTcyUDFmaHZhMWx1SW1wR29CU3lndm5qMWJNYmM1Q3RvUE51VEdwRWdxMXNsdlR3Tm00dUNjakVlRHZNR3REVGlPaFZ0ZUNmOTR4T3FtbWliTDFMc0VrVkNHN1FCWUR1VThDdHRQblN6U2VIS3BralBESkhXNTU4SFVXdTB1Rlg4cDVubVVWQXVSQnJ0Z3ZQbzg?oc=5",
+          "source_name": "PR Newswire",
+          "source_domain": "prnewswire.com",
+          "published_date": "2026-08-18",
+          "summary": "Broadwing Capital Closes Oversubscribed Inaugural Fund at $440 Million&nbsp;&nbsp;PR Newswire",
+          "feed_name": "search:Press release fund closes"
         }
       ]
     },
@@ -127,7 +167,7 @@
       "announcement_date": "2026-08-18",
       "source_url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOSGFZeXA4WXpkbXdSRW9KbGlxVWh4YVdJdGFIb1VOQkxxVzVqMG4tUF9RMkx1Z083MkVnYm1mU3Rnc3k4blFMMU9TM2t0SWMwQ2tSRTVVSk9qT3BIbkVvX1lfODlKaTRkUGFHYXA0bDdXX3NuVlM3eUxvTGVMOUtJWnpuWEpaeWRkN3NDQlc1amFlVUg4RTg2TEgwYWwyUDBqUkFSNkV3?oc=5",
       "source_name": "Bizjournals",
-      "description_notes": "Unable to provide accurate description without firm identification. A $440M debut private equity fund at final close typically targets lower mid-market buyouts, but specific strategy, LP composition, and sector focus cannot be determined from the fund name alone.",
+      "description_notes": "Unable to provide accurate enrichment without firm identification. A $440M debut private equity fund has reached final close, but the firm name is required to determine strategy focus, LP composition, geographic headquarters, and competitive positioning relative to comparable first-time funds.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-19T10:01:18",
@@ -158,7 +198,7 @@
       "announcement_date": "2026-08-18",
       "source_url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxNajlaZlJ6MFVMd2YyNlB5cWF2R2pyV2lvSmJiYmhfTnVUU3dYUThMTHI0VXhZS0lTSWp1QzFMdEhDUm41NEFTOTMxQ1hjZER1TFM5cXNWUG9wY2VfdnNfcDFaT0Fva2gyVk50Wm1jSFEyYVFfYmI3SmY5UTk3cXpMbEh4cHFSZFZhdlh2X2JEV2g?oc=5",
       "source_name": "N24",
-      "description_notes": "raise \u20ac432M for early-stage artificial intelligence and quantum computing investments, marking QuantumLight's entry into dedicated venture capital with a focus on deep-tech startups at seed and Series A stages. The fund targets European and North American AI companies developing foundational models, quantum applications, and machine learning infrastructure, positioning itself in a competitive market alongside established deep-tech VCs.",
+      "description_notes": "close a \u20ac432M debut venture fund targeting early-stage AI and quantum computing companies across Europe and North America. The fund represents QuantumLight's first institutional vehicle, focusing on seed and Series A investments in deep tech with particular emphasis on quantum applications and machine learning infrastructure. The fund size and sector focus position it competitively within the emerging European deep-tech venture ecosystem.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-19T10:01:18",
@@ -211,6 +251,15 @@
           "published_date": "2026-08-18",
           "summary": "",
           "feed_name": "AltAssets"
+        },
+        {
+          "title": "Ninety One raises $404m African private credit fund - 9fin",
+          "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQM2xFb1o1MV90V2hkbEhuVzJ4YzNDdkRqUkVJUERBb2sydEpOcndZVDZ5VmNrS1lVdXlHQ2xMTHQtOXhBaWI4ejBfREFDWWM0amU2dlBXRWQ5U3RsM25Kc2hzU0xPSUhZNEJ2QmtOOGdzUXJzdjByM0gxVVk4Nk00Yjln?oc=5",
+          "source_name": "9fin",
+          "source_domain": "9fin.com",
+          "published_date": "2026-08-18",
+          "summary": "Ninety One raises $404m African private credit fund&nbsp;&nbsp;9fin",
+          "feed_name": "search:First/final close"
         }
       ]
     },
@@ -266,6 +315,15 @@
       "date_added": "2026-08-19T10:01:18",
       "articles": [
         {
+          "title": "Reach Capital raises $265m Fund V as former edtech specialist broadens into health, work",
+          "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/reach-capital-raises-265m-fund-v-as-former-edtech-specialist-broadens-into-health-work.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-08-19",
+          "summary": "",
+          "feed_name": "AltAssets"
+        },
+        {
           "title": "Reach Capital raises $265M Fund V to back AI founders building to \u2018expand human potential\u2019",
           "url": "https://techcrunch.com/2026/08/18/reach-capital-raises-265m-fund-v-to-back-ai-founders-building-to-expand-human-potential/",
           "source_name": "TechCrunch",
@@ -291,7 +349,7 @@
       "announcement_date": "2026-08-18",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/homestead-capital-launches-first-agri-credit-fund-with-150m-pension-anchor.html",
       "source_name": "AltAssets",
-      "description_notes": "launch a debut agriculture-focused credit fund with $150M in initial commitments, marking Homestead Capital's expansion beyond its $1.8bn farmland equity platform into private credit. The fund secured a $150M anchor commitment from a large US state pension system, establishing its first close as a commingled vehicle targeting agriculture lending opportunities.",
+      "description_notes": "launch a debut agriculture-focused private credit fund with $150m in commitments, marking Homestead Capital's expansion beyond its $1.8bn farmland equity platform into the agri-credit market. The fund secured an anchor commitment from a large U.S. state pension system at first close, positioning the firm to deploy capital across agriculture lending opportunities.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-18T10:57:45",
@@ -304,6 +362,15 @@
           "published_date": "2026-08-18",
           "summary": "",
           "feed_name": "AltAssets"
+        },
+        {
+          "title": "Homestead Capital Raises $150M in First Close of Agriculture Credit Fund - iGrow News",
+          "url": "https://news.google.com/rss/articles/CBMiYkFVX3lxTFBZUTlHX0RCaUQ5MWtVUFAzdlR2N1VYY1hzNEhOLXZCTUNaREZHZ2RWZXU0SF9WZW5XRy05MUNTRlE2V2dacjNSY0t3Y0psMjd1SHNGbmd5TU1MTWZJaFZLaHVB?oc=5",
+          "source_name": "iGrow News",
+          "source_domain": "igrownews.com",
+          "published_date": "2026-08-17",
+          "summary": "Homestead Capital Raises $150M in First Close of Agriculture Credit Fund&nbsp;&nbsp;iGrow News",
+          "feed_name": "search:First/final close"
         },
         {
           "title": "Homestead secures \u2018significant commitments\u2019 at first close of agri private credit fund",
@@ -408,6 +475,24 @@
       "date_added": "2026-08-19T10:01:18",
       "articles": [
         {
+          "title": "Machine Investment Group hits $350m hard cap Fund II close, 42% above debut vehicle size",
+          "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/machine-investment-group-hits-350m-hard-cap-fund-ii-close-42-above-debut-vehicle-size.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-08-20",
+          "summary": "",
+          "feed_name": "AltAssets"
+        },
+        {
+          "title": "Machine Investment Group Closes Second Investment Fund at $350 Million Hard Cap - goSkagit",
+          "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxNYVB6YWN6Z3NMRnVEWnJDNmgxWjNPanl5WjJ3dDBNMmRjaHEtR1VDT1JQRUFNRnlMcktHb25hVnc5TnVYYzB3eWVzcUotMTJGRWgxaHRfSnVxR0I1cEktLXBFQlRaRk11SndIcXhwVkd0bWx1MUE4QXR4Wk44c2FsS01aYjZ3enRPQUlSUEI0QVJlV1FKS2VnMWQyR3FjekNKOE5ia2ljcmlsWkNLYV84SktFTWZab1MtZXBxMmVvbm1WQXoxVlJKRkdmakswb3FjMWxvdFVGVDdGM213NFpIX3ZVZU05U1Bo?oc=5",
+          "source_name": "goSkagit",
+          "source_domain": "goskagit.com",
+          "published_date": "2026-08-19",
+          "summary": "Machine Investment Group Closes Second Investment Fund at $350 Million Hard Cap&nbsp;&nbsp;goSkagit",
+          "feed_name": "search:Oversubscribed funds"
+        },
+        {
           "title": "Machine Investment Group hits hard-cap on second opportunistic fund - pei-privaterealestate.com",
           "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOam8xb2VsN3k5c2RwblQtRDJwOUd2UGtKdEhITUVKZjFWMjdmMEpLRnFJbHZBVHZtM0ZRQkk2MVg4bWFLWmJXZUx2dk82MzA3V09fd0JvT1BWNFZtazFQYXlSbl83R21YUWZnWml4aXZ4bWFrZDNJQ2tvcmpNOW5RMTAxTGhDUDMwSDFjMGpBZm5VMmN4UUJ4dHVSeVNEVm0tYjg2NWY2ZkY3WHVPV3hpTFZxbw?oc=5",
           "source_name": "pei-privaterealestate.com",
@@ -495,7 +580,7 @@
       "announcement_date": "2026-08-16",
       "source_url": "https://www.prnewswire.com/news-releases/the-wealth-company-lance-un-fonds-a-gift-city-afin-doffrir-aux-nri-un-acces-unique-libelle-en-dollars-au-marche-des-fonds-communs-de-placement-de-linde-302852415.html",
       "source_name": "PR Newswire",
-      "description_notes": "provides dollar-denominated access to Indian mutual funds for Non-Resident Indians (NRIs) through the GIFT City (Gujarat International Financial Tec-City) onshore financial center. the fund offers a unique investment vehicle enabling NRIs to invest in India's mutual fund market with currency denomination in US dollars, addressing a previously unavailable investment option for this diaspora segment.",
+      "description_notes": "launch a dollar-denominated fund of funds targeting non-resident Indians (NRIs) with access to Indian mutual market opportunities through Gift City's International Financial Services Centre structure. The Wealth Company, the asset management arm of Pantomath Group, positions this vehicle to bridge cross-border investment flows for diaspora capital seeking rupee exposure without direct onshore complications.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-17T10:01:14",
@@ -557,7 +642,7 @@
       "announcement_date": "2026-08-14",
       "source_url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQcU1Nc0VzZ3hmUWk5SFJpY2NqNGtRdGptZEgtZVdKbmRXTV82WVhsSHpwXzFYWHJHa0pIUXV3RkN1bTBxUm5xc000Tm95ejZWN1BOY1NvNGwtMjdrZWlMZTJxNmk5Q25Ca0h1TDgtak9zcGxkMHBNVF9YRFRST0wyM2JaLXJFQXZzbzRrQ1lqRHl0dWtUR3hWa0pOODZYUEdHVHJWQTNwZEU3MnVidUhfV3U5T1Z4SmlpeUpRNllEVzFmdkwxWDdHb25iaXZlY3c?oc=5",
       "source_name": "PR Newswire",
-      "description_notes": "launch a $300M venture capital fund targeting emerging companies and early-stage growth opportunities across technology and adjacent sectors. The fund combines EMERGING and Promethean's joint investment expertise, marking a significant collaboration between the two firms in the VC space. This inaugural fund positions the partners to compete in the mid-market venture segment with a diversified portfolio approach.",
+      "description_notes": "launch a $300M venture capital fund targeting early-stage technology and innovation-focused companies across emerging markets and developed economies. The fund is a joint initiative between EMERGING and Promethean, combining expertise in frontier market investing with deep tech sector knowledge. This represents a significant institutional effort to capitalize on cross-border venture opportunities, though specific LP anchors and comparison to prior vintages remain undisclosed.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-15T10:01:22",
@@ -628,7 +713,7 @@
       "announcement_date": "2026-08-14",
       "source_url": "https://alternativecreditinvestor.com/2026/08/14/star-mountain-hails-strong-institutional-interest-at-final-close-of-cfo-i/",
       "source_name": "Alternative Credit Investor",
-      "description_notes": "close Star Mountain's inaugural credit fund targeting direct lending and structured credit opportunities across the capital stack. The fund reached final close with an undisclosed amount, marking the firm's entry into the credit strategy space alongside its existing buyout and growth platforms.",
+      "description_notes": "close Star Mountain's inaugural credit fund after reaching final close with an undisclosed commitment size. CFO I targets credit opportunities across the market, positioning the firm's first dedicated vehicle in the growing credit strategies space. The fund's completion marks Star Mountain's entry into credit investing following its establishment.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-15T10:01:22",
@@ -1480,6 +1565,15 @@
         {
           "title": "Areion Group achieves first close of maiden Gift city fund - Cafemutual",
           "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxQRy1KS2sya1I2c3A0WnZIcGQ4eGdlNEFoS3dtellXTFl2TDU4VlYzdGxlaEM1ZmN2Mnd1MjI0QTVONXZvaENESDNwQWxaUi1pRlFvbl9JZFNOaDBKbFhmc2tMVFUzZ1p6b3FtU0U3akc0U2Rha0NNUXM3X2VpbjFuZF9kXzZNSUNzR0lKdHJSNjFIQzBZa0RERlVmUnIySmUyelQ0?oc=5",
+          "source_name": "Cafemutual",
+          "source_domain": "cafemutual.com",
+          "published_date": "2026-08-14",
+          "summary": "Areion Group achieves first close of maiden Gift city fund&nbsp;&nbsp;Cafemutual",
+          "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Areion Group achieves first close of maiden Gift city fund - Cafemutual",
+          "url": "https://news.google.com/rss/articles/CBMijAJBVV95cUxNY25odllUZlZ1QnMyRmZyZnBpUEZLSVRGOWpCNk5GeXhJWUJUYXpKbzRFbnZrYnh1eXdvZlZjV1RFbzcyLWdtNV96eHpVUjZQNllOZ3d1WXV1ZFJwcFRENlN2aHJzdHBvb2ljMUlpSlA3VG9EQ0JWMWpfS25FaUJCaTlNcWM1elRwSG5pcHpMUmV6enFqS3VrdGRnM0ZhVF9PZ0h5cXF2NlZrM0duZDE0ZTJqd2dwM1RZU0RKVHpQbVE5OGpOclREczdaSC1fZGlaUGhObEh6R3NnMy1KY2hETFBjUEZscWNkckZzRk9BM3lVTWlKNkVRaEJKRWtZa085b2luT3o3SXhJbTNo?oc=5",
           "source_name": "Cafemutual",
           "source_domain": "cafemutual.com",
           "published_date": "2026-08-14",
@@ -2779,6 +2873,15 @@
           "published_date": "2026-08-04",
           "summary": "Blue Owl\u2019s European Real Estate Fund Tops \u20ac1.5B Cap&nbsp;&nbsp;Stock Titan",
           "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Blue Owl closes record-setting debut European net lease fund - pei-privaterealestate.com",
+          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQOTU0SEl1US1DYkppU0tYbnVuZmszd1h2b2ZYOGxSRm5DcGJ0WkxHbEVieGY0bkJRdkU0SWFQZHFRN3lKXzR5cVo2VEtFcE55T3VGU3BuaDI5YnlROW0yQlp5WFllbG1ReU1lX3p2Ym02OXR4UEU3OGNqYk9wOXlfYmVMMzF1MVFZdklmSUpyZ2Q4WFQ3ZG5henlmdGNhRElBVEFfTXh6UUNSUQ?oc=5",
+          "source_name": "pei-privaterealestate.com",
+          "source_domain": "pei-privaterealestate.com",
+          "published_date": "2026-08-04",
+          "summary": "Blue Owl closes record-setting debut European net lease fund&nbsp;&nbsp;pei-privaterealestate.com",
+          "feed_name": "search:Oversubscribed funds"
         }
       ]
     },
@@ -3321,15 +3424,15 @@
       "amount": "Undisclosed",
       "amount_usd_millions": null,
       "category": "Infrastructure",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "",
+      "location": "Boston, MA",
+      "city": "Boston",
+      "state": "MA",
+      "country": "US",
       "stage": "Launch",
       "announcement_date": "2026-07-31",
       "source_url": "https://news.google.com/rss/articles/CBMimAJBVV95cUxOVnU1VU1RUXZMSWFtb1FlVkhxVzgtWVoyYS1QT25iNkc2VWFqeWNJZzFsQk56ZkhLX0UzcWxyMzRzaEgyajdJSFQteGxQUWY2U3VqN3pubW9rWTkzN2stWmhnalpWOFlxQjhhbW1VV3dJSmdzTXFnZWc2QmRpM3h3S2gzSlBXNmtTN0ZhWnpPV3d4YnhJSTFWNnBNelJuTGV3Ukc3U2lhNmZ3R0p6SGxraE90ekd2eVBoSkExdUVBZ2p2T3FpaHU4Z1hlSkpETVZwRlBuMWk4QkpKOVcwaEV1UkE3XzhIWkV2cEEwdGhrWi1Fd0JHbThGYzg2cm1Cb290NHNIaHRPTnZwY0FWaEljSG4yZ3FVdmZi?oc=5",
       "source_name": "Business Wire",
-      "description_notes": "launch an infrastructure-focused fund under the Northampton Capital Partners banner, targeting core and core-plus assets in North American utilities, transportation, and essential services. The fund represents Northampton's entry into dedicated infrastructure investing, diversifying beyond its traditional sectors. Northampton Capital Partners is a established middle-market investor known for operational value creation across industrial and business services.",
+      "description_notes": "launch an infrastructure fund focused on mid-market assets and essential services across North America. Northampton Capital Partners, known for disciplined value creation in core infrastructure, is targeting institutional LPs seeking stable, long-duration returns in utilities, transportation, and energy transition sectors. The fund represents the firm's expansion into dedicated infrastructure strategy, building on its track record in operational improvements and portfolio company growth.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-01T10:03:01",
@@ -5594,7 +5697,7 @@
       "announcement_date": "2026-07-16",
       "source_url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOUmFKR2NGTnRES0xOUUc1SGNLbXR5S1FnSVhfTmdVanBHTWdzSnViZ3VmbGdtaUxsRExYWm5lZkdyRVV0Uk9qMXlfd0tVcEpnOG1SRS1BSTkwTV9OcUthaXo3eGk3b1Fock9FbUZpMl9SSU11NXI0T1NXVjhHdlFEbjZmQzFCZHMyUWxoV2NxLVdISzBLdG1OeE4wUzI1bzlfN214Z1FFcnNTT3dXXzFZaVlObkIwWGw4dmJJOGxB?oc=5",
       "source_name": "Infrastructure Investor",
-      "description_notes": "launch an infrastructure credit fund focused on opportunistic debt investments across utility, transportation, and renewable energy assets. Clifford Capital Asset Management targets institutional investors seeking yield-generating exposure to essential infrastructure with defensive characteristics and inflation-hedging potential. The fund enters a competitive market as infrastructure credit strategies continue attracting capital amid rising interest rates and refinancing opportunities.",
+      "description_notes": "launch an opportunistic infrastructure credit fund targeting debt investments across core and non-core infrastructure assets. The fund aims to capitalize on dislocations and yield opportunities in the infrastructure debt market, positioning itself for investors seeking exposure to essential asset classes with inflation-hedging characteristics. Clifford Capital's entry into dedicated infrastructure credit follows broader institutional appetite for alternative credit strategies in the sector.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-16T10:11:21",
@@ -7072,6 +7175,15 @@
           "published_date": "2026-07-09",
           "summary": "",
           "feed_name": "TechCrunch - Venture"
+        },
+        {
+          "title": "Nandan Nilekani leaves GP role at Fundamentum as it launches $200M third fund - TechCrunch",
+          "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNQjA3azhoTExyVmZqSzVGejBqek1WUnhKM3I3N3drMm1mV1VRNEpJOVdvbnZvQnExdm5YN0pGeEdIZTRvdGRzVWhHQms4OUVSLXpnczNDMi1RLTFCZV93NmF6a3NuQXpkMGktbUdtWjNJSVF0NkxUb3V3R2pRdkJHbHp4NHJZMV8tbFlKY1dCOXo2WnFGbUppdzJxdFRhZFQ5TzZDQXhPdVVmTEFnUGFRMg?oc=5",
+          "source_name": "TechCrunch",
+          "source_domain": "techcrunch.com",
+          "published_date": "2026-07-09",
+          "summary": "Nandan Nilekani leaves GP role at Fundamentum as it launches $200M third fund&nbsp;&nbsp;TechCrunch",
+          "feed_name": "search:PE/VC fund closes"
         }
       ]
     },
@@ -8899,7 +9011,7 @@
       "announcement_date": "2026-07-02",
       "source_url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxNUml5NTc1Y0J0WmQ4X3JMMndYMWNMNE9pLUxqbGZWVHEyR3Buc1hyT25SSjJXNGhQaXRxMWlzSDRLY1RGTmxoVzUxLU9uNFp2TlhRR0d0OWQ3em9XR0dXYThOQzd1dEw3c2lZbWNSUWJtcWVLWUIwRVNuUHktSG5RV1Z1RGFOWEdkdVBMZ2ZTMUJFV0VVV1hORV9PSDdOcHpNc2NLblQwR19lVTUxeF81RW1Cc000UU93TFhWZHIzenNINUVfXzVzSzNiWnpWN3ZUUEtN?oc=5",
       "source_name": "Passionateinmarketing",
-      "description_notes": "launch a $100M infrastructure fund focused on climate solutions and decarbonization technologies across energy, transportation, and built environment sectors. The fund targets growth-stage and scale-up companies addressing climate mitigation and adaptation, positioning itself as a thematic infrastructure investor rather than traditional energy or utility-focused managers. This inaugural vehicle represents 100x100's entry into dedicated climate infrastructure, capitalizing on increased LP appetite for ESG-aligned infrastructure exposure.",
+      "description_notes": "close a $100M inaugural climate infrastructure fund targeting decarbonization investments across energy, transportation, and industrial sectors. the debut vehicle from 100x100 aims to deploy capital into mid-market climate solutions with 10+ year horizons, positioning itself in the gap between venture-scale cleantech and large institutional infrastructure funds. limited details on anchor LPs are available, but the fund's launch reflects growing institutional appetite for thematic infrastructure aligned with net-zero transition timelines.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-02T10:01:52",
@@ -11051,7 +11163,7 @@
       "announcement_date": "2026-06-20",
       "source_url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxQSlc5T1FDYTlkOXVFbjQ0elpTOGtqUVdybUpIdW5laktyWmU5SG94VktqTWg0WjUwaWluWmk4ZFcwXzRkR2dNampIMWFMcFM5V2ZCNUdXb2s4T1VBTndORmJ2NnEwVlBpYUVhZFV3azlfcDc5UGtFankxdGJJQWZiOUhXa0NPdzk3aEQzMmwtUjRIczRzLTdGaWxFeVkwNHJqSDNIMm5XRnd0WVQ2aDRzZGFEZE1EZ3dMUWphanAtUDhpZzVIMjJXM2FPOUw3T3BvbVNnNnN6MVFCenRQZUc1VTJ5T3Z1ajJ3cDVvSDB5XzYwLUhh?oc=5",
       "source_name": "Whalesbook",
-      "description_notes": "launch a \u20b9100 crore ($12M+) second vintage focused on early-stage fashion and apparel entrepreneurs across India, following the initial fund's backing of emerging designers and direct-to-consumer brands. the fund targets pre-seed to Series A fashion tech and traditional apparel companies in the Indian subcontinent, with a distinctive focus on underserved fashion founders outside major metros. Season 2's larger corpus reflects demand from LPs for dedicated fashion venture capital in a market where apparel and fashion tech remain fragmented across generalist investors.",
+      "description_notes": "launch a \u20b9100 crore ($12M) second vintage focused on early-stage fashion and apparel entrepreneurs in India, building on the inaugural fund's thesis of backing founders in the subcontinent's fragmented and growing fashion sector. The fund targets pre-seed and seed-stage companies in fashion tech, direct-to-consumer brands, and supply chain innovation, though specific LP names and anchor investors are not publicly disclosed. Season 2 represents an expansion of the original fund, signaling confidence in the model and continued demand from Indian fashion entrepreneurs seeking specialized venture capital.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-23T10:01:41",
@@ -11735,7 +11847,7 @@
       "announcement_date": "2026-06-16",
       "source_url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNdlRpTFRWakQydkxjVWVEalhMb3Y0SU1MbmRZNU5rNTRwbXZUdDlFTk85dTB6dFRMQzhxSmZWOUlrNmVvQUI0NVgyR25mSzh0dHZSMEFGUEI3cmpxSjJjdE9xdERXbEtuMkV3aWNSQmNvcTd5TUhrYVVGQlpGLU9kdF9sTTdIeG4wT2JkcTNyemJmR0lqQjhHREpSUUJHZEZO?oc=5",
       "source_name": "Infrastructure Investor",
-      "description_notes": "close a $1.5B inaugural mid-market infrastructure fund targeting core and core-plus assets across North America and Europe. The debut vehicle from Tallvine, a newly formed infrastructure-focused manager, aims to acquire controlling or significant minority stakes in utility, energy transition, and essential services businesses with enterprise values between $500M\u2013$2B. The fund's launch marks entry into a competitive mid-market infrastructure segment where established players like Brookfield, Stonepeak, and Macquarie have raised increasingly larger vehicles.",
+      "description_notes": "raise $1.5B for its debut mid-market infrastructure fund, targeting core and core-plus assets in North America with a focus on essential infrastructure across utilities, transportation, and digital connectivity sectors. The debut vehicle marks Tallvine's entry into the mid-market infrastructure space, positioning itself between larger institutional buyout platforms and smaller regional operators. Fund aims to acquire and operate assets with $50M\u2013$250M in EBITDA, leveraging operational expertise and long-hold strategies typical of infrastructure-focused managers.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-26T10:01:28",
@@ -12748,7 +12860,7 @@
       "announcement_date": "2026-06-11",
       "source_url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxQc2lKLXZIbFJNX1ozY3pCYUhfX0NtV21yNkV2Z0NfQ29uakozUklIdld3VzRhUGdjcS1zMDVVTklEMzZ4U1lIb1A4VDZWcDd2RmlOaW9ZQUQ5TmlBVW5zem9CUlRvTlJScGdiZHNyNUgyelNoVVRIVjZGX3NvUWhpOVZSSTZIUm00ZzF1eDRiVGxKNGZzVTRlQnNIaWZjTVcyTm5TYVVrVDU2NERDWVNXXzVtTjB3RExWNVAtODd2cTN1aTdRUFQxVmp6REdiYlpQV2dQcEREaGVoeXJJcVA3TDBHaG8tX3o5QTdIT0xydG5SdGhN0gH6AUFVX3lxTE9ZdEN5MFZad0FTRFVmTDhXaF91VkZ4dThheU0tWF9IQVN5dWpGNDloZVRNQXVwYWZ6azBLam1teFV0dlViRVVSZG90RlQ2VTFDazlzdEFrbjBZbHhRQjhhZzBON1B3VkVudmpiQTFDWmdzN3M4dHNFWER1MDJrUUtmandIMGcwR3MtRnRBVmVqRTJCY2RlUEhUWXlNaUhFTXl4ZzNfTm5oMU9QcGxlNVdhc0Q1Ymd2ZDVYOGVIRy1nak1mN2pId212a1RlcTR0Sm9HSFJsOHdTSUR2R3MycVJYdko1R0hfUnVIWGtHVlVuWDg0ZnNKUk5COWc?oc=5",
       "source_name": "M",
-      "description_notes": "launch a new real estate opportunities fund focused on value-add and opportunistic investments across property types and geographies. Prime Litmus Investment Management, known for its real estate expertise, is targeting institutional and high-net-worth investors seeking exposure to real estate fundamentals and market dislocations. The fund represents the firm's expansion into dedicated real estate investing with a flexible mandate to capitalize on market opportunities.",
+      "description_notes": "launch a real estate opportunities fund targeting core-plus and value-add properties across the US market. Prime Litmus Investment Management, known for its disciplined real estate approach, is positioning this vehicle for institutional capital seeking exposure to mid-market real estate with an emphasis on operational improvements and market cycle positioning. The fund's structure suggests a focus on the current market environment where selective real estate opportunities are available at attractive basis points.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-06-30T10:01:25",
@@ -14547,7 +14659,7 @@
       "announcement_date": "2026-06-03",
       "source_url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxPaTVNT1dSQ3o4RmhCZ1NqS1MzYThvQU5FdFpHYkF3N0xuandkekFyVTYzY1BJdlVSYTVtYmV1Sjd5dnlnWG04SWxfcHBaVnA2R0dRYUdoRi15cktKMnRWRlMyNnlQRUp0Q0cyeFFfZ1VMYTRlUHpHZmJNRzB6dXlrZk1saUh2Ynd2aWR0VUwwSFBWZ0VKZHhuOWlacngtdUd6RF9yZGEweU5TWFRLbmdPT1lYSTY2RW9WeU9VR0lQSDZMOHcy?oc=5",
       "source_name": "Gtreview",
-      "description_notes": "launch a credit fund focused on direct lending and structured credit opportunities, targeting middle-market borrowers and sponsors seeking non-bank capital solutions. the fund represents Price Ridge Capital's entry into the credit strategy space, positioning the firm to compete in the growing alternative credit market as traditional bank lending tightens.",
+      "description_notes": "launch a credit fund focused on direct lending and structured credit opportunities, though specific strategy details and target market segments remain undisclosed at this early stage. The fund's LP base and anchor investors have not been publicly announced. As a newly formed credit vehicle, Price Ridge Capital enters a competitive landscape of established middle-market lenders and broadly syndicated credit platforms.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-01T10:03:02",
@@ -15330,6 +15442,15 @@
       "covered_date": null,
       "date_added": "2026-05-28T10:01:21",
       "articles": [
+        {
+          "title": "Pemberton launches credit fund for US pension plans - pei-privatecredit.com",
+          "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxNeXh2Zm1VUm9pTzRGR3drQzRWbFNNYVl0ZmZFUlJDUGhfSVNfSEJWZVUxTktFVmV1N2M2Q0NwQVVRYmZJYzhnN0ZNdUlNWUNiNFdRUkpIc082OGlCYjBwRGJ0dVRGTU9sTk5wT0JLdmpPanVKM2x4dTJCSjZyOFpkX2x1dXlUcGxWT092UEhqd2s?oc=5",
+          "source_name": "pei-privatecredit.com",
+          "source_domain": "privatedebtinvestor.com",
+          "published_date": "2026-08-18",
+          "summary": "Pemberton launches credit fund for US pension plans&nbsp;&nbsp;pei-privatecredit.com",
+          "feed_name": "search:PE/VC fund closes"
+        },
         {
           "title": "Pemberton closes Credit Opps IV on \u20ac3.4bn - pei-privatecredit.com",
           "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxNdVRVM3R6U1dsRXpTclloYV9XbVpJN2tIV2Vjc1M4VlJzMDM0QU1EWl83UVd0Ymt2V0taSFdpX3VpN3ZMbGhrMnBjUXBNMkNadlBsR2h0bnB1TlljeTg3aWNCblc2aU50c2hUY0x0M0JIXzNqTFgyTlhNeHFsTXg2Ni1kTQ?oc=5",
@@ -20725,7 +20846,7 @@
       "announcement_date": "2026-05-05",
       "source_url": "https://news.google.com/rss/articles/CBMi8AFBVV95cUxOaDA2T29EUUxXdzM1WVVzMjlVbzZvR3JuZEJ3ZjZkZFVaREhPdURJX2FjckU2R2xnMFZndHJNaGswdkwzcEdlYzlRMDF4dTQtNEE2WkpwLTYwbjZLdWJDVjNnZWtobW0wb0g5eDk1NFVYOUtLMGRzNTBxRmRZSFNuRTRmUEpIMHRCZkhQUXJtZ0lqY05TN3V1UHFTVm1UNlRGOUpvT0lkM3RkRkd4Y1RQd1pEck43dXdlajVSb3J5MDZrV1k0bTlrZ3ZwY0NlTmlWWUNnaVpyR2JKTnZETENGdHVTOUlJemNzN3FnS3RUYzU?oc=5",
       "source_name": "PR Newswire",
-      "description_notes": "launch a $100M venture capital fund focused on early-stage technology investments. AlphaDrive targets seed and Series A companies, competing in the crowded early-stage VC market with a typical check size range of $500K\u2013$3M per deal. The fund's maiden close represents the firm's entry into institutional venture capital, though limited details on anchor LPs or a distinctive sectoral thesis are publicly available.",
+      "description_notes": "launch a $100M venture capital fund focused on early-stage technology investments. AlphaDrive targets seed and Series A companies, competing in the crowded early-stage market with a thesis centered on [specific sector or geography\u2014details unavailable]. The fund represents the firm's inaugural raise and will need to demonstrate differentiation through either exceptional founder networks, sector expertise, or geographic focus to attract limited partners.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-05-06T10:01:30",
@@ -21676,7 +21797,7 @@
       "announcement_date": "2026-05-01",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/growth-tech-investor-crecent-cove-collects-446m-for-oversubscribed-fund-iv.html",
       "source_name": "AltAssets",
-      "description_notes": "raise $446m for its fourth growth-stage technology fund, which closed oversubscribed and signals continued investor appetite for late-stage venture capital in software and tech-enabled businesses. Crescent Cove Advisors maintains its focus on growth equity investments in the North American tech sector, with Fund IV exceeding its target and demonstrating LP confidence in the firm's track record across prior vintages.",
+      "description_notes": "closes $446m for growth-stage tech investments in an oversubscribed fourth fund, signaling strong LP demand for the firm's strategy. Crescent Cove Advisors focuses on growth capital deployment across the technology sector, with Fund IV exceeding its target amid a competitive fundraising environment. The oversubscription and final close completion underscore investor confidence in the firm's track record and sector positioning.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-05-01T10:46:40",
@@ -32793,7 +32914,7 @@
       "announcement_date": "2026-03-23",
       "source_url": "https://alternativecreditinvestor.com/2026/03/23/chamonix-completes-304m-inaugural-project-finance-clo/",
       "source_name": "Alternative Credit Investor",
-      "description_notes": "close a $304M credit fund targeting opportunistic fixed-income and structured credit investments across multiple sectors and geographies. the fund has reached final close after securing commitments from institutional investors, positioning it within the competitive credit fund landscape. specific details on LPs, strategy focus areas, and how this vintage compares to prior Chamonix funds are not disclosed in available sources.",
+      "description_notes": "close $304M credit fund targeting opportunistic fixed-income and structured credit investments across multiple sectors and geographies. Fund reached final close, suggesting strong demand from institutional LPs despite limited details on anchor investors or strategy specifics in available materials. Chamonix enters competitive credit market at mid-market fund size, positioning for direct lending, distressed, or specialty credit opportunities.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-24T12:09:19",
@@ -36197,6 +36318,15 @@
       "date_added": "2026-03-10T12:07:57",
       "articles": [
         {
+          "title": "Copenhagen Infrastructure Partners closes US$3 billion energy fund targeting 'high-growth, middle-income markets' - Energy-Storage.News",
+          "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxPTnV0U29uc3dhN0QwcC1GQWhEVk5xQ1lONjNLUU5IRzRJVjFBWElKeW9Qd2tlTndWVzdnNkNwVTUtcDBxdlRUd0tjS2ZQNjhaMGl5NUJzYUtGWU9icnJVT1Q3cUctbTFUTXB1dmF1bkZ0VWpHUXV2ZENEbUFjbTVzWDJLYTRNMnNaa0xwTVRiZ1daSkxfbXZWM1Y5MUZZeEpHVEZhT0Zua2RSemdldnFVSzdEMWtHQ3BKQUZQMjd2VmpQeVcyZFM0TVEyNmZ4RHBaTENLc1VTYmdsQQ?oc=5",
+          "source_name": "Energy-Storage.News",
+          "source_domain": "energy-storage.news",
+          "published_date": "2026-08-19",
+          "summary": "Copenhagen Infrastructure Partners closes US$3 billion energy fund targeting 'high-growth, middle-income markets'&nbsp;&nbsp;Energy-Storage.News",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
+        },
+        {
           "title": "CIP Raises $3 Billion for Growth Markets-Focused Clean Energy Infrastructure Fund",
           "url": "https://www.esgtoday.com/cip-raises-3-billion-for-growth-markets-focused-clean-energy-infrastructure-fund/?utm_source=rss&utm_medium=rss&utm_campaign=cip-raises-3-billion-for-growth-markets-focused-clean-energy-infrastructure-fund",
           "source_name": "ESG Today",
@@ -37597,7 +37727,7 @@
       "announcement_date": "2026-03-06",
       "source_url": "https://www.perenews.com/msrei-on-course-for-its-gxi-fundraising-target-after-major-first-close/",
       "source_name": "PERE",
-      "description_notes": "raise capital for a real estate investment fund targeting institutional investors after securing a major first close that puts the firm on track to meet its undisclosed fundraising target. MSREI's GXI fund represents the firm's continued focus on the private real estate market, with momentum from early anchor commitments suggesting strong LP appetite. The successful first close indicates positive market reception for the vehicle despite the broader economic environment.",
+      "description_notes": "close a significant portion of its fundraising target for GXI, a real estate fund from MSREI that appears to be gaining momentum among institutional investors. the firm is tracking toward its overall fundraising goal after securing major commitments at first close, suggesting strong LP appetite for the vehicle. limited details are available on the fund's specific strategy or sector focus, though the successful first close indicates market confidence in MSREI's real estate investment platform.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-08T10:01:35",
@@ -49047,6 +49177,15 @@
       "date_added": "2026-02-07T16:53:32",
       "articles": [
         {
+          "title": "Impact Investor Blue Earth Capital Raises Over $200 Million for Secondaries Strategy",
+          "url": "https://www.esgtoday.com/impact-investor-blue-earth-capital-raises-over-200-million-for-secondaries-strategy/?utm_source=rss&utm_medium=rss&utm_campaign=impact-investor-blue-earth-capital-raises-over-200-million-for-secondaries-strategy",
+          "source_name": "ESG Today",
+          "source_domain": "esgtoday.com",
+          "published_date": "2026-08-19",
+          "summary": "Specialist impact investor Blue Earth Capital announced that it has raised over $200 million in [&#8230;]",
+          "feed_name": "ESG Today"
+        },
+        {
           "title": "Blue Earth Capital makes second close of strategy on $200m",
           "url": "https://www.altassets.net/private-equity-news/by-news-type/fund-news/blue-earth-capital-makes-second-close-of-strategy-on-200m.html",
           "source_name": "AltAssets",
@@ -60478,6 +60617,17 @@
       "country": "Denmark"
     },
     {
+      "firm": "Prospect Ridge",
+      "firm_slug": "prospect-ridge",
+      "fund_count": 1,
+      "total_aum_millions": 800.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
       "firm": "Dimension Capital",
       "firm_slug": "dimension-capital",
       "fund_count": 1,
@@ -66318,8 +66468,8 @@
       "categories": [
         "Infrastructure"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "Boston",
+      "country": "US"
     },
     {
       "firm": "Savano",
@@ -69758,8 +69908,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-08-19T06:00:24.392303",
-      "last_success": "2026-08-19T06:00:24.392313",
+      "last_fetch": "2026-08-20T06:00:21.031585",
+      "last_success": "2026-08-20T06:00:21.031595",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -69768,8 +69918,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-08-19T06:00:22.180172",
-      "last_success": "2026-08-19T06:00:22.180181",
+      "last_fetch": "2026-08-20T06:00:18.895630",
+      "last_success": "2026-08-20T06:00:18.895639",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -69808,8 +69958,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-08-19T06:00:31.754499",
-      "last_success": "2026-08-19T06:00:31.754509",
+      "last_fetch": "2026-08-20T06:00:29.667533",
+      "last_success": "2026-08-20T06:00:29.667543",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -69818,8 +69968,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-08-19T06:00:10.500122",
-      "last_success": "2026-08-19T06:00:10.500125",
+      "last_fetch": "2026-08-20T06:00:06.422553",
+      "last_success": "2026-08-20T06:00:06.422557",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -69828,8 +69978,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-08-19T06:00:07.910729",
-      "last_success": "2026-08-19T06:00:07.910735",
+      "last_fetch": "2026-08-20T06:00:03.959587",
+      "last_success": "2026-08-20T06:00:03.959592",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -69838,8 +69988,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-08-19T06:00:20.708035",
-      "last_success": "2026-08-19T06:00:20.708046",
+      "last_fetch": "2026-08-20T06:00:17.478677",
+      "last_success": "2026-08-20T06:00:17.478688",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -69848,8 +69998,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-08-19T06:00:12.181524",
-      "last_success": "2026-08-19T06:00:12.181526",
+      "last_fetch": "2026-08-20T06:00:08.169146",
+      "last_success": "2026-08-20T06:00:08.169150",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -69858,8 +70008,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-08-19T06:00:28.547102",
-      "last_success": "2026-08-19T06:00:28.547111",
+      "last_fetch": "2026-08-20T06:00:25.416244",
+      "last_success": "2026-08-20T06:00:25.416255",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -69868,8 +70018,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-08-19T06:00:13.943173",
-      "last_success": "2026-08-19T06:00:13.943174",
+      "last_fetch": "2026-08-20T06:00:10.101762",
+      "last_success": "2026-08-20T06:00:10.101771",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -69878,8 +70028,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-08-19T06:00:06.292982",
-      "last_success": "2026-08-19T06:00:06.292983",
+      "last_fetch": "2026-08-20T06:00:02.554150",
+      "last_success": "2026-08-20T06:00:02.554151",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -69888,8 +70038,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-08-19T06:00:18.878243",
-      "last_success": "2026-08-19T06:00:18.878246",
+      "last_fetch": "2026-08-20T06:00:15.341285",
+      "last_success": "2026-08-20T06:00:15.341290",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -69898,8 +70048,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-08-19T06:00:17.052249",
-      "last_success": "2026-08-19T06:00:17.052260",
+      "last_fetch": "2026-08-20T06:00:13.517442",
+      "last_success": "2026-08-20T06:00:13.517451",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -69908,8 +70058,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-08-19T06:00:09.196990",
-      "last_success": "2026-08-19T06:00:09.197000",
+      "last_fetch": "2026-08-20T06:00:05.176445",
+      "last_success": "2026-08-20T06:00:05.176454",
       "error_count": 0,
       "article_count": 19,
       "last_error": "",
@@ -69917,12 +70067,12 @@
     }
   ],
   "stats": {
-    "total_funds": 1400,
+    "total_funds": 1401,
     "total_covered": 52,
-    "total_uncovered": 1348,
-    "total_aum_millions": 1006563229.4,
+    "total_uncovered": 1349,
+    "total_aum_millions": 1006564029.4,
     "by_category": {
-      "Credit Funds": 286,
+      "Credit Funds": 287,
       "Private Equity": 355,
       "Venture Capital": 353,
       "Secondaries & GP-Stakes": 82,
@@ -69932,7 +70082,7 @@
       "N/A": 1
     },
     "by_stage": {
-      "Final Close": 407,
+      "Final Close": 408,
       "Launch": 576,
       "Other": 150,
       "First Close": 239,
