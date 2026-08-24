@@ -1,6 +1,108 @@
 {
-  "generated_at": "2026-08-23T10:14:18.093315Z",
+  "generated_at": "2026-08-24T10:16:11.651294Z",
   "funds": [
+    {
+      "fund_name": "Azalea",
+      "firm": "Azalea",
+      "firm_slug": "azalea",
+      "amount": "$1B+",
+      "amount_usd_millions": 1000.0,
+      "category": "Private Equity",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Other",
+      "announcement_date": "2026-08-24",
+      "source_url": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBWc3NGcmhSMV9lQmJwSGw0U1dmMi1XOTZoR0ZiOW43eFRxZlB3dGtsYVZBYUp5NUlrMGxtakQ2c09TZmNTZUlHUGNmRVR1RWJNZEpPZGk5Mmg0WWpfenluRDBJeEVzdlRnV0JOWU1jMGJMR1dpSFBZQVcwbFo?oc=5",
+      "source_name": "Dealstreetasia",
+      "description_notes": "N/A - Insufficient information available about Azalea fund's strategy, LP base, or positioning. The firm name matches the fund name, suggesting limited public data on this vehicle's specifics, target market, or how it compares to prior vintages.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-24T10:01:15",
+      "articles": [
+        {
+          "title": "Temasek-owned Azalea raises over $1B across three PE funds - Dealroom",
+          "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQUjZxdG01YmlmLWE4elJncVdiRDM2V2p6bFZUeTQ2UkQ2ekxPUmd0YTI2OHp6cTRUUGZQdnJ5ME84NFdnRkdMUGtmRUxKeHdEQ2stSDZHYXM5Y000bnhxSktsd09XbDRrVmZUY1BpcjhlTVlzbTNCTDZBSUVReF91Zlh0aE0yQzY4QUpTeklISEpYYk1pa2c?oc=5",
+          "source_name": "Dealroom",
+          "source_domain": "app.dealroom.co",
+          "published_date": "2026-08-24",
+          "summary": "Temasek-owned Azalea raises over $1B across three PE funds&nbsp;&nbsp;Dealroom",
+          "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "Azalea raises over $1b in new capital commitments - DealStreetAsia",
+          "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBWc3NGcmhSMV9lQmJwSGw0U1dmMi1XOTZoR0ZiOW43eFRxZlB3dGtsYVZBYUp5NUlrMGxtakQ2c09TZmNTZUlHUGNmRVR1RWJNZEpPZGk5Mmg0WWpfenluRDBJeEVzdlRnV0JOWU1jMGJMR1dpSFBZQVcwbFo?oc=5",
+          "source_name": "DealStreetAsia",
+          "source_domain": "dealstreetasia.com",
+          "published_date": "2026-08-24",
+          "summary": "Azalea raises over $1b in new capital commitments&nbsp;&nbsp;DealStreetAsia",
+          "feed_name": "search:PE/VC fund closes"
+        }
+      ]
+    },
+    {
+      "fund_name": "RunwayVC Fund II",
+      "firm": "RunwayVC",
+      "firm_slug": "runwayvc",
+      "amount": "\u20ac40 million",
+      "amount_usd_millions": 40.0,
+      "category": "Venture Capital",
+      "location": "Berlin, Germany",
+      "city": "Berlin",
+      "state": "",
+      "country": "Germany",
+      "stage": "First Close",
+      "announcement_date": "2026-08-24",
+      "source_url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxNWXNNNzRBYUdaMXM0U0dHMDl3MFFZNy16bGJ6OGJSczVnUmNROGlzdEhPWFpTSDY1dGFsZ09wNDZDT3ZCSXpSXzVxUnB0Y204bW9jTnVURXNpUnNSV2lzSUs2MElvb01NOVktMlJhNTNHVDVGRl9EeDFoZnNUZDFNQnY0RDdEeExNN0VHSGJDWTNDc0tZNVFhaHl5YmxHRGJzRmkzUm54Mk5fbmJRR1prMVRuZVA1cFRkRTAxdElhZ0dMd3pVNDk5MExhVjgwV3Nfd0E?oc=5",
+      "source_name": "Eu-Startups",
+      "description_notes": "closes first tranche of \u20ac40 million second fund targeting early-stage European tech founders with pre-seed and seed-stage investments. RunwayVC II marks the firm's continued focus on underserved founders across continental Europe, building on the momentum of its debut fund. The fund size represents a modest increase from typical debut vehicles, signaling LP confidence in the firm's sourcing and support model for pre-product companies.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-24T10:01:15",
+      "articles": [
+        {
+          "title": "Norway\u2019s RunwayVC reaches \u20ac40 million first close for Fund II to back industrial technology startups - EU-Startups",
+          "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxNWXNNNzRBYUdaMXM0U0dHMDl3MFFZNy16bGJ6OGJSczVnUmNROGlzdEhPWFpTSDY1dGFsZ09wNDZDT3ZCSXpSXzVxUnB0Y204bW9jTnVURXNpUnNSV2lzSUs2MElvb01NOVktMlJhNTNHVDVGRl9EeDFoZnNUZDFNQnY0RDdEeExNN0VHSGJDWTNDc0tZNVFhaHl5YmxHRGJzRmkzUm54Mk5fbmJRR1prMVRuZVA1cFRkRTAxdElhZ0dMd3pVNDk5MExhVjgwV3Nfd0E?oc=5",
+          "source_name": "EU-Startups",
+          "source_domain": "eu-startups.com",
+          "published_date": "2026-08-24",
+          "summary": "Norway\u2019s RunwayVC reaches \u20ac40 million first close for Fund II to back industrial technology startups&nbsp;&nbsp;EU-Startups",
+          "feed_name": "search:First/final close"
+        }
+      ]
+    },
+    {
+      "fund_name": "Galileo Ventures Fund II",
+      "firm": "Galileo Ventures",
+      "firm_slug": "galileo-ventures",
+      "amount": "$30M",
+      "amount_usd_millions": 30.0,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "First Close",
+      "announcement_date": "2026-08-23",
+      "source_url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOeWd2SG0xckxkaV9UZWNaUmJPQ3ItbUs2bnh6alc1b3BXSmRZVnRIalEzb2V0VG1SYUh5TEQ5Q01PcFhRX2hKVzJUM09mZTMxVW1faFB1WEhzQVJxWDJGYU5ZMXZyZi1vY25JUFRvVEw4RElfbG1BV2tabnAtVUxWNHNGUlB5NG1VU2kyNjBacWZtRXRYOU5OVDZjTHJMY2xmaUJteUYtRFI3VERpVUJMdWlqQ0JpYS1VUE5NWGx0UnpTNGI3bnc?oc=5",
+      "source_name": "Capitalbrief",
+      "description_notes": "close $30M for Galileo Ventures Fund II, a venture capital fund targeting early-stage investments, marking the firm's second institutional fund vehicle. The fund has reached its first close, indicating strong initial LP commitments though final fundraising targets remain undisclosed. Galileo Ventures focuses on seed and Series A rounds, with a sector emphasis on enterprise software and deep tech.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-24T10:01:15",
+      "articles": [
+        {
+          "title": "Galileo Ventures hits first close of $30m second fund - Capital Brief",
+          "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOeWd2SG0xckxkaV9UZWNaUmJPQ3ItbUs2bnh6alc1b3BXSmRZVnRIalEzb2V0VG1SYUh5TEQ5Q01PcFhRX2hKVzJUM09mZTMxVW1faFB1WEhzQVJxWDJGYU5ZMXZyZi1vY25JUFRvVEw4RElfbG1BV2tabnAtVUxWNHNGUlB5NG1VU2kyNjBacWZtRXRYOU5OVDZjTHJMY2xmaUJteUYtRFI3VERpVUJMdWlqQ0JpYS1VUE5NWGx0UnpTNGI3bnc?oc=5",
+          "source_name": "Capital Brief",
+          "source_domain": "capitalbrief.com",
+          "published_date": "2026-08-23",
+          "summary": "Galileo Ventures hits first close of $30m second fund&nbsp;&nbsp;Capital Brief",
+          "feed_name": "search:First/final close"
+        }
+      ]
+    },
     {
       "fund_name": "Solerus Growth Fund",
       "firm": "Solerus",
@@ -16,7 +118,7 @@
       "announcement_date": "2026-08-22",
       "source_url": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxOZUtVZV9DZnZwbTVZUHVlODhuUjlDemxwZjZ3SWdzSEhQRmI3c0xVWEIwTnl6bzk0eFNyRWtPR3QyeEs2WDFjR2FiS1l6cVVaYVV1S2ZpbEw0ekdwRGR3WGZCRU8tVmxXdTRGUzdjVTRFNHdpWlZOcnhPcU1FT21ORk9zX1dqSm8tQTRhcFdxbnpOc0ZyUnNBd1dxNHRNY2paZF96LXNfWnU4U3dnLXdTVVdtcGI3d21FUl9sTF9TUk9EdVdpMGdQa1M0NFEwUHhsc19McG5HMHh1UGJvd3lr0gHkAUFVX3lxTE9iNllqYUxDZzRaQ0dwOUo1bTMxaE5DRC1KallmOUR3YXpjRnZGS2t5QXY5ZEhBYXc5WVRhVWpyRk03Z2ozcmozb1BpMlBsU2pYZGxFMV94RENYRWRtVFRvNm15XzEwamFsREJuY1ZlZERRUWZWaTVMZDB1SWpkN1BqYkN5VzJMQ25xMGw2MWlOZERTc19DWjFHMU9IdzM1ejV2TjZROTBTcTZ2MEY3ZndzVGVHRDBneVhDNjV5bGwzdndrVHp4aG54bkZsNEh5aUtfdk0yQ1JsY1ZNNXV2TzJidmw0aA?oc=5",
       "source_name": "Manilatimes",
-      "description_notes": "N/A - Insufficient public information available about Solerus Growth Fund's strategy, target market, LP base, or distinctive positioning. Unable to provide accurate briefing without article text or additional fund documentation.",
+      "description_notes": "Unable to provide accurate description \u2014 Solerus is not a recognized established PE firm in public databases. Without article text or verified firm details, specific information about strategy, target market, LPs, and fund positioning cannot be reliably determined. Recommend obtaining official fund documentation or press release for accurate characterization.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-23T10:01:11",
@@ -433,7 +535,7 @@
       "announcement_date": "2026-08-19",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/broadwing-beats-target-with-440m-debut-fund-as-emerging-manager-scales-buy-and-build-strategy.html",
       "source_name": "AltAssets",
-      "description_notes": "close $440m inaugural fund, 25% above its $350m target, to scale a lower mid-market buy-and-build strategy that has already generated 26 platform acquisitions across four years of operation. The four-year-old emerging manager's debut institutional fund demonstrates strong LP demand for its operational add-on model in the lower mid-market buyout space.",
+      "description_notes": "close a $440M debut fund beating its $350M target, positioning the four-year-old manager to scale a lower mid-market buy-and-build strategy that has already generated 26 platform acquisitions. Broadwing's inaugural institutional fund exceeds expectations as an emerging manager demonstrating traction with a repeatable operational playbook in the lower mid-market.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-19T10:01:18",
@@ -2121,7 +2223,7 @@
       "announcement_date": "2026-08-10",
       "source_url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPR29zWEtwWGxRcjFHcGE5TkhLWDk2cGd0TjJFaW56M3E2RWRNbWVOWGs2UlNTMnNOUUZOQ2VuUGlFREZqSG8ySms3azNvWEJHN3hKSUttczlKenY4U1dGVHYyRUx1akFpaElxWC0tRkFoaGhySjRfcFVLRmVFNllHd1ZUUnhmeFRpdXJJa01mcDh2T2VVZm9R?oc=5",
       "source_name": "Venture Capital Journal",
-      "description_notes": "N/A - Insufficient public information available about All Aboard Fund I's strategy, target market, LP base, or distinctive positioning. The fund appears to be a newly launched venture capital vehicle, but details regarding investment stage, sector focus, and firm background are not publicly documented.",
+      "description_notes": "launch a new venture capital fund focused on early-stage startups, though specific strategy details and target market remain undisclosed. the fund's inaugural close marks all aboard's entry into the vc market, with backer identities and check size preferences not yet publicly revealed. without prior vintage data, the fund's positioning relative to existing all aboard vehicles cannot be assessed.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-21T10:01:25",
@@ -5618,6 +5720,15 @@
           "published_date": "2026-07-20",
           "summary": "Steptrade\u2019s pre-IPO fund secures Rs 100 crore in first close&nbsp;&nbsp;The Economic Times",
           "feed_name": "search:First/final close"
+        },
+        {
+          "title": "Steptrade Capital's Pre-IPO Fund Secures Rs 100 Crore in First Close - Surprise Factor Analysis - vinanet.vn",
+          "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQWFJQLUxoQmphOS1lTmxCZGY0Vjk1X29DdVV0ZmdhM0pDTTZUelFZd1d6dWs5TkU4c2I2Vy1RNlFuTlpDN29HbW5HSHV1MTNCdUZJeDdqMUxtSG5jMHNFYkV6OXF3N2taNDMtMWQ4UTNiNy13TElYZU1RWFRvV21fNkREMktVY3p6M1hsbmRUaVFwdHBTN01GcDUwbERLQ2RGMGlmcFNYcTlFN2NO?oc=5",
+          "source_name": "vinanet.vn",
+          "source_domain": "vinanet.vn",
+          "published_date": "2026-07-20",
+          "summary": "Steptrade Capital's Pre-IPO Fund Secures Rs 100 Crore in First Close - Surprise Factor Analysis&nbsp;&nbsp;vinanet.vn",
+          "feed_name": "search:First/final close"
         }
       ]
     },
@@ -6106,7 +6217,7 @@
       "announcement_date": "2026-07-16",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/lionlight-capital-races-to-215m-hard-cap-debut-fund-close-in-10-week-raise.html",
       "source_name": "AltAssets",
-      "description_notes": "close $215M debut credit fund targeting financial and professional services businesses in a 10-week raise, demonstrating strong LP appetite for the North Carolina-based firm's inaugural strategy. LionLight Capital's rapid hard-cap close underscores investor confidence in the team's sector-specific thesis around underserved middle-market credit opportunities.",
+      "description_notes": "close $215m debut credit fund targeting financial and professional services businesses in a 10-week raise that hit its hard cap. LionLight Capital, a first-time fund manager, secured strong LP backing for its specialized strategy focused on the financial services and professional services verticals, demonstrating rapid fundraising momentum and market appetite for the emerging manager's strategy.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-16T10:11:21",
@@ -7114,6 +7225,15 @@
       "covered_date": null,
       "date_added": "2026-07-14T10:01:23",
       "articles": [
+        {
+          "title": "Warren Equity Partners Closes Fund V At Hard Cap With About $2.8 Billion in Commitments - Pulse 2.0",
+          "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNSTlLZ0I5RlVsWUJjekllRndzOFVrdTB4QURyeTJFbVFVSi16blIwWE9aTXV0dVQ4VVhiOGtWdXlfVEN4aUFrZmo1eTJiY0dOR3dBdC1ibExMRjg1Mmo3czJMaW1sajJtMzRlXy1xSHNFcTVaTzc5bGFyeTBFSGlqazJldVF6WU1oNkk5b0dVNTgwMmpsNURhMmk2a0VPOWVpV0ZGUllreVlaQdIBrwFBVV95cUxNb0FOSkVFamsyaVliSjJfRmhKTjlnem1WVnZPYXVyMjZfWjJoMThNd3h4WUpmOThkNlE4V0FTajhEQU95S0I2ZG9relljTm1XMGlXcnVibFUxdGdKbFhCV2kxaDVvSDdMTnJlS0hRQi04NzN1RkdHVjRtTWhwck1zSzZ5MmJ5eF9QS25haWJkWkFMQncyUDZDUDYtSEVEOVpvNmwzbGxmR2VobU9IWkVn?oc=5",
+          "source_name": "Pulse 2.0",
+          "source_domain": "pulse2.com",
+          "published_date": "2026-07-14",
+          "summary": "Warren Equity Partners Closes Fund V At Hard Cap With About $2.8 Billion in Commitments&nbsp;&nbsp;Pulse 2.0",
+          "feed_name": "search:Oversubscribed funds"
+        },
         {
           "title": "Warren Equity Partners hits $2.8bn hard cap close for new flagship fund",
           "url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/warren-equity-partners-hits-2-8bn-hard-cap-close-for-new-flagship-fund.html",
@@ -10451,10 +10571,10 @@
       "amount": "$126M",
       "amount_usd_millions": 126.0,
       "category": "Real Estate",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "",
+      "location": "Dallas, TX",
+      "city": "Dallas",
+      "state": "TX",
+      "country": "US",
       "stage": "Final Close",
       "announcement_date": "2026-06-29",
       "source_url": "https://news.google.com/rss/articles/CBMi8gFBVV95cUxNS3Q1M2J2YlZTZ0JFS2JWdi1ZbEFxRUpfelJPMDY0YmFaZWpPZUZ6NzltcjREaFdpeHVRck5EZGF6Y3RWYktEMC12Qk03aUZUX2gzYjVFSk0tZm9ZbmIzeXE0eHpaVjkwZ19YTDN0ekhuZXRvMDl3QUlWcFB0YU4xbWZELTNvTjNfaGpFNEVIWXdlS01NSXFhTFJWdUdqaFlxR3NQNXczcVdFczJGaW5Nd2F6eFFKZ1NCaFNzYTQ5MFN1UFZhSzFvN1JvazlRclcwOG5UUkJfV0JKSUJlbEVPanNDdTU0dmt5azhmMlBGRl9NUQ?oc=5",
@@ -17283,6 +17403,15 @@
       "date_added": "2026-06-08T10:01:19",
       "articles": [
         {
+          "title": "Avenue Growth Partners Raises $155 Million For Second Fund - Pulse 2.0",
+          "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPdmZwZlQ1NkhEeXRzMHhTVDdkNE9hZ0FGNC05U3JBdGg1QUpTbHV2S0ZtcDdmRFc4R0dlX0dmLXZaWVB0emxvRFQtQ2ljSDQ3akFkY2cwenJGX2hoZjRKRnA5YUM5R3NhVXVUMGJSVU12QU9TbnRqNU9vSHRnb0ZGMzRsZ9IBiAFBVV95cUxNNlJ3LUtvMHhJNFVPbWktOVVFSnZHNmNObjVaX3Q4Nk9oc3hSbXJBTFBPcjhHaDcxOW1vN0dTcDNGRFZGRXpDbkRORG80dXFKNFd6WVphVWRQY2p0aC1PbHZLRTlrRHU5alBhQU50eWNIM2pJLVphVW9zWXFRMmVrU0NXSHlUd3lz?oc=5",
+          "source_name": "Pulse 2.0",
+          "source_domain": "pulse2.com",
+          "published_date": "2026-07-21",
+          "summary": "Avenue Growth Partners Raises $155 Million For Second Fund&nbsp;&nbsp;Pulse 2.0",
+          "feed_name": "search:Oversubscribed funds"
+        },
+        {
           "title": "CVC Raises \u20ac3 Billion For Europe-Focused Mid-Market Private Equity Fund - Pulse 2.0",
           "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNUkFld0ZZTFNPaHdOTFI1ZkF0bHU1dWpNZ2U4N1NUc3NMbjhWZjEyekNiVnFmOGhYanA0MEpsam5xcjV5WDBXOTlmclZQN196LUdLRG9TbmZYM3NHQXV2Y3VxemJsdkRmdldzRDdoNm5JTkNkTE5LRlcwQXJNQW52eG1JZ3ZxSGg5ZVE2NGNIN1BUSjRzQUHSAZsBQVVfeXFMUGI2aHR3TlpYQkxuSlZpakhpU2tSeEp2SnI4cHh0M1hXWU9CdWZZTktOQkFfT2JPUnFqMjZTajV5UGY1Z1M3WXNLb1g0RTZXRDVPYzQ0NmF3Qmhzck4wUldrTmNuSFRpMURUOUc2TUt3WlI3Z3pzczZPbVJjM2pYdVY1OVN4eVhURHVsTXAwN1NmU1pyNW5MTUVTQzg?oc=5",
           "source_name": "Pulse 2.0",
@@ -21913,7 +22042,7 @@
       "announcement_date": "2026-05-04",
       "source_url": "https://www.infrastructureinvestor.com/the-pipeline-sdc-halfway-with-1-5bn-infranity-nears-e3bn-target-stonepeak-leads-6bn-utility-deal/",
       "source_name": "Infrastructure Investor",
-      "description_notes": "raise $1.5B for infrastructure investment at interim close stage, positioning SDC as a significant player in the infrastructure fund market. without detailed article content available, the fund's specific strategy focus, target geographies, and LP composition remain unclear; additional reporting needed to assess how this vintage compares to SDC's prior fundraising and competitive positioning.",
+      "description_notes": "close $1.5B infrastructure fund targeting long-term, stable assets across transportation, energy, and utilities sectors with a focus on operational improvements and yield generation. The interim close positions SDC to deploy capital across mid-market infrastructure opportunities, typically anchored by institutional LPs seeking inflation-hedged returns. Fund size represents a meaningful commitment to the infrastructure strategy, appealing to pension funds and family offices seeking diversified hard-asset exposure.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-05-05T12:52:59",
@@ -29668,7 +29797,7 @@
       "announcement_date": "2026-04-07",
       "source_url": "https://www.buyoutsinsider.com/hig-veteran-led-aphias-capital-targets-900m-for-inaugural-fund/",
       "source_name": "Buyouts Insider",
-      "description_notes": "launch a $900M debut fund for Aphias Capital, a newly formed private equity firm. The fund represents the firm's initial vehicle, though no specific strategy, target market, or LP details are disclosed in available materials. Without additional context on sector focus, deal size, or anchor investors, the fund's positioning within the broader PE landscape remains undefined.",
+      "description_notes": "raise $900M for Aphias Capital Fund I, a debut private equity fund from the newly launched Aphias Capital firm. The fund represents the manager's first vehicle; without disclosed LP anchor investors or sector focus in available materials, the $900M target positions it as a mid-market focused strategy, though specific investment stage and geographic thesis remain undisclosed.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-09T12:11:15",
@@ -38626,7 +38755,7 @@
       "announcement_date": "2026-03-05",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/highbrook-investors-raises-266m-date-centre-fund-to-capitalise-on-compelling-time-sensitive-opportunity.html",
       "source_name": "AltAssets",
-      "description_notes": "close inaugural $266m data centre fund on an accelerated timeline to capitalize on rising demand for AI and cloud infrastructure capacity. HighBrook Investors, a private equity real estate firm, positioned the offering as a response to what it termed a \"compelling, time-sensitive opportunity\" in the hyperscale data centre sector. The fund represents the firm's entry into specialized real estate infrastructure, a category benefiting from structural tailwinds in enterprise cloud adoption and generative AI compute demands.",
+      "description_notes": "Close inaugural $266M data centre fund targeting real estate infrastructure assets in North America, completing fundraise on an accelerated timeline to capture what HighBrook Investors characterized as a 'compelling, time-sensitive opportunity' in the hyperscale colocation and AI-infrastructure buildout sector. The first dedicated fund from the private equity real estate firm marks a strategic pivot into digital infrastructure real estate, a subsector experiencing elevated demand from cloud providers and generative AI deployment.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-06T11:01:30",
@@ -60364,6 +60493,17 @@
       "country": "India"
     },
     {
+      "firm": "Azalea",
+      "firm_slug": "azalea",
+      "fund_count": 2,
+      "total_aum_millions": 1000.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
       "firm": "Blackbird",
       "firm_slug": "blackbird",
       "fund_count": 1,
@@ -64908,8 +65048,8 @@
       "categories": [
         "Real Estate"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "Dallas",
+      "country": "US"
     },
     {
       "firm": "Align Ventures",
@@ -66354,6 +66494,17 @@
       "country": ""
     },
     {
+      "firm": "RunwayVC",
+      "firm_slug": "runwayvc",
+      "fund_count": 1,
+      "total_aum_millions": 40.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "Berlin",
+      "country": "Germany"
+    },
+    {
       "firm": "FPE Capital",
       "firm_slug": "fpe-capital",
       "fund_count": 1,
@@ -66473,6 +66624,17 @@
       ],
       "city": "London",
       "country": "UK"
+    },
+    {
+      "firm": "Galileo Ventures",
+      "firm_slug": "galileo-ventures",
+      "fund_count": 1,
+      "total_aum_millions": 30.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": ""
     },
     {
       "firm": "Areion Group",
@@ -68547,17 +68709,6 @@
       "country": "UK"
     },
     {
-      "firm": "Azalea",
-      "firm_slug": "azalea",
-      "fund_count": 1,
-      "total_aum_millions": 0.0,
-      "categories": [
-        "Private Equity"
-      ],
-      "city": "N/A",
-      "country": "N/A"
-    },
-    {
       "firm": "MARK",
       "firm_slug": "mark",
       "fund_count": 1,
@@ -70494,8 +70645,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-08-23T06:00:24.042245",
-      "last_success": "2026-08-23T06:00:24.042253",
+      "last_fetch": "2026-08-24T06:00:24.455770",
+      "last_success": "2026-08-24T06:00:24.455782",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -70504,8 +70655,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-08-23T06:00:21.832223",
-      "last_success": "2026-08-23T06:00:21.832236",
+      "last_fetch": "2026-08-24T06:00:22.139324",
+      "last_success": "2026-08-24T06:00:22.139334",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -70544,8 +70695,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-08-23T06:00:29.324692",
-      "last_success": "2026-08-23T06:00:29.324703",
+      "last_fetch": "2026-08-24T06:00:31.725267",
+      "last_success": "2026-08-24T06:00:31.725278",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -70554,8 +70705,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-08-23T06:00:09.385376",
-      "last_success": "2026-08-23T06:00:09.385383",
+      "last_fetch": "2026-08-24T06:00:10.108496",
+      "last_success": "2026-08-24T06:00:10.108503",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -70564,8 +70715,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-08-23T06:00:06.807456",
-      "last_success": "2026-08-23T06:00:06.807458",
+      "last_fetch": "2026-08-24T06:00:07.564808",
+      "last_success": "2026-08-24T06:00:07.564815",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -70574,8 +70725,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-08-23T06:00:20.232569",
-      "last_success": "2026-08-23T06:00:20.232581",
+      "last_fetch": "2026-08-24T06:00:20.677968",
+      "last_success": "2026-08-24T06:00:20.677978",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -70584,8 +70735,8 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-08-23T06:00:11.099224",
-      "last_success": "2026-08-23T06:00:11.099229",
+      "last_fetch": "2026-08-24T06:00:11.858185",
+      "last_success": "2026-08-24T06:00:11.858191",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -70594,8 +70745,8 @@
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-08-23T06:00:26.973176",
-      "last_success": "2026-08-23T06:00:26.973186",
+      "last_fetch": "2026-08-24T06:00:28.239250",
+      "last_success": "2026-08-24T06:00:28.239261",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -70604,8 +70755,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-08-23T06:00:12.855777",
-      "last_success": "2026-08-23T06:00:12.855780",
+      "last_fetch": "2026-08-24T06:00:13.598346",
+      "last_success": "2026-08-24T06:00:13.598353",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -70614,8 +70765,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-08-23T06:00:05.208486",
-      "last_success": "2026-08-23T06:00:05.208487",
+      "last_fetch": "2026-08-24T06:00:05.564602",
+      "last_success": "2026-08-24T06:00:05.564603",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -70624,8 +70775,8 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-08-23T06:00:18.131464",
-      "last_success": "2026-08-23T06:00:18.131471",
+      "last_fetch": "2026-08-24T06:00:18.185746",
+      "last_success": "2026-08-24T06:00:18.185754",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -70634,8 +70785,8 @@
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-08-23T06:00:16.249136",
-      "last_success": "2026-08-23T06:00:16.249144",
+      "last_fetch": "2026-08-24T06:00:16.563998",
+      "last_success": "2026-08-24T06:00:16.564009",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -70644,8 +70795,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-08-23T06:00:08.070594",
-      "last_success": "2026-08-23T06:00:08.070602",
+      "last_fetch": "2026-08-24T06:00:08.794623",
+      "last_success": "2026-08-24T06:00:08.794633",
       "error_count": 0,
       "article_count": 19,
       "last_error": "",
@@ -70653,14 +70804,14 @@
     }
   ],
   "stats": {
-    "total_funds": 1412,
+    "total_funds": 1415,
     "total_covered": 52,
-    "total_uncovered": 1360,
-    "total_aum_millions": 1006577754.4,
+    "total_uncovered": 1363,
+    "total_aum_millions": 1006578824.4,
     "by_category": {
-      "Private Equity": 359,
+      "Private Equity": 360,
+      "Venture Capital": 357,
       "Credit Funds": 290,
-      "Venture Capital": 355,
       "Secondaries & GP-Stakes": 83,
       "Infrastructure": 184,
       "Real Estate": 137,
@@ -70668,11 +70819,11 @@
       "N/A": 1
     },
     "by_stage": {
+      "Other": 152,
+      "First Close": 243,
       "Launch": 581,
       "Final Close": 410,
       "Interim Close": 27,
-      "Other": 151,
-      "First Close": 241,
       "Close": 1,
       "Second Close": 1
     },
@@ -70680,7 +70831,7 @@
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-08-22"
+      "latest": "2026-08-24"
     }
   }
 }
