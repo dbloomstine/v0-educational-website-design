@@ -1,6 +1,77 @@
 {
-  "generated_at": "2026-08-24T10:16:11.651294Z",
+  "generated_at": "2026-08-25T10:14:09.635474Z",
   "funds": [
+    {
+      "fund_name": "Climate-Resilient Fund",
+      "firm": "AFC",
+      "firm_slug": "afc",
+      "amount": "US$750m",
+      "amount_usd_millions": 750.0,
+      "category": "Infrastructure",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "Other",
+      "announcement_date": "2026-08-25",
+      "source_url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNWHFTQzYxV1NTTUJKMmVKWHNUX3V1dEUwMzlodll0TkdGQ2N6MFY3WTFUMWFhRno3bHphVTdGWnJ4UllMX3lsRFBfSXZyY1RuWkJUMi1Bb29fM3pDZFZ3Wk9sSU5SRlE4MHI3NEpEZS1taF8yNlJsX3E2a3RoR19FM2lHcE9lUHBPRTNLaDlnWWZWTU9EV0Rj?oc=5",
+      "source_name": "Streamlinefeed",
+      "description_notes": "close a $750m infrastructure fund focused on climate-resilient assets and adaptation investments. The fund targets mid-market opportunities in renewable energy, water management, and climate-resilient infrastructure across developed and emerging markets. This represents AFC's continued expansion in the climate infrastructure space as institutional capital increasingly flows toward ESG-aligned infrastructure assets.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-25T10:01:30",
+      "articles": [
+        {
+          "title": "AFC Opens Nigerian Window on US$750m Climate-Resilient Fund - streamlinefeed.co.ke",
+          "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNWHFTQzYxV1NTTUJKMmVKWHNUX3V1dEUwMzlodll0TkdGQ2N6MFY3WTFUMWFhRno3bHphVTdGWnJ4UllMX3lsRFBfSXZyY1RuWkJUMi1Bb29fM3pDZFZ3Wk9sSU5SRlE4MHI3NEpEZS1taF8yNlJsX3E2a3RoR19FM2lHcE9lUHBPRTNLaDlnWWZWTU9EV0Rj?oc=5",
+          "source_name": "streamlinefeed.co.ke",
+          "source_domain": "streamlinefeed.co.ke",
+          "published_date": "2026-08-25",
+          "summary": "AFC Opens Nigerian Window on US$750m Climate-Resilient Fund&nbsp;&nbsp;streamlinefeed.co.ke",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
+        }
+      ]
+    },
+    {
+      "fund_name": "Granite Asia Pan-Asia Private Credit Fund",
+      "firm": "Granite Asia",
+      "firm_slug": "granite-asia",
+      "amount": "US$500 million",
+      "amount_usd_millions": 500.0,
+      "category": "Credit Funds",
+      "location": "Singapore, Singapore",
+      "city": "Singapore",
+      "state": "",
+      "country": "Singapore",
+      "stage": "Final Close",
+      "announcement_date": "2026-08-25",
+      "source_url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOb3o4cVBBakxiRmVKa2VRYXktUnBDN0VPUGhpNHVPV1lKLUNRUGZVQ0VpaUlkUElwTXNnRnAyeDZmcUtwek5MQ3JnT1RrdmhuV201WUV3eW5EeEdMN1RqR0RUTjh6Szd0THI2X2JsSnRKTkoyWHcyMElSdk5LMnEwT2hrMmVMcEhGUTQxZUV1UGloSFViaXFvenliTy1ndUdGemUza01WamdJYU82RUVIX3ZZODIzaHRSVF83ZnJB?oc=5",
+      "source_name": "Businesstimes",
+      "description_notes": "close $500 million pan-Asia private credit fund targeting mid-market borrowers across Southeast Asia, India, and broader Asia-Pacific markets. Granite Asia's latest vehicle expands the firm's credit-focused strategy beyond traditional bank lending, positioning it to capture growth in underserved SME and mid-market segments across the region. The final close reflects strong LP demand for Asia-denominated credit exposure amid rising interest rates and tightening bank credit.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-25T10:01:30",
+      "articles": [
+        {
+          "title": "Granite Asia raises $500m for Pan-Asia private credit strategy",
+          "url": "https://alternativecreditinvestor.com/2026/08/25/granite-asia-raises-500m-for-pan-asia-private-credit-strategy/",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-08-25",
+          "summary": "",
+          "feed_name": "Alternative Credit Investor"
+        },
+        {
+          "title": "Granite Asia exceeds US$500 million target for pan-Asia private credit fund - The Business Times",
+          "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOb3o4cVBBakxiRmVKa2VRYXktUnBDN0VPUGhpNHVPV1lKLUNRUGZVQ0VpaUlkUElwTXNnRnAyeDZmcUtwek5MQ3JnT1RrdmhuV201WUV3eW5EeEdMN1RqR0RUTjh6Szd0THI2X2JsSnRKTkoyWHcyMElSdk5LMnEwT2hrMmVMcEhGUTQxZUV1UGloSFViaXFvenliTy1ndUdGemUza01WamdJYU82RUVIX3ZZODIzaHRSVF83ZnJB?oc=5",
+          "source_name": "The Business Times",
+          "source_domain": "businesstimes.com.sg",
+          "published_date": "2026-08-25",
+          "summary": "Granite Asia exceeds US$500 million target for pan-Asia private credit fund&nbsp;&nbsp;The Business Times",
+          "feed_name": "search:Credit/Real estate"
+        }
+      ]
+    },
     {
       "fund_name": "Azalea",
       "firm": "Azalea",
@@ -38,6 +109,46 @@
           "published_date": "2026-08-24",
           "summary": "Azalea raises over $1b in new capital commitments&nbsp;&nbsp;DealStreetAsia",
           "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "Azalea raises $1bn across three PE products, but flagship fund size shrinks 35%",
+          "url": "https://www.altassets.net/private-equity-news/by-region/asia-by-region/singapore-asia-by-region-by-region/azalea-raises-1bn-across-three-pe-products-but-flagship-fund-size-shrinks-35.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-08-24",
+          "summary": "",
+          "feed_name": "AltAssets"
+        }
+      ]
+    },
+    {
+      "fund_name": "GEMGO II",
+      "firm": "Siguler Guff",
+      "firm_slug": "siguler-guff",
+      "amount": "$500M",
+      "amount_usd_millions": 500.0,
+      "category": "Private Equity",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "stage": "Final Close",
+      "announcement_date": "2026-08-24",
+      "source_url": "https://www.altassets.net/private-equity-news/by-region/asia-by-region/india-asia-by-region/siguler-guff-boosts-india-firepower-with-500m-gemgo-ii-close.html",
+      "source_name": "AltAssets",
+      "description_notes": "closed GEMGO II at $500m, more than doubling capital deployed into India versus the predecessor fund, as Siguler Guff expands its emerging-markets growth-equity platform across South Asia. The vehicle targets mid-market companies in India across consumer, technology, and financial services sectors, supported by the firm's established emerging-markets LP base.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-25T10:01:30",
+      "articles": [
+        {
+          "title": "Siguler Guff boosts India firepower with $500m GEMGO II close",
+          "url": "https://www.altassets.net/private-equity-news/by-region/asia-by-region/india-asia-by-region/siguler-guff-boosts-india-firepower-with-500m-gemgo-ii-close.html",
+          "source_name": "AltAssets",
+          "source_domain": "altassets.net",
+          "published_date": "2026-08-24",
+          "summary": "",
+          "feed_name": "AltAssets"
         }
       ]
     },
@@ -69,6 +180,37 @@
           "published_date": "2026-08-24",
           "summary": "Norway\u2019s RunwayVC reaches \u20ac40 million first close for Fund II to back industrial technology startups&nbsp;&nbsp;EU-Startups",
           "feed_name": "search:First/final close"
+        }
+      ]
+    },
+    {
+      "fund_name": "Redstone Blue Economy Fund",
+      "firm": "Redstone",
+      "firm_slug": "redstone",
+      "amount": "\u20ac25 million",
+      "amount_usd_millions": 25.0,
+      "category": "Venture Capital",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "N/A",
+      "stage": "First Close",
+      "announcement_date": "2026-08-24",
+      "source_url": "https://www.esgtoday.com/redstone-raises-25-million-for-new-ocean-tech-focused-blue-fund/?utm_source=rss&utm_medium=rss&utm_campaign=redstone-raises-25-million-for-new-ocean-tech-focused-blue-fund",
+      "source_name": "ESG Today",
+      "description_notes": "close a \u20ac25 million debut venture fund targeting blue economy companies and sustainable ocean-focused technologies. The first close marks Redstone's entry into climate and marine sustainability investing, positioning the firm within the growing intersection of climate tech and ocean innovation.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-25T10:01:30",
+      "articles": [
+        {
+          "title": "Redstone Raises \u20ac25 Million for Ocean Tech-Focused Blue Economy Fund",
+          "url": "https://www.esgtoday.com/redstone-raises-25-million-for-new-ocean-tech-focused-blue-fund/?utm_source=rss&utm_medium=rss&utm_campaign=redstone-raises-25-million-for-new-ocean-tech-focused-blue-fund",
+          "source_name": "ESG Today",
+          "source_domain": "esgtoday.com",
+          "published_date": "2026-08-24",
+          "summary": "Early-stage venture capital investor Redstone announced that it has raised \u20ac25 million (USD$29 million) at [&#8230;]",
+          "feed_name": "ESG Today"
         }
       ]
     },
@@ -574,6 +716,15 @@
           "source_domain": "morningstar.com",
           "published_date": "2026-08-18",
           "summary": "Broadwing Capital Closes Oversubscribed Inaugural Fund at $440 Million&nbsp;&nbsp;Morningstar",
+          "feed_name": "search:Oversubscribed funds"
+        },
+        {
+          "title": "Broadwing Capital Closes Oversubscribed Inaugural Fund at $440 Million - AOL.com",
+          "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxQUTBHQk9nYmE4T1Zqbk1HSWFBbEVHMnJod0xMQmJwQllqNzhmdEg2cjFWdEQwSWUxVkdZRjZUNWFyOERCRmFKX1lPeE9vQlphd2F0WmI3OHRJSU5selNPci1ObjlDNFRxVHBzOUxqcHhQOUk0S3lwRFRvRGRnd0Z2akltLU53U3RCVjdPeHNMaFE1QWEwQmE2Ug?oc=5",
+          "source_name": "AOL.com",
+          "source_domain": "aol.com",
+          "published_date": "2026-08-18",
+          "summary": "Broadwing Capital Closes Oversubscribed Inaugural Fund at $440 Million&nbsp;&nbsp;AOL.com",
           "feed_name": "search:Oversubscribed funds"
         }
       ]
@@ -1728,6 +1879,15 @@
       "date_added": "2026-08-15T10:01:22",
       "articles": [
         {
+          "title": "WovenEarth Raises $155 Million for CleanTech Venture Fund",
+          "url": "https://www.esgtoday.com/wovenearth-raises-155-million-for-cleantech-venture-fund/?utm_source=rss&utm_medium=rss&utm_campaign=wovenearth-raises-155-million-for-cleantech-venture-fund",
+          "source_name": "ESG Today",
+          "source_domain": "esgtoday.com",
+          "published_date": "2026-08-24",
+          "summary": "Early-stage cleantech investment firm WovenEarth Ventures announced that it has raised $155 million at the [&#8230;]",
+          "feed_name": "ESG Today"
+        },
+        {
           "title": "WovenEarth Ventures Closes $155M Fund II to Deliver Strategic Exposure to Cleantech 2.0 - PR Newswire",
           "url": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxQYV9sQXB6ODkwbHgyVVltb2JKa29HaDlENFlpbHpWak54OW04U0F4b29iYTE2Rlp6WDlxRVZ5b1dSNzRQTG9xOGJ2UVdKWFdCRFJoSFlyNWtfQWVzWG5pdF85c2xaREFmeXFOQnJRRkJWQ3hMT2xoTG13cUltek85U1MyemJMbGw0cTRrUVR6UFNUMmc0b2dKWmg4RUc0RWlQY2FWY045aGppQldLc3pveWVINGRaUzVIZnRtOVhySExIZnZCSUxGQ0hCa3RMczBvTktJTzZYYU5TRk0?oc=5",
           "source_name": "PR Newswire",
@@ -1745,10 +1905,10 @@
       "amount": "Undisclosed",
       "amount_usd_millions": null,
       "category": "Credit Funds",
-      "location": "N/A",
-      "city": "N/A",
-      "state": "",
-      "country": "",
+      "location": "New York, NY",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
       "stage": "Launch",
       "announcement_date": "2026-08-12",
       "source_url": "https://alternativecreditinvestor.com/2026/08/12/churchill-launches-capital-solutions-strategy-backed-by-tiaa/",
@@ -3539,7 +3699,7 @@
       "announcement_date": "2026-08-04",
       "source_url": "https://alternativecreditinvestor.com/2026/08/04/star-mountain-closes-first-us-direct-lending-cfo/",
       "source_name": "Alternative Credit Investor",
-      "description_notes": "launch Star Mountain's first US-focused direct lending fund targeting middle-market companies, marking the firm's expansion into the North American credit market. The fund, which closed its first tranche with an undisclosed amount, positions Star Mountain to compete in the competitive direct lending space where institutional LPs increasingly seek alternatives to traditional bank debt.",
+      "description_notes": "launch Star Mountain's first US-focused direct lending fund targeting mid-market companies, marking the firm's expansion into the North American credit market after establishing its presence in European direct lending. The fund focuses on CFO-level financing solutions for privately-held businesses, positioning it as a specialized credit offering distinct from the firm's prior European vintages.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-04T10:01:33",
@@ -4169,7 +4329,7 @@
       "announcement_date": "2026-07-29",
       "source_url": "https://www.altassets.net/private-equity-news/jump-capital-bets-bigger-on-crypto-with-record-350m-fund.html",
       "source_name": "AltAssets",
-      "description_notes": "close Jump Capital's eighth institutional venture fund at $350M, marking continued growth for the firm's portfolio strategy. The fund targets institutional investors and builds on the firm's track record across seven prior vintages, indicating sustained LP confidence in the manager's investment approach.",
+      "description_notes": "close Jump Capital's eighth institutional venture fund at $350M, marking continued momentum for the multi-stage investor. The fund size and eighth-vintage status suggest an established, repeat institutional manager with steady LP confidence, though specific sector focus and anchor investors were not disclosed in available materials.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-30T10:01:20",
@@ -6297,7 +6457,7 @@
       "announcement_date": "2026-07-16",
       "source_url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOUmFKR2NGTnRES0xOUUc1SGNLbXR5S1FnSVhfTmdVanBHTWdzSnViZ3VmbGdtaUxsRExYWm5lZkdyRVV0Uk9qMXlfd0tVcEpnOG1SRS1BSTkwTV9OcUthaXo3eGk3b1Fock9FbUZpMl9SSU11NXI0T1NXVjhHdlFEbjZmQzFCZHMyUWxoV2NxLVdISzBLdG1OeE4wUzI1bzlfN214Z1FFcnNTT3dXXzFZaVlObkIwWGw4dmJJOGxB?oc=5",
       "source_name": "Infrastructure Investor",
-      "description_notes": "launch an opportunistic infrastructure credit fund targeting debt investments across core and non-core infrastructure assets. The fund aims to capitalize on dislocations and yield opportunities in the infrastructure debt market, positioning itself for investors seeking exposure to essential asset classes with inflation-hedging characteristics. Clifford Capital's entry into dedicated infrastructure credit follows broader institutional appetite for alternative credit strategies in the sector.",
+      "description_notes": "launches an opportunistic infrastructure credit fund targeting debt investments across transportation, energy, and utilities assets. The fund focuses on floating-rate senior and mezzanine debt opportunities in mid-market infrastructure projects, positioning itself to capitalize on refinancing cycles and distressed opportunities in the sector. This inaugural offering from Clifford Capital Asset Management enters a competitive infrastructure debt market where institutional allocators increasingly seek yield-accretive alternatives to traditional fixed-income products.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-16T10:11:21",
@@ -14762,6 +14922,37 @@
           "published_date": "2026-06-02",
           "summary": "Wingman Growth Partners Closes Oversubscribed Inaugural Fund at $215 Million Hard Cap&nbsp;&nbsp;PR Newswire",
           "feed_name": "search:Oversubscribed funds"
+        }
+      ]
+    },
+    {
+      "fund_name": "du Venture Fund",
+      "firm": "du",
+      "firm_slug": "du",
+      "amount": "$50 Million",
+      "amount_usd_millions": 50.0,
+      "category": "Venture Capital",
+      "location": "Dubai, UAE",
+      "city": "Dubai",
+      "state": "",
+      "country": "UAE",
+      "stage": "Launch",
+      "announcement_date": "2026-06-04",
+      "source_url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxOZHpoZG1NbUNSOXFYeDBjSlNTTFozdmFBcThscTJjOTlCa3dfTlVTWEpaT1V5VEFQcnVuVzhQaFRERzRobjVZTzltMEszbHBHRk5VX0U4ZXZMN0p4Zm9VclBKZldmV21fM1RwanN1TVYtMVhlbTlQLUJtbDVnM051Qk14RXlwMFNfYzNSYUtFRVktU2s?oc=5",
+      "source_name": "Cairoscene",
+      "description_notes": "launch a $50M venture capital fund focused on early-stage investments in the MENA region and diaspora-led startups. du is a Dubai-based venture firm backing founders in underserved markets with a particular emphasis on technology and innovation ecosystems across the Middle East and North Africa.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-25T10:01:30",
+      "articles": [
+        {
+          "title": "du Launches $50 Million Venture Fund for UAE Tech Startups - CairoScene",
+          "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxOZHpoZG1NbUNSOXFYeDBjSlNTTFozdmFBcThscTJjOTlCa3dfTlVTWEpaT1V5VEFQcnVuVzhQaFRERzRobjVZTzltMEszbHBHRk5VX0U4ZXZMN0p4Zm9VclBKZldmV21fM1RwanN1TVYtMVhlbTlQLUJtbDVnM051Qk14RXlwMFNfYzNSYUtFRVktU2s?oc=5",
+          "source_name": "CairoScene",
+          "source_domain": "cairoscene.com",
+          "published_date": "2026-06-04",
+          "summary": "du Launches $50 Million Venture Fund for UAE Tech Startups&nbsp;&nbsp;CairoScene",
+          "feed_name": "search:PE/VC fund closes"
         }
       ]
     },
@@ -29859,7 +30050,7 @@
       "announcement_date": "2026-04-07",
       "source_url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxOZ1BSQUJEemprX2lfQkkzT2kwWHhEOWxYdHJJV3dJSkJRcHNtNUlWeVk5M3BLdmZGTWRnQzdqcjhweE8xbHAzRlRvcWpydkhEY2VmVFp6eUdOZGVXaGtIRHJaUmN3cU1ISmoxX2RSUDNYbEVSS01CTW1vb1pNMHNUWVVuSFAzTUlDSGNQWGtWN19aeFV4QXV1d3RoV1R2MG1rZzcyVlZXaFRocWxyU1p4Z1RyWjVfWkJSRDNCdE4wOWdvQQ?oc=5",
       "source_name": "Cio",
-      "description_notes": "launch a $100M venture capital fund focused on early-stage investments, though specific sector focus and LP composition remain limited in public disclosures. the fund represents Zero Shot's entry into dedicated venture capital deployment, positioning it to compete in the seed-to-Series A market. without prior fund vintages, this debut vehicle will establish the firm's track record in venture deployment and strategy execution.",
+      "description_notes": "launch a $100M venture fund focused on early-stage technology investments, though specific sector specialization and LP composition remain limited in public disclosures. the fund represents zero shot's entry into institutional venture capital management at a moderate fund size typical of emerging managers or sector-focused vehicles. without prior vintage data or anchoring investor announcements, the fund's positioning within the broader venture landscape requires additional market context.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-04-09T12:11:15",
@@ -61419,6 +61610,17 @@
       "country": "Denmark"
     },
     {
+      "firm": "AFC",
+      "firm_slug": "afc",
+      "fund_count": 1,
+      "total_aum_millions": 750.0,
+      "categories": [
+        "Infrastructure"
+      ],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
       "firm": "Exponent",
       "firm_slug": "exponent",
       "fund_count": 1,
@@ -61720,6 +61922,18 @@
       "country": "US"
     },
     {
+      "firm": "Granite Asia",
+      "firm_slug": "granite-asia",
+      "fund_count": 2,
+      "total_aum_millions": 610.0,
+      "categories": [
+        "Credit Funds",
+        "Venture Capital"
+      ],
+      "city": "Singapore",
+      "country": "Singapore"
+    },
+    {
       "firm": "Regal Healthcare Capital",
       "firm_slug": "regal-healthcare-capital",
       "fund_count": 1,
@@ -61986,6 +62200,17 @@
       ],
       "city": "Riyadh",
       "country": "Saudi Arabia"
+    },
+    {
+      "firm": "Siguler Guff",
+      "firm_slug": "siguler-guff",
+      "fund_count": 1,
+      "total_aum_millions": 500.0,
+      "categories": [
+        "Private Equity"
+      ],
+      "city": "New York",
+      "country": "US"
     },
     {
       "firm": "Vistara Capital",
@@ -65228,17 +65453,6 @@
       "country": "Spain"
     },
     {
-      "firm": "Granite Asia",
-      "firm_slug": "granite-asia",
-      "fund_count": 1,
-      "total_aum_millions": 110.0,
-      "categories": [
-        "Venture Capital"
-      ],
-      "city": "Singapore",
-      "country": "Singapore"
-    },
-    {
       "firm": "Cervinvest Capital",
       "firm_slug": "cervinvest-capital",
       "fund_count": 1,
@@ -66208,6 +66422,17 @@
       "country": "Vietnam"
     },
     {
+      "firm": "du",
+      "firm_slug": "du",
+      "fund_count": 1,
+      "total_aum_millions": 50.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "Dubai",
+      "country": "UAE"
+    },
+    {
       "firm": "Averroes Ventures",
       "firm_slug": "averroes-ventures",
       "fund_count": 1,
@@ -66714,6 +66939,17 @@
       "country": ""
     },
     {
+      "firm": "Redstone",
+      "firm_slug": "redstone",
+      "fund_count": 1,
+      "total_aum_millions": 25.0,
+      "categories": [
+        "Venture Capital"
+      ],
+      "city": "N/A",
+      "country": "N/A"
+    },
+    {
       "firm": "DayMark",
       "firm_slug": "daymark",
       "fund_count": 1,
@@ -67073,8 +67309,8 @@
       "categories": [
         "Credit Funds"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "New York",
+      "country": "US"
     },
     {
       "firm": "Equiton",
@@ -70645,8 +70881,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-08-24T06:00:24.455770",
-      "last_success": "2026-08-24T06:00:24.455782",
+      "last_fetch": "2026-08-25T06:00:28.600764",
+      "last_success": "2026-08-25T06:00:28.600777",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -70655,8 +70891,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-08-24T06:00:22.139324",
-      "last_success": "2026-08-24T06:00:22.139334",
+      "last_fetch": "2026-08-25T06:00:26.414238",
+      "last_success": "2026-08-25T06:00:26.414248",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -70695,8 +70931,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-08-24T06:00:31.725267",
-      "last_success": "2026-08-24T06:00:31.725278",
+      "last_fetch": "2026-08-25T06:00:34.671273",
+      "last_success": "2026-08-25T06:00:34.671286",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -70705,8 +70941,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-08-24T06:00:10.108496",
-      "last_success": "2026-08-24T06:00:10.108503",
+      "last_fetch": "2026-08-25T06:00:10.498320",
+      "last_success": "2026-08-25T06:00:10.498326",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -70715,8 +70951,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-08-24T06:00:07.564808",
-      "last_success": "2026-08-24T06:00:07.564815",
+      "last_fetch": "2026-08-25T06:00:07.907872",
+      "last_success": "2026-08-25T06:00:07.907882",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -70725,8 +70961,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-08-24T06:00:20.677968",
-      "last_success": "2026-08-24T06:00:20.677978",
+      "last_fetch": "2026-08-25T06:00:24.924491",
+      "last_success": "2026-08-25T06:00:24.924499",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -70735,18 +70971,18 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-08-24T06:00:11.858185",
-      "last_success": "2026-08-24T06:00:11.858191",
-      "error_count": 0,
+      "last_fetch": "2026-08-25T06:00:12.055409",
+      "last_success": null,
+      "error_count": 1,
       "article_count": 0,
-      "last_error": "",
+      "last_error": "Feed parse error for Infrastructure Investor: <unknown>:2:55436: not well-formed (invalid token)",
       "enabled": true
     },
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-08-24T06:00:28.239250",
-      "last_success": "2026-08-24T06:00:28.239261",
+      "last_fetch": "2026-08-25T06:00:31.618991",
+      "last_success": "2026-08-25T06:00:31.619000",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -70755,8 +70991,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-08-24T06:00:13.598346",
-      "last_success": "2026-08-24T06:00:13.598353",
+      "last_fetch": "2026-08-25T06:00:18.095043",
+      "last_success": "2026-08-25T06:00:18.095050",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -70765,8 +71001,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-08-24T06:00:05.564602",
-      "last_success": "2026-08-24T06:00:05.564603",
+      "last_fetch": "2026-08-25T06:00:06.153951",
+      "last_success": "2026-08-25T06:00:06.153953",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -70775,18 +71011,18 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-08-24T06:00:18.185746",
-      "last_success": "2026-08-24T06:00:18.185754",
-      "error_count": 0,
+      "last_fetch": "2026-08-25T06:00:22.920578",
+      "last_success": null,
+      "error_count": 1,
       "article_count": 0,
-      "last_error": "",
+      "last_error": "Feed parse error for Private Debt Investor: <unknown>:2:54226: not well-formed (invalid token)",
       "enabled": true
     },
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-08-24T06:00:16.563998",
-      "last_success": "2026-08-24T06:00:16.564009",
+      "last_fetch": "2026-08-25T06:00:21.118112",
+      "last_success": "2026-08-25T06:00:21.118123",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -70795,8 +71031,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-08-24T06:00:08.794623",
-      "last_success": "2026-08-24T06:00:08.794633",
+      "last_fetch": "2026-08-25T06:00:09.194069",
+      "last_success": "2026-08-25T06:00:09.194078",
       "error_count": 0,
       "article_count": 19,
       "last_error": "",
@@ -70804,25 +71040,25 @@
     }
   ],
   "stats": {
-    "total_funds": 1415,
+    "total_funds": 1420,
     "total_covered": 52,
-    "total_uncovered": 1363,
-    "total_aum_millions": 1006578824.4,
+    "total_uncovered": 1368,
+    "total_aum_millions": 1006580649.4,
     "by_category": {
-      "Private Equity": 360,
-      "Venture Capital": 357,
-      "Credit Funds": 290,
+      "Infrastructure": 185,
+      "Credit Funds": 291,
+      "Private Equity": 361,
+      "Venture Capital": 359,
       "Secondaries & GP-Stakes": 83,
-      "Infrastructure": 184,
       "Real Estate": 137,
       "Other": 3,
       "N/A": 1
     },
     "by_stage": {
-      "Other": 152,
-      "First Close": 243,
-      "Launch": 581,
-      "Final Close": 410,
+      "Other": 153,
+      "Final Close": 412,
+      "First Close": 244,
+      "Launch": 582,
       "Interim Close": 27,
       "Close": 1,
       "Second Close": 1
@@ -70831,7 +71067,7 @@
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-08-24"
+      "latest": "2026-08-25"
     }
   }
 }
