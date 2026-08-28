@@ -1,6 +1,108 @@
 {
-  "generated_at": "2026-08-27T10:13:04.151606Z",
+  "generated_at": "2026-08-28T10:12:51.664021Z",
   "funds": [
+    {
+      "fund_name": "BridgeInvest US Specialty Real Estate Credit Fund",
+      "firm": "BridgeInvest",
+      "firm_slug": "bridgeinvest",
+      "amount": "$612M",
+      "amount_usd_millions": 612.0,
+      "category": "Credit Funds",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "US",
+      "stage": "First Close",
+      "announcement_date": "2026-08-28",
+      "source_url": "https://alternativecreditinvestor.com/2026/08/28/bridgeinvest-raises-612m-for-us-speciality-re-credit-fund/",
+      "source_name": "Alternative Credit Investor",
+      "description_notes": "close a $612M specialty real estate credit fund targeting non-traditional asset classes and underserved borrower segments, marking BridgeInvest's entry into the credit space with a first-close vehicle. The fund focuses on real estate credit opportunities in niche sectors where traditional lenders have reduced exposure, positioning it as a differentiated alternative to broader commercial real estate debt strategies.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-28T10:01:13",
+      "articles": [
+        {
+          "title": "BridgeInvest raises $612m for US speciality RE credit fund",
+          "url": "https://alternativecreditinvestor.com/2026/08/28/bridgeinvest-raises-612m-for-us-speciality-re-credit-fund/",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-08-28",
+          "summary": "",
+          "feed_name": "Alternative Credit Investor"
+        },
+        {
+          "title": "BridgeInvest raises $612M for real estate credit fund, eyes $1B - Dealroom",
+          "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxPZEtYNFVzYUpwT1NrdHdmOVhsakNCTHM4WFR3X3FaZ3Z5SDJxeEhXOGtRV1B2ZTZQUk9STDRMMFJYbFNSNVJQZXlPdXREaXFlaGJLOWd6NEFUdFFvamcwczh0Q1FMbF9qYTRXMUJMeWJ3Wkh1QUlrZS15UFJmRHh2TGhfenpIcEdsZngxaXpTVElTMEljVDNiaVdn?oc=5",
+          "source_name": "Dealroom",
+          "source_domain": "app.dealroom.co",
+          "published_date": "2026-08-27",
+          "summary": "BridgeInvest raises $612M for real estate credit fund, eyes $1B&nbsp;&nbsp;Dealroom",
+          "feed_name": "search:Credit/Real estate"
+        }
+      ]
+    },
+    {
+      "fund_name": "Nuveen Green",
+      "firm": "Nuveen",
+      "firm_slug": "nuveen",
+      "amount": "$1 billion",
+      "amount_usd_millions": 1000.0,
+      "category": "Real Estate",
+      "location": "Chicago, IL",
+      "city": "Chicago",
+      "state": "IL",
+      "country": "US",
+      "stage": "First Close",
+      "announcement_date": "2026-08-27",
+      "source_url": "https://www.esgtoday.com/nuveen-raises-over-1-billion-for-fund-backing-energy-water-resilience-upgrades-for-buildings/?utm_source=rss&utm_medium=rss&utm_campaign=nuveen-raises-over-1-billion-for-fund-backing-energy-water-resilience-upgrades-for-buildings",
+      "source_name": "ESG Today",
+      "description_notes": "finances energy, water, and resilience upgrades for commercial buildings through Nuveen's sustainable commercial real estate financing solutions business. The fund has raised over $1 billion to support building decarbonization and climate adaptation projects.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-28T10:01:13",
+      "articles": [
+        {
+          "title": "Nuveen Raises Over $1 Billion for Fund Backing Energy, Water, Resilience Upgrades for Buildings",
+          "url": "https://www.esgtoday.com/nuveen-raises-over-1-billion-for-fund-backing-energy-water-resilience-upgrades-for-buildings/?utm_source=rss&utm_medium=rss&utm_campaign=nuveen-raises-over-1-billion-for-fund-backing-energy-water-resilience-upgrades-for-buildings",
+          "source_name": "ESG Today",
+          "source_domain": "esgtoday.com",
+          "published_date": "2026-08-27",
+          "summary": "Global investment manager Nuveen and its sustainable commercial real estate financing solutions business Nuveen Green [&#8230;]",
+          "feed_name": "ESG Today"
+        }
+      ]
+    },
+    {
+      "fund_name": "Bridge Direct Lending Fund for US Retail Suppliers",
+      "firm": "Bridge",
+      "firm_slug": "bridge",
+      "amount": "$500M",
+      "amount_usd_millions": 500.0,
+      "category": "Credit Funds",
+      "location": "N/A",
+      "city": "N/A",
+      "state": "",
+      "country": "",
+      "stage": "Launch",
+      "announcement_date": "2026-08-27",
+      "source_url": "https://alternativecreditinvestor.com/2026/08/27/bridge-launches-500m-direct-lending-fund-for-us-retail-suppliers/",
+      "source_name": "Alternative Credit Investor",
+      "description_notes": "launch a $500M direct lending fund targeting US retail suppliers, marking Bridge's entry into sector-specific credit with a focus on mid-market borrowers in the retail supply chain. The fund addresses a gap in financing options for retail suppliers, which traditionally face seasonal working capital needs and covenant-heavy bank lending.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-28T10:01:13",
+      "articles": [
+        {
+          "title": "Bridge launches $500m direct lending fund for US retail suppliers",
+          "url": "https://alternativecreditinvestor.com/2026/08/27/bridge-launches-500m-direct-lending-fund-for-us-retail-suppliers/",
+          "source_name": "Alternative Credit Investor",
+          "source_domain": "alternativecreditinvestor.com",
+          "published_date": "2026-08-27",
+          "summary": "",
+          "feed_name": "Alternative Credit Investor"
+        }
+      ]
+    },
     {
       "fund_name": "Capital F Debut Fund",
       "firm": "Capital F",
@@ -16,7 +118,7 @@
       "announcement_date": "2026-08-27",
       "source_url": "https://www.altassets.net/private-equity-news/by-region/north-america-by-region/united-states-north-america-by-region/capital-f-closes-17m-debut-fund-targeting-15tn-female-economy-women-make-up-nearly-85-of-lp-base.html",
       "source_name": "AltAssets",
-      "description_notes": "close a $17M debut venture fund targeting tech businesses serving the $15 trillion 'female economy,' where women drive purchasing and product demand. The fund achieved a notably female-forward LP base, with women comprising nearly 85% of investors, signaling strong alignment around gender-focused venture investing. This first-time fund from Capital F enters a growing niche of thematic venture strategies centered on female consumer markets and entrepreneurship.",
+      "description_notes": "close $17M debut fund targeting the $15 trillion 'female economy' by investing in tech businesses serving markets where women drive purchasing and product demand. The fund achieved a notably female-forward LP base, with women comprising nearly 85% of investors, signaling strong institutional backing for the gender-lens investment thesis. Capital F's inaugural vehicle reflects the growing appetite among institutional capital for venture strategies focused on underrepresented founder and consumer demographics.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-27T10:01:12",
@@ -189,11 +291,20 @@
       "announcement_date": "2026-08-26",
       "source_url": "https://news.google.com/rss/articles/CBMingFBVV95cUxQenlkLXBwQU1reHZIaTJhRFFfaUFFYXVhbXFKLXpFMGNPQnFpVGZQUkt2ZW95dG1uamxnSlNxNi1TUzB0WEg4LXdaWDVQMXphbUExS0dvbzNHaFkwbkVqSXc3WVgyLUNHQlFraFJMU0FOdVZFY3diMXpLNVEzWGxydkswMnRqRzNQaWJpdVh6cXYwUEl5anh6R3ZDY1BCdw?oc=5",
       "source_name": "Vccircle",
-      "description_notes": "launch a debut venture fund focused on industrial technology and deep tech investments, targeting early-stage companies building infrastructure and manufacturing solutions. Industrial47's first close marks the firm's entry into the venture market with a sector-specific thesis around the industrial economy, positioning it alongside established industrial tech investors but with undisclosed capital.",
+      "description_notes": "launch a debut venture fund focused on industrial technology and deep tech investments targeting early-stage founders building solutions for manufacturing, energy, and infrastructure sectors. the fund marks Industrial47's entry into dedicated venture capital after operating as an angel syndicate, positioning it to deploy larger checks into companies at the intersection of hardware, software, and physical infrastructure. first close status suggests the fund is still in fundraising, likely targeting lower nine figures given the firm's background in mid-market industrial investing.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-27T10:01:12",
       "articles": [
+        {
+          "title": "Industrial47 raises Rs 85 crore in first close of debut fund to back frontier-tech startups - The Economic Times",
+          "url": "https://news.google.com/rss/articles/CBMi7gFBVV95cUxNTWlsaFZOdVNvbjFwd0VnNkVkQzZLUkJtRHNYdHE2aXk0OUx2bTFNVnVNWmVVS3pfc3JZcTVyeVRZOHV2X09MeFNoamJ6bjJscTlFWGNrMUQxRDBDd0Uza1gxbkItTnBsMUI3WlcxaFlBa3h3QWlpNVBpbFZhVlJKT093VUZrb1FINWN0U3czRXNBNmFvekNvbE1UZTl0Q0pBVGJKUW1ZTzc1NUlDb3d3LVZuS1diS1h5emI4QWVxR1VSME5IQlRzbl9qTWxiMFhWMElEMlJrY2hIWTd4cDhPd25yRVFqcDloTU5wRUhR0gHzAUFVX3lxTFBpbWhxTTZXREtrNDlJWkpHdVEtb0g4Znc0c200ckpZYmtmUkhNTWtFZ012TjdGNFhZOWg1ZGltQTlXdDZWTTdNUWxaQU1hdEQ1QUZYSkJwV0ZsWmpEYmhLUmR3OFpONmZjcUZKZi1qMXdTcHRwMkV1bERzVndBS2pLejFXb1Z2Uzh6N0VvQlYtLUYyRElOV2x5Mk5yeXZHMW1jTzJMYTgzUDZWUUNGdG0yMy02Uy0yQnFtMVlMeDNVVVBGeUd0TzJPUmU5aEZaWnVTQ1JEeDdxYlozNEU5YlRQQVhhb0RkLWVZS09RbVVxRGVfUQ?oc=5",
+          "source_name": "The Economic Times",
+          "source_domain": "m.economictimes.com",
+          "published_date": "2026-08-27",
+          "summary": "Industrial47 raises Rs 85 crore in first close of debut fund to back frontier-tech startups&nbsp;&nbsp;The Economic Times",
+          "feed_name": "search:First/final close"
+        },
         {
           "title": "Former Antler exec\u2019s Industrial47 unveils debut VC fund, marks first close - VCCircle",
           "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxQenlkLXBwQU1reHZIaTJhRFFfaUFFYXVhbXFKLXpFMGNPQnFpVGZQUkt2ZW95dG1uamxnSlNxNi1TUzB0WEg4LXdaWDVQMXphbUExS0dvbzNHaFkwbkVqSXc3WVgyLUNHQlFraFJMU0FOdVZFY3diMXpLNVEzWGxydkswMnRqRzNQaWJpdVh6cXYwUEl5anh6R3ZDY1BCdw?oc=5",
@@ -232,6 +343,37 @@
           "source_domain": "investmentguruindia.com",
           "published_date": "2026-08-26",
           "summary": "Modulus Alternatives announces first close of India Credit Opportunities Fund III with gross commitments in excess of INR 300 crore&nbsp;&nbsp;Investment Guru India",
+          "feed_name": "search:First/final close"
+        }
+      ]
+    },
+    {
+      "fund_name": "Satin Creditcare Alternative Investment Fund",
+      "firm": "Satin Creditcare",
+      "firm_slug": "satin-creditcare",
+      "amount": "Undisclosed",
+      "amount_usd_millions": null,
+      "category": "Credit Funds",
+      "location": "Mumbai, India",
+      "city": "Mumbai",
+      "state": "",
+      "country": "India",
+      "stage": "First Close",
+      "announcement_date": "2026-08-26",
+      "source_url": "https://news.google.com/rss/articles/CBMihAJBVV95cUxPcGhmbmxWXzFDWUcwV0FISXR6bzJBMExUT09PMU1Da24yZUxaa21CY2NLM2I2d1VMTzNVZGJHeGF3WFhvOHVqU29kNkFibS1kTlhGbndPUTBHQnNsLW9jdWZZT0xDNGZORlN5S09SMmN4NHFOTE5DaERDZGU3VEpJc1oxdzlpQ2J2a21tcTlGSlpuVFNLSF9ZTGlkcTFvUkMyVUJKUXFlaXFRVmpNQktILS1qQ0tfX09QdTJTZFJiNkd6UldfUzk5V2F1VjFqWUw1ZmxIZ1hleXJOUWlpQWJ4a3QyZXpsNXpOYXhaUEN4bkJSX3FfY21oeUhOcjRyS3plbnlYVw?oc=5",
+      "source_name": "Whalesbook",
+      "description_notes": "launch a credit-focused alternative investment fund targeting underserved lending markets in India. Satin Creditcare, a non-bank financial company specializing in micro and small enterprise lending, is deploying capital through its inaugural fund to expand credit access and portfolio diversification. The fund's first close marks the firm's entry into alternative asset management, building on its two-decade track record in retail and MSME financing.",
+      "is_covered": false,
+      "covered_date": null,
+      "date_added": "2026-08-28T10:01:13",
+      "articles": [
+        {
+          "title": "Satin Creditcare Subsidiary Achieves First Close for New Alternative Investment Fund - Whalesbook",
+          "url": "https://news.google.com/rss/articles/CBMihAJBVV95cUxPcGhmbmxWXzFDWUcwV0FISXR6bzJBMExUT09PMU1Da24yZUxaa21CY2NLM2I2d1VMTzNVZGJHeGF3WFhvOHVqU29kNkFibS1kTlhGbndPUTBHQnNsLW9jdWZZT0xDNGZORlN5S09SMmN4NHFOTE5DaERDZGU3VEpJc1oxdzlpQ2J2a21tcTlGSlpuVFNLSF9ZTGlkcTFvUkMyVUJKUXFlaXFRVmpNQktILS1qQ0tfX09QdTJTZFJiNkd6UldfUzk5V2F1VjFqWUw1ZmxIZ1hleXJOUWlpQWJ4a3QyZXpsNXpOYXhaUEN4bkJSX3FfY21oeUhOcjRyS3plbnlYVw?oc=5",
+          "source_name": "Whalesbook",
+          "source_domain": "whalesbook.com",
+          "published_date": "2026-08-26",
+          "summary": "Satin Creditcare Subsidiary Achieves First Close for New Alternative Investment Fund&nbsp;&nbsp;Whalesbook",
           "feed_name": "search:First/final close"
         }
       ]
@@ -407,15 +549,15 @@
       "amount": "$35M",
       "amount_usd_millions": 35.0,
       "category": "Venture Capital",
-      "location": "N/A",
-      "city": "N/A",
+      "location": "S\u00e3o Paulo, Brazil",
+      "city": "S\u00e3o Paulo",
       "state": "",
-      "country": "",
+      "country": "Brazil",
       "stage": "Launch",
       "announcement_date": "2026-08-25",
       "source_url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxObllsSGZrRVdsSGYwemdxWHVwODh0dVZ1VUtDUHByVnE2eGdaTDRuX0pNLXYtSkhoZU9zVi14blVNLU9ieXZTNHkzUGFmX2JDay1uQTU1VzR1YzRTeGk5ajZIaUROR20ySGc5RlZkN01LcjdmNURYTW5YcENMdk5JcVJVQk5NZm90QkNQd1BXN3dVRzNDd2VLTEd4S0VvZ0Q5WWdJMVJCVUYxaEIweVhURk5LbVlTZmdNRkhnR3JSSklCQjFhcFJsQzQ0ZGRMREU?oc=5",
       "source_name": "Business Wire",
-      "description_notes": "raise $35M for its second venture fund focused on early-stage technology investments. FGV Capital's Fund II represents growth from its debut vehicle, targeting founders and emerging companies in core tech sectors. The firm targets a mix of seed and Series A rounds, with this second fund demonstrating LP confidence in its investment thesis and operational track record.",
+      "description_notes": "raise $35M for its second venture fund focused on early-stage technology investments. Fund II represents growth from the firm's debut vehicle, targeting seed and Series A companies in software and digital services. FGV Capital, based in Latin America, is expanding its check sizes and portfolio depth as institutional LP interest in the region's tech ecosystem continues to rise.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-26T10:01:17",
@@ -624,7 +766,7 @@
       "announcement_date": "2026-08-24",
       "source_url": "https://www.esgtoday.com/redstone-raises-25-million-for-new-ocean-tech-focused-blue-fund/?utm_source=rss&utm_medium=rss&utm_campaign=redstone-raises-25-million-for-new-ocean-tech-focused-blue-fund",
       "source_name": "ESG Today",
-      "description_notes": "closes \u20ac25 million for blue economy venture investments, marking the firm's first close in the sustainable ocean and marine sectors. the fund targets early-stage companies addressing climate and resource challenges in maritime industries, though specific anchor LPs and comparison to prior funds are not detailed in available materials.",
+      "description_notes": "close \u20ac25 million debut blue economy venture fund targeting early-stage climate and ocean sustainability startups. Redstone's inaugural vehicle focuses on the intersection of environmental impact and commercial returns in marine and water-related technologies, positioning itself as a specialist player in the growing climate-tech VC landscape.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-08-25T10:01:30",
@@ -10300,7 +10442,7 @@
       "announcement_date": "2026-07-02",
       "source_url": "https://alternativecreditinvestor.com/2026/07/02/orbit-inks-more-than-e100m-for-venture-debt-fund/",
       "source_name": "Alternative Credit Investor",
-      "description_notes": "deploy a \u20ac100M+ debut venture debt fund targeting growth-stage and late-stage companies across Europe and beyond. Orbit's first close marks the firm's entry into the credit market, positioning itself to compete with established venture debt providers by offering flexible financing solutions to venture-backed companies. The fund size and inaugural status suggest Orbit is building a dedicated credit vertical to complement or expand beyond its existing investment platform.",
+      "description_notes": "raise \u20ac100M+ for a debut venture debt fund targeting growth-stage and late-stage companies across Europe and potentially beyond. Orbit's first close marks the firm's entry into the credit market, positioning itself to compete with established venture debt providers by offering flexible financing solutions to venture-backed companies. The fund size and first-time status suggest Orbit is building institutional credibility in the venture credit space, though specific LP names and sector focus areas are not detailed in available materials.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-07-03T23:35:59",
@@ -11254,6 +11396,15 @@
           "published_date": "2026-06-29",
           "summary": "Amid rising UK cyber talent growth, Osney Capital closes oversubscribed \u20ac69 million debut fund&nbsp;&nbsp;EU-Startups",
           "feed_name": "search:PE/VC fund closes"
+        },
+        {
+          "title": "Osney Capital closes debut fund for cybersecurity startups at \u00a360m - UKTN",
+          "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPeTBDWS1jRElLOEVHS3c3dXNHR2ZQRTY4VVl1M2dOWjhzX1VGa1M1VVFsV1Ixb3pUcWVvanItRkNzcnRORUl1aXlWNC1yZWpSekhaTEpZczRSaGZNOThJUkVXLTlkWUZCNnpSVDQ0Q3BudHZCM3VKUmdid1ZCV1Rxd29fckNpYjZ2cGVZdDViS3N5ZVFDTG5kVnZZNHJKR0w3cmlXWWtLVUpPMWFyU01VandB?oc=5",
+          "source_name": "UKTN",
+          "source_domain": "uktech.news",
+          "published_date": "2026-06-29",
+          "summary": "Osney Capital closes debut fund for cybersecurity startups at \u00a360m&nbsp;&nbsp;UKTN",
+          "feed_name": "search:Oversubscribed funds"
         }
       ]
     },
@@ -25102,6 +25253,15 @@
       "date_added": "2026-04-24T11:15:09",
       "articles": [
         {
+          "title": "StepStone closes first infrastructure secondaries fund at $1.7B - Dealroom",
+          "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxON1QycGNFcFZwWUw1YjIwQkx4SlNzaDdDSDNoQ1RBX04xYk5rOFlReEFQZ0dubkZ6dlRWaldXNnA3SEFJM0VqM3BmZXlqS1pRQUdoQW1uZFpGR25LZms3azNENktTQmIwQWJPWER5N3dNQng2TEowMjNUZHU2RWhLUVdvdkI3Qy1KVWxYZnA4dUJfWDBDOUtJdFMxN0c?oc=5",
+          "source_name": "Dealroom",
+          "source_domain": "app.dealroom.co",
+          "published_date": "2026-08-26",
+          "summary": "StepStone closes first infrastructure secondaries fund at $1.7B&nbsp;&nbsp;Dealroom",
+          "feed_name": "search:Secondaries/Infra/GP-stakes"
+        },
+        {
           "title": "StepStone\u2019s VC secondaries fund tops $1bn as LP interest grows",
           "url": "https://www.secondariesinvestor.com/stepstones-vc-secondaries-fund-tops-1bn-as-lp-interest-grows/",
           "source_name": "Secondaries Investor",
@@ -31246,6 +31406,15 @@
       "date_added": "2026-04-03T13:48:39",
       "articles": [
         {
+          "title": "StepStone Group Closes its Infrastructure Secondaries Fund, Raising $1.7 Billion Across the Fund and Related Separate Accounts - The Manila Times",
+          "url": "https://news.google.com/rss/articles/CBMiowJBVV95cUxPcHE0VXBub1I2R1VVb1YyRjYtMFh1TVBuRzdZWHcxQnB0Zm8ybjZZWm9JY1BYWEN2MkV3VlkyZmpGRG9La1dpZmlURlNZRFJNcmtWOGZFXzZ4Sy1VMlpOMjNzLV9RdmFEeG9EeERnTWs3ci01eTBBa29EM1ZoSUtwY1lGandPYXZweWhka283VTl5T0NxSVQyUmRHNEpWTmlnQmpzc1lWZE5ybWFfbFF3blg5ZmZDYjhhdHZFdm1pWDAzTXBEaXlQa0RPSno5a0VwUE9WMHozZE1uRXZUQk1lWnBLNnMtMUszNWwyTXlNSUh1WWFBZ0hCM0Rfclc4dFZGbEhMTDZxdWRHWTMyQzZGSnNJWGhmNDRyZmdudlVrX0pNSVnSAagCQVVfeXFMTXJHN2ZxbW8yeFBYYVhXUjhkanEyT3NMVjZnSDhnaGYyYVZSR0dPWmY2dDdJR3RObmRfT0h4NFEyTHJiZFN4Y1lfcUQzc2YxUWhmd3pCeXNVT0VaRk5aS0tsUVc5M3o4RmxQRnRqdF9TOTdaM2QwT2NHTlduRmtZRnVpQkZrb1BaS0V5MWxuQWZGR3hlNHBiYWp3VGc1UzBUWWNrbTh2VnJGN3BmM2NqdXhPUDdSM2hZTEhadEs5UEV5aFpDcUhqX2ktSFZMUG14QkczdDFLVjBWdTlNYmVZTFJpdnhuTU5JZjg5MWljSEpQQjlGUGc5ejM4bmVUWUdVVi05LXhCU2UwZGJIMllRWnFaWnJqVzlFQ3JjUEJRWlNJVVdhMVNHWHc?oc=5",
+          "source_name": "The Manila Times",
+          "source_domain": "manilatimes.net",
+          "published_date": "2026-08-26",
+          "summary": "StepStone Group Closes its Infrastructure Secondaries Fund, Raising $1.7 Billion Across the Fund and Related Separate Accounts&nbsp;&nbsp;The Manila Times",
+          "feed_name": "search:Oversubscribed funds"
+        },
+        {
           "title": "Ares backs $3.1bn StepStone structured secondaries vehicle",
           "url": "https://alternativecreditinvestor.com/2026/04/02/ares-backs-3-1bn-stepstone-structured-secondaries-vehicle/",
           "source_name": "Alternative Credit Investor",
@@ -36778,7 +36947,7 @@
       "announcement_date": "2026-03-12",
       "source_url": "https://news.google.com/rss/articles/CBMiwwFBVV95cUxPSEdlTXF6UTRmZWFxNmYzb3ZERG4tYlpsTVlDM2hpZUU0ZklTdUdKNFRyTTR3a0xGbXBfc29YQ0lLTy13U0NTLW9rbU1lRkk2R0VsTXAzRXk0NVBHRTJyblNaem1ldk50R1MybUpjRW03YTN4a000T3hIcTEzUk1JMmlZanM4SXlOdWVsdnM2dnhvM051WTBCZVRLMDQ4WThIbl9IeWJjWWROcHBxc2hWc2N1TGt3ZmFHUGZTYWRpWWZUMEU?oc=5",
       "source_name": "Agfundernews",
-      "description_notes": "deploy capital into artificial intelligence applications within food distribution and supply chain logistics, targeting early-stage and growth companies solving operational efficiency, last-mile delivery, and inventory management challenges. The fund represents Anchr's specialized focus on the intersection of AI and food systems, a vertical gaining momentum as logistics operators digitize. Details on LP composition and fund size remain undisclosed, though the thesis reflects growing venture appetite for deep-tech applications in fragmented food distribution markets.",
+      "description_notes": "back a portfolio of artificial intelligence and automation companies serving the food distribution sector, a fragmented $800B+ market where tech adoption remains relatively nascent. The fund targets early-stage startups building software, logistics optimization, and supply chain visibility tools for distributors, wholesalers, and related infrastructure players. Anchr's sector-specific focus on food distribution distinguishes it from broader AI venture funds, positioning it to capitalize on digitization tailwinds in an essential but traditionally underinvested industry.",
       "is_covered": false,
       "covered_date": null,
       "date_added": "2026-03-15T22:21:38",
@@ -59064,6 +59233,19 @@
       "country": "US"
     },
     {
+      "firm": "Nuveen",
+      "firm_slug": "nuveen",
+      "fund_count": 3,
+      "total_aum_millions": 4500.0,
+      "categories": [
+        "Credit Funds",
+        "Infrastructure",
+        "Real Estate"
+      ],
+      "city": "Chicago",
+      "country": "US"
+    },
+    {
       "firm": "Inflexion",
       "firm_slug": "inflexion",
       "fund_count": 1,
@@ -59185,18 +59367,6 @@
         "Credit Funds"
       ],
       "city": "Bethesda",
-      "country": "US"
-    },
-    {
-      "firm": "Nuveen",
-      "firm_slug": "nuveen",
-      "fund_count": 2,
-      "total_aum_millions": 3500.0,
-      "categories": [
-        "Credit Funds",
-        "Infrastructure"
-      ],
-      "city": "Chicago",
       "country": "US"
     },
     {
@@ -59522,6 +59692,17 @@
       ],
       "city": "London",
       "country": "UK"
+    },
+    {
+      "firm": "Bridge",
+      "firm_slug": "bridge",
+      "fund_count": 2,
+      "total_aum_millions": 2650.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "N/A",
+      "country": "US"
     },
     {
       "firm": "Avendus",
@@ -59856,17 +60037,6 @@
       ],
       "city": "Seoul",
       "country": "South Korea"
-    },
-    {
-      "firm": "Bridge",
-      "firm_slug": "bridge",
-      "fund_count": 1,
-      "total_aum_millions": 2150.0,
-      "categories": [
-        "Credit Funds"
-      ],
-      "city": "New York",
-      "country": "US"
     },
     {
       "firm": "Onex",
@@ -62432,6 +62602,17 @@
         "Private Equity"
       ],
       "city": "Boston",
+      "country": "US"
+    },
+    {
+      "firm": "BridgeInvest",
+      "firm_slug": "bridgeinvest",
+      "fund_count": 1,
+      "total_aum_millions": 612.0,
+      "categories": [
+        "Credit Funds"
+      ],
+      "city": "N/A",
       "country": "US"
     },
     {
@@ -67338,8 +67519,8 @@
       "categories": [
         "Venture Capital"
       ],
-      "city": "N/A",
-      "country": ""
+      "city": "S\u00e3o Paulo",
+      "country": "Brazil"
     },
     {
       "firm": "Meridian Ventures",
@@ -67784,7 +67965,7 @@
     {
       "firm": "Satin Creditcare",
       "firm_slug": "satin-creditcare",
-      "fund_count": 1,
+      "fund_count": 2,
       "total_aum_millions": 0.0,
       "categories": [
         "Credit Funds"
@@ -71482,8 +71663,8 @@
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed",
-      "last_fetch": "2026-08-27T06:00:24.644884",
-      "last_success": "2026-08-27T06:00:24.644890",
+      "last_fetch": "2026-08-28T06:00:25.861824",
+      "last_success": "2026-08-28T06:00:25.861834",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71492,8 +71673,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-08-27T06:00:22.497029",
-      "last_success": "2026-08-27T06:00:22.497038",
+      "last_fetch": "2026-08-28T06:00:23.589136",
+      "last_success": "2026-08-28T06:00:23.589147",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71532,8 +71713,8 @@
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://www.buyoutsinsider.com/feed/",
-      "last_fetch": "2026-08-27T06:00:29.960073",
-      "last_success": "2026-08-27T06:00:29.960084",
+      "last_fetch": "2026-08-28T06:00:31.805357",
+      "last_success": "2026-08-28T06:00:31.805368",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71542,8 +71723,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-08-27T06:00:10.475803",
-      "last_success": "2026-08-27T06:00:10.475809",
+      "last_fetch": "2026-08-28T06:00:12.343218",
+      "last_success": "2026-08-28T06:00:12.343226",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71552,8 +71733,8 @@
     {
       "feed_name": "GlobeNewswire - Financial",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Financing%20Agreements/feedTitle/GlobeNewswire%20-%20Financing%20Agreements.xml",
-      "last_fetch": "2026-08-27T06:00:07.854330",
-      "last_success": "2026-08-27T06:00:07.854342",
+      "last_fetch": "2026-08-28T06:00:09.712616",
+      "last_success": "2026-08-28T06:00:09.712626",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -71562,8 +71743,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-08-27T06:00:21.012572",
-      "last_success": "2026-08-27T06:00:21.012580",
+      "last_fetch": "2026-08-28T06:00:21.963149",
+      "last_success": "2026-08-28T06:00:21.963159",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71572,18 +71753,18 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-08-27T06:00:12.241096",
+      "last_fetch": "2026-08-28T06:00:13.934355",
       "last_success": null,
       "error_count": 1,
       "article_count": 0,
-      "last_error": "Feed parse error for Infrastructure Investor: <unknown>:2:55436: not well-formed (invalid token)",
+      "last_error": "Feed parse error for Infrastructure Investor: <unknown>:2:55352: not well-formed (invalid token)",
       "enabled": true
     },
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-08-27T06:00:27.506334",
-      "last_success": "2026-08-27T06:00:27.506345",
+      "last_fetch": "2026-08-28T06:00:29.539616",
+      "last_success": "2026-08-28T06:00:29.539629",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71592,8 +71773,8 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-08-27T06:00:13.986694",
-      "last_success": "2026-08-27T06:00:13.986697",
+      "last_fetch": "2026-08-28T06:00:15.755740",
+      "last_success": "2026-08-28T06:00:15.755746",
       "error_count": 0,
       "article_count": 0,
       "last_error": "",
@@ -71602,8 +71783,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-08-27T06:00:06.187651",
-      "last_success": "2026-08-27T06:00:06.187652",
+      "last_fetch": "2026-08-28T06:00:06.197842",
+      "last_success": "2026-08-28T06:00:06.197846",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -71612,28 +71793,28 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-08-27T06:00:18.566648",
+      "last_fetch": "2026-08-28T06:00:20.172236",
       "last_success": null,
       "error_count": 1,
       "article_count": 0,
-      "last_error": "Feed parse error for Private Debt Investor: <unknown>:2:54226: not well-formed (invalid token)",
+      "last_error": "Feed parse error for Private Debt Investor: <unknown>:2:54142: not well-formed (invalid token)",
       "enabled": true
     },
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-08-27T06:00:15.761574",
+      "last_fetch": "2026-08-28T06:00:17.764228",
       "last_success": null,
       "error_count": 1,
       "article_count": 0,
-      "last_error": "Feed parse error for Secondaries Investor: <unknown>:2:54370: not well-formed (invalid token)",
+      "last_error": "Feed parse error for Secondaries Investor: <unknown>:2:54286: not well-formed (invalid token)",
       "enabled": true
     },
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-08-27T06:00:09.135157",
-      "last_success": "2026-08-27T06:00:09.135167",
+      "last_fetch": "2026-08-28T06:00:11.003109",
+      "last_success": "2026-08-28T06:00:11.003119",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -71641,24 +71822,24 @@
     }
   ],
   "stats": {
-    "total_funds": 1431,
+    "total_funds": 1435,
     "total_covered": 52,
-    "total_uncovered": 1379,
-    "total_aum_millions": 1006583146.4,
+    "total_uncovered": 1383,
+    "total_aum_millions": 1006585258.4,
     "by_category": {
+      "Credit Funds": 298,
+      "Real Estate": 138,
       "Venture Capital": 363,
-      "Credit Funds": 295,
       "Infrastructure": 187,
       "Private Equity": 362,
       "Secondaries & GP-Stakes": 83,
-      "Real Estate": 137,
       "Other": 3,
       "N/A": 1
     },
     "by_stage": {
+      "First Close": 252,
+      "Launch": 588,
       "Final Close": 414,
-      "Launch": 587,
-      "First Close": 249,
       "Other": 153,
       "Interim Close": 26,
       "Close": 1,
@@ -71668,7 +71849,7 @@
     "feed_count": 16,
     "date_range": {
       "earliest": "2025-10-01",
-      "latest": "2026-08-27"
+      "latest": "2026-08-28"
     }
   }
 }
