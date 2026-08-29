@@ -4,6 +4,12 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { EventsBoard } from '@/components/events/EventsBoard'
+import { queryEventFeed } from '@/lib/events/api'
+import type { IndustryEvent } from '@/lib/events/types'
+
+// Re-render hourly so the server-side JSON-LD tracks the live table without
+// a query per request. The interactive board still fetches client-side.
+export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Industry Events Calendar | FundOpsHQ',
@@ -27,9 +33,66 @@ export const metadata: Metadata = {
   },
 }
 
-export default function EventsPage() {
+// schema.org Event markup for the next ~25 events — this is what lets the
+// board rank for searches like "private equity events new york".
+function buildEventsJsonLd(events: IndustryEvent[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Upcoming private markets industry events',
+    url: 'https://fundopshq.com/events',
+    itemListElement: events.map((e, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
+        '@type': 'Event',
+        name: e.name,
+        startDate: e.startDate,
+        ...(e.endDate ? { endDate: e.endDate } : {}),
+        eventAttendanceMode:
+          e.eventFormat === 'virtual'
+            ? 'https://schema.org/OnlineEventAttendanceMode'
+            : e.eventFormat === 'hybrid'
+              ? 'https://schema.org/MixedEventAttendanceMode'
+              : 'https://schema.org/OfflineEventAttendanceMode',
+        location:
+          e.eventFormat === 'virtual'
+            ? { '@type': 'VirtualLocation', url: e.eventUrl }
+            : {
+                '@type': 'Place',
+                name: e.venue ?? e.city ?? 'TBA',
+                address: {
+                  '@type': 'PostalAddress',
+                  ...(e.city ? { addressLocality: e.city } : {}),
+                  ...(e.stateRegion ? { addressRegion: e.stateRegion } : {}),
+                  ...(e.country ? { addressCountry: e.country } : {}),
+                },
+              },
+        organizer: { '@type': 'Organization', name: e.organizerName },
+        url: e.eventUrl,
+      },
+    })),
+  }
+}
+
+export default async function EventsPage() {
+  // Soft dependency: the page must render even if the DB hiccups.
+  let jsonLdEvents: IndustryEvent[] = []
+  try {
+    const feed = await queryEventFeed({ limit: 25 })
+    jsonLdEvents = feed.events
+  } catch {
+    // no structured data this render — the client board fetches on its own
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
+      {jsonLdEvents.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildEventsJsonLd(jsonLdEvents)) }}
+        />
+      )}
       <SiteHeader />
 
       <main id="main-content" className="flex-1">

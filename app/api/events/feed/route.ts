@@ -15,6 +15,8 @@ export async function GET(req: Request) {
       format: params.get('format') || undefined,
       cost: params.get('cost') || undefined,
       category: params.get('category') || undefined,
+      topic: params.get('topic') || undefined,
+      city: params.get('city') || undefined,
       region: params.get('region') || undefined,
       ops: params.get('ops') || undefined,
       offset: params.get('offset') ? Number(params.get('offset')) : undefined,

@@ -10,6 +10,7 @@ import {
   EVENT_FORMAT_LABELS,
   EVENT_REGION_LABELS,
   EVENT_ASSET_CLASSES,
+  EVENT_TOPIC_LABELS,
   formatMonthHeader,
 } from '@/lib/events/constants'
 import type { EventFeedResponse, IndustryEvent, EventFacetCounts } from '@/lib/events/types'
@@ -17,11 +18,16 @@ import type { EventFeedResponse, IndustryEvent, EventFacetCounts } from '@/lib/e
 // ── Filter constants ──────────────────────────────────────────────
 
 const WHEN_RANGES = [
+  { label: '2w', value: '2w' },
   { label: '30d', value: '30d' },
   { label: '3m', value: '3m' },
-  { label: '6m', value: '6m' },
   { label: 'All', value: '' },
 ] as const
+
+const TOPIC_OPTIONS = Object.entries(EVENT_TOPIC_LABELS).map(([value, label]) => ({ value, label }))
+
+// How many city pills to show — the facet drives which ones (top by count)
+const CITY_PILL_LIMIT = 12
 
 const KIND_OPTIONS = Object.entries(EVENT_KIND_LABELS)
   .filter(([value]) => value !== 'other')
@@ -71,6 +77,8 @@ export function EventsBoard() {
   const [format, setFormat] = useState(searchParams.get('format') || '')
   const [cost, setCost] = useState(searchParams.get('cost') || '')
   const [category, setCategory] = useState(searchParams.get('category') || '')
+  const [topic, setTopic] = useState(searchParams.get('topic') || '')
+  const [city, setCity] = useState(searchParams.get('city') || '')
   const [region, setRegion] = useState(searchParams.get('region') || '')
   const [opsOnly, setOpsOnly] = useState(searchParams.get('ops') === '1')
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -83,8 +91,8 @@ export function EventsBoard() {
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
 
-  const activeFilterCount = [query, kind, format, cost, category, region, opsOnly, when !== ''].filter(Boolean).length
-  const pillFilterCount = [kind, format, cost, category, region, opsOnly].filter(Boolean).length
+  const activeFilterCount = [query, kind, format, cost, category, topic, city, region, opsOnly, when !== ''].filter(Boolean).length
+  const pillFilterCount = [kind, format, cost, category, topic, city, region, opsOnly].filter(Boolean).length
 
   const buildParams = useCallback(
     (newOffset = 0) => {
@@ -97,11 +105,13 @@ export function EventsBoard() {
       if (format) params.set('format', format)
       if (cost) params.set('cost', cost)
       if (category) params.set('category', category)
+      if (topic) params.set('topic', topic)
+      if (city) params.set('city', city)
       if (region) params.set('region', region)
       if (opsOnly) params.set('ops', '1')
       return params
     },
-    [query, when, kind, format, cost, category, region, opsOnly]
+    [query, when, kind, format, cost, category, topic, city, region, opsOnly]
   )
 
   // Sync URL — default values are omitted so the bare /events URL stays clean
@@ -113,12 +123,14 @@ export function EventsBoard() {
     if (format) params.set('format', format)
     if (cost) params.set('cost', cost)
     if (category) params.set('category', category)
+    if (topic) params.set('topic', topic)
+    if (city) params.set('city', city)
     if (region) params.set('region', region)
     if (opsOnly) params.set('ops', '1')
     const qs = params.toString()
     const base = pathname || '/events'
     router.replace(qs ? `${base}?${qs}` : base, { scroll: false })
-  }, [router, pathname, query, when, kind, format, cost, category, region, opsOnly])
+  }, [router, pathname, query, when, kind, format, cost, category, topic, city, region, opsOnly])
 
   const fetchFeed = useCallback(
     async (newOffset = 0, append = false) => {
@@ -156,7 +168,7 @@ export function EventsBoard() {
     fetchFeed(0, false)
     syncUrl()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, when, kind, format, cost, category, region, opsOnly])
+  }, [query, when, kind, format, cost, category, topic, city, region, opsOnly])
 
   // Search debounce
   const [searchInput, setSearchInput] = useState(query)
@@ -173,9 +185,24 @@ export function EventsBoard() {
     setFormat('')
     setCost('')
     setCategory('')
+    setTopic('')
+    setCity('')
     setRegion('')
     setOpsOnly(false)
   }
+
+  // Top cities by upcoming-event count, from the live facets. A selected city
+  // always stays visible even if it drops out of the top N.
+  const cityOptions = (() => {
+    const entries = Object.entries(facets?.cities ?? {}).sort((a, b) => b[1] - a[1])
+    const top = entries.slice(0, CITY_PILL_LIMIT)
+    for (const selected of city ? city.split(',') : []) {
+      if (!top.some(([name]) => name === selected)) {
+        top.push([selected, facets?.cities[selected] ?? 0])
+      }
+    }
+    return top
+  })()
 
   const loadMore = () => {
     fetchFeed(offset, true)
@@ -391,6 +418,63 @@ export function EventsBoard() {
                   )
                 })}
               </div>
+            </div>
+          </div>
+
+          {/* City pills — dynamic, driven by upcoming-event counts */}
+          {cityOptions.length > 0 && (
+            <div>
+              <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">City</span>
+              <div className="flex flex-wrap gap-1">
+                {cityOptions.map(([name, count]) => (
+                  <button
+                    key={name}
+                    onClick={() => setCity(toggleFilter(city, name))}
+                    className={cn(
+                      'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors',
+                      hasFilter(city, name)
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
+                    )}
+                  >
+                    {name}
+                    {count > 0 && (
+                      <span className={cn('text-[9px]', hasFilter(city, name) ? 'text-blue-200' : 'text-muted-foreground/50')}>
+                        {count}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Topic pills — functional area, orthogonal to asset class */}
+          <div>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">Topic</span>
+            <div className="flex flex-wrap gap-1">
+              {TOPIC_OPTIONS.map((opt) => {
+                const count = facets?.topics[opt.value] ?? 0
+                return (
+                  <button
+                    key={opt.value}
+                    onClick={() => setTopic(toggleFilter(topic, opt.value))}
+                    className={cn(
+                      'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors',
+                      hasFilter(topic, opt.value)
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
+                    )}
+                  >
+                    {opt.label}
+                    {count > 0 && (
+                      <span className={cn('text-[9px]', hasFilter(topic, opt.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
+                        {count}
+                      </span>
+                    )}
+                  </button>
+                )
+              })}
             </div>
           </div>
 

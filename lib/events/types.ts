@@ -18,6 +18,7 @@ export interface IndustryEvent {
   costType: string
   priceNote: string | null
   fundCategories: string[]
+  topics: string[]
   opsRelevance: string
   region: string
   isFeatured: boolean
@@ -29,6 +30,8 @@ export interface EventFacetCounts {
   costs: Record<string, number>
   regions: Record<string, number>
   categories: Record<string, number>
+  topics: Record<string, number>
+  cities: Record<string, number>
   opsHighCount: number
   totalUpcoming: number
 }

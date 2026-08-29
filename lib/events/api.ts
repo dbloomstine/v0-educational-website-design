@@ -8,6 +8,8 @@ export interface EventQueryParams {
   format?: string
   cost?: string
   category?: string
+  topic?: string
+  city?: string
   region?: string
   ops?: string
   offset?: number
@@ -15,9 +17,10 @@ export interface EventQueryParams {
 }
 
 const WHEN_TO_DAYS: Record<string, number> = {
+  '2w': 14,
   '30d': 30,
   '3m': 92,
-  '6m': 183,
+  '6m': 183, // legacy URLs — no longer offered in the UI
 }
 
 function todayIso(): string {
@@ -59,6 +62,12 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
   }
   if (params.category) {
     query = query.overlaps('fund_categories', params.category.split(','))
+  }
+  if (params.topic) {
+    query = query.overlaps('topics', params.topic.split(','))
+  }
+  if (params.city) {
+    query = query.in('city', params.city.split(','))
   }
   if (params.ops === '1') {
     query = query.eq('ops_relevance', 'high')
@@ -109,6 +118,7 @@ function mapRowToEvent(row: any): IndustryEvent {
     costType: row.cost_type,
     priceNote: row.price_note,
     fundCategories: row.fund_categories ?? [],
+    topics: row.topics ?? [],
     opsRelevance: row.ops_relevance,
     region: row.region,
     isFeatured: row.is_featured ?? false,
@@ -120,7 +130,7 @@ async function queryEventFacets(today: string): Promise<EventFacetCounts> {
   // how the news feed computes its counts.
   const { data: rows } = await getSupabaseAdmin()
     .from('industry_events')
-    .select('event_kind, event_format, cost_type, region, fund_categories, ops_relevance')
+    .select('event_kind, event_format, cost_type, region, fund_categories, topics, city, ops_relevance')
     .eq('status', 'published')
     .gte('start_date', today)
 
@@ -129,6 +139,8 @@ async function queryEventFacets(today: string): Promise<EventFacetCounts> {
   const costs: Record<string, number> = {}
   const regions: Record<string, number> = {}
   const categories: Record<string, number> = {}
+  const topics: Record<string, number> = {}
+  const cities: Record<string, number> = {}
   let opsHighCount = 0
 
   for (const row of rows ?? []) {
@@ -139,6 +151,10 @@ async function queryEventFacets(today: string): Promise<EventFacetCounts> {
     for (const cat of (row.fund_categories as string[]) ?? []) {
       categories[cat] = (categories[cat] ?? 0) + 1
     }
+    for (const t of (row.topics as string[]) ?? []) {
+      topics[t] = (topics[t] ?? 0) + 1
+    }
+    if (row.city) cities[row.city] = (cities[row.city] ?? 0) + 1
     if (row.ops_relevance === 'high') opsHighCount++
   }
 
@@ -148,6 +164,8 @@ async function queryEventFacets(today: string): Promise<EventFacetCounts> {
     costs,
     regions,
     categories,
+    topics,
+    cities,
     opsHighCount,
     totalUpcoming: rows?.length ?? 0,
   }

@@ -37,6 +37,19 @@ export const EVENT_REGION_LABELS: Record<string, { label: string; short: string 
   global: { label: 'Global', short: 'Global' },
 }
 
+// Functional-area topics — "which part of the job", orthogonal to asset class.
+// Values must match the loader's TOPICS validation list.
+export const EVENT_TOPIC_LABELS: Record<string, string> = {
+  compliance_regulatory: 'Compliance & Reg',
+  fund_finance: 'Fund Finance',
+  accounting_tax: 'Accounting & Tax',
+  technology_ai: 'Tech & AI',
+  fundraising_ir: 'Fundraising & IR',
+  legal: 'Legal',
+  esg: 'ESG',
+  talent: 'Talent',
+}
+
 // Same values as the news feed's asset-class taxonomy (minus service_provider,
 // which is a news-source category, not an event audience).
 export const EVENT_ASSET_CLASSES = [
