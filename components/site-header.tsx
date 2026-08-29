@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 
 const NAV_ITEMS = [
   { label: "News", href: "/#news", match: ["/"] },
+  { label: "Events", href: "/events", match: ["/events"] },
   { label: "About", href: "/about", match: ["/about"] },
 ] as const
 
