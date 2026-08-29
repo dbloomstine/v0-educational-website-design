@@ -6,6 +6,7 @@ type NavLink = { label: string; href: string; external: boolean }
 
 const NAV_LINKS: NavLink[] = [
   { label: "News", href: "/#news", external: false },
+  { label: "Events", href: "/events", external: false },
   { label: "About", href: "/about", external: false },
   { label: "Privacy", href: "/privacy", external: false },
   { label: "Terms", href: "/terms", external: false },

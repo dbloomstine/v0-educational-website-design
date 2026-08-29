@@ -36,6 +36,9 @@ The site was aggressively consolidated on 2026-04-10. There are only six public 
                            · HeroSubscribe (hero + newsletter signup, anchor #subscribe)
                            · NewsFeed (section #news — the daily news feed)
                            · LiveShowFeature (section #show — latest broadcast)
+/events                 → Industry events board (added 2026-08-29) — "Section B · The Circuit".
+                           EventsBoard component, filterable, backed by industry_events.
+                           Refreshed weekly via the scout-events skill (~/.claude/skills/scout-events)
 /about                  → About page (rebuilt 2026-04-09)
 /brand                  → Brand kit — logos, monograms, backgrounds (added 2026-04-09)
 /privacy, /terms        → Legal
@@ -48,6 +51,7 @@ Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/news
 
 ```
 /api/news/feed                          → Homepage NewsFeed data source
+/api/events/feed                        → /events EventsBoard data source (mirrors news/feed pattern)
 /api/newsletter/subscribe               → Email signup — single opt-in, sends welcome email
 /api/newsletter/confirm                 → Legacy endpoint, kept alive for old confirmation links
 /api/newsletter/unsubscribe             → One-click unsubscribe
@@ -244,6 +248,10 @@ with the server-side rules — needs a patch before the next manual run.
 | `newsletter_subscribers` | Single opt-in email list (flipped from double opt-in 2026-04-11)                                                                          |
 | `feedback`               | Inline feedback submissions                                                                                                               |
 | `cold_outreach_sent`     | Append-only log of outreach drafts + sends (Path B + grow-newsletter)                                                                     |
+| `event_sources`          | Events-board source registry (added 2026-08-29) — 60+ calendars, tiered; seeded from workspace docs/EVENTS_SOURCES.md                     |
+| `industry_events`        | Curated events for /events (added 2026-08-29) — every row date-verified at the source; refreshed by the scout-events skill                |
+
+Events-domain naming is deliberately distinct from news: `event_kind`/`event_format` on `industry_events`, NEVER `event_type` — that column on `news_items` (and `eventType` in the news UI) means "kind of news story". Inserts to `industry_events` go through `scripts/events/load-events.mjs` (validated loader), not hand-written SQL.
 
 `news_items` still carries orphan FK columns (`cluster_id`, `gp_id`, `fund_id`, `firm_id`, `embedding`) from the old architecture. Nothing populates them, so they're always null. (The `story_cluster_id` column and its dormant Layer-1 clustering path were dropped 2026-04-18 — all feed grouping now runs through `isSameStory` in `lib/news/story-dedup.ts`.)
 
@@ -258,6 +266,9 @@ lib/
 │   │                    # for "are these two articles the same underlying story?".
 │   └── rss-client.ts    # Entity-decoding stripHtml — decodeEntities is exported
 │                        # for the backfill script and handles named + numeric refs.
+├── events/          # Events board — types, display constants (EVENT_KIND_LABELS etc.),
+│                    # queryEventFeed. Mirrors lib/news/api.ts but looks FORWARD in time
+│                    # (start_date >= today) instead of back.
 ├── newsletter/      # Email template, Resend sender, query-articles, sponsors, confirmation email
 ├── outreach/        # Path B cold outreach pipeline — candidates, dedup, Apollo,
 │                    # Anthropic hook generator, Gmail OAuth/MIME/send, monitor.
@@ -280,6 +291,10 @@ components/
 ├── home/
 │   ├── hero-subscribe.tsx   # Homepage hero + inline subscribe form
 │   └── live-show-feature.tsx # "Channel 02" broadcast section with latest video
+├── events/
+│   ├── EventsBoard.tsx      # /events board (client component — clones NewsFeed's
+│   │                        # URL-sync/filter idiom; filters collapsed by default)
+│   └── EventRow.tsx         # Single event row — desktop grid + mobile card, links out
 ├── news/
 │   ├── NewsFeed.tsx         # Main news feed (client component, filters, clusters)
 │   ├── ArticleRow.tsx       # Single row in the feed
