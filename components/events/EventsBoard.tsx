@@ -9,7 +9,6 @@ import { EventRow } from './EventRow'
 import {
   EVENT_KIND_LABELS,
   EVENT_FORMAT_LABELS,
-  EVENT_REGION_LABELS,
   EVENT_ASSET_CLASSES,
   EVENT_TOPIC_LABELS,
   formatMonthHeader,
@@ -43,8 +42,6 @@ const COST_OPTIONS = [
   { value: 'member_only', label: 'Members Only' },
   { value: 'invite_only', label: 'Invite Only' },
 ] as const
-
-const REGION_OPTIONS = Object.entries(EVENT_REGION_LABELS).map(([value, { label }]) => ({ value, label }))
 
 const PAGE_SIZE = 100
 
@@ -81,7 +78,6 @@ export function EventsBoard() {
   const [category, setCategory] = useState(searchParams.get('category') || '')
   const [topic, setTopic] = useState(searchParams.get('topic') || '')
   const [city, setCity] = useState(searchParams.get('city') || '')
-  const [region, setRegion] = useState(searchParams.get('region') || '')
   const [opsOnly, setOpsOnly] = useState(searchParams.get('ops') === '1')
   const [filtersOpen, setFiltersOpen] = useState(false)
 
@@ -93,8 +89,8 @@ export function EventsBoard() {
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
 
-  const activeFilterCount = [query, kind, format, cost, category, topic, city, region, opsOnly, when !== ''].filter(Boolean).length
-  const pillFilterCount = [kind, format, cost, category, topic, city, region, opsOnly].filter(Boolean).length
+  const activeFilterCount = [query, kind, format, cost, category, topic, city, opsOnly, when !== ''].filter(Boolean).length
+  const pillFilterCount = [kind, format, cost, category, topic, city, opsOnly].filter(Boolean).length
 
   const buildParams = useCallback(
     (newOffset = 0) => {
@@ -109,11 +105,10 @@ export function EventsBoard() {
       if (category) params.set('category', category)
       if (topic) params.set('topic', topic)
       if (city) params.set('city', city)
-      if (region) params.set('region', region)
       if (opsOnly) params.set('ops', '1')
       return params
     },
-    [query, when, kind, format, cost, category, topic, city, region, opsOnly]
+    [query, when, kind, format, cost, category, topic, city, opsOnly]
   )
 
   // Sync URL — default values are omitted so the bare /events URL stays clean
@@ -127,12 +122,11 @@ export function EventsBoard() {
     if (category) params.set('category', category)
     if (topic) params.set('topic', topic)
     if (city) params.set('city', city)
-    if (region) params.set('region', region)
     if (opsOnly) params.set('ops', '1')
     const qs = params.toString()
     const base = pathname || '/events'
     router.replace(qs ? `${base}?${qs}` : base, { scroll: false })
-  }, [router, pathname, query, when, kind, format, cost, category, topic, city, region, opsOnly])
+  }, [router, pathname, query, when, kind, format, cost, category, topic, city, opsOnly])
 
   const fetchFeed = useCallback(
     async (newOffset = 0, append = false) => {
@@ -170,7 +164,7 @@ export function EventsBoard() {
     fetchFeed(0, false)
     syncUrl()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, when, kind, format, cost, category, topic, city, region, opsOnly])
+  }, [query, when, kind, format, cost, category, topic, city, opsOnly])
 
   // Search debounce
   const [searchInput, setSearchInput] = useState(query)
@@ -189,7 +183,6 @@ export function EventsBoard() {
     setCategory('')
     setTopic('')
     setCity('')
-    setRegion('')
     setOpsOnly(false)
   }
 
@@ -236,7 +229,6 @@ export function EventsBoard() {
     if (category) params.set('category', category)
     if (topic) params.set('topic', topic)
     if (city) params.set('city', city)
-    if (region) params.set('region', region)
     if (opsOnly) params.set('ops', '1')
     const qs = params.toString()
     const url = `webcal://${window.location.host}/api/events/calendar${qs ? `?${qs}` : ''}`
@@ -536,34 +528,8 @@ export function EventsBoard() {
             </div>
           </div>
 
-          {/* Region pills */}
-          <div>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">Region</span>
-            <div className="flex flex-wrap gap-1">
-              {REGION_OPTIONS.map((opt) => {
-                const count = facets?.regions[opt.value] ?? 0
-                return (
-                  <button
-                    key={opt.value}
-                    onClick={() => setRegion(toggleFilter(region, opt.value))}
-                    className={cn(
-                      'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors',
-                      hasFilter(region, opt.value)
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-muted text-muted-foreground hover:bg-accent hover:text-foreground'
-                    )}
-                  >
-                    {opt.label}
-                    {count > 0 && (
-                      <span className={cn('text-[9px]', hasFilter(region, opt.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
-                        {count}
-                      </span>
-                    )}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
+          {/* Region pills removed 2026-08-29 — the board is North America-only
+              for now (enforced in lib/events/api.ts BOARD_REGION) */}
         </div>
       )}
 

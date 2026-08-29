@@ -83,6 +83,7 @@ export async function queryCircuitContent(): Promise<CircuitContent> {
       .from('industry_events')
       .select('id', { count: 'exact', head: true })
       .eq('status', 'published')
+      .eq('region', 'north_america')
       .gte('start_date', today),
   ])
 

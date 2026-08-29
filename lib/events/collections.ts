@@ -35,9 +35,9 @@ function topicCollection(slug: string, topic: string, title: string, heading: st
 }
 
 export const EVENT_COLLECTIONS: EventCollection[] = [
-  // Cities
+  // Cities — North America only while the board is NA-scoped (non-NA
+  // collections removed 2026-08-29; their slugs stay reserved in the loader)
   cityCollection('new-york', 'New York', 'curated for GPs, LPs, and fund service providers.'),
-  cityCollection('london', 'London', 'the European private capital circuit in one list.'),
   cityCollection('boston', 'Boston', 'from ACG programs to institutional forums.'),
   cityCollection('chicago', 'Chicago', 'curated for the funds industry.'),
   cityCollection('san-francisco', 'San Francisco', 'venture, growth, and the West Coast LP circuit.'),
@@ -45,11 +45,6 @@ export const EVENT_COLLECTIONS: EventCollection[] = [
   cityCollection('dallas', 'Dallas', 'the Texas private capital circuit.'),
   cityCollection('washington-dc', 'Washington DC', 'where the industry meets policy.'),
   cityCollection('miami', 'Miami', 'the winter capital of alternatives.'),
-  cityCollection('paris', 'Paris', 'IPEM, France Invest, and the French private capital scene.'),
-  cityCollection('luxembourg', 'Luxembourg', 'the fund-domicile capital of Europe.'),
-  cityCollection('dublin', 'Dublin', 'the fund-servicing hub of Ireland.'),
-  cityCollection('dubai', 'Dubai', 'the Gulf private capital circuit.'),
-  cityCollection('singapore', 'Singapore', 'the APAC alternatives hub.'),
   // Topics
   topicCollection('compliance', 'compliance_regulatory', 'Fund Compliance & Regulatory Events',
     'Compliance and regulatory events.',
@@ -96,4 +91,4 @@ export const EVENT_COLLECTIONS: EventCollection[] = [
 export const COLLECTION_BY_SLUG = new Map(EVENT_COLLECTIONS.map((c) => [c.slug, c]))
 
 /** The subset worth surfacing as browse links on the main board. */
-export const FEATURED_COLLECTIONS = ['new-york', 'london', 'miami', 'singapore', 'webinars', 'compliance', 'fund-finance', 'free']
+export const FEATURED_COLLECTIONS = ['new-york', 'boston', 'chicago', 'miami', 'webinars', 'compliance', 'fund-finance', 'free']
