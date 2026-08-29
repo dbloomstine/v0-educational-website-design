@@ -98,6 +98,19 @@ export function formatMonthHeader(startDate: string): string {
   return `${MONTH_LONG[m - 1]} ${y}`
 }
 
+/**
+ * Week-group header for trip view, e.g. "Week of Sep 14" — the Monday of the
+ * event's week. Used when a city filter is active: "one trip, three events."
+ */
+export function formatWeekHeader(startDate: string): string {
+  const { y, m, d } = parseDateParts(startDate)
+  const dt = new Date(Date.UTC(y, m - 1, d))
+  const dow = dt.getUTCDay() // 0 = Sunday
+  dt.setUTCDate(dt.getUTCDate() - ((dow + 6) % 7)) // back to Monday
+  const yearSuffix = dt.getUTCFullYear() !== new Date().getFullYear() ? `, ${dt.getUTCFullYear()}` : ''
+  return `Week of ${MONTH_SHORT[dt.getUTCMonth()]} ${dt.getUTCDate()}${yearSuffix}`
+}
+
 /** "New York, NY" · "London, UK" · falls back to "Virtual" for online events. */
 export function formatEventLocation(event: {
   city: string | null

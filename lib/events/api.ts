@@ -100,6 +100,7 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
 function mapRowToEvent(row: any): IndustryEvent {
   return {
     id: row.id,
+    slug: row.slug,
     name: row.name,
     description: row.description,
     eventUrl: row.event_url,
@@ -122,7 +123,67 @@ function mapRowToEvent(row: any): IndustryEvent {
     opsRelevance: row.ops_relevance,
     region: row.region,
     isFeatured: row.is_featured ?? false,
+    expectedAttendance: row.expected_attendance ?? null,
   }
+}
+
+/** Single event by slug — detail pages. Includes past events (archived pages stay up for SEO). */
+export async function queryEventBySlug(slug: string): Promise<IndustryEvent | null> {
+  const { data, error } = await getSupabaseAdmin()
+    .from('industry_events')
+    .select('*')
+    .eq('slug', slug)
+    .neq('status', 'draft')
+    .maybeSingle()
+
+  if (error || !data) return null
+  return mapRowToEvent(data)
+}
+
+/** Related events for a detail page: same city, then same topic, upcoming only. */
+export async function queryRelatedEvents(event: IndustryEvent, limit = 5): Promise<IndustryEvent[]> {
+  const today = todayIso()
+  const related: IndustryEvent[] = []
+  const seen = new Set([event.id])
+
+  const pull = async (filter: (q: any) => any) => {
+    let q = getSupabaseAdmin()
+      .from('industry_events')
+      .select('*')
+      .eq('status', 'published')
+      .gte('start_date', today)
+      .order('start_date', { ascending: true })
+      .limit(limit + 1)
+    q = filter(q)
+    const { data } = await q
+    for (const row of data ?? []) {
+      if (related.length >= limit || seen.has(row.id)) continue
+      seen.add(row.id)
+      related.push(mapRowToEvent(row))
+    }
+  }
+
+  if (event.city) {
+    await pull((q) => q.eq('city', event.city))
+  }
+  if (related.length < limit && event.topics.length > 0) {
+    await pull((q) => q.overlaps('topics', event.topics))
+  }
+  if (related.length < limit) {
+    await pull((q) => q.overlaps('fund_categories', event.fundCategories.length ? event.fundCategories : ['PE']))
+  }
+  return related
+}
+
+/** All non-draft slugs — sitemap generation. */
+export async function queryAllEventSlugs(): Promise<{ slug: string; startDate: string }[]> {
+  const { data } = await getSupabaseAdmin()
+    .from('industry_events')
+    .select('slug, start_date')
+    .neq('status', 'draft')
+    .order('start_date', { ascending: true })
+    .limit(1000)
+  return (data ?? []).map((r) => ({ slug: r.slug, startDate: r.start_date }))
 }
 
 async function queryEventFacets(today: string): Promise<EventFacetCounts> {

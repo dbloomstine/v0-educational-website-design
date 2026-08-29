@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { Search, X, Loader2, SlidersHorizontal } from 'lucide-react'
+import Link from 'next/link'
+import { Search, X, Loader2, SlidersHorizontal, CalendarPlus, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { EventRow } from './EventRow'
 import {
@@ -12,6 +13,7 @@ import {
   EVENT_ASSET_CLASSES,
   EVENT_TOPIC_LABELS,
   formatMonthHeader,
+  formatWeekHeader,
 } from '@/lib/events/constants'
 import type { EventFeedResponse, IndustryEvent, EventFacetCounts } from '@/lib/events/types'
 
@@ -208,16 +210,43 @@ export function EventsBoard() {
     fetchFeed(offset, true)
   }
 
-  // Group the date-sorted list under month headers (Gary's Guide-style)
+  // Group the date-sorted list under month headers (Gary's Guide-style).
+  // Trip view: with a city filter active, switch to WEEK headers — the
+  // traveler's question is "what can I hit in one trip", not "what's in
+  // October".
+  const tripView = Boolean(city)
   const monthGroups: { header: string; events: IndustryEvent[] }[] = []
   for (const event of events) {
-    const header = formatMonthHeader(event.startDate)
+    const header = tripView ? formatWeekHeader(event.startDate) : formatMonthHeader(event.startDate)
     const last = monthGroups[monthGroups.length - 1]
     if (last && last.header === header) {
       last.events.push(event)
     } else {
       monthGroups.push({ header, events: [event] })
     }
+  }
+
+  // Subscribable calendar feed for the current filter view
+  const [feedCopied, setFeedCopied] = useState(false)
+  const copyCalendarFeed = () => {
+    const params = new URLSearchParams()
+    if (kind) params.set('kind', kind)
+    if (format) params.set('format', format)
+    if (cost) params.set('cost', cost)
+    if (category) params.set('category', category)
+    if (topic) params.set('topic', topic)
+    if (city) params.set('city', city)
+    if (region) params.set('region', region)
+    if (opsOnly) params.set('ops', '1')
+    const qs = params.toString()
+    const url = `webcal://${window.location.host}/api/events/calendar${qs ? `?${qs}` : ''}`
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        setFeedCopied(true)
+        setTimeout(() => setFeedCopied(false), 2500)
+      })
+      .catch(() => {})
   }
 
   const whenControl = (
@@ -537,6 +566,21 @@ export function EventsBoard() {
           </div>
         </div>
       )}
+
+      {/* ── Utility row: calendar feed + submit ──────────────── */}
+      <div className="flex items-center justify-end gap-4">
+        <button
+          onClick={copyCalendarFeed}
+          title="Copies a webcal:// URL for this filtered view — paste it into Google/Outlook/Apple Calendar under 'subscribe from URL' and new events appear automatically"
+          className="inline-flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-foreground transition-colors"
+        >
+          {feedCopied ? <Check className="h-3 w-3 text-emerald-400" /> : <CalendarPlus className="h-3 w-3" />}
+          {feedCopied ? 'Feed URL copied' : 'Subscribe to this view'}
+        </button>
+        <Link href="/events/submit" className="text-[11px] text-muted-foreground hover:text-foreground transition-colors">
+          Submit an event
+        </Link>
+      </div>
 
       {/* ── Events list ──────────────────────────────────────── */}
       {loading ? (

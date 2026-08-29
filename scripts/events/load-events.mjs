@@ -51,6 +51,29 @@ function normalizeCity(city) {
   return CITY_MAP[trimmed.toLowerCase()] ?? trimmed
 }
 
+// Reserved landing-page slugs — keep in sync with lib/events/collections.ts.
+// An event slug must never shadow one (the route checks collections first,
+// but colliding here would make the event page unreachable).
+const RESERVED_SLUGS = new Set([
+  'submit','new-york','london','boston','chicago','san-francisco','los-angeles','dallas',
+  'washington-dc','miami','paris','luxembourg','dublin','dubai','singapore',
+  'compliance','fund-finance','accounting-tax','tech-ai','fundraising',
+  'webinars','networking','free',
+])
+
+function slugify(name, takenSlugs) {
+  let base = String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80)
+  if (!base || RESERVED_SLUGS.has(base)) base = `${base || 'event'}-listing`
+  let slug = base
+  let n = 2
+  while (takenSlugs.has(slug)) {
+    slug = `${base}-${n}`
+    n++
+  }
+  takenSlugs.add(slug)
+  return slug
+}
+
 const { data: sources, error: srcErr } = await supabase.from('event_sources').select('id, name')
 if (srcErr) { console.error('source fetch failed:', srcErr.message); process.exit(1) }
 const sourceByName = new Map(sources.map((s) => [s.name.toLowerCase(), s.id]))
@@ -64,8 +87,9 @@ function resolveSource(key) {
   return null
 }
 
-const { data: existing } = await supabase.from('industry_events').select('event_url')
+const { data: existing } = await supabase.from('industry_events').select('event_url, slug')
 const seen = new Set((existing ?? []).map((r) => r.event_url.toLowerCase()))
+const takenSlugs = new Set((existing ?? []).map((r) => r.slug).filter(Boolean))
 
 let inserted = 0
 const skipped = []
@@ -87,6 +111,7 @@ for (const file of process.argv.slice(2)) {
     seen.add(urlKey)
 
     const { error } = await supabase.from('industry_events').insert({
+      slug: slugify(r.name, takenSlugs),
       name: r.name,
       description: r.description ?? null,
       event_url: r.event_url,
@@ -107,6 +132,7 @@ for (const file of process.argv.slice(2)) {
       price_note: r.price_note ?? null,
       fund_categories: cats,
       topics,
+      expected_attendance: Number.isInteger(r.expected_attendance) && r.expected_attendance > 0 ? r.expected_attendance : null,
       ops_relevance: r.ops_relevance ?? 'medium',
       region: r.region,
       status: 'published',
