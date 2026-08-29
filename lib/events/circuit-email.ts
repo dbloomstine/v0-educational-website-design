@@ -1,5 +1,5 @@
 import { getSupabaseAdmin } from '@/lib/supabase/client'
-import { formatEventDates, formatEventLocation, COST_LABELS } from './constants'
+import { formatEventDates, formatEventLocation } from './constants'
 import type { IndustryEvent } from './types'
 
 // "The Circuit" — weekly events digest. Sections: This Week, Next Week,
@@ -53,11 +53,16 @@ export async function queryCircuitContent(): Promise<CircuitContent> {
   const today = new Date().toISOString().split('T')[0]
   const plus = (days: number) => new Date(Date.now() + days * 86400000).toISOString().split('T')[0]
 
+  // Per Danny (2026-08-29): the email is the NORTH AMERICA edition for now —
+  // the board stays global, but the weekly digest covers US/Canada (+ virtual
+  // events from NA organizers, which share the region). Widen deliberately
+  // later, not by accident.
   const base = () =>
     supabase
       .from('industry_events')
       .select('*')
       .eq('status', 'published')
+      .eq('region', 'north_america')
       .order('start_date', { ascending: true })
 
   const [thisWeekRes, nextWeekRes, freshRes, countRes] = await Promise.all([
@@ -69,6 +74,7 @@ export async function queryCircuitContent(): Promise<CircuitContent> {
       .from('industry_events')
       .select('*')
       .eq('status', 'published')
+      .eq('region', 'north_america')
       .gt('start_date', plus(14))
       .gte('created_at', new Date(Date.now() - 7 * 86400000).toISOString())
       .order('created_at', { ascending: false })
@@ -88,24 +94,42 @@ export async function queryCircuitContent(): Promise<CircuitContent> {
   return { thisWeek, nextWeek, freshAdds, totalUpcoming: countRes.count ?? 0 }
 }
 
-const AMBER = '#d4a72c'
-const INK = '#1a2338'
-const MUTED = '#5b6577'
-const GREEN = '#1a7f4f'
+// Gary's Guide idiom, per Danny's direction: dense three-column rows
+// (date | price | linked title + one detail line), no hero, no cards, no
+// background colors — plain text that Gmail dark mode inverts naturally.
+const TEXT = '#222222'
+const MUTED = '#666666'
+const LINK = '#2b6cb0'
+
+const COST_SHORT: Record<string, string> = {
+  free: 'Free',
+  paid: 'Paid',
+  member_only: 'Mmbr',
+  invite_only: 'Inv',
+  mixed: 'Mixed',
+}
+
+// Verbose time notes ("8:15 AM registration; 8:30-9:30 AM session") wreck the
+// date column — compress to a start time + timezone ("8:15am ET"), or nothing.
+function compactTime(timeNote: string | null): string | null {
+  if (!timeNote) return null
+  const m = timeNote.match(/(\d{1,2})(?::(\d{2}))?\s?(am|pm)/i)
+  if (!m) return null
+  const tz = timeNote.match(/\b(ET|EST|EDT|CT|PT|PST|PDT|GMT|BST|CET|CEST|HKT|SGT|JST|AEST)\b/i)
+  return `${m[1]}${m[2] ? `:${m[2]}` : ''}${m[3].toLowerCase()}${tz ? ` ${tz[1].toUpperCase()}` : ''}`
+}
 
 function eventLine(e: IndustryEvent): string {
   const dates = formatEventDates(e.startDate, e.endDate)
-  const where = e.eventFormat === 'virtual' ? `Virtual${e.timeNote ? ` · ${e.timeNote}` : ''}` : formatEventLocation(e)
-  const cost =
-    e.costType === 'free'
-      ? `<span style="color:${GREEN};font-weight:600;">Free</span>`
-      : (COST_LABELS[e.costType] ?? COST_LABELS.paid).label
+  const where = e.eventFormat === 'virtual' ? 'Virtual' : formatEventLocation(e)
+  const time = compactTime(e.timeNote)
   return `
     <tr>
-      <td style="padding:7px 0;border-bottom:1px solid #e8eaf0;vertical-align:top;white-space:nowrap;font-family:'Courier New',monospace;font-size:12px;color:${MUTED};width:86px;">${dates}</td>
-      <td style="padding:7px 0 7px 12px;border-bottom:1px solid #e8eaf0;vertical-align:top;">
-        <a href="https://fundopshq.com/events/${e.slug}" style="color:${INK};text-decoration:none;font-weight:600;font-size:14px;">${escapeHtml(e.name)}</a>
-        <div style="font-size:12px;color:${MUTED};padding-top:1px;">${escapeHtml(e.organizerName)} · ${escapeHtml(where)} · ${cost}</div>
+      <td style="padding:6px 8px 6px 0;border-bottom:1px solid #dddddd;vertical-align:top;white-space:nowrap;font-size:11px;color:${MUTED};width:76px;">${dates}${time ? `<br><span style="font-size:10px;">${time}</span>` : ''}</td>
+      <td style="padding:6px 8px 6px 0;border-bottom:1px solid #dddddd;vertical-align:top;white-space:nowrap;font-size:11px;color:${MUTED};width:36px;">${COST_SHORT[e.costType] ?? 'Paid'}</td>
+      <td style="padding:6px 0;border-bottom:1px solid #dddddd;vertical-align:top;font-size:13px;line-height:1.3;">
+        <a href="https://fundopshq.com/events/${e.slug}" style="color:${LINK};text-decoration:none;font-weight:bold;">${escapeHtml(e.name)}</a><br>
+        <span style="font-size:11px;color:${MUTED};"><b style="font-weight:600;color:${TEXT};">${escapeHtml(e.organizerName)}</b> · ${escapeHtml(where)}</span>
       </td>
     </tr>`
 }
@@ -113,10 +137,8 @@ function eventLine(e: IndustryEvent): string {
 function section(title: string, events: IndustryEvent[]): string {
   if (events.length === 0) return ''
   return `
-    <tr><td style="padding:26px 0 6px 0;">
-      <div style="font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${AMBER};border-bottom:2px solid ${INK};padding-bottom:6px;">${title}</div>
-    </td></tr>
-    <tr><td><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">${events.map(eventLine).join('')}</table></td></tr>`
+    <tr><td style="padding:14px 0 3px 0;font-size:13px;font-weight:bold;color:${TEXT};border-bottom:1px solid #999999;">${title}</td></tr>
+    <tr><td style="padding:2px 0 0 0;"><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">${events.map(eventLine).join('')}</table></td></tr>`
 }
 
 function escapeHtml(text: string): string {
@@ -124,46 +146,38 @@ function escapeHtml(text: string): string {
 }
 
 export function renderCircuitEmail(content: CircuitContent, unsubscribeUrl: string): string {
-  const dateLabel = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+  const dateLabel = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="color-scheme" content="light only">
-<meta name="supported-color-schemes" content="light only">
 <title>The Circuit</title>
 </head>
-<body style="margin:0;padding:0;background-color:#f4f5f7;">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color:#f4f5f7;">
-<tr><td align="center" style="padding:24px 12px;">
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;background-color:#ffffff;border:1px solid #e2e5ec;">
-<tr><td style="padding:28px 32px 0 32px;font-family:Arial,Helvetica,sans-serif;">
+<body style="margin:0;padding:0;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+<tr><td align="center" style="padding:10px 8px;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;">
+<tr><td style="font-family:Arial,Helvetica,sans-serif;color:${TEXT};">
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
     <tr>
-      <td style="font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:${MUTED};">FundOpsHQ · Section B</td>
-      <td align="right" style="font-family:'Courier New',monospace;font-size:11px;color:${MUTED};">${dateLabel}</td>
+      <td style="font-size:13px;font-weight:bold;color:${TEXT};padding-bottom:2px;">FundOpsHQ — The Circuit</td>
+      <td align="right" style="font-size:12px;color:${MUTED};">${dateLabel}</td>
     </tr>
   </table>
-  <h1 style="margin:14px 0 4px 0;font-size:30px;line-height:1.1;color:${INK};font-family:Georgia,'Times New Roman',serif;">The Circuit</h1>
-  <p style="margin:0 0 4px 0;font-size:14px;line-height:1.5;color:${MUTED};">
-    The week ahead in private markets events — every date verified at the source.
-    ${content.totalUpcoming} events on <a href="https://fundopshq.com/events" style="color:${AMBER};text-decoration:none;font-weight:600;">the board</a>.
-  </p>
+  <div style="font-size:12px;color:${MUTED};border-bottom:2px solid #999999;padding-bottom:5px;">
+    The week ahead in private markets events. ${content.totalUpcoming} verified events on
+    <a href="https://fundopshq.com/events" style="color:${LINK};text-decoration:none;font-weight:bold;">the board</a>
+    · <a href="https://fundopshq.com/events/submit" style="color:${LINK};text-decoration:none;font-weight:bold;">submit an event</a>
+  </div>
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-    ${section('This Week', content.thisWeek)}
-    ${section('Next Week', content.nextWeek)}
-    ${section('Fresh on the Board', content.freshAdds)}
+    ${section('THIS WEEK', content.thisWeek)}
+    ${section('NEXT WEEK', content.nextWeek)}
+    ${section('FRESH ON THE BOARD', content.freshAdds)}
   </table>
-  <p style="margin:28px 0 0 0;font-size:13px;color:${MUTED};">
-    Traveling? Filter by city on <a href="https://fundopshq.com/events" style="color:${AMBER};text-decoration:none;font-weight:600;">fundopshq.com/events</a> —
-    or <a href="https://fundopshq.com/events/submit" style="color:${AMBER};text-decoration:none;font-weight:600;">submit an event</a> we&#39;re missing.
-  </p>
-</td></tr>
-<tr><td style="padding:24px 32px 28px 32px;font-family:Arial,Helvetica,sans-serif;">
-  <div style="border-top:1px solid #e8eaf0;padding-top:14px;font-size:11px;line-height:1.6;color:#8b93a3;">
-    You&#39;re getting The Circuit because you subscribe to FundOps Daily.
-    <a href="${unsubscribeUrl}" style="color:#8b93a3;text-decoration:underline;">Unsubscribe</a>
-    · FundOpsHQ · New York
+  <div style="margin-top:16px;border-top:1px solid #999999;padding-top:8px;font-size:11px;line-height:1.5;color:${MUTED};">
+    You get The Circuit because you subscribe to FundOps Daily.
+    <a href="${unsubscribeUrl}" style="color:${MUTED};text-decoration:underline;">Unsubscribe</a>
+    · FundOpsHQ
   </div>
 </td></tr>
 </table>
