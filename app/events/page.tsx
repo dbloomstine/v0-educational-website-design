@@ -4,7 +4,9 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { EventsBoard } from '@/components/events/EventsBoard'
+import Link from 'next/link'
 import { queryEventFeed } from '@/lib/events/api'
+import { EVENT_COLLECTIONS } from '@/lib/events/collections'
 import type { IndustryEvent } from '@/lib/events/types'
 
 // Re-render hourly so the server-side JSON-LD tracks the live table without
@@ -149,6 +151,24 @@ export default async function EventsPage() {
             <Suspense fallback={<EventsBoardSkeleton />}>
               <EventsBoard />
             </Suspense>
+
+            {/* Browse collections — internal-link surface for the landing pages */}
+            <div className="mt-12 border-t border-foreground/10 pt-6">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+                Browse
+              </span>
+              <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
+                {EVENT_COLLECTIONS.map((c) => (
+                  <Link
+                    key={c.slug}
+                    href={`/events/${c.slug}`}
+                    className="text-[12px] text-muted-foreground hover:text-amber-400 transition-colors"
+                  >
+                    {c.title.replace(' | FundOpsHQ', '')}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
       </main>

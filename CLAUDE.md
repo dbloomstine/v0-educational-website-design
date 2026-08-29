@@ -39,6 +39,12 @@ The site was aggressively consolidated on 2026-04-10. There are only six public 
 /events                 → Industry events board (added 2026-08-29) — "Section B · The Circuit".
                            EventsBoard component, filterable, backed by industry_events.
                            Refreshed weekly via the scout-events skill (~/.claude/skills/scout-events)
+/events/[slug]          → Dual route: reserved slugs in lib/events/collections.ts render
+                           pre-filtered LANDING pages (/events/new-york, /events/compliance,
+                           /events/webinars, /events/free...); everything else is an event
+                           DETAIL page (per-event JSON-LD, Google Cal + .ics buttons, related
+                           events). Past events stay up as archived pages for SEO.
+/events/submit          → Public "Submit an event" form → event_submissions pending queue
 /about                  → About page (rebuilt 2026-04-09)
 /brand                  → Brand kit — logos, monograms, backgrounds (added 2026-04-09)
 /privacy, /terms        → Legal
@@ -52,6 +58,11 @@ Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/news
 ```
 /api/news/feed                          → Homepage NewsFeed data source
 /api/events/feed                        → /events EventsBoard data source (mirrors news/feed pattern)
+/api/events/calendar                    → iCalendar: ?slug= for one event's .ics, or filtered webcal:// subscribe feed
+/api/events/click                       → Count-only outbound-click beacon (increment_event_click RPC)
+/api/events/submit                      → Public event submissions → event_submissions (pending queue)
+/api/pipeline/circuit-send              → Cron (Mon 12:00 UTC): The Circuit weekly events digest. SHIPS DARK —
+                                           previews to Danny until CIRCUIT_ENABLED=true; ?preview=1 returns HTML
 /api/newsletter/subscribe               → Email signup — single opt-in, sends welcome email
 /api/newsletter/confirm                 → Legacy endpoint, kept alive for old confirmation links
 /api/newsletter/unsubscribe             → One-click unsubscribe
@@ -252,6 +263,8 @@ with the server-side rules — needs a patch before the next manual run.
 | `industry_events`        | Curated events for /events (added 2026-08-29) — every row date-verified at the source; refreshed by the scout-events skill                |
 
 Events-domain naming is deliberately distinct from news: `event_kind`/`event_format` on `industry_events`, NEVER `event_type` — that column on `news_items` (and `eventType` in the news UI) means "kind of news story". Inserts to `industry_events` go through `scripts/events/load-events.mjs` (validated loader — enforces enums, date rules, URL dedup, and city-alias normalization), not hand-written SQL.
+
+Events board v3 (2026-08-29): `slug` (unique, loader-generated — must never collide with the reserved collection slugs), `click_count` (via `increment_event_click()` RPC only), `expected_attendance`, and the `event_submissions` table (public queue; ALL fields untrusted — scout-events verifies at the source before promoting). `scripts/events/check-links.mjs` = weekly link-health report. The Circuit weekly digest ships dark behind `CIRCUIT_ENABLED`.
 
 Events board v2 (2026-08-29): `industry_events.topics text[]` adds the functional-area dimension (compliance_regulatory, fund_finance, accounting_tax, technology_ai, fundraising_ir, legal, esg, talent — see `EVENT_TOPIC_LABELS`). The board's core use case is "traveling to a city / picking a topic, next 1–2 weeks": the horizon control starts at 2w, and the City filter pills are DYNAMIC (top cities by upcoming-event count from the facets — nothing hardcoded). City matching is exact-string, so keep the loader's CITY_MAP and the DB canonical ("New York", "Washington DC", "London"). `/events` renders schema.org Event JSON-LD server-side for the next ~25 events with `revalidate = 3600` — inserts show in the board instantly but in the structured data within the hour. A weekly scheduled task (`scout-events-weekly`, Mondays 7am, in ~/.claude/scheduled-tasks/) runs the scout-events skill unattended.
 

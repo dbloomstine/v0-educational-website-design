@@ -1,5 +1,6 @@
 export interface IndustryEvent {
   id: string
+  slug: string
   name: string
   description: string | null
   eventUrl: string
@@ -22,6 +23,7 @@ export interface IndustryEvent {
   opsRelevance: string
   region: string
   isFeatured: boolean
+  expectedAttendance: number | null
 }
 
 export interface EventFacetCounts {
