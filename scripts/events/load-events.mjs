@@ -29,7 +29,27 @@ const ENUMS = {
   region: ['north_america','europe','asia_pacific','middle_east','latam','global'],
 }
 const CATS = ['PE','VC','credit','hedge','real_estate','infrastructure','secondaries','gp_stakes']
+// Functional-area topics — must match EVENT_TOPIC_LABELS in lib/events/constants.ts
+const TOPICS = ['compliance_regulatory','fund_finance','accounting_tax','technology_ai','fundraising_ir','legal','esg','talent']
 const TODAY = new Date().toISOString().split('T')[0]
+
+// City normalization — the /events city filter matches on exact strings, so
+// every alias must collapse to one canonical name before insert.
+const CITY_MAP = {
+  'nyc': 'New York', 'new york city': 'New York', 'manhattan': 'New York', 'brooklyn': 'New York',
+  'sf': 'San Francisco', 'san fran': 'San Francisco',
+  'la': 'Los Angeles',
+  'dc': 'Washington DC', 'washington': 'Washington DC', 'washington, d.c.': 'Washington DC',
+  'washington d.c.': 'Washington DC', 'washington dc': 'Washington DC', 'washington, dc': 'Washington DC',
+  'greater london': 'London',
+  'luxembourg city': 'Luxembourg',
+}
+function normalizeCity(city) {
+  if (!city) return null
+  const trimmed = String(city).trim()
+  if (!trimmed) return null
+  return CITY_MAP[trimmed.toLowerCase()] ?? trimmed
+}
 
 const { data: sources, error: srcErr } = await supabase.from('event_sources').select('id, name')
 if (srcErr) { console.error('source fetch failed:', srcErr.message); process.exit(1) }
@@ -60,6 +80,7 @@ for (const file of process.argv.slice(2)) {
       if (r[field] != null && !allowed.includes(r[field])) problems.push(`bad ${field} ${r[field]}`)
     }
     const cats = (r.fund_categories ?? []).filter((c) => CATS.includes(c))
+    const topics = (r.topics ?? []).filter((t) => TOPICS.includes(t))
     if (problems.length) { skipped.push(`${r.name}: ${problems.join('; ')}`); continue }
     const urlKey = r.event_url.toLowerCase()
     if (seen.has(urlKey)) { skipped.push(`${r.name}: duplicate url`); continue }
@@ -76,7 +97,7 @@ for (const file of process.argv.slice(2)) {
       start_date: r.start_date,
       end_date: r.end_date && r.end_date !== r.start_date ? r.end_date : null,
       time_note: r.time_note ?? null,
-      city: r.city ?? null,
+      city: normalizeCity(r.city),
       state_region: r.state_region ?? null,
       country: r.country ?? null,
       venue: r.venue ?? null,
@@ -85,6 +106,7 @@ for (const file of process.argv.slice(2)) {
       cost_type: r.cost_type ?? 'paid',
       price_note: r.price_note ?? null,
       fund_categories: cats,
+      topics,
       ops_relevance: r.ops_relevance ?? 'medium',
       region: r.region,
       status: 'published',
