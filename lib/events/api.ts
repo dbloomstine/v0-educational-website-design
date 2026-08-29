@@ -27,6 +27,11 @@ function todayIso(): string {
   return new Date().toISOString().split('T')[0]
 }
 
+// Per Danny (2026-08-29): the PUBLIC board is North America-only for now.
+// Non-NA rows stay in the table (unlisted — direct detail URLs still work)
+// so widening later is a one-line change here, not a re-scout.
+const BOARD_REGION = 'north_america'
+
 export async function queryEventFeed(params: EventQueryParams): Promise<EventFeedResponse> {
   const limit = Math.min(params.limit ?? 100, 200)
   const offset = params.offset ?? 0
@@ -36,6 +41,7 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
     .from('industry_events')
     .select('*')
     .eq('status', 'published')
+    .eq('region', BOARD_REGION)
     .gte('start_date', today)
     .order('start_date', { ascending: true })
     .order('name', { ascending: true })
@@ -57,9 +63,7 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
   if (params.cost) {
     query = query.in('cost_type', params.cost.split(','))
   }
-  if (params.region) {
-    query = query.in('region', params.region.split(','))
-  }
+  // params.region is accepted but cannot widen past the NA board scope
   if (params.category) {
     query = query.overlaps('fund_categories', params.category.split(','))
   }
@@ -151,6 +155,7 @@ export async function queryRelatedEvents(event: IndustryEvent, limit = 5): Promi
       .from('industry_events')
       .select('*')
       .eq('status', 'published')
+      .eq('region', BOARD_REGION)
       .gte('start_date', today)
       .order('start_date', { ascending: true })
       .limit(limit + 1)
@@ -175,12 +180,13 @@ export async function queryRelatedEvents(event: IndustryEvent, limit = 5): Promi
   return related
 }
 
-/** All non-draft slugs — sitemap generation. */
+/** Slugs for the sitemap — NA board scope only (non-NA pages stay unlisted). */
 export async function queryAllEventSlugs(): Promise<{ slug: string; startDate: string }[]> {
   const { data } = await getSupabaseAdmin()
     .from('industry_events')
     .select('slug, start_date')
     .neq('status', 'draft')
+    .eq('region', BOARD_REGION)
     .order('start_date', { ascending: true })
     .limit(1000)
   return (data ?? []).map((r) => ({ slug: r.slug, startDate: r.start_date }))
@@ -193,6 +199,7 @@ async function queryEventFacets(today: string): Promise<EventFacetCounts> {
     .from('industry_events')
     .select('event_kind, event_format, cost_type, region, fund_categories, topics, city, ops_relevance')
     .eq('status', 'published')
+    .eq('region', BOARD_REGION)
     .gte('start_date', today)
 
   const kinds: Record<string, number> = {}

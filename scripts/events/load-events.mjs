@@ -42,6 +42,8 @@ const CITY_MAP = {
   'dc': 'Washington DC', 'washington': 'Washington DC', 'washington, d.c.': 'Washington DC',
   'washington d.c.': 'Washington DC', 'washington dc': 'Washington DC', 'washington, dc': 'Washington DC',
   'greater london': 'London',
+  'miami beach': 'Miami',
+  'west hollywood': 'Los Angeles',
   'luxembourg city': 'Luxembourg',
 }
 function normalizeCity(city) {
