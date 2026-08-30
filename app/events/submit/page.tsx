@@ -6,7 +6,7 @@ import { SiteFooter } from '@/components/site-footer'
 import { SubmitEventForm } from '@/components/events/SubmitEventForm'
 
 export const metadata: Metadata = {
-  title: 'Submit an Event | FundOpsHQ',
+  title: 'Submit an Event',
   description:
     'Submit a private markets industry event — conference, forum, webinar, or networking — for the FundOpsHQ events calendar. Free listings, dates verified before publishing.',
   alternates: { canonical: 'https://fundopshq.com/events/submit' },

@@ -24,23 +24,29 @@ export function HomeEventsStrip({ events, rail = false }: { events: IndustryEven
         const costText = event.costType === 'free' ? 'Free' : cost.label
         // Rail mode (homepage right column): two-line rows — dates+meta on top,
         // bold name below — so a ~430px column still reads instantly.
+        // Rail mode (homepage right column): a plain two-column table —
+        // date, then event name with its city trailing in muted text. The
+        // earlier two-line treatment (uppercase mono meta line stacked over
+        // the name) read as designed rather than scannable.
         if (rail) {
           return (
             <Link
               key={event.id}
               href={`/events/${event.slug}`}
-              className="group block border-b border-border/40 px-2.5 py-1.5 transition-colors hover:bg-accent/40 last:border-b-0"
+              className="group grid grid-cols-[56px_1fr_84px] items-baseline gap-x-2 border-b border-border/40 px-2.5 py-1 transition-colors hover:bg-accent/40 last:border-b-0"
             >
-              <div className="flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-wide text-muted-foreground/70">
-                <span className="tabular-nums text-foreground/80">{formatEventDates(event.startDate, event.endDate)}</span>
-                <span className="flex items-center gap-2 truncate">
-                  <span className="truncate">{formatEventLocation(event)}</span>
-                  <span className={cn('shrink-0 font-semibold', event.costType === 'free' ? 'text-emerald-400' : '')}>{costText}</span>
-                </span>
-              </div>
-              <div className="mt-0.5 truncate text-[13px] font-semibold leading-snug text-foreground group-hover:text-amber-400 transition-colors">
+              <span className="whitespace-nowrap font-mono text-[11px] tabular-nums text-muted-foreground/70">
+                {formatEventDates(event.startDate, event.endDate)}
+              </span>
+              <span className="min-w-0 truncate text-[13px] font-semibold leading-snug text-foreground transition-colors group-hover:text-amber-400">
                 {event.name}
-              </div>
+              </span>
+              {/* City gets its own column so it survives a long event name —
+                  when the two shared a cell the location was always the part
+                  that got truncated away. */}
+              <span className="truncate text-right text-[11px] text-muted-foreground/70">
+                {formatEventLocation(event)}
+              </span>
             </Link>
           )
         }

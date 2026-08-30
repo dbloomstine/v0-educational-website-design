@@ -10,12 +10,15 @@ const nextConfig = {
   // the matching redirect — Next.js serves redirects before routes.
   async redirects() {
     return [
-      { source: '/news', destination: '/#news', permanent: true },
-      { source: '/news/:path*', destination: '/#news', permanent: true },
-      { source: '/blog', destination: '/#news', permanent: true },
-      { source: '/blog/:path*', destination: '/#news', permanent: true },
-      { source: '/articles', destination: '/#news', permanent: true },
-      { source: '/articles/:path*', destination: '/#news', permanent: true },
+      // /news is a real page again as of 2026-08-30 (the news archive), so its
+      // redirect is gone and the legacy article paths now point AT it rather
+      // than at the homepage anchor. NOTE: `:path+`, not `:path*` — the star
+      // form also matches the bare `/news`, which redirects the page to itself.
+      { source: '/news/:path+', destination: '/news', permanent: true },
+      { source: '/blog', destination: '/news', permanent: true },
+      { source: '/blog/:path*', destination: '/news', permanent: true },
+      { source: '/articles', destination: '/news', permanent: true },
+      { source: '/articles/:path*', destination: '/news', permanent: true },
       { source: '/interviews', destination: '/#show', permanent: true },
       { source: '/interviews/:path*', destination: '/#show', permanent: true },
       { source: '/guests', destination: '/#show', permanent: true },

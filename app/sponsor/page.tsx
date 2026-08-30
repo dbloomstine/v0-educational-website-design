@@ -6,7 +6,7 @@ import { BackToTop } from '@/components/back-to-top'
 import { ArrowRight, Mail, Check, Newspaper } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Sponsor FundOps Daily | FundOpsHQ',
+  title: 'Sponsor FundOps Daily',
   description:
     'Sponsor the morning news brief for GPs, LPs, and fund service providers in private markets. Rate card, audience, and sample newsletter.',
   openGraph: {

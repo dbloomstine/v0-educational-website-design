@@ -1,14 +1,15 @@
 import { Metadata } from 'next'
 import Link from 'next/link'
-import { Suspense } from 'react'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { HeroSubscribe } from '@/components/home/hero-subscribe'
-import { NewsFeed } from '@/components/news/NewsFeed'
+import { HomeNewsTable } from '@/components/home/HomeNewsTable'
 import { HomeEventsStrip } from '@/components/events/HomeEventsStrip'
 import { queryEventFeed } from '@/lib/events/api'
+import { queryArticleFeed } from '@/lib/news/api'
 import type { IndustryEvent } from '@/lib/events/types'
+import type { ArticleGroup } from '@/lib/news/types'
 import { StickySubscribeBar } from '@/components/news/StickySubscribeBar'
 
 export const metadata: Metadata = {
@@ -68,14 +69,16 @@ const websiteJsonLd = {
 export const revalidate = 900
 
 export default async function HomePage() {
-  // Section B strip — the page must render even if the DB hiccups
-  let upcomingEvents: IndustryEvent[] = []
-  try {
-    const feed = await queryEventFeed({ when: '60d', limit: 14 })
-    upcomingEvents = feed.events
-  } catch {
-    // strip hides itself when empty
-  }
+  // Both sections are soft dependencies: the page must render even if the DB
+  // hiccups. Fetched in parallel — neither depends on the other.
+  const [upcomingEvents, topStories] = await Promise.all([
+    queryEventFeed({ when: '60d', limit: 18 })
+      .then((feed) => feed.events)
+      .catch<IndustryEvent[]>(() => []),
+    queryArticleFeed({ range: '7d', limit: 18 })
+      .then((feed) => feed.groups ?? [])
+      .catch<ArticleGroup[]>(() => []),
+  ])
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -107,17 +110,29 @@ export default async function HomePage() {
                     <span aria-hidden="true" className="text-foreground/20">·</span>
                     <span>The Wire<span className="hidden sm:inline"> — Fund News</span></span>
                   </span>
-                  <span className="flex items-center gap-2 whitespace-nowrap">
+                  <Link href="/news" className="flex items-center gap-2 whitespace-nowrap hover:text-foreground transition-colors">
                     <span className="relative flex h-1.5 w-1.5">
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
                       <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
                     </span>
                     <span className="text-emerald-400/90">Live · 200+ sources</span>
-                  </span>
+                  </Link>
                 </div>
-                <Suspense fallback={<NewsFeedSkeleton />}>
-                  <NewsFeed />
-                </Suspense>
+                {topStories.length > 0 ? (
+                  <>
+                    <HomeNewsTable groups={topStories} />
+                    <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">
+                      <Link href="/news" className="text-foreground/70 hover:text-amber-400 transition-colors">
+                        All news · search &amp; filter →
+                      </Link>
+                    </p>
+                  </>
+                ) : (
+                  <p className="rounded-lg border border-border bg-card px-4 py-6 text-sm text-muted-foreground">
+                    The news feed is at{' '}
+                    <Link href="/news" className="text-amber-400 hover:text-amber-300">fundopshq.com/news</Link>.
+                  </p>
+                )}
               </section>
 
               {/* ── Section B · The Circuit (events rail) ── */}
@@ -154,27 +169,6 @@ export default async function HomePage() {
       <SiteFooter />
       <BackToTop />
       <StickySubscribeBar />
-    </div>
-  )
-}
-
-function NewsFeedSkeleton() {
-  return (
-    <div className="space-y-3 animate-pulse">
-      <div className="flex items-center gap-2">
-        <div className="h-8 flex-1 rounded-lg bg-muted" />
-        <div className="h-8 w-32 rounded-lg bg-muted" />
-        <div className="h-8 w-20 rounded-lg bg-muted" />
-      </div>
-      <div className="overflow-hidden rounded-lg border border-border bg-card">
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div key={i} className="flex items-center gap-2 border-b border-border/40 px-3 py-2">
-            <div className="h-4 w-10 rounded bg-muted" />
-            <div className="h-4 flex-1 rounded bg-muted" />
-            <div className="h-4 w-16 rounded bg-muted" />
-          </div>
-        ))}
-      </div>
     </div>
   )
 }

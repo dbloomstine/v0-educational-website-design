@@ -14,7 +14,7 @@ import type { IndustryEvent } from '@/lib/events/types'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Industry Events Calendar | FundOpsHQ',
+  title: 'Industry Events Calendar',
   description:
     'The industry events calendar for private markets — conferences, summits, webinars, training, and networking across PE, VC, private credit, real estate, and infrastructure. Curated for GPs, LPs, and fund service providers, with verified dates.',
   openGraph: {
