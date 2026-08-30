@@ -6,9 +6,10 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 120
 
 // The Circuit — weekly events digest. Cron: Mondays (vercel.json).
-// SHIPS DARK: with CIRCUIT_ENABLED unset/false, each run emails a [PREVIEW]
-// to Danny only. Set CIRCUIT_ENABLED=true in Vercel env to send to the
-// confirmed FundOps Daily list.
+// Runs before the 2026-09-07 go-live date email a [PREVIEW] to Danny only;
+// from that Monday on it goes to the confirmed FundOps Daily list (see
+// isCircuitLive in lib/events/circuit-email.ts). CIRCUIT_ENABLED=false in
+// Vercel env forces it back to preview mode.
 //
 // Manual testing:
 //   ?preview=1  → returns the rendered HTML (no email sent)
