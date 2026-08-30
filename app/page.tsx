@@ -97,17 +97,17 @@ export default async function HomePage() {
             Density is the point: both datasets visible the moment the
             page loads, Gary's Guide-style, in the editorial skin. */}
         <div className="border-t border-foreground/10 bg-background">
-          <div className="container mx-auto max-w-[1400px] px-4 py-5">
-            <div className="grid gap-8 lg:grid-cols-12">
+          <div className="container mx-auto max-w-[1400px] px-4 py-3">
+            <div className="grid gap-5 lg:gap-6 lg:grid-cols-12">
               {/* ── Section A · The Wire ── */}
               <section id="news" className="lg:col-span-8 min-w-0 scroll-mt-16">
-                <div className="mb-3 flex items-center justify-between gap-3 border-b-2 border-foreground/15 pb-2 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-                  <span className="flex items-center gap-3">
+                <div className="mb-2 flex items-center justify-between gap-3 border-b-2 border-foreground/15 pb-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+                  <span className="flex items-center gap-3 whitespace-nowrap">
                     <span className="text-foreground/80">Section A</span>
                     <span aria-hidden="true" className="text-foreground/20">·</span>
-                    <span>The Wire — Fund News</span>
+                    <span>The Wire<span className="hidden sm:inline"> — Fund News</span></span>
                   </span>
-                  <span className="flex items-center gap-2">
+                  <span className="flex items-center gap-2 whitespace-nowrap">
                     <span className="relative flex h-1.5 w-1.5">
                       <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
                       <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
@@ -122,18 +122,18 @@ export default async function HomePage() {
 
               {/* ── Section B · The Circuit (events rail) ── */}
               <section id="events" className="lg:col-span-4 min-w-0 scroll-mt-16">
-                <div className="mb-3 flex items-center justify-between gap-3 border-b-2 border-foreground/15 pb-2 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-                  <span className="flex items-center gap-3">
+                <div className="mb-2 flex items-center justify-between gap-3 border-b-2 border-foreground/15 pb-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+                  <span className="flex items-center gap-3 whitespace-nowrap">
                     <span className="text-foreground/80">Section B</span>
                     <span aria-hidden="true" className="text-foreground/20">·</span>
-                    <span>The Circuit — Events</span>
+                    <span>The Circuit<span className="hidden sm:inline"> — Events</span></span>
                   </span>
-                  <span className="text-amber-400/90">Dates Verified</span>
+                  <span className="whitespace-nowrap text-amber-400/90">Dates Verified</span>
                 </div>
                 {upcomingEvents.length > 0 ? (
                   <>
                     <HomeEventsStrip events={upcomingEvents} rail />
-                    <p className="mt-2.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60 leading-relaxed">
+                    <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60 leading-relaxed">
                       <Link href="/events" className="text-foreground/70 hover:text-amber-400 transition-colors">
                         Filter by city, topic &amp; date →
                       </Link>

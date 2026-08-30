@@ -102,7 +102,7 @@ export function HeroSubscribe() {
         <span
           className="font-display italic font-black tracking-[-0.05em] leading-none whitespace-nowrap translate-x-16"
           style={{
-            fontSize: '180px',
+            fontSize: '110px',
             background: 'linear-gradient(180deg, oklch(0.98 0 0 / 0.07) 0%, oklch(0.98 0 0 / 0.02) 100%)',
             WebkitBackgroundClip: 'text',
             backgroundClip: 'text',
@@ -116,7 +116,7 @@ export function HeroSubscribe() {
 
       {/* Masthead bar */}
       <div className="relative z-10 border-b border-foreground/10">
-        <div className="container mx-auto flex flex-wrap items-center justify-between gap-2 px-4 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
+        <div className="container mx-auto flex flex-wrap items-center justify-between gap-2 px-4 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
           <span className="flex items-center gap-3">
             <span className="text-foreground/90">Vol. I</span>
             <span aria-hidden="true" className="text-foreground/20">
@@ -137,15 +137,15 @@ export function HeroSubscribe() {
       </div>
 
       {/* Slim hero band: headline left, inline subscribe right */}
-      <div className="relative z-10 container mx-auto max-w-[1400px] px-4 py-5 sm:py-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="relative z-10 container mx-auto max-w-[1400px] px-4 py-2.5 sm:py-3">
+        <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
             <h1
               className="font-display text-foreground"
               style={{
-                fontSize: 'clamp(24px, 3vw, 38px)',
-                lineHeight: 1.02,
-                letterSpacing: '-0.025em',
+                fontSize: 'clamp(17px, 1.9vw, 26px)',
+                lineHeight: 1.05,
+                letterSpacing: '-0.02em',
                 fontWeight: 500,
                 fontVariationSettings: '"opsz" 144',
               }}
@@ -162,7 +162,7 @@ export function HeroSubscribe() {
                 a morning newsletter.
               </span>
             </h1>
-            <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/60">
+            <p className="mt-0.5 hidden sm:block font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/60">
               200+ sources · Hourly news · Verified events calendar ·{' '}
               <span className="text-foreground/60">Edited by Danny Bloomstine</span>
             </p>
@@ -176,7 +176,7 @@ export function HeroSubscribe() {
                 <span className="text-sm text-emerald-300">Subscribed — first edition lands tomorrow morning.</span>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex w-full items-stretch gap-2 lg:w-[440px]">
+              <form onSubmit={handleSubmit} className="flex w-full items-stretch gap-2 lg:w-[400px]">
                 <div className="relative flex-1">
                   <Mail className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/50" />
                   <input
@@ -188,13 +188,13 @@ export function HeroSubscribe() {
                     placeholder="name@email.com"
                     required
                     aria-label="Email address"
-                    className="h-10 w-full rounded-sm border-2 border-foreground/15 bg-background/70 px-3 pl-9 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-foreground/50 focus:outline-none"
+                    className="h-9 w-full rounded-sm border-2 border-foreground/15 bg-background/70 px-3 pl-9 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-foreground/50 focus:outline-none"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={status === 'loading'}
-                  className="group inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-sm bg-foreground px-4 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-background transition-all hover:bg-amber-400 disabled:opacity-50"
+                  className="group inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-sm bg-foreground px-4 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-background transition-all hover:bg-amber-400 disabled:opacity-50"
                 >
                   {status === 'loading' ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
@@ -207,9 +207,9 @@ export function HeroSubscribe() {
                 </button>
               </form>
             )}
-            {status === 'error' && <p className="mt-1.5 text-xs text-red-400">{errorMsg}</p>}
+            {status === 'error' && <p className="mt-1 text-xs text-red-400">{errorMsg}</p>}
             {status !== 'success' && (
-              <p className="mt-1.5 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/50">
+              <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/50">
                 FundOps Daily · every morning before the open · free
               </p>
             )}

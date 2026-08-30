@@ -6,11 +6,10 @@ import { cn } from '@/lib/utils'
 import {
   EVENT_KIND_LABELS,
   COST_LABELS,
-  EVENT_FORMAT_LABELS,
+  compactTimeNote,
   formatEventDates,
   formatEventLocation,
 } from '@/lib/events/constants'
-import { CATEGORY_LABELS } from '@/lib/news/constants'
 import type { IndustryEvent } from '@/lib/events/types'
 
 export function EventRow({ event }: { event: IndustryEvent }) {
@@ -18,10 +17,11 @@ export function EventRow({ event }: { event: IndustryEvent }) {
   const cost = COST_LABELS[event.costType] ?? COST_LABELS.paid
   const location = formatEventLocation(event)
   const dates = formatEventDates(event.startDate, event.endDate)
+  const time = compactTimeNote(event.timeNote)
 
-  // Free events show "Free" in green; paid ones show the price note when we
-  // have one (truncated), else the cost-type label.
-  const costText = event.costType === 'free' ? 'Free' : event.priceNote || cost.label
+  // Free events show "Free" in green; paid ones show the cost-type label.
+  // Price notes live on the detail page — the row carries main info only.
+  const costText = event.costType === 'free' ? 'Free' : cost.label
 
   // Row click → our detail page; the external icon jumps straight to the
   // organizer (with a count-only click beacon).
@@ -38,58 +38,44 @@ export function EventRow({ event }: { event: IndustryEvent }) {
       href={`/events/${event.slug}`}
       className="group block border-b border-border/40 transition-colors hover:bg-accent/40 last:border-b-0"
     >
-      {/* ── Desktop row ─────────────────────────────────────── */}
-      <div className="hidden lg:grid items-center gap-x-2 px-4 py-2.5 grid-cols-[130px_96px_1fr_200px_120px]">
-        {/* Date */}
-        <div className="font-mono text-[12px] tabular-nums text-foreground/90 whitespace-nowrap">
+      {/* ── Desktop: single line ────────────────────────────── */}
+      <div className="hidden lg:grid items-center gap-x-2 px-4 py-1.5 grid-cols-[148px_72px_1fr_170px_88px]">
+        {/* Date · time */}
+        <div className="font-mono text-[12px] tabular-nums text-foreground/90 truncate">
           {dates}
-          {event.timeNote && (
-            <div className="text-[10px] text-muted-foreground/70">{event.timeNote}</div>
+          {time && <span className="text-[10px] text-muted-foreground/70"> · {time}</span>}
+        </div>
+
+        {/* Kind — quiet mono text, no pill */}
+        <div className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground/60 truncate">
+          {kind.label}
+        </div>
+
+        {/* Name — organizer */}
+        <div className="flex items-center gap-1.5 min-w-0 pr-2">
+          {event.isFeatured && (
+            <Star className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400" aria-label="Featured" />
           )}
-        </div>
-
-        {/* Kind pill */}
-        <div>
-          <span className={cn('inline-flex rounded-full border px-2 py-0.5 text-[10px] font-medium whitespace-nowrap', kind.color)}>
-            {kind.label}
-          </span>
-        </div>
-
-        {/* Name + organizer */}
-        <div className="min-w-0 pr-2">
-          <div className="flex items-center gap-1.5 min-w-0">
-            {event.isFeatured && (
-              <Star className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400" aria-label="Featured" />
-            )}
-            <span className="truncate text-[13px] font-medium text-foreground group-hover:text-amber-400 transition-colors">
+          <span className="truncate text-[13px] leading-snug">
+            <span className="font-semibold text-foreground group-hover:text-amber-400 transition-colors">
               {event.name}
             </span>
-            {/* button, not <a> — anchors can't nest inside the row's Link */}
-            <button
-              type="button"
-              aria-label={`${event.name} — organizer site`}
-              onClick={(e) => {
-                e.preventDefault()
-                e.stopPropagation()
-                beacon()
-                window.open(event.eventUrl, '_blank', 'noopener,noreferrer')
-              }}
-              className="shrink-0 text-muted-foreground/0 group-hover:text-muted-foreground/60 hover:!text-amber-400 transition-colors"
-            >
-              <ExternalLink className="h-3 w-3" />
-            </button>
-          </div>
-          <div className="flex items-center gap-1.5 truncate text-[11px] text-muted-foreground">
-            <span className="truncate">{event.organizerName}</span>
-            {event.fundCategories.slice(0, 3).map((cat) => (
-              <span
-                key={cat}
-                className={cn('rounded px-1 py-px text-[9px] font-medium shrink-0', CATEGORY_LABELS[cat]?.color ?? 'bg-muted text-muted-foreground')}
-              >
-                {CATEGORY_LABELS[cat]?.label ?? cat}
-              </span>
-            ))}
-          </div>
+            <span className="text-[11px] text-muted-foreground"> — {event.organizerName}</span>
+          </span>
+          {/* button, not <a> — anchors can't nest inside the row's Link */}
+          <button
+            type="button"
+            aria-label={`${event.name} — organizer site`}
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              beacon()
+              window.open(event.eventUrl, '_blank', 'noopener,noreferrer')
+            }}
+            className="shrink-0 text-muted-foreground/0 group-hover:text-muted-foreground/60 hover:!text-amber-400 transition-colors"
+          >
+            <ExternalLink className="h-3 w-3" />
+          </button>
         </div>
 
         {/* Location */}
@@ -106,32 +92,24 @@ export function EventRow({ event }: { event: IndustryEvent }) {
         </div>
       </div>
 
-      {/* ── Mobile card ─────────────────────────────────────── */}
-      <div className="lg:hidden px-4 py-3 space-y-1.5">
-        <div className="flex items-center justify-between gap-2">
-          <span className="font-mono text-[11px] tabular-nums text-foreground/90">
+      {/* ── Mobile: two lines ───────────────────────────────── */}
+      <div className="lg:hidden px-3 py-2">
+        <div className="flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-wide text-muted-foreground/70">
+          <span className="tabular-nums text-foreground/80 truncate">
             {dates}
-            {event.timeNote ? ` · ${event.timeNote}` : ''}
+            {time ? ` · ${time}` : ''}
+            <span className="text-muted-foreground/60"> · {kind.label}</span>
           </span>
-          <span className={cn('inline-flex rounded-full border px-2 py-0.5 text-[10px] font-medium', kind.color)}>
-            {kind.label}
-          </span>
-        </div>
-        <div className="flex items-start gap-1.5">
-          {event.isFeatured && (
-            <Star className="mt-0.5 h-3 w-3 shrink-0 fill-amber-400 text-amber-400" aria-label="Featured" />
-          )}
-          <span className="text-[14px] font-medium leading-snug text-foreground">{event.name}</span>
-        </div>
-        <div className="text-[11px] text-muted-foreground">{event.organizerName}</div>
-        <div className="flex items-center justify-between gap-2 text-[11px]">
-          <span className="truncate text-muted-foreground">
-            {location}
-            {event.eventFormat === 'hybrid' && ` · ${EVENT_FORMAT_LABELS[event.eventFormat]}`}
-          </span>
-          <span className={cn('font-medium shrink-0', event.costType === 'free' ? 'text-emerald-400' : cost.color)}>
+          <span className={cn('shrink-0 font-semibold', event.costType === 'free' ? 'text-emerald-400' : '')}>
             {costText}
           </span>
+        </div>
+        <div className="mt-0.5 text-[13px] leading-snug">
+          {event.isFeatured && (
+            <Star className="mr-1 inline h-3 w-3 fill-amber-400 text-amber-400" aria-label="Featured" />
+          )}
+          <span className="font-semibold text-foreground">{event.name}</span>
+          <span className="text-[11px] text-muted-foreground"> — {event.organizerName} · {location}</span>
         </div>
       </div>
     </Link>

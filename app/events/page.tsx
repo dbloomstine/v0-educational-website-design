@@ -116,42 +116,33 @@ export default async function EventsPage() {
             </div>
           </div>
 
-          <div className="container mx-auto max-w-[1400px] px-4 py-10 sm:py-14">
-            <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-end">
-              <div className="lg:col-span-8">
-                <h1
-                  className="font-display text-foreground"
-                  style={{
-                    fontSize: 'clamp(36px, 5vw, 64px)',
-                    lineHeight: 0.95,
-                    letterSpacing: '-0.03em',
-                    fontWeight: 500,
-                    fontVariationSettings: '"opsz" 144',
-                  }}
+          <div className="container mx-auto max-w-[1400px] px-4 py-3 sm:py-4">
+            {/* Compact header — one line, the board is the pitch */}
+            <div className="mb-2.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5">
+              <h1
+                className="font-display text-foreground"
+                style={{
+                  fontSize: 'clamp(19px, 2.2vw, 26px)',
+                  lineHeight: 1.05,
+                  letterSpacing: '-0.02em',
+                  fontWeight: 500,
+                  fontVariationSettings: '"opsz" 144',
+                }}
+              >
+                The industry events calendar
+                <span
+                  className="italic"
+                  style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
                 >
-                  The industry calendar,
-                  <br />
-                  <span
-                    className="italic"
-                    style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
-                  >
-                    curated for fund ops.
-                  </span>
-                </h1>
-              </div>
-              <div className="lg:col-span-4">
-                <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground/60 leading-relaxed">
-                  Conferences · Summits · Forums<br />
-                  Webinars · Training · Networking<br />
-                  <span className="text-foreground/70">Every date verified at the source.</span>
-                </p>
-                <Link
-                  href="/events/submit"
-                  className="mt-4 inline-flex items-center gap-2 rounded-sm border border-amber-400/50 bg-amber-400/10 px-4 py-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-amber-300 transition-colors hover:bg-amber-400/20 hover:border-amber-400"
-                >
-                  Submit an event — free
-                </Link>
-              </div>
+                  {' '}— dates verified at the source.
+                </span>
+              </h1>
+              <Link
+                href="/events/submit"
+                className="inline-flex items-center gap-2 rounded-sm border border-amber-400/50 bg-amber-400/10 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-amber-300 transition-colors hover:bg-amber-400/20 hover:border-amber-400"
+              >
+                Submit an event — free
+              </Link>
             </div>
 
             <Suspense fallback={<EventsBoardSkeleton />}>
@@ -159,11 +150,11 @@ export default async function EventsPage() {
             </Suspense>
 
             {/* Browse collections — internal-link surface for the landing pages */}
-            <div className="mt-12 border-t border-foreground/10 pt-6">
+            <div className="mt-8 border-t border-foreground/10 pt-4">
               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
                 Browse
               </span>
-              <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
+              <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5">
                 {EVENT_COLLECTIONS.map((c) => (
                   <Link
                     key={c.slug}

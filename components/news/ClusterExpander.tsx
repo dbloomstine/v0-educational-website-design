@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronRight, Newspaper } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { ArticleRow } from './ArticleRow'
 import type { NewsArticle } from '@/lib/news/types'
@@ -28,18 +28,17 @@ export function ClusterExpander({ relatedArticles, clusterSize, dateRange }: Clu
       <button
         onClick={() => setExpanded(!expanded)}
         className={cn(
-          'w-full flex items-center gap-2 px-4 py-1.5 text-[11px] hover:bg-muted/30 transition-colors border-b border-border/50',
+          'w-full flex items-center gap-1.5 px-4 py-1 text-[10px] hover:bg-muted/30 transition-colors border-b border-border/50',
           expanded ? 'bg-muted/20 text-muted-foreground' : 'text-muted-foreground/50'
         )}
       >
         <ChevronRight
           className={cn('h-3 w-3 transition-transform shrink-0', expanded && 'rotate-90')}
         />
-        <Newspaper className="h-3 w-3 shrink-0 opacity-50" />
-        <span>
+        <span className="truncate">
           <span className="font-medium">{relatedArticles.length} more {relatedArticles.length === 1 ? 'source' : 'sources'}</span>
           {sources.length > 0 && (
-            <span className="opacity-60">
+            <span className="opacity-60 hidden sm:inline">
               {' '}— {sources.join(', ')}{extraCount > 0 ? `, +${extraCount}` : ''}
             </span>
           )}
