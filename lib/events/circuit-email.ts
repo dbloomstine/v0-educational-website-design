@@ -7,8 +7,8 @@ import type { IndustryEvent } from './types'
 // CLAUDE.md: every <a> carries an inline color + text-decoration, sizes stay
 // far under the ~102KB Gmail clip line (this email is a fraction of it).
 //
-// SHIPS DARK: send mode is gated by CIRCUIT_ENABLED in the route. Until
-// Danny flips it, each weekly cron delivers a [PREVIEW] to his inbox only.
+// Send mode is gated by isCircuitLive() below: previews to Danny until the
+// go-live date (2026-09-07), the confirmed list after it.
 
 interface CircuitContent {
   thisWeek: IndustryEvent[]
@@ -192,6 +192,22 @@ export function renderCircuitEmail(content: CircuitContent, unsubscribeUrl: stri
 </html>`
 }
 
+/**
+ * The first Monday The Circuit is allowed to reach the subscriber list.
+ *
+ * Danny green-lit the list send on 2026-08-30 "starting a week from now", so
+ * the runs before this date stay previews to him and the Sep 7 cron is the
+ * first real one — no flag to remember flipping. Setting CIRCUIT_ENABLED=false
+ * in Vercel env is the kill switch if it needs to stop.
+ */
+const CIRCUIT_GO_LIVE_DATE = '2026-09-07'
+
+function isCircuitLive(): boolean {
+  if (process.env.CIRCUIT_ENABLED === 'false') return false
+  if (process.env.CIRCUIT_ENABLED === 'true') return true
+  return new Date().toISOString().split('T')[0] >= CIRCUIT_GO_LIVE_DATE
+}
+
 export async function sendCircuitEmail(resendApiKey: string): Promise<{
   ok: boolean
   mode: 'preview' | 'list'
@@ -202,12 +218,12 @@ export async function sendCircuitEmail(resendApiKey: string): Promise<{
   const supabase = getSupabaseAdmin()
   const content = await queryCircuitContent()
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
-  const enabled = process.env.CIRCUIT_ENABLED === 'true'
+  const enabled = isCircuitLive()
   const subject = `The Circuit — ${content.thisWeek.length} events this week, ${content.nextWeek.length} next`
   const errors: string[] = []
 
   if (!enabled) {
-    // Ships dark: preview to Danny only, every week, until he flips the flag.
+    // Pre-go-live (or killed): preview to Danny only.
     const html = renderCircuitEmail(content, 'https://fundopshq.com/events')
     const res = await fetch('https://api.resend.com/emails', {
       method: 'POST',
