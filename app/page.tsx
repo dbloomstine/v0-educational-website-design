@@ -71,7 +71,7 @@ export default async function HomePage() {
   // Section B strip — the page must render even if the DB hiccups
   let upcomingEvents: IndustryEvent[] = []
   try {
-    const feed = await queryEventFeed({ when: '30d', limit: 10 })
+    const feed = await queryEventFeed({ when: '60d', limit: 14 })
     upcomingEvents = feed.events
   } catch {
     // strip hides itself when empty
@@ -90,125 +90,65 @@ export default async function HomePage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* ─── Hero: subscribe CTA over massive wordmark ─── */}
+        {/* ─── Compact hub hero (slim band + inline subscribe) ─── */}
         <HeroSubscribe />
 
-        {/* ─── News Feed ─── */}
-        <section id="news" className="relative border-t-2 border-foreground/15 bg-background">
-          {/* Editorial section masthead */}
-          <div className="border-b border-foreground/10">
-            <div className="container mx-auto max-w-[1400px] px-4">
-              <div className="flex items-center justify-between gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-                <span className="flex items-center gap-3">
-                  <span className="text-foreground/80">Section A</span>
-                  <span aria-hidden="true" className="text-foreground/20">·</span>
-                  <span>The Wire</span>
-                </span>
-                <span className="flex items-center gap-2">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+        {/* ─── The hub: Wire (news) + Circuit (events) side by side ───
+            Density is the point: both datasets visible the moment the
+            page loads, Gary's Guide-style, in the editorial skin. */}
+        <div className="border-t border-foreground/10 bg-background">
+          <div className="container mx-auto max-w-[1400px] px-4 py-5">
+            <div className="grid gap-8 lg:grid-cols-12">
+              {/* ── Section A · The Wire ── */}
+              <section id="news" className="lg:col-span-8 min-w-0 scroll-mt-16">
+                <div className="mb-3 flex items-center justify-between gap-3 border-b-2 border-foreground/15 pb-2 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+                  <span className="flex items-center gap-3">
+                    <span className="text-foreground/80">Section A</span>
+                    <span aria-hidden="true" className="text-foreground/20">·</span>
+                    <span>The Wire — Fund News</span>
                   </span>
-                  <span className="text-emerald-400/90">Updating Live</span>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="container mx-auto max-w-[1400px] px-4 py-10 sm:py-14">
-            <div className="mb-8 grid gap-6 lg:grid-cols-12 lg:items-end">
-              <div className="lg:col-span-8">
-                <h2
-                  className="font-display text-foreground"
-                  style={{
-                    fontSize: 'clamp(36px, 5vw, 64px)',
-                    lineHeight: 0.95,
-                    letterSpacing: '-0.03em',
-                    fontWeight: 500,
-                    fontVariationSettings: '"opsz" 144',
-                  }}
-                >
-                  Fund operations news,
-                  <br />
-                  <span
-                    className="italic"
-                    style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
-                  >
-                    in real time.
+                  <span className="flex items-center gap-2">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    </span>
+                    <span className="text-emerald-400/90">Live · 200+ sources</span>
                   </span>
-                </h2>
-              </div>
-              <div className="lg:col-span-4">
-                <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground/60 leading-relaxed">
-                  Fund launches · Capital raises<br />
-                  Exec moves · M&amp;A · Reg actions<br />
-                  <span className="text-foreground/70">Sourced from 200+ publications.</span>
-                </p>
-              </div>
-            </div>
+                </div>
+                <Suspense fallback={<NewsFeedSkeleton />}>
+                  <NewsFeed />
+                </Suspense>
+              </section>
 
-            <Suspense fallback={<NewsFeedSkeleton />}>
-              <NewsFeed />
-            </Suspense>
-          </div>
-        </section>
-
-        {/* ─── Events: Section B · The Circuit ─── */}
-        {upcomingEvents.length > 0 && (
-          <section id="events" className="relative border-t-2 border-foreground/15 bg-background">
-            {/* Editorial section masthead */}
-            <div className="border-b border-foreground/10">
-              <div className="container mx-auto max-w-[1400px] px-4">
-                <div className="flex items-center justify-between gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+              {/* ── Section B · The Circuit (events rail) ── */}
+              <section id="events" className="lg:col-span-4 min-w-0 scroll-mt-16">
+                <div className="mb-3 flex items-center justify-between gap-3 border-b-2 border-foreground/15 pb-2 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
                   <span className="flex items-center gap-3">
                     <span className="text-foreground/80">Section B</span>
                     <span aria-hidden="true" className="text-foreground/20">·</span>
-                    <span>The Circuit</span>
+                    <span>The Circuit — Events</span>
                   </span>
-                  <span className="flex items-center gap-2">
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-400" />
-                    <span className="text-amber-400/90">Updated Weekly</span>
-                  </span>
+                  <span className="text-amber-400/90">Dates Verified</span>
                 </div>
-              </div>
-            </div>
-
-            <div className="container mx-auto max-w-[1400px] px-4 py-10 sm:py-12">
-              <div className="mb-6 grid gap-6 lg:grid-cols-12 lg:items-end">
-                <div className="lg:col-span-8">
-                  <h2
-                    className="font-display text-foreground"
-                    style={{
-                      fontSize: 'clamp(30px, 4vw, 48px)',
-                      lineHeight: 0.95,
-                      letterSpacing: '-0.03em',
-                      fontWeight: 500,
-                      fontVariationSettings: '"opsz" 144',
-                    }}
-                  >
-                    Industry events,
-                    <span
-                      className="italic"
-                      style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
-                    >
-                      {' '}dates verified.
-                    </span>
-                  </h2>
-                </div>
-                <div className="lg:col-span-4">
-                  <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground/60 leading-relaxed">
-                    Conferences · Webinars · Networking<br />
-                    <Link href="/events" className="text-foreground/70 hover:text-amber-400 transition-colors">
-                      Filter by city, topic &amp; date →
-                    </Link>
+                {upcomingEvents.length > 0 ? (
+                  <>
+                    <HomeEventsStrip events={upcomingEvents} rail />
+                    <p className="mt-2.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60 leading-relaxed">
+                      <Link href="/events" className="text-foreground/70 hover:text-amber-400 transition-colors">
+                        Filter by city, topic &amp; date →
+                      </Link>
+                    </p>
+                  </>
+                ) : (
+                  <p className="rounded-lg border border-border bg-card px-4 py-6 text-sm text-muted-foreground">
+                    The events calendar is at{' '}
+                    <Link href="/events" className="text-amber-400 hover:text-amber-300">fundopshq.com/events</Link>.
                   </p>
-                </div>
-              </div>
-
-              <HomeEventsStrip events={upcomingEvents} />
+                )}
+              </section>
             </div>
-          </section>
-        )}
+          </div>
+        </div>
       </main>
 
       <SiteFooter />
