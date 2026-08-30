@@ -17,7 +17,7 @@
  */
 
 import type { ArticleGroup } from './query-articles'
-import { formatFundSize, isLikelyAumLeak } from './query-articles'
+import { isLikelyAumLeak } from './query-articles'
 import { firmLabelFor } from '@/lib/news/constants'
 import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponsors'
 
@@ -111,13 +111,6 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
   font-weight: 700;
   font-family: ${FONT_SERIF};
   line-height: 1.3;
-}
-.fops-size {
-  color: ${INK};
-  font-size: 11px;
-  font-family: ${FONT_MONO};
-  font-weight: 700;
-  padding-left: 6px;
 }
 .fops-blurb {
   color: ${INK_MUTED};
@@ -373,17 +366,12 @@ function truncateBlurb(text: string, max = 150): string {
 // ─── Single story row ──────────────────────────────────────────────────────
 
 function renderArticle(article: ArticleGroup['articles'][0]): string {
-  // Suppress size on likely AUM leaks (e.g. 4/18 "Nest $81B" where
-  // classifier put £60bn firm AUM into fund_size_usd_millions on an
-  // unnamed private-credit mandate). Same rail as buildSubject.
-  const size = isLikelyAumLeak(article.fundSizeUsdMillions, article.fundName)
-    ? ''
-    : formatFundSize(article.fundSizeUsdMillions)
-
+  // Fund size was removed from the row on 2026-08-30 (Danny: "I don't like
+  // the dollar amounts... I just like the headline more"). The figure is
+  // almost always in the headline or the blurb already; it still drives the
+  // subject line, which is where isLikelyAumLeak is now applied.
   const identity = renderMetaIdentity(article)
-  const sizeHtml = size ? `<span class="fops-size">${escapeHtml(size)}</span>` : ''
-  const metaLine =
-    identity || sizeHtml ? `<div class="fops-m">${identity}${sizeHtml}</div>` : ''
+  const metaLine = identity ? `<div class="fops-m">${identity}</div>` : ''
 
   const extraSources = article.alsoCoveredBy?.length
     ? ` +${article.alsoCoveredBy.length}`
