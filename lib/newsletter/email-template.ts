@@ -108,10 +108,10 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 .fops-title {
   color: ${INK};
   text-decoration: none;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   font-family: ${FONT_SERIF};
-  line-height: 1.35;
+  line-height: 1.3;
 }
 .fops-size {
   color: ${INK};
@@ -123,7 +123,7 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 .fops-blurb {
   color: ${INK_MUTED};
   font-size: 12px;
-  line-height: 1.5;
+  line-height: 1.45;
   font-family: ${FONT_SANS};
   margin: 2px 0 0;
 }
@@ -228,10 +228,10 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 
 /* Sponsor card chrome */
 .fops-sponsor-blurb {
-  margin: 0 0 12px;
+  margin: 0 0 8px;
   color: ${INK};
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 12px;
+  line-height: 1.5;
   font-family: ${FONT_SANS};
 }
 .fops-sponsor-blurb-lg {
@@ -485,13 +485,13 @@ function renderSponsorMark(sponsor: Sponsor, logoHeightPx: number): string {
 }
 
 function renderSponsorCardTop(sponsor: Sponsor, isFirst: boolean): string {
-  const mark = renderSponsorMark(sponsor, 18)
-  const padTopBottom = isFirst ? '6px 0 14px' : '14px 0'
+  const mark = renderSponsorMark(sponsor, 15)
+  const padTopBottom = isFirst ? '2px 0 8px' : '8px 0'
   const borderTop = isFirst ? '' : `border-top:1px solid ${HAIRLINE};`
   return `
     <div style="padding:${padTopBottom};${borderTop}">
-      <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;margin:0 0 10px;">${mark}</a>
-      <p class="fops-sponsor-blurb" style="margin:0 0 8px;">${escapeHtml(sponsor.blurb)}</p>
+      <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;margin:0 0 6px;">${mark}</a>
+      <p class="fops-sponsor-blurb" style="margin:0 0 6px;">${escapeHtml(sponsor.blurb)}</p>
       ${sponsor.ctaText ? `<a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-outline" style="color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a>` : ''}
     </div>`
 }
@@ -515,7 +515,7 @@ function renderSponsorTop(slate: SponsorSlate): string {
     .join('')
   return `
     <tr>
-      <td class="fops-bg-cream fops-px" style="padding:20px 16px 18px;background-color:${CREAM};border-bottom:1px solid ${HAIRLINE};">
+      <td class="fops-bg-cream fops-px" style="padding:14px 16px 12px;background-color:${CREAM};border-bottom:1px solid ${HAIRLINE};">
         <div class="fops-eyebrow" style="margin-bottom:6px;">${escapeHtml(slate.label)}</div>
         ${cards}
       </td>
@@ -669,7 +669,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
               <!-- Top eyebrow strip -->
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
-                  <td class="fops-px" style="padding:14px 16px 12px;border-bottom:1px solid ${HAIRLINE_DARK};">
+                  <td class="fops-px" style="padding:10px 16px 8px;border-bottom:1px solid ${HAIRLINE_DARK};">
                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                       <tr>
                         <td class="fops-eyebrow-light">
@@ -689,7 +689,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
               <!-- Wordmark row -->
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
-                  <td class="fops-px" style="padding:26px 16px 24px;text-align:left;">
+                  <td class="fops-px" style="padding:16px 16px 12px;text-align:left;">
                     <span class="fops-serif fops-cream" style="font-size:36px;font-weight:700;letter-spacing:-0.5px;line-height:1;">FundOps</span><span class="fops-serif fops-amber" style="font-size:36px;font-weight:700;font-style:italic;letter-spacing:-0.5px;line-height:1;">Daily</span>
                   </td>
                 </tr>
@@ -698,7 +698,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
               <!-- Bottom eyebrow strip -->
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
-                  <td class="fops-px" style="padding:14px 16px;border-top:1px solid ${HAIRLINE_DARK};">
+                  <td class="fops-px" style="padding:10px 16px;border-top:1px solid ${HAIRLINE_DARK};">
                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                       <tr>
                         <td class="fops-eyebrow-light" style="letter-spacing:2.5px;">
