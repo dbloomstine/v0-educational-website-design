@@ -3,7 +3,7 @@ import { formatEventDates, formatEventLocation } from './constants'
 import type { IndustryEvent } from './types'
 
 // "The Circuit" — weekly events digest. Sections: This Week, Next Week,
-// Fresh on the Board. Rendered per the newsletter template rules in
+// Just Announced. Rendered per the newsletter template rules in
 // CLAUDE.md: every <a> carries an inline color + text-decoration, sizes stay
 // far under the ~102KB Gmail clip line (this email is a fraction of it).
 //
@@ -68,7 +68,7 @@ export async function queryCircuitContent(): Promise<CircuitContent> {
   const [thisWeekRes, nextWeekRes, freshRes, countRes] = await Promise.all([
     base().gte('start_date', today).lte('start_date', plus(7)).limit(30),
     base().gt('start_date', plus(7)).lte('start_date', plus(14)).limit(30),
-    // "Fresh" = added in the last week but happening beyond the two-week
+    // "Just Announced" = added in the last week but happening beyond the two-week
     // window (near-term adds already show in the sections above)
     supabase
       .from('industry_events')
@@ -173,7 +173,7 @@ export function renderCircuitEmail(content: CircuitContent, unsubscribeUrl: stri
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
     ${section('THIS WEEK', content.thisWeek)}
     ${section('NEXT WEEK', content.nextWeek)}
-    ${section('FRESH ON THE BOARD', content.freshAdds)}
+    ${section('JUST ANNOUNCED', content.freshAdds)}
   </table>
   <div style="margin-top:14px;padding:8px 10px;border:1px solid #999999;font-size:12px;line-height:1.45;color:${TEXT};">
     <b>Hosting an event?</b> Listings are free and dates get verified before publishing —
