@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { ExternalLink, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -13,134 +13,10 @@ import {
   formatRelativeDate,
 } from '@/lib/news/constants'
 import type { NewsArticle } from '@/lib/news/types'
-import {
-  getLogoCandidates,
-  resolveLogoDomain,
-  resolveFirmLogoDomain,
-} from '@/lib/news/firm-logo-url'
-import { getFirmDomain } from '@/lib/news/firm-logos'
+import { FirmLogo } from './FirmLogo'
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   EUR: '€', GBP: '£', JPY: '¥', CHF: 'CHF ', CNY: '¥', KRW: '₩', AUD: 'A$', CAD: 'C$',
-}
-
-// ─── Firm Logo ───────────────────────────────────────────────────────────────
-
-const LOGO_COLORS = [
-  'bg-blue-900/60 text-blue-300',
-  'bg-emerald-900/60 text-emerald-300',
-  'bg-violet-900/60 text-violet-300',
-  'bg-amber-900/60 text-amber-300',
-  'bg-rose-900/60 text-rose-300',
-  'bg-cyan-900/60 text-cyan-300',
-  'bg-indigo-900/60 text-indigo-300',
-  'bg-orange-900/60 text-orange-300',
-]
-
-function getInitialColor(name: string): string {
-  let hash = 0
-  for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash)
-  return LOGO_COLORS[Math.abs(hash) % LOGO_COLORS.length]
-}
-
-function FirmLogo({
-  domain,
-  firmName,
-  sourceName,
-  size = 20,
-}: {
-  domain: string | null
-  firmName: string | null
-  sourceName?: string | null
-  size?: number
-}) {
-  // When a firm is named, the icon must come from that firm — falling
-  // through to the publication's domain paired the outlet's favicon with
-  // the firm's name (the "Siri with Nikkei's logo" bug). With no firm at
-  // all, the source favicon is honest (the initial fallback labels it).
-  const resolvedDomain = firmName
-    ? resolveFirmLogoDomain(firmName, domain)
-    : resolveLogoDomain(firmName, domain, sourceName ?? null)
-  const candidates = useMemo(
-    () => (resolvedDomain ? getLogoCandidates(resolvedDomain) : []),
-    [resolvedDomain],
-  )
-
-  // Walk the candidate list on each img load failure. Reset when the
-  // resolved domain changes so a re-render with different props starts
-  // over from the primary source.
-  const [candidateIdx, setCandidateIdx] = useState(0)
-  useEffect(() => {
-    setCandidateIdx(0)
-  }, [resolvedDomain])
-
-  const currentUrl = candidates[candidateIdx]
-
-  if (currentUrl) {
-    return (
-      <img
-        key={resolvedDomain ?? ''}
-        src={currentUrl}
-        alt={firmName || ''}
-        loading="lazy"
-        className="rounded-full object-contain bg-white shrink-0 ring-1 ring-black/5"
-        style={{ width: size, height: size }}
-        onError={() => setCandidateIdx((i) => i + 1)}
-      />
-    )
-  }
-
-  // Final fallback: letter initial from firmName, or sourceName if no firm.
-  // Font size scales with the container so the initial looks right whether
-  // the row renders at 20px, 24px, or 28px.
-  const displayName = firmName || sourceName || '?'
-  const initial = displayName[0].toUpperCase()
-  return (
-    <div
-      className={cn(
-        'rounded-full flex items-center justify-center font-bold shrink-0 ring-1 ring-white/5',
-        getInitialColor(displayName),
-      )}
-      style={{
-        width: size,
-        height: size,
-        fontSize: Math.max(9, Math.round(size * 0.46)),
-        lineHeight: 1,
-      }}
-      role="img"
-      aria-label={displayName}
-    >
-      {initial}
-    </div>
-  )
-}
-
-/**
- * Extra favicons for co-firms (M&A counterparties, co-managers). Curated
- * FIRM_DOMAIN_MAP only — a co-firm without a mapped domain renders no icon
- * rather than a guessed (often wrong) one. Broken images hide themselves.
- */
-function CoFirmLogos({ coFirms, size = 16 }: { coFirms: string[]; size?: number }) {
-  const entries = coFirms
-    .map((name) => ({ name, domain: getFirmDomain(name) }))
-    .filter((e): e is { name: string; domain: string } => !!e.domain)
-  if (entries.length === 0) return null
-  return (
-    <>
-      {entries.map((e) => (
-        <img
-          key={e.domain}
-          src={getLogoCandidates(e.domain)[0]}
-          alt={e.name}
-          title={e.name}
-          loading="lazy"
-          className="rounded-full object-contain bg-white shrink-0 ring-1 ring-black/5 -ml-1"
-          style={{ width: size, height: size }}
-          onError={(ev) => { (ev.target as HTMLImageElement).style.display = 'none' }}
-        />
-      ))}
-    </>
-  )
 }
 
 // ─── Article Row ─────────────────────────────────────────────────────────────
@@ -163,6 +39,16 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
   const sizeTooltip = isConverted && article.originalAmountMillions && article.originalCurrency
     ? `Converted from ${CURRENCY_SYMBOLS[article.originalCurrency] ?? article.originalCurrency}${article.originalAmountMillions >= 1000 ? `${(article.originalAmountMillions / 1000).toFixed(1)}B` : `${article.originalAmountMillions.toFixed(0)}M`}`
     : isConverted ? 'Converted to USD' : undefined
+
+  // Classification that used to occupy two dedicated columns, condensed to a
+  // single trailing token: "CLOSE · PE · $865M". Empty when we know nothing.
+  const metaTrail = [
+    eventLabel?.short,
+    article.fundCategories.slice(0, 1).map((c) => CATEGORY_LABELS[c]?.label || c).join(''),
+    displaySize ?? undefined,
+  ]
+    .filter(Boolean)
+    .join(' · ')
 
   // Desktop hover card state
   const [visible, setVisible] = useState(false)
@@ -223,73 +109,54 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
   return (
     <>
       {/* ─── Desktop: Grid row (lg and up) ─── */}
-      {/* Event/category pills removed 2026-08-15 (reader feedback: pills
-          distracting). Classification renders as quiet mono text; the full
-          labels live on in the hover card. */}
+      {/* Headline-first (2026-08-30, Danny: "make it all more about the
+          headlines"). The old Type and Size columns were reserving ~170px of
+          every row for two mostly-empty cells — classification now trails the
+          headline as quiet mono text, and the whole row is the hover-card
+          trigger so the "Details" pill costs nothing either. */}
       <div
+        onMouseEnter={handleRowEnter}
+        onMouseMove={handleRowMove}
+        onMouseLeave={handleRowLeave}
         className={cn(
-          'hidden lg:grid group items-center gap-x-2 px-4 py-1.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[96px_72px_1fr_auto_56px_150px]'
+          'hidden lg:grid group items-center gap-x-3 px-4 py-1.5 border-b border-border/40 hover:bg-accent/30 transition-colors grid-cols-[1fr_52px_128px]'
         )}
       >
-        {/* Col 1: Type · Category (muted text) */}
-        <span className="text-[10px] font-mono uppercase tracking-wide text-muted-foreground/60 truncate">
-          {[eventLabel?.short, article.fundCategories.slice(0, 1).map((c) => CATEGORY_LABELS[c]?.label || c).join('')]
-            .filter(Boolean)
-            .join(' · ')}
-        </span>
-
-        {/* Col 2: Fund size */}
-        <span className="text-[11px] font-mono font-medium text-muted-foreground whitespace-nowrap" title={sizeTooltip}>
-          {displaySize || ''}
-        </span>
-
-        {/* Col 3: Logo(s) + Firm + Headline */}
-        <div className="flex items-center gap-1.5 min-w-0">
-          <div className="flex items-center shrink-0">
-            <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} />
-            <CoFirmLogos coFirms={article.coFirms} />
-          </div>
-          {article.firmName && (
-            <span className="shrink-0 max-w-[140px] text-[11px] font-semibold text-muted-foreground truncate leading-none">
-              {article.firmName}
-              {article.coFirms.length > 0 && (
-                <span className="font-normal text-muted-foreground/60"> + {article.coFirms.length}</span>
-              )}
+        {/* Col 1: Logo + headline + trailing classification */}
+        <div className="flex items-baseline gap-2 min-w-0">
+          <span className="shrink-0 self-center">
+            <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} size={16} />
+          </span>
+          <a
+            href={article.sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[14px] font-semibold text-foreground leading-snug truncate hover:text-amber-400 transition-colors"
+          >
+            {decodeHtmlEntities(article.title)}
+          </a>
+          {metaTrail && (
+            <span
+              className="shrink-0 text-[10px] font-mono uppercase tracking-wide text-muted-foreground/50"
+              title={sizeTooltip}
+            >
+              {metaTrail}
             </span>
           )}
-          <span className="text-[14px] font-medium text-foreground leading-snug truncate">
-            {decodeHtmlEntities(article.title)}
-          </span>
         </div>
 
-        {/* Col 5: Details pill — hover trigger for detail card */}
-        <div
-          onMouseEnter={handleRowEnter}
-          onMouseMove={handleRowMove}
-          onMouseLeave={handleRowLeave}
-          className="flex items-center"
-        >
-          <span className="inline-flex rounded-full border border-border/60 bg-muted/40 px-2.5 py-1 text-[11px] font-medium text-muted-foreground/60 hover:text-foreground hover:border-foreground/30 hover:bg-accent transition-all cursor-pointer whitespace-nowrap select-none">
-            Details
-          </span>
-        </div>
-
-        {/* Col 6: Date */}
+        {/* Col 2: Date */}
         <span className="text-[11px] text-muted-foreground/50 tabular-nums whitespace-nowrap">
           {article.publishedDate ? formatCompactTime(article.publishedDate, dateRange) : ''}
         </span>
 
-        {/* Col 7: Source name + cluster badge */}
-        <div className="flex items-center gap-1.5 min-w-0">
-          <span className="text-[12px] text-muted-foreground/60 truncate">
-            {article.sourceName || ''}
-          </span>
+        {/* Col 3: Source (+ cluster count as plain text, not a badge) */}
+        <span className="text-[11px] text-muted-foreground/60 truncate">
+          {article.sourceName || ''}
           {clusterSize && clusterSize > 1 && (
-            <span className="shrink-0 inline-flex items-center gap-0.5 rounded-full bg-muted/60 border border-border/50 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground/70 leading-none">
-              {clusterSize} sources
-            </span>
+            <span className="text-muted-foreground/40"> +{clusterSize - 1}</span>
           )}
-        </div>
+        </span>
       </div>
 
       {/* ─── Mobile: Card layout (below lg) ─── */}
@@ -304,18 +171,27 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
           onClick={() => setMobileExpanded(!mobileExpanded)}
           className="w-full text-left px-3 py-1.5 active:bg-accent/30 transition-colors"
         >
-          {/* Row 1: quiet meta text + Date (pills removed 2026-08-15).
-              Firm name lives here — the headline usually repeats it, so it
-              no longer gets its own line (density pass 2026-08-30). */}
-          <div className="flex items-center gap-1.5 mb-0.5">
+          {/* Row 1: Logo + headline — the headline leads on mobile too, so a
+              thumb-scroll reads a column of titles, not a column of labels. */}
+          <div className="flex items-start gap-1.5 min-w-0">
+            <span className="shrink-0 pt-0.5">
+              <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} size={16} />
+            </span>
+            <span className={cn(
+              'min-w-0 flex-1 text-[13px] font-semibold text-foreground leading-snug',
+              mobileExpanded ? 'line-clamp-none' : 'line-clamp-2'
+            )}>
+              {decodeHtmlEntities(article.title)}
+            </span>
+            <ChevronDown className={cn('h-3 w-3 shrink-0 text-muted-foreground/40 transition-transform mt-0.5', mobileExpanded && 'rotate-180')} />
+          </div>
+
+          {/* Row 2: quiet classification + date, tucked under the headline */}
+          <div className="mt-0.5 flex items-center gap-1.5 pl-[22px]">
             <span className="text-[9px] font-mono uppercase tracking-wide text-muted-foreground/50 truncate">
-              {article.firmName && (
-                <span className="font-semibold text-muted-foreground/80">{article.firmName} · </span>
-              )}
               {[
-                eventLabel?.short,
-                article.fundCategories.slice(0, 1).map((c) => CATEGORY_LABELS[c]?.label || c).join(''),
-                displaySize ?? undefined,
+                article.firmName,
+                metaTrail || undefined,
                 clusterSize && clusterSize > 1 ? `${clusterSize} sources` : undefined,
               ]
                 .filter(Boolean)
@@ -323,21 +199,6 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
             </span>
             <span className="ml-auto text-[10px] text-muted-foreground/50 tabular-nums whitespace-nowrap">
               {article.publishedDate ? formatCompactTime(article.publishedDate, dateRange) : ''}
-            </span>
-            <ChevronDown className={cn('h-3 w-3 text-muted-foreground/40 shrink-0 transition-transform', mobileExpanded && 'rotate-180')} />
-          </div>
-
-          {/* Row 2: Logo(s) + Headline */}
-          <div className="flex items-start gap-1.5 min-w-0">
-            <div className="flex items-center shrink-0 pt-px">
-              <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} size={18} />
-              <CoFirmLogos coFirms={article.coFirms} size={14} />
-            </div>
-            <span className={cn(
-              'min-w-0 flex-1 text-[13px] font-medium text-foreground leading-snug',
-              mobileExpanded ? 'line-clamp-none' : 'line-clamp-2'
-            )}>
-              {decodeHtmlEntities(article.title)}
             </span>
           </div>
         </button>

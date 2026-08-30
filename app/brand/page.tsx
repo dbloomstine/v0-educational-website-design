@@ -7,7 +7,7 @@ import { BackToTop } from '@/components/back-to-top'
 import { ArrowDownToLine, ArrowRight, Package } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Brand Kit | FundOpsHQ',
+  title: 'Brand Kit',
   description:
     'Logos, monograms, patterns, backgrounds and posters for FundOpsHQ — free to download for press, partners, and guests.',
   openGraph: {

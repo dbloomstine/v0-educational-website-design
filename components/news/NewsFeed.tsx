@@ -627,11 +627,8 @@ export function NewsFeed() {
           {/* Dense article list */}
           <div className="rounded-lg border border-border bg-card overflow-hidden">
             {/* Column headers — desktop only */}
-            <div className="hidden lg:grid items-center gap-x-2 px-4 py-1.5 border-b border-border bg-muted/50 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 grid-cols-[96px_72px_1fr_auto_56px_150px]">
-              <span>Type</span>
-              <span>Size</span>
-              <span className="pl-7">Headline</span>
-              <span />
+            <div className="hidden lg:grid items-center gap-x-3 px-4 py-1 border-b border-border bg-muted/50 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 grid-cols-[1fr_52px_128px]">
+              <span className="pl-6">Headline</span>
               <span>Date</span>
               <span>Source</span>
             </div>
