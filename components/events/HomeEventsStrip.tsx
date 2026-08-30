@@ -29,7 +29,7 @@ export function HomeEventsStrip({ events, rail = false }: { events: IndustryEven
             <Link
               key={event.id}
               href={`/events/${event.slug}`}
-              className="group block border-b border-border/40 px-3 py-2 transition-colors hover:bg-accent/40 last:border-b-0"
+              className="group block border-b border-border/40 px-2.5 py-1.5 transition-colors hover:bg-accent/40 last:border-b-0"
             >
               <div className="flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-wide text-muted-foreground/70">
                 <span className="tabular-nums text-foreground/80">{formatEventDates(event.startDate, event.endDate)}</span>

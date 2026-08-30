@@ -228,7 +228,7 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
           labels live on in the hover card. */}
       <div
         className={cn(
-          'hidden lg:grid group items-center gap-x-2 px-4 py-2 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[96px_72px_1fr_auto_56px_150px]'
+          'hidden lg:grid group items-center gap-x-2 px-4 py-1.5 border-b border-border/40 hover:bg-accent/30 transition-colors cursor-default grid-cols-[96px_72px_1fr_auto_56px_150px]'
         )}
       >
         {/* Col 1: Type · Category (muted text) */}
@@ -302,11 +302,16 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
         <button
           type="button"
           onClick={() => setMobileExpanded(!mobileExpanded)}
-          className="w-full text-left px-3 py-2.5 active:bg-accent/30 transition-colors"
+          className="w-full text-left px-3 py-1.5 active:bg-accent/30 transition-colors"
         >
-          {/* Row 1: quiet meta text + Date (pills removed 2026-08-15) */}
-          <div className="flex items-center gap-1.5 mb-1">
+          {/* Row 1: quiet meta text + Date (pills removed 2026-08-15).
+              Firm name lives here — the headline usually repeats it, so it
+              no longer gets its own line (density pass 2026-08-30). */}
+          <div className="flex items-center gap-1.5 mb-0.5">
             <span className="text-[9px] font-mono uppercase tracking-wide text-muted-foreground/50 truncate">
+              {article.firmName && (
+                <span className="font-semibold text-muted-foreground/80">{article.firmName} · </span>
+              )}
               {[
                 eventLabel?.short,
                 article.fundCategories.slice(0, 1).map((c) => CATEGORY_LABELS[c]?.label || c).join(''),
@@ -322,28 +327,18 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
             <ChevronDown className={cn('h-3 w-3 text-muted-foreground/40 shrink-0 transition-transform', mobileExpanded && 'rotate-180')} />
           </div>
 
-          {/* Row 2: Logo(s) + Firm + Headline */}
-          <div className="flex items-start gap-2 min-w-0">
-            <div className="flex items-center shrink-0">
-              <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} size={22} />
-              <CoFirmLogos coFirms={article.coFirms} size={16} />
+          {/* Row 2: Logo(s) + Headline */}
+          <div className="flex items-start gap-1.5 min-w-0">
+            <div className="flex items-center shrink-0 pt-px">
+              <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} size={18} />
+              <CoFirmLogos coFirms={article.coFirms} size={14} />
             </div>
-            <div className="min-w-0 flex-1">
-              {article.firmName && (
-                <span className="text-[10px] font-semibold text-muted-foreground/70 block leading-tight mb-0.5">
-                  {article.firmName}
-                  {article.coFirms.length > 0 && (
-                    <span className="font-normal text-muted-foreground/50"> · {article.coFirms.join(' · ')}</span>
-                  )}
-                </span>
-              )}
-              <span className={cn(
-                'text-[13px] font-medium text-foreground leading-snug',
-                mobileExpanded ? 'line-clamp-none' : 'line-clamp-2'
-              )}>
-                {decodeHtmlEntities(article.title)}
-              </span>
-            </div>
+            <span className={cn(
+              'min-w-0 flex-1 text-[13px] font-medium text-foreground leading-snug',
+              mobileExpanded ? 'line-clamp-none' : 'line-clamp-2'
+            )}>
+              {decodeHtmlEntities(article.title)}
+            </span>
           </div>
         </button>
 
@@ -353,6 +348,9 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
             {/* Firm / Fund / Person details */}
             {(article.firmName || article.fundName || article.personName) && (
               <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
+                {article.firmName && (
+                  <span><span className="text-muted-foreground/50">Firm:</span> <span className="font-medium text-foreground/80">{article.firmName}{article.coFirms.length > 0 ? ` · ${article.coFirms.join(' · ')}` : ''}</span></span>
+                )}
                 {article.fundName && (
                   <span><span className="text-muted-foreground/50">Fund:</span> <span className="font-medium text-foreground/80">{article.fundName}</span></span>
                 )}

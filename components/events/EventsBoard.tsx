@@ -261,7 +261,7 @@ export function EventsBoard() {
   )
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {/* ── Compact toolbar ──────────────────────────────────── */}
       <div className="space-y-2">
         <div className="flex items-center gap-2">
@@ -576,7 +576,7 @@ export function EventsBoard() {
         <>
           <div className="rounded-lg border border-border bg-card overflow-hidden">
             {/* Column headers — desktop only */}
-            <div className="hidden lg:grid items-center gap-x-2 px-4 py-1.5 border-b border-border bg-muted/50 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 grid-cols-[130px_96px_1fr_200px_120px]">
+            <div className="hidden lg:grid items-center gap-x-2 px-4 py-1 border-b border-border bg-muted/50 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 grid-cols-[148px_72px_1fr_170px_88px]">
               <span>Date</span>
               <span>Type</span>
               <span>Event</span>
@@ -587,7 +587,7 @@ export function EventsBoard() {
             {monthGroups.map((group) => (
               <div key={group.header}>
                 {/* Month divider */}
-                <div className="border-b border-border/60 bg-muted/30 px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/70">
+                <div className="border-b border-border/60 bg-muted/30 px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/70">
                   {group.header}
                 </div>
                 {group.events.map((event) => (

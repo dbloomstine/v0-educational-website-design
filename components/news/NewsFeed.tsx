@@ -302,7 +302,7 @@ export function NewsFeed() {
   const pillFilterCount = [category, eventType, geography].filter(Boolean).length
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {/* ── Compact toolbar ──────────────────────────────────── */}
       <div className="space-y-2">
         {/* Row 1: Search (full width on mobile, flex-1 on desktop) */}

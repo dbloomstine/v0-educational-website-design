@@ -111,6 +111,20 @@ export function formatWeekHeader(startDate: string): string {
   return `Week of ${MONTH_SHORT[dt.getUTCMonth()]} ${dt.getUTCDate()}${yearSuffix}`
 }
 
+/**
+ * Compress verbose time notes to a scannable token: "Begins 12:30 PM ET" →
+ * "12:30pm ET", "1:00 PM ET (60 minutes)" → "1pm ET". Null when no clock
+ * time is present (e.g. "All day"). Same idiom as the Circuit email.
+ */
+export function compactTimeNote(timeNote: string | null): string | null {
+  if (!timeNote) return null
+  const m = timeNote.match(/(\d{1,2})(?::(\d{2}))?\s?(am|pm)/i)
+  if (!m) return null
+  const minutes = m[2] && m[2] !== '00' ? `:${m[2]}` : ''
+  const tz = timeNote.match(/\b(ET|EST|EDT|CT|PT|PST|PDT|GMT|BST|CET|CEST|HKT|SGT|JST|AEST)\b/i)
+  return `${m[1]}${minutes}${m[3].toLowerCase()}${tz ? ` ${tz[1].toUpperCase()}` : ''}`
+}
+
 /** "New York, NY" · "London, UK" · falls back to "Virtual" for online events. */
 export function formatEventLocation(event: {
   city: string | null
