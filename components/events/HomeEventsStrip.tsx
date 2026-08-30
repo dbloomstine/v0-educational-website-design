@@ -13,7 +13,7 @@ import type { IndustryEvent } from '@/lib/events/types'
 // next ~10 upcoming events. Same row idiom as the /events board, no client
 // JS: the homepage is the hub's front page, the board is the full calendar.
 
-export function HomeEventsStrip({ events }: { events: IndustryEvent[] }) {
+export function HomeEventsStrip({ events, rail = false }: { events: IndustryEvent[]; rail?: boolean }) {
   if (events.length === 0) return null
 
   return (
@@ -22,6 +22,28 @@ export function HomeEventsStrip({ events }: { events: IndustryEvent[] }) {
         const kind = EVENT_KIND_LABELS[event.eventKind] ?? EVENT_KIND_LABELS.other
         const cost = COST_LABELS[event.costType] ?? COST_LABELS.paid
         const costText = event.costType === 'free' ? 'Free' : cost.label
+        // Rail mode (homepage right column): two-line rows — dates+meta on top,
+        // bold name below — so a ~430px column still reads instantly.
+        if (rail) {
+          return (
+            <Link
+              key={event.id}
+              href={`/events/${event.slug}`}
+              className="group block border-b border-border/40 px-3 py-2 transition-colors hover:bg-accent/40 last:border-b-0"
+            >
+              <div className="flex items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-wide text-muted-foreground/70">
+                <span className="tabular-nums text-foreground/80">{formatEventDates(event.startDate, event.endDate)}</span>
+                <span className="flex items-center gap-2 truncate">
+                  <span className="truncate">{formatEventLocation(event)}</span>
+                  <span className={cn('shrink-0 font-semibold', event.costType === 'free' ? 'text-emerald-400' : '')}>{costText}</span>
+                </span>
+              </div>
+              <div className="mt-0.5 truncate text-[13px] font-semibold leading-snug text-foreground group-hover:text-amber-400 transition-colors">
+                {event.name}
+              </div>
+            </Link>
+          )
+        }
         return (
           <Link
             key={event.id}
