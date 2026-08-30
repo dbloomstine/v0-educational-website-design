@@ -156,7 +156,7 @@ export function renderCircuitEmail(content: CircuitContent, unsubscribeUrl: stri
 </head>
 <body style="margin:0;padding:0;">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-<tr><td align="center" style="padding:10px 8px;">
+<tr><td align="center" style="padding:8px 4px;">
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="max-width:600px;">
 <tr><td style="font-family:Arial,Helvetica,sans-serif;color:${TEXT};">
   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -175,7 +175,11 @@ export function renderCircuitEmail(content: CircuitContent, unsubscribeUrl: stri
     ${section('NEXT WEEK', content.nextWeek)}
     ${section('FRESH ON THE BOARD', content.freshAdds)}
   </table>
-  <div style="margin-top:16px;border-top:1px solid #999999;padding-top:8px;font-size:11px;line-height:1.5;color:${MUTED};">
+  <div style="margin-top:14px;padding:8px 10px;border:1px solid #999999;font-size:12px;line-height:1.45;color:${TEXT};">
+    <b>Hosting an event?</b> Listings are free and dates get verified before publishing —
+    <a href="https://fundopshq.com/events/submit" style="color:${LINK};text-decoration:none;font-weight:bold;">submit it here</a>.
+  </div>
+  <div style="margin-top:10px;border-top:1px solid #999999;padding-top:8px;font-size:11px;line-height:1.5;color:${MUTED};">
     You get The Circuit because you subscribe to FundOps Daily.
     <a href="${unsubscribeUrl}" style="color:${MUTED};text-decoration:underline;">Unsubscribe</a>
     · FundOpsHQ
