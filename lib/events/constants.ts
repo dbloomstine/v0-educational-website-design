@@ -120,8 +120,9 @@ export function formatEventLocation(event: {
 }): string {
   if (event.city) {
     let suffix = event.stateRegion || (event.country && event.country !== 'USA' && event.country !== 'United States' ? event.country : null)
-    // City-states ("Singapore, Singapore", "Hong Kong, Hong Kong") read better bare
-    if (suffix === event.city) suffix = null
+    // City-states ("Singapore, Singapore") and self-referential suffixes
+    // ("Washington DC, DC") read better bare
+    if (suffix && (suffix === event.city || event.city.includes(suffix))) suffix = null
     return suffix ? `${event.city}, ${suffix}` : event.city
   }
   if (event.eventFormat === 'virtual') return 'Virtual'
