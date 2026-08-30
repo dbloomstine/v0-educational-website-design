@@ -11,9 +11,9 @@ import {
   formatFundSize,
   formatCompactTime,
   formatRelativeDate,
+  firmLabelFor,
 } from '@/lib/news/constants'
 import type { NewsArticle } from '@/lib/news/types'
-import { FirmLogo } from './FirmLogo'
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   EUR: '€', GBP: '£', JPY: '¥', CHF: 'CHF ', CNY: '¥', KRW: '₩', AUD: 'A$', CAD: 'C$',
@@ -49,6 +49,11 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
   ]
     .filter(Boolean)
     .join(' · ')
+
+  // Most fund headlines already name the firm, so repeating it beside the
+  // headline only steals width. firmLabelFor returns null in that case.
+  const decodedTitle = decodeHtmlEntities(article.title)
+  const showFirm = firmLabelFor(article.firmName, decodedTitle)
 
   // Desktop hover card state
   const [visible, setVisible] = useState(false)
@@ -122,24 +127,25 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
           'hidden lg:grid group items-center gap-x-3 px-4 py-1.5 border-b border-border/40 hover:bg-accent/30 transition-colors grid-cols-[1fr_52px_128px]'
         )}
       >
-        {/* Col 1: Logo + headline + trailing classification */}
+        {/* Col 1: headline + trailing firm and classification */}
         <div className="flex items-baseline gap-2 min-w-0">
-          <span className="shrink-0 self-center">
-            <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} size={16} />
-          </span>
           <a
             href={article.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="text-[14px] font-semibold text-foreground leading-snug truncate hover:text-amber-400 transition-colors"
           >
-            {decodeHtmlEntities(article.title)}
+            {decodedTitle}
           </a>
-          {metaTrail && (
+          {(showFirm || metaTrail) && (
             <span
               className="shrink-0 text-[10px] font-mono uppercase tracking-wide text-muted-foreground/50"
               title={sizeTooltip}
             >
+              {showFirm && (
+                <span className="font-semibold text-muted-foreground/70">{showFirm}</span>
+              )}
+              {showFirm && metaTrail ? ' · ' : ''}
               {metaTrail}
             </span>
           )}
@@ -171,31 +177,28 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
           onClick={() => setMobileExpanded(!mobileExpanded)}
           className="w-full text-left px-3 py-1.5 active:bg-accent/30 transition-colors"
         >
-          {/* Row 1: Logo + headline — the headline leads on mobile too, so a
-              thumb-scroll reads a column of titles, not a column of labels. */}
+          {/* Row 1: headline — a thumb-scroll reads a column of titles, not a
+              column of labels. */}
           <div className="flex items-start gap-1.5 min-w-0">
-            <span className="shrink-0 pt-0.5">
-              <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} size={16} />
-            </span>
             <span className={cn(
               'min-w-0 flex-1 text-[13px] font-semibold text-foreground leading-snug',
               mobileExpanded ? 'line-clamp-none' : 'line-clamp-2'
             )}>
-              {decodeHtmlEntities(article.title)}
+              {decodedTitle}
             </span>
             <ChevronDown className={cn('h-3 w-3 shrink-0 text-muted-foreground/40 transition-transform mt-0.5', mobileExpanded && 'rotate-180')} />
           </div>
 
-          {/* Row 2: quiet classification + date, tucked under the headline */}
-          <div className="mt-0.5 flex items-center gap-1.5 pl-[22px]">
-            <span className="text-[9px] font-mono uppercase tracking-wide text-muted-foreground/50 truncate">
-              {[
-                article.firmName,
-                metaTrail || undefined,
-                clusterSize && clusterSize > 1 ? `${clusterSize} sources` : undefined,
-              ]
-                .filter(Boolean)
-                .join(' · ')}
+          {/* Row 2: firm + quiet classification + date. No logo indent to sit
+              under any more, so this line starts at the row's left edge. */}
+          <div className="mt-0.5 flex items-center gap-1.5">
+            <span className="text-[9.5px] font-mono uppercase tracking-wide text-muted-foreground/50 truncate">
+              {showFirm && (
+                <span className="font-semibold text-muted-foreground/80">{showFirm}</span>
+              )}
+              {showFirm && metaTrail ? ' · ' : ''}
+              {metaTrail}
+              {clusterSize && clusterSize > 1 ? ` · ${clusterSize} sources` : ''}
             </span>
             <span className="ml-auto text-[10px] text-muted-foreground/50 tabular-nums whitespace-nowrap">
               {article.publishedDate ? formatCompactTime(article.publishedDate, dateRange) : ''}
@@ -292,17 +295,11 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
               )}
             </div>
 
-            {/* Headline with logo */}
-            <div className="flex items-start gap-2.5">
-              <FirmLogo domain={article.firmDomain} firmName={article.firmName} sourceName={article.sourceName} size={28} />
-              <div className="min-w-0">
-                <h3 className="text-sm font-semibold text-foreground leading-snug">
-                  {decodeHtmlEntities(article.title)}
-                </h3>
-                {article.firmName && (
-                  <p className="text-[11px] text-muted-foreground/60 mt-0.5">{article.firmName}</p>
-                )}
-              </div>
+            {/* Headline */}
+            <div className="min-w-0">
+              <h3 className="text-sm font-semibold text-foreground leading-snug">
+                {decodedTitle}
+              </h3>
             </div>
 
             {/* Firm / Fund / Person details */}

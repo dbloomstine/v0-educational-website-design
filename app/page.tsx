@@ -72,10 +72,10 @@ export default async function HomePage() {
   // Both sections are soft dependencies: the page must render even if the DB
   // hiccups. Fetched in parallel — neither depends on the other.
   const [upcomingEvents, topStories] = await Promise.all([
-    queryEventFeed({ when: '60d', limit: 18 })
+    queryEventFeed({ when: '60d', limit: 26 })
       .then((feed) => feed.events)
       .catch<IndustryEvent[]>(() => []),
-    queryArticleFeed({ range: '7d', limit: 18 })
+    queryArticleFeed({ range: '7d', limit: 26 })
       .then((feed) => feed.groups ?? [])
       .catch<ArticleGroup[]>(() => []),
   ])

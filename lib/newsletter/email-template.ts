@@ -18,8 +18,7 @@
 
 import type { ArticleGroup } from './query-articles'
 import { formatFundSize, isLikelyAumLeak } from './query-articles'
-import { getPrimaryLogoUrl, resolveFirmLogoDomain } from '@/lib/news/firm-logo-url'
-import { getFirmDomain } from '@/lib/news/firm-logos'
+import { firmLabelFor } from '@/lib/news/constants'
 import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponsors'
 
 interface TemplateParams {
@@ -100,7 +99,7 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 .fops-bg-navy-deep { background-color: ${NAVY_DEEP}; }
 
 /* Story row — dense, executive-brief style. One compact meta line
-   (favicons + firm + size), headline, then a single truncated summary
+   (firm + size), headline, then a single truncated summary
    line with the source folded onto its end. ~2x the stories per screen
    vs the pre-2026-08 layout. */
 .fops-row { padding: 7px 0; border-bottom: 1px solid ${HAIRLINE}; }
@@ -178,27 +177,6 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 .fops-c-deals { border-bottom-color: #0891B2; }
 .fops-c-reg { border-bottom-color: #DC2626; }
 .fops-c-default { border-bottom-color: ${INK_MUTED}; }
-
-/* Firm logo — 18px inline favicon(s) on the meta line. */
-.fops-logo {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  vertical-align: middle;
-  background: #FFFFFF;
-  border: 1px solid ${HAIRLINE};
-  margin-right: 5px;
-}
-.fops-logo-img { object-fit: contain; }
-.fops-logo-fallback {
-  display: inline-block;
-  color: ${INK};
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 16px;
-  text-align: center;
-  font-family: ${FONT_SERIF};
-}
 
 /* Eyebrow labels (SUPPORTED BY / PRESENTED BY / SECTION A etc.) */
 .fops-eyebrow {
@@ -356,50 +334,32 @@ function collapseTemplateWhitespace(html: string): string {
     .join('')
 }
 
-// ─── Firm logos (circular favicon with white tile) ─────────────────────────
-
-function logoImg(domain: string, alt: string): string {
-  const logoUrl = getPrimaryLogoUrl(domain)
-  return `<img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(alt)}" width="18" height="18" class="fops-logo fops-logo-img" />`
-}
+// ─── Firm identity (names only) ────────────────────────────────────────────
 
 /**
- * Favicon strip + firm names for the meta line. Renders the primary firm's
- * favicon plus up to two co-firm favicons (M&A counterparties, co-managers).
+ * Firm names for the meta line. Favicons were removed everywhere on
+ * 2026-08-30 (Danny) — the name is the identity anchor, and dropping the
+ * images also drops a per-article domain lookup from the pipeline and a
+ * remote image fetch from every subscriber's mail client.
  *
- * Accuracy rules:
- *   - A favicon next to a firm name must come from THAT firm (curated map
- *     or classify-time domain) — never from the news outlet.
- *   - Co-firm favicons come from the curated map only; an unmapped co-firm
- *     still shows its name, just without an icon.
- *   - No firm at all → no favicon and no label (the headline carries it);
- *     an outlet favicon would only mislead.
+ * A name the headline already carries is dropped rather than printed
+ * directly above itself; when every name is redundant the meta line
+ * collapses to the fund size alone (or disappears).
  */
 function renderMetaIdentity(article: ArticleGroup['articles'][0]): string {
-  const parts: string[] = []
   const names: string[] = []
-
   if (article.firmName) {
-    const primaryDomain = resolveFirmLogoDomain(article.firmName, article.firmDomain)
-    if (primaryDomain) {
-      parts.push(logoImg(primaryDomain, article.firmName[0].toUpperCase()))
-    } else {
-      parts.push(
-        `<span class="fops-logo fops-logo-fallback">${escapeHtml(article.firmName[0].toUpperCase())}</span>`
-      )
-    }
-    names.push(article.firmName)
-
+    const primary = firmLabelFor(article.firmName, article.title)
+    if (primary) names.push(primary)
     for (const coFirm of article.coFirms.slice(0, 2)) {
-      const coDomain = getFirmDomain(coFirm)
-      if (coDomain) parts.push(logoImg(coDomain, coFirm[0].toUpperCase()))
-      names.push(coFirm)
+      const label = firmLabelFor(coFirm, article.title)
+      if (label) names.push(label)
     }
   }
-
   if (names.length === 0) return ''
-  const nameHtml = `<span class="fops-firm">${names.map(escapeHtml).join(' <span style="color:rgba(90,107,130,0.5);font-weight:400;">·</span> ')}</span>`
-  return parts.join('') + nameHtml
+  return `<span class="fops-firm">${names
+    .map(escapeHtml)
+    .join(' <span style="color:rgba(90,107,130,0.5);font-weight:400;">·</span> ')}</span>`
 }
 
 /** Truncate a summary at a word boundary so the blurb stays ~one line. */

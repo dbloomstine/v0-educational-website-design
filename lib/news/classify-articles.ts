@@ -27,7 +27,6 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
-import { resolveFirmDomain } from './resolve-firm-logo';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>;
@@ -290,8 +289,9 @@ export async function classifyPendingArticles(
           continue;
         }
 
-        // Resolve firm domain for logo display (non-blocking — null on failure)
-        const firmDomain = await resolveFirmDomain(classification.firm_name ?? '');
+        // Firm-domain resolution was removed 2026-08-30 with the favicons:
+        // it cost a Clearbit lookup per classified article and nothing renders
+        // a logo any more.
 
         const { error: updateError } = await supabase
           .from('news_items')
@@ -324,7 +324,6 @@ export async function classifyPendingArticles(
               person_title: classification.person_title,
               city: classification.city,
               fund_number: classification.fund_number,
-              firm_domain: firmDomain,
             },
           })
           .eq('id', article.id);

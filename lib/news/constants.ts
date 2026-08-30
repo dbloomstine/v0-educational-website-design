@@ -129,3 +129,54 @@ export function formatCompactTime(date: string, dateRange?: string): string {
     return ''
   }
 }
+
+/**
+ * Suffix words that don't distinguish one firm from another. "GenNx360
+ * Capital Partners" and "StepStone Group" are recognised by their first
+ * token; the rest is boilerplate shared with hundreds of other managers.
+ */
+const GENERIC_FIRM_TOKENS = new Set([
+  'capital', 'partners', 'group', 'management', 'advisors', 'advisers',
+  'ventures', 'holdings', 'investments', 'investment', 'asset', 'assets',
+  'fund', 'funds', 'company', 'co', 'corp', 'corporation', 'inc', 'llc',
+  'llp', 'lp', 'ltd', 'plc', 'associates', 'international', 'global',
+  'the', 'and', '&',
+])
+
+function normalizeForMatch(s: string): string {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, '')
+}
+
+/**
+ * The firm label to show beside a headline, or null when the headline
+ * already identifies the firm.
+ *
+ * Favicons were removed site-wide on 2026-08-30, so the firm name became the
+ * identity anchor — but printing "GENNX360 CAPITAL PARTNERS" next to
+ * "GenNx360 scores $865m Fund IV close" just steals width from the headline.
+ * Matching on the distinctive core (everything before the generic suffix
+ * words) catches those, while still surfacing the firm when the headline
+ * genuinely omits it — e.g. "Buying the Platform Does Not Buy You Liquidity"
+ * keeps its "Victory Capital" label, and a headline that only says "a16z"
+ * keeps "Andreessen Horowitz".
+ */
+export function firmLabelFor(firmName: string | null, title: string): string | null {
+  if (!firmName) return null
+  const haystack = normalizeForMatch(title)
+  if (!haystack) return firmName
+
+  // Full name present ("LGT Capital Partners beats target…") → redundant.
+  if (haystack.includes(normalizeForMatch(firmName))) return null
+
+  const tokens = firmName.split(/\s+/).filter(Boolean)
+  const core = tokens.filter((t) => !GENERIC_FIRM_TOKENS.has(t.toLowerCase().replace(/[^a-z0-9&]/g, '')))
+  // An all-generic name ("Capital Group") has no distinctive core to match
+  // on; the full-name check above is the only safe test for it.
+  if (core.length === 0) return firmName
+
+  const coreKey = normalizeForMatch(core.join(''))
+  // Single-letter or numeric-only cores would match almost any headline.
+  if (coreKey.length < 3) return firmName
+
+  return haystack.includes(coreKey) ? null : firmName
+}
