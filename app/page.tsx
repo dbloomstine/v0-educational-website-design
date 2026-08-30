@@ -1,28 +1,32 @@
 import { Metadata } from 'next'
+import Link from 'next/link'
 import { Suspense } from 'react'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { HeroSubscribe } from '@/components/home/hero-subscribe'
 import { NewsFeed } from '@/components/news/NewsFeed'
+import { HomeEventsStrip } from '@/components/events/HomeEventsStrip'
+import { queryEventFeed } from '@/lib/events/api'
+import type { IndustryEvent } from '@/lib/events/types'
 import { StickySubscribeBar } from '@/components/news/StickySubscribeBar'
 
 export const metadata: Metadata = {
-  title: 'FundOpsHQ | News & Daily Newsletter for the Investment Funds Industry',
+  title: 'FundOpsHQ | News, Events & Daily Newsletter for the Investment Funds Industry',
   description:
-    'The hub for the investment funds industry. Real-time fund launches, capital raises, exec moves, and regulatory news across PE, VC, private credit, real estate, and infrastructure. Subscribe to the FundOps Daily newsletter.',
+    'The hub for the investment funds industry. Real-time fund news, the verified industry events calendar, and the FundOps Daily morning newsletter — across PE, VC, private credit, real estate, and infrastructure.',
   openGraph: {
-    title: 'FundOpsHQ | News & Daily Newsletter for the Investment Funds Industry',
+    title: 'FundOpsHQ | News, Events & Daily Newsletter for the Investment Funds Industry',
     description:
-      'The hub for the investment funds industry. Real-time fund news and a morning newsletter — built for GPs, LPs, and fund service providers across private markets.',
+      'The hub for the investment funds industry. Real-time fund news, the industry events calendar, and a morning newsletter — built for GPs, LPs, and fund service providers across private markets.',
     type: 'website',
     url: 'https://fundopshq.com',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FundOpsHQ | News & Daily Newsletter for the Investment Funds Industry',
+    title: 'FundOpsHQ | News, Events & Daily Newsletter for the Investment Funds Industry',
     description:
-      'The hub for the investment funds industry. Built for GPs, LPs, and fund service providers across private markets. Subscribe to FundOps Daily.',
+      'The hub for the investment funds industry — news, events, and the FundOps Daily newsletter. Built for GPs, LPs, and fund service providers across private markets.',
   },
   alternates: {
     canonical: 'https://fundopshq.com',
@@ -60,7 +64,19 @@ const websiteJsonLd = {
   },
 }
 
-export default function HomePage() {
+// Refresh the server-rendered events strip every 15 minutes
+export const revalidate = 900
+
+export default async function HomePage() {
+  // Section B strip — the page must render even if the DB hiccups
+  let upcomingEvents: IndustryEvent[] = []
+  try {
+    const feed = await queryEventFeed({ when: '30d', limit: 10 })
+    upcomingEvents = feed.events
+  } catch {
+    // strip hides itself when empty
+  }
+
   return (
     <div className="flex min-h-screen flex-col">
       <script
@@ -136,6 +152,63 @@ export default function HomePage() {
             </Suspense>
           </div>
         </section>
+
+        {/* ─── Events: Section B · The Circuit ─── */}
+        {upcomingEvents.length > 0 && (
+          <section id="events" className="relative border-t-2 border-foreground/15 bg-background">
+            {/* Editorial section masthead */}
+            <div className="border-b border-foreground/10">
+              <div className="container mx-auto max-w-[1400px] px-4">
+                <div className="flex items-center justify-between gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+                  <span className="flex items-center gap-3">
+                    <span className="text-foreground/80">Section B</span>
+                    <span aria-hidden="true" className="text-foreground/20">·</span>
+                    <span>The Circuit</span>
+                  </span>
+                  <span className="flex items-center gap-2">
+                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-400" />
+                    <span className="text-amber-400/90">Updated Weekly</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="container mx-auto max-w-[1400px] px-4 py-10 sm:py-12">
+              <div className="mb-6 grid gap-6 lg:grid-cols-12 lg:items-end">
+                <div className="lg:col-span-8">
+                  <h2
+                    className="font-display text-foreground"
+                    style={{
+                      fontSize: 'clamp(30px, 4vw, 48px)',
+                      lineHeight: 0.95,
+                      letterSpacing: '-0.03em',
+                      fontWeight: 500,
+                      fontVariationSettings: '"opsz" 144',
+                    }}
+                  >
+                    Industry events,
+                    <span
+                      className="italic"
+                      style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
+                    >
+                      {' '}dates verified.
+                    </span>
+                  </h2>
+                </div>
+                <div className="lg:col-span-4">
+                  <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground/60 leading-relaxed">
+                    Conferences · Webinars · Networking<br />
+                    <Link href="/events" className="text-foreground/70 hover:text-amber-400 transition-colors">
+                      Filter by city, topic &amp; date →
+                    </Link>
+                  </p>
+                </div>
+              </div>
+
+              <HomeEventsStrip events={upcomingEvents} />
+            </div>
+          </section>
+        )}
       </main>
 
       <SiteFooter />

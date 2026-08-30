@@ -152,7 +152,7 @@ export function HeroSubscribe() {
             <span>{today}</span>
           </span>
           <span className="flex items-center gap-3">
-            <span className="hidden sm:inline">The Daily Brief for Private Markets</span>
+            <span className="hidden sm:inline">The Hub for Private Markets</span>
             <span aria-hidden="true" className="hidden sm:inline text-foreground/20">·</span>
             <Link
               href="/about"
@@ -184,7 +184,7 @@ export function HeroSubscribe() {
                 fontVariationSettings: '"opsz" 144, "SOFT" 30',
               }}
             >
-              Fund news and a
+              Fund news, events, and
               <br />
               <span
                 className="italic"
@@ -194,20 +194,24 @@ export function HeroSubscribe() {
                   color: 'oklch(0.85 0.12 85)',
                 }}
               >
-                morning&nbsp;newsletter.
+                a morning&nbsp;newsletter.
               </span>
             </h1>
 
             <p className="mt-6 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-              Real-time fund news and a morning briefing in your inbox — for the GPs, LPs, and fund service
-              providers across PE, VC, credit and the rest of private markets.
+              Real-time fund news, the industry&apos;s verified events calendar, and a morning briefing in
+              your inbox — for the GPs, LPs, and fund service providers across private markets.
             </p>
 
             {/* Channels strip — News · Newsletter · Sources */}
-            <dl className="mt-8 grid grid-cols-3 gap-4 max-w-md border-y border-foreground/10 py-4">
+            <dl className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-xl border-y border-foreground/10 py-4">
               <div>
                 <dt className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">News</dt>
                 <dd className="mt-1 font-display text-2xl text-foreground">Hourly</dd>
+              </div>
+              <div className="sm:border-l border-foreground/10 sm:pl-4">
+                <dt className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">Events</dt>
+                <dd className="mt-1 font-display text-2xl text-foreground">Verified</dd>
               </div>
               <div className="border-l border-foreground/10 pl-4">
                 <dt className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">Newsletter</dt>
@@ -327,9 +331,12 @@ export function HeroSubscribe() {
                   >
                     Skip → The Wire
                   </Link>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/40">
-                    5 min read
-                  </span>
+                  <Link
+                    href="/events"
+                    className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 transition-colors hover:text-foreground"
+                  >
+                    Events → The Circuit
+                  </Link>
                 </div>
               </div>
 
