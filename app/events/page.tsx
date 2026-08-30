@@ -145,6 +145,12 @@ export default async function EventsPage() {
                   Webinars · Training · Networking<br />
                   <span className="text-foreground/70">Every date verified at the source.</span>
                 </p>
+                <Link
+                  href="/events/submit"
+                  className="mt-4 inline-flex items-center gap-2 rounded-sm border border-amber-400/50 bg-amber-400/10 px-4 py-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-amber-300 transition-colors hover:bg-amber-400/20 hover:border-amber-400"
+                >
+                  Submit an event — free
+                </Link>
               </div>
             </div>
 
