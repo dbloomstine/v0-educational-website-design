@@ -32,10 +32,11 @@ Note: no Jest/Vitest suite is configured. TypeScript build errors are ignored in
 The site was aggressively consolidated on 2026-04-10. There are only six public routes plus an admin tool:
 
 ```
-/                       → Editorial newsroom homepage
-                           · HeroSubscribe (hero + newsletter signup, anchor #subscribe)
-                           · NewsFeed (section #news — the daily news feed)
-                           · LiveShowFeature (section #show — latest broadcast)
+/                       → Editorial HUB homepage (repositioned 2026-08-30: news + events + newsletter)
+                           · HeroSubscribe (hero + newsletter signup, anchor #subscribe; 4-stat strip incl. Events)
+                           · NewsFeed (section #news — "Section A · The Wire")
+                           · HomeEventsStrip (section #events — "Section B · The Circuit", server-rendered
+                             next-10-events strip, revalidate 900; page is now async/ISR)
 /events                 → Industry events board (added 2026-08-29) — "Section B · The Circuit".
                            EventsBoard component, filterable, backed by industry_events.
                            Refreshed weekly via the scout-events skill (~/.claude/skills/scout-events)
