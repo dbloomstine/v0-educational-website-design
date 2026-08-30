@@ -98,6 +98,10 @@ const skipped = []
 for (const file of process.argv.slice(2)) {
   const rows = JSON.parse(readFileSync(file, 'utf8'))
   for (const r of rows) {
+    // Coerce common agent-output variants before validation
+    if (r.cost_type === 'unknown' || r.cost_type === '') r.cost_type = 'mixed'
+    if (r.event_kind === 'seminar' || r.event_kind === 'workshop') r.event_kind = 'forum'
+    if (r.event_kind === 'gala' || r.event_kind === 'reception') r.event_kind = 'networking'
     const problems = []
     if (!r.name || !r.event_url || !r.organizer_name) problems.push('missing required field')
     if (!/^\d{4}-\d{2}-\d{2}$/.test(r.start_date ?? '') || r.start_date < TODAY) problems.push(`bad start_date ${r.start_date}`)
