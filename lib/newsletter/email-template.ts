@@ -18,7 +18,7 @@
 
 import type { ArticleGroup } from './query-articles'
 import { isLikelyAumLeak } from './query-articles'
-import { firmLabelFor } from '@/lib/news/constants'
+import { firmLabelFor, splitHeadlineByEntities } from '@/lib/news/constants'
 import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponsors'
 
 interface TemplateParams {
@@ -108,10 +108,13 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
   color: ${INK};
   text-decoration: none;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 400;
   font-family: ${FONT_SERIF};
   line-height: 1.3;
 }
+/* Only the actor is bold inside a headline, so the eye lands on who did
+   the thing rather than on a wall of uniform bold. */
+.fops-title b { font-weight: 700; }
 .fops-blurb {
   color: ${INK_MUTED};
   font-size: 12px;
@@ -355,6 +358,21 @@ function renderMetaIdentity(article: ArticleGroup['articles'][0]): string {
     .join(' <span style="color:rgba(90,107,130,0.5);font-weight:400;">·</span> ')}</span>`
 }
 
+/**
+ * Headline with its named entities bolded and the rest at regular weight.
+ * Mirrors the site rows so the email and the page read the same way.
+ */
+function renderHeadline(article: ArticleGroup['articles'][0]): string {
+  const segments = splitHeadlineByEntities(article.title, [
+    article.firmName,
+    ...article.coFirms,
+    article.personName,
+  ])
+  return segments
+    .map((seg) => (seg.bold ? `<b>${escapeHtml(seg.text)}</b>` : escapeHtml(seg.text)))
+    .join('')
+}
+
 /** Truncate a summary at a word boundary so the blurb stays ~one line. */
 function truncateBlurb(text: string, max = 150): string {
   if (text.length <= max) return text
@@ -388,7 +406,7 @@ function renderArticle(article: ArticleGroup['articles'][0]): string {
     <tr>
       <td class="fops-row">
         ${metaLine}
-        <div><a href="${escapeHtml(article.sourceUrl)}" class="fops-title" style="color:${INK};text-decoration:none;" target="_blank">${escapeHtml(article.title)}</a></div>
+        <div><a href="${escapeHtml(article.sourceUrl)}" class="fops-title" style="color:${INK};text-decoration:none;font-weight:400;" target="_blank">${renderHeadline(article)}</a></div>
         ${blurbHtml}
       </td>
     </tr>`

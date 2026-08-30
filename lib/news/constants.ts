@@ -180,3 +180,85 @@ export function firmLabelFor(firmName: string | null, title: string): string | n
 
   return haystack.includes(coreKey) ? null : firmName
 }
+
+export interface HeadlineSegment {
+  text: string
+  bold: boolean
+}
+
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+/**
+ * The distinctive part of a firm name — "GenNx360 Capital Partners" →
+ * "GenNx360". Returns null when the name is all boilerplate.
+ */
+function distinctiveCore(name: string): string | null {
+  const tokens = name.split(/\s+/).filter(Boolean)
+  const core: string[] = []
+  for (const t of tokens) {
+    if (GENERIC_FIRM_TOKENS.has(t.toLowerCase().replace(/[^a-z0-9&]/g, ''))) break
+    core.push(t)
+  }
+  const joined = core.join(' ').trim()
+  return joined.length >= 3 && joined.length < name.length ? joined : null
+}
+
+/**
+ * Split a headline into bold/regular runs, bolding the entities it names.
+ *
+ * Danny (2026-08-30): "I want a lot of the letters to be not bold and then
+ * just the main focus bold, like the manager name or the person's name." An
+ * all-bold headline gives the eye nothing to land on; bolding only the actor
+ * turns the column into a scannable index of who did what.
+ *
+ * Matching is case-insensitive and boundary-aware, and tries each entity's
+ * full name before its distinctive core, so "StepStone Group" bolds
+ * "StepStone" in "StepStone raises $1.7bn". Entities the headline never names
+ * (a16z for "Andreessen Horowitz") simply don't match, leaving the headline
+ * unbolded rather than guessing.
+ */
+export function splitHeadlineByEntities(
+  title: string,
+  entities: (string | null | undefined)[],
+): HeadlineSegment[] {
+  const candidates: string[] = []
+  for (const raw of entities) {
+    const name = raw?.trim()
+    if (!name || name.length < 3) continue
+    candidates.push(name)
+    const core = distinctiveCore(name)
+    if (core) candidates.push(core)
+  }
+  if (candidates.length === 0) return [{ text: title, bold: false }]
+
+  // Longest first so "Rahul Seth" wins over a shorter overlapping candidate.
+  candidates.sort((a, b) => b.length - a.length)
+
+  const ranges: Array<[number, number]> = []
+  for (const c of candidates) {
+    // Boundaries are non-alphanumeric so we never match inside a longer word,
+    // while still catching possessives ("Rahul Seth's").
+    const re = new RegExp(`(^|[^A-Za-z0-9])(${escapeRegExp(c)})(?![A-Za-z0-9])`, 'gi')
+    let m: RegExpExecArray | null
+    while ((m = re.exec(title)) !== null) {
+      const start = m.index + m[1].length
+      const end = start + m[2].length
+      if (!ranges.some(([s, e]) => start < e && end > s)) ranges.push([start, end])
+      re.lastIndex = end
+    }
+  }
+  if (ranges.length === 0) return [{ text: title, bold: false }]
+
+  ranges.sort((a, b) => a[0] - b[0])
+  const segments: HeadlineSegment[] = []
+  let cursor = 0
+  for (const [start, end] of ranges) {
+    if (start > cursor) segments.push({ text: title.slice(cursor, start), bold: false })
+    segments.push({ text: title.slice(start, end), bold: true })
+    cursor = end
+  }
+  if (cursor < title.length) segments.push({ text: title.slice(cursor), bold: false })
+  return segments
+}
