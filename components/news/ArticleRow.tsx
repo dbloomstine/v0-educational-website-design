@@ -12,6 +12,7 @@ import {
   formatCompactTime,
   formatRelativeDate,
   firmLabelFor,
+  splitHeadlineByEntities,
 } from '@/lib/news/constants'
 import type { NewsArticle } from '@/lib/news/types'
 
@@ -54,6 +55,17 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
   // headline only steals width. firmLabelFor returns null in that case.
   const decodedTitle = decodeHtmlEntities(article.title)
   const showFirm = firmLabelFor(article.firmName, decodedTitle)
+
+  // Only the actor is bold — the rest of the headline sits at regular weight
+  // so the eye lands on who did the thing.
+  const headline = splitHeadlineByEntities(decodedTitle, [
+    article.firmName,
+    ...article.coFirms,
+    article.personName,
+  ])
+  const headlineNodes = headline.map((seg, i) =>
+    seg.bold ? <strong key={i} className="font-semibold">{seg.text}</strong> : <span key={i}>{seg.text}</span>,
+  )
 
   // Desktop hover card state
   const [visible, setVisible] = useState(false)
@@ -133,9 +145,9 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
             href={article.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[14px] font-semibold text-foreground leading-snug truncate hover:text-amber-400 transition-colors"
+            className="text-[14px] font-normal text-foreground leading-snug truncate hover:text-amber-400 transition-colors"
           >
-            {decodedTitle}
+            {headlineNodes}
           </a>
           {(showFirm || metaTrail) && (
             <span
@@ -181,10 +193,10 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
               column of labels. */}
           <div className="flex items-start gap-1.5 min-w-0">
             <span className={cn(
-              'min-w-0 flex-1 text-[13px] font-semibold text-foreground leading-snug',
+              'min-w-0 flex-1 text-[13px] font-normal text-foreground leading-snug',
               mobileExpanded ? 'line-clamp-none' : 'line-clamp-2'
             )}>
-              {decodedTitle}
+              {headlineNodes}
             </span>
             <ChevronDown className={cn('h-3 w-3 shrink-0 text-muted-foreground/40 transition-transform mt-0.5', mobileExpanded && 'rotate-180')} />
           </div>
@@ -297,8 +309,8 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
 
             {/* Headline */}
             <div className="min-w-0">
-              <h3 className="text-sm font-semibold text-foreground leading-snug">
-                {decodedTitle}
+              <h3 className="text-sm font-normal text-foreground leading-snug">
+                {headlineNodes}
               </h3>
             </div>
 

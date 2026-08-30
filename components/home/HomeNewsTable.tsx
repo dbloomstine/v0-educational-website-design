@@ -5,6 +5,7 @@ import {
   formatFundSize,
   formatCompactTime,
   firmLabelFor,
+  splitHeadlineByEntities,
 } from '@/lib/news/constants'
 import type { ArticleGroup } from '@/lib/news/types'
 
@@ -35,6 +36,14 @@ export function HomeNewsTable({ groups }: { groups: ArticleGroup[] }) {
         const title = decodeHtmlEntities(a.title)
         const showFirm = firmLabelFor(a.firmName, title)
 
+        // Only the actor is bold — the headline's remaining words sit at
+        // regular weight so the eye lands on who did the thing.
+        const headline = splitHeadlineByEntities(title, [
+          a.firmName,
+          ...a.coFirms,
+          a.personName,
+        ])
+
         // Source and cluster count live on /news; the hub keeps the trailing
         // meta to the classification a scanner actually sorts on.
         const meta = [
@@ -59,8 +68,14 @@ export function HomeNewsTable({ groups }: { groups: ArticleGroup[] }) {
                 No `block` on the clamped headline — Tailwind's line-clamp sets
                 display to -webkit-box and `block` would override it. */}
             <span className="min-w-0 flex-1 lg:flex lg:items-baseline lg:gap-2">
-              <span className="text-[13.5px] font-semibold leading-snug text-foreground line-clamp-2 lg:truncate lg:line-clamp-none group-hover:text-amber-400 transition-colors">
-                {title}
+              <span className="text-[13.5px] font-normal leading-snug text-foreground line-clamp-2 lg:truncate lg:line-clamp-none group-hover:text-amber-400 transition-colors">
+                {headline.map((seg, i) =>
+                  seg.bold ? (
+                    <strong key={i} className="font-semibold">{seg.text}</strong>
+                  ) : (
+                    <span key={i}>{seg.text}</span>
+                  ),
+                )}
               </span>
               {(showFirm || meta) && (
                 <span className="mt-0.5 block truncate font-mono text-[9.5px] uppercase tracking-wide text-muted-foreground/50 lg:mt-0 lg:shrink-0">
