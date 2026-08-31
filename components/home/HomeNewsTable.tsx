@@ -1,6 +1,5 @@
 import {
   decodeHtmlEntities,
-  formatCompactTime,
   firmLabelFor,
   splitHeadlineByEntities,
 } from '@/lib/news/constants'
@@ -42,7 +41,7 @@ export function HomeNewsTable({ groups }: { groups: ArticleGroup[] }) {
             target="_blank"
             rel="noopener noreferrer"
             title={a.tldr ?? undefined}
-            className="group flex items-start gap-3 rounded px-2 py-1 lg:py-[3px] transition-colors hover:bg-accent/30"
+            className="group block rounded px-2 py-1 lg:py-[3px] transition-colors hover:bg-accent/30"
           >
             {/* Wide screens fit the headline on one line, so the meta trails
                 it and the row costs a single line. Narrow screens stack, where
@@ -64,10 +63,6 @@ export function HomeNewsTable({ groups }: { groups: ArticleGroup[] }) {
                   {showFirm}
                 </span>
               )}
-            </span>
-
-            <span className="shrink-0 pt-0.5 text-[10px] tabular-nums text-muted-foreground/50">
-              {a.publishedDate ? formatCompactTime(a.publishedDate, '7d') : ''}
             </span>
           </a>
         )
