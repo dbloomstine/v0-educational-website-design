@@ -18,7 +18,7 @@
 
 import type { ArticleGroup } from './query-articles'
 import { isLikelyAumLeak } from './query-articles'
-import { firmLabelFor, splitHeadlineByEntities } from '@/lib/news/constants'
+import { cleanEntityName, firmLabelFor, splitHeadlineByEntities } from '@/lib/news/constants'
 import { formatEventDates, formatEventLocation, compactTimeNote } from '@/lib/events/constants'
 import type { IndustryEvent } from '@/lib/events/types'
 import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponsors'
@@ -392,32 +392,31 @@ function renderHeadline(article: ArticleGroup['articles'][0]): string {
     .join('')
 }
 
-/** Truncate a summary at a word boundary so the blurb stays ~one line. */
-function truncateBlurb(text: string, max = 150): string {
-  if (text.length <= max) return text
-  const cut = text.slice(0, max)
-  const lastSpace = cut.lastIndexOf(' ')
-  return `${cut.slice(0, lastSpace > max * 0.6 ? lastSpace : max).replace(/[,;:.\s]+$/, '')}…`
-}
 
 // ─── Events (Section B) ────────────────────────────────────────────────────
 
+/** "MONDAY, SEP 1" — the date heading each group of events sits under. */
+function eventDayHeading(startDate: string): string {
+  const [y, m, d] = startDate.split('-').map(Number)
+  const dt = new Date(Date.UTC(y, m - 1, d))
+  const weekday = dt.toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' })
+  const month = dt.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' })
+  return `${weekday}, ${month} ${d}`.toUpperCase()
+}
+
 /**
- * One event: name with its organizer bolded inside, over a quiet meta line.
- * Identical treatment to the site's events stream, so a reader who clicks
- * through finds the same shapes.
+ * One event row, Gary's Guide-style: the time sits in a narrow left column so
+ * a reader scans the day vertically by clock, and the bold event title carries
+ * the row with organizer and city beneath it.
  */
 function renderEvent(event: IndustryEvent): string {
-  const segments = splitHeadlineByEntities(event.name, [event.organizerName])
-  const nameHtml = segments
-    .map((seg) => (seg.bold ? `<b>${escapeHtml(seg.text)}</b>` : escapeHtml(seg.text)))
-    .join('')
-
   const time = compactTimeNote(event.timeNote)
-  const meta = [
-    formatEventDates(event.startDate, event.endDate) + (time ? ` \u00b7 ${time}` : ''),
+  const isRange = event.endDate && event.endDate !== event.startDate
+  const when = time ?? (isRange ? formatEventDates(event.startDate, event.endDate) : 'All day')
+
+  const under = [
+    cleanEntityName(event.organizerName),
     formatEventLocation(event),
-    firmLabelFor(event.organizerName, event.name) ?? undefined,
     event.costType === 'free' ? 'Free' : undefined,
   ]
     .filter(Boolean)
@@ -425,29 +424,48 @@ function renderEvent(event: IndustryEvent): string {
 
   return `
     <tr>
-      <td class="fops-row">
-        <div><a href="https://fundopshq.com/events/${escapeHtml(event.slug)}" class="fops-title" style="color:${INK};text-decoration:none;font-weight:400;" target="_blank">${nameHtml}</a></div>
-        <div class="fops-emeta" style="font-family:${FONT_MONO};font-size:10px;line-height:15px;color:${INK_MUTED};text-transform:uppercase;margin:2px 0 0;">${escapeHtml(meta)}</div>
+      <td class="fops-etime" style="font-family:${FONT_MONO};font-size:10px;line-height:16px;color:${INK_MUTED};text-transform:uppercase;padding:6px 10px 6px 0;vertical-align:top;white-space:nowrap;width:78px;">${escapeHtml(when)}</td>
+      <td style="padding:6px 0;vertical-align:top;border-bottom:1px solid ${HAIRLINE};">
+        <a href="https://fundopshq.com/events/${escapeHtml(event.slug)}" style="color:${INK};text-decoration:none;font-family:${FONT_SERIF};font-size:13px;font-weight:700;line-height:1.3;" target="_blank">${escapeHtml(event.name)}</a>
+        <div style="font-family:${FONT_MONO};font-size:10px;line-height:15px;color:${INK_MUTED};text-transform:uppercase;margin-top:2px;">${escapeHtml(under)}</div>
       </td>
     </tr>`
 }
 
 function renderEventsSection(events: IndustryEvent[]): string {
   if (events.length === 0) return ''
+
+  // Group consecutive events by start date — the list arrives date-sorted.
+  const days: { heading: string; events: IndustryEvent[] }[] = []
+  for (const event of events) {
+    const heading = eventDayHeading(event.startDate)
+    const last = days[days.length - 1]
+    if (last && last.heading === heading) last.events.push(event)
+    else days.push({ heading, events: [event] })
+  }
+
+  const dayBlocks = days
+    .map(
+      (day) => `
+              <div class="fops-eday" style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:1.5px;color:${INK};text-transform:uppercase;padding:14px 0 4px;border-bottom:2px solid ${INK};">${escapeHtml(day.heading)}</div>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                ${day.events.map(renderEvent).join('')}
+              </table>`,
+    )
+    .join('')
+
   return `
           <tr>
             <td class="fops-bg-cream fops-px" style="padding:4px 16px 12px;background-color:${CREAM};">
               <div class="fops-eyebrow" style="margin-bottom:4px;">
                 Section B &nbsp;&middot;&nbsp; Events
               </div>
-              <div class="fops-serif fops-ink" style="font-size:20px;font-weight:700;line-height:1.2;margin-bottom:4px;">
+              <div class="fops-serif fops-ink" style="font-size:20px;font-weight:700;line-height:1.2;margin-bottom:2px;">
                 The next <span class="fops-amber" style="font-style:italic;">two weeks.</span>
               </div>
-              <div class="fops-emeta" style="font-family:${FONT_MONO};font-size:10px;line-height:15px;color:${INK_MUTED};text-transform:uppercase;margin:0 0 10px;">Every date verified at the organizer</div>
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-                ${events.map(renderEvent).join('')}
-              </table>
-              <div style="padding-top:10px;">
+              <div style="font-family:${FONT_MONO};font-size:10px;line-height:15px;color:${INK_MUTED};text-transform:uppercase;">Every date verified at the organizer</div>
+              ${dayBlocks}
+              <div style="padding-top:12px;">
                 <a href="https://fundopshq.com/events" class="fops-mono" style="color:${INK};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;">Full calendar &rarr;</a>
                 <span style="color:rgba(90,107,130,0.4);">&nbsp;&nbsp;</span>
                 <a href="https://fundopshq.com/events/submit" class="fops-mono" style="color:${INK};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;">Submit an event &mdash; free</a>
@@ -459,35 +477,22 @@ function renderEventsSection(events: IndustryEvent[]): string {
 // ─── Single story row ──────────────────────────────────────────────────────
 
 function renderArticle(article: ArticleGroup['articles'][0]): string {
-  // Fund size was removed from the row on 2026-08-30 (Danny: "I don't like
-  // the dollar amounts... I just like the headline more"). The figure is
-  // almost always in the headline or the blurb already; it still drives the
-  // subject line, which is where isLikelyAumLeak is now applied.
+  // Headlines only (2026-08-30, Danny: "The news section of the email should
+  // be like the website now. It should be headlines only"). The summary blurb
+  // and source attribution are gone — the site's stream carries neither, and
+  // the headline plus its bolded actor is what a reader scans. The firm still
+  // appears above the headline in the rare case the headline omits it.
   const identity = renderMetaIdentity(article)
   const metaLine = identity ? `<div class="fops-m">${identity}</div>` : ''
-
-  const extraSources = article.alsoCoveredBy?.length
-    ? ` +${article.alsoCoveredBy.length}`
-    : ''
-  const sourceHtml = article.sourceName
-    ? ` <span class="fops-source">&mdash; ${escapeHtml(article.sourceName)}${extraSources}</span>`
-    : ''
-
-  const blurbHtml = article.tldr
-    ? `<div class="fops-blurb">${escapeHtml(truncateBlurb(article.tldr))}${sourceHtml}</div>`
-    : `<div class="fops-blurb">${sourceHtml}</div>`
 
   return `
     <tr>
       <td class="fops-row">
         ${metaLine}
         <div><a href="${escapeHtml(article.sourceUrl)}" class="fops-title" style="color:${INK};text-decoration:none;font-weight:400;" target="_blank">${renderHeadline(article)}</a></div>
-        ${blurbHtml}
       </td>
     </tr>`
 }
-
-// ─── Category section head ─────────────────────────────────────────────────
 
 function renderCategory(group: ArticleGroup): string {
   const categoryClass = CATEGORY_CLASS[group.category] ?? 'fops-c-default'
