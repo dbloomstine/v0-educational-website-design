@@ -129,12 +129,14 @@ export default function AboutPage() {
             The editor
           </h2>
           <div className="mt-4 flex flex-col gap-5 sm:flex-row sm:items-start">
+            {/* Transparent cutout: it needs a light backdrop or the dark suit
+                vanishes into the page. Amber matches the welcome email. */}
             <Image
               src="/danny-headshot-nobg.png"
               alt="Danny Bloomstine"
               width={112}
               height={112}
-              className="h-28 w-28 shrink-0 rounded-full bg-card object-cover ring-1 ring-foreground/10"
+              className="h-28 w-28 shrink-0 rounded-full bg-amber-400 object-cover ring-1 ring-foreground/10"
             />
             <div className="min-w-0">
               <p className="text-[15px] font-semibold text-foreground">Danny Bloomstine</p>
