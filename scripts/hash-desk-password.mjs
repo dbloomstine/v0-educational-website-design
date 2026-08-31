@@ -24,7 +24,7 @@ const salt = randomBytes(16)
 const hash = scryptSync(pw, salt, 64)
 
 console.log('\nAdd these to .env.local and to Vercel (Production + Preview):\n')
-console.log(`CRM_PASSWORD_HASH=scrypt$${salt.toString('hex')}$${hash.toString('hex')}`)
+console.log(`CRM_PASSWORD_HASH=scrypt:${salt.toString('hex')}:${hash.toString('hex')}`)
 console.log(`CRM_SESSION_SECRET=${randomBytes(32).toString('hex')}`)
 console.log('\nAlso needed:')
 console.log('CRM_SUPABASE_URL=https://chyawefctesysoioxuwl.supabase.co')

@@ -28,7 +28,7 @@ the site's project.
 ```
 CRM_SUPABASE_URL=https://chyawefctesysoioxuwl.supabase.co
 CRM_SUPABASE_SERVICE_ROLE_KEY=<danny-lead-crm dashboard → Settings → API>
-CRM_PASSWORD_HASH=scrypt$<salt>$<hash>
+CRM_PASSWORD_HASH=scrypt:<salt>:<hash>
 CRM_SESSION_SECRET=<32 random bytes, hex>
 ```
 
@@ -49,7 +49,9 @@ surface, a password-reset flow, and an anon key in the browser for no benefit.
 Instead:
 
 - `proxy.ts` gates `/desk/*` and `/api/desk/*` (Next 16 renamed `middleware` → `proxy`)
-- Password verified with scrypt + `timingSafeEqual` in `lib/crm/password.ts` (Node runtime)
+- Password verified with scrypt + `timingSafeEqual` in `lib/crm/password.ts` (Node runtime).
+  The hash uses `:` separators, not `$` — dotenv expansion would treat `$salt`
+  as a variable reference and silently blank it out.
 - Session is an HMAC-SHA256 token, 12h TTL, verified with Web Crypto in
   `lib/crm/session.ts` so it runs on the edge
 - Cookie is `httpOnly`, `secure` in production, `sameSite=strict` — no Supabase
