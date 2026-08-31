@@ -99,9 +99,9 @@ function NewsFeedSkeleton() {
         <div className="h-8 w-32 rounded-lg bg-muted" />
         <div className="h-8 w-20 rounded-lg bg-muted" />
       </div>
-      <div className="overflow-hidden rounded-lg border border-border bg-card">
+      <div>
         {Array.from({ length: 16 }).map((_, i) => (
-          <div key={i} className="flex items-center gap-2 border-b border-border/40 px-3 py-1.5">
+          <div key={i} className="flex items-center gap-2 px-2 py-1.5">
             <div className="h-4 flex-1 rounded bg-muted" />
             <div className="h-4 w-12 rounded bg-muted" />
             <div className="h-4 w-24 rounded bg-muted" />
