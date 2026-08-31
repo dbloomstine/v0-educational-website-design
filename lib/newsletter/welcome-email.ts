@@ -124,7 +124,7 @@ export function renderWelcomeEmail(unsubscribeUrl: string): string {
               </p>
 
               <p style="margin:0 0 16px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
-                I built FundOpsHQ because I wanted one place to keep up with what&rsquo;s actually happening across the funds industry — fund launches, closes, LP commitments, exec moves, regulatory shifts and deals — without hopping between a dozen trade publications every morning. Starting tomorrow, you&rsquo;ll get a tight rundown of the biggest stories in your inbox every morning, before the market opens.
+                I built FundOpsHQ because I wanted one place to keep up with what&rsquo;s actually happening across the funds industry — fund launches, closes, LP commitments, exec moves, regulatory shifts and deals, plus which conferences and webinars are actually worth the trip — without hopping between a dozen trade publications and event sites every morning. Starting tomorrow, you&rsquo;ll get a tight rundown of the biggest stories in your inbox every morning, before the market opens.
               </p>
 
               <p style="margin:24px 0 10px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};font-weight:700;">
@@ -134,11 +134,12 @@ export function renderWelcomeEmail(unsubscribeUrl: string): string {
                 <li style="margin-bottom:8px;">Fund news organized by strategy — PE, VC, credit, hedge, real estate, infrastructure, secondaries</li>
                 <li style="margin-bottom:8px;">Dedicated <strong>LP Commitments</strong> and <strong>Service Providers</strong> sections — pension and institutional allocations, plus the law firms, fund admins, and fund finance desks working around them</li>
                 <li style="margin-bottom:8px;">People Moves, M&amp;A, and regulatory news rounding out the brief</li>
-                <li>Every story links to the original reporting, with duplicate coverage from 200+ publications collapsed into one line</li>
+                <li style="margin-bottom:8px;">Every story links to the original reporting, with duplicate coverage from 200+ publications collapsed into one line</li>
+                <li><strong>Section B &mdash; Events:</strong> the next two weeks of industry conferences, forums, and free webinars across North America, grouped by day. Every date verified at the organizer, never scraped from an aggregator</li>
               </ul>
 
               <p style="margin:0 0 16px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
-                Don&rsquo;t want to wait until morning? The full newsroom updates all day at <a href="https://fundopshq.com/#news" style="color:${INK};text-decoration:underline;font-weight:600;">fundopshq.com</a>.
+                Don&rsquo;t want to wait until morning? The newsroom updates all day at <a href="https://fundopshq.com/news" style="color:${INK};text-decoration:underline;font-weight:600;">fundopshq.com/news</a>, and the full industry calendar &mdash; filterable by city, topic and date &mdash; lives at <a href="https://fundopshq.com/events" style="color:${INK};text-decoration:underline;font-weight:600;">fundopshq.com/events</a>. Hosting something? <a href="https://fundopshq.com/events/submit" style="color:${INK};text-decoration:underline;font-weight:600;">Submit an event free</a>.
               </p>
 
               <!-- Feedback callout -->

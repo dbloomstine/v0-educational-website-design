@@ -4,22 +4,22 @@ import Image from 'next/image'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
-import { ArrowRight, Linkedin, Mail, Newspaper, Building2 } from 'lucide-react'
+import { ArrowRight, CalendarDays, Linkedin, Mail, Newspaper, Building2 } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'About FundOpsHQ',
   description:
-    'FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed and morning newsletter. By Danny Bloomstine.',
+    'FundOpsHQ is the hub for the investment funds industry — real-time fund news, the verified industry events calendar, and the FundOps Daily morning newsletter. By Danny Bloomstine.',
   openGraph: {
     title: 'About FundOpsHQ',
-    description: 'The hub for the investment funds industry. Home to the FundOps Daily news feed and morning newsletter.',
+    description: 'The hub for the investment funds industry — fund news, the industry events calendar, and the FundOps Daily morning newsletter.',
     type: 'website',
     url: 'https://fundopshq.com/about',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'About FundOpsHQ',
-    description: 'The hub for the investment funds industry. Home to the FundOps Daily news feed and morning newsletter.',
+    description: 'The hub for the investment funds industry — fund news, the industry events calendar, and the FundOps Daily morning newsletter.',
   },
   alternates: {
     canonical: 'https://fundopshq.com/about',
@@ -36,20 +36,30 @@ const today = new Date().toLocaleDateString('en-US', {
 const PILLARS = [
   {
     no: '01',
-    eyebrow: 'The Wire',
+    eyebrow: 'Section A',
     title: 'Real-time fund news',
     body:
       'A continuously updated feed of fund launches, capital raises, LP commitments, executive moves, M&A and regulatory actions across PE, VC, credit, hedge and the rest of alternatives — sourced from 200+ publications and de-duplicated into single stories.',
     icon: Newspaper,
-    href: '/',
-    cta: 'Read the wire',
+    href: '/news',
+    cta: 'Read the news',
   },
   {
     no: '02',
+    eyebrow: 'Section B',
+    title: 'The industry events calendar',
+    body:
+      'Conferences, summits, forums, training and free webinars for GPs, LPs and fund service providers across North America — filterable by city, topic and date, and subscribable to your own calendar. Every date is verified at the organizer\'s own page rather than copied from an aggregator, and anyone can submit an event free.',
+    icon: CalendarDays,
+    href: '/events',
+    cta: 'Browse the calendar',
+  },
+  {
+    no: '03',
     eyebrow: 'Morning Edition',
     title: 'FundOps Daily newsletter',
     body:
-      'Every morning before the open. The day\'s fund moves organized by strategy, plus dedicated LP Commitments, Service Providers, People Moves and Deals sections — dense, scannable, written like a newsroom desk note.',
+      'Every morning before the open: the day\'s fund moves as a scannable run of headlines organized by strategy, followed by the next two weeks of industry events grouped by day. One email, both halves of the brief.',
     icon: Mail,
     href: '/#subscribe',
     cta: 'Subscribe free',
@@ -166,7 +176,7 @@ export default function AboutPage() {
               </h1>
 
               <p className="mt-8 max-w-2xl text-lg sm:text-xl text-muted-foreground leading-relaxed">
-                FundOpsHQ is the news desk and morning briefing for GPs, LPs, and the fund
+                FundOpsHQ is the news desk, events calendar and morning briefing for GPs, LPs, and the fund
                 service providers working around them — covering PE, VC, credit, hedge, real estate and the
                 rest of the alternative investment industry. Built and edited by{' '}
                 <span className="text-foreground font-medium">Danny Bloomstine</span>.
@@ -185,7 +195,7 @@ export default function AboutPage() {
                   <span aria-hidden="true" className="text-foreground/20">·</span>
                   <span>Two Channels</span>
                 </span>
-                <span className="hidden sm:inline">News · Newsletter</span>
+                <span className="hidden sm:inline">News · Events · Newsletter</span>
               </div>
             </div>
           </div>
@@ -202,7 +212,7 @@ export default function AboutPage() {
                   fontVariationSettings: '"opsz" 144',
                 }}
               >
-                Two ways{' '}
+                Three ways{' '}
                 <span
                   className="italic"
                   style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
