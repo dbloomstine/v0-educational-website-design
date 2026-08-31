@@ -4,36 +4,33 @@ import Link from 'next/link'
 import { ExternalLink, Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
-  EVENT_KIND_LABELS,
   COST_LABELS,
   compactTimeNote,
   formatEventDates,
   formatEventLocation,
 } from '@/lib/events/constants'
-import { firmLabelFor, splitHeadlineByEntities } from '@/lib/news/constants'
+import { cleanEntityName } from '@/lib/news/constants'
 import type { IndustryEvent } from '@/lib/events/types'
 
+/**
+ * Board row — the same shape as Section B of the daily email and the homepage
+ * rail (2026-08-30): the time sits in a narrow left column so a day scans by
+ * clock, the event name carries the row, and organizer / city / cost recede
+ * beneath it. The board keeps the full cost label (it is a planning surface);
+ * the email and rail only flag free events.
+ */
 export function EventRow({ event }: { event: IndustryEvent }) {
-  const kind = EVENT_KIND_LABELS[event.eventKind] ?? EVENT_KIND_LABELS.other
   const cost = COST_LABELS[event.costType] ?? COST_LABELS.paid
-  const location = formatEventLocation(event)
-  const dates = formatEventDates(event.startDate, event.endDate)
   const time = compactTimeNote(event.timeNote)
+  const isRange = Boolean(event.endDate && event.endDate !== event.startDate)
+  const when = time ?? (isRange ? formatEventDates(event.startDate, event.endDate) : 'All day')
 
-  // Free events show "Free" in green; paid ones show the cost-type label.
-  // Price notes live on the detail page — the row carries main info only.
-  const costText = event.costType === 'free' ? 'Free' : cost.label
+  const under = [cleanEntityName(event.organizerName), formatEventLocation(event)]
+    .filter(Boolean)
+    .join(' · ')
 
-  // Same treatment the news rows give firms: the organizer is bolded inside
-  // the event name where it leads, and only named separately when it isn't.
-  const nameSegments = splitHeadlineByEntities(event.name, [event.organizerName])
-  const showOrganizer = firmLabelFor(event.organizerName, event.name)
-  const nameNodes = nameSegments.map((seg, i) =>
-    seg.bold ? <strong key={i} className="font-semibold">{seg.text}</strong> : <span key={i}>{seg.text}</span>,
-  )
-
-  // Row click → our detail page; the external icon jumps straight to the
-  // organizer (with a count-only click beacon).
+  // The row links to our detail page; the icon jumps straight to the organizer
+  // with a count-only beacon. A button, not an anchor — anchors cannot nest.
   const beacon = () => {
     try {
       navigator.sendBeacon(`/api/events/click?id=${event.id}`)
@@ -45,35 +42,20 @@ export function EventRow({ event }: { event: IndustryEvent }) {
   return (
     <Link
       href={`/events/${event.slug}`}
-      className="group block rounded transition-colors hover:bg-accent/40"
+      className="group grid grid-cols-[76px_1fr] items-baseline gap-x-3 border-b border-border/30 px-2 py-1.5 transition-colors hover:bg-accent/40 last:border-b-0 sm:grid-cols-[92px_1fr_86px]"
     >
-      {/* ── Desktop: single line ────────────────────────────── */}
-      <div className="hidden lg:grid items-center gap-x-3 px-2 py-[3px] grid-cols-[148px_64px_1fr_160px_76px]">
-        {/* Date · time */}
-        <div className="font-mono text-[12px] tabular-nums text-foreground/90 truncate">
-          {dates}
-          {time && <span className="text-[10px] text-muted-foreground/70"> · {time}</span>}
-        </div>
+      <span className="whitespace-nowrap font-mono text-[10px] uppercase tabular-nums text-muted-foreground/70">
+        {when}
+      </span>
 
-        {/* Kind — quiet mono text, no pill */}
-        <div className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground/60 truncate">
-          {kind.label}
-        </div>
-
-        {/* Name — organizer */}
-        <div className="flex items-center gap-1.5 min-w-0 pr-2">
+      <span className="min-w-0">
+        <span className="flex items-center gap-1.5">
           {event.isFeatured && (
             <Star className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400" aria-label="Featured" />
           )}
-          <span className="truncate text-[13px] font-normal leading-snug text-foreground group-hover:text-amber-400 transition-colors">
-            {nameNodes}
+          <span className="text-[13.5px] font-semibold leading-snug text-foreground transition-colors group-hover:text-amber-400">
+            {event.name}
           </span>
-          {showOrganizer && (
-            <span className="shrink-0 text-[10px] font-mono uppercase tracking-wide text-muted-foreground/50">
-              {showOrganizer}
-            </span>
-          )}
-          {/* button, not <a> — anchors can't nest inside the row's Link */}
           <button
             type="button"
             aria-label={`${event.name} — organizer site`}
@@ -83,40 +65,28 @@ export function EventRow({ event }: { event: IndustryEvent }) {
               beacon()
               window.open(event.eventUrl, '_blank', 'noopener,noreferrer')
             }}
-            className="shrink-0 text-muted-foreground/0 group-hover:text-muted-foreground/60 hover:!text-amber-400 transition-colors"
+            className="shrink-0 text-muted-foreground/0 transition-colors group-hover:text-muted-foreground/60 hover:!text-amber-400"
           >
             <ExternalLink className="h-3 w-3" />
           </button>
-        </div>
-
-        {/* Location */}
-        <div className="truncate text-[12px] text-muted-foreground">
-          {location}
-          {event.eventFormat === 'hybrid' && (
-            <span className="ml-1.5 text-[10px] text-muted-foreground/60">· Hybrid</span>
-          )}
-        </div>
-
-        {/* Cost */}
-        <div className={cn('truncate text-[12px] font-medium', event.costType === 'free' ? 'text-emerald-400' : cost.color)} title={event.priceNote ?? undefined}>
-          {costText}
-        </div>
-      </div>
-
-      {/* ── Mobile: two lines ───────────────────────────────── */}
-      <div className="lg:hidden px-2 py-1">
-        <span className="text-[13.5px] font-normal leading-snug text-foreground line-clamp-2">
-          {event.isFeatured && (
-            <Star className="mr-1 inline h-3 w-3 fill-amber-400 text-amber-400" aria-label="Featured" />
-          )}
-          {nameNodes}
         </span>
         <span className="mt-0.5 block truncate font-mono text-[9.5px] uppercase tracking-wide text-muted-foreground/60">
-          {[dates + (time ? ` · ${time}` : ''), location, showOrganizer ?? undefined, kind.label, costText]
-            .filter(Boolean)
-            .join(' · ')}
+          {under}
+          <span className="sm:hidden">
+            {event.costType === 'free' ? ' · Free' : ` · ${cost.label}`}
+          </span>
         </span>
-      </div>
+      </span>
+
+      <span
+        className={cn(
+          'hidden text-right text-[11px] font-medium sm:block',
+          event.costType === 'free' ? 'text-emerald-400' : cost.color,
+        )}
+        title={event.priceNote ?? undefined}
+      >
+        {event.costType === 'free' ? 'Free' : cost.label}
+      </span>
     </Link>
   )
 }

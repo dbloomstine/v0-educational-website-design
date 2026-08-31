@@ -11,8 +11,7 @@ import {
   EVENT_FORMAT_LABELS,
   EVENT_ASSET_CLASSES,
   EVENT_TOPIC_LABELS,
-  formatMonthHeader,
-  formatWeekHeader,
+  formatEventDayHeading,
 } from '@/lib/events/constants'
 import type { EventFeedResponse, IndustryEvent, EventFacetCounts } from '@/lib/events/types'
 
@@ -203,14 +202,13 @@ export function EventsBoard() {
     fetchFeed(offset, true)
   }
 
-  // Group the date-sorted list under month headers (Gary's Guide-style).
-  // Trip view: with a city filter active, switch to WEEK headers — the
-  // traveler's question is "what can I hit in one trip", not "what's in
-  // October".
-  const tripView = Boolean(city)
+  // Grouped by DAY, matching the daily email and the homepage rail. Day
+  // headings supersede the old month/week split: they are finer than the trip
+  // view's week grouping, so "what can I hit in one trip" still reads off
+  // consecutive headings.
   const monthGroups: { header: string; events: IndustryEvent[] }[] = []
   for (const event of events) {
-    const header = tripView ? formatWeekHeader(event.startDate) : formatMonthHeader(event.startDate)
+    const header = formatEventDayHeading(event.startDate)
     const last = monthGroups[monthGroups.length - 1]
     if (last && last.header === header) {
       last.events.push(event)
@@ -580,7 +578,7 @@ export function EventsBoard() {
             {monthGroups.map((group) => (
               <div key={group.header}>
                 {/* Month divider */}
-                <div className="mt-3 mb-1 px-2 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-amber-400/70 first:mt-0">
+                <div className="mt-3 mb-1 border-b-2 border-foreground/20 px-2 pb-1 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/80 first:mt-0">
                   {group.header}
                 </div>
                 {group.events.map((event) => (
