@@ -17,7 +17,7 @@ export function HomeEventsStrip({ events, rail = false }: { events: IndustryEven
   if (events.length === 0) return null
 
   return (
-    <div className="rounded-lg border border-border bg-card overflow-hidden">
+    <div className={rail ? '' : 'rounded-lg border border-border bg-card overflow-hidden'}>
       {events.map((event) => {
         const kind = EVENT_KIND_LABELS[event.eventKind] ?? EVENT_KIND_LABELS.other
         const cost = COST_LABELS[event.costType] ?? COST_LABELS.paid
@@ -33,7 +33,7 @@ export function HomeEventsStrip({ events, rail = false }: { events: IndustryEven
             <Link
               key={event.id}
               href={`/events/${event.slug}`}
-              className="group grid grid-cols-[56px_1fr_84px] items-baseline gap-x-2 border-b border-border/40 px-2.5 py-1 transition-colors hover:bg-accent/40 last:border-b-0"
+              className="group grid grid-cols-[56px_1fr_84px] items-baseline gap-x-2 rounded px-2 py-1 lg:py-[3px] transition-colors hover:bg-accent/40"
             >
               <span className="whitespace-nowrap font-mono text-[11px] tabular-nums text-muted-foreground/70">
                 {formatEventDates(event.startDate, event.endDate)}
@@ -76,7 +76,10 @@ export function HomeEventsStrip({ events, rail = false }: { events: IndustryEven
       })}
 
       {/* CTA row */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border bg-muted/30 px-4 py-2.5">
+      <div className={cn(
+        'flex flex-wrap items-center justify-between gap-3',
+        rail ? 'mt-2 px-2' : 'border-t border-border bg-muted/30 px-4 py-2.5',
+      )}>
         <Link
           href="/events"
           className="group inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-amber-400 hover:text-amber-300 transition-colors"
