@@ -148,6 +148,15 @@ function normalizeForMatch(s: string): string {
 }
 
 /**
+ * Strip parenthetical asides from an entity name — "AdvancingVC (Tim Hsia &
+ * Neil Devani)" → "AdvancingVC". They break core extraction (the scan stops
+ * at the "&" inside the parens) and are noise wherever the name is displayed.
+ */
+export function cleanEntityName(name: string): string {
+  return name.replace(/\s*\([^)]*\)/g, '').replace(/\s+/g, ' ').trim()
+}
+
+/**
  * The firm label to show beside a headline, or null when the headline
  * already identifies the firm.
  *
@@ -160,7 +169,9 @@ function normalizeForMatch(s: string): string {
  * keeps its "Victory Capital" label, and a headline that only says "a16z"
  * keeps "Andreessen Horowitz".
  */
-export function firmLabelFor(firmName: string | null, title: string): string | null {
+export function firmLabelFor(rawFirmName: string | null, title: string): string | null {
+  if (!rawFirmName) return null
+  const firmName = cleanEntityName(rawFirmName)
   if (!firmName) return null
   const haystack = normalizeForMatch(title)
   if (!haystack) return firmName
@@ -225,7 +236,7 @@ export function splitHeadlineByEntities(
 ): HeadlineSegment[] {
   const candidates: string[] = []
   for (const raw of entities) {
-    const name = raw?.trim()
+    const name = raw ? cleanEntityName(raw) : ''
     if (!name || name.length < 3) continue
     candidates.push(name)
     const core = distinctiveCore(name)
