@@ -55,3 +55,17 @@ describe('firmLabelFor', () => {
     expect(firmLabelFor('Blackstone', '')).toBe('Blackstone')
   })
 })
+
+describe('parenthetical asides', () => {
+  it('ignores a parenthetical when deciding redundancy', () => {
+    // The "&" inside the parens used to halt core extraction, so the whole
+    // name leaked into the meta line beside a title that already said it.
+    expect(firmLabelFor('AdvancingVC (Tim Hsia & Neil Devani)', 'AdvancingVC Summit')).toBeNull()
+  })
+
+  it('strips the aside from the label it does show', () => {
+    expect(firmLabelFor('AdvancingVC (Tim Hsia & Neil Devani)', 'A summit for founders')).toBe(
+      'AdvancingVC',
+    )
+  })
+})

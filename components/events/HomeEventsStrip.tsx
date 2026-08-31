@@ -7,6 +7,7 @@ import {
   formatEventDates,
   formatEventLocation,
 } from '@/lib/events/constants'
+import { firmLabelFor, splitHeadlineByEntities } from '@/lib/news/constants'
 import type { IndustryEvent } from '@/lib/events/types'
 
 // Homepage "Section B · The Circuit" — a dense server-rendered strip of the
@@ -22,30 +23,47 @@ export function HomeEventsStrip({ events, rail = false }: { events: IndustryEven
         const kind = EVENT_KIND_LABELS[event.eventKind] ?? EVENT_KIND_LABELS.other
         const cost = COST_LABELS[event.costType] ?? COST_LABELS.paid
         const costText = event.costType === 'free' ? 'Free' : cost.label
-        // Rail mode (homepage right column): two-line rows — dates+meta on top,
-        // bold name below — so a ~430px column still reads instantly.
-        // Rail mode (homepage right column): a plain two-column table —
-        // date, then event name with its city trailing in muted text. The
-        // earlier two-line treatment (uppercase mono meta line stacked over
-        // the name) read as designed rather than scannable.
+
+        // Rail mode (homepage right column): the same idiom as the news
+        // stream, because a three-column table could not fit an event name in
+        // a ~440px rail — "McGuireWoods Emerging Ma…" was the norm. The name
+        // now takes the full width and wraps; date, city and organizer drop to
+        // a quiet meta line underneath.
         if (rail) {
+          // Most event names lead with their organizer ("McGuireWoods
+          // Emerging Manager Conference"), so bold it inside the name and
+          // only add it to the meta line when the name leaves it out — the
+          // same rule the news rows use for firms.
+          const nameSegments = splitHeadlineByEntities(event.name, [event.organizerName])
+          const showOrganizer = firmLabelFor(event.organizerName, event.name)
+          const meta = [
+            formatEventDates(event.startDate, event.endDate),
+            formatEventLocation(event),
+            showOrganizer ?? undefined,
+            event.costType === 'free' ? 'Free' : undefined,
+          ]
+            .filter(Boolean)
+            .join(' · ')
+
           return (
             <Link
               key={event.id}
               href={`/events/${event.slug}`}
-              className="group grid grid-cols-[56px_1fr_84px] items-baseline gap-x-2 rounded px-2 py-1 lg:py-[3px] transition-colors hover:bg-accent/40"
+              className="group block rounded px-2 py-1 lg:py-[3px] transition-colors hover:bg-accent/40"
             >
-              <span className="whitespace-nowrap font-mono text-[11px] tabular-nums text-muted-foreground/70">
-                {formatEventDates(event.startDate, event.endDate)}
+              {/* No `block` on the clamped name — line-clamp sets display to
+                  -webkit-box and `block` would override it. */}
+              <span className="text-[13.5px] font-normal leading-snug text-foreground line-clamp-2 transition-colors group-hover:text-amber-400">
+                {nameSegments.map((seg, i) =>
+                  seg.bold ? (
+                    <strong key={i} className="font-semibold">{seg.text}</strong>
+                  ) : (
+                    <span key={i}>{seg.text}</span>
+                  ),
+                )}
               </span>
-              <span className="min-w-0 truncate text-[13px] font-semibold leading-snug text-foreground transition-colors group-hover:text-amber-400">
-                {event.name}
-              </span>
-              {/* City gets its own column so it survives a long event name —
-                  when the two shared a cell the location was always the part
-                  that got truncated away. */}
-              <span className="truncate text-right text-[11px] text-muted-foreground/70">
-                {formatEventLocation(event)}
+              <span className="mt-0.5 block truncate font-mono text-[9.5px] uppercase tracking-wide text-muted-foreground/60">
+                {meta}
               </span>
             </Link>
           )
