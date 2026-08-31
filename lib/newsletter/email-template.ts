@@ -19,7 +19,12 @@
 import type { ArticleGroup } from './query-articles'
 import { isLikelyAumLeak } from './query-articles'
 import { cleanEntityName, splitHeadlineByEntities } from '@/lib/news/constants'
-import { formatEventDates, formatEventLocation, compactTimeNote } from '@/lib/events/constants'
+import {
+  formatEventDates,
+  formatEventLocation,
+  formatEventDayHeading,
+  compactTimeNote,
+} from '@/lib/events/constants'
 import type { IndustryEvent } from '@/lib/events/types'
 import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponsors'
 
@@ -370,14 +375,6 @@ function renderHeadline(article: ArticleGroup['articles'][0]): string {
 
 // ─── Events (Section B) ────────────────────────────────────────────────────
 
-/** "MONDAY, SEP 1" — the date heading each group of events sits under. */
-function eventDayHeading(startDate: string): string {
-  const [y, m, d] = startDate.split('-').map(Number)
-  const dt = new Date(Date.UTC(y, m - 1, d))
-  const weekday = dt.toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' })
-  const month = dt.toLocaleDateString('en-US', { month: 'short', timeZone: 'UTC' })
-  return `${weekday}, ${month} ${d}`.toUpperCase()
-}
 
 /**
  * One event row, Gary's Guide-style: the time sits in a narrow left column so
@@ -413,7 +410,7 @@ function renderEventsSection(events: IndustryEvent[]): string {
   // Group consecutive events by start date — the list arrives date-sorted.
   const days: { heading: string; events: IndustryEvent[] }[] = []
   for (const event of events) {
-    const heading = eventDayHeading(event.startDate)
+    const heading = formatEventDayHeading(event.startDate)
     const last = days[days.length - 1]
     if (last && last.heading === heading) last.events.push(event)
     else days.push({ heading, events: [event] })

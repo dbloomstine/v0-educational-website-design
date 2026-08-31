@@ -4,11 +4,50 @@ import { cn } from '@/lib/utils'
 import {
   EVENT_KIND_LABELS,
   COST_LABELS,
+  compactTimeNote,
   formatEventDates,
+  formatEventDayHeading,
   formatEventLocation,
 } from '@/lib/events/constants'
-import { firmLabelFor, splitHeadlineByEntities } from '@/lib/news/constants'
+import { cleanEntityName } from '@/lib/news/constants'
 import type { IndustryEvent } from '@/lib/events/types'
+
+/**
+ * One event, in the format Danny approved in the daily email: time in a
+ * narrow left column, bold name, organizer and city beneath. Multi-day events
+ * show their range in the time column; undated ones read "All day".
+ */
+export function EventLine({ event }: { event: IndustryEvent }) {
+  const time = compactTimeNote(event.timeNote)
+  const isRange = Boolean(event.endDate && event.endDate !== event.startDate)
+  const when = time ?? (isRange ? formatEventDates(event.startDate, event.endDate) : 'All day')
+  const under = [
+    cleanEntityName(event.organizerName),
+    formatEventLocation(event),
+    event.costType === 'free' ? 'Free' : null,
+  ]
+    .filter(Boolean)
+    .join(' · ')
+
+  return (
+    <Link
+      href={`/events/${event.slug}`}
+      className="group grid grid-cols-[68px_1fr] items-baseline gap-x-3 border-b border-border/30 px-1 py-1.5 transition-colors hover:bg-accent/40 last:border-b-0"
+    >
+      <span className="whitespace-nowrap font-mono text-[10px] uppercase tabular-nums text-muted-foreground/70">
+        {when}
+      </span>
+      <span className="min-w-0">
+        <span className="block text-[13.5px] font-semibold leading-snug text-foreground transition-colors group-hover:text-amber-400">
+          {event.name}
+        </span>
+        <span className="mt-0.5 block truncate font-mono text-[9.5px] uppercase tracking-wide text-muted-foreground/60">
+          {under}
+        </span>
+      </span>
+    </Link>
+  )
+}
 
 // Homepage "Section B · Events" — a dense server-rendered strip of the
 // next ~10 upcoming events. Same row idiom as the /events board, no client
@@ -17,6 +56,50 @@ import type { IndustryEvent } from '@/lib/events/types'
 export function HomeEventsStrip({ events, rail = false }: { events: IndustryEvent[]; rail?: boolean }) {
   if (events.length === 0) return null
 
+  // Rail mode (homepage): the same shape as Section B of the daily email —
+  // day headings, the time in a narrow left column so a day scans by clock,
+  // bold title, organizer and city beneath.
+  if (rail) {
+    const days: { heading: string; events: IndustryEvent[] }[] = []
+    for (const event of events) {
+      const heading = formatEventDayHeading(event.startDate)
+      const last = days[days.length - 1]
+      if (last && last.heading === heading) last.events.push(event)
+      else days.push({ heading, events: [event] })
+    }
+
+    return (
+      <div>
+        {days.map((day) => (
+          <div key={day.heading}>
+            <div className="mt-3 border-b-2 border-foreground/20 pb-1 pt-1 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/80 first:mt-0">
+              {day.heading}
+            </div>
+            {day.events.map((event) => (
+              <EventLine key={event.id} event={event} />
+            ))}
+          </div>
+        ))}
+
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 px-1">
+          <Link
+            href="/events"
+            className="group inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-amber-400 hover:text-amber-300 transition-colors"
+          >
+            Full calendar
+            <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          </Link>
+          <Link
+            href="/events/submit"
+            className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Submit an event — free
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={rail ? '' : 'rounded-lg border border-border bg-card overflow-hidden'}>
       {events.map((event) => {
@@ -24,50 +107,9 @@ export function HomeEventsStrip({ events, rail = false }: { events: IndustryEven
         const cost = COST_LABELS[event.costType] ?? COST_LABELS.paid
         const costText = event.costType === 'free' ? 'Free' : cost.label
 
-        // Rail mode (homepage right column): the same idiom as the news
-        // stream, because a three-column table could not fit an event name in
-        // a ~440px rail — "McGuireWoods Emerging Ma…" was the norm. The name
-        // now takes the full width and wraps; date, city and organizer drop to
-        // a quiet meta line underneath.
-        if (rail) {
-          // Most event names lead with their organizer ("McGuireWoods
-          // Emerging Manager Conference"), so bold it inside the name and
-          // only add it to the meta line when the name leaves it out — the
-          // same rule the news rows use for firms.
-          const nameSegments = splitHeadlineByEntities(event.name, [event.organizerName])
-          const showOrganizer = firmLabelFor(event.organizerName, event.name)
-          const meta = [
-            formatEventDates(event.startDate, event.endDate),
-            formatEventLocation(event),
-            showOrganizer ?? undefined,
-            event.costType === 'free' ? 'Free' : undefined,
-          ]
-            .filter(Boolean)
-            .join(' · ')
+        // Rail mode is handled by the day-grouped block below.
+        if (rail) return null
 
-          return (
-            <Link
-              key={event.id}
-              href={`/events/${event.slug}`}
-              className="group block rounded px-2 py-1 lg:py-[3px] transition-colors hover:bg-accent/40"
-            >
-              {/* No `block` on the clamped name — line-clamp sets display to
-                  -webkit-box and `block` would override it. */}
-              <span className="text-[13.5px] font-normal leading-snug text-foreground line-clamp-2 transition-colors group-hover:text-amber-400">
-                {nameSegments.map((seg, i) =>
-                  seg.bold ? (
-                    <strong key={i} className="font-semibold">{seg.text}</strong>
-                  ) : (
-                    <span key={i}>{seg.text}</span>
-                  ),
-                )}
-              </span>
-              <span className="mt-0.5 block truncate font-mono text-[9.5px] uppercase tracking-wide text-muted-foreground/60">
-                {meta}
-              </span>
-            </Link>
-          )
-        }
         return (
           <Link
             key={event.id}

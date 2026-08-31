@@ -142,3 +142,19 @@ export function formatEventLocation(event: {
   if (event.eventFormat === 'virtual') return 'Virtual'
   return event.country ?? 'TBA'
 }
+
+/**
+ * Day heading for a grouped event list — "TUESDAY, SEP 1".
+ *
+ * Shared by the daily email and both site surfaces so the three read
+ * identically (Danny, 2026-08-30: "I like the new format of the events in the
+ * email now. Can you make that the format style for the website too?").
+ * Parsed as UTC so a date-only string never shifts a day in a west-of-UTC
+ * timezone.
+ */
+export function formatEventDayHeading(startDate: string): string {
+  const { y, m, d } = parseDateParts(startDate)
+  const dt = new Date(Date.UTC(y, m - 1, d))
+  const weekday = dt.toLocaleDateString('en-US', { weekday: 'long', timeZone: 'UTC' })
+  return `${weekday}, ${MONTH_SHORT[m - 1]} ${d}`.toUpperCase()
+}
