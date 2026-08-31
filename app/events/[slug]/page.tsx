@@ -75,7 +75,7 @@ function Masthead({ right }: { right: string }) {
           <span className="flex items-center gap-3">
             <span className="text-foreground/80">Section B</span>
             <span aria-hidden="true" className="text-foreground/20">·</span>
-            <span>The Circuit</span>
+            <span>Events</span>
           </span>
           <span className="text-amber-400/90">{right}</span>
         </div>

@@ -28,7 +28,7 @@ export function ClusterExpander({ relatedArticles, clusterSize, dateRange }: Clu
       <button
         onClick={() => setExpanded(!expanded)}
         className={cn(
-          'w-full flex items-center gap-1.5 px-4 py-1 text-[10px] hover:bg-muted/30 transition-colors border-b border-border/50',
+          'w-full flex items-center gap-1.5 rounded px-2 py-0.5 text-[10px] hover:bg-muted/30 transition-colors',
           expanded ? 'bg-muted/20 text-muted-foreground' : 'text-muted-foreground/50'
         )}
       >

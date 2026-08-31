@@ -601,9 +601,9 @@ export function NewsFeed() {
 
       {/* ── Articles ─────────────────────────────────────────── */}
       {loading ? (
-        <div className="rounded-lg border border-border bg-card overflow-hidden">
+        <div>
           {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-2 px-3 py-2 border-b border-border/40">
+            <div key={i} className="flex items-center gap-2 px-3 py-2">
               <div className="h-4 w-10 rounded bg-muted animate-pulse" />
               <div className="h-4 flex-1 rounded bg-muted animate-pulse" />
               <div className="h-4 w-16 rounded bg-muted animate-pulse" />
@@ -611,7 +611,7 @@ export function NewsFeed() {
           ))}
         </div>
       ) : articles.length === 0 ? (
-        <div className="rounded-lg border border-border bg-card py-16 text-center">
+        <div className="py-16 text-center">
           <p className="text-muted-foreground">No articles found matching your filters.</p>
           {activeFilterCount > 0 && (
             <button
@@ -624,14 +624,9 @@ export function NewsFeed() {
         </div>
       ) : (
         <>
-          {/* Dense article list */}
-          <div className="rounded-lg border border-border bg-card overflow-hidden">
-            {/* Column headers — desktop only */}
-            <div className="hidden lg:grid items-center gap-x-3 px-4 py-1 border-b border-border bg-muted/50 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 grid-cols-[1fr_52px_128px]">
-              <span className="pl-6">Headline</span>
-              <span>Date</span>
-              <span>Source</span>
-            </div>
+          {/* Dense article list — no card, no rules (2026-08-30): the site
+              reads as one continuous stream, on the archive as on the hub. */}
+          <div>
             {groups.length > 0
               ? groups.map((group, idx) => (
                   <div key={group.primaryArticle.id}>
