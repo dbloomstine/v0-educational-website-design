@@ -1,8 +1,5 @@
 import {
-  EVENT_LABELS,
-  CATEGORY_LABELS,
   decodeHtmlEntities,
-  formatFundSize,
   formatCompactTime,
   firmLabelFor,
   splitHeadlineByEntities,
@@ -22,14 +19,8 @@ export function HomeNewsTable({ groups }: { groups: ArticleGroup[] }) {
   if (groups.length === 0) return null
 
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-card">
-      {groups.map(({ primaryArticle: a, clusterSize }) => {
-        const size = formatFundSize(a.fundSizeUsd)
-        const isConverted = a.originalCurrency
-          ? a.originalCurrency !== 'USD'
-          : !!(a.fundSizeUsd && /[€£¥]|EUR |GBP |CHF /i.test(a.title))
-        const displaySize = size ? (isConverted ? `≈${size}` : size) : null
-
+    <div>
+      {groups.map(({ primaryArticle: a }) => {
         // Most fund headlines already name the firm ("GenNx360 scores $865m
         // Fund IV close"), so repeating it in the meta just steals width from
         // the headline. firmLabelFor returns null in that case.
@@ -44,23 +35,14 @@ export function HomeNewsTable({ groups }: { groups: ArticleGroup[] }) {
           a.personName,
         ])
 
-        // Source and cluster count live on /news; the hub keeps the trailing
-        // meta to the classification a scanner actually sorts on.
-        const meta = [
-          a.eventType ? EVENT_LABELS[a.eventType]?.short : undefined,
-          a.fundCategories.slice(0, 1).map((c) => CATEGORY_LABELS[c]?.label || c).join('') || undefined,
-          displaySize ?? undefined,
-        ]
-          .filter(Boolean)
-          .join(' · ')
-
         return (
           <a
             key={a.id}
             href={a.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex items-start gap-3 border-b border-border/40 px-3 py-1.5 transition-colors last:border-b-0 hover:bg-accent/30"
+            title={a.tldr ?? undefined}
+            className="group flex items-start gap-3 rounded px-2 py-1 lg:py-[3px] transition-colors hover:bg-accent/30"
           >
             {/* Wide screens fit the headline on one line, so the meta trails
                 it and the row costs a single line. Narrow screens stack, where
@@ -77,13 +59,9 @@ export function HomeNewsTable({ groups }: { groups: ArticleGroup[] }) {
                   ),
                 )}
               </span>
-              {(showFirm || meta) && (
-                <span className="mt-0.5 block truncate font-mono text-[9.5px] uppercase tracking-wide text-muted-foreground/50 lg:mt-0 lg:shrink-0">
-                  {showFirm && (
-                    <span className="font-semibold text-muted-foreground/80">{showFirm}</span>
-                  )}
-                  {showFirm && meta ? ' · ' : ''}
-                  {meta}
+              {showFirm && (
+                <span className="mt-0.5 block truncate font-mono text-[9.5px] uppercase tracking-wide text-muted-foreground/60 lg:mt-0 lg:shrink-0">
+                  {showFirm}
                 </span>
               )}
             </span>
