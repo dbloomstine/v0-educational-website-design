@@ -19,6 +19,8 @@
 import type { ArticleGroup } from './query-articles'
 import { isLikelyAumLeak } from './query-articles'
 import { firmLabelFor, splitHeadlineByEntities } from '@/lib/news/constants'
+import { formatEventDates, formatEventLocation, compactTimeNote } from '@/lib/events/constants'
+import type { IndustryEvent } from '@/lib/events/types'
 import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponsors'
 
 interface TemplateParams {
@@ -35,6 +37,12 @@ interface TemplateParams {
    * to undefined for test-send contexts where the count is unavailable.
    */
   subscriberCount?: number
+  /**
+   * Next ~2 weeks of North America events. The Circuit stopped being its own
+   * weekly email on 2026-08-30 (Danny) and rides at the bottom of the daily
+   * instead — one send, one habit. Empty array renders no section.
+   */
+  events?: IndustryEvent[]
 }
 
 // ─── Brand palette ──────────────────────────────────────────────────────────
@@ -104,6 +112,17 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
    vs the pre-2026-08 layout. */
 .fops-row { padding: 7px 0; border-bottom: 1px solid ${HAIRLINE}; }
 .fops-m { line-height: 18px; margin: 0 0 3px; }
+/* Events meta line — small, muted, mono: the same hierarchy the site uses,
+   where the event name carries the weight and the details recede. */
+.fops-emeta {
+  font-family: ${FONT_MONO};
+  font-size: 10px;
+  line-height: 15px;
+  color: ${INK_MUTED};
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  margin: 2px 0 0;
+}
 .fops-title {
   color: ${INK};
   text-decoration: none;
@@ -381,6 +400,62 @@ function truncateBlurb(text: string, max = 150): string {
   return `${cut.slice(0, lastSpace > max * 0.6 ? lastSpace : max).replace(/[,;:.\s]+$/, '')}…`
 }
 
+// ─── Events (Section B) ────────────────────────────────────────────────────
+
+/**
+ * One event: name with its organizer bolded inside, over a quiet meta line.
+ * Identical treatment to the site's events stream, so a reader who clicks
+ * through finds the same shapes.
+ */
+function renderEvent(event: IndustryEvent): string {
+  const segments = splitHeadlineByEntities(event.name, [event.organizerName])
+  const nameHtml = segments
+    .map((seg) => (seg.bold ? `<b>${escapeHtml(seg.text)}</b>` : escapeHtml(seg.text)))
+    .join('')
+
+  const time = compactTimeNote(event.timeNote)
+  const meta = [
+    formatEventDates(event.startDate, event.endDate) + (time ? ` \u00b7 ${time}` : ''),
+    formatEventLocation(event),
+    firmLabelFor(event.organizerName, event.name) ?? undefined,
+    event.costType === 'free' ? 'Free' : undefined,
+  ]
+    .filter(Boolean)
+    .join(' \u00b7 ')
+
+  return `
+    <tr>
+      <td class="fops-row">
+        <div><a href="https://fundopshq.com/events/${escapeHtml(event.slug)}" class="fops-title" style="color:${INK};text-decoration:none;font-weight:400;" target="_blank">${nameHtml}</a></div>
+        <div class="fops-emeta" style="font-family:${FONT_MONO};font-size:10px;line-height:15px;color:${INK_MUTED};text-transform:uppercase;margin:2px 0 0;">${escapeHtml(meta)}</div>
+      </td>
+    </tr>`
+}
+
+function renderEventsSection(events: IndustryEvent[]): string {
+  if (events.length === 0) return ''
+  return `
+          <tr>
+            <td class="fops-bg-cream fops-px" style="padding:4px 16px 12px;background-color:${CREAM};">
+              <div class="fops-eyebrow" style="margin-bottom:4px;">
+                Section B &nbsp;&middot;&nbsp; Events
+              </div>
+              <div class="fops-serif fops-ink" style="font-size:20px;font-weight:700;line-height:1.2;margin-bottom:4px;">
+                The next <span class="fops-amber" style="font-style:italic;">two weeks.</span>
+              </div>
+              <div class="fops-emeta" style="font-family:${FONT_MONO};font-size:10px;line-height:15px;color:${INK_MUTED};text-transform:uppercase;margin:0 0 10px;">Every date verified at the organizer</div>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                ${events.map(renderEvent).join('')}
+              </table>
+              <div style="padding-top:10px;">
+                <a href="https://fundopshq.com/events" class="fops-mono" style="color:${INK};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;">Full calendar &rarr;</a>
+                <span style="color:rgba(90,107,130,0.4);">&nbsp;&nbsp;</span>
+                <a href="https://fundopshq.com/events/submit" class="fops-mono" style="color:${INK};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;">Submit an event &mdash; free</a>
+              </div>
+            </td>
+          </tr>`
+}
+
 // ─── Single story row ──────────────────────────────────────────────────────
 
 function renderArticle(article: ArticleGroup['articles'][0]): string {
@@ -557,6 +632,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
     unsubscribeUrl,
     sponsorSlate = DEFAULT_SPONSOR_SLATE,
     subscriberCount,
+    events = [],
   } = params
   const preheader = buildPreheader(groups, totalArticles)
   const formattedDate = formatDate(editionDate)
@@ -564,6 +640,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   const categoryBlocks = groups.map(renderCategory).join('')
   const sponsorTop = renderSponsorTop(sponsorSlate)
   const sponsorBottom = renderSponsorBottom(sponsorSlate)
+  const eventsSection = renderEventsSection(events)
 
   // Social-proof eyebrow fragment. Omitted when count is unavailable
   // (test sends) or absurdly small. "In private markets" is the
@@ -689,7 +766,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
           <tr>
             <td class="fops-bg-cream fops-px" style="padding:24px 16px 12px;background-color:${CREAM};">
               <div class="fops-eyebrow" style="margin-bottom:4px;">
-                Section A &nbsp;·&nbsp; The Wire
+                Section A &nbsp;&middot;&nbsp; News
               </div>
               <div class="fops-serif fops-ink" style="font-size:20px;font-weight:700;line-height:1.2;margin-bottom:16px;">
                 This morning&rsquo;s <span class="fops-amber" style="font-style:italic;">top stories.</span>
@@ -701,9 +778,12 @@ export function renderNewsletterEmail(params: TemplateParams): string {
           <!-- ─── Main CTA ─── -->
           <tr>
             <td class="fops-bg-cream fops-px" style="padding:8px 16px 24px;background-color:${CREAM};text-align:center;">
-              <a href="https://fundopshq.com/#news" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:11px;font-weight:700;padding:14px 28px;border-radius:2px;text-decoration:none;letter-spacing:2px;text-transform:uppercase;">Read the full feed &rarr;</a>
+              <a href="https://fundopshq.com/news" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:11px;font-weight:700;padding:14px 28px;border-radius:2px;text-decoration:none;letter-spacing:2px;text-transform:uppercase;">Read the full feed &rarr;</a>
             </td>
           </tr>
+
+          <!-- ─── Section B · Events ─── -->
+          ${eventsSection}
 
           <!-- ─── Sponsor: bottom ─── -->
           ${sponsorBottom}

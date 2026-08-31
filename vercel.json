@@ -29,10 +29,6 @@
     {
       "path": "/api/pipeline/outreach-monitor",
       "schedule": "15 * * * *"
-    },
-    {
-      "path": "/api/pipeline/circuit-send",
-      "schedule": "0 12 * * 1"
     }
   ]
 }
