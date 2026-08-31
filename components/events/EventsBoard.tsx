@@ -550,9 +550,9 @@ export function EventsBoard() {
 
       {/* ── Events list ──────────────────────────────────────── */}
       {loading ? (
-        <div className="rounded-lg border border-border bg-card overflow-hidden">
+        <div>
           {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} className="flex items-center gap-2 px-3 py-2.5 border-b border-border/40">
+            <div key={i} className="flex items-center gap-2 px-3 py-2">
               <div className="h-4 w-20 rounded bg-muted animate-pulse" />
               <div className="h-4 w-16 rounded bg-muted animate-pulse" />
               <div className="h-4 flex-1 rounded bg-muted animate-pulse" />
@@ -561,7 +561,7 @@ export function EventsBoard() {
           ))}
         </div>
       ) : events.length === 0 ? (
-        <div className="rounded-lg border border-border bg-card py-16 text-center">
+        <div className="py-16 text-center">
           <p className="text-muted-foreground">No events found matching your filters.</p>
           {activeFilterCount > 0 && (
             <button
@@ -574,20 +574,13 @@ export function EventsBoard() {
         </div>
       ) : (
         <>
-          <div className="rounded-lg border border-border bg-card overflow-hidden">
-            {/* Column headers — desktop only */}
-            <div className="hidden lg:grid items-center gap-x-2 px-4 py-1 border-b border-border bg-muted/50 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/50 grid-cols-[148px_72px_1fr_170px_88px]">
-              <span>Date</span>
-              <span>Type</span>
-              <span>Event</span>
-              <span>Location</span>
-              <span>Cost</span>
-            </div>
-
+          {/* No card, no column rules (2026-08-30) — the board reads as
+              the same stream as the hub; month labels do the grouping. */}
+          <div>
             {monthGroups.map((group) => (
               <div key={group.header}>
                 {/* Month divider */}
-                <div className="border-b border-border/60 bg-muted/30 px-4 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/70">
+                <div className="mt-3 mb-1 px-2 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-amber-400/70 first:mt-0">
                   {group.header}
                 </div>
                 {group.events.map((event) => (

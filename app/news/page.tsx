@@ -45,7 +45,7 @@ export default function NewsPage() {
                 <span className="flex items-center gap-3 whitespace-nowrap">
                   <span className="text-foreground/80">Section A</span>
                   <span aria-hidden="true" className="text-foreground/20">·</span>
-                  <span>The Wire</span>
+                  <span>News</span>
                 </span>
                 <span className="flex items-center gap-2 whitespace-nowrap">
                   <span className="relative flex h-1.5 w-1.5">

@@ -106,7 +106,7 @@ export default async function EventsPage() {
                 <span className="flex items-center gap-3">
                   <span className="text-foreground/80">Section B</span>
                   <span aria-hidden="true" className="text-foreground/20">·</span>
-                  <span>The Circuit</span>
+                  <span>Events</span>
                 </span>
                 <span className="flex items-center gap-2">
                   <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-400" />

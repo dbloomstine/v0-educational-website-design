@@ -136,7 +136,7 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
         onMouseMove={handleRowMove}
         onMouseLeave={handleRowLeave}
         className={cn(
-          'hidden lg:grid group items-center gap-x-3 px-4 py-1.5 border-b border-border/40 hover:bg-accent/30 transition-colors grid-cols-[1fr_52px_128px]'
+          'hidden lg:grid group items-center gap-x-3 rounded px-2 py-[3px] hover:bg-accent/30 transition-colors grid-cols-[1fr_52px_128px]'
         )}
       >
         {/* Col 1: headline + trailing firm and classification */}
@@ -178,16 +178,12 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
       </div>
 
       {/* ─── Mobile: Card layout (below lg) ─── */}
-      <div
-        className={cn(
-          'lg:hidden border-b border-border/40 transition-colors'
-        )}
-      >
+      <div className="lg:hidden transition-colors">
         {/* Tappable main area */}
         <button
           type="button"
           onClick={() => setMobileExpanded(!mobileExpanded)}
-          className="w-full text-left px-3 py-1.5 active:bg-accent/30 transition-colors"
+          className="w-full rounded text-left px-2 py-1 active:bg-accent/30 transition-colors"
         >
           {/* Row 1: headline — a thumb-scroll reads a column of titles, not a
               column of labels. */}

@@ -574,7 +574,7 @@ export default function BrandPage() {
                 </p>
                 <h3 className="font-mono text-4xl font-bold text-foreground tracking-tight">JetBrains</h3>
                 <p className="mt-2 font-mono text-xs font-bold uppercase tracking-[0.25em] text-amber-400">
-                  Vol. I · Section A · The Wire
+                  Vol. I · Section A · News
                 </p>
                 <p className="mt-6 text-sm text-muted-foreground leading-relaxed">
                   All-caps mono labels, eyebrows, mastheads, dates, channel numbers — anywhere the brand wants to

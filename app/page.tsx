@@ -102,13 +102,13 @@ export default async function HomePage() {
         <div className="border-t border-foreground/10 bg-background">
           <div className="container mx-auto max-w-[1400px] px-4 py-3">
             <div className="grid gap-5 lg:gap-6 lg:grid-cols-12">
-              {/* ── Section A · The Wire ── */}
+              {/* ── Section A · News ── */}
               <section id="news" className="lg:col-span-8 min-w-0 scroll-mt-16">
                 <div className="mb-2 flex items-center justify-between gap-3 border-b-2 border-foreground/15 pb-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
                   <span className="flex items-center gap-3 whitespace-nowrap">
                     <span className="text-foreground/80">Section A</span>
                     <span aria-hidden="true" className="text-foreground/20">·</span>
-                    <span>The Wire<span className="hidden sm:inline"> — Fund News</span></span>
+                    <span>News</span>
                   </span>
                   <Link href="/news" className="flex items-center gap-2 whitespace-nowrap hover:text-foreground transition-colors">
                     <span className="relative flex h-1.5 w-1.5">
@@ -135,13 +135,13 @@ export default async function HomePage() {
                 )}
               </section>
 
-              {/* ── Section B · The Circuit (events rail) ── */}
+              {/* ── Section B · Events (rail) ── */}
               <section id="events" className="lg:col-span-4 min-w-0 scroll-mt-16">
                 <div className="mb-2 flex items-center justify-between gap-3 border-b-2 border-foreground/15 pb-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
                   <span className="flex items-center gap-3 whitespace-nowrap">
                     <span className="text-foreground/80">Section B</span>
                     <span aria-hidden="true" className="text-foreground/20">·</span>
-                    <span>The Circuit<span className="hidden sm:inline"> — Events</span></span>
+                    <span>Events</span>
                   </span>
                   <span className="whitespace-nowrap text-amber-400/90">Dates Verified</span>
                 </div>

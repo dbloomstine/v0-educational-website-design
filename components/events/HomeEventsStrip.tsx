@@ -10,7 +10,7 @@ import {
 import { firmLabelFor, splitHeadlineByEntities } from '@/lib/news/constants'
 import type { IndustryEvent } from '@/lib/events/types'
 
-// Homepage "Section B · The Circuit" — a dense server-rendered strip of the
+// Homepage "Section B · Events" — a dense server-rendered strip of the
 // next ~10 upcoming events. Same row idiom as the /events board, no client
 // JS: the homepage is the hub's front page, the board is the full calendar.
 
