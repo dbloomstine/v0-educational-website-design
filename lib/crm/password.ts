@@ -2,7 +2,10 @@ import { scryptSync, timingSafeEqual, randomBytes } from 'node:crypto'
 
 /**
  * Node-only. Never import from middleware (edge runtime has no node:crypto).
- * Stored format: `scrypt$<saltHex>$<hashHex>`
+ * Stored format: `scrypt:<saltHex>:<hashHex>`
+ *
+ * Separator is ':' not '$' on purpose — dotenv expansion in .env files treats
+ * `$name` as a variable reference and would silently eat the salt and hash.
  *
  * Generate a hash with:  node scripts/hash-desk-password.mjs
  */
@@ -10,12 +13,12 @@ import { scryptSync, timingSafeEqual, randomBytes } from 'node:crypto'
 export function hashPassword(password: string): string {
   const salt = randomBytes(16)
   const hash = scryptSync(password, salt, 64)
-  return `scrypt$${salt.toString('hex')}$${hash.toString('hex')}`
+  return `scrypt:${salt.toString('hex')}:${hash.toString('hex')}`
 }
 
 export function verifyPassword(password: string, stored: string | undefined): boolean {
   if (!stored) return false
-  const parts = stored.split('$')
+  const parts = stored.split(':')
   if (parts.length !== 3 || parts[0] !== 'scrypt') return false
   try {
     const salt = Buffer.from(parts[1], 'hex')
