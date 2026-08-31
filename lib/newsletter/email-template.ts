@@ -18,7 +18,7 @@
 
 import type { ArticleGroup } from './query-articles'
 import { isLikelyAumLeak } from './query-articles'
-import { cleanEntityName, firmLabelFor, splitHeadlineByEntities } from '@/lib/news/constants'
+import { cleanEntityName, splitHeadlineByEntities } from '@/lib/news/constants'
 import { formatEventDates, formatEventLocation, compactTimeNote } from '@/lib/events/constants'
 import type { IndustryEvent } from '@/lib/events/types'
 import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponsors'
@@ -351,31 +351,6 @@ function collapseTemplateWhitespace(html: string): string {
 
 // ─── Firm identity (names only) ────────────────────────────────────────────
 
-/**
- * Firm names for the meta line. Favicons were removed everywhere on
- * 2026-08-30 (Danny) — the name is the identity anchor, and dropping the
- * images also drops a per-article domain lookup from the pipeline and a
- * remote image fetch from every subscriber's mail client.
- *
- * A name the headline already carries is dropped rather than printed
- * directly above itself; when every name is redundant the meta line
- * collapses to the fund size alone (or disappears).
- */
-function renderMetaIdentity(article: ArticleGroup['articles'][0]): string {
-  const names: string[] = []
-  if (article.firmName) {
-    const primary = firmLabelFor(article.firmName, article.title)
-    if (primary) names.push(primary)
-    for (const coFirm of article.coFirms.slice(0, 2)) {
-      const label = firmLabelFor(coFirm, article.title)
-      if (label) names.push(label)
-    }
-  }
-  if (names.length === 0) return ''
-  return `<span class="fops-firm">${names
-    .map(escapeHtml)
-    .join(' <span style="color:rgba(90,107,130,0.5);font-weight:400;">·</span> ')}</span>`
-}
 
 /**
  * Headline with its named entities bolded and the rest at regular weight.
@@ -482,13 +457,9 @@ function renderArticle(article: ArticleGroup['articles'][0]): string {
   // and source attribution are gone — the site's stream carries neither, and
   // the headline plus its bolded actor is what a reader scans. The firm still
   // appears above the headline in the rare case the headline omits it.
-  const identity = renderMetaIdentity(article)
-  const metaLine = identity ? `<div class="fops-m">${identity}</div>` : ''
-
   return `
     <tr>
       <td class="fops-row">
-        ${metaLine}
         <div><a href="${escapeHtml(article.sourceUrl)}" class="fops-title" style="color:${INK};text-decoration:none;font-weight:400;" target="_blank">${renderHeadline(article)}</a></div>
       </td>
     </tr>`
@@ -569,7 +540,17 @@ function renderSponsorTop(slate: SponsorSlate): string {
 }
 
 function renderSponsorBottom(slate: SponsorSlate): string {
-  if (slate.sponsors.length === 0) return ''
+  // With no sponsor sold, the slot is just the pitch line — the FundOpsHQ
+  // house card was removed 2026-08-30 (Danny: "remove the FundOpsHQ sponsor
+  // or presented by section"). A real slate still renders in full.
+  if (slate.sponsors.length === 0) {
+    return `
+    <tr>
+      <td class="fops-bg-cream fops-px" style="padding:18px 16px;background-color:${CREAM};border-top:1px solid ${HAIRLINE};">
+        <p class="fops-house-cta" style="margin:0;">Reach GPs, LPs, and fund service providers every morning. <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:${INK};text-decoration:none;font-weight:600;font-style:normal;">Sponsor FundOps Daily &rarr;</a></p>
+      </td>
+    </tr>`
+  }
   const cards = slate.sponsors
     .map((sponsor, i) => renderSponsorCardBottom(sponsor, i === 0))
     .join('')
@@ -714,47 +695,23 @@ export function renderNewsletterEmail(params: TemplateParams): string {
           <tr>
             <td class="fops-bg-navy" style="padding:0;background-color:${NAVY};">
 
-              <!-- Top eyebrow strip -->
-              <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                <tr>
-                  <td class="fops-px" style="padding:10px 16px 8px;border-bottom:1px solid ${HAIRLINE_DARK};">
-                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
-                      <tr>
-                        <td class="fops-eyebrow-light">
-                          <span style="color:rgba(248,245,236,0.85);">VOL. I</span>
-                          <span style="color:rgba(248,245,236,0.35);"> &nbsp;·&nbsp; </span>
-                          <span>${escapeHtml(mastheadDate)}</span>
-                        </td>
-                        <td align="right" class="fops-eyebrow-light">
-                          ${escapeHtml(socialProof)}
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-
               <!-- Wordmark row -->
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
-                  <td class="fops-px" style="padding:16px 16px 12px;text-align:left;">
-                    <span class="fops-serif fops-cream" style="font-size:36px;font-weight:700;letter-spacing:-0.5px;line-height:1;">FundOps</span><span class="fops-serif fops-amber" style="font-size:36px;font-weight:700;font-style:italic;letter-spacing:-0.5px;line-height:1;">Daily</span>
+                  <td class="fops-px" style="padding:14px 16px 10px;text-align:left;">
+                    <span class="fops-serif fops-cream" style="font-size:34px;font-weight:700;letter-spacing:-0.5px;line-height:1;">FundOps</span><span class="fops-serif fops-amber" style="font-size:34px;font-weight:700;font-style:italic;letter-spacing:-0.5px;line-height:1;">Daily</span>
                   </td>
                 </tr>
               </table>
 
-              <!-- Bottom eyebrow strip -->
+              <!-- Date / readership strip -->
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
-                  <td class="fops-px" style="padding:10px 16px;border-top:1px solid ${HAIRLINE_DARK};">
+                  <td class="fops-px" style="padding:8px 16px 10px;border-top:1px solid ${HAIRLINE_DARK};">
                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                       <tr>
-                        <td class="fops-eyebrow-light" style="letter-spacing:2.5px;">
-                          PE &nbsp;·&nbsp; VC &nbsp;·&nbsp; CREDIT &nbsp;·&nbsp; HEDGE &nbsp;·&nbsp; REAL ESTATE &nbsp;·&nbsp; INFRA
-                        </td>
-                        <td align="right" class="fops-eyebrow-amber">
-                          FUNDOPSHQ.COM
-                        </td>
+                        <td class="fops-eyebrow-light">${escapeHtml(mastheadDate)}</td>
+                        <td align="right" class="fops-eyebrow-light">${escapeHtml(socialProof)}</td>
                       </tr>
                     </table>
                   </td>

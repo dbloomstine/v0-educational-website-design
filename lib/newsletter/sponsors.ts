@@ -66,9 +66,16 @@ export const FUNDOPSHQ_SPONSOR: Sponsor = {
  * relabel to "PRESENTED BY" and put the paid sponsor card in the
  * `sponsors` array.
  */
+/**
+ * Production slate. Empty as of 2026-08-30 (Danny: "remove the FundOpsHQ
+ * sponsor or presented by section") — the house ad was taking a full screen
+ * at the top of every edition to tell existing subscribers about the thing
+ * they already subscribed to. Add a real Sponsor here when one is sold and
+ * both the top and bottom slots light up again.
+ */
 export const DEFAULT_SPONSOR_SLATE: SponsorSlate = {
   label: 'BROUGHT TO YOU BY',
-  sponsors: [FUNDOPSHQ_SPONSOR],
+  sponsors: [],
 }
 
 /**
