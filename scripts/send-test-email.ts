@@ -16,6 +16,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles } from '../lib/newsletter/query-articles'
 import { renderNewsletterEmail } from '../lib/newsletter/email-template'
+import { queryEventFeed } from '../lib/events/api'
 import { DEFAULT_SPONSOR_SLATE, FUNDOPSHQ_SPONSOR, type SponsorSlate } from '../lib/newsletter/sponsors'
 
 // Hosted asset URLs. Gmail strips base64 data: URIs in <img src>, so
@@ -85,6 +86,9 @@ async function main() {
   const sponsorSlate =
     process.env.MOCK_SPONSORS === '1' ? buildSampleSlate() : DEFAULT_SPONSOR_SLATE
 
+  const upcomingEvents = (await queryEventFeed({ when: '2w', limit: 24 })).events
+
+
   const html = renderNewsletterEmail({
     groups: content.groups,
     totalArticles: content.totalArticles,
@@ -92,6 +96,7 @@ async function main() {
     unsubscribeUrl: 'https://fundopshq.com/api/newsletter/unsubscribe?token=TEST',
     sponsorSlate,
     subscriberCount: subscriberCount ?? undefined,
+    events: upcomingEvents,
   })
 
   const from = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'

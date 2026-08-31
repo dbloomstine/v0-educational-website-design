@@ -20,6 +20,7 @@ import { fileURLToPath } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles } from '../lib/newsletter/query-articles'
 import { renderNewsletterEmail } from '../lib/newsletter/email-template'
+import { queryEventFeed } from '../lib/events/api'
 import { FUNDOPSHQ_SPONSOR, type SponsorSlate } from '../lib/newsletter/sponsors'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -172,12 +173,16 @@ async function main() {
     console.log('  Using SAMPLE_SLATE — co-sponsor preview (FundOpsHQ + Fidelity Careers).')
   }
 
+  const upcomingEvents = (await queryEventFeed({ when: '2w', limit: 24 })).events
+
+
   let html = renderNewsletterEmail({
     groups: content.groups,
     totalArticles: content.totalArticles,
     editionDate,
     unsubscribeUrl: 'https://fundopshq.com/api/newsletter/unsubscribe?token=PREVIEW',
     sponsorSlate: useSampleSlate ? buildSampleSlate() : undefined,
+    events: upcomingEvents,
   })
 
   // Fetch every external favicon the template references and inline

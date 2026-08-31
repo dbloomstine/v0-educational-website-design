@@ -11,6 +11,8 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles, isLikelyAumLeak } from './query-articles'
 import { renderNewsletterEmail } from './email-template'
+import { queryEventFeed } from '@/lib/events/api'
+import type { IndustryEvent } from '@/lib/events/types'
 import { sendPipelineAlert } from '@/lib/pipeline/alert'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -119,6 +121,17 @@ export async function sendDailyNewsletter(
   }
 
   // ─── 4. Render & send ─────────────────────────────────────────────────────
+  // Section B rides along at the bottom (2026-08-30) — The Circuit no longer
+  // sends on its own. A failure here must never block the news send, so the
+  // section simply renders empty.
+  let upcomingEvents: IndustryEvent[] = []
+  try {
+    const feed = await queryEventFeed({ when: '2w', limit: 24 })
+    upcomingEvents = feed.events
+  } catch (err) {
+    console.error('[send-daily] events lookup failed, sending without Section B:', err)
+  }
+
   const subject = buildSubject(content)
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
 
@@ -136,6 +149,7 @@ export async function sendDailyNewsletter(
     editionDate,
     unsubscribeUrl: UNSUB_SENTINEL,
     subscriberCount: subscribers.length,
+    events: upcomingEvents,
   })
 
   const emails = subscribers.map((sub) => {
