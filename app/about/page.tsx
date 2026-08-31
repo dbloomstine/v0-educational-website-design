@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
-import { ArrowRight, CalendarDays, Linkedin, Mail, Newspaper, Building2 } from 'lucide-react'
+import { ArrowRight, Linkedin } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'About FundOpsHQ',
@@ -12,81 +12,51 @@ export const metadata: Metadata = {
     'FundOpsHQ is the hub for the investment funds industry — real-time fund news, the verified industry events calendar, and the FundOps Daily morning newsletter. By Danny Bloomstine.',
   openGraph: {
     title: 'About FundOpsHQ',
-    description: 'The hub for the investment funds industry — fund news, the industry events calendar, and the FundOps Daily morning newsletter.',
+    description:
+      'The hub for the investment funds industry — fund news, the industry events calendar, and the FundOps Daily morning newsletter.',
     type: 'website',
     url: 'https://fundopshq.com/about',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'About FundOpsHQ',
-    description: 'The hub for the investment funds industry — fund news, the industry events calendar, and the FundOps Daily morning newsletter.',
+    description:
+      'The hub for the investment funds industry — fund news, the industry events calendar, and the FundOps Daily morning newsletter.',
   },
   alternates: {
     canonical: 'https://fundopshq.com/about',
   },
 }
 
-const today = new Date().toLocaleDateString('en-US', {
-  weekday: 'long',
-  month: 'long',
-  day: 'numeric',
-  year: 'numeric',
-}).toUpperCase()
+// Rewritten 2026-08-30 (Danny: "way trimmed down and much more professional
+// and concise"). The previous version ran ~525 lines across four numbered
+// "Section C.x" acts with icon cards, a plate-numbered editor portrait and two
+// tag clouds. This says the same things in a fraction of the space, following
+// the density doctrine the rest of the site now uses.
 
-const PILLARS = [
+const CHANNELS = [
   {
-    no: '01',
-    eyebrow: 'Section A',
-    title: 'Real-time fund news',
-    body:
-      'A continuously updated feed of fund launches, capital raises, LP commitments, executive moves, M&A and regulatory actions across PE, VC, credit, hedge and the rest of alternatives — sourced from 200+ publications and de-duplicated into single stories.',
-    icon: Newspaper,
     href: '/news',
-    cta: 'Read the news',
+    name: 'News',
+    body: 'Fund launches, closes, LP commitments, executive moves, M&A and regulatory actions — tracked across 200+ publications and de-duplicated into single stories.',
   },
   {
-    no: '02',
-    eyebrow: 'Section B',
-    title: 'The industry events calendar',
-    body:
-      'Conferences, summits, forums, training and free webinars for GPs, LPs and fund service providers across North America — filterable by city, topic and date, and subscribable to your own calendar. Every date is verified at the organizer\'s own page rather than copied from an aggregator, and anyone can submit an event free.',
-    icon: CalendarDays,
     href: '/events',
-    cta: 'Browse the calendar',
+    name: 'Events',
+    body: 'Conferences, forums, training and free webinars across North America. Filterable by city, topic and date, with every date verified at the organizer rather than copied from an aggregator.',
   },
   {
-    no: '03',
-    eyebrow: 'Morning Edition',
-    title: 'FundOps Daily newsletter',
-    body:
-      'Every morning before the open: the day\'s fund moves as a scannable run of headlines organized by strategy, followed by the next two weeks of industry events grouped by day. One email, both halves of the brief.',
-    icon: Mail,
     href: '/#subscribe',
-    cta: 'Subscribe free',
+    name: 'FundOps Daily',
+    body: 'One email before the open: the morning’s headlines by strategy, then the next two weeks of events grouped by day. Free.',
   },
 ] as const
 
-const STORY_TYPES = [
-  'Fund Launches',
-  'First & Final Closes',
-  'Capital Raises',
-  'LP Commitments',
-  'Executive Moves',
-  'M&A & Take-Privates',
-  'Regulatory Actions',
-  'Service Provider Moves',
-] as const
+const FUND_TYPES =
+  'Private Equity · Venture Capital · Private Credit · Hedge Funds · Real Estate · Infrastructure · Secondaries · GP Stakes'
 
-const FUND_TYPES = [
-  'Private Equity',
-  'Venture Capital',
-  'Private Credit',
-  'Hedge Funds',
-  'Real Estate',
-  'Infrastructure',
-  'Secondaries',
-  'GP Stakes',
-] as const
+const STORY_TYPES =
+  'Fund launches · First and final closes · Capital raises · LP commitments · Executive moves · M&A and take-privates · Regulatory actions · Service provider moves'
 
 export default function AboutPage() {
   return (
@@ -94,428 +64,141 @@ export default function AboutPage() {
       <SiteHeader />
 
       <main id="main-content" className="flex-1">
-        {/* ─── Masthead bar ─── */}
-        <div className="border-b border-foreground/10">
-          <div className="container mx-auto flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
-            <span className="flex items-center gap-3">
-              <span className="text-foreground/90">Vol. I</span>
-              <span aria-hidden="true" className="text-foreground/20">·</span>
-              <span>{today}</span>
-            </span>
-            <span className="flex items-center gap-3">
-              <span>Section C</span>
-              <span aria-hidden="true" className="text-foreground/20">·</span>
-              <span className="text-foreground/80">About the Paper</span>
-            </span>
+        {/* Section masthead — same furniture as /news and /events */}
+        <div className="border-t-2 border-foreground/15 border-b border-foreground/10">
+          <div className="container mx-auto max-w-[1400px] px-4">
+            <div className="flex items-center justify-between gap-3 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+              <span className="flex items-center gap-3 whitespace-nowrap">
+                <span className="text-foreground/80">Section C</span>
+                <span aria-hidden="true" className="text-foreground/20">·</span>
+                <span>About</span>
+              </span>
+              <span className="whitespace-nowrap text-amber-400/90">Est. 2026 · New York</span>
+            </div>
           </div>
         </div>
 
-        {/* ─── Hero ─── */}
-        <section className="relative isolate overflow-hidden border-b-2 border-foreground/15">
-          {/* Background editorial wordmark */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute -inset-x-12 -bottom-12 flex items-end justify-center select-none"
+        <div className="container mx-auto max-w-[900px] px-4 py-6 sm:py-8">
+          <h1
+            className="font-display text-foreground"
+            style={{
+              fontSize: 'clamp(24px, 3.4vw, 38px)',
+              lineHeight: 1.05,
+              letterSpacing: '-0.02em',
+              fontWeight: 500,
+              fontVariationSettings: '"opsz" 144',
+            }}
           >
+            A daily newsroom for{' '}
             <span
-              className="font-display italic font-black tracking-[-0.05em] leading-[0.78] whitespace-nowrap"
-              style={{
-                fontSize: 'clamp(220px, 32vw, 520px)',
-                background:
-                  'linear-gradient(180deg, oklch(0.98 0 0 / 0.12) 0%, oklch(0.98 0 0 / 0.04) 60%, transparent 100%)',
-                WebkitBackgroundClip: 'text',
-                backgroundClip: 'text',
-                color: 'transparent',
-                fontVariationSettings: '"opsz" 144, "SOFT" 100',
-              }}
+              className="italic"
+              style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
             >
-              About
+              private markets.
+            </span>
+          </h1>
+
+          <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-muted-foreground">
+            FundOpsHQ is the news desk, events calendar and morning briefing for GPs, LPs and the
+            fund service providers working around them — across private equity, venture, credit,
+            hedge, real estate and the rest of alternatives. Written and edited by{' '}
+            <span className="font-medium text-foreground">Danny Bloomstine</span>.
+          </p>
+
+          {/* ─── Channels ─── */}
+          <h2 className="mt-8 border-b-2 border-foreground/15 pb-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+            Three ways to read it
+          </h2>
+          <div className="mt-3 space-y-2">
+            {CHANNELS.map((channel) => (
+              <Link
+                key={channel.name}
+                href={channel.href}
+                className="group grid gap-x-4 gap-y-1 rounded px-2 py-2 transition-colors hover:bg-accent/30 sm:grid-cols-[150px_1fr]"
+              >
+                <span className="font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-foreground transition-colors group-hover:text-amber-400">
+                  {channel.name}
+                </span>
+                <span className="text-[14px] leading-snug text-muted-foreground">{channel.body}</span>
+              </Link>
+            ))}
+          </div>
+
+          {/* ─── Editor ─── */}
+          <h2 className="mt-8 border-b-2 border-foreground/15 pb-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+            The editor
+          </h2>
+          <div className="mt-4 flex flex-col gap-5 sm:flex-row sm:items-start">
+            <Image
+              src="/danny-headshot-nobg.png"
+              alt="Danny Bloomstine"
+              width={112}
+              height={112}
+              className="h-28 w-28 shrink-0 rounded-full bg-card object-cover ring-1 ring-foreground/10"
+            />
+            <div className="min-w-0">
+              <p className="text-[15px] font-semibold text-foreground">Danny Bloomstine</p>
+              <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/70">
+                Founder &amp; Editor · Managing Director, IQ-EQ
+              </p>
+              <p className="mt-2.5 text-[14px] leading-relaxed text-muted-foreground">
+                Danny has spent a decade at the intersection of capital markets, technology and fund
+                operations — S&amp;P Capital IQ, an early role at VTS, business development at Juniper
+                Square, and now IQ-EQ, where he helps investment managers evaluate fund
+                administration, compliance, tax and CFO solutions. He started FundOpsHQ to give the
+                operational side of the industry the coverage it does not otherwise get.
+              </p>
+              <a
+                href="https://www.linkedin.com/in/danny-bloomstine/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground transition-colors hover:text-amber-400"
+              >
+                <Linkedin className="h-3 w-3" />
+                Connect on LinkedIn
+              </a>
+            </div>
+          </div>
+
+          {/* ─── Coverage ─── */}
+          <h2 className="mt-8 border-b-2 border-foreground/15 pb-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+            What we cover
+          </h2>
+          <dl className="mt-3 space-y-2">
+            <div className="grid gap-x-4 gap-y-1 px-2 sm:grid-cols-[150px_1fr]">
+              <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/70">
+                Asset classes
+              </dt>
+              <dd className="text-[14px] leading-snug text-muted-foreground">{FUND_TYPES}</dd>
+            </div>
+            <div className="grid gap-x-4 gap-y-1 px-2 sm:grid-cols-[150px_1fr]">
+              <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground/70">
+                Story types
+              </dt>
+              <dd className="text-[14px] leading-snug text-muted-foreground">{STORY_TYPES}</dd>
+            </div>
+          </dl>
+
+          {/* ─── Close ─── */}
+          <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-foreground/10 pt-5">
+            <Link
+              href="/#subscribe"
+              className="group inline-flex items-center gap-2 rounded-sm bg-foreground px-4 py-2.5 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-background transition-colors hover:bg-amber-400"
+            >
+              Subscribe free
+              <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+            </Link>
+            <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">
+              Questions or story tips?{' '}
+              <a
+                href="mailto:dbloomstine@gmail.com"
+                className="text-foreground/70 underline transition-colors hover:text-amber-400"
+              >
+                Email the desk
+              </a>
             </span>
           </div>
-
-          {/* Hairline grid */}
-          <div
-            aria-hidden="true"
-            className="pointer-events-none absolute inset-0 opacity-[0.04]"
-            style={{
-              backgroundImage:
-                'linear-gradient(to right, oklch(0.98 0 0) 1px, transparent 1px), linear-gradient(to bottom, oklch(0.98 0 0) 1px, transparent 1px)',
-              backgroundSize: '80px 80px',
-            }}
-          />
-
-          <div className="relative z-10 container mx-auto px-4 py-16 sm:py-24">
-            <div className="max-w-4xl">
-              <div className="mb-5 inline-flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground/70">
-                <span className="h-px w-8 bg-foreground/40" />
-                Colophon · About FundOpsHQ
-              </div>
-
-              <h1
-                className="font-display text-foreground"
-                style={{
-                  fontSize: 'clamp(44px, 7vw, 104px)',
-                  lineHeight: 0.92,
-                  letterSpacing: '-0.035em',
-                  fontWeight: 500,
-                  fontVariationSettings: '"opsz" 144, "SOFT" 30',
-                }}
-              >
-                A daily{' '}
-                <span
-                  className="italic"
-                  style={{
-                    fontVariationSettings: '"opsz" 144, "SOFT" 100',
-                    color: 'oklch(0.85 0.12 85)',
-                  }}
-                >
-                  newsroom
-                </span>
-                <br />
-                for private markets.
-              </h1>
-
-              <p className="mt-8 max-w-2xl text-lg sm:text-xl text-muted-foreground leading-relaxed">
-                FundOpsHQ is the news desk, events calendar and morning briefing for GPs, LPs, and the fund
-                service providers working around them — covering PE, VC, credit, hedge, real estate and the
-                rest of the alternative investment industry. Built and edited by{' '}
-                <span className="text-foreground font-medium">Danny Bloomstine</span>.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── Three pillars ─── */}
-        <section className="relative border-b-2 border-foreground/15 bg-background">
-          <div className="border-b border-foreground/10">
-            <div className="container mx-auto px-4">
-              <div className="flex items-center justify-between gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-                <span className="flex items-center gap-3">
-                  <span className="text-foreground/80">Section C.1</span>
-                  <span aria-hidden="true" className="text-foreground/20">·</span>
-                  <span>Two Channels</span>
-                </span>
-                <span className="hidden sm:inline">News · Events · Newsletter</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="container mx-auto px-4 py-16 sm:py-20">
-            <div className="mb-12 max-w-3xl">
-              <h2
-                className="font-display text-foreground"
-                style={{
-                  fontSize: 'clamp(36px, 5vw, 64px)',
-                  lineHeight: 0.95,
-                  letterSpacing: '-0.03em',
-                  fontWeight: 500,
-                  fontVariationSettings: '"opsz" 144',
-                }}
-              >
-                Three ways{' '}
-                <span
-                  className="italic"
-                  style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
-                >
-                  to read it.
-                </span>
-              </h2>
-            </div>
-
-            <div className="grid gap-px bg-foreground/10 md:grid-cols-2 border border-foreground/15">
-              {PILLARS.map((pillar) => {
-                const Icon = pillar.icon
-                const isExternal = pillar.href.startsWith('http')
-                const inner = (
-                  <>
-                    <div className="mb-6 flex items-start justify-between">
-                      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground/60">
-                        No. {pillar.no} · {pillar.eyebrow}
-                      </span>
-                      <Icon className="h-5 w-5 text-muted-foreground/50 transition-colors group-hover:text-amber-400" />
-                    </div>
-
-                    <h3
-                      className="font-display text-foreground mb-4"
-                      style={{
-                        fontSize: '30px',
-                        lineHeight: 1.05,
-                        letterSpacing: '-0.02em',
-                        fontWeight: 500,
-                        fontVariationSettings: '"opsz" 60',
-                      }}
-                    >
-                      {pillar.title}
-                    </h3>
-
-                    <p className="mb-8 text-sm leading-relaxed text-muted-foreground">
-                      {pillar.body}
-                    </p>
-
-                    <div className="mt-auto flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-foreground transition-colors group-hover:text-amber-400">
-                      {pillar.cta}
-                      <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-                    </div>
-                  </>
-                )
-                const className =
-                  'group relative flex flex-col bg-background p-8 transition-colors hover:bg-card/40'
-                return isExternal ? (
-                  <a
-                    key={pillar.no}
-                    href={pillar.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={className}
-                  >
-                    {inner}
-                  </a>
-                ) : (
-                  <Link key={pillar.no} href={pillar.href} className={className}>
-                    {inner}
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* ─── Editor (Danny bio) ─── */}
-        <section className="relative border-b-2 border-foreground/15 bg-background">
-          <div className="border-b border-foreground/10">
-            <div className="container mx-auto px-4">
-              <div className="flex items-center gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-                <span className="text-foreground/80">Section C.2</span>
-                <span aria-hidden="true" className="text-foreground/20">·</span>
-                <span>The Editor</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="container mx-auto px-4 py-16 sm:py-24">
-            <div className="grid gap-12 lg:grid-cols-12 lg:gap-16 items-start">
-              {/* Left column: Headshot card */}
-              <div className="lg:col-span-4">
-                <div className="relative">
-                  <div className="relative overflow-hidden rounded-sm border-2 border-foreground/15 bg-card/60 p-3">
-                    <div className="relative aspect-square">
-                      <Image
-                        src="/danny-headshot-nobg.png"
-                        alt="Danny Bloomstine"
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 1024px) 100vw, 30vw"
-                      />
-                    </div>
-                    <div className="mt-3 flex items-center justify-between border-t border-foreground/10 pt-3">
-                      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/60">
-                        Editor
-                      </span>
-                      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/40">
-                        Plate №01
-                      </span>
-                    </div>
-                  </div>
-                  {/* Corner ticks */}
-                  <div className="pointer-events-none absolute -top-1 -left-1 h-3 w-3 border-l-2 border-t-2 border-amber-400/40" />
-                  <div className="pointer-events-none absolute -top-1 -right-1 h-3 w-3 border-r-2 border-t-2 border-amber-400/40" />
-                  <div className="pointer-events-none absolute -bottom-1 -left-1 h-3 w-3 border-l-2 border-b-2 border-amber-400/40" />
-                  <div className="pointer-events-none absolute -bottom-1 -right-1 h-3 w-3 border-r-2 border-b-2 border-amber-400/40" />
-                </div>
-              </div>
-
-              {/* Right column: Bio */}
-              <div className="lg:col-span-8">
-                <div className="mb-5 inline-flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground/70">
-                  <span className="h-px w-8 bg-foreground/40" />
-                  Editor &amp; Founder
-                </div>
-
-                <h2
-                  className="font-display text-foreground"
-                  style={{
-                    fontSize: 'clamp(40px, 5.5vw, 76px)',
-                    lineHeight: 0.92,
-                    letterSpacing: '-0.035em',
-                    fontWeight: 500,
-                    fontVariationSettings: '"opsz" 144',
-                  }}
-                >
-                  Danny{' '}
-                  <span
-                    className="italic"
-                    style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
-                  >
-                    Bloomstine.
-                  </span>
-                </h2>
-
-                <div className="mt-6 space-y-5 text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl">
-                  <p>
-                    Danny is a Managing Director at IQ-EQ, where he helps investment managers evaluate and implement
-                    fund administration, compliance, tax and CFO solutions.
-                  </p>
-                  <p>
-                    Over the past decade he&apos;s worked at the intersection of capital markets, technology and fund
-                    operations — beginning at S&amp;P Capital IQ, joining VTS as an early employee, growing business
-                    development at Juniper Square, and now at IQ-EQ helping firms make operational decisions.
-                  </p>
-                  <p>
-                    He started FundOpsHQ to bring more visibility to the operational side of the industry — through
-                    real-time news and a daily briefing for the people doing the work.
-                  </p>
-                </div>
-
-                <div className="mt-8 flex flex-wrap items-center gap-3">
-                  <a
-                    href="https://www.linkedin.com/in/danny-bloomstine/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-sm border-2 border-foreground/20 bg-card/40 px-5 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-foreground transition-colors hover:border-foreground/40 hover:bg-card/70"
-                  >
-                    <Linkedin className="h-4 w-4" />
-                    Connect on LinkedIn
-                  </a>
-                  <span className="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/60">
-                    <Building2 className="h-3.5 w-3.5" />
-                    MD at IQ-EQ
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── Coverage ─── */}
-        <section className="relative border-b-2 border-foreground/15 bg-background">
-          <div className="border-b border-foreground/10">
-            <div className="container mx-auto px-4">
-              <div className="flex items-center gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-                <span className="text-foreground/80">Section C.3</span>
-                <span aria-hidden="true" className="text-foreground/20">·</span>
-                <span>Coverage</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="container mx-auto px-4 py-16 sm:py-20">
-            <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-              <div className="lg:col-span-5">
-                <h2
-                  className="font-display text-foreground"
-                  style={{
-                    fontSize: 'clamp(36px, 5vw, 64px)',
-                    lineHeight: 0.95,
-                    letterSpacing: '-0.03em',
-                    fontWeight: 500,
-                    fontVariationSettings: '"opsz" 144',
-                  }}
-                >
-                  What we{' '}
-                  <span
-                    className="italic"
-                    style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
-                  >
-                    cover.
-                  </span>
-                </h2>
-                <p className="mt-6 max-w-md text-base text-muted-foreground leading-relaxed">
-                  Every major alternative asset class, and every move that matters — the capital, the people,
-                  and the firms working around the funds. From first close to wind-down.
-                </p>
-              </div>
-
-              <div className="lg:col-span-7 grid gap-10 sm:grid-cols-2">
-                <div>
-                  <p className="mb-4 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground/60">
-                    Fund types
-                  </p>
-                  <ul className="space-y-2.5">
-                    {FUND_TYPES.map((type) => (
-                      <li
-                        key={type}
-                        className="flex items-baseline gap-3 border-b border-foreground/10 pb-2.5 text-base text-foreground"
-                      >
-                        <span className="font-mono text-[10px] text-muted-foreground/40 tabular-nums">
-                          {String(FUND_TYPES.indexOf(type) + 1).padStart(2, '0')}
-                        </span>
-                        <span>{type}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <p className="mb-4 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground/60">
-                    Story types
-                  </p>
-                  <ul className="space-y-2.5">
-                    {STORY_TYPES.map((type, i) => (
-                      <li
-                        key={type}
-                        className="flex items-baseline gap-3 border-b border-foreground/10 pb-2.5 text-base text-foreground"
-                      >
-                        <span className="font-mono text-[10px] text-muted-foreground/40 tabular-nums">
-                          {String(i + 1).padStart(2, '0')}
-                        </span>
-                        <span>{type}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* ─── Closing CTA ─── */}
-        <section className="relative bg-background">
-          <div className="container mx-auto px-4 py-16 sm:py-20">
-            <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-5 inline-flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground/70">
-                <span className="h-px w-8 bg-foreground/40" />
-                Get the paper
-                <span className="h-px w-8 bg-foreground/40" />
-              </div>
-              <h2
-                className="font-display text-foreground"
-                style={{
-                  fontSize: 'clamp(36px, 5vw, 60px)',
-                  lineHeight: 0.95,
-                  letterSpacing: '-0.03em',
-                  fontWeight: 500,
-                  fontVariationSettings: '"opsz" 144',
-                }}
-              >
-                Read it{' '}
-                <span
-                  className="italic"
-                  style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
-                >
-                  every morning.
-                </span>
-              </h2>
-              <p className="mx-auto mt-6 max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-                The FundOps Daily newsletter lands in your inbox before the open, and the wire updates
-                continuously throughout the day.
-              </p>
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-                <Link
-                  href="/#subscribe"
-                  className="group inline-flex items-center gap-2 rounded-sm bg-foreground px-6 py-3.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-background transition-colors hover:bg-amber-400"
-                >
-                  Subscribe to FundOps Daily
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                </Link>
-                <Link
-                  href="/"
-                  className="inline-flex items-center gap-2 rounded-sm border-2 border-foreground/20 bg-card/40 px-6 py-3.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-foreground transition-colors hover:border-foreground/40 hover:bg-card/70"
-                >
-                  Read the wire
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section>
+        </div>
       </main>
 
       <SiteFooter />

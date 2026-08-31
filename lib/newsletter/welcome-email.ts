@@ -120,26 +120,25 @@ export function renderWelcomeEmail(unsubscribeUrl: string): string {
               </p>
 
               <p style="margin:0 0 16px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
-                Thanks for subscribing to <strong>FundOps Daily</strong> — glad you&rsquo;re here. A quick note from me before your first edition lands tomorrow morning.
+                Thanks for subscribing to <strong>FundOps Daily</strong>. Your first edition lands tomorrow morning.
               </p>
 
               <p style="margin:0 0 16px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
-                I built FundOpsHQ because I wanted one place to keep up with what&rsquo;s actually happening across the funds industry — fund launches, closes, LP commitments, exec moves, regulatory shifts and deals, plus which conferences and webinars are actually worth the trip — without hopping between a dozen trade publications and event sites every morning. Starting tomorrow, you&rsquo;ll get a tight rundown of the biggest stories in your inbox every morning, before the market opens.
+                I built FundOpsHQ to have one place for what&rsquo;s actually happening across the
+                funds industry &mdash; and which events are worth the trip &mdash; without checking a dozen
+                trade publications every morning.
               </p>
 
-              <p style="margin:24px 0 10px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};font-weight:700;">
-                What to expect in each edition:
+              <p style="margin:0 0 10px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};font-weight:700;">
+                Each edition, before the open:
               </p>
               <ul style="margin:0 0 24px;padding-left:22px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
-                <li style="margin-bottom:8px;">Fund news organized by strategy — PE, VC, credit, hedge, real estate, infrastructure, secondaries</li>
-                <li style="margin-bottom:8px;">Dedicated <strong>LP Commitments</strong> and <strong>Service Providers</strong> sections — pension and institutional allocations, plus the law firms, fund admins, and fund finance desks working around them</li>
-                <li style="margin-bottom:8px;">People Moves, M&amp;A, and regulatory news rounding out the brief</li>
-                <li style="margin-bottom:8px;">Every story links to the original reporting, with duplicate coverage from 200+ publications collapsed into one line</li>
-                <li><strong>Section B &mdash; Events:</strong> the next two weeks of industry conferences, forums, and free webinars across North America, grouped by day. Every date verified at the organizer, never scraped from an aggregator</li>
+                <li style="margin-bottom:8px;"><strong>News</strong> &mdash; the morning&rsquo;s headlines by strategy: launches, closes, LP commitments, people moves, M&amp;A and regulatory action, de-duplicated across 200+ publications and linked to the original reporting</li>
+                <li><strong>Events</strong> &mdash; the next two weeks of conferences, forums and free webinars across North America, grouped by day, every date verified at the organizer</li>
               </ul>
 
               <p style="margin:0 0 16px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
-                Don&rsquo;t want to wait until morning? The newsroom updates all day at <a href="https://fundopshq.com/news" style="color:${INK};text-decoration:underline;font-weight:600;">fundopshq.com/news</a>, and the full industry calendar &mdash; filterable by city, topic and date &mdash; lives at <a href="https://fundopshq.com/events" style="color:${INK};text-decoration:underline;font-weight:600;">fundopshq.com/events</a>. Hosting something? <a href="https://fundopshq.com/events/submit" style="color:${INK};text-decoration:underline;font-weight:600;">Submit an event free</a>.
+                Between editions, the newsroom runs all day at <a href="https://fundopshq.com/news" style="color:${INK};text-decoration:underline;font-weight:600;">fundopshq.com/news</a> and the full calendar lives at <a href="https://fundopshq.com/events" style="color:${INK};text-decoration:underline;font-weight:600;">fundopshq.com/events</a>.
               </p>
 
               <!-- Feedback callout -->
@@ -147,7 +146,7 @@ export function renderWelcomeEmail(unsubscribeUrl: string): string {
                 <tr>
                   <td style="border-left:3px solid ${AMBER};padding:4px 0 4px 16px;">
                     <p style="margin:0;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
-                      One more thing — I&rsquo;d love your feedback. Hit reply or email me directly at <a href="mailto:dbloomstine@gmail.com" style="color:${INK};text-decoration:underline;font-weight:700;">dbloomstine@gmail.com</a> any time — questions, story tips, things you&rsquo;d like to see covered, or (honestly) things you&rsquo;d rather see less of. I read everything.
+                      Reply any time with questions, story tips, or an event worth listing &mdash; I read everything.
                     </p>
                   </td>
                 </tr>
