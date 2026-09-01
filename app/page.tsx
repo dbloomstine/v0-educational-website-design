@@ -71,11 +71,16 @@ export const revalidate = 900
 export default async function HomePage() {
   // Both sections are soft dependencies: the page must render even if the DB
   // hiccups. Fetched in parallel — neither depends on the other.
+  //
+  // 100 articles is queryArticleFeed's hard cap and clusters down to ~70
+  // story groups, which is what makes the news column run roughly as deep as
+  // the events column beside it (Danny, 2026-08-31). Raising it further needs
+  // the cap in lib/news/api.ts raised too.
   const [upcomingEvents, topStories] = await Promise.all([
     queryEventFeed({ when: '60d', limit: 26 })
       .then((feed) => feed.events)
       .catch<IndustryEvent[]>(() => []),
-    queryArticleFeed({ range: '7d', limit: 26 })
+    queryArticleFeed({ range: '7d', limit: 100 })
       .then((feed) => feed.groups ?? [])
       .catch<ArticleGroup[]>(() => []),
   ])
