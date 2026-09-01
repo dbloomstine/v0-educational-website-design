@@ -87,6 +87,37 @@ default) or `contacted` (6-month window). Default is deliberately the
 conservative direction — under-suppressing is recoverable, over-suppressing
 hides real prospects silently.
 
+## The grid
+
+Defaults to **All**, sorted by date received. Every column header opens an
+Excel-style filter — distinct values with counts, search, sort A→Z / Z→A —
+and the value list honours the other active filters, so filtering narrows
+what the next column offers. `Received` gets a date range with 7/30/90-day
+presets instead.
+
+`Domain` is the bare host (`bare_domain()` in SQL: no scheme, no `www.`) so it
+can be pasted straight into a CRM search.
+
+The Status column carries an inline checkbox: ticking it marks the lead done
+and writes the contact_log row; unticking returns it to to-do and writes
+nothing (un-marking is a correction, not work).
+
+Notes are editable in the drawer — one field for the person, one for the firm
+(`firms.notes`). Both are internal and neither is exportable.
+
+## Exports
+
+Two buttons, deliberately different files:
+
+- **Export to Excel** — `desk_rows`, 34 columns including handling notes and
+  who referred the lead. Sheet is named `Leads (INTERNAL)`. Never send it.
+- **Export shareable** — `leads_shareable`, 10 columns. Source, priority,
+  readiness, blocker, lead_ref and notes are not columns in that view, so they
+  cannot appear in the file.
+
+Both respect the current selection: tick rows and the export covers only those;
+tick nothing and it covers everything.
+
 ## Files
 
 ```

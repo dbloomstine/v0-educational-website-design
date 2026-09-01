@@ -185,3 +185,93 @@
 .loginBtn:hover:not(:disabled) { opacity:.88; }
 .loginBtn:disabled { opacity:.5; cursor:default; }
 .loginErr { font-size:12px; color:#E28E70; margin:10px 0 0; min-height:16px; }
+
+/* ---------- column filter (Excel-style) ---------- */
+.thInner { display:flex; align-items:center; gap:4px; }
+.thLabel { cursor:pointer; }
+.thCaret { opacity:.45; font-size:8px; line-height:1; }
+.thActive { color:var(--accent) !important; }
+.thActive .thCaret { opacity:1; }
+
+.fPop {
+  position:fixed; z-index:70; width:236px; background:var(--surface);
+  border:1px solid var(--line); border-radius:7px; box-shadow:var(--shadow);
+  padding:8px; font-size:12px; text-transform:none; letter-spacing:0;
+  color:var(--ink); font-weight:400;
+}
+.fSort { display:flex; gap:4px; margin-bottom:7px; }
+.fSort button {
+  flex:1; font:inherit; font-size:11px; padding:4px 6px; border-radius:4px; cursor:pointer;
+  border:1px solid var(--line); background:var(--surfaceAlt); color:var(--inkSoft);
+}
+.fSort button:hover { border-color:var(--muted); }
+.fSearch {
+  width:100%; font:inherit; font-size:11.5px; padding:4px 7px; margin-bottom:6px;
+  border:1px solid var(--line); border-radius:4px; background:var(--ground); color:var(--ink);
+}
+.fSearch:focus { outline:none; border-color:var(--accent); }
+.fList { max-height:210px; overflow-y:auto; display:flex; flex-direction:column; gap:1px; }
+.fItem {
+  display:flex; align-items:center; gap:7px; padding:3px 5px; border-radius:3px; cursor:pointer;
+  white-space:nowrap; overflow:hidden;
+}
+.fItem:hover { background:var(--surfaceAlt); }
+.fItem input { margin:0; accent-color:var(--accent); flex:none; }
+.fItem span { overflow:hidden; text-overflow:ellipsis; }
+.fItem .fCount { margin-left:auto; color:var(--muted); font-size:10.5px; padding-left:6px; }
+.fFoot { display:flex; gap:5px; margin-top:7px; padding-top:7px; border-top:1px solid var(--line); }
+.fFoot button {
+  flex:1; font:inherit; font-size:11px; padding:4px; border-radius:4px; cursor:pointer;
+  border:1px solid var(--line); background:var(--surfaceAlt); color:var(--inkSoft);
+}
+.fFoot button:hover { border-color:var(--muted); }
+.fDate { display:flex; flex-direction:column; gap:5px; }
+.fDate label { font-size:10.5px; color:var(--muted); }
+.fDate input {
+  font:inherit; font-size:11.5px; padding:4px 7px; border:1px solid var(--line);
+  border-radius:4px; background:var(--ground); color:var(--ink);
+}
+.fPresets { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:7px; }
+.fPresets button {
+  font:inherit; font-size:10.5px; padding:3px 7px; border-radius:999px; cursor:pointer;
+  border:1px solid var(--line); background:var(--surfaceAlt); color:var(--inkSoft);
+}
+.fPresets button:hover { border-color:var(--muted); }
+
+.activeBar {
+  display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+  padding:5px 16px; background:var(--surfaceAlt); border-bottom:1px solid var(--line);
+  font-size:11.5px; color:var(--muted);
+}
+.fTag {
+  display:inline-flex; align-items:center; gap:5px; padding:2px 7px; border-radius:999px;
+  background:var(--accentSoft); color:var(--accentInk); font-size:11px;
+}
+.fTag button { background:none; border:none; color:inherit; cursor:pointer; padding:0; font-size:13px; line-height:1; }
+
+/* ---------- inline done checkbox ---------- */
+.doneCell { display:flex; align-items:center; gap:6px; }
+.doneCell input { margin:0; accent-color:var(--accent); cursor:pointer; }
+
+/* ---------- editable notes ---------- */
+.noteArea {
+  width:100%; font:inherit; font-size:12.5px; line-height:1.45; padding:9px 11px;
+  border:1px solid var(--line); border-radius:6px; background:var(--surfaceAlt);
+  color:var(--ink); resize:vertical; min-height:74px;
+}
+.noteArea:focus { outline:none; border-color:var(--accent); }
+.noteRow { display:flex; align-items:center; gap:8px; margin:6px 0 16px; }
+.noteRow .saved { font-size:11.5px; color:var(--accent); }
+.noteRow .dirty { font-size:11.5px; color:var(--hold); }
+.drawSection {
+  font-size:10px; letter-spacing:.06em; text-transform:uppercase; color:var(--muted);
+  font-weight:500; margin:0 0 7px;
+}
+.chkRow { display:flex; align-items:center; gap:7px; font-size:12.5px; margin-bottom:14px; }
+.chkRow input { accent-color:var(--accent); margin:0; }
+
+.thLabel {
+  background:none; border:none; padding:0; margin:0; cursor:pointer;
+  font:inherit; color:inherit; letter-spacing:inherit; text-transform:inherit;
+}
+.thLabel:hover { color:var(--ink); }

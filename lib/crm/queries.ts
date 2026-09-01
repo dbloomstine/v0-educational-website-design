@@ -14,6 +14,9 @@ export interface DeskRow {
   status: string
   blocker: string | null
   notes: string | null
+  lead_type: string | null
+  readiness: string | null
+  share_ok_reason: string | null
   created_at: string
   worked_at: string | null
   firm_id: string
@@ -22,7 +25,11 @@ export interface DeskRow {
   website: string | null
   firm_type: string | null
   strategy: string | null
+  aum_usd: number | null
+  n_funds: number | null
+  firm_notes: string | null
   firm_location: string | null
+  firm_country: string | null
   person_id: string
   full_name: string
   title: string | null
@@ -30,13 +37,17 @@ export interface DeskRow {
   email: string
   email_type: string | null
   email_confidence: string | null
+  email_verified_at: string | null
   phone: string | null
   linkedin: string | null
+  linkedin_verified: boolean
   hold_note: string | null
   person_location: string | null
   source_name: string | null
   source_org: string | null
   source_type: string | null
+  research_summary: string | null
+  touch_count: number
 }
 
 export interface ContactLogEntry {
@@ -132,12 +143,45 @@ export async function setWorkState(
  * because they are not columns in that view. Never build an export from
  * `leads` or `desk_rows`.
  */
-export async function fetchShareableCut(): Promise<Record<string, unknown>[]> {
-  const { data, error } = await getCrmAdmin()
-    .from('leads_shareable')
-    .select('*')
-    .order('company', { ascending: true })
+export async function fetchShareableCut(leadIds?: string[]): Promise<Record<string, unknown>[]> {
+  let q = getCrmAdmin().from('leads_shareable').select('*')
+  if (leadIds?.length) q = q.in('lead_id', leadIds)
+  const { data, error } = await q.order('company', { ascending: true })
 
   if (error) throw new Error(`Shareable cut query failed: ${error.message}`)
+  return (data ?? []) as Record<string, unknown>[]
+}
+
+/** Update the editable free-text fields from the grid drawer. */
+export async function updateLeadFields(
+  leadId: string,
+  fields: { notes?: string | null; firmNotes?: string | null; blocker?: string | null }
+): Promise<void> {
+  const sb = getCrmAdmin()
+
+  if (fields.notes !== undefined || fields.blocker !== undefined) {
+    const patch: Record<string, unknown> = {}
+    if (fields.notes !== undefined) patch.notes = fields.notes
+    if (fields.blocker !== undefined) patch.blocker = fields.blocker
+    const { error } = await sb.from('leads').update(patch).eq('id', leadId)
+    if (error) throw new Error(`Note update failed: ${error.message}`)
+  }
+
+  if (fields.firmNotes !== undefined) {
+    const { data, error: readErr } = await sb
+      .from('leads').select('firm_id').eq('id', leadId).single()
+    if (readErr) throw new Error(`Lookup failed: ${readErr.message}`)
+    const { error } = await sb
+      .from('firms').update({ notes: fields.firmNotes }).eq('id', data.firm_id)
+    if (error) throw new Error(`Firm note update failed: ${error.message}`)
+  }
+}
+
+/** Full internal export — every column, for Danny only. Never share this file. */
+export async function fetchInternalCut(leadIds?: string[]): Promise<Record<string, unknown>[]> {
+  let q = getCrmAdmin().from('desk_rows').select('*')
+  if (leadIds?.length) q = q.in('id', leadIds)
+  const { data, error } = await q.order('firm_name', { ascending: true })
+  if (error) throw new Error(`Internal export failed: ${error.message}`)
   return (data ?? []) as Record<string, unknown>[]
 }
