@@ -15,6 +15,7 @@ interface Col {
   key: string
   label: string
   on: boolean
+  w: number
   locked?: boolean
   sticky?: string
   kind: Kind
@@ -42,9 +43,9 @@ const S = (v: unknown) => (v === null || v === undefined || v === '' ? '' : Stri
 
 function buildCols(onToggleDone: (r: DeskRow, done: boolean) => void): Col[] {
   return [
-    { key: 'check', label: '', on: true, locked: true, sticky: styles.kCheck, kind: 'text', val: () => '' },
+    { key: 'check', w: 34, label: '', on: true, locked: true, sticky: styles.kCheck, kind: 'text', val: () => '' },
 
-    { key: 'full_name', label: 'Contact', on: true, locked: true, sticky: styles.kContact, kind: 'text',
+    { key: 'full_name', w: 178, label: 'Contact', on: true, locked: true, sticky: styles.kContact, kind: 'text',
       val: r => r.full_name,
       render: r => (
         <span className={styles.contactName}>
@@ -53,7 +54,7 @@ function buildCols(onToggleDone: (r: DeskRow, done: boolean) => void): Col[] {
         </span>
       ) },
 
-    { key: 'work_state', label: 'Status', on: true, kind: 'enum',
+    { key: 'work_state', w: 112, label: 'Status', on: true, kind: 'enum',
       val: r => STATE_LABEL[r.work_state],
       render: r => (
         <span className={styles.doneCell}>
@@ -68,74 +69,74 @@ function buildCols(onToggleDone: (r: DeskRow, done: boolean) => void): Col[] {
         </span>
       ) },
 
-    { key: 'date_received', label: 'Received', on: true, kind: 'date',
+    { key: 'date_received', w: 104, label: 'Received', on: true, kind: 'date',
       val: r => (r.date_received ?? r.created_at).slice(0, 10),
       render: r => <span className={`${styles.mono} ${styles.soft}`}>{(r.date_received ?? r.created_at).slice(0, 10)}</span> },
 
-    { key: 'title', label: 'Title', on: true, kind: 'text', val: r => S(r.title), render: r => dash(r.title) },
+    { key: 'title', w: 196, label: 'Title', on: true, kind: 'text', val: r => S(r.title), render: r => dash(r.title) },
 
-    { key: 'firm_name', label: 'Company', on: true, kind: 'text', val: r => r.firm_name, render: r => r.firm_name },
+    { key: 'firm_name', w: 210, label: 'Company', on: true, kind: 'text', val: r => r.firm_name, render: r => r.firm_name },
 
-    { key: 'domain', label: 'Domain', on: true, kind: 'text', val: r => S(r.domain),
+    { key: 'domain', w: 186, label: 'Domain', on: true, kind: 'text', val: r => S(r.domain),
       render: r => r.domain ? <span className={styles.mono}>{r.domain}</span> : dash(null) },
 
-    { key: 'firm_type', label: 'Fund type', on: true, kind: 'enum', val: r => S(r.firm_type), render: r => dash(r.firm_type) },
+    { key: 'firm_type', w: 96, label: 'Fund type', on: true, kind: 'enum', val: r => S(r.firm_type), render: r => dash(r.firm_type) },
 
-    { key: 'strategy', label: 'Strategy', on: true, kind: 'text', val: r => S(r.strategy), render: r => dash(r.strategy) },
+    { key: 'strategy', w: 230, label: 'Strategy', on: true, kind: 'text', val: r => S(r.strategy), render: r => dash(r.strategy) },
 
-    { key: 'target_raise', label: 'Fund / target', on: true, kind: 'text', val: r => S(r.target_raise),
+    { key: 'target_raise', w: 128, label: 'Fund / target', on: true, kind: 'text', val: r => S(r.target_raise),
       render: r => r.target_raise ? <span className={styles.mono}>{r.target_raise}</span> : dash(null) },
 
-    { key: 'person_location', label: 'Person based', on: true, kind: 'enum', val: r => S(r.person_location),
+    { key: 'person_location', w: 136, label: 'Person based', on: true, kind: 'enum', val: r => S(r.person_location),
       render: r => dash(r.person_location) },
 
-    { key: 'firm_location', label: 'Fund based', on: true, kind: 'enum', val: r => S(r.firm_location),
+    { key: 'firm_location', w: 136, label: 'Fund based', on: true, kind: 'enum', val: r => S(r.firm_location),
       render: r => r.firm_location
         ? <span className={r.person_location === r.firm_location ? styles.soft : undefined}>{r.firm_location}</span>
         : dash(null) },
 
-    { key: 'email', label: 'Email', on: true, kind: 'text', val: r => r.email,
+    { key: 'email', w: 244, label: 'Email', on: true, kind: 'text', val: r => r.email,
       render: r => <span className={styles.mono}>{r.email}</span> },
 
-    { key: 'source_name', label: 'Source', on: true, kind: 'enum', val: r => S(r.source_name),
+    { key: 'source_name', w: 168, label: 'Source', on: true, kind: 'enum', val: r => S(r.source_name),
       render: r => r.source_name
         ? <>{r.source_name}{r.source_org && r.source_org !== 'seed' ? <span className={styles.soft}> · {r.source_org}</span> : null}</>
         : dash(null) },
 
-    { key: 'status', label: 'Fund status', on: false, kind: 'enum', val: r => S(r.status), render: r => dash(r.status) },
-    { key: 'share_ok', label: 'Share', on: false, kind: 'enum',
+    { key: 'status', w: 150, label: 'Fund status', on: false, kind: 'enum', val: r => S(r.status), render: r => dash(r.status) },
+    { key: 'share_ok', w: 110, label: 'Share', on: false, kind: 'enum',
       val: r => (SHARE_LABEL[r.share_ok]?.[1] ?? r.share_ok),
       render: r => {
         const [cls, label] = SHARE_LABEL[r.share_ok] ?? ['', r.share_ok]
         return <span className={`${styles.tag} ${cls}`}>{label}</span>
       } },
-    { key: 'priority', label: 'Pri', on: false, kind: 'enum', val: r => S(r.priority),
+    { key: 'priority', w: 58, label: 'Pri', on: false, kind: 'enum', val: r => S(r.priority),
       render: r => r.priority
         ? <span className={`${styles.pri} ${r.priority === 'A' ? styles.priA : r.priority === 'B' ? styles.priB : styles.priC}`}>{r.priority}</span>
         : dash(null) },
-    { key: 'role_class', label: 'Role', on: false, kind: 'enum', val: r => S(r.role_class), render: r => dash(r.role_class) },
-    { key: 'linkedin', label: 'LinkedIn', on: false, kind: 'text', val: r => S(r.linkedin),
+    { key: 'role_class', w: 104, label: 'Role', on: false, kind: 'enum', val: r => S(r.role_class), render: r => dash(r.role_class) },
+    { key: 'linkedin', w: 180, label: 'LinkedIn', on: false, kind: 'text', val: r => S(r.linkedin),
       render: r => r.linkedin
         ? <a className={`${styles.lnk} ${styles.mono}`} onClick={e => e.stopPropagation()}
              href={r.linkedin.startsWith('http') ? r.linkedin : `https://www.linkedin.com/${r.linkedin.replace(/^\/+/, '')}`}
              target="_blank" rel="noreferrer noopener">{r.linkedin.replace(/^https?:\/\/(www\.)?linkedin\.com\//, '')}</a>
         : dash(null) },
-    { key: 'linkedin_verified', label: 'LI verified', on: false, kind: 'bool',
+    { key: 'linkedin_verified', w: 104, label: 'LI verified', on: false, kind: 'bool',
       val: r => (r.linkedin_verified ? 'Verified' : 'Not verified'),
       render: r => r.linkedin_verified
         ? <span className={`${styles.tag} ${styles.tagOk}`}>verified</span>
         : <span className={styles.soft}>—</span> },
-    { key: 'email_confidence', label: 'Email conf', on: false, kind: 'enum', val: r => S(r.email_confidence),
+    { key: 'email_confidence', w: 112, label: 'Email conf', on: false, kind: 'enum', val: r => S(r.email_confidence),
       render: r => <span className={styles.soft}>{r.email_confidence ?? '—'}</span> },
-    { key: 'email_type', label: 'Email type', on: false, kind: 'enum', val: r => S(r.email_type),
+    { key: 'email_type', w: 118, label: 'Email type', on: false, kind: 'enum', val: r => S(r.email_type),
       render: r => <span className={styles.soft}>{r.email_type ?? '—'}</span> },
-    { key: 'phone', label: 'Phone', on: false, kind: 'text', val: r => S(r.phone),
+    { key: 'phone', w: 140, label: 'Phone', on: false, kind: 'text', val: r => S(r.phone),
       render: r => <span className={`${styles.mono} ${styles.soft}`}>{r.phone ?? '—'}</span> },
-    { key: 'lead_type', label: 'Lead type', on: false, kind: 'enum', val: r => S(r.lead_type), render: r => dash(r.lead_type) },
-    { key: 'blocker', label: 'Blocker', on: false, kind: 'text', val: r => S(r.blocker), render: r => dash(r.blocker) },
-    { key: 'touch_count', label: 'Touches', on: false, kind: 'enum', val: r => String(r.touch_count),
+    { key: 'lead_type', w: 128, label: 'Lead type', on: false, kind: 'enum', val: r => S(r.lead_type), render: r => dash(r.lead_type) },
+    { key: 'blocker', w: 220, label: 'Blocker', on: false, kind: 'text', val: r => S(r.blocker), render: r => dash(r.blocker) },
+    { key: 'touch_count', w: 84, label: 'Touches', on: false, kind: 'enum', val: r => String(r.touch_count),
       render: r => <span className={styles.mono}>{r.touch_count}</span> },
-    { key: 'lead_ref', label: 'Ref', on: false, kind: 'text', val: r => r.lead_ref,
+    { key: 'lead_ref', w: 92, label: 'Ref', on: false, kind: 'text', val: r => r.lead_ref,
       render: r => <span className={`${styles.mono} ${styles.soft}`}>{r.lead_ref}</span> },
   ]
 }
@@ -192,6 +193,11 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
   const [cols, setCols] = useState<Col[]>(() => buildCols(() => {}))
   const [dragKey, setDragKey] = useState<string | null>(null)
   const [overKey, setOverKey] = useState<string | null>(null)
+  const [sizingKey, setSizingKey] = useState<string | null>(null)
+  const sizing = useRef<{ key: string; startX: number; startW: number } | null>(null)
+  // read by autoFit, which runs long after render — kept current below
+  const colsRef = useRef<Col[]>([])
+  const listRef = useRef<DeskRow[]>([])
   const layoutLoaded = useRef(false)
 
   /** Move `fromKey` to sit where `toKey` currently is. The two sticky identity
@@ -221,6 +227,52 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
     })
   }, [])
 
+  const MIN_W = 56
+
+  /** Drag the right edge of a header. Uses window listeners so the pointer can
+   *  leave the 5px handle mid-drag without the resize sticking. */
+  const startResize = useCallback((key: string, startX: number, startW: number) => {
+    sizing.current = { key, startX, startW }
+    setSizingKey(key)
+
+    const onMove = (e: MouseEvent) => {
+      const s = sizing.current
+      if (!s) return
+      const next = Math.max(MIN_W, Math.round(s.startW + (e.clientX - s.startX)))
+      setCols(prev => prev.map(c => (c.key === s.key ? { ...c, w: next } : c)))
+    }
+    const onUp = () => {
+      sizing.current = null
+      setSizingKey(null)
+      window.removeEventListener('mousemove', onMove)
+      window.removeEventListener('mouseup', onUp)
+      document.body.style.cursor = ''
+      document.body.style.userSelect = ''
+    }
+    window.addEventListener('mousemove', onMove)
+    window.addEventListener('mouseup', onUp)
+    document.body.style.cursor = 'col-resize'
+    document.body.style.userSelect = 'none'
+  }, [])
+
+  /** Double-click the handle: size this column to fit its widest visible cell. */
+  const autoFit = useCallback((key: string) => {
+    const col = colsRef.current.find(c => c.key === key)
+    if (!col) return
+    const probe = document.createElement('span')
+    probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font:13px var(--font-inter),sans-serif'
+    document.body.appendChild(probe)
+    let widest = 0
+    for (const r of listRef.current.slice(0, 200)) {
+      probe.textContent = col.val(r)
+      widest = Math.max(widest, probe.offsetWidth)
+    }
+    probe.textContent = col.label
+    widest = Math.max(widest, probe.offsetWidth)
+    probe.remove()
+    setCols(prev => prev.map(c => (c.key === key ? { ...c, w: Math.min(460, Math.max(MIN_W, widest + 26)) } : c)))
+  }, [])
+
   // Restore saved column order + visibility once, after mount.
   useEffect(() => {
     if (layoutLoaded.current) return
@@ -228,14 +280,17 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
     try {
       const raw = localStorage.getItem(LAYOUT_KEY)
       if (!raw) return
-      const saved = JSON.parse(raw) as { key: string; on: boolean }[]
+      const saved = JSON.parse(raw) as { key: string; on: boolean; w?: number }[]
       if (!Array.isArray(saved)) return
       setCols(prev => {
         const byKey = new Map(prev.map(c => [c.key, c]))
         const out: Col[] = []
-        for (const { key, on } of saved) {
+        for (const { key, on, w } of saved) {
           const c = byKey.get(key)
-          if (c) { out.push({ ...c, on: c.locked ? true : !!on }); byKey.delete(key) }
+          if (c) {
+            out.push({ ...c, on: c.locked ? true : !!on, w: typeof w === 'number' && w >= 40 ? w : c.w })
+            byKey.delete(key)
+          }
         }
         // columns added since the layout was saved keep their defaults
         for (const c of prev) if (byKey.has(c.key)) out.push(c)
@@ -253,7 +308,7 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
   useEffect(() => {
     if (!layoutLoaded.current) return
     try {
-      localStorage.setItem(LAYOUT_KEY, JSON.stringify(cols.map(c => ({ key: c.key, on: c.on }))))
+      localStorage.setItem(LAYOUT_KEY, JSON.stringify(cols.map(c => ({ key: c.key, on: c.on, w: c.w }))))
     } catch { /* storage disabled — layout just won't persist */ }
   }, [cols])
   // keep the render closure pointing at the latest toggleDone
@@ -263,6 +318,7 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
     [cols, toggleDone]
   )
   const visible = useMemo(() => liveCols.filter(c => c.on), [liveCols])
+  colsRef.current = liveCols
 
   /* ---- filtering ---------------------------------------------------- */
 
@@ -375,6 +431,7 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
 
   /* ------------------------------------------------------------------ */
 
+  listRef.current = list
   const todo = rows.filter(r => r.work_state === 'to_do').length
 
   return (
@@ -479,10 +536,13 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
 
       <div className={styles.gridWrap}>
         <table className={styles.table}>
+          <colgroup>
+            {visible.map(c => <col key={c.key} style={{ width: c.w }} />)}
+          </colgroup>
           <thead>
             <tr>
               {visible.map(c => c.key === 'check' ? (
-                <th key="check" className={c.sticky}>
+                <th key="check" className={c.sticky} style={{ width: c.w }}>
                   <input type="checkbox" checked={allShown} onChange={e => {
                     const next = new Set(sel)
                     list.forEach(r => e.target.checked ? next.add(r.id) : next.delete(r.id))
@@ -492,8 +552,10 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
               ) : (
                 <th
                   key={c.key}
+                  style={c.key === 'contact' || c.sticky === styles.kContact
+                    ? { left: visible.find(x => x.key === 'check')?.w ?? 34 } : undefined}
                   className={`${c.sticky ?? ''} ${overKey === c.key ? styles.thOver : ''} ${dragKey === c.key ? styles.thDragging : ''}`}
-                  draggable={!c.locked}
+                  draggable={!c.locked && !sizingKey}
                   onDragStart={e => { setDragKey(c.key); e.dataTransfer.effectAllowed = 'move' }}
                   onDragOver={e => {
                     if (!dragKey || c.locked) return
@@ -519,6 +581,19 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
                     <span className={styles.thCaret}>▼</span>
                     {sortKey === c.key && <span className={styles.arrow}>{sortDir < 0 ? '↓' : '↑'}</span>}
                   </span>
+                  <span
+                    role="separator"
+                    aria-orientation="vertical"
+                    aria-label={`Resize ${c.label}`}
+                    className={`${styles.resizer} ${sizingKey === c.key ? styles.resizerOn : ''}`}
+                    onMouseDown={e => {
+                      e.preventDefault(); e.stopPropagation()
+                      startResize(c.key, e.clientX, c.w)
+                    }}
+                    onDoubleClick={e => { e.stopPropagation(); autoFit(c.key) }}
+                    onDragStart={e => { e.preventDefault(); e.stopPropagation() }}
+                    title="Drag to resize · double-click to fit"
+                  />
                 </th>
               ))}
             </tr>
@@ -543,7 +618,13 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
                     }} />
                   </td>
                 ) : (
-                  <td key={c.key} className={c.sticky} title={c.val(r)}>{c.render ? c.render(r) : dash(c.val(r))}</td>
+                  <td
+                    key={c.key}
+                    className={c.sticky}
+                    style={c.sticky === styles.kContact
+                      ? { left: visible.find(x => x.key === 'check')?.w ?? 34 } : undefined}
+                    title={c.val(r)}
+                  >{c.render ? c.render(r) : dash(c.val(r))}</td>
                 ))}
               </tr>
             ))}

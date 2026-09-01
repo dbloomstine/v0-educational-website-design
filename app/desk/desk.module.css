@@ -92,7 +92,7 @@
 
 /* ---------- grid ---------- */
 .gridWrap { flex:1; overflow:auto; background:var(--surface); }
-.table { border-collapse:separate; border-spacing:0; width:100%; }
+.table { border-collapse:separate; border-spacing:0; width:max-content; min-width:100%; }
 .table thead th {
   position:sticky; top:0; z-index:20;
   background:var(--surfaceHi); color:var(--muted);
@@ -296,3 +296,16 @@
   background:var(--surfaceAlt); color:var(--inkSoft);
 }
 .nudge button:hover { border-color:var(--muted); color:var(--ink); }
+
+/* ---------- column resizing ---------- */
+.table { table-layout: fixed; }
+.resizer {
+  position:absolute; top:0; right:0; bottom:0; width:6px;
+  cursor:col-resize; user-select:none; touch-action:none;
+}
+.resizer::after {
+  content:""; position:absolute; top:20%; bottom:20%; right:2px; width:1px;
+  background:transparent; transition:background .12s;
+}
+.resizer:hover::after, .resizerOn::after { background:var(--accent); }
+.resizerOn { background:color-mix(in srgb, var(--accent) 18%, transparent); }
