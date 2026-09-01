@@ -3,13 +3,20 @@
    marketing site's tokens: this is a tool, not a page. */
 
 .shell {
-  --ground:#0F1311; --surface:#171C1A; --surfaceAlt:#1D2321; --surfaceHi:#252D2A;
-  --ink:#E8EDEA; --inkSoft:#B3BEB9; --muted:#8B9892; --dim:#6B7772;
-  --line:#2B3330; --lineSoft:#222927;
-  --accent:#5CC0A2; --accentSoft:#173129; --accentInk:#8ADCC1; --onAccent:#0F1311;
-  --warn:#E28E70; --warnSoft:#34221C;
-  --hold:#D8BC6C; --holdSoft:#2C2718;
-  --shadow:0 2px 6px rgba(0,0,0,.5), 0 14px 34px -16px rgba(0,0,0,.8);
+  /* Neutral black-and-white. The green-tinted palette measured 3.7:1 on
+     done-row text — below the AA floor — and every row reads "done" once a
+     batch is worked, so that was most of the grid. These are all AA or AAA. */
+  --ground:#0A0A0A; --surface:#121212; --surfaceAlt:#1E1E1E; --surfaceHi:#282828;
+  --ink:#FAFAFA;        /* 17.9:1  AAA */
+  --inkSoft:#DEDEDE;    /* 13.9:1  AAA */
+  --muted:#ABABAB;      /*  8.2:1  AAA */
+  --dim:#8A8A8A;        /*  5.4:1  AA  */
+  --line:#3A3A3A; --lineSoft:#2A2A2A;
+  --accent:#57D9A8;     /* 10.6:1  AAA — the one hue, used only for state */
+  --accentSoft:#16332A; --accentInk:#7FE8C0; --onAccent:#0A0A0A;
+  --warn:#F0916E; --warnSoft:#3A2119;
+  --hold:#E4C46A; --holdSoft:#332C17;
+  --shadow:0 2px 6px rgba(0,0,0,.6), 0 14px 34px -16px rgba(0,0,0,.9);
 
   position: fixed; inset: 0; display: flex; flex-direction: column;
   background: var(--ground); color: var(--ink);
@@ -96,14 +103,15 @@
 .table thead th:hover { color:var(--ink); }
 .arrow { opacity:.5; margin-left:3px; }
 .table tbody td {
-  padding:5px 9px; border-bottom:1px solid var(--lineSoft);
+  padding:5px 9px; border-bottom:1px solid var(--line);
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   max-width:280px; line-height:1.35;
 }
 .table tbody tr { cursor:pointer; }
 .table tbody tr:hover td { background:var(--surfaceAlt); }
 .rowSel td { background:var(--accentSoft) !important; }
-.rowDone td { color:var(--dim); }
+.rowDone td { color:var(--inkSoft); }
+.rowDone .contactName { color:var(--muted); font-weight:500; }
 
 .kCheck { position:sticky; left:0; z-index:10; width:32px; padding-left:11px !important; }
 .kContact { position:sticky; left:32px; z-index:10; }
@@ -162,25 +170,25 @@
 /* ---------- login ---------- */
 .loginWrap {
   position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
-  background:#0F1311; color:#E8EDEA;
+  background:#0A0A0A; color:#FAFAFA;
   font-family:var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 .loginCard {
-  width:min(340px,90vw); background:#171C1A; border:1px solid #2B3330;
+  width:min(340px,90vw); background:#121212; border:1px solid #3A3A3A;
   border-radius:9px; padding:26px 24px;
   box-shadow:0 2px 6px rgba(0,0,0,.5), 0 14px 34px -16px rgba(0,0,0,.8);
 }
 .loginMark { font-family:var(--font-fraunces),Georgia,serif; font-size:17px; font-weight:600; margin:0 0 3px; }
-.loginMark span { color:#5CC0A2; }
-.loginSub { font-size:12px; color:#8B9892; margin:0 0 18px; }
+.loginMark span { color:#57D9A8; }
+.loginSub { font-size:12px; color:#ABABAB; margin:0 0 18px; }
 .loginInput {
   width:100%; font:inherit; font-size:13px; padding:8px 11px; border-radius:6px;
-  background:#0F1311; border:1px solid #2B3330; color:#E8EDEA; margin-bottom:10px;
+  background:#0A0A0A; border:1px solid #3A3A3A; color:#FAFAFA; margin-bottom:10px;
 }
-.loginInput:focus { outline:none; border-color:#5CC0A2; }
+.loginInput:focus { outline:none; border-color:#57D9A8; }
 .loginBtn {
   width:100%; font:inherit; font-size:13px; font-weight:500; padding:8px; border-radius:6px;
-  background:#5CC0A2; border:1px solid #5CC0A2; color:#0F1311; cursor:pointer;
+  background:#57D9A8; border:1px solid #57D9A8; color:#0A0A0A; cursor:pointer;
 }
 .loginBtn:hover:not(:disabled) { opacity:.88; }
 .loginBtn:disabled { opacity:.5; cursor:default; }

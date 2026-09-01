@@ -113,6 +113,25 @@ nothing (un-marking is a correction, not work).
 Notes are editable in the drawer — one field for the person, one for the firm
 (`firms.notes`). Both are internal and neither is exportable.
 
+## Palette
+
+Neutral black-and-white, deliberately. The original green-tinted palette put
+done-row text at **3.7:1 — under the WCAG AA floor** — and once a batch is
+worked every row reads "done", so that was the whole grid. Measured values on
+`--surface #121212`:
+
+| token       | hex       | ratio  |     |
+| ----------- | --------- | ------ | --- |
+| `--ink`     | `#FAFAFA` | 17.9:1 | AAA |
+| `--inkSoft` | `#DEDEDE` | 13.9:1 | AAA |
+| `--muted`   | `#ABABAB` | 8.2:1  | AAA |
+| `--dim`     | `#8A8A8A` | 5.4:1  | AA  |
+| `--accent`  | `#57D9A8` | 10.6:1 | AAA |
+
+Done rows now keep readable text and let the Status pill carry the state, rather
+than greying the entire row. Keep every colour on a token — if you add one,
+measure it against `--surface` first.
+
 ## Exports
 
 Two buttons, deliberately different files:
