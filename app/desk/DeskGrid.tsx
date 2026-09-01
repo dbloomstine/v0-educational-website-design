@@ -140,6 +140,8 @@ function buildCols(onToggleDone: (r: DeskRow, done: boolean) => void): Col[] {
   ]
 }
 
+const LAYOUT_KEY = 'leaddesk.layout.v1'
+
 const QUICK = [
   { id: 'all', label: 'All', fn: () => true },
   { id: 'to_do', label: 'To do', fn: (r: DeskRow) => r.work_state === 'to_do' },
@@ -188,6 +190,72 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
   }, [logAs, router])
 
   const [cols, setCols] = useState<Col[]>(() => buildCols(() => {}))
+  const [dragKey, setDragKey] = useState<string | null>(null)
+  const [overKey, setOverKey] = useState<string | null>(null)
+  const layoutLoaded = useRef(false)
+
+  /** Move `fromKey` to sit where `toKey` currently is. The two sticky identity
+   *  columns are pinned: they can't move and nothing lands before them. */
+  const moveCol = useCallback((fromKey: string, toKey: string) => {
+    setCols(prev => {
+      const from = prev.findIndex(c => c.key === fromKey)
+      const to = prev.findIndex(c => c.key === toKey)
+      if (from < 0 || to < 0 || from === to) return prev
+      if (prev[from].locked || to < 2) return prev
+      const next = [...prev]
+      const [moved] = next.splice(from, 1)
+      next.splice(to, 0, moved)
+      return next
+    })
+  }, [])
+
+  /** Nudge a column one slot in the picker — the keyboard-reachable path. */
+  const nudge = useCallback((key: string, dir: -1 | 1) => {
+    setCols(prev => {
+      const i = prev.findIndex(c => c.key === key)
+      const j = i + dir
+      if (i < 2 || j < 2 || j >= prev.length) return prev
+      const next = [...prev]
+      ;[next[i], next[j]] = [next[j], next[i]]
+      return next
+    })
+  }, [])
+
+  // Restore saved column order + visibility once, after mount.
+  useEffect(() => {
+    if (layoutLoaded.current) return
+    layoutLoaded.current = true
+    try {
+      const raw = localStorage.getItem(LAYOUT_KEY)
+      if (!raw) return
+      const saved = JSON.parse(raw) as { key: string; on: boolean }[]
+      if (!Array.isArray(saved)) return
+      setCols(prev => {
+        const byKey = new Map(prev.map(c => [c.key, c]))
+        const out: Col[] = []
+        for (const { key, on } of saved) {
+          const c = byKey.get(key)
+          if (c) { out.push({ ...c, on: c.locked ? true : !!on }); byKey.delete(key) }
+        }
+        // columns added since the layout was saved keep their defaults
+        for (const c of prev) if (byKey.has(c.key)) out.push(c)
+        // The two sticky identity columns must stay at 0 and 1 or the sticky
+        // left offsets break. A partial or hand-edited layout could displace
+        // them, so re-pin unconditionally.
+        const locked = prev.filter(c => c.locked)
+        const rest = out.filter(c => !c.locked)
+        return [...locked, ...rest]
+      })
+    } catch { /* corrupt or unavailable storage — fall back to defaults */ }
+  }, [])
+
+  // Persist whenever the layout changes.
+  useEffect(() => {
+    if (!layoutLoaded.current) return
+    try {
+      localStorage.setItem(LAYOUT_KEY, JSON.stringify(cols.map(c => ({ key: c.key, on: c.on }))))
+    } catch { /* storage disabled — layout just won't persist */ }
+  }, [cols])
   // keep the render closure pointing at the latest toggleDone
   const liveCols = useMemo(
     () => cols.map(c => (c.key === 'work_state' ? buildCols(toggleDone).find(x => x.key === 'work_state')! : c))
@@ -322,14 +390,25 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
             <button className={styles.btn} onClick={() => setPickerOpen(o => !o)}>Columns</button>
             {pickerOpen && (
               <div className={styles.pickPanel}>
-                <div className={styles.pickHead}>Display columns</div>
+                <div className={styles.pickHead}>Columns — drag headers to reorder</div>
                 {liveCols.filter(c => c.key !== 'check').map(c => (
-                  <label key={c.key} className={styles.pickRow}>
-                    <input type="checkbox" checked={c.on} disabled={c.locked}
+                  <div key={c.key} className={styles.pickRow}>
+                    <input id={`col-${c.key}`} type="checkbox" checked={c.on} disabled={c.locked}
                       onChange={e => setCols(prev => prev.map(x => x.key === c.key ? { ...x, on: e.target.checked } : x))} />
-                    <span>{c.label}</span>
-                  </label>
+                    <label htmlFor={`col-${c.key}`} style={{ flex: 1, cursor: c.locked ? 'default' : 'pointer' }}>{c.label}</label>
+                    {!c.locked && (
+                      <span className={styles.nudge}>
+                        <button type="button" aria-label={`Move ${c.label} left`} onClick={() => nudge(c.key, -1)}>↑</button>
+                        <button type="button" aria-label={`Move ${c.label} right`} onClick={() => nudge(c.key, 1)}>↓</button>
+                      </span>
+                    )}
+                  </div>
                 ))}
+                <div className={styles.fFoot}>
+                  <button type="button" onClick={() => { setCols(buildCols(() => {})); try { localStorage.removeItem(LAYOUT_KEY) } catch { /* storage disabled */ } }}>
+                    Reset layout
+                  </button>
+                </div>
               </div>
             )}
           </div>
@@ -411,7 +490,26 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
                   }} />
                 </th>
               ) : (
-                <th key={c.key} className={c.sticky}>
+                <th
+                  key={c.key}
+                  className={`${c.sticky ?? ''} ${overKey === c.key ? styles.thOver : ''} ${dragKey === c.key ? styles.thDragging : ''}`}
+                  draggable={!c.locked}
+                  onDragStart={e => { setDragKey(c.key); e.dataTransfer.effectAllowed = 'move' }}
+                  onDragOver={e => {
+                    if (!dragKey || c.locked) return
+                    e.preventDefault()
+                    e.dataTransfer.dropEffect = 'move'
+                    if (overKey !== c.key) setOverKey(c.key)
+                  }}
+                  onDragLeave={() => setOverKey(k => (k === c.key ? null : k))}
+                  onDrop={e => {
+                    e.preventDefault()
+                    if (dragKey) moveCol(dragKey, c.key)
+                    setDragKey(null); setOverKey(null)
+                  }}
+                  onDragEnd={() => { setDragKey(null); setOverKey(null) }}
+                  title={c.locked ? undefined : 'Drag to reorder'}
+                >
                   <span className={`${styles.thInner} ${(colFilters[c.key]?.length || (c.key === 'date_received' && (dateFrom || dateTo))) ? styles.thActive : ''}`}>
                     <button type="button" className={styles.thLabel} onClick={e => {
                       const rect = (e.currentTarget as HTMLElement).getBoundingClientRect()

@@ -95,6 +95,14 @@ and the value list honours the other active filters, so filtering narrows
 what the next column offers. `Received` gets a date range with 7/30/90-day
 presets instead.
 
+Columns reorder by dragging a header. The two identity columns (checkbox and
+Contact) are pinned to the left and are re-pinned on load even if a saved
+layout says otherwise — the sticky left offsets depend on them being at 0 and 1.
+The Columns panel carries ↑/↓ nudge buttons as the keyboard-reachable path, plus
+Reset layout. Order and visibility persist per browser in `localStorage`
+(`leaddesk.layout.v1`); columns added later keep their defaults rather than
+disappearing.
+
 `Domain` is the bare host (`bare_domain()` in SQL: no scheme, no `www.`) so it
 can be pasted straight into a CRM search.
 

@@ -275,3 +275,16 @@
   font:inherit; color:inherit; letter-spacing:inherit; text-transform:inherit;
 }
 .thLabel:hover { color:var(--ink); }
+
+/* ---------- column reordering ---------- */
+.table thead th[draggable='true'] { cursor: grab; }
+.table thead th[draggable='true']:active { cursor: grabbing; }
+.thDragging { opacity:.45; }
+.thOver { box-shadow: inset 3px 0 0 0 var(--accent); }
+.nudge { display:flex; gap:2px; flex:none; }
+.nudge button {
+  font:inherit; font-size:10px; line-height:1; padding:2px 5px; cursor:pointer;
+  border:1px solid var(--line); border-radius:3px;
+  background:var(--surfaceAlt); color:var(--inkSoft);
+}
+.nudge button:hover { border-color:var(--muted); color:var(--ink); }
