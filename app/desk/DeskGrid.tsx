@@ -30,6 +30,15 @@ const STATE_LABEL: Record<WorkState, string> = {
 const STATE_CLASS: Record<string, string> = {
   to_do: styles.stTodo, in_progress: styles.stWorking, done: styles.stDone, parked: styles.stDone,
 }
+// Which IQ-EQ service the lead is a pitch for. A firm can appear more than
+// once under different lines; that is not a duplicate.
+const LINE_LABEL: Record<string, string> = {
+  fund_admin: 'Fund admin', compliance: 'Compliance', ocfo: 'Outsourced CFO',
+  middle_office: 'Middle office', tax: 'Tax', cyber: 'Cyber',
+  capital_markets: 'Capital markets', corporate: 'Corporate',
+  private_wealth: 'Private wealth', esg: 'ESG', multi: 'Multi',
+}
+
 const SHARE_LABEL: Record<string, [string, string]> = {
   yes: [styles.tagOk, 'Shareable'],
   no_discreet: [styles.tagDisc, 'Discreet'],
@@ -98,6 +107,12 @@ function buildCols(onToggleDone: (r: DeskRow, done: boolean) => void): Col[] {
     { key: 'email', w: 244, label: 'Email', on: true, kind: 'text', val: r => r.email,
       render: r => <span className={styles.mono}>{r.email}</span> },
 
+    { key: 'service_line', w: 130, label: 'Service', on: true, kind: 'enum',
+      val: r => (r.service_line ? LINE_LABEL[r.service_line] ?? r.service_line : ''),
+      render: r => r.service_line
+        ? <span className={styles.tag}>{LINE_LABEL[r.service_line] ?? r.service_line}</span>
+        : dash(null) },
+
     { key: 'source_name', w: 168, label: 'Source', on: true, kind: 'enum', val: r => S(r.source_name),
       render: r => r.source_name
         ? <>{r.source_name}{r.source_org && r.source_org !== 'seed' ? <span className={styles.soft}> · {r.source_org}</span> : null}</>
@@ -150,6 +165,12 @@ const QUICK = [
   { id: 'done', label: 'Done', fn: (r: DeskRow) => r.work_state === 'done' },
   { id: 'referral', label: 'Referrals', fn: (r: DeskRow) => r.source_type === 'referral_partner' },
   { id: 'discreet', label: 'Discreet', fn: (r: DeskRow) => r.share_ok === 'no_discreet' },
+  { id: 'l_fund_admin', label: 'Fund admin', fn: (r: DeskRow) => r.service_line === 'fund_admin' },
+  { id: 'l_compliance', label: 'Compliance', fn: (r: DeskRow) => r.service_line === 'compliance' },
+  { id: 'l_ocfo', label: 'OCFO', fn: (r: DeskRow) => r.service_line === 'ocfo' },
+  { id: 'l_capmkts', label: 'Capital mkts', fn: (r: DeskRow) => r.service_line === 'capital_markets' },
+  { id: 'l_corporate', label: 'Corporate', fn: (r: DeskRow) => r.service_line === 'corporate' },
+  { id: 'l_wealth', label: 'Private wealth', fn: (r: DeskRow) => r.service_line === 'private_wealth' },
 ]
 
 /* ------------------------------------------------------------------ */
@@ -814,6 +835,7 @@ function Drawer({ row, log, onClose, onSaved }: {
           <dt>Source</dt><dd>{[row.source_name, row.source_org].filter(Boolean).join(' · ') || '—'}</dd>
           <dt>Channel</dt><dd>{row.source_type ?? '—'}</dd>
           <dt>Received</dt><dd className={styles.mono}>{(row.date_received ?? row.created_at).slice(0, 10)}</dd>
+          <dt>Service</dt><dd>{row.service_line ? LINE_LABEL[row.service_line] ?? row.service_line : '—'}</dd>
           <dt>Share</dt><dd>{shareLabel}{row.share_ok_reason ? <span className={styles.soft}> — {row.share_ok_reason}</span> : null}</dd>
           <dt>Touches</dt><dd className={styles.mono}>{row.touch_count}</dd>
         </dl>

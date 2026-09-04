@@ -16,6 +16,7 @@ export interface DeskRow {
   notes: string | null
   lead_type: string | null
   readiness: string | null
+  service_line: string | null
   share_ok_reason: string | null
   created_at: string
   worked_at: string | null
