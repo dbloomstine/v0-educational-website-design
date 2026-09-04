@@ -23,6 +23,14 @@ import { renderNewsletterEmail } from '../lib/newsletter/email-template'
 import { queryEventFeed } from '../lib/events/api'
 import { FUNDOPSHQ_SPONSOR, type SponsorSlate } from '../lib/newsletter/sponsors'
 
+// The events section is bounded by the DATE WINDOW, not by a count. A cap of
+// 24 silently truncated it to ~8 days once the board grew past ~24 events in
+// a fortnight, while the section header still promised "the next two weeks"
+// (found 2026-09-04: 67 events in the window, 24 rendered). This ceiling
+// exists only so a pathological day can't produce an unbounded email.
+const EVENTS_LIMIT = 150
+
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const PROJECT_ROOT = join(__dirname, '..')
@@ -173,7 +181,7 @@ async function main() {
     console.log('  Using SAMPLE_SLATE — co-sponsor preview (FundOpsHQ + Fidelity Careers).')
   }
 
-  const upcomingEvents = (await queryEventFeed({ when: '2w', limit: 24 })).events
+  const upcomingEvents = (await queryEventFeed({ when: '2w', limit: EVENTS_LIMIT })).events
 
 
   let html = renderNewsletterEmail({

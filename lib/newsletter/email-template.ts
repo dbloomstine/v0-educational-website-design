@@ -119,6 +119,40 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 .fops-m { line-height: 18px; margin: 0 0 3px; }
 /* Events meta line — small, muted, mono: the same hierarchy the site uses,
    where the event name carries the weight and the details recede. */
+.fops-etd {
+  font-family: ${FONT_MONO};
+  font-size: 10px;
+  line-height: 16px;
+  color: ${INK_MUTED};
+  text-transform: uppercase;
+  padding: 6px 10px 6px 0;
+  vertical-align: top;
+  white-space: nowrap;
+  width: 78px;
+}
+.fops-ecell {
+  padding: 6px 0;
+  vertical-align: top;
+  border-bottom: 1px solid ${HAIRLINE};
+}
+.fops-etitle {
+  color: ${INK};
+  text-decoration: none;
+  font-family: ${FONT_SERIF};
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.fops-eday {
+  font-family: ${FONT_MONO};
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: ${INK};
+  text-transform: uppercase;
+  padding: 14px 0 4px;
+  border-bottom: 2px solid ${INK};
+}
 .fops-emeta {
   font-family: ${FONT_MONO};
   font-size: 10px;
@@ -396,10 +430,10 @@ function renderEvent(event: IndustryEvent): string {
 
   return `
     <tr>
-      <td class="fops-etime" style="font-family:${FONT_MONO};font-size:10px;line-height:16px;color:${INK_MUTED};text-transform:uppercase;padding:6px 10px 6px 0;vertical-align:top;white-space:nowrap;width:78px;">${escapeHtml(when)}</td>
-      <td style="padding:6px 0;vertical-align:top;border-bottom:1px solid ${HAIRLINE};">
-        <a href="https://fundopshq.com/events/${escapeHtml(event.slug)}" style="color:${INK};text-decoration:none;font-family:${FONT_SERIF};font-size:13px;font-weight:700;line-height:1.3;" target="_blank">${escapeHtml(event.name)}</a>
-        <div style="font-family:${FONT_MONO};font-size:10px;line-height:15px;color:${INK_MUTED};text-transform:uppercase;margin-top:2px;">${escapeHtml(under)}</div>
+      <td class="fops-etd">${escapeHtml(when)}</td>
+      <td class="fops-ecell">
+        <a href="https://fundopshq.com/events/${escapeHtml(event.slug)}" class="fops-etitle" style="color:${INK};text-decoration:none;" target="_blank">${escapeHtml(event.name)}</a>
+        <div class="fops-emeta">${escapeHtml(under)}</div>
       </td>
     </tr>`
 }
@@ -419,7 +453,7 @@ function renderEventsSection(events: IndustryEvent[]): string {
   const dayBlocks = days
     .map(
       (day) => `
-              <div class="fops-eday" style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:1.5px;color:${INK};text-transform:uppercase;padding:14px 0 4px;border-bottom:2px solid ${INK};">${escapeHtml(day.heading)}</div>
+              <div class="fops-eday">${escapeHtml(day.heading)}</div>
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                 ${day.events.map(renderEvent).join('')}
               </table>`,

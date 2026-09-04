@@ -19,6 +19,14 @@ import { renderNewsletterEmail } from '../lib/newsletter/email-template'
 import { queryEventFeed } from '../lib/events/api'
 import { DEFAULT_SPONSOR_SLATE, FUNDOPSHQ_SPONSOR, type SponsorSlate } from '../lib/newsletter/sponsors'
 
+// The events section is bounded by the DATE WINDOW, not by a count. A cap of
+// 24 silently truncated it to ~8 days once the board grew past ~24 events in
+// a fortnight, while the section header still promised "the next two weeks"
+// (found 2026-09-04: 67 events in the window, 24 rendered). This ceiling
+// exists only so a pathological day can't produce an unbounded email.
+const EVENTS_LIMIT = 150
+
+
 // Hosted asset URLs. Gmail strips base64 data: URIs in <img src>, so
 // test emails must reference the deployed copies on fundopshq.com.
 // These PNGs are committed in public/sponsors/ and served by Vercel.
@@ -86,7 +94,7 @@ async function main() {
   const sponsorSlate =
     process.env.MOCK_SPONSORS === '1' ? buildSampleSlate() : DEFAULT_SPONSOR_SLATE
 
-  const upcomingEvents = (await queryEventFeed({ when: '2w', limit: 24 })).events
+  const upcomingEvents = (await queryEventFeed({ when: '2w', limit: EVENTS_LIMIT })).events
 
 
   const html = renderNewsletterEmail({

@@ -15,6 +15,14 @@ import { queryEventFeed } from '@/lib/events/api'
 import type { IndustryEvent } from '@/lib/events/types'
 import { sendPipelineAlert } from '@/lib/pipeline/alert'
 
+// The events section is bounded by the DATE WINDOW, not by a count. A cap of
+// 24 silently truncated it to ~8 days once the board grew past ~24 events in
+// a fortnight, while the section header still promised "the next two weeks"
+// (found 2026-09-04: 67 events in the window, 24 rendered). This ceiling
+// exists only so a pathological day can't produce an unbounded email.
+const EVENTS_LIMIT = 150
+
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>
 
@@ -126,7 +134,7 @@ export async function sendDailyNewsletter(
   // section simply renders empty.
   let upcomingEvents: IndustryEvent[] = []
   try {
-    const feed = await queryEventFeed({ when: '2w', limit: 24 })
+    const feed = await queryEventFeed({ when: '2w', limit: EVENTS_LIMIT })
     upcomingEvents = feed.events
   } catch (err) {
     console.error('[send-daily] events lookup failed, sending without Section B:', err)
