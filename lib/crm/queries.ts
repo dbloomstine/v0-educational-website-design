@@ -56,6 +56,11 @@ export interface DeskRow {
   draft_note: string | null
   /** Cleared every free check but has no verified email yet. */
   provisional: boolean
+  /** Which feed surfaced this lead, e.g. "SEC Form D". Distinct from
+   *  source_name, which means the referral partner who sent it. */
+  origin: string | null
+  /** The signal headline that produced it. */
+  origin_note: string | null
 }
 
 export interface ContactLogEntry {

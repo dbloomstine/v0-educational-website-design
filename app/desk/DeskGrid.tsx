@@ -48,6 +48,32 @@ const SHARE_LABEL: Record<string, [string, string]> = {
 function dash(v: string | null | undefined): ReactNode {
   return v ? v : <span className={styles.soft}>—</span>
 }
+
+/**
+ * Copy-to-clipboard affordance. Danny lives in the copy button — the address,
+ * the subject and the body each get their own, because they go into three
+ * different fields in Gmail.
+ */
+function CopyBtn({ text, label = 'copy' }: { text: string; label?: string }) {
+  return (
+    <button
+      type="button"
+      className={styles.copyBtn}
+      title={`Copy ${label === 'copy' ? 'to clipboard' : label}`}
+      onClick={e => {
+        e.stopPropagation()
+        const btn = e.currentTarget
+        navigator.clipboard?.writeText(text).then(
+          () => {
+            btn.textContent = 'copied'
+            setTimeout(() => { btn.textContent = label }, 1200)
+          },
+          () => { btn.textContent = 'failed'; setTimeout(() => { btn.textContent = label }, 1200) },
+        )
+      }}
+    >{label}</button>
+  )
+}
 const S = (v: unknown) => (v === null || v === undefined || v === '' ? '' : String(v))
 
 function buildCols(onToggleDone: (r: DeskRow, done: boolean) => void): Col[] {
@@ -104,9 +130,12 @@ function buildCols(onToggleDone: (r: DeskRow, done: boolean) => void): Col[] {
         ? <span className={r.person_location === r.firm_location ? styles.soft : undefined}>{r.firm_location}</span>
         : dash(null) },
 
-    { key: 'email', w: 244, label: 'Email', on: true, kind: 'text', val: r => r.email,
+    { key: 'email', w: 262, label: 'Email', on: true, kind: 'text', val: r => r.email,
       render: r => r.email
-        ? <span className={styles.mono}>{r.email}</span>
+        ? <span className={styles.draftCell}>
+            <CopyBtn text={r.email} />
+            <span className={`${styles.mono} ${styles.draftText}`}>{r.email}</span>
+          </span>
         : <span className={`${styles.tag} ${styles.tagDisc}`} title="Cleared every free check; waiting on an email reveal">awaiting reveal</span> },
 
     // The pre-written first touch. Danny copies it into Gmail, edits, sends.
@@ -114,7 +143,10 @@ function buildCols(onToggleDone: (r: DeskRow, done: boolean) => void): Col[] {
     { key: 'email_subject', w: 300, label: 'Subject', on: true, kind: 'text',
       val: r => S(r.email_subject),
       render: r => r.email_subject
-        ? <span>{r.email_subject}</span>
+        ? <span className={styles.draftCell}>
+            <CopyBtn text={r.email_subject} />
+            <span className={styles.draftText}>{r.email_subject}</span>
+          </span>
         : r.draft_note
           ? <span className={styles.soft} title={r.draft_note}>withheld — {r.draft_note}</span>
           : dash(null) },
@@ -123,22 +155,7 @@ function buildCols(onToggleDone: (r: DeskRow, done: boolean) => void): Col[] {
       val: r => S(r.email_body),
       render: r => r.email_body
         ? <span className={styles.draftCell}>
-            <button
-              type="button"
-              className={styles.copyBtn}
-              title="Copy subject and body"
-              onClick={e => {
-                e.stopPropagation()
-                const text = `Subject: ${r.email_subject ?? ''}\n\n${r.email_body ?? ''}`
-                navigator.clipboard?.writeText(text).then(
-                  () => {
-                    const b = e.currentTarget as HTMLButtonElement | null
-                    if (b) { b.textContent = 'copied'; setTimeout(() => { b.textContent = 'copy' }, 1200) }
-                  },
-                  () => {},
-                )
-              }}
-            >copy</button>
+            <CopyBtn text={r.email_body} />
             <span className={styles.draftText}>{r.email_body.replace(/\s*\n\s*/g, ' ')}</span>
           </span>
         : dash(null) },
@@ -149,7 +166,16 @@ function buildCols(onToggleDone: (r: DeskRow, done: boolean) => void): Col[] {
         ? <span className={styles.tag}>{LINE_LABEL[r.service_line] ?? r.service_line}</span>
         : dash(null) },
 
-    { key: 'source_name', w: 168, label: 'Source', on: true, kind: 'enum', val: r => S(r.source_name),
+    { key: 'origin', w: 186, label: 'Found via', on: true, kind: 'enum',
+      val: r => S(r.origin),
+      render: r => r.origin
+        ? <span title={r.origin_note ?? undefined}>
+            <span className={styles.tag}>{r.origin}</span>
+            {r.origin_note ? <span className={styles.soft}> {r.origin_note}</span> : null}
+          </span>
+        : dash(null) },
+
+    { key: 'source_name', w: 168, label: 'Referrer', on: true, kind: 'enum', val: r => S(r.source_name),
       render: r => r.source_name
         ? <>{r.source_name}{r.source_org && r.source_org !== 'seed' ? <span className={styles.soft}> · {r.source_org}</span> : null}</>
         : dash(null) },
@@ -889,19 +915,24 @@ function Drawer({ row, log, onClose, onSaved }: {
         <div className={styles.drawSection}>First touch — draft only, nothing is ever sent</div>
         {row.email_subject ? (
           <div className={styles.draftBox}>
-            <div className={styles.draftSubject}>{row.email_subject}</div>
+            <div className={styles.draftRow}>
+              <span className={styles.draftLabel}>To</span>
+              <span className={styles.mono}>{row.email ?? 'awaiting reveal'}</span>
+              {row.email ? <CopyBtn text={row.email} /> : null}
+            </div>
+            <div className={styles.draftRow}>
+              <span className={styles.draftLabel}>Subject</span>
+              <span className={styles.draftSubject}>{row.email_subject}</span>
+              <CopyBtn text={row.email_subject} />
+            </div>
             <pre className={styles.draftBody}>{row.email_body}</pre>
-            <button
-              type="button"
-              className={`${styles.btn}`}
-              onClick={e => {
-                const text = `Subject: ${row.email_subject ?? ''}\n\n${row.email_body ?? ''}`
-                navigator.clipboard?.writeText(text).then(() => {
-                  const b = e.currentTarget as HTMLButtonElement | null
-                  if (b) { b.textContent = 'Copied'; setTimeout(() => { b.textContent = 'Copy email' }, 1400) }
-                }, () => {})
-              }}
-            >Copy email</button>
+            <div className={styles.draftRow}>
+              <CopyBtn text={row.email_body ?? ''} label="copy body" />
+              <CopyBtn
+                text={`Subject: ${row.email_subject ?? ''}\n\n${row.email_body ?? ''}`}
+                label="copy all"
+              />
+            </div>
           </div>
         ) : (
           <p className={styles.soft} style={{ fontSize: 12.5 }}>

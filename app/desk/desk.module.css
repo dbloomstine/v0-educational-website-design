@@ -145,7 +145,12 @@
 .copyBtn:hover { color:var(--accentInk); border-color:var(--accent); }
 
 .draftBox { border:1px solid var(--line); border-radius:5px; background:var(--surfaceAlt); padding:11px 12px; }
-.draftSubject { font-size:12.5px; font-weight:600; margin-bottom:8px; }
+.draftSubject { font-size:12.5px; font-weight:600; }
+.draftRow { display:flex; align-items:center; gap:8px; margin-bottom:7px; font-size:12.5px; flex-wrap:wrap; }
+.draftLabel {
+  font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted);
+  min-width:46px; flex:none;
+}
 .draftBody {
   margin:0 0 10px; font-family:inherit; font-size:12.5px; line-height:1.55;
   color:var(--inkSoft); white-space:pre-wrap; word-break:break-word;
