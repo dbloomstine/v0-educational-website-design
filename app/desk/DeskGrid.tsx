@@ -105,7 +105,43 @@ function buildCols(onToggleDone: (r: DeskRow, done: boolean) => void): Col[] {
         : dash(null) },
 
     { key: 'email', w: 244, label: 'Email', on: true, kind: 'text', val: r => r.email,
-      render: r => <span className={styles.mono}>{r.email}</span> },
+      render: r => r.email
+        ? <span className={styles.mono}>{r.email}</span>
+        : <span className={`${styles.tag} ${styles.tagDisc}`} title="Cleared every free check; waiting on an email reveal">awaiting reveal</span> },
+
+    // The pre-written first touch. Danny copies it into Gmail, edits, sends.
+    // Nothing here sends anything — see draft_email.py.
+    { key: 'email_subject', w: 300, label: 'Subject', on: true, kind: 'text',
+      val: r => S(r.email_subject),
+      render: r => r.email_subject
+        ? <span>{r.email_subject}</span>
+        : r.draft_note
+          ? <span className={styles.soft} title={r.draft_note}>withheld — {r.draft_note}</span>
+          : dash(null) },
+
+    { key: 'email_body', w: 340, label: 'Draft', on: true, kind: 'text',
+      val: r => S(r.email_body),
+      render: r => r.email_body
+        ? <span className={styles.draftCell}>
+            <button
+              type="button"
+              className={styles.copyBtn}
+              title="Copy subject and body"
+              onClick={e => {
+                e.stopPropagation()
+                const text = `Subject: ${r.email_subject ?? ''}\n\n${r.email_body ?? ''}`
+                navigator.clipboard?.writeText(text).then(
+                  () => {
+                    const b = e.currentTarget as HTMLButtonElement | null
+                    if (b) { b.textContent = 'copied'; setTimeout(() => { b.textContent = 'copy' }, 1200) }
+                  },
+                  () => {},
+                )
+              }}
+            >copy</button>
+            <span className={styles.draftText}>{r.email_body.replace(/\s*\n\s*/g, ' ')}</span>
+          </span>
+        : dash(null) },
 
     { key: 'service_line', w: 130, label: 'Service', on: true, kind: 'enum',
       val: r => (r.service_line ? LINE_LABEL[r.service_line] ?? r.service_line : ''),
@@ -151,6 +187,12 @@ function buildCols(onToggleDone: (r: DeskRow, done: boolean) => void): Col[] {
     { key: 'blocker', w: 220, label: 'Blocker', on: false, kind: 'text', val: r => S(r.blocker), render: r => dash(r.blocker) },
     { key: 'touch_count', w: 84, label: 'Touches', on: false, kind: 'enum', val: r => String(r.touch_count),
       render: r => <span className={styles.mono}>{r.touch_count}</span> },
+    { key: 'provisional', w: 104, label: 'Ready', on: false, kind: 'bool',
+      val: r => (r.provisional ? 'awaiting reveal' : 'ready'),
+      render: r => r.provisional
+        ? <span className={`${styles.tag} ${styles.tagDisc}`}>awaiting reveal</span>
+        : <span className={`${styles.tag} ${styles.tagOk}`}>ready</span> },
+
     { key: 'lead_ref', w: 92, label: 'Ref', on: false, kind: 'text', val: r => r.lead_ref,
       render: r => <span className={`${styles.mono} ${styles.soft}`}>{r.lead_ref}</span> },
   ]
@@ -842,6 +884,29 @@ function Drawer({ row, log, onClose, onSaved }: {
 
         {row.research_summary && (
           <div className={`${styles.box} ${styles.boxNote}`}><b>Research</b>{row.research_summary}</div>
+        )}
+
+        <div className={styles.drawSection}>First touch — draft only, nothing is ever sent</div>
+        {row.email_subject ? (
+          <div className={styles.draftBox}>
+            <div className={styles.draftSubject}>{row.email_subject}</div>
+            <pre className={styles.draftBody}>{row.email_body}</pre>
+            <button
+              type="button"
+              className={`${styles.btn}`}
+              onClick={e => {
+                const text = `Subject: ${row.email_subject ?? ''}\n\n${row.email_body ?? ''}`
+                navigator.clipboard?.writeText(text).then(() => {
+                  const b = e.currentTarget as HTMLButtonElement | null
+                  if (b) { b.textContent = 'Copied'; setTimeout(() => { b.textContent = 'Copy email' }, 1400) }
+                }, () => {})
+              }}
+            >Copy email</button>
+          </div>
+        ) : (
+          <p className={styles.soft} style={{ fontSize: 12.5 }}>
+            No draft — {row.draft_note ?? 'not generated yet'}.
+          </p>
         )}
 
         <div className={styles.drawSection}>Notes on this person — internal, never exported</div>

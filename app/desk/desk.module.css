@@ -130,6 +130,27 @@
 .tag { display:inline-block; font-size:10px; padding:1px 5px; border-radius:3px; background:var(--surfaceAlt); color:var(--muted); border:1px solid var(--line); }
 .tagDisc { background:var(--warnSoft); color:var(--warn); border-color:transparent; }
 .tagOk { background:var(--accentSoft); color:var(--accentInk); border-color:transparent; }
+/* ---------- pre-written first touch ---------- */
+/* The draft is long and the row is one line, so the cell shows it collapsed
+   to a single run of text. The full version is in the cell's title tooltip
+   and in the detail panel; the copy button is what actually gets used. */
+.draftCell { display:flex; align-items:center; gap:7px; min-width:0; }
+.draftText { color:var(--inkSoft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.copyBtn {
+  flex:none; font-size:10px; line-height:1; padding:3px 6px; cursor:pointer;
+  border:1px solid var(--line); border-radius:3px;
+  background:var(--surfaceAlt); color:var(--muted);
+  font-family:var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+.copyBtn:hover { color:var(--accentInk); border-color:var(--accent); }
+
+.draftBox { border:1px solid var(--line); border-radius:5px; background:var(--surfaceAlt); padding:11px 12px; }
+.draftSubject { font-size:12.5px; font-weight:600; margin-bottom:8px; }
+.draftBody {
+  margin:0 0 10px; font-family:inherit; font-size:12.5px; line-height:1.55;
+  color:var(--inkSoft); white-space:pre-wrap; word-break:break-word;
+}
+
 .pri { font-weight:600; font-size:11px; }
 .priA { color:var(--accent); } .priB { color:var(--inkSoft); } .priC { color:var(--dim); }
 .lnk { color:var(--accent); text-decoration:none; }

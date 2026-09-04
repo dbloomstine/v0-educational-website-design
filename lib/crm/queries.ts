@@ -49,6 +49,13 @@ export interface DeskRow {
   source_type: string | null
   research_summary: string | null
   touch_count: number
+  /** Pre-written first touch. Never sent by any code path — Danny sends it. */
+  email_subject: string | null
+  email_body: string | null
+  /** Why a draft was withheld: discreet, on hold, or not yet named. */
+  draft_note: string | null
+  /** Cleared every free check but has no verified email yet. */
+  provisional: boolean
 }
 
 export interface ContactLogEntry {
@@ -62,7 +69,10 @@ export interface ContactLogEntry {
 /**
  * Reads `desk_rows`, which enforces the promotion gate in SQL — disqualified
  * firms, parked leads, and rows without a researched person and a real email
- * are structurally absent. Do not query `leads` directly for the grid.
+ * are structurally absent. The one exception is a row flagged `provisional`:
+ * it cleared every free check but is still waiting on an email reveal, and it
+ * shows in the grid labelled as such so it cannot be mistaken for sendable.
+ * Do not query `leads` directly for the grid.
  */
 export async function fetchDeskRows(limit = 1000): Promise<DeskRow[]> {
   const { data, error } = await getCrmAdmin()
