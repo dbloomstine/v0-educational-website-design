@@ -121,8 +121,8 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
    where the event name carries the weight and the details recede. */
 .fops-etd {
   font-family: ${FONT_MONO};
-  font-size: 10px;
-  line-height: 16px;
+  font-size: 11.5px;
+  line-height: 18px;
   color: ${INK_MUTED};
   text-transform: uppercase;
   padding: 6px 10px 6px 0;
@@ -139,13 +139,13 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
   color: ${INK};
   text-decoration: none;
   font-family: ${FONT_SERIF};
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 700;
   line-height: 1.3;
 }
 .fops-eday {
   font-family: ${FONT_MONO};
-  font-size: 10px;
+  font-size: 11.5px;
   font-weight: 700;
   letter-spacing: 1.5px;
   color: ${INK};
@@ -155,8 +155,8 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 }
 .fops-emeta {
   font-family: ${FONT_MONO};
-  font-size: 10px;
-  line-height: 15px;
+  font-size: 11.5px;
+  line-height: 17px;
   color: ${INK_MUTED};
   letter-spacing: 0.3px;
   text-transform: uppercase;
@@ -165,7 +165,7 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 .fops-title {
   color: ${INK};
   text-decoration: none;
-  font-size: 14px;
+  font-size: 15.5px;
   font-weight: 400;
   font-family: ${FONT_SERIF};
   line-height: 1.3;
@@ -175,21 +175,21 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 .fops-title b { font-weight: 700; }
 .fops-blurb {
   color: ${INK_MUTED};
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.45;
   font-family: ${FONT_SANS};
   margin: 2px 0 0;
 }
 .fops-source {
   color: rgba(90,107,130,0.75);
-  font-size: 10px;
+  font-size: 11px;
   font-family: ${FONT_MONO};
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
 .fops-firm {
   color: ${INK};
-  font-size: 12px;
+  font-size: 13px;
   font-family: ${FONT_SANS};
   font-weight: 700;
   vertical-align: middle;

@@ -145,17 +145,17 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
             href={article.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[14px] font-normal text-foreground leading-snug truncate hover:text-amber-400 transition-colors"
+            className="text-[15px] font-normal text-foreground leading-normal truncate hover:text-amber-400 transition-colors"
           >
             {headlineNodes}
           </a>
           {(showFirm || metaTrail) && (
             <span
-              className="shrink-0 text-[10px] font-mono uppercase tracking-wide text-muted-foreground/50"
+              className="shrink-0 text-[11px] font-mono uppercase tracking-wide text-muted-foreground"
               title={sizeTooltip}
             >
               {showFirm && (
-                <span className="font-semibold text-muted-foreground/70">{showFirm}</span>
+                <span className="font-semibold text-foreground/80">{showFirm}</span>
               )}
               {showFirm && metaTrail ? ' · ' : ''}
               {metaTrail}
@@ -164,12 +164,12 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
         </div>
 
         {/* Col 2: Date */}
-        <span className="text-[11px] text-muted-foreground/50 tabular-nums whitespace-nowrap">
+        <span className="text-[11.5px] text-muted-foreground tabular-nums whitespace-nowrap">
           {article.publishedDate ? formatCompactTime(article.publishedDate, dateRange) : ''}
         </span>
 
         {/* Col 3: Source (+ cluster count as plain text, not a badge) */}
-        <span className="text-[11px] text-muted-foreground/60 truncate">
+        <span className="text-[11.5px] text-muted-foreground truncate">
           {article.sourceName || ''}
           {clusterSize && clusterSize > 1 && (
             <span className="text-muted-foreground/40"> +{clusterSize - 1}</span>
@@ -189,7 +189,7 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
               column of labels. */}
           <div className="flex items-start gap-1.5 min-w-0">
             <span className={cn(
-              'min-w-0 flex-1 text-[13px] font-normal text-foreground leading-snug',
+              'min-w-0 flex-1 text-[14.5px] font-normal text-foreground leading-normal',
               mobileExpanded ? 'line-clamp-none' : 'line-clamp-2'
             )}>
               {headlineNodes}
@@ -200,7 +200,7 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
           {/* Row 2: firm + quiet classification + date. No logo indent to sit
               under any more, so this line starts at the row's left edge. */}
           <div className="mt-0.5 flex items-center gap-1.5">
-            <span className="text-[9.5px] font-mono uppercase tracking-wide text-muted-foreground/50 truncate">
+            <span className="text-[11px] font-mono uppercase tracking-wide text-muted-foreground truncate">
               {showFirm && (
                 <span className="font-semibold text-muted-foreground/80">{showFirm}</span>
               )}
@@ -208,7 +208,7 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
               {metaTrail}
               {clusterSize && clusterSize > 1 ? ` · ${clusterSize} sources` : ''}
             </span>
-            <span className="ml-auto text-[10px] text-muted-foreground/50 tabular-nums whitespace-nowrap">
+            <span className="ml-auto text-[11px] text-muted-foreground tabular-nums whitespace-nowrap">
               {article.publishedDate ? formatCompactTime(article.publishedDate, dateRange) : ''}
             </span>
           </div>

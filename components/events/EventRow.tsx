@@ -44,7 +44,7 @@ export function EventRow({ event }: { event: IndustryEvent }) {
       href={`/events/${event.slug}`}
       className="group grid grid-cols-[76px_1fr] items-baseline gap-x-3 border-b border-border/30 px-2 py-1.5 transition-colors hover:bg-accent/40 last:border-b-0 sm:grid-cols-[92px_1fr_86px]"
     >
-      <span className="whitespace-nowrap font-mono text-[10px] uppercase tabular-nums text-muted-foreground/70">
+      <span className="whitespace-nowrap font-mono text-[11.5px] uppercase tabular-nums text-muted-foreground">
         {when}
       </span>
 
@@ -53,7 +53,7 @@ export function EventRow({ event }: { event: IndustryEvent }) {
           {event.isFeatured && (
             <Star className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400" aria-label="Featured" />
           )}
-          <span className="text-[13.5px] font-semibold leading-snug text-foreground transition-colors group-hover:text-amber-400">
+          <span className="text-[15px] font-semibold leading-normal text-foreground transition-colors group-hover:text-amber-400">
             {event.name}
           </span>
           <button
@@ -70,7 +70,7 @@ export function EventRow({ event }: { event: IndustryEvent }) {
             <ExternalLink className="h-3 w-3" />
           </button>
         </span>
-        <span className="mt-0.5 block truncate font-mono text-[9.5px] uppercase tracking-wide text-muted-foreground/60">
+        <span className="mt-0.5 block truncate font-mono text-[11px] uppercase tracking-wide text-muted-foreground">
           {under}
           <span className="sm:hidden">
             {event.costType === 'free' ? ' · Free' : ` · ${cost.label}`}
@@ -80,7 +80,7 @@ export function EventRow({ event }: { event: IndustryEvent }) {
 
       <span
         className={cn(
-          'hidden text-right text-[11px] font-medium sm:block',
+          'hidden text-right text-[12px] font-medium sm:block',
           event.costType === 'free' ? 'text-emerald-400' : cost.color,
         )}
         title={event.priceNote ?? undefined}

@@ -34,14 +34,14 @@ export function EventLine({ event }: { event: IndustryEvent }) {
       href={`/events/${event.slug}`}
       className="group grid grid-cols-[68px_1fr] items-baseline gap-x-3 border-b border-border/30 px-1 py-1.5 transition-colors hover:bg-accent/40 last:border-b-0"
     >
-      <span className="whitespace-nowrap font-mono text-[10px] uppercase tabular-nums text-muted-foreground/70">
+      <span className="whitespace-nowrap font-mono text-[11.5px] uppercase tabular-nums text-muted-foreground">
         {when}
       </span>
       <span className="min-w-0">
-        <span className="block text-[13.5px] font-semibold leading-snug text-foreground transition-colors group-hover:text-amber-400">
+        <span className="block text-[15px] font-semibold leading-normal text-foreground transition-colors group-hover:text-amber-400">
           {event.name}
         </span>
-        <span className="mt-0.5 block truncate font-mono text-[9.5px] uppercase tracking-wide text-muted-foreground/60">
+        <span className="mt-0.5 block truncate font-mono text-[11px] uppercase tracking-wide text-muted-foreground">
           {under}
         </span>
       </span>
@@ -116,16 +116,16 @@ export function HomeEventsStrip({ events, rail = false }: { events: IndustryEven
             href={`/events/${event.slug}`}
             className="group flex items-center gap-3 border-b border-border/40 px-4 py-2 transition-colors hover:bg-accent/40 last:border-b-0"
           >
-            <span className="w-[92px] shrink-0 font-mono text-[12px] tabular-nums text-foreground/90 whitespace-nowrap">
+            <span className="w-[92px] shrink-0 font-mono text-[12.5px] tabular-nums text-foreground whitespace-nowrap">
               {formatEventDates(event.startDate, event.endDate)}
             </span>
             <span className={cn('hidden sm:inline-flex shrink-0 rounded-full border px-2 py-0.5 text-[10px] font-medium', kind.color)}>
               {kind.label}
             </span>
-            <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-foreground group-hover:text-amber-400 transition-colors">
+            <span className="min-w-0 flex-1 truncate text-[14.5px] font-medium text-foreground group-hover:text-amber-400 transition-colors">
               {event.name}
             </span>
-            <span className="hidden md:block w-[150px] shrink-0 truncate text-right text-[12px] text-muted-foreground">
+            <span className="hidden md:block w-[150px] shrink-0 truncate text-right text-[12.5px] text-muted-foreground">
               {formatEventLocation(event)}
             </span>
             <span className={cn('hidden sm:block w-[46px] shrink-0 text-right text-[12px] font-medium', event.costType === 'free' ? 'text-emerald-400' : 'text-muted-foreground')}>

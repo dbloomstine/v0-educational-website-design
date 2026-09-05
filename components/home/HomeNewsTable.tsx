@@ -49,7 +49,7 @@ export function HomeNewsTable({ groups }: { groups: ArticleGroup[] }) {
                 No `block` on the clamped headline — Tailwind's line-clamp sets
                 display to -webkit-box and `block` would override it. */}
             <span className="min-w-0 flex-1 lg:flex lg:items-baseline lg:gap-2">
-              <span className="text-[13.5px] font-normal leading-snug text-foreground line-clamp-2 lg:truncate lg:line-clamp-none group-hover:text-amber-400 transition-colors">
+              <span className="text-[15px] font-normal leading-normal text-foreground line-clamp-2 lg:truncate lg:line-clamp-none group-hover:text-amber-400 transition-colors">
                 {headline.map((seg, i) =>
                   seg.bold ? (
                     <strong key={i} className="font-semibold">{seg.text}</strong>
@@ -59,7 +59,7 @@ export function HomeNewsTable({ groups }: { groups: ArticleGroup[] }) {
                 )}
               </span>
               {showFirm && (
-                <span className="mt-0.5 block truncate font-mono text-[9.5px] uppercase tracking-wide text-muted-foreground/60 lg:mt-0 lg:shrink-0">
+                <span className="mt-0.5 block truncate font-mono text-[11px] uppercase tracking-wide text-muted-foreground lg:mt-0 lg:shrink-0">
                   {showFirm}
                 </span>
               )}
