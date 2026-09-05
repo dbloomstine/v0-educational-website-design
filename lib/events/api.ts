@@ -67,10 +67,13 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
     query = query.in('event_kind', params.kind.split(','))
   }
   if (params.format) {
-    // A caller may narrow within the board scope but never widen past it —
-    // asking for format=virtual yields nothing rather than resurrecting it.
+    // A caller may narrow within the board scope but never widen past it.
+    // If nothing they asked for is in scope (e.g. format=virtual) the result
+    // is EMPTY — an empty `in` list matches no rows. Falling back to
+    // BOARD_FORMATS here would answer "show me virtual events" with a full
+    // page of in-person ones, which is worse than returning nothing.
     const requested = params.format.split(',').filter((f) => BOARD_FORMATS.includes(f as never))
-    query = query.in('event_format', requested.length ? requested : BOARD_FORMATS)
+    query = query.in('event_format', requested)
   }
   if (params.cost) {
     query = query.in('cost_type', params.cost.split(','))
