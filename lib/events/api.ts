@@ -32,6 +32,14 @@ function todayIso(): string {
 // so widening later is a one-line change here, not a re-scout.
 const BOARD_REGION = 'north_america'
 
+// Per Danny (2026-09-05): the board and the daily email are IN-PERSON ONLY.
+// Virtual-only events are excluded everywhere the board is read. `hybrid` is
+// kept deliberately — those events DO have a live in-person component, which is
+// what the rule is about; they are in-person events that happen to also stream.
+// Virtual rows stay in the table (unlisted) so this is a one-line widen later,
+// not a re-scout — same approach as BOARD_REGION above.
+const BOARD_FORMATS = ['in_person', 'hybrid'] as const
+
 export async function queryEventFeed(params: EventQueryParams): Promise<EventFeedResponse> {
   const limit = Math.min(params.limit ?? 100, 200)
   const offset = params.offset ?? 0
@@ -42,6 +50,7 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
     .select('*')
     .eq('status', 'published')
     .eq('region', BOARD_REGION)
+    .in('event_format', BOARD_FORMATS)
     .gte('start_date', today)
     .order('start_date', { ascending: true })
     .order('name', { ascending: true })
@@ -58,7 +67,10 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
     query = query.in('event_kind', params.kind.split(','))
   }
   if (params.format) {
-    query = query.in('event_format', params.format.split(','))
+    // A caller may narrow within the board scope but never widen past it —
+    // asking for format=virtual yields nothing rather than resurrecting it.
+    const requested = params.format.split(',').filter((f) => BOARD_FORMATS.includes(f as never))
+    query = query.in('event_format', requested.length ? requested : BOARD_FORMATS)
   }
   if (params.cost) {
     query = query.in('cost_type', params.cost.split(','))
@@ -156,6 +168,7 @@ export async function queryRelatedEvents(event: IndustryEvent, limit = 5): Promi
       .select('*')
       .eq('status', 'published')
       .eq('region', BOARD_REGION)
+      .in('event_format', BOARD_FORMATS)
       .gte('start_date', today)
       .order('start_date', { ascending: true })
       .limit(limit + 1)
@@ -187,6 +200,7 @@ export async function queryAllEventSlugs(): Promise<{ slug: string; startDate: s
     .select('slug, start_date')
     .neq('status', 'draft')
     .eq('region', BOARD_REGION)
+    .in('event_format', BOARD_FORMATS)
     .order('start_date', { ascending: true })
     .limit(1000)
   return (data ?? []).map((r) => ({ slug: r.slug, startDate: r.start_date }))
@@ -200,6 +214,7 @@ async function queryEventFacets(today: string): Promise<EventFacetCounts> {
     .select('event_kind, event_format, cost_type, region, fund_categories, topics, city, ops_relevance')
     .eq('status', 'published')
     .eq('region', BOARD_REGION)
+    .in('event_format', BOARD_FORMATS)
     .gte('start_date', today)
 
   const kinds: Record<string, number> = {}

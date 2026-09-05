@@ -83,7 +83,7 @@ export function SubmitEventForm() {
           <input id="ev-org" name="organizer_name" maxLength={200} className={inputClass} placeholder="Firm or association" />
         </div>
         <div>
-          <label htmlFor="ev-city" className={labelClass}>City <span className="normal-case tracking-normal font-sans font-normal">(blank if virtual)</span></label>
+          <label htmlFor="ev-city" className={labelClass}>City</label>
           <input id="ev-city" name="city" maxLength={100} className={inputClass} placeholder="e.g. New York" />
         </div>
       </div>
@@ -92,10 +92,12 @@ export function SubmitEventForm() {
         <div>
           <label htmlFor="ev-format" className={labelClass}>Format</label>
           <select id="ev-format" name="event_format" className={inputClass} defaultValue="">
+            {/* Per Danny (2026-09-05): the board is in-person only, so
+                virtual-only events are not accepted. Offering the option would
+                invite submissions that could never be published. */}
             <option value="">Select...</option>
             <option value="in_person">In-person</option>
-            <option value="virtual">Virtual</option>
-            <option value="hybrid">Hybrid</option>
+            <option value="hybrid">Hybrid (in-person + streamed)</option>
           </select>
         </div>
         <div>
