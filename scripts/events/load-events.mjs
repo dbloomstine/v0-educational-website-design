@@ -95,6 +95,8 @@ const takenSlugs = new Set((existing ?? []).map((r) => r.slug).filter(Boolean))
 
 let inserted = 0
 const skipped = []
+const perSource = new Map()   // event_source_id -> rows inserted this run
+const unattributed = []       // inserted rows whose source_key resolved to nothing
 for (const file of process.argv.slice(2)) {
   const rows = JSON.parse(readFileSync(file, 'utf8'))
   for (const r of rows) {
@@ -147,8 +149,42 @@ for (const file of process.argv.slice(2)) {
     })
     if (error) { skipped.push(`${r.name}: insert error ${error.message}`); continue }
     inserted++
+    const sid = resolveSource(r.source_key)
+    if (sid) perSource.set(sid, (perSource.get(sid) ?? 0) + 1)
+    else unattributed.push(r.name)
   }
 }
 
+// Bookkeeping used to be a manual SQL step the agent ran after loading, and it
+// was routinely forgotten: an audit on 2026-09-05 found events_found_total
+// summing to 139 against 318 real rows, with 39 sources reading 0 despite
+// having produced events. That silently mislabels live sources as dead, which
+// is exactly the signal used to decide what to prune. The loader already knows
+// the source id for every row it inserts, so it does the bookkeeping itself.
+for (const [sourceId, n] of perSource) {
+  const { data: cur } = await supabase
+    .from('event_sources').select('events_found_total').eq('id', sourceId).single()
+  const { error } = await supabase
+    .from('event_sources')
+    .update({
+      events_found_total: (cur?.events_found_total ?? 0) + n,
+      last_scouted_at: new Date().toISOString(),
+    })
+    .eq('id', sourceId)
+  if (error) skipped.push(`bookkeeping failed for source ${sourceId}: ${error.message}`)
+}
+
 console.log(`inserted: ${inserted}`)
+if (perSource.size) {
+  console.log(`bookkeeping: bumped events_found_total for ${perSource.size} source(s)`)
+}
+// A row that resolves to no source still loads, but nothing counts it — say so
+// loudly rather than letting the registry quietly under-report again.
+if (unattributed.length) {
+  console.log(
+    `WARNING: ${unattributed.length} event(s) had an unresolvable source_key and were NOT counted ` +
+    `against any source (fix source_key or add the source to event_sources):\n  ` +
+    unattributed.join('\n  ')
+  )
+}
 if (skipped.length) console.log('skipped:\n  ' + skipped.join('\n  '))
