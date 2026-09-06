@@ -93,7 +93,13 @@ jobs:
           fi
           WAVE="${{ steps.which.outputs.wave }}"
           FORCE="${{ steps.which.outputs.force }}"
-          URL="https://fundopshq.com/api/pipeline/outreach-send-wave-${WAVE}"
+          # Explicit map. "nightly" is the lookalike mode (cap 2, draft by default);
+          # the numbered waves are the legacy article-driven sender.
+          case "$WAVE" in
+            nightly) URL="https://fundopshq.com/api/pipeline/outreach-lookalike-nightly" ;;
+            1|2)     URL="https://fundopshq.com/api/pipeline/outreach-send-wave-${WAVE}" ;;
+            *) echo "::error::unknown wave $WAVE"; exit 1 ;;
+          esac
           if [[ "$FORCE" == "true" ]]; then
             URL="${URL}?force=true"
           fi
@@ -109,7 +115,7 @@ jobs:
           echo
           echo "---"
           if [[ "$HTTP" != "200" ]]; then
-            echo "::error::outreach-send-wave-${WAVE} returned HTTP ${HTTP}"
+            echo "::error::wave ${WAVE} (${URL}) returned HTTP ${HTTP}"
             exit 1
           fi
 

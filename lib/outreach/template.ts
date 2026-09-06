@@ -30,6 +30,7 @@
  * substitution.
  */
 
+import type { LookalikeSegment } from './segments'
 import type { Article, ComposedEmail, QualityGateResult } from './types'
 import type { NewsletterPayload } from './newsletter-fetch'
 import { shortenFirmName } from './candidates'
@@ -143,7 +144,7 @@ function encodeEmailForDeepLink(email: string): string {
   return Buffer.from(email, 'utf8').toString('base64url')
 }
 
-function subscribeDeepLink(recipientEmail: string): string {
+export function subscribeDeepLink(recipientEmail: string): string {
   return `fundopshq.com/?e=${encodeEmailForDeepLink(recipientEmail)}`
 }
 
@@ -530,5 +531,49 @@ export function qualityGateForward(
     return { ok: false, reason: 'em_dash' }
   }
 
+  return { ok: true }
+}
+
+// ─── Lookalike mode (2026-09-06) ─────────────────────────────────────────────
+export const LOOKALIKE_TEMPLATE_VARIANT = 'lookalike_v1'
+export const LOOKALIKE_SUBJECT = 'Quick one from FundOpsHQ'
+
+/**
+ * Danny's approved note, verbatim in shape: who he is, why this reader,
+ * one link, an invitation to share, an ask for feedback. No news hook,
+ * no dashes, plus the CAN-SPAM line after the signature.
+ */
+export function composeLookalikeEmail(params: {
+  firstName: string
+  segment: LookalikeSegment
+  recipientEmail: string
+}): ComposedEmail {
+  const { firstName, segment, recipientEmail } = params
+  const link = subscribeDeepLink(recipientEmail)
+  const body = [
+    `Hi ${firstName},`,
+    '',
+    `I run FundOps Daily, a short morning brief on fund closes, launches, and moves across private markets. ${segment.audienceLine}, and it tends to get forwarded around teams.`,
+    '',
+    `Figured you might find it useful: ${link}`,
+    '',
+    "If you do, share it with anyone who'd want it. And if you have feedback, I genuinely want it.",
+    '',
+    'Danny',
+    '',
+    CAN_SPAM_FOOTER,
+  ].join('\n')
+  return { subject: LOOKALIKE_SUBJECT, body }
+}
+
+export function qualityGateLookalike(body: string, subject: string): QualityGateResult {
+  const words = body.trim().split(/\s+/).filter(Boolean).length
+  if (words > 120) return { ok: false, reason: 'over_word_cap' }
+  if (!body.includes('fundopshq.com')) return { ok: false, reason: 'missing_link' }
+  if (!/\nDanny\n/.test(body)) return { ok: false, reason: 'missing_signature' }
+  if (!body.includes(CAN_SPAM_FOOTER)) return { ok: false, reason: 'missing_can_spam_footer' }
+  if (body.includes('\u2014') || body.includes('\u2013') || subject.includes('\u2014')) return { ok: false, reason: 'em_dash' }
+  if (!body.startsWith('Hi ') || body.startsWith('Hi ,')) return { ok: false, reason: 'missing_greeting' }
+  if (subject !== LOOKALIKE_SUBJECT) return { ok: false, reason: 'wrong_subject_prefix' }
   return { ok: true }
 }

@@ -469,3 +469,33 @@ export async function getMessage(messageId: string): Promise<GmailMessageDetail>
     body,
   }
 }
+
+/**
+ * Review mode: create a Gmail DRAFT instead of sending. Danny reads it in
+ * his Drafts folder and sends by hand. Requires gmail.modify (granted).
+ */
+export async function createGmailDraft(params: {
+  to: string
+  subject: string
+  body: string
+  html?: string
+  from?: string
+  fromName?: string
+}): Promise<{ draftId: string; messageId: string }> {
+  const accessToken = await getAccessToken()
+  const from = params.from ?? process.env.GMAIL_SENDER_EMAIL ?? DEFAULT_SENDER_EMAIL
+  const fromName = params.fromName ?? DEFAULT_SENDER_NAME
+  const raw = buildMimeMessage({ from, fromName, to: params.to, subject: params.subject, body: params.body, html: params.html })
+  const res = await fetch(`${GMAIL_API_BASE}/drafts`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ message: { raw: base64UrlEncode(raw) } }),
+  })
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Gmail draft create failed ${res.status}: ${text.slice(0, 300)}`)
+  }
+  const data = (await res.json()) as { id?: string; message?: { id?: string } }
+  if (!data.id) throw new Error('Gmail draft create succeeded but returned no draft ID')
+  return { draftId: data.id, messageId: data.message?.id ?? '' }
+}

@@ -15,7 +15,8 @@
  * thinner batch does.
  */
 
-import type { Article, Contact, FindContactResult } from './types'
+import type { Article, Contact, FindContactResult, LookalikeContact, LookalikeFindResult } from './types'
+import { titleMatchesSegment, type LookalikeSegment } from './segments'
 
 const APOLLO_BASE = 'https://api.apollo.io/api/v1'
 
@@ -125,7 +126,7 @@ const INVESTMENT_TITLE_PATTERNS: RegExp[] = [
   /\bacquisit/i,                // acquisition, acquisitions
 ]
 
-function titleIsJunior(title: string | undefined | null): boolean {
+export function titleIsJunior(title: string | undefined | null): boolean {
   if (!title) return true // empty title = skip
   return JUNIOR_TITLE_PATTERNS.some((re) => re.test(title))
 }
@@ -441,4 +442,78 @@ function domainsMatch(emailDom: string, targetDom: string): boolean {
  */
 function normalizeFirmName(name: string): string {
   return name.toLowerCase().replace(/[^a-z0-9]/g, '')
+}
+
+// ─── Lookalike mode ──────────────────────────────────────────────────────────
+// Search by SEGMENT (titles + keywords), not by a firm from an article. The
+// domain anchor that the article-driven mode took from extracted_data now
+// comes from Apollo's own organization.primary_domain on the match record,
+// so the email-domain guard survives without the classifier's help.
+
+/** One search call. Emails are not returned; use matchPersonById to reveal. */
+export async function searchPeopleBySegment(
+  seg: LookalikeSegment,
+  opts: { perPage?: number; page?: number } = {},
+): Promise<ApolloSearchPerson[]> {
+  const apiKey = process.env.OUTREACH_APOLLO_API_KEY
+  if (!apiKey) throw new Error('Missing OUTREACH_APOLLO_API_KEY')
+  const body: Record<string, unknown> = {
+    q_keywords: seg.keywords,
+    person_titles: seg.titles,
+    person_seniorities: ['senior', 'director', 'vp', 'c_suite', 'owner', 'partner'],
+    person_locations: ['United States'],
+    contact_email_status: ['verified'],
+    per_page: opts.perPage ?? 25,
+    page: opts.page ?? 1,
+  }
+  if (seg.employeeRanges?.length) body.organization_num_employees_ranges = seg.employeeRanges
+  const res = await fetch(`${APOLLO_BASE}/mixed_people/api_search`, {
+    method: 'POST',
+    headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Apollo segment search failed ${res.status}: ${text.slice(0, 200)}`)
+  }
+  const data = (await res.json()) as { people?: ApolloSearchPerson[] }
+  return data.people ?? []
+}
+
+/** One credit. Reveals email + organization.primary_domain. */
+export async function matchPersonById(personId: string): Promise<ApolloMatchPerson | null> {
+  return matchPerson({ personId })
+}
+
+/**
+ * Same discipline as applyPostMatchGuards, minus the article: verified
+ * email, real first name, title inside the segment (and not junior), and
+ * the email domain must equal the organization's primary domain.
+ */
+export function applyLookalikeGuards(
+  seg: LookalikeSegment,
+  person: ApolloMatchPerson | null,
+): LookalikeFindResult {
+  if (!person) return { ok: false, reason: 'apollo_no_match' }
+  if (person.email_status !== 'verified' || !person.email) return { ok: false, reason: 'no_verified_email' }
+  if (!person.first_name || !person.first_name.trim()) return { ok: false, reason: 'empty_first_name' }
+  if (titleIsJunior(person.title) || !titleMatchesSegment(person.title, seg)) {
+    return { ok: false, reason: 'title_not_acceptable' }
+  }
+  const orgDomain = person.organization?.primary_domain
+  if (!orgDomain) return { ok: false, reason: 'missing_firm_domain' }
+  if (emailDomain(person.email) !== normalizeDomain(orgDomain)) {
+    return { ok: false, reason: 'email_domain_mismatch' }
+  }
+  const contact: LookalikeContact = {
+    email: person.email,
+    firstName: person.first_name.trim(),
+    lastName: (person.last_name ?? '').trim(),
+    title: person.title ?? '',
+    firmName: person.organization?.name ?? '',
+    firmDomain: normalizeDomain(orgDomain),
+    personId: person.id,
+    segmentKey: seg.key,
+  }
+  return { ok: true, contact }
 }

@@ -171,3 +171,18 @@ export interface OutreachRunResult {
   runtimeMs: number
   error?: string
 }
+
+// ─── Lookalike mode (2026-09-06) ─────────────────────────────────────────────
+export interface LookalikeContact {
+  email: string
+  firstName: string
+  lastName: string
+  title: string
+  firmName: string
+  firmDomain: string
+  personId: string
+  segmentKey: string
+}
+export type LookalikeFindResult =
+  | { ok: true; contact: LookalikeContact }
+  | { ok: false; reason: ContactDropReason }
