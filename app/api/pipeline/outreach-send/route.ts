@@ -293,6 +293,32 @@ export async function GET(req: Request) {
       ? allCandidates
       : await firmLevelDedup(supabase, allCandidates)
 
+    // ─── 7.4. Domain-anchor preflight (BEFORE any Apollo spend) ───────────
+    // The Apollo guard rejects any match it cannot anchor to the firm's
+    // domain — but it runs AFTER the paid lookup. On 2026-09-06 a single
+    // cap=1 test burned 106 credits and sent nothing, because the classifier
+    // stopped populating extracted_data.firm_domain on 2026-08-30 (removed
+    // with the favicons; see commit d9bae182) and every candidate was
+    // dropped post-lookup. If nothing here can be verified, say so and stop.
+    const withDomain = dedupedFirms.filter((c) => !!c.firmDomain)
+    if (dedupedFirms.length > 0 && withDomain.length === 0) {
+      await sendStatusEmail({
+        wave: waveLabel,
+        editionDate,
+        reason: 'no_firm_domains',
+        details: [
+          `${dedupedFirms.length} candidate firm(s) from the edition, none with a firm_domain.`,
+          'Skipped before enrichment: zero Apollo credits spent, nothing sent.',
+          'Cause: extracted_data.firm_domain is no longer populated by the classifier (removed 2026-08-30 with the favicons).',
+          'Fix: resolve firm domains in the outreach pipeline at enrichment time, or switch to the subscriber-lookalike targeting mode.',
+        ],
+      })
+      return NextResponse.json(
+        { ok: true, skipped: 'no_firm_domains', candidates: dedupedFirms.length, spentApolloCredits: 0 },
+        { status: 200 },
+      )
+    }
+
     // ─── 7.5. Gmail token preflight (BEFORE any Apollo spend) ─────────────
     // If the refresh token is dead there is nothing to send with, so stop
     // here — before enrichment burns credits — and alert through Resend,
