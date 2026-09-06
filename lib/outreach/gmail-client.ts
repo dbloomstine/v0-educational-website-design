@@ -35,6 +35,21 @@ interface CachedToken {
 
 let _tokenCache: CachedToken | null = null
 
+/**
+ * Preflight: prove the refresh token still works BEFORE the pipeline spends
+ * anything. The 2026-04 outage taught two lessons: (1) a dead token failed
+ * silently, and (2) Apollo enrichment ran before the send step, so credits
+ * burned daily for six weeks while nothing could send. Call this first.
+ */
+export async function verifyGmailToken(): Promise<{ ok: true } | { ok: false; error: string }> {
+  try {
+    await getAccessToken()
+    return { ok: true }
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err) }
+  }
+}
+
 async function getAccessToken(): Promise<string> {
   // Return cached token if it has >60s of life left.
   if (_tokenCache && _tokenCache.expiresAt - Date.now() > 60_000) {

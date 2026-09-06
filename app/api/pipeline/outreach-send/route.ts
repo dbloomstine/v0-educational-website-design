@@ -46,6 +46,8 @@ import {
   TEMPLATE_VARIANT,
 } from '@/lib/outreach/template'
 import { fetchTodaysNewsletter } from '@/lib/outreach/newsletter-fetch'
+import { verifyGmailToken } from '@/lib/outreach/gmail-client'
+import { sendAlertViaResend } from '@/lib/outreach/alert-fallback'
 import type { NewsletterPayload } from '@/lib/outreach/newsletter-fetch'
 import type { TemplateMode } from '@/lib/outreach/types'
 import { sendGmail } from '@/lib/outreach/gmail-client'
@@ -291,6 +293,29 @@ export async function GET(req: Request) {
       ? allCandidates
       : await firmLevelDedup(supabase, allCandidates)
 
+    // ─── 7.5. Gmail token preflight (BEFORE any Apollo spend) ─────────────
+    // If the refresh token is dead there is nothing to send with, so stop
+    // here — before enrichment burns credits — and alert through Resend,
+    // since a Gmail-based alert cannot deliver when Gmail is the failure.
+    const tokenCheck = await verifyGmailToken()
+    if (!tokenCheck.ok) {
+      await sendStatusEmail({
+        wave: waveLabel,
+        editionDate,
+        reason: 'gmail_oauth_dead',
+        details: [
+          `Gmail token preflight failed: ${tokenCheck.error}`,
+          'No Apollo credits were spent and nothing was sent.',
+          'Fix: regenerate GMAIL_OAUTH_REFRESH_TOKEN (OAuth Playground, all 3 scopes) and update the Vercel env.',
+          'If this keeps happening every ~7 days, the Google Cloud OAuth consent screen is still in Testing mode — publish it to Production.',
+        ],
+      })
+      return NextResponse.json(
+        { ok: false, error: `gmail oauth dead: ${tokenCheck.error}`, spentApolloCredits: 0 },
+        { status: 500 },
+      )
+    }
+
     // ─── 8. Apollo enrichment, capped at CAP + headroom ───────────────────
     // Enrich up to CAP * 2 candidates so we have headroom for Apollo misses
     // and email-level dedup attrition. Stop early once we have CAP verified
@@ -361,6 +386,17 @@ export async function GET(req: Request) {
         newsletter = await fetchTodaysNewsletter()
       } catch (err) {
         console.error('fetchTodaysNewsletter failed:', err)
+        // Was a silent 500 until 2026-09-06 — the exact path that hid the
+        // April token death for weeks.
+        await sendStatusEmail({
+          wave: waveLabel,
+          editionDate,
+          reason: 'newsletter_fetch_failed',
+          details: [
+            `fetchTodaysNewsletter threw: ${err instanceof Error ? err.message : 'unknown'}`,
+            'Forward mode needs today\'s FundOps Daily in the pipeline Gmail inbox.',
+          ],
+        })
         return NextResponse.json(
           {
             ok: false,
@@ -642,9 +678,10 @@ async function sendSummaryEmail(
 // status/summary email subject tells Danny at a glance which cron hit.
 // The wave wrappers forward cap=25 (wave 1) and cap=50 (wave 2) before
 // calling this handler; anything else is a manual ad-hoc trigger.
-function waveFromCap(capOverride: string | null): 'wave 1' | 'wave 2' | 'manual' {
+function waveFromCap(capOverride: string | null): 'wave 1' | 'wave 2' | 'nightly' | 'manual' {
   if (capOverride === '25') return 'wave 1'
   if (capOverride === '50') return 'wave 2'
+  if (capOverride === '4') return 'nightly' // 2026-09-06 restart: one small nightly wave
   return 'manual'
 }
 
@@ -659,11 +696,17 @@ function waveFromCap(capOverride: string | null): 'wave 1' | 'wave 2' | 'manual'
 // HTTP response — we'd rather return 200 cleanly than throw and
 // double-alert.
 async function sendStatusEmail(params: {
-  wave: 'wave 1' | 'wave 2' | 'manual'
+  wave: 'wave 1' | 'wave 2' | 'nightly' | 'manual'
   editionDate: string
   reason: string
   details: string[]
 }) {
+  // Gmail first (matches every other pipeline email), but if Gmail itself
+  // is the thing that broke, fall back to Resend so the alert still lands.
+  // The 2026-04 token death was silent precisely because this path had no
+  // fallback.
+  let subjectForFallback = ''
+  let bodyForFallback = ''
   try {
     const to = process.env.GMAIL_SENDER_EMAIL ?? 'dbloomstine@gmail.com'
     const subject = `Outreach ${params.wave} ${params.editionDate} — skipped: ${params.reason}`
@@ -678,8 +721,18 @@ async function sendStatusEmail(params: {
       'it just returned early. If you did not receive this AND did not',
       'receive a full send summary, Vercel cron missed the window.',
     ].join('\n')
+    subjectForFallback = subject
+    bodyForFallback = body
     await sendGmail({ to, subject, body })
   } catch (err) {
-    console.error('sendStatusEmail failed:', err)
+    console.error('sendStatusEmail via Gmail failed, falling back to Resend:', err)
+    const to = process.env.GMAIL_SENDER_EMAIL ?? 'dbloomstine@gmail.com'
+    const r = await sendAlertViaResend({
+      to,
+      subject: subjectForFallback || `Outreach ${params.wave} ${params.editionDate} — ${params.reason}`,
+      text: (bodyForFallback || params.details.join('\n')) +
+        `\n\n[Delivered via Resend fallback because Gmail failed: ${err instanceof Error ? err.message : String(err)}]`,
+    })
+    if (!r.ok) console.error('Resend fallback also failed:', r.error)
   }
 }

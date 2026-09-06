@@ -105,6 +105,7 @@ export type TemplateMode = 'short' | 'forward'
 
 export type QualityGateReason =
   | 'over_word_cap'
+  | 'missing_can_spam_footer' // CAN-SPAM opt-out + postal address line (2026-09-06)
   | 'missing_link'
   | 'missing_unsub'
   | 'missing_signature'

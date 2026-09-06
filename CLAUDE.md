@@ -199,8 +199,10 @@ and Anthropic patterns. Zero new npm dependencies.
 ```
 GMAIL_OAUTH_CLIENT_ID       — from Google Cloud Console OAuth 2.0 client
 GMAIL_OAUTH_CLIENT_SECRET   — same
-GMAIL_OAUTH_REFRESH_TOKEN   — generated once via OAuth Playground, never expires
-                              (as long as used at least once every 6 months)
+GMAIL_OAUTH_REFRESH_TOKEN   — generated via OAuth Playground. Lifetime depends on
+                              the GCP consent-screen status: TESTING = expires in
+                              7 days (this is what killed the pipeline 2026-04-21);
+                              PRODUCTION = indefinite while used. Keep it Production.
 GMAIL_SENDER_EMAIL          — defaults to dbloomstine@gmail.com
 OUTREACH_APOLLO_API_KEY     — Apollo.io REST API key (separate from other
                               Apollo keys Danny may use elsewhere)
@@ -215,14 +217,18 @@ CRON_SECRET + PIPELINE_API_KEY — reused auth via lib/pipeline/auth.ts
 ### Gmail OAuth setup (one-time, already done 2026-04-14)
 
 Google Cloud project `fundopshq-outreach` → Gmail API enabled → OAuth
-consent screen in Testing mode with `dbloomstine@gmail.com` as test user
-→ Web application OAuth client → redirect URI
+consent screen **published to Production** (it was in Testing mode until
+2026-09-06, and Testing-mode refresh tokens expire after 7 days — that
+is exactly why the pipeline died on 2026-04-21, seven days after the
+token was minted) → Web application OAuth client → redirect URI
 `https://developers.google.com/oauthplayground` → refresh token generated
-via the Playground with three scopes: `gmail.send`, `gmail.readonly`,
-`gmail.modify`. Refresh tokens don't expire as long as they're used
-at least once every 6 months. The cron runs daily so expiration is
-never a concern; if it ever does expire, re-run the Playground flow
-(~2 min) and update the env var.
+via the Playground with ALL THREE scopes requested in one authorization:
+`gmail.send`, `gmail.readonly`, `gmail.modify`. In the Playground, tick
+"Use your own OAuth credentials" first — otherwise the Playground revokes
+the token within 24h. Production-status tokens last indefinitely while
+used. If one ever dies, the pipeline now self-alerts via Resend (it can't
+alert via Gmail when Gmail is the thing that broke) and spends no Apollo
+credits; re-run the Playground flow (~2 min) and update the env var.
 
 ### Kill switch (set from phone in <60s)
 

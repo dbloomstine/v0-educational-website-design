@@ -147,6 +147,14 @@ function subscribeDeepLink(recipientEmail: string): string {
   return `fundopshq.com/?e=${encodeEmailForDeepLink(recipientEmail)}`
 }
 
+/**
+ * Required on every outbound commercial email (CAN-SPAM): a plain-language
+ * opt-out plus a physical postal address. Kept as one line so the gates
+ * can recognise it and so it reads like a person, not a legal block.
+ */
+export const CAN_SPAM_FOOTER =
+  "If you'd rather not hear from me again, just reply \"stop\" and I won't. FundOpsHQ, 76 Ensign Dr, Mystic, CT 06355."
+
 export function composeEmail(params: {
   firstName: string
   firmName: string
@@ -167,6 +175,11 @@ export function composeEmail(params: {
     `If you want it daily, one-click subscribe at ${deepLink}.`,
     '',
     'Danny',
+    '',
+    // CAN-SPAM: commercial email needs a working opt-out and a postal
+    // address. The opt-out is real — the hourly monitor flips any "stop"
+    // reply to opted_out and the dedup layer never contacts them again.
+    CAN_SPAM_FOOTER,
   ].join('\n')
 
   return { subject, body }
@@ -182,10 +195,11 @@ export function composeEmail(params: {
  * provide daily drip.
  */
 export function qualityGate(body: string, subject: string): QualityGateResult {
-  // 1. Word count cap. Static template renders to ~55 words; cap at 70
-  // to catch pathological firm-name expansion.
+  // 1. Word count cap. Static template renders to ~55 words plus the
+  // ~25-word CAN-SPAM footer (added 2026-09-06); cap at 100 to catch
+  // pathological firm-name expansion.
   const words = body.trim().split(/\s+/).filter(Boolean).length
-  if (words > 70) return { ok: false, reason: 'over_word_cap' }
+  if (words > 100) return { ok: false, reason: 'over_word_cap' }
 
   // 2. Required content — fundopshq.com link somewhere in the body.
   if (!body.includes('fundopshq.com')) {
@@ -195,8 +209,14 @@ export function qualityGate(body: string, subject: string): QualityGateResult {
   // 3. Required content — "Danny" signature on its own line. v5 dropped
   // the "Founder & Host, FundOpsHQ" second line to read as a 1:1 note
   // rather than a marketing signature block.
-  if (!/\nDanny\s*$/.test(body)) {
+  // Since 2026-09-06 the CAN-SPAM footer follows the signature, so the
+  // signature is no longer the last line — require it on its own line
+  // anywhere (same rule forward mode already uses), and require the footer.
+  if (!/\nDanny\n/.test(body)) {
     return { ok: false, reason: 'missing_signature' }
+  }
+  if (!body.includes(CAN_SPAM_FOOTER)) {
+    return { ok: false, reason: 'missing_can_spam_footer' }
   }
 
   // 4. No em/en dashes. Template is clean but a firm name could
@@ -288,6 +308,8 @@ export function composeForwardEmail(params: {
     '',
     'Danny',
     '',
+    CAN_SPAM_FOOTER,
+    '',
     '---------- Forwarded message ----------',
     `From: ${newsletter.fromName} <${newsletter.fromEmail}>`,
     `Date: ${newsletter.date}`,
@@ -315,6 +337,7 @@ export function composeForwardEmail(params: {
     `<p style="margin:0 0 14px 0;">Hi ${escapeHtml(firstName)},</p>` +
     `<p style="margin:0 0 14px 0;">${escapeHtml(hook)}${escapeHtml(sectionParenthetical)}. Forwarding the full brief so you can see it. If this is up your alley, <a href="${escapeHtml(subscribeUrlWithScheme)}" style="color:#1a73e8;text-decoration:underline;">one-click subscribe here</a>.</p>` +
     '<p style="margin:0 0 18px 0;">Danny</p>' +
+    `<p style="margin:0 0 18px 0;color:#5f6368;font-size:12px;">${escapeHtml(CAN_SPAM_FOOTER)}</p>` +
     '<p style="margin:0;color:#80868b;font-size:12px;font-family:monospace;">' +
     `---------- Forwarded message ----------<br>` +
     `From: ${escapeHtml(newsletter.fromName)} &lt;${escapeHtml(newsletter.fromEmail)}&gt;<br>` +

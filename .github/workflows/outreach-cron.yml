@@ -34,18 +34,25 @@ name: Outreach Cron (external trigger)
 # until outreach is intentionally resumed. `workflow_dispatch` is kept so the
 # pipeline can still be fired manually on demand.
 # To resume: uncomment the `schedule:` block below.
+# RESUMED 2026-09-06 as ONE small nightly wave (cap 4 → /outreach-send-nightly).
+# The Apollo-burn failure mode above is now structurally closed: the shared
+# handler runs a Gmail token preflight BEFORE any enrichment and alerts via
+# Resend if the token is dead, so a broken token costs zero credits.
+# The old wave-1/wave-2 (25/50) schedules stay commented as a reference
+# for ramping later.
 on:
-  # schedule:
-  #   - cron: '30 12 * * *' # wave 1 — 12:30 UTC / 8:30 AM EDT (7:30 EST)
-  #   - cron: '0 17 * * *' # wave 2 — 17:00 UTC / 1:00 PM EDT (12:00 EST)
+  schedule:
+    - cron: '0 13 * * *' # nightly — 13:00 UTC / 9:00 AM EDT, ~1.5h after the 11:30 UTC newsletter send
+  #   - cron: '30 12 * * *' # wave 1 — 12:30 UTC / 8:30 AM EDT (7:30 EST)  [paused]
+  #   - cron: '0 17 * * *' # wave 2 — 17:00 UTC / 1:00 PM EDT (12:00 EST)  [paused]
   workflow_dispatch:
     inputs:
       wave:
-        description: 'Wave (1 or 2) for manual runs'
+        description: 'Wave for manual runs (nightly = cap 4, 1 = cap 25, 2 = cap 50)'
         required: true
         type: choice
-        options: ['1', '2']
-        default: '1'
+        options: ['nightly', '1', '2']
+        default: 'nightly'
       force:
         description: 'Bypass idempotency guard (?force=true)'
         required: false
@@ -65,6 +72,7 @@ jobs:
             FORCE="${{ github.event.inputs.force }}"
           else
             case "${{ github.event.schedule }}" in
+              "0 13 * * *")  WAVE="nightly" ;;
               "30 12 * * *") WAVE="1" ;;
               "0 17 * * *")  WAVE="2" ;;
               *) echo "::error::unrecognized cron schedule ${{ github.event.schedule }}" ; exit 1 ;;
