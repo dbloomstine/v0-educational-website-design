@@ -16,7 +16,7 @@
  */
 
 import type { Article, Contact, FindContactResult, LookalikeContact, LookalikeFindResult } from './types'
-import { titleMatchesSegment, isCompetitor, type LookalikeSegment } from './segments'
+import { titleMatchesSegment, isCompetitor, industryMatchesSegment, type LookalikeSegment } from './segments'
 
 const APOLLO_BASE = 'https://api.apollo.io/api/v1'
 
@@ -44,6 +44,7 @@ interface ApolloMatchPerson {
   organization?: {
     name?: string
     primary_domain?: string
+    industry?: string | null
   }
 }
 
@@ -457,27 +458,39 @@ export async function searchPeopleBySegment(
 ): Promise<ApolloSearchPerson[]> {
   const apiKey = process.env.OUTREACH_APOLLO_API_KEY
   if (!apiKey) throw new Error('Missing OUTREACH_APOLLO_API_KEY')
-  const body: Record<string, unknown> = {
-    q_keywords: seg.keywords,
-    person_titles: seg.titles,
-    person_seniorities: ['senior', 'director', 'vp', 'c_suite', 'owner', 'partner'],
-    person_locations: ['United States'],
-    contact_email_status: ['verified'],
-    per_page: opts.perPage ?? 25,
-    page: opts.page ?? 1,
+  // Every query is a free search. Run them all and union by person id so
+  // one thin query (Apollo ANDs keyword tokens) can't blank the whole day.
+  const seen = new Set<string>()
+  const out: ApolloSearchPerson[] = []
+  for (const q of seg.queries) {
+    const body: Record<string, unknown> = {
+      person_titles: seg.titles,
+      person_seniorities: ['senior', 'director', 'vp', 'c_suite', 'owner', 'partner', 'head'],
+      person_locations: ['United States'],
+      contact_email_status: ['verified'],
+      per_page: opts.perPage ?? 25,
+      page: opts.page ?? 1,
+    }
+    if (q.keywords) body.q_keywords = q.keywords
+    if (q.orgTags?.length) body.q_organization_keyword_tags = q.orgTags
+    if (seg.employeeRanges?.length) body.organization_num_employees_ranges = seg.employeeRanges
+    const res = await fetch(`${APOLLO_BASE}/mixed_people/api_search`, {
+      method: 'POST',
+      headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    if (!res.ok) {
+      const text = await res.text()
+      throw new Error(`Apollo segment search failed ${res.status}: ${text.slice(0, 200)}`)
+    }
+    const data = (await res.json()) as { people?: ApolloSearchPerson[] }
+    for (const p of data.people ?? []) {
+      if (!p?.id || seen.has(p.id)) continue
+      seen.add(p.id)
+      out.push(p)
+    }
   }
-  if (seg.employeeRanges?.length) body.organization_num_employees_ranges = seg.employeeRanges
-  const res = await fetch(`${APOLLO_BASE}/mixed_people/api_search`, {
-    method: 'POST',
-    headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  })
-  if (!res.ok) {
-    const text = await res.text()
-    throw new Error(`Apollo segment search failed ${res.status}: ${text.slice(0, 200)}`)
-  }
-  const data = (await res.json()) as { people?: ApolloSearchPerson[] }
-  return data.people ?? []
+  return out
 }
 
 /** One credit. Reveals email + organization.primary_domain. */
@@ -501,6 +514,7 @@ export function applyLookalikeGuards(
     return { ok: false, reason: 'title_not_acceptable' }
   }
   if (isCompetitor(person.title, person.organization?.name)) return { ok: false, reason: 'competitor_org' }
+  if (!industryMatchesSegment(person.organization?.industry, seg)) return { ok: false, reason: 'org_industry_mismatch' }
   const orgDomain = person.organization?.primary_domain
   if (!orgDomain) return { ok: false, reason: 'missing_firm_domain' }
   if (emailDomain(person.email) !== normalizeDomain(orgDomain)) {

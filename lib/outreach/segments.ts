@@ -18,14 +18,34 @@
  * Each segment maps to Apollo people-search parameters. One segment runs
  * per day, rotating, so a cap of 2/day spreads across all six in a week.
  */
+/**
+ * One Apollo people-search call. Apollo ANDs every token of `keywords`
+ * against the person + firm text, so keep it to a short, title-shaped
+ * phrase ("fund finance", not "fund finance subscription line banking" —
+ * the long form returns zero). `orgTags` narrows to firms Apollo has
+ * tagged that way (OR across tags); it is how a "private funds" search
+ * stays at law firms instead of in-house counsel at Ares.
+ */
+export interface SegmentQuery {
+  keywords?: string
+  orgTags?: string[]
+}
+
 export interface LookalikeSegment {
   key: string
   /** Short noun phrase used in the run summary, e.g. "fund lawyers". */
   label: string
-  /** Apollo `person_titles`. Matching is case-insensitive substring. */
+  /** Apollo `person_titles`, also the post-match title screen (case-insensitive substring). */
   titles: string[]
-  /** Apollo `q_keywords` (free text across person + organization). */
-  keywords: string
+  /** Free searches, run in order and unioned. Verified 2026-09-06 against the live index. */
+  queries: SegmentQuery[]
+  /**
+   * Post-match screen on Apollo's `organization.industry` (lower-cased
+   * substring, only applied when Apollo reports one). Keeps an
+   * "alternative investments" accounting search from returning a wealth
+   * manager, and a "private funds" search from returning a GP.
+   */
+  orgIndustries?: string[]
   /** Optional Apollo `organization_num_employees_ranges`, e.g. "1,10". */
   employeeRanges?: string[]
 }
@@ -35,37 +55,70 @@ export const LOOKALIKE_SEGMENTS: LookalikeSegment[] = [
     key: 'fund_lawyers',
     label: 'fund lawyers',
     titles: ['Partner', 'Counsel', 'Of Counsel'],
-    keywords: 'private funds investment funds fund formation law firm',
+    queries: [
+      { keywords: 'investment funds', orgTags: ['law firm', 'legal services'] },
+      { keywords: 'private funds', orgTags: ['law firm', 'legal services'] },
+      { keywords: 'fund formation', orgTags: ['law firm', 'legal services'] },
+    ],
+    orgIndustries: ['law practice', 'legal services'],
   },
   {
     key: 'fund_finance_banking',
-    label: 'fund-finance and private-markets bankers',
-    titles: ['Managing Director', 'Director', 'Vice President', 'Relationship Manager'],
-    keywords: 'fund finance subscription line NAV lending private equity banking',
+    label: 'fund-finance and sponsor-coverage bankers',
+    titles: ['Managing Director', 'Director', 'Senior Vice President', 'Vice President', 'Relationship Manager', 'Head of'],
+    queries: [
+      { keywords: 'fund finance', orgTags: ['banking', 'bank'] },
+      { keywords: 'financial sponsors', orgTags: ['banking', 'investment banking'] },
+      { keywords: 'fund banking', orgTags: ['banking', 'bank'] },
+      { keywords: 'subscription finance' },
+    ],
+    orgIndustries: ['banking', 'financial services', 'investment banking', 'capital markets'],
   },
   {
     key: 'fund_auditors',
     label: 'audit and tax partners serving funds',
     titles: ['Audit Partner', 'Assurance Partner', 'Tax Partner', 'Partner', 'Principal', 'Managing Director'],
-    keywords: 'audit assurance tax private equity venture capital funds accounting firm',
+    queries: [
+      { keywords: 'alternative investments', orgTags: ['accounting'] },
+      { keywords: 'asset management tax', orgTags: ['accounting'] },
+      { keywords: 'private equity audit', orgTags: ['accounting'] },
+      { keywords: 'investment management', orgTags: ['accounting'] },
+    ],
+    orgIndustries: ['accounting'],
   },
   {
     key: 'fund_software',
     label: 'people at private-markets software companies',
-    titles: ['Head of Sales', 'VP Sales', 'Account Executive', 'Head of Business Development', 'Head of Marketing', 'Chief Revenue Officer', 'Head of Partnerships'],
-    keywords: 'private markets software portfolio monitoring investor portal fund software',
+    titles: ['Head of Sales', 'VP Sales', 'VP of Sales', 'Vice President of Sales', 'Vice President, Sales', 'Director of Sales', 'Account Executive', 'Head of Business Development', 'Head of Marketing', 'Chief Revenue Officer', 'Head of Partnerships', 'Head of Strategic Partnerships'],
+    queries: [
+      { orgTags: ['private equity software'] },
+      { keywords: 'private markets', orgTags: ['software'] },
+      { orgTags: ['investor reporting'] },
+    ],
+    orgIndustries: ['computer software', 'information technology', 'financial services', 'internet', 'software'],
   },
   {
     key: 'placement_agents',
     label: 'placement agents and capital-raising advisers',
     titles: ['Managing Director', 'Partner', 'Director', 'Principal', 'Vice President'],
-    keywords: 'placement agent fund placement capital raising private equity',
+    queries: [
+      { orgTags: ['placement agent'] },
+      { keywords: 'private capital advisory' },
+      { keywords: 'fund placement' },
+    ],
+    orgIndustries: ['financial services', 'investment banking', 'capital markets', 'venture capital', 'private equity'],
   },
   {
     key: 'fund_insurance',
     label: 'insurance brokers serving fund managers',
     titles: ['Managing Director', 'Senior Vice President', 'Vice President', 'Partner', 'Broker', 'Practice Leader'],
-    keywords: 'insurance broker private equity management liability GPL transaction liability',
+    queries: [
+      { keywords: 'private equity', orgTags: ['insurance', 'insurance brokerage'] },
+      { keywords: 'management liability', orgTags: ['insurance', 'insurance brokerage'] },
+      { keywords: 'transaction liability' },
+      { keywords: 'financial institutions', orgTags: ['insurance brokerage'] },
+    ],
+    orgIndustries: ['insurance'],
   },
 ]
 
@@ -115,6 +168,13 @@ export function segmentForDate(dateISO: string): LookalikeSegment {
 
 export function segmentByKey(key: string): LookalikeSegment | undefined {
   return LOOKALIKE_SEGMENTS.find((s) => s.key === key)
+}
+
+/** Industry screen: pass when Apollo reports nothing, or when it matches. */
+export function industryMatchesSegment(industry: string | null | undefined, seg: LookalikeSegment): boolean {
+  if (!seg.orgIndustries?.length || !industry) return true
+  const i = industry.toLowerCase()
+  return seg.orgIndustries.some((x) => i.includes(x.toLowerCase()))
 }
 
 /** Title must contain one of the segment's titles (case-insensitive). */

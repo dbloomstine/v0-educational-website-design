@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { LOOKALIKE_SEGMENTS, segmentForDate, titleMatchesSegment, isCompetitor } from '../segments'
+import { LOOKALIKE_SEGMENTS, segmentForDate, titleMatchesSegment, isCompetitor, industryMatchesSegment } from '../segments'
 import { composeLookalikeEmail, qualityGateLookalike, CAN_SPAM_FOOTER, LOOKALIKE_SUBJECT } from '../template'
 import { sha256Hex } from '../suppression'
 
@@ -13,7 +13,19 @@ describe('lookalike segments', () => {
     const keys = LOOKALIKE_SEGMENTS.map((s) => s.key)
     expect(keys).not.toContain('fund_admin_accounting')
     expect(keys).not.toContain('emerging_gp_ops')
-    for (const s of LOOKALIKE_SEGMENTS) expect(s.keywords).not.toMatch(/fund administration|compliance consult/i)
+    for (const s of LOOKALIKE_SEGMENTS) for (const q of s.queries) expect(q.keywords ?? '').not.toMatch(/fund administration|compliance consult/i)
+  })
+  it('keeps every keyword phrase short: Apollo ANDs tokens, four words returned zero on 2026-09-06', () => {
+    for (const s of LOOKALIKE_SEGMENTS) {
+      expect(s.queries.length).toBeGreaterThan(0)
+      for (const q of s.queries) if (q.keywords) expect(q.keywords.split(/\s+/).length).toBeLessThanOrEqual(3)
+    }
+  })
+  it('industry screen passes unknown industries and rejects off-segment ones', () => {
+    const lawyers = LOOKALIKE_SEGMENTS.find((s) => s.key === 'fund_lawyers')!
+    expect(industryMatchesSegment(null, lawyers)).toBe(true)
+    expect(industryMatchesSegment('Law Practice', lawyers)).toBe(true)
+    expect(industryMatchesSegment('venture capital & private equity', lawyers)).toBe(false)
   })
   it('competitor screen catches admins and compliance consultants by title or firm', () => {
     expect(isCompetitor('Head of Fund Administration', 'Some Bank')).toBe(true)

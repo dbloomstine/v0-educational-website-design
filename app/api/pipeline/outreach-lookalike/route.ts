@@ -27,7 +27,7 @@ import { verifyGmailToken, sendGmail, createGmailDraft } from '@/lib/outreach/gm
 import { sendAlertViaResend } from '@/lib/outreach/alert-fallback'
 import { filterSuppressed } from '@/lib/outreach/suppression'
 import { composeLookalikeEmail, qualityGateLookalike, LOOKALIKE_TEMPLATE_VARIANT } from '@/lib/outreach/template'
-import { segmentForDate, segmentByKey, titleMatchesSegment, isCompetitor } from '@/lib/outreach/segments'
+import { LOOKALIKE_SEGMENTS, segmentForDate, segmentByKey, titleMatchesSegment, isCompetitor } from '@/lib/outreach/segments'
 import type { Contact, LookalikeContact } from '@/lib/outreach/types'
 
 export const maxDuration = 300
@@ -89,9 +89,17 @@ export async function GET(req: Request) {
     // One search (free). Page by day-of-year so consecutive runs of the same
     // segment don't keep re-reading the same top results.
     const dayOfYear = Math.floor((Date.parse(dateET + 'T12:00:00Z') - Date.UTC(new Date(dateET).getUTCFullYear(), 0, 0)) / 86_400_000)
-    const page = (Math.floor(dayOfYear / 5) % 4) + 1
-    const hits = await searchPeopleBySegment(segment, { perPage: 25, page })
-    const viable = hits.filter((p) => p.has_email && !titleIsJunior(p.title) && titleMatchesSegment(p.title, segment) && !isCompetitor(p.title, p.organization?.name))
+    let page = (Math.floor(dayOfYear / LOOKALIKE_SEGMENTS.length) % 4) + 1
+    const isViable = (p: { has_email?: boolean; title?: string; organization?: { name?: string } }) =>
+      Boolean(p.has_email) && !titleIsJunior(p.title) && titleMatchesSegment(p.title, segment) && !isCompetitor(p.title, p.organization?.name)
+    let hits = await searchPeopleBySegment(segment, { perPage: 25, page })
+    let viable = hits.filter(isViable)
+    if (viable.length === 0 && page !== 1) {
+      // Past the end of a thin segment; the searches are free, so start over.
+      page = 1
+      hits = await searchPeopleBySegment(segment, { perPage: 25, page })
+      viable = hits.filter(isViable)
+    }
 
     // Reveal at most cap*3 (1 credit each) until we have `cap` contacts.
     const maxMatches = cap * 3
@@ -150,7 +158,7 @@ export async function GET(req: Request) {
     }
 
     const summary = [
-      `Segment: ${segment.key} (${segment.label}) · page ${page} · mode ${mode}`,
+      `Segment: ${segment.key} (${segment.label}) · page ${page} · ${hits.length} search hits, ${viable.length} viable · mode ${mode}`,
       `Search hits ${hits.length} → viable ${viable.length} → matched ${found.length} (Apollo match calls: ${matchCalls}) → after dedup ${afterDedup.length} → after suppression ${sup.kept.length}`,
       '',
       ...(results.length ? results.map((r) => `${r.status === 'sent' ? 'SENT ' : 'DRAFT'}  ${r.firm} · ${r.title} · ${r.email}`) : ['Nothing produced.']),

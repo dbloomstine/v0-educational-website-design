@@ -72,6 +72,7 @@ export type ContactDropReason =
   | 'missing_firm_domain'    // article.firmDomain was null/empty — can't verify domain match
   | 'email_domain_mismatch'  // returned email domain didn't match article.firmDomain
   | 'competitor_org'         // lookalike: title or firm reads as an IQ-EQ competitor
+  | 'org_industry_mismatch'  // lookalike: Apollo industry is outside the segment's list
 
 /**
  * findContactForFirm result. Either a contact was found, or a typed
