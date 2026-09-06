@@ -41,8 +41,11 @@ name: Outreach Cron (external trigger)
 # The old wave-1/wave-2 (25/50) schedules stay commented as a reference
 # for ramping later.
 on:
-  schedule:
-    - cron: '0 13 * * *' # nightly — 13:00 UTC / 9:00 AM EDT, ~1.5h after the 11:30 UTC newsletter send
+  # PAUSED 2026-09-06 (Danny): "leave it dormant" — no sends, no Apollo credits,
+  # no scheduled runs. To resume: uncomment the schedule below and set
+  # OUTREACH_ENABLED=true in Vercel Production. See lib/outreach/firms.ts.
+  #   schedule:
+  #     - cron: '0 13 * * *' # nightly — 13:00 UTC / 9:00 AM EDT, ~1.5h after the 11:30 UTC newsletter send
   #   - cron: '30 12 * * *' # wave 1 — 12:30 UTC / 8:30 AM EDT (7:30 EST)  [paused]
   #   - cron: '0 17 * * *' # wave 2 — 17:00 UTC / 1:00 PM EDT (12:00 EST)  [paused]
   workflow_dispatch:
