@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { LOOKALIKE_SEGMENTS, segmentForDate, titleMatchesSegment, isCompetitor, industryMatchesSegment } from '../segments'
 import { composeLookalikeEmail, qualityGateLookalike, CAN_SPAM_FOOTER, LOOKALIKE_SUBJECT } from '../template'
 import { sha256Hex } from '../suppression'
+import { keywordLadderFor, CATEGORY_KEYWORD_LADDER } from '../firms'
 
 describe('lookalike segments', () => {
   it('rotates through every segment over N consecutive days', () => {
@@ -73,5 +74,20 @@ describe('suppression hashing', () => {
   it('is case- and whitespace-insensitive and matches Postgres sha256(lower(trim()))', () => {
     expect(sha256Hex('  Danny@Example.com ')).toBe(sha256Hex('danny@example.com'))
     expect(sha256Hex('danny@example.com')).toHaveLength(64)
+  })
+})
+
+describe('target-firm registry', () => {
+  it('has a keyword ladder for every segment, all short phrases', () => {
+    for (const s of LOOKALIKE_SEGMENTS) {
+      const ladder = CATEGORY_KEYWORD_LADDER[s.key]
+      expect(ladder, s.key).toBeDefined()
+      for (const kw of ladder) if (kw) expect(kw.split(/\s+/).length).toBeLessThanOrEqual(3)
+    }
+  })
+  it('a firm-level keyword override replaces the ladder', () => {
+    expect(keywordLadderFor({ category: 'placement_agents', keywords: 'park hill' })).toEqual(['park hill'])
+    expect(keywordLadderFor({ category: 'fund_lawyers', keywords: null })[0]).toBe('investment funds')
+    expect(keywordLadderFor({ category: 'fund_software', keywords: '  ' })).toEqual([null])
   })
 })

@@ -7,9 +7,15 @@
  * sends Danny's plain note: who he is, why this reader, one link, share
  * it if you like, tell me if you have feedback.
  *
+ * Targeting (Danny, 2026-09-06): registry first. `outreach_target_firms`
+ * is a curated list of referral-partner firms (see lib/outreach/firms.ts);
+ * each run takes the least-recently-targeted firms, finds one person at
+ * each by domain, and only falls back to the day's Apollo keyword segment
+ * when the registry yields nothing.
+ *
  * Guardrails, in order:
  *   auth → OUTREACH_ENABLED → cap/mode → idempotency → Gmail token
- *   preflight (before any Apollo spend) → one Apollo search (free) →
+ *   preflight (before any Apollo spend) → free Apollo searches →
  *   at most cap*3 match calls (1 credit each) → guards → email dedup
  *   (subscribers, 120-day history, opt-outs, bounces) → suppression
  *   (iqeq.com + hashed Lead Desk list) → compose → gate → draft or send
@@ -22,12 +28,13 @@ import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { isAuthorizedPipelineRequest } from '@/lib/pipeline/auth'
 import { emailLevelDedup, countTodaysRuns } from '@/lib/outreach/dedup'
-import { searchPeopleBySegment, matchPersonById, applyLookalikeGuards, titleIsJunior } from '@/lib/outreach/apollo-client'
+import { searchPeopleBySegment, searchPeopleAtDomain, matchPersonById, applyLookalikeGuards, titleIsJunior } from '@/lib/outreach/apollo-client'
+import { pickTargetFirms, markFirmTargeted, keywordLadderFor, segmentForFirm } from '@/lib/outreach/firms'
 import { verifyGmailToken, sendGmail, createGmailDraft } from '@/lib/outreach/gmail-client'
 import { sendAlertViaResend } from '@/lib/outreach/alert-fallback'
 import { filterSuppressed } from '@/lib/outreach/suppression'
 import { composeLookalikeEmail, qualityGateLookalike, LOOKALIKE_TEMPLATE_VARIANT } from '@/lib/outreach/template'
-import { LOOKALIKE_SEGMENTS, segmentForDate, segmentByKey, titleMatchesSegment, isCompetitor } from '@/lib/outreach/segments'
+import { LOOKALIKE_SEGMENTS, segmentForDate, segmentByKey, titleMatchesSegment, isCompetitor, type LookalikeSegment } from '@/lib/outreach/segments'
 import type { Contact, LookalikeContact } from '@/lib/outreach/types'
 
 export const maxDuration = 300
@@ -86,33 +93,68 @@ export async function GET(req: Request) {
       return NextResponse.json({ ok: false, error: `gmail oauth dead: ${token.error}`, spentApolloCredits: 0 }, { status: 500 })
     }
 
-    // One search (free). Page by day-of-year so consecutive runs of the same
-    // segment don't keep re-reading the same top results.
-    const dayOfYear = Math.floor((Date.parse(dateET + 'T12:00:00Z') - Date.UTC(new Date(dateET).getUTCFullYear(), 0, 0)) / 86_400_000)
-    let page = (Math.floor(dayOfYear / LOOKALIKE_SEGMENTS.length) % 4) + 1
-    const isViable = (p: { has_email?: boolean; title?: string; organization?: { name?: string } }) =>
-      Boolean(p.has_email) && !titleIsJunior(p.title) && titleMatchesSegment(p.title, segment) && !isCompetitor(p.title, p.organization?.name)
-    let hits = await searchPeopleBySegment(segment, { perPage: 25, page })
-    let viable = hits.filter(isViable)
-    if (viable.length === 0 && page !== 1) {
-      // Past the end of a thin segment; the searches are free, so start over.
-      page = 1
-      hits = await searchPeopleBySegment(segment, { perPage: 25, page })
-      viable = hits.filter(isViable)
-    }
+    const isViable = (seg: LookalikeSegment) => (p: { has_email?: boolean; title?: string; organization?: { name?: string } }) =>
+      Boolean(p.has_email) && !titleIsJunior(p.title) && titleMatchesSegment(p.title, seg) && !isCompetitor(p.title, p.organization?.name)
 
     // Reveal at most cap*3 (1 credit each) until we have `cap` contacts.
     const maxMatches = cap * 3
     const found: LookalikeContact[] = []
     const dropped: Array<{ reason: string; firm?: string }> = []
+    const firmLog: string[] = []
     let matchCalls = 0
-    for (const hit of viable) {
+    let searchHits = 0
+    let viableCount = 0
+
+    // ── 1. Registry first: one contact per firm, least-recently-targeted first.
+    const firms = await pickTargetFirms(supabase, cap * 4)
+    for (const firm of firms) {
       if (found.length >= cap || matchCalls >= maxMatches) break
-      matchCalls++
-      const person = await matchPersonById(hit.id)
-      const r = applyLookalikeGuards(segment, person)
-      if (r.ok) found.push(r.contact)
-      else dropped.push({ reason: r.reason, firm: hit.organization?.name })
+      const seg = segmentForFirm(firm)
+      if (!seg) { firmLog.push(`${firm.name}: unknown category ${firm.category}`); continue }
+      let viable: Awaited<ReturnType<typeof searchPeopleAtDomain>> = []
+      let usedKw: string | null = null
+      for (const kw of keywordLadderFor(firm)) {
+        const hits = await searchPeopleAtDomain(firm.domain, seg, kw)
+        searchHits += hits.length
+        viable = hits.filter(isViable(seg))
+        if (viable.length) { usedKw = kw; break }
+      }
+      viableCount += viable.length
+      let firmFound = 0
+      for (const hit of viable.slice(0, 2)) {
+        if (found.length >= cap || matchCalls >= maxMatches) break
+        matchCalls++
+        const person = await matchPersonById(hit.id)
+        const r = applyLookalikeGuards(seg, person)
+        if (r.ok) { found.push(r.contact); firmFound++; break }
+        dropped.push({ reason: r.reason, firm: firm.name })
+      }
+      await markFirmTargeted(supabase, firm, firmFound)
+      firmLog.push(`${firm.name} (${firm.category}${usedKw ? `, "${usedKw}"` : ''}): ${viable.length} viable → ${firmFound} contact`)
+    }
+
+    // ── 2. Fallback: the day's keyword segment, only if the registry came up empty.
+    let page = 0
+    if (found.length < cap && matchCalls < maxMatches && firms.length === 0) {
+      const dayOfYear = Math.floor((Date.parse(dateET + 'T12:00:00Z') - Date.UTC(new Date(dateET).getUTCFullYear(), 0, 0)) / 86_400_000)
+      page = (Math.floor(dayOfYear / LOOKALIKE_SEGMENTS.length) % 4) + 1
+      let hits = await searchPeopleBySegment(segment, { perPage: 25, page })
+      let viable = hits.filter(isViable(segment))
+      if (viable.length === 0 && page !== 1) {
+        page = 1
+        hits = await searchPeopleBySegment(segment, { perPage: 25, page })
+        viable = hits.filter(isViable(segment))
+      }
+      searchHits += hits.length
+      viableCount += viable.length
+      for (const hit of viable) {
+        if (found.length >= cap || matchCalls >= maxMatches) break
+        matchCalls++
+        const person = await matchPersonById(hit.id)
+        const r = applyLookalikeGuards(segment, person)
+        if (r.ok) found.push(r.contact)
+        else dropped.push({ reason: r.reason, firm: hit.organization?.name })
+      }
     }
 
     // Dedup + suppression. emailLevelDedup wants Contact[]; adapt the shape.
@@ -145,12 +187,12 @@ export async function GET(req: Request) {
         firm_domain: contact.firmDomain,
         person_title: contact.title || null,
         article_id: null,
-        story_type: `lookalike:${segment.key}`,
+        story_type: `lookalike:${contact.segmentKey}`,
         subject,
         draft_id: draftId,
         status,
         sent_at: status === 'sent' ? new Date().toISOString() : null,
-        notes: `lookalike ${mode} via outreach-lookalike, segment=${segment.key}, run=${startedAt}`,
+        notes: `lookalike ${mode} via outreach-lookalike, segment=${contact.segmentKey}, source=${firms.length ? 'registry' : 'keyword'}, run=${startedAt}`,
         template_variant: LOOKALIKE_TEMPLATE_VARIANT,
       })
       results.push({ email: contact.email, firm: contact.firmName, title: contact.title, status })
@@ -158,17 +200,19 @@ export async function GET(req: Request) {
     }
 
     const summary = [
-      `Segment: ${segment.key} (${segment.label}) · page ${page} · ${hits.length} search hits, ${viable.length} viable · mode ${mode}`,
-      `Search hits ${hits.length} → viable ${viable.length} → matched ${found.length} (Apollo match calls: ${matchCalls}) → after dedup ${afterDedup.length} → after suppression ${sup.kept.length}`,
+      `Registry firms tried: ${firms.length} · fallback segment: ${segment.key}${page ? ` (page ${page})` : ' (not needed)'} · mode ${mode}`,
+      `Search hits ${searchHits} → viable ${viableCount} → matched ${found.length} (Apollo match calls: ${matchCalls}) → after dedup ${afterDedup.length} → after suppression ${sup.kept.length}`,
       '',
       ...(results.length ? results.map((r) => `${r.status === 'sent' ? 'SENT ' : 'DRAFT'}  ${r.firm} · ${r.title} · ${r.email}`) : ['Nothing produced.']),
+      '',
+      ...(firmLog.length ? ['Firms:', ...firmLog.map((l) => `  ${l}`)] : []),
       '',
       ...(dropped.length ? ['Dropped:', ...dropped.map((d) => `  ${d.reason}${d.firm ? ' · ' + d.firm : ''}`)] : []),
       '',
       mode === 'draft' ? 'Review mode: open Gmail → Drafts, read, and send the ones you like.' : 'Auto-send mode.',
     ]
     await notify(`${tag} — ${results.length} ${mode === 'send' ? 'sent' : 'drafted'}`, summary)
-    return NextResponse.json({ ok: true, mode, segment: segment.key, page, produced: results.length, apolloMatchCalls: matchCalls, results, dropped })
+    return NextResponse.json({ ok: true, mode, segment: segment.key, registryFirms: firms.length, page, produced: results.length, apolloMatchCalls: matchCalls, results, firms: firmLog, dropped })
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err)
     console.error('outreach-lookalike failed:', err)

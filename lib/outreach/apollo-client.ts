@@ -494,6 +494,41 @@ export async function searchPeopleBySegment(
 }
 
 /** One credit. Reveals email + organization.primary_domain. */
+/**
+ * Registry mode: find people at ONE firm by domain (free). `keywords` is
+ * optional; null means titles-only.
+ */
+export async function searchPeopleAtDomain(
+  domain: string,
+  seg: LookalikeSegment,
+  keywords: string | null,
+  opts: { perPage?: number } = {},
+): Promise<ApolloSearchPerson[]> {
+  const apiKey = process.env.OUTREACH_APOLLO_API_KEY
+  if (!apiKey) throw new Error('Missing OUTREACH_APOLLO_API_KEY')
+  const body: Record<string, unknown> = {
+    q_organization_domains_list: [domain],
+    person_titles: seg.titles,
+    person_seniorities: ['senior', 'director', 'vp', 'c_suite', 'owner', 'partner', 'head'],
+    person_locations: ['United States'],
+    contact_email_status: ['verified'],
+    per_page: opts.perPage ?? 10,
+    page: 1,
+  }
+  if (keywords) body.q_keywords = keywords
+  const res = await fetch(`${APOLLO_BASE}/mixed_people/api_search`, {
+    method: 'POST',
+    headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Apollo domain search failed ${res.status}: ${text.slice(0, 200)}`)
+  }
+  const data = (await res.json()) as { people?: ApolloSearchPerson[] }
+  return data.people ?? []
+}
+
 export async function matchPersonById(personId: string): Promise<ApolloMatchPerson | null> {
   return matchPerson({ personId })
 }
