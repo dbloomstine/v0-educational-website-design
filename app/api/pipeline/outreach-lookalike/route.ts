@@ -27,7 +27,7 @@ import { verifyGmailToken, sendGmail, createGmailDraft } from '@/lib/outreach/gm
 import { sendAlertViaResend } from '@/lib/outreach/alert-fallback'
 import { filterSuppressed } from '@/lib/outreach/suppression'
 import { composeLookalikeEmail, qualityGateLookalike, LOOKALIKE_TEMPLATE_VARIANT } from '@/lib/outreach/template'
-import { segmentForDate, segmentByKey, titleMatchesSegment } from '@/lib/outreach/segments'
+import { segmentForDate, segmentByKey, titleMatchesSegment, isCompetitor } from '@/lib/outreach/segments'
 import type { Contact, LookalikeContact } from '@/lib/outreach/types'
 
 export const maxDuration = 300
@@ -91,7 +91,7 @@ export async function GET(req: Request) {
     const dayOfYear = Math.floor((Date.parse(dateET + 'T12:00:00Z') - Date.UTC(new Date(dateET).getUTCFullYear(), 0, 0)) / 86_400_000)
     const page = (Math.floor(dayOfYear / 5) % 4) + 1
     const hits = await searchPeopleBySegment(segment, { perPage: 25, page })
-    const viable = hits.filter((p) => p.has_email && !titleIsJunior(p.title) && titleMatchesSegment(p.title, segment))
+    const viable = hits.filter((p) => p.has_email && !titleIsJunior(p.title) && titleMatchesSegment(p.title, segment) && !isCompetitor(p.title, p.organization?.name))
 
     // Reveal at most cap*3 (1 credit each) until we have `cap` contacts.
     const maxMatches = cap * 3

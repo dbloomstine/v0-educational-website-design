@@ -539,25 +539,25 @@ export const LOOKALIKE_TEMPLATE_VARIANT = 'lookalike_v1'
 export const LOOKALIKE_SUBJECT = 'Quick one from FundOpsHQ'
 
 /**
- * Danny's approved note, verbatim in shape: who he is, why this reader,
- * one link, an invitation to share, an ask for feedback. No news hook,
- * no dashes, plus the CAN-SPAM line after the signature.
+ * Deliberately generic and friendly (Danny, 2026-09-06): he may know some
+ * of these people, so no "people like you" targeting language, no news
+ * hook, no segment-specific line. Who he is, one link, a soft "pass it
+ * along", an open door for feedback, an easy out. No dashes, plus the
+ * CAN-SPAM line after the signature.
  */
 export function composeLookalikeEmail(params: {
   firstName: string
   segment: LookalikeSegment
   recipientEmail: string
 }): ComposedEmail {
-  const { firstName, segment, recipientEmail } = params
+  const { firstName, recipientEmail } = params
   const link = subscribeDeepLink(recipientEmail)
   const body = [
     `Hi ${firstName},`,
     '',
-    `I run FundOps Daily, a short morning brief on fund closes, launches, and moves across private markets. ${segment.audienceLine}, and it tends to get forwarded around teams.`,
+    'I run FundOpsHQ, a free daily email covering fund closes, launches, and people moves across private markets. A lot of folks in the ecosystem read it, and since you are in the mix I figured I would share it in case it is useful: ' + link,
     '',
-    `Figured you might find it useful: ${link}`,
-    '',
-    "If you do, share it with anyone who'd want it. And if you have feedback, I genuinely want it.",
+    'If it is not for you, no worries at all. If you know others who might want it, feel free to pass it along. And I am always open to feedback.',
     '',
     'Danny',
     '',

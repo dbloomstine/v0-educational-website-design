@@ -16,7 +16,7 @@
  */
 
 import type { Article, Contact, FindContactResult, LookalikeContact, LookalikeFindResult } from './types'
-import { titleMatchesSegment, type LookalikeSegment } from './segments'
+import { titleMatchesSegment, isCompetitor, type LookalikeSegment } from './segments'
 
 const APOLLO_BASE = 'https://api.apollo.io/api/v1'
 
@@ -500,6 +500,7 @@ export function applyLookalikeGuards(
   if (titleIsJunior(person.title) || !titleMatchesSegment(person.title, seg)) {
     return { ok: false, reason: 'title_not_acceptable' }
   }
+  if (isCompetitor(person.title, person.organization?.name)) return { ok: false, reason: 'competitor_org' }
   const orgDomain = person.organization?.primary_domain
   if (!orgDomain) return { ok: false, reason: 'missing_firm_domain' }
   if (emailDomain(person.email) !== normalizeDomain(orgDomain)) {
