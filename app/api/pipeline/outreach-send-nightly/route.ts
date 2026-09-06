@@ -1,5 +1,5 @@
 /**
- * Nightly cron entrypoint — one small wave, cap 4.
+ * Nightly cron entrypoint — one small wave, cap 2.
  *
  * Restarted 2026-09-06 after the pipeline had been dormant since the
  * 2026-04-21 token death. Deliberately tiny: a sending pattern that has
@@ -14,7 +14,7 @@ export const maxDuration = 300 // must match the shared handler
 
 export async function GET(req: Request) {
   const url = new URL(req.url)
-  url.searchParams.set('cap', '4')
+  url.searchParams.set('cap', '2')
   const forwarded = new Request(url.toString(), {
     method: 'GET',
     headers: req.headers,

@@ -34,7 +34,7 @@ name: Outreach Cron (external trigger)
 # until outreach is intentionally resumed. `workflow_dispatch` is kept so the
 # pipeline can still be fired manually on demand.
 # To resume: uncomment the `schedule:` block below.
-# RESUMED 2026-09-06 as ONE small nightly wave (cap 4 → /outreach-send-nightly).
+# RESUMED 2026-09-06 as ONE small nightly wave (cap 2 → /outreach-send-nightly; Danny: "tread lightly", 2026-09-06).
 # The Apollo-burn failure mode above is now structurally closed: the shared
 # handler runs a Gmail token preflight BEFORE any enrichment and alerts via
 # Resend if the token is dead, so a broken token costs zero credits.
@@ -48,7 +48,7 @@ on:
   workflow_dispatch:
     inputs:
       wave:
-        description: 'Wave for manual runs (nightly = cap 4, 1 = cap 25, 2 = cap 50)'
+        description: 'Wave for manual runs (nightly = cap 2, 1 = cap 25, 2 = cap 50)'
         required: true
         type: choice
         options: ['nightly', '1', '2']

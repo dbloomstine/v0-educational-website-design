@@ -681,7 +681,7 @@ async function sendSummaryEmail(
 function waveFromCap(capOverride: string | null): 'wave 1' | 'wave 2' | 'nightly' | 'manual' {
   if (capOverride === '25') return 'wave 1'
   if (capOverride === '50') return 'wave 2'
-  if (capOverride === '4') return 'nightly' // 2026-09-06 restart: one small nightly wave
+  if (capOverride === '2' || capOverride === '4') return 'nightly' // 2026-09-06 restart: one small nightly wave
   return 'manual'
 }
 
