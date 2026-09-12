@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildSubject, resolveLookback } from '../send-daily'
+import { buildSubject, subjectFirmName, resolveLookback } from '../send-daily'
 
 /** Minimal supabase stub returning the given date as the last 'sent' edition. */
 function dbWithLastSent(lastSent: string | null) {
@@ -64,119 +64,101 @@ function group(category: string, articles: Array<Record<string, unknown>>) {
 }
 
 describe('buildSubject', () => {
-  it('picks the biggest GP fund close and includes the size hint', () => {
+  it('lists firms, biggest GP fund close first, then the count of the rest', () => {
     const subject = buildSubject({
       totalArticles: 5,
       groups: [
         group('PE', [
-          {
-            firmName: 'Adams Street Partners',
-            fundName: 'Private Credit III',
-            fundSizeUsdMillions: 7500,
-            eventType: 'fund_close',
-          },
-          {
-            firmName: 'Apollo',
-            fundName: 'Apollo Credit Fund',
-            fundSizeUsdMillions: 3000,
-            eventType: 'fund_close',
-          },
+          { firmName: 'Apollo', fundName: 'Apollo Credit Fund', fundSizeUsdMillions: 3000, eventType: 'fund_close' },
+          { firmName: 'Adams Street Partners', fundName: 'Private Credit III', fundSizeUsdMillions: 7500, eventType: 'fund_close' },
         ]),
+        group('deals', [{ firmName: 'Blackstone', eventType: 'acquisition' }]),
       ],
     })
-    expect(subject).toBe('Adams Street Partners $7.5B · + 4 more moves')
+    expect(subject).toBe('Adams Street Partners, Apollo, Blackstone + 2 more')
   })
 
-  it('drops AUM-leak candidates (>$30B, no fund name) from subject selection', () => {
-    // Regression: 2026-04-10 "Ares Management Corp $623B" — that article's
-    // fund_size_usd_millions was 623000 (Ares AUM) on an executive_hire
-    // story. And 2026-04-09 "Lemssouguer Fund $20B" profile piece.
-    // Safety rail: size > $30B + no fund_name → drop from subject.
+  it('ranks closes over launches over raises, then by size', () => {
     const subject = buildSubject({
-      totalArticles: 5,
+      totalArticles: 3,
       groups: [
-        group('PE', [
-          {
-            firmName: 'Ares Management Corp',
-            fundName: null,
-            fundSizeUsdMillions: 623000,
-            eventType: 'capital_raise',
-          },
-          {
-            firmName: 'Court Square Capital',
-            fundName: 'Court Square Capital Fund V',
-            fundSizeUsdMillions: 3800,
-            eventType: 'capital_raise',
-          },
+        group('credit', [
+          { firmName: 'HarbourVest Partners', fundSizeUsdMillions: 2400, eventType: 'capital_raise' },
+          { firmName: 'EQT', fundSizeUsdMillions: 0, eventType: 'fund_launch' },
+          { firmName: 'Arini', fundSizeUsdMillions: 4000, eventType: 'fund_close' },
         ]),
       ],
     })
-    // The $623B row is dropped; Court Square becomes the headline.
-    expect(subject).toContain('Court Square Capital')
-    expect(subject).not.toContain('Ares Management Corp')
-    expect(subject).not.toContain('$623B')
+    expect(subject).toBe('Arini, EQT, HarbourVest Partners')
+  })
+
+  it('demotes AUM-leak rows (>$30B, no fund name) instead of letting them lead', () => {
+    // Regression: 2026-04-10 "Ares Management Corp $623B" — firm AUM on an
+    // executive_hire story. The firm may still appear, but never on "size".
+    const subject = buildSubject({
+      totalArticles: 3,
+      groups: [
+        group('PE', [
+          { firmName: 'Ares Management Corp', fundName: null, fundSizeUsdMillions: 623000, eventType: 'capital_raise' },
+          { firmName: 'Court Square Capital', fundName: 'Court Square Capital Fund V', fundSizeUsdMillions: 3800, eventType: 'capital_raise' },
+        ]),
+      ],
+    })
+    expect(subject.startsWith('Court Square Capital, Ares Management')).toBe(true)
+    expect(subject).not.toContain('$')
   })
 
   it('keeps genuine mega-funds when fund_name is present', () => {
-    // If the classifier legitimately extracts a fund_name, the >$30B
-    // rule should NOT fire — real mega-funds exist and will always be
-    // named in the source article.
-    const subject = buildSubject({
-      totalArticles: 1,
-      groups: [
-        group('PE', [
-          {
-            firmName: 'Blackstone',
-            fundName: 'Blackstone Real Estate Partners X',
-            fundSizeUsdMillions: 40000,
-            eventType: 'fund_close',
-          },
-        ]),
-      ],
-    })
-    expect(subject).toContain('Blackstone')
-    expect(subject).toContain('$40B')
-  })
-
-  it('skips LP commitments when selecting the headline', () => {
     const subject = buildSubject({
       totalArticles: 2,
       groups: [
-        group('lp_commitments', [
-          {
-            firmName: 'Arkansas Teacher Retirement System',
-            fundName: null,
-            fundSizeUsdMillions: 200,
-            eventType: 'capital_raise',
-          },
-        ]),
         group('PE', [
-          {
-            firmName: 'Thoma Bravo',
-            fundName: 'Thoma Bravo Fund XVI',
-            fundSizeUsdMillions: 24000,
-            eventType: 'fund_close',
-          },
+          { firmName: 'Thoma Bravo', fundName: 'Thoma Bravo XVI', fundSizeUsdMillions: 24000, eventType: 'fund_close' },
+          { firmName: 'Blackstone', fundName: 'Blackstone Real Estate Partners X', fundSizeUsdMillions: 40000, eventType: 'fund_close' },
         ]),
       ],
     })
-    expect(subject).toContain('Thoma Bravo')
+    expect(subject).toBe('Blackstone, Thoma Bravo')
   })
 
-  it('falls back to story count when nothing qualifies', () => {
+  it('puts LP commitments last, after GP events and deals', () => {
     const subject = buildSubject({
-      totalArticles: 7,
+      totalArticles: 3,
+      groups: [
+        group('lp_commitments', [{ firmName: 'Arkansas Teacher Retirement System', fundSizeUsdMillions: 200, eventType: 'capital_raise' }]),
+        group('deals', [{ firmName: 'Audax', eventType: 'acquisition' }]),
+        group('PE', [{ firmName: 'Thoma Bravo', fundSizeUsdMillions: 100, eventType: 'capital_raise' }]),
+      ],
+    })
+    expect(subject).toBe('Thoma Bravo, Audax, Arkansas Teacher Retirement System')
+  })
+
+  it('dedups repeated firms and strips legal suffixes and internal commas', () => {
+    const subject = buildSubject({
+      totalArticles: 4,
       groups: [
         group('people_moves', [
-          {
-            firmName: 'KKR',
-            fundName: null,
-            fundSizeUsdMillions: null,
-            eventType: 'executive_hire',
-          },
+          { firmName: 'Reed Smith LLP', eventType: 'executive_hire' },
+          { firmName: 'Reed Smith', eventType: 'executive_hire' },
+          { firmName: 'Clayton, Dubilier & Rice, LLC', eventType: 'executive_hire' },
+          { firmName: 'Cerberus Capital Management, L.P.', eventType: 'executive_hire' },
         ]),
       ],
     })
-    expect(subject).toBe('7 moves across private markets')
+    expect(subject).toBe('Reed Smith, Clayton Dubilier & Rice, Cerberus Capital Management + 1 more')
+    expect(subjectFirmName('Apollo Global Management, Inc.')).toBe('Apollo Global Management')
+    expect(subjectFirmName('Permira')).toBe('Permira')
+  })
+
+  it('stays within the inbox budget and always names at least one firm', () => {
+    const long = Array.from({ length: 8 }, (_, i) => ({ firmName: `Very Long Firm Name Number ${i + 1} Partners`, eventType: 'fund_close', fundSizeUsdMillions: 100 - i }))
+    const subject = buildSubject({ totalArticles: 44, groups: [group('PE', long)] })
+    expect(subject.length).toBeLessThanOrEqual(70 + 10)
+    expect(subject.startsWith('Very Long Firm Name Number 1 Partners')).toBe(true)
+    expect(subject).toMatch(/\+ \d+ more$/)
+  })
+
+  it('falls back to a count when no article names a firm', () => {
+    expect(buildSubject({ totalArticles: 7, groups: [group('PE', [{ firmName: null, eventType: 'fund_close' }])] })).toBe('7 moves across private markets')
   })
 })

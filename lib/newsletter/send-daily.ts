@@ -352,15 +352,30 @@ async function alertOnSkip(supabase: DbClient, editionDate: string): Promise<voi
 }
 
 /**
- * Pick the subject-line headline: biggest GP fund event of the day,
- * preferring closes over launches over raises. Excludes LP commitments
- * (which are allocation news, not "fund X landed Y") and exec moves
- * (where the extracted size is usually firm AUM, not a fund size).
+ * Subject line = the firms in today's edition, most notable first.
+ * (Danny, 2026-09-12: "instead of one deal, a bunch of names of firms
+ * that are in the news".) Was "{Firm} {size} · + N more moves".
  *
- * No "FundOps Daily —" prefix — the From: name already carries the
- * brand, so leading the subject with the news gives the inbox preview
- * more signal. Format: "{Firm} {size} · + {N} more moves".
+ * Order: GP fund events first (closes > launches > raises, then size),
+ * then deals, people moves, service providers, regulatory, and LP
+ * commitments last (allocator names are long and rarely the headline).
+ * AUM-leak candidates are excluded from the lead slots, same rail as
+ * before. Names are deduped, stripped of legal suffixes, and added until
+ * the line would pass ~70 characters, which is what Gmail shows.
+ *
+ * No "FundOps Daily —" prefix — the From: name already carries the brand.
+ * Format: "KKR, Arini, EIG, ARCHIMED + 40 more".
  */
+export const SUBJECT_MAX_CHARS = 70
+export const SUBJECT_MAX_NAMES = 6
+
+const LEGAL_SUFFIX_RE = /(,?\s+(LLC|LLP|L\.?L\.?P\.?|L\.?P\.?|Inc\.?|Ltd\.?|Limited|plc|PLC|Corp\.?|Corporation|Co\.?|S\.?A\.?|AG|GmbH|SE))+\s*$/i
+
+/** "Clayton, Dubilier & Rice, LLC" → "Clayton Dubilier & Rice" (commas separate names in the subject). */
+export function subjectFirmName(name: string): string {
+  return name.replace(LEGAL_SUFFIX_RE, '').replace(/\s*,\s*/g, ' ').replace(/\s+/g, ' ').trim()
+}
+
 export function buildSubject(content: {
   groups: {
     category: string
@@ -380,50 +395,59 @@ export function buildSubject(content: {
     fund_launch: 2,
     capital_raise: 1,
   }
-
-  // AUM safety rail — see isLikelyAumLeak() in query-articles.ts. Drop
-  // from subject candidates rather than risk another $623B-style headline.
-  let bestArticle: {
-    firmName: string | null
-    fundSizeUsdMillions: number | null
-  } | null = null
-  let bestSize = 0
-  let bestPriority = -1
-
-  for (const group of content.groups) {
-    if (group.category === 'lp_commitments') continue
-    for (const article of group.articles) {
-      if (!article.firmName) continue
-      const prio = typePriority[article.eventType ?? ''] ?? -1
-      if (prio < 0) continue
-      const size = article.fundSizeUsdMillions ?? 0
-      if (size <= 0) continue
-
-      // Drop AUM leaks
-      if (isLikelyAumLeak(size, article.fundName)) continue
-
-      if (prio > bestPriority || (prio === bestPriority && size > bestSize)) {
-        bestPriority = prio
-        bestSize = size
-        bestArticle = article
-      }
+  const tierFor = (category: string): number => {
+    switch (category) {
+      case 'deals': return 1
+      case 'people_moves': return 2
+      case 'service_providers': return 3
+      case 'regulatory': return 4
+      case 'lp_commitments': return 5
+      default: return 0 // asset-class fund activity
     }
   }
 
-  if (!bestArticle?.firmName) {
+  type Cand = { name: string; tier: number; prio: number; size: number; seq: number }
+  const cands: Cand[] = []
+  let seq = 0
+  for (const group of content.groups) {
+    const tier = tierFor(group.category)
+    for (const article of group.articles) {
+      seq++
+      if (!article.firmName) continue
+      const name = subjectFirmName(article.firmName)
+      if (!name) continue
+      const size = article.fundSizeUsdMillions ?? 0
+      // AUM safety rail — see isLikelyAumLeak() in query-articles.ts. Such a
+      // row still names a real firm; it just must not lead on its "size".
+      const leak = size > 0 && isLikelyAumLeak(size, article.fundName)
+      const prio = tier === 0 ? (typePriority[article.eventType ?? ''] ?? 0) : 0
+      cands.push({ name, tier, prio: leak ? 0 : prio, size: leak ? 0 : size, seq })
+    }
+  }
+  cands.sort((a, b) => a.tier - b.tier || b.prio - a.prio || b.size - a.size || a.seq - b.seq)
+
+  const names: string[] = []
+  const seen = new Set<string>()
+  for (const c of cands) {
+    const key = c.name.toLowerCase()
+    if (seen.has(key)) continue
+    seen.add(key)
+    names.push(c.name)
+  }
+
+  if (names.length === 0) {
     return `${content.totalArticles} moves across private markets`
   }
 
-  let sizeHint = ''
-  if (bestSize >= 1000) {
-    sizeHint = ` $${(bestSize / 1000).toFixed(1).replace(/\.0$/, '')}B`
-  } else if (bestSize > 0) {
-    sizeHint = ` $${bestSize}M`
+  const render = (picked: string[]) => {
+    const remaining = Math.max(0, content.totalArticles - picked.length)
+    return remaining === 0 ? picked.join(', ') : `${picked.join(', ')} + ${remaining} more`
   }
-
-  const remaining = content.totalArticles - 1
-  if (remaining === 0) {
-    return `${bestArticle.firmName}${sizeHint}`
+  let picked = [names[0]]
+  for (const n of names.slice(1, SUBJECT_MAX_NAMES)) {
+    const next = [...picked, n]
+    if (render(next).length > SUBJECT_MAX_CHARS) break
+    picked = next
   }
-  return `${bestArticle.firmName}${sizeHint} · + ${remaining} more move${remaining === 1 ? '' : 's'}`
+  return render(picked)
 }
