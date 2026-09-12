@@ -145,7 +145,9 @@ describe('buildSubject', () => {
         ]),
       ],
     })
-    expect(subject).toBe('Reed Smith, Clayton Dubilier & Rice, Cerberus Capital Management + 1 more')
+    // Three names would run to 73 chars, past the 70-char budget, so the third drops.
+    expect(subject).toBe('Reed Smith, Clayton Dubilier & Rice + 2 more')
+    expect(subjectFirmName('Cerberus Capital Management, L.P.')).toBe('Cerberus Capital Management')
     expect(subjectFirmName('Apollo Global Management, Inc.')).toBe('Apollo Global Management')
     expect(subjectFirmName('Permira')).toBe('Permira')
   })
