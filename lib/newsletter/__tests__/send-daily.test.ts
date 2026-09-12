@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildSubject, subjectFirmName, resolveLookback } from '../send-daily'
+import { buildSubject, subjectFirmName, shortenFirmName, resolveLookback } from '../send-daily'
 
 /** Minimal supabase stub returning the given date as the last 'sent' edition. */
 function dbWithLastSent(lastSent: string | null) {
@@ -75,7 +75,7 @@ describe('buildSubject', () => {
         group('deals', [{ firmName: 'Blackstone', eventType: 'acquisition' }]),
       ],
     })
-    expect(subject).toBe('Adams Street Partners, Apollo, Blackstone + 2 more')
+    expect(subject).toBe('Adams Street, Apollo, Blackstone + 2 more')
   })
 
   it('ranks closes over launches over raises, then by size', () => {
@@ -89,7 +89,7 @@ describe('buildSubject', () => {
         ]),
       ],
     })
-    expect(subject).toBe('Arini, EQT, HarbourVest Partners')
+    expect(subject).toBe('Arini, EQT, HarbourVest')
   })
 
   it('demotes AUM-leak rows (>$30B, no fund name) instead of letting them lead', () => {
@@ -104,7 +104,7 @@ describe('buildSubject', () => {
         ]),
       ],
     })
-    expect(subject.startsWith('Court Square Capital, Ares Management')).toBe(true)
+    expect(subject.startsWith('Court Square, Ares Management')).toBe(true)
     expect(subject).not.toContain('$')
   })
 
@@ -146,9 +146,9 @@ describe('buildSubject', () => {
       ],
     })
     // Three names would run to 73 chars, past the 70-char budget, so the third drops.
-    expect(subject).toBe('Reed Smith, Clayton Dubilier & Rice + 2 more')
-    expect(subjectFirmName('Cerberus Capital Management, L.P.')).toBe('Cerberus Capital Management')
-    expect(subjectFirmName('Apollo Global Management, Inc.')).toBe('Apollo Global Management')
+    expect(subject).toBe('Reed Smith, Clayton Dubilier & Rice, Cerberus + 1 more')
+    expect(subjectFirmName('Cerberus Capital Management, L.P.')).toBe('Cerberus')
+    expect(subjectFirmName('Apollo Global Management, Inc.')).toBe('Apollo')
     expect(subjectFirmName('Permira')).toBe('Permira')
   })
 
@@ -156,8 +156,41 @@ describe('buildSubject', () => {
     const long = Array.from({ length: 8 }, (_, i) => ({ firmName: `Very Long Firm Name Number ${i + 1} Partners`, eventType: 'fund_close', fundSizeUsdMillions: 100 - i }))
     const subject = buildSubject({ totalArticles: 44, groups: [group('PE', long)] })
     expect(subject.length).toBeLessThanOrEqual(70 + 10)
-    expect(subject.startsWith('Very Long Firm Name Number 1 Partners')).toBe(true)
+    expect(subject.startsWith('Very Long Firm Name Number 1,')).toBe(true)
     expect(subject).toMatch(/\+ \d+ more$/)
+  })
+
+  it('trims descriptor tails tastefully and leaves real names alone', () => {
+    const cases: Array<[string, string]> = [
+      ['PennantPark Investment Advisers', 'PennantPark'],
+      ['Pinegrove Venture Partners', 'Pinegrove'],
+      ['Cerberus Capital Management', 'Cerberus'],
+      ['HarbourVest Partners', 'HarbourVest'],
+      ['Adams Street Partners', 'Adams Street'],
+      ['Brookfield Asset Management', 'Brookfield'],
+      ['Goldman Sachs Asset Management', 'Goldman Sachs'],
+      ['Fortress Investment Group', 'Fortress'],
+      ['Millennium Management', 'Millennium'],
+      ['Advent International', 'Advent'],
+      ['Carlyle Group', 'Carlyle'],
+      // stays whole: remainder too short, generic, or a place
+      ['Bain Capital', 'Bain Capital'],
+      ['Main Capital Partners', 'Main Capital Partners'],
+      ['Intermediate Capital Group', 'Intermediate Capital Group'],
+      ['Seed Capital', 'Seed Capital'],
+      ['Prime Capital', 'Prime Capital'],
+      ['Francisco Partners', 'Francisco Partners'],
+      ['Insight Partners', 'Insight Partners'],
+      ['Ares Management', 'Ares Management'],
+      ['Vista Equity Partners', 'Vista Equity Partners'],
+      // no descriptor tail at all
+      ['Thoma Bravo', 'Thoma Bravo'],
+      ['Warburg Pincus', 'Warburg Pincus'],
+      ['General Catalyst', 'General Catalyst'],
+      ['Frazier Life Sciences', 'Frazier Life Sciences'],
+      ['KKR', 'KKR'],
+    ]
+    for (const [input, want] of cases) expect(shortenFirmName(input), input).toBe(want)
   })
 
   it('falls back to a count when no article names a firm', () => {

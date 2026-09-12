@@ -371,9 +371,49 @@ export const SUBJECT_MAX_NAMES = 6
 
 const LEGAL_SUFFIX_RE = /(,?\s+(LLC|LLP|L\.?L\.?P\.?|L\.?P\.?|Inc\.?|Ltd\.?|Limited|plc|PLC|Corp\.?|Corporation|Co\.?|S\.?A\.?|AG|GmbH|SE))+\s*$/i
 
+/**
+ * Trailing descriptor words that add nothing in a subject line
+ * ("Investment Advisers", "Venture Partners", "Capital Management").
+ * Stripped as one trailing run, and only when what is left still reads as
+ * a name: two or more words, or one word of six-plus letters that is not
+ * a generic adjective or place. So "PennantPark Investment Advisers" →
+ * "PennantPark" and "Adams Street Partners" → "Adams Street", but
+ * "Bain Capital", "Main Capital Partners" and "Intermediate Capital
+ * Group" stay whole. (Danny, 2026-09-12: "cut off the 'Investment
+ * Advisers' and the 'Venture Partners' etc., tastefully".)
+ */
+const DESCRIPTOR_WORDS = new Set([
+  'partners', 'partner', 'capital', 'management', 'investment', 'investments', 'investors',
+  'advisers', 'advisors', 'advisory', 'group', 'holdings', 'equity', 'asset', 'assets',
+  'global', 'international', 'securities', 'financial', 'fund', 'funds', 'associates',
+  'company', 'venture', 'private', 'markets', 'strategies', 'alternatives', 'alternative',
+])
+/** Words that must not stand alone as a firm name even when long enough. */
+const STANDALONE_STOPLIST = new Set([
+  'intermediate', 'general', 'strategic', 'institutional', 'national', 'american', 'european',
+  'atlantic', 'pacific', 'northern', 'southern', 'western', 'eastern', 'central', 'united',
+  'insight', 'summit', 'francisco', 'boston', 'london', 'chicago', 'first', 'prime', 'index',
+  'digital', 'growth', 'value', 'income', 'credit', 'infrastructure', 'energy', 'healthcare',
+])
+
+export function shortenFirmName(name: string): string {
+  const words = name.split(' ').filter(Boolean)
+  let cut = 0
+  while (cut < words.length - 1 && DESCRIPTOR_WORDS.has(words[words.length - 1 - cut].toLowerCase().replace(/[.,]/g, ''))) cut++
+  if (cut === 0) return name
+  const rest = words.slice(0, words.length - cut)
+  const last = rest[rest.length - 1].toLowerCase()
+  if (last === '&' || last === 'and' || last === 'of' || last === 'de') return name
+  if (rest.length >= 2) return rest.join(' ')
+  const only = rest[0]
+  if (only.replace(/[^A-Za-z]/g, '').length >= 6 && !STANDALONE_STOPLIST.has(only.toLowerCase())) return only
+  return name
+}
+
 /** "Clayton, Dubilier & Rice, LLC" → "Clayton Dubilier & Rice" (commas separate names in the subject). */
 export function subjectFirmName(name: string): string {
-  return name.replace(LEGAL_SUFFIX_RE, '').replace(/\s*,\s*/g, ' ').replace(/\s+/g, ' ').trim()
+  const base = name.replace(LEGAL_SUFFIX_RE, '').replace(/\s*,\s*/g, ' ').replace(/\s+/g, ' ').trim()
+  return shortenFirmName(base)
 }
 
 export function buildSubject(content: {
