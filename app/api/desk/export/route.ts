@@ -9,8 +9,9 @@ export const runtime = 'nodejs'
  *  - `shareable` reads leads_shareable — the view that structurally omits
  *    source, priority, readiness, blocker, lead_ref and notes. Safe to put in
  *    front of a prospect or referral partner.
- *  - `internal` reads desk_rows — everything, including handling notes and who
- *    referred the lead. NEVER send this to anyone.
+ *  - `internal` reads desk_rows — everything, including handling notes, who
+ *    referred the lead, and the pre-written email subject and body. It is the
+ *    working send sheet. NEVER send this to anyone.
  *
  * The internal file is watermarked on a first row so a stray copy is obvious.
  */
@@ -30,6 +31,10 @@ const INTERNAL_COLS = [
   ['target_raise', 'Fund / target'], ['status', 'Status'],
   ['person_location', 'Person based'], ['firm_location', 'Fund based'],
   ['email', 'Email'], ['email_type', 'Email type'], ['email_confidence', 'Email confidence'],
+  // The pre-written first touch rides along so the export is the send sheet:
+  // Danny clears it against the CRM in Copilot, filters, then copies the
+  // address, subject and body straight off the row (2026-09-14).
+  ['email_subject', 'Email subject'], ['email_body', 'Email body'], ['draft_note', 'Draft note'],
   ['phone', 'Phone'], ['linkedin', 'LinkedIn'], ['linkedin_verified', 'LinkedIn verified'],
   ['priority', 'Priority'], ['share_ok', 'Share'], ['share_ok_reason', 'Share reason'],
   ['lead_type', 'Lead type'], ['readiness', 'Readiness'], ['blocker', 'Blocker'],
@@ -47,7 +52,9 @@ function sheetFrom(rows: Record<string, unknown>[], cols: readonly (readonly [st
   })
   const ws = XLSX.utils.json_to_sheet(body, { header: cols.map((c) => c[1]) })
   ws['!cols'] = cols.map(([key]) => ({
-    wch: key === 'notes' || key === 'research_summary' || key === 'strategy' || key === 'hold_note' ? 46 : 20,
+    wch: key === 'email_body' ? 72
+      : key === 'notes' || key === 'research_summary' || key === 'strategy' || key === 'hold_note' || key === 'email_subject' || key === 'draft_note' ? 46
+      : 20,
   }))
   ws['!autofilter'] = { ref: XLSX.utils.encode_range({
     s: { r: 0, c: 0 }, e: { r: body.length, c: cols.length - 1 },
