@@ -21,6 +21,21 @@ export default tseslint.config(
   // Base JavaScript rules
   js.configs.recommended,
 
+  // scripts/**/*.mjs run under Node (fetch, URL, process, console are globals there);
+  // without this the base config lints them as browser code and CI fails on files
+  // no PR touched (first seen on #20, 2026-09-22).
+  {
+    files: ['scripts/**/*.mjs'], ignores: ['scripts/generate-brand-assets.mjs'],
+    languageOptions: {
+      globals: {
+        console: 'readonly', process: 'readonly', fetch: 'readonly', URL: 'readonly',
+        URLSearchParams: 'readonly', AbortSignal: 'readonly', AbortController: 'readonly',
+        setTimeout: 'readonly', clearTimeout: 'readonly', Buffer: 'readonly',
+      },
+    },
+    rules: { 'no-console': 'off' },
+  },
+
   // TypeScript rules
   ...tseslint.configs.recommended,
 
