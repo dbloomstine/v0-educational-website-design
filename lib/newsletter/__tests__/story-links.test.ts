@@ -53,6 +53,13 @@ describe('sameStoryLoose — same edition', () => {
     const b = story({ title: 'SEC Alleges Ex-VC Assistant Took $1.3M From Funds', eventType: 'regulatory_action', firmName: 'SEC' })
     expect(sameStoryLoose(a, b)).toBe(false)
   })
+  it('regulatory: two write-ups of one announcement merge; two different proposals do not', () => {
+    const a = story({ title: 'SEC proposes widening retail access to private markets', eventType: 'regulatory_action', firmName: 'U.S. Securities and Exchange Commission' })
+    const b = story({ title: 'SEC opens door further to retail private credit push', eventType: 'regulatory_action' })
+    const c = story({ title: 'SEC Prepares To Relax Fund Cross-Trading Limits', eventType: 'regulatory_action' })
+    expect(sameStoryLoose(a, b)).toBe(true)
+    expect(sameStoryLoose(a, c)).toBe(false)
+  })
   it('people: a shared full name, or the same surname at the same firm', () => {
     const a = story({ title: 'Three Weil partners join PE co-chief in defection to Paul Weiss', eventType: 'executive_change', firmName: 'Paul Weiss', personKeys: keys('Chris Machera') })
     const b = story({ title: 'Paul Weiss adds three Weil partners to private equity team', eventType: 'executive_hire', firmName: 'Paul Weiss', personKeys: keys('Timothy Burns', 'Noah Beck', 'Chris Machera') })

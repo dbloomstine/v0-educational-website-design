@@ -231,6 +231,13 @@ export function sameStoryLoose(a: StoryLike, b: StoryLike, opts: { crossEdition?
   if (famA === 'regulatory' && famB === 'regulatory') {
     if (sameFirm && !isRegulatorName(a.firmName) && !isRegulatorName(b.firmName)) return true
     if (titleJaccard(stem(a.title), stem(b.title)) >= 0.5) return true
+    // One announcement, two write-ups, on the same morning: "SEC proposes
+    // widening retail access to private markets" / "SEC opens door further to
+    // retail private credit push". Same edition only, and only when neither
+    // names a specific firm — "SEC charges adviser X" and "SEC charges adviser
+    // Y" are two cases.
+    const noSubject = (x: StoryLike) => !x.firmName || isRegulatorName(x.firmName)
+    if (!opts.crossEdition && noSubject(a) && noSubject(b) && contentJaccard(stem(a.title), stem(b.title)) >= 0.22) return true
     return false
   }
 
