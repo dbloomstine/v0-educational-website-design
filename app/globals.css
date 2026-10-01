@@ -1,9 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+/* `.paper` is the light newsprint scope used by the public news pages; a
+   `dark:` variant must not fire inside it even though <html> carries .dark. */
+@custom-variant dark (&:is(.dark *):not(:is(.paper, .paper *)));
 
 :root {
+  --display-accent: oklch(0.6 0.135 70);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -41,6 +44,7 @@
 
 .dark {
   /* FundOpsHQ Brand: Monochrome - Deep Navy (#1E3A5F) + Slate Gray (#64748B) */
+  --display-accent: oklch(0.85 0.12 85);            /* amber italic in display headlines */
   --background: oklch(0.32 0.055 250);           /* Deep Navy #1E3A5F */
   --foreground: oklch(0.98 0 0);                 /* White #FFFFFF */
   --card: oklch(0.28 0.05 250);                  /* Slightly darker navy for cards */
@@ -75,7 +79,126 @@
   --sidebar-ring: oklch(0.55 0.03 250);          /* Slate Gray */
 }
 
+/* ─── Newsprint ───────────────────────────────────────────────────────────
+   The public site reads like a newspaper: a navy masthead over a cream page,
+   the same palette as the FundOps Daily email. Any element with `.paper`
+   re-points the design tokens, so every component built on bg-background /
+   text-foreground / border-border follows without a line of its own changing.
+
+   The accent utilities are re-pointed too. `text-amber-400` was chosen for
+   navy; on cream it is unreadable, so inside .paper the same class resolves
+   to an ochre with real contrast. One scope, one switch: removing the class
+   from a page puts that page back on navy. */
+.paper {
+  --background: oklch(0.968 0.012 90);          /* newsprint cream  #F8F5EC */
+  --foreground: oklch(0.245 0.042 255);         /* ink navy         #13233A */
+  --card: oklch(0.992 0.007 90);                /* brighter stock   #FFFDF8 */
+  --card-foreground: oklch(0.245 0.042 255);
+  --popover: oklch(0.992 0.007 90);
+  --popover-foreground: oklch(0.245 0.042 255);
+  --primary: oklch(0.245 0.042 255);
+  --primary-foreground: oklch(0.968 0.012 90);
+  --secondary: oklch(0.935 0.02 90);
+  --secondary-foreground: oklch(0.245 0.042 255);
+  --muted: oklch(0.935 0.02 90);
+  --muted-foreground: oklch(0.48 0.035 255);    /* #55647A — 6:1 on cream */
+  --accent: oklch(0.925 0.024 90);
+  --accent-foreground: oklch(0.245 0.042 255);
+  --destructive: oklch(0.52 0.2 27);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.875 0.024 90);              /* column rule       #DDD5C3 */
+  --input: oklch(0.992 0.007 90);
+  --ring: oklch(0.45 0.08 255);
+
+  --color-amber-200: oklch(0.52 0.125 65);
+  --color-amber-300: oklch(0.5 0.125 62);
+  --color-amber-400: oklch(0.56 0.13 68);       /* ochre             #9C6410 */
+  --color-emerald-300: oklch(0.44 0.11 160);
+  --color-emerald-400: oklch(0.5 0.125 160);
+  --color-red-200: oklch(0.45 0.18 27);
+  --color-red-300: oklch(0.5 0.19 27);
+  --color-red-400: oklch(0.54 0.2 27);
+  --color-green-400: oklch(0.5 0.13 150);
+  --color-blue-200: oklch(0.4 0.1 255);
+  --color-blue-300: oklch(0.43 0.12 255);
+  --color-blue-400: oklch(0.46 0.14 255);
+
+  /* Category and event-kind chips were drawn for navy (text-*-300 on bg-*-900).
+     On newsprint the same classes resolve to a dark word on a pale tint. */
+  --color-red-800: oklch(0.8 0.06 27);
+  --color-red-900: oklch(0.86 0.07 27);
+  --color-rose-300: oklch(0.43 0.13 12);
+  --color-rose-800: oklch(0.8 0.06 12);
+  --color-rose-900: oklch(0.86 0.07 12);
+  --color-orange-300: oklch(0.43 0.13 50);
+  --color-orange-800: oklch(0.8 0.06 50);
+  --color-orange-900: oklch(0.86 0.07 50);
+  --color-green-300: oklch(0.43 0.13 150);
+  --color-green-800: oklch(0.8 0.06 150);
+  --color-green-900: oklch(0.86 0.07 150);
+  --color-teal-300: oklch(0.43 0.13 185);
+  --color-teal-800: oklch(0.8 0.06 185);
+  --color-teal-900: oklch(0.86 0.07 185);
+  --color-sky-300: oklch(0.43 0.13 235);
+  --color-sky-800: oklch(0.8 0.06 235);
+  --color-sky-900: oklch(0.86 0.07 235);
+  --color-indigo-300: oklch(0.43 0.13 275);
+  --color-indigo-800: oklch(0.8 0.06 275);
+  --color-indigo-900: oklch(0.86 0.07 275);
+  --color-violet-300: oklch(0.43 0.13 293);
+  --color-violet-800: oklch(0.8 0.06 293);
+  --color-violet-900: oklch(0.86 0.07 293);
+  --color-purple-300: oklch(0.43 0.13 305);
+  --color-purple-800: oklch(0.8 0.06 305);
+  --color-purple-900: oklch(0.86 0.07 305);
+  --color-emerald-800: oklch(0.8 0.06 162);
+  --color-emerald-900: oklch(0.86 0.07 162);
+  --color-amber-800: oklch(0.8 0.07 75);
+  --color-amber-900: oklch(0.87 0.08 80);
+  --color-blue-800: oklch(0.8 0.05 258);
+  --color-blue-900: oklch(0.86 0.06 258);
+  --color-slate-300: oklch(0.42 0.03 255);
+  --color-slate-800: oklch(0.86 0.02 255);
+
+  /* The italic half of a display headline ("…and a morning newsletter."). */
+  --display-accent: oklch(0.6 0.135 70);
+
+  /* Typography: `font-display` and the inherited body face follow suit. */
+  --font-fraunces: var(--font-newsreader);
+  --font-inter: var(--font-franklin);
+  font-family: var(--font-franklin), "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Headline links: the underline is the hover, not a colour change that
+   fights the bolded names inside the headline. */
+.paper .hl {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.18s ease;
+}
+.paper a:hover .hl,
+.paper a.hl:hover {
+  background-size: 100% 1px;
+}
+
+/* Horizontal tab strip: scrolls on narrow screens without a scrollbar. */
+.tab-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.tab-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 @theme inline {
+  --font-news: var(--font-newsreader), "Newsreader", Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-ui: var(--font-franklin), "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
   --font-sans: var(--font-inter), "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-heading: var(--font-dm-sans), "DM Sans", ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-fraunces), "Fraunces", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;

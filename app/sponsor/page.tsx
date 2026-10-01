@@ -202,7 +202,7 @@ export default function SponsorPage() {
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
 
-      <main id="main-content" className="flex-1">
+      <main id="main-content" className="paper flex-1">
         {/* ─── Masthead bar ─── */}
         <div className="border-b border-foreground/10">
           <div className="container mx-auto flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
@@ -274,7 +274,7 @@ export default function SponsorPage() {
                   className="italic"
                   style={{
                     fontVariationSettings: '"opsz" 144, "SOFT" 100',
-                    color: 'oklch(0.85 0.12 85)',
+                    color: 'var(--display-accent)',
                   }}
                 >
                   morning brief
@@ -342,7 +342,7 @@ export default function SponsorPage() {
                 Small but{' '}
                 <span
                   className="italic"
-                  style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
+                  style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'var(--display-accent)' }}
                 >
                   narrow.
                 </span>
@@ -488,7 +488,7 @@ export default function SponsorPage() {
                 Three{' '}
                 <span
                   className="italic"
-                  style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
+                  style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'var(--display-accent)' }}
                 >
                   ways in.
                 </span>
@@ -631,7 +631,7 @@ export default function SponsorPage() {
                   What you{' '}
                   <span
                     className="italic"
-                    style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
+                    style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'var(--display-accent)' }}
                   >
                     send us.
                   </span>
@@ -680,7 +680,7 @@ export default function SponsorPage() {
                   How it{' '}
                   <span
                     className="italic"
-                    style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
+                    style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'var(--display-accent)' }}
                   >
                     works.
                   </span>
@@ -746,7 +746,7 @@ export default function SponsorPage() {
                   Common{' '}
                   <span
                     className="italic"
-                    style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
+                    style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'var(--display-accent)' }}
                   >
                     questions.
                   </span>
@@ -811,7 +811,7 @@ export default function SponsorPage() {
                 Say{' '}
                 <span
                   className="italic"
-                  style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
+                  style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'var(--display-accent)' }}
                 >
                   hello.
                 </span>

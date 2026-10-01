@@ -1,3 +1,9 @@
+const SECTION_SLUGS = [
+  'fundraising', 'deals', 'people', 'private-equity', 'venture-capital',
+  'private-credit', 'real-estate', 'infrastructure', 'secondaries',
+  'hedge-funds', 'lps', 'regulation', 'service-providers',
+]
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
@@ -14,7 +20,11 @@ const nextConfig = {
       // redirect is gone and the legacy article paths now point AT it rather
       // than at the homepage anchor. NOTE: `:path+`, not `:path*` — the star
       // form also matches the bare `/news`, which redirects the page to itself.
-      { source: '/news/:path+', destination: '/news', permanent: true },
+      // Section fronts live at /news/<section> (2026-10 redesign), so the
+      // legacy-article redirect must step around them. Keep SECTION_SLUGS in
+      // step with lib/news/sections.ts — a test checks the two agree.
+      { source: `/news/:slug((?!(?:${SECTION_SLUGS.join('|')})$)[^/]+)`, destination: '/news', permanent: true },
+      { source: '/news/:slug/:rest+', destination: '/news', permanent: true },
       { source: '/blog', destination: '/news', permanent: true },
       { source: '/blog/:path*', destination: '/news', permanent: true },
       { source: '/articles', destination: '/news', permanent: true },

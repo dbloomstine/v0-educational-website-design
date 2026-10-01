@@ -284,6 +284,11 @@ export function sameStoryLoose(a: StoryLike, b: StoryLike, opts: { crossEdition?
     // Different extracted firms, same raise: an all-but-identical size plus a
     // party in common, or two parties in common at a compatible stage.
     if (sameFigure && shared >= 1) return true
+    // The same number under a near-identical headline, whoever was extracted
+    // as the firm: "NYC pension chief proposes $5bn private markets climate
+    // investment expansion" / "NYC comptroller proposes $5bn private markets
+    // climate push".
+    if (sameFigure && contentJaccard(a.title, b.title) >= 0.4) return true
     if (shared >= 2) return true
     return false
   }

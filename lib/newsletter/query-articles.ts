@@ -204,7 +204,7 @@ const SOURCE_TIER: Record<string, number> = Object.fromEntries(
   Object.entries(SOURCE_TIER_RAW).map(([k, v]) => [k.toLowerCase(), v])
 )
 
-function sourceTier(name: string | null | undefined): number {
+export function sourceTier(name: string | null | undefined): number {
   if (!name) return 50
   return SOURCE_TIER[name.toLowerCase()] ?? 50
 }
@@ -779,6 +779,72 @@ function assetClassFor(a: NewsletterArticle): string {
   return 'PE'
 }
 
+// ─── Shared with the site's front page (lib/news/front-page.ts) ─────────────
+// One definition of "is this a story" and "which section is it", so the email
+// and the website can never disagree about either.
+
+/** Why a mapped row is not a story we publish, or null if it is. */
+export function screenArticle(a: NewsletterArticle): string | null {
+  if (isGovtProgram(a)) return 'govt/blocked source'
+  if (isStartupRound(a)) return 'startup round'
+  if (isDigest(a.title)) return 'digest column'
+  if (NOT_FUND_NEWS.test(a.title)) return 'not fund news'
+  if (extractionMisaligned(a.title, a.firmName, a.tldr)) return 'extraction belongs to another article'
+  return null
+}
+
+/** Quality gate + minimum fund size, applied after dedup has merged fields. */
+export function gateArticle(a: NewsletterArticle): string | null {
+  if (!passesQualityGate(a)) return 'quality gate: no firm/fund or placeholder summary'
+  if (FUND_ACTIVITY_TYPES.includes(a.eventType ?? '') && a.fundSizeUsdMillions != null && a.fundSizeUsdMillions < MIN_FUND_SIZE_MILLIONS) {
+    return 'fund under $10M'
+  }
+  return null
+}
+
+export type ArticleSection = 'fund' | 'lp_commitments' | 'service_providers' | 'people_moves' | 'deals' | 'regulatory'
+
+export interface ArticlePlacement {
+  section: ArticleSection
+  /** Asset class for fund events; null elsewhere. */
+  assetClass: string | null
+  /** May this row lead a subject line / front page as "Firm $X"? */
+  leadEligible: boolean
+}
+
+/**
+ * Which section a story belongs in, decided by what the story IS rather than
+ * only by the classifier's tags:
+ *   regulatory action   → Regulatory, always (an SEC risk alert tagged
+ *                         service_provider used to land in Service Providers)
+ *   transaction         → Deals, including fund-typed rows that are deals
+ *   fund event          → LP Commitments or its asset class — never Service
+ *                         Providers, even when Law360 leads the headline with
+ *                         the law firm ("Latham-Led Stride Wraps $550M
+ *                         Sophomore Fund")
+ *   people / firm news  → Service Providers when the firm is one, otherwise
+ *                         People Moves
+ * Returns null for a service-provider story with no fund angle (dropped).
+ */
+export function placeArticle(a: NewsletterArticle): ArticlePlacement | null {
+  const family = storyFamily(a.eventType)
+  if (family === 'regulatory') return { section: 'regulatory', assetClass: null, leadEligible: true }
+  if (family === 'fund') {
+    if (isDealShaped(a)) return { section: 'deals', assetClass: null, leadEligible: false }
+    if (isLpCommitment(a)) return { section: 'lp_commitments', assetClass: null, leadEligible: false }
+    const notARaise = isWindDown(a) || STRUCTURED_CREDIT.test(a.title) || !readsAsFundraise(a)
+    return { section: 'fund', assetClass: assetClassFor(a), leadEligible: !notARaise }
+  }
+  if (isServiceProvider(a)) {
+    return FUND_RELEVANT.test(`${a.firmName ?? ''} ${a.title} ${a.tldr ?? ''}`)
+      ? { section: 'service_providers', assetClass: null, leadEligible: true }
+      : null
+  }
+  if (family === 'people') return { section: 'people_moves', assetClass: null, leadEligible: true }
+  if (family === 'deal') return { section: 'deals', assetClass: null, leadEligible: true }
+  return null
+}
+
 /**
  * Pure assembly: classified rows + prior-edition memory in, edition out. No
  * I/O, so `scripts/replay-editions.ts` can re-run past days against a saved
@@ -803,14 +869,7 @@ export function assembleNewsletter(
     .map(rowToArticle)
 
   // ─── Drop what is not a story we can stand behind ──────────────────────
-  const afterGovtFilter = keep(articles, (a) => {
-    if (isGovtProgram(a)) return 'govt/blocked source'
-    if (isStartupRound(a)) return 'startup round'
-    if (isDigest(a.title)) return 'digest column'
-    if (NOT_FUND_NEWS.test(a.title)) return 'not fund news'
-    if (extractionMisaligned(a.title, a.firmName, a.tldr)) return 'extraction belongs to another article'
-    return null
-  })
+  const afterGovtFilter = keep(articles, screenArticle)
 
   for (const a of afterGovtFilter) a.title = plainHeadline(a.title, a.tldr, a.sourceName)
 
@@ -857,16 +916,8 @@ export function assembleNewsletter(
     return null
   })
 
-  // ─── Quality gate ──────────────────────────────────────────────────────
-  const gated = keep(afterCrossDay, (a) => (passesQualityGate(a) ? null : 'quality gate: no firm/fund or placeholder summary'))
-
-  // ─── Minimum fund size filter for fund activity ────────────────────────
-  const sizeFiltered = keep(gated, (a) => {
-    const isFundActivity = FUND_ACTIVITY_TYPES.includes(a.eventType ?? '')
-    if (!isFundActivity) return null
-    if (a.fundSizeUsdMillions == null) return null
-    return a.fundSizeUsdMillions >= MIN_FUND_SIZE_MILLIONS ? null : 'fund under $10M'
-  })
+  // ─── Quality gate + minimum fund size ──────────────────────────────────
+  const sizeFiltered = keep(afterCrossDay, gateArticle)
 
   // ─── Per-firm cap ──────────────────────────────────────────────────────
   // Applied before sectioning so a single firm's news cycle can't consume
@@ -874,41 +925,30 @@ export function assembleNewsletter(
   const firmCapped = capPerFirm(sizeFiltered)
   { const k = new Set(firmCapped.map((a) => a.id)); for (const a of sizeFiltered) if (!k.has(a.id)) dropped.push({ id: a.id, title: a.title, reason: 'per-firm cap' }) }
 
-  // ─── Split into sections ───────────────────────────────────────────────
-  // Decided by what the story IS, not only by the classifier's tags:
-  //   regulatory action      → Regulatory, always (an SEC risk alert tagged
-  //                            service_provider used to land in Service Providers)
-  //   transaction            → Deals, including fund-typed rows that are deals
-  //   fund event             → LP Commitments or its asset class — never
-  //                            Service Providers, even when Law360 leads the
-  //                            headline with the law firm ("Latham-Led Stride
-  //                            Wraps $550M Sophomore Fund")
-  //   people / firm news     → Service Providers when the firm is one,
-  //                            otherwise People Moves
+  // ─── Split into sections (see placeArticle) ────────────────────────────
   const serviceProviders: NewsletterArticle[] = []
   const lpCommitments: NewsletterArticle[] = []
   const fundActivity: NewsletterArticle[] = []
   const peopleMoves: NewsletterArticle[] = []
   const deals: NewsletterArticle[] = []
   const regulatory: NewsletterArticle[] = []
+  const bins: Record<ArticleSection, NewsletterArticle[]> = {
+    fund: fundActivity,
+    lp_commitments: lpCommitments,
+    service_providers: serviceProviders,
+    people_moves: peopleMoves,
+    deals,
+    regulatory,
+  }
 
   for (const a of firmCapped) {
-    const family = storyFamily(a.eventType)
-    if (family === 'regulatory') { regulatory.push(a); continue }
-    if (family === 'fund') {
-      if (isDealShaped(a)) { a.leadEligible = false; deals.push(a); continue }
-      if (isLpCommitment(a)) { a.leadEligible = false; lpCommitments.push(a); continue }
-      if (isWindDown(a) || STRUCTURED_CREDIT.test(a.title) || !readsAsFundraise(a)) a.leadEligible = false
-      fundActivity.push(a)
+    const placement = placeArticle(a)
+    if (!placement) {
+      if (isServiceProvider(a)) dropped.push({ id: a.id, title: a.title, reason: 'service-provider story with no fund relevance' })
       continue
     }
-    if (isServiceProvider(a)) {
-      if (FUND_RELEVANT.test(`${a.firmName ?? ''} ${a.title} ${a.tldr ?? ''}`)) serviceProviders.push(a)
-      else dropped.push({ id: a.id, title: a.title, reason: 'service-provider story with no fund relevance' })
-      continue
-    }
-    if (family === 'people') peopleMoves.push(a)
-    else if (family === 'deal') deals.push(a)
+    a.leadEligible = placement.leadEligible
+    bins[placement.section].push(a)
   }
 
   // Multi-story wires rank last in their section: they fill space on a quiet
@@ -1095,47 +1135,54 @@ function deduplicateByStory(articles: NewsletterArticle[]): NewsletterArticle[] 
     stories.push([r])
   }
 
-  return stories.map((group) => {
-    group.sort((a, b) => {
-      // Law360-style headlines credit the lawyers, not the principals ("4 Firms
-      // Steer $1.6B Priority Technology Take-Private", "Linklaters advises
-      // LBBW AM on…"). Any other outlet's version of the story reads better.
-      const legal = (x: NewsletterArticle) => (LEGAL_CREDIT_HEADLINE.test(x.title) ? 100 : 0)
-      const tierA = sourceTier(a.sourceName) + legal(a)
-      const tierB = sourceTier(b.sourceName) + legal(b)
-      if (tierA !== tierB) return tierA - tierB
-      return (b.tldr?.length ?? 0) - (a.tldr?.length ?? 0)
-    })
+  return stories.map(mergeStoryGroup)
+}
 
-    const best = group[0]
-    const otherSources = Array.from(new Set(
-      group.slice(1)
-        .map((a) => a.sourceName)
-        .filter((name): name is string => !!name && name !== best.sourceName)
-    ))
-    best.alsoCoveredBy = otherSources
-
-    const maxSize = Math.max(...group.map((a) => a.fundSizeUsdMillions ?? 0))
-    if (maxSize > 0 && (best.fundSizeUsdMillions ?? 0) === 0) {
-      best.fundSizeUsdMillions = maxSize
-    }
-
-    const bestTldr = group
-      .map((a) => a.tldr)
-      .filter((t): t is string => !!t)
-      .sort((a, b) => b.length - a.length)[0]
-    if (bestTldr && bestTldr.length > (best.tldr?.length ?? 0)) {
-      best.tldr = bestTldr
-    }
-
-    // Promote a non-null firm name from other versions if the best one is missing it.
-    if (!best.firmName) {
-      const alt = group.find((a) => a.firmName)
-      if (alt) best.firmName = alt.firmName
-    }
-
-    return best
+/**
+ * Collapse one story's rows into the row that represents it: best source's
+ * headline, the largest size and longest summary any version carried, and
+ * every other outlet listed in `alsoCoveredBy`.
+ */
+export function mergeStoryGroup(group: NewsletterArticle[]): NewsletterArticle {
+  group.sort((a, b) => {
+    // Law360-style headlines credit the lawyers, not the principals ("4 Firms
+    // Steer $1.6B Priority Technology Take-Private", "Linklaters advises
+    // LBBW AM on…"). Any other outlet's version of the story reads better.
+    const legal = (x: NewsletterArticle) => (LEGAL_CREDIT_HEADLINE.test(x.title) ? 100 : 0)
+    const tierA = sourceTier(a.sourceName) + legal(a)
+    const tierB = sourceTier(b.sourceName) + legal(b)
+    if (tierA !== tierB) return tierA - tierB
+    return (b.tldr?.length ?? 0) - (a.tldr?.length ?? 0)
   })
+
+  const best = group[0]
+  const otherSources = Array.from(new Set(
+    group.slice(1)
+      .map((a) => a.sourceName)
+      .filter((name): name is string => !!name && name !== best.sourceName)
+  ))
+  best.alsoCoveredBy = otherSources
+
+  const maxSize = Math.max(...group.map((a) => a.fundSizeUsdMillions ?? 0))
+  if (maxSize > 0 && (best.fundSizeUsdMillions ?? 0) === 0) {
+    best.fundSizeUsdMillions = maxSize
+  }
+
+  const bestTldr = group
+    .map((a) => a.tldr)
+    .filter((t): t is string => !!t)
+    .sort((a, b) => b.length - a.length)[0]
+  if (bestTldr && bestTldr.length > (best.tldr?.length ?? 0)) {
+    best.tldr = bestTldr
+  }
+
+  // Promote a non-null firm name from other versions if the best one is missing it.
+  if (!best.firmName) {
+    const alt = group.find((a) => a.firmName)
+    if (alt) best.firmName = alt.firmName
+  }
+
+  return best
 }
 
 // ─── Cross-edition fingerprint dedup ────────────────────────────────────────

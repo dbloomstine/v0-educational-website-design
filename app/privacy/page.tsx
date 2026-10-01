@@ -28,7 +28,7 @@ export default function PrivacyPolicyPage() {
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
 
-      <main id="main-content" className="flex-1">
+      <main id="main-content" className="paper flex-1">
         <PageHero
           title="Privacy Policy"
           subtitle="How we collect, use, and protect your information"

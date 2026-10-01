@@ -64,7 +64,7 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
     article.personName,
   ])
   const headlineNodes = headline.map((seg, i) =>
-    seg.bold ? <strong key={i} className="font-semibold">{seg.text}</strong> : <span key={i}>{seg.text}</span>,
+    seg.bold ? <strong key={i} className="font-bold">{seg.text}</strong> : <span key={i}>{seg.text}</span>,
   )
 
   // Desktop hover card state
@@ -145,7 +145,7 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
             href={article.sourceUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[15px] font-normal text-foreground leading-normal truncate hover:text-amber-400 transition-colors"
+            className="font-news text-[16px] font-normal text-foreground leading-normal truncate hover:underline decoration-1 underline-offset-2"
           >
             {headlineNodes}
           </a>
@@ -189,7 +189,7 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
               column of labels. */}
           <div className="flex items-start gap-1.5 min-w-0">
             <span className={cn(
-              'min-w-0 flex-1 text-[14.5px] font-normal text-foreground leading-normal',
+              'min-w-0 flex-1 font-news text-[15.5px] font-normal text-foreground leading-snug',
               mobileExpanded ? 'line-clamp-none' : 'line-clamp-2'
             )}>
               {headlineNodes}

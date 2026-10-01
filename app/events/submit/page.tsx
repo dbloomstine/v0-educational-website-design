@@ -16,7 +16,7 @@ export default function SubmitEventPage() {
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
-      <main id="main-content" className="flex-1 border-t-2 border-foreground/15 bg-background">
+      <main id="main-content" className="paper flex-1 border-t-2 border-foreground/15 bg-background">
         <div className="border-b border-foreground/10">
           <div className="container mx-auto max-w-[760px] px-4">
             <div className="flex items-center justify-between gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">

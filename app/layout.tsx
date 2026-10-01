@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Inter, DM_Sans, Fraunces, JetBrains_Mono } from "next/font/google"
+import { Inter, DM_Sans, Fraunces, JetBrains_Mono, Newsreader, Libre_Franklin } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "sonner"
 import "./globals.css"
@@ -10,15 +10,20 @@ import "./globals.css"
 // - DM Sans      → secondary headings (kept for backwards compat)
 // - Fraunces     → editorial display (variable serif w/ optical sizing)
 // - JetBrains Mono → financial-ticker numerals, timestamps, eyebrows
+// `preload: false` on the three faces the public pages no longer use: they
+// still load wherever they are asked for (Lead Desk, /brand), but a reader
+// arriving on the front page is not made to download them first.
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter"
+  variable: "--font-inter",
+  preload: false,
 })
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
   weight: ["500", "600", "700"],
-  variable: "--font-dm-sans"
+  variable: "--font-dm-sans",
+  preload: false,
 })
 
 const fraunces = Fraunces({
@@ -26,6 +31,22 @@ const fraunces = Fraunces({
   variable: "--font-fraunces",
   style: ["normal", "italic"],
   axes: ["opsz", "SOFT"],
+  preload: false,
+})
+
+// The news pages (2026-10 redesign) are set like a newspaper: Newsreader for
+// headlines, Libre Franklin for labels and UI. Applied inside `.paper` only
+// (see globals.css), so Lead Desk and the admin pages keep Inter.
+const newsreader = Newsreader({
+  subsets: ["latin"],
+  variable: "--font-newsreader",
+  style: ["normal", "italic"],
+  axes: ["opsz"],
+})
+
+const franklin = Libre_Franklin({
+  subsets: ["latin"],
+  variable: "--font-franklin",
 })
 
 const jetbrainsMono = JetBrains_Mono({
@@ -122,7 +143,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} ${dmSans.variable} ${fraunces.variable} ${jetbrainsMono.variable} font-sans antialiased`}>
+      <body className={`${inter.variable} ${dmSans.variable} ${fraunces.variable} ${jetbrainsMono.variable} ${newsreader.variable} ${franklin.variable} font-sans antialiased`}>
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-background focus:text-foreground focus:border focus:border-border focus:rounded-md focus:outline-none focus:ring-2 focus:ring-ring"

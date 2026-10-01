@@ -48,7 +48,7 @@ const CHANNELS = [
   {
     href: '/#subscribe',
     name: 'FundOps Daily',
-    body: 'One email before the open: the morning’s headlines by strategy, then the next two weeks of events grouped by day. Free.',
+    body: 'One email before the open: the morning’s headlines by strategy, then the week ahead in events grouped by day. Free.',
   },
 ] as const
 
@@ -63,7 +63,7 @@ export default function AboutPage() {
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
 
-      <main id="main-content" className="flex-1">
+      <main id="main-content" className="paper flex-1">
         {/* Section masthead — same furniture as /news and /events */}
         <div className="border-t-2 border-foreground/15 border-b border-foreground/10">
           <div className="container mx-auto max-w-[1400px] px-4">
@@ -92,7 +92,7 @@ export default function AboutPage() {
             A daily newsroom for{' '}
             <span
               className="italic"
-              style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
+              style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'var(--display-accent)' }}
             >
               private markets.
             </span>

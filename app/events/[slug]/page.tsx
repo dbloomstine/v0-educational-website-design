@@ -139,7 +139,7 @@ async function CollectionPage({ collection }: { collection: EventCollection }) {
     <div className="flex min-h-screen flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <SiteHeader />
-      <main id="main-content" className="flex-1 border-t-2 border-foreground/15 bg-background">
+      <main id="main-content" className="paper flex-1 border-t-2 border-foreground/15 bg-background">
         <Masthead right={`${events.length} Upcoming`} />
         <div className="container mx-auto max-w-[1100px] px-4 py-10 sm:py-14">
           <Link href="/events" className="mb-6 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors">
@@ -229,7 +229,7 @@ function EventDetailPage({ event, related }: { event: IndustryEvent; related: In
     <div className="flex min-h-screen flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <SiteHeader />
-      <main id="main-content" className="flex-1 border-t-2 border-foreground/15 bg-background">
+      <main id="main-content" className="paper flex-1 border-t-2 border-foreground/15 bg-background">
         <Masthead right={isPast ? 'Archived' : 'Verified Date'} />
         <div className="container mx-auto max-w-[1100px] px-4 py-10 sm:py-14">
           <Link href="/events" className="mb-6 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors">

@@ -97,44 +97,15 @@ export default async function EventsPage() {
       )}
       <SiteHeader />
 
-      <main id="main-content" className="flex-1">
-        <section className="relative border-t-2 border-foreground/15 bg-background">
-          {/* Editorial section masthead */}
-          <div className="border-b border-foreground/10">
-            <div className="container mx-auto max-w-[1400px] px-4">
-              <div className="flex items-center justify-between gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-                <span className="flex items-center gap-3">
-                  <span className="text-foreground/80">Section B</span>
-                  <span aria-hidden="true" className="text-foreground/20">·</span>
-                  <span>Events</span>
-                </span>
-                <span className="flex items-center gap-2">
-                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-400" />
-                  <span className="text-amber-400/90">Updated Weekly</span>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="container mx-auto max-w-[1400px] px-4 py-3 sm:py-4">
+      <main id="main-content" className="paper flex-1">
+        <section className="relative">
+          <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
             {/* Compact header — one line, the board is the pitch */}
             <div className="mb-2.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5">
-              <h1
-                className="font-display text-foreground"
-                style={{
-                  fontSize: 'clamp(19px, 2.2vw, 26px)',
-                  lineHeight: 1.05,
-                  letterSpacing: '-0.02em',
-                  fontWeight: 500,
-                  fontVariationSettings: '"opsz" 144',
-                }}
-              >
-                The industry events calendar
-                <span
-                  className="italic"
-                  style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
-                >
-                  {' '}— dates verified at the source.
+              <h1 className="font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">
+                Events
+                <span className="font-news text-[18px] italic tracking-normal sm:text-[22px]" style={{ color: 'var(--display-accent)' }}>
+                  {' '}— every date verified at the source.
                 </span>
               </h1>
               <Link

@@ -9,7 +9,7 @@ export default function NotFound() {
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
 
-      <main id="main-content" className="flex-1">
+      <main id="main-content" className="paper flex-1">
         <section className="py-24">
           <div className="container mx-auto px-4">
             <div className="max-w-xl mx-auto text-center">

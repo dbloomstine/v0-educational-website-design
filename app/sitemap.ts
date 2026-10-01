@@ -1,6 +1,7 @@
 import { MetadataRoute } from 'next'
 import { queryAllEventSlugs } from '@/lib/events/api'
 import { EVENT_COLLECTIONS } from '@/lib/events/collections'
+import { SECTIONS, sectionHref } from '@/lib/news/sections'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://fundopshq.com'
@@ -15,6 +16,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${baseUrl}/terms`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
   ]
+
+  const sectionPages: MetadataRoute.Sitemap = SECTIONS.map((s) => ({
+    url: `${baseUrl}${sectionHref(s.slug)}`,
+    lastModified: now,
+    changeFrequency: 'hourly' as const,
+    priority: 0.8,
+  }))
 
   const collectionPages: MetadataRoute.Sitemap = EVENT_COLLECTIONS.map((c) => ({
     url: `${baseUrl}/events/${c.slug}`,
@@ -38,5 +46,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // degrade gracefully
   }
 
-  return [...staticPages, ...collectionPages, ...eventPages]
+  return [...staticPages, ...sectionPages, ...collectionPages, ...eventPages]
 }

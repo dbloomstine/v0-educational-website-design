@@ -49,6 +49,27 @@ export const SOURCE_NAME_MAP: Record<string, string> = {
   'newswire.com': 'Newswire.com',
   'www.newswire.com': 'Newswire.com',
   'newswire': 'Newswire.com',
+  // Google News mirrors report the site's hostname or a long masthead.
+  'pei-privaterealestate.com': 'PERE',
+  'perenews.com': 'PERE',
+  'pei-privatecredit.com': 'Private Debt Investor',
+  'privatedebtinvestor.com': 'Private Debt Investor',
+  'infrastructureinvestor.com': 'Infrastructure Investor',
+  'altassets private equity news': 'AltAssets',
+  'hedge week': 'Hedgeweek',
+  'dealroom.co': 'Dealroom',
+  'institutional real estate, inc.': 'IREI',
+  'azərtac – azərbaycan dövlət i̇nformasiya agentliyi': 'AZERTAC',
+  'azərtac': 'AZERTAC',
+  'ai-cio.com': 'Chief Investment Officer',
+  'the drawdown': 'The Drawdown',
+  'buttondown': 'The Secondary Brief',
+  'eu-startups.com': 'EU-Startups',
+  'techcrunch vc': 'TechCrunch',
+  'law360 private equity': 'Law360',
+  'law360 asset management': 'Law360',
+  'jd supra securities law': 'JD Supra',
+  'jd supra finance & banking': 'JD Supra',
 }
 
 export function normalizeSourceName(raw: string | null): string | null {

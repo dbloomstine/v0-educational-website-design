@@ -1,16 +1,16 @@
 import { Metadata } from 'next'
-import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { HeroSubscribe } from '@/components/home/hero-subscribe'
-import { HomeNewsTable } from '@/components/home/HomeNewsTable'
-import { HomeEventsStrip } from '@/components/events/HomeEventsStrip'
-import { queryEventFeed } from '@/lib/events/api'
-import { queryArticleFeed } from '@/lib/news/api'
-import type { IndustryEvent } from '@/lib/events/types'
-import type { ArticleGroup } from '@/lib/news/types'
+import { EventsRail, LargestCloses, LatestRail, SectionBlock } from '@/components/home/Rail'
+import { LeadStory, SectionFlag, TopStory } from '@/components/story/StoryBlocks'
 import { StickySubscribeBar } from '@/components/news/StickySubscribeBar'
+import { queryEventFeed } from '@/lib/events/api'
+import { getStoriesSafe } from '@/lib/news/front-page'
+import { composeFrontPage, rankSection } from '@/lib/news/stories'
+import { SECTIONS, sectionHref, storyInSection } from '@/lib/news/sections'
+import type { IndustryEvent } from '@/lib/events/types'
 
 export const metadata: Metadata = {
   title: 'FundOpsHQ | News, Events & Daily Newsletter for the Investment Funds Industry',
@@ -47,9 +47,7 @@ const organizationJsonLd = {
     name: 'Danny Bloomstine',
     url: 'https://www.linkedin.com/in/danny-bloomstine/',
   },
-  sameAs: [
-    'https://www.linkedin.com/in/danny-bloomstine/',
-  ],
+  sameAs: ['https://www.linkedin.com/in/danny-bloomstine/'],
 }
 
 const websiteJsonLd = {
@@ -57,117 +55,148 @@ const websiteJsonLd = {
   '@type': 'WebSite',
   name: 'FundOpsHQ',
   url: 'https://fundopshq.com',
-  description:
-    'Real-time fund news and the FundOps Daily newsletter — the hub for the investment funds industry.',
-  publisher: {
-    '@type': 'Organization',
-    name: 'FundOpsHQ',
-  },
+  description: 'Real-time fund news and the FundOps Daily newsletter — the hub for the investment funds industry.',
+  publisher: { '@type': 'Organization', name: 'FundOpsHQ' },
 }
 
-// Refresh the server-rendered events strip every 15 minutes
-export const revalidate = 900
+// The front page is rebuilt at most every ten minutes; the stories behind it
+// are cached on the same clock (lib/news/front-page.ts).
+export const revalidate = 600
+
+/** Headlines per section block on the front page. */
+const PER_BLOCK = 5
+/** The rail: enough to show the day is moving, not so much it outruns the page. */
+const LATEST_COUNT = 11
 
 export default async function HomePage() {
-  // Both sections are soft dependencies: the page must render even if the DB
-  // hiccups. Fetched in parallel — neither depends on the other.
-  //
-  // 100 articles is queryArticleFeed's hard cap and clusters down to ~70
-  // story groups, which is what makes the news column run roughly as deep as
-  // the events column beside it (Danny, 2026-08-31). Raising it further needs
-  // the cap in lib/news/api.ts raised too.
-  const [upcomingEvents, topStories] = await Promise.all([
-    queryEventFeed({ when: '60d', limit: 26 })
-      .then((feed) => feed.events)
+  // Both feeds are soft dependencies: the page renders even if the DB hiccups.
+  const [stories, events] = await Promise.all([
+    getStoriesSafe(),
+    // The week ahead, at most two a day: six events all happening this
+    // afternoon say less than a spread across the week.
+    queryEventFeed({ when: '1w', limit: 40 })
+      .then((feed) => {
+        const perDay = new Map<string, number>()
+        return feed.events
+          .filter((e) => {
+            const n = perDay.get(e.startDate) ?? 0
+            perDay.set(e.startDate, n + 1)
+            return n < 2
+          })
+          .slice(0, 6)
+      })
       .catch<IndustryEvent[]>(() => []),
-    queryArticleFeed({ range: '7d', limit: 100 })
-      .then((feed) => feed.groups ?? [])
-      .catch<ArticleGroup[]>(() => []),
   ])
+
+  const nowMs = Date.now()
+  const front = composeFrontPage(stories, nowMs)
+
+  // A story appears once on the page. The lead and top stories claim theirs
+  // first; each section block then takes its best stories not yet shown, so
+  // "Private equity" is never a repeat of "Fundraising" a few inches up.
+  const shown = new Set<string>([front.lead?.id, ...front.top.map((s) => s.id)].filter(Boolean) as string[])
+  const blockFor = (section: (typeof SECTIONS)[number], count: number) => {
+    const picks = rankSection(
+      stories.filter((s) => storyInSection(s, section) && !shown.has(s.id) && !s.roundup),
+      nowMs,
+    ).slice(0, count)
+    picks.forEach((s) => shown.add(s.id))
+    return { section, picks }
+  }
+  // By story type first (they sit beside the rail), then by asset class.
+  const typeBlocks = SECTIONS.filter((s) => s.group === 'type').map((s) => blockFor(s, PER_BLOCK)).filter((b) => b.picks.length > 0)
+  const assetBlocks = SECTIONS.filter((s) => s.group === 'asset').map((s) => blockFor(s, PER_BLOCK)).filter((b) => b.picks.length > 0)
 
   return (
     <div className="flex min-h-screen flex-col">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
       <SiteHeader />
 
-      <main id="main-content" className="flex-1">
-        {/* ─── Compact hub hero (slim band + inline subscribe) ─── */}
+      <main id="main-content" className="paper flex-1">
+        <h1 className="sr-only">FundOpsHQ — fund news, events and the FundOps Daily newsletter</h1>
         <HeroSubscribe />
 
-        {/* ─── The hub: Wire (news) + Circuit (events) side by side ───
-            Density is the point: both datasets visible the moment the
-            page loads, Gary's Guide-style, in the editorial skin. */}
-        <div className="border-t border-foreground/10 bg-background">
-          <div className="container mx-auto max-w-[1400px] px-4 py-3">
-            <div className="grid gap-5 lg:gap-6 lg:grid-cols-12">
-              {/* ── Section A · News ── */}
-              <section id="news" className="lg:col-span-8 min-w-0 scroll-mt-16">
-                <div className="mb-2 flex items-center justify-between gap-3 border-b-2 border-foreground/15 pb-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-                  <span className="flex items-center gap-3 whitespace-nowrap">
-                    <span className="text-foreground/80">Section A</span>
-                    <span aria-hidden="true" className="text-foreground/20">·</span>
-                    <span>News</span>
-                  </span>
-                  <Link href="/news" className="flex items-center gap-2 whitespace-nowrap hover:text-foreground transition-colors">
-                    <span className="relative flex h-1.5 w-1.5">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                    </span>
-                    <span className="text-emerald-400/90">Live · 200+ sources</span>
-                  </Link>
-                </div>
-                {topStories.length > 0 ? (
-                  <>
-                    <HomeNewsTable groups={topStories} />
-                    <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60">
-                      <Link href="/news" className="text-foreground/70 hover:text-amber-400 transition-colors">
-                        All news · search &amp; filter →
-                      </Link>
-                    </p>
-                  </>
-                ) : (
-                  <p className="rounded-lg border border-border bg-card px-4 py-6 text-sm text-muted-foreground">
-                    The news feed is at{' '}
-                    <Link href="/news" className="text-amber-400 hover:text-amber-300">fundopshq.com/news</Link>.
-                  </p>
-                )}
-              </section>
+        <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
+          {/* ─── Front: lead + top stories, with the running rail ─── */}
+          <div className="grid gap-x-9 gap-y-8 lg:grid-cols-[minmax(0,1fr)_332px] lg:grid-rows-[auto_1fr]">
+            <div className="min-w-0 lg:col-start-1">
+              {front.lead ? (
+                <LeadStory story={front.lead} nowMs={nowMs} />
+              ) : (
+                <p className="font-news text-lg text-muted-foreground">
+                  The newsroom is catching up. The full feed is at <a href="/news" className="underline">Latest</a>.
+                </p>
+              )}
 
-              {/* ── Section B · Events (rail) ── */}
-              <section id="events" className="lg:col-span-4 min-w-0 scroll-mt-16">
-                <div className="mb-2 flex items-center justify-between gap-3 border-b-2 border-foreground/15 pb-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-                  <span className="flex items-center gap-3 whitespace-nowrap">
-                    <span className="text-foreground/80">Section B</span>
-                    <span aria-hidden="true" className="text-foreground/20">·</span>
-                    <span>Events</span>
-                  </span>
-                  <span className="whitespace-nowrap text-amber-400/90">Dates Verified</span>
-                </div>
-                {upcomingEvents.length > 0 ? (
-                  <>
-                    <HomeEventsStrip events={upcomingEvents} rail />
-                    <p className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/60 leading-relaxed">
-                      <Link href="/events" className="text-foreground/70 hover:text-amber-400 transition-colors">
-                        Filter by city, topic &amp; date →
-                      </Link>
-                    </p>
-                  </>
-                ) : (
-                  <p className="rounded-lg border border-border bg-card px-4 py-6 text-sm text-muted-foreground">
-                    The events calendar is at{' '}
-                    <Link href="/events" className="text-amber-400 hover:text-amber-300">fundopshq.com/events</Link>.
-                  </p>
-                )}
-              </section>
+              {front.top.length > 0 && (
+                <section aria-label="Top stories" className="mt-6">
+                  <SectionFlag label="Top stories" />
+                  <div className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
+                    {front.top.map((s) => (
+                      <TopStory key={s.id} story={s} nowMs={nowMs} />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+            </div>
+
+            {/* The running rail. Second in the document so a phone shows it
+                right after the top stories; on a desk it is the right column. */}
+            <aside className="min-w-0 space-y-7 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:border-l lg:border-border lg:pl-8">
+              <LatestRail stories={front.latest.slice(0, LATEST_COUNT)} nowMs={nowMs} />
+              <LargestCloses stories={front.largestCloses} stats={front.stats} />
+              <EventsRail events={events} />
+            </aside>
+
+            {/* By story type — under the top stories, beside the rail */}
+            <div className="min-w-0 lg:col-start-1">
+              <div className="grid gap-x-8 gap-y-8 sm:grid-cols-2">
+                {typeBlocks.map(({ section, picks }) => (
+                  <SectionBlock
+                    key={section.slug}
+                    label={section.title}
+                    href={sectionHref(section.slug)}
+                    stories={picks}
+                    moreLabel={section.more}
+                  />
+                ))}
+              </div>
             </div>
           </div>
+
+          {/* ─── By asset class ─── */}
+          {assetBlocks.length > 0 && (
+            <div className="mt-10 border-t border-border pt-6">
+              <p className="mb-4 font-news text-[22px] italic leading-none text-foreground">By asset class</p>
+              <div className="grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+                {assetBlocks.map(({ section, picks }) => (
+                  <SectionBlock
+                    key={section.slug}
+                    label={section.title}
+                    href={sectionHref(section.slug)}
+                    stories={picks}
+                    moreLabel={section.more}
+                  />
+                ))}
+
+                {/* How the page is made. Said once, plainly, where a reader
+                    who has got this far would look for it. */}
+                <section aria-label="About this page" className="border-t-2 border-foreground pt-1.5">
+                  <h2 className="font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">How this page is made</h2>
+                  <p className="mt-2 font-news text-[15px] leading-[1.4] text-foreground/80">
+                    Stories are gathered every hour from more than 200 publications, grouped so one event is one
+                    line, and ranked by size, breadth of coverage and recency. Every headline links to its publisher.
+                  </p>
+                  <p className="mt-2 font-news text-[15px] leading-[1.4] text-foreground/80">
+                    Edited by Danny Bloomstine.{' '}
+                    <a href="/about" className="font-semibold underline underline-offset-2">About FundOpsHQ</a>
+                  </p>
+                </section>
+              </div>
+            </div>
+          )}
         </div>
       </main>
 

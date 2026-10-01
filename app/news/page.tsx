@@ -36,47 +36,18 @@ export default function NewsPage() {
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
 
-      <main id="main-content" className="flex-1">
-        <section className="border-t-2 border-foreground/15 bg-background">
-          {/* Section masthead — same editorial furniture as /events */}
-          <div className="border-b border-foreground/10">
-            <div className="container mx-auto max-w-[1400px] px-4">
-              <div className="flex items-center justify-between gap-3 py-2 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-                <span className="flex items-center gap-3 whitespace-nowrap">
-                  <span className="text-foreground/80">Section A</span>
-                  <span aria-hidden="true" className="text-foreground/20">·</span>
-                  <span>News</span>
-                </span>
-                <span className="flex items-center gap-2 whitespace-nowrap">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-                    <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  </span>
-                  <span className="text-emerald-400/90">Live · 200+ sources</span>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="container mx-auto max-w-[1400px] px-4 py-3 sm:py-4">
-            <h1
-              className="mb-2.5 font-display text-foreground"
-              style={{
-                fontSize: 'clamp(19px, 2.2vw, 26px)',
-                lineHeight: 1.05,
-                letterSpacing: '-0.02em',
-                fontWeight: 500,
-                fontVariationSettings: '"opsz" 144',
-              }}
-            >
-              Fund news
-              <span
-                className="italic"
-                style={{ fontVariationSettings: '"opsz" 144, "SOFT" 100', color: 'oklch(0.85 0.12 85)' }}
-              >
-                {' '}— launches, closes, moves, and deals.
-              </span>
-            </h1>
+      <main id="main-content" className="paper flex-1">
+        <section>
+          <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
+            <header className="mb-3 border-b border-border pb-3">
+              <h1 className="font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">
+                Latest
+              </h1>
+              <p className="mt-2 max-w-[72ch] font-news text-[16px] leading-snug text-foreground/70">
+                Every story as it arrives — fund closes, launches, deals, moves and regulation — with search, filters and
+                the full archive.
+              </p>
+            </header>
 
             <Suspense fallback={<NewsFeedSkeleton />}>
               <NewsFeed />

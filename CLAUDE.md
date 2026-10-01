@@ -25,18 +25,45 @@ npm run lint     # Run ESLint
 npm run start    # Start production server
 ```
 
-Note: no Jest/Vitest suite is configured. TypeScript build errors are ignored in `next.config.mjs` — rely on `next build` for type validation.
+Tests: `npx vitest run` (lib/news, lib/newsletter, lib/outreach). TypeScript build errors are ignored in `next.config.mjs` — rely on `next build` for type validation.
+
+## Design system (2026-10-01 redesign)
+
+The public site is a newspaper: navy masthead and footer, cream "newsprint" body — the same palette as the
+FundOps Daily email. Mechanics, all in `app/globals.css`:
+
+- **`.paper`** on a page's `<main>` re-points every design token (background, foreground, border, muted…) to
+  the light palette, and re-points the accent utilities (`text-amber-400`, `text-emerald-400`, chip colours)
+  to shades that read on cream. Components keep their classes; the scope does the work. Remove the class and
+  a page is navy again. `/brand`, `/desk` and `/admin` do not use it.
+- **Type:** Newsreader for headlines (`font-news`), Libre Franklin for labels and UI (`font-ui`, and the
+  inherited face inside `.paper`), JetBrains Mono for figures and timestamps. Lead Desk keeps Inter.
+- **Headlines:** regular weight with the named firms/people bold (`components/story/Headline.tsx`,
+  `splitHeadlineByEntities`). Never all-bold. Hover is an underline (`.hl`), not a colour change.
+- **A story, not an article, is the unit** (`lib/news/stories.ts`): one event however many outlets reported
+  it, built with the newsletter's own screening, clustering and section rules. The site and the email
+  therefore agree on what a story is and where it belongs — change those rules in `lib/newsletter/`.
 
 ## Routing (post-cleanup, April 2026)
 
 The site was aggressively consolidated on 2026-04-10. There are only six public routes plus an admin tool:
 
 ```
-/                       → Editorial HUB homepage (repositioned 2026-08-30: news + events + newsletter)
-                           · HeroSubscribe (hero + newsletter signup, anchor #subscribe; 4-stat strip incl. Events)
-                           · NewsFeed (section #news — "Section A · The Wire")
-                           · HomeEventsStrip (section #events — "Section B · The Circuit", server-rendered
-                             next-10-events strip, revalidate 900; page is now async/ISR)
+/                       → The FRONT PAGE (redesigned 2026-10-01 as a news site, not a feed).
+                           Server-rendered from lib/news/stories.ts, revalidate 600:
+                           · HeroSubscribe (now a one-line subscribe band; anchor #subscribe, input #newsletter-email)
+                           · LeadStory + six TopStory (ranked: size, coverage breadth, source tier, recency)
+                           · rail: Latest, Largest closes (7 days), Events (week ahead)
+                           · section blocks by story type, then by asset class; a story appears once per page
+/news                   → "Latest": the full archive with search and filters (client NewsFeed, unchanged logic)
+/news/[section]         → Section fronts — the TABS in the header. 13 sections defined in lib/news/sections.ts:
+                           by story type (fundraising, deals, people, lps, regulation, service-providers) and by
+                           asset class (private-equity, venture-capital, private-credit, real-estate,
+                           infrastructure, secondaries, hedge-funds). `?f=` narrows within a section.
+                           NOTE next.config.mjs redirects every OTHER /news/* path to /news (legacy article
+                           links); a new section slug must be added to SECTION_SLUGS there (a test enforces it).
+/story/[id]             → Our page for one story: summary, extracted facts, every outlet that covered it,
+                           share buttons, per-story OG image. `id` is any news_items id in the story.
 /events                 → Industry events board (added 2026-08-29) — "Section B · The Circuit".
                            EventsBoard component, filterable, backed by industry_events.
                            Refreshed weekly via the scout-events skill (~/.claude/skills/scout-events)
@@ -308,10 +335,12 @@ Anything you read about `lib/content/`, `lib/hooks/`, `lib/seo/`, `lib/exports/`
 
 ```
 components/
-├── site-header.tsx          # Sticky top nav — News / Show / About / Live / Subscribe
-├── site-footer.tsx          # Editorial "Colophon" footer — brand + CTA + nav + socials
+├── site-header.tsx          # Masthead (scrolls away) + section TAB STRIP (sticky). Tabs come from lib/news/sections.ts
+├── site-footer.tsx          # Navy footer — nameplate, section links by type and asset class
+├── story/                   # Headline (bold entities), Coverage, LeadStory/TopStory/HeadlineRow/LatestRow, ShareBar
 ├── home/
-│   ├── hero-subscribe.tsx   # Homepage hero + inline subscribe form
+│   ├── hero-subscribe.tsx   # One-line subscribe band under the tabs (homepage only)
+│   ├── Rail.tsx             # LatestRail, LargestCloses, EventsRail, SectionBlock
 │   └── live-show-feature.tsx # "Channel 02" broadcast section with latest video
 ├── events/
 │   ├── EventsBoard.tsx      # /events board (client component — clones NewsFeed's

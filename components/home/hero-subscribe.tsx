@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
-import Link from 'next/link'
 import { CheckCircle2, Loader2, ArrowRight, Mail } from 'lucide-react'
 
 /**
@@ -27,10 +26,12 @@ function decodePrefillEmail(): string | null {
 }
 
 /**
- * Compact hub hero (density redesign 2026-08-30): a slim editorial band —
- * masthead bar, one-line headline, inline subscribe — so the news feed and
- * events rail land above the fold. The old full-viewport hero is gone by
- * design: the content IS the pitch now.
+ * The subscribe band: one line under the section tabs, on the homepage only.
+ * The newsletter is the site's main funnel, so the ask sits above the lead
+ * story — but as a single line, because the stories are the pitch.
+ *
+ * Keeps the contracts other code relies on: the section id `subscribe`, the
+ * input id `newsletter-email`, and the `?e=` prefill from outreach links.
  */
 export function HeroSubscribe() {
   const [email, setEmail] = useState('')
@@ -62,10 +63,6 @@ export function HeroSubscribe() {
     return () => window.removeEventListener('hashchange', focusIfTargeted)
   }, [])
 
-  const today = new Date()
-    .toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })
-    .toUpperCase()
-
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!email.trim()) return
@@ -93,127 +90,53 @@ export function HeroSubscribe() {
   }
 
   return (
-    <section id="subscribe" className="relative isolate overflow-hidden border-b border-foreground/10 scroll-mt-16">
-      {/* Faint wordmark texture, tucked behind the band */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 flex items-center overflow-hidden select-none"
-      >
-        <span
-          className="font-display italic font-black tracking-[-0.05em] leading-none whitespace-nowrap translate-x-16"
-          style={{
-            fontSize: '110px',
-            background: 'linear-gradient(180deg, oklch(0.98 0 0 / 0.07) 0%, oklch(0.98 0 0 / 0.02) 100%)',
-            WebkitBackgroundClip: 'text',
-            backgroundClip: 'text',
-            color: 'transparent',
-            fontVariationSettings: '"opsz" 144, "SOFT" 100',
-          }}
-        >
-          FundOpsHQ
-        </span>
-      </div>
+    <section id="subscribe" className="scroll-mt-14 border-b border-border bg-card">
+      <div className="mx-auto flex max-w-[1320px] flex-col gap-2 px-4 py-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 lg:px-6">
+        <p className="min-w-0 font-news text-[15.5px] leading-snug text-foreground">
+          <span className="font-bold">FundOps Daily</span>
+          <span className="text-foreground/75"> — fund closes, launches, deals and moves, in your inbox before the open.</span>
+          <span className="hidden whitespace-nowrap font-ui text-[12px] text-muted-foreground xl:inline"> Free, every morning.</span>
+        </p>
 
-      {/* Masthead bar */}
-      <div className="relative z-10 border-b border-foreground/10">
-        <div className="container mx-auto flex flex-wrap items-center justify-between gap-2 px-4 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
-          <span className="flex items-center gap-3">
-            <span className="text-foreground/90">Vol. I</span>
-            <span aria-hidden="true" className="text-foreground/20">
-              ·
-            </span>
-            <span>{today}</span>
-          </span>
-          <span className="flex items-center gap-3">
-            <span className="hidden sm:inline">The Hub for Private Markets</span>
-            <span aria-hidden="true" className="hidden sm:inline text-foreground/20">
-              ·
-            </span>
-            <Link href="/about" className="text-amber-400 hover:text-amber-300 transition-colors">
-              About
-            </Link>
-          </span>
-        </div>
-      </div>
-
-      {/* Slim hero band: headline left, inline subscribe right */}
-      <div className="relative z-10 container mx-auto max-w-[1400px] px-4 py-2.5 sm:py-3">
-        <div className="flex flex-col gap-2 lg:flex-row lg:items-center lg:justify-between">
-          <div className="min-w-0">
-            <h1
-              className="font-display text-foreground"
-              style={{
-                fontSize: 'clamp(17px, 1.9vw, 26px)',
-                lineHeight: 1.05,
-                letterSpacing: '-0.02em',
-                fontWeight: 500,
-                fontVariationSettings: '"opsz" 144',
-              }}
-            >
-              Fund news, events, and{' '}
-              <span
-                className="italic"
-                style={{
-                  fontWeight: 400,
-                  fontVariationSettings: '"opsz" 144, "SOFT" 100',
-                  color: 'oklch(0.85 0.12 85)',
-                }}
-              >
-                a morning newsletter.
-              </span>
-            </h1>
-            <p className="mt-0.5 hidden sm:block font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/60">
-              200+ sources · Hourly news · Verified events calendar ·{' '}
-              <span className="text-foreground/60">Edited by Danny Bloomstine</span>
-            </p>
-          </div>
-
-          {/* Inline subscribe */}
-          <div className="w-full lg:w-auto lg:shrink-0">
-            {status === 'success' ? (
-              <div className="flex items-center gap-2.5 rounded-sm border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
-                <span className="text-sm text-emerald-300">Subscribed — first edition lands tomorrow morning.</span>
+        <div className="w-full shrink-0 sm:w-auto">
+          {status === 'success' ? (
+            <div className="flex items-center gap-2 rounded-sm border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5">
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
+              <span className="font-ui text-[13px] text-emerald-300">Subscribed — your first edition lands tomorrow morning.</span>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="flex w-full items-stretch gap-2 sm:w-[390px]">
+              <div className="relative flex-1">
+                <Mail className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/70" />
+                <input
+                  ref={emailInputRef}
+                  id="newsletter-email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@firm.com"
+                  required
+                  aria-label="Email address"
+                  className="h-9 w-full rounded-sm border border-foreground/25 bg-background px-3 pl-8 font-ui text-[14px] text-foreground placeholder:text-muted-foreground/70 focus:border-foreground focus:outline-none"
+                />
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex w-full items-stretch gap-2 lg:w-[400px]">
-                <div className="relative flex-1">
-                  <Mail className="pointer-events-none absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground/50" />
-                  <input
-                    ref={emailInputRef}
-                    id="newsletter-email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@email.com"
-                    required
-                    aria-label="Email address"
-                    className="h-9 w-full rounded-sm border-2 border-foreground/15 bg-background/70 px-3 pl-9 text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-foreground/50 focus:outline-none"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  disabled={status === 'loading'}
-                  className="group inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-sm bg-foreground px-4 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-background transition-all hover:bg-amber-400 disabled:opacity-50"
-                >
-                  {status === 'loading' ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <>
-                      {prefilled && email ? 'Subscribe' : 'Subscribe free'}
-                      <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
-                    </>
-                  )}
-                </button>
-              </form>
-            )}
-            {status === 'error' && <p className="mt-1 text-xs text-red-400">{errorMsg}</p>}
-            {status !== 'success' && (
-              <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/50">
-                FundOps Daily · every morning before the open · free
-              </p>
-            )}
-          </div>
+              <button
+                type="submit"
+                disabled={status === 'loading'}
+                className="group inline-flex h-9 shrink-0 items-center justify-center gap-1.5 rounded-sm bg-foreground px-4 font-ui text-[12px] font-bold uppercase tracking-[0.08em] text-background transition-colors hover:bg-foreground/85 disabled:opacity-50"
+              >
+                {status === 'loading' ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <>
+                    {prefilled && email ? 'Subscribe' : 'Subscribe free'}
+                    <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+          {status === 'error' && <p className="mt-1 font-ui text-xs text-red-400">{errorMsg}</p>}
         </div>
       </div>
     </section>

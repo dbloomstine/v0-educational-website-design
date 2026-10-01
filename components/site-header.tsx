@@ -1,36 +1,69 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Logo } from "@/components/logo"
-import { Menu, X, ArrowRight } from "lucide-react"
+import { ArrowRight, Search, X } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { SECTIONS, sectionHref } from "@/lib/news/sections"
 
-const NAV_ITEMS = [
-  { label: "News", href: "/news", match: ["/news"] },
-  { label: "Events", href: "/events", match: ["/events"] },
-  { label: "About", href: "/about", match: ["/about"] },
-] as const
+/**
+ * Masthead + section tabs (2026-10 redesign).
+ *
+ * Two parts with two jobs. The masthead says where you are — the name, the
+ * date, the way to subscribe — and scrolls away. The tab strip is how you
+ * move, so it stays pinned: every section is one click from anywhere on the
+ * site, the way a newspaper's section front is one page-turn from any other.
+ */
+
+interface Tab {
+  label: string
+  href: string
+  /** Path prefixes that light this tab. */
+  match: (path: string) => boolean
+  /** Thin divider before this tab: the strip has three groups. */
+  gap?: boolean
+}
+
+const TABS: Tab[] = [
+  { label: "Top", href: "/", match: (p) => p === "/" },
+  { label: "Latest", href: "/news", match: (p) => p === "/news" },
+  ...SECTIONS.map((s, i) => ({
+    label: s.label,
+    href: sectionHref(s.slug),
+    match: (p: string) => p === sectionHref(s.slug),
+    gap: i === 0 || s.slug === "private-equity" || s.slug === "lps",
+  })),
+  { label: "Events", href: "/events", match: (p) => p.startsWith("/events"), gap: true },
+]
 
 export function SiteHeader() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname() || "/"
+  const [searchOpen, setSearchOpen] = useState(false)
+  const searchRef = useRef<HTMLInputElement>(null)
+  const stripRef = useRef<HTMLDivElement>(null)
+  const activeRef = useRef<HTMLAnchorElement>(null)
 
-  const isActive = (matches: readonly string[]) =>
-    matches.some((m) => (m === "/" ? pathname === "/" : pathname.startsWith(m)))
+  // Keep the active tab in view on narrow screens, where the strip scrolls.
+  useEffect(() => {
+    const strip = stripRef.current
+    const active = activeRef.current
+    if (!strip || !active) return
+    const left = active.offsetLeft - strip.clientWidth / 2 + active.clientWidth / 2
+    strip.scrollTo({ left: Math.max(0, left) })
+  }, [pathname])
 
-  // Clicking Subscribe in the header scrolls to the hero signup card AND
-  // focuses the email input (otherwise a repeat click from /#subscribe is a
-  // no-op and users think the button is broken). On non-home pages we let
-  // the Link navigate normally — hero-subscribe.tsx's mount effect picks up
-  // the #subscribe hash and focuses the input on landing.
+  useEffect(() => {
+    if (searchOpen) searchRef.current?.focus()
+  }, [searchOpen])
+
+  // On the homepage the subscribe form is on the page: scroll to it and focus
+  // the field rather than navigating to where we already are.
   const handleSubscribeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (pathname !== "/") return
     e.preventDefault()
-    setMobileMenuOpen(false)
-    document.getElementById("subscribe")?.scrollIntoView({ behavior: "smooth", block: "start" })
-    // Delay slightly so smooth-scroll doesn't yank focus mid-animation.
+    document.getElementById("subscribe")?.scrollIntoView({ behavior: "smooth", block: "center" })
     window.setTimeout(() => {
       document.getElementById("newsletter-email")?.focus({ preventScroll: true })
     }, 450)
@@ -39,91 +72,108 @@ export function SiteHeader() {
     }
   }
 
+  const today = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  })
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b-2 border-foreground/15 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/75">
-      <div className="container mx-auto flex h-16 items-center justify-between gap-4 px-4">
-        {/* Brand mark */}
-        <Link href="/" className="flex items-center" aria-label="FundOpsHQ — Home">
-          <Logo height={26} className="text-foreground" />
-        </Link>
+    <>
+      <header className="w-full bg-background text-foreground">
+        <div className="mx-auto grid h-[58px] max-w-[1320px] grid-cols-[1fr_auto] items-center gap-4 px-4 md:grid-cols-[1fr_auto_1fr] lg:px-6">
+          {/* Dateline */}
+          <div className="hidden min-w-0 md:block">
+            <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-foreground/55" suppressHydrationWarning>
+              {today}
+            </p>
+            <p className="font-ui text-[11px] text-foreground/45">News for GPs, LPs and fund service providers</p>
+          </div>
 
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-1">
-          {NAV_ITEMS.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={cn(
-                "relative inline-flex h-9 items-center justify-center px-3 font-mono text-[11px] font-bold uppercase tracking-[0.2em] transition-colors",
-                isActive(item.match)
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              )}
-            >
-              {item.label}
-              {isActive(item.match) && (
-                <span className="absolute -bottom-[1px] left-3 right-3 h-px bg-amber-400/80" aria-hidden="true" />
-              )}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Right-side actions */}
-        <div className="flex items-center gap-2">
-          {/* Primary subscribe CTA */}
-          <Link
-            href="/#subscribe"
-            onClick={handleSubscribeClick}
-            className="group hidden sm:inline-flex h-9 items-center gap-2 rounded-sm bg-foreground px-4 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-background transition-all hover:bg-amber-400 hover:text-background"
-          >
-            Subscribe
-            <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+          {/* Nameplate */}
+          <Link href="/" className="flex items-center md:justify-self-center" aria-label="FundOpsHQ — Home">
+            <Logo height={25} className="text-foreground" />
           </Link>
 
-          {/* Mobile menu toggle */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-sm border border-foreground/20 text-foreground hover:bg-accent focus:outline-none focus:ring-2 focus:ring-inset focus:ring-ring"
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={mobileMenuOpen}
-            aria-controls="mobile-menu"
-          >
-            {mobileMenuOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile menu */}
-      {mobileMenuOpen && (
-        <nav
-          id="mobile-menu"
-          role="navigation"
-          aria-label="Mobile navigation"
-          className="md:hidden border-t border-foreground/10 bg-background"
-        >
-          <div className="container mx-auto px-4 py-4 space-y-1">
-            {NAV_ITEMS.map((item) => (
-              <Link
-                key={item.label}
-                href={item.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block rounded-sm px-3 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-foreground hover:bg-accent/60"
+          {/* Search + subscribe */}
+          <div className="flex items-center justify-end gap-2">
+            {searchOpen ? (
+              <form action="/news" method="get" className="flex items-center gap-1" role="search">
+                <input
+                  ref={searchRef}
+                  type="search"
+                  name="q"
+                  placeholder="Search fund news"
+                  aria-label="Search fund news"
+                  className="h-8 w-40 rounded-sm border border-foreground/25 bg-foreground/5 px-2.5 font-ui text-[13px] text-foreground placeholder:text-foreground/40 focus:border-foreground/60 focus:outline-none sm:w-56"
+                />
+                <button
+                  type="button"
+                  onClick={() => setSearchOpen(false)}
+                  aria-label="Close search"
+                  className="flex h-8 w-8 items-center justify-center text-foreground/60 hover:text-foreground"
+                >
+                  <X className="h-4 w-4" aria-hidden="true" />
+                </button>
+              </form>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                aria-label="Search fund news"
+                className="flex h-8 w-8 items-center justify-center rounded-sm text-foreground/60 transition-colors hover:bg-foreground/10 hover:text-foreground"
               >
-                {item.label}
-              </Link>
-            ))}
-
+                <Search className="h-4 w-4" aria-hidden="true" />
+              </button>
+            )}
             <Link
               href="/#subscribe"
               onClick={handleSubscribeClick}
-              className="mt-3 flex items-center justify-center gap-2 rounded-sm bg-foreground px-4 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-background"
+              className={cn(
+                "group h-8 items-center gap-1.5 rounded-sm bg-[#E6B045] px-3.5 font-ui text-[12px] font-bold uppercase tracking-[0.08em] text-[#13233A] transition-colors hover:bg-white",
+                searchOpen ? "hidden sm:inline-flex" : "inline-flex",
+              )}
             >
-              Subscribe to FundOps Daily
-              <ArrowRight className="h-3 w-3" />
+              Subscribe
+              <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
             </Link>
           </div>
-        </nav>
-      )}
-    </header>
+        </div>
+      </header>
+
+      {/* Section tabs — pinned */}
+      <nav
+        aria-label="Sections"
+        className="sticky top-0 z-50 w-full border-y border-foreground/15 bg-background/97 text-foreground shadow-[0_1px_0_rgba(0,0,0,0.12)] backdrop-blur supports-[backdrop-filter]:bg-background/90"
+      >
+        <div className="relative mx-auto max-w-[1320px]">
+          <div ref={stripRef} className="tab-scroll flex items-stretch overflow-x-auto px-2 lg:px-4">
+            {TABS.map((tab) => {
+              const active = tab.match(pathname)
+              return (
+                <span key={tab.href} className="flex shrink-0 items-stretch">
+                  {tab.gap && <span aria-hidden="true" className="mx-1.5 my-2.5 w-px bg-foreground/15" />}
+                  <Link
+                    ref={active ? activeRef : undefined}
+                    href={tab.href}
+                    aria-current={active ? "page" : undefined}
+                    className={cn(
+                      "relative flex h-10 items-center whitespace-nowrap px-2.5 font-ui text-[13px] transition-colors",
+                      active ? "font-bold text-foreground" : "font-medium text-foreground/65 hover:text-foreground",
+                    )}
+                  >
+                    {tab.label}
+                    {active && <span aria-hidden="true" className="absolute inset-x-2.5 bottom-0 h-[3px] bg-[#E6B045]" />}
+                  </Link>
+                </span>
+              )
+            })}
+          </div>
+          {/* Edge fade: more tabs lie to the right on a narrow screen. */}
+          <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent xl:hidden" />
+        </div>
+      </nav>
+    </>
   )
 }
