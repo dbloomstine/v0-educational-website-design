@@ -181,7 +181,7 @@ async function main() {
     console.log('  Using SAMPLE_SLATE — co-sponsor preview (FundOpsHQ + Fidelity Careers).')
   }
 
-  const upcomingEvents = (await queryEventFeed({ when: '2w', limit: EVENTS_LIMIT })).events
+  const upcomingEvents = (await queryEventFeed({ when: '1w', limit: EVENTS_LIMIT })).events
 
 
   let html = renderNewsletterEmail({
