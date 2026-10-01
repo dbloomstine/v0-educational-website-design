@@ -71,21 +71,6 @@ const FONT_MONO = `ui-monospace, Menlo, Consolas, 'Courier New', monospace`
 // are becoming distracting") — the classification survives in the data and
 // section placement; the row itself now leads with firm + headline.
 
-const CATEGORY_CLASS: Record<string, string> = {
-  PE: 'fops-c-pe',
-  VC: 'fops-c-vc',
-  credit: 'fops-c-credit',
-  hedge: 'fops-c-hedge',
-  real_estate: 'fops-c-re',
-  infrastructure: 'fops-c-infra',
-  secondaries: 'fops-c-sec',
-  gp_stakes: 'fops-c-gp',
-  lp_commitments: 'fops-c-lp',
-  service_providers: 'fops-c-sp',
-  people_moves: 'fops-c-ppl',
-  deals: 'fops-c-deals',
-  regulatory: 'fops-c-reg',
-}
 
 // ─── Style block ───────────────────────────────────────────────────────────
 // Every class below maps to a style combination repeated 10+ times in the
@@ -195,42 +180,29 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
   vertical-align: middle;
 }
 
-/* Category section heads */
-.fops-cat { margin-bottom: 10px; }
+/* Category section heads — a solid navy band with reversed type.
+   Danny, 2026-10-01: the old heads (12px navy label over a thin coloured
+   rule) "blend in when your eye scans". They were the same navy as the
+   headlines and smaller than them, so nothing marked where one section
+   stopped and the next began. A filled band is a different *kind* of object
+   from a row of text, which is what the eye needs to find the breaks.
+   The colours are also set inline on the cell: a forwarded or quoted copy
+   loses this style block, and the head would otherwise fall back to plain
+   body text. */
+.fops-cat { margin-bottom: 14px; }
 .fops-cat-head {
-  padding-bottom: 5px;
-  border-bottom-width: 2px;
-  border-bottom-style: solid;
+  padding: 6px 10px 5px;
+  background-color: ${NAVY};
+  border-left: 4px solid ${AMBER};
 }
 .fops-cat-label {
   font-family: ${FONT_MONO};
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 2px;
-  color: ${INK};
+  color: ${CREAM};
   text-transform: uppercase;
 }
-.fops-cat-count {
-  font-family: ${FONT_MONO};
-  font-size: 10px;
-  color: ${INK_MUTED};
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-}
-.fops-c-pe { border-bottom-color: #4F46E5; }
-.fops-c-vc { border-bottom-color: #059669; }
-.fops-c-credit { border-bottom-color: #D97706; }
-.fops-c-hedge { border-bottom-color: #7C3AED; }
-.fops-c-re { border-bottom-color: #EA580C; }
-.fops-c-infra { border-bottom-color: #0284C7; }
-.fops-c-sec { border-bottom-color: #DB2777; }
-.fops-c-gp { border-bottom-color: #0D9488; }
-.fops-c-lp { border-bottom-color: ${AMBER}; }
-.fops-c-sp { border-bottom-color: #475569; }
-.fops-c-ppl { border-bottom-color: #8B5CF6; }
-.fops-c-deals { border-bottom-color: #0891B2; }
-.fops-c-reg { border-bottom-color: #DC2626; }
-.fops-c-default { border-bottom-color: ${INK_MUTED}; }
 
 /* Eyebrow labels (SUPPORTED BY / PRESENTED BY / SECTION A etc.) */
 .fops-eyebrow {
@@ -498,18 +470,15 @@ function renderArticle(article: ArticleGroup['articles'][0]): string {
 }
 
 function renderCategory(group: ArticleGroup): string {
-  const categoryClass = CATEGORY_CLASS[group.category] ?? 'fops-c-default'
   const articleRows = group.articles.map(renderArticle).join('')
 
+  // fops-bg-navy / fops-cream are the classes the dark-mode block re-pins, so
+  // an auto-inverting client keeps the band navy with cream type.
   return `
     <table cellpadding="0" cellspacing="0" border="0" width="100%" class="fops-cat">
       <tr>
-        <td class="fops-cat-head ${categoryClass}">
-          <table cellpadding="0" cellspacing="0" border="0" width="100%">
-            <tr>
-              <td><span class="fops-cat-label">${escapeHtml(group.label)}</span></td>
-            </tr>
-          </table>
+        <td class="fops-cat-head fops-bg-navy" bgcolor="${NAVY}" style="background-color:${NAVY};border-left:4px solid ${AMBER};padding:6px 10px 5px;">
+          <span class="fops-cat-label fops-cream" style="font-family:${FONT_MONO};font-size:12px;font-weight:700;letter-spacing:2px;color:${CREAM};text-transform:uppercase;">${escapeHtml(group.label)}</span>
         </td>
       </tr>
       ${articleRows}
