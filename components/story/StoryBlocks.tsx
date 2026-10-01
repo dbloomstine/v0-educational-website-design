@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import type { Story } from '@/lib/news/stories'
 import { homeSectionFor, sectionHref } from '@/lib/news/sections'
-import { kickerLabel, sizeLabel, stageLabel, timeLabel } from '@/lib/news/format'
+import { kickerLabel, sizeLabel, stageLabel } from '@/lib/news/format'
 import { Headline } from './Headline'
 import { Coverage } from './Coverage'
 
@@ -32,7 +32,7 @@ function Facts({ story, className = '' }: { story: Story; className?: string }) 
 }
 
 /** The one story the page leads with. */
-export function LeadStory({ story, nowMs }: { story: Story; nowMs: number }) {
+export function LeadStory({ story }: { story: Story }) {
   return (
     <article>
       <Kicker story={story} lead />
@@ -49,31 +49,31 @@ export function LeadStory({ story, nowMs }: { story: Story; nowMs: number }) {
       <div className="mt-2.5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <Facts story={story} className="text-[12px]" />
         <Coverage story={story} max={4} />
-        <Permalink story={story} nowMs={nowMs} />
+        <Permalink story={story} />
       </div>
     </article>
   )
 }
 
 /**
- * The timestamp is the permalink, as on any news site: it opens our page for
- * the story — summary, every outlet that covered it, and the share buttons.
+ * Our page for the story — summary, every outlet that covered it, share
+ * buttons. Labelled by what is behind it rather than by a clock: when a story
+ * was posted matters less to this reader than who else reported it.
  */
-function Permalink({ story, nowMs }: { story: Story; nowMs: number }) {
+function Permalink({ story }: { story: Story }) {
   return (
     <Link
       href={`/story/${story.id}`}
       title="Summary, all coverage, and share"
       className="font-ui text-[12px] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
     >
-      {timeLabel(story.firstSeen, nowMs)}
-      {story.coverage.length > 0 && ` · ${story.coverage.length + 1} sources`}
+      {story.coverage.length > 0 ? `${story.coverage.length + 1} sources` : 'Details'}
     </Link>
   )
 }
 
 /** Second tier: headline, one line of what happened, who reported it. */
-export function TopStory({ story, nowMs }: { story: Story; nowMs: number }) {
+export function TopStory({ story }: { story: Story }) {
   return (
     <article className="border-t border-border pt-3">
       <div className="flex items-baseline justify-between gap-3">
@@ -90,7 +90,7 @@ export function TopStory({ story, nowMs }: { story: Story; nowMs: number }) {
       )}
       <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2.5">
         <Coverage story={story} max={2} />
-        <Permalink story={story} nowMs={nowMs} />
+        <Permalink story={story} />
       </div>
     </article>
   )
@@ -120,19 +120,20 @@ export function HeadlineRow({ story, showSource = false }: { story: Story; showS
   )
 }
 
-/** The rail's running list: when, then what. */
-export function LatestRow({ story, nowMs }: { story: Story; nowMs: number }) {
+/**
+ * The rail's running list. No timestamp: Danny, 2026-10-01 — "no one cares
+ * about the exact time on that column"; the order says newest-first and the
+ * width goes to the headline instead.
+ */
+export function LatestRow({ story }: { story: Story }) {
   return (
-    <li className="grid grid-cols-[56px_minmax(0,1fr)] gap-2 border-b border-border/70 py-[7px] last:border-0">
-      <span className="pt-[3px] font-mono text-[10.5px] uppercase tracking-tight text-muted-foreground">
-        {timeLabel(story.firstSeen, nowMs).replace(' ago', '')}
-      </span>
+    <li className="border-b border-border/70 py-[7px] last:border-0">
       <a
         href={story.url}
         target="_blank"
         rel="noopener noreferrer"
         title={story.summary ?? undefined}
-        className="group font-news text-[14.5px] leading-[1.27] text-foreground"
+        className="group block font-news text-[14.5px] leading-[1.27] text-foreground"
       >
         <span className="hl"><Headline story={story} /></span>
       </a>

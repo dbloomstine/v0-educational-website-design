@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Logo } from "@/components/logo"
-import { ArrowRight, Search, X } from "lucide-react"
+import { ArrowRight, ChevronLeft, ChevronRight, Search, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { SECTIONS, sectionHref } from "@/lib/news/sections"
 
@@ -35,8 +35,16 @@ const TABS: Tab[] = [
     match: (p: string) => p === sectionHref(s.slug),
     gap: i === 0 || s.slug === "private-equity" || s.slug === "lps",
   })),
-  { label: "Events", href: "/events", match: (p) => p.startsWith("/events"), gap: true },
 ]
+
+/**
+ * Events is pinned at the right end of the strip instead of living in the
+ * scrolling list. On a laptop-width window the list is longer than the
+ * window, and the last tab — Events, half of what the site is — was simply
+ * out of sight (Danny, 2026-10-01: "it's hard to know that you can scroll
+ * right and left… to see the events on the far right").
+ */
+const EVENTS_TAB = { label: "Events", href: "/events", match: (p: string) => p.startsWith("/events") }
 
 export function SiteHeader() {
   const pathname = usePathname() || "/"
@@ -44,6 +52,9 @@ export function SiteHeader() {
   const searchRef = useRef<HTMLInputElement>(null)
   const stripRef = useRef<HTMLDivElement>(null)
   const activeRef = useRef<HTMLAnchorElement>(null)
+
+  // Which way the strip can still scroll — drives the arrow buttons.
+  const [canScroll, setCanScroll] = useState({ left: false, right: false })
 
   // Keep the active tab in view on narrow screens, where the strip scrolls.
   useEffect(() => {
@@ -53,6 +64,29 @@ export function SiteHeader() {
     const left = active.offsetLeft - strip.clientWidth / 2 + active.clientWidth / 2
     strip.scrollTo({ left: Math.max(0, left) })
   }, [pathname])
+
+  useEffect(() => {
+    const strip = stripRef.current
+    if (!strip) return
+    const update = () => {
+      const max = strip.scrollWidth - strip.clientWidth
+      setCanScroll({ left: strip.scrollLeft > 4, right: strip.scrollLeft < max - 4 })
+    }
+    update()
+    strip.addEventListener("scroll", update, { passive: true })
+    const ro = new ResizeObserver(update)
+    ro.observe(strip)
+    return () => {
+      strip.removeEventListener("scroll", update)
+      ro.disconnect()
+    }
+  }, [pathname])
+
+  const nudge = (dir: 1 | -1) => {
+    const strip = stripRef.current
+    if (!strip) return
+    strip.scrollBy({ left: dir * Math.max(160, strip.clientWidth * 0.6), behavior: "smooth" })
+  }
 
   useEffect(() => {
     if (searchOpen) searchRef.current?.focus()
@@ -147,31 +181,66 @@ export function SiteHeader() {
         aria-label="Sections"
         className="sticky top-0 z-50 w-full border-y border-foreground/15 bg-background/97 text-foreground shadow-[0_1px_0_rgba(0,0,0,0.12)] backdrop-blur supports-[backdrop-filter]:bg-background/90"
       >
-        <div className="relative mx-auto max-w-[1320px]">
-          <div ref={stripRef} className="tab-scroll flex items-stretch overflow-x-auto px-2 lg:px-4">
-            {TABS.map((tab) => {
-              const active = tab.match(pathname)
-              return (
-                <span key={tab.href} className="flex shrink-0 items-stretch">
-                  {tab.gap && <span aria-hidden="true" className="mx-1.5 my-2.5 w-px bg-foreground/15" />}
-                  <Link
-                    ref={active ? activeRef : undefined}
-                    href={tab.href}
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "relative flex h-10 items-center whitespace-nowrap px-2.5 font-ui text-[13px] transition-colors",
-                      active ? "font-bold text-foreground" : "font-medium text-foreground/65 hover:text-foreground",
-                    )}
-                  >
-                    {tab.label}
-                    {active && <span aria-hidden="true" className="absolute inset-x-2.5 bottom-0 h-[3px] bg-[#E6B045]" />}
-                  </Link>
-                </span>
-              )
-            })}
+        <div className="mx-auto flex max-w-[1320px] items-stretch">
+          <div className="relative min-w-0 flex-1">
+            <div ref={stripRef} className="tab-scroll flex items-stretch overflow-x-auto px-2 lg:px-4">
+              {TABS.map((tab) => {
+                const active = tab.match(pathname)
+                return (
+                  <span key={tab.href} className="flex shrink-0 items-stretch">
+                    {tab.gap && <span aria-hidden="true" className="mx-1.5 my-2.5 w-px bg-foreground/15" />}
+                    <Link
+                      ref={active ? activeRef : undefined}
+                      href={tab.href}
+                      aria-current={active ? "page" : undefined}
+                      className={cn(
+                        "relative flex h-10 items-center whitespace-nowrap px-2.5 font-ui text-[13px] transition-colors",
+                        active ? "font-bold text-foreground" : "font-medium text-foreground/65 hover:text-foreground",
+                      )}
+                    >
+                      {tab.label}
+                      {active && <span aria-hidden="true" className="absolute inset-x-2.5 bottom-0 h-[3px] bg-[#E6B045]" />}
+                    </Link>
+                  </span>
+                )
+              })}
+            </div>
+
+            {/* More sections lie off-screen: say so with a button, not just a fade. */}
+            {canScroll.left && (
+              <button
+                type="button"
+                onClick={() => nudge(-1)}
+                aria-label="Earlier sections"
+                className="absolute inset-y-0 left-0 flex w-9 items-center justify-start bg-gradient-to-r from-background from-55% to-transparent pl-1 text-foreground/80 hover:text-foreground"
+              >
+                <ChevronLeft className="h-4 w-4" aria-hidden="true" />
+              </button>
+            )}
+            {canScroll.right && (
+              <button
+                type="button"
+                onClick={() => nudge(1)}
+                aria-label="More sections"
+                className="absolute inset-y-0 right-0 flex w-10 items-center justify-end bg-gradient-to-l from-background from-55% to-transparent pr-1 text-foreground/80 hover:text-foreground"
+              >
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              </button>
+            )}
           </div>
-          {/* Edge fade: more tabs lie to the right on a narrow screen. */}
-          <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-background to-transparent xl:hidden" />
+
+          {/* Pinned: always visible, whatever the window width. */}
+          <Link
+            href={EVENTS_TAB.href}
+            aria-current={EVENTS_TAB.match(pathname) ? "page" : undefined}
+            className={cn(
+              "relative flex h-10 shrink-0 items-center border-l border-foreground/15 px-3.5 font-ui text-[13px] transition-colors lg:mr-2",
+              EVENTS_TAB.match(pathname) ? "font-bold text-foreground" : "font-semibold text-foreground/80 hover:text-foreground",
+            )}
+          >
+            {EVENTS_TAB.label}
+            {EVENTS_TAB.match(pathname) && <span aria-hidden="true" className="absolute inset-x-3.5 bottom-0 h-[3px] bg-[#E6B045]" />}
+          </Link>
         </div>
       </nav>
     </>

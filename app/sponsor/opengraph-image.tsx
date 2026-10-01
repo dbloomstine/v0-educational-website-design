@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og'
 
 export const alt =
-  'Sponsor the morning brief for private markets — FundOps Daily rate card'
+  'Sponsor the morning brief for private markets — FundOps Daily'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -107,9 +107,9 @@ export default async function OG() {
           }}
         >
           <div style={{ display: 'flex', gap: 56 }}>
-            <Stat kpi="98" label="Confirmed subscribers" />
-            <Stat kpi="56%" label="7-day open rate" />
-            <Stat kpi="$2K" label="Starts at / week" />
+            {/* No audience numbers on a static card: they go stale. The page has the live ones. */}
+            <Stat kpi="7×" label="Mornings a week" />
+            <Stat kpi="GPs · LPs" label="And the firms that serve them" />
           </div>
           <div
             style={{

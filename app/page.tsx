@@ -122,7 +122,7 @@ export default async function HomePage() {
           <div className="grid gap-x-9 gap-y-8 lg:grid-cols-[minmax(0,1fr)_332px] lg:grid-rows-[auto_1fr]">
             <div className="min-w-0 lg:col-start-1">
               {front.lead ? (
-                <LeadStory story={front.lead} nowMs={nowMs} />
+                <LeadStory story={front.lead} />
               ) : (
                 <p className="font-news text-lg text-muted-foreground">
                   The newsroom is catching up. The full feed is at <a href="/news" className="underline">Latest</a>.
@@ -134,7 +134,7 @@ export default async function HomePage() {
                   <SectionFlag label="Top stories" />
                   <div className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
                     {front.top.map((s) => (
-                      <TopStory key={s.id} story={s} nowMs={nowMs} />
+                      <TopStory key={s.id} story={s} />
                     ))}
                   </div>
                 </section>
@@ -145,7 +145,7 @@ export default async function HomePage() {
             {/* The running rail. Second in the document so a phone shows it
                 right after the top stories; on a desk it is the right column. */}
             <aside className="min-w-0 space-y-7 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:border-l lg:border-border lg:pl-8">
-              <LatestRail stories={front.latest.slice(0, LATEST_COUNT)} nowMs={nowMs} />
+              <LatestRail stories={front.latest.slice(0, LATEST_COUNT)} />
               <LargestCloses stories={front.largestCloses} stats={front.stats} />
               <EventsRail events={events} />
             </aside>

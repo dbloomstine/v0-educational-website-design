@@ -140,3 +140,31 @@ describe('clusterBy', () => {
     expect(groups.map((g) => g.sort())).toEqual([[1, 2, 3], [10]])
   })
 })
+
+describe('same size, different fund', () => {
+  it('does not merge two funds because both convert to about $55M and both "raise" a "first close"', () => {
+    const connect = story({
+      title: 'Connect Ventures raises $55 mn first close for $80 mn Fund V', eventType: 'fund_close',
+      firmName: 'Connect Ventures', fundName: 'Connect Ventures Fund V', fundSizeUsdMillions: 55, closeType: 'first_close',
+      entityKeys: keys('Connect Ventures', 'Connect Ventures Fund V'),
+    })
+    const iitm = story({
+      title: 'IITM-backed deeptech fund raises Rs 453 cr in first close', eventType: 'fund_close',
+      firmName: 'Unicorn India Ventures', fundName: 'IITM Unicorn Frontier Fund-I', fundSizeUsdMillions: 54, closeType: 'first_close',
+      entityKeys: keys('Unicorn India Ventures', 'IITM Unicorn Frontier Fund-I'),
+    })
+    expect(sameStoryLoose(connect, iitm)).toBe(false)
+    expect(sameStoryLoose(connect, iitm, { crossEdition: true })).toBe(false)
+  })
+  it('still merges one announcement reported under two differently-extracted firms', () => {
+    const a = story({
+      title: 'NYC pension chief proposes $5bn private markets climate investment expansion', eventType: 'fund_launch',
+      firmName: 'NYC Retirement Systems', fundSizeUsdMillions: 5000, entityKeys: keys('NYC Retirement Systems'),
+    })
+    const b = story({
+      title: 'NYC comptroller proposes $5bn private markets climate push', eventType: 'fund_launch',
+      firmName: 'New York City Comptroller', fundSizeUsdMillions: 5000, entityKeys: keys('New York City Comptroller'),
+    })
+    expect(sameStoryLoose(a, b)).toBe(true)
+  })
+})

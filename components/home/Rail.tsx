@@ -6,17 +6,62 @@ import { sizeLabel, stageLabel, totalLabel } from '@/lib/news/format'
 import { Headline } from '@/components/story/Headline'
 import { LatestRow, MoreLink, SectionFlag } from '@/components/story/StoryBlocks'
 
-export function LatestRail({ stories, nowMs }: { stories: Story[]; nowMs: number }) {
+/** The newest stories on the site, newest first. Front page and story pages. */
+export function LatestRail({ stories }: { stories: Story[] }) {
   if (stories.length === 0) return null
   return (
     <section aria-label="Latest">
       <SectionFlag label="Latest" href="/news" note="Updated hourly" live />
       <ol>
         {stories.map((s) => (
-          <LatestRow key={s.id} story={s} nowMs={nowMs} />
+          <LatestRow key={s.id} story={s} />
         ))}
       </ol>
       <MoreLink href="/news">All news, with search and filters</MoreLink>
+    </section>
+  )
+}
+
+/** Stories carried by more than one outlet, most outlets first. */
+export function mostCovered(stories: Story[], limit = 8): Story[] {
+  return stories
+    .filter((s) => !s.roundup && s.coverage.length > 0)
+    .sort((a, b) => b.coverage.length - a.coverage.length || b.firstSeen.localeCompare(a.firstSeen))
+    .slice(0, limit)
+}
+
+/**
+ * A section's rail. The river beside it is already that section's newest
+ * stories in order, so the rail ranks the same stories a different way: by
+ * how many outlets ran them. `stories` should come from mostCovered().
+ */
+export function MostCovered({ stories, note }: { stories: Story[]; note?: string }) {
+  if (stories.length < 3) return null
+  return (
+    <section aria-label="Most covered">
+      <SectionFlag label="Most covered" note={note} />
+      <ol>
+        {stories.map((s) => (
+          <li key={s.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3 border-b border-border/70 py-[7px] last:border-0">
+            <a
+              href={s.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              title={s.summary ?? undefined}
+              className="group block font-news text-[14.5px] leading-[1.27] text-foreground"
+            >
+              <span className="hl"><Headline story={s} /></span>
+            </a>
+            <Link
+              href={`/story/${s.id}`}
+              title="Every outlet that covered it"
+              className="whitespace-nowrap font-mono text-[10.5px] uppercase tracking-tight text-muted-foreground hover:text-foreground"
+            >
+              {s.coverage.length + 1} sources
+            </Link>
+          </li>
+        ))}
+      </ol>
     </section>
   )
 }
@@ -61,11 +106,21 @@ export function LargestCloses({ stories, stats }: { stories: Story[]; stats: { f
   )
 }
 
-export function EventsRail({ events }: { events: IndustryEvent[] }) {
+export function EventsRail({
+  events,
+  label = 'Events',
+  href = '/events',
+  moreLabel = 'Full calendar, by city and topic',
+}: {
+  events: IndustryEvent[]
+  label?: string
+  href?: string
+  moreLabel?: string
+}) {
   if (events.length === 0) return null
   return (
-    <section aria-label="Events this week">
-      <SectionFlag label="Events" href="/events" note="Dates verified" />
+    <section aria-label={label}>
+      <SectionFlag label={label} href={href} note="Dates verified" />
       <ol>
         {events.map((e) => (
           <li key={e.id} className="grid grid-cols-[56px_minmax(0,1fr)] gap-2 border-b border-border/70 py-[7px] last:border-0">
@@ -81,7 +136,7 @@ export function EventsRail({ events }: { events: IndustryEvent[] }) {
           </li>
         ))}
       </ol>
-      <MoreLink href="/events">Full calendar, by city and topic</MoreLink>
+      <MoreLink href={href}>{moreLabel}</MoreLink>
     </section>
   )
 }

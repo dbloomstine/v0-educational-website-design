@@ -188,6 +188,17 @@ const GLUE = /\b(and|the|for|with|from|into|over|after|its|amid)\b/gi
 const contentJaccard = (a: string, b: string) => titleJaccard(a.replace(GLUE, ' '), b.replace(GLUE, ' '))
 
 /**
+ * Words every fundraising headline uses. Two headlines that share only these
+ * share nothing: "Connect Ventures raises $55 mn first close for $80 mn Fund V"
+ * and "IITM-backed deeptech fund raises Rs 453 cr in first close" overlap on
+ * "raises / first / close / fund" and are two different funds (2026-10-01:
+ * that overlap, plus two sizes that both convert to about $55M, filed 31 IIT
+ * Madras reports under Connect Ventures on the site).
+ */
+const FUND_VOCAB = /\b(funds?|raises?|raised|raising|closes?|closed|closing|first|final|second|third|debut|maiden|new|launch(es|ed)?|targets?|targeting|secures?|secured|hits?|holds?|announces?|announced|million|billion|capital|ventures?|partners|investments?)\b/gi
+const distinctiveJaccard = (a: string, b: string) => contentJaccard(a.replace(FUND_VOCAB, ' '), b.replace(FUND_VOCAB, ' '))
+
+/**
  * Same story, by the names in it. `crossEdition` tightens the fund rule: over
  * several days one firm can genuinely announce two different vehicles, so two
  * disjoint fund names are never merged there.
@@ -288,7 +299,9 @@ export function sameStoryLoose(a: StoryLike, b: StoryLike, opts: { crossEdition?
     // as the firm: "NYC pension chief proposes $5bn private markets climate
     // investment expansion" / "NYC comptroller proposes $5bn private markets
     // climate push".
-    if (sameFigure && contentJaccard(a.title, b.title) >= 0.4) return true
+    // "Near-identical" is judged on what is left once the words every fund
+    // headline uses are set aside.
+    if (sameFigure && distinctiveJaccard(a.title, b.title) >= 0.4) return true
     if (shared >= 2) return true
     return false
   }

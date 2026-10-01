@@ -12,7 +12,7 @@ import { LatestRail } from '@/components/home/Rail'
 import { getStory } from '@/lib/news/front-page'
 import { rankSection, type Story } from '@/lib/news/stories'
 import { ASSET_LABEL, homeSectionFor, sectionHref, storyInSection } from '@/lib/news/sections'
-import { kickerLabel, sizeLabel, stageLabel, timeLabel } from '@/lib/news/format'
+import { kickerLabel, sizeLabel, stageLabel } from '@/lib/news/format'
 import { entityKey, keysMatch } from '@/lib/newsletter/story-links'
 
 export const revalidate = 600
@@ -186,7 +186,7 @@ export default async function StoryPage({ params }: Params) {
             </article>
 
             <aside className="min-w-0 space-y-7 lg:border-l lg:border-border lg:pl-8">
-              <LatestRail stories={all.slice(0, 10)} nowMs={nowMs} />
+              <LatestRail stories={all.slice(0, 10)} />
               <section aria-label="Newsletter" className="border-t-2 border-foreground pt-3">
                 <p className="font-news text-[19px] font-medium leading-tight text-foreground">
                   Stories like this, every morning.
@@ -201,9 +201,6 @@ export default async function StoryPage({ params }: Params) {
                   Subscribe free
                 </Link>
               </section>
-              <p className="font-ui text-[11.5px] text-muted-foreground">
-                Seen {timeLabel(story.firstSeen, nowMs)}.
-              </p>
             </aside>
           </div>
         </div>

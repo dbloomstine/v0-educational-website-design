@@ -4,13 +4,15 @@ import { notFound } from 'next/navigation'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
-import { LargestCloses, LatestRail } from '@/components/home/Rail'
+import { EventsRail, LargestCloses, MostCovered, mostCovered } from '@/components/home/Rail'
+import { queryEventFeed } from '@/lib/events/api'
+import type { IndustryEvent } from '@/lib/events/types'
 import { LeadStory, SectionFlag, TopStory } from '@/components/story/StoryBlocks'
 import { Headline } from '@/components/story/Headline'
 import { getStoriesSafe, STORY_WINDOW_DAYS } from '@/lib/news/front-page'
 import { composeFrontPage, rankSection, type Story } from '@/lib/news/stories'
 import { ASSET_LABEL, KIND_LABEL, SECTIONS, SECTION_BY_SLUG, sectionHref, storyInSection } from '@/lib/news/sections'
-import { dayHeading, dayKey, kickerLabel, sizeLabel, stageLabel } from '@/lib/news/format'
+import { kickerLabel, sizeLabel, stageLabel } from '@/lib/news/format'
 import { cn } from '@/lib/utils'
 
 export const revalidate = 600
@@ -52,7 +54,15 @@ export default async function SectionPage({ params, searchParams }: Params) {
   const section = SECTION_BY_SLUG.get(slug)
   if (!section) notFound()
 
-  const all = await getStoriesSafe()
+  // An asset-class page also carries that market's next events.
+  const [all, events] = await Promise.all([
+    getStoriesSafe(),
+    section.group === 'asset' && section.assetClasses?.length
+      ? queryEventFeed({ category: section.assetClasses.join(','), when: '30d', limit: 5 })
+          .then((feed) => feed.events)
+          .catch<IndustryEvent[]>(() => [])
+      : Promise.resolve<IndustryEvent[]>([]),
+  ])
   const nowMs = Date.now()
   const inSection = all.filter((s) => storyInSection(s, section))
   const facets = facetsFor(section, inSection)
@@ -63,18 +73,10 @@ export default async function SectionPage({ params, searchParams }: Params) {
   const lead = ranked[0] ?? null
   const top = ranked.slice(1, 5)
 
-  // Everything, newest first, under day headings.
-  const days: { key: string; heading: string; stories: Story[] }[] = []
-  for (const s of stories) {
-    const key = dayKey(s.firstSeen)
-    const last = days[days.length - 1]
-    if (last?.key === key) last.stories.push(s)
-    else days.push({ key, heading: dayHeading(s.firstSeen, nowMs), stories: [s] })
-  }
-
-  const front = composeFrontPage(all, nowMs)
   const closes = composeFrontPage(inSection, nowMs)
-  const showCloses = section.group === 'asset' || section.kind === 'fundraising'
+  const showCloses = (section.group === 'asset' || section.kind === 'fundraising') && closes.largestCloses.length > 0
+  const covered = mostCovered(stories)
+  const hasRail = showCloses || covered.length >= 3 || events.length > 0
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -109,10 +111,10 @@ export default async function SectionPage({ params, searchParams }: Params) {
             )}
           </header>
 
-          <div className="mt-5 grid gap-x-9 gap-y-8 lg:grid-cols-[minmax(0,1fr)_332px]">
+          <div className={cn('mt-5 grid gap-x-9 gap-y-8', hasRail && 'lg:grid-cols-[minmax(0,1fr)_332px]')}>
             <div className="min-w-0">
               {lead ? (
-                <LeadStory story={lead} nowMs={nowMs} />
+                <LeadStory story={lead} />
               ) : (
                 <p className="font-news text-lg text-muted-foreground">
                   Nothing in the last {STORY_WINDOW_DAYS} days. The archive is at <Link href="/news" className="underline">Latest</Link>.
@@ -122,30 +124,26 @@ export default async function SectionPage({ params, searchParams }: Params) {
               {top.length > 0 && (
                 <section aria-label="More top stories" className="mt-6 grid gap-x-8 gap-y-4 sm:grid-cols-2">
                   {top.map((s) => (
-                    <TopStory key={s.id} story={s} nowMs={nowMs} />
+                    <TopStory key={s.id} story={s} />
                   ))}
                 </section>
               )}
 
               {/* The river: every story in the section, by day */}
-              {days.length > 0 && (
+              {stories.length > 0 && (
                 <section aria-label={`All ${section.title} stories`} className="mt-9">
                   <SectionFlag
                     label={facet ? `${section.title} · ${facet.label}` : `All ${section.title.toLowerCase()} stories`}
                     note={`${stories.length} in the last ${STORY_WINDOW_DAYS} days`}
                   />
-                  {days.map((day) => (
-                    <div key={day.key} className="mt-3 first:mt-1">
-                      <h3 className="mb-0.5 font-mono text-[10.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                        {day.heading}
-                      </h3>
-                      <ul>
-                        {day.stories.map((s) => (
-                          <RiverRow key={s.id} story={s} section={section} />
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
+                  {/* One list, newest first, no day headings — Danny, 2026-10-01:
+                      "the date of when it was posted is becoming less relevant…
+                      they'll trust that it's recent". */}
+                  <ul>
+                    {stories.map((s) => (
+                      <RiverRow key={s.id} story={s} section={section} />
+                    ))}
+                  </ul>
                   <p className="mt-4 font-ui text-[12.5px] text-muted-foreground">
                     Older stories, search and filters are in the{' '}
                     <Link href="/news" className="font-semibold text-foreground/80 underline underline-offset-2">full archive</Link>.
@@ -154,10 +152,23 @@ export default async function SectionPage({ params, searchParams }: Params) {
               )}
             </div>
 
-            <aside className="min-w-0 space-y-7 lg:sticky lg:top-14 lg:self-start lg:border-l lg:border-border lg:pl-8">
-              {showCloses && <LargestCloses stories={closes.largestCloses} stats={closes.stats} />}
-              <LatestRail stories={front.latest.slice(0, 10)} nowMs={nowMs} />
-            </aside>
+            {/* The rail belongs to the section — Danny, 2026-10-01: "the latest
+                doesn't seem to be venture specific stuff". Its closes, its
+                most-covered stories, its events; never the site-wide feed, and
+                never a copy of the river beside it. It scrolls with the page:
+                pinned, a rail taller than the window can't be read to its end. */}
+            {hasRail && (
+              <aside className="min-w-0 space-y-7 lg:border-l lg:border-border lg:pl-8">
+                {showCloses && <LargestCloses stories={closes.largestCloses} stats={closes.stats} />}
+                <MostCovered stories={covered} note={`Past ${STORY_WINDOW_DAYS} days`} />
+                <EventsRail
+                  events={events}
+                  label={`${section.title} events`}
+                  href={`/events?category=${(section.assetClasses ?? []).join(',')}`}
+                  moreLabel={`All ${section.title.toLowerCase()} events`}
+                />
+              </aside>
+            )}
           </div>
         </div>
       </main>

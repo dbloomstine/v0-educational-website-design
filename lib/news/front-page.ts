@@ -39,7 +39,7 @@ async function fetchStories(): Promise<Story[]> {
 
 // Bump the version whenever the Story shape changes: a deploy must never
 // read stories cached by the previous build's code.
-export const getStories = unstable_cache(fetchStories, ['front-page-stories-v2'], {
+export const getStories = unstable_cache(fetchStories, ['front-page-stories-v3'], {
   revalidate: 600,
   tags: ['stories'],
 })
