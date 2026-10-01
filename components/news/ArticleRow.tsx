@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 import {
   EVENT_LABELS,
   CATEGORY_LABELS,
-  decodeHtmlEntities,
+  cleanHeadline,
   formatFundSize,
   formatCompactTime,
   formatRelativeDate,
@@ -53,7 +53,7 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
 
   // Most fund headlines already name the firm, so repeating it beside the
   // headline only steals width. firmLabelFor returns null in that case.
-  const decodedTitle = decodeHtmlEntities(article.title)
+  const decodedTitle = cleanHeadline(article.title, article.sourceName)
   const showFirm = firmLabelFor(article.firmName, decodedTitle)
 
   // Only the actor is bold — the rest of the headline sits at regular weight

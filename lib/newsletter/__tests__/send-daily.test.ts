@@ -78,18 +78,37 @@ describe('buildSubject', () => {
     expect(subject).toBe('Adams Street, Apollo, Blackstone + 2 more')
   })
 
-  it('ranks closes over launches over raises, then by size', () => {
+  it('leads with the biggest raise; close/launch/raise only breaks ties', () => {
     const subject = buildSubject({
-      totalArticles: 3,
+      totalArticles: 4,
       groups: [
         group('credit', [
-          { firmName: 'HarbourVest Partners', fundSizeUsdMillions: 2400, eventType: 'capital_raise' },
+          { firmName: 'Breed VC', fundSizeUsdMillions: 15, eventType: 'fund_close' },
+          { firmName: 'Goldman Sachs', fundSizeUsdMillions: 10000, eventType: 'capital_raise' },
           { firmName: 'EQT', fundSizeUsdMillions: 0, eventType: 'fund_launch' },
           { firmName: 'Arini', fundSizeUsdMillions: 4000, eventType: 'fund_close' },
         ]),
       ],
     })
-    expect(subject).toBe('Arini, EQT, HarbourVest')
+    // 2026-09-24 really did lead "Kotak Alts, Connect Ventures, Breed VC…" —
+    // a $15M close ahead of everything larger that was not a "close".
+    expect(subject).toBe('Goldman Sachs, Arini, Breed VC, EQT')
+  })
+
+  it('never leads with a row that is not a raise, and merges alias names', () => {
+    const subject = buildSubject({
+      totalArticles: 4,
+      groups: [
+        group('hedge', [
+          // "$2 billion hedge fund SoMa Equity Partners is closing down" (9/23)
+          { firmName: 'SoMa Equity Partners', fundSizeUsdMillions: 2000, eventType: 'fund_close', leadEligible: false },
+          { firmName: 'IIT Madras', fundSizeUsdMillions: 54, eventType: 'fund_close' },
+          { firmName: 'IIT Madras Research Park', fundSizeUsdMillions: 72, eventType: 'fund_launch' },
+          { firmName: 'Palmer Square', fundSizeUsdMillions: 241, eventType: 'capital_raise' },
+        ]),
+      ],
+    })
+    expect(subject).toBe('Palmer Square, IIT Madras Research Park, SoMa Equity + 1 more')
   })
 
   it('demotes AUM-leak rows (>$30B, no fund name) instead of letting them lead', () => {
@@ -173,16 +192,19 @@ describe('buildSubject', () => {
       ['Millennium Management', 'Millennium'],
       ['Advent International', 'Advent'],
       ['Carlyle Group', 'Carlyle'],
-      // stays whole: remainder too short, generic, or a place
+      // remainder too short, generic, or a place: keep one more word, or all of it
       ['Bain Capital', 'Bain Capital'],
-      ['Main Capital Partners', 'Main Capital Partners'],
-      ['Intermediate Capital Group', 'Intermediate Capital Group'],
+      ['Main Capital Partners', 'Main Capital'],
+      ['Intermediate Capital Group', 'Intermediate Capital'],
       ['Seed Capital', 'Seed Capital'],
       ['Prime Capital', 'Prime Capital'],
       ['Francisco Partners', 'Francisco Partners'],
       ['Insight Partners', 'Insight Partners'],
       ['Ares Management', 'Ares Management'],
-      ['Vista Equity Partners', 'Vista Equity Partners'],
+      ['Vista Equity Partners', 'Vista Equity'],
+      ['Princeton Equity Group', 'Princeton Equity'],
+      ['Polus Capital Management', 'Polus Capital'],
+      ['Partners Group', 'Partners Group'],
       // no descriptor tail at all
       ['Thoma Bravo', 'Thoma Bravo'],
       ['Warburg Pincus', 'Warburg Pincus'],

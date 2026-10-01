@@ -21,6 +21,18 @@ import {
   titleJaccard,
   titlesShareSignificantNumber,
 } from '@/lib/news/story-dedup'
+import { cleanHeadline } from '@/lib/news/constants'
+import {
+  clusterBy,
+  entityKey,
+  entityMentioned,
+  isDigest,
+  isRoundup,
+  findPriorStory,
+  sameStoryLoose,
+  storyFamily,
+  type StoryLike,
+} from './story-links'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>
@@ -41,7 +53,7 @@ const REGULATORY_TYPES = [
   'regulatory_action',
 ]
 
-const ALL_NEWSLETTER_TYPES = [
+export const ALL_NEWSLETTER_TYPES = [
   ...FUND_ACTIVITY_TYPES,
   ...PEOPLE_TYPES,
   ...DEALS_TYPES,
@@ -52,6 +64,8 @@ const CATEGORY_ORDER = [
   'PE', 'VC', 'credit', 'hedge', 'real_estate',
   'infrastructure', 'secondaries', 'gp_stakes',
 ]
+
+const ASSET_CLASSES = new Set(CATEGORY_ORDER)
 
 const CATEGORY_LABELS: Record<string, string> = {
   PE: 'Private Equity',
@@ -106,8 +120,17 @@ const MIN_FUND_SIZE_MILLIONS = 10
  */
 const MAX_ARTICLES_PER_FIRM = 2
 
-/** Look back this many recent editions for cross-day firm-level dedup. */
-const CROSS_EDITION_LOOKBACK = 3
+/**
+ * Look back this many recent editions for cross-day dedup (fingerprints,
+ * titles, people, and the entity memory in story-links).
+ *
+ * Was 3. The 2026-10 audit found the same story returning four and five
+ * editions later — a verbatim Lowenstein Sandler headline on 9/23 and 9/27,
+ * "HIG sells GDT to Softcat" on 9/18 and 9/22 — because trade outlets and the
+ * Google News mirror keep re-publishing for most of a week. One week of
+ * memory covers that tail.
+ */
+const CROSS_EDITION_LOOKBACK = 7
 
 /**
  * Extended lookback for fund-activity events, which are one-time happenings
@@ -160,7 +183,11 @@ const SOURCE_TIER_RAW: Record<string, number> = {
   'Private Equity International': 5, 'Private Equity International | PEI': 5,
   'Secondaries Investor': 5, 'Infrastructure Investor': 5,
   'Private Debt Investor': 5, PERE: 5, 'Private Equity Wire': 5,
-  'Hedge Week': 6, 'Alternative Credit Investor': 6,
+  'Hedge Week': 6, Hedgeweek: 6, 'Alternative Credit Investor': 6,
+  // Middle Market Growth-style punning headlines ("Butterfly Orders Takeout",
+  // "C.H. Guenther Brings Home the Hushpuppies") tell a scanning reader
+  // nothing. When another outlet covers the same deal, its headline wins.
+  'Private Equity Professional': 18,
   AltAssets: 7, 'AltAssets Private Equity News': 7,
   'Commercial Observer': 8, 'ESG Today': 8,
   'Business Wire': 10, 'PR Newswire': 10, 'PR Newswire Financial': 10,
@@ -269,6 +296,17 @@ const LP_NAME_PATTERNS = [
   // pension acronym is upper-case.
   /\b[A-Z]{1,8}(?:STRS|SERS|PERS|CERS)\b/,
   /\bMass ?PRIM\b/i,
+  // Named allocators the generic words above never reach. In the 2026-10
+  // audit "La Caisse invests $75M in AlphaFixe", "British Business Bank backs
+  // Advent funds with £135m" and "NZ Super adds $50m to Domain" all ran in
+  // GP fund sections as though the manager had closed a fund.
+  /\b(la )?caisse\b|\bCDPQ\b/i,
+  /\bCPP Investments\b|\bCPPIB\b|\bOTPP\b|\bOMERS\b|\bPSP Investments\b|\bAIMCo\b|\bBCI\b/,
+  /\bNZ Super\b|\bFuture Fund\b|\bAustralianSuper\b|\bsuperannuation\b/i,
+  /\bGIC\b(?! trader)|\bTemasek\b|\bADIA\b|\bMubadala\b|\bPIF\b|\bQIA\b|\bQatar Investment Authority\b/,
+  /\bKorea Investment Corp\b|\bKIC\b|\bNational Pension Service\b|\bGPIF\b|\bNorges\b|\bNBIM\b|\bPGGM\b|\bAPG\b/,
+  /\bBritish Business Bank\b|\bEuropean Investment Fund\b|\bEIF\b|\bBritish International Investment\b/,
+  /\bsovereign\b|\bcomptroller\b|\bborough\b|\bpensions?\b|\bfamily office\b/i,
 ]
 
 /**
@@ -317,14 +355,42 @@ const KNOWN_SERVICE_PROVIDERS = [
   'eisneramper', 'rsm us', 'grant thornton', 'bdo', 'cohen & company',
   'deloitte', 'kpmg', 'ernst & young', 'pwc', 'pricewaterhousecoopers',
   'aca group', 'accelex', 'mercer', 'cambridge associates', 'albourne',
+  // Law, second tranche (every one of these ran in the 2026-10 audit window)
+  'weil', 'sullivan & cromwell', 'lowenstein sandler', 'mayer brown',
+  'a&o shearman', 'allen & overy', 'troutman', 'winston', 'davis polk',
+  'k&l gates', 'mcdermott', 'reed smith', 'seward & kissel', 'katten',
+  'stradley', 'vedder', 'haynes boone', 'cooley', 'gunderson', 'orrick',
+  'wilson sonsini', 'fenwick', 'hogan lovells', 'freshfields', 'white & case',
+  'jones day', 'dla piper', 'norton rose', 'ashurst', 'herbert smith',
+  'stephenson harwood', 'vinson & elkins', 'latham', 'kirkland',
+  // Administration / fund tech / placement
+  'vistra', 'tmf group', 'intertrust', 'sanne', 'formidium', 'nav fund',
+  'petra funds', 'standish', '73 strings', 'allvue', 'dynamo software',
+  'canoe intelligence', 'chronograph', 'arcesium', 'clearwater analytics',
+  'campbell lutyens', 'monument group', 'eaton partners', 'park hill',
+  'alvarez & marsal',
 ]
 
+/** A name shaped like a provider even when it is not on the list. */
+const PROVIDER_SHAPED = /\b(llp|law|legal|solicitors|attorneys|fund (services|solutions|administration)|fund admin\w*|trust company|corporate services)\b/i
+function isProviderFirm(firmName: string | null): boolean {
+  const firm = (firmName ?? '').toLowerCase()
+  if (!firm) return false
+  if (KNOWN_SERVICE_PROVIDERS.some((p) => firm.includes(p))) return true
+  return PROVIDER_SHAPED.test(firm)
+}
+
+/**
+ * Service Providers holds people and firm news AT a provider. Called only for
+ * non-fund, non-regulatory rows — a fund close is fund news and a regulator's
+ * action is regulatory news, whoever's name the headline leads with.
+ *
+ * The classifier's `service_provider` tag alone is not trusted: it marks any
+ * story with a fund-services angle, including managers' own hires.
+ */
 function isServiceProvider(article: NewsletterArticle): boolean {
-  if (article.fundCategories.includes('service_provider')) return true
-  if (SERVICE_PROVIDER_TITLE_PATTERNS.some((p) => p.test(article.title))) return true
-  const firm = (article.firmName ?? '').toLowerCase()
-  if (firm && KNOWN_SERVICE_PROVIDERS.some((p) => firm.includes(p))) return true
-  return false
+  if (isProviderFirm(article.firmName)) return true
+  return SERVICE_PROVIDER_TITLE_PATTERNS.some((p) => p.test(article.title))
 }
 
 export interface NewsletterArticle {
@@ -356,6 +422,18 @@ export interface NewsletterArticle {
   coFirms: string[]
   /** Other sources that also covered this story (populated by story dedup) */
   alsoCoveredBy: string[]
+  /** Every firm and person the story names, for bolding in the headline. */
+  headlineEntities: string[]
+  /** Comparison keys for every firm/fund named (see story-links). */
+  entityKeys: string[]
+  /** Comparison keys for every person named. */
+  personKeys: string[]
+  /**
+   * False when the row sits in a fund section but is not a fundraise a reader
+   * would expect behind "Firm $X": a wind-down, a CLO pricing, a company
+   * financing. Such rows still run; they never lead the subject or preheader.
+   */
+  leadEligible: boolean
 }
 
 export interface ArticleGroup {
@@ -368,7 +446,11 @@ export interface NewsletterContent {
   groups: ArticleGroup[]
   totalArticles: number
   articleIds: string[]
+  /** Why each candidate that did not run was dropped. Audit/replay only. */
+  dropped?: Array<{ id: string; title: string; reason: string }>
 }
+
+const LP_VERB_PATTERN = /\b(commits?|allocates?|makes? [^,;]{0,24}(investment|commitment|allocation)|adds? [$€£]?[\d.]+\s?(m|bn|million|billion)?)\b[^,;]*\b(in|to|into)\b[^,;]*\b(funds?|strategy|account|mandate|vehicle)\b/i
 
 export function isLpCommitment(article: NewsletterArticle): boolean {
   if (article.eventType !== 'capital_raise') return false
@@ -382,6 +464,9 @@ export function isLpCommitment(article: NewsletterArticle): boolean {
   if (LP_NAME_PATTERNS.some((p) => p.test(article.title))) {
     return true
   }
+  // An allocator's verb pointed at someone else's vehicle: "Skandia makes
+  // GBP19m investment in Liontrust absolute return fund".
+  if (LP_VERB_PATTERN.test(article.title)) return true
   return false
 }
 
@@ -397,6 +482,9 @@ function isGovtProgram(article: NewsletterArticle): boolean {
  * - Placeholder tldr AND no fund size → no real information
  */
 function passesQualityGate(article: NewsletterArticle): boolean {
+  // A regulator's own action often has no "firm" at all ("SEC Risk Alert
+  // Highlights…"); the headline is the identity.
+  if (storyFamily(article.eventType) === 'regulatory') return true
   if (!article.firmName && !article.fundName) return false
   if (!article.fundSizeUsdMillions && article.tldr) {
     if (PLACEHOLDER_TLDR_PATTERNS.some((p) => p.test(article.tldr!))) {
@@ -404,14 +492,6 @@ function passesQualityGate(article: NewsletterArticle): boolean {
     }
   }
   return true
-}
-
-/** Pick primary fund category, skipping 'other' when possible. */
-function primaryCategoryFor(article: NewsletterArticle): string {
-  for (const cat of article.fundCategories) {
-    if (cat && cat !== 'other') return cat
-  }
-  return article.fundCategories[0] ?? 'other'
 }
 
 export async function queryNewsletterArticles(
@@ -429,6 +509,7 @@ export async function queryNewsletterArticles(
         priorEvents: [] as PriorFundEvent[],
         priorTitles: [] as PriorTitle[],
         priorPeople: new Set<string>(),
+        priorStories: [] as StoryLike[],
       }
     : await getPriorEditionExclusions(supabase)
 
@@ -447,78 +528,303 @@ export async function queryNewsletterArticles(
     throw new Error(`Failed to query articles: ${error.message}`)
   }
 
+  return assembleNewsletter(rows ?? [], priorExclusions)
+}
+
+// ─── Row → article ──────────────────────────────────────────────────────────
+
+const TITLE_STOPWORDS = new Set([
+  'the', 'and', 'for', 'with', 'from', 'into', 'over', 'after', 'amid', 'its', 'new', 'first',
+  'fund', 'funds', 'capital', 'partners', 'group', 'management', 'private', 'equity', 'credit',
+  'million', 'billion', 'raises', 'closes', 'launches', 'says', 'year', 'firm', 'deal',
+])
+function contentTokens(text: string | null | undefined): Set<string> {
+  return new Set(
+    (text ?? '')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter((w) => w.length >= 3 && !TITLE_STOPWORDS.has(w))
+      // crude stem so "standards"/"standard", "launches"/"launched" meet
+      .map((w) => (w.length > 5 ? w.replace(/(ies|es|ed|ing|s)$/, '') : w))
+  )
+}
+
+/** "Financial Services Council" → "fsc": headlines often use the initials. */
+function initials(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter((w) => /^[A-Z0-9]/.test(w))
+    .map((w) => w[0])
+    .join('')
+    .toLowerCase()
+}
+
+/**
+ * True when the extracted details belong to a different article. Until
+ * 2026-10 the classifier mapped its batch output back by array position, so
+ * one skipped item shifted every later result by one. Real cases, 9/30: the
+ * headline "Audax Agrees to Sell GCG to Rexel for $1.4 Billion" carried
+ * HighPost Capital's hire (and ran under People Moves) while "HighPost Capital
+ * Forms Aerospace… Vertical" carried the Audax sale (and ran under Deals).
+ *
+ * The classifier now echoes ids, but rows written before the fix remain, and
+ * any future slip should fail closed: a headline that names neither the
+ * extracted firm nor a single word of its own summary is not trusted.
+ */
+export function extractionMisaligned(
+  title: string,
+  firmName: string | null,
+  tldr: string | null,
+): boolean {
+  if (!tldr) return false
+  if (firmName && entityMentioned(firmName, title, null)) return false
+  if (firmName) {
+    const abbr = initials(firmName)
+    if (abbr.length >= 3 && new RegExp(`\\b${abbr}\\b`, 'i').test(title)) return false
+  }
+  const t = contentTokens(title)
+  for (const w of contentTokens(tldr)) if (t.has(w)) return false
+  return true
+}
+
+function splitPeople(names: string | null): string[] {
+  if (!names) return []
+  return names.split(/\s*(?:;|,| and | & )\s*/).map((n) => n.trim()).filter(Boolean)
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function rowToArticle(row: any): NewsletterArticle {
+  const extractedData = row.extracted_data as Record<string, unknown> | null
+  const entitiesRaw = (row.entities_raw ?? []) as Array<{ name: string; type: string; role: string | null; confidence?: number }>
+  const title = cleanHeadline(row.title as string, row.source_name as string | null)
+  const tldr = (row.tldr as string | null) ?? null
+
+  // Only entities the story's own text names. The classifier has attached
+  // another article's entities before (an IIT Madras fund story carrying
+  // "Morgan Stanley" and "Schroders"), and a 0.6-confidence "related entity"
+  // once put "Siri" on a story as the firm.
+  const named = entitiesRaw.filter(
+    (e) => e?.name && (e.confidence ?? 0) >= 0.8 && entityMentioned(e.name, title, tldr)
+  )
+  const firmEntity = named.find((e) => e.type === 'firm')
+  const firmName = (extractedData?.firm_name as string) ?? firmEntity?.name ?? null
+  const fundName = (extractedData?.fund_name as string) ?? null
+  const personName = (extractedData?.person_name as string) ?? null
+  const fundSizeMillions = extractedData?.fund_size_usd_millions as number | null
+
+  // Additional firms beyond the primary — co-managers, acquirer/target pairs,
+  // JV partners. Cap at 2 extras. Any token overlap with the primary firm
+  // means it's almost certainly the same org under a variant name ("Korea's
+  // National Pension Service" vs "Korea's NPS") — skip those.
+  const primaryNorm = normalizeFirmName(firmName)
+  const primaryTokens = new Set(primaryNorm.split(' '))
+  const coFirms: string[] = []
+  for (const e of named) {
+    if (e.type !== 'firm') continue
+    const norm = normalizeFirmName(e.name)
+    if (!norm || norm === primaryNorm) continue
+    if (norm.split(' ').some((t) => primaryTokens.has(t))) continue
+    if (coFirms.some((c) => normalizeFirmName(c) === norm)) continue
+    coFirms.push(e.name)
+    if (coFirms.length >= 2) break
+  }
+
+  const uniq = (xs: string[]) => Array.from(new Set(xs.filter(Boolean)))
+  const entityKeys = uniq(
+    [firmName, fundName, ...named.filter((e) => e.type === 'firm' || e.type === 'fund').map((e) => e.name)]
+      .map((n) => entityKey(n))
+  )
+  // Full names only — a bare surname ("Allan") would link unrelated stories.
+  const personKeys = uniq(
+    [...splitPeople(personName), ...named.filter((e) => e.type === 'person').map((e) => e.name)]
+      .map((n) => entityKey(n))
+      .filter((k) => k.includes(' '))
+  )
+  // The classifier sometimes returns a description as a name ("New London
+  // private equity firm"); two lowercase words in a row is the tell.
+  const isDescription = (n: string) => /\b[a-z]{3,}\s+[a-z]{3,}\b/.test(n)
+  const headlineEntities = uniq([
+    firmName ?? '',
+    ...named.filter((e) => e.type === 'firm' || e.type === 'person').map((e) => e.name),
+    ...splitPeople(personName),
+  ]).filter((n) => !isDescription(n)).slice(0, 10)
+
+  return {
+    id: row.id,
+    title,
+    sourceUrl: row.source_url,
+    sourceName: row.source_name,
+    publishedDate: row.published_date,
+    articleType: row.article_type,
+    eventType: row.event_type ?? row.article_type,
+    fundCategories: row.fund_categories ?? [],
+    isHighSignal: row.is_high_signal,
+    relevanceScore: row.relevance_score,
+    tldr,
+    firmName,
+    firmDomain: (extractedData?.firm_domain as string) ?? null,
+    fundName,
+    fundSizeUsdMillions: fundSizeMillions,
+    fundStrategy: (extractedData?.fund_strategy as string) ?? null,
+    geography: (extractedData?.geography as string[]) ?? [],
+    personName,
+    personTitle: (extractedData?.person_title as string) ?? null,
+    closeType: (extractedData?.close_type as string) ?? null,
+    coFirms,
+    alsoCoveredBy: [],
+    headlineEntities,
+    entityKeys,
+    personKeys,
+    leadEligible: true,
+  }
+}
+
+/**
+ * Outlets whose house style is a pun. "Butterfly Orders Takeout", "Pfingsten
+ * Rolls Into Precision Bearings", "C.H. Guenther Brings Home the Hushpuppies"
+ * all ran in the audited fortnight; none tells a scanning reader who bought
+ * what. For these sources only, and only when the headline carries no plain
+ * deal verb, the row shows the first clause of the story's summary instead
+ * ("Butterfly Equity acquires Sabert, a manufacturer of … food containers").
+ * The link still goes to the original article.
+ */
+const WORDPLAY_HEADLINE_SOURCES = new Set(['private equity professional'])
+const PLAIN_VERB =
+  /\b(acquires?|acquired|to acquire|buys?|sells?|sold|invests?|backs?|closes?|raises?|hires?|names?|appoints?|launch(es)?|merges?|adds?|completes?|agrees?|forms?|promotes?|exits?|partners with|recapitali[sz]es?|secures?|joins?|announces?)\b/i
+
+export function plainHeadline(title: string, tldr: string | null, sourceName: string | null): string {
+  if (!tldr || !WORDPLAY_HEADLINE_SOURCES.has((sourceName ?? '').toLowerCase())) return title
+  if (PLAIN_VERB.test(title)) return title
+  let clause = tldr.split(/;|\.\s+(?=[A-Z])/)[0].trim().replace(/\.$/, '')
+  if (clause.length > 130) {
+    const cut = clause.lastIndexOf(',', 130)
+    if (cut < 40) return title
+    clause = clause.slice(0, cut)
+  }
+  return clause.length >= 25 ? clause : title
+}
+
+// ─── What kind of row is this, really ───────────────────────────────────────
+
+/**
+ * A fund-activity row that is actually a transaction. The classifier files
+ * "LLR Partners takes stake in EnergyCAP", "Apollo provides $585m financing
+ * package", "Bain-backed EcoCeres targets $1bn Hong Kong IPO" as capital_raise
+ * — money moved, but no fund was raised — and they ran in the Private Equity
+ * and Credit fund lists beside real closes. They belong in Deals.
+ */
+const DEAL_SHAPED_TITLE =
+  /\b(takes? (a |an )?(\d+(\.\d+)?% |majority |minority |strategic |controlling )?stake|growth investment in|invests? in|backs\b(?!.*\bfunds?\b)|acquires?|to acquire|agrees? to (buy|sell)|ipo\b|take-private|financing package|credit facility|structured investment|growth financing|provides? [$€£]?[\d.]+|leads? [$€£]?[\d.,]+\s?(m|bn|million|billion)?\s?(raise|round))/i
+
+export function isDealShaped(a: NewsletterArticle): boolean {
+  if (storyFamily(a.eventType) !== 'fund') return false
+  // A row with a close stage is a fund event whatever its headline says.
+  if (a.closeType && a.closeType !== 'launch') return false
+  return DEAL_SHAPED_TITLE.test(a.title)
+}
+
+/**
+ * "Close" has two meanings and the classifier reads both as fund_close.
+ * 2026-09-21: "Magellan to close Vinva global equity fund" (a termination)
+ * led the preheader as "Magellan Asset Management $101M"; 9/23: "$2 billion
+ * hedge fund SoMa Equity Partners is closing down" led as "SoMa Equity
+ * Partners $2B". Both read as successful raises. Wind-downs still run — a
+ * $2B fund shutting is news — but never as a size-led headline.
+ */
+const WIND_DOWN_TITLE =
+  /\b(closing down|clos(es|ing|e) (its )?doors|shut(s|ting)? down|shutting|shutter(s|ing)?|wind(s|ing)? (down|up)|liquidat\w+|to return (outside |investor |client )?(capital|money)|returning (outside |investor |client )?(capital|money))\b|\bto close\b(?!.*\b(at|on|above|round|first|final|oversubscribed|hard cap)\b).*\bfund\b/i
+const WIND_DOWN_TLDR = /\b(shutting down|closing down|wind(ing)? down|termination scheduled|liquidat\w+|ceas(e|ing) operations)\b/i
+
+export function isWindDown(a: NewsletterArticle): boolean {
+  if (storyFamily(a.eventType) !== 'fund') return false
+  return WIND_DOWN_TITLE.test(a.title) || WIND_DOWN_TLDR.test(a.tldr ?? '')
+}
+
+/**
+ * A `capital_raise` whose headline has no fundraising word in it is usually
+ * something else carrying a big number: "Musk's long-time backer is giving
+ * SpaceX stock to its investors" was typed capital_raise with $8.5B and would
+ * have led the 2026-09-17 subject line as "Valor Equity".
+ */
+const FUNDRAISE_WORDS = /\b(funds?|raises?|raised|raising|fundrais\w+|clos(e|es|ed|ing)|targets?|launch(es|ed)?|vehicle|strategy|hard cap|commitments?|oversubscribed|vintage)\b/i
+function readsAsFundraise(a: NewsletterArticle): boolean {
+  if (a.eventType !== 'capital_raise') return true
+  if (a.fundName || a.closeType) return true
+  return FUNDRAISE_WORDS.test(a.title)
+}
+
+/** Structured-credit pricings: credit news, but not a fund close. */
+const STRUCTURED_CREDIT = /\bCLOs?\b|collaterali[sz]ed (loan|fund) obligation|\bCFO financing\b/
+/** Capital-markets plumbing with no fund in it at all. Dropped. */
+const NOT_FUND_NEWS = /\b(securiti[sz]ation|RMBS|CMBS|green bond|bond (issuance|issue|offering)|share offer)\b/i
+
+/**
+ * Fund relevance for the Service Providers section. A law firm's fund-finance
+ * hire is core; its new disputes partner in Paris, or its next London
+ * managing partner, is not (both ran in the audited fortnight).
+ */
+const FUND_RELEVANT =
+  /private (equity|credit|capital|markets?|funds?|debt)|\bPE\b|\bVC\b|funds? (formation|finance|administration|administrators?|services|solutions|practice|group|team|launch|lawyers?|partners?)|\b(investment|private|venture|hedge|credit|secondar(y|ies)) funds?\b|asset management|investment management|secondar(y|ies)|buyouts?|venture capital|hedge funds?|alternative (assets?|investments?|asset)|real estate|infrastructure|financial sponsors?|\bM&A\b|fund (admin|tech)\w*/i
+
+function assetClassFor(a: NewsletterArticle): string {
+  for (const cat of a.fundCategories) if (ASSET_CLASSES.has(cat)) return cat
+  const t = `${a.title} ${a.fundStrategy ?? ''} ${a.tldr ?? ''}`.toLowerCase()
+  if (/\bsecondar(y|ies)\b|continuation (fund|vehicle)|gp-led/.test(t)) return 'secondaries'
+  if (/\b(private credit|direct lending|lending|debt|loans?|clo)\b/.test(t)) return 'credit'
+  if (/\b(real estate|property|logistics|housing|reit)\b/.test(t)) return 'real_estate'
+  if (/\b(infrastructure|energy transition|renewables?|wind|solar)\b/.test(t)) return 'infrastructure'
+  if (/\b(venture|startups?|seed)\b/.test(t)) return 'VC'
+  if (/\bhedge\b/.test(t)) return 'hedge'
+  return 'PE'
+}
+
+/**
+ * Pure assembly: classified rows + prior-edition memory in, edition out. No
+ * I/O, so `scripts/replay-editions.ts` can re-run past days against a saved
+ * pool and show exactly what a rule change would have done to real editions.
+ */
+export function assembleNewsletter(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const filtered = (rows ?? []).filter((row: any) => !priorExclusions.ids.has(row.id))
+  rows: any[],
+  priorExclusions: PriorExclusions,
+): NewsletterContent {
+  const dropped: Array<{ id: string; title: string; reason: string }> = []
+  const keep = (list: NewsletterArticle[], test: (a: NewsletterArticle) => string | null) =>
+    list.filter((a) => {
+      const reason = test(a)
+      if (reason) dropped.push({ id: a.id, title: a.title, reason })
+      return !reason
+    })
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const articles: NewsletterArticle[] = filtered.map((row: any) => {
-    const extractedData = row.extracted_data as Record<string, unknown> | null
-    const entitiesRaw = row.entities_raw as Array<{ name: string; type: string; role: string | null; confidence?: number }> | null
-    // Entity fallback for a missing firm_name requires high confidence — a
-    // 0.6-confidence "related entity" once put "Siri" (Apple's assistant,
-    // mentioned in passing) on a story as the firm, paired with the news
-    // outlet's favicon.
-    const firmEntity = entitiesRaw?.find(
-      (e) => e.type === 'firm' && (e.confidence ?? 0) >= 0.8
-    )
-    const firmName = (extractedData?.firm_name as string) ?? firmEntity?.name ?? null
-    const fundSizeMillions = extractedData?.fund_size_usd_millions as number | null
+  const articles: NewsletterArticle[] = rows
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .filter((row: any) => !priorExclusions.ids.has(row.id))
+    .map(rowToArticle)
 
-    // Additional high-confidence firms beyond the primary — co-managers,
-    // acquirer/target pairs, JV partners. Cap at 2 extras. Any token overlap
-    // with the primary firm means it's almost certainly the same org under a
-    // variant name ("Korea's National Pension Service" vs "Korea's NPS",
-    // "Goldman Sachs" vs "Goldman Sachs Alternatives") — skip those.
-    const primaryNorm = normalizeFirmName(firmName)
-    const primaryTokens = new Set(primaryNorm.split(' '))
-    const coFirms: string[] = []
-    for (const e of entitiesRaw ?? []) {
-      if (e.type !== 'firm' || (e.confidence ?? 0) < 0.8) continue
-      const norm = normalizeFirmName(e.name)
-      if (!norm || norm === primaryNorm) continue
-      if (norm.split(' ').some((t) => primaryTokens.has(t))) continue
-      if (coFirms.some((c) => normalizeFirmName(c) === norm)) continue
-      coFirms.push(e.name)
-      if (coFirms.length >= 2) break
-    }
-
-    return {
-      id: row.id,
-      // Some feeds (HedgeCo) end headlines with a dangling colon — trim it.
-      title: (row.title as string).replace(/\s*:\s*$/, ''),
-      sourceUrl: row.source_url,
-      sourceName: row.source_name,
-      publishedDate: row.published_date,
-      articleType: row.article_type,
-      eventType: row.event_type ?? row.article_type,
-      fundCategories: row.fund_categories ?? [],
-      isHighSignal: row.is_high_signal,
-      relevanceScore: row.relevance_score,
-      tldr: row.tldr,
-      firmName,
-      firmDomain: (extractedData?.firm_domain as string) ?? null,
-      fundName: (extractedData?.fund_name as string) ?? null,
-      fundSizeUsdMillions: fundSizeMillions,
-      fundStrategy: (extractedData?.fund_strategy as string) ?? null,
-      geography: (extractedData?.geography as string[]) ?? [],
-      personName: (extractedData?.person_name as string) ?? null,
-      personTitle: (extractedData?.person_title as string) ?? null,
-      closeType: (extractedData?.close_type as string) ?? null,
-      coFirms,
-      alsoCoveredBy: [],
-    }
+  // ─── Drop what is not a story we can stand behind ──────────────────────
+  const afterGovtFilter = keep(articles, (a) => {
+    if (isGovtProgram(a)) return 'govt/blocked source'
+    if (isStartupRound(a)) return 'startup round'
+    if (isDigest(a.title)) return 'digest column'
+    if (NOT_FUND_NEWS.test(a.title)) return 'not fund news'
+    if (extractionMisaligned(a.title, a.firmName, a.tldr)) return 'extraction belongs to another article'
+    return null
   })
 
-  // ─── Drop govt/NGO announcements, blocked sources, startup rounds ──────
-  const afterGovtFilter = articles.filter(
-    (a) => !isGovtProgram(a) && !isStartupRound(a)
-  )
+  for (const a of afterGovtFilter) a.title = plainHeadline(a.title, a.tldr, a.sourceName)
 
   // ─── Same-day story dedup ──────────────────────────────────────────────
   const deduped = deduplicateByStory(afterGovtFilter)
+  const dedupedIds = new Set(deduped.map((a) => a.id))
+  for (const a of afterGovtFilter) {
+    if (dedupedIds.has(a.id)) continue
+    const kept = deduped.find((b) => isSameStory(a, b) || sameStoryLoose(a, b))
+    dropped.push({ id: a.id, title: a.title, reason: `same story as "${(kept?.title ?? 'another row in its cluster').slice(0, 70)}"` })
+  }
 
-  // ─── Cross-edition fingerprint dedup ───────────────────────────────────
-  const afterCrossDay = deduped.filter((a) => {
+  // ─── Cross-edition dedup ───────────────────────────────────────────────
+  const afterCrossDay = keep(deduped, (a) => {
     // Extended window: same firm, same-sized fund event within ~25%.
     if (
       matchesPriorFundEvent(
@@ -526,88 +832,116 @@ export async function queryNewsletterArticles(
         priorExclusions.priorEvents
       )
     ) {
-      return false
+      return 'ran before: same firm, same-size fund event'
     }
     // Title memory: catches re-reports that carry no size or fund name and
     // therefore evade every fingerprint. Real case, 2026-07-31→08-01: "CVC
     // aims for Q3 close for 6th secondaries fund" ran twice on consecutive
     // days because the second copy had null size and null fund name.
     if (matchesPriorTitle(a.title, a.firmName, priorExclusions.priorTitles)) {
-      return false
+      return 'ran before: similar headline'
     }
     // Person memory: an exec move re-reported next day with a different firm
     // extraction ("Blackstone" vs "BCRED") shares no firm fingerprint, but
     // the person is the same. 2026-07-27→28: Jonathan Bock ran twice.
     if (a.personName && PEOPLE_TYPES.includes(a.eventType ?? '')) {
       const person = normalizeFirmName(a.personName)
-      if (person && priorExclusions.priorPeople.has(person)) return false
+      if (person && priorExclusions.priorPeople.has(person)) return 'ran before: same person'
     }
-    // Recent window: exact fingerprint keys.
+    // Entity memory: the same names in the same kind of story (story-links).
+    const prior = findPriorStory(a, priorExclusions.priorStories)
+    if (prior) return `ran before: "${prior.title.slice(0, 70)}"`
+    // Exact fingerprint keys.
     const fps = storyFingerprints(a.firmName, a.fundName, a.eventType, a.fundSizeUsdMillions)
-    if (fps.length === 0) return true
-    return !fps.some((fp) => priorExclusions.fingerprints.has(fp))
+    if (fps.some((fp) => priorExclusions.fingerprints.has(fp))) return 'ran before: fingerprint'
+    return null
   })
 
   // ─── Quality gate ──────────────────────────────────────────────────────
-  const gated = afterCrossDay.filter(passesQualityGate)
+  const gated = keep(afterCrossDay, (a) => (passesQualityGate(a) ? null : 'quality gate: no firm/fund or placeholder summary'))
 
   // ─── Minimum fund size filter for fund activity ────────────────────────
-  const sizeFiltered = gated.filter((a) => {
+  const sizeFiltered = keep(gated, (a) => {
     const isFundActivity = FUND_ACTIVITY_TYPES.includes(a.eventType ?? '')
-    if (!isFundActivity) return true
-    if (a.fundSizeUsdMillions == null) return true
-    return a.fundSizeUsdMillions >= MIN_FUND_SIZE_MILLIONS
+    if (!isFundActivity) return null
+    if (a.fundSizeUsdMillions == null) return null
+    return a.fundSizeUsdMillions >= MIN_FUND_SIZE_MILLIONS ? null : 'fund under $10M'
   })
 
   // ─── Per-firm cap ──────────────────────────────────────────────────────
   // Applied before sectioning so a single firm's news cycle can't consume
   // slots across several sections at once.
   const firmCapped = capPerFirm(sizeFiltered)
+  { const k = new Set(firmCapped.map((a) => a.id)); for (const a of sizeFiltered) if (!k.has(a.id)) dropped.push({ id: a.id, title: a.title, reason: 'per-firm cap' }) }
 
   // ─── Split into sections ───────────────────────────────────────────────
-  // Service providers first — a Kirkland fund-formation team move belongs in
-  // Service Providers, not People Moves, regardless of its event type.
-  const serviceProviders = firmCapped.filter(isServiceProvider)
-  const spIds = new Set(serviceProviders.map((a) => a.id))
-  const nonSp = firmCapped.filter((a) => !spIds.has(a.id))
+  // Decided by what the story IS, not only by the classifier's tags:
+  //   regulatory action      → Regulatory, always (an SEC risk alert tagged
+  //                            service_provider used to land in Service Providers)
+  //   transaction            → Deals, including fund-typed rows that are deals
+  //   fund event             → LP Commitments or its asset class — never
+  //                            Service Providers, even when Law360 leads the
+  //                            headline with the law firm ("Latham-Led Stride
+  //                            Wraps $550M Sophomore Fund")
+  //   people / firm news     → Service Providers when the firm is one,
+  //                            otherwise People Moves
+  const serviceProviders: NewsletterArticle[] = []
+  const lpCommitments: NewsletterArticle[] = []
+  const fundActivity: NewsletterArticle[] = []
+  const peopleMoves: NewsletterArticle[] = []
+  const deals: NewsletterArticle[] = []
+  const regulatory: NewsletterArticle[] = []
 
-  const lpCommitments = nonSp.filter(isLpCommitment)
-  const lpIds = new Set(lpCommitments.map((a) => a.id))
-  const fundActivity = nonSp.filter(
-    (a) => FUND_ACTIVITY_TYPES.includes(a.eventType ?? '') && !lpIds.has(a.id)
-  )
-  const peopleMoves = nonSp.filter((a) => PEOPLE_TYPES.includes(a.eventType ?? ''))
-  const deals = nonSp.filter((a) => DEALS_TYPES.includes(a.eventType ?? ''))
-  const regulatory = nonSp.filter((a) => REGULATORY_TYPES.includes(a.eventType ?? ''))
+  for (const a of firmCapped) {
+    const family = storyFamily(a.eventType)
+    if (family === 'regulatory') { regulatory.push(a); continue }
+    if (family === 'fund') {
+      if (isDealShaped(a)) { a.leadEligible = false; deals.push(a); continue }
+      if (isLpCommitment(a)) { a.leadEligible = false; lpCommitments.push(a); continue }
+      if (isWindDown(a) || STRUCTURED_CREDIT.test(a.title) || !readsAsFundraise(a)) a.leadEligible = false
+      fundActivity.push(a)
+      continue
+    }
+    if (isServiceProvider(a)) {
+      if (FUND_RELEVANT.test(`${a.firmName ?? ''} ${a.title} ${a.tldr ?? ''}`)) serviceProviders.push(a)
+      else dropped.push({ id: a.id, title: a.title, reason: 'service-provider story with no fund relevance' })
+      continue
+    }
+    if (family === 'people') peopleMoves.push(a)
+    else if (family === 'deal') deals.push(a)
+  }
 
-  const sortByPriority = (arr: NewsletterArticle[]) =>
-    [...arr].sort((a, b) => articlePriorityScore(b) - articlePriorityScore(a))
+  // Multi-story wires rank last in their section: they fill space on a quiet
+  // day and are the first thing cut on a busy one.
+  // …and a better-sourced story edges out a weaker one at the same score.
+  const rank = (a: NewsletterArticle) =>
+    articlePriorityScore(a) -
+    (isRoundup(a.title, a.headlineEntities) ? 1 : 0) -
+    Math.min(sourceTier(a.sourceName), 50) / 250
+  const sortByPriority = (arr: NewsletterArticle[]) => [...arr].sort((a, b) => rank(b) - rank(a))
 
   const cappedFundActivity = sortByPriority(fundActivity).slice(0, 36)
   const cappedLp = sortByPriority(lpCommitments).slice(0, 6)
   const cappedSp = sortByPriority(serviceProviders).slice(0, 6)
-  const cappedPeople = sortByPriority(peopleMoves).slice(0, 6)
-  const cappedDeals = sortByPriority(deals).slice(0, 8)
+  const cappedPeople = sortByPriority(peopleMoves).slice(0, 8)
+  const cappedDeals = sortByPriority(deals).slice(0, 10)
   const cappedRegulatory = sortByPriority(regulatory).slice(0, 3)
 
-  // Group fund activity by primary category
+  // Group fund activity by asset class
   const grouped: Record<string, NewsletterArticle[]> = {}
   for (const article of cappedFundActivity) {
-    const primaryCat = primaryCategoryFor(article)
-    if (!grouped[primaryCat]) grouped[primaryCat] = []
-    grouped[primaryCat].push(article)
+    const cat = assetClassFor(article)
+    if (!grouped[cat]) grouped[cat] = []
+    grouped[cat].push(article)
   }
 
-  // Secondaries stands as its own section, consistent with every other
-  // asset class. (It was previously rolled into PE whenever it had <2
-  // stories on a given day; a 2026-06 review found that quietly hid the
-  // category even on days it had supply, so the rollup was removed.)
-  // Suppress "other" entirely — classification orphans that pass the
-  // quality gate should be reclassified upstream, not leaked to readers.
-  delete grouped.other
-
+  // Raises first by size; wind-downs and structured-credit rows after them.
   for (const cat of Object.keys(grouped)) {
-    grouped[cat].sort((a, b) => (b.fundSizeUsdMillions ?? 0) - (a.fundSizeUsdMillions ?? 0))
+    grouped[cat].sort(
+      (a, b) =>
+        Number(b.leadEligible) - Number(a.leadEligible) ||
+        (b.fundSizeUsdMillions ?? 0) - (a.fundSizeUsdMillions ?? 0)
+    )
   }
 
   const groups: ArticleGroup[] = CATEGORY_ORDER
@@ -618,45 +952,14 @@ export async function queryNewsletterArticles(
       articles: grouped[cat],
     }))
 
-  if (cappedLp.length > 0) {
-    groups.push({
-      category: 'lp_commitments',
-      label: CATEGORY_LABELS.lp_commitments,
-      articles: cappedLp,
-    })
+  const pushGroup = (category: string, list: NewsletterArticle[]) => {
+    if (list.length > 0) groups.push({ category, label: CATEGORY_LABELS[category], articles: list })
   }
-
-  if (cappedSp.length > 0) {
-    groups.push({
-      category: 'service_providers',
-      label: CATEGORY_LABELS.service_providers,
-      articles: cappedSp,
-    })
-  }
-
-  if (cappedPeople.length > 0) {
-    groups.push({
-      category: 'people_moves',
-      label: CATEGORY_LABELS.people_moves,
-      articles: cappedPeople,
-    })
-  }
-
-  if (cappedDeals.length > 0) {
-    groups.push({
-      category: 'deals',
-      label: CATEGORY_LABELS.deals,
-      articles: cappedDeals,
-    })
-  }
-
-  if (cappedRegulatory.length > 0) {
-    groups.push({
-      category: 'regulatory',
-      label: CATEGORY_LABELS.regulatory,
-      articles: cappedRegulatory,
-    })
-  }
+  pushGroup('lp_commitments', cappedLp)
+  pushGroup('service_providers', cappedSp)
+  pushGroup('people_moves', cappedPeople)
+  pushGroup('deals', cappedDeals)
+  pushGroup('regulatory', cappedRegulatory)
 
   deduplicateAcrossSections(groups)
 
@@ -665,10 +968,17 @@ export async function queryNewsletterArticles(
     for (const a of g.articles) includedIds.add(a.id)
   }
 
+  for (const a of firmCapped) {
+    if (!includedIds.has(a.id) && !dropped.some((d) => d.id === a.id)) {
+      dropped.push({ id: a.id, title: a.title, reason: 'section cap or cross-section duplicate' })
+    }
+  }
+
   return {
     groups,
     totalArticles: includedIds.size,
     articleIds: Array.from(includedIds),
+    dropped,
   }
 }
 
@@ -762,32 +1072,37 @@ export function deduplicateAcrossSections(groups: ArticleGroup[]): void {
 
 // ─── Story-level dedup (same day) ───────────────────────────────────────────
 
-function deduplicateByStory(articles: NewsletterArticle[]): NewsletterArticle[] {
-  const stories: NewsletterArticle[][] = []
+const LEGAL_CREDIT_HEADLINE = /\b\d+ firms? (steer|build|guide|advise|handle|shape)|\b(advises|advised|represents?|counsels?|steers?|guides?)\b|-led\b/i
 
-  for (const article of articles) {
-    let matched = false
-    for (const story of stories) {
-      // Compare against every member, not just the representative — story
-      // identity is not transitive through one member. Real case, 2026-08-15:
-      // nine outlets covered one Mirae first close; the ₹1,800cr-target
-      // variant matched the ₹1,125cr variant but not the cluster's $118M
-      // representative, so it escaped as a ninth "distinct" story.
-      if (story.some((member) => isSameStory(member, article))) {
-        story.push(article)
-        matched = true
-        break
-      }
-    }
-    if (!matched) {
-      stories.push([article])
-    }
+function deduplicateByStory(articles: NewsletterArticle[]): NewsletterArticle[] {
+  // Multi-story wires ("A backs X; B to acquire Y; C hires Z") are kept out of
+  // the clustering: one would bridge two unrelated deals into a single
+  // "story" and lose one of them. A wire runs only if none of its items
+  // already has a row of its own.
+  const singles = articles.filter((a) => !isRoundup(a.title, a.headlineEntities))
+  const roundups = articles.filter((a) => isRoundup(a.title, a.headlineEntities))
+
+  // Union-find rather than first-match: story identity is not transitive
+  // through one representative. 2026-08-15, nine outlets covered one Mirae
+  // first close and a variant escaped as a "distinct" story; 2026-09-27, four
+  // rows of one IIT Madras first close ran in a single edition because each
+  // had been extracted under a different firm name.
+  const stories = clusterBy(singles, (a, b) => isSameStory(a, b) || sameStoryLoose(a, b))
+
+  for (const r of roundups) {
+    if (singles.some((s) => sameStoryLoose(s, r))) continue
+    if (roundups.some((o) => o !== r && stories.some((g) => g[0] === o) && sameStoryLoose(o, r))) continue
+    stories.push([r])
   }
 
   return stories.map((group) => {
     group.sort((a, b) => {
-      const tierA = sourceTier(a.sourceName)
-      const tierB = sourceTier(b.sourceName)
+      // Law360-style headlines credit the lawyers, not the principals ("4 Firms
+      // Steer $1.6B Priority Technology Take-Private", "Linklaters advises
+      // LBBW AM on…"). Any other outlet's version of the story reads better.
+      const legal = (x: NewsletterArticle) => (LEGAL_CREDIT_HEADLINE.test(x.title) ? 100 : 0)
+      const tierA = sourceTier(a.sourceName) + legal(a)
+      const tierB = sourceTier(b.sourceName) + legal(b)
       if (tierA !== tierB) return tierA - tierB
       return (b.tldr?.length ?? 0) - (a.tldr?.length ?? 0)
     })
@@ -858,7 +1173,12 @@ export function storyFingerprints(
   if (fundSizeUsdMillions && fundSizeUsdMillions > 0) {
     const bucket = Math.round(fundSizeUsdMillions / 500) * 500
     out.push(`${firm}|${evt}|${bucket}`)
-  } else if (!fund) {
+  } else if (!fund && storyFamily(evt) === 'fund') {
+    // Fund events only. For deals and people this key suppressed every later
+    // story from the same firm — a sponsor's second acquisition of the week
+    // vanished because its first one was in memory — while doing nothing for
+    // real repeats filed under the other party's name. The entity memory in
+    // story-links replaces it for those families.
     out.push(`${firm}|${evt}`)
   }
   return out
@@ -963,19 +1283,20 @@ function extractFingerprintFields(row: any): {
   return { firmName, fundName, fundSize, eventType, personName }
 }
 
-async function getPriorEditionExclusions(
-  supabase: DbClient
-): Promise<{
+export interface PriorExclusions {
   ids: Set<string>
   fingerprints: Set<string>
   priorEvents: PriorFundEvent[]
   priorTitles: PriorTitle[]
   priorPeople: Set<string>
-}> {
-  // Pull the extended window once (newest first). The most recent
-  // CROSS_EDITION_LOOKBACK editions contribute full fingerprints + the
-  // exact-id exclusion; the older editions in the window contribute only the
-  // strong close/launch fingerprint (see EXTENDED_CLOSE_LOOKBACK).
+  /** Every story from the recent window, for entity-based repeat detection. */
+  priorStories: StoryLike[]
+}
+
+async function getPriorEditionExclusions(
+  supabase: DbClient
+): Promise<PriorExclusions> {
+  // Pull the extended window once (newest first).
   const { data: editions } = await supabase
     .from('newsletter_editions')
     .select('article_ids')
@@ -983,71 +1304,79 @@ async function getPriorEditionExclusions(
     .order('edition_date', { ascending: false })
     .limit(EXTENDED_CLOSE_LOOKBACK)
 
+  const editionIds = (editions ?? []).map(
+    (ed) => (ed as { article_ids: string[] | null }).article_ids ?? []
+  )
+  const allIds = Array.from(new Set(editionIds.flat()))
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rowsById = new Map<string, any>()
+  for (let i = 0; i < allIds.length; i += 200) {
+    const chunk = allIds.slice(i, i + 200)
+    const { data: rowsData } = await supabase
+      .from('news_items')
+      .select('id, title, source_name, tldr, article_type, event_type, extracted_data, entities_raw')
+      .in('id', chunk)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    for (const row of (rowsData ?? []) as any[]) rowsById.set(row.id, row)
+  }
+  return buildPriorExclusions(editionIds, rowsById)
+}
+
+/**
+ * Pure: turn the last N editions (newest first) into the memory the
+ * cross-edition filter consults. The most recent CROSS_EDITION_LOOKBACK
+ * editions contribute full fingerprints, titles and people; every edition in
+ * the window contributes its fund events for the relative-size comparison
+ * (see EXTENDED_CLOSE_LOOKBACK / EXTENDED_SIZE_TOLERANCE).
+ */
+export function buildPriorExclusions(
+  editionIdsNewestFirst: string[][],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  rowsById: Map<string, any>,
+): PriorExclusions {
   const recentIds = new Set<string>()
   const extendedIds = new Set<string>()
-  if (editions) {
-    editions.forEach((ed, idx) => {
-      const arr = (ed as { article_ids: string[] | null }).article_ids
-      if (!arr) return
-      const target = idx < CROSS_EDITION_LOOKBACK ? recentIds : extendedIds
-      for (const id of arr) target.add(id)
-    })
-  }
+  editionIdsNewestFirst.slice(0, EXTENDED_CLOSE_LOOKBACK).forEach((arr, idx) => {
+    const target = idx < CROSS_EDITION_LOOKBACK ? recentIds : extendedIds
+    for (const id of arr) target.add(id)
+  })
 
-  // Exact-id exclusion stays scoped to the recent window — an article that ran
-  // days ago won't re-enter the 26h query anyway, and the extended window is
-  // meant to soft-suppress by size, not hard-block by id.
-  const ids = recentIds
+  // An article that already ran never runs again, anywhere in the window
+  // (the weekend rescue and the outage catch-up both widen the query well
+  // past 26h, so "it won't re-enter anyway" does not hold).
+  const ids = new Set([...recentIds, ...extendedIds])
   const fingerprints = new Set<string>()
-
-  // Recent window: full fingerprints, titles, and people for every article.
   const priorTitles: PriorTitle[] = []
   const priorPeople = new Set<string>()
-  const recentList = Array.from(recentIds)
-  for (let i = 0; i < recentList.length; i += 200) {
-    const chunk = recentList.slice(i, i + 200)
-    const { data: rowsData } = await supabase
-      .from('news_items')
-      .select('title, article_type, event_type, extracted_data, entities_raw')
-      .in('id', chunk)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    for (const row of (rowsData ?? []) as any[]) {
-      const { firmName, fundName, fundSize, eventType, personName } = extractFingerprintFields(row)
-      for (const fp of storyFingerprints(firmName, fundName, eventType, fundSize)) {
-        fingerprints.add(fp)
-      }
-      if (row.title) {
-        priorTitles.push({ firm: normalizeFirmName(firmName), title: row.title as string })
-      }
-      if (personName && PEOPLE_TYPES.includes(eventType ?? '')) {
-        const person = normalizeFirmName(personName)
-        if (person) priorPeople.add(person)
-      }
+  const priorStories: StoryLike[] = []
+  for (const id of recentIds) {
+    const row = rowsById.get(id)
+    if (!row) continue
+    if (row.title) priorStories.push(rowToArticle(row))
+    const { firmName, fundName, fundSize, eventType, personName } = extractFingerprintFields(row)
+    for (const fp of storyFingerprints(firmName, fundName, eventType, fundSize)) {
+      fingerprints.add(fp)
+    }
+    if (row.title) {
+      priorTitles.push({ firm: normalizeFirmName(firmName), title: row.title as string })
+    }
+    if (personName && PEOPLE_TYPES.includes(eventType ?? '')) {
+      const person = normalizeFirmName(personName)
+      if (person) priorPeople.add(person)
     }
   }
 
-  // Extended window: fund-activity events, compared by relative size rather
-  // than a hashed bucket (see EXTENDED_SIZE_TOLERANCE). Every article in the
-  // window contributes, including those in the recent slice — a repeat two
-  // editions later should be caught by size as well as by exact id.
-  const allWindowIds = Array.from(new Set([...recentIds, ...extendedIds]))
   const priorEvents: PriorFundEvent[] = []
-  for (let i = 0; i < allWindowIds.length; i += 200) {
-    const chunk = allWindowIds.slice(i, i + 200)
-    const { data: rowsData } = await supabase
-      .from('news_items')
-      .select('article_type, event_type, extracted_data, entities_raw')
-      .in('id', chunk)
-      .in('article_type', Array.from(EXTENDED_FINGERPRINT_TYPES))
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    for (const row of (rowsData ?? []) as any[]) {
-      const { firmName, fundSize, eventType } = extractFingerprintFields(row)
-      const evt = priorFundEvent(firmName, eventType, fundSize)
-      if (evt) priorEvents.push(evt)
-    }
+  for (const id of new Set([...recentIds, ...extendedIds])) {
+    const row = rowsById.get(id)
+    if (!row) continue
+    const { firmName, fundSize, eventType } = extractFingerprintFields(row)
+    if (!EXTENDED_FINGERPRINT_TYPES.has(row.article_type ?? '')) continue
+    const evt = priorFundEvent(firmName, eventType, fundSize)
+    if (evt) priorEvents.push(evt)
   }
 
-  return { ids, fingerprints, priorEvents, priorTitles, priorPeople }
+  return { ids, fingerprints, priorEvents, priorTitles, priorPeople, priorStories }
 }
 
 // ─── Article priority scoring for cap ───────────────────────────────────────

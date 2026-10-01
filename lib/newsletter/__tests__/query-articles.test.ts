@@ -38,6 +38,10 @@ function makeArticle(overrides: Partial<NewsletterArticle>): NewsletterArticle {
     closeType: null,
     coFirms: [],
     alsoCoveredBy: [],
+    headlineEntities: [],
+    entityKeys: [],
+    personKeys: [],
+    leadEligible: true,
     ...overrides,
   }
 }
@@ -85,9 +89,13 @@ describe('storyFingerprints', () => {
     expect(storyFingerprints('', 'Fund X', 'fund_close', 1000)).toEqual([])
   })
 
-  it('falls back to firm|event for exec moves with no fund or size', () => {
-    const fps = storyFingerprints('KKR', null, 'executive_hire', null)
-    expect(fps).toEqual(['kkr|executive_hire'])
+  it('falls back to firm|event only for fund events with no fund or size', () => {
+    expect(storyFingerprints('KKR', null, 'capital_raise', null)).toEqual(['kkr|capital_raise'])
+    // Deals and people are matched by the names in the story (story-links),
+    // not by "this firm did something of this type" — that key hid a
+    // sponsor's second acquisition of the week behind its first.
+    expect(storyFingerprints('KKR', null, 'executive_hire', null)).toEqual([])
+    expect(storyFingerprints('KKR', null, 'acquisition', null)).toEqual([])
   })
 
   it('normalizes Partners-Group-style all-noise firm names so fingerprints are non-empty', () => {
@@ -320,6 +328,7 @@ describe('capPerFirm', () => {
       fundSizeUsdMillions: size, fundStrategy: null, geography: [],
       personName: null, personTitle: null, closeType: null,
       coFirms: [], alsoCoveredBy: [],
+      headlineEntities: [], entityKeys: [], personKeys: [], leadEligible: true,
     }) as NewsletterArticle
 
   it('keeps at most two stories per firm, highest priority first', () => {

@@ -152,6 +152,47 @@ function normalizeForMatch(s: string): string {
  * Neil Devani)" → "AdvancingVC". They break core extraction (the scan stops
  * at the "&" inside the parens) and are noise wherever the name is displayed.
  */
+/**
+ * Tidy a source headline for display, without rewriting it.
+ *
+ * Feeds deliver headlines with packaging that isn't part of the story: a
+ * publisher suffix from the Google News mirror ("… first close - pei",
+ * "… Joint Investment Fund - AZƏRTAC", "… could bail - ABC News & Headlines"),
+ * a house label in front ("Exclusive | …", "In brief: …"), a trademark sign.
+ * A two-week audit of sent editions (2026-10) found one of these in roughly
+ * one row in fifteen. The words of the headline itself are never changed.
+ */
+export function cleanHeadline(title: string, sourceName?: string | null): string {
+  let t = decodeHtmlEntities(title).replace(/[®™]/g, '').replace(/\s+/g, ' ').trim()
+
+  t = t.replace(/^(exclusive|breaking|updated?|in brief|news brief|watch|video|podcast)\s*[|:–—-]\s*/i, '')
+  t = t.replace(/\s*[–—-]\s*exclusive\s*$/i, '')
+
+  const m = t.match(/^(.*\S)\s+([-–—|])\s+([^-–—|]{1,40})$/)
+  if (m && m[1].split(' ').length >= 4 && looksLikePublisher(m[3].trim(), sourceName, m[2] === '-')) {
+    t = m[1]
+  }
+
+  // Some feeds (HedgeCo) end headlines with a dangling colon.
+  return t.replace(/\s*:\s*$/, '').trim()
+}
+
+function looksLikePublisher(tail: string, sourceName: string | null | undefined, plainHyphen: boolean): boolean {
+  const squash = (x: string) => x.toLowerCase().replace(/[^a-z0-9]/g, '')
+  const tailKey = squash(tail)
+  const sourceKey = squash(sourceName ?? '')
+  if (tailKey && sourceKey && (sourceKey.includes(tailKey) || tailKey.includes(sourceKey))) return true
+  // The mirror always joins with a plain hyphen; an en or em dash is the
+  // headline writer's own punctuation ("Citadel rehires Matt Giannini – again").
+  if (plainHyphen) {
+    // A truncated publisher slug: one short lowercase token ("pei", "eu", "the").
+    if (/^[a-z]{2,6}$/.test(tail)) return true
+    // A masthead in capitals: CHOSUNBIZ, AZƏRTAC.
+    if (/^[\p{Lu}\d]{5,}$/u.test(tail)) return true
+  }
+  return /\b(news|times|journal|daily|post|wire|review|headlines|magazine|press|tribune|herald|gazette|bloomberg|reuters|insider|weekly|today)\b|\.(com|co|net|org|io)\b/i.test(tail)
+}
+
 export function cleanEntityName(name: string): string {
   return name.replace(/\s*\([^)]*\)/g, '').replace(/\s+/g, ' ').trim()
 }
@@ -235,12 +276,20 @@ export function splitHeadlineByEntities(
   entities: (string | null | undefined)[],
 ): HeadlineSegment[] {
   const candidates: string[] = []
+  const add = (c: string) => {
+    if (!candidates.includes(c)) candidates.push(c)
+    // "H.I.G." in the data, "HIG" in the headline — and the reverse.
+    if (/^([A-Z]\.){2,5}$/.test(c)) candidates.push(c.replace(/\./g, ''))
+    else if (/^[A-Z]{2,5}$/.test(c)) candidates.push(c.split('').join('.') + '.')
+  }
   for (const raw of entities) {
     const name = raw ? cleanEntityName(raw) : ''
-    if (!name || name.length < 3) continue
-    candidates.push(name)
+    // Two-letter names are real ("Hg") but only safe as an exact-case match,
+    // which the capitalisation check below enforces.
+    if (!name || name.length < 2 || (name.length === 2 && !/^[A-Z][a-z]$/.test(name))) continue
+    add(name)
     const core = distinctiveCore(name)
-    if (core) candidates.push(core)
+    if (core) add(core)
   }
   if (candidates.length === 0) return [{ text: title, bold: false }]
 
@@ -256,8 +305,14 @@ export function splitHeadlineByEntities(
     while ((m = re.exec(title)) !== null) {
       const start = m.index + m[1].length
       const end = start + m[2].length
-      if (!ranges.some(([s, e]) => start < e && end > s)) ranges.push([start, end])
       re.lastIndex = end
+      // A capitalised name must not match a lowercase word: the firm
+      // "Medical Group" once bolded the adjective in "French medical device".
+      // Short names must match case exactly ("Hg", never "hg" or "HG").
+      const matched = m[2]
+      if (/^[A-Z]/.test(c) && /^[a-z]/.test(matched)) continue
+      if (c.length <= 3 && matched !== c) continue
+      if (!ranges.some(([s, e]) => start < e && end > s)) ranges.push([start, end])
     }
   }
   if (ranges.length === 0) return [{ text: title, bold: false }]

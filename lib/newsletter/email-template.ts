@@ -396,11 +396,12 @@ function collapseTemplateWhitespace(html: string): string {
  * Mirrors the site rows so the email and the page read the same way.
  */
 function renderHeadline(article: ArticleGroup['articles'][0]): string {
-  const segments = splitHeadlineByEntities(article.title, [
-    article.firmName,
-    ...article.coFirms,
-    article.personName,
-  ])
+  const segments = splitHeadlineByEntities(
+    article.title,
+    article.headlineEntities?.length
+      ? article.headlineEntities
+      : [article.firmName, ...article.coFirms, article.personName],
+  )
   return segments
     .map((seg) => (seg.bold ? `<b>${escapeHtml(seg.text)}</b>` : escapeHtml(seg.text)))
     .join('')
@@ -600,7 +601,7 @@ function renderSponsorBottom(slate: SponsorSlate): string {
 // what Gmail / iOS Mail show as the preview next to the subject. Without an
 // explicit preheader, clients fall back to the first visible text in <body>
 // (in our case the "Forwarded to you?" strip) — a wasted first impression.
-// We build it from the top 2 size-led GP fund events, same rail as
+// We build it from the two largest GP fund events, same rail as
 // buildSubject in send-daily.ts.
 
 function buildPreheader(groups: ArticleGroup[], totalArticles: number): string {
@@ -620,6 +621,9 @@ function buildPreheader(groups: ArticleGroup[], totalArticles: number): string {
       const size = article.fundSizeUsdMillions ?? 0
       if (size <= 0) continue
       if (isLikelyAumLeak(size, article.fundName)) continue
+      // A fund shutting down or a CLO pricing is not "Firm $X raised".
+      if (article.leadEligible === false) continue
+      if (candidates.some((c) => c.firm === article.firmName)) continue
       const sizeStr =
         size >= 1000
           ? `$${(size / 1000).toFixed(1).replace(/\.0$/, '')}B`
@@ -627,7 +631,7 @@ function buildPreheader(groups: ArticleGroup[], totalArticles: number): string {
       candidates.push({ firm: article.firmName, sizeStr, size, priority: prio })
     }
   }
-  candidates.sort((a, b) => b.priority - a.priority || b.size - a.size)
+  candidates.sort((a, b) => b.size - a.size || b.priority - a.priority)
   const top = candidates.slice(0, 2)
   if (top.length === 0) {
     return `${totalArticles} moves across private markets this morning — fund launches, closes, exec changes, regulatory actions.`

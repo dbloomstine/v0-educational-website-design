@@ -358,9 +358,9 @@ async function alertOnSkip(supabase: DbClient, editionDate: string): Promise<voi
  * (Danny, 2026-09-12: "instead of one deal, a bunch of names of firms
  * that are in the news".) Was "{Firm} {size} · + N more moves".
  *
- * Order: GP fund events first (closes > launches > raises, then size),
- * then deals, people moves, service providers, regulatory, and LP
- * commitments last (allocator names are long and rarely the headline).
+ * Order: GP fund events first, largest first (close > launch > raise only
+ * breaks ties), then deals, people moves, service providers, regulatory, and
+ * LP commitments last (allocator names are long and rarely the headline).
  * AUM-leak candidates are excluded from the lead slots, same rail as
  * before. Names are deduped, stripped of legal suffixes, and added until
  * the line would pass ~70 characters, which is what Gmail shows.
@@ -368,6 +368,7 @@ async function alertOnSkip(supabase: DbClient, editionDate: string): Promise<voi
  * No "FundOps Daily —" prefix — the From: name already carries the brand.
  * Format: "KKR, Arini, EIG, ARCHIMED + 40 more".
  */
+const BARE_PLACE = /^(korea|south korea|china|india|japan|singapore|australia|canada|france|germany|italy|spain|saudi arabia|uae|uk|us|eu|europe|asia|africa)$/i
 export const SUBJECT_MAX_CHARS = 70
 export const SUBJECT_MAX_NAMES = 6
 
@@ -396,19 +397,43 @@ const STANDALONE_STOPLIST = new Set([
   'atlantic', 'pacific', 'northern', 'southern', 'western', 'eastern', 'central', 'united',
   'insight', 'summit', 'francisco', 'boston', 'london', 'chicago', 'first', 'prime', 'index',
   'digital', 'growth', 'value', 'income', 'credit', 'infrastructure', 'energy', 'healthcare',
+  // Places and institutions: "Princeton Equity Group" cut to "Princeton" read
+  // as the university in the 2026-09-30 subject line.
+  'princeton', 'oxford', 'cambridge', 'harvard', 'stanford', 'columbia', 'berkeley', 'hudson',
+  'madison', 'lincoln', 'washington', 'jefferson', 'georgia', 'carolina', 'virginia', 'texas',
+  'dallas', 'houston', 'denver', 'seattle', 'portland', 'arlington', 'brooklyn', 'manhattan',
+  'toronto', 'montreal', 'sydney', 'melbourne', 'zurich', 'geneva', 'paris', 'berlin', 'munich',
+  'madrid', 'milan', 'dublin', 'edinburgh', 'nordic', 'baltic', 'alpine', 'emerging',
+  'sustainable', 'premier', 'golden', 'silver', 'liberty', 'heritage',
 ])
 
+function remainderIsName(rest: string[]): boolean {
+  if (rest.length === 0) return false
+  const last = rest[rest.length - 1].toLowerCase().replace(/[.,]/g, '')
+  if (last === '&' || last === 'and' || last === 'of' || last === 'de') return false
+  if (rest.length >= 2) return true
+  const only = rest[0]
+  return (
+    only.replace(/[^A-Za-z]/g, '').length >= 6 &&
+    !STANDALONE_STOPLIST.has(last) &&
+    !DESCRIPTOR_WORDS.has(last)
+  )
+}
+
+/**
+ * Strip the longest trailing run of descriptor words that still leaves a name:
+ * "PennantPark Investment Advisers" → "PennantPark", "Princeton Equity Group"
+ * → "Princeton Equity", "Main Capital Partners" → "Main Capital". "Bain
+ * Capital", "Seed Capital" and "Partners Group" have no shorter form.
+ */
 export function shortenFirmName(name: string): string {
   const words = name.split(' ').filter(Boolean)
-  let cut = 0
-  while (cut < words.length - 1 && DESCRIPTOR_WORDS.has(words[words.length - 1 - cut].toLowerCase().replace(/[.,]/g, ''))) cut++
-  if (cut === 0) return name
-  const rest = words.slice(0, words.length - cut)
-  const last = rest[rest.length - 1].toLowerCase()
-  if (last === '&' || last === 'and' || last === 'of' || last === 'de') return name
-  if (rest.length >= 2) return rest.join(' ')
-  const only = rest[0]
-  if (only.replace(/[^A-Za-z]/g, '').length >= 6 && !STANDALONE_STOPLIST.has(only.toLowerCase())) return only
+  let run = 0
+  while (run < words.length - 1 && DESCRIPTOR_WORDS.has(words[words.length - 1 - run].toLowerCase().replace(/[.,]/g, ''))) run++
+  for (let cut = run; cut >= 1; cut--) {
+    const rest = words.slice(0, words.length - cut)
+    if (remainderIsName(rest)) return rest.join(' ')
+  }
   return name
 }
 
@@ -428,6 +453,8 @@ export function buildSubject(content: {
       fundName?: string | null
       fundSizeUsdMillions: number | null
       eventType: string | null
+      /** false for wind-downs, CLO pricings, LP commitments — never a lead. */
+      leadEligible?: boolean
     }[]
   }[]
   totalArticles: number
@@ -448,7 +475,7 @@ export function buildSubject(content: {
     }
   }
 
-  type Cand = { name: string; tier: number; prio: number; size: number; seq: number }
+  type Cand = { name: string; tier: number; lead: number; prio: number; size: number; seq: number }
   const cands: Cand[] = []
   let seq = 0
   for (const group of content.groups) {
@@ -458,22 +485,34 @@ export function buildSubject(content: {
       if (!article.firmName) continue
       const name = subjectFirmName(article.firmName)
       if (!name) continue
+      // Not names a reader would recognise as a firm: a description the
+      // classifier returned as one ("New London private equity firm"), or a
+      // bare country ("Korea launches $250M fund of funds").
+      if (/\b[a-z]{3,}\s+[a-z]{3,}\b/.test(name) || BARE_PLACE.test(name)) continue
       const size = article.fundSizeUsdMillions ?? 0
       // AUM safety rail — see isLikelyAumLeak() in query-articles.ts. Such a
       // row still names a real firm; it just must not lead on its "size".
       const leak = size > 0 && isLikelyAumLeak(size, article.fundName)
       const prio = tier === 0 ? (typePriority[article.eventType ?? ''] ?? 0) : 0
-      cands.push({ name, tier, prio: leak ? 0 : prio, size: leak ? 0 : size, seq })
+      const lead = tier === 0 && article.leadEligible !== false && !leak ? 1 : 0
+      cands.push({ name, tier, lead, prio: leak ? 0 : prio, size: lead ? size : 0, seq })
     }
   }
-  cands.sort((a, b) => a.tier - b.tier || b.prio - a.prio || b.size - a.size || a.seq - b.seq)
+  // Biggest raise first. The first cut of this ranked every close ahead of
+  // every launch or raise, so a $15M close led a subject line on a day
+  // Goldman drew $10bn; the names a reader recognises are the large ones.
+  // Type only breaks ties, and rows that are not a raise at all (a fund
+  // shutting down, a CLO pricing) follow the real ones.
+  cands.sort((a, b) =>
+    a.tier - b.tier || b.lead - a.lead || b.size - a.size || b.prio - a.prio || a.seq - b.seq)
 
   const names: string[] = []
-  const seen = new Set<string>()
+  const seen: string[] = []
   for (const c of cands) {
     const key = c.name.toLowerCase()
-    if (seen.has(key)) continue
-    seen.add(key)
+    // "IIT Madras" and "IIT Madras Research Park" are one name to a reader.
+    if (seen.some((k) => k === key || k.startsWith(key + ' ') || key.startsWith(k + ' '))) continue
+    seen.push(key)
     names.push(c.name)
   }
 

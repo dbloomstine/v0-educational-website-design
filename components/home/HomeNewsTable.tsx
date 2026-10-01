@@ -1,5 +1,5 @@
 import {
-  decodeHtmlEntities,
+  cleanHeadline,
   firmLabelFor,
   splitHeadlineByEntities,
 } from '@/lib/news/constants'
@@ -23,7 +23,7 @@ export function HomeNewsTable({ groups }: { groups: ArticleGroup[] }) {
         // Most fund headlines already name the firm ("GenNx360 scores $865m
         // Fund IV close"), so repeating it in the meta just steals width from
         // the headline. firmLabelFor returns null in that case.
-        const title = decodeHtmlEntities(a.title)
+        const title = cleanHeadline(a.title, (a as { sourceName?: string | null }).sourceName)
         const showFirm = firmLabelFor(a.firmName, title)
 
         // Only the actor is bold — the headline's remaining words sit at
