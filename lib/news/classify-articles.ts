@@ -27,6 +27,7 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js';
+import { alignClassifications } from './classification-align';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>;
@@ -144,6 +145,7 @@ const SYSTEM_PROMPT = `You are classifying news articles about investment funds 
 
 For each article, return a JSON object with exactly these fields:
 {
+  "id": number,                    // the "id" of the input article this object describes — copy it exactly
   "fund_categories": string[],     // subset of: ["PE","VC","credit","hedge","real_estate","infrastructure","secondaries","gp_stakes","service_provider"] — all that apply. Use UPPERCASE for PE and VC. "service_provider" = the story is chiefly about a firm that SERVES private funds: law firm (fund formation, fund finance), fund administrator, auditor/CPA, valuation firm, fund finance lender, prime broker, custodian, placement agent, or fund tech vendor. Tag it alongside any asset-class category that applies.
   "article_type": string,          // one of: fund_launch, fund_close, capital_raise, executive_hire, executive_departure, executive_change, acquisition, regulatory_action, legal_alert, market_commentary, press_release, industry_analysis, award, other. Use "acquisition" for BOTH acquisitions and mergers.
   "source_type": string,           // one of: press_release, trade_press, news_wire, law_firm, regulatory, blog
@@ -209,7 +211,7 @@ E. By event type — for these article_types, fund_size_usd_millions should almo
 F. Acquisitions / M&A — fund_size_usd_millions holds the DEAL VALUE (purchase price), which is acceptable for our pipeline. "EQT $11bn takeover of Intertek" → 11000.
 G. LP commitments (article_type: capital_raise where firm_name is a pension/LP) — fund_size_usd_millions is the COMMITMENT AMOUNT, not the LP's total AUM. "Arkansas Teachers commits $900M to alternatives" → 900.
 
-Return ONLY a JSON array in the same order as input. No markdown, no explanation.`;
+Return ONLY a JSON array with exactly one object per input article, in the same order as input, each carrying that article's "id". Never skip an article and never merge two. No markdown, no explanation.`;
 
 // ─── Main ───────────────────────────────────────────────────────────────────
 
@@ -476,13 +478,12 @@ async function classifyBatch(
     throw new Error('Classification response was not an array');
   }
 
-  // Map back by index, filling nulls for missing items
-  const results: (ClassificationOutput | null)[] = [];
-  for (let i = 0; i < articles.length; i++) {
-    results.push(parsed[i] ?? null);
-  }
-
-  return results;
+  // Pair by echoed id and verify each result fits its article — never by
+  // bare position (see classification-align.ts for what that cost).
+  return alignClassifications(
+    input.map((a) => ({ title: a.title, text: a.body_snippet })),
+    parsed
+  );
 }
 
 // ─── Helpers ────────────────────────────────────────────────────────────────
