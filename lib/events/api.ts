@@ -17,6 +17,7 @@ export interface EventQueryParams {
 }
 
 const WHEN_TO_DAYS: Record<string, number> = {
+  '1w': 7, // the daily email's events section (Danny, 2026-10-01: two weeks ran too long)
   '2w': 14,
   '30d': 30,
   '3m': 92,
@@ -31,6 +32,12 @@ function todayIso(): string {
 // Non-NA rows stay in the table (unlisted — direct detail URLs still work)
 // so widening later is a one-line change here, not a re-scout.
 const BOARD_REGION = 'north_america'
+
+// Per-event exception to the NA scope (Danny, 2026-10-01): a row with
+// `board_exception = true` is listed on the board and in the daily email even
+// though its region is elsewhere. Hand-set in the database, on his say-so only
+// — first use was a friend's London event. The region itself stays honest.
+const BOARD_SCOPE = `region.eq.${BOARD_REGION},board_exception.eq.true`
 
 // Per Danny (2026-09-05): the board and the daily email are IN-PERSON ONLY.
 // Virtual-only events are excluded everywhere the board is read. `hybrid` is
@@ -49,7 +56,7 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
     .from('industry_events')
     .select('*')
     .eq('status', 'published')
-    .eq('region', BOARD_REGION)
+    .or(BOARD_SCOPE)
     .in('event_format', BOARD_FORMATS)
     .gte('start_date', today)
     .order('start_date', { ascending: true })
@@ -170,7 +177,7 @@ export async function queryRelatedEvents(event: IndustryEvent, limit = 5): Promi
       .from('industry_events')
       .select('*')
       .eq('status', 'published')
-      .eq('region', BOARD_REGION)
+      .or(BOARD_SCOPE)
       .in('event_format', BOARD_FORMATS)
       .gte('start_date', today)
       .order('start_date', { ascending: true })
@@ -196,13 +203,13 @@ export async function queryRelatedEvents(event: IndustryEvent, limit = 5): Promi
   return related
 }
 
-/** Slugs for the sitemap — NA board scope only (non-NA pages stay unlisted). */
+/** Slugs for the sitemap — board scope only (non-NA pages stay unlisted unless flagged board_exception). */
 export async function queryAllEventSlugs(): Promise<{ slug: string; startDate: string }[]> {
   const { data } = await getSupabaseAdmin()
     .from('industry_events')
     .select('slug, start_date')
     .neq('status', 'draft')
-    .eq('region', BOARD_REGION)
+    .or(BOARD_SCOPE)
     .in('event_format', BOARD_FORMATS)
     .order('start_date', { ascending: true })
     .limit(1000)
@@ -216,7 +223,7 @@ async function queryEventFacets(today: string): Promise<EventFacetCounts> {
     .from('industry_events')
     .select('event_kind, event_format, cost_type, region, fund_categories, topics, city, ops_relevance')
     .eq('status', 'published')
-    .eq('region', BOARD_REGION)
+    .or(BOARD_SCOPE)
     .in('event_format', BOARD_FORMATS)
     .gte('start_date', today)
 

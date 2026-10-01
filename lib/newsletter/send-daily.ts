@@ -18,7 +18,8 @@ import { sendPipelineAlert } from '@/lib/pipeline/alert'
 // The events section is bounded by the DATE WINDOW, not by a count. A cap of
 // 24 silently truncated it to ~8 days once the board grew past ~24 events in
 // a fortnight, while the section header still promised "the next two weeks"
-// (found 2026-09-04: 67 events in the window, 24 rendered). This ceiling
+// (found 2026-09-04: 67 events in the window, 24 rendered). The window has
+// since been cut to one week, with the header to match. This ceiling
 // exists only so a pathological day can't produce an unbounded email.
 const EVENTS_LIMIT = 150
 
@@ -134,7 +135,8 @@ export async function sendDailyNewsletter(
   // section simply renders empty.
   let upcomingEvents: IndustryEvent[] = []
   try {
-    const feed = await queryEventFeed({ when: '2w', limit: EVENTS_LIMIT })
+    // One week ahead, not two (Danny, 2026-10-01): a fortnight made the email too long.
+    const feed = await queryEventFeed({ when: '1w', limit: EVENTS_LIMIT })
     upcomingEvents = feed.events
   } catch (err) {
     console.error('[send-daily] events lookup failed, sending without Section B:', err)

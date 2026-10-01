@@ -43,7 +43,7 @@ interface TemplateParams {
    */
   subscriberCount?: number
   /**
-   * Next ~2 weeks of North America events. The Circuit stopped being its own
+   * The next week of board events (North America, plus hand-flagged exceptions). The Circuit stopped being its own
    * weekly email on 2026-08-30 (Danny) and rides at the bottom of the daily
    * instead — one send, one habit. Empty array renders no section.
    */
@@ -467,7 +467,7 @@ function renderEventsSection(events: IndustryEvent[]): string {
                 Section B &nbsp;&middot;&nbsp; Events
               </div>
               <div class="fops-serif fops-ink" style="font-size:20px;font-weight:700;line-height:1.2;margin-bottom:2px;">
-                The next <span class="fops-amber" style="font-style:italic;">two weeks.</span>
+                The week <span class="fops-amber" style="font-style:italic;">ahead.</span>
               </div>
               <div style="font-family:${FONT_MONO};font-size:10px;line-height:15px;color:${INK_MUTED};text-transform:uppercase;">Every date verified at the organizer</div>
               ${dayBlocks}

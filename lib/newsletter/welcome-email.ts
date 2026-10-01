@@ -134,7 +134,7 @@ export function renderWelcomeEmail(unsubscribeUrl: string): string {
               </p>
               <ul style="margin:0 0 24px;padding-left:22px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
                 <li style="margin-bottom:8px;"><strong>News</strong> &mdash; the morning&rsquo;s headlines by strategy: launches, closes, LP commitments, people moves, M&amp;A and regulatory action, de-duplicated across 200+ publications and linked to the original reporting</li>
-                <li><strong>Events</strong> &mdash; the next two weeks of conferences, forums and free webinars across North America, grouped by day, every date verified at the organizer</li>
+                <li><strong>Events</strong> &mdash; the week ahead in conferences, forums and networking events across North America, grouped by day, every date verified at the organizer</li>
               </ul>
 
               <p style="margin:0 0 16px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
