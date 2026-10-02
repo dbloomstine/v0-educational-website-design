@@ -63,10 +63,14 @@ async function computeFirm(slug: string): Promise<FirmPage | null> {
     // them on a busy database must not hold the firm's own stories up.
     base().or(lookupFilter('title', lookup)).limit(300).abortSignal(AbortSignal.timeout(MENTIONS_TIMEOUT_MS)),
   ])
-  // Nothing under the name as words: it may be a name whose words an accent
-  // joins ("Värde" is the key "v rde"). Ask for the letters in order instead.
+  // Nothing under the name as words, and no headline that uses it: it may be
+  // a name whose words an accent joins ("Värde" is the key "v rde"). Ask for
+  // the letters in order instead. Not when a headline matched: then this is a
+  // company that is named in stories but is never their subject — most of
+  // what a crawler asks for — and the extra query would find nothing.
+  const inHeadlines = !inHeadline.error && (inHeadline.data ?? []).length > 0
   const asSubject =
-    !named.error && (named.data ?? []).length === 0 && lookup.loose
+    !named.error && (named.data ?? []).length === 0 && lookup.loose && !inHeadlines
       ? await base().or(lookupFilter('extracted_data->>firm_name', lookup, { loose: true })).limit(600)
       : named
   if (asSubject.error) throw new Error(`firm query failed: ${asSubject.error.message}`)

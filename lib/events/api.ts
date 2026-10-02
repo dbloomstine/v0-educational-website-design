@@ -220,16 +220,21 @@ export async function queryRelatedEvents(event: IndustryEvent, limit = 5): Promi
 }
 
 /** Slugs for the sitemap — board scope only (non-NA pages stay unlisted unless flagged board_exception). */
-export async function queryAllEventSlugs(): Promise<{ slug: string; startDate: string }[]> {
+/** Every listed event's page, with when its row last changed: the sitemap's honest "last modified". */
+export async function queryAllEventSlugs(): Promise<{ slug: string; startDate: string; changedAt: string | null }[]> {
   const { data } = await getSupabaseAdmin()
     .from('industry_events')
-    .select('slug, start_date')
+    .select('slug, start_date, created_at, updated_at, verified_at')
     .neq('status', 'draft')
     .or(BOARD_SCOPE)
     .in('event_format', BOARD_FORMATS)
     .order('start_date', { ascending: true })
     .limit(1000)
-  return (data ?? []).map((r) => ({ slug: r.slug, startDate: r.start_date }))
+  return (data ?? []).map((r) => ({
+    slug: r.slug,
+    startDate: r.start_date,
+    changedAt: [r.updated_at, r.verified_at, r.created_at].filter(Boolean).sort().pop() ?? null,
+  }))
 }
 
 async function queryEventFacets(today: string): Promise<EventFacetCounts> {
