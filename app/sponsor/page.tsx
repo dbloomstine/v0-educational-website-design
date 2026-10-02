@@ -58,7 +58,6 @@ function figures(s: SponsorStats): { value: string; label: string; note?: string
   if (s.subscribers != null) out.push({ value: s.subscribers.toLocaleString('en-US'), label: 'Confirmed subscribers', note: 'Double opt-in' })
   if (s.openRate != null) out.push({ value: `${s.openRate}%`, label: 'Open rate', note: `Last ${s.editionsMeasured} editions` })
   if (s.weeklyReach != null) out.push({ value: `${s.weeklyReach}%`, label: 'Open at least once a week' })
-  if (s.clickRate != null) out.push({ value: `${s.clickRate}%`, label: 'Click rate', note: `Last ${s.editionsMeasured} editions` })
   if (s.firms != null) out.push({ value: s.firms.toLocaleString('en-US'), label: 'Firms reading' })
   if (s.editionsSent != null) {
     const since = fmtMonth(s.firstEdition)
@@ -131,8 +130,8 @@ export default async function SponsorPage() {
                 ))}
               </dl>
               <p className="mt-2 font-ui text-[11.5px] leading-snug text-muted-foreground">
-                Counted automatically from the subscriber list and delivery records, and refreshed twice a day. Opens and clicks are as reported
-                by the mail platform and include automatic ones from some mail apps and corporate security filters.
+                Counted automatically from the subscriber list and delivery records, and refreshed twice a day. Opens are as reported by the mail
+                platform and include automatic opens by some mail apps.
               </p>
             </section>
           )}
