@@ -7,6 +7,7 @@ const COMPANY_LINKS = [
   { label: "About", href: "/about" },
   { label: "Sponsor", href: "/sponsor" },
   { label: "Submit an event", href: "/events/submit" },
+  { label: "RSS feed", href: "/feed.xml" },
   { label: "Privacy", href: "/privacy" },
   { label: "Terms", href: "/terms" },
 ]

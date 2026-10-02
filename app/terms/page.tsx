@@ -2,16 +2,17 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { PageHero } from '@/components/layout'
+import { OG_IMAGES } from '@/lib/seo'
 
 export const metadata: Metadata = {
-  title: 'Terms of Service - FundOpsHQ',
+  title: 'Terms of Service',
   description: 'Terms of Service for FundOpsHQ. Read about the terms and conditions governing your use of our site.',
   openGraph: {
     title: 'Terms of Service - FundOpsHQ',
     description: 'Terms of Service for FundOpsHQ.',
     type: 'website',
     url: 'https://fundopshq.com/terms',
+    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',
@@ -29,19 +30,20 @@ export default function TermsPage() {
       <SiteHeader />
 
       <main id="main-content" className="paper flex-1">
-        <PageHero
-          title="Terms of Service"
-          subtitle="Please read these terms carefully before using FundOpsHQ."
-        />
+        <header className="mx-auto max-w-[760px] px-4 pt-8 lg:px-6">
+          <p className="font-ui text-[10.5px] font-bold uppercase tracking-[0.14em] text-amber-400">Legal</p>
+          <h1 className="mt-2 font-news text-[34px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[42px]">Terms of Service</h1>
+          <p className="mt-2 font-news text-[17px] leading-snug text-foreground/70">Please read these terms carefully before using FundOpsHQ.</p>
+        </header>
 
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-3xl">
+        <section className="pb-14 pt-6">
+          <div className="mx-auto max-w-[760px] px-4 lg:px-6">
+            <div className="legal">
               <p className="text-sm text-muted-foreground mb-12">
                 Last Updated: June 27, 2026
               </p>
 
-              <div className="prose prose-invert prose-lg max-w-none space-y-12">
+              <div className="space-y-8">
                 {/* Acceptance of Terms */}
                 <div>
                   <h2 className="text-2xl font-bold tracking-tight mb-4">1. Acceptance of Terms</h2>

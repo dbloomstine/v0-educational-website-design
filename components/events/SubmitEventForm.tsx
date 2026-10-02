@@ -45,7 +45,7 @@ export function SubmitEventForm() {
       <div className="rounded-lg border border-emerald-800 bg-emerald-900/20 px-5 py-8 text-center">
         <p className="text-sm font-medium text-emerald-300">Submission received — thank you.</p>
         <p className="mt-2 text-[13px] text-muted-foreground">
-          We verify every date at the organizer&apos;s site before publishing. If it checks out, it&apos;ll be on the board within a week.
+          We verify every date at the organizer&apos;s site before publishing. If it checks out, it&apos;ll be on the board within a day.
         </p>
       </div>
     )

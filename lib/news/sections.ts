@@ -25,19 +25,28 @@ export interface SectionDef {
   group: 'type' | 'asset'
   kind?: StoryKind
   assetClasses?: string[]
+  /** Lower-case noun for running text: "All LP stories", "Latest deal news". Defaults to the title, lower-cased. */
+  noun?: string
+  /** Event-board topics that belong on a story-type page's rail (asset-class pages use their asset class). */
+  eventTopics?: string[]
+}
+
+/** The section's name as it reads mid-sentence. */
+export function sectionNoun(section: SectionDef): string {
+  return section.noun ?? section.title.toLowerCase()
 }
 
 export const SECTIONS: SectionDef[] = [
   {
-    slug: 'fundraising', more: 'More fundraising', label: 'Fundraising', title: 'Fundraising', group: 'type', kind: 'fundraising',
+    slug: 'fundraising', more: 'More fundraising', label: 'Fundraising', title: 'Fundraising', group: 'type', kind: 'fundraising', eventTopics: ['fundraising_ir'],
     description: 'Fund closes, launches and targets across private markets — who is raising, how much, and how it compares with the last one.',
   },
   {
-    slug: 'deals', more: 'More deals', label: 'Deals', title: 'Deals', group: 'type', kind: 'deals',
+    slug: 'deals', more: 'More deals', label: 'Deals', title: 'Deals', group: 'type', kind: 'deals', noun: 'deal',
     description: 'Buyouts, take-privates, exits and manager-level M&A, from first rumour to signed and closed.',
   },
   {
-    slug: 'people', more: 'More people moves', label: 'People', title: 'People moves', group: 'type', kind: 'people',
+    slug: 'people', more: 'More people moves', label: 'People', title: 'People moves', group: 'type', kind: 'people', noun: 'people', eventTopics: ['talent'],
     description: 'Hires, promotions and departures at fund managers — partners, C-suite, and the heads of IR, operations and strategy.',
   },
   {
@@ -61,7 +70,7 @@ export const SECTIONS: SectionDef[] = [
     description: 'Infrastructure equity and debt funds, energy transition vehicles and their backers.',
   },
   {
-    slug: 'secondaries', more: 'More secondaries', label: 'Secondaries', title: 'Secondaries & GP stakes', group: 'asset', assetClasses: ['secondaries', 'gp_stakes'],
+    slug: 'secondaries', more: 'More secondaries', label: 'Secondaries', title: 'Secondaries & GP stakes', group: 'asset', assetClasses: ['secondaries', 'gp_stakes'], noun: 'secondaries and GP stakes',
     description: 'Secondaries funds, continuation vehicles and GP-stake deals.',
   },
   {
@@ -69,15 +78,15 @@ export const SECTIONS: SectionDef[] = [
     description: 'Launches, closures, capital raises and portfolio-manager moves at hedge funds.',
   },
   {
-    slug: 'lps', more: 'More LP news', label: 'LPs', title: 'LPs', group: 'type', kind: 'lps',
+    slug: 'lps', more: 'More LP news', label: 'LPs', title: 'LPs', group: 'type', kind: 'lps', noun: 'LP',
     description: 'Commitments, pacing plans and allocation shifts from pensions, sovereign funds, endowments and family offices.',
   },
   {
-    slug: 'regulation', more: 'More regulation', label: 'Regulation', title: 'Regulation', group: 'type', kind: 'regulation',
+    slug: 'regulation', more: 'More regulation', label: 'Regulation', title: 'Regulation', group: 'type', kind: 'regulation', eventTopics: ['compliance_regulatory', 'legal'],
     description: 'Rules, risk alerts and enforcement that touch private fund managers — SEC, FCA, ESMA, ASIC and beyond.',
   },
   {
-    slug: 'service-providers', more: 'More service-provider news', label: 'Providers', title: 'Service providers', group: 'type', kind: 'providers',
+    slug: 'service-providers', more: 'More service-provider news', label: 'Providers', title: 'Service providers', group: 'type', kind: 'providers', noun: 'service provider', eventTopics: ['technology_ai', 'accounting_tax', 'fund_finance'],
     description: 'Law firms, fund administrators, auditors, lenders and fund technology: who is hiring, merging and moving.',
   },
 ]

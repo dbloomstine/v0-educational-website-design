@@ -106,6 +106,47 @@ export function LargestCloses({ stories, stats }: { stories: Story[]; stats: { f
   )
 }
 
+/** Stories of one kind with a stated size, largest first. For the Deals and LPs rails. */
+export function largestBySize(stories: Story[], limit = 6, withinDays = 7, nowMs = Date.now()): Story[] {
+  return stories
+    // The figure has to be the story's own: a headline with no number in it
+    // usually means the size on file is someone's AUM ("New York Life boosts
+    // private credit arm with Invictus stake" carried Invictus's $20B).
+    .filter((s) => !s.roundup && !!s.sizeUsdM && /\d/.test(s.headline) && nowMs - new Date(s.firstSeen).getTime() < withinDays * 86_400_000)
+    .sort((a, b) => (b.sizeUsdM ?? 0) - (a.sizeUsdM ?? 0))
+    .slice(0, limit)
+}
+
+/**
+ * The same league table as LargestCloses, for the sections whose number is
+ * not a fund close: the week's largest deals, the week's largest LP commitments.
+ */
+export function LargestBySize({ label, stories, note = 'Past 7 days' }: { label: string; stories: Story[]; note?: string }) {
+  if (stories.length < 3) return null
+  return (
+    <section aria-label={label}>
+      <SectionFlag label={label} note={note} />
+      <ol>
+        {stories.map((s, i) => (
+          <li key={s.id} className="border-b border-border/70 last:border-0">
+            <Link
+              href={`/story/${s.id}`}
+              title={s.headline}
+              className="group grid grid-cols-[18px_minmax(0,1fr)_auto] items-baseline gap-2 py-[7px]"
+            >
+              <span className="font-mono text-[10.5px] text-muted-foreground">{i + 1}</span>
+              <span className="hl min-w-0 font-news text-[14.5px] leading-[1.27] text-foreground">
+                <Headline story={s} />
+              </span>
+              <span className="font-mono text-[13px] font-bold tabular-nums text-foreground">{sizeLabel(s.sizeUsdM)}</span>
+            </Link>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )
+}
+
 export function EventsRail({
   events,
   label = 'Events',

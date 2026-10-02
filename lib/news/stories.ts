@@ -13,7 +13,7 @@ import {
   rowToArticle, screenArticle, gateArticle, placeArticle, mergeStoryGroup, plainHeadline,
   sourceTier, isLikelyAumLeak, type NewsletterArticle, type ArticleSection,
 } from '@/lib/newsletter/query-articles'
-import { clusterBy, isRoundup, sameStoryLoose } from '@/lib/newsletter/story-links'
+import { clusterBy, dealStage, entityKey, isRoundup, keysMatch, sameStoryLoose, storyFamily } from '@/lib/newsletter/story-links'
 import { isSameStory } from './story-dedup'
 import { normalizeSourceName } from './constants'
 
@@ -127,6 +127,15 @@ export function storyHeat(story: Story, nowMs: number): number {
   return story.weight * Math.pow(0.5, ageH / 28)
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isLateDealRepeat(a: any, b: any): boolean {
+  if (!a.firmName || !b.firmName) return false
+  if (!keysMatch(entityKey(a.firmName), entityKey(b.firmName))) return false
+  if (dealStage(a.title) !== dealStage(b.title)) return false
+  if (storyFamily(a.eventType) !== 'deal' || storyFamily(b.eventType) !== 'deal') return false
+  return sameStoryLoose(a, b, { crossEdition: true })
+}
+
 export function buildStories(rows: Row[]): Story[] {
   const candidates: Candidate[] = []
   for (const row of rows) {
@@ -145,7 +154,15 @@ export function buildStories(rows: Row[]): Story[] {
   // cross-edition ones (a big firm really does announce two funds in a week).
   const same = (a: Candidate, b: Candidate) => {
     const gap = Math.abs(a.day - b.day)
-    if (gap > 4) return false
+    if (gap > 4) {
+      // A deal re-reported a week on by the trade press ("73 Strings buys
+      // Callisto…", then "73 Strings Acquires Callisto" six days later) is
+      // still one deal: same acquirer, same two parties, same stage.
+      return (
+        gap <= 10 &&
+        isLateDealRepeat(a.article, b.article)
+      )
+    }
     return isSameStory(a.article, b.article) || sameStoryLoose(a.article, b.article, { crossEdition: gap > 1 })
   }
   const groups = clusterBy(singles, same)

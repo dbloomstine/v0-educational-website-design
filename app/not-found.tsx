@@ -4,6 +4,8 @@ import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Home } from "lucide-react"
 
+export const metadata = { title: 'Page not found', robots: { index: false } }
+
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col">

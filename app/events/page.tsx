@@ -1,3 +1,4 @@
+import { OG_IMAGES } from '@/lib/seo'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 import { SiteHeader } from '@/components/site-header'
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
       'Conferences, summits, webinars, and networking for the investment funds industry — curated for GPs, LPs, and fund service providers, with verified dates.',
     type: 'website',
     url: 'https://fundopshq.com/events',
+    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary_large_image',

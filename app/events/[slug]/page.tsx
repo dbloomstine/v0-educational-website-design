@@ -17,6 +17,7 @@ import {
 import { googleCalendarUrl } from '@/lib/events/ics'
 import { CATEGORY_LABELS } from '@/lib/news/constants'
 import { cn } from '@/lib/utils'
+import { OG_IMAGES } from '@/lib/seo'
 import type { IndustryEvent } from '@/lib/events/types'
 
 export const revalidate = 3600
@@ -32,24 +33,24 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (collection) {
     const title = `${collection.title} | FundOpsHQ`
     return {
-      title,
+      title: { absolute: title },
       description: collection.blurb,
       alternates: { canonical: `https://fundopshq.com/events/${slug}` },
-      openGraph: { title, description: collection.blurb, type: 'website', url: `https://fundopshq.com/events/${slug}` },
+      openGraph: { title, description: collection.blurb, type: 'website', url: `https://fundopshq.com/events/${slug}`, images: OG_IMAGES },
     }
   }
   const event = await queryEventBySlug(slug)
-  if (!event) return { title: 'Event Not Found | FundOpsHQ' }
+  if (!event) return { title: 'Event not found' }
   const dates = formatEventDates(event.startDate, event.endDate)
   const title = `${event.name} — ${dates} | FundOpsHQ Events`
   const description = event.description
     ? event.description.slice(0, 300)
     : `${event.name} by ${event.organizerName}, ${dates}${event.city ? ` in ${event.city}` : ''}. Dates verified by FundOpsHQ.`
   return {
-    title,
+    title: { absolute: title },
     description,
     alternates: { canonical: `https://fundopshq.com/events/${slug}` },
-    openGraph: { title, description, type: 'website', url: `https://fundopshq.com/events/${slug}` },
+    openGraph: { title, description, type: 'website', url: `https://fundopshq.com/events/${slug}`, images: OG_IMAGES },
   }
 }
 
@@ -66,23 +67,6 @@ export default async function EventOrCollectionPage({ params }: { params: Promis
 }
 
 // ── Shared shell ──────────────────────────────────────────────────
-
-function Masthead({ right }: { right: string }) {
-  return (
-    <div className="border-b border-foreground/10">
-      <div className="container mx-auto max-w-[1100px] px-4">
-        <div className="flex items-center justify-between gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-          <span className="flex items-center gap-3">
-            <span className="text-foreground/80">Section B</span>
-            <span aria-hidden="true" className="text-foreground/20">·</span>
-            <span>Events</span>
-          </span>
-          <span className="text-amber-400/90">{right}</span>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 function MiniEventRow({ event }: { event: IndustryEvent }) {
   const kind = EVENT_KIND_LABELS[event.eventKind] ?? EVENT_KIND_LABELS.other
@@ -140,7 +124,6 @@ async function CollectionPage({ collection }: { collection: EventCollection }) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <SiteHeader />
       <main id="main-content" className="paper flex-1 border-t-2 border-foreground/15 bg-background">
-        <Masthead right={`${events.length} Upcoming`} />
         <div className="container mx-auto max-w-[1100px] px-4 py-10 sm:py-14">
           <Link href="/events" className="mb-6 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-3 w-3" /> All Events
@@ -230,7 +213,6 @@ function EventDetailPage({ event, related }: { event: IndustryEvent; related: In
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <SiteHeader />
       <main id="main-content" className="paper flex-1 border-t-2 border-foreground/15 bg-background">
-        <Masthead right={isPast ? 'Archived' : 'Verified Date'} />
         <div className="container mx-auto max-w-[1100px] px-4 py-10 sm:py-14">
           <Link href="/events" className="mb-6 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-3 w-3" /> All Events

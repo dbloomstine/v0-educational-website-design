@@ -61,6 +61,7 @@ export const metadata: Metadata = {
     default: "FundOpsHQ — News & Daily Newsletter for the Investment Funds Industry",
     template: "%s | FundOpsHQ"
   },
+  alternates: { types: { 'application/rss+xml': [{ url: '/feed.xml', title: 'FundOpsHQ' }] } },
   description:
     "FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed and morning newsletter. Built for GPs, LPs, and the fund service providers working in and around private markets.",
   keywords: [

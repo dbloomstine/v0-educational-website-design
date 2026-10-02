@@ -4,15 +4,15 @@ import { notFound } from 'next/navigation'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
-import { EventsRail, LargestCloses, MostCovered, mostCovered } from '@/components/home/Rail'
+import { EventsRail, LargestBySize, LargestCloses, MostCovered, largestBySize, mostCovered } from '@/components/home/Rail'
 import { queryEventFeed } from '@/lib/events/api'
 import type { IndustryEvent } from '@/lib/events/types'
-import { LeadStory, SectionFlag, TopStory } from '@/components/story/StoryBlocks'
-import { Headline } from '@/components/story/Headline'
+import { LeadStory, RiverRow, SectionFlag, TopStory } from '@/components/story/StoryBlocks'
 import { getStoriesSafe, STORY_WINDOW_DAYS } from '@/lib/news/front-page'
 import { composeFrontPage, rankSection, type Story } from '@/lib/news/stories'
-import { ASSET_LABEL, KIND_LABEL, SECTIONS, SECTION_BY_SLUG, sectionHref, storyInSection } from '@/lib/news/sections'
-import { kickerLabel, sizeLabel, stageLabel } from '@/lib/news/format'
+import { ASSET_LABEL, KIND_LABEL, SECTIONS, SECTION_BY_SLUG, sectionHref, sectionNoun, storyInSection } from '@/lib/news/sections'
+import { OG_IMAGES } from '@/lib/seo'
+import { kickerLabel } from '@/lib/news/format'
 import { cn } from '@/lib/utils'
 
 export const revalidate = 600
@@ -28,13 +28,14 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { section: slug } = await params
   const section = SECTION_BY_SLUG.get(slug)
   if (!section) return {}
-  const title = `${section.title} news`
+  const title = `${sectionNoun(section).replace(/^./, (c) => c.toUpperCase())} news`
+  const url = `https://fundopshq.com${sectionHref(slug)}`
   return {
     title,
     description: section.description,
-    alternates: { canonical: `https://fundopshq.com${sectionHref(slug)}` },
-    openGraph: { title: `${title} | FundOpsHQ`, description: section.description, type: 'website', url: `https://fundopshq.com${sectionHref(slug)}` },
-    twitter: { card: 'summary_large_image', title: `${title} | FundOpsHQ`, description: section.description },
+    alternates: { canonical: url },
+    openGraph: { title: `${title} | FundOpsHQ`, description: section.description, type: 'website', url, images: OG_IMAGES },
+    twitter: { card: 'summary_large_image', title: `${title} | FundOpsHQ`, description: section.description, images: OG_IMAGES.map((i) => i.url) },
   }
 }
 
@@ -54,11 +55,18 @@ export default async function SectionPage({ params, searchParams }: Params) {
   const section = SECTION_BY_SLUG.get(slug)
   if (!section) notFound()
 
-  // An asset-class page also carries that market's next events.
+  // The rail carries the section's own events: an asset-class page by asset
+  // class, a story-type page by the board topics that go with it.
+  const eventQuery: { category?: string; topic?: string } | null =
+    section.group === 'asset' && section.assetClasses?.length
+      ? { category: section.assetClasses.join(',') }
+      : section.eventTopics?.length
+        ? { topic: section.eventTopics.join(',') }
+        : null
   const [all, events] = await Promise.all([
     getStoriesSafe(),
-    section.group === 'asset' && section.assetClasses?.length
-      ? queryEventFeed({ category: section.assetClasses.join(','), when: '30d', limit: 5 })
+    eventQuery
+      ? queryEventFeed({ ...eventQuery, when: '30d', limit: 5 })
           .then((feed) => feed.events)
           .catch<IndustryEvent[]>(() => [])
       : Promise.resolve<IndustryEvent[]>([]),
@@ -76,7 +84,14 @@ export default async function SectionPage({ params, searchParams }: Params) {
   const closes = composeFrontPage(inSection, nowMs)
   const showCloses = (section.group === 'asset' || section.kind === 'fundraising') && closes.largestCloses.length > 0
   const covered = mostCovered(stories)
-  const hasRail = showCloses || covered.length >= 3 || events.length > 0
+  // Deals and LPs have a number of their own: the week's largest.
+  const largest = section.kind === 'deals' || section.kind === 'lps' ? largestBySize(inSection, 6, 7, nowMs) : []
+  const largestLabel = section.kind === 'lps' ? 'Largest commitments' : 'Largest deals'
+  const noun = sectionNoun(section)
+  const eventsHref = eventQuery
+    ? `/events?${eventQuery.category ? `category=${eventQuery.category.split(',')[0]}` : `topic=${(eventQuery.topic ?? '').split(',')[0]}`}`
+    : '/events'
+  const hasRail = showCloses || largest.length >= 3 || covered.length >= 3 || events.length > 0
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -133,7 +148,7 @@ export default async function SectionPage({ params, searchParams }: Params) {
               {stories.length > 0 && (
                 <section aria-label={`All ${section.title} stories`} className="mt-9">
                   <SectionFlag
-                    label={facet ? `${section.title} · ${facet.label}` : `All ${section.title.toLowerCase()} stories`}
+                    label={facet ? `${section.title} · ${facet.label}` : `All ${noun} stories`}
                     note={`${stories.length} in the last ${STORY_WINDOW_DAYS} days`}
                   />
                   {/* One list, newest first, no day headings — Danny, 2026-10-01:
@@ -141,7 +156,7 @@ export default async function SectionPage({ params, searchParams }: Params) {
                       they'll trust that it's recent". */}
                   <ul>
                     {stories.map((s) => (
-                      <RiverRow key={s.id} story={s} section={section} />
+                      <RiverRow key={s.id} story={s} tags={[riverTag(s, section)]} />
                     ))}
                   </ul>
                   <p className="mt-4 font-ui text-[12.5px] text-muted-foreground">
@@ -160,12 +175,13 @@ export default async function SectionPage({ params, searchParams }: Params) {
             {hasRail && (
               <aside className="min-w-0 space-y-7 lg:border-l lg:border-border lg:pl-8">
                 {showCloses && <LargestCloses stories={closes.largestCloses} stats={closes.stats} />}
+                <LargestBySize label={largestLabel} stories={largest} />
                 <MostCovered stories={covered} note={`Past ${STORY_WINDOW_DAYS} days`} />
                 <EventsRail
                   events={events}
-                  label={`${section.title} events`}
-                  href={`/events?category=${(section.assetClasses ?? []).join(',')}`}
-                  moreLabel={`All ${section.title.toLowerCase()} events`}
+                  label={section.group === 'asset' ? `${section.title} events` : 'Related events'}
+                  href={eventsHref}
+                  moreLabel={section.group === 'asset' ? `All ${noun} events` : 'More on the events calendar'}
                 />
               </aside>
             )}
@@ -198,36 +214,8 @@ function FacetLink({ href, active, label, count }: { href: string; active: boole
   )
 }
 
-/** One story in the river: headline, then the facts that distinguish it, then who reported it. */
-function RiverRow({ story, section }: { story: Story; section: (typeof SECTIONS)[number] }) {
-  // On an asset-class page the useful tag is the story type; on a type page, the asset class.
-  const tag = section.group === 'asset' ? KIND_LABEL[story.kind] : story.assetClasses[0] ? ASSET_LABEL[story.assetClasses[0]] : null
-  const sized = story.kind === 'fundraising' || story.kind === 'deals' || story.kind === 'lps'
-  const facts = [tag ?? (section.group === 'type' ? null : kickerLabel(story)), sized && story.leadEligible ? sizeLabel(story.sizeUsdM) : null, stageLabel(story)].filter(Boolean)
-  const more = story.coverage.length
-  return (
-    <li className="grid gap-x-4 border-b border-border/70 py-[7px] last:border-0 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-baseline">
-      <a
-        href={story.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        title={story.summary ?? undefined}
-        className="group font-news text-[16px] leading-[1.28] text-foreground"
-      >
-        <span className="hl"><Headline story={story} /></span>
-      </a>
-      {/* The trailing facts are the permalink: our page for the story. */}
-      <Link
-        href={`/story/${story.id}`}
-        title="Summary, all coverage, and share"
-        className="mt-0.5 flex flex-wrap items-baseline gap-x-2 font-ui text-[11.5px] text-muted-foreground hover:text-foreground lg:mt-0 lg:justify-end"
-      >
-        {facts.length > 0 && <span className="font-mono text-[10.5px] uppercase tracking-tight">{facts.join(' · ')}</span>}
-        <span className="whitespace-nowrap text-foreground/65">
-          {story.source}
-          {more > 0 && ` +${more}`}
-        </span>
-      </Link>
-    </li>
-  )
+/** What a river row says that the page does not: the story type on an asset-class page, the asset class on a type page. */
+function riverTag(story: Story, section: (typeof SECTIONS)[number]): string | null {
+  if (section.group === 'asset') return KIND_LABEL[story.kind] ?? kickerLabel(story)
+  return story.assetClasses[0] ? ASSET_LABEL[story.assetClasses[0]] : null
 }

@@ -556,3 +556,16 @@
 .success-pulse {
   animation: success-pulse 0.5s ease-in-out;
 }
+
+/* ── Legal pages (privacy, terms) ──────────────────────────────────────────
+   These were written for the old dark theme with `prose-invert`, which set
+   their headings white — invisible on the cream page. One scope restyles all
+   three without touching their markup. */
+.paper .legal { font-family: var(--font-newsreader), Georgia, serif; font-size: 16.5px; line-height: 1.55; color: color-mix(in oklab, var(--foreground) 82%, transparent); }
+.paper .legal > div, .paper .legal .mb-12 { margin-bottom: 1.75rem; }
+.paper .legal h2 { font-family: var(--font-franklin), system-ui, sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--foreground); border-top: 2px solid var(--foreground); padding-top: 6px; margin: 0 0 0.6rem; }
+.paper .legal h3 { font-family: var(--font-newsreader), Georgia, serif; font-size: 18px; font-weight: 700; letter-spacing: 0; color: var(--foreground); margin: 1.1rem 0 0.35rem; }
+.paper .legal p, .paper .legal li { color: inherit; font-size: inherit; line-height: inherit; }
+.paper .legal p.text-sm { font-family: var(--font-franklin), system-ui, sans-serif; font-size: 12.5px; margin-bottom: 1.25rem; }
+.paper .legal a { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; }
+.paper .legal strong { color: var(--foreground); }

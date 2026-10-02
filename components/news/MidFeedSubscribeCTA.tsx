@@ -60,7 +60,7 @@ export function MidFeedSubscribeCTA() {
         Get the morning brief before the market opens.
       </h3>
       <p className="mt-1.5 text-sm text-muted-foreground">
-        FundOps Daily — top fund news, every weekday morning. Free.
+        FundOps Daily — top fund news, every morning. Free.
       </p>
 
       {status === 'success' ? (

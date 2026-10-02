@@ -139,3 +139,32 @@ describe('formatting', () => {
     expect(timeLabel('2026-09-25T15:00:00Z', NOW)).toBe('Sep 25')
   })
 })
+
+describe('a deal re-reported a week later', () => {
+  const first = { event_type: 'acquisition', firm: '73 Strings', ents: ['73 Strings', 'Callisto'], published_date: '2026-09-24', created_at: '2026-09-24T14:00:00Z' }
+  it('is one story when the acquirer, the parties and the stage all match', () => {
+    const stories = buildStories([
+      row({ ...first, title: '73 Strings buys Callisto to build up private markets automation' }),
+      row({ ...first, title: '73 Strings Acquires Callisto', published_date: '2026-09-30', created_at: '2026-09-30T14:00:00Z', source_name: 'Business Wire' }),
+    ])
+    expect(stories).toHaveLength(1)
+    expect(stories[0].coverage).toHaveLength(1)
+  })
+  it('stays two stories when the same buyer does a different deal that week', () => {
+    const stories = buildStories([
+      row({ ...first, title: '73 Strings buys Callisto to build up private markets automation' }),
+      row({ ...first, ents: ['73 Strings', 'Acme Data'], title: '73 Strings acquires Acme Data', published_date: '2026-09-30', created_at: '2026-09-30T14:00:00Z' }),
+    ])
+    // Whatever else the gates do with them, the two are never filed as one story.
+    expect(stories.every((s) => s.coverage.length === 0)).toBe(true)
+  })
+})
+
+describe('section names in running text', () => {
+  it('reads as English: "All LP stories", not "All lps stories"', async () => {
+    const { sectionNoun, SECTION_BY_SLUG } = await import('../sections')
+    expect(sectionNoun(SECTION_BY_SLUG.get('lps')!)).toBe('LP')
+    expect(sectionNoun(SECTION_BY_SLUG.get('secondaries')!)).toBe('secondaries and GP stakes')
+    expect(sectionNoun(SECTION_BY_SLUG.get('private-equity')!)).toBe('private equity')
+  })
+})

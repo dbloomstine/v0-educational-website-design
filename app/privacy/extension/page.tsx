@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { PageHero } from '@/components/layout'
+import { OG_IMAGES } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Chrome Extension Privacy Policy',
@@ -14,6 +14,7 @@ export const metadata: Metadata = {
       'Privacy Policy for the FundOpsHQ News Chrome extension. Learn what data the extension accesses and how it is used.',
     type: 'website',
     url: 'https://fundopshq.com/privacy/extension',
+    images: OG_IMAGES,
   },
   twitter: {
     card: 'summary',
@@ -32,15 +33,16 @@ export default function ExtensionPrivacyPolicyPage() {
       <SiteHeader />
 
       <main id="main-content" className="paper flex-1">
-        <PageHero
-          title="Chrome Extension Privacy Policy"
-          subtitle="What the FundOpsHQ News extension does and does not collect"
-        />
+        <header className="mx-auto max-w-[760px] px-4 pt-8 lg:px-6">
+          <p className="font-ui text-[10.5px] font-bold uppercase tracking-[0.14em] text-amber-400">Legal</p>
+          <h1 className="mt-2 font-news text-[34px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[42px]">Chrome Extension Privacy Policy</h1>
+          <p className="mt-2 font-news text-[17px] leading-snug text-foreground/70">What the FundOpsHQ News extension does and does not collect</p>
+        </header>
 
-        <section className="py-16 lg:py-20">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-3xl">
-              <div className="prose prose-invert prose-lg max-w-none">
+        <section className="pb-14 pt-6">
+          <div className="mx-auto max-w-[760px] px-4 lg:px-6">
+            <div className="legal">
+              <div className="">
                 <p className="text-sm text-muted-foreground mb-12">Last updated: April 28, 2026</p>
 
                 <div className="mb-12">

@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next'
 import { queryAllEventSlugs } from '@/lib/events/api'
 import { EVENT_COLLECTIONS } from '@/lib/events/collections'
 import { SECTIONS, sectionHref } from '@/lib/news/sections'
+import { getStoriesSafe } from '@/lib/news/front-page'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://fundopshq.com'
@@ -13,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/events`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
     { url: `${baseUrl}/events/submit`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${baseUrl}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/sponsor`, lastModified: now, changeFrequency: 'weekly', priority: 0.5 },
     { url: `${baseUrl}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${baseUrl}/terms`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
   ]
@@ -46,5 +48,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // degrade gracefully
   }
 
-  return [...staticPages, ...sectionPages, ...collectionPages, ...eventPages]
+  // Story pages: only stories more than one outlet reported. A single-source
+  // story's page adds little to the publisher's own, so it is not offered up.
+  const stories = await getStoriesSafe()
+  const storyPages: MetadataRoute.Sitemap = stories
+    .filter((s) => !s.roundup && s.coverage.length > 0)
+    .map((s) => ({
+      url: `${baseUrl}/story/${s.id}`,
+      lastModified: new Date(s.firstSeen),
+      changeFrequency: 'daily' as const,
+      priority: 0.5,
+    }))
+
+  return [...staticPages, ...sectionPages, ...storyPages, ...collectionPages, ...eventPages]
 }

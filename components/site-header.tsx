@@ -111,6 +111,9 @@ export function SiteHeader() {
     month: "long",
     day: "numeric",
     year: "numeric",
+    // The newsroom's day, not the server's: without this the masthead read
+    // "Friday" from 8pm ET on Thursday, because the server keeps UTC.
+    timeZone: "America/New_York",
   })
 
   return (

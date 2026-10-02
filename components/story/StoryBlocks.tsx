@@ -169,3 +169,40 @@ export function MoreLink({ href, children }: { href: string; children: React.Rea
     </Link>
   )
 }
+
+/**
+ * One story in a long list: headline, then the facts that distinguish it, then
+ * who reported it. The trailing facts are the permalink — our page for the story.
+ * `tags` is whatever the surrounding page does not already say (on a venture
+ * page, the story type; on the fundraising page, the asset class).
+ */
+export function RiverRow({ story, tags = [], date }: { story: Story; tags?: (string | null | undefined)[]; date?: string | null }) {
+  const sized = story.kind === 'fundraising' || story.kind === 'deals' || story.kind === 'lps'
+  const facts = [...tags, sized && story.leadEligible ? sizeLabel(story.sizeUsdM) : null, stageLabel(story)].filter(Boolean)
+  const more = story.coverage.length
+  return (
+    <li className="grid gap-x-4 border-b border-border/70 py-[7px] last:border-0 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-baseline">
+      <a
+        href={story.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        title={story.summary ?? undefined}
+        className="group font-news text-[16px] leading-[1.28] text-foreground"
+      >
+        <span className="hl"><Headline story={story} /></span>
+      </a>
+      <Link
+        href={`/story/${story.id}`}
+        title="Summary, all coverage, and share"
+        className="mt-0.5 flex flex-wrap items-baseline gap-x-2 font-ui text-[11.5px] text-muted-foreground hover:text-foreground lg:mt-0 lg:justify-end"
+      >
+        {facts.length > 0 && <span className="font-mono text-[10.5px] uppercase tracking-tight">{facts.join(' · ')}</span>}
+        <span className="whitespace-nowrap text-foreground/65">
+          {story.source}
+          {more > 0 && ` +${more}`}
+        </span>
+        {date && <span className="whitespace-nowrap font-mono text-[10.5px] uppercase tracking-tight">{date}</span>}
+      </Link>
+    </li>
+  )
+}
