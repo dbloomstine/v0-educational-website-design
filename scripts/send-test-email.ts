@@ -3,10 +3,10 @@
  * Send a one-off test email of the FundOps Daily preview to a
  * specific recipient so the design can be validated inside a real
  * email client (Gmail, Apple Mail, Outlook) before pitching to a
- * sponsor. Defaults to the production DEFAULT_SPONSOR_SLATE so the
- * test mirrors what real subscribers see. Set MOCK_SPONSORS=1 to
- * render a co-sponsor sample (FundOpsHQ + Fidelity Careers) for
- * sponsor pitches.
+ * sponsor. By default it renders what the next send would: the sponsor
+ * booked for today (lib/sponsor/bookings.ts), or the house "Your firm
+ * here" notice when nobody is. Set MOCK_SPONSORS=1 for the one-sponsor
+ * placeholder a prospect sees at /newsletter/sample.
  *
  * Usage:
  *   TO=dbloomstine@gmail.com npx tsx --env-file=.env.local scripts/send-test-email.ts
@@ -17,7 +17,10 @@ import { createClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles } from '../lib/newsletter/query-articles'
 import { renderNewsletterEmail } from '../lib/newsletter/email-template'
 import { queryEventFeed } from '../lib/events/api'
-import { DEFAULT_SPONSOR_SLATE, FUNDOPSHQ_SPONSOR, type SponsorSlate } from '../lib/newsletter/sponsors'
+import { SAMPLE_SPONSOR_SLATE } from '../lib/newsletter/sponsors'
+import { slateFor, sponsorForEdition } from '../lib/sponsor/bookings'
+import { readerFirmDomains } from '../lib/sponsor/reader-firms'
+import { lastWeeksCloses } from '../lib/newsletter/recap'
 
 // The events section is bounded by the DATE WINDOW, not by a count. A cap of
 // 24 silently truncated it to ~8 days once the board grew past ~24 events in
@@ -26,33 +29,6 @@ import { DEFAULT_SPONSOR_SLATE, FUNDOPSHQ_SPONSOR, type SponsorSlate } from '../
 // exists only so a pathological day can't produce an unbounded email.
 const EVENTS_LIMIT = 150
 
-
-// Hosted asset URLs. Gmail strips base64 data: URIs in <img src>, so
-// test emails must reference the deployed copies on fundopshq.com.
-// These PNGs are committed in public/sponsors/ and served by Vercel.
-const FUNDOPSHQ_LOGO_URL = 'https://fundopshq.com/sponsors/fundopshq-wordmark.png'
-const FIDELITY_LOGO_URL = 'https://fundopshq.com/sponsors/fidelity-careers.png'
-
-function buildSampleSlate(): SponsorSlate {
-  return {
-    label: 'PRESENTED BY',
-    sponsors: [
-      {
-        ...FUNDOPSHQ_SPONSOR,
-        logoUrl: FUNDOPSHQ_LOGO_URL,
-      },
-      {
-        name: 'Fidelity Careers',
-        logoUrl: FIDELITY_LOGO_URL,
-        logoWidth: 200,
-        blurb:
-          'Fidelity is hiring across fund operations, fund accounting, investor reporting, and technology. Join a team supporting trillions in assets and the teams running private markets at scale.',
-        ctaUrl: 'https://jobs.fidelity.com',
-        ctaText: 'See open roles',
-      },
-    ],
-  }
-}
 
 async function main() {
   const to = process.env.TO
@@ -80,22 +56,21 @@ async function main() {
   const content = await queryNewsletterArticles(supabase, 72, { excludePriorEdition: false })
   console.log(`  ${content.totalArticles} articles across ${content.groups.length} groups`)
 
-  // Fetch the live confirmed-subscriber count so the test preview shows
-  // the same social-proof eyebrow the production send will render.
-  const { count: subscriberCount } = await supabase
-    .from('newsletter_subscribers')
-    .select('id', { count: 'exact', head: true })
-    .eq('status', 'confirmed')
+  // The live list, so the test shows the same reader figures the send will.
+  const { data: subscribers } = await supabase.from('newsletter_subscribers').select('email').eq('status', 'confirmed').limit(10000)
 
   const editionDate = new Date().toLocaleDateString('en-CA', {
     timeZone: 'America/New_York',
   })
 
+  // One sponsor at a time: the placeholder, or whoever is booked for today, or
+  // nobody (the house notice).
   const sponsorSlate =
-    process.env.MOCK_SPONSORS === '1' ? buildSampleSlate() : DEFAULT_SPONSOR_SLATE
+    process.env.MOCK_SPONSORS === '1' ? SAMPLE_SPONSOR_SLATE : slateFor(await sponsorForEdition(supabase, editionDate))
 
-  const upcomingEvents = (await queryEventFeed({ when: '2w', limit: EVENTS_LIMIT })).events
-
+  // One week ahead, as the send does.
+  const upcomingEvents = (await queryEventFeed({ when: '1w', limit: EVENTS_LIMIT })).events
+  const monday = new Date(`${editionDate}T12:00:00-05:00`).getUTCDay() === 1
 
   const html = renderNewsletterEmail({
     groups: content.groups,
@@ -103,7 +78,9 @@ async function main() {
     editionDate,
     unsubscribeUrl: 'https://fundopshq.com/api/newsletter/unsubscribe?token=TEST',
     sponsorSlate,
-    subscriberCount: subscriberCount ?? undefined,
+    subscriberCount: subscribers?.length || undefined,
+    readerFirms: subscribers ? readerFirmDomains(subscribers.map((s) => String(s.email))).size : undefined,
+    recap: monday ? await lastWeeksCloses() : null,
     events: upcomingEvents,
   })
 

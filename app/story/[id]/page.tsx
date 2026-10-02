@@ -1,4 +1,4 @@
-import { SponsorCard } from '@/components/sponsor/SponsorSlot'
+import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { firmHref } from '@/lib/news/league'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -94,6 +94,7 @@ export default async function StoryPage({ params }: Params) {
 
       <main id="main-content" className="paper flex-1">
         <div className="mx-auto max-w-[1320px] px-4 pb-12 pt-6 lg:px-6">
+          <SponsorStrip className="mb-5" />
           <div className="grid gap-x-9 gap-y-10 lg:grid-cols-[minmax(0,1fr)_332px]">
             <article className="min-w-0 max-w-[820px]">
               <p className="font-ui text-[10.5px] font-bold uppercase tracking-[0.14em] text-amber-400">
@@ -210,8 +211,8 @@ export default async function StoryPage({ params }: Params) {
 
             <aside className="min-w-0 space-y-5">
               <LatestRail stories={all.slice(0, 10)} />
-              <SubscribePanel title="Stories like this, every morning." body="FundOps Daily is the brief on fund closes, launches, deals and moves. Free, before the open." />
               <SponsorCard />
+              <SubscribePanel title="Stories like this, every morning." body="FundOps Daily is the brief on fund closes, launches, deals and moves. Free, before the open." />
             </aside>
           </div>
         </div>

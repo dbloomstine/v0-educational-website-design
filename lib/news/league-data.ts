@@ -8,7 +8,7 @@
 import { unstable_cache } from 'next/cache'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { ALL_NEWSLETTER_TYPES } from '@/lib/newsletter/query-articles'
-import { buildLeague, LEAGUE_CLOSE_TYPES, type FundClose, type LeagueOverride } from './league'
+import { buildLeagueReport, LEAGUE_CLOSE_TYPES, type FundClose, type LeagueOverride, type LeagueReport } from './league'
 
 /**
  * The classifier and the feed set that produce reliable close data came on
@@ -55,18 +55,28 @@ export async function fetchLeagueOverrides(): Promise<LeagueOverride[]> {
   return (data ?? []) as LeagueOverride[]
 }
 
-async function computeLeague(): Promise<FundClose[]> {
+/** The whole league, uncached. The newsletter send uses this directly: it runs outside the page cache. */
+export async function computeLeagueReport(): Promise<LeagueReport & { asOf: string }> {
   const [rows, overrides] = await Promise.all([fetchLeagueRows(), fetchLeagueOverrides()])
-  return buildLeague(rows, overrides)
+  return { ...buildLeagueReport(rows, overrides), asOf: new Date().toISOString() }
 }
 
-const getLeague = unstable_cache(computeLeague, ['league-v1'], { revalidate: 1800, tags: ['league'] })
+// Bump the version whenever FundClose changes shape: a deploy must never read
+// rows cached by the previous build's code.
+const getLeagueReport = unstable_cache(computeLeagueReport, ['league-v2'], { revalidate: 1800, tags: ['league'] })
 
-export async function getLeagueSafe(): Promise<FundClose[]> {
+const EMPTY: LeagueReport & { asOf: string } = { closes: [], unsized: [], asOf: '' }
+
+/** Never throws: a database hiccup renders an empty table, not an error page. */
+export async function getLeagueReportSafe(): Promise<LeagueReport & { asOf: string }> {
   try {
-    return await getLeague()
+    return await getLeagueReport()
   } catch (err) {
     console.error('[league] fetch failed:', err)
-    return []
+    return EMPTY
   }
+}
+
+export async function getLeagueSafe(): Promise<FundClose[]> {
+  return (await getLeagueReportSafe()).closes
 }

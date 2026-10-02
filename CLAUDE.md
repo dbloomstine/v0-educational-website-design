@@ -46,14 +46,15 @@ FundOps Daily email. Mechanics, all in `app/globals.css`:
 
 ## Routing (post-cleanup, April 2026)
 
-The site was aggressively consolidated on 2026-04-10. There are only six public routes plus an admin tool:
+The site was aggressively consolidated on 2026-04-10. These are the public routes, plus an admin tool:
 
 ```
 /                       → The FRONT PAGE (redesigned 2026-10-01 as a news site, not a feed).
                            Server-rendered from lib/news/stories.ts, revalidate 600:
                            · HeroSubscribe (now a one-line subscribe band; anchor #subscribe, input #newsletter-email)
+                           · "Firms in the news" line, then the sponsor strip (see "Sponsors" below)
                            · LeadStory + six TopStory (ranked: size, coverage breadth, source tier, recency)
-                           · rail: Latest, Largest closes (7 days), Events (week ahead)
+                           · rail: the fundraising chart, Latest, Largest closes (7 days), Events (week ahead)
                            · section blocks by story type, then by asset class; a story appears once per page
 /news                   → "Latest": the full archive with search and filters (client NewsFeed, unchanged logic)
 /news/[section]         → Section fronts — the TABS in the header. 13 sections defined in lib/news/sections.ts:
@@ -64,6 +65,13 @@ The site was aggressively consolidated on 2026-04-10. There are only six public 
                            links); a new section slug must be added to SECTION_SLUGS there (a test enforces it).
 /story/[id]             → Our page for one story: summary, extracted facts, every outlet that covered it,
                            share buttons, per-story OG image. `id` is any news_items id in the story.
+/league-tables          → Final closes ranked by size: 30 days / 90 days / year, by asset class. Built from
+                           stories by lib/news/league.ts. See "League tables, the chart and firm pages".
+/firms                  → Directory of every firm in the month's stories, with a search that reaches back a year.
+/firm/[slug]            → One firm: its stories for the past year, its closes, and where it is named in others'.
+/sponsor                → What a sponsor gets. Every number on it is counted (lib/sponsor/stats.ts), never typed —
+                           a test enforces that. Shows mock-ups of the placements and whether the space is open.
+/newsletter/sample      → Today's edition rendered with a one-sponsor placeholder; linked from /sponsor.
 /events                 → Industry events board (added 2026-08-29) — "Section B · The Circuit".
                            EventsBoard component, filterable, backed by industry_events.
                            Refreshed weekly via the scout-events skill (~/.claude/skills/scout-events)
@@ -79,7 +87,7 @@ The site was aggressively consolidated on 2026-04-10. There are only six public 
 /admin/newsletter       → Internal newsletter prep UI (not in sitemap/robots)
 ```
 
-Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/news`, `/contact`, `/episodes/*`, `/fund-watch/*`, `/newsletter/*`, `/articles/*`, `/tools/*`, `/funds/*`, `/roles/*`. Do not recreate them without an explicit ask.
+Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/contact`, `/episodes/*`, `/fund-watch/*`, `/articles/*`, `/tools/*`, `/funds/*`, `/roles/*`, and every `/newsletter/*` page except the sample. Do not recreate them without an explicit ask.
 
 ## API Routes
 
@@ -295,6 +303,10 @@ with the server-side rules — needs a patch before the next manual run.
 | `cold_outreach_sent`     | Append-only log of outreach drafts + sends (Path B + grow-newsletter)                                                                     |
 | `event_sources`          | Events-board source registry (added 2026-08-29) — 60+ calendars, tiered; seeded from workspace docs/EVENTS_SOURCES.md                     |
 | `industry_events`        | Curated events for /events (added 2026-08-29) — every row date-verified at the source; refreshed by the scout-events skill                |
+| `league_overrides`       | Hand corrections to a league-table row (2026-10-01): `hide` it, or `set` its firm / fund / size / stage. Keyed by any report in the story |
+| `sponsor_bookings`       | One row per sponsor run (2026-10-02), read by the daily send and by the site. See "Sponsors" below                                        |
+
+**The database reads slowly from a cold disk.** A query that reads a year of `news_items` takes ~70 ms when the rows are in memory and 8–19 s when they are not — past the 8 s statement limit. Anything on a page's request path must be served by an index and touch few rows: `idx_news_items_fund_events` (the league), and the trigram indexes on `title`, `tldr` and `extracted_data->>'firm_name'` (search and firm pages). Check a new query with `explain (analyze)` and make sure it is not walking `idx_news_items_not_duplicate` for the whole year. Migrations are recorded in `supabase/migrations/`.
 
 Events-domain naming is deliberately distinct from news: `event_kind`/`event_format` on `industry_events`, NEVER `event_type` — that column on `news_items` (and `eventType` in the news UI) means "kind of news story". Inserts to `industry_events` go through `scripts/events/load-events.mjs` (validated loader — enforces enums, date rules, URL dedup, and city-alias normalization), not hand-written SQL.
 
@@ -313,12 +325,22 @@ lib/
 │   │                    # fundSizesMatch, titleJaccard. Used by both the newsletter
 │   │                    # assembly and the feed UI grouping. Single source of truth
 │   │                    # for "are these two articles the same underlying story?".
-│   └── rss-client.ts    # Entity-decoding stripHtml — decodeEntities is exported
-│                        # for the backfill script and handles named + numeric refs.
+│   ├── rss-client.ts    # Entity-decoding stripHtml — decodeEntities is exported
+│   │                    # for the backfill script and handles named + numeric refs.
+│   ├── stories.ts       # buildStories: reports → stories (the unit the site and the email share)
+│   ├── league.ts        # buildLeagueReport: stories → fund closes. What counts, what merges, which figure
+│   ├── league-data.ts   # …fetched and cached (getLeagueReportSafe). scripts/league-audit.ts audits it
+│   ├── chart-math.ts    # Bars for the fundraising chart. Browser-safe: the chart computes its views client-side
+│   ├── firms.ts         # firmIndex: the directory and "firms in the news", from stories
+│   ├── firm-data.ts     # getFirm(slug), searchFirms — the database side of firm pages
+│   └── firm-lookup.ts   # How a firm's address becomes a database lookup. Read its header before touching
 ├── events/          # Events board — types, display constants (EVENT_KIND_LABELS etc.),
 │                    # queryEventFeed. Mirrors lib/news/api.ts but looks FORWARD in time
 │                    # (start_date >= today) instead of back.
-├── newsletter/      # Email template, Resend sender, query-articles, sponsors, confirmation email
+├── newsletter/      # Email template, Resend sender, query-articles, top-stories (what leads an edition),
+│                    # recap (Monday's largest closes), sponsors (types + the /newsletter/sample placeholder)
+├── sponsor/         # bookings.ts (who the sponsor is on a date), stats.ts (the /sponsor page's numbers),
+│                    # reader-firms.ts (which firms read it)
 ├── outreach/        # Path B cold outreach pipeline — candidates, dedup, Apollo,
 │                    # Anthropic hook generator, Gmail OAuth/MIME/send, monitor.
 │                    # See the "Cold Outreach Pipeline" section above.
@@ -341,7 +363,12 @@ components/
 ├── home/
 │   ├── hero-subscribe.tsx   # One-line subscribe band under the tabs (homepage only)
 │   ├── Rail.tsx             # LatestRail, LargestCloses, EventsRail, SectionBlock
+│   ├── InTheNews.tsx        # "Firms in the news" line under the subscribe band
 │   └── live-show-feature.tsx # "Channel 02" broadcast section with latest video
+├── charts/
+│   └── FundraisingChart.tsx # The rail chart (client). Hover explores, click pins — see below
+├── sponsor/
+│   └── SponsorSlot.tsx      # SponsorStrip (above the stories, every news page) + SponsorCard (rail, booked only)
 ├── events/
 │   ├── EventsBoard.tsx      # /events board (client component — clones NewsFeed's
 │   │                        # URL-sync/filter idiom; filters collapsed by default)
@@ -379,6 +406,24 @@ components/
 - Canonical domain: `https://fundopshq.com` (not `fundops.com`)
 - Syncs with v0.app — edits made in v0.app land here automatically, so expect occasional unfamiliar commits from the v0 bot
 
+## League tables, the chart and firm pages (2026-10)
+
+**One definition of a fund close.** `lib/news/league.ts` turns stories into closes; the league tables, the rail chart, "Largest closes" and Monday's recap in the email all read it, so a number is the same wherever it appears. A close needs a named manager, a stated size and a headline that says the fund closed — targets, "nears", continuation vehicles, CLOs, mandates and evergreen vehicles are news, not closes. Reports of one close are merged (`sameClose`); when they disagree on the size the table takes the **lower** figure and marks the row † (`altSizeUsdM`) — the higher is usually leverage or sister vehicles added in. ≈ marks a size converted from another currency. A wrong row is fixed with a `league_overrides` row, not with code. After any change to the classifier, the story rules or `league.ts`, run `npx tsx scripts/league-audit.ts` (`--pairs` lists same-manager rows that might be one fund).
+
+**The chart (`components/charts/FundraisingChart.tsx`).** The closes of the last 92 days are sent to the page and the views (market, weeks, size, funds, firms, region) are computed in the browser by `lib/news/chart-math.ts`. Interaction model, on Danny's instruction (2026-10-02 — "should react and or be active on hover. should not require a click"): **hover explores, click sets.** Pointing at a bar opens a pop-out listing the funds in it, each linked to its reports and its firm; pointing at a view tab switches the view after a short dwell; clicking a bar pins its pop-out. Period, measure and the table view are click-only: they sit on the pointer's path to the bars. On a touch screen the pinned card opens inline. Do not gate a value behind hover — every bar prints its figure.
+
+**Firm pages.** There is no firm table. A firm is a key (`entityKey`: "Ares Management" → `ares`, "H.I.G. Capital" → `hig`, "A&O Shearman" → `ao shearman`) and its page address is that key. `lib/news/firm-lookup.ts` turns the key back into a database lookup that finds every spelling — and is written so the trigram index can serve it. That constraint is the whole design; the file's comments say what breaks it (an open-ended character class, or a non-ASCII character inside one). `lib/news/__tests__/firm-lookup.test.ts` holds the names that were dead links before it. `getFirm` returns null for "no such firm" and **throws** when the lookup fails, so a database hiccup is never cached as a 404.
+
+## Sponsors: one at a time, booked by a row (2026-10-02)
+
+A sponsor is a row in `sponsor_bookings` with a start and an end date. The morning's send asks for the sponsor in force on the edition's date (`sponsorForEdition`); the site asks for the one in force today (`getSiteSponsorState`, cached ten minutes). Nothing is deployed to put a sponsor up and nothing has to be remembered to take one down. The table refuses two booked runs that share a day.
+
+- **To book:** insert a row — `name`, `blurb` (≤ ~60 words), `cta_url` (https), optional `cta_text`, `tagline` (one line for the site strip), `logo_url` + `logo_width` (hosted PNG/JPG/GIF), `starts_on`, `ends_on`. The site shows it within ten minutes; the next edition carries it top and bottom.
+- **To pull one:** `status = 'paused'` (or `'cancelled'`).
+- **With nobody booked** the email and the site show the house notice, "Your firm here" — a slim strip under the masthead / above the stories, and a framed card at the foot of the email. Its reader figure is counted, never typed.
+- **Never insert a test row in production**: it is live on the site within ten minutes and in the next send. Test with `sponsorOn()` in a unit test, or `/newsletter/sample`.
+- The site strip sits directly above the stories on `/`, `/news`, `/news/[section]`, `/story/[id]`, `/league-tables`, `/firms`, `/firm/[slug]` and `/events` — in view when the page loads, on Danny's instruction.
+
 ## FundOps Daily email template — `lib/newsletter/email-template.ts`
 
 One file renders the entire morning brief. System fonts only — no `@font-face`, no Google Fonts, no external stylesheets. All brand colors, typography stacks, and reusable chrome live as `const` declarations at the top of the file; mirror the palette from `app/brand/page.tsx` rather than inventing new hex codes.
@@ -387,11 +432,21 @@ The full editorial redesign landed on 2026-04-11 and matches the fundopshq.com b
 
 ### Size budget — Gmail clipping at ~102 KB
 
-Gmail clips any email whose HTML body exceeds **~102 KB** and shows a `[Message clipped] View entire message` link that hides the tail. A full edition currently delivers around **68–72 KB** with the sample co-sponsor slate — plenty of headroom, but easy to blow if you're careless.
+Gmail clips any email whose HTML body exceeds **~102 KB** and shows a `[Message clipped] View entire message` link that hides the tail. A full 40-story edition currently delivers around **57 KB**, 65 KB on a Monday with the weekly recap — plenty of headroom, but easy to blow if you're careless.
 
 The single biggest thing keeping us under the ceiling is the `STYLE_BLOCK` const at the top of `email-template.ts`. It defines ~35 utility classes (`.fops-serif`, `.fops-ink`, `.fops-title`, `.fops-row`, `.fops-badge` + per-type variants, `.fops-c-pe` + per-category variants, `.fops-cta-outline`, `.fops-cta-solid`, etc.) that every story row, category head, and sponsor card references via `class="..."`. Before that refactor the same template was **139 KB** and got clipped in Gmail. **Do not** revert to "every style attribute inline on every element" — the clipping will come back. Keep repeated styles in `STYLE_BLOCK`.
 
-The final output also runs through `collapseTemplateWhitespace()` to strip per-line indentation, saving another ~15% on delivered bytes without touching inline text spacing.
+The final output also runs through `collapseTemplateWhitespace()`, which strips per-line indentation (another ~15% of delivered bytes) and removes the template's own comments — HTML and CSS — so notes written for whoever edits the file are not sent to readers. Outlook's conditional block (`<!--[if mso]>`) is kept. Because lines are joined with nothing between them, a space that must survive a line break has to be `&nbsp;`.
+
+### The shape of an edition (2026-10-02)
+
+Masthead → sponsor (or the house strip) → **top stories** → sections → on Mondays, last week's largest closes → the week's events → sponsor (or the house card) → share → footer.
+
+- **Top stories** (`lib/newsletter/top-stories.ts`): up to five, chosen across sections by the site's own `storyWeight`, one per firm, with a brake so they are not five fund closes. Each carries a kicker (section · size · stage). They are *removed* from their sections — every story runs once. Fewer than 12 stories and there is no top block.
+- **Sections** run in the order of the site's tabs: the asset classes, then Deals, People Moves, LP Commitments, Regulation, Service Providers.
+- **Preview text** (`buildPreheader`) is the lead headline and the second: what happened. The subject line already says who.
+- **Monday recap** (`lib/newsletter/recap.ts`): the six largest closes of the past week, from the league table, each linked to its story page. It is an extra — if the league cannot be built in 25 s the edition goes without it.
+- Rows are headlines only (Danny, 2026-08-30). Do not add summaries, source lines or logos back.
 
 ### The anchor color gotcha — every `<a>` needs inline `color`
 
@@ -411,33 +466,13 @@ Gmail iOS/Android auto-invert email colors in dark mode, which turned our navy m
 
 Removing any one of these will appear fine in some clients and break in others. Leave all three.
 
-### Sponsor slate model
+### Sponsor block
 
-Sponsor data lives in `lib/newsletter/sponsors.ts`:
-
-```ts
-interface Sponsor {
-  name;
-  logoUrl?;
-  logoWidth?;
-  wordmarkHtml?;
-  blurb;
-  ctaUrl;
-  ctaText?;
-}
-interface SponsorSlate {
-  label;
-  sponsors: Sponsor[];
-}
-```
-
-The slate `label` (e.g. `"PRESENTED BY"`) renders **once per block** — top sponsor block and bottom sponsor block — not per card. This was a deliberate editorial call: repeating "PRESENTED BY" above every card reads as redundant when stacking multiple co-sponsors. The bottom block adds a filled `fops-cta-solid` CTA per card plus the house "Sponsor FundOps Daily →" invitation at the tail.
-
-`DEFAULT_SPONSOR_SLATE` is what the live send uses. It ships with only the house `FUNDOPSHQ_SPONSOR`. **To add a paid sponsor**, append a new `Sponsor` object to `DEFAULT_SPONSOR_SLATE.sponsors` in `sponsors.ts` — the next morning's send picks it up. Keep the slate between 1 and 5 sponsors; more than 5 dilutes each brand's visibility and the card stack gets unwieldy.
+Who the sponsor is comes from `sponsor_bookings` (see "Sponsors" above), not from this code. The template is handed a `SponsorSlate` — a label and a list that holds one sponsor or none (it is a list for history's sake: an earlier design stacked up to five co-sponsors). One sponsor renders as a framed "PRESENTED BY" card under the masthead and again at the foot, where its link is a button. An empty slate renders the house notice. `SAMPLE_SPONSOR_SLATE` in `lib/newsletter/sponsors.ts` is the placeholder `/newsletter/sample` shows a prospect; it is never used in a send. A sponsor's copy is escaped: it is text, never markup.
 
 ### Sponsor logo assets — always hosted PNG, never base64, never SVG
 
-Logos live in `public/sponsors/` and are served from `https://fundopshq.com/sponsors/*`. Three non-negotiables:
+Logos live in `public/sponsors/` and are served from `https://fundopshq.com/sponsors/*`; that URL goes in the booking's `logo_url`. Three non-negotiables:
 
 1. **PNG only, no SVG.** Gmail doesn't render SVG reliably. Most sponsor assets come in as SVG — render them to PNG with headless Chrome:
    ```bash
@@ -499,6 +534,6 @@ The subject line is chosen by `buildSubject` in `lib/newsletter/send-daily.ts` �
 3. **Gmail clip budget:** a full edition should stay under ~95 KB HTML. If you find yourself adding verbose inline styles to every story row, stop and add a class to `STYLE_BLOCK` instead. Re-run `send-test-email.ts` and watch the printed size before committing.
 4. **Dark-mode opt-out:** don't simplify or remove any of the three layers (meta color-scheme tags, `@media (prefers-color-scheme: dark)` block, Gmail/Outlook-specific selectors) without re-testing in Gmail iOS — each layer hits a different client.
 5. Dedup lives in two files for two distinct concepts — don't conflate them. Same-day "are these two articles the same real-world story?" clustering is `isSameStory` / `normalizeFirmName` in `lib/news/story-dedup.ts`, shared by the feed UI (`lib/news/api.ts`) and the newsletter. Cross-edition "did we already run this in the last 3 editions?" fingerprinting is `storyFingerprints` in `lib/newsletter/query-articles.ts`, newsletter-only. Never paste either helper into the other file; never build a private copy in `api.ts`.
-6. **Adding a new sponsor:** edit `DEFAULT_SPONSOR_SLATE.sponsors` in `lib/newsletter/sponsors.ts`. The logo PNG goes in `public/sponsors/` and must be referenced by absolute URL (`https://fundopshq.com/sponsors/foo.png`). Test with `send-test-email.ts` before committing to confirm the image loads through Gmail's proxy.
+6. **Adding a new sponsor:** insert a row in `sponsor_bookings` (see "Sponsors" above) — do not edit code. The logo PNG goes in `public/sponsors/` and is referenced by absolute URL (`https://fundopshq.com/sponsors/foo.png`), so it has to be deployed before the run starts. Check the result on `/newsletter/sample`-style output (a test render with that sponsor) before the first send; one sponsor at a time, and the table will refuse an overlapping run.
 7. If you're tempted to recreate a page that was deleted, check first — the 2026-04-10 cleanup was deliberate, not a bug.
 8. **Outreach pipeline (Path B):** never remove the `OUTREACH_ENABLED` env var gate — it's the kill switch. Never use Resend for cold outreach (TOS violation would put the real newsletter at risk). Never loosen the quality gate in `lib/outreach/template.ts` without syncing the static template too; the gate is the safety net against bad auto-sends. When editing `lib/outreach/candidates.ts` hard blocks, run the local dry-run test against today's edition before committing (see `project_outreach_pipeline.md` in auto-memory for the script). Never use substring patterns shorter than 5 chars in Block B/D — `'pers'` false-positived on "Pershing Square" in dry-run, `'ft'` would collide with "Softbank"/"Lyft".

@@ -5,6 +5,8 @@ import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { SectionFlag } from '@/components/story/StoryBlocks'
 import { getSponsorStats, type SponsorStats } from '@/lib/sponsor/stats'
+import { getSiteSponsorState } from '@/lib/sponsor/bookings'
+import { SponsorCardView, SponsorStripView, type SlotSponsor } from '@/components/sponsor/SponsorSlot'
 
 export const metadata: Metadata = {
   title: 'Sponsor FundOps Daily',
@@ -25,17 +27,49 @@ export const revalidate = 3600
 
 const MAILTO = 'mailto:sponsor@fundopshq.com?subject=FundOps%20Daily%20sponsorship'
 
-const PLACEMENT = [
-  { label: 'Where', value: 'A sponsor card at the top and at the bottom of every edition in your run.' },
-  { label: 'What', value: 'Your logo, up to 60 words, and one link. You write it; we proof it and send you a preview before anything ships.' },
-  { label: 'Run', value: 'By the week, the month or the quarter. The slate is shared with at most four other sponsors.' },
-  { label: 'Report', value: 'Delivery, opens and clicks at the end of the run.' },
-]
+/** What a sponsor gets. `open` is read from the bookings table, never typed. */
+function placement(open: string): { label: string; value: string }[] {
+  return [
+    {
+      label: 'Where',
+      value:
+        'In the email, under the masthead and again at the foot of every edition in your run. On the site, above the stories on every page and in the column beside them.',
+    },
+    { label: 'What', value: 'Your logo, up to 60 words, and one link. You write it; we proof it and send you a preview before anything ships.' },
+    { label: 'Run', value: 'By the week, the month or the quarter. One sponsor at a time: for your dates, the space is yours alone.' },
+    { label: 'Open', value: open },
+    { label: 'Report', value: 'Delivery, opens and clicks for the email, at the end of the run.' },
+  ]
+}
+
+const longDate = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-US', { month: 'long', day: 'numeric', timeZone: 'UTC' })
+
+/** "Now." — or the day after the run in force ends. */
+function openLine(bookedThrough: string | null): string {
+  if (!bookedThrough) return 'Now. The space is open today.'
+  const next = new Date(`${bookedThrough}T12:00:00Z`)
+  next.setUTCDate(next.getUTCDate() + 1)
+  return `From ${longDate(next.toISOString().slice(0, 10))}. The space is booked through ${longDate(bookedThrough)}.`
+}
+
+/**
+ * The stand-in for the mock-ups below: the real components, drawn with an
+ * empty box where a logo goes, so a prospect sees their own placement and
+ * nobody mistakes the example for a client.
+ */
+const SAMPLE: SlotSponsor = {
+  name: 'Your logo here',
+  tagline: 'One line of your own, beside your name on every page.',
+  blurb: 'Up to 60 words, in your own voice: what your firm does for the people who run private funds, and why they should look this morning.',
+  ctaUrl: 'https://fundopshq.com/sponsor',
+  ctaText: 'Your link',
+  sample: true,
+}
 
 const FAQS = [
   {
     q: 'Do you take any advertiser?',
-    a: 'No. A sponsor has to be useful to a GP, an LP or a fund service provider. We also turn down a direct competitor of a sponsor already booked for the same dates.',
+    a: 'No. A sponsor has to be useful to a GP, an LP or a fund service provider. And there is one sponsor at a time, so yours never runs beside a competitor.',
   },
   {
     q: 'What if our firm is in the news that day?',
@@ -67,7 +101,7 @@ function figures(s: SponsorStats): { value: string; label: string; note?: string
 }
 
 export default async function SponsorPage() {
-  const stats = await getSponsorStats().catch(() => null)
+  const [stats, { bookedThrough }] = await Promise.all([getSponsorStats().catch(() => null), getSiteSponsorState()])
   const tiles = stats ? figures(stats) : []
   const asOf = stats
     ? new Date(stats.asOf).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/New_York' })
@@ -164,13 +198,52 @@ export default async function SponsorPage() {
           <section aria-label="What a sponsor gets" className="mt-10">
             <SectionFlag label="What a sponsor gets" />
             <dl>
-              {PLACEMENT.map((p) => (
+              {placement(openLine(bookedThrough)).map((p) => (
                 <div key={p.label} className="grid gap-x-6 border-b border-border/70 py-2.5 sm:grid-cols-[110px_minmax(0,1fr)]">
                   <dt className="font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:pt-1">{p.label}</dt>
                   <dd className="font-news text-[16px] leading-[1.45] text-foreground">{p.value}</dd>
                 </div>
               ))}
             </dl>
+          </section>
+
+          {/* ─── Where it appears: the real components, with a stand-in ─── */}
+          <section aria-label="Where your firm appears" className="mt-10">
+            <SectionFlag label="Where your firm appears" note="Mock-ups, to scale" />
+            <figure>
+              <figcaption className="pb-2 pt-3 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                On the site · above the stories, on every page
+              </figcaption>
+              <div inert aria-hidden="true" className="pointer-events-none select-none">
+                <SponsorStripView sponsor={SAMPLE} line="" />
+              </div>
+            </figure>
+            <div className="mt-5 grid gap-x-8 gap-y-5 sm:grid-cols-[300px_minmax(0,1fr)]">
+              <figure>
+                <figcaption className="pb-2 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                  On the site · beside the stories
+                </figcaption>
+                <div inert aria-hidden="true" className="pointer-events-none select-none">
+                  <SponsorCardView sponsor={SAMPLE} />
+                </div>
+              </figure>
+              <div>
+                <p className="pb-2 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">In the email · top and foot</p>
+                <p className="max-w-[52ch] font-news text-[16.5px] leading-[1.45] text-foreground/85">
+                  The same card opens every edition in your run, directly under the masthead and above the first headline, and closes it with your
+                  link as a button. The sample is today&rsquo;s edition with the space filled in.
+                </p>
+                <a
+                  href="/newsletter/sample"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group mt-3 inline-flex items-center gap-1.5 font-ui text-[12.5px] font-bold uppercase tracking-[0.06em] text-foreground underline decoration-[var(--tab)] decoration-2 underline-offset-4 hover:decoration-foreground"
+                >
+                  See it in today&rsquo;s edition
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+                </a>
+              </div>
+            </div>
           </section>
 
           {/* ─── Rates: by conversation ─── */}

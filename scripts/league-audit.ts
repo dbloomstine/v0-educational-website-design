@@ -13,14 +13,15 @@ process.loadEnvFile('.env.local')
 
 async function main() {
   const { fetchLeagueRows, fetchLeagueOverrides } = await import('../lib/news/league-data')
-  const { buildLeague, leagueRejection, leagueRows } = await import('../lib/news/league')
+  const { buildLeagueReport, leagueRejection, leagueRows, sameFirmName } = await import('../lib/news/league')
   const { buildStories } = await import('../lib/news/stories')
   const { entityKey, keysMatch } = await import('../lib/newsletter/story-links')
   const top = Number(process.argv[process.argv.indexOf('--top') + 1]) || 0
 
   const [rows, overrides] = await Promise.all([fetchLeagueRows(), fetchLeagueOverrides()])
   const t = Date.now()
-  const league = buildLeague(rows, overrides)
+  const report = buildLeagueReport(rows, overrides)
+  const league = report.closes
   const ms = Date.now() - t
   const now = Date.now()
   const fmt = (m: number) => (m >= 1000 ? `$${(m / 1000).toFixed(2)}B` : `$${Math.round(m)}M`)
@@ -41,7 +42,7 @@ async function main() {
   if (show) {
     for (const why of Object.keys(reasons)) {
       console.log(`\n— ${why}`)
-      buildStories(rows).filter((s) => leagueRejection(s) === why).sort((a, b) => (b.sizeUsdM ?? 0) - (a.sizeUsdM ?? 0)).slice(0, 14)
+      buildStories(rows).filter((s) => leagueRejection(s) === why).sort((a, b) => (b.sizeUsdM ?? 0) - (a.sizeUsdM ?? 0)).slice(0, process.argv.includes('--all') ? 200 : 14)
         .forEach((s) => console.log(`   ${String(s.sizeUsdM ?? '-').padEnd(7)} ${s.closeType}  ${s.headline.slice(0, 120)}`))
     }
   }
@@ -57,6 +58,25 @@ async function main() {
   }
   console.log(`\nsame manager, stage and figure (should be 0 unless two real funds): ${dup.length}`)
   dup.slice(0, 25).forEach((d) => console.log(d))
+
+  // Soft: one manager, one stage, two rows inside 45 days. Most are two real
+  // funds; a pair that is one fund under two figures is a double count.
+  const days = (a: string, b: string) => Math.abs(Date.parse(a) - Date.parse(b)) / 86_400_000
+  const near: string[] = []
+  for (let i = 0; i < league.length; i++) for (let j = i + 1; j < league.length; j++) {
+    const a = league[i], b = league[j]
+    if (a.stage !== b.stage || days(a.date, b.date) > 45 || !sameFirmName(a.firm, b.firm)) continue
+    near.push(`  ${a.stage.padEnd(7)} ${a.firm} | ${a.fund} | ${fmt(a.sizeUsdM)} ${a.date}   vs   ${b.firm} | ${b.fund} | ${fmt(b.sizeUsdM)} ${b.date}\n          A: ${a.headline.slice(0, 100)}\n          B: ${b.headline.slice(0, 100)}`)
+  }
+  console.log(`\nsame manager and stage, two rows within 45 days (read: are any one fund?): ${near.length}`)
+  if (process.argv.includes('--pairs')) near.forEach((d) => console.log(d))
+
+  // Rows whose reports disagreed on the figure: the table shows the lower one.
+  const differ = league.filter((c) => c.altSizeUsdM)
+  console.log(`\nreports disagree on the figure (lower one shown): ${differ.length}`)
+  differ.slice(0, 40).forEach((c) => console.log(`  ${fmt(c.sizeUsdM).padEnd(8)} (also ${fmt(c.altSizeUsdM as number)})  ${c.date}  ${c.firm} — ${c.fund ?? '(unnamed)'}  ${c.sources}src`))
+
+  console.log(`\ncloses reported without a size (not ranked): ${report.unsized.length} (${report.unsized.filter((u) => u.stage === 'final').length} final)`)
 
   // Hard check 2: nothing outside the size range, nothing dated in the future.
   const today = new Date().toISOString().slice(0, 10)

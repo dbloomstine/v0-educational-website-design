@@ -7,11 +7,12 @@ import { EventsRail, LargestCloses, LatestRail, SectionBlock } from '@/component
 import { LeadStory, SectionFlag, TopStory } from '@/components/story/StoryBlocks'
 import { StickySubscribeBar } from '@/components/news/StickySubscribeBar'
 import { InTheNews } from '@/components/home/InTheNews'
-import { SponsorStrip } from '@/components/sponsor/SponsorSlot'
+import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { firmsInTheNews } from '@/lib/news/firms'
 import { FundraisingChart } from '@/components/charts/FundraisingChart'
-import { getLeagueSafe } from '@/lib/news/league-data'
-import { fundraisingChartViews } from '@/lib/news/chart-views'
+import { getLeagueReportSafe } from '@/lib/news/league-data'
+import { chartData } from '@/lib/news/chart-views'
+import { weekCloses } from '@/lib/news/league'
 import { queryEventFeed } from '@/lib/events/api'
 import { getStoriesSafe } from '@/lib/news/front-page'
 import { composeFrontPage, rankSection } from '@/lib/news/stories'
@@ -78,7 +79,7 @@ export default async function HomePage() {
   // Both feeds are soft dependencies: the page renders even if the DB hiccups.
   const [stories, league, events] = await Promise.all([
     getStoriesSafe(),
-    getLeagueSafe(),
+    getLeagueReportSafe(),
     // The week ahead, at most two a day: six events all happening this
     // afternoon say less than a spread across the week.
     queryEventFeed({ when: '1w', limit: 40 })
@@ -96,7 +97,9 @@ export default async function HomePage() {
   ])
 
   const nowMs = Date.now()
-  const chartViews = fundraisingChartViews(league, nowMs)
+  const chart = chartData(league, nowMs)
+  // The week's closes come from the league, like the chart above them: one definition of a close on the page.
+  const week = weekCloses(league.closes, nowMs)
   const inTheNews = firmsInTheNews(stories, nowMs, 7, 10)
   const front = composeFrontPage(stories, nowMs)
 
@@ -128,6 +131,7 @@ export default async function HomePage() {
 
         <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-4 lg:px-6">
           <InTheNews firms={inTheNews} />
+          <SponsorStrip className="mb-5" />
 
           {/* ─── Front: lead + top stories, with the running rail ─── */}
           <div className="grid gap-x-9 gap-y-8 lg:grid-cols-[minmax(0,1fr)_332px] lg:grid-rows-[auto_1fr]">
@@ -158,15 +162,15 @@ export default async function HomePage() {
             <aside className="min-w-0 space-y-5 lg:col-start-2 lg:row-span-2 lg:row-start-1">
               {/* The chart leads the rail: it is the one thing on the page a
                   reader can play with, so it sits where it is seen first. */}
-              <FundraisingChart views={chartViews} href="/league-tables" />
+              <FundraisingChart {...chart} href="/league-tables" />
+              <SponsorCard />
               <LatestRail stories={front.latest.slice(0, LATEST_COUNT)} />
-              <LargestCloses stories={front.largestCloses} stats={front.stats} />
+              <LargestCloses week={week} />
               <EventsRail events={events} />
             </aside>
 
             {/* By story type — under the top stories, beside the rail */}
             <div className="min-w-0 lg:col-start-1">
-              <SponsorStrip className="mb-8" />
               <div className="col-rule grid gap-x-10 gap-y-8 sm:grid-cols-2">
                 {typeBlocks.map(({ section, picks }) => (
                   <SectionBlock

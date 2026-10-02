@@ -17,7 +17,6 @@
  */
 
 import type { ArticleGroup } from './query-articles'
-import { isLikelyAumLeak } from './query-articles'
 import { cleanEntityName, splitHeadlineByEntities } from '@/lib/news/constants'
 import {
   formatEventDates,
@@ -27,6 +26,8 @@ import {
 } from '@/lib/events/constants'
 import type { IndustryEvent } from '@/lib/events/types'
 import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponsors'
+import { arrangeEdition, kickerParts, sizeWords, type TopPick } from './top-stories'
+import { entityKey, keysMatch } from './story-links'
 
 interface TemplateParams {
   groups: ArticleGroup[]
@@ -48,6 +49,33 @@ interface TemplateParams {
    * instead — one send, one habit. Empty array renders no section.
    */
   events?: IndustryEvent[]
+  /**
+   * How many firms the list is read at (distinct work domains among confirmed
+   * subscribers), counted at send time. Used by the house "Your firm here"
+   * notice; omitted, the notice describes the readers without a number.
+   */
+  readerFirms?: number
+  /**
+   * The past week's largest fund closes, from the league table. The send
+   * passes it on Mondays ("Last week's largest closes"); otherwise absent.
+   */
+  recap?: WeekRecap | null
+}
+
+/** One row of the weekly recap: a close as the league table has it. */
+export interface RecapRow {
+  id: string
+  firm: string
+  fund: string | null
+  stage: string
+  sizeUsdM: number
+  converted?: boolean
+}
+export interface WeekRecap {
+  rows: RecapRow[]
+  /** Final closes in the week, and their capital. */
+  finals: number
+  capitalUsdM: number
 }
 
 // ─── Brand palette ──────────────────────────────────────────────────────────
@@ -61,6 +89,13 @@ const INK = '#1E3A5F'
 const INK_MUTED = '#5A6B82'
 const HAIRLINE = '#D8D0BC'
 const HAIRLINE_DARK = 'rgba(248,245,236,0.18)'
+/** Amber dark enough to read as text on cream: the site's ochre. The brand amber is for fills. */
+const OCHRE = '#9C6410'
+/** The deeper cream of the site's bands: day heads, the frame inside a notice. */
+const BAND = '#EFEADC'
+const FRAME = '#B9B3A2'
+/** The paper a framed notice sits on: a shade lighter than the page, as the site's cards are. */
+const CARD = '#FFFDF8'
 
 const FONT_SERIF = `Georgia, 'Times New Roman', Times, serif`
 const FONT_SANS = `-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, Helvetica, sans-serif`
@@ -93,6 +128,7 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 .fops-cream { color: ${CREAM}; }
 .fops-amber { color: ${AMBER}; }
 .fops-bg-cream { background-color: ${CREAM}; }
+.fops-bg-card { background-color: ${CARD}; }
 .fops-bg-navy { background-color: ${NAVY}; }
 .fops-bg-navy-deep { background-color: ${NAVY_DEEP}; }
 
@@ -128,6 +164,8 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
   font-weight: 700;
   line-height: 1.3;
 }
+/* A day in the week ahead: a tinted strip with the amber tab, as on the
+   site's events board, so the eye finds "Tuesday" before it reads an event. */
 .fops-eday {
   font-family: ${FONT_MONO};
   font-size: 11.5px;
@@ -135,8 +173,10 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
   letter-spacing: 1.5px;
   color: ${INK};
   text-transform: uppercase;
-  padding: 14px 0 4px;
-  border-bottom: 2px solid ${INK};
+  margin: 14px 0 2px;
+  padding: 5px 10px;
+  background-color: ${BAND};
+  border-left: 4px solid ${AMBER};
 }
 .fops-emeta {
   font-family: ${FONT_MONO};
@@ -158,6 +198,26 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 /* Only the actor is bold inside a headline, so the eye lands on who did
    the thing rather than on a wall of uniform bold. */
 .fops-title b { font-weight: 700; }
+/* Top stories: the same headline a size up, under a one-line kicker that
+   says where it is from and, for a raise or a deal, how much. */
+.fops-top {
+  color: ${INK};
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 400;
+  font-family: ${FONT_SERIF};
+  line-height: 1.27;
+}
+.fops-top b { font-weight: 700; }
+.fops-kicker {
+  font-family: ${FONT_MONO};
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  color: ${OCHRE};
+  text-transform: uppercase;
+  margin: 0 0 3px;
+}
 .fops-blurb {
   color: ${INK_MUTED};
   font-size: 13px;
@@ -300,6 +360,8 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
   .fops-bg-navy { background-color: ${NAVY} !important; }
   .fops-bg-navy-deep { background-color: ${NAVY_DEEP} !important; }
   .fops-bg-cream { background-color: ${CREAM} !important; }
+  .fops-bg-card { background-color: ${CARD} !important; }
+  .fops-eday { background-color: ${BAND} !important; }
   .fops-cream { color: ${CREAM} !important; }
   .fops-amber { color: ${AMBER} !important; }
   .fops-ink { color: ${INK} !important; }
@@ -307,8 +369,10 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
 }
 u + .body .fops-bg-navy { background-color: ${NAVY} !important; }
 u + .body .fops-bg-cream { background-color: ${CREAM} !important; }
+u + .body .fops-bg-card { background-color: ${CARD} !important; }
 [data-ogsc] .fops-bg-navy { background-color: ${NAVY} !important; }
 [data-ogsc] .fops-bg-cream { background-color: ${CREAM} !important; }
+[data-ogsc] .fops-bg-card { background-color: ${CARD} !important; }
 `.trim()
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
@@ -353,11 +417,26 @@ function formatMastheadDate(dateStr: string): string {
  * shrinking the delivered body ~15%.
  */
 function collapseTemplateWhitespace(html: string): string {
-  return html
+  return stripComments(html)
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => line.length > 0)
     .join('')
+}
+
+/**
+ * The notes in this file are for whoever edits it, not for the reader's inbox.
+ * Until 2026-10-02 every edition carried them — about 3KB of "why this strip
+ * exists" in each message, against the size at which Gmail clips one.
+ *
+ * Outlook's conditional comments (`<!--[if mso]>…<![endif]-->`) are code, not
+ * notes, and stay. CSS comments are removed inside <style> only: a "/*" in a
+ * link elsewhere is somebody's URL.
+ */
+function stripComments(html: string): string {
+  return html
+    .replace(/<style>([\s\S]*?)<\/style>/g, (_, css: string) => `<style>${css.replace(/\/\*[\s\S]*?\*\//g, '')}</style>`)
+    .replace(/<!--(?!\[if)[\s\S]*?-->/g, '')
 }
 
 // ─── Firm identity (names only) ────────────────────────────────────────────
@@ -380,7 +459,7 @@ function renderHeadline(article: ArticleGroup['articles'][0]): string {
 }
 
 
-// ─── Events (Section B) ────────────────────────────────────────────────────
+// ─── Events: the week ahead ────────────────────────────────────────────────
 
 
 /**
@@ -436,9 +515,6 @@ function renderEventsSection(events: IndustryEvent[]): string {
   return `
           <tr>
             <td class="fops-bg-cream fops-px" style="padding:4px 16px 12px;background-color:${CREAM};">
-              <div class="fops-eyebrow" style="margin-bottom:4px;">
-                Section B &nbsp;&middot;&nbsp; Events
-              </div>
               <div class="fops-serif fops-ink" style="font-size:20px;font-weight:700;line-height:1.2;margin-bottom:2px;">
                 The week <span class="fops-amber" style="font-style:italic;">ahead.</span>
               </div>
@@ -485,6 +561,72 @@ function renderCategory(group: ArticleGroup): string {
     </table>`
 }
 
+// ─── Top stories ───────────────────────────────────────────────────────────
+// The edition's lead: the stories lib/newsletter/top-stories.ts picked, each
+// under a kicker. Font and colour are inline as well as in the style block —
+// a forwarded copy loses the block, and the top of the email is what gets
+// forwarded.
+
+function renderTopStory(pick: TopPick, isLast: boolean): string {
+  const kicker = kickerParts(pick).map(escapeHtml).join(' &nbsp;&middot;&nbsp; ')
+  return `
+    <tr>
+      <td style="padding:9px 0 10px;${isLast ? '' : `border-bottom:1px solid ${HAIRLINE};`}">
+        <div class="fops-kicker" style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:1.5px;color:${OCHRE};text-transform:uppercase;margin:0 0 3px;">${kicker}</div>
+        <div><a href="${escapeHtml(pick.article.sourceUrl)}" class="fops-top" style="color:${INK};text-decoration:none;font-family:${FONT_SERIF};font-size:18px;font-weight:400;line-height:1.27;" target="_blank">${renderHeadline(pick.article)}</a></div>
+      </td>
+    </tr>`
+}
+
+function renderTopStories(top: TopPick[]): string {
+  if (top.length === 0) return ''
+  return `
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:20px;border-top:2px solid ${INK};border-bottom:1px solid ${HAIRLINE};">
+      ${top.map((pick, i) => renderTopStory(pick, i === top.length - 1)).join('')}
+    </table>`
+}
+
+// ─── The week's largest closes (Mondays) ───────────────────────────────────
+// The league table's past seven days, as a small table: who, which fund, how
+// much. Each row opens the close's page on the site, where the reports are.
+
+function renderRecap(recap: WeekRecap | null | undefined): string {
+  if (!recap || recap.rows.length < 3) return ''
+  const rows = recap.rows
+    .map(
+      (r, i) => `
+      <tr>
+        <td style="padding:7px 8px 7px 0;vertical-align:top;width:18px;font-family:${FONT_MONO};font-size:11px;line-height:20px;color:${INK_MUTED};border-bottom:1px solid ${HAIRLINE};">${i + 1}</td>
+        <td style="padding:7px 8px 7px 0;vertical-align:top;border-bottom:1px solid ${HAIRLINE};">
+          <a href="https://fundopshq.com/story/${escapeHtml(r.id)}" style="color:${INK};text-decoration:none;font-family:${FONT_SERIF};font-size:15.5px;font-weight:700;line-height:1.3;" target="_blank">${escapeHtml(r.firm)}</a>
+          <div style="font-family:${FONT_SANS};font-size:12px;line-height:17px;color:${INK_MUTED};">${escapeHtml([r.fund, r.stage].filter(Boolean).join(' \u00b7 '))}</div>
+        </td>
+        <td align="right" style="padding:7px 0;vertical-align:top;white-space:nowrap;font-family:${FONT_MONO};font-size:14px;font-weight:700;line-height:20px;color:${INK};border-bottom:1px solid ${HAIRLINE};">${r.converted ? '&asymp;' : ''}${escapeHtml(sizeWords(r.sizeUsdM))}</td>
+      </tr>`,
+    )
+    .join('')
+  const total =
+    recap.finals > 0
+      ? `<b style="color:${INK};">${escapeHtml(sizeWords(recap.capitalUsdM))}</b> in ${recap.finals} final ${recap.finals === 1 ? 'close' : 'closes'} last week, as reported. `
+      : ''
+  return `
+          <tr>
+            <td class="fops-bg-cream fops-px" style="padding:4px 16px 20px;background-color:${CREAM};">
+              <table cellpadding="0" cellspacing="0" border="0" width="100%" class="fops-cat" style="margin-bottom:0;">
+                <tr>
+                  <td colspan="3" class="fops-cat-head fops-bg-navy" bgcolor="${NAVY}" style="background-color:${NAVY};border-left:4px solid ${AMBER};padding:6px 10px 5px;">
+                    <span class="fops-cat-label fops-cream" style="font-family:${FONT_MONO};font-size:12px;font-weight:700;letter-spacing:2px;color:${CREAM};text-transform:uppercase;">Last week&rsquo;s largest closes</span>
+                  </td>
+                </tr>
+                ${rows}
+              </table>
+              <div style="padding-top:8px;font-family:${FONT_SANS};font-size:12px;line-height:18px;color:${INK_MUTED};">
+                ${total}<a href="https://fundopshq.com/league-tables" style="color:${INK};font-weight:600;text-decoration:underline;" target="_blank">The league tables: the month, the quarter, the year &rarr;</a>
+              </div>
+            </td>
+          </tr>`
+}
+
 // ─── Sponsor marks ─────────────────────────────────────────────────────────
 
 // Sponsor cards stack vertically: logo on top, blurb + CTA below. An
@@ -502,67 +644,147 @@ function renderSponsorMark(sponsor: Sponsor, logoHeightPx: number): string {
   return `<span class="fops-serif fops-ink" style="display:inline-block;font-size:${logoHeightPx}px;font-weight:800;letter-spacing:-0.3px;line-height:1;">${escapeHtml(sponsor.name)}</span>`
 }
 
-function renderSponsorCardTop(sponsor: Sponsor, isFirst: boolean): string {
-  const mark = renderSponsorMark(sponsor, 15)
-  const padTopBottom = isFirst ? '2px 0 8px' : '8px 0'
-  const borderTop = isFirst ? '' : `border-top:1px solid ${HAIRLINE};`
+/**
+ * The frame every notice in the email sits in: an ink rule outside, a hairline
+ * inside — the financial pages' tombstone, and the same frame the sponsor slot
+ * has on the site. Nested tables, because that is what Outlook draws. The card
+ * colour is pinned in all three dark-mode layers, like the cream and the navy:
+ * unpinned, Gmail on a phone in dark mode turns a pale box dark.
+ */
+function framed(inner: string, cellStyle: string): string {
   return `
-    <div style="padding:${padTopBottom};${borderTop}">
-      <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;margin:0 0 6px;">${mark}</a>
-      <p class="fops-sponsor-blurb" style="margin:0 0 6px;">${escapeHtml(sponsor.blurb)}</p>
-      ${sponsor.ctaText ? `<a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-outline" style="color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a>` : ''}
-    </div>`
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" class="fops-bg-card" bgcolor="${CARD}" style="border:1px solid ${INK};background-color:${CARD};">
+          <tr>
+            <td style="padding:3px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid ${FRAME};">
+                <tr>
+                  <td style="${cellStyle}">${inner}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>`
 }
 
-function renderSponsorCardBottom(sponsor: Sponsor, isFirst: boolean): string {
-  const mark = renderSponsorMark(sponsor, 20)
-  const padTopBottom = isFirst ? '6px 0 18px' : '18px 0'
-  const borderTop = isFirst ? '' : `border-top:1px solid ${HAIRLINE};`
+const SPONSOR_PAGE = 'https://fundopshq.com/sponsor'
+/** A caret after "Your firm here": the name is still to be typed. Drawn, not animated — most mail clients do not animate. */
+const CARET = `<span style="display:inline-block;width:2px;height:0.78em;margin-left:3px;background-color:${AMBER};vertical-align:-0.06em;">&#8203;</span>`
+const kickerStyle = `font-family:${FONT_MONO};font-size:9.5px;font-weight:700;letter-spacing:2px;color:${OCHRE};text-transform:uppercase;`
+
+function renderSponsorCardTop(sponsor: Sponsor, label: string): string {
+  const mark = renderSponsorMark(sponsor, 17)
+  return framed(
+    `
+      <div style="${kickerStyle}margin:0 0 7px;">${escapeHtml(label)}</div>
+      <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;margin:0 0 6px;">${mark}</a>
+      <p class="fops-sponsor-blurb" style="margin:0 0 6px;font-size:13px;">${escapeHtml(sponsor.blurb)}</p>
+      ${sponsor.ctaText ? `<a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:${INK};text-decoration:underline;">${escapeHtml(sponsor.ctaText)} &rarr;</a>` : ''}`,
+    'padding:11px 14px 12px;',
+  )
+}
+
+function renderSponsorCardBottom(sponsor: Sponsor, label: string): string {
+  const mark = renderSponsorMark(sponsor, 22)
+  return framed(
+    `
+      <div style="${kickerStyle}margin:0 0 10px;">${escapeHtml(label)}</div>
+      <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;margin:0 0 10px;">${mark}</a>
+      <p class="fops-sponsor-blurb-lg" style="margin:0 0 14px;">${escapeHtml(sponsor.blurb)}</p>
+      ${sponsor.ctaText ? `<a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-solid" style="color:${CREAM};background-color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a>` : ''}`,
+    'padding:16px 18px 18px;',
+  )
+}
+
+/**
+ * The house notice, top: one slim line under the masthead. It is where a
+ * sponsor's card goes, and it says so to the people most likely to take it —
+ * the readers. Slim on purpose: a house block that filled the top of the
+ * email was removed on 2026-08-30 for telling subscribers about the thing
+ * they had already subscribed to.
+ */
+function renderHouseTop(): string {
+  const inner = `
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                    <tr>
+                      <td style="vertical-align:middle;">
+                        <span style="${kickerStyle}">Space available</span>
+                        <span style="font-family:${FONT_SERIF};font-size:19px;font-style:italic;line-height:1.1;color:${INK};white-space:nowrap;">&nbsp;Your firm here${CARET}</span>
+                      </td>
+                      <td align="right" style="vertical-align:middle;white-space:nowrap;padding-left:10px;">
+                        <a href="${SPONSOR_PAGE}?ref=email-top" target="_blank" style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${INK};text-decoration:underline;">Sponsor this brief &rarr;</a>
+                      </td>
+                    </tr>
+                  </table>`
   return `
-    <div style="padding:${padTopBottom};${borderTop}">
-      <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;margin:0 0 12px;">${mark}</a>
-      <p class="fops-sponsor-blurb-lg" style="margin:0 0 12px;">${escapeHtml(sponsor.blurb)}</p>
-      ${sponsor.ctaText ? `<a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-solid" style="color:${CREAM};background-color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a>` : ''}
-    </div>`
+    <tr>
+      <td class="fops-bg-cream fops-px" style="padding:12px 16px 0;background-color:${CREAM};">
+        ${framed(inner, 'padding:7px 12px 7px;')}
+      </td>
+    </tr>`
+}
+
+/** The line about who reads it. The number is counted at send time, never typed. */
+function readerLine(readerFirms: number | undefined): string {
+  return readerFirms && readerFirms >= 24
+    ? `FundOps Daily is read each morning at ${readerFirms.toLocaleString('en-US')} firms: GPs, LPs, and fund service providers.`
+    : 'FundOps Daily is the morning brief for GPs, LPs, and fund service providers.'
+}
+
+/** The house notice, bottom: the whole tombstone. */
+function renderHouseBottom(readerFirms: number | undefined): string {
+  const inner = `
+                  <div style="${kickerStyle}">Space available</div>
+                  <div style="font-family:${FONT_SERIF};font-size:30px;font-style:italic;line-height:1.1;color:${INK};padding-top:8px;">Your firm here${CARET}</div>
+                  <div style="font-family:${FONT_SERIF};font-size:15px;line-height:1.45;color:${INK_MUTED};padding-top:9px;max-width:400px;margin:0 auto;">${escapeHtml(readerLine(readerFirms))}</div>
+                  <div style="padding-top:14px;">
+                    <a href="${SPONSOR_PAGE}?ref=email" target="_blank" class="fops-cta-solid" style="color:${CREAM};background-color:${INK};text-decoration:none;">Sponsor FundOps Daily &rarr;</a>
+                  </div>
+                  <div style="margin-top:15px;padding-top:8px;border-top:1px solid ${HAIRLINE};font-family:${FONT_MONO};font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:${INK_MUTED};">This announcement appears as a matter of record only.</div>`
+  return `
+    <tr>
+      <td class="fops-bg-cream fops-px" style="padding:22px 16px 22px;background-color:${CREAM};border-top:1px solid ${HAIRLINE};">
+        ${framed(inner, 'padding:16px 18px 11px;text-align:center;')}
+      </td>
+    </tr>`
 }
 
 function renderSponsorTop(slate: SponsorSlate): string {
-  if (slate.sponsors.length === 0) return ''
-  const cards = slate.sponsors
-    .map((sponsor, i) => renderSponsorCardTop(sponsor, i === 0))
-    .join('')
+  if (slate.sponsors.length === 0) return renderHouseTop()
+  const cards = slate.sponsors.map((sponsor) => renderSponsorCardTop(sponsor, slate.label)).join('<div style="height:8px;line-height:8px;font-size:8px;">&nbsp;</div>')
   return `
     <tr>
-      <td class="fops-bg-cream fops-px" style="padding:14px 16px 12px;background-color:${CREAM};border-bottom:1px solid ${HAIRLINE};">
-        <div class="fops-eyebrow" style="margin-bottom:6px;">${escapeHtml(slate.label)}</div>
+      <td class="fops-bg-cream fops-px" style="padding:12px 16px 0;background-color:${CREAM};">
         ${cards}
       </td>
     </tr>`
 }
 
-function renderSponsorBottom(slate: SponsorSlate): string {
-  // With no sponsor sold, the slot is just the pitch line — the FundOpsHQ
-  // house card was removed 2026-08-30 (Danny: "remove the FundOpsHQ sponsor
-  // or presented by section"). A real slate still renders in full.
-  if (slate.sponsors.length === 0) {
-    return `
-    <tr>
-      <td class="fops-bg-cream fops-px" style="padding:18px 16px;background-color:${CREAM};border-top:1px solid ${HAIRLINE};">
-        <p class="fops-house-cta" style="margin:0;">Reach GPs, LPs, and fund service providers every morning. <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:${INK};text-decoration:none;font-weight:600;font-style:normal;">Sponsor FundOps Daily &rarr;</a></p>
-      </td>
-    </tr>`
-  }
-  const cards = slate.sponsors
-    .map((sponsor, i) => renderSponsorCardBottom(sponsor, i === 0))
-    .join('')
+function renderSponsorBottom(slate: SponsorSlate, readerFirms: number | undefined): string {
+  if (slate.sponsors.length === 0) return renderHouseBottom(readerFirms)
+  const cards = slate.sponsors.map((sponsor) => renderSponsorCardBottom(sponsor, slate.label)).join('<div style="height:10px;line-height:10px;font-size:10px;">&nbsp;</div>')
   return `
     <tr>
-      <td class="fops-bg-cream fops-px" style="padding:28px 16px 28px;background-color:${CREAM};border-top:1px solid ${HAIRLINE};">
-        <div class="fops-eyebrow" style="margin-bottom:6px;">${escapeHtml(slate.label)}</div>
+      <td class="fops-bg-cream fops-px" style="padding:22px 16px 20px;background-color:${CREAM};border-top:1px solid ${HAIRLINE};">
         ${cards}
-        <p class="fops-house-cta">Reach GPs, LPs, and fund service providers every morning. <a href="mailto:dbloomstine@gmail.com?subject=FundOps%20Daily%20sponsorship" style="color:${INK};text-decoration:none;font-weight:600;font-style:normal;">Sponsor FundOps Daily &rarr;</a></p>
+        ${slate.sample ? '' : `<p style="margin:12px 0 0;font-family:${FONT_SANS};font-size:11px;line-height:1.5;color:${INK_MUTED};font-style:italic;">Your firm here next. <a href="${SPONSOR_PAGE}?ref=email" target="_blank" style="color:${INK};text-decoration:none;font-weight:600;font-style:normal;">Sponsor FundOps Daily &rarr;</a></p>`}
       </td>
     </tr>`
+}
+
+/**
+ * Sponsors that are also in this edition's news. The sponsor page promises
+ * that such an edition says so; this is where it is found out.
+ */
+function sponsorsInTheNews(slate: SponsorSlate, groups: ArticleGroup[]): string[] {
+  return slate.sponsors
+    .filter((sponsor) => {
+      const key = entityKey(sponsor.name)
+      if (key.length < 3) return false
+      return groups.some((g) =>
+        g.articles.some((a) => [a.firmName, ...a.coFirms, ...(a.headlineEntities ?? [])].some((n) => n && keysMatch(entityKey(n), key))),
+      )
+    })
+    .map((sponsor) => sponsor.name)
 }
 
 // ─── Preheader (inbox preview text) ────────────────────────────────────────
@@ -570,46 +792,22 @@ function renderSponsorBottom(slate: SponsorSlate): string {
 // what Gmail / iOS Mail show as the preview next to the subject. Without an
 // explicit preheader, clients fall back to the first visible text in <body>
 // (in our case the "Forwarded to you?" strip) — a wasted first impression.
-// We build it from the two largest GP fund events, same rail as
-// buildSubject in send-daily.ts.
 
-function buildPreheader(groups: ArticleGroup[], totalArticles: number): string {
-  const typePriority: Record<string, number> = {
-    fund_close: 3,
-    fund_launch: 2,
-    capital_raise: 1,
-  }
-  type Candidate = { firm: string; sizeStr: string; size: number; priority: number }
-  const candidates: Candidate[] = []
-  for (const group of groups) {
-    if (group.category === 'lp_commitments') continue
-    for (const article of group.articles) {
-      if (!article.firmName) continue
-      const prio = typePriority[article.eventType ?? ''] ?? -1
-      if (prio < 0) continue
-      const size = article.fundSizeUsdMillions ?? 0
-      if (size <= 0) continue
-      if (isLikelyAumLeak(size, article.fundName)) continue
-      // A fund shutting down or a CLO pricing is not "Firm $X raised".
-      if (article.leadEligible === false) continue
-      if (candidates.some((c) => c.firm === article.firmName)) continue
-      const sizeStr =
-        size >= 1000
-          ? `$${(size / 1000).toFixed(1).replace(/\.0$/, '')}B`
-          : `$${size}M`
-      candidates.push({ firm: article.firmName, sizeStr, size, priority: prio })
-    }
-  }
-  candidates.sort((a, b) => b.size - a.size || b.priority - a.priority)
-  const top = candidates.slice(0, 2)
-  if (top.length === 0) {
-    return `${totalArticles} moves across private markets this morning — fund launches, closes, exec changes, regulatory actions.`
-  }
-  const headlines = top.map((c) => `${c.firm} ${c.sizeStr}`).join(' · ')
-  const remaining = totalArticles - top.length
-  return remaining > 0
-    ? `${headlines} · + ${remaining} more moves across private markets.`
-    : `${headlines}.`
+/**
+ * What happened, in the publishers' own words: the lead headline, and the
+ * second if there is room. The subject line already names WHO is in the news
+ * ("Apax Partners, Ares Management + 37 more"); until 2026-10-02 the preview
+ * text repeated those names with a figure, so the two lines an inbox shows
+ * said the same thing twice.
+ */
+export function buildPreheader(top: TopPick[], groups: ArticleGroup[], totalArticles: number): string {
+  const lead = top[0]?.article.title ?? groups[0]?.articles[0]?.title
+  if (!lead) return `${totalArticles} moves across private markets this morning.`
+  const second = top[1]?.article.title ?? (top.length === 0 ? groups[0]?.articles[1]?.title : undefined)
+  const withSecond = second && lead.length + second.length <= 150
+  const text = withSecond ? `${lead} · ${second}` : lead
+  const rest = totalArticles - (withSecond ? 2 : 1)
+  return rest > 0 ? `${text} · and ${rest} more this morning.` : text
 }
 
 // ─── Main render ───────────────────────────────────────────────────────────
@@ -623,14 +821,21 @@ export function renderNewsletterEmail(params: TemplateParams): string {
     sponsorSlate = DEFAULT_SPONSOR_SLATE,
     subscriberCount,
     events = [],
+    readerFirms,
+    recap,
   } = params
-  const preheader = buildPreheader(groups, totalArticles)
+  // The edition in reading order: the top stories, then the sections without them.
+  const { top, sections } = arrangeEdition(groups, totalArticles)
+  const preheader = buildPreheader(top, groups, totalArticles)
   const formattedDate = formatDate(editionDate)
   const mastheadDate = formatMastheadDate(editionDate)
-  const categoryBlocks = groups.map(renderCategory).join('')
+  const topBlock = renderTopStories(top)
+  const categoryBlocks = sections.map(renderCategory).join('')
   const sponsorTop = renderSponsorTop(sponsorSlate)
-  const sponsorBottom = renderSponsorBottom(sponsorSlate)
+  const sponsorBottom = renderSponsorBottom(sponsorSlate, readerFirms)
+  const recapSection = renderRecap(recap)
   const eventsSection = renderEventsSection(events)
+  const covered = sponsorsInTheNews(sponsorSlate, groups)
 
   // Social-proof eyebrow fragment. Omitted when count is unavailable
   // (test sends) or absurdly small. "In private markets" is the
@@ -644,7 +849,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   // Biggest story of the day for the bottom share block. Falls back to
   // the first group's first article when category ordering lands deals
   // below the wire. Used only as a suggested share prompt.
-  const topStory = groups[0]?.articles[0]
+  const topStory = top[0]?.article ?? groups[0]?.articles[0]
   const topStoryHeadline = topStory?.title ?? 'today\'s top fund news'
   const shareText = `Top fund news today: "${topStoryHeadline}" — from FundOps Daily`
   const shareUrl = 'https://fundopshq.com/?ref=share'
@@ -730,13 +935,11 @@ export function renderNewsletterEmail(params: TemplateParams): string {
 
           <!-- ─── Content ─── -->
           <tr>
-            <td class="fops-bg-cream fops-px" style="padding:24px 16px 12px;background-color:${CREAM};">
-              <div class="fops-eyebrow" style="margin-bottom:4px;">
-                Section A &nbsp;&middot;&nbsp; News
-              </div>
-              <div class="fops-serif fops-ink" style="font-size:20px;font-weight:700;line-height:1.2;margin-bottom:16px;">
+            <td class="fops-bg-cream fops-px" style="padding:20px 16px 12px;background-color:${CREAM};">
+              <div class="fops-serif fops-ink" style="font-size:20px;font-weight:700;line-height:1.2;margin-bottom:${top.length > 0 ? 8 : 16}px;">
                 This morning&rsquo;s <span class="fops-amber" style="font-style:italic;">top stories.</span>
               </div>
+              ${topBlock}
               ${categoryBlocks}
             </td>
           </tr>
@@ -748,7 +951,10 @@ export function renderNewsletterEmail(params: TemplateParams): string {
             </td>
           </tr>
 
-          <!-- ─── Section B · Events ─── -->
+          <!-- ─── Monday: last week's largest closes ─── -->
+          ${recapSection}
+
+          <!-- ─── The week ahead ─── -->
           ${eventsSection}
 
           <!-- ─── Sponsor: bottom ─── -->
@@ -787,6 +993,23 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                 </tr>
                 <tr>
                   <td class="fops-sans" style="padding-top:14px;font-size:11px;color:rgba(248,245,236,0.55);line-height:1.65;">
+                    <p style="margin:0 0 10px;">
+                      <span style="color:rgba(248,245,236,0.45);">On the site:&nbsp;</span>
+                      <a href="https://fundopshq.com/news" style="color:rgba(248,245,236,0.8);text-decoration:underline;">Latest</a>
+                      &nbsp;·&nbsp;
+                      <a href="https://fundopshq.com/league-tables" style="color:rgba(248,245,236,0.8);text-decoration:underline;">League tables</a>
+                      &nbsp;·&nbsp;
+                      <a href="https://fundopshq.com/firms" style="color:rgba(248,245,236,0.8);text-decoration:underline;">Firms</a>
+                      &nbsp;·&nbsp;
+                      <a href="https://fundopshq.com/events" style="color:rgba(248,245,236,0.8);text-decoration:underline;">Events</a>
+                    </p>${
+                      covered.length > 0
+                        ? `
+                    <p style="margin:0 0 10px;">
+                      ${escapeHtml(covered.join(' and '))} ${covered.length === 1 ? 'sponsors' : 'sponsor'} this edition and ${covered.length === 1 ? 'is' : 'are'} in today&rsquo;s news. Coverage is not traded for sponsorship.
+                    </p>`
+                        : ''
+                    }
                     <p style="margin:0;">
                       You&rsquo;re receiving this because you subscribed at <a href="https://fundopshq.com" style="color:rgba(248,245,236,0.75);text-decoration:none;">fundopshq.com</a>.
                     </p>
@@ -796,6 +1019,8 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                       <a href="https://fundopshq.com" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Visit FundOpsHQ</a>
                       &nbsp;·&nbsp;
                       <a href="https://fundopshq.com/about" style="color:rgba(248,245,236,0.65);text-decoration:underline;">About</a>
+                      &nbsp;·&nbsp;
+                      <a href="https://fundopshq.com/sponsor" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Sponsor</a>
                     </p>
                   </td>
                 </tr>

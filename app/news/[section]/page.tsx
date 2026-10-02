@@ -9,15 +9,15 @@ import { queryEventFeed } from '@/lib/events/api'
 import type { IndustryEvent } from '@/lib/events/types'
 import { LeadStory, RiverRow, SectionFlag, TopStory } from '@/components/story/StoryBlocks'
 import { getStoriesSafe, STORY_WINDOW_DAYS } from '@/lib/news/front-page'
-import { composeFrontPage, rankSection, type Story } from '@/lib/news/stories'
+import { rankSection, type Story } from '@/lib/news/stories'
 import { ASSET_LABEL, KIND_LABEL, SECTIONS, SECTION_BY_SLUG, sectionHref, sectionNoun, storyInSection } from '@/lib/news/sections'
 import { OG_IMAGES } from '@/lib/seo'
 import { FilterTabs } from '@/components/news/FilterTabs'
 import { FundraisingChart } from '@/components/charts/FundraisingChart'
-import { SponsorCard } from '@/components/sponsor/SponsorSlot'
-import { getLeagueSafe } from '@/lib/news/league-data'
-import type { FundClose } from '@/lib/news/league'
-import { chartHasData, fundraisingChartViews } from '@/lib/news/chart-views'
+import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
+import { getLeagueReportSafe } from '@/lib/news/league-data'
+import { weekCloses } from '@/lib/news/league'
+import { chartData } from '@/lib/news/chart-views'
 import { kickerLabel } from '@/lib/news/format'
 import { cn } from '@/lib/utils'
 
@@ -73,7 +73,7 @@ export default async function SectionPage({ params, searchParams }: Params) {
   const charted = section.kind === 'fundraising' || section.group === 'asset'
   const [all, league, events] = await Promise.all([
     getStoriesSafe(),
-    charted ? getLeagueSafe() : Promise.resolve<FundClose[]>([]),
+    charted ? getLeagueReportSafe() : Promise.resolve(null),
     eventQuery
       ? queryEventFeed({ ...eventQuery, when: '30d', limit: 5 })
           .then((feed) => feed.events)
@@ -90,8 +90,11 @@ export default async function SectionPage({ params, searchParams }: Params) {
   const lead = ranked[0] ?? null
   const top = ranked.slice(1, 5)
 
-  const closes = composeFrontPage(inSection, nowMs)
-  const showCloses = (section.group === 'asset' || section.kind === 'fundraising') && closes.largestCloses.length > 0
+  // The section's closes and its chart are cut from the league table, so the
+  // two panels and the league page agree on what a close is.
+  const scope = section.group === 'asset' ? { assetClasses: section.assetClasses } : {}
+  const week = league ? weekCloses(league.closes, nowMs, scope) : null
+  const showCloses = !!week && week.rows.length > 0
   const covered = mostCovered(stories)
   // Deals and LPs have a number of their own: the week's largest.
   const largest = section.kind === 'deals' || section.kind === 'lps' ? largestBySize(inSection, 6, 7, nowMs) : []
@@ -100,10 +103,8 @@ export default async function SectionPage({ params, searchParams }: Params) {
   const eventsHref = eventQuery
     ? `/events?${eventQuery.category ? `category=${eventQuery.category.split(',')[0]}` : `topic=${(eventQuery.topic ?? '').split(',')[0]}`}`
     : '/events'
-  const chartViews = charted
-    ? fundraisingChartViews(league, nowMs, section.group === 'asset' ? { assetClasses: section.assetClasses } : {})
-    : []
-  const showChart = chartHasData(chartViews)
+  const chart = league ? chartData(league, nowMs, scope) : null
+  const showChart = !!chart && chart.closes.length > 0
   const leagueHref = section.group === 'asset' && section.assetClasses?.[0] ? `/league-tables?asset=${section.assetClasses[0]}` : '/league-tables'
   const hasRail = showChart || showCloses || largest.length >= 3 || covered.length >= 3 || events.length > 0
 
@@ -144,6 +145,7 @@ export default async function SectionPage({ params, searchParams }: Params) {
         </div>
 
         <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
+          <SponsorStrip className="mb-5" />
           <div className={cn('grid gap-x-9 gap-y-8', hasRail && 'lg:grid-cols-[minmax(0,1fr)_332px]')}>
             <div className="min-w-0">
               {lead ? (
@@ -192,15 +194,16 @@ export default async function SectionPage({ params, searchParams }: Params) {
                 pinned, a rail taller than the window can't be read to its end. */}
             {hasRail && (
               <aside className="min-w-0 space-y-5">
-                {showChart && (
+                {showChart && chart && (
                   <FundraisingChart
-                    views={chartViews}
+                    {...chart}
                     href={leagueHref}
                     title={section.group === 'asset' ? `${section.label}, charted` : 'Fundraising, charted'}
                     moreLabel={section.group === 'asset' ? `${section.title} league table` : 'Full league tables'}
                   />
                 )}
-                {showCloses && <LargestCloses stories={closes.largestCloses} stats={closes.stats} />}
+                <SponsorCard />
+                {showCloses && week && <LargestCloses week={week} />}
                 <LargestBySize label={largestLabel} stories={largest} />
                 <MostCovered stories={covered} note={`Past ${STORY_WINDOW_DAYS} days`} />
                 <EventsRail
@@ -209,7 +212,6 @@ export default async function SectionPage({ params, searchParams }: Params) {
                   href={eventsHref}
                   moreLabel={section.group === 'asset' ? `All ${noun} events` : 'More on the events calendar'}
                 />
-                <SponsorCard />
               </aside>
             )}
           </div>

@@ -5,7 +5,7 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { Panel, SectionFlag } from '@/components/story/StoryBlocks'
-import { SponsorCard } from '@/components/sponsor/SponsorSlot'
+import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { ARCHIVE_WINDOW_DAYS, getArchiveStoriesSafe } from '@/lib/news/front-page'
 import { searchFirms } from '@/lib/news/firm-data'
 import { firmIndex, firmsByLetter } from '@/lib/news/firms'
@@ -79,6 +79,7 @@ export default async function FirmsPage({ searchParams }: Params) {
         </div>
 
         <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
+          <SponsorStrip className="mb-5" />
           <div className="grid gap-x-9 gap-y-8 lg:grid-cols-[minmax(0,1fr)_332px]">
             <div className="min-w-0">
               {q ? (

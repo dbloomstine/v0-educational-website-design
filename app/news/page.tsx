@@ -7,7 +7,7 @@ import { BackToTop } from '@/components/back-to-top'
 import { MostCovered, mostCovered } from '@/components/home/Rail'
 import { RiverRow, SectionFlag } from '@/components/story/StoryBlocks'
 import { SubscribePanel } from '@/components/home/Rail'
-import { SponsorCard } from '@/components/sponsor/SponsorSlot'
+import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { searchFirms } from '@/lib/news/firm-data'
 import { ARCHIVE_WINDOW_DAYS, getArchiveStoriesSafe, searchStories } from '@/lib/news/front-page'
 import type { Story, StoryKind } from '@/lib/news/stories'
@@ -146,6 +146,7 @@ export default async function NewsPage({ searchParams }: Params) {
         </div>
 
         <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
+          <SponsorStrip className="mb-5" />
           <div className="grid gap-x-9 gap-y-8 lg:grid-cols-[minmax(0,1fr)_332px]">
             <section aria-label="Stories" className="min-w-0">
               {firmHits.length > 0 && (
@@ -195,8 +196,8 @@ export default async function NewsPage({ searchParams }: Params) {
 
             <aside className="min-w-0 space-y-5">
               <MostCovered stories={covered} note="Past 7 days" />
-              <SubscribePanel title="All of this, once a morning." body="FundOps Daily is the day’s closes, launches, deals and moves in one email. Free, seven days a week." />
               <SponsorCard />
+              <SubscribePanel title="All of this, once a morning." body="FundOps Daily is the day’s closes, launches, deals and moves in one email. Free, seven days a week." />
             </aside>
           </div>
         </div>

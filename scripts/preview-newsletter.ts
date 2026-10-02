@@ -7,21 +7,27 @@
  * through the production email template, writes the HTML to a temp file,
  * and opens it in your default browser.
  *
+ * It renders what the next send would: the sponsor booked for today
+ * (lib/sponsor/bookings.ts) or the house "Your firm here" notice, the reader
+ * figures, the week's events, and on a Monday the weekly recap.
+ *
  * Usage:
  *   npx tsx --env-file=.env.local scripts/preview-newsletter.ts
+ *   SAMPLE_SLATE=1 npx tsx …   # with the one-sponsor placeholder a prospect sees
  *
  * Re-run after every template tweak — the browser tab just needs Cmd+R.
  */
 
-import { readFileSync, writeFileSync } from 'node:fs'
+import { writeFileSync } from 'node:fs'
 import { execSync } from 'node:child_process'
-import { join, dirname } from 'node:path'
-import { fileURLToPath } from 'node:url'
 import { createClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles } from '../lib/newsletter/query-articles'
 import { renderNewsletterEmail } from '../lib/newsletter/email-template'
 import { queryEventFeed } from '../lib/events/api'
-import { FUNDOPSHQ_SPONSOR, type SponsorSlate } from '../lib/newsletter/sponsors'
+import { SAMPLE_SPONSOR_SLATE } from '../lib/newsletter/sponsors'
+import { slateFor, sponsorForEdition } from '../lib/sponsor/bookings'
+import { readerFirmDomains } from '../lib/sponsor/reader-firms'
+import { lastWeeksCloses } from '../lib/newsletter/recap'
 
 // The events section is bounded by the DATE WINDOW, not by a count. A cap of
 // 24 silently truncated it to ~8 days once the board grew past ~24 events in
@@ -30,10 +36,6 @@ import { FUNDOPSHQ_SPONSOR, type SponsorSlate } from '../lib/newsletter/sponsors
 // exists only so a pathological day can't produce an unbounded email.
 const EVENTS_LIMIT = 150
 
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const PROJECT_ROOT = join(__dirname, '..')
 
 const OUTPUT_PATH = '/tmp/fundops-newsletter-preview.html'
 const HOURS_BACK = 72
@@ -110,51 +112,6 @@ async function inlineExternalFaviconsForOfflinePreview(html: string): Promise<st
   )
 }
 
-/**
- * Read a file from public/ and return a data URI. Used by the sample
- * slate so local previews render hosted logos without needing a deploy
- * first — and so the generated HTML can be forwarded to a prospect as
- * a self-contained mockup with no broken images.
- */
-
-function publicFileAsDataUri(relativePath: string): string {
-  const abs = join(PROJECT_ROOT, 'public', relativePath)
-  const buf = readFileSync(abs)
-  const ext = relativePath.split('.').pop()?.toLowerCase() ?? 'png'
-  const mime =
-    ext === 'svg' ? 'image/svg+xml' : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : `image/${ext}`
-  return `data:${mime};base64,${buf.toString('base64')}`
-}
-
-/**
- * A sample co-sponsor slate used by the SAMPLE_SLATE=1 preview mode.
- * Currently demonstrates FundOpsHQ + a Fidelity Careers mockup card
- * so we can tweak the visual before pitching real sponsors.
- */
-function buildSampleSlate(): SponsorSlate {
-  return {
-    label: 'PRESENTED BY',
-    sponsors: [
-      // Override FUNDOPSHQ_SPONSOR's hosted logoUrl with a data URI
-      // so the local preview renders the wordmark without requiring
-      // a deploy.
-      {
-        ...FUNDOPSHQ_SPONSOR,
-        logoUrl: publicFileAsDataUri('sponsors/fundopshq-wordmark.png'),
-      },
-      {
-        name: 'Fidelity Careers',
-        logoUrl: publicFileAsDataUri('sponsors/fidelity-careers.png'),
-        logoWidth: 200,
-        blurb:
-          'Fidelity is hiring across fund operations, fund accounting, investor reporting, and technology. Join a team supporting trillions in assets and the teams running private markets at scale.',
-        ctaUrl: 'https://jobs.fidelity.com',
-        ctaText: 'See open roles',
-      },
-    ],
-  }
-}
-
 async function main() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -176,20 +133,26 @@ async function main() {
     timeZone: 'America/New_York',
   })
 
+  // One sponsor at a time. SAMPLE_SLATE=1 shows the placeholder a prospect
+  // sees at /newsletter/sample; otherwise it is whoever is booked for today,
+  // or nobody — the house notice — exactly as the send would render it.
   const useSampleSlate = process.env.SAMPLE_SLATE === '1'
-  if (useSampleSlate) {
-    console.log('  Using SAMPLE_SLATE — co-sponsor preview (FundOpsHQ + Fidelity Careers).')
-  }
+  const booked = useSampleSlate ? null : await sponsorForEdition(supabase, editionDate)
+  console.log(useSampleSlate ? '  Sponsor: the one-sponsor placeholder (SAMPLE_SLATE).' : `  Sponsor: ${booked ? booked.name : 'none booked — house notice'}.`)
 
   const upcomingEvents = (await queryEventFeed({ when: '1w', limit: EVENTS_LIMIT })).events
-
+  const { data: subscribers } = await supabase.from('newsletter_subscribers').select('email').eq('status', 'confirmed').limit(10000)
+  const monday = new Date(`${editionDate}T12:00:00-05:00`).getUTCDay() === 1
 
   let html = renderNewsletterEmail({
     groups: content.groups,
     totalArticles: content.totalArticles,
     editionDate,
     unsubscribeUrl: 'https://fundopshq.com/api/newsletter/unsubscribe?token=PREVIEW',
-    sponsorSlate: useSampleSlate ? buildSampleSlate() : undefined,
+    sponsorSlate: useSampleSlate ? SAMPLE_SPONSOR_SLATE : slateFor(booked),
+    subscriberCount: subscribers?.length || undefined,
+    readerFirms: subscribers ? readerFirmDomains(subscribers.map((s) => String(s.email))).size : undefined,
+    recap: monday ? await lastWeeksCloses() : null,
     events: upcomingEvents,
   })
 

@@ -80,7 +80,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   service_providers: 'Service Providers',
   people_moves: 'People Moves',
   deals: 'Deals',
-  regulatory: 'Regulatory',
+  regulatory: 'Regulation',
 }
 
 const EVENT_TYPE_LABELS: Record<string, string> = {
@@ -1005,11 +1005,15 @@ export function assembleNewsletter(
   const pushGroup = (category: string, list: NewsletterArticle[]) => {
     if (list.length > 0) groups.push({ category, label: CATEGORY_LABELS[category], articles: list })
   }
-  pushGroup('lp_commitments', cappedLp)
-  pushGroup('service_providers', cappedSp)
-  pushGroup('people_moves', cappedPeople)
+  // After the fund sections, the order the site's tabs and front page use:
+  // deals, people, LPs, regulation, service providers. A reader who knows one
+  // knows the other. (Until 2026-10-02 the email ran LPs and service providers
+  // first and regulation last, under 36 other headlines.)
   pushGroup('deals', cappedDeals)
+  pushGroup('people_moves', cappedPeople)
+  pushGroup('lp_commitments', cappedLp)
   pushGroup('regulatory', cappedRegulatory)
+  pushGroup('service_providers', cappedSp)
 
   deduplicateAcrossSections(groups)
 

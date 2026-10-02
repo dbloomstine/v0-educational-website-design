@@ -14,6 +14,9 @@ import { renderNewsletterEmail } from './email-template'
 import { queryEventFeed } from '@/lib/events/api'
 import type { IndustryEvent } from '@/lib/events/types'
 import { sendPipelineAlert } from '@/lib/pipeline/alert'
+import { slateFor, sponsorForEdition } from '@/lib/sponsor/bookings'
+import { readerFirmDomains } from '@/lib/sponsor/reader-firms'
+import { lastWeeksCloses } from './recap'
 
 // The events section is bounded by the DATE WINDOW, not by a count. A cap of
 // 24 silently truncated it to ~8 days once the board grew past ~24 events in
@@ -142,6 +145,14 @@ export async function sendDailyNewsletter(
     console.error('[send-daily] events lookup failed, sending without Section B:', err)
   }
 
+  // The sponsor whose run covers this edition, if there is one; otherwise the
+  // template shows the house notice. Never throws.
+  const sponsor = await sponsorForEdition(supabase, editionDate)
+
+  // Mondays carry last week's largest closes, from the league table. Like the
+  // events, it rides along: if it cannot be built, the edition goes without it.
+  const recap = dayOfWeek === 1 ? await lastWeeksCloses() : null
+
   const subject = buildSubject(content)
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
 
@@ -160,6 +171,9 @@ export async function sendDailyNewsletter(
     unsubscribeUrl: UNSUB_SENTINEL,
     subscriberCount: subscribers.length,
     events: upcomingEvents,
+    sponsorSlate: slateFor(sponsor),
+    readerFirms: readerFirmDomains(subscribers.map((s) => String(s.email))).size,
+    recap,
   })
 
   const emails = subscribers.map((sub) => {

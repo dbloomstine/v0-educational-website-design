@@ -641,3 +641,22 @@
 }
 @keyframes caret-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .paper .caret { animation: none; } }
+
+/* ── The chart ─────────────────────────────────────────────────────────────
+   Bars grow from their baseline when a view opens. The hover card (the funds
+   inside the bar under the pointer) is for a pointer and a wide screen; on a
+   phone the same list opens under the chart on a tap. */
+.paper .bar-x { transform-origin: left center; animation: bar-x 380ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.paper .bar-y { transform-origin: center bottom; animation: bar-y 380ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+@keyframes bar-x { from { transform: scaleX(0); } }
+@keyframes bar-y { from { transform: scaleY(0); } }
+@media (prefers-reduced-motion: reduce) { .paper .bar-x, .paper .bar-y { animation: none; } }
+.paper .hover-card, .paper .hover-hint { display: none; }
+@media (hover: hover) and (min-width: 1024px) {
+  .paper .hover-card { display: block; }
+  .paper .hover-hint { display: inline; }
+  .paper .touch-hint, .paper .touch-card { display: none; }
+}
+/* Static bars (league-table rail): the row under the pointer lights. */
+.paper .bar-row:hover .bar-fill { background: var(--tab) !important; }
+.paper .bar-row:hover .bar-label { color: var(--foreground); font-weight: 600; }

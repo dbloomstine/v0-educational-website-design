@@ -2,14 +2,19 @@ import { createClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles } from '@/lib/newsletter/query-articles'
 import { renderNewsletterEmail } from '@/lib/newsletter/email-template'
 import { SAMPLE_SPONSOR_SLATE } from '@/lib/newsletter/sponsors'
+import { queryEventFeed } from '@/lib/events/api'
+import type { IndustryEvent } from '@/lib/events/types'
+import { readerFirmDomains } from '@/lib/sponsor/reader-firms'
+import { lastWeeksCloses } from '@/lib/newsletter/recap'
 
 /**
  * Public sample of the most-recent FundOps Daily edition.
  *
  * Linked from the /sponsor page so prospects can see exactly what the
- * newsletter looks like before committing to a slot. Renders the
- * production email template with real data from the latest 72h of
- * articles so it stays fresh without any manual regeneration.
+ * newsletter looks like with a sponsor in it. Renders the production
+ * email template with real data from the latest 72h of articles — so it
+ * stays fresh without any manual regeneration — and one placeholder
+ * sponsor, top and bottom.
  *
  * The unsubscribe token is a dead placeholder — this is a preview,
  * not a real delivery, so there's no subscriber to unsubscribe.
@@ -49,26 +54,37 @@ export async function GET() {
       timeZone: 'America/New_York',
     })
 
-    // Subscriber count is the live confirmed-subscriber total. Used
-    // in the social-proof eyebrow so the sample matches what real
-    // recipients see today.
-    const { count } = await supabase
-      .from('newsletter_subscribers')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'confirmed')
+    // The live list, for the "read by" line in the masthead — the sample
+    // matches what real recipients see today.
+    const { data: subs } = await supabase.from('newsletter_subscribers').select('email').eq('status', 'confirmed').limit(10000)
 
-    const html = renderNewsletterEmail({
+    // The same extras a real edition carries, so the sample is a whole one:
+    // the week ahead, and on a Monday last week's largest closes.
+    const events = await queryEventFeed({ when: '1w', limit: 150 })
+      .then((feed) => feed.events)
+      .catch<IndustryEvent[]>(() => [])
+    const monday = new Date(`${editionDate}T12:00:00-05:00`).getUTCDay() === 1
+
+    const email = renderNewsletterEmail({
       groups: content.groups,
       totalArticles: content.totalArticles,
       editionDate,
       unsubscribeUrl: 'https://fundopshq.com/sponsor',
-      subscriberCount: count ?? undefined,
-      // Preview uses a shared slate (1 FundOpsHQ house card + 4
-      // placeholder firms with dashed "YOUR LOGO HERE" boxes) so
-      // prospects see up front that sponsorship is a shared slate,
-      // not an exclusive-sponsor arrangement.
+      subscriberCount: subs?.length || undefined,
+      readerFirms: subs ? readerFirmDomains(subs.map((s) => String(s.email))).size : undefined,
+      events,
+      recap: monday ? await lastWeeksCloses() : null,
+      // One sponsor, top and bottom: exactly what a sponsor gets.
       sponsorSlate: SAMPLE_SPONSOR_SLATE,
     })
+
+    // A bar above the email — outside it, so it is plainly not part of the
+    // edition — saying what this page is and how to get back.
+    const notice = `<div style="background:#E6B045;color:#13233A;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:13px;line-height:1.45;padding:10px 16px;text-align:center;">
+      <b>A sample edition.</b> This is today&rsquo;s FundOps Daily with a sponsor in place: the dashed box, under the masthead and again at the foot, is where your firm would appear.
+      &nbsp;<a href="https://fundopshq.com/sponsor" style="color:#13233A;font-weight:700;">Back to sponsorship &rarr;</a>
+    </div>`
+    const html = email.replace(/<body[^>]*>/, (open) => `${open}${notice}`)
 
     return new Response(html, {
       status: 200,

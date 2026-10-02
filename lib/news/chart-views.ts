@@ -1,27 +1,47 @@
-import { capitalByAsset, capitalByWeek, closesBySize, type FundClose } from './league'
-import { ASSET_LABEL } from './sections'
-import type { ChartView } from '@/components/charts/FundraisingChart'
+import { LEAGUE_ASSET_LABEL, toChartClose, type LeagueReport } from './league'
+import type { ChartClose, ChartViewKey } from './chart-math'
 
 /**
- * The fundraising chart's views, all cut from the league table so the two can
- * never disagree. With `assetClasses`, the chart is one market's — "by market"
- * would be a single bar there, so it is left out.
+ * What the interactive chart is given: the final closes of the last quarter
+ * (twelve whole weeks plus the current one needs up to ninety days), the dates
+ * of the closes no report put a size on, and the labels. Cut on the server, so
+ * a section page sends only its own market.
  */
-export function fundraisingChartViews(league: FundClose[], nowMs: number, opts: { assetClasses?: string[] } = {}): ChartView[] {
-  const only = opts.assetClasses
-  const rows = only ? league.filter((c) => c.assetClass != null && only.includes(c.assetClass)) : league
-  const views: ChartView[] = [
-    { key: 'week', tab: 'By week', title: 'Capital closed each week', period: 'Past 12 weeks', unit: 'usd', layout: 'columns', bars: capitalByWeek(rows, nowMs, 12) },
-    { key: 'size', tab: 'By size', title: 'Number of closes, by fund size', period: only ? 'Past 90 days' : 'Past 30 days', unit: 'count', layout: 'rows', bars: closesBySize(rows, nowMs, only ? '90d' : '30d') },
-  ]
-  if (only) return views
-  return [
-    { key: 'asset', tab: 'By market', title: 'Capital closed, by asset class', period: 'Past 30 days', unit: 'usd', layout: 'rows', bars: capitalByAsset(league, nowMs, ASSET_LABEL, '30d').slice(0, 7) },
-    ...views,
-  ]
+export interface ChartData {
+  closes: ChartClose[]
+  unsized: string[]
+  today: string
+  updated: string | null
+  labels: Record<string, string>
+  views: ChartViewKey[]
+  scopeAsset?: string
 }
 
-/** True when the chart has something to draw (the component renders nothing otherwise). */
-export function chartHasData(views: ChartView[]): boolean {
-  return views.some((v) => v.bars.some((b) => b.value > 0))
+/** Days of closes sent to the page: the 90-day period, and the twelve-week view's oldest Monday. */
+const CHART_WINDOW_DAYS = 92
+
+export function chartData(report: LeagueReport & { asOf?: string }, nowMs: number, opts: { assetClasses?: string[] } = {}): ChartData {
+  const today = new Date(nowMs).toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+  const since = new Date(new Date(`${today}T12:00:00Z`).getTime() - CHART_WINDOW_DAYS * 86_400_000).toISOString().slice(0, 10)
+  const only = opts.assetClasses
+  const inScope = (asset: string | null) => !only || (asset != null && only.includes(asset))
+  const closes = report.closes
+    .filter((c) => c.stage === 'final' && c.date >= since && c.date <= today && inScope(c.assetClass))
+    .map(toChartClose)
+  const unsized = report.unsized
+    .filter((u) => u.stage === 'final' && u.date >= since && u.date <= today && inScope(u.assetClass))
+    .map((u) => u.date)
+  const updated = report.asOf
+    ? `${new Date(report.asOf).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' })} ET`
+    : null
+  return {
+    closes,
+    unsized,
+    today,
+    updated,
+    labels: LEAGUE_ASSET_LABEL,
+    // One market has no "by market" cut: its own chart opens on the weeks.
+    views: only ? ['weeks', 'size', 'funds', 'firms', 'region'] : ['market', 'weeks', 'size', 'funds', 'firms', 'region'],
+    ...(only?.length === 1 ? { scopeAsset: only[0] } : {}),
+  }
 }

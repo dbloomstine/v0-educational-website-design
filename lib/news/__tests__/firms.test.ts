@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { buildStories, type Story } from '../stories'
 import { firmIndex, firmsByLetter, firmsInTheNews } from '../firms'
-import { fundraisingChartViews, chartHasData } from '../chart-views'
+import { chartData } from '../chart-views'
 import type { FundClose } from '../league'
 
 let seq = 0
@@ -71,20 +71,38 @@ describe('the firms a story names', () => {
   })
 })
 
-describe('the chart on a section page', () => {
+describe('the chart’s data', () => {
   const mk = (o: Partial<FundClose>): FundClose => ({
     id: uuid(), memberIds: [], firm: 'A', firmSlug: 'a', fund: null, sizeUsdM: 100, stage: 'final', date: '2026-09-20',
-    assetClass: 'PE', headline: '', source: null, url: '', sources: 1, converted: false, ...o,
+    assetClass: 'PE', headline: '', source: null, url: '', sources: 1, outlets: [], converted: false, region: null, altSizeUsdM: null, ...o,
   })
-  const league = [mk({ assetClass: 'VC', sizeUsdM: 250 }), mk({ assetClass: 'VC', sizeUsdM: 40 }), mk({ assetClass: 'credit', sizeUsdM: 5000 })]
-  it('is cut to the section’s market and drops the by-market view', () => {
-    const views = fundraisingChartViews(league, NOW, { assetClasses: ['VC'] })
-    expect(views.map((v) => v.key)).toEqual(['week', 'size'])
-    expect(views[0].bars.reduce((s, b) => s + b.value, 0)).toBe(290)
-    expect(chartHasData(views)).toBe(true)
+  const closes = [
+    mk({ assetClass: 'VC', sizeUsdM: 250, converted: true }),
+    mk({ assetClass: 'VC', sizeUsdM: 40, altSizeUsdM: 90 }),
+    mk({ assetClass: 'credit', sizeUsdM: 5000 }),
+    mk({ assetClass: 'VC', sizeUsdM: 900, stage: 'first' }),
+    mk({ assetClass: 'VC', sizeUsdM: 700, date: '2026-03-15' }),
+  ]
+  const unsized = [
+    { id: uuid(), firm: 'B', firmSlug: 'b', stage: 'final' as const, date: '2026-09-22', assetClass: 'VC' },
+    { id: uuid(), firm: 'C', firmSlug: 'c', stage: 'first' as const, date: '2026-09-22', assetClass: 'VC' },
+  ]
+  it('sends the page final closes of the last quarter, trimmed, with what was converted or disputed marked', () => {
+    const d = chartData({ closes, unsized }, NOW)
+    expect(d.closes.map((c) => c.v)).toEqual([250, 40, 5000])
+    expect(d.closes[0]).toMatchObject({ f: 'A', s: 'a', a: 'VC', c: 1 })
+    expect(d.closes[1].alt).toBe(90)
+    expect(d.closes[2]).not.toHaveProperty('c')
+    expect(d.unsized).toEqual(['2026-09-22'])
+    expect(d.views[0]).toBe('market')
+    expect(d.today).toBe('2026-09-30')
   })
-  it('has nothing to draw for a market with no closes', () => {
-    expect(chartHasData(fundraisingChartViews(league, NOW, { assetClasses: ['hedge'] }))).toBe(false)
-    expect(fundraisingChartViews(league, NOW).map((v) => v.key)).toEqual(['asset', 'week', 'size'])
+  it('is cut to a section’s market, and then opens on the weeks', () => {
+    const d = chartData({ closes, unsized }, NOW, { assetClasses: ['VC'] })
+    expect(d.closes.map((c) => c.v)).toEqual([250, 40])
+    expect(d.views).not.toContain('market')
+    expect(d.views[0]).toBe('weeks')
+    expect(d.scopeAsset).toBe('VC')
+    expect(chartData({ closes, unsized }, NOW, { assetClasses: ['hedge'] }).closes).toEqual([])
   })
 })

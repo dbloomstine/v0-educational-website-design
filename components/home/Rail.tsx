@@ -2,7 +2,8 @@ import Link from 'next/link'
 import type { Story } from '@/lib/news/stories'
 import type { IndustryEvent } from '@/lib/events/types'
 import { formatEventDates } from '@/lib/events/constants'
-import { sizeLabel, stageLabel, totalLabel } from '@/lib/news/format'
+import { sizeLabel, totalLabel } from '@/lib/news/format'
+import { STAGE_LABEL, type FundClose } from '@/lib/news/league'
 import { Headline } from '@/components/story/Headline'
 import { LatestRow, MoreLink, Panel, SectionFlag } from '@/components/story/StoryBlocks'
 
@@ -67,36 +68,43 @@ export function MostCovered({ stories, note }: { stories: Story[]; note?: string
 /**
  * The week's league table. Fund size is the one number this audience
  * compares, so it gets a column of its own here rather than a tag on a row.
+ *
+ * The rows are league-table closes (lib/news/league.ts weekCloses), the same
+ * ones the chart counts — a close that is not good enough for the league is
+ * not listed here either. Each row opens the close's own page: its summary,
+ * every outlet that reported it, and the way on to the firm.
  */
-export function LargestCloses({ stories, stats }: { stories: Story[]; stats: { funds: number; capitalUsdM: number } }) {
-  if (stories.length === 0) return null
+export function LargestCloses({ week }: { week: { rows: FundClose[]; finals: number; capitalUsdM: number } }) {
+  if (week.rows.length === 0) return null
   return (
-    <Panel label="Largest closes" href="/news/fundraising" note="Past 7 days">
+    <Panel label="Largest closes" href="/league-tables" note="Past 7 days">
       <ol>
-        {stories.map((s, i) => (
-          <li key={s.id} className="border-b border-border/70 last:border-0">
-            <a
-              href={s.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              title={s.headline}
+        {week.rows.map((c, i) => (
+          <li key={c.id} className="border-b border-border/70 last:border-0">
+            <Link
+              href={`/story/${c.id}`}
+              title={c.headline}
               className="group grid grid-cols-[18px_minmax(0,1fr)_auto] items-baseline gap-2 py-[7px]"
             >
               <span className="font-mono text-[10.5px] text-muted-foreground">{i + 1}</span>
               <span className="min-w-0">
-                <span className="hl font-news text-[15px] font-bold leading-tight text-foreground">{s.firmName ?? s.headline}</span>
+                <span className="hl font-news text-[15px] font-bold leading-tight text-foreground">{c.firm}</span>
                 <span className="block truncate font-ui text-[11.5px] text-muted-foreground">
-                  {[s.fundName, stageLabel(s)].filter(Boolean).join(' · ')}
+                  {[c.fund, STAGE_LABEL[c.stage]].filter(Boolean).join(' · ')}
                 </span>
               </span>
-              <span className="font-mono text-[13px] font-bold tabular-nums text-foreground">{sizeLabel(s.sizeUsdM)}</span>
-            </a>
+              <span className="whitespace-nowrap font-mono text-[13px] font-bold tabular-nums text-foreground">
+                {c.converted && <span className="font-normal text-muted-foreground" title="Reported in another currency; converted to dollars">≈</span>}
+                {sizeLabel(c.sizeUsdM)}
+                {c.altSizeUsdM && <span className="font-normal text-muted-foreground" title={`Reports also give ${sizeLabel(c.altSizeUsdM)}`}>†</span>}
+              </span>
+            </Link>
           </li>
         ))}
       </ol>
-      {stats.funds > 0 && (
+      {week.finals > 0 && (
         <p className="mt-1.5 font-ui text-[12px] text-muted-foreground">
-          <span className="font-semibold text-foreground/80">{totalLabel(stats.capitalUsdM)}</span> across {stats.funds} fund closes this week
+          <span className="font-semibold text-foreground/80">{totalLabel(week.capitalUsdM)}</span> in {week.finals} final {week.finals === 1 ? 'close' : 'closes'} this week
         </p>
       )}
       <MoreLink href="/league-tables">League tables: the month, the quarter, the year</MoreLink>

@@ -13,7 +13,7 @@
  */
 import { unstable_cache } from 'next/cache'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
-import { currentReaderFirms, isPersonalDomain, type ReaderGroup } from './reader-firms'
+import { currentReaderFirms, readerFirmDomains, type ReaderGroup } from './reader-firms'
 
 export interface SponsorStats {
   /** Confirmed subscribers. */
@@ -77,9 +77,7 @@ export interface SponsorAudience {
 export async function computeAudience(): Promise<SponsorAudience> {
   const { data: subs } = await getSupabaseAdmin().from('newsletter_subscribers').select('email').eq('status', 'confirmed').limit(10000)
   if (!subs) return { subscribers: null, firms: null, readerFirms: [] }
-  const domains = subs.map((s) => String(s.email).toLowerCase().split('@')[1] ?? '').filter(Boolean)
-  // Our own domain is not a reader firm.
-  const firmDomains = new Set(domains.filter((d) => !isPersonalDomain(d) && d !== 'fundopshq.com'))
+  const firmDomains = readerFirmDomains(subs.map((s) => String(s.email)))
   return { subscribers: subs.length, firms: firmDomains.size, readerFirms: currentReaderFirms(firmDomains) }
 }
 

@@ -6,11 +6,11 @@ import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { Panel, RiverRow, SectionFlag } from '@/components/story/StoryBlocks'
 import { SubscribePanel } from '@/components/home/Rail'
-import { SponsorCard } from '@/components/sponsor/SponsorSlot'
-import { FIRM_WINDOW_DAYS, getFirmSafe } from '@/lib/news/firm-data'
+import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
+import { FIRM_WINDOW_DAYS, getFirm } from '@/lib/news/firm-data'
 import type { Story } from '@/lib/news/stories'
-import type { CloseStage } from '@/lib/news/league'
-import { ASSET_LABEL, KIND_LABEL } from '@/lib/news/sections'
+import { LEAGUE_ASSET_LABEL as ASSET_LABEL, STAGE_LABEL } from '@/lib/news/league'
+import { KIND_LABEL } from '@/lib/news/sections'
 import { sizeLabel, totalLabel } from '@/lib/news/format'
 import { OG_IMAGES } from '@/lib/seo'
 
@@ -22,12 +22,11 @@ export const revalidate = 1800
 
 type Params = { params: Promise<{ slug: string }> }
 
-const STAGE_LABEL: Record<CloseStage, string> = { final: 'Final close', first: 'First close', interim: 'Interim close' }
 const day = (iso: string | null) => (iso ? new Date(`${iso.slice(0, 10)}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }) : null)
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params
-  const firm = await getFirmSafe(slug)
+  const firm = await getFirm(slug)
   if (!firm) return { title: 'Firm not found', robots: { index: false } }
   const total = firm.stories.length + firm.mentions.length
   const description = `${firm.name} in the news: ${total} ${total === 1 ? 'story' : 'stories'} from the past year${firm.closes.length ? `, including ${firm.closes.length} fund ${firm.closes.length === 1 ? 'close' : 'closes'}` : ''} — fund closes, deals and people moves, each linked to its publisher.`
@@ -45,7 +44,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function FirmPage({ params }: Params) {
   const { slug } = await params
-  const firm = await getFirmSafe(slug)
+  const firm = await getFirm(slug)
   if (!firm) notFound()
 
   const finals = firm.closes.filter((c) => c.stage === 'final')
@@ -74,6 +73,7 @@ export default async function FirmPage({ params }: Params) {
         </div>
 
         <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
+          <SponsorStrip className="mb-5" />
           <div className="grid gap-x-9 gap-y-8 lg:grid-cols-[minmax(0,1fr)_332px]">
             <div className="min-w-0 space-y-8">
               {firm.closes.length > 0 && (
@@ -99,6 +99,7 @@ export default async function FirmPage({ params }: Params) {
                             <td className="whitespace-nowrap px-2 py-2 text-right font-mono text-[13.5px] font-bold tabular-nums text-foreground">
                               {c.converted && <span className="font-normal text-muted-foreground" title="Reported in another currency; converted to dollars">≈</span>}
                               {sizeLabel(c.sizeUsdM)}
+                              {c.altSizeUsdM && <span className="font-normal text-muted-foreground" title={`Reports also give ${sizeLabel(c.altSizeUsdM)}; the lower figure is used`}>†</span>}
                             </td>
                             <td className="whitespace-nowrap px-2 py-2 font-ui text-[12.5px] text-foreground/80">{STAGE_LABEL[c.stage]}</td>
                             <td className="hidden whitespace-nowrap px-2 py-2 font-mono text-[11px] uppercase tracking-tight text-muted-foreground sm:table-cell">{day(c.date)}</td>
@@ -152,6 +153,7 @@ export default async function FirmPage({ params }: Params) {
                   </dl>
                 </Panel>
               )}
+              <SponsorCard />
               <Panel label="About this page">
                 <p className="pt-2 font-news text-[14.5px] leading-[1.4] text-foreground/85">
                   Every story FundOpsHQ has carried about {firm.name} in the past year, gathered from the publications that
@@ -165,7 +167,6 @@ export default async function FirmPage({ params }: Params) {
                   League tables: the largest fund closes →
                 </Link>
               </Panel>
-              <SponsorCard />
               <SubscribePanel title="Follow the firms you care about." body="FundOps Daily is the morning’s closes, launches, deals and moves in one email. Free." />
             </aside>
           </div>

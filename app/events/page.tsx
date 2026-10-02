@@ -1,3 +1,4 @@
+import { SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { OG_IMAGES } from '@/lib/seo'
 import { Panel } from '@/components/story/StoryBlocks'
 import { Metadata } from 'next'
@@ -121,6 +122,7 @@ export default async function EventsPage() {
 
         <section className="relative">
           <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
+            <SponsorStrip className="mb-5" />
             <Suspense fallback={<EventsBoardSkeleton />}>
               <EventsBoard />
             </Suspense>

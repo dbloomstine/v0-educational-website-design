@@ -6,10 +6,9 @@ import { BackToTop } from '@/components/back-to-top'
 import { FilterTabs } from '@/components/news/FilterTabs'
 import { Panel } from '@/components/story/StoryBlocks'
 import { SubscribePanel } from '@/components/home/Rail'
-import { SponsorCard } from '@/components/sponsor/SponsorSlot'
-import { getLeagueSafe, LEAGUE_SINCE } from '@/lib/news/league-data'
-import { capitalByAsset, leagueRows, LEAGUE_PERIODS, type CloseStage, type FundClose, type LeaguePeriod } from '@/lib/news/league'
-import { ASSET_LABEL } from '@/lib/news/sections'
+import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
+import { getLeagueReportSafe, LEAGUE_SINCE } from '@/lib/news/league-data'
+import { capitalByAsset, leagueRows, LEAGUE_ASSET_LABEL as ASSET_LABEL, LEAGUE_PERIODS, STAGE_LABEL, type FundClose, type LeaguePeriod } from '@/lib/news/league'
 import { sizeLabel, totalLabel } from '@/lib/news/format'
 import { OG_IMAGES } from '@/lib/seo'
 
@@ -21,7 +20,6 @@ type Params = { searchParams: Promise<{ period?: string; asset?: string; stage?:
 
 const ROWS_SHOWN = 100
 const ASSETS = Object.keys(ASSET_LABEL)
-const STAGE_LABEL: Record<CloseStage, string> = { final: 'Final close', first: 'First close', interim: 'Interim close' }
 const DESCRIPTION =
   'The largest private fund closes, ranked by size — private equity, venture, credit, real estate, infrastructure and secondaries. Every row links to the report it came from.'
 
@@ -56,7 +54,8 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
   const stage: 'final' | 'all' = sp.stage === 'all' ? 'all' : 'final'
   const nowMs = Date.now()
 
-  const league = await getLeagueSafe()
+  const report = await getLeagueReportSafe()
+  const league = report.closes
   const inPeriodAndStage = leagueRows(league, { period, stage }, nowMs)
   const rows = asset ? inPeriodAndStage.filter((c) => c.assetClass === asset) : inPeriodAndStage
   const shown = rows.slice(0, ROWS_SHOWN)
@@ -66,6 +65,19 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
   const periodLabel = LEAGUE_PERIODS.find((p) => p.key === period)!.label
   const since = new Date(`${LEAGUE_SINCE}T12:00:00Z`).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' })
   const maxAsset = Math.max(...byAsset.map((b) => b.value), 1)
+  // Closes in this view that no report put a size on: counted, not ranked.
+  const today = new Date(nowMs).toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
+  const periodStart =
+    period === 'ytd'
+      ? `${today.slice(0, 4)}-01-01`
+      : new Date(new Date(`${today}T12:00:00Z`).getTime() - (period === '90d' ? 90 : 30) * 86_400_000).toISOString().slice(0, 10)
+  const noSize = report.unsized.filter(
+    (u) => u.date >= periodStart && u.date <= today && (stage === 'all' || u.stage === 'final') && (!asset || u.assetClass === asset),
+  ).length
+  const disputed = shown.some((c) => c.altSizeUsdM)
+  const updated = report.asOf
+    ? `${new Date(report.asOf).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/New_York' })} ET`
+    : null
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -115,6 +127,7 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
         </div>
 
         <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
+          <SponsorStrip className="mb-5" />
           <div className="grid gap-x-9 gap-y-8 lg:grid-cols-[minmax(0,1fr)_332px]">
             <section aria-label="League table" className="min-w-0">
               <div className="panel">
@@ -152,11 +165,13 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
                   </div>
                 )}
               </div>
-              {rows.length > ROWS_SHOWN && (
-                <p className="mt-2 font-ui text-[12px] text-muted-foreground">
-                  Showing the largest {ROWS_SHOWN} of {rows.length.toLocaleString('en-US')}. Narrow by market to see further down.
-                </p>
-              )}
+              <p className="mt-2 font-ui text-[12px] leading-snug text-muted-foreground">
+                {rows.length > ROWS_SHOWN && <>Showing the largest {ROWS_SHOWN} of {rows.length.toLocaleString('en-US')}; narrow by market to see further down. </>}
+                {noSize > 0 && <>{noSize} more {noSize === 1 ? 'close was' : 'closes were'} reported in this period without a size and {noSize === 1 ? 'is' : 'are'} not ranked. </>}
+                ≈ converted to dollars from another currency.
+                {disputed && <> † the reports also give a higher figure (usually a total that adds leverage or sister vehicles); the lower one is ranked.</>}
+                {updated && <> Updated {updated}.</>}
+              </p>
             </section>
 
             <aside className="min-w-0 space-y-5">
@@ -164,10 +179,10 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
                 <Panel label="Capital by market" note={`Final closes · ${periodLabel.toLowerCase()}`}>
                   <ol className="space-y-[7px] pt-2">
                     {byAsset.map((b) => (
-                      <li key={b.label} className="grid grid-cols-[92px_minmax(0,1fr)_46px] items-center gap-x-2" title={`${b.count} ${b.count === 1 ? 'close' : 'closes'}`}>
-                        <span className="truncate font-ui text-[12px] text-foreground/80">{b.label}</span>
+                      <li key={b.label} className="bar-row grid grid-cols-[108px_minmax(0,1fr)_46px] items-center gap-x-2" title={`${b.label}: ${totalLabel(b.value)} across ${b.count} ${b.count === 1 ? 'close' : 'closes'}`}>
+                        <span className="bar-label truncate font-ui text-[12px] text-foreground/80">{b.label}</span>
                         <span className="h-[10px]">
-                          <span className="block h-full rounded-r-[4px]" style={{ width: `${Math.max((b.value / maxAsset) * 100, 1.5)}%`, background: 'var(--ink)' }} />
+                          <span className="bar-fill block h-full rounded-r-[4px] transition-colors" style={{ width: `${Math.max((b.value / maxAsset) * 100, 1.5)}%`, background: 'var(--ink)' }} />
                         </span>
                         <span className="text-right font-mono text-[11.5px] font-semibold tabular-nums text-foreground">{totalLabel(b.value)}</span>
                       </li>
@@ -176,12 +191,16 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
                 </Panel>
               )}
 
+              <SponsorCard />
+
               <Panel label="How this table is made">
                 <ul className="space-y-2 pt-2 font-news text-[14.5px] leading-[1.4] text-foreground/85">
                   <li><strong className="font-bold text-foreground">What counts.</strong> A fund close that a publication reported, with a named manager and a stated size. Rumoured and expected closes are left out until they happen.</li>
-                  <li><strong className="font-bold text-foreground">What does not.</strong> Hedge funds, continuation vehicles, CLOs and other structured issues, and a manager’s total assets or yearly fundraising.</li>
-                  <li><strong className="font-bold text-foreground">One fund, one row.</strong> Several outlets’ reports of the same close are joined, and dated to the first.</li>
+                  <li><strong className="font-bold text-foreground">What does not.</strong> Hedge funds, continuation vehicles, CLOs and other structured issues, single-investor mandates, evergreen funds, and a manager’s total assets or yearly fundraising. A figure the headline calls a target is not a close.</li>
+                  <li><strong className="font-bold text-foreground">One fund, one row.</strong> Several outlets’ reports of the same close are joined — under whatever name or number each gave the fund — and dated to the first.</li>
                   <li><strong className="font-bold text-foreground">Sizes.</strong> As reported. A figure marked ≈ was reported in another currency and converted to dollars at the time.</li>
+                  <li><strong className="font-bold text-foreground">When reports disagree.</strong> If outlets give different figures for one fund, the lower is ranked and the row is marked †. The higher is usually a total that adds leverage or single-investor vehicles to the fund itself.</li>
+                  <li><strong className="font-bold text-foreground">Markets.</strong> Growth equity is counted with venture, which is how the reports are filed.</li>
                   <li><strong className="font-bold text-foreground">Coverage.</strong> From {since}. It ranks the closes in the stories we carried; it is not a census of every fund.</li>
                   <li>
                     <strong className="font-bold text-foreground">Corrections.</strong> The fields are extracted from the reports by software and can be wrong.{' '}
@@ -190,7 +209,6 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
                 </ul>
               </Panel>
 
-              <SponsorCard />
               <SubscribePanel title="The closes, as they happen." body="FundOps Daily carries each morning’s fund closes, launches, deals and moves. Free, seven days a week." />
             </aside>
           </div>
@@ -218,6 +236,7 @@ function Row({ c, rank, showStage }: { c: FundClose; rank: number; showStage: bo
       <td className="whitespace-nowrap px-2 py-2 text-right font-mono text-[14px] font-bold tabular-nums text-foreground">
         {c.converted && <span className="font-normal text-muted-foreground" title="Reported in another currency; converted to dollars">≈</span>}
         {sizeLabel(c.sizeUsdM)}
+        {c.altSizeUsdM && <span className="font-normal text-muted-foreground" title={`Reports also give ${sizeLabel(c.altSizeUsdM)}`}>†</span>}
       </td>
       <td className="hidden whitespace-nowrap px-2 py-2 font-ui text-[12.5px] text-foreground/80 md:table-cell">{c.assetClass ? ASSET_LABEL[c.assetClass] ?? '—' : '—'}</td>
       <td className="hidden whitespace-nowrap px-2 py-2 font-mono text-[11px] uppercase tracking-tight text-muted-foreground sm:table-cell">{day(c.date)}</td>

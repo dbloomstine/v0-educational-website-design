@@ -86,6 +86,12 @@ export function isPersonalDomain(domain: string): boolean {
   return PERSONAL_DOMAINS.has(domain)
 }
 
+/** The work domains among a list of subscriber addresses — one per firm the list is read at. Ours is not a reader firm. */
+export function readerFirmDomains(emails: string[]): Set<string> {
+  const domains = emails.map((e) => String(e).toLowerCase().split('@')[1] ?? '').filter(Boolean)
+  return new Set(domains.filter((d) => !isPersonalDomain(d) && d !== 'fundopshq.com'))
+}
+
 /** True when `domain` is the firm's domain or a subdomain of it ("us.dlapiper.com"). */
 export function domainBelongsTo(domain: string, firmDomains: string[]): boolean {
   return firmDomains.some((d) => domain === d || domain.endsWith(`.${d}`))

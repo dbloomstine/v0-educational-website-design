@@ -38,6 +38,22 @@ describe('sponsor page', () => {
   })
 })
 
+describe('what the sponsor page sells', () => {
+  const page = readFileSync(join(__dirname, '..', '..', '..', 'app', 'sponsor', 'page.tsx'), 'utf8')
+  it('is one sponsor at a time, in the email and on the site', () => {
+    // Until 2026-10-02 the page promised a slate "shared with at most four
+    // other sponsors" while the product had become one sponsor, everywhere.
+    expect(page).toContain('One sponsor at a time')
+    expect(page).not.toMatch(/four other sponsors|shared with/i)
+    expect(page).toMatch(/On the site, above the stories on every page/)
+  })
+  it('reads whether the space is open from the bookings, and shows the placements with the real components', () => {
+    expect(page).toContain('getSiteSponsorState')
+    expect(page).toContain('<SponsorStripView sponsor={SAMPLE}')
+    expect(page).toContain('<SponsorCardView sponsor={SAMPLE}')
+  })
+})
+
 describe('the house ad', () => {
   it('counts its audience instead of stating it', () => {
     // The same rule as the sponsor page, for the "Your firm here" slot that
