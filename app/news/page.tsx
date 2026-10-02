@@ -11,7 +11,7 @@ import { ARCHIVE_WINDOW_DAYS, getArchiveStoriesSafe, searchStories } from '@/lib
 import type { Story, StoryKind } from '@/lib/news/stories'
 import { ASSET_LABEL, KIND_LABEL } from '@/lib/news/sections'
 import { OG_IMAGES } from '@/lib/seo'
-import { cn } from '@/lib/utils'
+import { FilterTabs } from '@/components/news/FilterTabs'
 
 // Latest: every story, newest first, with search and two filters. Rendered on
 // the server from the same stories as the fronts, so a story that is one line
@@ -91,7 +91,7 @@ export default async function NewsPage({ searchParams }: Params) {
 
       <main id="main-content" className="paper flex-1">
         <div className="band">
-          <header className="mx-auto max-w-[1320px] px-4 pb-4 pt-5 lg:px-6">
+          <header className="mx-auto max-w-[1320px] px-4 pb-0 pt-5 lg:px-6">
             <h1 className="font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">Latest</h1>
             <p className="mt-2 max-w-[72ch] font-news text-[16px] leading-snug text-foreground/70">
               Every story, newest first — fund closes, launches, deals, moves and regulation. One line per story, however
@@ -123,18 +123,23 @@ export default async function NewsPage({ searchParams }: Params) {
               )}
             </form>
 
-            <nav aria-label="Filter by story type" className="tab-scroll -mx-1 mt-3 flex items-center gap-1 overflow-x-auto px-1">
-              <Chip href={href({ q, asset })} active={!type} label="All types" />
-              {typeCounts.map((o) => (
-                <Chip key={o.key} href={href({ q, asset, type: o.key })} active={type === o.key} label={o.label} count={o.count} />
-              ))}
-            </nav>
-            <nav aria-label="Filter by asset class" className="tab-scroll -mx-1 mt-1.5 flex items-center gap-1 overflow-x-auto px-1">
-              <Chip href={href({ q, type })} active={!asset} label="All asset classes" />
-              {assetCounts.map((o) => (
-                <Chip key={o.key} href={href({ q, type, asset: o.key })} active={asset === o.key} label={o.label} count={o.count} />
-              ))}
-            </nav>
+            <FilterTabs
+              ariaLabel="Filter by story type"
+              label="Type"
+              className="mt-3 border-b border-border/70"
+              items={[
+                { href: href({ q, asset }), label: 'All', active: !type },
+                ...typeCounts.map((o) => ({ href: href({ q, asset, type: o.key }), label: o.label, active: type === o.key })),
+              ]}
+            />
+            <FilterTabs
+              ariaLabel="Filter by asset class"
+              label="Market"
+              items={[
+                { href: href({ q, type }), label: 'All', active: !asset },
+                ...assetCounts.map((o) => ({ href: href({ q, type, asset: o.key }), label: o.label, active: asset === o.key })),
+              ]}
+            />
           </header>
         </div>
 
@@ -187,24 +192,5 @@ export default async function NewsPage({ searchParams }: Params) {
       <SiteFooter />
       <BackToTop />
     </div>
-  )
-}
-
-function Chip({ href, active, label, count }: { href: string; active: boolean; label: string; count?: number }) {
-  return (
-    <Link
-      href={href}
-      scroll={false}
-      aria-current={active ? 'true' : undefined}
-      className={cn(
-        'inline-flex h-7 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 font-ui text-[12.5px] transition-colors',
-        active
-          ? 'border-foreground bg-foreground font-semibold text-background'
-          : 'border-border bg-card text-foreground/75 hover:border-foreground/40 hover:text-foreground',
-      )}
-    >
-      {label}
-      {count != null && <span className={cn('font-mono text-[10.5px]', active ? 'text-background/70' : 'text-muted-foreground')}>{count}</span>}
-    </Link>
   )
 }

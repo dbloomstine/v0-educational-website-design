@@ -12,6 +12,7 @@ import { getStoriesSafe, STORY_WINDOW_DAYS } from '@/lib/news/front-page'
 import { composeFrontPage, rankSection, type Story } from '@/lib/news/stories'
 import { ASSET_LABEL, KIND_LABEL, SECTIONS, SECTION_BY_SLUG, sectionHref, sectionNoun, storyInSection } from '@/lib/news/sections'
 import { OG_IMAGES } from '@/lib/seo'
+import { FilterTabs } from '@/components/news/FilterTabs'
 import { kickerLabel } from '@/lib/news/format'
 import { cn } from '@/lib/utils'
 
@@ -110,19 +111,21 @@ export default async function SectionPage({ params, searchParams }: Params) {
       <main id="main-content" className="paper flex-1">
         {/* Section front, on the band: the page's own masthead */}
         <div className="band">
-          <header className="mx-auto max-w-[1320px] px-4 pb-4 pt-5 lg:px-6">
+          <header className={cn('mx-auto max-w-[1320px] px-4 pt-5 lg:px-6', facets.length > 1 ? 'pb-0' : 'pb-4')}>
             <h1 className="font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">
               {section.title}
             </h1>
             <p className="mt-2 max-w-[72ch] font-news text-[16px] leading-snug text-foreground/70">{section.description}</p>
 
             {facets.length > 1 && (
-              <nav aria-label={`Filter ${section.title}`} className="tab-scroll -mx-1 mt-3 flex items-center gap-1 overflow-x-auto px-1">
-                <FacetLink href={sectionHref(slug)} active={!facet} label="All" count={inSection.length} />
-                {facets.map((o) => (
-                  <FacetLink key={o.key} href={`${sectionHref(slug)}?f=${o.key}`} active={facet?.key === o.key} label={o.label} count={o.count} />
-                ))}
-              </nav>
+              <FilterTabs
+                ariaLabel={`Filter ${section.title}`}
+                className="mt-2"
+                items={[
+                  { href: sectionHref(slug), label: 'All', active: !facet },
+                  ...facets.map((o) => ({ href: `${sectionHref(slug)}?f=${o.key}`, label: o.label, active: facet?.key === o.key })),
+                ]}
+              />
             )}
           </header>
         </div>
@@ -194,25 +197,6 @@ export default async function SectionPage({ params, searchParams }: Params) {
       <SiteFooter />
       <BackToTop />
     </div>
-  )
-}
-
-function FacetLink({ href, active, label, count }: { href: string; active: boolean; label: string; count: number }) {
-  return (
-    <Link
-      href={href}
-      scroll={false}
-      aria-current={active ? 'true' : undefined}
-      className={cn(
-        'inline-flex h-7 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 font-ui text-[12.5px] transition-colors',
-        active
-          ? 'border-foreground bg-foreground font-semibold text-background'
-          : 'border-border bg-card text-foreground/75 hover:border-foreground/40 hover:text-foreground',
-      )}
-    >
-      {label}
-      <span className={cn('font-mono text-[10.5px]', active ? 'text-background/70' : 'text-muted-foreground')}>{count}</span>
-    </Link>
   )
 }
 
