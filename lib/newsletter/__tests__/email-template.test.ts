@@ -61,6 +61,27 @@ describe('the top of the edition', () => {
     // A CLO pricing is not a lead, whatever its number.
     expect(top.map((t) => t.article.firmName)).not.toContain('Monroe Capital')
   })
+  it('names the larger raise first, however widely the smaller was reported', () => {
+    // Weight alone put a $1.3bn close five desks reported above a $10bn one two did.
+    const groups = [
+      group('PE', 'Private Equity', [
+        article({ title: 'Princeton Equity Group closes $1.3bn Fund III at hard cap', firmName: 'Princeton Equity Group', fundSizeUsdMillions: 1300, closeType: 'final_close', sourceName: 'PE Hub', alsoCoveredBy: ['Buyouts', 'Private Equity Wire', 'PitchBook', 'Private Equity International', 'AltAssets'] }),
+        article({ title: 'TPG Gets $10 Billion for Climate PE Fund', firmName: 'TPG', fundSizeUsdMillions: 10000, closeType: 'final_close', sourceName: 'Bloomberg' }),
+        article({ title: 'Small Co closes $40m fund', firmName: 'Small Co', fundSizeUsdMillions: 40, closeType: 'final_close', relevanceScore: 0.3, isHighSignal: false }),
+      ]),
+      group('deals', 'Deals', [
+        article({ title: 'Veritas agrees $2.5bn takeover', firmName: 'Veritas Capital', eventType: 'acquisition', fundSizeUsdMillions: 2500, alsoCoveredBy: ['Reuters', 'Financial Times', 'Bloomberg'] }),
+        article({ title: 'Antin agrees $2.9bn sale of Vicinity Energy', firmName: 'Antin', eventType: 'acquisition', fundSizeUsdMillions: 2900 }),
+        ...filler(8, 'Deal').map((a) => ({ ...a, eventType: 'acquisition' })),
+      ]),
+      group('people_moves', 'People Moves', filler(12, 'People')),
+    ]
+    const total = groups.reduce((n, g) => n + g.articles.length, 0)
+    const names = pickTopStories(groups, total).map((t) => t.article.firmName)
+    expect(names.indexOf('TPG')).toBeLessThan(names.indexOf('Princeton Equity Group'))
+    expect(names.indexOf('Antin')).toBeLessThan(names.indexOf('Veritas Capital'))
+    expect(names[0]).toBe('TPG')
+  })
   it('never names one firm twice at the top', () => {
     const groups = [group('PE', 'Private Equity', [
       article({ title: 'Blackstone closes $10bn fund', firmName: 'Blackstone', fundSizeUsdMillions: 10000, closeType: 'final_close' }),

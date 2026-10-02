@@ -442,7 +442,7 @@ The final output also runs through `collapseTemplateWhitespace()`, which strips 
 
 Masthead → sponsor (or the house strip) → **top stories** → sections → on Mondays, last week's largest closes → the week's events → sponsor (or the house card) → share → footer.
 
-- **Top stories** (`lib/newsletter/top-stories.ts`): up to five, chosen across sections by the site's own `storyWeight`, one per firm, with a brake so they are not five fund closes. Each carries a kicker (section · size · stage). They are *removed* from their sections — every story runs once. Fewer than 12 stories and there is no top block.
+- **Top stories** (`lib/newsletter/top-stories.ts`): up to five, chosen across sections by the site's own `storyWeight`, one per firm, with a brake so they are not five fund closes. Weight decides *which* stories lead; among the raises that do (and among the deals) the larger runs first, so the top block opens on the firm the subject line names first. Each carries a kicker (section · size · stage). They are *removed* from their sections — every story runs once. Fewer than 12 stories and there is no top block.
 - **Sections** run in the order of the site's tabs: the asset classes, then Deals, People Moves, LP Commitments, Regulation, Service Providers.
 - **Preview text** (`buildPreheader`) is the lead headline and the second: what happened. The subject line already says who.
 - **Monday recap** (`lib/newsletter/recap.ts`): the six largest closes of the past week, from the league table, each linked to its story page. It is an extra — if the league cannot be built in 25 s the edition goes without it.

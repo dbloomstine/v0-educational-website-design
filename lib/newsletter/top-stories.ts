@@ -10,7 +10,8 @@
  * storyWeight() (size, how many desks reported it, which desks, how final),
  * and the same two brakes so the top is a front page and not the five largest
  * closes: each further story of a kind already shown counts for less, and one
- * firm appears once.
+ * firm appears once. Weight decides which stories lead; among the raises that
+ * do (and among the deals) the larger runs first, as in the subject line.
  *
  * A story appears once in an edition: what is picked for the top is taken out
  * of its section.
@@ -47,8 +48,13 @@ export function topCount(total: number): number {
   return 0
 }
 
+/** The story's own figure: a raise or a deal's size, never a firm's assets under management. */
+function sizeOf(article: NewsletterArticle): number | null {
+  return article.fundSizeUsdMillions && !isLikelyAumLeak(article.fundSizeUsdMillions, article.fundName) ? article.fundSizeUsdMillions : null
+}
+
 function weightOf(article: NewsletterArticle, kind: StoryKind): number {
-  const size = article.fundSizeUsdMillions && !isLikelyAumLeak(article.fundSizeUsdMillions, article.fundName) ? article.fundSizeUsdMillions : null
+  const size = sizeOf(article)
   return storyWeight(
     {
       kind,
@@ -74,7 +80,7 @@ export function pickTopStories(groups: ArticleGroup[], total: number): TopPick[]
     .filter((p) => !isRoundup(p.article.title, p.article.headlineEntities))
     .map((p) => ({ ...p, weight: weightOf(p.article, p.kind) }))
 
-  const picked: TopPick[] = []
+  const picked: (typeof pool)[number][] = []
   const kinds = new Map<StoryKind, number>()
   const firms = new Set<string>()
   while (picked.length < want && pool.length > 0) {
@@ -88,11 +94,27 @@ export function pickTopStories(groups: ArticleGroup[], total: number): TopPick[]
     })
     if (best < 0) break
     const [p] = pool.splice(best, 1)
-    picked.push({ article: p.article, category: p.category, label: p.label })
+    picked.push(p)
     kinds.set(p.kind, (kinds.get(p.kind) ?? 0) + 1)
     if (p.article.firmName) firms.add(p.article.firmName.toLowerCase())
   }
-  return picked
+
+  // Which stories lead is a matter of weight; among the raises that do, and
+  // among the deals, the larger is named first — the order the subject line
+  // names them in, and the order a reader of league tables expects. Weight
+  // alone put a $1.3bn close that five desks reported above a $10bn one that
+  // two did. Each kind keeps the places it won.
+  for (const kind of ['fundraising', 'deals'] as StoryKind[]) {
+    const places = picked.map((p, i) => (p.kind === kind ? i : -1)).filter((i) => i >= 0)
+    const bySize = places.map((i) => picked[i]).sort((a, b) => raiseSize(b) - raiseSize(a))
+    places.forEach((place, n) => { picked[place] = bySize[n] })
+  }
+  return picked.map((p) => ({ article: p.article, category: p.category, label: p.label }))
+}
+
+/** A story's figure for ordering: nothing for a story that is not "Firm raises $X" (a wind-down, a CLO pricing). */
+function raiseSize(p: { article: NewsletterArticle }): number {
+  return p.article.leadEligible ? sizeOf(p.article) ?? 0 : 0
 }
 
 /** The edition in reading order: the top stories, then the sections without them. */
