@@ -461,3 +461,13 @@ describe('matchesPriorTitle (2026-08-16 third-day repeats)', () => {
     ).toBe(false)
   })
 })
+
+describe('"to close" is a shutdown only when nothing says it is a raise', () => {
+  it('reads raise headlines as raises', async () => {
+    const { isWindDown } = await import('../query-articles')
+    const a = (title: string) => ({ title, tldr: null, eventType: 'fund_close' }) as never
+    expect(isWindDown(a('Bain Capital exceeds target to close third double impact fund'))).toBe(false)
+    expect(isWindDown(a('Serent Capital takes less than 90 days to close $1.3bn Fund VI, its biggest fund yet'))).toBe(false)
+    expect(isWindDown(a('Hedge fund manager to close fund'))).toBe(true)
+  })
+})

@@ -160,6 +160,9 @@ export function isRoundup(title: string, entityNames: string[] = []): boolean {
 const DIGEST_PATTERNS = [
   /^\s*the secondary brief\b/i,
   /^\s*on the move\s*:/i,
+  /^\s*the pipeline\s*:/i,
+  /^\s*side letter\s*:/i,
+  /^\s*pe weekly\s*:/i,
   /\bdeal tracker\b/i,
   /^\s*(weekly|daily|monthly) (wrap|round-?up|digest|briefing)\b/i,
   /\bhires, promotions\b/i,

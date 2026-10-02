@@ -6,6 +6,9 @@ import { HeroSubscribe } from '@/components/home/hero-subscribe'
 import { EventsRail, LargestCloses, LatestRail, SectionBlock } from '@/components/home/Rail'
 import { LeadStory, SectionFlag, TopStory } from '@/components/story/StoryBlocks'
 import { StickySubscribeBar } from '@/components/news/StickySubscribeBar'
+import { FundraisingChart } from '@/components/charts/FundraisingChart'
+import { getLeagueSafe } from '@/lib/news/league-data'
+import { fundraisingChartViews } from '@/lib/news/chart-views'
 import { queryEventFeed } from '@/lib/events/api'
 import { getStoriesSafe } from '@/lib/news/front-page'
 import { composeFrontPage, rankSection } from '@/lib/news/stories'
@@ -70,8 +73,9 @@ const LATEST_COUNT = 11
 
 export default async function HomePage() {
   // Both feeds are soft dependencies: the page renders even if the DB hiccups.
-  const [stories, events] = await Promise.all([
+  const [stories, league, events] = await Promise.all([
     getStoriesSafe(),
+    getLeagueSafe(),
     // The week ahead, at most two a day: six events all happening this
     // afternoon say less than a spread across the week.
     queryEventFeed({ when: '1w', limit: 40 })
@@ -89,6 +93,7 @@ export default async function HomePage() {
   ])
 
   const nowMs = Date.now()
+  const chartViews = fundraisingChartViews(league, nowMs)
   const front = composeFrontPage(stories, nowMs)
 
   // A story appears once on the page. The lead and top stories claim theirs
@@ -146,6 +151,7 @@ export default async function HomePage() {
                 right after the top stories; on a desk it is the right column. */}
             <aside className="min-w-0 space-y-5 lg:col-start-2 lg:row-span-2 lg:row-start-1">
               <LatestRail stories={front.latest.slice(0, LATEST_COUNT)} />
+              <FundraisingChart views={chartViews} href="/league-tables" />
               <LargestCloses stories={front.largestCloses} stats={front.stats} />
               <EventsRail events={events} />
             </aside>

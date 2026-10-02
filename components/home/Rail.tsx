@@ -99,6 +99,7 @@ export function LargestCloses({ stories, stats }: { stories: Story[]; stats: { f
           <span className="font-semibold text-foreground/80">{totalLabel(stats.capitalUsdM)}</span> across {stats.funds} fund closes this week
         </p>
       )}
+      <MoreLink href="/league-tables">League tables: the month, the quarter, the year</MoreLink>
     </Panel>
   )
 }

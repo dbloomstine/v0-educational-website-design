@@ -1,3 +1,4 @@
+import { firmHref } from '@/lib/news/league'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -129,7 +130,13 @@ export default async function StoryPage({ params }: Params) {
 
               {/* What we know, as fields */}
               <dl className="mt-8 grid gap-x-8 border-t-2 border-foreground sm:grid-cols-2">
-                {story.firmName && <Fact label={story.kind === 'lps' ? 'Investor' : 'Firm'}>{story.firmName}</Fact>}
+                {story.firmName && (
+                  <Fact label={story.kind === 'lps' ? 'Investor' : 'Firm'}>
+                    {firmHref(story.firmName) ? (
+                      <Link href={firmHref(story.firmName) as string} className="underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground">{story.firmName}</Link>
+                    ) : story.firmName}
+                  </Fact>
+                )}
                 {story.fundName && <Fact label="Fund">{story.fundName}</Fact>}
                 {size && <Fact label={story.kind === 'deals' ? 'Deal value' : story.kind === 'lps' ? 'Commitment' : 'Size'}><span className="font-mono text-[15px] font-bold">{size}</span></Fact>}
                 {stage && <Fact label="Stage">{stage}</Fact>}
@@ -164,7 +171,7 @@ export default async function StoryPage({ params }: Params) {
 
               {sameFirm.length > 0 && (
                 <section aria-label={`More on ${story.firmName}`} className="mt-9">
-                  <SectionFlag label={`More on ${story.firmName}`} />
+                  <SectionFlag label={`More on ${story.firmName}`} href={firmHref(story.firmName) ?? undefined} note={firmHref(story.firmName) ? 'Everything on this firm →' : undefined} />
                   <ul>
                     {sameFirm.map((s) => (
                       <HeadlineRow key={s.id} story={s} showSource />

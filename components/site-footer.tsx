@@ -67,6 +67,7 @@ export function SiteFooter() {
           <nav aria-label="FundOpsHQ">
             <p className={headClass}>FundOpsHQ</p>
             <ul className="space-y-1.5">
+              <li><Link href="/league-tables" className={linkClass}>League tables</Link></li>
               <li><Link href="/events" className={linkClass}>Events calendar</Link></li>
               {COMPANY_LINKS.map((l) => (
                 <li key={l.href}><Link href={l.href} className={linkClass}>{l.label}</Link></li>

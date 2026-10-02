@@ -2,6 +2,8 @@ import Link from 'next/link'
 import type { Story } from '@/lib/news/stories'
 import { homeSectionFor, sectionHref } from '@/lib/news/sections'
 import { kickerLabel, sizeLabel, stageLabel } from '@/lib/news/format'
+import { firmHref, fundLabel } from '@/lib/news/league'
+import { ASSET_LABEL } from '@/lib/news/sections'
 import { Headline } from './Headline'
 import { Coverage } from './Coverage'
 
@@ -31,25 +33,74 @@ function Facts({ story, className = '' }: { story: Story; className?: string }) 
   return <span className={`font-mono text-[11px] font-semibold tracking-tight text-foreground/70 ${className}`}>{parts.join(' · ')}</span>
 }
 
+/**
+ * The lead's facts, set beside it: who, which fund, how much, what stage, how
+ * widely reported. It gives the lead the weight of a feature without a
+ * picture, and it is where a reader first meets a link to the firm's page.
+ */
+function LeadFacts({ story }: { story: Story }) {
+  const sized = story.kind === 'fundraising' || story.kind === 'deals' || story.kind === 'lps'
+  const size = sized && story.leadEligible ? sizeLabel(story.sizeUsdM) : null
+  const href = firmHref(story.firmName)
+  const facts: { label: string; value: React.ReactNode; big?: boolean }[] = []
+  if (size) facts.push({ label: story.kind === 'deals' ? 'Deal value' : story.kind === 'lps' ? 'Commitment' : 'Size', value: size, big: true })
+  if (story.firmName) {
+    facts.push({
+      label: story.kind === 'lps' ? 'Investor' : 'Firm',
+      value: href ? <Link href={href} className="underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground">{story.firmName}</Link> : story.firmName,
+    })
+  }
+  const fund = fundLabel(story.fundName)
+  if (fund) facts.push({ label: 'Fund', value: fund })
+  const stage = stageLabel(story)
+  if (stage) facts.push({ label: 'Stage', value: stage })
+  if (story.assetClasses[0] && ASSET_LABEL[story.assetClasses[0]]) facts.push({ label: 'Market', value: ASSET_LABEL[story.assetClasses[0]] })
+  facts.push({
+    label: 'Coverage',
+    value: (
+      <Link href={`/story/${story.id}`} className="underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground">
+        {story.coverage.length > 0 ? `${story.coverage.length + 1} publications` : story.source ?? 'One publication'}
+      </Link>
+    ),
+  })
+  // Two facts are a caption, not a box.
+  if (facts.length < 3) return null
+  return (
+    <dl className="mt-4 grid grid-cols-2 gap-x-5 border-t border-border pt-1 sm:grid-cols-3 lg:mt-0 lg:block lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0">
+      {facts.slice(0, 6).map((f) => (
+        <div key={f.label} className="border-b border-border/70 py-[7px] last:border-0 lg:first:pt-0">
+          <dt className="font-ui text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground">{f.label}</dt>
+          <dd className={f.big ? 'font-mono text-[22px] font-bold leading-tight tracking-tight text-foreground' : 'font-news text-[15px] leading-snug text-foreground'}>{f.value}</dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
+
 /** The one story the page leads with. */
 export function LeadStory({ story }: { story: Story }) {
+  const facts = <LeadFacts story={story} />
   return (
     <article className="panel panel-lead">
-      <Kicker story={story} lead />
-      <a href={story.url} target="_blank" rel="noopener noreferrer" className="group mt-2 block">
-        <h2 className="font-news text-[29px] font-medium leading-[1.07] tracking-[-0.018em] text-foreground sm:text-[36px] lg:text-[42px]">
-          <span className="hl"><Headline story={story} /></span>
-        </h2>
-      </a>
-      {story.summary && (
-        <p className="mt-2.5 max-w-[68ch] font-news text-[17px] leading-[1.42] text-foreground/75 lg:text-[18px]">
-          {story.summary}
-        </p>
-      )}
-      <div className="mt-2.5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <Facts story={story} className="text-[12px]" />
-        <Coverage story={story} max={4} />
-        <Permalink story={story} />
+      <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_224px] lg:gap-x-6">
+        <div className="min-w-0">
+          <Kicker story={story} lead />
+          <a href={story.url} target="_blank" rel="noopener noreferrer" className="group mt-2 block">
+            <h2 className="font-news text-[29px] font-medium leading-[1.07] tracking-[-0.018em] text-foreground sm:text-[36px] lg:text-[40px]">
+              <span className="hl"><Headline story={story} /></span>
+            </h2>
+          </a>
+          {story.summary && (
+            <p className="mt-2.5 max-w-[68ch] font-news text-[17px] leading-[1.42] text-foreground/75 lg:text-[18px]">
+              {story.summary}
+            </p>
+          )}
+          <div className="mt-2.5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <Coverage story={story} max={4} />
+            <Permalink story={story} />
+          </div>
+        </div>
+        {facts}
       </div>
     </article>
   )

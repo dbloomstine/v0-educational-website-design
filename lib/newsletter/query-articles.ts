@@ -733,12 +733,22 @@ export function isDealShaped(a: NewsletterArticle): boolean {
  * $2B fund shutting is news — but never as a size-led headline.
  */
 const WIND_DOWN_TITLE =
-  /\b(closing down|clos(es|ing|e) (its )?doors|shut(s|ting)? down|shutting|shutter(s|ing)?|wind(s|ing)? (down|up)|liquidat\w+|to return (outside |investor |client )?(capital|money)|returning (outside |investor |client )?(capital|money))\b|\bto close\b(?!.*\b(at|on|above|round|first|final|oversubscribed|hard cap)\b).*\bfund\b/i
+  /\b(closing down|clos(es|ing|e) (its )?doors|shut(s|ting)? down|shutting|shutter(s|ing)?|wind(s|ing)? (down|up)|liquidat\w+|to return (outside |investor |client )?(capital|money)|returning (outside |investor |client )?(capital|money))\b/i
+/**
+ * "X to close fund" is a shutdown; "exceeds target to close third fund" and
+ * "takes 90 days to close $1.3bn Fund VI" are the opposite. A figure, or any
+ * word that belongs to a raise, anywhere in the headline means it is a raise.
+ * (Until 2026-10-01 only words AFTER "to close" were checked, so those two —
+ * and Investcorp's $1.25bn GP-stakes close — were filed as wind-downs.)
+ */
+const TO_CLOSE_FUND = /\bto close\b.*\bfund\b/i
+const RAISE_CONTEXT = /[$€£¥₹]\s?\d|\d\s?(bn|billion|m|mn|million)\b|\b(at|on|above|round|first|final|oversubscribed|hard cap|target|exceed\w*|rais\w+|secur\w+|debut|flagship|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth)\b/i
 const WIND_DOWN_TLDR = /\b(shutting down|closing down|wind(ing)? down|termination scheduled|liquidat\w+|ceas(e|ing) operations)\b/i
 
 export function isWindDown(a: NewsletterArticle): boolean {
   if (storyFamily(a.eventType) !== 'fund') return false
-  return WIND_DOWN_TITLE.test(a.title) || WIND_DOWN_TLDR.test(a.tldr ?? '')
+  if (WIND_DOWN_TITLE.test(a.title) || WIND_DOWN_TLDR.test(a.tldr ?? '')) return true
+  return TO_CLOSE_FUND.test(a.title) && !RAISE_CONTEXT.test(a.title)
 }
 
 /**
