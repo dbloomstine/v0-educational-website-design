@@ -6,6 +6,7 @@ import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { MostCovered, mostCovered } from '@/components/home/Rail'
 import { RiverRow, SectionFlag } from '@/components/story/StoryBlocks'
+import { SubscribePanel } from '@/components/home/Rail'
 import { ARCHIVE_WINDOW_DAYS, getArchiveStoriesSafe, searchStories } from '@/lib/news/front-page'
 import type { Story, StoryKind } from '@/lib/news/stories'
 import { ASSET_LABEL, KIND_LABEL } from '@/lib/news/sections'
@@ -89,8 +90,8 @@ export default async function NewsPage({ searchParams }: Params) {
       <SiteHeader />
 
       <main id="main-content" className="paper flex-1">
-        <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
-          <header className="border-b border-border pb-3">
+        <div className="band">
+          <header className="mx-auto max-w-[1320px] px-4 pb-4 pt-5 lg:px-6">
             <h1 className="font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">Latest</h1>
             <p className="mt-2 max-w-[72ch] font-news text-[16px] leading-snug text-foreground/70">
               Every story, newest first — fund closes, launches, deals, moves and regulation. One line per story, however
@@ -135,8 +136,10 @@ export default async function NewsPage({ searchParams }: Params) {
               ))}
             </nav>
           </header>
+        </div>
 
-          <div className="mt-5 grid gap-x-9 gap-y-8 lg:grid-cols-[minmax(0,1fr)_332px]">
+        <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
+          <div className="grid gap-x-9 gap-y-8 lg:grid-cols-[minmax(0,1fr)_332px]">
             <section aria-label="Stories" className="min-w-0">
               <SectionFlag
                 label={q ? `Results for “${q}”` : [type ? KIND_LABEL[type] : null, asset ? ASSET_LABEL[asset] : null].filter(Boolean).join(' · ') || 'All stories'}
@@ -148,7 +151,7 @@ export default async function NewsPage({ searchParams }: Params) {
                   <Link href="/news" className="underline underline-offset-2">Show everything</Link>.
                 </p>
               ) : (
-                <ul>
+                <ul className="river">
                   {shown.map((s) => (
                     <RiverRow
                       key={s.id}
@@ -173,17 +176,9 @@ export default async function NewsPage({ searchParams }: Params) {
               )}
             </section>
 
-            <aside className="min-w-0 space-y-7 lg:border-l lg:border-border lg:pl-8">
+            <aside className="min-w-0 space-y-5">
               <MostCovered stories={covered} note="Past 7 days" />
-              <section aria-label="Newsletter" className="border-t-2 border-foreground pt-2">
-                <h2 className="font-news text-[19px] font-medium leading-tight text-foreground">All of this, once a morning.</h2>
-                <p className="mt-1 font-news text-[15px] leading-snug text-foreground/70">
-                  FundOps Daily is the day&rsquo;s closes, launches, deals and moves in one email. Free, seven days a week.
-                </p>
-                <Link href="/#subscribe" className="mt-3 inline-flex h-9 items-center rounded-sm bg-foreground px-4 font-ui text-[12px] font-bold uppercase tracking-[0.06em] text-background hover:bg-foreground/85">
-                  Subscribe free
-                </Link>
-              </section>
+              <SubscribePanel title="All of this, once a morning." body="FundOps Daily is the day’s closes, launches, deals and moves in one email. Free, seven days a week." />
             </aside>
           </div>
         </div>

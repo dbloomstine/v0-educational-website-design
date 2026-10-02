@@ -4,21 +4,20 @@ import type { IndustryEvent } from '@/lib/events/types'
 import { formatEventDates } from '@/lib/events/constants'
 import { sizeLabel, stageLabel, totalLabel } from '@/lib/news/format'
 import { Headline } from '@/components/story/Headline'
-import { LatestRow, MoreLink, SectionFlag } from '@/components/story/StoryBlocks'
+import { LatestRow, MoreLink, Panel, SectionFlag } from '@/components/story/StoryBlocks'
 
 /** The newest stories on the site, newest first. Front page and story pages. */
 export function LatestRail({ stories }: { stories: Story[] }) {
   if (stories.length === 0) return null
   return (
-    <section aria-label="Latest">
-      <SectionFlag label="Latest" href="/news" note="Updated hourly" live />
+    <Panel label="Latest" href="/news" note="Updated hourly" live>
       <ol>
         {stories.map((s) => (
           <LatestRow key={s.id} story={s} />
         ))}
       </ol>
       <MoreLink href="/news">All news, with search and filters</MoreLink>
-    </section>
+    </Panel>
   )
 }
 
@@ -38,8 +37,7 @@ export function mostCovered(stories: Story[], limit = 8): Story[] {
 export function MostCovered({ stories, note }: { stories: Story[]; note?: string }) {
   if (stories.length < 3) return null
   return (
-    <section aria-label="Most covered">
-      <SectionFlag label="Most covered" note={note} />
+    <Panel label="Most covered" note={note}>
       <ol>
         {stories.map((s) => (
           <li key={s.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3 border-b border-border/70 py-[7px] last:border-0">
@@ -62,7 +60,7 @@ export function MostCovered({ stories, note }: { stories: Story[]; note?: string
           </li>
         ))}
       </ol>
-    </section>
+    </Panel>
   )
 }
 
@@ -73,8 +71,7 @@ export function MostCovered({ stories, note }: { stories: Story[]; note?: string
 export function LargestCloses({ stories, stats }: { stories: Story[]; stats: { funds: number; capitalUsdM: number } }) {
   if (stories.length === 0) return null
   return (
-    <section aria-label="Largest closes this week">
-      <SectionFlag label="Largest closes" href="/news/fundraising" note="Past 7 days" />
+    <Panel label="Largest closes" href="/news/fundraising" note="Past 7 days">
       <ol>
         {stories.map((s, i) => (
           <li key={s.id} className="border-b border-border/70 last:border-0">
@@ -102,7 +99,7 @@ export function LargestCloses({ stories, stats }: { stories: Story[]; stats: { f
           <span className="font-semibold text-foreground/80">{totalLabel(stats.capitalUsdM)}</span> across {stats.funds} fund closes this week
         </p>
       )}
-    </section>
+    </Panel>
   )
 }
 
@@ -124,8 +121,7 @@ export function largestBySize(stories: Story[], limit = 6, withinDays = 7, nowMs
 export function LargestBySize({ label, stories, note = 'Past 7 days' }: { label: string; stories: Story[]; note?: string }) {
   if (stories.length < 3) return null
   return (
-    <section aria-label={label}>
-      <SectionFlag label={label} note={note} />
+    <Panel label={label} note={note}>
       <ol>
         {stories.map((s, i) => (
           <li key={s.id} className="border-b border-border/70 last:border-0">
@@ -143,7 +139,7 @@ export function LargestBySize({ label, stories, note = 'Past 7 days' }: { label:
           </li>
         ))}
       </ol>
-    </section>
+    </Panel>
   )
 }
 
@@ -160,8 +156,7 @@ export function EventsRail({
 }) {
   if (events.length === 0) return null
   return (
-    <section aria-label={label}>
-      <SectionFlag label={label} href={href} note="Dates verified" />
+    <Panel label={label} href={href} note="Dates verified">
       <ol>
         {events.map((e) => (
           <li key={e.id} className="grid grid-cols-[56px_minmax(0,1fr)] gap-2 border-b border-border/70 py-[7px] last:border-0">
@@ -178,16 +173,15 @@ export function EventsRail({
         ))}
       </ol>
       <MoreLink href={href}>{moreLabel}</MoreLink>
-    </section>
+    </Panel>
   )
 }
 
-/** A section's top headlines on the front page. */
-export function SectionBlock({ label, href, stories, moreLabel }: { label: string; href: string; stories: Story[]; moreLabel: string }) {
+/** A section's top headlines on the front page: flat beside the rail, a panel on the asset-class band. */
+export function SectionBlock({ label, href, stories, moreLabel, panel = false }: { label: string; href: string; stories: Story[]; moreLabel: string; panel?: boolean }) {
   if (stories.length === 0) return null
-  return (
-    <section aria-label={label}>
-      <SectionFlag label={label} href={href} />
+  const list = (
+    <>
       <ul>
         {stories.map((s) => (
           <li key={s.id} className="border-b border-border/70 py-[7px] last:border-0">
@@ -204,6 +198,30 @@ export function SectionBlock({ label, href, stories, moreLabel }: { label: strin
         ))}
       </ul>
       <MoreLink href={href}>{moreLabel}</MoreLink>
+    </>
+  )
+  if (panel) return <Panel label={label} href={href}>{list}</Panel>
+  return (
+    <section aria-label={label}>
+      <SectionFlag label={label} href={href} />
+      {list}
+    </section>
+  )
+}
+
+/** The rail's one call to action, in ink so it is the only dark thing on the page. */
+export function SubscribePanel({ title, body }: { title: string; body: string }) {
+  return (
+    <section aria-label="Newsletter" className="panel-ink">
+      <h2 className="font-news text-[20px] font-medium leading-tight">{title}</h2>
+      <p className="mt-1 font-news text-[15px] leading-snug opacity-80">{body}</p>
+      <Link
+        href="/#subscribe"
+        className="mt-3 inline-flex h-9 items-center rounded-sm px-4 font-ui text-[12px] font-bold uppercase tracking-[0.06em] transition-opacity hover:opacity-90"
+        style={{ background: 'var(--tab)', color: 'var(--ink)' }}
+      >
+        Subscribe free
+      </Link>
     </section>
   )
 }

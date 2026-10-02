@@ -569,3 +569,49 @@
 .paper .legal p.text-sm { font-family: var(--font-franklin), system-ui, sans-serif; font-size: 12.5px; margin-bottom: 1.25rem; }
 .paper .legal a { color: var(--foreground); text-decoration: underline; text-underline-offset: 3px; }
 .paper .legal strong { color: var(--foreground); }
+
+/* ── Surfaces (2026-10 polish) ─────────────────────────────────────────────
+   Danny: "we need a little more in terms of sections or background fill or
+   shading or borders… something to visually differentiate the page sections".
+   The page had one surface — cream — and told its parts apart with hairlines
+   alone. There are now four, each with one job:
+
+     page   cream            running text: top stories, the long lists
+     panel  brighter stock   a self-contained module: the lead, every rail box
+     band   deeper cream     a full-width zone: page fronts, "by asset class"
+     ink    navy             a panel's heading, and anything that asks for action
+
+   A panel head is the same navy bar with an amber tab as the section heads in
+   the FundOps Daily email, so the site and the email read as one product. */
+.paper {
+  --band: oklch(0.944 0.017 90);
+  --ink: oklch(0.32 0.055 250);
+  --ink-foreground: oklch(0.968 0.012 90);
+  --tab: #E6B045;
+}
+.paper .band { background: var(--band); border-bottom: 1px solid var(--border); }
+.paper .band-top { border-top: 1px solid var(--border); }
+.paper .panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 2px oklch(0.245 0.042 255 / 0.05);
+}
+.paper .panel-head {
+  display: flex; align-items: baseline; justify-content: space-between; gap: 12px;
+  background: var(--ink); color: var(--ink-foreground);
+  border-left: 4px solid var(--tab);
+  padding: 7px 12px 7px 10px;
+}
+.paper .panel-head h2 { color: var(--ink-foreground); }
+.paper .panel-head .note { color: color-mix(in oklab, var(--ink-foreground) 62%, transparent); }
+.paper .panel-body { padding: 4px 14px 10px; }
+.paper .panel-lead { border-top: 3px solid var(--ink); padding: 16px 20px 18px; }
+@media (max-width: 640px) { .paper .panel-lead { padding: 13px 14px 15px; } }
+.paper .panel-ink { background: var(--ink); color: var(--ink-foreground); border-left: 4px solid var(--tab); padding: 14px 16px 16px; }
+/* A long list reads as rows once the row under the pointer lifts. */
+.paper .river > li { transition: background-color 120ms, box-shadow 120ms; }
+.paper .river > li:hover { background: var(--card); box-shadow: -8px 0 0 var(--card), 8px 0 0 var(--card); }
+/* Two columns of stories get a column rule between them. */
+@media (min-width: 640px) {
+  .paper .col-rule { background: linear-gradient(var(--border), var(--border)) center / 1px 100% no-repeat; }
+}

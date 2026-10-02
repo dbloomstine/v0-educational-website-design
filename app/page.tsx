@@ -132,7 +132,7 @@ export default async function HomePage() {
               {front.top.length > 0 && (
                 <section aria-label="Top stories" className="mt-6">
                   <SectionFlag label="Top stories" />
-                  <div className="grid gap-x-8 gap-y-4 sm:grid-cols-2">
+                  <div className="col-rule grid gap-x-10 gap-y-4 sm:grid-cols-2">
                     {front.top.map((s) => (
                       <TopStory key={s.id} story={s} />
                     ))}
@@ -144,7 +144,7 @@ export default async function HomePage() {
 
             {/* The running rail. Second in the document so a phone shows it
                 right after the top stories; on a desk it is the right column. */}
-            <aside className="min-w-0 space-y-7 lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:border-l lg:border-border lg:pl-8">
+            <aside className="min-w-0 space-y-5 lg:col-start-2 lg:row-span-2 lg:row-start-1">
               <LatestRail stories={front.latest.slice(0, LATEST_COUNT)} />
               <LargestCloses stories={front.largestCloses} stats={front.stats} />
               <EventsRail events={events} />
@@ -152,7 +152,7 @@ export default async function HomePage() {
 
             {/* By story type — under the top stories, beside the rail */}
             <div className="min-w-0 lg:col-start-1">
-              <div className="grid gap-x-8 gap-y-8 sm:grid-cols-2">
+              <div className="col-rule grid gap-x-10 gap-y-8 sm:grid-cols-2">
                 {typeBlocks.map(({ section, picks }) => (
                   <SectionBlock
                     key={section.slug}
@@ -165,12 +165,17 @@ export default async function HomePage() {
               </div>
             </div>
           </div>
+        </div>
 
-          {/* ─── By asset class ─── */}
-          {assetBlocks.length > 0 && (
-            <div className="mt-10 border-t border-border pt-6">
-              <p className="mb-4 font-news text-[22px] italic leading-none text-foreground">By asset class</p>
-              <div className="grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+        {/* ─── By asset class: its own zone, on the deeper band ─── */}
+        {assetBlocks.length > 0 && (
+          <div className="band band-top">
+            <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-6 lg:px-6">
+              <div className="mb-4 flex items-baseline justify-between gap-4">
+                <h2 className="font-news text-[24px] font-medium leading-none tracking-[-0.01em] text-foreground">By asset class</h2>
+                <span className="font-ui text-[12px] text-muted-foreground">The same stories, by market</span>
+              </div>
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {assetBlocks.map(({ section, picks }) => (
                   <SectionBlock
                     key={section.slug}
@@ -178,26 +183,27 @@ export default async function HomePage() {
                     href={sectionHref(section.slug)}
                     stories={picks}
                     moreLabel={section.more}
+                    panel
                   />
                 ))}
 
                 {/* How the page is made. Said once, plainly, where a reader
                     who has got this far would look for it. */}
-                <section aria-label="About this page" className="border-t-2 border-foreground pt-1.5">
-                  <h2 className="font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">How this page is made</h2>
-                  <p className="mt-2 font-news text-[15px] leading-[1.4] text-foreground/80">
+                <section aria-label="About this page" className="panel-ink">
+                  <h2 className="font-ui text-[11.5px] font-extrabold uppercase tracking-[0.13em]">How this page is made</h2>
+                  <p className="mt-2 font-news text-[15px] leading-[1.4] opacity-85">
                     Stories are gathered every hour from more than 200 publications, grouped so one event is one
                     line, and ranked by size, breadth of coverage and recency. Every headline links to its publisher.
                   </p>
-                  <p className="mt-2 font-news text-[15px] leading-[1.4] text-foreground/80">
+                  <p className="mt-2 font-news text-[15px] leading-[1.4] opacity-85">
                     Edited by Danny Bloomstine.{' '}
                     <a href="/about" className="font-semibold underline underline-offset-2">About FundOpsHQ</a>
                   </p>
                 </section>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </main>
 
       <SiteFooter />

@@ -108,9 +108,9 @@ export default async function SectionPage({ params, searchParams }: Params) {
       <SiteHeader />
 
       <main id="main-content" className="paper flex-1">
-        <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
-          {/* Section front */}
-          <header className="border-b border-border pb-3">
+        {/* Section front, on the band: the page's own masthead */}
+        <div className="band">
+          <header className="mx-auto max-w-[1320px] px-4 pb-4 pt-5 lg:px-6">
             <h1 className="font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">
               {section.title}
             </h1>
@@ -125,8 +125,10 @@ export default async function SectionPage({ params, searchParams }: Params) {
               </nav>
             )}
           </header>
+        </div>
 
-          <div className={cn('mt-5 grid gap-x-9 gap-y-8', hasRail && 'lg:grid-cols-[minmax(0,1fr)_332px]')}>
+        <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
+          <div className={cn('grid gap-x-9 gap-y-8', hasRail && 'lg:grid-cols-[minmax(0,1fr)_332px]')}>
             <div className="min-w-0">
               {lead ? (
                 <LeadStory story={lead} />
@@ -137,7 +139,7 @@ export default async function SectionPage({ params, searchParams }: Params) {
               )}
 
               {top.length > 0 && (
-                <section aria-label="More top stories" className="mt-6 grid gap-x-8 gap-y-4 sm:grid-cols-2">
+                <section aria-label="More top stories" className="col-rule mt-6 grid gap-x-10 gap-y-4 sm:grid-cols-2">
                   {top.map((s) => (
                     <TopStory key={s.id} story={s} />
                   ))}
@@ -154,7 +156,7 @@ export default async function SectionPage({ params, searchParams }: Params) {
                   {/* One list, newest first, no day headings — Danny, 2026-10-01:
                       "the date of when it was posted is becoming less relevant…
                       they'll trust that it's recent". */}
-                  <ul>
+                  <ul className="river">
                     {stories.map((s) => (
                       <RiverRow key={s.id} story={s} tags={[riverTag(s, section)]} />
                     ))}
@@ -173,7 +175,7 @@ export default async function SectionPage({ params, searchParams }: Params) {
                 never a copy of the river beside it. It scrolls with the page:
                 pinned, a rail taller than the window can't be read to its end. */}
             {hasRail && (
-              <aside className="min-w-0 space-y-7 lg:border-l lg:border-border lg:pl-8">
+              <aside className="min-w-0 space-y-5">
                 {showCloses && <LargestCloses stories={closes.largestCloses} stats={closes.stats} />}
                 <LargestBySize label={largestLabel} stories={largest} />
                 <MostCovered stories={covered} note={`Past ${STORY_WINDOW_DAYS} days`} />

@@ -8,7 +8,7 @@ import { BackToTop } from '@/components/back-to-top'
 import { Headline } from '@/components/story/Headline'
 import { ShareBar } from '@/components/story/ShareBar'
 import { HeadlineRow, SectionFlag } from '@/components/story/StoryBlocks'
-import { LatestRail } from '@/components/home/Rail'
+import { LatestRail, SubscribePanel } from '@/components/home/Rail'
 import { getStory } from '@/lib/news/front-page'
 import { rankSection, type Story } from '@/lib/news/stories'
 import { ASSET_LABEL, homeSectionFor, sectionHref, storyInSection } from '@/lib/news/sections'
@@ -185,22 +185,9 @@ export default async function StoryPage({ params }: Params) {
               )}
             </article>
 
-            <aside className="min-w-0 space-y-7 lg:border-l lg:border-border lg:pl-8">
+            <aside className="min-w-0 space-y-5">
               <LatestRail stories={all.slice(0, 10)} />
-              <section aria-label="Newsletter" className="border-t-2 border-foreground pt-3">
-                <p className="font-news text-[19px] font-medium leading-tight text-foreground">
-                  Stories like this, every morning.
-                </p>
-                <p className="mt-1 font-news text-[15px] leading-snug text-foreground/70">
-                  FundOps Daily is the brief on fund closes, launches, deals and moves. Free, before the open.
-                </p>
-                <Link
-                  href="/#subscribe"
-                  className="mt-3 inline-flex h-9 items-center rounded-sm bg-foreground px-4 font-ui text-[12px] font-bold uppercase tracking-[0.08em] text-background hover:bg-foreground/85"
-                >
-                  Subscribe free
-                </Link>
-              </section>
+              <SubscribePanel title="Stories like this, every morning." body="FundOps Daily is the brief on fund closes, launches, deals and moves. Free, before the open." />
             </aside>
           </div>
         </div>

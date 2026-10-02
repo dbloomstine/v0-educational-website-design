@@ -34,7 +34,7 @@ function Facts({ story, className = '' }: { story: Story; className?: string }) 
 /** The one story the page leads with. */
 export function LeadStory({ story }: { story: Story }) {
   return (
-    <article>
+    <article className="panel panel-lead">
       <Kicker story={story} lead />
       <a href={story.url} target="_blank" rel="noopener noreferrer" className="group mt-2 block">
         <h2 className="font-news text-[29px] font-medium leading-[1.07] tracking-[-0.018em] text-foreground sm:text-[36px] lg:text-[42px]">
@@ -146,6 +146,7 @@ export function SectionFlag({ label, href, note, live }: { label: string; href?:
   return (
     <div className="mb-1 flex items-baseline justify-between gap-3 border-t-2 border-foreground pt-1.5">
       <h2 className="flex items-center gap-2 font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">
+        <span className="h-[11px] w-[4px] shrink-0" style={{ background: 'var(--tab)' }} aria-hidden="true" />
         {live && (
           <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-70" />
@@ -156,6 +157,34 @@ export function SectionFlag({ label, href, note, live }: { label: string; href?:
       </h2>
       {note && <span className="font-ui text-[11.5px] text-muted-foreground">{note}</span>}
     </div>
+  )
+}
+
+/**
+ * A self-contained module on brighter stock with a navy head — every box in
+ * the rail. The head is the email's section head: navy bar, amber tab.
+ */
+export function Panel({
+  label, href, note, live, children, ariaLabel,
+}: {
+  label: string; href?: string; note?: string; live?: boolean; children: React.ReactNode; ariaLabel?: string
+}) {
+  return (
+    <section aria-label={ariaLabel ?? label} className="panel">
+      <div className="panel-head">
+        <h2 className="flex items-center gap-2 font-ui text-[11.5px] font-extrabold uppercase tracking-[0.13em]">
+          {live && (
+            <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full opacity-70" style={{ background: '#34D399' }} />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full" style={{ background: '#34D399' }} />
+            </span>
+          )}
+          {href ? <Link href={href} className="hover:underline">{label}</Link> : label}
+        </h2>
+        {note && <span className="note whitespace-nowrap font-ui text-[11px]">{note}</span>}
+      </div>
+      <div className="panel-body">{children}</div>
+    </section>
   )
 }
 
