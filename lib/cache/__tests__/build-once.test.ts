@@ -8,6 +8,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 interface Row { key: string; payload: string | null; computed_at: string | null; claimed_until: string }
 const table = new Map<string, Row>()
 let unreachable = false
+let missingTable = false
 
 function query() {
   const filters: ((r: Row) => boolean)[] = []
@@ -15,6 +16,7 @@ function query() {
   let insert: Row | null = null
   const run = () => {
     if (unreachable) return { data: null, error: { message: 'connection refused' } }
+    if (missingTable) return { data: null, error: { code: 'PGRST205', message: "Could not find the table 'public.site_cache' in the schema cache" } }
     if (insert) {
       if (table.has(insert.key)) return { data: [], error: null }
       table.set(insert.key, insert)
@@ -40,7 +42,7 @@ vi.mock('@/lib/supabase/client', () => ({ getSupabaseAdmin: () => ({ from: () =>
 
 import { buildOnce } from '../build-once'
 
-beforeEach(() => { table.clear(); unreachable = false; vi.useFakeTimers({ now: new Date('2026-10-02T20:00:00Z') }) })
+beforeEach(() => { table.clear(); unreachable = false; missingTable = false; vi.useFakeTimers({ now: new Date('2026-10-02T20:00:00Z') }) })
 afterEach(() => { vi.useRealTimers() })
 
 /** Run to completion with the fake clock: lets the polling sleeps elapse. */
@@ -106,8 +108,15 @@ describe('buildOnce', () => {
     expect(results).toEqual([{ ok: true }, { ok: true }, { ok: true }])
   })
 
-  it('just builds when the table cannot be reached', async () => {
+  it('does not build when the database cannot be reached: the build needs the same database', async () => {
     unreachable = true
+    const build = vi.fn(async () => 'value')
+    await expect(settle(buildOnce('league', build))).rejects.toThrow(/database unavailable/)
+    expect(build).not.toHaveBeenCalled()
+  })
+
+  it('just builds where the table does not exist (a fresh environment)', async () => {
+    missingTable = true
     const build = vi.fn(async () => 'value')
     expect(await settle(buildOnce('league', build))).toBe('value')
     expect(build).toHaveBeenCalledTimes(1)

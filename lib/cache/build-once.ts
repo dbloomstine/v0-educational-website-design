@@ -21,8 +21,10 @@
  * gets room to recover instead of a retry storm.
  *
  * It wraps the function handed to unstable_cache; the data cache stays the
- * way pages read. If the table cannot be reached at all, the build simply
- * runs, as it did before this existed.
+ * way pages read. If the turnstile cannot be reached, nothing is built — the
+ * build needs the same database — and the caller falls back on its last copy.
+ * Only where the table does not exist (a fresh environment) does the build
+ * simply run, as it did before this existed.
  */
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 
@@ -45,17 +47,25 @@ interface Row {
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
+/** The table is not there at all: a fresh environment, before its migration. Not the same as "could not reach it". */
+class NoTurnstile extends Error {}
+
+function fail(error: { message: string; code?: string }): never {
+  const missing = error.code === 'PGRST205' || error.code === '42P01' || /could not find the table|does not exist/i.test(error.message)
+  throw missing ? new NoTurnstile(error.message) : new Error(error.message)
+}
+
 /** Take the claim. True for exactly one caller per `lockSeconds`. */
 async function claim(key: string, lockSeconds: number): Promise<boolean> {
   const db = getSupabaseAdmin()
   const now = Date.now()
   const until = new Date(now + lockSeconds * 1000).toISOString()
   const taken = await db.from(TABLE).update({ claimed_until: until }).eq('key', key).lt('claimed_until', new Date(now).toISOString()).select('key')
-  if (taken.error) throw new Error(taken.error.message)
+  if (taken.error) fail(taken.error)
   if ((taken.data ?? []).length === 1) return true
   // Nothing moved: the claim is held — or the row has never existed. Creating it is the claim.
   const created = await db.from(TABLE).upsert({ key, claimed_until: until }, { onConflict: 'key', ignoreDuplicates: true }).select('key')
-  if (created.error) throw new Error(created.error.message)
+  if (created.error) fail(created.error)
   return (created.data ?? []).length === 1
 }
 
@@ -112,8 +122,13 @@ export async function buildOnce<T>(key: string, build: () => Promise<T>, opts: O
   try {
     mine = await claim(key, lockSeconds)
   } catch (err) {
-    console.error(`[build-once] ${key}: turnstile unreachable, building anyway:`, err instanceof Error ? err.message : err)
-    return build()
+    // No table (a fresh environment): build, as before this existed.
+    if (err instanceof NoTurnstile) return build()
+    // The database could not be reached, or did not answer. The build needs
+    // the same database: running it now would add its queries to whatever is
+    // already wrong, from every server that got here. Fail instead; the
+    // caller has the last copy.
+    throw new Error(`${key}: database unavailable (${err instanceof Error ? err.message : String(err)})`)
   }
 
   if (mine) {
