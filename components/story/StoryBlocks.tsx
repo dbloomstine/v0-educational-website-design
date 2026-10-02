@@ -68,6 +68,7 @@ function Permalink({ story }: { story: Story }) {
   return (
     <Link
       href={`/story/${story.id}`}
+      prefetch={false}
       title="Summary, all coverage, and share"
       className="font-ui text-[12px] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
     >
@@ -226,6 +227,7 @@ export function RiverRow({ story, tags = [], date }: { story: Story; tags?: (str
       </a>
       <Link
         href={`/story/${story.id}`}
+        prefetch={false}
         title="Summary, all coverage, and share"
         className="mt-0.5 flex flex-wrap items-baseline gap-x-2 font-ui text-[11.5px] text-muted-foreground hover:text-foreground lg:mt-0 lg:justify-end"
       >

@@ -151,8 +151,8 @@ function BarCard({
           {shown.map((c) => (
             <li key={c.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-2 border-b border-border/60 py-[5px] last:border-0">
               <span className="min-w-0">
-                <Link href={`/firm/${c.s}`} className="hl font-news text-[14.5px] font-bold leading-tight text-foreground">{c.f}</Link>
-                <Link href={`/story/${c.id}`} title="The reports of this close" className="block truncate font-ui text-[11.5px] text-muted-foreground hover:text-foreground hover:underline">
+                <Link prefetch={false} href={`/firm/${c.s}`} className="hl font-news text-[14.5px] font-bold leading-tight text-foreground">{c.f}</Link>
+                <Link prefetch={false} href={`/story/${c.id}`} title="The reports of this close" className="block truncate font-ui text-[11.5px] text-muted-foreground hover:text-foreground hover:underline">
                   {c.n ?? 'Fund not named'} · {shortDate(c.d)} · {c.o} {c.o === 1 ? 'source' : 'sources'}
                 </Link>
               </span>
@@ -165,15 +165,15 @@ function BarCard({
       <div className="border-t border-border bg-background px-2.5 py-1.5 font-ui text-[11.5px] leading-snug text-muted-foreground">
         {single ? (
           <p className="flex flex-wrap gap-x-4 gap-y-0.5">
-            <Link href={`/story/${first.id}`} className={more}>The {first.o === 1 ? 'report' : `${first.o} reports`} →</Link>
-            <Link href={`/firm/${first.s}`} className={more}>Everything on {first.f} →</Link>
+            <Link prefetch={false} href={`/story/${first.id}`} className={more}>The {first.o === 1 ? 'report' : `${first.o} reports`} →</Link>
+            <Link prefetch={false} href={`/firm/${first.s}`} className={more}>Everything on {first.f} →</Link>
           </p>
         ) : (
           <p className="flex flex-wrap gap-x-4 gap-y-0.5">
             <Link href={leagueHref} className={more}>
               {exact ? `All ${bar.count} in the league table →` : 'The league table for this period →'}
             </Link>
-            {bar.href && <Link href={bar.href} className={more}>Firm page →</Link>}
+            {bar.href && <Link prefetch={false} href={bar.href} className={more}>Firm page →</Link>}
           </p>
         )}
         {shown.some((c) => c.c) && <span className="mt-0.5 block">≈ converted to dollars</span>}

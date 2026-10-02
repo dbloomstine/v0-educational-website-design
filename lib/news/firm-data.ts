@@ -59,8 +59,8 @@ async function computeFirm(slug: string): Promise<FirmPage | null> {
   const [named, inHeadline] = await Promise.all([
     base().or(lookupFilter('extracted_data->>firm_name', lookup)).limit(600),
     // The mentions are an extra: given a few seconds and not asked twice. A
-    // common word ("One", "Man") is in thousands of headlines, and reading
-    // them from a cold disk must not hold the firm's own stories up.
+    // common word ("One", "Man") is in thousands of headlines, and checking
+    // them on a busy database must not hold the firm's own stories up.
     base().or(lookupFilter('title', lookup)).limit(300).abortSignal(AbortSignal.timeout(MENTIONS_TIMEOUT_MS)),
   ])
   // Nothing under the name as words: it may be a name whose words an accent

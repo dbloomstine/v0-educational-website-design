@@ -53,6 +53,7 @@ export function MostCovered({ stories, note }: { stories: Story[]; note?: string
             </a>
             <Link
               href={`/story/${s.id}`}
+              prefetch={false}
               title="Every outlet that covered it"
               className="whitespace-nowrap font-mono text-[10.5px] uppercase tracking-tight text-muted-foreground hover:text-foreground"
             >
@@ -83,6 +84,7 @@ export function LargestCloses({ week }: { week: { rows: FundClose[]; finals: num
           <li key={c.id} className="border-b border-border/70 last:border-0">
             <Link
               href={`/story/${c.id}`}
+              prefetch={false}
               title={c.headline}
               className="group grid grid-cols-[18px_minmax(0,1fr)_auto] items-baseline gap-2 py-[7px]"
             >
@@ -136,6 +138,7 @@ export function LargestBySize({ label, stories, note = 'Past 7 days' }: { label:
           <li key={s.id} className="border-b border-border/70 last:border-0">
             <Link
               href={`/story/${s.id}`}
+              prefetch={false}
               title={s.headline}
               className="group grid grid-cols-[18px_minmax(0,1fr)_auto] items-baseline gap-2 py-[7px]"
             >
@@ -172,7 +175,7 @@ export function EventsRail({
             <span className="pt-[3px] font-mono text-[10.5px] uppercase tracking-tight text-muted-foreground">
               {formatEventDates(e.startDate, e.endDate)}
             </span>
-            <Link href={`/events/${e.slug}`} className="group min-w-0">
+            <Link href={`/events/${e.slug}`} prefetch={false} className="group min-w-0">
               <span className="hl font-news text-[14.5px] leading-[1.27] text-foreground">{e.name}</span>
               <span className="block truncate font-ui text-[11.5px] text-muted-foreground">
                 {[e.city, e.organizerName].filter(Boolean).join(' · ')}

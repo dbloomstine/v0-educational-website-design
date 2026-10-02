@@ -154,7 +154,7 @@ export default async function NewsPage({ searchParams }: Params) {
                 <p className="mb-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-border pb-3">
                   <span className="font-ui text-[10.5px] font-extrabold uppercase tracking-[0.14em] text-foreground">Firm pages</span>
                   {firmHits.map((f) => (
-                    <Link key={f.slug} href={`/firm/${f.slug}`} className="font-news text-[16px] font-bold text-foreground underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground">
+                    <Link prefetch={false} key={f.slug} href={`/firm/${f.slug}`} className="font-news text-[16px] font-bold text-foreground underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground">
                       {f.name}
                     </Link>
                   ))}

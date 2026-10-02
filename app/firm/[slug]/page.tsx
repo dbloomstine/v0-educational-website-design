@@ -114,7 +114,7 @@ export default async function FirmPage({ params }: Params) {
                               <a href={c.url} target="_blank" rel="noopener noreferrer" title={c.headline} className="font-semibold text-foreground underline decoration-foreground/25 underline-offset-2 hover:decoration-foreground">
                                 {c.source ?? 'Report'}
                               </a>
-                              {c.sources > 1 && <Link href={`/story/${c.id}`} className="ml-1.5 whitespace-nowrap text-[11.5px] text-muted-foreground hover:underline">+{c.sources - 1}</Link>}
+                              {c.sources > 1 && <Link prefetch={false} href={`/story/${c.id}`} className="ml-1.5 whitespace-nowrap text-[11.5px] text-muted-foreground hover:underline">+{c.sources - 1}</Link>}
                             </td>
                           </tr>
                         ))}

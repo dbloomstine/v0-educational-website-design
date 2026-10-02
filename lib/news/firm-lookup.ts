@@ -48,8 +48,8 @@ export interface FirmLookup {
  * path through it, and for a short word or a pair of initials those three
  * characters include the word's edges — which it recognises only as a list of
  * plain punctuation. With the open-ended class the lookup for "M&G" read every
- * row of the year: seventeen seconds from a cold disk, against a statement
- * limit of eight. With the list, it reads thirty-nine rows. The list also
+ * row of the year: seventeen seconds when the database was busy, against a
+ * statement limit of eight. With the list, it reads thirty-nine rows. The list also
  * tells the index a word ends where it ends: "man" as a word is a third of the
  * rows "man" inside "management" is.
  *

@@ -94,7 +94,7 @@ export default async function FirmsPage({ searchParams }: Params) {
                     <ul className="river">
                       {hits.map((f) => (
                         <li key={f.slug} className="border-b border-border/70 py-[7px] last:border-0">
-                          <Link href={`/firm/${f.slug}`} className="hl font-news text-[17px] font-bold leading-snug text-foreground">{f.name}</Link>
+                          <Link prefetch={false} href={`/firm/${f.slug}`} className="hl font-news text-[17px] font-bold leading-snug text-foreground">{f.name}</Link>
                         </li>
                       ))}
                     </ul>
@@ -120,7 +120,7 @@ export default async function FirmsPage({ searchParams }: Params) {
                       <ul className="columns-1 gap-x-8 pb-1 pt-1 sm:columns-2 xl:columns-3">
                         {g.firms.map((f) => (
                           <li key={f.slug} className="break-inside-avoid py-[3px]">
-                            <Link href={`/firm/${f.slug}`} className="font-news text-[15.5px] leading-snug text-foreground underline-offset-[3px] hover:underline">
+                            <Link prefetch={false} href={`/firm/${f.slug}`} className="font-news text-[15.5px] leading-snug text-foreground underline-offset-[3px] hover:underline">
                               {f.name}
                             </Link>
                           </li>
@@ -141,7 +141,7 @@ export default async function FirmsPage({ searchParams }: Params) {
                   <ol>
                     {mostCovered.map((f, i) => (
                       <li key={f.slug} className="border-b border-border/70 last:border-0">
-                        <Link href={`/firm/${f.slug}`} className="group grid grid-cols-[20px_minmax(0,1fr)_auto] items-baseline gap-2 py-[7px]">
+                        <Link prefetch={false} href={`/firm/${f.slug}`} className="group grid grid-cols-[20px_minmax(0,1fr)_auto] items-baseline gap-2 py-[7px]">
                           <span className="font-mono text-[10.5px] text-muted-foreground">{i + 1}</span>
                           <span className="min-w-0">
                             <span className="hl font-news text-[15px] font-bold leading-tight text-foreground">{f.name}</span>

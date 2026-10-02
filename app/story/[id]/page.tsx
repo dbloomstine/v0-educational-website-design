@@ -148,7 +148,7 @@ export default async function StoryPage({ params }: Params) {
                 {story.firmName && (
                   <Fact label={story.kind === 'lps' ? 'Investor' : 'Firm'}>
                     {firmHref(story.firmName) ? (
-                      <Link href={firmHref(story.firmName) as string} className="underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground">{story.firmName}</Link>
+                      <Link prefetch={false} href={firmHref(story.firmName) as string} className="underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground">{story.firmName}</Link>
                     ) : story.firmName}
                   </Fact>
                 )}
@@ -157,7 +157,7 @@ export default async function StoryPage({ params }: Params) {
                     {alsoNamed.map((f, i) => (
                       <span key={f.href}>
                         {i > 0 && ', '}
-                        <Link href={f.href} className="underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground">{f.name}</Link>
+                        <Link prefetch={false} href={f.href} className="underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground">{f.name}</Link>
                       </span>
                     ))}
                   </Fact>

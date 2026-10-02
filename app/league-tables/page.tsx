@@ -226,7 +226,7 @@ function Row({ c, rank, showStage }: { c: FundClose; rank: number; showStage: bo
     <tr className="border-b border-border/70 align-baseline last:border-0 hover:bg-background">
       <td className="py-2 pl-3.5 pr-1 font-mono text-[11px] tabular-nums text-muted-foreground">{rank}</td>
       <td className="px-2 py-2">
-        <Link href={`/firm/${c.firmSlug}`} className="hl font-news text-[16px] font-bold leading-tight text-foreground">
+        <Link prefetch={false} href={`/firm/${c.firmSlug}`} className="hl font-news text-[16px] font-bold leading-tight text-foreground">
           {c.firm}
         </Link>
         <span className="block font-ui text-[12px] leading-snug text-muted-foreground">
@@ -245,7 +245,7 @@ function Row({ c, rank, showStage }: { c: FundClose; rank: number; showStage: bo
           {c.source ?? 'Report'}
         </a>
         {c.sources > 1 && (
-          <Link href={`/story/${c.id}`} className="block whitespace-nowrap text-[11.5px] text-muted-foreground hover:text-foreground hover:underline">
+          <Link prefetch={false} href={`/story/${c.id}`} className="block whitespace-nowrap text-[11.5px] text-muted-foreground hover:text-foreground hover:underline">
             {c.sources} sources
           </Link>
         )}

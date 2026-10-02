@@ -41,6 +41,7 @@ export function EventRow({ event }: { event: IndustryEvent }) {
 
   return (
     <Link
+      prefetch={false}
       href={`/events/${event.slug}`}
       className="group grid grid-cols-[76px_1fr] items-baseline gap-x-3 border-b border-border/30 px-2 py-1.5 transition-colors hover:bg-accent/40 last:border-b-0 sm:grid-cols-[92px_1fr_86px]"
     >

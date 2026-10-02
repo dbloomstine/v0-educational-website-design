@@ -17,6 +17,7 @@ export function InTheNews({ firms }: { firms: FirmEntry[] }) {
       </span>
       {firms.map((f) => (
         <Link
+          prefetch={false}
           key={f.slug}
           href={`/firm/${f.slug}`}
           title={`${f.name}: every story and fund close`}
