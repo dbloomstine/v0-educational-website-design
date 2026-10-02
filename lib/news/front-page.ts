@@ -42,13 +42,13 @@ async function fetchStories(windowDays: number = STORY_WINDOW_DAYS): Promise<Sto
 
 // Bump the version whenever the Story shape changes: a deploy must never
 // read stories cached by the previous build's code.
-export const getStories = unstable_cache(() => fetchStories(STORY_WINDOW_DAYS), ['front-page-stories-v4'], {
+export const getStories = unstable_cache(() => fetchStories(STORY_WINDOW_DAYS), ['front-page-stories-v5'], {
   revalidate: 600,
   tags: ['stories'],
 })
 
 /** Thirty days of stories for the Latest page: the same stories, a longer window. */
-const getArchive = unstable_cache(() => fetchStories(ARCHIVE_WINDOW_DAYS), ['archive-stories-v1'], {
+const getArchive = unstable_cache(() => fetchStories(ARCHIVE_WINDOW_DAYS), ['archive-stories-v2'], {
   revalidate: 900,
   tags: ['stories'],
 })

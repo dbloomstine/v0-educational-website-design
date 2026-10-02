@@ -13,7 +13,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { ALL_NEWSLETTER_TYPES } from '@/lib/newsletter/query-articles'
 import { entityKey, keysMatch } from '@/lib/newsletter/story-links'
 import { buildStories, type Story } from './stories'
-import { acronymOf, type FundClose } from './league'
+import { acronymOf, firmSlug, type FundClose } from './league'
 import { getLeagueSafe, LEAGUE_COLUMNS } from './league-data'
 
 export const FIRM_WINDOW_DAYS = 365
@@ -68,13 +68,13 @@ async function computeFirm(slug: string): Promise<FirmPage | null> {
   const all = buildStories(data).filter((s) => !s.roundup)
   const stories = all.filter((s) => isFirm(s.firmName, key))
   const taken = new Set(stories.map((s) => s.id))
-  const mentions = all.filter((s) => !taken.has(s.id) && s.entities.some((e) => isFirm(e, key)))
+  const mentions = all.filter((s) => !taken.has(s.id) && s.firms.some((e) => isFirm(e, key)))
   if (stories.length === 0 && mentions.length === 0) return null
 
   // The name as the reports most often write it.
   const names = new Map<string, number>()
   for (const s of stories) if (s.firmName) names.set(s.firmName, (names.get(s.firmName) ?? 0) + 1)
-  for (const s of mentions) for (const e of s.entities) if (isFirm(e, key)) names.set(e, (names.get(e) ?? 0) + 0.5)
+  for (const s of mentions) for (const e of s.firms) if (isFirm(e, key)) names.set(e, (names.get(e) ?? 0) + 0.5)
   const ranked = Array.from(names.entries()).sort((a, b) => b[1] - a[1] || b[0].length - a[0].length)
   // Prefer the fuller form when it is common too: "Ares Management" over "Ares".
   const top = ranked[0]
@@ -86,7 +86,7 @@ async function computeFirm(slug: string): Promise<FirmPage | null> {
   return { slug, name, stories: stories.sort(byDate), mentions: mentions.sort(byDate).slice(0, 40), closes: [] }
 }
 
-const cached = unstable_cache(computeFirm, ['firm-page-v2'], { revalidate: 1800, tags: ['stories'] })
+const cached = unstable_cache(computeFirm, ['firm-page-v3'], { revalidate: 1800, tags: ['stories'] })
 
 /** Never throws; null means "no such firm in the past year". */
 export async function getFirmSafe(slug: string): Promise<FirmPage | null> {
@@ -103,5 +103,62 @@ export async function getFirmSafe(slug: string): Promise<FirmPage | null> {
   } catch (err) {
     console.error('[firm] fetch failed:', err)
     return null
+  }
+}
+
+export interface FirmHit { slug: string; name: string; reports: number }
+
+/**
+ * Firms whose name contains the query, most reported first — for the firm
+ * directory's search box and for the "firm pages" line above a news search.
+ * It reads only the firm name of each matching report (a year back, on the
+ * trigram index), then groups the spellings the reports used under one page.
+ */
+export async function searchFirms(query: string, limit = 24): Promise<FirmHit[]> {
+  const q = query.replace(/[^\p{L}\p{N}\s&'-]/gu, ' ').replace(/\s+/g, ' ').trim().slice(0, 60)
+  if (q.length < 2) return []
+  const since = new Date(Date.now() - FIRM_WINDOW_DAYS * 86_400_000).toISOString().slice(0, 10)
+  try {
+    const { data, error } = await getSupabaseAdmin()
+      .from('news_items')
+      .select('firm:extracted_data->>firm_name')
+      .eq('classification_status', 'complete')
+      .eq('is_duplicate', false)
+      .gte('published_date', since)
+      .or('is_high_signal.eq.true,relevance_score.gte.0.3')
+      .in('article_type', ALL_NEWSLETTER_TYPES)
+      .ilike('extracted_data->>firm_name', `%${q.replace(/[%_]/g, ' ')}%`)
+      .order('published_date', { ascending: false })
+      .limit(1500)
+    if (error) throw new Error(error.message)
+
+    const bySlug = new Map<string, { names: Map<string, number>; reports: number }>()
+    for (const r of (data ?? []) as { firm: string | null }[]) {
+      const name = r.firm?.trim()
+      const slug = firmSlug(name)
+      if (!name || !SLUG_RE.test(slug) || slug.length > 60) continue
+      const hit = bySlug.get(slug) ?? { names: new Map<string, number>(), reports: 0 }
+      hit.reports++
+      hit.names.set(name, (hit.names.get(name) ?? 0) + 1)
+      bySlug.set(slug, hit)
+    }
+    const needle = q.toLowerCase()
+    const all = Array.from(bySlug.entries())
+      .map(([slug, h]) => ({
+        slug,
+        reports: h.reports,
+        name: Array.from(h.names.entries()).sort((a, b) => b[1] - a[1] || b[0].length - a[0].length)[0][0],
+      }))
+    // "ares" is inside Antares, Mutares and "Nawy Shares". A name counts when
+    // one of its words starts with what was typed; only if none does are the
+    // looser matches offered.
+    const startsAWord = all.filter((f) => f.name.toLowerCase().split(/[^\p{L}\p{N}]+/u).some((w) => w.startsWith(needle.split(' ')[0])))
+    return (startsAWord.length > 0 ? startsAWord : all)
+      // A name that starts with what was typed comes before one that merely contains it.
+      .sort((a, b) => Number(b.name.toLowerCase().startsWith(needle)) - Number(a.name.toLowerCase().startsWith(needle)) || b.reports - a.reports)
+      .slice(0, limit)
+  } catch (err) {
+    console.error('[firm] search failed:', err)
+    return []
   }
 }

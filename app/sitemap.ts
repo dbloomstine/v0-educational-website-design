@@ -2,7 +2,8 @@ import { MetadataRoute } from 'next'
 import { queryAllEventSlugs } from '@/lib/events/api'
 import { EVENT_COLLECTIONS } from '@/lib/events/collections'
 import { SECTIONS, sectionHref } from '@/lib/news/sections'
-import { getStoriesSafe } from '@/lib/news/front-page'
+import { getArchiveStoriesSafe, getStoriesSafe } from '@/lib/news/front-page'
+import { firmIndex } from '@/lib/news/firms'
 import { getLeagueSafe } from '@/lib/news/league-data'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -13,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: baseUrl, lastModified: now, changeFrequency: 'daily', priority: 1 },
     { url: `${baseUrl}/news`, lastModified: now, changeFrequency: 'hourly', priority: 0.9 },
     { url: `${baseUrl}/league-tables`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${baseUrl}/firms`, lastModified: now, changeFrequency: 'daily', priority: 0.6 },
     { url: `${baseUrl}/events`, lastModified: now, changeFrequency: 'daily', priority: 0.9 },
     { url: `${baseUrl}/events/submit`, lastModified: now, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${baseUrl}/about`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
@@ -63,7 +65,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }))
 
   // Firm pages: the managers in the league table, each of which has at least a fund close to show.
-  const firmSlugs = Array.from(new Set((await getLeagueSafe()).map((c) => c.firmSlug))).slice(0, 600)
+  // …and the firms with more than one story this month.
+  const active = firmIndex(await getArchiveStoriesSafe()).filter((f) => f.stories >= 2).map((f) => f.slug)
+  const firmSlugs = Array.from(new Set([...(await getLeagueSafe()).map((c) => c.firmSlug), ...active])).slice(0, 900)
   const firmPages: MetadataRoute.Sitemap = firmSlugs.map((slug) => ({
     url: `${baseUrl}/firm/${slug}`,
     lastModified: now,

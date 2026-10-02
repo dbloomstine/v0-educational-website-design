@@ -628,3 +628,16 @@
 .paper .day-head:first-child { margin-top: 0; }
 .paper .panel-pad { padding: 16px 20px 18px; }
 @media (max-width: 640px) { .paper .panel-pad { padding: 13px 14px 15px; } }
+
+/* ── The house ad ("Your firm here") ───────────────────────────────────────
+   Set like a tombstone: an ink rule outside, a hairline inside, brighter
+   stock between. The caret is the one thing on the site that moves. */
+.paper .sponsor-slot { background: var(--card); border: 1px solid var(--foreground); padding: 4px; }
+.paper .sponsor-frame { border: 1px solid color-mix(in oklab, var(--foreground) 28%, transparent); }
+.paper .caret {
+  display: inline-block; width: 3px; height: 0.78em; margin-left: 4px;
+  background: var(--tab); transform: translateY(0.06em);
+  animation: caret-blink 1.15s steps(1, end) infinite;
+}
+@keyframes caret-blink { 0%, 55% { opacity: 1; } 56%, 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .paper .caret { animation: none; } }

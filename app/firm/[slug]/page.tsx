@@ -6,6 +6,7 @@ import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { Panel, RiverRow, SectionFlag } from '@/components/story/StoryBlocks'
 import { SubscribePanel } from '@/components/home/Rail'
+import { SponsorCard } from '@/components/sponsor/SponsorSlot'
 import { FIRM_WINDOW_DAYS, getFirmSafe } from '@/lib/news/firm-data'
 import type { Story } from '@/lib/news/stories'
 import type { CloseStage } from '@/lib/news/league'
@@ -64,7 +65,9 @@ export default async function FirmPage({ params }: Params) {
       <main id="main-content" className="paper flex-1">
         <div className="band">
           <header className="mx-auto max-w-[1320px] px-4 pb-4 pt-5 lg:px-6">
-            <p className="font-ui text-[10.5px] font-bold uppercase tracking-[0.14em] text-amber-400">Firm</p>
+            <p className="font-ui text-[10.5px] font-bold uppercase tracking-[0.14em] text-amber-400">
+              <Link href="/firms" className="hover:underline">Firms</Link>
+            </p>
             <h1 className="mt-1.5 font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">{firm.name}</h1>
             <p className="mt-2 font-news text-[16px] leading-snug text-foreground/70">{summary.join(' · ')}</p>
           </header>
@@ -155,10 +158,14 @@ export default async function FirmPage({ params }: Params) {
                   reported them. Fund sizes and stages are extracted from those reports by software and can be wrong;
                   the linked article is the source of record.
                 </p>
-                <Link href="/league-tables" className="mt-2 inline-block font-ui text-[12px] font-semibold text-foreground/70 underline-offset-2 hover:text-foreground hover:underline">
+                <Link href="/firms" className="mt-2 block font-ui text-[12px] font-semibold text-foreground/70 underline-offset-2 hover:text-foreground hover:underline">
+                  All firms, A to Z →
+                </Link>
+                <Link href="/league-tables" className="mt-1 block font-ui text-[12px] font-semibold text-foreground/70 underline-offset-2 hover:text-foreground hover:underline">
                   League tables: the largest fund closes →
                 </Link>
               </Panel>
+              <SponsorCard />
               <SubscribePanel title="Follow the firms you care about." body="FundOps Daily is the morning’s closes, launches, deals and moves in one email. Free." />
             </aside>
           </div>

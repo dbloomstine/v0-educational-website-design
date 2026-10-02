@@ -68,6 +68,7 @@ export function SiteFooter() {
             <p className={headClass}>FundOpsHQ</p>
             <ul className="space-y-1.5">
               <li><Link href="/league-tables" className={linkClass}>League tables</Link></li>
+              <li><Link href="/firms" className={linkClass}>Firms</Link></li>
               <li><Link href="/events" className={linkClass}>Events calendar</Link></li>
               {COMPANY_LINKS.map((l) => (
                 <li key={l.href}><Link href={l.href} className={linkClass}>{l.label}</Link></li>

@@ -6,6 +6,7 @@ import { BackToTop } from '@/components/back-to-top'
 import { FilterTabs } from '@/components/news/FilterTabs'
 import { Panel } from '@/components/story/StoryBlocks'
 import { SubscribePanel } from '@/components/home/Rail'
+import { SponsorCard } from '@/components/sponsor/SponsorSlot'
 import { getLeagueSafe, LEAGUE_SINCE } from '@/lib/news/league-data'
 import { capitalByAsset, leagueRows, LEAGUE_PERIODS, type CloseStage, type FundClose, type LeaguePeriod } from '@/lib/news/league'
 import { ASSET_LABEL } from '@/lib/news/sections'
@@ -189,6 +190,7 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
                 </ul>
               </Panel>
 
+              <SponsorCard />
               <SubscribePanel title="The closes, as they happen." body="FundOps Daily carries each morning’s fund closes, launches, deals and moves. Free, seven days a week." />
             </aside>
           </div>

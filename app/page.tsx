@@ -6,6 +6,9 @@ import { HeroSubscribe } from '@/components/home/hero-subscribe'
 import { EventsRail, LargestCloses, LatestRail, SectionBlock } from '@/components/home/Rail'
 import { LeadStory, SectionFlag, TopStory } from '@/components/story/StoryBlocks'
 import { StickySubscribeBar } from '@/components/news/StickySubscribeBar'
+import { InTheNews } from '@/components/home/InTheNews'
+import { SponsorStrip } from '@/components/sponsor/SponsorSlot'
+import { firmsInTheNews } from '@/lib/news/firms'
 import { FundraisingChart } from '@/components/charts/FundraisingChart'
 import { getLeagueSafe } from '@/lib/news/league-data'
 import { fundraisingChartViews } from '@/lib/news/chart-views'
@@ -94,6 +97,7 @@ export default async function HomePage() {
 
   const nowMs = Date.now()
   const chartViews = fundraisingChartViews(league, nowMs)
+  const inTheNews = firmsInTheNews(stories, nowMs, 7, 10)
   const front = composeFrontPage(stories, nowMs)
 
   // A story appears once on the page. The lead and top stories claim theirs
@@ -122,7 +126,9 @@ export default async function HomePage() {
         <h1 className="sr-only">FundOpsHQ — fund news, events and the FundOps Daily newsletter</h1>
         <HeroSubscribe />
 
-        <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
+        <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-4 lg:px-6">
+          <InTheNews firms={inTheNews} />
+
           {/* ─── Front: lead + top stories, with the running rail ─── */}
           <div className="grid gap-x-9 gap-y-8 lg:grid-cols-[minmax(0,1fr)_332px] lg:grid-rows-[auto_1fr]">
             <div className="min-w-0 lg:col-start-1">
@@ -150,14 +156,17 @@ export default async function HomePage() {
             {/* The running rail. Second in the document so a phone shows it
                 right after the top stories; on a desk it is the right column. */}
             <aside className="min-w-0 space-y-5 lg:col-start-2 lg:row-span-2 lg:row-start-1">
-              <LatestRail stories={front.latest.slice(0, LATEST_COUNT)} />
+              {/* The chart leads the rail: it is the one thing on the page a
+                  reader can play with, so it sits where it is seen first. */}
               <FundraisingChart views={chartViews} href="/league-tables" />
+              <LatestRail stories={front.latest.slice(0, LATEST_COUNT)} />
               <LargestCloses stories={front.largestCloses} stats={front.stats} />
               <EventsRail events={events} />
             </aside>
 
             {/* By story type — under the top stories, beside the rail */}
             <div className="min-w-0 lg:col-start-1">
+              <SponsorStrip className="mb-8" />
               <div className="col-rule grid gap-x-10 gap-y-8 sm:grid-cols-2">
                 {typeBlocks.map(({ section, picks }) => (
                   <SectionBlock

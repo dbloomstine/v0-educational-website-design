@@ -34,7 +34,7 @@ function usd(m: number): string {
 const fmt = (v: number, unit: ChartView['unit']) => (unit === 'usd' ? usd(v) : String(v))
 const closes = (n: number) => `${n} ${n === 1 ? 'close' : 'closes'}`
 
-export function FundraisingChart({ views, href }: { views: ChartView[]; href: string }) {
+export function FundraisingChart({ views, href, title = 'Fundraising, charted', moreLabel = 'Full league tables' }: { views: ChartView[]; href: string; title?: string; moreLabel?: string }) {
   const usable = views.filter((v) => v.bars.some((b) => b.value > 0))
   const [active, setActive] = useState(usable[0]?.key)
   const [hover, setHover] = useState<number | null>(null)
@@ -46,9 +46,9 @@ export function FundraisingChart({ views, href }: { views: ChartView[]; href: st
   const focus = hover != null ? view.bars[hover] : null
 
   return (
-    <section aria-label="Fundraising, charted" className="panel">
+    <section aria-label={title} className="panel">
       <div className="panel-head">
-        <h2 className="font-ui text-[11.5px] font-extrabold uppercase tracking-[0.13em]">Fundraising, charted</h2>
+        <h2 className="font-ui text-[11.5px] font-extrabold uppercase tracking-[0.13em]">{title}</h2>
         <span className="note whitespace-nowrap font-ui text-[11px]">Final closes</span>
       </div>
 
@@ -142,7 +142,7 @@ export function FundraisingChart({ views, href }: { views: ChartView[]; href: st
           )}
         </p>
         <Link href={href} className="mt-1 inline-block font-ui text-[12px] font-semibold text-foreground/70 underline-offset-2 hover:text-foreground hover:underline">
-          Full league tables →
+          {moreLabel} →
         </Link>
       </div>
     </section>

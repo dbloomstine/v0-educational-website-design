@@ -13,7 +13,7 @@ import {
   rowToArticle, screenArticle, gateArticle, placeArticle, mergeStoryGroup, plainHeadline,
   sourceTier, isLikelyAumLeak, type NewsletterArticle, type ArticleSection,
 } from '@/lib/newsletter/query-articles'
-import { clusterBy, dealStage, entityKey, isRoundup, keysMatch, sameStoryLoose, storyFamily } from '@/lib/newsletter/story-links'
+import { clusterBy, dealStage, entityKey, entityMentioned, isRoundup, keysMatch, sameStoryLoose, storyFamily } from '@/lib/newsletter/story-links'
 import { isSameStory } from './story-dedup'
 import { normalizeSourceName } from './constants'
 
@@ -61,6 +61,12 @@ export interface Story {
   geography: string[]
   /** Firms and people to embolden in the headline. */
   entities: string[]
+  /**
+   * The firms the story names, subject first — firms only, never people. Each
+   * has a page at /firm/<slug>; `entities` cannot be used for that because it
+   * mixes in the people.
+   */
+  firms: string[]
   /** False for wind-downs, CLO pricings, LP commitments: never "Firm $X". */
   leadEligible: boolean
   roundup: boolean
@@ -134,6 +140,34 @@ function isLateDealRepeat(a: any, b: any): boolean {
   if (dealStage(a.title) !== dealStage(b.title)) return false
   if (storyFamily(a.eventType) !== 'deal' || storyFamily(b.eventType) !== 'deal') return false
   return sameStoryLoose(a, b, { crossEdition: true })
+}
+
+/**
+ * The firms a report names: its subject, then every entity the classifier
+ * typed as a firm with confidence and that the headline or summary actually
+ * mentions (the same test rowToArticle applies before trusting an entity).
+ */
+function namedFirms(row: Row | undefined, article: NewsletterArticle): string[] {
+  const raw = (row?.entities_raw ?? []) as { name?: string; type?: string; confidence?: number }[]
+  const candidates = [
+    article.firmName,
+    ...raw
+      .filter((e) => e?.name && e.type === 'firm' && (e.confidence ?? 0) >= 0.8 && entityMentioned(e.name, article.title, article.tldr))
+      .map((e) => e.name as string),
+  ]
+  const out: string[] = []
+  const seen: string[] = []
+  for (const name of candidates) {
+    if (!name) continue
+    // A description is not a name ("New London private equity firm").
+    if (/\b[a-z]{3,}\s+[a-z]{3,}\b/.test(name)) continue
+    const key = entityKey(name)
+    if (!key || seen.some((k) => keysMatch(k, key))) continue
+    seen.push(key)
+    out.push(name)
+    if (out.length >= 6) break
+  }
+  return out
 }
 
 export function buildStories(rows: Row[]): Story[] {
@@ -228,6 +262,7 @@ export function buildStories(rows: Row[]): Story[] {
       personName: best.personName,
       geography: best.geography,
       entities: best.headlineEntities,
+      firms: namedFirms(bestRow, best),
       firstSeen,
       publishedDate: best.publishedDate ? String(best.publishedDate).slice(0, 10) : null,
       weight: storyWeight(partial, Boolean(bestRow?.is_high_signal), Number(bestRow?.relevance_score ?? 0)),

@@ -1,3 +1,4 @@
+import { SponsorCard } from '@/components/sponsor/SponsorSlot'
 import { firmHref } from '@/lib/news/league'
 import type { Metadata } from 'next'
 import Link from 'next/link'
@@ -54,6 +55,11 @@ export default async function StoryPage({ params }: Params) {
 
   const section = homeSectionFor(story)
   const firmKey = entityKey(story.firmName)
+  // The other firms in the story, each with a page of its own.
+  const alsoNamed = (story.firms ?? [])
+    .filter((name) => !keysMatch(entityKey(name), firmKey || '\u0000'))
+    .map((name) => ({ name, href: firmHref(name) }))
+    .filter((f): f is { name: string; href: string } => !!f.href)
   const sameFirm: Story[] = firmKey
     ? all.filter((s) => s.id !== story.id && keysMatch(entityKey(s.firmName), firmKey)).slice(0, 5)
     : []
@@ -137,6 +143,16 @@ export default async function StoryPage({ params }: Params) {
                     ) : story.firmName}
                   </Fact>
                 )}
+                {alsoNamed.length > 0 && (
+                  <Fact label="Also named">
+                    {alsoNamed.map((f, i) => (
+                      <span key={f.href}>
+                        {i > 0 && ', '}
+                        <Link href={f.href} className="underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground">{f.name}</Link>
+                      </span>
+                    ))}
+                  </Fact>
+                )}
                 {story.fundName && <Fact label="Fund">{story.fundName}</Fact>}
                 {size && <Fact label={story.kind === 'deals' ? 'Deal value' : story.kind === 'lps' ? 'Commitment' : 'Size'}><span className="font-mono text-[15px] font-bold">{size}</span></Fact>}
                 {stage && <Fact label="Stage">{stage}</Fact>}
@@ -195,6 +211,7 @@ export default async function StoryPage({ params }: Params) {
             <aside className="min-w-0 space-y-5">
               <LatestRail stories={all.slice(0, 10)} />
               <SubscribePanel title="Stories like this, every morning." body="FundOps Daily is the brief on fund closes, launches, deals and moves. Free, before the open." />
+              <SponsorCard />
             </aside>
           </div>
         </div>

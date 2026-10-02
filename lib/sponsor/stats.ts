@@ -67,6 +67,32 @@ async function resendEvents(apiKey: string, wanted: Set<string>, untilMs: number
   return events
 }
 
+export interface SponsorAudience {
+  subscribers: number | null
+  firms: number | null
+  readerFirms: { group: ReaderGroup; firms: string[] }[]
+}
+
+/** Who reads it: confirmed subscribers and the firms they read from. One small query. */
+export async function computeAudience(): Promise<SponsorAudience> {
+  const { data: subs } = await getSupabaseAdmin().from('newsletter_subscribers').select('email').eq('status', 'confirmed').limit(10000)
+  if (!subs) return { subscribers: null, firms: null, readerFirms: [] }
+  const domains = subs.map((s) => String(s.email).toLowerCase().split('@')[1] ?? '').filter(Boolean)
+  // Our own domain is not a reader firm.
+  const firmDomains = new Set(domains.filter((d) => !isPersonalDomain(d) && d !== 'fundopshq.com'))
+  return { subscribers: subs.length, firms: firmDomains.size, readerFirms: currentReaderFirms(firmDomains) }
+}
+
+/**
+ * The audience alone, for the house ad that runs on news pages. It does not
+ * wait on the delivery records the full stats need, so a cold cache costs one
+ * quick query rather than a dozen calls to the mail platform.
+ */
+export const getSponsorAudience = unstable_cache(computeAudience, ['sponsor-audience-v1'], {
+  revalidate: 43_200,
+  tags: ['sponsor-stats'],
+})
+
 export async function computeSponsorStats(): Promise<SponsorStats> {
   const supabase = getSupabaseAdmin()
   const stats: SponsorStats = {
@@ -76,15 +102,12 @@ export async function computeSponsorStats(): Promise<SponsorStats> {
   }
 
   // ── Subscribers and the firms they read from ──
-  const { data: subs } = await supabase.from('newsletter_subscribers').select('email').eq('status', 'confirmed').limit(10000)
-  if (subs) {
-    const domains = subs.map((s) => String(s.email).toLowerCase().split('@')[1] ?? '').filter(Boolean)
-    // Our own domain is not a reader firm.
-    const firmDomains = new Set(domains.filter((d) => !isPersonalDomain(d) && d !== 'fundopshq.com'))
-    stats.subscribers = subs.length
-    stats.firms = firmDomains.size
-    stats.readerFirms = currentReaderFirms(firmDomains)
-  }
+  // The raw function, not its cached wrapper: a cache call nested inside
+  // another cached function is not shared.
+  const audience = await computeAudience()
+  stats.subscribers = audience.subscribers
+  stats.firms = audience.firms
+  stats.readerFirms = audience.readerFirms
 
   // ── Editions ──
   const { data: editions } = await supabase

@@ -7,6 +7,8 @@ import { BackToTop } from '@/components/back-to-top'
 import { MostCovered, mostCovered } from '@/components/home/Rail'
 import { RiverRow, SectionFlag } from '@/components/story/StoryBlocks'
 import { SubscribePanel } from '@/components/home/Rail'
+import { SponsorCard } from '@/components/sponsor/SponsorSlot'
+import { searchFirms } from '@/lib/news/firm-data'
 import { ARCHIVE_WINDOW_DAYS, getArchiveStoriesSafe, searchStories } from '@/lib/news/front-page'
 import type { Story, StoryKind } from '@/lib/news/stories'
 import { ASSET_LABEL, KIND_LABEL } from '@/lib/news/sections'
@@ -67,7 +69,7 @@ export default async function NewsPage({ searchParams }: Params) {
   const nowMs = Date.now()
 
   const archive = await getArchiveStoriesSafe()
-  const pool = q ? await searchStories(q) : archive
+  const [pool, firmHits] = q ? await Promise.all([searchStories(q), searchFirms(q, 6)]) : [archive, []]
   const base = [...pool].sort((a, b) => (b.publishedDate ?? '').localeCompare(a.publishedDate ?? '') || b.firstSeen.localeCompare(a.firstSeen))
 
   const byType = type ? base.filter((s) => s.kind === type) : base
@@ -146,6 +148,16 @@ export default async function NewsPage({ searchParams }: Params) {
         <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
           <div className="grid gap-x-9 gap-y-8 lg:grid-cols-[minmax(0,1fr)_332px]">
             <section aria-label="Stories" className="min-w-0">
+              {firmHits.length > 0 && (
+                <p className="mb-4 flex flex-wrap items-baseline gap-x-4 gap-y-1 border-b border-border pb-3">
+                  <span className="font-ui text-[10.5px] font-extrabold uppercase tracking-[0.14em] text-foreground">Firm pages</span>
+                  {firmHits.map((f) => (
+                    <Link key={f.slug} href={`/firm/${f.slug}`} className="font-news text-[16px] font-bold text-foreground underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground">
+                      {f.name}
+                    </Link>
+                  ))}
+                </p>
+              )}
               <SectionFlag
                 label={q ? `Results for “${q}”` : [type ? KIND_LABEL[type] : null, asset ? ASSET_LABEL[asset] : null].filter(Boolean).join(' · ') || 'All stories'}
                 note={note}
@@ -184,6 +196,7 @@ export default async function NewsPage({ searchParams }: Params) {
             <aside className="min-w-0 space-y-5">
               <MostCovered stories={covered} note="Past 7 days" />
               <SubscribePanel title="All of this, once a morning." body="FundOps Daily is the day’s closes, launches, deals and moves in one email. Free, seven days a week." />
+              <SponsorCard />
             </aside>
           </div>
         </div>

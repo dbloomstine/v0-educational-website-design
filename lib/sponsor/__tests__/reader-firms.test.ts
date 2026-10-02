@@ -37,3 +37,14 @@ describe('sponsor page', () => {
     expect(page).not.toMatch(/\d+%\s*(open|click)/i)
   })
 })
+
+describe('the house ad', () => {
+  it('counts its audience instead of stating it', () => {
+    // The same rule as the sponsor page, for the "Your firm here" slot that
+    // runs on news pages: the number of firms is read from the subscriber
+    // list (getSponsorAudience), never typed into the component.
+    const slot = readFileSync(join(__dirname, '..', '..', '..', 'components', 'sponsor', 'SponsorSlot.tsx'), 'utf8')
+    expect(slot).toContain('getSponsorAudience')
+    expect(slot).not.toMatch(/\b\d{2,5}\s+(firms|readers|subscribers)\b/i)
+  })
+})

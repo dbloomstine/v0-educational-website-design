@@ -73,7 +73,7 @@ describe('buildStories', () => {
 const story = (o: Partial<Story>): Story => ({
   id: uuid(), memberIds: [], headline: 'A headline', url: 'https://example.com', source: 'PE Hub', summary: 'A summary of what happened.',
   coverage: [], kind: 'fundraising', assetClasses: ['PE'], eventType: 'fund_close', closeType: 'final_close', sizeUsdM: 500,
-  firmName: null, fundName: null, personName: null, geography: [], entities: [], leadEligible: true, roundup: false,
+  firmName: null, fundName: null, personName: null, geography: [], entities: [], firms: [], leadEligible: true, roundup: false,
   firstSeen: '2026-09-30T14:00:00Z', publishedDate: '2026-09-30', weight: 1, ...o,
 })
 
