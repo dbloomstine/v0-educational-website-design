@@ -82,22 +82,24 @@ async function computeFirm(slug: string): Promise<FirmPage | null> {
   const name = (fuller ?? top)?.[0]
   if (!name) return null
 
-  const league = await getLeagueSafe()
-  const closes = league
-    .filter((c) => c.firmSlug === slug || isFirm(c.firm, key))
-    .sort((a, b) => b.date.localeCompare(a.date))
-
   const byDate = (a: Story, b: Story) => (b.publishedDate ?? '').localeCompare(a.publishedDate ?? '') || b.firstSeen.localeCompare(a.firstSeen)
-  return { slug, name, stories: stories.sort(byDate), mentions: mentions.sort(byDate).slice(0, 40), closes }
+  return { slug, name, stories: stories.sort(byDate), mentions: mentions.sort(byDate).slice(0, 40), closes: [] }
 }
 
-const cached = unstable_cache(computeFirm, ['firm-page-v1'], { revalidate: 1800, tags: ['stories'] })
+const cached = unstable_cache(computeFirm, ['firm-page-v2'], { revalidate: 1800, tags: ['stories'] })
 
 /** Never throws; null means "no such firm in the past year". */
 export async function getFirmSafe(slug: string): Promise<FirmPage | null> {
   if (!SLUG_RE.test(slug) || slug.length > 60) return null
   try {
-    return await cached(slug)
+    // The league is fetched here, beside the firm, not inside its cached
+    // function: a cache call nested in another is not shared, so every new
+    // firm page rebuilt the whole league table (ten seconds a page).
+    const [firm, league] = await Promise.all([cached(slug), getLeagueSafe()])
+    if (!firm) return null
+    const key = slug.replace(/-/g, ' ')
+    const closes = league.filter((c) => c.firmSlug === slug || isFirm(c.firm, key)).sort((a, b) => b.date.localeCompare(a.date))
+    return { ...firm, closes }
   } catch (err) {
     console.error('[firm] fetch failed:', err)
     return null
