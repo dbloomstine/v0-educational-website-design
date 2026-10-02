@@ -297,11 +297,6 @@ export function EventsBoard() {
             )}
           >
             Ops-Focused
-            {facets && facets.opsHighCount > 0 && (
-              <span className={cn('text-[9px]', opsOnly ? 'text-amber-300/70' : 'text-muted-foreground/50')}>
-                {facets.opsHighCount}
-              </span>
-            )}
           </button>
 
           {/* Filters toggle */}
@@ -370,11 +365,6 @@ export function EventsBoard() {
                     )}
                   >
                     {opt.label}
-                    {count > 0 && (
-                      <span className={cn('text-[9px]', hasFilter(kind, opt.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
-                        {count}
-                      </span>
-                    )}
                   </button>
                 )
               })}
@@ -400,11 +390,6 @@ export function EventsBoard() {
                       )}
                     >
                       {opt.label}
-                      {count > 0 && (
-                        <span className={cn('text-[9px]', hasFilter(cost, opt.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
-                          {count}
-                        </span>
-                      )}
                     </button>
                   )
                 })}
@@ -428,11 +413,6 @@ export function EventsBoard() {
                       )}
                     >
                       {opt.label}
-                      {count > 0 && (
-                        <span className={cn('text-[9px]', hasFilter(format, opt.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
-                          {count}
-                        </span>
-                      )}
                     </button>
                   )
                 })}
@@ -457,11 +437,6 @@ export function EventsBoard() {
                     )}
                   >
                     {name}
-                    {count > 0 && (
-                      <span className={cn('text-[9px]', hasFilter(city, name) ? 'text-blue-200' : 'text-muted-foreground/50')}>
-                        {count}
-                      </span>
-                    )}
                   </button>
                 ))}
               </div>
@@ -486,11 +461,6 @@ export function EventsBoard() {
                     )}
                   >
                     {opt.label}
-                    {count > 0 && (
-                      <span className={cn('text-[9px]', hasFilter(topic, opt.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
-                        {count}
-                      </span>
-                    )}
                   </button>
                 )
               })}
@@ -515,11 +485,6 @@ export function EventsBoard() {
                     )}
                   >
                     {cat.label}
-                    {count > 0 && (
-                      <span className={cn('text-[9px]', hasFilter(category, cat.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
-                        {count}
-                      </span>
-                    )}
                   </button>
                 )
               })}
@@ -578,7 +543,7 @@ export function EventsBoard() {
             {monthGroups.map((group) => (
               <div key={group.header}>
                 {/* Month divider */}
-                <div className="mt-3 mb-1 border-b-2 border-foreground/20 px-2 pb-1 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-foreground/80 first:mt-0">
+                <div className="day-head">
                   {group.header}
                 </div>
                 {group.events.map((event) => (

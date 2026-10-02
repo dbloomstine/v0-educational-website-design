@@ -1,4 +1,5 @@
 import { OG_IMAGES } from '@/lib/seo'
+import { Panel } from '@/components/story/StoryBlocks'
 import { Metadata } from 'next'
 import { Suspense } from 'react'
 import { SiteHeader } from '@/components/site-header'
@@ -100,44 +101,45 @@ export default async function EventsPage() {
       <SiteHeader />
 
       <main id="main-content" className="paper flex-1">
+        <div className="band">
+          <div className="mx-auto flex max-w-[1320px] flex-wrap items-end justify-between gap-x-6 gap-y-3 px-4 pb-4 pt-5 lg:px-6">
+            <div>
+              <h1 className="font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">Events</h1>
+              <p className="mt-2 max-w-[72ch] font-news text-[16px] leading-snug text-foreground/70">
+                Conferences, forums, training and webinars for private markets across North America — every date
+                verified at the organizer.
+              </p>
+            </div>
+            <Link
+              href="/events/submit"
+              className="inline-flex h-9 items-center rounded-sm bg-foreground px-4 font-ui text-[12px] font-bold uppercase tracking-[0.06em] text-background transition-colors hover:bg-foreground/85"
+            >
+              Submit an event — free
+            </Link>
+          </div>
+        </div>
+
         <section className="relative">
           <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
-            {/* Compact header — one line, the board is the pitch */}
-            <div className="mb-2.5 flex flex-wrap items-center justify-between gap-x-4 gap-y-1.5">
-              <h1 className="font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">
-                Events
-                <span className="font-news text-[18px] italic tracking-normal sm:text-[22px]" style={{ color: 'var(--display-accent)' }}>
-                  {' '}— every date verified at the source.
-                </span>
-              </h1>
-              <Link
-                href="/events/submit"
-                className="inline-flex items-center gap-2 rounded-sm border border-amber-400/50 bg-amber-400/10 px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-amber-300 transition-colors hover:bg-amber-400/20 hover:border-amber-400"
-              >
-                Submit an event — free
-              </Link>
-            </div>
-
             <Suspense fallback={<EventsBoardSkeleton />}>
               <EventsBoard />
             </Suspense>
 
             {/* Browse collections — internal-link surface for the landing pages */}
-            <div className="mt-8 border-t border-foreground/10 pt-4">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-                Browse
-              </span>
-              <div className="mt-2 flex flex-wrap gap-x-5 gap-y-1.5">
-                {EVENT_COLLECTIONS.map((c) => (
-                  <Link
-                    key={c.slug}
-                    href={`/events/${c.slug}`}
-                    className="text-[12px] text-muted-foreground hover:text-amber-400 transition-colors"
-                  >
-                    {c.title.replace(' | FundOpsHQ', '')}
-                  </Link>
-                ))}
-              </div>
+            <div className="mt-8">
+              <Panel label="Browse by city and topic">
+                <div className="flex flex-wrap gap-x-5 gap-y-1.5 pt-2">
+                  {EVENT_COLLECTIONS.map((c) => (
+                    <Link
+                      key={c.slug}
+                      href={`/events/${c.slug}`}
+                      className="font-news text-[15px] text-foreground underline decoration-foreground/25 underline-offset-4 hover:decoration-foreground"
+                    >
+                      {c.title.replace(' | FundOpsHQ', '')}
+                    </Link>
+                  ))}
+                </div>
+              </Panel>
             </div>
           </div>
         </section>

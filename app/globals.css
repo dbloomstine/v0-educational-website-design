@@ -615,3 +615,16 @@
 @media (min-width: 640px) {
   .paper .col-rule { background: linear-gradient(var(--border), var(--border)) center / 1px 100% no-repeat; }
 }
+
+/* A day on the events board: a tinted strip with the amber tab, so the eye
+   finds "Tuesday" before it reads a single event. */
+.paper .day-head {
+  margin: 14px 0 2px; padding: 5px 10px;
+  background: var(--band); border-left: 4px solid var(--tab);
+  font-family: var(--font-franklin), system-ui, sans-serif;
+  font-size: 11.5px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--foreground);
+}
+.paper .day-head:first-child { margin-top: 0; }
+.paper .panel-pad { padding: 16px 20px 18px; }
+@media (max-width: 640px) { .paper .panel-pad { padding: 13px 14px 15px; } }

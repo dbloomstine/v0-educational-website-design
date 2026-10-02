@@ -78,9 +78,9 @@ export default async function SponsorPage() {
       <SiteHeader />
 
       <main id="main-content" className="paper flex-1">
-        <div className="mx-auto max-w-[1000px] px-4 pb-14 pt-7 lg:px-6">
-          {/* ─── The pitch ─── */}
-          <header className="border-b border-border pb-7">
+        {/* ─── The pitch ─── */}
+        <div className="band">
+          <header className="mx-auto max-w-[1000px] px-4 pb-7 pt-7 lg:px-6">
             <p className="font-ui text-[10.5px] font-bold uppercase tracking-[0.14em] text-amber-400">Sponsorship</p>
             <h1 className="mt-2 font-news text-[34px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[46px]">
               Sponsor <span className="italic" style={{ color: 'var(--display-accent)' }}>FundOps Daily.</span>
@@ -115,20 +115,26 @@ export default async function SponsorPage() {
               </a>
             </div>
           </header>
-
+        </div>
+        <div className="mx-auto max-w-[1000px] px-4 pb-14 pt-1 lg:px-6">
           {/* ─── The numbers, live ─── */}
           {tiles.length > 0 && (
             <section aria-label="Audience figures" className="mt-8">
-              <SectionFlag label="The numbers" note={asOf ? `As of ${asOf}` : undefined} />
-              <dl className="grid grid-cols-2 gap-x-8 sm:grid-cols-3">
+              <div className="panel">
+                <div className="panel-head">
+                  <h2 className="font-ui text-[11.5px] font-extrabold uppercase tracking-[0.13em]">The numbers</h2>
+                  {asOf && <span className="note whitespace-nowrap font-ui text-[11px]">As of {asOf}</span>}
+                </div>
+              <dl className="grid grid-cols-2 gap-x-8 px-5 pt-1 sm:grid-cols-3">
                 {tiles.map((t) => (
-                  <div key={t.label} className="border-b border-border/70 py-3.5">
+                  <div key={t.label} className="py-3.5">
                     <dd className="font-news text-[38px] font-medium leading-none tracking-[-0.02em] text-foreground">{t.value}</dd>
                     <dt className="mt-1.5 font-ui text-[12.5px] font-semibold text-foreground/85">{t.label}</dt>
                     {t.note && <p className="font-ui text-[11.5px] text-muted-foreground">{t.note}</p>}
                   </div>
                 ))}
               </dl>
+              </div>
               <p className="mt-2 font-ui text-[11.5px] leading-snug text-muted-foreground">
                 Counted automatically from the subscriber list and delivery records, and refreshed twice a day. Opens are as reported by the mail
                 platform and include automatic opens by some mail apps.
@@ -168,16 +174,17 @@ export default async function SponsorPage() {
           </section>
 
           {/* ─── Rates: by conversation ─── */}
-          <section aria-label="Rates" className="mt-10 border-y-2 border-foreground py-5">
-            <h2 className="font-news text-[26px] font-medium leading-tight tracking-[-0.01em] text-foreground">Rates and open dates</h2>
-            <p className="mt-2 max-w-[62ch] font-news text-[16.5px] leading-[1.45] text-foreground/80">
+          <section aria-label="Rates" className="panel-ink mt-10">
+            <h2 className="font-news text-[26px] font-medium leading-tight tracking-[-0.01em]">Rates and open dates</h2>
+            <p className="mt-2 max-w-[62ch] font-news text-[16.5px] leading-[1.45] opacity-85">
               Sponsorship is booked by the week, the month or the quarter. The list is young and growing, so rates are
               quoted for the dates you want rather than printed here. Tell us what you are promoting and when, and you
               will have a rate and the open dates within one business day.
             </p>
             <a
               href={MAILTO}
-              className="mt-3 inline-flex items-center gap-1.5 font-ui text-[14px] font-bold text-foreground underline underline-offset-4 hover:no-underline"
+              className="mt-4 inline-flex h-10 items-center gap-2 rounded-sm px-5 font-ui text-[13px] font-bold uppercase tracking-[0.06em] transition-opacity hover:opacity-90"
+              style={{ background: 'var(--tab)', color: 'var(--ink)' }}
             >
               sponsor@fundopshq.com
               <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />

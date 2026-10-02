@@ -84,8 +84,8 @@ export default function AboutPage() {
       <SiteHeader />
 
       <main id="main-content" className="paper flex-1">
-        <div className="mx-auto max-w-[1000px] px-4 pb-14 pt-7 lg:px-6">
-          <header className="border-b border-border pb-6">
+        <div className="band">
+          <header className="mx-auto max-w-[1000px] px-4 pb-6 pt-7 lg:px-6">
             <p className="font-ui text-[10.5px] font-bold uppercase tracking-[0.14em] text-amber-400">About</p>
             <h1 className="mt-2 font-news text-[34px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[46px]">
               A daily newsroom for <span className="italic" style={{ color: 'var(--display-accent)' }}>private markets.</span>
@@ -96,7 +96,8 @@ export default function AboutPage() {
               infrastructure. Edited by Danny Bloomstine in New York.
             </p>
           </header>
-
+        </div>
+        <div className="mx-auto max-w-[1000px] px-4 pb-14 pt-1 lg:px-6">
           <section aria-label="Three ways to read it" className="mt-8">
             <SectionFlag label="Three ways to read it" />
             <dl>
@@ -153,7 +154,7 @@ export default function AboutPage() {
 
           <section aria-label="The editor" className="mt-10">
             <SectionFlag label="The editor" />
-            <div className="mt-3 flex flex-col gap-5 sm:flex-row sm:items-start">
+            <div className="panel panel-pad mt-3 flex flex-col gap-5 sm:flex-row sm:items-start">
               {/* Transparent cutout: it needs a light backdrop or the dark suit
                   vanishes into the page. Amber matches the welcome email. */}
               <Image
@@ -186,20 +187,21 @@ export default function AboutPage() {
             </div>
           </section>
 
-          <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3 border-t-2 border-foreground pt-5">
+          <div className="panel-ink mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
             <Link
               href="/#subscribe"
-              className="group inline-flex h-10 items-center gap-2 rounded-sm bg-foreground px-5 font-ui text-[13px] font-bold uppercase tracking-[0.06em] text-background transition-colors hover:bg-foreground/85"
+              className="group inline-flex h-10 items-center gap-2 rounded-sm px-5 font-ui text-[13px] font-bold uppercase tracking-[0.06em] transition-opacity hover:opacity-90"
+              style={{ background: 'var(--tab)', color: 'var(--ink)' }}
             >
               Subscribe free
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
             </Link>
-            <p className="font-ui text-[13px] text-muted-foreground">
+            <p className="font-ui text-[13px] opacity-85">
               Story tips and corrections:{' '}
-              <a href="mailto:dbloomstine@gmail.com" className="font-semibold text-foreground underline underline-offset-4 hover:no-underline">
+              <a href="mailto:dbloomstine@gmail.com" className="font-semibold underline underline-offset-4 hover:no-underline">
                 email the desk
               </a>
-              . Sponsorship: <Link href="/sponsor" className="font-semibold text-foreground underline underline-offset-4 hover:no-underline">see the sponsor page</Link>.
+              . Sponsorship: <Link href="/sponsor" className="font-semibold underline underline-offset-4 hover:no-underline">see the sponsor page</Link>.
             </p>
           </div>
         </div>

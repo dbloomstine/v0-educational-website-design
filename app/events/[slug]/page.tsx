@@ -18,6 +18,7 @@ import { googleCalendarUrl } from '@/lib/events/ics'
 import { CATEGORY_LABELS } from '@/lib/news/constants'
 import { cn } from '@/lib/utils'
 import { OG_IMAGES } from '@/lib/seo'
+import { Panel } from '@/components/story/StoryBlocks'
 import type { IndustryEvent } from '@/lib/events/types'
 
 export const revalidate = 3600
@@ -123,32 +124,29 @@ async function CollectionPage({ collection }: { collection: EventCollection }) {
     <div className="flex min-h-screen flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <SiteHeader />
-      <main id="main-content" className="paper flex-1 border-t-2 border-foreground/15 bg-background">
-        <div className="container mx-auto max-w-[1100px] px-4 py-10 sm:py-14">
-          <Link href="/events" className="mb-6 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="h-3 w-3" /> All Events
+      <main id="main-content" className="paper flex-1">
+        <div className="band">
+          <div className="mx-auto max-w-[1100px] px-4 pb-5 pt-5 lg:px-6">
+          <Link href="/events" className="mb-3 inline-flex items-center gap-1.5 font-ui text-[12px] font-semibold text-muted-foreground transition-colors hover:text-foreground">
+            <ArrowLeft className="h-3 w-3" /> All events
           </Link>
-          <h1
-            className="font-display text-foreground"
-            style={{ fontSize: 'clamp(32px, 4.5vw, 54px)', lineHeight: 1, letterSpacing: '-0.03em', fontWeight: 500, fontVariationSettings: '"opsz" 144' }}
-          >
-            {collection.heading}
-          </h1>
-          <p className="mt-4 max-w-2xl text-sm leading-relaxed text-muted-foreground">{collection.blurb}</p>
-
-          <div className="mt-4 flex flex-wrap items-center gap-4">
-            <Link href={`/events?${boardQs}`} className="font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-amber-400 hover:text-amber-300 transition-colors">
-              Filter &amp; search this list →
+          <h1 className="font-news text-[32px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[42px]">{collection.heading}</h1>
+          <p className="mt-2 max-w-[72ch] font-news text-[16px] leading-snug text-foreground/70">{collection.blurb}</p>
+          <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2">
+            <Link href={`/events?${boardQs}`} className="font-ui text-[13px] font-bold text-foreground underline underline-offset-4 hover:no-underline">
+              Filter and search this list →
             </Link>
             <a
               href={`/api/events/calendar?${boardQs}`}
-              className="inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors"
+              className="inline-flex items-center gap-1.5 font-ui text-[13px] font-semibold text-muted-foreground hover:text-foreground"
             >
-              <CalendarPlus className="h-3 w-3" /> Calendar feed
+              <CalendarPlus className="h-3.5 w-3.5" /> Calendar feed
             </a>
           </div>
-
-          <div className="mt-8 rounded-lg border border-border bg-card overflow-hidden">
+          </div>
+        </div>
+        <div className="mx-auto max-w-[1100px] px-4 pb-12 pt-6 lg:px-6">
+          <div className="panel overflow-hidden">
             {events.length === 0 ? (
               <p className="px-4 py-12 text-center text-sm text-muted-foreground">
                 Nothing upcoming here right now — check the <Link href="/events" className="text-amber-400 hover:text-amber-300">full board</Link>.
@@ -212,10 +210,11 @@ function EventDetailPage({ event, related }: { event: IndustryEvent; related: In
     <div className="flex min-h-screen flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <SiteHeader />
-      <main id="main-content" className="paper flex-1 border-t-2 border-foreground/15 bg-background">
-        <div className="container mx-auto max-w-[1100px] px-4 py-10 sm:py-14">
-          <Link href="/events" className="mb-6 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="h-3 w-3" /> All Events
+      <main id="main-content" className="paper flex-1">
+        <div className="band">
+          <div className="mx-auto max-w-[1100px] px-4 pb-5 pt-5 lg:px-6">
+          <Link href="/events" className="mb-3 inline-flex items-center gap-1.5 font-ui text-[12px] font-semibold text-muted-foreground transition-colors hover:text-foreground">
+            <ArrowLeft className="h-3 w-3" /> All events
           </Link>
 
           <div className="flex flex-wrap items-center gap-2">
@@ -232,13 +231,8 @@ function EventDetailPage({ event, related }: { event: IndustryEvent; related: In
             ))}
           </div>
 
-          <h1
-            className="mt-4 font-display text-foreground"
-            style={{ fontSize: 'clamp(28px, 4vw, 48px)', lineHeight: 1.05, letterSpacing: '-0.02em', fontWeight: 500, fontVariationSettings: '"opsz" 144' }}
-          >
-            {event.name}
-          </h1>
-          <p className="mt-2 text-sm text-muted-foreground">by {event.organizerName}</p>
+          <h1 className="mt-3 font-news text-[32px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[42px]">{event.name}</h1>
+          <p className="mt-1.5 font-news text-[17px] text-foreground/70">by {event.organizerName}</p>
 
           {isPast && (
             <p className="mt-4 inline-block rounded-md border border-amber-400/40 bg-amber-400/10 px-3 py-1.5 text-[12px] text-amber-300">
@@ -246,10 +240,13 @@ function EventDetailPage({ event, related }: { event: IndustryEvent; related: In
             </p>
           )}
 
-          <div className="mt-8 grid gap-8 lg:grid-cols-3">
-            <div className="lg:col-span-2 space-y-6">
+          </div>
+        </div>
+        <div className="mx-auto max-w-[1100px] px-4 pb-12 pt-6 lg:px-6">
+          <div className="grid gap-5 lg:grid-cols-3">
+            <div className="panel panel-lead lg:col-span-2 space-y-6">
               {event.description && (
-                <p className="max-w-2xl text-[15px] leading-relaxed text-foreground/90">{event.description}</p>
+                <p className="max-w-[68ch] font-news text-[18px] leading-[1.45] text-foreground/85">{event.description}</p>
               )}
 
               <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2 max-w-2xl">
@@ -291,7 +288,7 @@ function EventDetailPage({ event, related }: { event: IndustryEvent; related: In
               </dl>
             </div>
 
-            <div className="space-y-3">
+            <div className="panel panel-pad space-y-3 self-start">
               <a
                 href={event.eventUrl}
                 target="_blank"
@@ -324,15 +321,14 @@ function EventDetailPage({ event, related }: { event: IndustryEvent; related: In
           </div>
 
           {related.length > 0 && (
-            <div className="mt-14">
-              <div className="mb-3 border-b border-foreground/10 pb-2 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
-                Related Events
-              </div>
-              <div className="rounded-lg border border-border bg-card overflow-hidden">
-                {related.map((e) => (
-                  <MiniEventRow key={e.id} event={e} />
-                ))}
-              </div>
+            <div className="mt-6">
+              <Panel label="Related events">
+                <div className="-mx-[14px] -mb-[10px] -mt-1">
+                  {related.map((e) => (
+                    <MiniEventRow key={e.id} event={e} />
+                  ))}
+                </div>
+              </Panel>
             </div>
           )}
         </div>

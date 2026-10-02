@@ -17,21 +17,20 @@ export default function SubmitEventPage() {
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
       <main id="main-content" className="paper flex-1">
-        <div className="container mx-auto max-w-[760px] px-4 py-10 sm:py-14">
-          <Link href="/events" className="mb-6 inline-flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="h-3 w-3" /> All Events
+        <div className="band">
+          <div className="mx-auto max-w-[760px] px-4 pb-5 pt-5 lg:px-6">
+          <Link href="/events" className="mb-3 inline-flex items-center gap-1.5 font-ui text-[12px] font-semibold text-muted-foreground transition-colors hover:text-foreground">
+            <ArrowLeft className="h-3 w-3" /> All events
           </Link>
-          <h1
-            className="font-display text-foreground"
-            style={{ fontSize: 'clamp(30px, 4vw, 46px)', lineHeight: 1.05, letterSpacing: '-0.02em', fontWeight: 500, fontVariationSettings: '"opsz" 144' }}
-          >
-            Submit an event.
-          </h1>
-          <p className="mt-4 max-w-xl text-sm leading-relaxed text-muted-foreground">
-            Hosting a conference, forum, webinar, or networking event for GPs, LPs, or fund service providers?
+          <h1 className="font-news text-[32px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[42px]">Submit an event</h1>
+          <p className="mt-2 max-w-[62ch] font-news text-[16px] leading-snug text-foreground/70">
+            Hosting a conference, forum, webinar or networking event for GPs, LPs or fund service providers?
             Listings are free. We verify every date at the source before publishing — most submissions are on the board within a day.
           </p>
-          <div className="mt-8">
+          </div>
+        </div>
+        <div className="mx-auto max-w-[760px] px-4 pb-12 pt-6 lg:px-6">
+          <div className="panel panel-lead">
             <SubmitEventForm />
           </div>
         </div>
