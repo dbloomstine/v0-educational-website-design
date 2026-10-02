@@ -7,7 +7,7 @@ import { FilterTabs } from '@/components/news/FilterTabs'
 import { Panel } from '@/components/story/StoryBlocks'
 import { SubscribePanel } from '@/components/home/Rail'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
-import { getLeagueReportSafe, LEAGUE_SINCE } from '@/lib/news/league-data'
+import { loadLeagueReport, LEAGUE_SINCE } from '@/lib/news/league-data'
 import { capitalByAsset, leagueRows, LEAGUE_ASSET_LABEL as ASSET_LABEL, LEAGUE_PERIODS, STAGE_LABEL, type FundClose, type LeaguePeriod } from '@/lib/news/league'
 import { sizeLabel, totalLabel } from '@/lib/news/format'
 import { OG_IMAGES } from '@/lib/seo'
@@ -54,7 +54,7 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
   const stage: 'final' | 'all' = sp.stage === 'all' ? 'all' : 'final'
   const nowMs = Date.now()
 
-  const report = await getLeagueReportSafe()
+  const report = await loadLeagueReport()
   const league = report.closes
   const inPeriodAndStage = leagueRows(league, { period, stage }, nowMs)
   const rows = asset ? inPeriodAndStage.filter((c) => c.assetClass === asset) : inPeriodAndStage

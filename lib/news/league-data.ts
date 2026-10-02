@@ -2,11 +2,11 @@
  * Fetching and caching for the league tables (lib/news/league.ts is the logic).
  *
  * One query for every fund-close report since coverage began, one cached build
- * shared by the league page, the firm pages and the front-page chart. Never
- * throws: a database hiccup renders an empty table, not an error page.
+ * shared by the league page, the firm pages and the front-page chart.
  */
 import { unstable_cache } from 'next/cache'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
+import { buildOnce } from '@/lib/cache/build-once'
 import { ALL_NEWSLETTER_TYPES } from '@/lib/newsletter/query-articles'
 import { buildLeagueReport, LEAGUE_CLOSE_TYPES, type FundClose, type LeagueOverride, type LeagueReport } from './league'
 
@@ -62,21 +62,36 @@ export async function computeLeagueReport(): Promise<LeagueReport & { asOf: stri
 }
 
 // Bump the version whenever FundClose changes shape: a deploy must never read
-// rows cached by the previous build's code.
-const getLeagueReport = unstable_cache(computeLeagueReport, ['league-v2'], { revalidate: 1800, tags: ['league'] })
+// rows cached by the previous build's code (the same version names the copy
+// in `site_cache`).
+//
+// buildOnce: the league is the heaviest thing the site computes — four seconds
+// of database work — and every firm page asks for it. When this entry went
+// stale during a crawl, fifty pages each rebuilt it and the database stopped
+// answering. Only one may build (lib/cache/build-once.ts).
+const LEAGUE_KEY = 'league-v2'
+const getLeagueReport = unstable_cache(() => buildOnce(LEAGUE_KEY, computeLeagueReport), [LEAGUE_KEY], { revalidate: 1800, tags: ['league'] })
 
-const EMPTY: LeagueReport & { asOf: string } = { closes: [], unsized: [], asOf: '' }
+/** What this server last got, so a failure has something to fall back on. */
+let lastReport: (LeagueReport & { asOf: string }) | null = null
 
-/** Never throws: a database hiccup renders an empty table, not an error page. */
-export async function getLeagueReportSafe(): Promise<LeagueReport & { asOf: string }> {
+/**
+ * The league, from the cache. Throws when it cannot be had at all — for the
+ * reason lib/news/front-page.ts loadStories() gives: an empty table on a
+ * cached page is cached. (Until 2026-10-02 this returned an empty league on
+ * failure, under a name ending "Safe".)
+ */
+export async function loadLeagueReport(): Promise<LeagueReport & { asOf: string }> {
   try {
-    return await getLeagueReport()
+    lastReport = await getLeagueReport()
+    return lastReport
   } catch (err) {
-    console.error('[league] fetch failed:', err)
-    return EMPTY
+    if (!lastReport) throw err
+    console.error('[league] fetch failed, serving the last copy:', err)
+    return lastReport
   }
 }
 
-export async function getLeagueSafe(): Promise<FundClose[]> {
-  return (await getLeagueReportSafe()).closes
+export async function loadLeague(): Promise<FundClose[]> {
+  return (await loadLeagueReport()).closes
 }

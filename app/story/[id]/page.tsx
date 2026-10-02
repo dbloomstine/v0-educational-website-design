@@ -17,7 +17,15 @@ import { ASSET_LABEL, homeSectionFor, sectionHref, storyInSection } from '@/lib/
 import { kickerLabel, sizeLabel, stageLabel } from '@/lib/news/format'
 import { entityKey, keysMatch } from '@/lib/newsletter/story-links'
 
-export const revalidate = 600
+export const revalidate = 1800
+
+// Built on first request, then served from the edge until it is half an hour
+// old. Without this a story page is rendered — and the database asked — on
+// EVERY request, and the requests are mostly crawlers: 1,345 different story
+// pages in one ten-minute stretch on 2026-10-02.
+export function generateStaticParams() {
+  return []
+}
 
 type Params = { params: Promise<{ id: string }> }
 

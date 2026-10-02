@@ -9,7 +9,7 @@ import { RiverRow, SectionFlag } from '@/components/story/StoryBlocks'
 import { SubscribePanel } from '@/components/home/Rail'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { searchFirms } from '@/lib/news/firm-data'
-import { ARCHIVE_WINDOW_DAYS, getArchiveStoriesSafe, searchStories } from '@/lib/news/front-page'
+import { ARCHIVE_WINDOW_DAYS, loadArchive, searchStories } from '@/lib/news/front-page'
 import type { Story, StoryKind } from '@/lib/news/stories'
 import { ASSET_LABEL, KIND_LABEL } from '@/lib/news/sections'
 import { OG_IMAGES } from '@/lib/seo'
@@ -68,8 +68,9 @@ export default async function NewsPage({ searchParams }: Params) {
   const page = Math.max(1, Math.min(50, parseInt(sp.page ?? '1', 10) || 1))
   const nowMs = Date.now()
 
-  const archive = await getArchiveStoriesSafe()
-  const [pool, firmHits] = q ? await Promise.all([searchStories(q), searchFirms(q, 6)]) : [archive, []]
+  const archive = await loadArchive()
+  // The firm line above the results is an extra: if its lookup fails, the story search still answers.
+  const [pool, firmHits] = q ? await Promise.all([searchStories(q), searchFirms(q, 6).catch(() => [])]) : [archive, []]
   const base = [...pool].sort((a, b) => (b.publishedDate ?? '').localeCompare(a.publishedDate ?? '') || b.firstSeen.localeCompare(a.firstSeen))
 
   const byType = type ? base.filter((s) => s.kind === type) : base

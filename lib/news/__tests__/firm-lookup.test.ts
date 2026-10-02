@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { anyOfPatterns, firmLookup, ilike, isFirmInStory, isFirmName, lookupFilter, searchPatterns, startsAWord, type FirmLookup } from '../firm-lookup'
+import { anyOfPatterns, firmLookup, ilike, isFirmInStory, isFirmName, lookupFilter, searchFilter, startsAWord, type FirmLookup } from '../firm-lookup'
 import { firmHref, firmSlug } from '../league'
 
 const lookupFor = (key: string) => firmLookup(key) as FirmLookup
@@ -125,13 +125,35 @@ describe('who counts as the firm', () => {
 })
 
 describe('searching the directory', () => {
-  it('tries a short query as initials too', () => {
-    expect(searchPatterns('hig')).toEqual(expect.arrayContaining(['%hig%', '%h.i.g%']))
-    expect(searchPatterns('mg')).toEqual(expect.arrayContaining(['%mg%', '%m&g%']))
-    expect(searchPatterns('blackstone')).toEqual(['%blackstone%'])
-    expect(searchPatterns('hamilton lane')).toEqual(['%hamilton lane%'])
-    expect(searchPatterns('100%_"')).toEqual(['%100%'])
-    expect(searchPatterns('  ')).toEqual([])
+  /** What the filter would return for a name: the same expressions, run here. */
+  const found = (query: string, name: string) => {
+    const filter = searchFilter('n', query) as string
+    return [...filter.matchAll(/n\.(imatch|ilike)\."((?:[^"\\]|\\.)*)"/g)].some(([, op, v]) => (op === 'imatch' ? new RegExp(v, 'i').test(name) : ilike(v, name)))
+  }
+  it('finds names containing three letters or more, and reads a short query as initials too', () => {
+    expect(found('hig', 'HIG Capital')).toBe(true)
+    expect(found('hig', 'H.I.G. Capital')).toBe(true)
+    expect(found('hig', 'Highland Capital')).toBe(true)
+    expect(found('blackstone', 'Blackstone Inc')).toBe(true)
+    expect(found('hamilton lane', 'Hamilton Lane')).toBe(true)
+    expect(searchFilter('n', 'blackstone')).toBe('n.ilike."%blackstone%"')
+    expect(searchFilter('n', '100%_"')).toBe('n.ilike."%100%"')
+  })
+  it('reads two letters as the start of a word or as initials, never as "containing"', () => {
+    // "%mg%" is Omega and Magnetar, and read every row of the year to find them: nine seconds.
+    for (const hit of ['M&G', 'M & G plc', 'MG Partners', 'MGX Capital', 'Prudential (M&G)']) expect(found('mg', hit), hit).toBe(true)
+    for (const miss of ['Omega Funds', 'Magnetar Capital', 'AMG']) expect(found('mg', miss), miss).toBe(false)
+    expect(found('bl', 'Blackstone')).toBe(true)
+    expect(found('bl', 'Blue Owl Capital')).toBe(true)
+    expect(found('bl', 'Noble Capital')).toBe(false)
+    expect(searchFilter('n', 'mg')).not.toContain('ilike')
+    // Its word edge is written out, so the index can serve it.
+    expect(searchFilter('n', 'mg')).not.toContain('[^')
+  })
+  it('has nothing to search for under two characters', () => {
+    expect(searchFilter('n', 'k')).toBeNull()
+    expect(searchFilter('n', '  ')).toBeNull()
+    expect(searchFilter('n', '%')).toBeNull()
   })
   it('counts welded initials as a word the query can start', () => {
     expect(startsAWord('H.I.G. Capital', 'hig')).toBe(true)

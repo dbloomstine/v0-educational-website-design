@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { useState, useEffect, useLayoutEffect, useCallback, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { Search, X, Loader2, SlidersHorizontal, CalendarPlus, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -44,6 +44,14 @@ const COST_OPTIONS = [
 
 const PAGE_SIZE = 100
 
+/** How long to wait for the list before saying so. Without it a stalled request left the skeleton up for minutes. */
+const FETCH_TIMEOUT_MS = 12_000
+
+const FILTER_KEYS = ['q', 'when', 'kind', 'format', 'cost', 'category', 'topic', 'city', 'ops'] as const
+
+// useLayoutEffect warns when a client component renders on the server; there it has nothing to do.
+const useBeforePaint = typeof window === 'undefined' ? useEffect : useLayoutEffect
+
 // Multi-select helpers for comma-separated filter strings (same idiom as NewsFeed)
 function toggleFilter(current: string, value: string): string {
   const values = current ? current.split(',') : []
@@ -63,30 +71,71 @@ function hasFilter(current: string, value: string): boolean {
 
 // ── Component ─────────────────────────────────────────────────────
 
-export function EventsBoard() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
+/**
+ * `initial` is the unfiltered board, fetched on the server with the page. With
+ * it the page arrives with its events in it: nothing to wait for, and nothing
+ * to go wrong, on the plain /events URL. A request is made only when a filter
+ * is set — including one in the URL the page was opened with, which is read
+ * after mount (reading it during render would keep the whole board out of the
+ * server's HTML).
+ */
+export function EventsBoard({ initial }: { initial?: EventFeedResponse | null }) {
   const pathname = usePathname()
 
-  // Filter state from URL
-  const [query, setQuery] = useState(searchParams.get('q') || '')
-  const [when, setWhen] = useState(searchParams.get('when') || '')
-  const [kind, setKind] = useState(searchParams.get('kind') || '')
-  const [format, setFormat] = useState(searchParams.get('format') || '')
-  const [cost, setCost] = useState(searchParams.get('cost') || '')
-  const [category, setCategory] = useState(searchParams.get('category') || '')
-  const [topic, setTopic] = useState(searchParams.get('topic') || '')
-  const [city, setCity] = useState(searchParams.get('city') || '')
-  const [opsOnly, setOpsOnly] = useState(searchParams.get('ops') === '1')
+  // Filter state. Starts empty and takes the URL's filters on mount.
+  const [query, setQuery] = useState('')
+  const [when, setWhen] = useState('')
+  const [kind, setKind] = useState('')
+  const [format, setFormat] = useState('')
+  const [cost, setCost] = useState('')
+  const [category, setCategory] = useState('')
+  const [topic, setTopic] = useState('')
+  const [city, setCity] = useState('')
+  const [opsOnly, setOpsOnly] = useState(false)
   const [filtersOpen, setFiltersOpen] = useState(false)
 
   // Data state
-  const [events, setEvents] = useState<IndustryEvent[]>([])
-  const [facets, setFacets] = useState<EventFacetCounts | null>(null)
-  const [hasMore, setHasMore] = useState(false)
-  const [offset, setOffset] = useState(0)
-  const [loading, setLoading] = useState(true)
+  const [events, setEvents] = useState<IndustryEvent[]>(initial?.events ?? [])
+  const [facets, setFacets] = useState<EventFacetCounts | null>(initial?.facets ?? null)
+  const [hasMore, setHasMore] = useState(initial?.hasMore ?? false)
+  const [offset, setOffset] = useState(initial ? initial.offset + initial.limit : 0)
+  const [loading, setLoading] = useState(!initial)
   const [loadingMore, setLoadingMore] = useState(false)
+  const [failed, setFailed] = useState(false)
+  // Search debounce
+  const [searchInput, setSearchInput] = useState('')
+  useEffect(() => {
+    const timer = setTimeout(() => setQuery(searchInput), 400)
+    return () => clearTimeout(timer)
+  }, [searchInput])
+
+  /** False until the URL's filters have been read: the first fetch waits for them. */
+  const [ready, setReady] = useState(false)
+  /** The server's copy answers the first, unfiltered view. */
+  const useInitial = useRef(Boolean(initial))
+  const latestRequest = useRef(0)
+
+  // The URL the page was opened with may carry filters (/events?city=Boston).
+  useBeforePaint(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (FILTER_KEYS.some((k) => params.get(k))) {
+      // Not the unfiltered board: show the skeleton, not the server's copy, while the right list loads.
+      useInitial.current = false
+      setLoading(true)
+      setQuery(params.get('q') || '')
+      setSearchInput(params.get('q') || '')
+      setWhen(params.get('when') || '')
+      setKind(params.get('kind') || '')
+      setFormat(params.get('format') || '')
+      setCost(params.get('cost') || '')
+      setCategory(params.get('category') || '')
+      setTopic(params.get('topic') || '')
+      setCity(params.get('city') || '')
+      setOpsOnly(params.get('ops') === '1')
+    }
+    setReady(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const activeFilterCount = [query, kind, format, cost, category, topic, city, opsOnly, when !== ''].filter(Boolean).length
   const pillFilterCount = [kind, format, cost, category, topic, city, opsOnly].filter(Boolean).length
@@ -124,22 +173,30 @@ export function EventsBoard() {
     if (opsOnly) params.set('ops', '1')
     const qs = params.toString()
     const base = pathname || '/events'
-    router.replace(qs ? `${base}?${qs}` : base, { scroll: false })
-  }, [router, pathname, query, when, kind, format, cost, category, topic, city, opsOnly])
+    // The address bar only: router.replace would ask the server for the page
+    // again — and the page now carries a hundred events — on every filter click.
+    window.history.replaceState(null, '', qs ? `${base}?${qs}` : base)
+  }, [pathname, query, when, kind, format, cost, category, topic, city, opsOnly])
 
   const fetchFeed = useCallback(
     async (newOffset = 0, append = false) => {
+      const request = ++latestRequest.current
       if (append) {
         setLoadingMore(true)
       } else {
         setLoading(true)
       }
 
+      const controller = new AbortController()
+      const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
       try {
         const params = buildParams(newOffset)
-        const res = await fetch(`/api/events/feed?${params.toString()}`)
+        const res = await fetch(`/api/events/feed?${params.toString()}`, { signal: controller.signal })
+        if (!res.ok) throw new Error(`feed responded ${res.status}`)
         const json = await res.json()
         const data: EventFeedResponse = json.data
+        // A slower, older request must not overwrite a newer one's list.
+        if (request !== latestRequest.current) return
 
         if (append) {
           setEvents((prev) => [...prev, ...data.events])
@@ -149,28 +206,34 @@ export function EventsBoard() {
         }
         setHasMore(data.hasMore)
         setOffset(data.offset + data.limit)
+        setFailed(false)
       } catch (err) {
+        if (request !== latestRequest.current) return
         console.error('Failed to fetch events feed:', err)
+        setFailed(true)
       } finally {
-        setLoading(false)
-        setLoadingMore(false)
+        clearTimeout(timer)
+        if (request === latestRequest.current) {
+          setLoading(false)
+          setLoadingMore(false)
+        }
       }
     },
     [buildParams]
   )
 
   useEffect(() => {
+    if (!ready) return
+    // The unfiltered first view is already here, from the server.
+    if (useInitial.current) {
+      useInitial.current = false
+      return
+    }
     fetchFeed(0, false)
     syncUrl()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query, when, kind, format, cost, category, topic, city, opsOnly])
+  }, [ready, query, when, kind, format, cost, category, topic, city, opsOnly])
 
-  // Search debounce
-  const [searchInput, setSearchInput] = useState(query)
-  useEffect(() => {
-    const timer = setTimeout(() => setQuery(searchInput), 400)
-    return () => clearTimeout(timer)
-  }, [searchInput])
 
   const clearFilters = () => {
     setSearchInput('')
@@ -512,6 +575,14 @@ export function EventsBoard() {
       </div>
 
       {/* ── Events list ──────────────────────────────────────── */}
+      {failed && !loading && (
+        <div role="status" className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 border border-border bg-card px-3 py-2 font-ui text-[13px] text-foreground">
+          <span>{events.length > 0 ? 'Couldn’t refresh the list just now — showing what loaded last.' : 'Couldn’t load the events just now.'}</span>
+          <button onClick={() => fetchFeed(0, false)} className="font-bold underline underline-offset-4 hover:no-underline">
+            Try again
+          </button>
+        </div>
+      )}
       {loading ? (
         <div>
           {Array.from({ length: 12 }).map((_, i) => (
@@ -523,7 +594,7 @@ export function EventsBoard() {
             </div>
           ))}
         </div>
-      ) : events.length === 0 ? (
+      ) : events.length === 0 && failed ? null : events.length === 0 ? (
         <div className="py-16 text-center">
           <p className="text-muted-foreground">No events found matching your filters.</p>
           {activeFilterCount > 0 && (

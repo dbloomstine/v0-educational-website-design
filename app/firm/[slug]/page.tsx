@@ -20,6 +20,13 @@ import { OG_IMAGES } from '@/lib/seo'
 
 export const revalidate = 1800
 
+// Built on first request, then served from the edge for half an hour. Firm
+// pages are what crawlers ask for most (1,400 lookups in ten minutes on
+// 2026-10-02); rendered on every request, each one was two database queries.
+export function generateStaticParams() {
+  return []
+}
+
 type Params = { params: Promise<{ slug: string }> }
 
 const day = (iso: string | null) => (iso ? new Date(`${iso.slice(0, 10)}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }) : null)

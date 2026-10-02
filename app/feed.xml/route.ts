@@ -1,4 +1,4 @@
-import { getStoriesSafe } from '@/lib/news/front-page'
+import { loadStories } from '@/lib/news/front-page'
 import { KIND_LABEL } from '@/lib/news/sections'
 
 // RSS for people who read news in a reader. Each item is a story — one event,
@@ -10,7 +10,7 @@ export const revalidate = 900
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
 export async function GET() {
-  const stories = (await getStoriesSafe())
+  const stories = (await loadStories())
     .filter((s) => !s.roundup)
     .sort((a, b) => b.firstSeen.localeCompare(a.firstSeen))
     .slice(0, 60)

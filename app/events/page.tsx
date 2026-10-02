@@ -2,18 +2,18 @@ import { SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { OG_IMAGES } from '@/lib/seo'
 import { Panel } from '@/components/story/StoryBlocks'
 import { Metadata } from 'next'
-import { Suspense } from 'react'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { EventsBoard } from '@/components/events/EventsBoard'
 import Link from 'next/link'
-import { queryEventFeed } from '@/lib/events/api'
+import { getEventFeed } from '@/lib/events/api'
 import { EVENT_COLLECTIONS } from '@/lib/events/collections'
-import type { IndustryEvent } from '@/lib/events/types'
+import type { EventFeedResponse, IndustryEvent } from '@/lib/events/types'
 
-// Re-render hourly so the server-side JSON-LD tracks the live table without
-// a query per request. The interactive board still fetches client-side.
+// Re-rendered on a timer, so the board and its structured data track the
+// table without a query per request. The board fetches for itself only when a
+// filter is set.
 export const revalidate = 3600
 
 export const metadata: Metadata = {
@@ -81,15 +81,22 @@ function buildEventsJsonLd(events: IndustryEvent[]) {
   }
 }
 
+/** The board's page size. The server sends the first page with the HTML. */
+const BOARD_PAGE_SIZE = 100
+
 export default async function EventsPage() {
-  // Soft dependency: the page must render even if the DB hiccups.
-  let jsonLdEvents: IndustryEvent[] = []
+  // The unfiltered board is fetched here, with the page, and handed to the
+  // client board: the plain /events URL arrives with its events in it instead
+  // of a skeleton waiting on a second request (which, on 2026-10-02, hung for
+  // minutes while the database was busy). Soft dependency: if this fails the
+  // page still renders and the board fetches for itself.
+  let initial: EventFeedResponse | null = null
   try {
-    const feed = await queryEventFeed({ limit: 25 })
-    jsonLdEvents = feed.events
+    initial = await getEventFeed({ limit: BOARD_PAGE_SIZE, offset: 0 })
   } catch {
-    // no structured data this render — the client board fetches on its own
+    // the client board fetches on its own
   }
+  const jsonLdEvents: IndustryEvent[] = initial?.events.slice(0, 25) ?? []
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -123,9 +130,7 @@ export default async function EventsPage() {
         <section className="relative">
           <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
             <SponsorStrip className="mb-5" />
-            <Suspense fallback={<EventsBoardSkeleton />}>
-              <EventsBoard />
-            </Suspense>
+            <EventsBoard initial={initial} />
 
             {/* Browse collections — internal-link surface for the landing pages */}
             <div className="mt-8">
@@ -149,28 +154,6 @@ export default async function EventsPage() {
 
       <SiteFooter />
       <BackToTop />
-    </div>
-  )
-}
-
-function EventsBoardSkeleton() {
-  return (
-    <div className="space-y-3 animate-pulse">
-      <div className="flex items-center gap-2">
-        <div className="h-8 flex-1 rounded-lg bg-muted" />
-        <div className="h-8 w-40 rounded-lg bg-muted" />
-        <div className="h-8 w-24 rounded-lg bg-muted" />
-      </div>
-      <div>
-        {Array.from({ length: 12 }).map((_, i) => (
-          <div key={i} className="flex items-center gap-2 px-2 py-2.5">
-            <div className="h-4 w-20 rounded bg-muted" />
-            <div className="h-4 w-16 rounded bg-muted" />
-            <div className="h-4 flex-1 rounded bg-muted" />
-            <div className="h-4 w-24 rounded bg-muted" />
-          </div>
-        ))}
-      </div>
     </div>
   )
 }

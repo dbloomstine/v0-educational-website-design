@@ -129,16 +129,30 @@ export function isFirmInStory(name: string | null | undefined, key: string, head
 }
 
 /**
- * Patterns for the directory's search box. Someone looking for H.I.G. types
- * "hig"; someone looking for M&G may type "mg". A short query with no spaces
- * is also tried as initials.
+ * The directory's search, as a PostgREST `or` filter on a column.
+ *
+ * Three letters or more: names containing what was typed — and, for a short
+ * query with no spaces, the same letters as initials ("hig" finds H.I.G.).
+ *
+ * Two letters: "containing mg" is Omega and Magnetar, and no index can serve
+ * it — the search read every row of the year and took nine seconds. So two
+ * letters are read as the start of a word, or as initials: "mg" finds M&G and
+ * MG Partners, "bl" finds Blackstone and Blue Owl. Written with its word edge
+ * spelled out, that is a lookup the index can serve (see MARK above).
+ *
+ * Returns null when there is nothing to search for.
  */
-export function searchPatterns(query: string): string[] {
+export function searchFilter(column: string, query: string): string | null {
   const q = query.replace(/[%_\\"]/g, ' ').replace(/\s+/g, ' ').trim()
-  if (!q) return []
-  const out = new Set<string>([`%${q}%`])
-  if (/^[a-z]{2,4}$/i.test(q)) for (const sep of ['.', '. ', '&', ' & ']) out.add(`%${q.split('').join(sep)}%`)
-  return Array.from(out)
+  if (q.length < 2) return null
+  const letters = /^[a-z0-9]{2}$/i.test(q) ? q.toLowerCase() : null
+  if (letters) {
+    const apart = letters.split('').join(`${MARK}+(and${MARK}+)?`)
+    return `${column}.imatch."(^|${MARK})(${letters}|${apart}(${AFTER}|$))"`
+  }
+  const patterns = new Set<string>([`%${q}%`])
+  if (/^[a-z]{3,4}$/i.test(q)) for (const sep of ['.', '. ', '&', ' & ']) patterns.add(`%${q.split('').join(sep)}%`)
+  return anyOfPatterns(column, Array.from(patterns))
 }
 
 /** True when what was typed starts one of the name's words — counting welded initials as a word. */

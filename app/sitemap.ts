@@ -2,9 +2,9 @@ import { MetadataRoute } from 'next'
 import { queryAllEventSlugs } from '@/lib/events/api'
 import { EVENT_COLLECTIONS } from '@/lib/events/collections'
 import { SECTIONS, sectionHref } from '@/lib/news/sections'
-import { getArchiveStoriesSafe, getStoriesSafe } from '@/lib/news/front-page'
+import { loadArchive, loadStories } from '@/lib/news/front-page'
 import { firmIndex } from '@/lib/news/firms'
-import { getLeagueSafe } from '@/lib/news/league-data'
+import { loadLeague } from '@/lib/news/league-data'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://fundopshq.com'
@@ -54,7 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Story pages: only stories more than one outlet reported. A single-source
   // story's page adds little to the publisher's own, so it is not offered up.
-  const stories = await getStoriesSafe()
+  const stories = await loadStories()
   const storyPages: MetadataRoute.Sitemap = stories
     .filter((s) => !s.roundup && s.coverage.length > 0)
     .map((s) => ({
@@ -66,8 +66,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Firm pages: the managers in the league table, each of which has at least a fund close to show.
   // …and the firms with more than one story this month.
-  const active = firmIndex(await getArchiveStoriesSafe()).filter((f) => f.stories >= 2).map((f) => f.slug)
-  const firmSlugs = Array.from(new Set([...(await getLeagueSafe()).map((c) => c.firmSlug), ...active])).slice(0, 900)
+  const active = firmIndex(await loadArchive()).filter((f) => f.stories >= 2).map((f) => f.slug)
+  const firmSlugs = Array.from(new Set([...(await loadLeague()).map((c) => c.firmSlug), ...active])).slice(0, 900)
   const firmPages: MetadataRoute.Sitemap = firmSlugs.map((slug) => ({
     url: `${baseUrl}/firm/${slug}`,
     lastModified: now,

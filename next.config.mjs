@@ -24,7 +24,17 @@ const nextConfig = {
       // legacy-article redirect must step around them. Keep SECTION_SLUGS in
       // step with lib/news/sections.ts — a test checks the two agree.
       { source: `/news/:slug((?!(?:${SECTION_SLUGS.join('|')})$)[^/]+)`, destination: '/news', permanent: true },
-      { source: '/news/:slug/:rest+', destination: '/news', permanent: true },
+      // A cut of a section lives one level down (/news/private-equity/deals,
+      // 2026-10-02), so the two-level legacy redirect steps around sections too.
+      { source: `/news/:slug((?!(?:${SECTION_SLUGS.join('|')})/)[^/]+)/:rest+`, destination: '/news', permanent: true },
+      // The cut used to be a query string. Reading one makes a page render on
+      // every request; as a path it is built once and served from the edge.
+      {
+        source: `/news/:section(${SECTION_SLUGS.join('|')})`,
+        has: [{ type: 'query', key: 'f', value: '(?<facet>[a-z0-9-]+)' }],
+        destination: '/news/:section/:facet',
+        permanent: true,
+      },
       { source: '/blog', destination: '/news', permanent: true },
       { source: '/blog/:path*', destination: '/news', permanent: true },
       { source: '/articles', destination: '/news', permanent: true },
@@ -49,6 +59,16 @@ const nextConfig = {
   },
   async headers() {
     return [
+      // Latest, the league tables and the firm directory read a query string
+      // (search, filters, paging), so they are rendered on request. They carry
+      // nothing personal, so the edge may keep each URL: five minutes fresh,
+      // then served stale for up to an hour while one request refreshes it.
+      // The browser still gets Next's own no-store header. (Section, story and
+      // firm pages are static and need none of this.)
+      ...['/news', '/league-tables', '/firms'].map((source) => ({
+        source,
+        headers: [{ key: 'Vercel-CDN-Cache-Control', value: 'max-age=300, stale-while-revalidate=3600' }],
+      })),
       {
         source: '/(.*)',
         headers: [

@@ -10,11 +10,11 @@ import { InTheNews } from '@/components/home/InTheNews'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { firmsInTheNews } from '@/lib/news/firms'
 import { FundraisingChart } from '@/components/charts/FundraisingChart'
-import { getLeagueReportSafe } from '@/lib/news/league-data'
+import { loadLeagueReport } from '@/lib/news/league-data'
 import { chartData } from '@/lib/news/chart-views'
 import { weekCloses } from '@/lib/news/league'
-import { queryEventFeed } from '@/lib/events/api'
-import { getStoriesSafe } from '@/lib/news/front-page'
+import { getEventFeed } from '@/lib/events/api'
+import { loadStories } from '@/lib/news/front-page'
 import { composeFrontPage, rankSection } from '@/lib/news/stories'
 import { SECTIONS, sectionHref, storyInSection } from '@/lib/news/sections'
 import type { IndustryEvent } from '@/lib/events/types'
@@ -76,13 +76,15 @@ const PER_BLOCK = 5
 const LATEST_COUNT = 11
 
 export default async function HomePage() {
-  // Both feeds are soft dependencies: the page renders even if the DB hiccups.
+  // Stories and the league throw if they cannot be had: this page is cached,
+  // and failing to rebuild it keeps the last good copy on the site, where
+  // rendering it empty would put the empty copy there for ten minutes.
   const [stories, league, events] = await Promise.all([
-    getStoriesSafe(),
-    getLeagueReportSafe(),
+    loadStories(),
+    loadLeagueReport(),
     // The week ahead, at most two a day: six events all happening this
     // afternoon say less than a spread across the week.
-    queryEventFeed({ when: '1w', limit: 40 })
+    getEventFeed({ when: '1w', limit: 40 })
       .then((feed) => {
         const perDay = new Map<string, number>()
         return feed.events

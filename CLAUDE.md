@@ -60,7 +60,11 @@ The site was aggressively consolidated on 2026-04-10. These are the public route
 /news/[section]         → Section fronts — the TABS in the header. 13 sections defined in lib/news/sections.ts:
                            by story type (fundraising, deals, people, lps, regulation, service-providers) and by
                            asset class (private-equity, venture-capital, private-credit, real-estate,
-                           infrastructure, secondaries, hedge-funds). `?f=` narrows within a section.
+                           infrastructure, secondaries, hedge-funds). STATIC (built at deploy, rebuilt
+                           every few minutes): these are the header's tabs, the site's main navigation.
+/news/[section]/[facet] → A cut within a section (/news/private-equity/deals): static too, built on
+                           first request. It was `?f=deals` until 2026-10-02; a query string forces a
+                           page to render on every request. next.config redirects the old form.
                            NOTE next.config.mjs redirects every OTHER /news/* path to /news (legacy article
                            links); a new section slug must be added to SECTION_SLUGS there (a test enforces it).
 /story/[id]             → Our page for one story: summary, extracted facts, every outlet that covered it,
@@ -305,8 +309,9 @@ with the server-side rules — needs a patch before the next manual run.
 | `industry_events`        | Curated events for /events (added 2026-08-29) — every row date-verified at the source; refreshed by the scout-events skill                |
 | `league_overrides`       | Hand corrections to a league-table row (2026-10-01): `hide` it, or `set` its firm / fund / size / stage. Keyed by any report in the story |
 | `sponsor_bookings`       | One row per sponsor run (2026-10-02), read by the daily send and by the site. See "Sponsors" below                                        |
+| `site_cache`             | Turnstile + last good copy for the shared datasets (2026-10-02). See "Speed, caching and the database" below. Safe to truncate           |
 
-**The database reads slowly from a cold disk.** A query that reads a year of `news_items` takes ~70 ms when the rows are in memory and 8–19 s when they are not — past the 8 s statement limit. Anything on a page's request path must be served by an index and touch few rows: `idx_news_items_fund_events` (the league), and the trigram indexes on `title`, `tldr` and `extracted_data->>'firm_name'` (search and firm pages). Check a new query with `explain (analyze)` and make sure it is not walking `idx_news_items_not_duplicate` for the whole year. Migrations are recorded in `supabase/migrations/`.
+Migrations are recorded in `supabase/migrations/`. Read "Speed, caching and the database" below before adding any query to a page.
 
 Events-domain naming is deliberately distinct from news: `event_kind`/`event_format` on `industry_events`, NEVER `event_type` — that column on `news_items` (and `eventType` in the news UI) means "kind of news story". Inserts to `industry_events` go through `scripts/events/load-events.mjs` (validated loader — enforces enums, date rules, URL dedup, and city-alias normalization), not hand-written SQL.
 
@@ -329,11 +334,12 @@ lib/
 │   │                    # for the backfill script and handles named + numeric refs.
 │   ├── stories.ts       # buildStories: reports → stories (the unit the site and the email share)
 │   ├── league.ts        # buildLeagueReport: stories → fund closes. What counts, what merges, which figure
-│   ├── league-data.ts   # …fetched and cached (getLeagueReportSafe). scripts/league-audit.ts audits it
+│   ├── league-data.ts   # …fetched and cached (loadLeagueReport). scripts/league-audit.ts audits it
 │   ├── chart-math.ts    # Bars for the fundraising chart. Browser-safe: the chart computes its views client-side
 │   ├── firms.ts         # firmIndex: the directory and "firms in the news", from stories
 │   ├── firm-data.ts     # getFirm(slug), searchFirms — the database side of firm pages
 │   └── firm-lookup.ts   # How a firm's address becomes a database lookup. Read its header before touching
+├── cache/           # build-once.ts: one build at a time, site-wide, for the shared datasets
 ├── events/          # Events board — types, display constants (EVENT_KIND_LABELS etc.),
 │                    # queryEventFeed. Mirrors lib/news/api.ts but looks FORWARD in time
 │                    # (start_date >= today) instead of back.
@@ -406,13 +412,31 @@ components/
 - Canonical domain: `https://fundopshq.com` (not `fundops.com`)
 - Syncs with v0.app — edits made in v0.app land here automatically, so expect occasional unfamiliar commits from the v0 bot
 
+## Speed, caching and the database (2026-10-02 — read before adding a query to a page)
+
+**The database is very small** (Supabase Micro: two shared cores, 224 MB of buffers, an 8 s statement limit) and everything shares it: the site, the hourly pipeline, the newsletter send. A scan of `news_items` that takes 70 ms on a quiet instance takes 8–19 s when anything else is running. On 2026-10-02 it stopped answering twice (03:40 and 19:50 UTC), for about twelve minutes each time; requests queued for up to five minutes. Both times a crawler was walking firm and story pages — hundreds of pages in ten minutes, several times a night, which the database handles — at the moment the league cache went stale. Two causes, both fixed, both easy to reintroduce:
+
+1. **Full-table scans in the pipeline.** The ingest's headline check and three housekeeping statements in the classifier had no index and read the whole table — 745 million rows since February, most of the database's CPU. `supabase/migrations/20261002_pipeline_hot_query_indexes.sql` has the indexes. **A new pipeline query needs an index**; check with `explain (analyze, buffers)` — a query touching ~11,000 buffers is reading the table. `select … from extensions.pg_stat_statements order by total_exec_time desc` shows what the database actually spends its time on.
+2. **Cache stampedes.** `unstable_cache` has no turnstile: when an entry goes stale, every request that notices rebuilds it. A crawler opened fifty firm pages in a minute as the league went stale; fifty league builds (4 s each) ran at once. `lib/cache/build-once.ts` is the turnstile: one server wins a claim in `site_cache`, builds and stores the result; the rest take the stored copy; a failed build is not retried until the claim lapses. **Wrap any expensive shared build in `buildOnce`** (stories, archive and league are).
+
+Rules that follow:
+
+- **Pages are static wherever they can be** — `/`, `/news/[section]`, `/news/[section]/[facet]`, `/story/[id]`, `/firm/[slug]`, `/events`, `/events/[slug]`, `/sponsor`. A page with a dynamic segment needs `generateStaticParams` (returning `[]` is enough) to be cached at all; without it, it renders on every request, and most requests are crawlers (1,345 story pages in ten minutes). Reading `searchParams` also forces a render per request: put a filter in the path, not the query string. `next build` prints the table — check a new page is `○` or `●`, not `ƒ`.
+- **`/news`, `/league-tables` and `/firms` read a query string** (search, filters, paging) and are rendered on request; `next.config.mjs` lets Vercel's edge keep each URL for five minutes (`Vercel-CDN-Cache-Control`).
+- **The loaders throw; they do not return empty.** `loadStories`, `loadArchive`, `loadLeagueReport` fall back to the last copy the server has and otherwise throw. A cached page that renders empty on a database failure is cached empty; a page that throws is not cached, and the last good copy stays up. Do not wrap them in a catch that returns `[]`.
+- **No retries against the database on a page's path.** A lookup fails because the database is overloaded; a retry is one more query in its queue.
+- **Every database request has a 15 s deadline** (`lib/supabase/client.ts`), so a page fails instead of hanging for minutes.
+- **Lookups on a page's path must be index-backed and touch few rows**: `idx_news_items_fund_events` (the league), the trigram indexes on `title`, `tldr` and `extracted_data->>'firm_name'` (search, firm pages). `order by … limit n` invites the planner to walk the date index for the whole year when it expects many matches and finds few.
+- **Events** are read through `getEventFeed` (kept five minutes). `/events` is sent with its first hundred events in the HTML; the client board fetches only when a filter is set, gives up after 12 s and offers a retry.
+- **A dev server talks to the same database.** Its cache starts cold, so a loop over many pages from `next dev` rebuilds the shared datasets on top of whatever production is doing. Test a handful, or against `next build && next start`.
+
 ## League tables, the chart and firm pages (2026-10)
 
 **One definition of a fund close.** `lib/news/league.ts` turns stories into closes; the league tables, the rail chart, "Largest closes" and Monday's recap in the email all read it, so a number is the same wherever it appears. A close needs a named manager, a stated size and a headline that says the fund closed — targets, "nears", continuation vehicles, CLOs, mandates and evergreen vehicles are news, not closes. Reports of one close are merged (`sameClose`); when they disagree on the size the table takes the **lower** figure and marks the row † (`altSizeUsdM`) — the higher is usually leverage or sister vehicles added in. ≈ marks a size converted from another currency. A wrong row is fixed with a `league_overrides` row, not with code. After any change to the classifier, the story rules or `league.ts`, run `npx tsx scripts/league-audit.ts` (`--pairs` lists same-manager rows that might be one fund).
 
 **The chart (`components/charts/FundraisingChart.tsx`).** The closes of the last 92 days are sent to the page and the views (market, weeks, size, funds, firms, region) are computed in the browser by `lib/news/chart-math.ts`. Interaction model, on Danny's instruction (2026-10-02 — "should react and or be active on hover. should not require a click"): **hover explores, click sets.** Pointing at a bar opens a pop-out listing the funds in it, each linked to its reports and its firm; pointing at a view tab switches the view after a short dwell; clicking a bar pins its pop-out. Period, measure and the table view are click-only: they sit on the pointer's path to the bars. On a touch screen the pinned card opens inline. Do not gate a value behind hover — every bar prints its figure.
 
-**Firm pages.** There is no firm table. A firm is a key (`entityKey`: "Ares Management" → `ares`, "H.I.G. Capital" → `hig`, "A&O Shearman" → `ao shearman`) and its page address is that key. `lib/news/firm-lookup.ts` turns the key back into a database lookup that finds every spelling — and is written so the trigram index can serve it. That constraint is the whole design; the file's comments say what breaks it (an open-ended character class, or a non-ASCII character inside one). `lib/news/__tests__/firm-lookup.test.ts` holds the names that were dead links before it. `getFirm` returns null for "no such firm" and **throws** when the lookup fails, so a database hiccup is never cached as a 404.
+**Firm pages.** There is no firm table. A firm is a key (`entityKey`: "Ares Management" → `ares`, "H.I.G. Capital" → `hig`, "A&O Shearman" → `ao shearman`) and its page address is that key. `lib/news/firm-lookup.ts` turns the key back into a database lookup that finds every spelling — and is written so the trigram index can serve it. That constraint is the whole design; the file's comments say what breaks it (an open-ended character class, or a non-ASCII character inside one). `lib/news/__tests__/firm-lookup.test.ts` holds the names that were dead links before it. `getFirm` returns null for "no such firm" and **throws** when the lookup fails, so a database hiccup is never cached as a 404. The directory's search (`searchFilter`) reads a two-letter query as the start of a word or as initials — "containing mg" cannot be indexed and took nine seconds.
 
 ## Sponsors: one at a time, booked by a row (2026-10-02)
 

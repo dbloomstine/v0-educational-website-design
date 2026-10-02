@@ -14,8 +14,8 @@ import { ALL_NEWSLETTER_TYPES } from '@/lib/newsletter/query-articles'
 import { entityKey } from '@/lib/newsletter/story-links'
 import { buildStories, type Story } from './stories'
 import { firmSlug, type FundClose } from './league'
-import { getLeagueSafe, LEAGUE_COLUMNS } from './league-data'
-import { anyOfPatterns, firmLookup, isFirmInStory, lookupFilter, searchPatterns, startsAWord } from './firm-lookup'
+import { loadLeague, LEAGUE_COLUMNS } from './league-data'
+import { firmLookup, isFirmInStory, lookupFilter, searchFilter, startsAWord } from './firm-lookup'
 
 export const FIRM_WINDOW_DAYS = 365
 
@@ -31,17 +31,6 @@ export interface FirmPage {
 
 const SLUG_RE = /^[a-z0-9]+(-[a-z0-9]+){0,7}$/
 const MENTIONS_TIMEOUT_MS = 4000
-
-/**
- * Run a lookup, and once more if it fails. The database reads slowly from
- * disk: the first lookup of a firm nobody has opened today can run into the
- * statement limit, and by then it has pulled most of what the second needs
- * into memory.
- */
-async function twice<T extends { error: unknown }>(run: () => PromiseLike<T>): Promise<T> {
-  const first = await run()
-  return first.error ? run() : first
-}
 
 async function computeFirm(slug: string): Promise<FirmPage | null> {
   const key = slug.replace(/-/g, ' ')
@@ -64,8 +53,11 @@ async function computeFirm(slug: string): Promise<FirmPage | null> {
   // Two lookups, not one OR: the reports about the firm, and the headlines
   // that name it in someone else's story. In one limited result the second
   // would crowd out the first.
+  // No retry on failure. A lookup fails when the database is overloaded, and a
+  // retry is one more query in its queue; the page errors instead (uncached),
+  // and the next visitor asks again.
   const [named, inHeadline] = await Promise.all([
-    twice(() => base().or(lookupFilter('extracted_data->>firm_name', lookup)).limit(600)),
+    base().or(lookupFilter('extracted_data->>firm_name', lookup)).limit(600),
     // The mentions are an extra: given a few seconds and not asked twice. A
     // common word ("One", "Man") is in thousands of headlines, and reading
     // them from a cold disk must not hold the firm's own stories up.
@@ -75,7 +67,7 @@ async function computeFirm(slug: string): Promise<FirmPage | null> {
   // joins ("Värde" is the key "v rde"). Ask for the letters in order instead.
   const asSubject =
     !named.error && (named.data ?? []).length === 0 && lookup.loose
-      ? await twice(() => base().or(lookupFilter('extracted_data->>firm_name', lookup, { loose: true })).limit(600))
+      ? await base().or(lookupFilter('extracted_data->>firm_name', lookup, { loose: true })).limit(600)
       : named
   if (asSubject.error) throw new Error(`firm query failed: ${asSubject.error.message}`)
   const seen = new Set<string>()
@@ -120,7 +112,7 @@ export async function getFirm(slug: string): Promise<FirmPage | null> {
   // The league is fetched here, beside the firm, not inside its cached
   // function: a cache call nested in another is not shared, so every new
   // firm page rebuilt the whole league table (ten seconds a page).
-  const [firm, league] = await Promise.all([cached(slug), getLeagueSafe()])
+  const [firm, league] = await Promise.all([cached(slug), loadLeague()])
   if (!firm) return null
   const key = slug.replace(/-/g, ' ')
   const closes = league.filter((c) => c.firmSlug === slug || isFirmInStory(c.firm, key, c.headline)).sort((a, b) => b.date.localeCompare(a.date))
@@ -137,51 +129,49 @@ export interface FirmHit { slug: string; name: string; reports: number }
  */
 export async function searchFirms(query: string, limit = 24): Promise<FirmHit[]> {
   const q = query.replace(/[^\p{L}\p{N}\s&'.+-]/gu, ' ').replace(/\s+/g, ' ').trim().slice(0, 60)
-  if (q.length < 2) return []
+  const filter = searchFilter('extracted_data->>firm_name', q)
+  if (!filter) return []
   const since = new Date(Date.now() - FIRM_WINDOW_DAYS * 86_400_000).toISOString().slice(0, 10)
-  try {
-    const { data, error } = await getSupabaseAdmin()
-      .from('news_items')
-      .select('firm:extracted_data->>firm_name')
-      .eq('classification_status', 'complete')
-      .eq('is_duplicate', false)
-      .gte('published_date', since)
-      .or('is_high_signal.eq.true,relevance_score.gte.0.3')
-      .in('article_type', ALL_NEWSLETTER_TYPES)
-      // "hig" also finds H.I.G.; "mg" also finds M&G.
-      .or(anyOfPatterns('extracted_data->>firm_name', searchPatterns(q)))
-      .order('published_date', { ascending: false })
-      .limit(1500)
-    if (error) throw new Error(error.message)
+  const { data, error } = await getSupabaseAdmin()
+    .from('news_items')
+    .select('firm:extracted_data->>firm_name')
+    .eq('classification_status', 'complete')
+    .eq('is_duplicate', false)
+    .gte('published_date', since)
+    .or('is_high_signal.eq.true,relevance_score.gte.0.3')
+    .in('article_type', ALL_NEWSLETTER_TYPES)
+    // "hig" also finds H.I.G.; "mg" also finds M&G.
+    .or(filter)
+    .order('published_date', { ascending: false })
+    .limit(1000)
+  // A search that fails is an error, not "no firms match": the page is kept
+  // at the edge, and the empty answer would be kept with it.
+  if (error) throw new Error(`firm search failed: ${error.message}`)
 
-    const bySlug = new Map<string, { names: Map<string, number>; reports: number }>()
-    for (const r of (data ?? []) as { firm: string | null }[]) {
-      const name = r.firm?.trim()
-      const slug = firmSlug(name)
-      if (!name || !SLUG_RE.test(slug) || slug.length > 60) continue
-      const hit = bySlug.get(slug) ?? { names: new Map<string, number>(), reports: 0 }
-      hit.reports++
-      hit.names.set(name, (hit.names.get(name) ?? 0) + 1)
-      bySlug.set(slug, hit)
-    }
-    const needle = q.toLowerCase()
-    const all = Array.from(bySlug.entries())
-      .map(([slug, h]) => ({
-        slug,
-        reports: h.reports,
-        name: Array.from(h.names.entries()).sort((a, b) => b[1] - a[1] || b[0].length - a[0].length)[0][0],
-      }))
-    // "ares" is inside Antares, Mutares and "Nawy Shares". A name counts when
-    // one of its words starts with what was typed; only if none does are the
-    // looser matches offered.
-    const wordHits = all.filter((f) => startsAWord(f.name, needle.split(' ')[0]))
-    const opens = (name: string) => name.toLowerCase().startsWith(needle) || entityKey(name).startsWith(needle)
-    return (wordHits.length > 0 ? wordHits : all)
-      // A name that starts with what was typed comes before one that merely contains it.
-      .sort((a, b) => Number(opens(b.name)) - Number(opens(a.name)) || b.reports - a.reports)
-      .slice(0, limit)
-  } catch (err) {
-    console.error('[firm] search failed:', err)
-    return []
+  const bySlug = new Map<string, { names: Map<string, number>; reports: number }>()
+  for (const r of (data ?? []) as { firm: string | null }[]) {
+    const name = r.firm?.trim()
+    const slug = firmSlug(name)
+    if (!name || !SLUG_RE.test(slug) || slug.length > 60) continue
+    const hit = bySlug.get(slug) ?? { names: new Map<string, number>(), reports: 0 }
+    hit.reports++
+    hit.names.set(name, (hit.names.get(name) ?? 0) + 1)
+    bySlug.set(slug, hit)
   }
+  const needle = q.toLowerCase()
+  const all = Array.from(bySlug.entries())
+    .map(([slug, h]) => ({
+      slug,
+      reports: h.reports,
+      name: Array.from(h.names.entries()).sort((a, b) => b[1] - a[1] || b[0].length - a[0].length)[0][0],
+    }))
+  // "ares" is inside Antares, Mutares and "Nawy Shares". A name counts when
+  // one of its words starts with what was typed; only if none does are the
+  // looser matches offered.
+  const wordHits = all.filter((f) => startsAWord(f.name, needle.split(' ')[0]))
+  const opens = (name: string) => name.toLowerCase().startsWith(needle) || entityKey(name).startsWith(needle)
+  return (wordHits.length > 0 ? wordHits : all)
+    // A name that starts with what was typed comes before one that merely contains it.
+    .sort((a, b) => Number(opens(b.name)) - Number(opens(a.name)) || b.reports - a.reports)
+    .slice(0, limit)
 }

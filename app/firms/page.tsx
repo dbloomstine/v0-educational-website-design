@@ -6,7 +6,7 @@ import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { Panel, SectionFlag } from '@/components/story/StoryBlocks'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
-import { ARCHIVE_WINDOW_DAYS, getArchiveStoriesSafe } from '@/lib/news/front-page'
+import { ARCHIVE_WINDOW_DAYS, loadArchive } from '@/lib/news/front-page'
 import { searchFirms } from '@/lib/news/firm-data'
 import { firmIndex, firmsByLetter } from '@/lib/news/firms'
 import { KIND_LABEL } from '@/lib/news/sections'
@@ -36,7 +36,7 @@ const MOST_COVERED = 20
 
 export default async function FirmsPage({ searchParams }: Params) {
   const q = ((await searchParams).q ?? '').trim().slice(0, 60)
-  const [stories, hits] = await Promise.all([getArchiveStoriesSafe(), q ? searchFirms(q, 60) : Promise.resolve([])])
+  const [stories, hits] = await Promise.all([loadArchive(), q ? searchFirms(q, 60) : Promise.resolve([])])
   const firms = firmIndex(stories)
   const letters = firmsByLetter(firms)
   const mostCovered = firms.filter((f) => !f.regulator).slice(0, MOST_COVERED)

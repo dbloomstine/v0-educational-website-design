@@ -21,7 +21,10 @@ export async function GET(req: Request) {
       limit: params.get('limit') ? Number(params.get('limit')) : undefined,
     })
 
-    return NextResponse.json({ data: result })
+    // No page reads this any more; the retired browser extension still may.
+    // Kept at the edge for two minutes so a caller that polls it is not a
+    // database query each time.
+    return NextResponse.json({ data: result }, { headers: { 'Cache-Control': 'public, s-maxage=120, stale-while-revalidate=600' } })
   } catch {
     return NextResponse.json({ error: 'Failed to fetch news' }, { status: 500 })
   }

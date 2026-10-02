@@ -1,3 +1,4 @@
+import { unstable_cache } from 'next/cache'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import type { IndustryEvent, EventFacetCounts, EventFeedResponse } from './types'
 
@@ -46,6 +47,21 @@ const BOARD_SCOPE = `region.eq.${BOARD_REGION},board_exception.eq.true`
 // Virtual rows stay in the table (unlisted) so this is a one-line widen later,
 // not a re-scout — same approach as BOARD_REGION above.
 const BOARD_FORMATS = ['in_person', 'hybrid'] as const
+
+/**
+ * The feed, kept for five minutes — what pages and the board's API read.
+ *
+ * The board changes when the weekly scout loads events, not minute to minute,
+ * but every section page asked the database for its events on every request,
+ * and the board asked on every visit: 23,000 identical queries, and a page
+ * that hung whenever the database was slow. Kept per set of filters; a text
+ * search is not kept (there is no end to what people type) and nor is the
+ * newsletter's read, which wants the table as it is at send time.
+ */
+export const getEventFeed = unstable_cache((params: EventQueryParams) => queryEventFeed(params), ['event-feed-v1'], {
+  revalidate: 300,
+  tags: ['events'],
+})
 
 export async function queryEventFeed(params: EventQueryParams): Promise<EventFeedResponse> {
   const limit = Math.min(params.limit ?? 100, 200)
