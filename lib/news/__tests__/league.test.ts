@@ -265,9 +265,13 @@ describe('more things that are not a fund close', () => {
       row({ ...first, firm: 'Eighteen48 Partners', size: 385, title: 'Eighteen48 Partners hits halfway mark in €350m-targeting debut fundraise' }),
       row({ ...first, firm: 'Redstone', fund: 'Blue Fund', size: 28, title: 'Redstone Reaches First Close Of €25 Million Blue Fund To Back Ocean Technology Startups' }),
       row({ ...first, firm: 'Founders First', size: 50, title: 'Founders First hits first close en route to $50m for private credit fund' }),
+      // 2026-10-03: filed as an interim close of $1.5bn. Halfway to $1.5bn is about $750m, and the report names no close.
+      row({ close: 'interim_close', firm: 'Seraya', size: 1500, fund_categories: ['infrastructure'], event_type: 'capital_raise', article_type: 'capital_raise', title: 'Seraya hits halfway mark for $1.5bn sophomore infra fund' }),
     ]
     expect(buildLeague(rows)).toHaveLength(0)
     expect(sizeIsTarget('CIP confirms €1.3bn first close for Green Credit fund', 1430, 'first')).toBe(false)
+    // The figure a fund has closed on is not its target, even when the headline also says how far along it is.
+    expect(sizeIsTarget('Northcote reaches halfway mark with $500m first close', 500, 'first')).toBe(false)
   })
   it('counts a final close at, or past, its target', () => {
     const rows = [

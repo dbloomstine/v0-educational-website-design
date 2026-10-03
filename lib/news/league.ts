@@ -136,9 +136,10 @@ const NOT_A_BLIND_POOL_RE = /\b(continuation (fund|vehicle)s?|single-asset|multi
 /**
  * The figure on file is a target when the headline says so: "eyes $70m for
  * fourth fund, hits $25m first close", "halfway mark in €350m-targeting debut
- * fundraise", "first close en route to $50m".
+ * fundraise", "first close en route to $50m", "hits halfway mark for $1.5bn
+ * sophomore infra fund" (halfway to a figure has not raised it).
  */
-const TARGET_BEFORE_RE = /(targets?|targeting|targeted|eyes|eyeing|seeks?|seeking|aims? (for|at)|en route to|towards?|on (its |the )?way to|(goal|target) of)\s+(a |an |up to |as much as |about |around |nearly )?$/i
+const TARGET_BEFORE_RE = /(targets?|targeting|targeted|eyes|eyeing|seeks?|seeking|aims? (for|at)|en route to|towards?|on (its |the )?way to|(goal|target) of|half[- ]?way (mark |point )?(for|to|in|on|of))\s+(a |an |up to |as much as |about |around |nearly )?$/i
 const TARGET_AFTER_RE = /^[\s-]*(target|targeting|-targeting|goal)\b/i
 /** "first close of €25m Blue Fund", "second close of €800m financing fund": the figure is the fund's size, not the close's. */
 const CLOSE_OF_BEFORE_RE = /\b(first|second|third|initial|interim|1st|2nd|3rd)\s+clos(e|ing)\s+(of|for|on)\s+(its |the |a |an )?$/i
