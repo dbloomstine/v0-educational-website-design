@@ -61,6 +61,28 @@ describe('buildStories', () => {
     expect(kindOf('King & Spalding')).toBeUndefined() // no fund angle: not a story
   })
 
+  it('drops a row that carries another article’s details, as the newsletter does', () => {
+    // 2026-09-30: the classifier swapped two neighbours' results, and the Audax
+    // headline was stored with HighPost Capital's hire. Firm pages are built
+    // here, so this row must not reach /firm/highpost-capital — not even as
+    // another outlet's coverage of the Audax sale.
+    const stories = buildStories([
+      row({
+        title: 'Audax Agrees to Sell GCG to Rexel for $1.4 Billion', event_type: 'executive_hire', source_name: 'Private Equity Professional',
+        firm: 'HighPost Capital', person: 'David Walsh', ents: ['HighPost Capital', 'Azimut Group'],
+        tldr: 'HighPost Capital launched aerospace, defense & cybersecurity (ADC) vertical; David Walsh (ex-Navy, FON Advisors) hired as lead.',
+      }),
+      row({
+        title: 'Audax agrees to sale of specialty wire and cable firm GCG to Rexel', event_type: 'acquisition',
+        firm: 'Audax', ents: ['Audax', 'GCG', 'Rexel'], tldr: 'Audax sold portfolio company GCG, a specialty wire and cable distributor, to Rexel.',
+      }),
+    ])
+    expect(stories).toHaveLength(1)
+    expect(stories[0].firmName).toBe('Audax')
+    expect(stories[0].memberIds).toHaveLength(1)
+    expect(stories[0].coverage).toEqual([])
+  })
+
   it('never lets a fund shutting down read as a raise', () => {
     const [s] = buildStories([
       row({ title: '$2 billion hedge fund SoMa Equity Partners is closing down', event_type: 'fund_close', firm: 'SoMa Equity Partners', size: 2000, fund_categories: ['hedge'], tldr: 'SoMa Equity Partners is shutting down.' }),
