@@ -5,6 +5,7 @@
  *   npx tsx scripts/alignment-audit.ts --save-pool pool.json   # also keep what was read
  *   npx tsx scripts/alignment-audit.ts --pool pool.json        # re-run offline, no database
  *   npx tsx scripts/alignment-audit.ts --days 90 --examples 40 --ids shifted.json
+ *   npx tsx scripts/alignment-audit.ts --calls calls.txt       # the batches to read by eye
  *
  * Until 2026-10-01 the classifier paired its answers with a batch's articles
  * by position, so one skipped or reordered answer gave every later article in
@@ -30,6 +31,12 @@
  * test 1 passes it. Those are looked for among the rows the newsletter's
  * screen flags (every one found by a wider scan was there): a summary that
  * plainly describes a neighbour and not its own article counts as shifted.
+ *
+ * The count is a floor. A shifted row that carries no names at all, with a
+ * short summary, passes both tests: the first repair (2026-10-03, 59 rows)
+ * left twelve such rows behind, found only by reading every row of the calls
+ * the 59 came from. --calls writes that reading list: each classifier call
+ * that produced a shifted row, all of its rows, headline beside summary.
  *
  * It also says which shifted rows still reach the site. Every site page is
  * built by buildStories, which drops rows that screenArticle flags (the
@@ -214,6 +221,7 @@ async function main() {
   const days = Number(flag('--days') ?? 365)
   const exampleCount = Number(flag('--examples') ?? 20)
   const idsOut = flag('--ids')
+  const callsOut = flag('--calls')
   const poolIn = flag('--pool')
   const poolOut = flag('--save-pool')
 
@@ -300,22 +308,25 @@ async function main() {
   const place = new Map(byQueue.map((r, i) => [r.id, i]))
   const byWrite = rows.filter((r) => r.updated_at).sort((a, b) => Date.parse(a.updated_at!) - Date.parse(b.updated_at!))
   const writeTimes = byWrite.map((r) => Date.parse(r.updated_at!))
+  /** The rows written back with this one, itself included; none if it was a bulk update. */
+  function sameCall(r: AuditRow): AuditRow[] {
+    if (!r.updated_at) return []
+    const t = Date.parse(r.updated_at)
+    let lo = 0
+    let hi = writeTimes.length
+    while (lo < hi) {
+      const mid = (lo + hi) >> 1
+      if (writeTimes[mid] < t - SAME_CALL_MS) lo = mid + 1
+      else hi = mid
+    }
+    const call: AuditRow[] = []
+    for (let j = lo; j < writeTimes.length && writeTimes[j] <= t + SAME_CALL_MS; j++) call.push(byWrite[j])
+    return call.length <= SAME_CALL_MAX ? call : []
+  }
   function batchMates(r: AuditRow): AuditRow[] {
     const i = place.get(r.id)!
     const mates = new Map(byQueue.slice(Math.max(0, i - QUEUE_REACH), i + QUEUE_REACH + 1).map((m) => [m.id, m]))
-    if (r.updated_at) {
-      const t = Date.parse(r.updated_at)
-      let lo = 0
-      let hi = writeTimes.length
-      while (lo < hi) {
-        const mid = (lo + hi) >> 1
-        if (writeTimes[mid] < t - SAME_CALL_MS) lo = mid + 1
-        else hi = mid
-      }
-      const sameCall: AuditRow[] = []
-      for (let j = lo; j < writeTimes.length && writeTimes[j] <= t + SAME_CALL_MS; j++) sameCall.push(byWrite[j])
-      if (sameCall.length <= SAME_CALL_MAX) for (const m of sameCall) mates.set(m.id, m)
-    }
+    for (const m of sameCall(r)) mates.set(m.id, m)
     mates.delete(r.id)
     return Array.from(mates.values())
   }
@@ -516,6 +527,30 @@ async function main() {
       hiddenByScreen: hiddenByScreen.map((r) => ({ id: r.id, published_date: r.published_date, event_type: r.event_type, title: r.title, firm_name: r.firm_name, tldr: r.tldr, verdict: verdictOf.get(r.id) ?? 'fits' })),
     }, null, 2))
     console.log(`\nwrote ${shifted.length} shifted rows (and the near-misses) to ${idsOut}`)
+  }
+
+  if (callsOut) {
+    // In a call where one answer slipped, the others may have too, and a row
+    // with no names and a short summary shows it only to a reader.
+    const flagged = new Set(shifted.map((f) => f.row.id))
+    const screened = new Set(screenFlags.map((r) => r.id))
+    const listed = new Set<string>()
+    const lines: string[] = ['R = counted as shifted above · S = flagged by the newsletter\'s screen · blank = neither: read headline against summary']
+    let unflagged = 0
+    for (const f of [...shifted].sort((a, b) => (a.row.updated_at ?? '').localeCompare(b.row.updated_at ?? ''))) {
+      if (listed.has(f.row.id)) continue
+      const call = sameCall(f.row).sort((a, b) => place.get(a.id)! - place.get(b.id)!)
+      if (call.length === 0) continue
+      lines.push(`\ncall written ${f.row.updated_at!.slice(0, 19)}: ${call.length} rows, ${call.filter((m) => flagged.has(m.id)).length} counted as shifted`)
+      for (const m of call) {
+        listed.add(m.id)
+        if (!flagged.has(m.id)) unflagged++
+        const mark = flagged.has(m.id) ? 'R' : screened.has(m.id) ? 'S' : ' '
+        lines.push(` ${mark} ${m.published_date} ${(m.event_type ?? '').slice(0, 12).padEnd(12)} ${m.id} | ${clip(m.title, 70).padEnd(70)} | ${clip(m.firm_name, 20).padEnd(20)} | ${clip(m.tldr, 110)}`)
+      }
+    }
+    writeFileSync(callsOut, lines.join('\n'))
+    console.log(`\nwrote the ${unflagged} other rows of those classifier calls, beside the shifted ones, to ${callsOut}`)
   }
 
   if (poolOut) {
