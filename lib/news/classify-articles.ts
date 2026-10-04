@@ -28,6 +28,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { alignClassifications } from './classification-align';
+import { withOwnAmounts } from './amount-guard';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>;
@@ -283,7 +284,10 @@ export async function classifyPendingArticles(
       // Apply classifications
       for (let j = 0; j < batch.length; j++) {
         const article = batch[j];
-        const classification = classifications[j];
+        // A sum of money the article itself does not give came from somewhere
+        // else, usually a neighbour in the batch: that article is classified
+        // again on its own (see amount-guard.ts).
+        const classification = await ownAmounts(article, classifications[j], claudeApiKey);
 
         if (!classification) {
           await markFailed(supabase, article.id);
@@ -548,4 +552,41 @@ async function markFailed(supabase: DbClient, articleId: string): Promise<void> 
       updated_at: new Date().toISOString(),
     })
     .eq('id', articleId);
+}
+
+/**
+ * One article's classification, with its money checked against the article.
+ *
+ * The batch's answer is kept when every sum it states is one the article
+ * gives. Otherwise the article is classified again alone, where there is no
+ * neighbour to take a figure from, and the summary or size that was wrong is
+ * replaced from that answer (amount-guard.ts has the rule, and the story of
+ * the row that showed why). A null return means "nothing usable this time":
+ * the caller marks the attempt and the article comes round again.
+ */
+async function ownAmounts(
+  article: ArticleForClassification,
+  classification: ClassificationOutput | null,
+  apiKey: string
+): Promise<ClassificationOutput | null> {
+  if (!classification) return null;
+  const checked = await withOwnAmounts(article, classification, async () => {
+    try {
+      const [alone] = await classifyBatch([article], apiKey);
+      return alone ?? null;
+    } catch (err) {
+      // The API being down is the run's to handle, as for any batch. An answer
+      // that could not be read costs this one article a retry, not its batch.
+      if (err instanceof ClassifierApiError) throw err;
+      return null;
+    }
+  });
+  if (checked.asked) {
+    console.warn(
+      `[classify] "${article.title.slice(0, 80)}" stated ${checked.why}, which its own article does not give: ` +
+        `classified again alone${checked.sizeDropped ? '; the article gives no such size, so it is stored with none' : ''}` +
+        `${checked.result ? '' : '; no usable answer, it will be tried again'}`
+    );
+  }
+  return checked.result;
 }

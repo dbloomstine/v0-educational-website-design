@@ -552,6 +552,19 @@ TO=you@example.com npx tsx --env-file=.env.local scripts/send-test-email.ts
 
 Use the preview script for visual tweaks (offline-safe HTML, fast iteration, forwardable to prospects as mockups). Use the test-send script for end-to-end validation inside an actual Gmail/Apple Mail inbox — it's the only way to catch dark-mode issues, anchor-color cascade issues, or Gmail clipping.
 
+### What the classifier's answers are checked for — `lib/news/classify-articles.ts`
+
+The classifier reads up to fifteen articles in one call, so one article's answer can carry something that belongs to another. Two checks stand between the model and the row:
+
+1. **The answer is about the right article** (`classification-align.ts`, 2026-10-01). Answers are paired with articles by an echoed id, and a name in the answer must appear in that article's text. Before this, one skipped answer shifted every later one in the batch.
+2. **Its money is the article's own** (`amount-guard.ts`, 2026-10-04). Every sum the answer states (the size, and each sum in the summary) must be a figure the article gives: the same sum, a plausible conversion, a point inside a stated range, or plain arithmetic on what it says ("half its $2bn target"). If one is not, the article is classified again **alone** and only what was wrong is replaced: the summary, or the size (which becomes null if the article gives none). Type, relevance and names stay the batch's, because an article read alone loses the context that says what kind of story it is. The check fails open: if it cannot be made, the answer is stored as it came.
+
+Why the second exists: "EQT Agreed to Sell Korea's Acuon Group…" (terms not disclosed) was stored at $2.92B, the price of the Vicinity Energy deal classified beside it. Replayed, the same batch borrows the same figure most times; telling the model not to (a prompt rule was tried) made no measurable difference, so the prompt is unchanged. Measured over the rows since 2026-06-27: about 1% of rows that state money state a sum their article does not give. Nearly all are true facts from another outlet's report of the same story (a target, usually); a wrong fact from a different story is rare (two found).
+
+- `npx tsx scripts/amount-audit.ts --save-pool pool.json` reads the rows once (read-only) and lists what fails the check, sorted into another story's sum, the same story from another outlet, and unexplained; `--pool pool.json` re-runs offline.
+- `npx tsx scripts/amount-replay.ts --pool pool.json --row <id>` sends a past call through the classifier as it is now, against a pretend database, and prints was/now for each article. About four cents a batch. Use it before changing the prompt or either check.
+- The reader in `amount-guard.ts` is deliberately generous about how a figure may be written ("$249mln", "US$30 bil", "Rs. 1,200 crores", "£345.6 deal", "Sh64.5bn", "$4-5 billion"). A figure the article states in a form the reader misses costs one extra call and can drop a true size, so a new misread belongs in `amount-guard.test.ts`.
+
 ### Newsletter content pipeline — `lib/newsletter/query-articles.ts`
 
 (This is how stories are _selected_; the template section above is how they're _rendered_.) Stages in order:
