@@ -52,6 +52,8 @@ export interface Figure {
   unitless?: boolean
   /** The other end of a range ("$4-5 billion"): anything between the two is given by the text. */
   to?: number
+  /** Written with a currency code we do not know ("Sh64.5bn", "RM1.2bn"): its dollar value cannot be worked out. */
+  unconvertible?: boolean
   index: number
   end: number
 }
@@ -160,12 +162,13 @@ export function figuresIn(text: string): Figure[] {
     const known = codeOf(pre)
     const byWord = word ? WORDS[word.toLowerCase()] ?? null : null
     const currency = known ?? byWord
-    // (A capitalised prefix we do not know, "Sh" or "RM", is a currency we cannot name: the figure is kept, with no currency.)
+    // A capitalised prefix we do not know ("Sh", "RM") is a currency we cannot name: the figure is kept, with no currency.
+    const unknownCode = Boolean(pre?.trim()) && !known && !byWord
     const at = { index, end: index + raw.length }
     if (unit) {
       // "500m" alone could be metres, and "B2B" is not two billion; with a currency, or a longer unit, it is money.
       if (!currency && SHORT_UNIT.has(unit)) continue
-      out.push({ currency, amountM: n * UNITS[unit], ...at })
+      out.push({ currency, amountM: n * UNITS[unit], ...(unknownCode ? { unconvertible: true } : {}), ...at })
     } else if (currency && (num.includes(',') || n >= 1000)) {
       if (/^(19|20)\d\d$/.test(num)) continue // "USD 2026 outlook"
       out.push({ currency, amountM: n / 1_000_000, ...at }) // "$950,000,000", "£503,000"
@@ -255,8 +258,8 @@ export function foreignAmounts(article: OwnArticle, claims: MoneyClaims, toleran
   const own = figuresIn(text)
   const forSize = [...own, ...derived(text, own, { pairs: false })]
   const forSummary = [...own, ...derived(text, own, { pairs: true })]
-  // A figure in a currency we cannot name cannot be converted, so its dollar value cannot be checked.
-  const unnamed = own.some((f) => f.currency === null)
+  // A figure in a currency we cannot name cannot be converted, so a dollar value given for it cannot be checked.
+  const unconvertible = own.some((f) => f.unconvertible)
 
   let size = false
   const sizeUsd = claims.fund_size_usd_millions
@@ -271,7 +274,8 @@ export function foreignAmounts(article: OwnArticle, claims: MoneyClaims, toleran
     // A figure the article prints with no currency we can name is read in the currency the classifier says it is.
     const named = foreignCurrency && USD_PER[currency] ? forSize.map((f) => (f.currency === null ? { ...f, currency } : f)) : forSize
     const byDollars = stated(named, { currency: 'USD', amountM: sizeUsd as number }, tolerance)
-    const unverifiable = foreignCurrency && !USD_PER[currency] && unnamed
+    // "RM1.2bn" in the article and 270 in the answer: a conversion we cannot check is not called foreign.
+    const unverifiable = unconvertible && (!foreignCurrency || !USD_PER[currency])
     size = !byOriginal && !byDollars && !unverifiable
   }
 
@@ -281,7 +285,7 @@ export function foreignAmounts(article: OwnArticle, claims: MoneyClaims, toleran
     // The summary giving the row's own size in dollars ("€65M (~$71M)"), where that size is the article's.
     if (sizeGiven && !size && (f.currency === 'USD' || f.currency === null) && close(f.amountM, sizeUsd as number, tolerance)) return false
     // "Sh64.5bn (~$500M)": a dollar gloss on a sum in a currency we cannot convert.
-    if (unnamed && f.currency === 'USD' && /[~≈(]\s?$|\b(?:about|approximately|roughly|around|or)\s$/i.test(summaryText.slice(Math.max(0, f.index - 16), f.index))) return false
+    if (unconvertible && f.currency === 'USD' && /[~≈(]\s?$|\b(?:about|approximately|roughly|around|or)\s$/i.test(summaryText.slice(Math.max(0, f.index - 16), f.index))) return false
     return true
   })
 

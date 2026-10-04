@@ -128,6 +128,13 @@ describe('sums a classification states that its article does not give', () => {
     // The rupee sign lost in the feed ("?11,000 Crore"), and crores given as millions.
     clean({ title: 'Permira Filed to Buy a 25.71% Stake in Cloudnine’s Parent at About ?11,000 Crore:' }, { summary_ai: 'Permira filed to acquire a 25.71% stake at approximately ₹11,000 crore valuation.', fund_size_usd_millions: 1320, original_currency: 'INR', original_amount_millions: 11000 })
   })
+  it('a dollar value for a sum in a currency it cannot convert is not called foreign; one for a sum with no currency at all still is', () => {
+    // Ringgit: the classifier converted and left the original currency out.
+    clean({ title: 'Malaysian manager closes RM1.2bn buyout fund' }, { summary_ai: 'The manager closed its fund at RM1.2bn (about $270M).', fund_size_usd_millions: 270 })
+    // No currency in the article at all: the number itself must match.
+    expect(foreignAmounts({ title: 'Manager raised 500 million for its fund' }, { summary_ai: 'The manager raised 500 million.', fund_size_usd_millions: 500 }).size).toBe(false)
+    expect(foreignAmounts({ title: 'Manager raised 500 million for its fund' }, { summary_ai: 'The manager raised 500 million.', fund_size_usd_millions: 270 }).size).toBe(true)
+  })
   it('nothing, for plain arithmetic on what the article says', () => {
     clean({ title: 'Sagard reaches half its $2bn target in first close on third vintage' }, { summary_ai: 'Sagard Credit Partners III hits $1bn at first close, 50% of its $2bn target.', fund_size_usd_millions: 1000 })
     clean({ title: 'This firm just raised one of the largest AI funds at $49 billion, topping its target', description: 'MGX closed at $49 billion against a $45 billion target.' }, { summary_ai: 'MGX closed MGX Fund 1 at $49B, $4B above its $45B target.', fund_size_usd_millions: 49000 })
