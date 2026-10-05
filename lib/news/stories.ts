@@ -16,6 +16,7 @@ import {
 import { clusterBy, dealStage, entityKey, entityMentioned, keysMatch, sameStoryLoose, storyFamily } from '@/lib/newsletter/story-links'
 import { isSameStory } from './story-dedup'
 import { normalizeSourceName } from './constants'
+import { cleanSummary } from './summary-clean'
 
 export type StoryKind = 'fundraising' | 'deals' | 'people' | 'lps' | 'regulation' | 'providers'
 
@@ -44,7 +45,7 @@ export interface Story {
   headline: string
   url: string
   source: string | null
-  /** One-sentence summary written at classification time. */
+  /** The summary written at classification time, without the classifier's remarks about its own work (summary-clean.ts). */
   summary: string | null
   /** Other outlets' reports of the same event, best source first. */
   coverage: StoryCoverage[]
@@ -259,7 +260,9 @@ export function buildStories(rows: Row[]): Story[] {
       closeType: roundup ? null : best.closeType,
       leadEligible: placement.leadEligible && !roundup,
       roundup,
-      summary: best.tldr,
+      // Without the classifier's own remarks ("…; size not disclosed in
+      // snippet"). Shown only: the gate above read the row's summary as stored.
+      summary: cleanSummary(best.tldr),
     }
     stories.push({
       id: best.id,

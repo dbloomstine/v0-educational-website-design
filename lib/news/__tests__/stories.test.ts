@@ -149,6 +149,16 @@ describe('buildStories', () => {
     expect(rankTop([s], NOW, 1)).toHaveLength(0)
   })
 
+  it('shows a summary without the classifier’s remarks, and still selects on the summary as stored', () => {
+    const stories = buildStories([
+      row({ title: 'Adams Street names partner for venture secondaries', event_type: 'executive_hire', firm: 'Adams Street', source_name: 'Alternatives Watch', tldr: 'Adams Street names partner for venture secondaries strategy. Leadership hire at secondary fund manager.' }),
+      // No size, and a summary the quality gate reads as a placeholder: turned
+      // away before the change and after it. Cleaning is for the reader only.
+      row({ title: 'Starlight Investments Announces Successful Close of UK BTR Fund II', event_type: 'fund_close', firm: 'Starlight Investments', fund: 'UK BTR Fund II', close: 'final_close', fund_categories: ['real_estate'], source_name: 'Yahoo Finance', tldr: 'Starlight Investments closes UK BTR Fund II; specific fund size not disclosed in snippet.' }),
+    ])
+    expect(stories.map((s) => s.summary)).toEqual(['Adams Street names partner for venture secondaries strategy.'])
+  })
+
   it('leaves a single story with a semicolon alone', () => {
     const [s] = buildStories([
       row({ title: 'TPG Gets $10 Billion for Climate PE Fund; to Close for New Cash', event_type: 'capital_raise', firm: 'TPG', fund: 'TPG Climate PE Fund', size: 10000, source_name: 'Bloomberg.com' }),

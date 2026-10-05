@@ -45,12 +45,13 @@ async function fetchStories(windowDays: number = STORY_WINDOW_DAYS): Promise<Sto
 // a deploy must never read stories cached by the previous build's code. The
 // same version names the copy in `site_cache`, for the same reason.
 // (v6 / v3, 2026-10-05: a roundup carries no size, fund or stage, and more
-// rows are known to be roundups.)
+// rows are known to be roundups. v7 / v4, the same day: a summary is shown
+// without the classifier's remarks.)
 //
 // buildOnce: when the cached entry goes stale, every request that notices
 // would rebuild it. Only one may (lib/cache/build-once.ts).
-const STORIES_KEY = 'front-page-stories-v6'
-const ARCHIVE_KEY = 'archive-stories-v3'
+const STORIES_KEY = 'front-page-stories-v7'
+const ARCHIVE_KEY = 'archive-stories-v4'
 
 const getStories = unstable_cache(() => buildOnce(STORIES_KEY, () => fetchStories(STORY_WINDOW_DAYS)), [STORIES_KEY], {
   revalidate: 600,
