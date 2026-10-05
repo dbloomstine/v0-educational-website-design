@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { socialGate } from '../auth'
-import { isUploadPath, parseAll, parseMetricRow, parsePostRow, parseUpdateRow } from '../records'
+import { isUploadPath, oldDateFolders, parseAll, parseMetricRow, parsePostRow, parseUpdateRow } from '../records'
 
 const req = (auth?: string) => new Request('https://fundopshq.com/api/social/export', { headers: auth ? { authorization: auth } : {} })
 
@@ -165,5 +165,27 @@ describe('parseAll', () => {
     expect(parseAll([], 10, parsePostRow)).toHaveProperty('error')
     expect(parseAll([post, post, post], 2, parsePostRow)).toHaveProperty('error')
     expect(parseAll('posts', 10, parsePostRow)).toHaveProperty('error')
+  })
+})
+
+describe('oldDateFolders', () => {
+  const names = ['2026-09-27', '2026-09-28', '2026-10-01', '2026-10-04', '2026-10-05', '2026-10-09', 'logos', '2026-13-40', '.emptyFolderPlaceholder']
+
+  it('picks the day folders more than a week old, oldest first, and nothing else', () => {
+    expect(oldDateFolders(names, '2026-10-05', 7)).toEqual(['2026-09-27'])
+    expect(oldDateFolders(names, '2026-10-06', 7)).toEqual(['2026-09-27', '2026-09-28'])
+    // A folder that is not a date, or not a real one, is never touched; nor is a day still to come.
+    expect(oldDateFolders(names, '2026-12-01', 7)).toEqual(['2026-09-27', '2026-09-28', '2026-10-01', '2026-10-04', '2026-10-05', '2026-10-09'])
+  })
+
+  it('never keeps fewer than three days, whatever is asked', () => {
+    expect(oldDateFolders(names, '2026-10-05', 0)).toEqual(['2026-09-27', '2026-09-28', '2026-10-01'])
+    expect(oldDateFolders(names, '2026-10-05', -5)).toEqual(['2026-09-27', '2026-09-28', '2026-10-01'])
+    expect(oldDateFolders(names, '2026-10-05', 3)).toEqual(['2026-09-27', '2026-09-28', '2026-10-01'])
+    expect(oldDateFolders(names, '2026-10-05', 2.5)).toEqual(['2026-09-27'])
+  })
+
+  it('removes nothing if it is not told what day it is', () => {
+    expect(oldDateFolders(names, 'today', 7)).toEqual([])
   })
 })

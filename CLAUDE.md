@@ -117,6 +117,7 @@ Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/cont
 /api/social/export                      → Social desk: the stories, league table and events the nightly social job works from
 /api/social/upload                      → Social desk: one-time upload slots into the public `social` storage bucket
 /api/social/posts                       → Social desk: the record of what was posted (social_posts, social_metrics)
+/api/social/cleanup                     → Social desk: removes finished files more than a week old from the `social` bucket (the job calls it once a day)
 ```
 
 FundOps Daily flipped to **single opt-in** on 2026-04-10. The `subscribe` route now sets `status = 'confirmed'` + `confirmed_at = now()` on insert and fires a welcome email via `lib/newsletter/welcome-email.ts`. The `confirm` route is still wired up so any stale confirmation-email links already in inboxes land on the homepage instead of 404ing. Don't reintroduce double opt-in without an explicit ask — we measured ~36% drop-off on the confirmation step before the flip.
@@ -457,16 +458,17 @@ A sponsor is a row in `sponsor_bookings` with a start and an end date. The morni
 
 ## Social desk: posts made from the news engine (2026-10-03)
 
-A nightly job turns the day's stories, the league table and the events board into TikTok-shaped posts (slides and short videos) and schedules them through Buffer to TikTok, Instagram and LinkedIn. **The job does not live here.** It is the private `fundopshq-social` repository (a copy of the working folder is at `~/fundopshq-workspace/social/`), run on a GitHub schedule, because rendering needs Chrome and ffmpeg. This site gives it three routes and nothing else:
+A nightly job turns the day's stories, the league table and the events board into TikTok-shaped posts (slides and short videos) and schedules them through Buffer to TikTok, Instagram and LinkedIn. **The job does not live here.** It is the private `fundopshq-social` repository (a copy of the working folder is at `~/fundopshq-workspace/social/`), run on a GitHub schedule, because rendering needs Chrome and ffmpeg. This site gives it four routes and nothing else:
 
 - `GET /api/social/export`: stories (the ten-day window), league closes, events for thirty days, and the job's own past posts. It reads through the same caches the pages use (`loadStories`, `loadLeagueReport`, `getEventFeed`), so a call costs the database one small query.
 - `POST /api/social/upload`: one-time upload slots. The job PUTs each finished file straight to storage; the service key never leaves the site. Paths are checked by `isUploadPath` (`lib/social/records.ts`): a date folder, a post folder, a `.jpg`/`.mp4`/`.pdf`.
 - `GET|POST /api/social/posts`: the record. `posts` writes whole rows (replacing on edition + slug + channel), `updates` changes a row by id without touching what it says, `metrics` adds a reading.
+- `POST /api/social/cleanup` (2026-10-05): removes the day folders of the `social` bucket that are more than a week old (`{ keepDays }`, never fewer than three; `oldDateFolders` in `lib/social/records.ts`), four days per call. The job calls it once a day. Danny approved deleting old media on 2026-10-05; since then the job posts about thirteen times a day, which is 30 to 40 MB of files a day. A row's `media_urls` outlive its files.
 
 Rules:
 
 - **Auth is `Authorization: Bearer $SOCIAL_SECRET`, a secret of its own** (`lib/social/auth.ts`). Not `CRON_SECRET`: that one also opens the routes that send email, and it should not sit in a second repository. Until `SOCIAL_SECRET` is set in Vercel the routes answer 503.
-- The `social` storage bucket is **public** (Buffer fetches each file from its public address when the post goes out, which can be a day after upload) and takes only JPEG, MP4 and PDF.
+- The `social` storage bucket is **public** (Buffer fetches each file from its public address when the post goes out, which can be a day after upload) and takes only JPEG, MP4 and PDF. Nothing in it is needed once its post has gone out.
 - Nothing on the public site reads `social_posts` or `social_metrics`. If a page ever shows them, read "Speed, caching and the database" first.
 - Whether a story is fit to post, and the words on a post, are decided in the other repository. What counts as a story is still decided here (`lib/newsletter/`, `lib/news/stories.ts`): the job posts what the site shows.
 

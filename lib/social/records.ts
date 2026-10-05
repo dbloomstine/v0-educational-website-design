@@ -26,6 +26,22 @@ export function isIsoDate(v: unknown): v is string {
   return typeof v === 'string' && DATE_RE.test(v) && !Number.isNaN(Date.parse(`${v}T00:00:00Z`))
 }
 
+/** Finished files are kept this long unless the job asks for longer, and never less than MIN_KEEP_DAYS. */
+export const DEFAULT_KEEP_DAYS = 7
+export const MIN_KEEP_DAYS = 3
+
+/**
+ * Which of the bucket's top-level folders are days old enough to remove: named
+ * as a date, and more than `keepDays` days before `today` (YYYY-MM-DD). Anything
+ * not named as a date is left alone, as is anything dated in the future.
+ */
+export function oldDateFolders(names: string[], today: string, keepDays: number): string[] {
+  if (!isIsoDate(today)) return []
+  const keep = Math.max(MIN_KEEP_DAYS, Number.isInteger(keepDays) ? keepDays : DEFAULT_KEEP_DAYS)
+  const cutoff = new Date(Date.parse(`${today}T00:00:00Z`) - keep * 86_400_000).toISOString().slice(0, 10)
+  return names.filter((n) => isIsoDate(n) && n < cutoff).sort()
+}
+
 export function isUploadPath(v: unknown): v is string {
   return typeof v === 'string' && v.length <= 200 && PATH_RE.test(v)
 }
