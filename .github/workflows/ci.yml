@@ -32,7 +32,9 @@ jobs:
       - name: Run tests
         run: npm run test:run
 
-      # Compile only: bundle every route and load it, but do not prerender.
+      # Compile only: bundle the whole site, but do not load the routes or
+      # prerender the pages. This fails on what only the bundler sees, such as
+      # a hook in a server component, which ESLint and tsc both pass.
       #
       # Prerendering builds the news pages from the site's database, and they
       # fail without it on purpose (a page that renders empty is cached empty:
@@ -42,7 +44,8 @@ jobs:
       # and store its results in the cache the live site reads.
       #
       # Vercel runs the full build, with the database, on every pull request
-      # and every push. That is the check for prerendering, and for the route
-      # table: the one printed here marks every page ƒ and means nothing.
+      # and every push. That is the check for a route that throws as it loads,
+      # for prerendering, and for the route table: the one printed here marks
+      # every page ƒ and means nothing.
       - name: Build (compile only)
         run: npx next build --experimental-build-mode compile
