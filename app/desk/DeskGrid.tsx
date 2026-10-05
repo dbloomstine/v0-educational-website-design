@@ -1,8 +1,12 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { memo, useCallback, useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
-import type { DeskRow, ContactLogEntry, WorkState } from '@/lib/crm/queries'
+import type { DeskListRow, DeskDetail, ContactLogEntry, WorkState } from '@/lib/crm/queries'
+
+/** A grid row. The drawer-only text (notes, research) is `DeskDetail`,
+ *  fetched when a row is opened — see GRID_COLUMNS in lib/crm/queries. */
+type DeskRow = DeskListRow
 import styles from './desk.module.css'
 
 /* ------------------------------------------------------------------ */
@@ -226,6 +230,25 @@ function buildCols(onToggleDone: (r: DeskRow, done: boolean) => void): Col[] {
 
 const LAYOUT_KEY = 'leaddesk.layout.v1'
 
+/**
+ * How many rows the table draws at a time.
+ *
+ * The desk used to draw every lead it held. On 2026-10-05 that was 3,477 rows
+ * by 18 columns — about 62,000 cells and 10,000 copy buttons — and ticking a
+ * checkbox or typing a letter in the search box redrew all of them. Filters,
+ * counts, search, select-all and export still run over every lead; only the
+ * drawing is windowed, with "show more" at the bottom.
+ */
+const PAGE_ROWS = 200
+
+/** Raw column values by key, for filtering, sorting and search. These never
+ *  change, so the filtered list does not have to be rebuilt when a column is
+ *  resized, reordered or hidden. */
+const COL_VAL: Record<string, (r: DeskRow) => string> = Object.fromEntries(
+  buildCols(() => {}).map(c => [c.key, c.val])
+)
+const ALL_VALS = Object.values(COL_VAL)
+
 const QUICK = [
   { id: 'all', label: 'All', fn: () => true },
   { id: 'to_do', label: 'To do', fn: (r: DeskRow) => r.work_state === 'to_do' },
@@ -243,11 +266,39 @@ const QUICK = [
 
 /* ------------------------------------------------------------------ */
 
-export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
+export default function DeskGrid({ rows: serverRows }: { rows: DeskRow[] }) {
   const router = useRouter()
+
+  // Changes made here (mark done, mark to do) are applied to the rows already
+  // in the browser instead of reloading every lead from the server. The patch
+  // set belongs to one server snapshot: after a real reload it is dropped.
+  const [patch, setPatch] = useState<{ src: DeskRow[]; byId: Map<string, Partial<DeskRow>> }>(
+    () => ({ src: serverRows, byId: new Map() })
+  )
+  const rows = useMemo(() => {
+    if (patch.src !== serverRows || patch.byId.size === 0) return serverRows
+    return serverRows.map(r => {
+      const p = patch.byId.get(r.id)
+      return p ? { ...r, ...p } : r
+    })
+  }, [serverRows, patch])
+  const applyPatch = useCallback((ids: string[], change: (r: DeskRow) => Partial<DeskRow>) => {
+    setPatch(prev => {
+      const byId = new Map(prev.src === serverRows ? prev.byId : [])
+      const current = new Map(serverRows.map(r => [r.id, r]))
+      for (const id of ids) {
+        const base = current.get(id)
+        if (!base) continue
+        const soFar = byId.get(id) ?? {}
+        byId.set(id, { ...soFar, ...change({ ...base, ...soFar }) })
+      }
+      return { src: serverRows, byId }
+    })
+  }, [serverRows])
 
   const [quick, setQuick] = useState('all')          // defaults to All
   const [query, setQuery] = useState('')
+  const search = useDeferredValue(query)   // typing stays responsive while the list catches up
   const [sortKey, setSortKey] = useState('date_received')
   const [sortDir, setSortDir] = useState<1 | -1>(-1)
   const [sel, setSel] = useState<Set<string>>(new Set())
@@ -259,6 +310,10 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
   const [pickerOpen, setPickerOpen] = useState(false)
   const [openRow, setOpenRow] = useState<DeskRow | null>(null)
   const [log, setLog] = useState<ContactLogEntry[] | null>(null)
+  const [detail, setDetail] = useState<DeskDetail | null>(null)
+  const [detailFailed, setDetailFailed] = useState(false)
+  const openSeq = useRef(0)
+  const [win, setWin] = useState({ key: '', n: PAGE_ROWS })
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
   const [logAs, setLogAs] = useState<'researched' | 'contacted'>('researched')
@@ -275,9 +330,13 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
         }),
       })
       if (!res.ok) setErr((await res.json().catch(() => ({}))).error ?? 'Update failed')
-      else router.refresh()
+      else applyPatch([r.id], cur => ({
+        work_state: done ? 'done' : 'to_do',
+        // marking done writes one contact_log row (see setWorkState)
+        touch_count: done ? cur.touch_count + 1 : cur.touch_count,
+      }))
     } catch { setErr('Network error') } finally { setBusy(false) }
-  }, [logAs, router])
+  }, [logAs, applyPatch])
 
   const [cols, setCols] = useState<Col[]>(() => buildCols(() => {}))
   const [dragKey, setDragKey] = useState<string | null>(null)
@@ -414,8 +473,8 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
   const passesExcept = useCallback((r: DeskRow, skipKey: string | null) => {
     for (const [key, allowed] of Object.entries(colFilters)) {
       if (key === skipKey || !allowed.length) continue
-      const col = liveCols.find(c => c.key === key)
-      if (col && !allowed.includes(col.val(r))) return false
+      const val = COL_VAL[key]
+      if (val && !allowed.includes(val(r))) return false
     }
     if (skipKey !== 'date_received') {
       const d = (r.date_received ?? r.created_at).slice(0, 10)
@@ -423,19 +482,27 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
       if (dateTo && d > dateTo) return false
     }
     return true
-  }, [colFilters, dateFrom, dateTo, liveCols])
+  }, [colFilters, dateFrom, dateTo])
+
+  // Everything "Search anything…" can match, built once per row and reused on
+  // every keystroke instead of being rebuilt for every lead each time.
+  const haystack = useMemo(() => {
+    const m = new Map<string, string>()
+    for (const r of rows) m.set(r.id, ALL_VALS.map(v => v(r)).join(' ').toLowerCase())
+    return m
+  }, [rows])
 
   const list = useMemo(() => {
     const qf = QUICK.find(x => x.id === quick)!
-    const q = query.trim().toLowerCase()
+    const q = search.trim().toLowerCase()
     const out = rows.filter(qf.fn).filter(r => passesExcept(r, null)).filter(r => {
       if (!q) return true
-      return liveCols.map(c => c.val(r)).join(' ').toLowerCase().includes(q)
+      return (haystack.get(r.id) ?? '').includes(q)
     })
-    const col = liveCols.find(c => c.key === sortKey)
-    if (col) {
+    const val = COL_VAL[sortKey]
+    if (val) {
       out.sort((a, b) => {
-        const A = col.val(a), B = col.val(b)
+        const A = val(a), B = val(b)
         if (A === B) return 0
         if (A === '') return 1
         if (B === '') return -1
@@ -443,21 +510,33 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
       })
     }
     return out
-  }, [rows, quick, query, sortKey, sortDir, liveCols, passesExcept])
+  }, [rows, quick, search, sortKey, sortDir, haystack, passesExcept])
+
+  // The window of rows actually drawn. It belongs to one view: change a
+  // filter, the search or the sort and it starts again from the first page.
+  const viewKey = `${quick}|${search}|${sortKey}|${sortDir}|${dateFrom}|${dateTo}|${JSON.stringify(colFilters)}`
+  const shownN = win.key === viewKey ? win.n : PAGE_ROWS
+  const page = useMemo(() => list.slice(0, shownN), [list, shownN])
+
+  const quickCounts = useMemo(() => {
+    const m: Record<string, number> = {}
+    for (const f of QUICK) m[f.id] = rows.filter(f.fn).length
+    return m
+  }, [rows])
 
   /** Distinct values for a column, honouring every OTHER active filter (Excel behaviour). */
   const distinctFor = useCallback((key: string) => {
-    const col = liveCols.find(c => c.key === key)
-    if (!col) return []
+    const val = COL_VAL[key]
+    if (!val) return []
     const counts = new Map<string, number>()
     const qf = QUICK.find(x => x.id === quick)!
     for (const r of rows.filter(qf.fn)) {
       if (!passesExcept(r, key)) continue
-      const v = col.val(r)
+      const v = val(r)
       counts.set(v, (counts.get(v) ?? 0) + 1)
     }
     return [...counts.entries()].sort((a, b) => (a[0] === '' ? 1 : b[0] === '' ? -1 : a[0].localeCompare(b[0])))
-  }, [liveCols, rows, quick, passesExcept])
+  }, [rows, quick, passesExcept])
 
   const activeFilterKeys = useMemo(
     () => Object.entries(colFilters).filter(([, v]) => v.length).map(([k]) => k),
@@ -467,6 +546,21 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
   /* ---- selection & bulk --------------------------------------------- */
 
   const allShown = list.length > 0 && list.every(r => sel.has(r.id))
+  // Select-all takes every row that matches the current view, drawn or not, so
+  // "To do → select all → mark done" still clears a batch longer than one page.
+  const selNotDrawn = useMemo(() => {
+    if (!sel.size) return 0
+    let drawn = 0
+    for (const r of page) if (sel.has(r.id)) drawn++
+    return sel.size - drawn
+  }, [sel, page])
+  const toggleSel = useCallback((id: string, on: boolean) => {
+    setSel(prev => {
+      const next = new Set(prev)
+      if (on) next.add(id); else next.delete(id)
+      return next
+    })
+  }, [])
 
   async function applyState(workState: WorkState) {
     if (!sel.size) return
@@ -477,7 +571,12 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
         body: JSON.stringify({ ids: [...sel], workState, logAs: workState === 'done' ? logAs : null }),
       })
       if (!res.ok) { setErr((await res.json().catch(() => ({}))).error ?? 'Update failed'); return }
-      setSel(new Set()); router.refresh()
+      const logged = workState === 'done'
+      applyPatch([...sel], cur => ({
+        work_state: workState,
+        touch_count: logged ? cur.touch_count + 1 : cur.touch_count,
+      }))
+      setSel(new Set())
     } catch { setErr('Network error') } finally { setBusy(false) }
   }
 
@@ -501,13 +600,24 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
 
   /* ---- drawer -------------------------------------------------------- */
 
-  const openDrawer = useCallback(async (r: DeskRow) => {
-    setOpenRow(r); setLog(null)
-    try {
-      const res = await fetch(`/api/desk/contact-log?firmId=${encodeURIComponent(r.firm_id)}`)
-      const b = await res.json()
-      setLog(res.ok ? b.entries ?? [] : [])
-    } catch { setLog([]) }
+  const openDrawer = useCallback((r: DeskRow) => {
+    // Each open gets a number, so an answer that arrives for a row that is no
+    // longer the one open is dropped instead of landing in the wrong drawer.
+    const seq = ++openSeq.current
+    setOpenRow(r); setLog(null); setDetail(null); setDetailFailed(false)
+    // The drawer opens at once with what the grid already holds; the contact
+    // log and the drawer-only text (notes, research) follow separately.
+    fetch(`/api/desk/contact-log?firmId=${encodeURIComponent(r.firm_id)}`)
+      .then(async res => { const b = await res.json(); return res.ok ? (b.entries ?? []) as ContactLogEntry[] : [] })
+      .catch(() => [] as ContactLogEntry[])
+      .then(entries => { if (openSeq.current === seq) setLog(entries) })
+    fetch(`/api/desk/lead?id=${encodeURIComponent(r.id)}`)
+      .then(async res => { const b = await res.json(); return res.ok && b.detail ? (b.detail as DeskDetail) : null })
+      .catch(() => null)
+      .then(d => {
+        if (openSeq.current !== seq) return
+        if (d) setDetail(d); else setDetailFailed(true)
+      })
   }, [])
 
   useEffect(() => {
@@ -521,7 +631,8 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
   /* ------------------------------------------------------------------ */
 
   listRef.current = list
-  const todo = rows.filter(r => r.work_state === 'to_do').length
+  const checkW = visible.find(x => x.key === 'check')?.w ?? 34
+  const todo = quickCounts.to_do ?? 0
 
   return (
     <div className={styles.shell}>
@@ -532,6 +643,8 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
         </div>
         <div className={styles.topRight}>
           <span className={styles.sync}>9mo researched · 6mo contacted</span>
+          <button className={styles.btn} type="button" title="Reload every lead from the CRM"
+            onClick={() => router.refresh()}>Refresh</button>
           <div className={styles.picker}>
             <button className={styles.btn} onClick={() => setPickerOpen(o => !o)}>Columns</button>
             {pickerOpen && (
@@ -568,7 +681,7 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
         {QUICK.map(f => (
           <button key={f.id} className={`${styles.chip} ${quick === f.id ? styles.chipOn : ''}`}
             aria-pressed={quick === f.id} onClick={() => { setQuick(f.id); setSel(new Set()) }}>
-            {f.label}<span className={`${styles.ct} ${styles.mono}`}>{rows.filter(f.fn).length}</span>
+            {f.label}<span className={`${styles.ct} ${styles.mono}`}>{quickCounts[f.id] ?? 0}</span>
           </button>
         ))}
         <span className={styles.sep} />
@@ -605,7 +718,8 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
 
       {sel.size > 0 && (
         <div className={styles.bulk}>
-          <b className={styles.mono}>{sel.size}</b><span>selected</span>
+          <b className={styles.mono}>{sel.size}</b>
+          <span>selected{selNotDrawn > 0 ? ` — ${selNotDrawn} of them further down, not drawn yet` : ''}</span>
           <div className={styles.bulkRight}>
             <label htmlFor="logAs" style={{ fontSize: 11.5 }}>log as</label>
             <select id="logAs" className={styles.logSel} value={logAs}
@@ -632,7 +746,8 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
             <tr>
               {visible.map(c => c.key === 'check' ? (
                 <th key="check" className={c.sticky} style={{ width: c.w }}>
-                  <input type="checkbox" checked={allShown} onChange={e => {
+                  <input type="checkbox" checked={allShown}
+                    title={`Select all ${list.length} matching rows`} onChange={e => {
                     const next = new Set(sel)
                     list.forEach(r => e.target.checked ? next.add(r.id) : next.delete(r.id))
                     setSel(next)
@@ -694,35 +809,33 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
                   ? 'No leads yet. Forward some to the leads inbox and run /process-leads.'
                   : 'Nothing matches these filters.'}
               </td></tr>
-            ) : list.map(r => (
-              <tr key={r.id}
-                className={`${sel.has(r.id) ? styles.rowSel : ''} ${r.work_state === 'done' ? styles.rowDone : ''}`}
-                onClick={() => openDrawer(r)}>
-                {visible.map(c => c.key === 'check' ? (
-                  <td key="check" className={c.sticky} onClick={e => e.stopPropagation()}>
-                    <input type="checkbox" checked={sel.has(r.id)} onChange={e => {
-                      const next = new Set(sel)
-                      if (e.target.checked) next.add(r.id); else next.delete(r.id)
-                      setSel(next)
-                    }} />
-                  </td>
-                ) : (
-                  <td
-                    key={c.key}
-                    className={c.sticky}
-                    style={c.sticky === styles.kContact
-                      ? { left: visible.find(x => x.key === 'check')?.w ?? 34 } : undefined}
-                    title={c.val(r)}
-                  >{c.render ? c.render(r) : dash(c.val(r))}</td>
-                ))}
-              </tr>
+            ) : page.map(r => (
+              <Row key={r.id} r={r} visible={visible} selected={sel.has(r.id)}
+                checkW={checkW} onSel={toggleSel} onOpen={openDrawer} />
             ))}
           </tbody>
         </table>
+        {list.length > page.length && (
+          <div className={styles.moreBar}>
+            <span>Showing the first <b className={styles.mono}>{page.length}</b> of <b className={styles.mono}>{list.length}</b></span>
+            <button className={`${styles.btn} ${styles.btnPrimary}`} type="button"
+              onClick={() => setWin({ key: viewKey, n: shownN + PAGE_ROWS })}>
+              Show {Math.min(PAGE_ROWS, list.length - page.length)} more
+            </button>
+            <button className={styles.btn} type="button"
+              title="Draws every matching row at once — slower on a long list"
+              onClick={() => setWin({ key: viewKey, n: list.length })}>
+              Show all {list.length}
+            </button>
+          </div>
+        )}
       </div>
 
       <div className={styles.statusBar}>
-        <span>{list.length} of {rows.length} rows · {visible.length - 1} columns{sel.size ? ` · ${sel.size} selected` : ''}</span>
+        <span>
+          {page.length < list.length ? `showing ${page.length} of ${list.length} matching` : `${list.length} matching`}
+          {` · ${rows.length} leads · ${visible.length - 1} columns`}{sel.size ? ` · ${sel.size} selected` : ''}
+        </span>
         <span>sorted by {liveCols.find(c => c.key === sortKey)?.label ?? sortKey} {sortDir < 0 ? 'desc' : 'asc'}</span>
         {err && <span className={styles.err}>{err}</span>}
         <span className={styles.statusRight}>danny-lead-crm</span>
@@ -748,11 +861,49 @@ export default function DeskGrid({ rows }: { rows: DeskRow[] }) {
       )}
 
       {openRow && (
-        <Drawer row={openRow} log={log} onClose={() => setOpenRow(null)} onSaved={() => router.refresh()} />
+        <Drawer row={openRow} detail={detail} detailFailed={detailFailed} log={log}
+          onClose={() => setOpenRow(null)} />
       )}
     </div>
   )
 }
+
+/* ------------------------------------------------------------------ */
+/* One table row                                                       */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Memoised so that ticking one checkbox, opening the drawer or typing in the
+ * search box redraws only the rows that actually changed. Every prop is
+ * stable between renders except `selected` and, after an edit, `r`.
+ */
+const Row = memo(function Row({ r, visible, selected, checkW, onSel, onOpen }: {
+  r: DeskRow
+  visible: Col[]
+  selected: boolean
+  checkW: number
+  onSel: (id: string, on: boolean) => void
+  onOpen: (r: DeskRow) => void
+}) {
+  return (
+    <tr
+      className={`${selected ? styles.rowSel : ''} ${r.work_state === 'done' ? styles.rowDone : ''}`}
+      onClick={() => onOpen(r)}>
+      {visible.map(c => c.key === 'check' ? (
+        <td key="check" className={c.sticky} onClick={e => e.stopPropagation()}>
+          <input type="checkbox" checked={selected} onChange={e => onSel(r.id, e.target.checked)} />
+        </td>
+      ) : (
+        <td
+          key={c.key}
+          className={c.sticky}
+          style={c.sticky === styles.kContact ? { left: checkW } : undefined}
+          title={c.val(r)}
+        >{c.render ? c.render(r) : dash(c.val(r))}</td>
+      ))}
+    </tr>
+  )
+})
 
 /* ------------------------------------------------------------------ */
 /* Excel-style column filter                                           */
@@ -836,31 +987,59 @@ function ColumnFilter(props: {
 /* Detail drawer                                                       */
 /* ------------------------------------------------------------------ */
 
-function Drawer({ row, log, onClose, onSaved }: {
-  row: DeskRow; log: ContactLogEntry[] | null; onClose: () => void; onSaved: () => void
-}) {
-  const [notes, setNotes] = useState(row.notes ?? '')
-  const [firmNotes, setFirmNotes] = useState(row.firm_notes ?? '')
+/**
+ * The two notes fields. Mounted only once the lead's detail has loaded, and
+ * keyed by lead, so its starting text is always the saved text: an editor
+ * that opened blank because the load failed could otherwise be saved over
+ * real notes.
+ */
+function NotesEditor({ leadId, detail }: { leadId: string; detail: DeskDetail }) {
+  const [base, setBase] = useState({ notes: detail.notes ?? '', firmNotes: detail.firm_notes ?? '' })
+  const [notes, setNotes] = useState(base.notes)
+  const [firmNotes, setFirmNotes] = useState(base.firmNotes)
   const [saving, setSaving] = useState(false)
-  const [savedAt, setSavedAt] = useState<string>('')
-  const dirty = notes !== (row.notes ?? '') || firmNotes !== (row.firm_notes ?? '')
-  const first = useRef(true)
-
-  useEffect(() => {
-    setNotes(row.notes ?? ''); setFirmNotes(row.firm_notes ?? ''); setSavedAt(''); first.current = true
-  }, [row.id, row.notes, row.firm_notes])
+  const [savedAt, setSavedAt] = useState('')
+  const [failed, setFailed] = useState(false)
+  const dirty = notes !== base.notes || firmNotes !== base.firmNotes
 
   async function save() {
-    setSaving(true)
+    setSaving(true); setFailed(false)
     try {
       const res = await fetch('/api/desk/notes', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ leadId: row.id, notes, firmNotes }),
+        body: JSON.stringify({ leadId, notes, firmNotes }),
       })
-      if (res.ok) { setSavedAt(new Date().toLocaleTimeString()); onSaved() }
-    } finally { setSaving(false) }
+      if (res.ok) { setBase({ notes, firmNotes }); setSavedAt(new Date().toLocaleTimeString()) }
+      else setFailed(true)
+    } catch { setFailed(true) } finally { setSaving(false) }
   }
 
+  return (
+    <>
+      <div className={styles.drawSection}>Notes on this person — internal, never exported</div>
+      <textarea className={styles.noteArea} value={notes} onChange={e => setNotes(e.target.value)}
+        placeholder="Angle, timing, who to mention, what not to mention…" />
+
+      <div className={styles.drawSection} style={{ marginTop: 14 }}>Notes on the firm</div>
+      <textarea className={styles.noteArea} value={firmNotes} onChange={e => setFirmNotes(e.target.value)}
+        placeholder="High-level context on the firm — incumbent providers, structure, history…" />
+
+      <div className={styles.noteRow}>
+        <button className={`${styles.btn} ${styles.btnPrimary}`} disabled={!dirty || saving} onClick={save}>
+          {saving ? 'Saving…' : 'Save notes'}
+        </button>
+        {failed && <span className={styles.err}>not saved — try again</span>}
+        {dirty && !saving && !failed && <span className={styles.dirty}>unsaved</span>}
+        {!dirty && savedAt && <span className={styles.saved}>saved {savedAt}</span>}
+      </div>
+    </>
+  )
+}
+
+function Drawer({ row, detail, detailFailed, log, onClose }: {
+  row: DeskRow; detail: DeskDetail | null; detailFailed: boolean
+  log: ContactLogEntry[] | null; onClose: () => void
+}) {
   const shareLabel = SHARE_LABEL[row.share_ok]?.[1] ?? row.share_ok
 
   return (
@@ -891,7 +1070,7 @@ function Drawer({ row, log, onClose, onSaved }: {
         <dl className={styles.kv}>
           <dt>Company</dt><dd>{row.firm_name}</dd>
           <dt>Domain</dt><dd className={styles.mono}>{row.domain ?? '—'}</dd>
-          <dt>Based</dt><dd>{row.firm_location ?? '—'}{row.firm_country ? ` · ${row.firm_country}` : ''}</dd>
+          <dt>Based</dt><dd>{row.firm_location ?? '—'}{detail?.firm_country ? ` · ${detail.firm_country}` : ''}</dd>
           <dt>Type</dt><dd>{row.firm_type ?? '—'}</dd>
           <dt>Strategy</dt><dd>{row.strategy ?? '—'}</dd>
           <dt>Target</dt><dd>{row.target_raise ?? '—'}</dd>
@@ -904,12 +1083,12 @@ function Drawer({ row, log, onClose, onSaved }: {
           <dt>Channel</dt><dd>{row.source_type ?? '—'}</dd>
           <dt>Received</dt><dd className={styles.mono}>{(row.date_received ?? row.created_at).slice(0, 10)}</dd>
           <dt>Service</dt><dd>{row.service_line ? LINE_LABEL[row.service_line] ?? row.service_line : '—'}</dd>
-          <dt>Share</dt><dd>{shareLabel}{row.share_ok_reason ? <span className={styles.soft}> — {row.share_ok_reason}</span> : null}</dd>
+          <dt>Share</dt><dd>{shareLabel}{detail?.share_ok_reason ? <span className={styles.soft}> — {detail.share_ok_reason}</span> : null}</dd>
           <dt>Touches</dt><dd className={styles.mono}>{row.touch_count}</dd>
         </dl>
 
-        {row.research_summary && (
-          <div className={`${styles.box} ${styles.boxNote}`}><b>Research</b>{row.research_summary}</div>
+        {detail?.research_summary && (
+          <div className={`${styles.box} ${styles.boxNote}`}><b>Research</b>{detail.research_summary}</div>
         )}
 
         <div className={styles.drawSection}>First touch — draft only, nothing is ever sent</div>
@@ -940,21 +1119,18 @@ function Drawer({ row, log, onClose, onSaved }: {
           </p>
         )}
 
-        <div className={styles.drawSection}>Notes on this person — internal, never exported</div>
-        <textarea className={styles.noteArea} value={notes} onChange={e => setNotes(e.target.value)}
-          placeholder="Angle, timing, who to mention, what not to mention…" />
-
-        <div className={styles.drawSection} style={{ marginTop: 14 }}>Notes on the firm</div>
-        <textarea className={styles.noteArea} value={firmNotes} onChange={e => setFirmNotes(e.target.value)}
-          placeholder="High-level context on the firm — incumbent providers, structure, history…" />
-
-        <div className={styles.noteRow}>
-          <button className={`${styles.btn} ${styles.btnPrimary}`} disabled={!dirty || saving} onClick={save}>
-            {saving ? 'Saving…' : 'Save notes'}
-          </button>
-          {dirty && !saving && <span className={styles.dirty}>unsaved</span>}
-          {!dirty && savedAt && <span className={styles.saved}>saved {savedAt}</span>}
-        </div>
+        {detail ? (
+          <NotesEditor key={row.id} leadId={row.id} detail={detail} />
+        ) : (
+          <>
+            <div className={styles.drawSection}>Notes — internal, never exported</div>
+            <p className={detailFailed ? styles.err : styles.soft} style={{ fontSize: 12.5 }}>
+              {detailFailed
+                ? 'Could not load the notes and research for this lead. Close this panel and open the row again.'
+                : 'Loading notes and research…'}
+            </p>
+          </>
+        )}
 
         <div className={styles.drawSection}>Contact log</div>
         {log === null ? <p className={styles.soft} style={{ fontSize: 12.5 }}>Loading…</p>

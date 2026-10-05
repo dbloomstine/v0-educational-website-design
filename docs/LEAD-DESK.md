@@ -113,6 +113,39 @@ nothing (un-marking is a correction, not work).
 Notes are editable in the drawer — one field for the person, one for the firm
 (`firms.notes`). Both are internal and neither is exportable.
 
+## Staying fast as the desk grows
+
+The desk gains a few hundred leads a night, so nothing here may cost more as
+the history gets longer. Measured on 2026-10-05 at 3,477 leads: the page drew
+every one (about 62,000 table cells and 10,000 copy buttons), sent 8.1 MB to
+the browser, and redrew the whole table on each checkbox tick and each letter
+typed. Four rules came out of that:
+
+- **The table draws 200 rows at a time** (`PAGE_ROWS` in `DeskGrid.tsx`), with
+  "Show 200 more" and "Show all" under it. Filters, chip counts, search,
+  select-all and export still run over every lead. Select-all deliberately
+  takes every matching row, drawn or not, so "To do → select all → Mark done"
+  clears a batch longer than one page; the bulk bar says how many of the
+  selected rows are further down.
+- **The list carries grid columns only** (`GRID_COLUMNS` in
+  `lib/crm/queries.ts`). Internal notes, firm notes and the research summary
+  are read one lead at a time by `/api/desk/lead` when a row is opened. Add a
+  column to `GRID_COLUMNS` only when the grid itself shows, filters or
+  searches it.
+- **Changes are applied in the browser, not by reloading.** Marking done or
+  saving notes updates the rows already loaded; the Refresh button in the
+  header is the one thing that reloads every lead from the CRM.
+- **The notes box only appears once the lead's notes have loaded.** If that
+  load fails the drawer says so and offers no box, so blank text can never be
+  saved over real notes.
+
+`fetchDeskRows` reads the first page with the total, then the remaining pages
+side by side: two round trips however long the history is. Tests:
+`app/desk/__tests__/DeskGrid.test.tsx` and `lib/crm/__tests__/queries.test.ts`.
+
+Not done yet, and worth doing once the desk passes about 10,000 leads: load
+open leads plus the last 30 days by default, with the older history on demand.
+
 ## Palette
 
 Neutral black-and-white, deliberately. The original green-tinted palette put
@@ -156,6 +189,6 @@ lib/crm/queries.ts            all data access
 app/desk/page.tsx             server component, fetches desk_rows
 app/desk/DeskGrid.tsx         the grid (client)
 app/desk/login/page.tsx       login form
-app/api/desk/*                login, logout, work-state, export, contact-log
+app/api/desk/*                login, logout, work-state, export, contact-log, lead, notes
 scripts/hash-desk-password.mjs
 ```
