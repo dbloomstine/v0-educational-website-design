@@ -217,40 +217,51 @@ export async function setWorkState(
 ): Promise<{ updated: number; logged: number }> {
   if (leadIds.length === 0) return { updated: 0, logged: 0 }
   const sb = getCrmAdmin()
-
-  const { data: rows, error: readErr } = await sb
-    .from('leads')
-    .select('id, firm_id, person_id')
-    .in('id', leadIds)
-  if (readErr) throw new Error(`Lookup failed: ${readErr.message}`)
-
   const now = new Date().toISOString()
-  const { error: updErr } = await sb
-    .from('leads')
-    .update({
-      work_state: workState,
-      worked_at: workState === 'done' ? now : null,
-    })
-    .in('id', leadIds)
-  if (updErr) throw new Error(`Update failed: ${updErr.message}`)
-
+  let updated = 0
   let logged = 0
-  if (logAs && rows?.length) {
-    const entries = rows.map((r) => ({
-      firm_id: r.firm_id,
-      person_id: r.person_id,
-      event_type: logAs,
-      occurred_at: now,
-      channel: logAs === 'contacted' ? 'email' : 'none',
-      notes: `Marked ${workState} from Lead Desk`,
-      created_by: 'danny',
-    }))
-    const { error: logErr } = await sb.from('contact_log').insert(entries)
-    if (logErr) throw new Error(`Contact log write failed: ${logErr.message}`)
-    logged = entries.length
+
+  // A filter of several hundred ids is a URL the database refuses ("Bad
+  // Request"): select-all on 713 to-do rows failed on 2026-10-05, the first
+  // time a batch was longer than one page. Work in groups, as the exports do.
+  // Each group is complete on its own, log first and state second, so a
+  // failure part-way leaves earlier groups fully done and later ones untouched,
+  // and never a lead marked done with no contact_log row behind it.
+  for (const ids of chunk(leadIds, ID_CHUNK)) {
+    const done = `${updated} of ${leadIds.length} rows were updated before this`
+    const { data: rows, error: readErr } = await sb
+      .from('leads')
+      .select('id, firm_id, person_id')
+      .in('id', ids)
+    if (readErr) throw new Error(`Lookup failed: ${readErr.message} (${done})`)
+
+    if (logAs && rows?.length) {
+      const entries = rows.map((r) => ({
+        firm_id: r.firm_id,
+        person_id: r.person_id,
+        event_type: logAs,
+        occurred_at: now,
+        channel: logAs === 'contacted' ? 'email' : 'none',
+        notes: `Marked ${workState} from Lead Desk`,
+        created_by: 'danny',
+      }))
+      const { error: logErr } = await sb.from('contact_log').insert(entries)
+      if (logErr) throw new Error(`Contact log write failed: ${logErr.message} (${done})`)
+      logged += entries.length
+    }
+
+    const { error: updErr } = await sb
+      .from('leads')
+      .update({
+        work_state: workState,
+        worked_at: workState === 'done' ? now : null,
+      })
+      .in('id', ids)
+    if (updErr) throw new Error(`Update failed: ${updErr.message} (${done})`)
+    updated += ids.length
   }
 
-  return { updated: leadIds.length, logged }
+  return { updated, logged }
 }
 
 /**
