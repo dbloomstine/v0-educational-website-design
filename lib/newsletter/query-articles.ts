@@ -812,6 +812,15 @@ export function gateArticle(a: NewsletterArticle): string | null {
   return null
 }
 
+/**
+ * Several items under one headline (story-links isRoundup): the headline, the
+ * names in it and the outlet it came from decide. Such a row runs last in its
+ * section, never leads, and is never "Firm $X": its size is one item's.
+ */
+export function isRoundupArticle(a: Pick<NewsletterArticle, 'title' | 'headlineEntities' | 'sourceName'>): boolean {
+  return isRoundup(a.title, a.headlineEntities, a.sourceName)
+}
+
 export type ArticleSection = 'fund' | 'lp_commitments' | 'service_providers' | 'people_moves' | 'deals' | 'regulatory'
 
 export interface ArticlePlacement {
@@ -957,7 +966,9 @@ export function assembleNewsletter(
       if (isServiceProvider(a)) dropped.push({ id: a.id, title: a.title, reason: 'service-provider story with no fund relevance' })
       continue
     }
-    a.leadEligible = placement.leadEligible
+    // A wire's size is one of its items': it never leads a subject line, and
+    // in a fund section it runs after the raises, not among them by size.
+    a.leadEligible = placement.leadEligible && !isRoundupArticle(a)
     bins[placement.section].push(a)
   }
 
@@ -966,7 +977,7 @@ export function assembleNewsletter(
   // …and a better-sourced story edges out a weaker one at the same score.
   const rank = (a: NewsletterArticle) =>
     articlePriorityScore(a) -
-    (isRoundup(a.title, a.headlineEntities) ? 1 : 0) -
+    (isRoundupArticle(a) ? 1 : 0) -
     Math.min(sourceTier(a.sourceName), 50) / 250
   const sortByPriority = (arr: NewsletterArticle[]) => [...arr].sort((a, b) => rank(b) - rank(a))
 
@@ -1133,8 +1144,8 @@ function deduplicateByStory(articles: NewsletterArticle[]): NewsletterArticle[] 
   // the clustering: one would bridge two unrelated deals into a single
   // "story" and lose one of them. A wire runs only if none of its items
   // already has a row of its own.
-  const singles = articles.filter((a) => !isRoundup(a.title, a.headlineEntities))
-  const roundups = articles.filter((a) => isRoundup(a.title, a.headlineEntities))
+  const singles = articles.filter((a) => !isRoundupArticle(a))
+  const roundups = articles.filter((a) => isRoundupArticle(a))
 
   // Union-find rather than first-match: story identity is not transitive
   // through one representative. 2026-08-15, nine outlets covered one Mirae

@@ -11,9 +11,9 @@
  */
 import {
   rowToArticle, screenArticle, gateArticle, placeArticle, mergeStoryGroup, plainHeadline,
-  sourceTier, isLikelyAumLeak, type NewsletterArticle, type ArticleSection,
+  sourceTier, isLikelyAumLeak, isRoundupArticle, type NewsletterArticle, type ArticleSection,
 } from '@/lib/newsletter/query-articles'
-import { clusterBy, dealStage, entityKey, entityMentioned, isRoundup, keysMatch, sameStoryLoose, storyFamily } from '@/lib/newsletter/story-links'
+import { clusterBy, dealStage, entityKey, entityMentioned, keysMatch, sameStoryLoose, storyFamily } from '@/lib/newsletter/story-links'
 import { isSameStory } from './story-dedup'
 import { normalizeSourceName } from './constants'
 
@@ -67,8 +67,9 @@ export interface Story {
    * mixes in the people.
    */
   firms: string[]
-  /** False for wind-downs, CLO pricings, LP commitments: never "Firm $X". */
+  /** False for wind-downs, CLO pricings, LP commitments and roundups: never "Firm $X". */
   leadEligible: boolean
+  /** Several items under one headline (a wire, a column). It carries no size, fund or stage. */
   roundup: boolean
   /** ISO timestamp the story first reached us. */
   firstSeen: string
@@ -180,8 +181,8 @@ export function buildStories(rows: Row[]): Story[] {
     candidates.push({ article, row, day })
   }
 
-  const singles = candidates.filter((c) => !isRoundup(c.article.title, c.article.headlineEntities))
-  const roundups = candidates.filter((c) => isRoundup(c.article.title, c.article.headlineEntities))
+  const singles = candidates.filter((c) => !isRoundupArticle(c.article))
+  const roundups = candidates.filter((c) => isRoundupArticle(c.article))
 
   // The same clustering as an edition, stretched over several days: within a
   // day the looser same-edition rules apply; further apart, the stricter
@@ -200,18 +201,24 @@ export function buildStories(rows: Row[]): Story[] {
     return isSameStory(a.article, b.article) || sameStoryLoose(a.article, b.article, { crossEdition: gap > 1 })
   }
   const groups = clusterBy(singles, same)
-  for (const r of roundups) {
-    if (singles.some((s) => Math.abs(s.day - r.day) <= 4 && sameStoryLoose(s.article, r.article))) continue
-    groups.push([r])
-  }
+  // The rows that tell one of a wire's items on their own. Read now: merging
+  // a group rewrites its best row's summary and size.
+  const tellers = new Map(roundups.map((r) => [r, singles.filter((s) => Math.abs(s.day - r.day) <= 4 && sameStoryLoose(s.article, r.article))]))
 
   const stories: Story[] = []
-  for (const group of groups) {
+  const shown = new Set<Candidate>()
+  // The stories first, then the wires.
+  for (const group of [...groups, ...roundups.map((r) => [r])]) {
+    // A wire runs only when none of its items has a row of its own on the
+    // page. A row the gate below turned away is not on the page: until
+    // 2026-10-05 it still silenced the wire, and the item was told nowhere.
+    if (tellers.get(group[0])?.some((s) => shown.has(s))) continue
     const rowById = new Map(group.map((c) => [c.article.id, c.row]))
     const best = mergeStoryGroup(group.map((c) => c.article))
     if (gateArticle(best)) continue
     const placement = placeArticle(best)
     if (!placement) continue
+    for (const c of group) shown.add(c)
 
     const tags = best.fundCategories.filter((c) => ASSET_TAGS.has(c))
     const assetClasses = placement.assetClass
@@ -231,7 +238,12 @@ export function buildStories(rows: Row[]): Story[] {
       coverage.push({ source, url: c.sourceUrl, headline: c.title })
     }
 
-    const size = best.fundSizeUsdMillions && !isLikelyAumLeak(best.fundSizeUsdMillions, best.fundName)
+    // A roundup is several items under one headline, and its row was written
+    // as though it were one: the size, the fund and the stage on it belong to
+    // one of the items, or to two of them mixed. It keeps its headline and
+    // its summary and is never shown as "Firm $X".
+    const roundup = isRoundupArticle(best)
+    const size = !roundup && best.fundSizeUsdMillions && !isLikelyAumLeak(best.fundSizeUsdMillions, best.fundName)
       ? best.fundSizeUsdMillions
       : null
     const firstSeen = group
@@ -244,9 +256,9 @@ export function buildStories(rows: Row[]): Story[] {
       sizeUsdM: size,
       coverage,
       source: normalizeSourceName(best.sourceName),
-      closeType: best.closeType,
-      leadEligible: placement.leadEligible,
-      roundup: isRoundup(best.title, best.headlineEntities),
+      closeType: roundup ? null : best.closeType,
+      leadEligible: placement.leadEligible && !roundup,
+      roundup,
       summary: best.tldr,
     }
     stories.push({
@@ -258,7 +270,7 @@ export function buildStories(rows: Row[]): Story[] {
       assetClasses,
       eventType: best.eventType,
       firmName: best.firmName,
-      fundName: best.fundName,
+      fundName: roundup ? null : best.fundName,
       personName: best.personName,
       geography: best.geography,
       entities: best.headlineEntities,

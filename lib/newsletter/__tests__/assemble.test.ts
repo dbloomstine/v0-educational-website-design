@@ -4,6 +4,7 @@ import {
   plainHeadline, rowToArticle,
 } from '../query-articles'
 import { cleanHeadline, splitHeadlineByEntities } from '@/lib/news/constants'
+import { buildSubject } from '../send-daily'
 
 let seq = 0
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -115,6 +116,19 @@ describe('assembleNewsletter — sections', () => {
     ], noMemory)
     const hedge = content.groups.find((g) => g.category === 'hedge')!.articles
     expect(hedge.map((a) => [a.firmName, a.leadEligible])).toEqual([['Palmer Square', true], ['SoMa Equity Partners', false]])
+  })
+
+  it('a column of several items runs after the raises, whatever size its row carries, and names no subject line', () => {
+    // 2026-10-05: the column's row held $707M, one item's figure, and would
+    // have headed its section and the subject line of the next edition.
+    const content = assembleNewsletter([
+      row({ title: 'Field Notes: Farm Credit Canada eyes private capital partnerships for C$1bn fund; Permanent crops ‘abyss has a floor,’ says AgIS Capital', event_type: 'fund_launch', firm: 'Farm Credit Canada', fund: 'Area One Farms Fund V', size: 707, ents: ['Farm Credit Canada', 'Mondelez Canada'], source_name: 'Agri Investor', tldr: 'Farm Credit Canada eyes private capital partnerships for C$1 billion ($707M) fund; Area One Farms Fund V secured Mondelez Canada backing.' }),
+      row({ title: 'Stride closes $550M sophomore fund', event_type: 'fund_close', firm: 'Stride', size: 550, close: 'final_close', source_name: 'Law360 Private Equity' }),
+      row({ title: 'Ruya Ventures closes debut deep tech fund at $50m', event_type: 'fund_close', firm: 'Ruya Ventures', size: 50, close: 'final_close', source_name: 'AltAssets' }),
+    ], noMemory)
+    const pe = content.groups.find((g) => g.category === 'PE')!.articles
+    expect(pe.map((a) => [a.firmName, a.leadEligible])).toEqual([['Stride', true], ['Ruya Ventures', true], ['Farm Credit Canada', false]])
+    expect(buildSubject(content)).toBe('Stride, Ruya Ventures + 1 more')
   })
 })
 

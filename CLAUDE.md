@@ -567,6 +567,15 @@ Why the second exists: "EQT Agreed to Sell Korea's Acuon Group…" (terms not di
 - `npx tsx scripts/amount-replay.ts --pool pool.json --row <id>` sends a past call through the classifier as it is now, against a pretend database, and prints was/now for each article. About four cents a batch. Use it before changing the prompt or either check.
 - The reader in `amount-guard.ts` is deliberately generous about how a figure may be written ("$249mln", "US$30 bil", "Rs. 1,200 crores", "£345.6 deal", "Sh64.5bn", "$4-5 billion"). A figure the article states in a form the reader misses costs one extra call and can drop a true size, so a new misread belongs in `amount-guard.test.ts`.
 
+### Roundups: several stories under one headline — `isRoundup` in `lib/newsletter/story-links.ts`
+
+Some rows are not one story: PE Hub's daily wire ("A backs X; B to acquire Y"), AltAssets' "Deal Roundup:", and columns under their own name ("Field Notes: A; B", "Loan Note:", "Term Sheet:", "Blueprint: A, B and more"). The classifier writes **one** record for such a row, and the record can pair one item's firm and size with another item's fund. On 2026-10-05 a Field Notes column led the front page as "Farm Credit Canada · $707M · Launch" with a fund name from an item its headline did not carry.
+
+- A roundup is known three ways: its column label (`COLUMN_LABEL`, a list), its outlet (`WIRE_OUTLETS`: a PE Hub headline with a semicolon is always the wire), or a later clause that opens with a named party the first clause never mentions. **A semicolon alone is not the test** ("TPG Gets $10 Billion for Climate PE Fund; to Close for New Cash" is one story), and neither is a lead-in or a closing "and more". Pass the outlet: use `isRoundupArticle(article)`.
+- A roundup keeps its headline and summary and nothing else: no size, fund or stage (`buildStories`), never `leadEligible`, never the lead, a top story, a firm page, a league row or a name in the subject line. In the email it runs last in its section. On the site it is a story at all only when none of its items has a row of its own **that is shown**; the email drops it when any row of the day tells one of its items.
+- `npx tsx scripts/roundup-audit.ts --save-pool pool.json` (read-only; `--pool` re-runs offline) lists lead-ins and outlets that look like columns the list does not know, and every semicolon headline still read as one story. Read them by eye before adding a label; `scripts/replay-editions.ts` shows what a change does to past editions.
+- Still read as one story: an unlabelled two-item headline from an outlet that is not on the list (one in a hundred days: AltAssets, "Apollo, KKR seal €3bn Bayer…; Aurelius agrees $323m Hain unit carve-out").
+
 ### Newsletter content pipeline — `lib/newsletter/query-articles.ts`
 
 (This is how stories are _selected_; the template section above is how they're _rendered_.) Stages in order:

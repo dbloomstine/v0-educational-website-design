@@ -125,6 +125,44 @@ describe('roundups and digests', () => {
   it('does not mistake a single story with a semicolon for a wire', () => {
     expect(isRoundup('TPG Gets $10 Billion for Climate PE Fund; to Close for New Cash', ['TPG'])).toBe(false)
     expect(isRoundup('IIT-M & Unicorn India hit ₹450 cr first close for its fund; Backs 4 deep-tech startups', ['IIT Madras', 'Unicorn India'])).toBe(false)
+    // One-story headlines with a semicolon from the hundred days to 2026-10-05.
+    expect(isRoundup('InfraRed-Managed Funds Agreed to Acquire Hector Rail; HICL to Invest About £68 Million', ['InfraRed Capital Partners', 'Hector Rail AB', 'Ancala'], 'HedgeCo Insights')).toBe(false)
+    expect(isRoundup('Sofia-based LAUNCHub Ventures secures €65 million first close of Fund III; targets €75 million+', ['LAUNCHub Ventures'], 'EU-Startups')).toBe(false)
+    expect(isRoundup('Korea Growth Fund Selects 7 GPs Including STIC, Dominus, and Korea Investment Partners for Second Round; Targets $1.1 Billion Fundraising', ['Korea Growth Fund', 'STIC', 'Dominus', 'Korea Investment Partners'], 'finance.biggo.com')).toBe(false)
+    expect(isRoundup('Korea Venture Investment Corp. Wins First Fund Management License in Singapore; K-Global Venture Fund to Launch in H2', ['Korea Venture Investment Corp.'], 'finance.biggo.com')).toBe(false)
+    expect(isRoundup('StepStone raises $1.7 billion; its infrastructure fund is deployed across 26 deals', ['StepStone'], 'Stock Titan')).toBe(false)
+    expect(isRoundup('CFTC Proposal Would Restore CPO and CTA Registration Exemptions for SEC-Registered Advisers; Comments Due October 5', ['CFTC', 'SEC'], 'JD Supra Securities Law')).toBe(false)
+  })
+  it('knows the columns that run several items under their own name (Field Notes, 2026-10-05)', () => {
+    // The row that led the front page as a $707M fund launch: its second item opens with no party's name.
+    expect(isRoundup('Field Notes: Farm Credit Canada eyes private capital partnerships for C$1bn fund; Permanent crops ‘abyss has a floor,’ says AgIS Capital', ['Farm Credit Canada', 'Mondelez Canada'], 'Agri Investor')).toBe(true)
+    expect(isRoundup('Field Notes: Homestead holds first close on $350m debut credit fund; US farmland returns to positive territory in Q2', ['Homestead Capital'], 'Agri Investor')).toBe(true)
+    // Items in lower case, items joined by commas, an item after "while": the label is the tell.
+    expect(isRoundup('Loan Note: Fundraising data reveals strong institutional support; senior hire for Silver Point', ['Silver Point Capital'], 'pei-privatecredit.com')).toBe(true)
+    expect(isRoundup('Term Sheet: Mubadala’s credit expansion; Deloitte’s debt predictions; Miami’s construction charge', ['Mubadala'], 'pei-privaterealestate.com')).toBe(true)
+    expect(isRoundup('Blueprint: GPIF appoints real estate chief; our first-ever capital advisory ranking; REITs’ private funds push and more', ['GPIF'], 'PERE')).toBe(true)
+    expect(isRoundup('Blueprint: BGO’s APAC ambition, UK build-to-rent momentum and more', ['BGO'], 'pei-privaterealestate.com')).toBe(true)
+    expect(isRoundup('ABF Deal Digest: Bci closes US$65m NAV facility, while Blacktree launches SBA platform', ['Bci'], 'Structured Credit Investor')).toBe(true)
+    expect(isRoundup('Deals in brief: Buddy Bites raises Series A funding, KCP reaches first close for two investment vehicles, Chandra Asri to acquire Cycle & Carriage businesses, and more', ['KCP'], 'KrASIA')).toBe(true)
+  })
+  it('does not take a lead-in, or a closing "and more", for a column', () => {
+    expect(isRoundup('Investor Intentions: NYSTRS sets private equity pacing for 2027', ['NYSTRS'], 'Private Equity International')).toBe(false)
+    expect(isRoundup('Real assets briefs: Ares, PSP Investments launch $2.4bn logistics JV', ['Ares', 'PSP Investments'], 'Alternatives Watch')).toBe(false)
+    expect(isRoundup('A new era of data center infrastructure: The market has been attracting extraordinary investment; new research shows the momentum is durable', [], 'Institutional Real Estate, Inc.')).toBe(false)
+    expect(isRoundup('Bain Capital Ventures closes on $1.6bn for Fund XI, targeting AI infrastructure and more', ['Bain Capital Ventures', 'Adams Street Partners'], 'Venture Capital Journal')).toBe(false)
+    expect(isRoundup('Blueprint Equity Hires Nine Across Investing, Value Creation and AI', ['Blueprint Equity'], 'Private Equity Professional')).toBe(false)
+  })
+  it('reads every PE Hub headline with a semicolon as its wire, whatever names the classifier listed', () => {
+    // Stored with a third firm's acquisition (Main Capital buying Qbees) as its summary: neither clause names it.
+    const wire = 'Hg to debut in Greece with ERP and business software provider ES1; Elvaston makes first deal in Poland with warehouse management systems company'
+    expect(isRoundup(wire, ['Main Capital Partners', 'Qbees'], 'PE Hub')).toBe(true)
+    expect(isRoundup(wire, ['Main Capital Partners', 'Qbees'])).toBe(false) // …which is why the outlet is asked
+    // A second item that names no party at all.
+    expect(isRoundup('Alpine backs ‘large and growing’ UK hard facilities management market with Eight Group launch; Take-private deals in focus', ['Alpine Investors'], 'PE Hub')).toBe(true)
+    expect(isRoundup('Music deals in focus after Pophouse acquires stake in Sia’s master music rights; Forward Consumer Partners featured in They Said It', ['Pophouse'], 'pehub.com')).toBe(true)
+    // PE Hub's ordinary headlines are one story.
+    expect(isRoundup('Frazier Healthcare to acquire health tech firm MatrixCare', ['Frazier Healthcare', 'MatrixCare'], 'PE Hub')).toBe(false)
+    expect(isRoundup('Fusion Capital-backed Relevant Solutions acquires Conrad Kacsik Instrument Systems', ['Fusion Capital'], 'PE Hub')).toBe(false)
   })
   it('drops recurring columns', () => {
     expect(isDigest('The Secondary Brief / Friday, 18 September 2026: ECP files its third continuation fund')).toBe(true)

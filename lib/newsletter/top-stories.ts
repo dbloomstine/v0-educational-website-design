@@ -19,8 +19,7 @@
  * Pure: no I/O.
  */
 import type { ArticleGroup, NewsletterArticle } from './query-articles'
-import { isLikelyAumLeak } from './query-articles'
-import { isRoundup } from './story-links'
+import { isLikelyAumLeak, isRoundupArticle } from './query-articles'
 import { storyWeight, type StoryKind } from '@/lib/news/stories'
 import { normalizeSourceName } from '@/lib/news/constants'
 
@@ -77,7 +76,7 @@ export function pickTopStories(groups: ArticleGroup[], total: number): TopPick[]
   const pool = groups
     .flatMap((g) => g.articles.map((article) => ({ article, category: g.category, label: g.label, kind: KIND_OF_CATEGORY[g.category] ?? ('fundraising' as StoryKind) })))
     // A multi-story wire is filler, never a lead.
-    .filter((p) => !isRoundup(p.article.title, p.article.headlineEntities))
+    .filter((p) => !isRoundupArticle(p.article))
     .map((p) => ({ ...p, weight: weightOf(p.article, p.kind) }))
 
   const picked: (typeof pool)[number][] = []

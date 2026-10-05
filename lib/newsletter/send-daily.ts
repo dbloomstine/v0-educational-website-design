@@ -10,6 +10,7 @@
 
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles, isLikelyAumLeak } from './query-articles'
+import { isRoundup } from './story-links'
 import { renderNewsletterEmail } from './email-template'
 import { queryEventFeed } from '@/lib/events/api'
 import type { IndustryEvent } from '@/lib/events/types'
@@ -469,6 +470,9 @@ export function buildSubject(content: {
       eventType: string | null
       /** false for wind-downs, CLO pricings, LP commitments — never a lead. */
       leadEligible?: boolean
+      /** With the names and the outlet, a multi-story wire is recognised and left out. */
+      headlineEntities?: string[]
+      sourceName?: string | null
     }[]
   }[]
   totalArticles: number
@@ -497,6 +501,9 @@ export function buildSubject(content: {
     for (const article of group.articles) {
       seq++
       if (!article.firmName) continue
+      // A wire's firm is the firm of one of its several items. The wire runs,
+      // at the foot of its section; it is not a name to open the email on.
+      if (article.headlineEntities && isRoundup(article.title, article.headlineEntities, article.sourceName ?? null)) continue
       const name = subjectFirmName(article.firmName)
       if (!name) continue
       // Not names a reader would recognise as a firm: a description the

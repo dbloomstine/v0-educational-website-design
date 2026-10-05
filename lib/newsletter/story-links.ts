@@ -131,17 +131,51 @@ export function dealStage(title: string): 0 | 1 | 2 {
 }
 
 /**
+ * Columns that run several items under their own name, whatever joins the
+ * items: "Field Notes: A; B" (Agri Investor), "Loan Note: A; b" (Private Debt
+ * Investor), "Term Sheet: A; B; C" and "Blueprint: A, B and more" (PERE).
+ *
+ * The classifier reads such a column as one article and writes one record
+ * for it, and the record can pair one item's firm and size with another
+ * item's fund. 2026-10-05: "Field Notes: Farm Credit Canada eyes private
+ * capital partnerships for C$1bn fund; Permanent crops ‘abyss has a floor,’
+ * says AgIS Capital" was stored as Farm Credit Canada launching the $707M
+ * "Area One Farms Fund V" (a fund from an item the headline does not even
+ * name), and led the front page as "$707M · Launch". The test on names
+ * below let it through: "Permanent crops" is not a party.
+ *
+ * A list of labels, because a label cannot be told from the lead-in to one
+ * story ("United States: SEC Proposes…; Comments Due October 5"), and neither
+ * can a closing "and more" ("…closes on $1.6bn for Fund XI, targeting AI
+ * infrastructure and more"). `scripts/roundup-audit.ts` shows a new column.
+ */
+const COLUMN_LABEL = /^\s*(field notes|loan note|term sheet|blueprint|abf deal digest|investment roundup|deals in brief)\s*:/i
+
+/**
+ * Outlets whose headline with a semicolon is their daily wire and never one
+ * story. All 138 such PE Hub headlines in the hundred days to 2026-10-05
+ * were; the test on names below caught 99. It misses a wire whose later item
+ * opens with a firm the classifier did not list ("…; Elvaston makes first
+ * deal in Poland…", stored with a third firm's acquisition as its summary) or
+ * with no firm at all ("…; Take-private deals in focus").
+ */
+const WIRE_OUTLETS = new Set(['pe hub', 'pehub.com'])
+
+/**
  * A digest of several unrelated stories under one headline — PE Hub's daily
- * wire ("A backs X; B to acquire Y; C hires Z") and "Deal Roundup:" columns.
+ * wire ("A backs X; B to acquire Y; C hires Z"), "Deal Roundup:" and the
+ * columns above.
  *
  * A semicolon alone is not enough: "TPG Gets $10 Billion for Climate PE Fund;
- * to Close for New Cash" is one story. A wire is recognised by a later clause
- * that opens with a different named party.
+ * to Close for New Cash" is one story. Away from the outlets and columns that
+ * are known, a wire is recognised by a later clause that opens with a
+ * different named party.
  */
-export function isRoundup(title: string, entityNames: string[] = []): boolean {
-  if (/^\s*deal roundup\b/i.test(title)) return true
+export function isRoundup(title: string, entityNames: string[] = [], sourceName: string | null = null): boolean {
+  if (/^\s*deal roundup\b/i.test(title) || COLUMN_LABEL.test(title)) return true
   const clauses = title.split(';').map((c) => c.trim()).filter((c) => c.split(/\s+/).length >= 3)
   if (clauses.length < 2) return false
+  if (WIRE_OUTLETS.has((sourceName ?? '').trim().toLowerCase())) return true
   const first = ` ${entityKey(clauses[0])} `
   const firstTokens = entityNames
     .map((n) => entityKey(n).split(' ')[0])

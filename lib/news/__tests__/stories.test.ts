@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { buildStories, composeFrontPage, rankTop, storyHeat, type Story } from '../stories'
 import { SECTIONS, homeSectionFor, storyInSection } from '../sections'
 import { kickerLabel, sizeLabel, stageLabel, timeLabel } from '../format'
+import { leagueRejection } from '../league'
 
 let seq = 0
 const uuid = () => `00000000-0000-4000-8000-${String(++seq).padStart(12, '0')}`
@@ -89,6 +90,70 @@ describe('buildStories', () => {
     ])
     expect(s.leadEligible).toBe(false)
     expect(stageLabel(s)).toBeNull()
+  })
+
+  // 2026-10-05, the front page's top story: "$707M · Launch". The row is a
+  // column of four items; it carried the first item's firm and size and the
+  // second item's fund.
+  const fieldNotes = () => row({
+    title: 'Field Notes: Farm Credit Canada eyes private capital partnerships for C$1bn fund; Permanent crops ‘abyss has a floor,’ says AgIS Capital',
+    event_type: 'fund_launch', firm: 'Farm Credit Canada', fund: 'Area One Farms Fund V', size: 707, ents: ['Farm Credit Canada', 'Mondelez Canada'],
+    fund_categories: ['PE'], source_name: 'Agri Investor',
+    tldr: 'Farm Credit Canada eyes private capital partnerships for C$1 billion ($707M) fund; Area One Farms Fund V secured Mondelez Canada backing.',
+  })
+
+  it('a column of several items carries no size, fund or stage, and never leads (Field Notes, 2026-10-05)', () => {
+    const stories = buildStories([
+      fieldNotes(),
+      row({ title: 'Palmer Square raises $241m for Excelsior hedge fund', event_type: 'capital_raise', firm: 'Palmer Square', size: 241, fund_categories: ['hedge'], source_name: 'Hedgeweek' }),
+    ])
+    const column = stories.find((s) => s.headline.startsWith('Field Notes'))!
+    expect(column.roundup).toBe(true)
+    expect([column.sizeUsdM, column.fundName, column.closeType, column.leadEligible]).toEqual([null, null, null, false])
+    expect(stageLabel(column)).toBeNull()
+    expect(leagueRejection(column)).toBe('multi-story wire')
+    // It keeps what is true of the column as a whole.
+    expect(column.summary).toMatch(/^Farm Credit Canada eyes/)
+    const front = composeFrontPage(stories, NOW)
+    expect(front.lead?.firmName).toBe('Palmer Square')
+    expect(front.top.map((s) => s.id)).not.toContain(column.id)
+  })
+
+  it('a column is not a second story when one of its items has a row of its own on the page', () => {
+    const stories = buildStories([
+      row({ title: 'Viresco Group targets A$500m for debut Australian farmland fund', event_type: 'capital_raise', firm: 'Viresco Group', fund: 'Queensland Farmland Fund', size: 330, close: 'target', source_name: 'Agri Investor' }),
+      row({ title: 'Field Notes: Viresco Group targets A$500m for debut farmland fund; Family-owned cold storage to benefit from nutrient density demand', event_type: 'capital_raise', firm: 'Viresco Group', fund: 'Queensland Farmland Fund', size: 330, close: 'target', source_name: 'Agri Investor' }),
+    ])
+    expect(stories.map((s) => s.headline)).toEqual(['Viresco Group targets A$500m for debut Australian farmland fund'])
+    expect(stories[0].memberIds).toHaveLength(1) // the column is not inside the story either: it lends it nothing
+  })
+
+  it('a wire still runs when the only row that tells its item was turned away by the quality gate', () => {
+    // 2026-08-06: PE Hub's own article on the deal ends "deal valuation not
+    // disclosed" and has no size, which the gate reads as a placeholder.
+    const stories = buildStories([
+      row({ title: 'Partners Group to acquire Aroma-Zone from Eurazeo', event_type: 'acquisition', firm: 'Partners Group', ents: ['Partners Group', 'Aroma-Zone', 'Eurazeo'], tldr: 'Partners Group acquires Aroma-Zone (beauty/wellness brand founded 1999) from Eurazeo; deal valuation not disclosed.' }),
+      row({ title: 'Partners Group in talks to buy beauty biz Aroma-Zone from Eurazeo; CVC, Veritas Capital vie for Bodycote', event_type: 'acquisition', firm: 'Partners Group', ents: ['Partners Group', 'Aroma-Zone', 'Eurazeo'], tldr: 'Partners Group is in talks to buy Aroma-Zone from Eurazeo; CVC and Veritas Capital are bidding for Bodycote.' }),
+    ])
+    expect(stories).toHaveLength(1)
+    expect(stories[0].roundup).toBe(true)
+    expect(stories[0].headline).toMatch(/^Partners Group in talks/)
+  })
+
+  it('a PE Hub wire is a roundup whatever names the classifier listed for it', () => {
+    // Stored with Main Capital's purchase of Qbees, an item its headline does not carry.
+    const [s] = buildStories([
+      row({ title: 'Hg to debut in Greece with ERP and business software provider ES1; Elvaston makes first deal in Poland with warehouse management systems company', event_type: 'acquisition', firm: 'Main Capital Partners', ents: ['Main Capital Partners', 'Qbees'], tldr: 'Main Capital Partners acquired Qbees, German managed IT services and financial software provider; headline references separate Hg and Elvaston deals in Greece and Poland.' }),
+    ])
+    expect(s.roundup).toBe(true)
+    expect(rankTop([s], NOW, 1)).toHaveLength(0)
+  })
+
+  it('leaves a single story with a semicolon alone', () => {
+    const [s] = buildStories([
+      row({ title: 'TPG Gets $10 Billion for Climate PE Fund; to Close for New Cash', event_type: 'capital_raise', firm: 'TPG', fund: 'TPG Climate PE Fund', size: 10000, source_name: 'Bloomberg.com' }),
+    ])
+    expect([s.roundup, s.leadEligible, s.sizeUsdM, s.fundName]).toEqual([false, true, 10000, 'TPG Climate PE Fund'])
   })
 })
 
