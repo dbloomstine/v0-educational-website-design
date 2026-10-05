@@ -25,7 +25,9 @@ npm run lint     # Run ESLint
 npm run start    # Start production server
 ```
 
-Tests: `npx vitest run` (lib/news, lib/newsletter, lib/outreach). TypeScript build errors are ignored in `next.config.mjs` — rely on `next build` for type validation.
+Tests: `npx vitest run` (lib/news, lib/newsletter, lib/outreach). Types: `npx tsc --noEmit`.
+
+**CI (`.github/workflows/ci.yml`) compiles the site but does not prerender it.** It runs ESLint, `npx tsc --noEmit`, the tests and `next build --experimental-build-mode compile`. The Actions runner has no database, and the news pages fail to prerender without one on purpose (see "The loaders throw" below). Vercel runs the full build, with the database, on every pull request and push: its check is the one that covers prerendering and the `○ ● ƒ` table. Do not get CI green by making a loader return empty when the database is missing, and do not give Actions the database keys — the loaders use the service-role key, and a build there would query the production database and write to `site_cache`. A local `npm run build` without `.env.local` fails the same way; that is expected.
 
 ## Design system (2026-10-01 redesign)
 

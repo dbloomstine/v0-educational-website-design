@@ -32,5 +32,17 @@ jobs:
       - name: Run tests
         run: npm run test:run
 
-      - name: Build
-        run: npm run build
+      # Compile only: bundle every route and load it, but do not prerender.
+      #
+      # Prerendering builds the news pages from the site's database, and they
+      # fail without it on purpose (a page that renders empty is cached empty:
+      # CLAUDE.md, "The loaders throw"). This runner has no database, and is not
+      # to be given one: the key the loaders need is the service-role key, and
+      # a build here would add its queries to a very small production database
+      # and store its results in the cache the live site reads.
+      #
+      # Vercel runs the full build, with the database, on every pull request
+      # and every push. That is the check for prerendering, and for the route
+      # table: the one printed here marks every page ƒ and means nothing.
+      - name: Build (compile only)
+        run: npx next build --experimental-build-mode compile
