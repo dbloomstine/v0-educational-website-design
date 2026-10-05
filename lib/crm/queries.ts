@@ -63,6 +63,37 @@ export interface DeskRow {
   origin_note: string | null
 }
 
+/**
+ * The columns the grid draws, filters, sorts or searches. Everything else on
+ * `desk_rows` is only ever shown in the drawer and is read one lead at a time
+ * by `fetchLeadDetail`.
+ *
+ * On 2026-10-05 the desk held 3,477 leads and `select *` sent 8.1 MB to the
+ * browser on every load; internal notes and the research summary alone were a
+ * quarter of it, for text nobody sees until a row is opened. At 385 new leads
+ * a night that grows by about a megabyte a day. Add a column here only when
+ * the grid itself needs it.
+ */
+export const GRID_COLUMNS = [
+  'id', 'lead_ref', 'work_state', 'priority', 'share_ok', 'target_raise',
+  'date_received', 'status', 'blocker', 'lead_type', 'service_line', 'created_at',
+  'firm_id', 'firm_name', 'domain', 'firm_type', 'strategy', 'firm_location',
+  'person_location', 'full_name', 'title', 'role_class', 'email', 'email_type',
+  'email_confidence', 'phone', 'linkedin', 'linkedin_verified', 'hold_note',
+  'source_name', 'source_org', 'source_type', 'touch_count', 'email_subject',
+  'email_body', 'draft_note', 'provisional', 'origin', 'origin_note',
+] as const satisfies readonly (keyof DeskRow)[]
+
+/** One row of the grid: `DeskRow` without the drawer-only text. */
+export type DeskListRow = Pick<DeskRow, (typeof GRID_COLUMNS)[number]>
+
+/** What the drawer adds when a row is opened. */
+export const DETAIL_COLUMNS = [
+  'id', 'notes', 'firm_notes', 'research_summary', 'share_ok_reason', 'firm_country',
+] as const satisfies readonly (keyof DeskRow)[]
+
+export type DeskDetail = Pick<DeskRow, (typeof DETAIL_COLUMNS)[number]>
+
 export interface ContactLogEntry {
   occurred_at: string
   event_type: string
@@ -112,18 +143,51 @@ function chunk<T>(items: T[], size: number): T[][] {
  * shows in the grid labelled as such so it cannot be mistaken for sendable.
  * Do not query `leads` directly for the grid.
  */
-export async function fetchDeskRows(): Promise<DeskRow[]> {
-  const rows = await fetchAllPages<DeskRow>(
-    'Lead Desk query',
-    (from, to) =>
-      getCrmAdmin()
-        .from('desk_rows')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .order('id', { ascending: true })
-        .range(from, to)
-  )
-  return rows
+export async function fetchDeskRows(): Promise<DeskListRow[]> {
+  const sb = getCrmAdmin()
+  const cols = GRID_COLUMNS.join(',')
+  // PostgREST caps a response at 1,000 rows, so the desk is read in pages
+  // (see fetchAllPages). The first page also asks for the total, and the
+  // remaining pages are then read side by side rather than one after another:
+  // the load takes two round trips however long the history gets, where it
+  // was one per thousand leads.
+  const page = (from: number) =>
+    sb
+      .from('desk_rows')
+      .select(cols, from === 0 ? { count: 'exact' } : undefined)
+      .order('created_at', { ascending: false })
+      .order('id', { ascending: true })
+      .range(from, from + PAGE_SIZE - 1)
+
+  const first = await page(0)
+  if (first.error) throw new Error(`Lead Desk query failed: ${first.error.message}`)
+  const total = first.count ?? first.data?.length ?? 0
+
+  const starts: number[] = []
+  for (let from = PAGE_SIZE; from < total; from += PAGE_SIZE) starts.push(from)
+  const rest = await Promise.all(starts.map(page))
+
+  const out = [...((first.data ?? []) as unknown as DeskListRow[])]
+  for (const r of rest) {
+    if (r.error) throw new Error(`Lead Desk query failed: ${r.error.message}`)
+    out.push(...((r.data ?? []) as unknown as DeskListRow[]))
+  }
+  // A lead written between two of those reads shifts every later page by one
+  // row, so one row can arrive twice. Keep the first copy of each.
+  const seen = new Set<string>()
+  return out.filter((r) => (seen.has(r.id) ? false : (seen.add(r.id), true)))
+}
+
+/** The drawer-only fields for one lead. Read when a row is opened. */
+export async function fetchLeadDetail(leadId: string): Promise<DeskDetail | null> {
+  const { data, error } = await getCrmAdmin()
+    .from('desk_rows')
+    .select(DETAIL_COLUMNS.join(','))
+    .eq('id', leadId)
+    .maybeSingle()
+
+  if (error) throw new Error(`Lead detail query failed: ${error.message}`)
+  return (data as unknown as DeskDetail | null) ?? null
 }
 
 export async function fetchContactLog(firmId: string): Promise<ContactLogEntry[]> {
