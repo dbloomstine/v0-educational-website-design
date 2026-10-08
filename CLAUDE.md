@@ -105,7 +105,7 @@ Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/cont
 /api/events/submit                      → Public event submissions → event_submissions (pending queue)
 /api/pipeline/circuit-send              → Cron (Mon 12:00 UTC): The Circuit weekly events digest. SHIPS DARK —
                                            previews to Danny until CIRCUIT_ENABLED=true; ?preview=1 returns HTML
-/api/newsletter/subscribe               → Email signup — single opt-in, sends welcome email
+/api/newsletter/subscribe               → Email signup — single opt-in, sends welcome email; stores where the visitor came from (see "Where subscribers come from")
 /api/newsletter/confirm                 → Legacy endpoint, kept alive for old confirmation links
 /api/newsletter/unsubscribe             → One-click unsubscribe
 /api/feedback                           → Inline feedback button on the news feed
@@ -459,6 +459,25 @@ A sponsor is a row in `sponsor_bookings` with a start and an end date. The morni
 - **With nobody booked** the email and the site show the house notice, "Your firm here" — a slim strip under the masthead / above the stories, and a framed card at the foot of the email. Its reader figure is counted, never typed.
 - **Never insert a test row in production**: it is live on the site within ten minutes and in the next send. Test with `sponsorOn()` in a unit test, or `/newsletter/sample`.
 - The site strip sits directly above the stories on `/`, `/news`, `/news/[section]`, `/story/[id]`, `/league-tables`, `/firms`, `/firm/[slug]` and `/events` — in view when the page loads, on Danny's instruction.
+
+## Where subscribers come from (2026-10-08)
+
+Every first signup records how the visitor arrived, so the owner can tell which surface produces subscribers.
+
+- **Captured** in the browser on the first page view of a session (`SignupSourceCapture` in the root layout → `lib/newsletter/signup-source.ts`), kept in `sessionStorage` under `fops_signup_src` (no cookie, no script, no banner), and sent as `attribution` by the three subscribe forms (`hero-subscribe`, `SubscribeWidget`, `MidFeedSubscribeCTA`). It is first-touch: later pages in the session do not change it.
+  - `source`: `utm_source` if present, else the referrer reduced to `tiktok`, `linkedin`, `instagram`, `facebook`, `x`, `google`, `bing`, `duckduckgo`, another site's bare host (`reddit.com`), or `direct` (no referrer, or our own site). `medium` and `campaign` come from `utm_medium` and `utm_campaign`. `path` is the first path landed on, without query or hash.
+  - Links already in the wild are read too: `?ref=fwd` (the "Forwarded to you?" link in the email) is `newsletter / email / forward`, `?ref=share` is `newsletter / share`, and the outreach emails' `?e=` link is `outreach / email`. A click from Gmail's website shows as `mail.google.com`, not `google`.
+- **Validated again on the server** (`sanitizeSignupSource`): lower-case; letters, digits, `.`, `-`, `_`; at most 40 characters (a path 120). Anything else is dropped, never stored.
+- **Stored** on `newsletter_subscribers` as `signup_source`, `signup_medium`, `signup_campaign`, `signup_landing_path` (`supabase/migrations/20261008_signup_source.sql`), at first signup only. A returning or re-subscribing address keeps what it has; rows from before the migration are null. If the insert fails because those columns do not exist yet, `lib/newsletter/insert-subscriber.ts` retries without them: a signup is never lost for want of a source, so the deploy and the migration can land in either order.
+- **Read** with `npx tsx --env-file=.env.local scripts/signup-sources.ts` (read-only, one query, counts only): subscribers by source / medium for the last 7, 30, 90 days and all time, split confirmed / unconfirmed / unsubscribed.
+- **Links to use** (a UTM link beats the referrer, and TikTok, Instagram and LinkedIn in-app browsers often send none, so always tag these):
+  - TikTok bio: `https://fundopshq.com/?utm_source=tiktok&utm_medium=bio`; a video's caption or pinned comment: `...&utm_medium=video&utm_campaign=<video-name>`
+  - Instagram bio: `https://fundopshq.com/?utm_source=instagram&utm_medium=bio`
+  - LinkedIn profile or post: `https://fundopshq.com/?utm_source=linkedin&utm_medium=bio` (or `post`)
+  - Facebook: `https://fundopshq.com/?utm_source=facebook&utm_medium=bio`; X: `?utm_source=x&utm_medium=bio`
+  - Land a visitor on a story or section instead: put the same query on that page (`https://fundopshq.com/news/private-equity?utm_source=tiktok&utm_medium=video`). Use lower-case words with dashes, no spaces.
+  - Search needs nothing (the referrer says `google`, `bing`, `duckduckgo`); a typed address is `direct`.
+- **Do not** add an analytics library or a cookie for this, log an address, or put a CHECK constraint on the columns (a constraint that disagreed with the route would refuse a signup). The privacy page says local storage "is never transmitted to our servers"; this sends a short source label with the signup, so that sentence wants a human edit when this ships.
 
 ## Social desk: posts made from the news engine (2026-10-03)
 

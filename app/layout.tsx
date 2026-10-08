@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter, DM_Sans, Fraunces, JetBrains_Mono, Newsreader, Libre_Franklin } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "sonner"
+import { SignupSourceCapture } from "@/components/signup-source-capture"
 import "./globals.css"
 
 // FundOpsHQ Brand Fonts:
@@ -164,6 +165,7 @@ export default function RootLayout({
           }}
         />
         <Analytics />
+        <SignupSourceCapture />
       </body>
     </html>
   )

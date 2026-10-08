@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { CheckCircle2, Loader2, ArrowRight, Mail } from 'lucide-react'
+import { signupSourceForRequest } from '@/lib/newsletter/signup-source'
 
 /**
  * Decode the `?e=<base64url>` query param that the outreach pipeline
@@ -74,7 +75,7 @@ export function HeroSubscribe() {
       const res = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify({ email: email.trim(), attribution: signupSourceForRequest() }),
       })
 
       if (!res.ok) {

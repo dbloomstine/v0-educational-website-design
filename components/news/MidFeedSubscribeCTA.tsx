@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Mail, CheckCircle2, Loader2, ArrowRight } from 'lucide-react'
+import { signupSourceForRequest } from '@/lib/newsletter/signup-source'
 
 /**
  * Mid-feed CTA card. Lives inside the NewsFeed render loop, injected
@@ -28,7 +29,7 @@ export function MidFeedSubscribeCTA() {
       const res = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify({ email: email.trim(), attribution: signupSourceForRequest() }),
       })
       if (!res.ok) {
         const data = await res.json()

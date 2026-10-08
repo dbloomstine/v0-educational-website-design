@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { Mail, CheckCircle2, Loader2 } from 'lucide-react'
+import { signupSourceForRequest } from '@/lib/newsletter/signup-source'
 
 export function SubscribeWidget() {
   const [email, setEmail] = useState('')
@@ -19,7 +20,7 @@ export function SubscribeWidget() {
       const res = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim() }),
+        body: JSON.stringify({ email: email.trim(), attribution: signupSourceForRequest() }),
       })
 
       if (!res.ok) {

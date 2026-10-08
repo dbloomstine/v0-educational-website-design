@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { renderWelcomeEmail } from '@/lib/newsletter/welcome-email'
+import { insertSubscriber } from '@/lib/newsletter/insert-subscriber'
+import { sanitizeSignupSource } from '@/lib/newsletter/signup-source'
 
 export async function POST(req: Request) {
   try {
@@ -47,24 +49,24 @@ export async function POST(req: Request) {
         .eq('id', existing.id)
 
       if (error) {
-        console.error('Failed to update subscriber:', error)
+        console.error('Failed to update subscriber:', error.code, error.message)
         return NextResponse.json({ error: 'Failed to subscribe' }, { status: 500 })
       }
       unsubscribeToken = existing.unsubscribe_token
     } else {
       // New subscriber — single opt-in, confirmed immediately
-      const { data: inserted, error } = await supabase
-        .from('newsletter_subscribers')
-        .insert({
-          email: trimmed,
-          status: 'confirmed',
-          confirmed_at: nowIso,
-        })
-        .select('unsubscribe_token')
-        .single()
+      // First signup only: this is where the source is written. A returning
+      // address (above) keeps the values it already has.
+      const { data: inserted, error } = await insertSubscriber(
+        supabase,
+        trimmed,
+        nowIso,
+        sanitizeSignupSource(body.attribution),
+      )
 
       if (error) {
-        console.error('Failed to insert subscriber:', error)
+        // Code and message only: an error's details can quote the address.
+        console.error('Failed to insert subscriber:', error.code, error.message)
         return NextResponse.json({ error: 'Failed to subscribe' }, { status: 500 })
       }
       unsubscribeToken = inserted.unsubscribe_token
