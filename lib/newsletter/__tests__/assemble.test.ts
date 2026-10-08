@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   assembleNewsletter, buildPriorExclusions, extractionMisaligned, isDealShaped, isWindDown,
-  plainHeadline, rowToArticle,
+  placeArticle, plainHeadline, rowToArticle,
 } from '../query-articles'
 import { cleanHeadline, splitHeadlineByEntities } from '@/lib/news/constants'
 import { buildSubject } from '../send-daily'
@@ -191,5 +191,56 @@ describe('assembleNewsletter — one hire, told with and without the name', () =
     const content = assembleNewsletter([again, other], memory)
     expect(section(content, 'people_moves')).toEqual(['VSS names chief financial officer'])
     expect(content.dropped?.find((d) => d.id === again.id)?.reason).toMatch(/ran before/)
+  })
+})
+
+describe('placeArticle — an allocator\'s commitment is not fund news (2026-10-01…08 audit)', () => {
+  const where = (title: string, o: Record<string, unknown>) => placeArticle(rowToArticle(row({ event_type: 'capital_raise', title, ...o })))?.section
+
+  it('files sovereign funds, state councils and pension acronyms under LP Commitments', () => {
+    expect(where('Norwegian wealth fund commits €1.2 billion to renewable energy infrastructure', { firm: 'Norwegian wealth fund', size: 1320, fund_categories: ['infrastructure'] })).toBe('lp_commitments')
+    expect(where('New Mexico SIC makes two real estate commitments - pei', { firm: 'New Mexico State Investment Council', fund_categories: ['real_estate'] })).toBe('lp_commitments')
+    expect(where('New Mexico adds over $1bn across bustling private markets', { firm: 'New Mexico', size: 1000 })).toBe('lp_commitments')
+    expect(where('N.Y. State Common allocates over $600m to U.S. real estate', { firm: 'N.Y. State Common', size: 600 })).toBe('lp_commitments')
+    expect(where('LACERA grows real assets portfolio with $200m commitment into Energy Capital fund', { firm: 'LACERA', fund: 'Energy Capital fund', size: 200 })).toBe('lp_commitments')
+    expect(where('Texas County & District adds $250 million to direct lending portfolio', { firm: 'Texas County & District', size: 250, fund_categories: ['credit'] })).toBe('lp_commitments')
+    expect(where('Investor Intentions: HFRRF reveals private equity pacing plan for 2027', { firm: 'HFRRF', size: 402 })).toBe('lp_commitments')
+    expect(where('Investor Intentions: Korea Venture Investment Corporation seeks domestic blind-pool VC funds for 2026', { firm: 'Korea Venture Investment Corporation', size: 23, fund_categories: ['VC'] })).toBe('lp_commitments')
+    expect(where('IFC raises $100m for Indian infra(2) - Infrastructure Investor', { firm: 'IFC', size: 100, fund_categories: ['infrastructure'] })).toBe('lp_commitments')
+  })
+
+  it('an allocator that "backs" a manager is a commitment, not a deal (Penn SERS, 10-07)', () => {
+    expect(where('Penn SERS backs new PE manager despite losses in asset class', { firm: 'Penn SERS' })).toBe('lp_commitments')
+    expect(where('PennSERS commits $130 million to buyout fund, co-investment sidecar', { firm: 'PennSERS', size: 130 })).toBe('lp_commitments')
+    // …but a direct investment by a big allocator, or a GP's backing, is still a deal.
+    expect(where('CPP Investments backs Prestige’s Indian hospitality platform with INR30bn', { firm: 'CPP Investments' })).toBe('deals')
+    expect(where('Riverside backs French medical device CDMO Medical Group', { firm: 'Riverside' })).toBe('deals')
+  })
+
+  it('a GP\'s raise that names its LP is a fund raise (Tishman Speyer, 10-06)', () => {
+    expect(where('Tishman Speyer Hits $395M Second Close of Korea Living Fund With German Pension Backing', { firm: 'Tishman Speyer', fund: 'Korea Living Fund', size: 395, close: 'interim_close', fund_categories: ['real_estate'] })).toBe('fund')
+    // An LP in the lead of the headline is still an LP story.
+    expect(where('German pension backs Tishman Speyer’s Korean residential fund', { firm: 'Tishman Speyer', fund: 'Tishman Speyer Korean Residential Fund', fund_categories: ['real_estate'] })).toBe('lp_commitments')
+  })
+
+  it('"to fund" is a verb: BC Partners financing LIV Golf is a deal (10-06)', () => {
+    expect(where('BC Partners Credit commits up to $300m to fund LIV Golf restructuring', { firm: 'BC Partners', size: 300, fund_categories: ['credit'] })).toBe('deals')
+    expect(where('Arkansas Teacher commits $200M to Ares Credit Fund', { firm: 'Ares', size: 200 })).toBe('lp_commitments')
+  })
+
+  it('does not mistake GP names for allocators', () => {
+    expect(where('Blackstone raises $10bn for Strategic Partners fund', { firm: 'Blackstone', size: 10000, close: 'final_close' })).toBe('fund')
+    expect(where('Texas Pacific Land raises $500m for energy fund', { firm: 'Texas Pacific Land', size: 500 })).toBe('fund')
+  })
+})
+
+describe('the email never opens on an allocator', () => {
+  it('leaves LP commitments out of the subject line', () => {
+    const content = assembleNewsletter([
+      row({ event_type: 'capital_raise', title: 'Norwegian wealth fund commits €1.2 billion to renewable energy infrastructure', firm: 'Norwegian wealth fund', size: 1320, fund_categories: ['infrastructure'] }),
+      row({ event_type: 'fund_close', title: 'Princeton Equity Group closes $1.3bn Fund III at hard cap', firm: 'Princeton Equity Group', size: 1300, close: 'hard_cap' }),
+    ], noMemory)
+    expect(buildSubject(content)).not.toMatch(/Norwegian/)
+    expect(buildSubject(content)).toMatch(/Princeton Equity/)
   })
 })

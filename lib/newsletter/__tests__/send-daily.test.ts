@@ -174,7 +174,7 @@ describe('buildSubject', () => {
     expect(subject).toBe('Niobrara, Sycamore, Breed VC')
   })
 
-  it('puts LP commitments last, after GP events and deals', () => {
+  it('never names an LP commitment, only GP events and deals', () => {
     const subject = buildSubject({
       totalArticles: 3,
       groups: [
@@ -183,7 +183,7 @@ describe('buildSubject', () => {
         group('PE', [{ firmName: 'Thoma Bravo', fundSizeUsdMillions: 100, eventType: 'capital_raise' }]),
       ],
     })
-    expect(subject).toBe('Thoma Bravo, Audax, Arkansas Teacher Retirement System')
+    expect(subject).toBe('Thoma Bravo, Audax + 1 more')
   })
 
   it('dedups repeated firms and strips legal suffixes and internal commas', () => {

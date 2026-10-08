@@ -91,6 +91,17 @@ describe('the top of the edition', () => {
     const top = pickTopStories(groups, 14)
     expect(top.filter((t) => t.article.firmName === 'Blackstone')).toHaveLength(1)
   })
+  it('never leads with an allocator\'s commitment, however large (New Mexico SIC led on 2026-10-04)', () => {
+    const groups = [
+      group('lp_commitments', 'LP Commitments', [
+        article({ title: 'New Mexico SIC makes two real estate commitments', firmName: 'New Mexico State Investment Council', eventType: 'capital_raise', fundSizeUsdMillions: 2000, leadEligible: false, sourceName: 'Pensions & Investments', alsoCoveredBy: ['PEI', 'IPE Real Assets'] }),
+      ]),
+      group('PE', 'Private Equity', [article({ title: 'Small Co closes $40m fund', firmName: 'Small Co', fundSizeUsdMillions: 40, closeType: 'final_close' })]),
+      group('people_moves', 'People Moves', filler(12, 'P')),
+    ]
+    const top = pickTopStories(groups, 14)
+    expect(top.map((t) => t.category)).not.toContain('lp_commitments')
+  })
   it('scales with the morning, and stands down on a thin one', () => {
     expect([40, 25, 24, 16, 15, 12, 11, 3].map(topCount)).toEqual([5, 5, 4, 4, 3, 3, 0, 0])
     const groups = [group('PE', 'Private Equity', filler(6, 'Thin'))]

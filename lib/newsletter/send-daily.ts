@@ -499,6 +499,9 @@ export function buildSubject(content: {
   const cands: Cand[] = []
   let seq = 0
   for (const group of content.groups) {
+    // An allocator is never the name a morning opens on: 2026-10-03 named
+    // "Norwegian wealth" beside Partners Group.
+    if (group.category === 'lp_commitments') continue
     const tier = tierFor(group.category)
     for (const article of group.articles) {
       seq++

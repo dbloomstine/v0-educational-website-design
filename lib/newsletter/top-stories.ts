@@ -75,8 +75,9 @@ export function pickTopStories(groups: ArticleGroup[], total: number): TopPick[]
   if (want === 0) return []
   const pool = groups
     .flatMap((g) => g.articles.map((article) => ({ article, category: g.category, label: g.label, kind: KIND_OF_CATEGORY[g.category] ?? ('fundraising' as StoryKind) })))
-    // A multi-story wire is filler, never a lead.
-    .filter((p) => !isRoundupArticle(p.article))
+    // A multi-story wire is filler, never a lead; so is an allocator's commitment
+    // (10-04 led with New Mexico's two real estate commitments).
+    .filter((p) => !isRoundupArticle(p.article) && p.category !== 'lp_commitments')
     .map((p) => ({ ...p, weight: weightOf(p.article, p.kind) }))
 
   const picked: (typeof pool)[number][] = []

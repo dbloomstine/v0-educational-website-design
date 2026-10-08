@@ -295,6 +295,8 @@ const LP_NAME_PATTERNS = [
   // words ending in these letters ("developers", "helpers"), and every real
   // pension acronym is upper-case.
   /\b[A-Z]{1,8}(?:STRS|SERS|PERS|CERS)\b/,
+  // …and the mixed-case ones: "PennSERS", "LACERA", "SBCERA".
+  /\b[A-Z][a-z]*[A-Z]{0,8}(?:SERS|PERS|STRS|CERS|CERA)\b/,
   /\bMass ?PRIM\b/i,
   // Named allocators the generic words above never reach. In the 2026-10
   // audit "La Caisse invests $75M in AlphaFixe", "British Business Bank backs
@@ -307,7 +309,26 @@ const LP_NAME_PATTERNS = [
   /\bKorea Investment Corp\b|\bKIC\b|\bNational Pension Service\b|\bGPIF\b|\bNorges\b|\bNBIM\b|\bPGGM\b|\bAPG\b/,
   /\bBritish Business Bank\b|\bEuropean Investment Fund\b|\bEIF\b|\bBritish International Investment\b/,
   /\bsovereign\b|\bcomptroller\b|\bborough\b|\bpensions?\b|\bfamily office\b/i,
+  // 2026-10-08 audit of 10-01…10-08: "Norwegian wealth fund" (the pattern above
+  // wants "sovereign"), "New Mexico State Investment Council", "N.Y. State
+  // Common", "Texas County & District", HFRRF, KVIC and IFC all ran as GP fund
+  // news, and three of them as top stories.
+  /\bwealth funds?\b|\bstate (investment (council|board)|common|treasur\w+)\b/i,
+  /\bTexas County\b|\bcount(y|ies)\b.*\b(district|retirement|employees)\b/i,
+  /\bKVIC\b|\bKorea Venture Investment\b|\bHFRRF\b/,
+  // Development-finance institutions allocate to funds like any LP.
+  /\b(IFC|EBRD|EIB|DFC|FMO|Proparco|IDB Invest)\b/,
 ]
+
+/**
+ * A firm_name that is only a US state ("New Mexico adds over $1bn across
+ * bustling private markets"): a state is an allocator, never a GP.
+ */
+const US_STATE_ONLY =
+  /^(?:the )?(?:state of )?(?:alabama|alaska|arizona|arkansas|california|colorado|connecticut|delaware|florida|georgia|hawaii|idaho|illinois|indiana|iowa|kansas|kentucky|louisiana|maine|maryland|massachusetts|michigan|minnesota|mississippi|missouri|montana|nebraska|nevada|new hampshire|new jersey|new mexico|new york|north carolina|north dakota|ohio|oklahoma|oregon|pennsylvania|rhode island|south carolina|south dakota|tennessee|texas|utah|vermont|virginia|washington|west virginia|wisconsin|wyoming)$/i
+
+/** PEI's "Investor Intentions:" column is always one allocator's plan, whatever acronym its firm_name carries. */
+const LP_COLUMN = /^Investor Intentions:/i
 
 /**
  * Service-provider detection for the dedicated Service Providers section
@@ -452,21 +473,47 @@ export interface NewsletterContent {
 
 const LP_VERB_PATTERN = /\b(commits?|allocates?|makes? [^,;]{0,24}(investment|commitment|allocation)|adds? [$€£]?[\d.]+\s?(m|bn|million|billion)?)\b[^,;]*\b(in|to|into)\b[^,;]*\b(funds?|strategy|account|mandate|vehicle)\b/i
 
+/**
+ * The allocator is named: by the row's firm_name, or by the "Investor
+ * Intentions:" column label. This is the strong test; a title that merely
+ * mentions a pension is the weak one (isLpCommitment).
+ */
+export function isLpByName(article: Pick<NewsletterArticle, 'eventType' | 'firmName' | 'title'>): boolean {
+  if (article.eventType !== 'capital_raise') return false
+  if (LP_COLUMN.test(article.title)) return true
+  const firm = article.firmName
+  return Boolean(firm && (US_STATE_ONLY.test(firm.trim()) || LP_NAME_PATTERNS.some((p) => p.test(firm))))
+}
+
+/**
+ * The part of a headline that is about its subject. "Tishman Speyer Hits $395M
+ * Second Close of Korea Living Fund With German Pension Backing" is a fund
+ * raise that names a backer; what follows with/from/via/by is not the subject.
+ */
+function headlineSubject(title: string): string {
+  const cut = title.search(/\b(with|from|via|by|alongside|amid|backed|backing)\b/i)
+  return cut > 0 ? title.slice(0, cut) : title
+}
+
 export function isLpCommitment(article: NewsletterArticle): boolean {
   if (article.eventType !== 'capital_raise') return false
   // Primary path: firm_name is the LP (e.g. "Arkansas Teacher Retirement System")
-  if (article.firmName && LP_NAME_PATTERNS.some((p) => p.test(article.firmName!))) {
-    return true
-  }
+  if (isLpByName(article)) return true
+  // A row with a close stage is a fund event whatever its headline says (as in
+  // isDealShaped): the second close of Tishman Speyer's Korea fund is a GP's
+  // raise even with a German pension named in the headline.
+  if (article.closeType && article.closeType !== 'launch') return false
   // Fallback: Claude sometimes extracts the underlying GP as firm_name on
   // stories like "Arkansas Teacher commits $200M to Ares Credit Fund". If
-  // an LP pattern appears in the title, treat it as an LP commitment.
-  if (LP_NAME_PATTERNS.some((p) => p.test(article.title))) {
+  // an LP pattern leads the title, treat it as an LP commitment.
+  if (LP_NAME_PATTERNS.some((p) => p.test(headlineSubject(article.title)))) {
     return true
   }
   // An allocator's verb pointed at someone else's vehicle: "Skandia makes
-  // GBP19m investment in Liontrust absolute return fund".
-  if (LP_VERB_PATTERN.test(article.title)) return true
+  // GBP19m investment in Liontrust absolute return fund". "To fund" is a
+  // verb, not a vehicle: "BC Partners Credit commits up to $300m to fund LIV
+  // Golf restructuring" is a financing.
+  if (LP_VERB_PATTERN.test(article.title.replace(/\bto fund\b/gi, 'to finance'))) return true
   return false
 }
 
@@ -714,14 +761,28 @@ export function plainHeadline(title: string, tldr: string | null, sourceName: st
  * — money moved, but no fund was raised — and they ran in the Private Equity
  * and Credit fund lists beside real closes. They belong in Deals.
  */
-const DEAL_SHAPED_TITLE =
-  /\b(takes? (a |an )?(\d+(\.\d+)?% |majority |minority |strategic |controlling )?stake|growth investment in|invests? in|backs\b(?!.*\bfunds?\b)|acquires?|to acquire|agrees? to (buy|sell)|ipo\b|take-private|financing package|credit facility|structured investment|growth financing|provides? [$€£]?[\d.]+|leads? [$€£]?[\d.,]+\s?(m|bn|million|billion)?\s?(raise|round))/i
+const DEAL_SHAPED_HARD =
+  /\b(takes? (a |an )?(\d+(\.\d+)?% |majority |minority |strategic |controlling )?stake|acquires?|to acquire|agrees? to (buy|sell)|ipo\b|take-private|financing package|credit facility|structured investment|growth financing)/i
+/**
+ * Verbs that mean a deal from a GP and an allocation from an LP: "Penn SERS
+ * backs new PE manager" is a pension's commitment, "Apax backs a software
+ * company" is a deal. An allocator's soft verb is a commitment only when the
+ * headline is about a manager or a strategy: "CPP Investments backs Prestige's
+ * hospitality platform" is still a direct investment.
+ */
+const DEAL_SHAPED_SOFT =
+  /\b(growth investment in|invests? in|backs\b(?!.*\bfunds?\b)|provides? [$€£]?[\d.]+|leads? [$€£]?[\d.,]+\s?(m|bn|million|billion)?\s?(raise|round))/i
+const MANAGER_WORDS = /\b(managers?|GPs?|sponsors?|strateg(y|ies)|mandates?|commitments?|allocations?)\b/i
+/** "BC Partners Credit commits up to $300m to fund LIV Golf restructuring": money to a named company, not a vehicle. */
+const FINANCES_A_COMPANY = /\b(commits?|pledges?|puts up)\b[^,;]{0,40}\bto fund (the |a |an )?[A-Z0-9]/
 
 export function isDealShaped(a: NewsletterArticle): boolean {
   if (storyFamily(a.eventType) !== 'fund') return false
   // A row with a close stage is a fund event whatever its headline says.
   if (a.closeType && a.closeType !== 'launch') return false
-  return DEAL_SHAPED_TITLE.test(a.title)
+  if (DEAL_SHAPED_HARD.test(a.title)) return true
+  if (isLpByName(a) && MANAGER_WORDS.test(a.title)) return false
+  return DEAL_SHAPED_SOFT.test(a.title) || FINANCES_A_COMPANY.test(a.title)
 }
 
 /**
