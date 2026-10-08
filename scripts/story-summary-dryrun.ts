@@ -30,9 +30,11 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname } from 'node:path'
 import { buildStories, type Story } from '../lib/news/stories'
 import { ALL_NEWSLETTER_TYPES } from '../lib/newsletter/query-articles'
-import { buildWriterInput, callWriter, judgeAnswer, prepareRows, realTextLength, THIN_CHARS, wordCount, SUMMARY_MODEL, type ModelCall, type PreparedRow, type SourceRow, type WriteOutcome } from '../lib/news/story-summary'
+import { buildWriterInput, callWriter, judgeAnswer, redoNote, prepareRows, realTextLength, THIN_CHARS, wordCount, SUMMARY_MODEL, type ModelCall, type PreparedRow, type SourceRow, type WriteOutcome } from '../lib/news/story-summary'
 
 const CALL_CAP = 20
+/** The most rewrite calls --redo makes, across runs. */
+const REDO_CAP = 6
 const DAYS = ['2026-10-07', '2026-10-08']
 
 function flag(name: string): string | undefined {
@@ -114,7 +116,7 @@ async function main() {
     console.log(`${p.kind.padEnd(8)} ${p.story.firstSeen.slice(0, 10)} outlets=${p.story.coverage.length + 1} real=${p.realChars} onFile=${p.textOnFile} ${p.story.headline.slice(0, 70)}`)
   }
   const replay = has('--replay')
-  if (!has('--run') && !replay) return console.log('\nPlan only. Add --run to call the model, or --replay to judge the saved answers again.')
+  if (!has('--run') && !replay && !has('--redo')) return console.log('\nPlan only. Add --run to call the model, or --replay to judge the saved answers again.')
 
   // Raw answers by the first 8 characters of the story's id.
   const saved: Record<string, ModelCall> = existsSync(answersPath) ? JSON.parse(readFileSync(answersPath, 'utf8')) : {}
@@ -130,7 +132,25 @@ async function main() {
     const id = pick.story.id.slice(0, 8)
     if (pick.kind === 'thin') { results.push({ pick, outcome: { status: 'thin' } }); continue }
     if (replay) {
-      results.push(saved[id] ? { pick, outcome: judge(pick, saved[id]) } : { pick, outcome: null, error: 'no saved answer' })
+      results.push(saved[id] ? { pick, outcome: judge(pick, saved[`${id}-redo`] ?? saved[id]) } : { pick, outcome: null, error: 'no saved answer' })
+      continue
+    }
+    // --redo: the rewrite the job asks for when a saved answer fails a check (at most REDO_CAP calls).
+    if (has('--redo')) {
+      const first = saved[id] ? judge(pick, saved[id]) : null
+      if (!saved[id] || !first || first.status !== 'rejected' || first.failures.length === 0 || saved[`${id}-redo`] || Object.keys(saved).filter((k) => k.endsWith('-redo')).length >= REDO_CAP) {
+        results.push(saved[id] ? { pick, outcome: judge(pick, saved[`${id}-redo`] ?? saved[id]) } : { pick, outcome: null, error: 'no saved answer' })
+        continue
+      }
+      try {
+        const raw = await callWriter(buildWriterInput(pick.prepared).user, key as string, fetch, { answer: saved[id].text, note: redoNote(first.failures) })
+        saved[`${id}-redo`] = raw
+        writeFileSync(answersPath, JSON.stringify(saved, null, 1))
+        results.push({ pick, outcome: judge(pick, raw) })
+      } catch (err) {
+        results.push({ pick, outcome: null, error: err instanceof Error ? err.message : String(err) })
+      }
+      console.log(`  ${id} redo: ${results[results.length - 1].outcome?.status ?? 'error'}`)
       continue
     }
     if (callsUsed() >= CALL_CAP) { results.push({ pick, outcome: null, error: `call cap ${CALL_CAP} reached` }); continue }

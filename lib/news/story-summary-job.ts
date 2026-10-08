@@ -22,9 +22,12 @@ export const WINDOW_HOURS = 48
  */
 export const RUN_BUDGET_MS = 240_000
 
-/** The kill switch. Off unless the variable is exactly "true". */
+/**
+ * The kill switch. On since 2026-10-08 (Danny: "go for it and do it with Sonnet"), so a deploy needs
+ * no setting to run it; STORY_SUMMARIES_ENABLED=false, and a redeploy, stops it before any read or call.
+ */
 export function storySummariesEnabled(env: Record<string, string | undefined> = process.env): boolean {
-  return env.STORY_SUMMARIES_ENABLED === 'true'
+  return (env.STORY_SUMMARIES_ENABLED ?? '').trim().toLowerCase() !== 'false'
 }
 
 /** `?limit=` may lower the cap for a manual run; nothing raises it. */
@@ -138,6 +141,7 @@ export async function runStorySummaries(deps: JobDeps, opts: RunOptions = {}): P
       const outcome = await deps.write(prepared)
       if (outcome.status === 'thin') { await deps.saveStatus(story.id, 'thin'); result.thin++; continue }
       for (const k of Object.keys(result.tokens) as (keyof Usage)[]) result.tokens[k] += outcome.usage[k]
+      result.calls += (outcome.calls ?? 1) - 1 // a rewrite is a call too, and counts toward the cap
 
       if (outcome.status === 'written') {
         await deps.saveWritten(story.id, outcome.summary, outcome.model)

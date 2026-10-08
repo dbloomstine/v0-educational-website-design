@@ -348,7 +348,7 @@ describe('parseWriterOutput and judgeAnswer', () => {
 describe('callWriter', () => {
   const ok = (text: string) => new Response(JSON.stringify({ content: [{ type: 'text', text }], stop_reason: 'end_turn', model: SUMMARY_MODEL, usage: { input_tokens: 10, output_tokens: 5, cache_read_input_tokens: 1000 } }), { status: 200 })
 
-  it('sends one story to claude-sonnet-5-5 with a cached system prompt and max_tokens 500', async () => {
+  it('sends one story to claude-sonnet-5-5 with a cached system prompt and max_tokens 700', async () => {
     let seen: { url: string; init: RequestInit } | null = null
     const fetchImpl = (async (url: string, init: RequestInit) => { seen = { url, init }; return ok('{"summary":"x","unsupported":[]}') }) as unknown as typeof fetch
     const call = await callWriter('STORY MATERIAL', 'sk-test', fetchImpl)
@@ -412,5 +412,49 @@ describe('which summary the page shows', () => {
   it('summaryParagraphs', () => {
     expect(summaryParagraphs('One  line\nwrapped.\n\n\nTwo.')).toEqual(['One line wrapped.', 'Two.'])
     expect(summaryParagraphs(undefined)).toEqual([])
+  })
+})
+
+// ─── one rewrite when a check fails ─────────────────────────────────────────
+
+describe('writeStorySummary asks for one rewrite', () => {
+  const answer = (summary: string) => new Response(JSON.stringify({
+    content: [{ type: 'text', text: JSON.stringify({ summary, unsupported: [] }) }], stop_reason: 'end_turn', model: 'claude-sonnet-5-5',
+    usage: { input_tokens: 100, output_tokens: 50, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 },
+  }), { status: 200 })
+
+  it('keeps a first answer that passes, with one call', async () => {
+    const { writeStorySummary } = await import('../story-summary')
+    const bodies: string[] = []
+    const fetchImpl = (async (_url: unknown, init?: { body?: unknown }) => { bodies.push(String(init?.body)); return answer(OPTION_CARE_SUMMARY) }) as unknown as typeof fetch
+    const out = await writeStorySummary(prepareRows(OPTION_CARE), 'k', fetchImpl)
+    expect(out.status).toBe('written')
+    expect(out.status !== 'thin' && out.calls).toBe(1)
+    expect(bodies).toHaveLength(1)
+  })
+
+  it('sends a failed answer back once, saying what failed, and judges the second', async () => {
+    const { writeStorySummary } = await import('../story-summary')
+    const bodies: string[] = []
+    const bad = OPTION_CARE_SUMMARY.replace('Clayton Dubilier & Rice', 'Carlyle Global Partners')
+    const fetchImpl = (async (_url: unknown, init?: { body?: unknown }) => { bodies.push(String(init?.body)); return answer(bodies.length === 1 ? bad : OPTION_CARE_SUMMARY) }) as unknown as typeof fetch
+    const out = await writeStorySummary(prepareRows(OPTION_CARE), 'k', fetchImpl)
+    expect(bodies).toHaveLength(2)
+    const second = JSON.parse(bodies[1]) as { messages: { role: string; content: string }[] }
+    expect(second.messages.map((m) => m.role)).toEqual(['user', 'assistant', 'user'])
+    expect(second.messages[2].content).toMatch(/Carlyle Global Partners/)
+    expect(out.status).toBe('written')
+    expect(out.status !== 'thin' && out.calls).toBe(2)
+    expect(out.status !== 'thin' && out.usage.input_tokens).toBe(200)
+  })
+
+  it('gives up after the one rewrite', async () => {
+    const { writeStorySummary } = await import('../story-summary')
+    let n = 0
+    const bad = OPTION_CARE_SUMMARY.replace('Clayton Dubilier & Rice', 'Carlyle Global Partners')
+    const fetchImpl = (async () => { n++; return answer(bad) }) as unknown as typeof fetch
+    const out = await writeStorySummary(prepareRows(OPTION_CARE), 'k', fetchImpl)
+    expect(n).toBe(2)
+    expect(out.status).toBe('rejected')
   })
 })

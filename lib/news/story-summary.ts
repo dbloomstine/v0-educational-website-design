@@ -28,7 +28,7 @@ import { figuresIn, foreignAmounts } from './amount-guard'
 // ─── Constants ──────────────────────────────────────────────────────────────
 
 export const SUMMARY_MODEL = 'claude-sonnet-5-5'
-export const SUMMARY_MAX_TOKENS = 500
+export const SUMMARY_MAX_TOKENS = 700
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages'
 
 /** Characters of one report's text (description and stored text together) the model is shown. */
@@ -414,7 +414,11 @@ export function checkNames(summary: string, source: string): string[] {
     seen.add(phrase)
 
     if (ws.length >= 2) {
-      if (!haystack.includes(padded(phrase))) problems.push(`name "${phrase}" is not in the source`)
+      // The phrase as written, or every word of it somewhere in the source: "US Treasury repo
+      // clearing" is the source's "repo clearing for US government bonds… the Treasury market".
+      // An acronym written out from memory still fails: its words are nowhere in the source.
+      const eachWord = ws.every((w) => sourceWords.includes(norm(w)))
+      if (!haystack.includes(padded(phrase)) && !eachWord) problems.push(`name "${phrase}" is not in the source`)
       continue
     }
     const w = ws[0]
@@ -596,7 +600,7 @@ export class StorySummaryApiError extends Error {
 }
 
 /** One story, one call. Plain fetch, as the classifier does. */
-export async function callWriter(user: string, apiKey: string, fetchImpl: typeof fetch = fetch): Promise<ModelCall> {
+export async function callWriter(user: string, apiKey: string, fetchImpl: typeof fetch = fetch, redo?: { answer: string; note: string }): Promise<ModelCall> {
   let response: Response
   try {
     response = await fetchImpl(ANTHROPIC_API_URL, {
@@ -607,7 +611,10 @@ export async function callWriter(user: string, apiKey: string, fetchImpl: typeof
         max_tokens: SUMMARY_MAX_TOKENS,
         // The prompt is the same on every call: cached for five minutes, so a run of twenty pays for it once.
         system: [{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }],
-        messages: [{ role: 'user', content: user }],
+        // A second go at the same story: the first answer, and what was wrong with it.
+        messages: redo
+          ? [{ role: 'user', content: user }, { role: 'assistant', content: redo.answer }, { role: 'user', content: redo.note }]
+          : [{ role: 'user', content: user }],
       }),
       signal: AbortSignal.timeout(60_000),
     })
@@ -693,9 +700,21 @@ export function judgeAnswer(call: Pick<ModelCall, 'text' | 'stopReason'>, input:
 
 export type WriteOutcome =
   | { status: 'thin' }
-  | (Judged & { usage: Usage; model: string })
+  | (Judged & { usage: Usage; model: string; /** Model calls made: 2 when a rewrite was asked for. */ calls?: number })
 
-/** Rows in, outcome out: thin before any call, otherwise one call and the checks. */
+/**
+ * What the model is told when its summary failed a check it can mend by rewriting. The checks stay
+ * as strict as they are; the model gets one chance to meet them, and is told exactly what was wrong.
+ */
+export function redoNote(failures: CheckFailure[]): string {
+  return [
+    'That summary cannot be used:',
+    ...failures.map((f) => `- ${f.detail}`),
+    'Write it again. Say the same facts in your own words and your own sentence order, so that no run of nine words matches any report. Use only names, numbers and facts that are in the reports above, and nothing about the reports themselves. Add no fact. Answer with the same JSON object.',
+  ].join('\n')
+}
+
+/** Rows in, outcome out: thin before any call; otherwise one call and the checks, and one rewrite if a check failed. */
 export async function writeStorySummary(
   rows: PreparedRow[],
   apiKey: string,
@@ -703,8 +722,13 @@ export async function writeStorySummary(
 ): Promise<WriteOutcome> {
   if (isThin(rows)) return { status: 'thin' }
   const input = buildWriterInput(rows)
-  const call = await callWriter(input.user, apiKey, fetchImpl)
-  return { ...judgeAnswer(call, input), usage: call.usage, model: call.model }
+  const first = await callWriter(input.user, apiKey, fetchImpl)
+  const judged = judgeAnswer(first, input)
+  if (judged.status === 'written' || judged.failures.length === 0) return { ...judged, usage: first.usage, model: first.model, calls: 1 }
+  const second = await callWriter(input.user, apiKey, fetchImpl, { answer: first.text, note: redoNote(judged.failures) })
+  const usage = { ...first.usage }
+  for (const k of Object.keys(usage) as (keyof Usage)[]) usage[k] += second.usage[k]
+  return { ...judgeAnswer(second, input), usage, model: second.model, calls: 2 }
 }
 
 // ─── The page ───────────────────────────────────────────────────────────────

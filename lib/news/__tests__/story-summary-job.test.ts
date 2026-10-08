@@ -24,12 +24,11 @@ const marks = (entries: [string, SummaryStatus][]) => new Map(entries)
 const ids = (xs: { id: string }[]) => xs.map((x) => x.id)
 
 describe('the kill switch and the cap', () => {
-  it('runs only when STORY_SUMMARIES_ENABLED is exactly "true"', () => {
-    expect(storySummariesEnabled({})).toBe(false)
-    expect(storySummariesEnabled({ STORY_SUMMARIES_ENABLED: 'false' })).toBe(false)
-    expect(storySummariesEnabled({ STORY_SUMMARIES_ENABLED: 'TRUE' })).toBe(false)
-    expect(storySummariesEnabled({ STORY_SUMMARIES_ENABLED: '1' })).toBe(false)
+  it('runs unless STORY_SUMMARIES_ENABLED says false', () => {
+    expect(storySummariesEnabled({})).toBe(true)
     expect(storySummariesEnabled({ STORY_SUMMARIES_ENABLED: 'true' })).toBe(true)
+    expect(storySummariesEnabled({ STORY_SUMMARIES_ENABLED: 'false' })).toBe(false)
+    expect(storySummariesEnabled({ STORY_SUMMARIES_ENABLED: ' FALSE ' })).toBe(false)
   })
   it('?limit= can lower the cap and never raise it', () => {
     expect(MAX_STORIES_PER_RUN).toBe(20)

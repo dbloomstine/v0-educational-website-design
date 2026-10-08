@@ -15,7 +15,7 @@ export const maxDuration = 300
  * Scheduled at :45, after ingest (:00), enrichment (:15) and classification
  * (:30), so a story is summarised from the text the earlier steps left.
  * SHIPS DARK: nothing is read, written or sent to the model until
- * STORY_SUMMARIES_ENABLED is exactly "true". At most 20 model calls a run
+ * STORY_SUMMARIES_ENABLED is "false" (the kill switch; on by default). At most 20 model calls a run
  * (?limit= can only lower that), one story per call.
  */
 export async function GET(req: Request) {
