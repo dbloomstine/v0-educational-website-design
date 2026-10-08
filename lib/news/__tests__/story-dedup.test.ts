@@ -552,3 +552,30 @@ describe('isSameStory — one hire, told with and without the name (2026-10-05 B
     expect(isSameStory({ ...pi, eventType: 'fund_launch' }, { ...aci, eventType: 'fund_launch', personName: null })).toBe(false)
   })
 })
+
+describe('isSameStory — leadership told in the abstract (Hines, 2026-10-02…05)', () => {
+  const move = (title: string, o: Record<string, unknown> = {}) => ({
+    title, firmName: 'Hines', fundName: null, fundSizeUsdMillions: null, eventType: 'executive_change', publishedDate: '2026-10-02', ...o,
+  })
+  const named = move('Hines Promotes Adam Hines to Co-CEO Alongside Laura Hines-Pierce', { personName: 'Adam Hines, Laura Hines-Pierce, David Steinbach, Alfonso Munk', personTitle: 'Co-CEO, Co-CEO, President, Global Chief Investment Officer' })
+  it('the vague headlines and the one that names the new co-CEO are one transition', () => {
+    const readies = move('Hines readies top leadership transitions')
+    const changes = move('Hines announces major leadership changes', { publishedDate: '2026-10-05' })
+    expect(isSameStory(readies, named)).toBe(true)
+    expect(isSameStory(changes, named)).toBe(true)
+    expect(isSameStory(changes, readies)).toBe(true)
+  })
+  it('a leadership headline is not a different hire at the firm, and not a week later', () => {
+    const readies = move('Hines readies top leadership transitions')
+    expect(isSameStory(readies, move('Hines hires Jane Doe as head of European acquisitions', { eventType: 'executive_hire', personName: 'Jane Doe', personTitle: 'Head of European Acquisitions' }))).toBe(false)
+    expect(isSameStory(move('Hines announces leadership transition', { publishedDate: '2026-10-12' }), named)).toBe(false)
+  })
+})
+
+describe('isSameStory — an accent is not a separator (LBP AM, 2026-10-02 and 10-05)', () => {
+  it('Stéphane Villemain, told by two outlets under two spellings of the firm and of him', () => {
+    const a = { title: 'LBP AM strengthens SRI team with hire', firmName: 'La Banque Postale Asset Management', fundName: null, fundSizeUsdMillions: null, eventType: 'executive_hire', personName: 'Stéphane Villemain' }
+    const b = { title: 'Ex-La Caisse sustainability exec joins LBP AM', firmName: 'LBP AM', fundName: null, fundSizeUsdMillions: null, eventType: 'executive_hire', personName: 'Stephane Villemain' }
+    expect(isSameStory(a, b)).toBe(true)
+  })
+})

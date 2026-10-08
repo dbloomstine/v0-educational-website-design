@@ -73,6 +73,21 @@ const WEAK_PREFIX = new Set([
   'general', 'royal', 'state', 'city', 'bank', 'the',
 ])
 
+/**
+ * "hp helicopters" is "high performance helicopters": every token of the
+ * shorter key is a token of the longer one, or the initials of the next
+ * run of its tokens. Only an acronym of two to four letters counts.
+ */
+function acronymMatches(short: string[], long: string[]): boolean {
+  let j = 0
+  for (const t of short) {
+    if (long[j] === t) { j++; continue }
+    if (t.length >= 2 && t.length <= 4 && j + t.length < long.length && long.slice(j, j + t.length).map((w) => w[0]).join('') === t) { j += t.length; continue }
+    return false
+  }
+  return j === long.length
+}
+
 /** Equal, or one is the leading tokens of the other ("metrics" ⊂ "metrics credit"). */
 export function keysMatch(a: string, b: string): boolean {
   if (!a || !b) return false
@@ -83,6 +98,18 @@ export function keysMatch(a: string, b: string): boolean {
 }
 
 /**
+ * The same party in two stories: keysMatch, or one spelled as an acronym.
+ * (Kept apart from keysMatch, which also addresses the firm pages.)
+ */
+function sameParty(a: string, b: string): boolean {
+  if (keysMatch(a, b)) return true
+  const [s, l] = a.length < b.length ? [a, b] : [b, a]
+  const st = s.split(' ')
+  const lt = l.split(' ')
+  return st.length >= 2 && st.length < lt.length && acronymMatches(st, lt)
+}
+
+/**
  * Collapse a key set to its roots, so a firm and its own fund ("kkr", "kkr
  * asia pacific infrastructure") count as one party, not two.
  */
@@ -90,12 +117,18 @@ function roots(keys: string[]): string[] {
   return keys.filter((k) => !keys.some((o) => o !== k && o.length < k.length && keysMatch(o, k)))
 }
 
-/** Distinct parties two stories have in common. */
+/**
+ * Distinct parties two stories have in common. Counted from both sides and the
+ * smaller taken: a firm and its own fund that do not prefix each other
+ * ("antin infrastructure", "antin nextgen infrastructure i") are two roots on
+ * one side and one party on the other, and counting from one side alone made
+ * the answer depend on which story was asked about.
+ */
 function sharedKeys(a: string[], b: string[]): number {
+  const ra = roots(a)
   const rb = roots(b)
-  let n = 0
-  for (const k of roots(a)) if (rb.some((o) => keysMatch(k, o))) n++
-  return n
+  const from = (x: string[], y: string[]) => x.filter((k) => y.some((o) => sameParty(k, o))).length
+  return Math.min(from(ra, rb), from(rb, ra))
 }
 
 /**
@@ -240,6 +273,52 @@ const contentJaccard = (a: string, b: string) => titleJaccard(a.replace(GLUE, ' 
 const FUND_VOCAB = /\b(funds?|raises?|raised|raising|closes?|closed|closing|first|final|second|third|debut|maiden|new|launch(es|ed)?|targets?|targeting|secures?|secured|hits?|holds?|announces?|announced|million|billion|capital|ventures?|partners|investments?)\b/gi
 const distinctiveJaccard = (a: string, b: string) => contentJaccard(a.replace(FUND_VOCAB, ' '), b.replace(FUND_VOCAB, ' '))
 
+/** What a deal headline says about the target once the parties and the deal's own verbs are set aside. */
+const DEAL_VOCAB = /\b(acquires?|acquired|acquisition|buys?|buying|bought|sells?|sale|strikes?|deal|inks?|agrees?|agreed|completes?|take-private|takeover|bid|offer|stake|majority|minority|billion|million|for|from|and|the|its|including|debt|more|add|to)\b/gi
+const descriptorWords = (title: string, keys: string[]): Set<string> => {
+  const skip = new Set(keys.flatMap((k) => k.split(' ')))
+  return new Set(
+    title.toLowerCase().replace(DEAL_VOCAB, ' ').replace(/[^a-z0-9\s]/g, ' ').split(/\s+/)
+      .filter((w) => w.length >= 4 && !skip.has(w) && !/^\d+$/.test(w)),
+  )
+}
+
+/**
+ * Two deals with ONE party in common are the same deal when they say so:
+ *   - the same stated price (within 2%, $100M or more) under a headline that
+ *     overlaps, as with "CD&R and
+ *     McKesson ink $5.8bn take-private deal for Option Care Health" and Law360's
+ *     "4 Firms Advise On $5.8B Option Care Health Take-Private Deal"; or
+ *   - headlines that are mostly the same words: "UBS to transfer Credit Suisse
+ *     fund administration businesses to Northern Trust" / "UBS to shed fund
+ *     administration business acquired through Credit Suisse merger"; or
+ *   - one of them names only the buyer, and describes the same target in two
+ *     or more words, within two days: "KKR (KKR) Acquires Fund Administrator
+ *     To Add More Recurring Fee Income" beside "KKR Strikes Deal to Buy
+ *     Private-Capital Fund Administrator Gen II".
+ * Two deals a sponsor does on one day share its name and little else.
+ */
+function sameDealOnePartyShared(a: StoryLike, b: StoryLike): boolean {
+  const words = contentJaccard(a.title, b.title)
+  const sameSize = !!a.fundSizeUsdMillions && !!b.fundSizeUsdMillions && a.fundSizeUsdMillions >= 100 && fundSizesMatch(a.fundSizeUsdMillions, b.fundSizeUsdMillions, 0.02)
+  if (sameSize && words >= 0.2) return true
+  if (words >= 0.3) return true
+  const [sparse, full] = a.entityKeys.length <= b.entityKeys.length ? [a, b] : [b, a]
+  if (sparse.entityKeys.length !== 1 || full.entityKeys.length < 2) return false
+  const gap = daysBetween(a.publishedDate, b.publishedDate)
+  if (gap !== null && gap > 2) return false
+  const mine = descriptorWords(sparse.title, sparse.entityKeys)
+  let shared = 0
+  descriptorWords(full.title, sparse.entityKeys).forEach((w) => { if (mine.has(w)) shared++ })
+  return shared >= 2
+}
+
+function daysBetween(a: string | null | undefined, b: string | null | undefined): number | null {
+  if (!a || !b) return null
+  const gap = Math.abs(Date.parse(`${String(a).slice(0, 10)}T12:00:00Z`) - Date.parse(`${String(b).slice(0, 10)}T12:00:00Z`)) / 86_400_000
+  return Number.isFinite(gap) ? Math.round(gap) : null
+}
+
 /**
  * Same story, by the names in it. `crossEdition` tightens the fund rule: over
  * several days one firm can genuinely announce two different vehicles, so two
@@ -269,7 +348,7 @@ export function sameStoryLoose(a: StoryLike, b: StoryLike, opts: { crossEdition?
   // enough on its own: "DCC Energy shareholders approve takeover by KKR and
   // ECP" and a different auction that also names KKR and ECP are two deals.
   if (famA === 'deal' && famB === 'deal') {
-    if (shared < 2) return false
+    if (shared < 2) return shared === 1 && sameDealOnePartyShared(a, b)
     if (!opts.crossEdition) return true
     return (
       shared >= 3 ||

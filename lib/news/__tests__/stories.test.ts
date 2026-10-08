@@ -304,3 +304,20 @@ describe('one hire, told with and without the name (Barings, 2026-10-05)', () =>
     expect(stories).toHaveLength(2)
   })
 })
+
+describe('one raise, re-reported by another outlet five days on (DIG Ventures, 2026-10-01 and 10-06)', () => {
+  it('is one story when it names the same fund, however the firm is spelled', () => {
+    const stories = buildStories([
+      row({ title: 'DIG Ventures raises $120m third fund to target Europe’s AI infrastructure startups', event_type: 'fund_close', firm: 'DIG Ventures', fund: 'DIG Ventures Fund III', size: 120, close: 'final_close', fund_categories: ['VC'], published_date: '2026-10-01', created_at: '2026-10-01T11:00:00Z', source_name: 'AltAssets' }),
+      row({ title: 'Dig’s new fund bets on infrastructure built around foundation models', event_type: 'fund_close', firm: 'Dig', fund: 'Dig Fund III', close: 'final_close', fund_categories: ['VC'], published_date: '2026-10-06', created_at: '2026-10-06T21:00:00Z', source_name: 'Venture Capital Journal' }),
+    ])
+    expect(stories).toHaveLength(1)
+  })
+  it('two different funds from one firm a week apart stay two', () => {
+    const stories = buildStories([
+      row({ title: 'Headline raises $400m eighth European fund as it doubles down on AI', event_type: 'fund_close', firm: 'Headline', fund: 'Headline Fund VIII', size: 400, close: 'final_close', fund_categories: ['VC'], published_date: '2026-10-01', created_at: '2026-10-01T11:00:00Z' }),
+      row({ title: 'Headline launches $150m growth opportunities fund', event_type: 'fund_close', firm: 'Headline', fund: 'Headline Growth Opportunities Fund', size: 150, close: 'final_close', fund_categories: ['VC'], published_date: '2026-10-07', created_at: '2026-10-07T11:00:00Z' }),
+    ])
+    expect(stories).toHaveLength(2)
+  })
+})

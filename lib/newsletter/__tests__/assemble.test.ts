@@ -268,3 +268,29 @@ describe('placeArticle — a transaction typed as a fund event is a deal (2026-1
     expect(where('Sacramento County adds U.S. buyout fund', { event_type: 'capital_raise', firm: 'Sacramento County' })).toBe('lp_commitments')
   })
 })
+
+describe('assembleNewsletter — a stage change is news, a repeat is not', () => {
+  const deal = { event_type: 'acquisition', fund_categories: ['PE'] }
+  it('runs the signed Boots sale after the rumour of it (Sycamore, 10-04 then 10-08)', () => {
+    const rumour = row({ ...deal, title: 'Sycamore nears $9bn sale of Boots to Weston family', firm: 'Sycamore Partners', size: 9000, ents: ['Sycamore Partners', 'Boots', 'Weston family'], published_date: '2026-10-01' })
+    const memory = buildPriorExclusions([[rumour.id]], new Map([[rumour.id, rumour]]))
+    const signed = row({ ...deal, title: 'Sycamore Partners agrees $8.9bn Boots exit to Wittington Investments', firm: 'Sycamore Partners', size: 8900, ents: ['Sycamore Partners', 'Boots', 'Wittington Investments'], published_date: '2026-10-08' })
+    const content = assembleNewsletter([signed], memory)
+    expect(section(content, 'deals')).toEqual(['Sycamore Partners agrees $8.9bn Boots exit to Wittington Investments'])
+  })
+  it('does not run the same signed deal twice (KKR / Gen II, ran 10-06, retold 10-08 without the target)', () => {
+    const first = row({ ...deal, title: 'KKR Strikes Deal to Buy Private-Capital Fund Administrator Gen II', firm: 'KKR', ents: ['KKR', 'Gen II'], published_date: '2026-10-06' })
+    const memory = buildPriorExclusions([[first.id]], new Map([[first.id, first]]))
+    const again = row({ ...deal, title: 'KKR (KKR) Acquires Fund Administrator To Add More Recurring Fee Income', firm: 'KKR', ents: ['KKR'], published_date: '2026-10-07', source_name: 'Simply Wall Street' })
+    const content = assembleNewsletter([again], memory)
+    expect(section(content, 'deals')).toEqual([])
+    expect(content.dropped?.find((d) => d.id === again.id)?.reason).toMatch(/ran before/)
+  })
+  it('does not run HP Helicopters again under the longer spelling of the target (10-02, 10-03)', () => {
+    const first = row({ ...deal, title: 'Antin acquires majority stake in aerial firefighting firm HP Helicopters', firm: 'Antin', ents: ['Antin', 'HP Helicopters'], published_date: '2026-10-01' })
+    const memory = buildPriorExclusions([[first.id]], new Map([[first.id, first]]))
+    const again = row({ ...deal, title: 'Antin NextGen Fund Acquired a Majority Stake in HP Helicopters', firm: 'Antin Infrastructure Partners', fund: 'Antin NextGen Infrastructure Fund I', size: 1320, ents: ['Antin Infrastructure Partners', 'Antin NextGen Infrastructure Fund I', 'High Performance Helicopters'], published_date: '2026-10-02', source_name: 'HedgeCo Insights', tldr: 'Antin NextGen Infrastructure Fund I acquired a majority stake in High Performance Helicopters (HP Helicopters).' })
+    const content = assembleNewsletter([again], memory)
+    expect(section(content, 'deals')).toEqual([])
+  })
+})

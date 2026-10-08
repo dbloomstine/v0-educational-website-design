@@ -14,7 +14,7 @@ import {
   sourceTier, isLikelyAumLeak, isRoundupArticle, type NewsletterArticle, type ArticleSection,
 } from '@/lib/newsletter/query-articles'
 import { clusterBy, dealStage, entityKey, entityMentioned, keysMatch, sameStoryLoose, storyFamily } from '@/lib/newsletter/story-links'
-import { isSameStory } from './story-dedup'
+import { fundSizesMatch, isSameStory } from './story-dedup'
 import { normalizeSourceName } from './constants'
 import { cleanSummary } from './summary-clean'
 
@@ -145,6 +145,24 @@ function isLateDealRepeat(a: any, b: any): boolean {
 }
 
 /**
+ * A fund close re-reported by a trade title a week on ("DIG Ventures raises
+ * $120m third fund", 10-01; "Dig’s new fund bets on infrastructure built around
+ * foundation models", 10-06) is still one raise when it names the very same
+ * vehicle: same manager, same fund, however each outlet spells them.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isLateFundRepeat(a: any, b: any): boolean {
+  if (storyFamily(a.eventType) !== 'fund' || storyFamily(b.eventType) !== 'fund') return false
+  if (!a.firmName || !b.firmName || !keysMatch(entityKey(a.firmName), entityKey(b.firmName))) return false
+  const fundA = entityKey(a.fundName)
+  const fundB = entityKey(b.fundName)
+  if (!fundA || fundA !== fundB || fundA.split(' ').length < 2) return false
+  // Not a different stage of the same raise, and not two sizes.
+  if (a.closeType && b.closeType && a.closeType !== b.closeType) return false
+  return !a.fundSizeUsdMillions || !b.fundSizeUsdMillions || fundSizesMatch(a.fundSizeUsdMillions, b.fundSizeUsdMillions, 0.25)
+}
+
+/**
  * The firms a report names: its subject, then every entity the classifier
  * typed as a firm with confidence and that the headline or summary actually
  * mentions (the same test rowToArticle applies before trusting an entity).
@@ -196,7 +214,7 @@ export function buildStories(rows: Row[]): Story[] {
       // still one deal: same acquirer, same two parties, same stage.
       return (
         gap <= 10 &&
-        isLateDealRepeat(a.article, b.article)
+        (isLateDealRepeat(a.article, b.article) || isLateFundRepeat(a.article, b.article))
       )
     }
     return isSameStory(a.article, b.article) || sameStoryLoose(a.article, b.article, { crossEdition: gap > 1 })

@@ -17,6 +17,7 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import {
   isSameStory,
   normalizeFirmName,
+  foldAccents,
   fundSizesMatch,
   titleJaccard,
   titlesShareSignificantNumber,
@@ -24,6 +25,7 @@ import {
 import { cleanHeadline } from '@/lib/news/constants'
 import {
   clusterBy,
+  dealStage,
   entityKey,
   entityMentioned,
   isDigest,
@@ -685,7 +687,8 @@ export function rowToArticle(row: any): NewsletterArticle {
   // Full names only — a bare surname ("Allan") would link unrelated stories.
   const personKeys = uniq(
     [...splitPeople(personName), ...named.filter((e) => e.type === 'person').map((e) => e.name)]
-      .map((n) => entityKey(n))
+      // An accent is not a separator: "Stéphane Villemain" is "Stephane Villemain".
+      .map((n) => entityKey(foldAccents(n)))
       .filter((k) => k.includes(' '))
   )
   // The classifier sometimes returns a description as a name ("New London
@@ -1009,7 +1012,7 @@ export function assembleNewsletter(
     const prior = findPriorStory(a, priorExclusions.priorStories)
     if (prior) return `ran before: "${prior.title.slice(0, 70)}"`
     // Exact fingerprint keys.
-    const fps = storyFingerprints(a.firmName, a.fundName, a.eventType, a.fundSizeUsdMillions)
+    const fps = storyFingerprints(a.firmName, a.fundName, a.eventType, a.fundSizeUsdMillions, a.title)
     if (fps.some((fp) => priorExclusions.fingerprints.has(fp))) return 'ran before: fingerprint'
     return null
   })
@@ -1324,7 +1327,14 @@ export function storyFingerprints(
   firmName: string | null,
   fundName: string | null,
   eventType: string | null,
-  fundSizeUsdMillions: number | null
+  fundSizeUsdMillions: number | null,
+  /**
+   * The headline, for a deal: how far along it says the deal is. A rumour
+   * followed by the signed deal is news, so "Sycamore nears $9bn sale of
+   * Boots" (10-04) must not shut out "Sycamore agrees $8.9bn Boots exit"
+   * (10-07, 10-08), which sat in the same size bucket.
+   */
+  title?: string | null
 ): string[] {
   const firm = normalizeFirmName(firmName)
   if (!firm) return []
@@ -1334,7 +1344,8 @@ export function storyFingerprints(
   if (fund) out.push(`${firm}|${fund}`)
   if (fundSizeUsdMillions && fundSizeUsdMillions > 0) {
     const bucket = Math.round(fundSizeUsdMillions / 500) * 500
-    out.push(`${firm}|${evt}|${bucket}`)
+    const stage = title && storyFamily(evt) === 'deal' ? `|stage${dealStage(title)}` : ''
+    out.push(`${firm}|${evt}|${bucket}${stage}`)
   } else if (!fund && storyFamily(evt) === 'fund') {
     // Fund events only. For deals and people this key suppressed every later
     // story from the same firm — a sponsor's second acquisition of the week
@@ -1518,7 +1529,7 @@ export function buildPriorExclusions(
     if (!row) continue
     if (row.title) priorStories.push(rowToArticle(row))
     const { firmName, fundName, fundSize, eventType, personName } = extractFingerprintFields(row)
-    for (const fp of storyFingerprints(firmName, fundName, eventType, fundSize)) {
+    for (const fp of storyFingerprints(firmName, fundName, eventType, fundSize, row.title)) {
       fingerprints.add(fp)
     }
     if (row.title) {

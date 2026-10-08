@@ -234,3 +234,56 @@ describe('same size, different fund', () => {
     expect(sameStoryLoose(a, b)).toBe(true)
   })
 })
+
+describe('deals with one party in common (2026-10-02…08 audit)', () => {
+  const deal = (title: string, firmName: string, ks: string[], o: Partial<Omit<StoryLike, 'title' | 'eventType'>> = {}) =>
+    story({ title, eventType: 'acquisition', firmName, entityKeys: keys(...ks), publishedDate: '2026-10-06', ...o })
+
+  it('the same transaction told by the buyer’s name and by the target’s (Option Care, $5.8B)', () => {
+    const a = deal('CD&R and McKesson ink $5.8bn take-private deal for Option Care Health', 'Clayton Dubilier & Rice', ['Clayton Dubilier & Rice', 'McKesson', 'Option Care Health'], { fundSizeUsdMillions: 5800 })
+    const b = deal('4 Firms Advise On $5.8B Option Care Health Take-Private Deal', 'Option Care Health', ['Option Care Health'], { fundSizeUsdMillions: 5800 })
+    expect(sameStoryLoose(a, b)).toBe(true)
+    expect(sameStoryLoose(b, a, { crossEdition: true })).toBe(true)
+  })
+  it('the same transaction under rephrased headlines (UBS fund administration to Northern Trust)', () => {
+    const a = deal('UBS to shed fund administration business acquired through Credit Suisse merger', 'UBS', ['UBS', 'Credit Suisse'])
+    const b = deal('UBS to transfer Credit Suisse fund administration businesses to Northern Trust', 'Northern Trust', ['Northern Trust', 'UBS'])
+    expect(sameStoryLoose(a, b)).toBe(true)
+  })
+  it('a headline that names only the buyer and describes the target (KKR / Gen II, 10-06 and 10-08)', () => {
+    const named = deal('KKR Strikes Deal to Buy Private-Capital Fund Administrator Gen II', 'KKR', ['KKR', 'Gen II'], { publishedDate: '2026-10-06' })
+    const sparse = deal('KKR (KKR) Acquires Fund Administrator To Add More Recurring Fee Income', 'KKR', ['KKR'], { publishedDate: '2026-10-07' })
+    expect(sameStoryLoose(named, sparse, { crossEdition: true })).toBe(true)
+    // …but not two days later than that, and not a different target.
+    expect(sameStoryLoose(named, { ...sparse, publishedDate: '2026-10-12' }, { crossEdition: true })).toBe(false)
+    const other = deal('KKR Acquires Infrastructure Services Platform Cisternina', 'KKR', ['KKR'], { publishedDate: '2026-10-07' })
+    expect(sameStoryLoose(named, other, { crossEdition: true })).toBe(false)
+  })
+  it('does not join two of one sponsor’s deals, nor a wire that happens to carry the same figure', () => {
+    const clarion = deal('Blackstone agrees $3.0bn sale of events business Clarion to Informa', 'Blackstone', ['Blackstone', 'Clarion', 'Informa'], { fundSizeUsdMillions: 3000 })
+    const falcata = deal('Blackstone inks deal for TSC and ASEI to form defense platform Falcata', 'Blackstone', ['Blackstone', 'TSC', 'ASEI'], { fundSizeUsdMillions: 1000 })
+    expect(sameStoryLoose(clarion, falcata)).toBe(false)
+    // 10-02: "€2bn" Robin Radar and a wire whose first item, Blackstone's Eurowind, also came to $2.2bn.
+    const robin = deal('CVC, Blackstone, Advent and EQT eye €2bn Robin Radar deal', 'Parcom', ['Parcom', 'CVC', 'Blackstone', 'Advent', 'EQT', 'Robin Radar Systems'], { fundSizeUsdMillions: 2200 })
+    const wire = deal('Blackstone completes Eurowind deal, Searchlight backs $1.6bn Priority Technology take-private', 'Blackstone', ['Blackstone', 'Eurowind Energy', 'Searchlight', 'Priority Technology'], { fundSizeUsdMillions: 2200 })
+    expect(sameStoryLoose(robin, wire, { crossEdition: true })).toBe(false)
+    expect(sameStoryLoose(wire, robin, { crossEdition: true })).toBe(false)
+  })
+  it('counts the parties the same whichever story is asked about (HP Helicopters)', () => {
+    const short = deal('Antin acquires majority stake in aerial firefighting firm HP Helicopters', 'Antin', ['Antin', 'HP Helicopters'], { publishedDate: '2026-10-01' })
+    const long = deal('Antin NextGen Fund Acquired a Majority Stake in HP Helicopters', 'Antin Infrastructure Partners', ['Antin Infrastructure Partners', 'Antin NextGen Infrastructure Fund I', 'High Performance Helicopters'], { fundSizeUsdMillions: 1320, publishedDate: '2026-10-02' })
+    expect(sameStoryLoose(short, long, { crossEdition: true })).toBe(true)
+    expect(sameStoryLoose(long, short, { crossEdition: true })).toBe(true)
+    expect(findPriorStory(long, [short])).toBe(short)
+  })
+})
+
+describe('a deal that has moved on is new', () => {
+  it('a signed deal after the rumour: Sycamore / Boots (10-04, then 10-07 and 10-08)', () => {
+    const nears = story({ title: 'Sycamore nears $9bn sale of Boots to Weston family', eventType: 'acquisition', firmName: 'Sycamore Partners', fundSizeUsdMillions: 9000, entityKeys: keys('Sycamore Partners', 'Boots', 'Weston family') })
+    const agrees = story({ title: 'Sycamore Partners agrees $8.9bn Boots exit to Wittington Investments', eventType: 'acquisition', firmName: 'Sycamore Partners', fundSizeUsdMillions: 8900, entityKeys: keys('Sycamore Partners', 'Boots', 'Wittington Investments') })
+    expect(sameStoryLoose(nears, agrees, { crossEdition: true })).toBe(true)
+    expect(findPriorStory(agrees, [nears])).toBeNull()
+    expect(findPriorStory(nears, [agrees])).toBe(agrees)
+  })
+})

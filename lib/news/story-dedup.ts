@@ -42,6 +42,15 @@ const DESCRIPTIVE_NOISE = new Set([
   'international', 'global', 'worldwide',
 ])
 
+/**
+ * "Stéphane Villemain" and "Stephane Villemain" are one person: an accent is
+ * not a separator. normalizeFirmName turns "é" into a gap ("st phane"), which
+ * the firm-page lookup depends on, so story identity folds accents first.
+ */
+export function foldAccents(s: string | null | undefined): string {
+  return (s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+}
+
 export function normalizeFirmName(name: string | null | undefined): string {
   if (!name) return ''
   const tokens = name
@@ -174,7 +183,7 @@ export function isSameStory(a: StoryCandidate, b: StoryCandidate): boolean {
 
   // Exec-move fallback: same person = same story regardless of firm extraction.
   if (a.personName && b.personName) {
-    if (normalizeFirmName(a.personName) === normalizeFirmName(b.personName)) {
+    if (normalizeFirmName(foldAccents(a.personName)) === normalizeFirmName(foldAccents(b.personName))) {
       return true
     }
   }
@@ -403,7 +412,7 @@ export interface MoveLike {
 const personNames = (m: MoveLike): string[] => [
   ...(m.personName ?? '').split(/\s*(?:;|,| and | & )\s*/),
   ...(m.personKeys ?? []),
-].map((n) => n.trim().toLowerCase()).filter(Boolean)
+].map((n) => foldAccents(n).trim().toLowerCase()).filter(Boolean)
 
 /**
  * What the job is, in words: the headline and the stated title, without the
@@ -427,6 +436,13 @@ function daysApart(a: MoveLike, b: MoveLike): number | null {
 
 /** A nameless report and its named twin appear within this many days. */
 const NAMELESS_MOVE_WINDOW_DAYS = 2
+
+/** A firm's leadership transition is reported over a longer stretch (Hines: 10-02 to 10-05). */
+const LEADERSHIP_MOVE_WINDOW_DAYS = 4
+const LEADERSHIP_HEADLINE = /\b(top )?leadership (transitions?|changes?|shake-?ups?|reshuffle|succession)\b|\bsuccession plan/i
+const TOP_ROLE = /\b(co-?ceo|ceo|chief executive|chair(man|woman|person)?|president)\b/i
+const isLeadershipHeadline = (m: MoveLike) => personNames(m).length === 0 && LEADERSHIP_HEADLINE.test(m.title)
+const namesTopRole = (m: MoveLike) => TOP_ROLE.test(`${m.title} ${m.personTitle ?? ''}`)
 
 /**
  * Two people-move reports from ONE firm (the caller has checked the firm, and
@@ -468,10 +484,22 @@ export function sameMove(a: MoveLike, b: MoveLike, opts: { crossEdition?: boolea
     return surnames(namesA).some((n) => sb.includes(n))
   }
 
-  const gap = daysApart(a, b)
-  if (gap === null ? opts.crossEdition : gap > NAMELESS_MOVE_WINDOW_DAYS) return false
   const types = [a.eventType, b.eventType]
   if (types.includes('executive_hire') && types.includes('executive_departure')) return false
+
+  // A firm's own leadership changing hands, told in the abstract ("Hines readies
+  // top leadership transitions", "Hines announces major leadership changes")
+  // and by the report that names the new co-CEO. These headlines carry no job
+  // words to compare, but a firm has one such transition at a time.
+  if (isLeadershipHeadline(a) || isLeadershipHeadline(b)) {
+    const apart = daysApart(a, b)
+    if (apart === null ? !opts.crossEdition : apart <= LEADERSHIP_MOVE_WINDOW_DAYS) {
+      if ((isLeadershipHeadline(a) || namesTopRole(a)) && (isLeadershipHeadline(b) || namesTopRole(b))) return true
+    }
+  }
+
+  const gap = daysApart(a, b)
+  if (gap === null ? opts.crossEdition : gap > NAMELESS_MOVE_WINDOW_DAYS) return false
 
   const ra = roleWords(a)
   const rb = roleWords(b)
