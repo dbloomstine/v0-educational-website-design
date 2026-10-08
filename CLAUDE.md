@@ -492,7 +492,7 @@ The final output also runs through `collapseTemplateWhitespace()`, which strips 
 
 Masthead → sponsor (or the house strip) → **top stories** → sections → on Mondays, last week's largest closes → the week's events → sponsor (or the house card) → share → footer.
 
-- **Top stories** (`lib/newsletter/top-stories.ts`): up to five, chosen across sections by the site's own `storyWeight`, one per firm, with a brake so they are not five fund closes. Weight decides *which* stories lead; among the raises that do (and among the deals) the larger runs first, so the top block opens on the firm the subject line names first. Each carries a kicker (section · size · stage). They are *removed* from their sections — every story runs once. Fewer than 12 stories and there is no top block.
+- **Top stories** (`lib/newsletter/top-stories.ts`): up to five, chosen across sections by the site's own `storyWeight`, one per firm, with a brake so they are not five fund closes. Never an LP commitment. On a morning with fewer than 25 stories (fewer than five places) a rumour does not lead, a raise or deal needs a stated size of $250M+, a hire needs two other outlets, and with fewer than two qualifying stories there is no top block (`THIN_DAY_FLOOR_USD_M`). Weight decides *which* stories lead; among the raises that do (and among the deals) the larger runs first, so the top block opens on the firm the subject line names first. Each carries a kicker (section · size · stage). They are *removed* from their sections — every story runs once. Fewer than 12 stories and there is no top block.
 - **Sections** run in the order of the site's tabs: the asset classes, then Deals, People Moves, LP Commitments, Regulation, Service Providers.
 - **Preview text** (`buildPreheader`) is the lead headline and the second: what happened. The subject line already says who.
 - **Monday recap** (`lib/newsletter/recap.ts`): the six largest closes of the past week, from the league table, each linked to its story page. It is an extra — if the league cannot be built in 25 s the edition goes without it.
@@ -591,6 +591,20 @@ Two reports of a hire were one story only if both named the person, or their hea
 - When the best outlet's report is the nameless one, the story takes the person from a report that names them (`mergeStoryGroup`).
 - **Not joined, on purpose:** a headline with no job in it ("Hines readies top leadership transitions", "Canyon Partners Real Estate makes senior origination hire", "Reed Smith builds out private funds bench"). Joining those to any named move at the firm would also join two different hires made on one day (Millennium, Point72 and Blackstone each had such a day in the sample), and a vague row would bridge them into one story.
 - `npx tsx scripts/people-pairs-audit.ts --pool pool.json` (offline; the pool is the one `roundup-audit.ts --save-pool` writes) lists every same-firm pair of moves the site still shows as two, with the job words they share. On the fifty days to 2026-10-08 the rule joined 14 of 69 such pairs, each one move when read. Read the list again after changing `ROLE_GENERIC`, `ROLE_PLACES` or the thresholds, and replay the editions.
+
+### Sectioning and repeats, second pass (2026-10-08)
+
+Found by auditing 10-01…10-08; each rule has a test built from the real headlines (`assemble.test.ts`, `story-links.test.ts`, `story-dedup.test.ts`, `stories.test.ts`).
+
+- **An allocator is an LP story** (`isLpByName`, `LP_NAME_PATTERNS`, `US_STATE_ONLY`, the "Investor Intentions:" column): sovereign wealth funds, state councils and commons, counties, development banks (IFC), mixed-case acronyms (PennSERS, LACERA). It beats the soft deal verbs ("backs", "invests in") only when the headline is about a manager or strategy; CPP "backs" a hospitality platform is still a deal. A row with a close stage, or an LP named only after "with/from/via/by" (Tishman Speyer's second close "with German pension backing"), is a fund event; "commits $300m to fund LIV Golf" is a deal ("to fund" is a verb). LP rows are never a top story and never in the subject.
+- **A transaction typed as a fund event is a deal** (`isTransactionNotRaise`): an exit, sale, stake, takeover or restructuring headline with no raise verb in it, whatever fund name or stage the classifier attached.
+- **A deal's cross-edition fingerprint carries its stage** (`storyFingerprints`, `dealStage`): "nears $9bn" and "agrees $8.9bn" share a size bucket and used to shut each other out. `eye/eyeing` now read as a rumour.
+- **Parties in common are counted from both sides** (`sharedKeys`, with `HP` = `High Performance`), and two deals with ONE party in common are one when they state the same price under overlapping headlines, share most words, or one names only the buyer and describes the target (`sameDealOnePartyShared`). A wire carrying a coincidentally identical figure does not join (Blackstone/Eurowind vs Robin Radar, both $2.2bn).
+- **Site only, 5–10 days apart:** a close naming the same fund is one story (`isLateFundRepeat`, DIG Ventures / "Dig").
+- **A firm's leadership transition told in the abstract** ("Hines readies top leadership transitions") is one story with the report that names the new co-CEO (`sameMove`, four days). Accents are folded in person names (`foldAccents`) but NOT in `normalizeFirmName` or `entityKey`, which address the firm pages.
+- **A wire is silenced by any item with a row of its own** (`tellsAnItemOf`), not just its first.
+- **A deal carries the deal's size** (`SUM_BEFORE_FUND` in `rowToArticle`): "€1.2B NextGen Infrastructure Fund I" is the buyer's fund, not the price.
+- Not fixed: a hire headline with no job and no name ("Canyon Partners Real Estate makes senior origination hire") beside the report that names the hire; a deal the classifier typed `other`; "Hg Genesis Fund" style sizes that are a valuation.
 
 ### Newsletter content pipeline — `lib/newsletter/query-articles.ts`
 
