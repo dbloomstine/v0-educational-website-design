@@ -356,7 +356,7 @@ describe('callWriter', () => {
     expect(seen!.url).toBe('https://api.anthropic.com/v1/messages')
     expect(body.model).toBe('claude-sonnet-5-5')
     expect(body.max_tokens).toBe(SUMMARY_MAX_TOKENS)
-    expect(SUMMARY_MAX_TOKENS).toBe(500)
+    expect(SUMMARY_MAX_TOKENS).toBe(700)
     expect(body.system).toEqual([{ type: 'text', text: SYSTEM_PROMPT, cache_control: { type: 'ephemeral' } }])
     expect(body.messages).toEqual([{ role: 'user', content: 'STORY MATERIAL' }])
     expect((seen!.init.headers as Record<string, string>)['x-api-key']).toBe('sk-test')
