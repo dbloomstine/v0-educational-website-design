@@ -62,11 +62,15 @@ export async function saveWritten(db: DbClient, id: string, summary: string, mod
   if (error) throw new Error(`story summary write failed: ${error.message}`)
 }
 
-/** Mark a story thin, for one more try, or given up. */
-export async function saveStatus(db: DbClient, id: string, status: Exclude<SummaryStatus, 'written'>): Promise<void> {
+/**
+ * Mark a story thin, for one more try, or given up. A thin mark also records
+ * when (summary_long_at, which nothing reads on a row without a summary), so
+ * the job can tell later whether the story has gained text or an outlet since.
+ */
+export async function saveStatus(db: DbClient, id: string, status: Exclude<SummaryStatus, 'written'>, nowMs: number = Date.now()): Promise<void> {
   const { error } = await db
     .from('news_items')
-    .update({ summary_long_status: status })
+    .update(status === 'thin' ? { summary_long_status: status, summary_long_at: new Date(nowMs).toISOString() } : { summary_long_status: status })
     .eq('id', id)
     .is('summary_long', null)
   if (error) throw new Error(`story summary status write failed: ${error.message}`)

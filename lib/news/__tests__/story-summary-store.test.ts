@@ -43,8 +43,8 @@ describe('story summary store', () => {
 
   it('marks a status without touching the summary columns', async () => {
     const { db, calls } = fakeDb({})
-    await saveStatus(db, 'best', 'thin')
-    expect(calls).toContainEqual(['update', [{ summary_long_status: 'thin' }]])
+    await saveStatus(db, 'best', 'retry')
+    expect(calls).toContainEqual(['update', [{ summary_long_status: 'retry' }]])
   })
 
   it('reads the tried rows of the last ten days', async () => {
@@ -57,5 +57,12 @@ describe('story summary store', () => {
 
   it('throws when the marks cannot be read, rather than treating every story as untried', async () => {
     await expect(loadMarks(fakeDb({ error: { message: 'timeout' } }).db)).rejects.toThrow('timeout')
+  })
+
+  it('stamps a thin mark with the time, so a later change can be told from the mark itself', async () => {
+    const { db, calls } = fakeDb({})
+    await saveStatus(db, 'best', 'thin', Date.parse('2026-10-08T12:00:00Z'))
+    expect(calls).toContainEqual(['update', [{ summary_long_status: 'thin', summary_long_at: '2026-10-08T12:00:00.000Z' }]])
+    expect(calls).toContainEqual(['is', ['summary_long', null]])
   })
 })

@@ -9,6 +9,7 @@
 import type { Story } from './stories'
 import { isThin, prepareRows, StorySummaryApiError, type PreparedRow, type SourceRow, type Usage, type WriteOutcome } from './story-summary'
 import type { SummaryStatus } from './story-summary-store'
+import type { RowTextState } from './story-text-store'
 
 /** The most model calls one run makes, whatever the route is asked. */
 export const MAX_STORIES_PER_RUN = 20
@@ -51,19 +52,67 @@ export function storyMark(story: Pick<Story, 'memberIds'>, marks: Map<string, Su
 }
 
 /**
+ * What the job knows about a story's rows beyond their marks: when each thin
+ * mark was made, and which rows hold stored text and since when. Optional: with
+ * none, a thin story stays thin and no story is preferred for its text.
+ */
+export interface StoryEvidence {
+  /** When each thin-marked row was marked. Null: marked before the time was kept. */
+  thinAt: Map<string, string | null>
+  rows: Map<string, RowTextState>
+}
+
+const ms = (iso: string | null | undefined): number => {
+  const t = iso ? Date.parse(iso) : NaN
+  return Number.isFinite(t) ? t : 0
+}
+
+/** Some row of the story holds stored text. */
+export function storyHasText(story: Pick<Story, 'memberIds'>, ev: StoryEvidence | undefined): boolean {
+  return !!ev && story.memberIds.some((id) => ev.rows.get(id)?.hasText)
+}
+
+/**
+ * A thin story is looked at again when, since its newest thin mark, one of its
+ * rows gained stored text or a row joined it (a new outlet). A mark made before
+ * the time was kept counts as made at the beginning of time, so such a story is
+ * looked at once more; that look stamps it, and from then on only a change
+ * brings it back. A thin story nothing has happened to is never re-read.
+ */
+export function thinStoryChanged(story: Pick<Story, 'memberIds'>, marks: Map<string, SummaryStatus>, ev: StoryEvidence | undefined): boolean {
+  if (!ev) return false
+  const markedAt = Math.max(0, ...story.memberIds.filter((id) => marks.get(id) === 'thin').map((id) => ms(ev.thinAt.get(id))))
+  return story.memberIds.some((id) => {
+    const row = ev.rows.get(id)
+    if (!row) return false
+    return (row.hasText && ms(row.enrichedAt) > markedAt) || ms(row.createdAt) > markedAt
+  })
+}
+
+/** Stories the selection could pick, before the evidence about them is read. */
+export function selectable<T extends Candidate>(stories: T[], marks: Map<string, SummaryStatus>, nowMs: number, windowHours = WINDOW_HOURS): T[] {
+  const since = nowMs - windowHours * 3_600_000
+  return stories.filter((s) => {
+    if (s.roundup || new Date(s.firstSeen).getTime() < since) return false
+    const m = storyMark(s, marks)
+    return m === null || m === 'retry' || m === 'thin'
+  })
+}
+
+/**
  * The stories to write, in the order to write them.
  *
  * Candidates: first seen in the last 48 hours, not a roundup (one headline over
- * several items: a summary would mix them), and no row of the story written,
- * thin or given up. A story whose first answer failed a check comes back, after
- * every story not yet tried. Order: the newer day first, then the more outlets,
- * then the newer story.
+ * several items: a summary would mix them), and no row of the story written or
+ * given up. A thin story is a candidate only when it has changed since it was
+ * marked (`thinStoryChanged`). A story whose first answer failed a check comes
+ * back, after every story not yet tried. Order: stories with stored text first,
+ * then the newer day, then the more outlets, then the newer story.
  */
-export function selectStories<T extends Candidate>(stories: T[], marks: Map<string, SummaryStatus>, nowMs: number, windowHours = WINDOW_HOURS): T[] {
-  const since = nowMs - windowHours * 3_600_000
-  const rank = (s: T) => (storyMark(s, marks) === 'retry' ? 1 : 0)
-  return stories
-    .filter((s) => !s.roundup && new Date(s.firstSeen).getTime() >= since && (storyMark(s, marks) === null || storyMark(s, marks) === 'retry'))
+export function selectStories<T extends Candidate>(stories: T[], marks: Map<string, SummaryStatus>, nowMs: number, windowHours = WINDOW_HOURS, evidence?: StoryEvidence): T[] {
+  const rank = (s: T) => (storyMark(s, marks) === 'retry' ? 2 : storyHasText(s, evidence) ? 0 : 1)
+  return selectable(stories, marks, nowMs, windowHours)
+    .filter((s) => storyMark(s, marks) !== 'thin' || thinStoryChanged(s, marks, evidence))
     .sort((a, b) =>
       rank(a) - rank(b) ||
       b.firstSeen.slice(0, 10).localeCompare(a.firstSeen.slice(0, 10)) ||
@@ -76,6 +125,8 @@ export interface JobDeps {
   loadStories(): Promise<Candidate[]>
   loadMarks(): Promise<Map<string, SummaryStatus>>
   loadRows(ids: string[]): Promise<SourceRow[]>
+  /** Thin marks' times and the rows' stored text, for these stories. Left out, a thin story stays thin. */
+  loadEvidence?(stories: Candidate[]): Promise<StoryEvidence>
   /** One call and the checks. May throw StorySummaryApiError. */
   write(rows: PreparedRow[]): Promise<WriteOutcome>
   saveWritten(id: string, summary: string, model: string): Promise<void>
@@ -115,10 +166,20 @@ export async function runStorySummaries(deps: JobDeps, opts: RunOptions = {}): P
   const started = deps.now()
 
   const [stories, marks] = await Promise.all([deps.loadStories(), deps.loadMarks()])
-  const queue = selectStories(stories, marks, deps.now())
+  const errors: string[] = []
+  let evidence: StoryEvidence | undefined
+  if (deps.loadEvidence) {
+    try {
+      evidence = await deps.loadEvidence(selectable(stories, marks, deps.now()))
+    } catch (err) {
+      // Without it the job is what it was: untried stories only. Say so, carry on.
+      errors.push(`evidence: ${err instanceof Error ? err.message : String(err)}`)
+    }
+  }
+  const queue = selectStories(stories, marks, deps.now(), WINDOW_HOURS, evidence)
   const result: RunResult = {
     candidates: queue.length, examined: 0, calls: 0, written: 0, thin: 0, rejected: 0, givenUp: 0,
-    aborted: false, stoppedBy: 'queue_empty', errors: [], tokens: noUsage(),
+    aborted: false, stoppedBy: 'queue_empty', errors, tokens: noUsage(),
   }
 
   for (const story of queue) {

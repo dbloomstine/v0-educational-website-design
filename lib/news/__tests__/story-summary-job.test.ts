@@ -1,12 +1,14 @@
 import { describe, it, expect } from 'vitest'
 import {
   capFor, MAX_EXAMINED_PER_RUN, MAX_STORIES_PER_RUN, runStorySummaries, selectStories, storyMark, storySummariesEnabled,
-  type JobDeps,
+  thinStoryChanged, type JobDeps, type StoryEvidence,
 } from '../story-summary-job'
+import type { RowTextState } from '../story-text-store'
 import { StorySummaryApiError, type SourceRow, type WriteOutcome } from '../story-summary'
 import type { SummaryStatus } from '../story-summary-store'
 
 const NOW = new Date('2026-10-08T14:00:00Z').getTime()
+const NOW_ISO = new Date(NOW).toISOString()
 const hoursAgo = (h: number) => new Date(NOW - h * 3_600_000).toISOString()
 
 let n = 0
@@ -78,6 +80,114 @@ describe('selectStories', () => {
     expect(storyMark(s, marks([['x', 'retry'], ['y', 'failed']]))).toBe('failed')
     expect(storyMark(s, marks([['x', 'retry'], ['y', 'written']]))).toBe('written')
     expect(storyMark(s, marks([]))).toBeNull()
+  })
+})
+
+// ─── A thin story is not thin for ever ──────────────────────────────────────
+
+const state = (o: Partial<RowTextState> = {}): RowTextState => ({ createdAt: hoursAgo(20), enrichedAt: null, hasText: false, ...o })
+const evidence = (thinAt: [string, string | null][], rows: [string, RowTextState][]): StoryEvidence => ({ thinAt: new Map(thinAt), rows: new Map(rows) })
+
+describe('thin stories come back only when something has changed', () => {
+  const MARKED = hoursAgo(5)
+
+  it('stays out when nothing has happened since it was marked', () => {
+    const s = story({ id: 't', members: ['t1', 't2'] })
+    const ev = evidence([['t1', MARKED]], [['t1', state()], ['t2', state({ createdAt: hoursAgo(6), enrichedAt: hoursAgo(6), hasText: true })]])
+    expect(thinStoryChanged(s, marks([['t1', 'thin']]), ev)).toBe(false)
+    expect(ids(selectStories([s], marks([['t1', 'thin']]), NOW, 48, ev))).toEqual([])
+  })
+  it('comes back once a row has gained text since it was marked', () => {
+    const s = story({ id: 't', members: ['t1', 't2'] })
+    const ev = evidence([['t1', MARKED]], [['t1', state()], ['t2', state({ enrichedAt: hoursAgo(1), hasText: true })]])
+    expect(ids(selectStories([s], marks([['t1', 'thin']]), NOW, 48, ev))).toEqual(['t'])
+  })
+  it('comes back when the story has gained an outlet since it was marked', () => {
+    const s = story({ id: 't', members: ['t1', 't2'] })
+    const ev = evidence([['t1', MARKED]], [['t1', state()], ['t2', state({ createdAt: hoursAgo(2) })]])
+    expect(ids(selectStories([s], marks([['t1', 'thin']]), NOW, 48, ev))).toEqual(['t'])
+  })
+  it('is not brought back by a row that was marked as tried but yielded nothing', () => {
+    const s = story({ id: 't', members: ['t1'] })
+    const ev = evidence([['t1', MARKED]], [['t1', state({ enrichedAt: hoursAgo(1), hasText: false })]])
+    expect(thinStoryChanged(s, marks([['t1', 'thin']]), ev)).toBe(false)
+  })
+  it('reads the newest thin mark when several rows carry one', () => {
+    const s = story({ id: 't', members: ['t1', 't2'] })
+    const ev = evidence([['t1', hoursAgo(30)], ['t2', hoursAgo(1)]], [['t1', state({ enrichedAt: hoursAgo(3), hasText: true })], ['t2', state()]])
+    expect(thinStoryChanged(s, marks([['t1', 'thin'], ['t2', 'thin']]), ev)).toBe(false)
+  })
+  it('looks once more at a thin mark made before the time was kept, and the look stamps it', () => {
+    const s = story({ id: 't', members: ['t1'] })
+    const ev = evidence([['t1', null]], [['t1', state()]])
+    expect(thinStoryChanged(s, marks([['t1', 'thin']]), ev)).toBe(true)
+    const stamped = evidence([['t1', NOW_ISO]], [['t1', state()]])
+    expect(thinStoryChanged(s, marks([['t1', 'thin']]), stamped)).toBe(false)
+  })
+  it('without evidence a thin story stays thin, as before', () => {
+    const s = story({ id: 't' })
+    expect(selectStories([s], marks([['t', 'thin']]), NOW)).toEqual([])
+  })
+  it('never brings back a written or given-up story, whatever has changed', () => {
+    const w = story({ id: 'w' })
+    const f = story({ id: 'f' })
+    const ev = evidence([], [['w', state({ enrichedAt: hoursAgo(1), hasText: true })], ['f', state({ enrichedAt: hoursAgo(1), hasText: true })]])
+    expect(selectStories([w, f], marks([['w', 'written'], ['f', 'failed']]), NOW, 48, ev)).toEqual([])
+  })
+  it('puts stories with stored text before those without, then the usual order, retries last', () => {
+    const bare = story({ id: 'bare', firstSeen: hoursAgo(1), outlets: 9 })
+    const texty = story({ id: 'texty', firstSeen: hoursAgo(30), outlets: 1 })
+    const retry = story({ id: 'retry', firstSeen: hoursAgo(1) })
+    const ev = evidence([], [['texty', state({ enrichedAt: hoursAgo(1), hasText: true })], ['retry', state({ hasText: true })]])
+    expect(ids(selectStories([retry, bare, texty], marks([['retry', 'retry']]), NOW, 48, ev))).toEqual(['texty', 'bare', 'retry'])
+  })
+})
+
+describe('runStorySummaries and thin stories', () => {
+  it('re-reads a thin story that gained text and writes it, but not one that is unchanged, and not twice', async () => {
+    const changed = story({ id: 'changed' })
+    const same = story({ id: 'same' })
+    const thinMarks: [string, SummaryStatus][] = [['changed', 'thin'], ['same', 'thin']]
+    const ev = evidence([['changed', hoursAgo(5)], ['same', hoursAgo(5)]], [['changed', state({ enrichedAt: hoursAgo(1), hasText: true })], ['same', state()]])
+    const first = deps([changed, same], { marks: thinMarks, loadEvidence: async () => ev })
+    const r1 = await runStorySummaries(first.d)
+    expect(r1).toMatchObject({ candidates: 1, examined: 1, calls: 1, written: 1 })
+    expect(first.log.written.map(([id]) => id)).toEqual(['changed'])
+  })
+  it('a re-read that is still thin is marked thin again, which stamps it; the next hour does not re-read it', async () => {
+    const s = story({ id: 's' })
+    const ev = evidence([['s', hoursAgo(5)]], [['s', state({ createdAt: hoursAgo(1) })]])
+    const first = deps([s], { marks: [['s', 'thin']], thin: ['s'], loadEvidence: async () => ev })
+    const r1 = await runStorySummaries(first.d)
+    expect(r1).toMatchObject({ examined: 1, thin: 1, calls: 0 })
+    expect(first.log.status).toEqual([['s', 'thin']])
+    // saveStatus stamped the row now; an hour later nothing is newer than the stamp.
+    const next = deps([s], { marks: [['s', 'thin']], thin: ['s'], now: () => NOW + 3_600_000, loadEvidence: async () => evidence([['s', NOW_ISO]], [['s', state({ createdAt: hoursAgo(1) })]]) })
+    const r2 = await runStorySummaries(next.d)
+    expect(r2).toMatchObject({ candidates: 0, examined: 0 })
+  })
+  it('thin stories without a change cost no examination at all, however many there are', async () => {
+    const stories = Array.from({ length: 80 }, (_, i) => story({ id: `t${i}` }))
+    const thinMarks = stories.map((s): [string, SummaryStatus] => [s.id, 'thin'])
+    const ev = evidence(stories.map((s): [string, string] => [s.id, hoursAgo(5)]), stories.map((s): [string, RowTextState] => [s.id, state()]))
+    const { d, log } = deps(stories, { marks: thinMarks, thin: stories.map((s) => s.id), loadEvidence: async () => ev })
+    expect(await runStorySummaries(d)).toMatchObject({ candidates: 0, examined: 0, calls: 0 })
+    expect(log.status).toEqual([])
+  })
+  it('carries on, as before, when the evidence cannot be read', async () => {
+    const fresh = story({ id: 'fresh' })
+    const thin = story({ id: 'thin' })
+    const { d, log } = deps([fresh, thin], { marks: [['thin', 'thin']], loadEvidence: async () => { throw new Error('timeout') } })
+    const r = await runStorySummaries(d)
+    expect(log.written.map(([id]) => id)).toEqual(['fresh'])
+    expect(r.errors[0]).toContain('timeout')
+  })
+  it('keeps the cap of twenty model calls however many stories now have text', async () => {
+    const stories = Array.from({ length: 30 }, (_, i) => story({ id: `x${i}` }))
+    const ev = evidence([], stories.map((s): [string, RowTextState] => [s.id, state({ enrichedAt: hoursAgo(1), hasText: true })]))
+    const { d, log } = deps(stories, { loadEvidence: async () => ev })
+    await runStorySummaries(d)
+    expect(log.asked).toHaveLength(20)
   })
 })
 

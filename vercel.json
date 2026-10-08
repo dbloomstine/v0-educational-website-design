@@ -16,7 +16,7 @@
     },
     {
       "path": "/api/pipeline/news-enrich",
-      "schedule": "15 */2 * * *"
+      "schedule": "15 * * * *"
     },
     {
       "path": "/api/pipeline/news-process",
@@ -25,6 +25,10 @@
     {
       "path": "/api/pipeline/newsletter-send",
       "schedule": "30 11 * * *"
+    },
+    {
+      "path": "/api/pipeline/story-text",
+      "schedule": "35 * * * *"
     },
     {
       "path": "/api/pipeline/story-summaries",
