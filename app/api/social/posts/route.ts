@@ -6,7 +6,9 @@ import { getSupabaseAdmin } from '@/lib/supabase/client'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
-const COLUMNS = 'id, post_date, slug, format, kind, channel, story_ids, status, hold_reason, scheduled_for, buffer_post_id, permalink, error, created_at, updated_at'
+// `caption` and `media_urls` are here so the job can release a held post: it schedules the same words and files
+// (social repo, engine/release.mjs).
+const COLUMNS = 'id, post_date, slug, format, kind, channel, story_ids, caption, media_urls, status, hold_reason, scheduled_for, buffer_post_id, permalink, error, created_at, updated_at'
 
 /**
  * The record of what the social job made: one row per post per channel.
