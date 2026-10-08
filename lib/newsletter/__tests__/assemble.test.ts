@@ -194,6 +194,22 @@ describe('assembleNewsletter — one hire, told with and without the name', () =
   })
 })
 
+describe('a deal carries the deal’s size, not the buyer’s fund (Antin / HP Helicopters, 2026-10-02)', () => {
+  const sizeOf = (o: Record<string, unknown>) => rowToArticle(row({ event_type: 'acquisition', ...o })).fundSizeUsdMillions
+  it('drops a fund’s size from an acquisition', () => {
+    expect(sizeOf({ title: 'Antin NextGen Fund Acquired a Majority Stake in HP Helicopters', firm: 'Antin Infrastructure Partners', fund: 'Antin NextGen Infrastructure Fund I', size: 1320, tldr: 'Antin Infrastructure Partners’ €1.2B NextGen Infrastructure Fund I acquired majority stake in HP Helicopters, a specialty helicopter operator.' })).toBeNull()
+    expect(sizeOf({ title: 'Deal Roundup: Warburg buys into Ares, LightBay-backed Awayday', firm: 'Warburg Pincus', fund: 'Capital Solutions Founders Fund', size: 4000, tldr: 'Warburg Pincus invests via $4bn+ Capital Solutions Founders Fund in Awayday vacation-rental platform.' })).toBeNull()
+  })
+  it('keeps a deal’s own size, with or without a fund named', () => {
+    expect(sizeOf({ title: 'EQT Agreed to Sell Korea’s Acuon Group to a Hanwha Life-Led Consortium', firm: 'EQT', fund: 'EQT BPEA Private Equity Fund VII', size: 2920, tldr: 'EQT BPEA Fund VII exits Korea’s Acuon Group to Hanwha Life-led consortium; deal valued at $2.92B enterprise value.' })).toBe(2920)
+    expect(sizeOf({ title: 'Sycamore to sell Boots Group to Canada’s Weston family, Fairfax for $8.9bn', firm: 'Sycamore Partners', fund: 'Boots Group', size: 8900, tldr: 'Sycamore Partners sells Boots Group to Weston family and Fairfax Financial for $8.9B.' })).toBe(8900)
+    expect(sizeOf({ title: 'KKR to buy fund administrator Gen II in $5.1 billion deal', firm: 'KKR', size: 5100, tldr: 'KKR to buy a $5.1bn deal for fund administrator Gen II.' })).toBe(5100)
+  })
+  it('does not touch a fund close', () => {
+    expect(rowToArticle(row({ event_type: 'fund_close', title: 'Antin closes €1.2B NextGen Infrastructure Fund I', firm: 'Antin', fund: 'Antin NextGen Infrastructure Fund I', size: 1320, tldr: 'Antin closes €1.2B NextGen Infrastructure Fund I.' })).fundSizeUsdMillions).toBe(1320)
+  })
+})
+
 describe('placeArticle — an allocator\'s commitment is not fund news (2026-10-01…08 audit)', () => {
   const where = (title: string, o: Record<string, unknown>) => placeArticle(rowToArticle(row({ event_type: 'capital_raise', title, ...o })))?.section
 

@@ -643,6 +643,18 @@ function splitPeople(names: string | null): string[] {
   return names.split(/\s*(?:;|,| and | & )\s*/).map((n) => n.trim()).filter(Boolean)
 }
 
+/**
+ * A sum written directly before the name of a fund: "€1.2B NextGen
+ * Infrastructure Fund I", "$4bn+ Capital Solutions Founders Fund". Only
+ * capitalised words may stand between the sum and "Fund", so "a $5.1bn deal
+ * for fund administrator Gen II" and "deal valued at $2.92B enterprise value"
+ * are not read as a fund's size.
+ */
+const SUM_BEFORE_FUND = /[$€£]\s?\d[\d,.]*\s?(?:[Bb]n?|[Bb]illion|[Mm]n?|[Mm]illion)\+?\s+(?:[A-Z][\w'’&.-]*\s+){0,6}Funds?\b/
+function sizeBelongsToFund(text: string): boolean {
+  return SUM_BEFORE_FUND.test(text)
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function rowToArticle(row: any): NewsletterArticle {
   const extractedData = row.extracted_data as Record<string, unknown> | null
@@ -661,7 +673,15 @@ export function rowToArticle(row: any): NewsletterArticle {
   const firmName = (extractedData?.firm_name as string) ?? firmEntity?.name ?? null
   const fundName = (extractedData?.fund_name as string) ?? null
   const personName = (extractedData?.person_name as string) ?? null
-  const fundSizeMillions = extractedData?.fund_size_usd_millions as number | null
+  const eventType = row.event_type ?? row.article_type
+  let fundSizeMillions = extractedData?.fund_size_usd_millions as number | null
+  // A deal carries the deal's size or nothing. The classifier's one size field
+  // also takes the buyer's fund: "Antin Infrastructure Partners' €1.2B NextGen
+  // Infrastructure Fund I acquired majority stake in HP Helicopters" was
+  // stored as $1.3B and led the email as "Deals · $1.3B".
+  if (fundSizeMillions && fundName && storyFamily(eventType) === 'deal' && sizeBelongsToFund(`${title} ${tldr ?? ''}`)) {
+    fundSizeMillions = null
+  }
 
   // Additional firms beyond the primary — co-managers, acquirer/target pairs,
   // JV partners. Cap at 2 extras. Any token overlap with the primary firm
@@ -708,7 +728,7 @@ export function rowToArticle(row: any): NewsletterArticle {
     sourceName: row.source_name,
     publishedDate: row.published_date,
     articleType: row.article_type,
-    eventType: row.event_type ?? row.article_type,
+    eventType,
     fundCategories: row.fund_categories ?? [],
     isHighSignal: row.is_high_signal,
     relevanceScore: row.relevance_score,

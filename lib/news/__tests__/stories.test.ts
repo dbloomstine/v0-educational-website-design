@@ -331,3 +331,13 @@ describe('a wire whose later item already has its own story (HP Helicopters, 202
     expect(stories.map((s) => s.headline)).toEqual(['Antin acquires majority stake in aerial firefighting firm HP Helicopters'])
   })
 })
+
+describe('a deal story’s size is the deal’s (Antin / HP Helicopters, 2026-10-02)', () => {
+  it('does not show the buyer’s fund as the size of the deal', () => {
+    const [story] = buildStories([
+      row({ title: 'Antin NextGen Fund Acquired a Majority Stake in HP Helicopters', event_type: 'acquisition', firm: 'Antin Infrastructure Partners', fund: 'Antin NextGen Infrastructure Fund I', size: 1320, fund_categories: ['infrastructure'], tldr: 'Antin Infrastructure Partners’ €1.2B NextGen Infrastructure Fund I acquired majority stake in HP Helicopters, a specialty helicopter operator.' }),
+    ])
+    expect(story.kind).toBe('deals')
+    expect(story.sizeUsdM).toBeNull()
+  })
+})
