@@ -665,13 +665,16 @@ const WIRE_SERVICE_SOURCES = new Set([
 const NON_ENGLISH_PATTERNS = [
   // German
   /\b(erwirbt|beteiligung|unternehmen|bekanntgabe|abschluss|ankündigung|gibt.*bekannt|führt|stellt.*vor|bringt.*markt|beschleunigt|verstärkt|übernimmt|ernennt|aufgenommen|geschäft|milliarden|millionen|zusammenarbeit)\b/i,
-  // French
-  /\b(annonce|présente|lance|renforce|partenariat|investissement|résultats|acquisition|développement|technologie|entreprise|société|gestion|rapport|stratégi[eq]|croissance|communiqué|hépatique|conférence)\b/i,
+  // French. Only words English does not share: "acquisition", "lance" and
+  // "rapport" were here until 2026-10-08, and every English headline with
+  // "acquisition" in it was dropped at the door (18 of the 26 rows filtered
+  // in the week to Oct 7, among them a Nuveen/Schroders completion).
+  /\b(annonce|présente|renforce|partenariat|investissement|résultats|développement|technologie|entreprise|société|gestion|stratégi[eq]|croissance|communiqué|hépatique|conférence)\b/i,
   // Spanish / Portuguese
   /\b(anuncia|presenta|inversión|resultados|adquisición|desarrollo|tecnología|compañía|sociedad|gestión|informe|estrategia|crecimiento|comunicado)\b/i,
 ];
 
-function isIrrelevantAtIngest(title: string, sourceName?: string, feedName?: string): boolean {
+export function isIrrelevantAtIngest(title: string, sourceName?: string, feedName?: string): boolean {
   // Non-English detection: >30% non-Latin characters
   // eslint-disable-next-line no-control-regex
   const nonLatin = title.replace(/[\x00-\x7F\u00C0-\u024F\u1E00-\u1EFF]/g, '').length;
