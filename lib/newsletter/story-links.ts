@@ -160,7 +160,7 @@ export function entityMentioned(name: string, title: string, tldr: string | null
 export function dealStage(title: string): 0 | 1 | 2 {
   const t = title.toLowerCase()
   if (/\b(complet(es|ed|ion)|finalis|finaliz|seals?|wraps? up|closes (on|its|the)? ?(acquisition|purchase|sale|deal|takeover|buyout))/.test(t)) return 2
-  if (/\b(in talks|talks to|nears?|nearing|weighs?|explor(es|ing)|mulls?|consider(s|ing)|eyes|bidders?|bids?|in the running|approach(es)?|proposal|offer|interest|shortlist|preferred|frontrunner|could|may|said to|set to|poised|plans? to|seeks?|revisit)\b/.test(t)) return 0
+  if (/\b(in talks|talks to|nears?|nearing|weighs?|explor(es|ing)|mulls?|consider(s|ing)|eyes?|eyeing|bidders?|bids?|in the running|approach(es)?|proposal|offer|interest|shortlist|preferred|frontrunner|could|may|said to|set to|poised|plans? to|seeks?|revisit)\b/.test(t)) return 0
   return 1
 }
 

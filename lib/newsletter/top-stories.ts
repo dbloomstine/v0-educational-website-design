@@ -22,6 +22,7 @@ import type { ArticleGroup, NewsletterArticle } from './query-articles'
 import { isLikelyAumLeak, isRoundupArticle } from './query-articles'
 import { storyWeight, type StoryKind } from '@/lib/news/stories'
 import { normalizeSourceName } from '@/lib/news/constants'
+import { dealStage } from './story-links'
 
 export interface TopPick {
   article: NewsletterArticle
@@ -52,6 +53,33 @@ function sizeOf(article: NewsletterArticle): number | null {
   return article.fundSizeUsdMillions && !isLikelyAumLeak(article.fundSizeUsdMillions, article.fundName) ? article.fundSizeUsdMillions : null
 }
 
+/**
+ * What a thin morning may lead with. With fewer than five places to fill, the
+ * block takes whatever weighs most, and on 2026-10-05 that was a rumour
+ * ("KKR, Blackstone among PE firms eyeing windscreen repair group"), a $38M
+ * launch and an $11M launch. On such a morning:
+ *   - a rumour does not lead;
+ *   - a raise, a deal or an allocation leads on a stated size of at least
+ *     THIN_DAY_FLOOR_USD_M; without a size, a deal needs two more outlets than
+ *     the first, and a raise cannot lead at all;
+ *   - a hire or a service-provider story leads only when two other outlets
+ *     carried it too;
+ *   - and if fewer than two stories qualify there is no top block: the
+ *     sections are the whole brief, as on the thinnest mornings.
+ */
+export const THIN_DAY_FLOOR_USD_M = 250
+const MIN_TOP_ON_A_THIN_DAY = 2
+
+function worthLeadingOnAThinDay(p: { article: NewsletterArticle; kind: StoryKind }): boolean {
+  const widely = p.article.alsoCoveredBy.length >= 2
+  if (p.kind === 'regulation') return true
+  if (p.kind === 'people' || p.kind === 'providers') return widely
+  if (p.kind === 'deals' && dealStage(p.article.title) === 0) return false
+  const size = sizeOf(p.article)
+  if (size === null) return p.kind === 'deals' && widely
+  return size >= THIN_DAY_FLOOR_USD_M
+}
+
 function weightOf(article: NewsletterArticle, kind: StoryKind): number {
   const size = sizeOf(article)
   return storyWeight(
@@ -78,7 +106,9 @@ export function pickTopStories(groups: ArticleGroup[], total: number): TopPick[]
     // A multi-story wire is filler, never a lead; so is an allocator's commitment
     // (10-04 led with New Mexico's two real estate commitments).
     .filter((p) => !isRoundupArticle(p.article) && p.category !== 'lp_commitments')
+    .filter((p) => want >= 5 || worthLeadingOnAThinDay(p))
     .map((p) => ({ ...p, weight: weightOf(p.article, p.kind) }))
+  if (want < 5 && pool.length < MIN_TOP_ON_A_THIN_DAY) return []
 
   const picked: (typeof pool)[number][] = []
   const kinds = new Map<StoryKind, number>()

@@ -102,6 +102,37 @@ describe('the top of the edition', () => {
     const top = pickTopStories(groups, 14)
     expect(top.map((t) => t.category)).not.toContain('lp_commitments')
   })
+  it('a thin morning does not lead with a rumour or a tiny launch (2026-10-04, 10-05)', () => {
+    const quiet = (extra: NewsletterArticle[]) => [
+      group('deals', 'Deals', extra),
+      group('people_moves', 'People Moves', filler(12, 'P')),
+    ]
+    // 10-05: a rumour, a $38M launch, an $11M launch and one regulation story.
+    const groups = [
+      group('deals', 'Deals', [
+        article({ title: 'KKR, Blackstone among PE firms eyeing windscreen repair group Cary', firmName: 'KKR', eventType: 'acquisition', fundSizeUsdMillions: 3400 }),
+        article({ title: 'Sycamore nears $9bn sale of Boots to Weston family', firmName: 'Sycamore Partners', eventType: 'acquisition', fundSizeUsdMillions: 9000 }),
+        article({ title: 'CPP Investments sells A$4.5bn Australian toll road stakes to Transurban', firmName: 'CPP Investments', eventType: 'acquisition', fundSizeUsdMillions: 3100 }),
+        article({ title: 'AEW JV buys stake in Texas mall for $194.3m', firmName: 'AEW', eventType: 'acquisition', fundSizeUsdMillions: 194 }),
+      ]),
+      group('real_estate', 'Real Estate', [article({ title: 'Amtar & Beltone Launch USD 38.3M Real Estate Investment Fund', firmName: 'Amtar', eventType: 'fund_launch', fundSizeUsdMillions: 38.3, closeType: 'launch' })]),
+      group('VC', 'Venture Capital', [article({ title: 'Cypress Asia launches RM50 mil debut venture fund', firmName: 'Cypress Asia', eventType: 'fund_launch', fundSizeUsdMillions: 11, closeType: 'launch' })]),
+      group('regulatory', 'Regulation', [article({ title: 'SEC proposes widening retail access to private markets', firmName: 'SEC', eventType: 'regulatory_action', alsoCoveredBy: ['Reuters', 'Bloomberg', 'Pensions & Investments'] })]),
+      group('people_moves', 'People Moves', filler(10, 'P')),
+    ]
+    const total = groups.reduce((n, g) => n + g.articles.length, 0)
+    expect(topCount(total)).toBeLessThan(5)
+    const titles = pickTopStories(groups, total).map((t) => t.article.title)
+    expect(titles).toContain('CPP Investments sells A$4.5bn Australian toll road stakes to Transurban')
+    expect(titles).toContain('SEC proposes widening retail access to private markets')
+    for (const t of titles) expect(t).not.toMatch(/eyeing|nears|Amtar|Cypress|AEW/)
+    // Nothing left that deserves the block: no block, rather than a block of filler.
+    expect(pickTopStories(quiet([article({ title: 'Eurazeo explores sale of a stake', firmName: 'Eurazeo', eventType: 'acquisition', fundSizeUsdMillions: 2000 })]), 14)).toEqual([])
+    // A busy morning still leads with a rumour if it is the day's biggest story.
+    const busy = busyMorning()
+    busy.groups[2].articles.push(article({ title: 'Sycamore nears $9bn sale of Boots to Weston family', firmName: 'Sycamore Partners', eventType: 'acquisition', fundSizeUsdMillions: 9000, alsoCoveredBy: ['Reuters', 'Bloomberg', 'FT'] }))
+    expect(pickTopStories(busy.groups, busy.total + 1).map((t) => t.article.firmName)).toContain('Sycamore Partners')
+  })
   it('scales with the morning, and stands down on a thin one', () => {
     expect([40, 25, 24, 16, 15, 12, 11, 3].map(topCount)).toEqual([5, 5, 4, 4, 3, 3, 0, 0])
     const groups = [group('PE', 'Private Equity', filler(6, 'Thin'))]

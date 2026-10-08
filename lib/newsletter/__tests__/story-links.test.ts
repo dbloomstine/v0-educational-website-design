@@ -278,6 +278,19 @@ describe('deals with one party in common (2026-10-02…08 audit)', () => {
   })
 })
 
+describe('dealStage — rumours', () => {
+  it('reads the words a rumour is told in', () => {
+    for (const t of [
+      'KKR, Blackstone among PE firms eyeing windscreen repair group Cary',
+      'Sycamore nears $9bn sale of Boots to Weston family',
+      'Elliott, Siris weigh $2bn-plus sale of Gigamon',
+      'CVC, Blackstone, Advent and EQT eye €2bn Robin Radar deal',
+      'Bain Capital explores potential investment in Hong Kong’s New World',
+    ]) expect(dealStage(t), t).toBe(0)
+    expect(dealStage('Sycamore Partners agrees $8.9bn Boots exit to Wittington Investments')).toBe(1)
+  })
+})
+
 describe('a deal that has moved on is new', () => {
   it('a signed deal after the rumour: Sycamore / Boots (10-04, then 10-07 and 10-08)', () => {
     const nears = story({ title: 'Sycamore nears $9bn sale of Boots to Weston family', eventType: 'acquisition', firmName: 'Sycamore Partners', fundSizeUsdMillions: 9000, entityKeys: keys('Sycamore Partners', 'Boots', 'Weston family') })
