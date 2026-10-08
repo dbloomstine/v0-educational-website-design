@@ -244,3 +244,27 @@ describe('the email never opens on an allocator', () => {
     expect(buildSubject(content)).toMatch(/Princeton Equity/)
   })
 })
+
+describe('placeArticle — a transaction typed as a fund event is a deal (2026-10-02, 10-07 audit)', () => {
+  const where = (title: string, o: Record<string, unknown>) => placeArticle(rowToArticle(row({ title, ...o })))?.section
+
+  it('files exits, minority sales, company investments and fund restructurings under Deals', () => {
+    expect(where('Partners Group restructures €6.6bn evergreen fund after redemption cap', { event_type: 'fund_close', firm: 'Partners Group', fund: 'Partners Group Global Value SICAV', size: 7260 })).toBe('deals')
+    expect(where('Apposite Capital seals first Healthcare III exit with CrestOptics sale to Evident', { event_type: 'fund_close', firm: 'Apposite Capital', fund: 'Apposite Capital Healthcare III' })).toBe('deals')
+    expect(where('Monzo turns to PE after Nubank ends takeover talks', { event_type: 'capital_raise', firm: 'CVC' })).toBe('deals')
+    // Typed fund_launch with a stray "target" stage: the stage does not make it a raise.
+    expect(where('AGR backs New Zealand goat dairy producer', { event_type: 'fund_launch', firm: 'AGR', size: 250, close: 'target' })).toBe('deals')
+    expect(placeArticle(rowToArticle(row({ title: 'Partners Group restructures €6.6bn evergreen fund after redemption cap', event_type: 'fund_close', firm: 'Partners Group', size: 7260 })))?.leadEligible).toBe(false)
+  })
+
+  it('keeps a raise that mentions an exit or a stake', () => {
+    expect(where('ECP closes third continuation vehicle at $834m after exiting first two', { event_type: 'fund_close', firm: 'Energy Capital Partners', size: 834, close: 'final_close' })).toBe('fund')
+    expect(where('LP-backed Collective Global eyes $1bn for sophomore GP stakes fund', { event_type: 'fund_launch', firm: 'Collective Global', size: 1000, close: 'target', fund_categories: ['gp_stakes'] })).toBe('fund')
+    expect(where('Stonelake grows opportunistic real estate strategy 34% with $1bn Fund VIII close', { event_type: 'fund_close', firm: 'Stonelake', size: 1000, fund_categories: ['real_estate'] })).toBe('fund')
+    expect(where('British Business Bank backs Advent funds with £135m', { event_type: 'capital_raise', firm: 'Advent' })).toBe('lp_commitments')
+  })
+
+  it('a county is an allocator ("Sacramento County adds U.S. buyout fund")', () => {
+    expect(where('Sacramento County adds U.S. buyout fund', { event_type: 'capital_raise', firm: 'Sacramento County' })).toBe('lp_commitments')
+  })
+})

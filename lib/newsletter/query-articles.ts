@@ -314,7 +314,7 @@ const LP_NAME_PATTERNS = [
   // Common", "Texas County & District", HFRRF, KVIC and IFC all ran as GP fund
   // news, and three of them as top stories.
   /\bwealth funds?\b|\bstate (investment (council|board)|common|treasur\w+)\b/i,
-  /\bTexas County\b|\bcount(y|ies)\b.*\b(district|retirement|employees)\b/i,
+  /\bCounty\b|\bcount(y|ies)\b.*\b(district|retirement|employees)\b/i,
   /\bKVIC\b|\bKorea Venture Investment\b|\bHFRRF\b/,
   // Development-finance institutions allocate to funds like any LP.
   /\b(IFC|EBRD|EIB|DFC|FMO|Proparco|IDB Invest)\b/,
@@ -819,6 +819,23 @@ export function isWindDown(a: NewsletterArticle): boolean {
  * have led the 2026-09-17 subject line as "Valor Equity".
  */
 const FUNDRAISE_WORDS = /\b(funds?|raises?|raised|raising|fundrais\w+|clos(e|es|ed|ing)|targets?|launch(es|ed)?|vehicle|strategy|hard cap|commitments?|oversubscribed|vintage)\b/i
+/**
+ * A fund-typed row whose headline is a transaction and says nothing of a
+ * raise: "Apposite Capital seals first Healthcare III exit with CrestOptics
+ * sale to Evident" (typed fund_close), "Monzo turns to PE after Nubank ends
+ * takeover talks" (capital_raise), "AGR backs New Zealand goat dairy producer"
+ * (fund_launch, closeType 'target'), "Partners Group restructures €6.6bn
+ * evergreen fund after redemption cap". The type and the stray fund name or
+ * stage the classifier attached are not enough to make them fund news; they
+ * belong in Deals. A raise verb anywhere keeps the row a raise: "ECP closes
+ * third continuation vehicle at $834m after exiting first two".
+ */
+const RAISE_VERBS = /\b(raises?|raised|raising|fundrais\w+|clos(e|es|ed|ing)|launch(es|ed|ing)?|targets?|hard cap|oversubscribed|commitments?|secures?|secured|upsiz\w+|eyes|seeks?|aims?|plans?|nears?|readies|approaches|holds|hits|tops|doubles)\b/i
+const TRANSACTION_TITLE = /\b(exits?|exited|sale of|sells?|sold|divest\w*|stake|takeover|take-private|restructur\w+|buys?|bought|bid|in talks|backs(?!.*\bfunds?\b))\b/i
+export function isTransactionNotRaise(a: NewsletterArticle): boolean {
+  return storyFamily(a.eventType) === 'fund' && !RAISE_VERBS.test(a.title) && TRANSACTION_TITLE.test(a.title)
+}
+
 function readsAsFundraise(a: NewsletterArticle): boolean {
   if (a.eventType !== 'capital_raise') return true
   if (a.fundName || a.closeType) return true
@@ -912,6 +929,7 @@ export function placeArticle(a: NewsletterArticle): ArticlePlacement | null {
   if (family === 'fund') {
     if (isDealShaped(a)) return { section: 'deals', assetClass: null, leadEligible: false }
     if (isLpCommitment(a)) return { section: 'lp_commitments', assetClass: null, leadEligible: false }
+    if (isTransactionNotRaise(a)) return { section: 'deals', assetClass: null, leadEligible: false }
     const notARaise = isWindDown(a) || STRUCTURED_CREDIT.test(a.title) || !readsAsFundraise(a)
     return { section: 'fund', assetClass: assetClassFor(a), leadEligible: !notARaise }
   }
