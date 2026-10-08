@@ -23,6 +23,7 @@ import { readFileSync, writeFileSync } from 'fs'
 import { assembleNewsletter, buildPriorExclusions, ALL_NEWSLETTER_TYPES } from '../lib/newsletter/query-articles'
 import { buildSubject } from '../lib/newsletter/send-daily'
 import { splitHeadlineByEntities } from '../lib/news/constants'
+import { arrangeEdition, kickerParts } from '../lib/newsletter/top-stories'
 
 const [poolPath, editionsPath, ...rest] = process.argv.slice(2)
 const fromDate = rest.find((a) => /^\d{4}-\d{2}-\d{2}$/.test(a)) ?? '0000-00-00'
@@ -67,7 +68,13 @@ for (const ed of editions) {
   const both = [...mine].filter((i) => actual.has(i)).length
   console.log(`\n===== ${ed.edition_date}  replay ${mine.size} | actual ${actual.size} | shared ${both}`)
   console.log(`subject: ${buildSubject(content)}`)
-  for (const g of content.groups) {
+  // The top block as the email draws it (arrangeEdition), then the sections without it.
+  const { top, sections } = arrangeEdition(content.groups, content.totalArticles)
+  if (top.length) {
+    console.log(`── TOP STORIES (${top.length})`)
+    for (const t of top) console.log(`   ★ [${kickerParts(t).join(' · ')}] ${t.article.title.slice(0, 120)}`)
+  }
+  for (const g of sections) {
     console.log(`── ${g.label} (${g.articles.length})`)
     for (const a of g.articles) {
       const mark = actual.has(a.id) ? ' ' : '+'
@@ -78,7 +85,7 @@ for (const ed of editions) {
   const why = new Map((content.dropped ?? []).map((d) => [d.id, d.reason]))
   const dropped = [...actual].filter((i) => !mine.has(i)).map((i) => `${String(rowsById.get(i)?.title ?? i).slice(0, 84)}  ⟵ ${why.get(i) ?? (shipped.some((ids) => ids.includes(i)) ? 'already ran in an earlier replayed edition' : 'not a candidate at replay send time')}`)
   if (dropped.length) { console.log(`── no longer included (${dropped.length})`); for (const t of dropped) console.log(`  - ${t}`) }
-  out.push({ date: ed.edition_date, subject: buildSubject(content), groups: content.groups.map((g) => ({ label: g.label, titles: g.articles.map((a) => a.title) })), dropped })
+  out.push({ date: ed.edition_date, subject: buildSubject(content), top: top.map((t) => `[${kickerParts(t).join(' · ')}] ${t.article.title}`), groups: sections.map((g) => ({ label: g.label, titles: g.articles.map((a) => a.title) })), dropped })
   shipped.push(actualPrior ? (ed.article_ids ?? []) : content.articleIds)
 }
 if (jsonOut) writeFileSync(jsonOut, JSON.stringify(out, null, 1))
