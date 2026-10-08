@@ -36,7 +36,7 @@ export const ARCHIVE_PAGE_SIZE = 50
 /** Deepest page a month will answer for; a page number beyond it is a 404 without a query. */
 export const ARCHIVE_MAX_PAGE = 200
 /** Stories the sitemap lists from the archive, newest first. */
-export const SITEMAP_STORY_CAP = 3000
+export const SITEMAP_STORY_CAP = 1000
 
 const MONTH_RE = /^(\d{4})-(0[1-9]|1[0-2])$/
 const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
