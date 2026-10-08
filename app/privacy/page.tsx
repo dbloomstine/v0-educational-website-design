@@ -41,7 +41,7 @@ export default function PrivacyPolicyPage() {
             <div className="legal">
               <div className="">
                 <p className="text-sm text-muted-foreground mb-12">
-                  Last updated: June 27, 2026
+                  Last updated: October 8, 2026
                 </p>
 
                 {/* Introduction */}
@@ -83,11 +83,19 @@ export default function PrivacyPolicyPage() {
                     If you choose to subscribe to our newsletter, we collect your email address. This is entirely
                     optional and is the only personal information we actively request from visitors.
                   </p>
+                  <p className="text-muted-foreground leading-relaxed mt-3">
+                    When you subscribe, we also record how you reached the Site on that visit: the name of the
+                    site that linked to us (for example a search engine or a social network), any campaign label
+                    in the link you followed, and the first page you opened. We use this only to learn which
+                    places bring us readers. It is kept with your subscription and is removed with it.
+                  </p>
 
                   <h3 className="text-xl font-semibold mb-3 mt-6">Local Storage</h3>
                   <p className="text-muted-foreground leading-relaxed">
                     Our Site may use your browser&apos;s local storage to save preferences. This data is stored
-                    only on your device and is never transmitted to our servers.
+                    only on your device and is not transmitted to our servers, with one exception: for the length
+                    of a visit, your browser remembers how you arrived (described under Newsletter Signup above),
+                    and that is sent to us only if you subscribe.
                   </p>
                 </div>
 
