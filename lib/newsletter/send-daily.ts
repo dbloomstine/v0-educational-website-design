@@ -386,6 +386,8 @@ async function alertOnSkip(supabase: DbClient, editionDate: string): Promise<voi
 const BARE_PLACE = /^(korea|south korea|china|india|japan|singapore|australia|canada|france|germany|italy|spain|saudi arabia|uae|uk|us|eu|europe|asia|africa)$/i
 export const SUBJECT_MAX_CHARS = 70
 export const SUBJECT_MAX_NAMES = 6
+/** A raise of at least this many USD millions leads the subject ahead of the day's deals. */
+export const SUBJECT_RAISE_FLOOR = 100
 
 const LEGAL_SUFFIX_RE = /(,?\s+(LLC|LLP|L\.?L\.?P\.?|L\.?P\.?|Inc\.?|Ltd\.?|Limited|plc|PLC|Corp\.?|Corporation|Co\.?|S\.?A\.?|AG|GmbH|SE))+\s*$/i
 
@@ -516,7 +518,14 @@ export function buildSubject(content: {
       const leak = size > 0 && isLikelyAumLeak(size, article.fundName)
       const prio = tier === 0 ? (typePriority[article.eventType ?? ''] ?? 0) : 0
       const lead = tier === 0 && article.leadEligible !== false && !leak ? 1 : 0
-      cands.push({ name, tier, lead, prio: leak ? 0 : prio, size: lead ? size : 0, seq })
+      // A raise too small to name a day by, or with no size at all, gives way
+      // to the day's deals: 2026-10-05 opened on a $38M and an $11M launch
+      // with KKR further along, and the Sunday before on an LP's commitment
+      // with a $9bn sale in the same email. A raise of SUBJECT_RAISE_FLOOR or
+      // more still leads, biggest first.
+      const band = tier === 0 ? (lead && size >= SUBJECT_RAISE_FLOOR ? 0 : 2) : tier === 1 ? 1 : tier + 1
+      const ranked = lead || (tier === 1 && !leak) ? size : 0
+      cands.push({ name, tier: band, lead, prio: leak ? 0 : prio, size: ranked, seq })
     }
   }
   // Biggest raise first. The first cut of this ranked every close ahead of

@@ -140,6 +140,40 @@ describe('buildSubject', () => {
     expect(subject).toBe('Blackstone, Thoma Bravo')
   })
 
+  it('lets the day\'s deals lead when the only raises are small ones', () => {
+    // 2026-10-05 really did open "Amtar, Cypress Asia, HFRRF, KKR…": a $38M
+    // and an $11M launch and a plan with no size, ahead of KKR.
+    const subject = buildSubject({
+      totalArticles: 5,
+      groups: [
+        group('VC', [
+          { firmName: 'Amtar', fundSizeUsdMillions: 38, eventType: 'fund_launch' },
+          { firmName: 'Cypress Asia', fundSizeUsdMillions: 11, eventType: 'fund_launch' },
+          { firmName: 'HFRRF', fundSizeUsdMillions: null, eventType: 'capital_raise' },
+        ]),
+        group('deals', [
+          { firmName: 'TDR Capital', fundSizeUsdMillions: null, eventType: 'acquisition' },
+          { firmName: 'KKR', fundSizeUsdMillions: 9000, eventType: 'acquisition' },
+        ]),
+      ],
+    })
+    expect(subject).toBe('KKR, TDR Capital, Amtar, Cypress Asia, HFRRF')
+  })
+
+  it('still leads with a raise of a hundred million or more, ahead of any deal', () => {
+    const subject = buildSubject({
+      totalArticles: 3,
+      groups: [
+        group('deals', [{ firmName: 'Sycamore', fundSizeUsdMillions: 9000, eventType: 'acquisition' }]),
+        group('PE', [
+          { firmName: 'Niobrara', fundSizeUsdMillions: 1100, eventType: 'fund_close' },
+          { firmName: 'Breed VC', fundSizeUsdMillions: 15, eventType: 'fund_close' },
+        ]),
+      ],
+    })
+    expect(subject).toBe('Niobrara, Sycamore, Breed VC')
+  })
+
   it('puts LP commitments last, after GP events and deals', () => {
     const subject = buildSubject({
       totalArticles: 3,
