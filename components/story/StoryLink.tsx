@@ -3,7 +3,9 @@ import { ArrowUpRight } from 'lucide-react'
 import type { Story } from '@/lib/news/stories'
 
 /** How every link out to a publisher opens: a new tab, with no hold on ours. */
-export const OUTBOUND = { target: '_blank', rel: 'noopener noreferrer' } as const
+// `noopener` without `noreferrer`: the publisher's own figures then show that the reader came from us. An
+// aggregator that sends readers to the source should be seen to.
+export const OUTBOUND = { target: '_blank', rel: 'noopener' } as const
 
 /**
  * A story's headline, wherever one is listed. It opens OUR page for the story
