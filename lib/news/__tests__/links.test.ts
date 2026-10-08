@@ -12,7 +12,7 @@ import { join } from 'node:path'
  * at deploy, and it is what makes a tab open instantly.)
  */
 const ROOT = join(__dirname, '..', '..', '..')
-const ON_DEMAND = /^\{`\/story\/\$\{|^\{`\/firm\/\$\{|^\{`\/events\/\$\{(?:event|e)\.slug|^\{firmHref\(|^\{f\.href\}|^\{bar\.href\}/
+const ON_DEMAND = /^\{`\/story\/\$\{|^\{`\/firm\/\$\{|^\{`\/events\/\$\{(?:event|e)\.slug|^\{firmHref\(|^\{f\.href\}|^\{bar\.href\}|^\{archiveHref\(|^"\/archive"/
 
 function sources(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {

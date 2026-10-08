@@ -69,6 +69,8 @@ export function SiteFooter() {
             <ul className="space-y-1.5">
               <li><Link href="/league-tables" className={linkClass}>League tables</Link></li>
               <li><Link href="/firms" className={linkClass}>Firms</Link></li>
+              {/* Not prefetched: the archive is built on request, and this link is on every page. */}
+              <li><Link href="/archive" prefetch={false} className={linkClass}>Archive</Link></li>
               <li><Link href="/events" className={linkClass}>Events calendar</Link></li>
               {COMPANY_LINKS.map((l) => (
                 <li key={l.href}><Link href={l.href} className={linkClass}>{l.label}</Link></li>

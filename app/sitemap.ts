@@ -5,6 +5,7 @@ import { SECTIONS, sectionHref, storyInSection } from '@/lib/news/sections'
 import { loadArchive, loadStories } from '@/lib/news/front-page'
 import { firmIndex } from '@/lib/news/firms'
 import { loadLeague } from '@/lib/news/league-data'
+import { archiveHref, loadArchiveSpan, loadSitemapStories, monthsBetween, type ArchiveSpan, type SitemapStory } from '@/lib/news/archive'
 
 /**
  * The sitemap, with HONEST dates.
@@ -90,6 +91,43 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
     }))
 
+  // The archive and its stories (lib/news/archive.ts): every story with a
+  // fuller summary, newest first and capped, however old. One bounded query, an
+  // hour in the data cache. The sitemap must not break if it fails, so the
+  // archive is simply left out until the next build.
+  let written: SitemapStory[] = []
+  let span: ArchiveSpan | null = null
+  try {
+    ;[written, span] = await Promise.all([loadSitemapStories(), loadArchiveSpan()])
+  } catch (err) {
+    console.error('[sitemap] the archive could not be read, leaving it out:', err)
+  }
+  const onPage = new Set(storyPages.map((p) => p.url))
+  const writtenPages: MetadataRoute.Sitemap = written
+    .filter((s) => !onPage.has(`${baseUrl}/story/${s.id}`))
+    .map((s) => ({
+      url: `${baseUrl}/story/${s.id}`,
+      // When the fuller summary was written; otherwise the day it was published.
+      lastModified: at(s.at ?? s.date),
+      changeFrequency: 'monthly' as const,
+      priority: 0.5,
+    }))
+  // A month page changed when its newest story arrived. A month older than the
+  // cap reaches carries no date rather than a guessed one.
+  const newestByMonth = new Map<string, string>()
+  for (const s of written) if (s.date > (newestByMonth.get(s.date.slice(0, 7)) ?? '')) newestByMonth.set(s.date.slice(0, 7), s.date)
+  const archivePages: MetadataRoute.Sitemap = span
+    ? [
+        { url: `${baseUrl}/archive`, lastModified: at(span.newestDay), changeFrequency: 'daily' as const, priority: 0.6 },
+        ...monthsBetween(span.first, span.last).map((m) => ({
+          url: `${baseUrl}${archiveHref(m)}`,
+          lastModified: at(newestByMonth.get(m)),
+          changeFrequency: m === span!.last ? ('daily' as const) : ('monthly' as const),
+          priority: 0.5,
+        })),
+      ]
+    : []
+
   // Firm pages: the managers in the league table, each of which has at least a
   // fund close to show, and the firms with more than one story this month.
   // Each is dated by its newest story or close.
@@ -109,5 +147,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }))
 
-  return [...staticPages, ...sectionPages, ...storyPages, ...firmPages, ...collectionPages, ...eventPages]
+  return [...staticPages, ...sectionPages, ...storyPages, ...archivePages, ...writtenPages, ...firmPages, ...collectionPages, ...eventPages]
 }

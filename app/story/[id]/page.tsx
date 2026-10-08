@@ -14,7 +14,9 @@ import { LatestRail, SubscribePanel } from '@/components/home/Rail'
 import { getStory } from '@/lib/news/front-page'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { pageSummary } from '@/lib/news/story-summary'
-import { readLongSummary } from '@/lib/news/story-summary-store'
+import { readLongSummaryDetail } from '@/lib/news/story-long'
+import { jsonLdScript, storyJsonLd, storyPermalink } from '@/lib/news/story-jsonld'
+import { loadDayStories, olderRails } from '@/lib/news/older-story'
 import { rankSection, type Story } from '@/lib/news/stories'
 import { ASSET_LABEL, homeSectionFor, sectionHref, storyInSection } from '@/lib/news/sections'
 import { kickerLabel, sizeLabel, stageLabel } from '@/lib/news/format'
@@ -38,7 +40,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (!found) return { title: 'Story not found' }
   const { story } = found
   const description = story.summary ?? `${story.headline} — reported by ${story.source ?? 'the original publisher'}.`
-  const url = `https://fundopshq.com/story/${story.id}`
+  const url = storyPermalink(story)
   return {
     title: story.headline,
     description,
@@ -61,11 +63,12 @@ export default async function StoryPage({ params }: Params) {
   const { id } = await params
   const found = await getStory(id)
   if (!found) notFound()
-  const { story, all } = found
+  const { story, all, older } = found
   const nowMs = Date.now()
   // The fuller summary, when the job has written one for any row of the story.
   // The meta description and the JSON-LD below keep the short one.
-  const summary = pageSummary(story.summary, await readLongSummary(getSupabaseAdmin(), story))
+  const long = await readLongSummaryDetail(getSupabaseAdmin(), story)
+  const summary = pageSummary(story.summary, long?.text)
 
   const section = homeSectionFor(story)
   const firmKey = entityKey(story.firmName)
@@ -74,36 +77,46 @@ export default async function StoryPage({ params }: Params) {
     .filter((name) => !keysMatch(entityKey(name), firmKey || '\u0000'))
     .map((name) => ({ name, href: firmHref(name) }))
     .filter((f): f is { name: string; href: string } => !!f.href)
-  const sameFirm: Story[] = firmKey
-    ? all.filter((s) => s.id !== story.id && keysMatch(entityKey(s.firmName), firmKey)).slice(0, 5)
-    : []
-  const taken = new Set([story.id, ...sameFirm.map((s) => s.id)])
-  const moreInSection = section
-    ? rankSection(all.filter((s) => storyInSection(s, section) && !taken.has(s.id) && !s.roundup), nowMs).slice(0, 6)
-    : []
+  // Under a story still on the page: its firm's stories and its section, from
+  // the ten days. Under an older one the same two rails, about the story
+  // itself — its firm's stories from the days around it, its section on its
+  // own day — and a rail with nothing related to show is left out, never
+  // filled from today (lib/news/older-story.ts).
+  let sameFirm: Story[]
+  let moreInSection: Story[]
+  if (older) {
+    // The section rail is an extra: if its lookup fails the page goes without it.
+    const day =
+      section && story.publishedDate
+        ? await loadDayStories(story.publishedDate).catch((err) => {
+            console.error('[story] could not read the day’s stories for the section rail:', err)
+            return [] as Story[]
+          })
+        : []
+    ;({ sameFirm, moreInSection } = olderRails(story, older.siblings, day, section))
+  } else {
+    sameFirm = firmKey
+      ? all.filter((s) => s.id !== story.id && keysMatch(entityKey(s.firmName), firmKey)).slice(0, 5)
+      : []
+    const taken = new Set([story.id, ...sameFirm.map((s) => s.id)])
+    moreInSection = section
+      ? rankSection(all.filter((s) => storyInSection(s, section) && !taken.has(s.id) && !s.roundup), nowMs).slice(0, 6)
+      : []
+  }
 
   const sized = story.kind === 'fundraising' || story.kind === 'deals' || story.kind === 'lps'
   const size = sized && story.leadEligible ? sizeLabel(story.sizeUsdM) : null
   const stage = stageLabel(story)
-  const permalink = `https://fundopshq.com/story/${story.id}`
+  const permalink = storyPermalink(story)
   const published = new Date(story.firstSeen).toLocaleDateString('en-US', {
     weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/New_York',
   })
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'NewsArticle',
-    headline: story.headline,
-    description: story.summary ?? undefined,
-    datePublished: story.firstSeen,
-    url: permalink,
-    isBasedOn: story.url,
-    publisher: { '@type': 'Organization', name: 'FundOpsHQ', url: 'https://fundopshq.com' },
-  }
+  const jsonLd = storyJsonLd(story, long?.at)
 
   return (
     <div className="flex min-h-screen flex-col">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
       <SiteHeader />
 
       <main id="main-content" className="paper flex-1">
@@ -218,7 +231,7 @@ export default async function StoryPage({ params }: Params) {
 
               {section && moreInSection.length > 0 && (
                 <section aria-label={`More in ${section.title}`} className="mt-9">
-                  <SectionFlag label={`More in ${section.title}`} href={sectionHref(section.slug)} />
+                  <SectionFlag label={`More in ${section.title}`} href={sectionHref(section.slug)} note={older ? 'From the same day' : undefined} />
                   <ul>
                     {moreInSection.map((s) => (
                       <HeadlineRow key={s.id} story={s} showSource />

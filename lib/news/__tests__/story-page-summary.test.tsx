@@ -20,7 +20,7 @@ const story: Story = {
 vi.mock('next/navigation', () => ({ notFound: () => { throw new Error('NEXT_NOT_FOUND') }, useRouter: () => ({}), usePathname: () => '/', useSearchParams: () => new URLSearchParams() }))
 vi.mock('@/lib/news/front-page', () => ({ getStory: async () => ({ story, all: [story] }) }))
 vi.mock('@/lib/supabase/client', () => ({ getSupabaseAdmin: () => ({}) }))
-vi.mock('@/lib/news/story-summary-store', () => ({ readLongSummary: async () => long }))
+vi.mock('@/lib/news/story-long', () => ({ readLongSummaryDetail: async () => (long ? { text: long, at: null } : null) }))
 vi.mock('@/components/sponsor/SponsorSlot', () => ({ SponsorStrip: () => null, SponsorCard: () => null }))
 vi.mock('@/components/site-header', () => ({ SiteHeader: () => null }))
 vi.mock('@/components/site-footer', () => ({ SiteFooter: () => null }))

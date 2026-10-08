@@ -9,11 +9,13 @@ import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { buildOnce } from '@/lib/cache/build-once'
 import { ALL_NEWSLETTER_TYPES } from '@/lib/newsletter/query-articles'
 import { buildStories, type Story } from './stories'
+import { STORY_COLUMNS } from './story-columns'
+import { loadOlderStory, type OlderContext } from './older-story'
 
 /** Days of stories the site keeps "on the page". The archive lives at /news. */
 export const STORY_WINDOW_DAYS = 10
 
-const COLUMNS = 'id, title, source_url, source_name, published_date, created_at, article_type, event_type, fund_categories, is_high_signal, relevance_score, tldr, entities_raw, extracted_data'
+const COLUMNS = STORY_COLUMNS
 
 /** The Latest page reaches further back than the fronts do. */
 export const ARCHIVE_WINDOW_DAYS = 30
@@ -129,38 +131,17 @@ export async function searchStories(query: string): Promise<Story[]> {
 
 /**
  * One story by any of its rows' ids. Stories still on the page come from the
- * shared cache; an older permalink falls back to that single row, so a link
- * shared last month still opens — with its summary and source, without the
- * other outlets.
+ * shared cache. An older permalink is built from its own row and the same
+ * firm's rows a few days either side (lib/news/older-story.ts), so a link
+ * shared last month opens a whole story: its summary, its facts and every
+ * outlet that reported it. `older` is set for those, and carries what the page
+ * needs for its rails: stories of the same firm from about the same time.
  */
-export async function getStory(id: string): Promise<{ story: Story; all: Story[] } | null> {
+export async function getStory(id: string): Promise<{ story: Story; all: Story[]; older?: OlderContext } | null> {
   if (!/^[0-9a-f-]{36}$/i.test(id)) return null
   const all = await loadStories()
   const hit = all.find((s) => s.id === id || s.memberIds?.includes(id))
   if (hit) return { story: hit, all }
-  const story = await getOlderStory(id.toLowerCase())
-  return story ? { story, all } : null
+  const older = await loadOlderStory(id.toLowerCase())
+  return older ? { story: older.story, all, older: { siblings: older.siblings } } : null
 }
-
-/**
- * A story that has left the ten-day window, by its row. An old report does
- * not change, so the answer — the story, or that there is none — is kept for
- * a day: crawlers ask for hundreds of old stories a minute, and each one was
- * a trip to the database. A lookup that FAILS throws and is not kept.
- */
-const getOlderStory = unstable_cache(
-  async (id: string): Promise<Story | null> => {
-    const { data, error } = await getSupabaseAdmin()
-      .from('news_items')
-      .select(COLUMNS)
-      .eq('id', id)
-      .eq('classification_status', 'complete')
-      .maybeSingle()
-    if (error) throw new Error(`story lookup failed: ${error.message}`)
-    if (!data) return null
-    const [story] = buildStories([data])
-    return story ?? null
-  },
-  ['story-by-id-v1'],
-  { revalidate: 86_400, tags: ['stories'] },
-)
