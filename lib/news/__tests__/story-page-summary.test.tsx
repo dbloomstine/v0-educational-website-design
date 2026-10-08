@@ -82,4 +82,24 @@ describe('the story page summary', () => {
     const meta = await generateMetadata({ params: Promise.resolve({ id: story.id }) })
     expect(meta.description).toBe(story.summary)
   })
+
+  it('keeps the way out in plain sight: the byline names the outlet as a link, the button follows the summary, every outlet in the coverage list is a link', async () => {
+    await renderPage()
+    const outward = (a: HTMLElement, url: string) => {
+      expect(a.getAttribute('href')).toBe(url)
+      expect(a.getAttribute('target')).toBe('_blank')
+      expect(a.getAttribute('rel')).toContain('noopener')
+    }
+    // Under the headline, above any scrolling on a phone: first reported by <outlet ↗>.
+    const byline = screen.getByText(/first reported by/)
+    outward(within(byline).getByRole('link', { name: 'AltAssets' }), 'https://example.com/original')
+    // The button, with the same target and rel.
+    outward(screen.getByRole('link', { name: /Read the full story at AltAssets/ }), 'https://example.com/original')
+    // Coverage: the first outlet and each other outlet, as links out.
+    const coverage = screen.getByRole('region', { name: 'Coverage' })
+    const links = within(coverage).getAllByRole('link')
+    expect(links).toHaveLength(2)
+    outward(links[0], 'https://example.com/original')
+    outward(links[1], 'https://example.com/law360')
+  })
 })

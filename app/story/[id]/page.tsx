@@ -1,6 +1,7 @@
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { firmHref } from '@/lib/news/league'
 import type { Metadata } from 'next'
+import { cache } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowUpRight } from 'lucide-react'
@@ -9,12 +10,14 @@ import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { Headline } from '@/components/story/Headline'
 import { ShareBar } from '@/components/story/ShareBar'
+import { OUTBOUND, SourceLink } from '@/components/story/StoryLink'
 import { HeadlineRow, SectionFlag } from '@/components/story/StoryBlocks'
 import { LatestRail, SubscribePanel } from '@/components/home/Rail'
 import { getStory } from '@/lib/news/front-page'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { pageSummary } from '@/lib/news/story-summary'
 import { readLongSummaryDetail } from '@/lib/news/story-long'
+import { storyRobots } from '@/lib/news/story-index'
 import { jsonLdScript, storyJsonLd, storyPermalink } from '@/lib/news/story-jsonld'
 import { loadDayStories, olderRails } from '@/lib/news/older-story'
 import { rankSection, type Story } from '@/lib/news/stories'
@@ -34,9 +37,29 @@ export function generateStaticParams() {
 
 type Params = { params: Promise<{ id: string }> }
 
+/**
+ * The story and its fuller summary, read once for the metadata and the page
+ * together. `longKnown` is false when the summary could not be read: the page
+ * then shows the short one, and the metadata says nothing about indexing
+ * (lib/news/story-index.ts).
+ */
+const loadStoryPage = cache(async (id: string) => {
+  const found = await getStory(id)
+  if (!found) return null
+  let long: Awaited<ReturnType<typeof readLongSummaryDetail>> = null
+  let longKnown = true
+  try {
+    long = await readLongSummaryDetail(getSupabaseAdmin(), found.story, { strict: true })
+  } catch (err) {
+    console.error('[story] could not read the long summary:', err)
+    longKnown = false
+  }
+  return { ...found, long, longKnown }
+})
+
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { id } = await params
-  const found = await getStory(id)
+  const found = await loadStoryPage(id)
   if (!found) return { title: 'Story not found' }
   const { story } = found
   const description = story.summary ?? `${story.headline} — reported by ${story.source ?? 'the original publisher'}.`
@@ -45,6 +68,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     title: story.headline,
     description,
     alternates: { canonical: url },
+    // A headline, one line and a link adds nothing to the publisher's page:
+    // noindex until the story has a fuller summary or a second outlet.
+    robots: storyRobots(story, found.longKnown ? !!found.long : null),
     openGraph: { title: story.headline, description, type: 'article', url, siteName: 'FundOpsHQ' },
     twitter: { card: 'summary_large_image', title: story.headline, description },
   }
@@ -61,13 +87,12 @@ function Fact({ label, children }: { label: string; children: React.ReactNode })
 
 export default async function StoryPage({ params }: Params) {
   const { id } = await params
-  const found = await getStory(id)
+  const found = await loadStoryPage(id)
   if (!found) notFound()
-  const { story, all, older } = found
+  const { story, all, older, long } = found
   const nowMs = Date.now()
   // The fuller summary, when the job has written one for any row of the story.
   // The meta description and the JSON-LD below keep the short one.
-  const long = await readLongSummaryDetail(getSupabaseAdmin(), story)
   const summary = pageSummary(story.summary, long?.text)
 
   const section = homeSectionFor(story)
@@ -138,7 +163,7 @@ export default async function StoryPage({ params }: Params) {
 
               <p className="mt-2 font-ui text-[13px] text-muted-foreground">
                 {published} · first reported by{' '}
-                <span className="font-semibold text-foreground/80">{story.source ?? 'the original publisher'}</span>
+                {story.source ? <SourceLink story={story} className="font-semibold text-foreground/80" /> : <span className="font-semibold text-foreground/80">the original publisher</span>}
                 {story.coverage.length > 0 && ` and ${story.coverage.length} other${story.coverage.length === 1 ? '' : 's'}`}
               </p>
 
@@ -157,8 +182,7 @@ export default async function StoryPage({ params }: Params) {
               <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
                 <a
                   href={story.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  {...OUTBOUND}
                   className="group inline-flex h-10 items-center gap-2 rounded-sm bg-foreground px-5 font-ui text-[13px] font-bold uppercase tracking-[0.06em] text-background transition-colors hover:bg-foreground/85"
                 >
                   Read the full story at {story.source ?? 'the source'}
@@ -206,7 +230,7 @@ export default async function StoryPage({ params }: Params) {
                 <ul>
                   {[{ source: story.source ?? 'Source', url: story.url, headline: story.headline }, ...story.coverage].map((c) => (
                     <li key={c.url} className="border-b border-border/70 py-2 last:border-0">
-                      <a href={c.url} target="_blank" rel="noopener noreferrer" className="group grid gap-x-4 sm:grid-cols-[170px_minmax(0,1fr)] sm:items-baseline">
+                      <a href={c.url} {...OUTBOUND} className="group grid gap-x-4 sm:grid-cols-[170px_minmax(0,1fr)] sm:items-baseline">
                         <span className="font-ui text-[12.5px] font-bold text-foreground/85">{c.source}</span>
                         <span className="font-news text-[15.5px] leading-snug text-foreground">
                           <span className="hl">{c.headline}</span>

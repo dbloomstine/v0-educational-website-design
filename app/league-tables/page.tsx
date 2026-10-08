@@ -6,6 +6,7 @@ import { BackToTop } from '@/components/back-to-top'
 import { FilterTabs } from '@/components/news/FilterTabs'
 import { Panel } from '@/components/story/StoryBlocks'
 import { SubscribePanel } from '@/components/home/Rail'
+import { OUTBOUND } from '@/components/story/StoryLink'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { loadLeagueReport, LEAGUE_SINCE } from '@/lib/news/league-data'
 import { capitalByAsset, leagueRows, LEAGUE_ASSET_LABEL as ASSET_LABEL, LEAGUE_PERIODS, STAGE_LABEL, type FundClose, type LeaguePeriod } from '@/lib/news/league'
@@ -230,7 +231,11 @@ function Row({ c, rank, showStage }: { c: FundClose; rank: number; showStage: bo
           {c.firm}
         </Link>
         <span className="block font-ui text-[12px] leading-snug text-muted-foreground">
-          {[c.fund, showStage ? STAGE_LABEL[c.stage] : null].filter(Boolean).join(' · ') || 'Fund not named in the reports'}
+          {/* The fund's name opens our page for the close; the source cell is the citation and stays out. */}
+          {c.fund && <Link prefetch={false} href={`/story/${c.id}`} className="hl text-foreground/80">{c.fund}</Link>}
+          {c.fund && showStage && ' · '}
+          {showStage && STAGE_LABEL[c.stage]}
+          {!c.fund && !showStage && 'Fund not named in the reports'}
         </span>
       </td>
       <td className="whitespace-nowrap px-2 py-2 text-right font-mono text-[14px] font-bold tabular-nums text-foreground">
@@ -241,7 +246,7 @@ function Row({ c, rank, showStage }: { c: FundClose; rank: number; showStage: bo
       <td className="hidden whitespace-nowrap px-2 py-2 font-ui text-[12.5px] text-foreground/80 md:table-cell">{c.assetClass ? ASSET_LABEL[c.assetClass] ?? '—' : '—'}</td>
       <td className="hidden whitespace-nowrap px-2 py-2 font-mono text-[11px] uppercase tracking-tight text-muted-foreground sm:table-cell">{day(c.date)}</td>
       <td className="py-2 pl-2 pr-3.5 font-ui text-[12.5px]">
-        <a href={c.url} target="_blank" rel="noopener noreferrer" title={c.headline} className="font-semibold text-foreground underline decoration-foreground/25 underline-offset-2 hover:decoration-foreground">
+        <a href={c.url} {...OUTBOUND} title={c.headline} className="font-semibold text-foreground underline decoration-foreground/25 underline-offset-2 hover:decoration-foreground">
           {c.source ?? 'Report'}
         </a>
         {c.sources > 1 && (

@@ -6,6 +6,7 @@ import { sizeLabel, totalLabel } from '@/lib/news/format'
 import { STAGE_LABEL, type FundClose } from '@/lib/news/league'
 import { Headline } from '@/components/story/Headline'
 import { LatestRow, MoreLink, Panel, SectionFlag } from '@/components/story/StoryBlocks'
+import { HeadlineLink, SourceLink } from '@/components/story/StoryLink'
 
 /** The newest stories on the site, newest first. Front page and story pages. */
 export function LatestRail({ stories }: { stories: Story[] }) {
@@ -42,23 +43,18 @@ export function MostCovered({ stories, note }: { stories: Story[]; note?: string
       <ol>
         {stories.map((s) => (
           <li key={s.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3 border-b border-border/70 py-[7px] last:border-0">
-            <a
-              href={s.url}
-              target="_blank"
-              rel="noopener noreferrer"
+            <HeadlineLink
+              story={s}
               title={s.summary ?? undefined}
               className="group block font-news text-[14.5px] leading-[1.27] text-foreground"
             >
               <span className="hl"><Headline story={s} /></span>
-            </a>
-            <Link
-              href={`/story/${s.id}`}
-              prefetch={false}
-              title="Every outlet that covered it"
-              className="whitespace-nowrap font-mono text-[10.5px] uppercase tracking-tight text-muted-foreground hover:text-foreground"
-            >
-              {s.coverage.length + 1} sources
-            </Link>
+            </HeadlineLink>
+            {/* The first outlet is the way out; "+N" is how many others ran it (they are on the story's page). */}
+            <span className="flex max-w-[9.5rem] items-baseline gap-1 whitespace-nowrap font-mono text-[10.5px] uppercase tracking-tight text-muted-foreground">
+              <SourceLink story={s} className="min-w-0 hover:text-foreground" />
+              +{s.coverage.length}
+            </span>
           </li>
         ))}
       </ol>
@@ -197,15 +193,13 @@ export function SectionBlock({ label, href, stories, moreLabel, panel = false }:
       <ul>
         {stories.map((s) => (
           <li key={s.id} className="border-b border-border/70 py-[7px] last:border-0">
-            <a
-              href={s.url}
-              target="_blank"
-              rel="noopener noreferrer"
+            <HeadlineLink
+              story={s}
               title={s.summary ?? undefined}
               className="group block font-news text-[15.5px] leading-[1.28] text-foreground"
             >
               <span className="hl"><Headline story={s} /></span>
-            </a>
+            </HeadlineLink>
           </li>
         ))}
       </ul>

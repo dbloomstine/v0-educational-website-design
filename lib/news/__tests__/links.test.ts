@@ -56,3 +56,25 @@ describe('links to pages that are built on demand', () => {
     expect(checked).toBeGreaterThanOrEqual(20)
   })
 })
+
+/**
+ * Headlines open our page for the story (2026-10-08): the way out to the
+ * publisher is a separate, quiet link (SourceLink). A list component that sets
+ * an anchor's href to a story's own `url` has gone back to the old behaviour.
+ * Roundups are the exception and are handled by HeadlineLink.
+ */
+describe('headlines in the story lists', () => {
+  it('do not link straight to the publisher', () => {
+    const offenders: string[] = []
+    for (const file of ['components/story/StoryBlocks.tsx', 'components/home/Rail.tsx']) {
+      const src = readFileSync(join(ROOT, file), 'utf8')
+      for (const m of src.matchAll(/href=\{(?:story|s)\.url\}/g)) offenders.push(`${file}: ${m[0]}`)
+    }
+    expect(offenders).toEqual([])
+  })
+
+  it('go through HeadlineLink, which prefetches nothing', () => {
+    const link = readFileSync(join(ROOT, 'components/story/StoryLink.tsx'), 'utf8')
+    expect(link).toMatch(/href=\{`\/story\/\$\{story\.id\}`\} prefetch=\{false\}/)
+  })
+})

@@ -6,6 +6,7 @@ import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { Panel, RiverRow, SectionFlag } from '@/components/story/StoryBlocks'
 import { SubscribePanel } from '@/components/home/Rail'
+import { OUTBOUND } from '@/components/story/StoryLink'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { FIRM_WINDOW_DAYS, getFirm } from '@/lib/news/firm-data'
 import type { Story } from '@/lib/news/stories'
@@ -100,7 +101,12 @@ export default async function FirmPage({ params }: Params) {
                         {firm.closes.map((c) => (
                           <tr key={c.id} className="border-b border-border/70 align-baseline last:border-0">
                             <td className="py-2 pl-3.5 pr-2 font-news text-[15.5px] leading-tight text-foreground">
-                              {c.fund ?? <span className="text-muted-foreground">Not named in the reports</span>}
+                              {c.fund ? (
+                                // The fund's name opens our page for the close; the Source cell is the citation and stays out.
+                                <Link prefetch={false} href={`/story/${c.id}`} className="hl">{c.fund}</Link>
+                              ) : (
+                                <span className="text-muted-foreground">Not named in the reports</span>
+                              )}
                               {c.assetClass && <span className="block font-ui text-[11.5px] text-muted-foreground">{ASSET_LABEL[c.assetClass]}</span>}
                             </td>
                             <td className="whitespace-nowrap px-2 py-2 text-right font-mono text-[13.5px] font-bold tabular-nums text-foreground">
@@ -111,7 +117,7 @@ export default async function FirmPage({ params }: Params) {
                             <td className="whitespace-nowrap px-2 py-2 font-ui text-[12.5px] text-foreground/80">{STAGE_LABEL[c.stage]}</td>
                             <td className="hidden whitespace-nowrap px-2 py-2 font-mono text-[11px] uppercase tracking-tight text-muted-foreground sm:table-cell">{day(c.date)}</td>
                             <td className="py-2 pl-2 pr-3.5 font-ui text-[12.5px]">
-                              <a href={c.url} target="_blank" rel="noopener noreferrer" title={c.headline} className="font-semibold text-foreground underline decoration-foreground/25 underline-offset-2 hover:decoration-foreground">
+                              <a href={c.url} {...OUTBOUND} title={c.headline} className="font-semibold text-foreground underline decoration-foreground/25 underline-offset-2 hover:decoration-foreground">
                                 {c.source ?? 'Report'}
                               </a>
                               {c.sources > 1 && <Link prefetch={false} href={`/story/${c.id}`} className="ml-1.5 whitespace-nowrap text-[11.5px] text-muted-foreground hover:underline">+{c.sources - 1}</Link>}

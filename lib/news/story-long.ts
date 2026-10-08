@@ -18,7 +18,17 @@ export interface LongSummary {
   at: string | null
 }
 
-export async function readLongSummaryDetail(db: DbClient, story: { id: string; memberIds: string[] }): Promise<LongSummary | null> {
+/**
+ * The fuller summary, if any row of the story has one. Failing to read it is
+ * logged and reads as "none", so the page falls back to the short summary.
+ * With `strict` the error is thrown instead, for a caller that must not mistake
+ * "could not read" for "there is none" (the noindex decision).
+ */
+export async function readLongSummaryDetail(
+  db: DbClient,
+  story: { id: string; memberIds: string[] },
+  opts: { strict?: boolean } = {},
+): Promise<LongSummary | null> {
   try {
     const ids = story.memberIds?.length ? story.memberIds : [story.id]
     const { data, error } = await db
@@ -32,6 +42,7 @@ export async function readLongSummaryDetail(db: DbClient, story: { id: string; m
     if (!text) return null
     return { text, at: rows.find((r) => r.summary_long === text)?.summary_long_at ?? null }
   } catch (err) {
+    if (opts.strict) throw err
     console.error('[story-summary] could not read the long summary:', err)
     return null
   }
