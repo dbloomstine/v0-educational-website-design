@@ -428,6 +428,48 @@ export function sameStoryLoose(a: StoryLike, b: StoryLike, opts: { crossEdition?
   return false
 }
 
+// ─── A wire's items ─────────────────────────────────────────────────────────
+
+const WIRE_STOP = new Set([
+  'deal', 'roundup', 'capital', 'partners', 'group', 'management', 'holdings', 'investment', 'investments',
+  'equity', 'fund', 'funds', 'ventures', 'family', 'private', 'global', 'asset', 'assets', 'with', 'from',
+  'acquires', 'acquire', 'agrees', 'backs', 'buys', 'completes', 'exits', 'sells', 'invest', 'strikes',
+  'what', 'this', 'that', 'bets', 'targets',
+])
+
+/** The names in a clause: capitalised words and acronyms, without the vocabulary every deal headline uses. */
+function namesIn(text: string): Set<string> {
+  const out = new Set<string>()
+  for (const w of text.match(/\b[A-Z][A-Za-z0-9&]*\b/g) ?? []) {
+    const k = w.toLowerCase()
+    if (WIRE_STOP.has(k)) continue
+    if (/^[A-Z0-9&]{2,}$/.test(w) || w.length >= 4) out.add(k)
+  }
+  return out
+}
+
+/**
+ * Does this row tell one of a wire's items? The wire's single record holds
+ * only its first item's firm and sizes, so comparing the row with the record
+ * (sameStoryLoose) can silence the wire for that first item and no other.
+ * Read the wire's own clauses instead: a row tells an item when two of the
+ * names in the row's headline are named together in one clause. 2026-10-05:
+ * "Deal Roundup: Warburg buys into Ares, LightBay-backed Awayday, Antin Infra
+ * invest in HP Helicopters" ran beside "Antin acquires majority stake in
+ * aerial firefighting firm HP Helicopters".
+ */
+export function tellsAnItemOf(single: StoryLike, wire: StoryLike): boolean {
+  if (sameStoryLoose(single, wire)) return true
+  const mine = namesIn(single.title)
+  if (mine.size < 2) return false
+  const clauses = wire.title.replace(/^[^:;]{0,30}:\s*/, '').split(/;|,\s+(?=[A-Z])/)
+  return clauses.some((clause) => {
+    let n = 0
+    namesIn(clause).forEach((k) => { if (mine.has(k)) n++ })
+    return n >= 2
+  })
+}
+
 /**
  * Cross-edition check. A deal that has visibly moved on ("nears $1.8bn deal"
  * → "agreed to acquire") is a development, not a repeat, and runs again.

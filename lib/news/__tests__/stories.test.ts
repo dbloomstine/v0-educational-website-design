@@ -321,3 +321,13 @@ describe('one raise, re-reported by another outlet five days on (DIG Ventures, 2
     expect(stories).toHaveLength(2)
   })
 })
+
+describe('a wire whose later item already has its own story (HP Helicopters, 2026-10-05)', () => {
+  it('is not a story of its own', () => {
+    const stories = buildStories([
+      row({ title: 'Antin acquires majority stake in aerial firefighting firm HP Helicopters', event_type: 'acquisition', firm: 'Antin', ents: ['Antin', 'HP Helicopters'], fund_categories: ['PE'], published_date: '2026-10-01', created_at: '2026-10-01T11:00:00Z' }),
+      row({ title: 'Deal Roundup: Warburg buys into Ares, LightBay-backed Awayday, Antin Infra invest in HP Helicopters', event_type: 'acquisition', firm: 'Warburg Pincus', ents: ['Warburg Pincus', 'Ares', 'LightBay', 'Awayday'], source_name: 'AltAssets', fund_categories: ['PE'], published_date: '2026-10-05', created_at: '2026-10-05T11:00:00Z' }),
+    ])
+    expect(stories.map((s) => s.headline)).toEqual(['Antin acquires majority stake in aerial firefighting firm HP Helicopters'])
+  })
+})

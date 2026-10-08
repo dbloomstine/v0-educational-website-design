@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   clusterBy, dealStage, entityKey, entityMentioned, findPriorStory, isDigest, isRoundup,
-  keysMatch, sameStoryLoose, type StoryLike,
+  keysMatch, sameStoryLoose, tellsAnItemOf, type StoryLike,
 } from '../story-links'
 
 const story = (o: Partial<StoryLike> & { title: string; eventType: string }): StoryLike => ({
@@ -285,5 +285,23 @@ describe('a deal that has moved on is new', () => {
     expect(sameStoryLoose(nears, agrees, { crossEdition: true })).toBe(true)
     expect(findPriorStory(agrees, [nears])).toBeNull()
     expect(findPriorStory(nears, [agrees])).toBe(agrees)
+  })
+})
+
+describe('tellsAnItemOf — a wire’s items, not only its first', () => {
+  const wire = story({ title: 'Deal Roundup: Warburg buys into Ares, LightBay-backed Awayday, Antin Infra invest in HP Helicopters', eventType: 'acquisition', firmName: 'Warburg Pincus', entityKeys: keys('Warburg Pincus', 'Ares', 'LightBay', 'Awayday') })
+  it('a row about the last item silences the wire', () => {
+    const hp = story({ title: 'Antin acquires majority stake in aerial firefighting firm HP Helicopters', eventType: 'acquisition', firmName: 'Antin', entityKeys: keys('Antin', 'HP Helicopters') })
+    expect(sameStoryLoose(hp, wire)).toBe(false)
+    expect(tellsAnItemOf(hp, wire)).toBe(true)
+  })
+  it('a row about another deal by a firm the wire names does not', () => {
+    const other = story({ title: 'Warburg Pincus raises Ingenia bid again', eventType: 'acquisition', firmName: 'Warburg Pincus', entityKeys: keys('Warburg Pincus', 'Ingenia') })
+    expect(tellsAnItemOf(other, wire)).toBe(false)
+  })
+  it('the Sojourner / LPNA wire (10-07) after the merger’s own story (10-06)', () => {
+    const own = story({ title: 'Sojourner unveils $279m Lornamead-AMG Brands merger to form LPNA Group', eventType: 'acquisition', firmName: 'Sojourner Capital', fundSizeUsdMillions: 279, entityKeys: keys('Sojourner Capital', 'Lornamead', 'AMG Brands') })
+    const w = story({ title: 'Sojourner aims to broaden personal care capabilities with LPNA merger; Main Capital, Gemspring, One Equity bet on cybersecurity', eventType: 'acquisition', firmName: 'Sojourner', entityKeys: keys('Sojourner', 'LPNA') })
+    expect(tellsAnItemOf(own, w)).toBe(true)
   })
 })

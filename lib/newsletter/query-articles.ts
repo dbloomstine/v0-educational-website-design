@@ -33,6 +33,7 @@ import {
   findPriorStory,
   sameStoryLoose,
   storyFamily,
+  tellsAnItemOf,
   type StoryLike,
 } from './story-links'
 
@@ -1237,7 +1238,7 @@ function deduplicateByStory(articles: NewsletterArticle[]): NewsletterArticle[] 
   const stories = clusterBy(singles, (a, b) => isSameStory(a, b) || sameStoryLoose(a, b))
 
   for (const r of roundups) {
-    if (singles.some((s) => sameStoryLoose(s, r))) continue
+    if (singles.some((s) => tellsAnItemOf(s, r))) continue
     if (roundups.some((o) => o !== r && stories.some((g) => g[0] === o) && sameStoryLoose(o, r))) continue
     stories.push([r])
   }
