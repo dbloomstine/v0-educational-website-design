@@ -582,6 +582,16 @@ Some rows are not one story: PE Hub's daily wire ("A backs X; B to acquire Y"), 
 - `npx tsx scripts/roundup-audit.ts --save-pool pool.json` (read-only; `--pool` re-runs offline) lists lead-ins and outlets that look like columns the list does not know, and every semicolon headline still read as one story. Read them by eye before adding a label; `scripts/replay-editions.ts` shows what a change does to past editions.
 - Still read as one story: an unlabelled two-item headline from an outlet that is not on the list (one in a hundred days: AltAssets, "Apollo, KKR seal €3bn Bayer…; Aurelius agrees $323m Hain unit carve-out").
 
+### People moves: one hire, told with and without the name — `sameMove` in `lib/news/story-dedup.ts` (2026-10-08)
+
+Two reports of a hire were one story only if both named the person, or their headlines happened to share enough words. On 2026-10-05 "Barings expands private credit naming global head of asset-based finance" (Pensions & Investments, nobody named) and "Barings hires global head of ABF" (Alternative Credit Investor, Sloan Sutta) were two stories on the site and two rows in the next morning's email. `sameMove` is asked about two people moves from one firm, by `isSameStory` (the site, the email, the `/news` archive) and by `sameStoryLoose` (the same, and the email's memory of what already ran):
+
+- **Both name someone:** the same surname. A bare surname counts ("Zilko" / "John Zilko"), under one employer only.
+- **One names nobody, or neither does:** the same job — two or more words of it in common, and three in four of the terser description's words found in the fuller one — in reports at most two days apart, and never a hire against a departure. The job is read from the headline and the stated title (`roleWords`): without the firm, the person, rank ("global head", "partner", "portfolio manager"), the verbs of a move, or a place; with short forms spelled out (ABF, IR, PE, infra…). The email's memory compares dates, so the rows it reads carry `published_date`.
+- When the best outlet's report is the nameless one, the story takes the person from a report that names them (`mergeStoryGroup`).
+- **Not joined, on purpose:** a headline with no job in it ("Hines readies top leadership transitions", "Canyon Partners Real Estate makes senior origination hire", "Reed Smith builds out private funds bench"). Joining those to any named move at the firm would also join two different hires made on one day (Millennium, Point72 and Blackstone each had such a day in the sample), and a vague row would bridge them into one story.
+- `npx tsx scripts/people-pairs-audit.ts --pool pool.json` (offline; the pool is the one `roundup-audit.ts --save-pool` writes) lists every same-firm pair of moves the site still shows as two, with the job words they share. On the fifty days to 2026-10-08 the rule joined 14 of 69 such pairs, each one move when read. Read the list again after changing `ROLE_GENERIC`, `ROLE_PLACES` or the thresholds, and replay the editions.
+
 ### Newsletter content pipeline — `lib/newsletter/query-articles.ts`
 
 (This is how stories are _selected_; the template section above is how they're _rendered_.) Stages in order:

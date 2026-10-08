@@ -8,7 +8,7 @@ let seq = 0
 const uuid = () => `00000000-0000-4000-8000-${String(++seq).padStart(12, '0')}`
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function row(o: Record<string, any>) {
-  const { firm, fund, size, close, person, ents, ...rest } = o
+  const { firm, fund, size, close, person, role, ents, ...rest } = o
   return {
     id: uuid(),
     source_url: `https://example.com/${seq}`,
@@ -21,7 +21,7 @@ function row(o: Record<string, any>) {
     tldr: `${firm ?? 'The firm'} announced the news described in the headline.`,
     article_type: rest.event_type,
     entities_raw: (ents ?? [firm].filter(Boolean)).map((name: string) => ({ name, type: 'firm', role: null, confidence: 0.95 })),
-    extracted_data: { firm_name: firm ?? null, fund_name: fund ?? null, fund_size_usd_millions: size ?? null, close_type: close ?? null, person_name: person ?? null },
+    extracted_data: { firm_name: firm ?? null, fund_name: fund ?? null, fund_size_usd_millions: size ?? null, close_type: close ?? null, person_name: person ?? null, person_title: role ?? null },
     ...rest,
   }
 }
@@ -263,5 +263,44 @@ describe('section names in running text', () => {
     expect(sectionNoun(SECTION_BY_SLUG.get('lps')!)).toBe('LP')
     expect(sectionNoun(SECTION_BY_SLUG.get('secondaries')!)).toBe('secondaries and GP stakes')
     expect(sectionNoun(SECTION_BY_SLUG.get('private-equity')!)).toBe('private equity')
+  })
+})
+
+describe('one hire, told with and without the name (Barings, 2026-10-05)', () => {
+  const hire = { event_type: 'executive_hire', firm: 'Barings', fund_categories: ['credit'], published_date: '2026-10-05' }
+  const barings = () => [
+    row({ ...hire, title: 'Barings expands private credit naming global head of asset-based finance', role: 'Global Head of Asset-Based Finance', source_name: 'Pensions & Investments', is_high_signal: false, relevance_score: 0.5, tldr: 'Barings appoints global head of asset-based finance to expand private credit platform.' }),
+    row({ ...hire, title: 'Barings hires global head of ABF', person: 'Sloan Sutta', role: 'Global Head of Asset-Based Finance', source_name: 'Alternative Credit Investor', relevance_score: 0.7, tldr: 'Barings appointed Sloan Sutta as global head of asset-based finance (ABF), overseeing the firm\'s $60bn ABF platform spanning public and private markets across commercial, consumer and residential strategies.', entities_raw: [{ name: 'Barings', type: 'firm', role: 'employer', confidence: 0.95 }, { name: 'Sloan Sutta', type: 'person', role: 'Global Head of Asset-Based Finance', confidence: 0.9 }] }),
+    row({ ...hire, title: 'Barings Appoints Asset-Based Finance Head - ai', role: 'Head of Asset-Based Finance', source_name: 'ai-cio.com', is_high_signal: false, relevance_score: 0.5, tldr: 'Barings appoints asset-based finance head.' }),
+  ]
+
+  it('is one story, with the other outlets as coverage and the person it names', () => {
+    const stories = buildStories(barings())
+    expect(stories).toHaveLength(1)
+    const [s] = stories
+    expect(s.kind).toBe('people')
+    expect(s.memberIds).toHaveLength(3)
+    expect(s.source).toBe('Pensions & Investments') // best desk leads, though its report names nobody
+    expect(s.coverage.map((c) => c.source)).toContain('Alternative Credit Investor')
+    // The name and the fuller summary come from the report that has them.
+    expect(s.personName).toBe('Sloan Sutta')
+    expect(s.summary).toMatch(/Sloan Sutta/)
+  })
+
+  it('leaves two hires one firm made on one day as two stories', () => {
+    const day = { event_type: 'executive_hire', fund_categories: ['hedge'], published_date: '2026-10-05' }
+    const stories = buildStories([
+      row({ ...day, title: 'Millennium adds veteran fixed-income exec as senior adviser', firm: 'Millennium Management', person: 'Nick Howard', role: 'senior adviser', source_name: 'Hedge Week', tldr: 'Millennium Management adds Nick Howard as senior adviser in London.' }),
+      row({ ...day, title: 'Millennium adds veteran fixed-income exec as senior adviser', firm: 'Millennium', role: 'Senior Adviser', source_name: 'hedgeweek.com', tldr: 'Millennium has hired a veteran fixed-income executive as a senior adviser.' }),
+      row({ ...day, title: 'Millennium taps Jera power trader', firm: 'Millennium Management', person: 'Matthias Soreau', role: 'power trader', source_name: 'Hedge Week', tldr: 'Millennium Management hires Matthias Soreau to expand Tokyo energy trading operation.' }),
+      row({ ...day, title: 'Millennium taps Jera power trader', firm: 'Millennium', role: 'Power Trader', source_name: 'hedgeweek.com', tldr: 'Millennium has hired a trader from Jera to expand its power trading operations.' }),
+    ])
+    expect(stories.map((s) => s.memberIds.length).sort()).toEqual([2, 2])
+  })
+
+  it('does not tie a nameless report to a named one from the week before', () => {
+    const [nameless, named] = barings()
+    const stories = buildStories([{ ...nameless, published_date: '2026-10-09', created_at: '2026-10-09T14:00:00Z' }, named])
+    expect(stories).toHaveLength(2)
   })
 })

@@ -1207,6 +1207,17 @@ export function mergeStoryGroup(group: NewsletterArticle[]): NewsletterArticle {
     if (alt) best.firmName = alt.firmName
   }
 
+  // …and the person, for a move: the best outlet's report may be the one that
+  // names nobody ("Barings expands private credit naming global head of
+  // asset-based finance", beside a report that names Sloan Sutta).
+  if (!best.personName && storyFamily(best.eventType) === 'people') {
+    const alt = group.find((a) => a.personName && storyFamily(a.eventType) === 'people')
+    if (alt) {
+      best.personName = alt.personName
+      best.personTitle = best.personTitle ?? alt.personTitle
+    }
+  }
+
   return best
 }
 
@@ -1386,7 +1397,9 @@ async function getPriorEditionExclusions(
     const chunk = allIds.slice(i, i + 200)
     const { data: rowsData } = await supabase
       .from('news_items')
-      .select('id, title, source_name, tldr, article_type, event_type, extracted_data, entities_raw')
+      // published_date: a nameless report of a hire is tied to the named one
+      // that already ran only within a couple of days of it (sameMove).
+      .select('id, title, source_name, published_date, tldr, article_type, event_type, extracted_data, entities_raw')
       .in('id', chunk)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     for (const row of (rowsData ?? []) as any[]) rowsById.set(row.id, row)

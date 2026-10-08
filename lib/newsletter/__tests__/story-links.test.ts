@@ -68,6 +68,24 @@ describe('sameStoryLoose — same edition', () => {
     const d = story({ title: 'Blackstone’s Private Equity Chief Joe Baratta in Talks to Exit', eventType: 'executive_departure', firmName: 'Blackstone', personKeys: keys('Joe Baratta') })
     expect(sameStoryLoose(c, d)).toBe(true)
   })
+  it('people: a report that names nobody and the one that names the hire (Barings, 2026-10-05)', () => {
+    const nameless = story({ title: 'Barings expands private credit naming global head of asset-based finance', eventType: 'executive_hire', firmName: 'Barings', personTitle: 'Global Head of Asset-Based Finance', publishedDate: '2026-10-05' })
+    const named = story({ title: 'Barings hires global head of ABF', eventType: 'executive_hire', firmName: 'Barings', personName: 'Sloan Sutta', personKeys: keys('Sloan Sutta'), personTitle: 'Global Head of Asset-Based Finance', publishedDate: '2026-10-05' })
+    expect(sameStoryLoose(nameless, named)).toBe(true)
+    expect(sameStoryLoose(nameless, named, { crossEdition: true })).toBe(true)
+    // A week on, the same job filled again is another story.
+    expect(sameStoryLoose(nameless, { ...named, publishedDate: '2026-10-12' }, { crossEdition: true })).toBe(false)
+    // Another firm's head of ABF is another hire.
+    expect(sameStoryLoose(nameless, { ...named, firmName: 'Ares', entityKeys: keys('Ares') })).toBe(false)
+  })
+  it('people: two hires at one firm on one day stay two (Blackstone, Millennium)', () => {
+    const infra = story({ title: 'Blackstone poaches ex-InfraBridge co-head for London infra MD role', eventType: 'executive_hire', firmName: 'Blackstone', personTitle: 'Managing Director', publishedDate: '2026-09-28' })
+    const baratta = story({ title: 'Blackstone’s private equity head Joseph Baratta to retire at end of year', eventType: 'executive_departure', firmName: 'Blackstone', personName: 'Joseph Baratta', personKeys: keys('Joseph Baratta'), personTitle: 'Head of Private Equity', publishedDate: '2026-09-28' })
+    expect(sameStoryLoose(infra, baratta)).toBe(false)
+    const adviser = story({ title: 'Millennium adds veteran fixed-income exec as senior adviser', eventType: 'executive_hire', firmName: 'Millennium', personTitle: 'Senior Adviser', publishedDate: '2026-10-05' })
+    const trader = story({ title: 'Millennium taps Jera power trader', eventType: 'executive_hire', firmName: 'Millennium Management', personName: 'Matthias Soreau', personKeys: keys('Matthias Soreau'), personTitle: 'power trader', publishedDate: '2026-10-05' })
+    expect(sameStoryLoose(adviser, trader)).toBe(false)
+  })
   it('never links across families', () => {
     const a = story({ title: 'Bain Capital hires a partner', eventType: 'executive_hire', firmName: 'Bain Capital', entityKeys: keys('Bain Capital', 'Rentokil') })
     const b = story({ title: 'Bain Capital buys from Rentokil', eventType: 'acquisition', firmName: 'Bain Capital', entityKeys: keys('Bain Capital', 'Rentokil') })
@@ -81,6 +99,16 @@ describe('findPriorStory — across editions', () => {
   it('deal: the same transaction under a punning headline four days later', () => {
     const again = story({ title: 'Bain Capital Takes SOLitude Independent', eventType: 'acquisition', firmName: 'Bain Capital', fundSizeUsdMillions: 230, entityKeys: keys('Bain Capital', 'SOLitude Lake Management', 'Rentokil Initial') })
     expect(findPriorStory(again, [bain])).toBe(bain)
+  })
+  it('people: the nameless report of a hire that ran yesterday with the name (VSS, 2026-10-01 and 10-02)', () => {
+    const ran = story({ title: 'VSS Capital Partners hires ex-World Bank adviser Otilia Ciotau for AI role', eventType: 'executive_hire', firmName: 'VSS Capital Partners', personName: 'Otilia Ciotau', personKeys: keys('Otilia Ciotau'), personTitle: 'Managing Director, AI and Value Creation', publishedDate: '2026-10-01' })
+    const again = story({ title: 'VSS hires for AI value creation', eventType: 'executive_hire', firmName: 'VSS', publishedDate: '2026-10-02' })
+    expect(findPriorStory(again, [ran])).toBe(ran)
+  })
+  it('people: a bare surname yesterday, the full name today (Octagon, 2026-10-07 and 10-08)', () => {
+    const ran = story({ title: 'Octagon Credit hires Antares exec Zilko to lead business development', eventType: 'executive_hire', firmName: 'Octagon Credit', personName: 'Zilko', personTitle: 'Head of Business Development', publishedDate: '2026-10-07' })
+    const again = story({ title: 'Octagon hires Antares Capital’s John Zilko to lead investor relations and business development', eventType: 'executive_hire', firmName: 'Octagon Credit Investors', personName: 'John Zilko', personKeys: keys('John Zilko'), publishedDate: '2026-10-08' })
+    expect(findPriorStory(again, [ran])).toBe(ran)
   })
   it('deal: filed under the other party’s name', () => {
     const prior = story({ title: 'HIG Capital sells IT solutions provider GDT to Softcat for $1.05bn', eventType: 'acquisition', firmName: 'HIG Capital', entityKeys: keys('HIG Capital', 'GDT', 'Softcat') })

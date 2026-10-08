@@ -26,6 +26,7 @@ import {
   titleJaccard,
   fundSizesMatch,
   titlesShareSignificantNumber,
+  sameMove,
 } from '@/lib/news/story-dedup'
 
 export type StoryFamily = 'fund' | 'deal' | 'people' | 'regulatory' | 'other'
@@ -216,6 +217,10 @@ export interface StoryLike {
   entityKeys: string[]
   /** entityKey() of every person the story names. */
   personKeys: string[]
+  /** Read for people moves only (story-dedup sameMove): the name as extracted, the job, the day. */
+  personName?: string | null
+  personTitle?: string | null
+  publishedDate?: string | null
 }
 
 const stem = (s: string) => s.replace(/\b(\w{4,})s\b/g, '$1')
@@ -252,13 +257,11 @@ export function sameStoryLoose(a: StoryLike, b: StoryLike, opts: { crossEdition?
   if (famA === 'people' && famB === 'people') {
     if (sharedKeys(a.personKeys, b.personKeys) >= 1) return true
     // Same firm, same surname: "Jon Baratta" in one summary and "Joe Baratta"
-    // in another were one Blackstone departure (2026-09-27).
-    if (sameFirm) {
-      const surnames = (keys: string[]) => keys.map((k) => k.split(' ').pop() ?? '').filter((n) => n.length >= 4)
-      const sb = surnames(b.personKeys)
-      if (surnames(a.personKeys).some((n) => sb.includes(n))) return true
-    }
-    return false
+    // in another were one Blackstone departure (2026-09-27). Or the same job,
+    // when one report names nobody: "Barings hires global head of ABF" and
+    // "Barings expands private credit naming global head of asset-based
+    // finance" (2026-10-05). Both tests are sameMove's.
+    return sameFirm && sameMove(a, b, opts)
   }
 
   // Deals: the same two companies are the same transaction — given some sign

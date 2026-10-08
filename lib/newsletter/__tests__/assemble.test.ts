@@ -9,7 +9,7 @@ import { buildSubject } from '../send-daily'
 let seq = 0
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function row(o: Record<string, any>) {
-  const { firm, fund, size, close, person, ents, ...rest } = o
+  const { firm, fund, size, close, person, role, ents, ...rest } = o
   return {
     id: `id-${++seq}`,
     source_url: `https://example.com/${seq}`,
@@ -21,7 +21,7 @@ function row(o: Record<string, any>) {
     tldr: `${firm ?? 'The firm'} announced the news described in the headline.`,
     article_type: rest.event_type,
     entities_raw: (ents ?? [firm].filter(Boolean)).map((name: string) => ({ name, type: 'firm', role: null, confidence: 0.95 })),
-    extracted_data: { firm_name: firm ?? null, fund_name: fund ?? null, fund_size_usd_millions: size ?? null, close_type: close ?? null, person_name: person ?? null },
+    extracted_data: { firm_name: firm ?? null, fund_name: fund ?? null, fund_size_usd_millions: size ?? null, close_type: close ?? null, person_name: person ?? null, person_title: role ?? null },
     ...rest,
   }
 }
@@ -162,5 +162,34 @@ describe('assembleNewsletter — repeats', () => {
       row({ title: 'Atlantic Street bets on HVAC with Canada’s GLP; GHK-backed WSB picks up engineering firm; LLR backs energy management biz', event_type: 'acquisition', firm: 'Atlantic Street Capital', ents: ['Atlantic Street Capital', 'GLP', 'GHK Capital Partners', 'WSB', 'LLR Partners'], tldr: 'Atlantic Street Capital invested in GLP; GHK-backed WSB acquired a firm; LLR Partners backed a platform.' }),
     ], noMemory)
     expect(section(content, 'deals')).toEqual(['Atlantic Street Capital inks majority investment deal for HVAC distributor GLP'])
+  })
+})
+
+describe('assembleNewsletter — one hire, told with and without the name', () => {
+  const hire = { event_type: 'executive_hire', fund_categories: ['credit'] }
+
+  it('runs the Barings hire once (2026-10-06: it ran twice, in People Moves)', () => {
+    const content = assembleNewsletter([
+      row({ ...hire, title: 'Barings expands private credit naming global head of asset-based finance', firm: 'Barings', role: 'Global Head of Asset-Based Finance', published_date: '2026-10-05', source_name: 'Pensions & Investments', tldr: 'Barings appoints global head of asset-based finance to expand private credit platform.' }),
+      row({ ...hire, title: 'Barings hires global head of ABF', firm: 'Barings', person: 'Sloan Sutta', role: 'Global Head of Asset-Based Finance', published_date: '2026-10-05', source_name: 'Alternative Credit Investor', tldr: 'Barings appointed Sloan Sutta as global head of asset-based finance (ABF).' }),
+      // The same morning's other hires are not swept in.
+      row({ ...hire, title: 'Millennium taps Jera power trader', firm: 'Millennium Management', person: 'Matthias Soreau', role: 'power trader', published_date: '2026-10-05', source_name: 'Hedge Week', tldr: 'Millennium Management hires Matthias Soreau.' }),
+      row({ ...hire, title: 'Millennium adds veteran fixed-income exec as senior adviser', firm: 'Millennium', role: 'Senior Adviser', published_date: '2026-10-05', source_name: 'hedgeweek.com', tldr: 'Millennium has hired a veteran fixed-income executive as a senior adviser.' }),
+    ], noMemory)
+    expect(section(content, 'people_moves').filter((t) => t.startsWith('Barings'))).toEqual(['Barings expands private credit naming global head of asset-based finance'])
+    expect(section(content, 'people_moves').filter((t) => t.startsWith('Millennium'))).toHaveLength(2)
+    const barings = content.groups.flatMap((g) => g.articles).find((a) => a.firmName === 'Barings')!
+    expect(barings.alsoCoveredBy).toEqual(['Alternative Credit Investor'])
+    expect(barings.personName).toBe('Sloan Sutta')
+  })
+
+  it('does not run a hire again the next morning because the second report left the name out (VSS, 2026-10-02 and 10-03)', () => {
+    const first = row({ ...hire, title: 'VSS Capital Partners hires ex-World Bank adviser Otilia Ciotau for AI role', firm: 'VSS Capital Partners', person: 'Otilia Ciotau', role: 'Managing Director, AI and Value Creation', published_date: '2026-10-01', tldr: 'VSS Capital Partners hires Otilia Ciotau as Managing Director of AI and Value Creation.' })
+    const memory = buildPriorExclusions([[first.id]], new Map([[first.id, first]]))
+    const again = row({ ...hire, title: 'VSS hires for AI value creation', firm: 'VSS', published_date: '2026-10-02', source_name: 'Alternatives Watch', tldr: 'VSS hires for AI value creation.' })
+    const other = row({ ...hire, title: 'VSS names chief financial officer', firm: 'VSS', published_date: '2026-10-02', source_name: 'Alternatives Watch', tldr: 'VSS names a chief financial officer.' })
+    const content = assembleNewsletter([again, other], memory)
+    expect(section(content, 'people_moves')).toEqual(['VSS names chief financial officer'])
+    expect(content.dropped?.find((d) => d.id === again.id)?.reason).toMatch(/ran before/)
   })
 })

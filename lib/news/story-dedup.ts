@@ -9,6 +9,9 @@
  *   3. Same normalized firm name AND fund sizes within ±10%
  *   4. Same normalized firm name AND title Jaccard ≥ 0.3
  *   5. Both missing firm, but same normalized fund name
+ *   6. Same firm, both people moves, and one move (sameMove, at the foot of
+ *      this file): the same surname, or — when one report names nobody — the
+ *      same job, within a couple of days
  */
 
 /**
@@ -129,6 +132,11 @@ export interface StoryCandidate {
   personName?: string | null
   /** close_type from extraction (first_close, final_close, …) when known. */
   closeType?: string | null
+  /** The four below are read only for people moves (see sameMove). */
+  eventType?: string | null
+  personTitle?: string | null
+  personKeys?: string[]
+  publishedDate?: string | null
 }
 
 /**
@@ -195,6 +203,12 @@ export function isSameStory(a: StoryCandidate, b: StoryCandidate): boolean {
   // (exact fund name match OR tight ≤5% size match) to keep KKR vs
   // KKR Credit Advisors distinct when their deals happen to align.
   const prefixFirmMatch = !firmMatch && firmsSharePrefix(firmA, firmB)
+
+  // One hire, told by one outlet with the name and by another without it.
+  if ((firmMatch || prefixFirmMatch) && isPeopleMove(a.eventType) && isPeopleMove(b.eventType) && sameMove(a, b)) {
+    return true
+  }
+
   if (prefixFirmMatch) {
     if (fundA.length > 0 && fundA === fundB) return true
     if (fundSizesMatch(a.fundSizeUsdMillions, b.fundSizeUsdMillions, 0.05)) return true
@@ -288,4 +302,181 @@ export function isSameStory(a: StoryCandidate, b: StoryCandidate): boolean {
   if (titleJaccard(a.title, b.title) >= 0.3) return true
 
   return false
+}
+
+// ─── People moves: one hire, told with and without the name ─────────────────
+
+const PEOPLE_EVENTS = new Set(['executive_hire', 'executive_change', 'executive_departure'])
+
+export function isPeopleMove(eventType: string | null | undefined): boolean {
+  return PEOPLE_EVENTS.has(eventType ?? '')
+}
+
+/**
+ * Short forms a headline uses for a desk, spelled out so that "global head of
+ * ABF" and "global head of asset-based finance" are the same words. Only
+ * forms that mean one thing in a people story: not CLO (a chief legal officer
+ * or a loan vehicle) and not RE ("re-hires").
+ */
+const ROLE_SHORT_FORMS: Array<[RegExp, string]> = [
+  [/\babf\b/g, 'asset based finance'],
+  [/\babl\b/g, 'asset based lending'],
+  [/\bir\b/g, 'investor relations'],
+  [/\bbd\b/g, 'business development'],
+  [/\bpe\b/g, 'private equity'],
+  [/\bvc\b/g, 'venture capital'],
+  [/\binfra\b/g, 'infrastructure'],
+  [/\bm&a\b/g, 'mergers acquisitions'],
+  [/\bai\b/g, 'artificial intelligence'],
+  [/\bcfo\b/g, 'chief financial officer'],
+  [/\bcoo\b/g, 'chief operating officer'],
+  [/\bcio\b/g, 'chief investment officer'],
+  [/\bcco\b/g, 'chief compliance officer'],
+  [/\bcto\b/g, 'chief technology officer'],
+  [/\bgc\b/g, 'general counsel'],
+]
+
+/**
+ * Words that say a move happened, or how senior it is, and not what the job
+ * is. "Portfolio manager", "managing director" and "partner" are here on
+ * purpose: a large firm hires several in a week, so sharing one says nothing
+ * ("Rates trader opts for Millennium", a portfolio manager, and "Ex-Schonfeld
+ * exec joins Millennium as senior PM in Hong Kong" were two people).
+ */
+const ROLE_GENERIC = new Set([
+  // rank
+  'head', 'heads', 'global', 'chief', 'chiefs', 'officer', 'senior', 'junior', 'managing', 'director',
+  'directors', 'partner', 'partners', 'principal', 'associate', 'vice', 'president', 'chair', 'chairman',
+  'executive', 'executives', 'exec', 'execs', 'leader', 'leaders', 'leadership', 'lead', 'leads',
+  'manager', 'managers', 'portfolio', 'member', 'members', 'team', 'teams', 'bench', 'practice', 'role',
+  'roles', 'boss',
+  'veteran', 'former', 'new', 'top', 'key', 'star', 'first', 'next',
+  // the move
+  'hire', 'hires', 'hired', 'hiring', 'rehires', 'appoints', 'appointed', 'appointment', 'names', 'named',
+  'naming', 'taps', 'tapped', 'adds', 'added', 'adding', 'joins', 'joined', 'join', 'promotes', 'promoted',
+  'poaches', 'nabs', 'lands', 'recruits', 'brings', 'elevates', 'moves', 'move', 'departs', 'depart',
+  'departure', 'leaves', 'leave', 'exit', 'exits', 'retire', 'retires', 'steps', 'makes', 'make', 'expands',
+  'expand', 'builds', 'build', 'continues', 'strengthens', 'bolsters', 'boosts', 'launches', 'creates',
+  // glue
+  'the', 'and', 'for', 'with', 'from', 'into', 'after', 'amid', 'over', 'its', 'has', 'firm', 'business',
+  'platform', 'unit', 'division', 'group', 'people', 'double', 'two', 'three', 'more', 'than',
+])
+
+/** Where the job is. Two hires share a city as easily as an employer. */
+const ROLE_PLACES = new Set([
+  'london', 'york', 'hong', 'kong', 'tokyo', 'singapore', 'dubai', 'paris', 'frankfurt', 'zurich',
+  'geneva', 'boston', 'chicago', 'los', 'angeles', 'san', 'francisco', 'miami', 'dallas', 'houston',
+  'toronto', 'sydney', 'mumbai', 'shanghai', 'beijing', 'seoul', 'milan', 'madrid', 'amsterdam',
+  'luxembourg', 'dublin', 'abu', 'dhabi', 'riyadh', 'europe', 'european', 'asia', 'asian', 'pacific',
+  'apac', 'emea', 'americas', 'america', 'american', 'north', 'south', 'east', 'west', 'eastern',
+  'western', 'central', 'region', 'regional', 'middle', 'nordic', 'nordics', 'latin', 'africa', 'india',
+  'china', 'japan', 'korea', 'australia', 'canada', 'germany', 'france', 'italy', 'spain', 'texas',
+  'california', 'florida', 'usa',
+])
+
+function words(text: string | null | undefined): string[] {
+  let t = ` ${(text ?? '').toLowerCase()} `
+  for (const [short, long] of ROLE_SHORT_FORMS) t = t.replace(short, long)
+  return t
+    .replace(/[’']s\b/g, ' ')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .split(/\s+/)
+    .filter((w) => w.length >= 3)
+}
+
+/** "secondaries" / "secondary", "investors" / "investor". */
+const singular = (w: string) => (w.length > 4 ? w.replace(/ies$/, 'y').replace(/([^s])s$/, '$1') : w)
+
+/** One report of a people move, as much of it as the rule below reads. */
+export interface MoveLike {
+  title: string
+  firmName: string | null
+  personName?: string | null
+  /** The job, as the classifier wrote it ("Global Head of Asset-Based Finance"). */
+  personTitle?: string | null
+  /** Full names of every person the report names (story-links entity keys). */
+  personKeys?: string[]
+  publishedDate?: string | null
+  eventType?: string | null
+}
+
+const personNames = (m: MoveLike): string[] => [
+  ...(m.personName ?? '').split(/\s*(?:;|,| and | & )\s*/),
+  ...(m.personKeys ?? []),
+].map((n) => n.trim().toLowerCase()).filter(Boolean)
+
+/**
+ * What the job is, in words: the headline and the stated title, without the
+ * firm's own name, the person's, rank, the verbs of a move, or a place.
+ */
+export function roleWords(m: MoveLike): Set<string> {
+  const skip = new Set([...words(m.firmName), ...personNames(m).flatMap((n) => words(n))])
+  return new Set(
+    [...words(m.title), ...words(m.personTitle)]
+      .filter((w) => !skip.has(w) && !ROLE_GENERIC.has(w) && !ROLE_PLACES.has(w) && !/^\d+$/.test(w))
+      .map(singular),
+  )
+}
+
+/** Days between two reports, or null when either has no date. */
+function daysApart(a: MoveLike, b: MoveLike): number | null {
+  const day = (m: MoveLike) => (m.publishedDate ? Date.parse(`${String(m.publishedDate).slice(0, 10)}T12:00:00Z`) : NaN)
+  const gap = Math.abs(day(a) - day(b)) / 86_400_000
+  return Number.isFinite(gap) ? Math.round(gap) : null
+}
+
+/** A nameless report and its named twin appear within this many days. */
+const NAMELESS_MOVE_WINDOW_DAYS = 2
+
+/**
+ * Two people-move reports from ONE firm (the caller has checked the firm, and
+ * that both are people moves): are they one move?
+ *
+ *   Both name someone → the same surname. A bare surname counts here and only
+ *   here, under one employer: "Octagon Credit hires Antares exec Zilko" and
+ *   "Octagon hires Antares Capital’s John Zilko".
+ *
+ *   One names nobody (or neither does) → there is no person to compare, so
+ *   the job has to be the same job: at least two words of it in common, and
+ *   three in four of the terser description's words found in the fuller one.
+ *   2026-10-05: "Barings expands private credit naming global head of
+ *   asset-based finance" (nobody named) and "Barings hires global head of
+ *   ABF" (Sloan Sutta) ran as two stories on the site and twice in one email.
+ *   Only within a couple of days of each other, and never a hire against a
+ *   departure. Without dates the pair is taken to be one day's reports,
+ *   unless the caller says it is comparing across editions.
+ *
+ * What it must not join, all real and all two moves: "Blackstone poaches
+ * ex-InfraBridge co-head for London infra MD role" / "Blackstone PE chief to
+ * leave firm"; "Millennium adds veteran fixed-income exec as senior adviser" /
+ * "Millennium taps Jera power trader"; "Point72 offering $300k salary to lure
+ * quant teacher" / "Point72 appoints former JPMorgan equities risk chief".
+ *
+ * Measured on the fifty days to 2026-10-08 (scripts/people-pairs-audit.ts):
+ * of 69 same-firm pairs of moves the site showed as two stories it joins 14,
+ * each one move when read; it leaves the vague ones apart ("Hines readies
+ * top leadership transitions" beside the report naming the new co-CEO),
+ * because a headline with no job in it would join any two moves at a firm.
+ */
+export function sameMove(a: MoveLike, b: MoveLike, opts: { crossEdition?: boolean } = {}): boolean {
+  const namesA = personNames(a)
+  const namesB = personNames(b)
+  if (namesA.length > 0 && namesB.length > 0) {
+    const surnames = (names: string[]) =>
+      names.map((n) => normalizeFirmName(n).split(' ').pop() ?? '').filter((n) => n.length >= 4)
+    const sb = surnames(namesB)
+    return surnames(namesA).some((n) => sb.includes(n))
+  }
+
+  const gap = daysApart(a, b)
+  if (gap === null ? opts.crossEdition : gap > NAMELESS_MOVE_WINDOW_DAYS) return false
+  const types = [a.eventType, b.eventType]
+  if (types.includes('executive_hire') && types.includes('executive_departure')) return false
+
+  const ra = roleWords(a)
+  const rb = roleWords(b)
+  const [terse, full] = ra.size <= rb.size ? [ra, rb] : [rb, ra]
+  let shared = 0
+  terse.forEach((w) => { if (full.has(w)) shared++ })
+  return shared >= 2 && shared / terse.size >= 0.75
 }

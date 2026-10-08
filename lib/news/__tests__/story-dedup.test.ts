@@ -5,6 +5,8 @@ import {
   titleJaccard,
   titlesShareSignificantNumber,
   isSameStory,
+  roleWords,
+  sameMove,
   type StoryCandidate,
 } from '../story-dedup'
 
@@ -428,5 +430,125 @@ describe('isSameStory — identical titles with conflicting firm extraction (202
       fundSizeUsdMillions: 2000,
     })
     expect(isSameStory(a, b)).toBe(false)
+  })
+})
+
+// ─── People moves: one hire, told with and without the name ─────────────────
+// Every headline, name, job and date below is a real row.
+
+const move = (o: Partial<StoryCandidate> & { title: string; firmName: string }): StoryCandidate =>
+  candidate({ eventType: 'executive_hire', ...o })
+
+describe('isSameStory — one hire, told with and without the name (2026-10-05 Barings)', () => {
+  const pi = move({ title: 'Barings expands private credit naming global head of asset-based finance', firmName: 'Barings', personTitle: 'Global Head of Asset-Based Finance', publishedDate: '2026-10-05' })
+  const aci = move({ title: 'Barings hires global head of ABF', firmName: 'Barings', personName: 'Sloan Sutta', personTitle: 'Global Head of Asset-Based Finance', publishedDate: '2026-10-05' })
+  const aiCio = move({ title: 'Barings Appoints Asset-Based Finance Head', firmName: 'Barings', personTitle: 'Head of Asset-Based Finance', publishedDate: '2026-10-05' })
+
+  it('reads "ABF" and "asset-based finance" as the same job', () => {
+    expect([...roleWords({ title: 'Barings hires global head of ABF', firmName: 'Barings' })].sort()).toEqual(['asset', 'based', 'finance'])
+    expect([...roleWords({ title: 'Octagon Credit Investors Names Investor Relations Head', firmName: 'Octagon Credit Investors' })].sort()).toEqual(['investor', 'relation'])
+    // Rank, the verbs of a move, the firm, the person and the city are not the job.
+    expect([...roleWords({ title: 'Ex-Schonfeld exec joins Millennium as senior PM in Hong Kong', firmName: 'Millennium', personTitle: 'Senior Portfolio Manager' })]).toEqual(['schonfeld'])
+  })
+
+  it('joins the report that names nobody to the one that names the hire', () => {
+    // The headlines share 3 words in 12 (0.25): under the 0.3 the same-firm rule asks for.
+    expect(titleJaccard(pi.title, aci.title)).toBeLessThan(0.3)
+    expect(isSameStory(pi, aci)).toBe(true)
+    expect(isSameStory(aci, aiCio)).toBe(true)
+  })
+
+  it('joins them when the headline is all there is to go on (no stated title, no date)', () => {
+    const bare = (c: StoryCandidate) => ({ ...c, personTitle: null, publishedDate: null })
+    expect(isSameStory(bare(pi), bare(aci))).toBe(true)
+  })
+
+  it('joins other nameless reports to their named twins', () => {
+    expect(isSameStory(
+      move({ title: 'Adams Street hires Industry Ventures’ Justine Huang Burns to scale venture secondaries', firmName: 'Adams Street Partners', personName: 'Justine Huang Burns', personTitle: 'Partner, Secondary Investments', publishedDate: '2026-09-28' }),
+      move({ title: 'Adams Street names partner for venture secondaries', firmName: 'Adams Street', personTitle: 'Partner', publishedDate: '2026-09-28' }),
+    )).toBe(true)
+    expect(isSameStory(
+      move({ title: 'VSS Capital Partners hires ex-World Bank adviser Otilia Ciotau for AI role', firmName: 'VSS Capital Partners', personName: 'Otilia Ciotau', personTitle: 'Managing Director, AI and Value Creation', publishedDate: '2026-10-01' }),
+      move({ title: 'VSS hires for AI value creation', firmName: 'VSS', publishedDate: '2026-10-02' }),
+    )).toBe(true)
+    // "Octagon Credit Investors" / "Octagon Credit": one firm under two spellings.
+    expect(isSameStory(
+      move({ title: 'Octagon hires Antares Capital’s John Zilko to lead investor relations and business development', firmName: 'Octagon Credit Investors', personName: 'John Zilko', personTitle: 'Head of Investor Solutions and Business Development', publishedDate: '2026-10-08' }),
+      move({ title: 'Octagon Credit Investors Names Investor Relations Head', firmName: 'Octagon Credit Investors', personTitle: 'Head of Investor Relations', publishedDate: '2026-10-07' }),
+    )).toBe(true)
+    // Neither names anybody.
+    expect(isSameStory(
+      move({ title: 'Simpson Thacher bolsters private funds bench', firmName: 'Simpson Thacher', personTitle: 'Private Funds Co-Head', publishedDate: '2026-09-03' }),
+      move({ title: 'Former Weil Private Funds Co-Head Joins Simpson Thacher', firmName: 'Simpson Thacher & Bartlett LLP', personTitle: 'Partner', publishedDate: '2026-09-04' }),
+    )).toBe(true)
+  })
+
+  it('joins a bare surname to the full name, under one employer', () => {
+    expect(isSameStory(
+      move({ title: 'Octagon Credit hires Antares exec Zilko to lead business development', firmName: 'Octagon Credit', personName: 'Zilko', personTitle: 'Head of Business Development', publishedDate: '2026-10-07' }),
+      move({ title: 'Octagon hires Antares Capital’s John Zilko to lead investor relations and business development', firmName: 'Octagon Credit Investors', personName: 'John Zilko', publishedDate: '2026-10-08' }),
+    )).toBe(true)
+    expect(isSameStory(
+      move({ title: 'People moves: Prieto joins Denham’s infrastructure credit platform', firmName: 'Denham Capital', personName: 'Prieto', publishedDate: '2026-09-30' }),
+      move({ title: 'Arturo Prieto becomes managing director of Denham Capital’s sustainable infra credit platform', firmName: 'Denham Capital', personName: 'Arturo Prieto', personTitle: 'Managing Director', publishedDate: '2026-09-30' }),
+    )).toBe(true)
+    // The same surname at another firm is another person.
+    expect(isSameStory(
+      move({ title: 'Octagon Credit hires Antares exec Zilko to lead business development', firmName: 'Octagon Credit', personName: 'Zilko' }),
+      move({ title: 'Antares Capital promotes Zilko deputy to head of investor relations', firmName: 'Antares Capital', personName: 'Mary Zilko' }),
+    )).toBe(false)
+  })
+
+  it('keeps two different hires at one firm apart', () => {
+    const pairs: Array<[StoryCandidate, StoryCandidate]> = [
+      // A hire with no name beside a departure with one.
+      [
+        move({ title: 'Blackstone poaches ex-InfraBridge co-head for London infra MD role', firmName: 'Blackstone', personTitle: 'Managing Director', publishedDate: '2026-09-28' }),
+        move({ title: 'Blackstone PE chief to leave firm after 28 years', firmName: 'Blackstone', eventType: 'executive_departure', personName: 'Joe Baratta', personTitle: 'Global Head of Private Equity Strategies', publishedDate: '2026-09-28' }),
+      ],
+      // Two hires on one day, each told once with the name and once without.
+      [
+        move({ title: 'Millennium adds veteran fixed-income exec as senior adviser', firmName: 'Millennium', personTitle: 'Senior Adviser', publishedDate: '2026-10-05' }),
+        move({ title: 'Millennium taps Jera power trader', firmName: 'Millennium Management', personName: 'Matthias Soreau', personTitle: 'power trader', publishedDate: '2026-10-05' }),
+      ],
+      [
+        move({ title: 'Millennium adds veteran fixed-income exec as senior adviser', firmName: 'Millennium', personTitle: 'Senior Adviser', publishedDate: '2026-10-05' }),
+        move({ title: 'Millennium taps Jera power trader', firmName: 'Millennium', personTitle: 'Power Trader', publishedDate: '2026-10-05' }),
+      ],
+      // Both portfolio managers: a rank, not a job.
+      [
+        move({ title: 'Rates trader opts for Millennium after accepting Point72 offer', firmName: 'Millennium Management', eventType: 'executive_change', personName: 'Matteo Sardo', personTitle: 'Portfolio Manager', publishedDate: '2026-09-28' }),
+        move({ title: 'Ex-Schonfeld exec joins Millennium as senior PM in Hong Kong', firmName: 'Millennium', personTitle: 'Senior Portfolio Manager', publishedDate: '2026-09-30' }),
+      ],
+      [
+        move({ title: 'Point72 offering $300k salary to lure quant teacher', firmName: 'Point72', personTitle: 'quant teacher', publishedDate: '2026-10-01' }),
+        move({ title: 'Point72 appoints former JPMorgan equities risk chief to lead risk technology', firmName: 'Point72', personName: 'Ashot Ordukhanyan', personTitle: 'Head of Risk Technology', publishedDate: '2026-10-01' }),
+      ],
+      [
+        move({ title: 'Double impact hire at M&G', firmName: 'M&G', personName: 'Jen Braswell', personTitle: 'Global Head of Impact', publishedDate: '2026-10-05' }),
+        move({ title: 'M&G rehires former debt co-head as real estate finance chief', firmName: 'M&G', personTitle: 'Real Estate Finance Chief', publishedDate: '2026-10-07' }),
+      ],
+      // Two named people are two moves, whatever their jobs have in common.
+      [
+        move({ title: 'Hamilton Lane appoints UBS co-head of private equity to funds team', firmName: 'Hamilton Lane', personName: 'Diana Celotto', personTitle: 'Managing Director, Fund Investment and Managed Solutions', publishedDate: '2026-09-17' }),
+        move({ title: 'Former GEM director joins Hamilton Lane', firmName: 'Hamilton Lane', personName: 'Angelica Nikolausson', personTitle: 'Managing Director of Sustainability and Impact', publishedDate: '2026-09-17' }),
+      ],
+    ]
+    for (const [a, b] of pairs) expect(isSameStory(a, b), `${a.title} / ${b.title}`).toBe(false)
+  })
+
+  it('only within a couple of days, and never a hire against a departure', () => {
+    expect(sameMove(pi, { ...aci, publishedDate: '2026-10-07' })).toBe(true)
+    expect(sameMove(pi, { ...aci, publishedDate: '2026-10-08' })).toBe(false)
+    // Across editions a pair with no dates cannot be placed in the window.
+    expect(sameMove({ ...pi, publishedDate: null }, aci, { crossEdition: true })).toBe(false)
+    expect(sameMove({ ...pi, publishedDate: null }, aci)).toBe(true)
+    expect(sameMove({ ...pi, eventType: 'executive_departure' }, aci)).toBe(false)
+  })
+
+  it('is a rule for people moves only', () => {
+    // The same two headlines filed as fund news are left to the fund rules.
+    expect(isSameStory({ ...pi, eventType: 'fund_launch' }, { ...aci, eventType: 'fund_launch', personName: null })).toBe(false)
   })
 })

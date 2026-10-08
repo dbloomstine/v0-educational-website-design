@@ -150,6 +150,9 @@ function toStoryCandidate(a: NewsArticle): StoryCandidate {
     fundSizeUsdMillions: a.fundSizeUsd ? a.fundSizeUsd / 1_000_000 : null,
     personName: a.personName,
     closeType: a.closeType,
+    eventType: a.eventType,
+    personTitle: a.personTitle,
+    publishedDate: a.publishedDate,
   }
 }
 
