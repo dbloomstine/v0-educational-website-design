@@ -27,6 +27,10 @@
       "schedule": "30 11 * * *"
     },
     {
+      "path": "/api/pipeline/story-summaries",
+      "schedule": "45 * * * *"
+    },
+    {
       "path": "/api/pipeline/outreach-monitor",
       "schedule": "15 * * * *"
     }

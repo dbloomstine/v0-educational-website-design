@@ -12,6 +12,9 @@ import { ShareBar } from '@/components/story/ShareBar'
 import { HeadlineRow, SectionFlag } from '@/components/story/StoryBlocks'
 import { LatestRail, SubscribePanel } from '@/components/home/Rail'
 import { getStory } from '@/lib/news/front-page'
+import { getSupabaseAdmin } from '@/lib/supabase/client'
+import { pageSummary } from '@/lib/news/story-summary'
+import { readLongSummary } from '@/lib/news/story-summary-store'
 import { rankSection, type Story } from '@/lib/news/stories'
 import { ASSET_LABEL, homeSectionFor, sectionHref, storyInSection } from '@/lib/news/sections'
 import { kickerLabel, sizeLabel, stageLabel } from '@/lib/news/format'
@@ -60,6 +63,9 @@ export default async function StoryPage({ params }: Params) {
   if (!found) notFound()
   const { story, all } = found
   const nowMs = Date.now()
+  // The fuller summary, when the job has written one for any row of the story.
+  // The meta description and the JSON-LD below keep the short one.
+  const summary = pageSummary(story.summary, await readLongSummary(getSupabaseAdmin(), story))
 
   const section = homeSectionFor(story)
   const firmKey = entityKey(story.firmName)
@@ -123,9 +129,14 @@ export default async function StoryPage({ params }: Params) {
                 {story.coverage.length > 0 && ` and ${story.coverage.length} other${story.coverage.length === 1 ? '' : 's'}`}
               </p>
 
-              {story.summary && (
+              {summary?.kind === 'long' && (
+                <div className="mt-5 space-y-4 font-news text-[18px] leading-[1.6] text-foreground/90 sm:text-[19px]">
+                  {summary.paragraphs.map((p, i) => <p key={i}>{p}</p>)}
+                </div>
+              )}
+              {summary?.kind === 'short' && (
                 <p className="mt-5 border-l-2 border-foreground pl-4 font-news text-[19px] leading-[1.45] text-foreground/85 sm:text-[20px]">
-                  {story.summary}
+                  {summary.text}
                 </p>
               )}
 
