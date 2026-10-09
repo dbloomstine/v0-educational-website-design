@@ -49,8 +49,11 @@ describe('what the sponsor page sells', () => {
   })
   it('reads whether the space is open from the bookings, and shows the placements with the real components', () => {
     expect(page).toContain('getSiteSponsorState')
-    expect(page).toContain('<SponsorStripView sponsor={SAMPLE}')
-    expect(page).toContain('<SponsorCardView sponsor={SAMPLE}')
+    // Since 2026-10-09 the placements are drawn in the builder, with what the prospect types.
+    const builder = readFileSync(join(__dirname, '..', '..', '..', 'components', 'sponsor', 'SponsorBuilder.tsx'), 'utf8')
+    expect(page).toContain('<SponsorBuilder openWeeks={openWeeks}')
+    expect(builder).toContain('<SponsorStripView sponsor={draft}')
+    expect(builder).toContain('<SponsorCardView sponsor={draft}')
   })
 })
 

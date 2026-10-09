@@ -1,17 +1,19 @@
 import { Metadata } from 'next'
-import { ArrowRight, Mail, Newspaper } from 'lucide-react'
+import { ArrowRight, Newspaper } from 'lucide-react'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { SectionFlag } from '@/components/story/StoryBlocks'
 import { getSponsorStats, type SponsorStats } from '@/lib/sponsor/stats'
-import { getSiteSponsorState } from '@/lib/sponsor/bookings'
-import { SponsorCardView, SponsorStripView, type SlotSponsor } from '@/components/sponsor/SponsorSlot'
+import { fetchBookingRows, getSiteSponsorState } from '@/lib/sponsor/bookings'
+import { PACKAGES, openMondays, usd } from '@/lib/sponsor/packages'
+import { SponsorBuilder } from '@/components/sponsor/SponsorBuilder'
+import { ReaderBeacon } from '@/components/sponsor/ReaderBeacon'
 
 export const metadata: Metadata = {
   title: 'Sponsor FundOps Daily',
   description:
-    'Sponsor the morning news brief read by GPs, LPs and fund service providers in private markets. Who reads it, what a sponsor gets, and how to book.',
+    'Sponsor the morning news brief read by GPs, LPs and fund service providers in private markets. Who reads it, what it costs, and a builder to write your ad, see it as it will run, and book it.',
   openGraph: {
     title: 'Sponsor FundOps Daily',
     description: 'The morning news brief for private markets. Who reads it, what a sponsor gets, and how to book.',
@@ -22,7 +24,8 @@ export const metadata: Metadata = {
 }
 
 // Rebuilt hourly; the numbers behind it refresh every twelve hours
-// (lib/sponsor/stats.ts). Nothing on this page is a typed-in figure.
+// (lib/sponsor/stats.ts). No audience figure on this page is typed in. The
+// prices are, in one place: lib/sponsor/packages.ts.
 export const revalidate = 3600
 
 const MAILTO = 'mailto:sponsor@fundopshq.com?subject=FundOps%20Daily%20sponsorship'
@@ -35,8 +38,8 @@ function placement(open: string): { label: string; value: string }[] {
       value:
         'In the email, under the masthead and again at the foot of every edition in your run. On the site, above the stories on every page and in the column beside them.',
     },
-    { label: 'What', value: 'Your logo, up to 60 words, and one link. You write it; we proof it and send you a preview before anything ships.' },
-    { label: 'Run', value: 'By the week, the month or the quarter. One sponsor at a time: for your dates, the space is yours alone.' },
+    { label: 'What', value: 'Your logo, up to 60 words, and one link. You write it in the builder below and see it as it will run; we read it before anything ships.' },
+    { label: 'Run', value: 'One week, four weeks or a quarter, starting on a Monday. One sponsor at a time: for your dates, the space is yours alone.' },
     { label: 'Open', value: open },
     { label: 'Report', value: 'Delivery, opens and clicks for the email, at the end of the run.' },
   ]
@@ -52,32 +55,38 @@ function openLine(bookedThrough: string | null): string {
   return `From ${longDate(next.toISOString().slice(0, 10))}. The space is booked through ${longDate(bookedThrough)}.`
 }
 
-/**
- * The stand-in for the mock-ups below: the real components, drawn with an
- * empty box where a logo goes, so a prospect sees their own placement and
- * nobody mistakes the example for a client.
- */
-const SAMPLE: SlotSponsor = {
-  name: 'Your logo here',
-  tagline: 'One line of your own, beside your name on every page.',
-  blurb: 'Up to 60 words, in your own voice: what your firm does for the people who run private funds, and why they should look this morning.',
-  ctaUrl: 'https://fundopshq.com/sponsor',
-  ctaText: 'Your link',
-  sample: true,
-}
+/** How a booking goes, start to finish. */
+const STEPS = [
+  { n: '1', title: 'Build it', body: 'Choose a length and a start date, write your ad, add your logo. You see it as it will run while you type.' },
+  { n: '2', title: 'We read it', body: 'Every ad is read by the editor before it runs. You have a yes or a no within one business day.' },
+  { n: '3', title: 'You pay', body: 'Only after a yes, and before your first edition. Nothing is charged when you submit.' },
+  { n: '4', title: 'It runs', body: 'From your Monday, in every edition and on every news page, and it ends by itself. A short report follows.' },
+]
 
 const FAQS = [
   {
     q: 'Do you take any advertiser?',
-    a: 'No. A sponsor has to be useful to a GP, an LP or a fund service provider. And there is one sponsor at a time, so yours never runs beside a competitor.',
+    a: 'No. A sponsor has to be useful to a GP, an LP or a fund service provider, and every ad is read before it runs. There is one sponsor at a time, so yours never runs beside a competitor.',
+  },
+  {
+    q: 'How and when do we pay?',
+    a: 'In full, before your first edition, by card or by invoice. Nothing is charged when you submit: you pay only after we have said yes.',
+  },
+  {
+    q: 'Can we change the copy, or cancel?',
+    a: 'Change the copy whenever you like, before or during the run: reply to any of our emails with the new wording. Cancel up to three business days before your start for a full refund. Once a run has started it is not refunded, but the copy can still change.',
+  },
+  {
+    q: 'How is the ad marked?',
+    a: 'With the words “Presented by” above your name, in the email and on the site, and the links are marked as sponsored for search engines.',
   },
   {
     q: 'What if our firm is in the news that day?',
     a: 'It runs as it would have. Coverage is not traded for sponsorship, and an edition that covers a sponsor says so in its footer.',
   },
   {
-    q: 'How far ahead do you need the creative?',
-    a: '48 hours before the first send: a PNG logo, your copy, and the link.',
+    q: 'How far ahead do you need it?',
+    a: 'The soonest start is the first Monday at least three days away. The builder only offers dates that are open.',
   },
 ]
 
@@ -101,7 +110,10 @@ function figures(s: SponsorStats): { value: string; label: string; note?: string
 }
 
 export default async function SponsorPage() {
-  const [stats, { bookedThrough }] = await Promise.all([getSponsorStats().catch(() => null), getSiteSponsorState()])
+  const [stats, { bookedThrough }, booked] = await Promise.all([getSponsorStats().catch(() => null), getSiteSponsorState(), fetchBookingRows().catch(() => [])])
+  // The Mondays the builder offers: read from the bookings, never typed.
+  const openWeeks = openMondays(new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' }), booked)
+  const from = PACKAGES.reduce((low, p) => Math.min(low, p.priceUsd), Infinity)
   const tiles = stats ? figures(stats) : []
   const asOf = stats
     ? new Date(stats.asOf).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/New_York' })
@@ -131,11 +143,11 @@ export default async function SponsorPage() {
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <a
-                href={MAILTO}
-                className="group inline-flex h-10 items-center gap-2 rounded-sm bg-foreground px-5 font-ui text-[13px] font-bold uppercase tracking-[0.06em] text-background transition-colors hover:bg-foreground/85"
+                href="#book"
+                className="group inline-flex h-10 items-center gap-2 rounded-sm px-5 font-ui text-[13px] font-extrabold uppercase tracking-[0.06em] transition-[filter] hover:brightness-95"
+                style={{ background: 'var(--tab)', color: 'var(--ink)' }}
               >
-                <Mail className="h-4 w-4" aria-hidden="true" />
-                Email about sponsoring
+                Build your ad · from {usd(from)}
                 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
               </a>
               <a
@@ -207,61 +219,52 @@ export default async function SponsorPage() {
             </dl>
           </section>
 
-          {/* ─── Where it appears: the real components, with a stand-in ─── */}
-          <section aria-label="Where your firm appears" className="mt-10">
-            <SectionFlag label="Where your firm appears" note="Mock-ups, to scale" />
-            <figure>
-              <figcaption className="pb-2 pt-3 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                On the site · above the stories, on every page
-              </figcaption>
-              <div inert aria-hidden="true" className="pointer-events-none select-none">
-                <SponsorStripView sponsor={SAMPLE} line="" />
-              </div>
-            </figure>
-            <div className="mt-5 grid gap-x-8 gap-y-5 sm:grid-cols-[300px_minmax(0,1fr)]">
-              <figure>
-                <figcaption className="pb-2 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                  On the site · beside the stories
-                </figcaption>
-                <div inert aria-hidden="true" className="pointer-events-none select-none">
-                  <SponsorCardView sponsor={SAMPLE} />
+          {/* ─── What it costs ─── */}
+          <section aria-label="Rates" className="mt-10">
+            <SectionFlag label="What it costs" note="One sponsor at a time" />
+            <div className="grid gap-3 pt-3 sm:grid-cols-3">
+              {PACKAGES.map((p) => (
+                <div key={p.id} className="panel px-4 pb-4 pt-3.5">
+                  <h3 className="font-ui text-[12px] font-extrabold uppercase tracking-[0.1em] text-foreground">{p.name}</h3>
+                  <p className="mt-1.5 font-news text-[40px] font-medium leading-none tracking-[-0.02em] text-foreground">{usd(p.priceUsd)}</p>
+                  <p className="mt-1.5 font-ui text-[12px] text-muted-foreground">
+                    {p.editions} editions and {p.days} days on the site
+                  </p>
+                  <p className="mt-2 font-news text-[15.5px] leading-[1.4] text-foreground/85">{p.line}</p>
                 </div>
-              </figure>
-              <div>
-                <p className="pb-2 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">In the email · top and foot</p>
-                <p className="max-w-[52ch] font-news text-[16.5px] leading-[1.45] text-foreground/85">
-                  The same card opens every edition in your run, directly under the masthead and above the first headline, and closes it with your
-                  link as a button. The sample is today&rsquo;s edition with the space filled in.
-                </p>
-                <a
-                  href="/newsletter/sample"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group mt-3 inline-flex items-center gap-1.5 font-ui text-[12.5px] font-bold uppercase tracking-[0.06em] text-foreground underline decoration-[var(--tab)] decoration-2 underline-offset-4 hover:decoration-foreground"
-                >
-                  See it in today&rsquo;s edition
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-                </a>
-              </div>
+              ))}
             </div>
+            <p className="mt-2 font-ui text-[11.5px] leading-snug text-muted-foreground">
+              Flat prices in US dollars. Each includes the email, top and foot, and both places on the site, for every day of the run.
+            </p>
           </section>
 
-          {/* ─── Rates: by conversation ─── */}
-          <section aria-label="Rates" className="panel-ink mt-10">
-            <h2 className="font-news text-[26px] font-medium leading-tight tracking-[-0.01em]">Rates and open dates</h2>
-            <p className="mt-2 max-w-[62ch] font-news text-[16.5px] leading-[1.45] opacity-85">
-              Sponsorship is booked by the week, the month or the quarter. The list is young and growing, so rates are
-              quoted for the dates you want rather than printed here. Tell us what you are promoting and when, and you
-              will have a rate and the open dates within one business day.
+          {/* ─── How it works ─── */}
+          <section aria-label="How it works" className="mt-10">
+            <SectionFlag label="How it works" />
+            <ol className="grid gap-x-6 sm:grid-cols-4">
+              {STEPS.map((st) => (
+                <li key={st.n} className="border-b border-border/70 py-3 sm:border-b-0">
+                  <p className="font-news text-[30px] font-medium leading-none text-amber-400">{st.n}</p>
+                  <h3 className="mt-1.5 font-ui text-[12.5px] font-extrabold uppercase tracking-[0.08em] text-foreground">{st.title}</h3>
+                  <p className="mt-1 font-news text-[15.5px] leading-[1.4] text-foreground/80">{st.body}</p>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          {/* ─── The builder: write it, see it, send it for approval ─── */}
+          <section id="book" aria-label="Build your ad" className="mt-10 scroll-mt-16">
+            <SectionFlag label="Build your ad" note="Drawn with the site’s own components, as you type" />
+            <div className="pt-4">
+              <SponsorBuilder openWeeks={openWeeks} />
+            </div>
+            <p className="mt-6 font-ui text-[13px] text-foreground/80">
+              Rather talk first, or want something that is not here?{' '}
+              <a href={MAILTO} className="font-semibold underline underline-offset-2">
+                sponsor@fundopshq.com
+              </a>
             </p>
-            <a
-              href={MAILTO}
-              className="mt-4 inline-flex h-10 items-center gap-2 rounded-sm px-5 font-ui text-[13px] font-bold uppercase tracking-[0.06em] transition-opacity hover:opacity-90"
-              style={{ background: 'var(--tab)', color: 'var(--ink)' }}
-            >
-              sponsor@fundopshq.com
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </a>
           </section>
 
           {/* ─── Questions ─── */}
@@ -281,6 +284,7 @@ export default async function SponsorPage() {
 
       <SiteFooter />
       <BackToTop />
+      <ReaderBeacon />
     </div>
   )
 }

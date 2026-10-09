@@ -69,6 +69,12 @@ interface TemplateParams {
   interests?: string[]
   /** The reader's own page for changing what they follow; a footer link when given. */
   preferencesUrl?: string
+  /**
+   * Appended to the email's links to the sponsor page (`r=<this>`), so the page
+   * can tell the owner which reader came to look (app/api/sponsor/interest).
+   * The send passes a sentinel and swaps in each subscriber's id.
+   */
+  readerTag?: string
 }
 
 /** One row of the weekly recap: a close as the league table has it. */
@@ -841,6 +847,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
     recap,
     interests,
     preferencesUrl,
+    readerTag,
   } = params
   // The edition in reading order: the top stories, the reader's own section
   // if they have one, then the sections without either.
@@ -1063,5 +1070,12 @@ export function renderNewsletterEmail(params: TemplateParams): string {
 </body>
 </html>`
 
-  return collapseTemplateWhitespace(html)
+  const out = collapseTemplateWhitespace(html)
+  return readerTag ? tagSponsorLinks(out, readerTag) : out
+}
+
+/** Every link to our own sponsor page gains `r=<tag>`: the house notice's two buttons and the footer's link. */
+export function tagSponsorLinks(html: string, tag: string): string {
+  return html.replace(/href="https:\/\/fundopshq\.com\/sponsor(\?[^"]*)?"/g, (_m, query: string | undefined) =>
+    `href="https://fundopshq.com/sponsor${query ? `${query}&amp;` : '?'}r=${tag}"`)
 }

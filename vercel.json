@@ -37,6 +37,10 @@
     {
       "path": "/api/pipeline/outreach-monitor",
       "schedule": "15 * * * *"
+    },
+    {
+      "path": "/api/pipeline/sponsor-followup",
+      "schedule": "0 13 * * *"
     }
   ]
 }

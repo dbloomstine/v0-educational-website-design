@@ -45,8 +45,8 @@ export interface BookedSponsor extends Sponsor {
   endsOn: string
 }
 
-/** The label over a booked sponsor, in the email and on the site. */
-export const SPONSOR_LABEL = 'Presented by'
+import { SPONSOR_LABEL } from './label'
+export { SPONSOR_LABEL }
 
 const HTTPS = /^https:\/\/[^\s"'<>]+$/
 const RASTER = /^https:\/\/[^\s"'<>]+\.(png|jpe?g|gif)(\?[^\s"'<>]*)?$/i

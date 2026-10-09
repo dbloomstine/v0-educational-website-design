@@ -166,6 +166,8 @@ export async function sendDailyNewsletter(
   // The '' key is the edition everyone else gets, and the one kept on record.
   const UNSUB_SENTINEL = '__FUNDOPS_UNSUB_URL_SENTINEL__'
   const PREFS_SENTINEL = '__FUNDOPS_PREFS_URL_SENTINEL__'
+  // On the links to the sponsor page: each reader's own id, so the page can say which reader came to look.
+  const READER_SENTINEL = '__FUNDOPS_READER_SENTINEL__'
   const readerFirms = readerFirmDomains(subscribers.map((s) => String(s.email))).size
   const renders = new Map<string, string>()
   const templateFor = (interests: string[]): string => {
@@ -178,6 +180,7 @@ export async function sendDailyNewsletter(
         editionDate,
         unsubscribeUrl: UNSUB_SENTINEL,
         preferencesUrl: PREFS_SENTINEL,
+        readerTag: READER_SENTINEL,
         subscriberCount: subscribers.length,
         events: upcomingEvents,
         sponsorSlate: slateFor(sponsor),
@@ -197,6 +200,7 @@ export async function sendDailyNewsletter(
     const html = templateFor(sub.interests ?? [])
       .replaceAll(UNSUB_SENTINEL, unsubscribeUrl)
       .replaceAll(PREFS_SENTINEL, preferencesUrl)
+      .replaceAll(READER_SENTINEL, sub.id ?? '')
 
     return {
       from: `FundOps Daily <${fromEmail}>`,
@@ -258,7 +262,7 @@ export async function sendDailyNewsletter(
   // Stored body is the rendered template with the unsub URL replaced by a
   // harmless anchor — same bytes as what recipients got, minus a per-user
   // token. Skips a redundant second render.
-  const placeholderHtml = templateHtml.replaceAll(UNSUB_SENTINEL, '#').replaceAll(PREFS_SENTINEL, 'https://fundopshq.com/#subscribe')
+  const placeholderHtml = templateHtml.replaceAll(UNSUB_SENTINEL, '#').replaceAll(PREFS_SENTINEL, 'https://fundopshq.com/#subscribe').replaceAll(READER_SENTINEL, '')
 
   const status = totalSent > 0 ? 'sent' : 'failed'
 
@@ -290,6 +294,7 @@ export async function sendDailyNewsletter(
 }
 
 export interface Recipient {
+  id?: string
   email: string
   unsubscribe_token: string
   interests?: string[] | null
@@ -306,12 +311,12 @@ export async function confirmedSubscribers(
   const read = (columns: string) =>
     supabase.from('newsletter_subscribers').select(columns).eq('status', 'confirmed')
 
-  const first = await read('email, unsubscribe_token, interests')
+  const first = await read('id, email, unsubscribe_token, interests')
   if (!first.error) return { subscribers: first.data as unknown as Recipient[] | null, error: null }
   if (!/interests/.test(first.error.message ?? '')) return { subscribers: null, error: first.error }
 
   console.warn('[send-daily] newsletter_subscribers has no interests column yet; sending one edition to all')
-  const plain = await read('email, unsubscribe_token')
+  const plain = await read('id, email, unsubscribe_token')
   return { subscribers: plain.data as unknown as Recipient[] | null, error: plain.error }
 }
 

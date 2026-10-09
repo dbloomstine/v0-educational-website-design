@@ -96,6 +96,20 @@ export default function PrivacyPolicyPage() {
                     subscription and is removed with it.
                   </p>
 
+                  <p className="text-muted-foreground leading-relaxed mt-3">
+                    The link to our sponsorship page in your own copy of the newsletter is personal to you. If you
+                    follow it, we record that you did, so that we know which readers are interested in sponsoring.
+                    We do not record which stories you read.
+                  </p>
+
+                  <h3 className="text-xl font-semibold mb-3 mt-6">Sponsorship Requests</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    If you ask to sponsor us, we collect what you enter in the request: your name, work email, firm,
+                    website, the advertisement itself and any logo you upload. We use it to review, run and bill the
+                    sponsorship and to write to you about it. An approved advertisement, including the logo, is shown
+                    publicly in the newsletter and on the Site.
+                  </p>
+
                   <h3 className="text-xl font-semibold mb-3 mt-6">Local Storage</h3>
                   <p className="text-muted-foreground leading-relaxed">
                     Our Site may use your browser&apos;s local storage to save preferences. This data is stored
