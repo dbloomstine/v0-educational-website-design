@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { renderNewsletterEmail } from '@/lib/newsletter/email-template'
 import { getSampleContent } from '@/lib/newsletter/sample-content'
 import { SPONSOR_LABEL } from '@/lib/sponsor/label'
-import { LIMITS } from '@/lib/sponsor/packages'
+import { LIMITS, emailLogoWidth } from '@/lib/sponsor/packages'
 import { readLogo } from '@/lib/sponsor/requests'
 
 /**
@@ -23,7 +23,8 @@ export async function POST(req: Request) {
   const ctaText = text(body.ctaText, LIMITS.ctaText) || 'Learn more'
   // Only a logo we have checked is a picture goes in; anything else and the firm's name is set as a wordmark.
   const logo = readLogo(body.logoData)
-  const logoUrl = logo && !('error' in logo) && typeof body.logoData === 'string' ? body.logoData : undefined
+  const ok = logo && !('error' in logo) ? logo : null
+  const logoUrl = ok && typeof body.logoData === 'string' ? body.logoData : undefined
 
   try {
     const sample = await getSampleContent()
@@ -31,7 +32,7 @@ export async function POST(req: Request) {
     const email = renderNewsletterEmail({
       ...sample,
       unsubscribeUrl: 'https://fundopshq.com/sponsor',
-      sponsorSlate: { label: SPONSOR_LABEL.toUpperCase(), sponsors: [{ name, blurb, ctaUrl: 'https://fundopshq.com/sponsor', ctaText, logoUrl, logoWidth: logoUrl ? 160 : undefined }], sample: true },
+      sponsorSlate: { label: SPONSOR_LABEL.toUpperCase(), sponsors: [{ name, blurb, ctaUrl: 'https://fundopshq.com/sponsor', ctaText, logoUrl, logoWidth: ok ? emailLogoWidth(ok.width, ok.height) : undefined }], sample: true },
     })
     return new Response(email, { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } })
   } catch (err) {

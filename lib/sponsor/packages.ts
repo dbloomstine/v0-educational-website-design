@@ -97,7 +97,20 @@ export const shortDay = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDa
 
 /* ───────── what a booking request must look like ───────── */
 
-export const LIMITS = { company: 60, contact: 80, tagline: 110, blurbWords: 60, blurbChars: 560, ctaText: 28, notes: 600 } as const
+// The firm's name is set large and never wraps, so it is held to what fits a phone's width.
+export const LIMITS = { company: 40, contact: 80, tagline: 110, blurbWords: 60, blurbChars: 560, ctaText: 28, notes: 600 } as const
+
+/** What a logo file must be: small enough to send, large enough to be sharp, not absurd. */
+export const LOGO_RULES = { maxBytes: 400_000, minWidth: 120, maxSide: 4000 } as const
+
+/**
+ * How wide a logo is drawn in the email, from its own shape, so that a wide wordmark and a square
+ * mark both come out about the same height (the email sets a width and lets the height follow).
+ */
+export function emailLogoWidth(width: number, height: number): number {
+  if (!(width > 0) || !(height > 0)) return 160
+  return Math.max(70, Math.min(220, Math.round((44 * width) / height)))
+}
 
 export interface BookingInput {
   packageId: string
@@ -115,11 +128,21 @@ export interface BookingInput {
 }
 
 const HTTPS = /^https:\/\/[^\s"'<>]{4,300}$/
+/** A real web address: https, a host with a dot in it, no user name or password tucked inside, nothing that is not a web page. */
+export function isWebUrl(value: string): boolean {
+  if (!HTTPS.test(value)) return false
+  try {
+    const u = new URL(value)
+    return u.protocol === 'https:' && !u.username && !u.password && /^[a-z0-9-]+(\.[a-z0-9-]+)+$/i.test(u.hostname)
+  } catch {
+    return false
+  }
+}
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
 const words = (s: string) => s.trim().split(/\s+/).filter(Boolean).length
 const text = (v: unknown) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim() : '')
 /** "acme.com" → "https://acme.com": people type a site the way they say it. */
-const asUrl = (v: unknown) => {
+export const asUrl = (v: unknown) => {
   const t = text(v)
   if (!t) return ''
   return /^https?:\/\//i.test(t) ? t.replace(/^http:\/\//i, 'https://') : `https://${t}`
@@ -147,13 +170,13 @@ export function checkBooking(raw: Record<string, unknown>, todayIso: string): { 
   if (input.company.length < 2 || input.company.length > LIMITS.company) errors.company = 'Your firm’s name, as it should appear.'
   if (input.contactName.length < 2 || input.contactName.length > LIMITS.contact) errors.contactName = 'Your name.'
   if (!EMAIL.test(input.email) || input.email.length > 120) errors.email = 'A work email we can reply to.'
-  if (!HTTPS.test(input.website)) errors.website = 'Your firm’s website.'
+  if (!isWebUrl(input.website)) errors.website = 'Your firm’s website.'
   if (input.tagline && (input.tagline.length < 10 || input.tagline.length > LIMITS.tagline)) errors.tagline = `One line, 10 to ${LIMITS.tagline} characters, or leave it empty.`
   if (input.blurb.length < 20) errors.blurb = 'A sentence or two about what you are promoting.'
   else if (words(input.blurb) > LIMITS.blurbWords || input.blurb.length > LIMITS.blurbChars) errors.blurb = `Up to ${LIMITS.blurbWords} words.`
-  if (!HTTPS.test(input.ctaUrl)) errors.ctaUrl = 'The page your link should open.'
+  if (!isWebUrl(input.ctaUrl)) errors.ctaUrl = 'The page your link should open.'
   if (input.ctaText && (input.ctaText.length < 2 || input.ctaText.length > LIMITS.ctaText)) errors.ctaText = `Up to ${LIMITS.ctaText} characters, or leave it empty.`
-  if (input.logoLink && !HTTPS.test(input.logoLink)) errors.logoLink = 'A link to your logo, or leave it empty and email it.'
+  if (input.logoLink && !isWebUrl(input.logoLink)) errors.logoLink = 'A link to your logo, or leave it empty and email it.'
   return { input, errors }
 }
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { PACKAGES, LEAD_DAYS, checkBooking, isMonday, openMondays, packageOf, runEnd, runIsFree } from '../packages'
-import { readLogo, hostedLogo, LOGO_MAX_BYTES } from '../requests'
+import { PACKAGES, LEAD_DAYS, LIMITS, LOGO_RULES, checkBooking, emailLogoWidth, isMonday, openMondays, packageOf, runEnd, runIsFree } from '../packages'
+import { readLogo, hostedLogo, imageSize, LOGO_MAX_BYTES } from '../requests'
 import { approvedMail, decideMail, receivedMail, interestMail, payUrl, type RequestRow } from '../mail'
 import { tagSponsorLinks } from '@/lib/newsletter/email-template'
 
@@ -59,6 +59,14 @@ describe('a booking request', () => {
     const { errors } = checkBooking({ ...good, packageId: 'year', startsOn: '2026-10-20', email: 'nope', blurb: 'Too short', ctaUrl: '' }, TODAY)
     expect(Object.keys(errors).sort()).toEqual(['blurb', 'ctaUrl', 'email', 'packageId', 'startsOn'])
   })
+  it('holds the firm name to what fits a phone, and a line or a button to their lengths', () => {
+    expect(checkBooking({ ...good, company: 'x'.repeat(LIMITS.company + 1) }, TODAY).errors.company).toBeTruthy()
+    expect(checkBooking({ ...good, tagline: 'x'.repeat(LIMITS.tagline + 1) }, TODAY).errors.tagline).toBeTruthy()
+    expect(checkBooking({ ...good, ctaText: 'x'.repeat(LIMITS.ctaText + 1) }, TODAY).errors.ctaText).toBeTruthy()
+    // A link has to be a real web address: not a script, not a bare word, not one with a password in it.
+    for (const bad of ['javascript:alert(1)', 'localhost', 'https://user:pw@acme.example/x', 'ftp://acme.example']) expect(checkBooking({ ...good, ctaUrl: bad }, TODAY).errors.ctaUrl, bad).toBeTruthy()
+    expect(checkBooking({ ...good, ctaUrl: 'acme.example/funds?x=1' }, TODAY).errors.ctaUrl).toBeUndefined()
+  })
   it('holds the copy to sixty words and refuses a start that is too soon', () => {
     expect(checkBooking({ ...good, blurb: Array(61).fill('word').join(' ') }, TODAY).errors.blurb).toMatch(/60 words/)
     expect(checkBooking({ ...good, startsOn: '2026-10-05' }, TODAY).errors.startsOn).toBeTruthy()
@@ -66,18 +74,47 @@ describe('a booking request', () => {
   })
 })
 
-const PNG = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.alloc(40)])
+/** The first 24 bytes of a PNG of the given size (signature and IHDR), padded: enough for a header to be read. */
+const png = (w: number, h: number, pad = 40) => {
+  const head = Buffer.alloc(24)
+  Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).copy(head)
+  head.writeUInt32BE(13, 8); head.write('IHDR', 12); head.writeUInt32BE(w, 16); head.writeUInt32BE(h, 20)
+  return Buffer.concat([head, Buffer.alloc(pad)])
+}
+/** A JPEG's opening: start marker, one application block, then the frame header that carries the size. */
+const jpeg = (w: number, h: number) => {
+  const app = Buffer.from([0xff, 0xe0, 0x00, 0x04, 0x00, 0x00])
+  const sof = Buffer.alloc(11); sof[0] = 0xff; sof[1] = 0xc2; sof.writeUInt16BE(9, 2); sof[4] = 8; sof.writeUInt16BE(h, 5); sof.writeUInt16BE(w, 7)
+  return Buffer.concat([Buffer.from([0xff, 0xd8]), app, sof, Buffer.alloc(20)])
+}
+const url = (b: Buffer, type = 'png') => `data:image/${type};base64,${b.toString('base64')}`
+
 describe('a logo sent with a request', () => {
+  it('has its size read from its own header, PNG or JPEG', () => {
+    expect(imageSize(png(640, 160))).toEqual({ width: 640, height: 160 })
+    expect(imageSize(jpeg(500, 250))).toEqual({ width: 500, height: 250 })
+    expect(imageSize(Buffer.from('not a picture at all, just words'))).toBeNull()
+  })
   it('is believed only if its own first bytes say it is a picture', () => {
-    const ok = readLogo(`data:image/png;base64,${PNG.toString('base64')}`)
-    expect(ok && 'ext' in ok && ok.ext).toBe('png')
-    expect(readLogo(`data:image/png;base64,${Buffer.from('<svg onload=alert(1)>').toString('base64')}`)).toEqual({ error: expect.stringMatching(/PNG or JPEG/) })
+    const ok = readLogo(url(png(640, 160)))
+    expect(ok && 'ext' in ok && [ok.ext, ok.width, ok.height]).toEqual(['png', 640, 160])
+    const jpg = readLogo(url(jpeg(500, 250), 'jpeg'))
+    expect(jpg && 'ext' in jpg && jpg.ext).toBe('jpg')
+    expect(readLogo(url(Buffer.from('<svg onload=alert(1)>')))).toEqual({ error: expect.stringMatching(/PNG or JPEG/) })
     expect(readLogo('data:image/svg+xml;base64,AAAA')).toEqual({ error: expect.stringMatching(/PNG or JPEG/) })
     expect(readLogo('')).toBeNull()
   })
-  it('is refused when it is too large', () => {
-    const big = Buffer.concat([PNG, Buffer.alloc(LOGO_MAX_BYTES)])
-    expect(readLogo(`data:image/png;base64,${big.toString('base64')}`)).toEqual({ error: expect.stringMatching(/400 KB/) })
+  it('is refused when it is too heavy, too small to be sharp, or absurdly large', () => {
+    expect(readLogo(url(png(640, 160, LOGO_MAX_BYTES)))).toEqual({ error: expect.stringMatching(/400 KB/) })
+    expect(readLogo(url(png(LOGO_RULES.minWidth - 1, 40)))).toEqual({ error: expect.stringMatching(/pixels wide/) })
+    expect(readLogo(url(png(LOGO_RULES.maxSide + 1, 400)))).toEqual({ error: expect.stringMatching(/very large/) })
+  })
+  it('is drawn in the email at about the same height whatever its shape', () => {
+    // A 4:1 wordmark and a square mark both come out near 44 px tall; neither is ever tiny or huge.
+    expect(emailLogoWidth(640, 160)).toBe(176)
+    expect(emailLogoWidth(400, 400)).toBe(70)
+    expect(emailLogoWidth(2000, 100)).toBe(220)
+    expect(emailLogoWidth(0, 0)).toBe(160)
   })
   it('goes into a booking only from our own storage', () => {
     process.env.NEXT_PUBLIC_SUPABASE_URL = 'https://proj.supabase.co'
@@ -110,7 +147,7 @@ describe('the letters', () => {
   it('say how to pay: by the link when one is set, by invoice when not', () => {
     delete process.env.SPONSOR_PAY_URL_WEEK
     expect(payUrl('week')).toBeNull()
-    expect(approvedMail(row).html).toMatch(/invoice follows/)
+    expect(approvedMail(row).html).toMatch(/by invoice/)
     process.env.SPONSOR_PAY_URL_WEEK = 'https://buy.stripe.com/test_123'
     expect(approvedMail(row).html).toContain('href="https://buy.stripe.com/test_123"')
     delete process.env.SPONSOR_PAY_URL_WEEK

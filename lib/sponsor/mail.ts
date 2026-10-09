@@ -38,6 +38,7 @@ export interface RequestRow {
   cta_url: string
   cta_text: string | null
   logo_link: string | null
+  logo_width?: number | null
   notes: string | null
   arrived_from: string | null
   action_token: string
@@ -103,7 +104,7 @@ export function receivedMail(r: RequestRow): Mail {
       `${p(`Hi ${esc(r.contact_name.split(' ')[0])},`)}
 ${p('Thanks for asking to sponsor FundOps Daily. This is what you sent:')}
 ${adTable(r)}
-${p('<b>What happens next.</b> We read every ad before it runs, and you will have a yes or a no within one business day. Nothing is charged and nothing runs until then. If we say yes, the dates are yours and the email that confirms it tells you how to pay.')}
+${p('<b>What happens next.</b> We read every ad before it runs, and you will have a yes or a no within one business day. Nothing is charged and nothing runs until then. If we say yes, the dates are yours and we send an invoice.')}
 ${p('To change anything, just reply to this email.')}
 ${p('Danny Bloomstine<br>FundOpsHQ')}`,
     ),
@@ -145,7 +146,7 @@ ${adTable(r)}
 ${
   pay
     ? `${p(`<b>Payment.</b> ${esc(usd(r.price_usd))}, by card, before the first edition:`)}<p style="margin:0 0 14px;">${button(pay, `Pay ${usd(r.price_usd)}`)}</p>`
-    : p(`<b>Payment.</b> ${esc(usd(r.price_usd))}, due before the first edition. An invoice follows from Danny today.`)
+    : p(`<b>Payment.</b> ${esc(usd(r.price_usd))}, by invoice. Danny will send it to this address; there is nothing you need to do now, and your run starts on its date either way.`)
 }
 ${p(r.logo_link ? 'Your logo is in place.' : '<b>Your logo.</b> Reply with a PNG and we will place it; until then your firm’s name is set as a wordmark.')}
 ${p('Want to change the copy before or during the run? Reply with the new wording. At the end of the run you get a short report: editions sent, opens and clicks.')}

@@ -59,7 +59,7 @@ function openLine(bookedThrough: string | null): string {
 const STEPS = [
   { n: '1', title: 'Build it', body: 'Choose a length and a start date, write your ad, add your logo. You see it as it will run while you type.' },
   { n: '2', title: 'We read it', body: 'Every ad is read by the editor before it runs. You have a yes or a no within one business day.' },
-  { n: '3', title: 'You pay', body: 'Only after a yes, and before your first edition. Nothing is charged when you submit.' },
+  { n: '3', title: 'We invoice you', body: 'Only after a yes. Nothing is charged when you submit, and there is no card to enter.' },
   { n: '4', title: 'It runs', body: 'From your Monday, in every edition and on every news page, and it ends by itself. A short report follows.' },
 ]
 
@@ -70,11 +70,11 @@ const FAQS = [
   },
   {
     q: 'How and when do we pay?',
-    a: 'In full, before your first edition, by card or by invoice. Nothing is charged when you submit: you pay only after we have said yes.',
+    a: 'By invoice, sent once we have said yes. Nothing is charged when you submit and there is no card to enter.',
   },
   {
     q: 'Can we change the copy, or cancel?',
-    a: 'Change the copy whenever you like, before or during the run: reply to any of our emails with the new wording. Cancel up to three business days before your start for a full refund. Once a run has started it is not refunded, but the copy can still change.',
+    a: 'Change the copy whenever you like, before or during the run: reply to any of our emails with the new wording. Cancel up to three business days before your start and you owe nothing. Once a run has started it is billed in full, but the copy can still change.',
   },
   {
     q: 'How is the ad marked?',
@@ -257,7 +257,7 @@ export default async function SponsorPage() {
           <section id="book" aria-label="Build your ad" className="mt-10 scroll-mt-16">
             <SectionFlag label="Build your ad" note="Drawn with the site’s own components, as you type" />
             <div className="pt-4">
-              <SponsorBuilder openWeeks={openWeeks} />
+              <SponsorBuilder openWeeks={openWeeks} taken={booked.map((b) => ({ starts_on: b.starts_on, ends_on: b.ends_on }))} />
             </div>
             <p className="mt-6 font-ui text-[13px] text-foreground/80">
               Rather talk first, or want something that is not here?{' '}

@@ -1,9 +1,9 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowRight, CheckCircle2, Loader2, Mail, Upload, X } from 'lucide-react'
 import { signupSourceForRequest } from '@/lib/newsletter/signup-source'
-import { LIMITS, PACKAGES, checkBooking, longDay, packageOf, runEnd, usd, wordCount } from '@/lib/sponsor/packages'
+import { LIMITS, LOGO_RULES, PACKAGES, asUrl, checkBooking, emailLogoWidth, isWebUrl, longDay, openMondays, packageOf, runEnd, runIsFree, usd, wordCount, type Taken } from '@/lib/sponsor/packages'
 import { SponsorCardView, SponsorStripView, type SlotSponsor } from './SponsorViews'
 
 /**
@@ -16,9 +16,18 @@ import { SponsorCardView, SponsorStripView, type SlotSponsor } from './SponsorVi
  * site's own components, and re-drawn on every keystroke; one button shows
  * it inside today's real email. Submitting files a request for the owner's
  * yes (lib/sponsor/requests.ts). Nothing here charges anyone.
+ *
+ * What makes it trustworthy to play with (second pass, same day: "they should
+ * feel confident their ad's going to show up the way they want"): the preview
+ * is the real components and the real email, not a sketch; the limits are
+ * shown as they are approached, not after; a logo is measured as it is
+ * chosen and the buyer is told how it will sit; the link is shown as it will
+ * be opened; only start dates that are free for the chosen length are
+ * offered; and the draft is kept on their device until it is sent.
  */
 
-const LOGO_MAX_BYTES = 400_000
+/** Where an unfinished ad is kept on the visitor's own device, so a reload or a second visit does not lose it. */
+const DRAFT_KEY = 'fops_sponsor_draft_v1'
 const today = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
 
 const inputClass =
@@ -27,11 +36,22 @@ const labelClass = 'font-ui text-[12.5px] font-bold text-foreground'
 const hintClass = 'font-ui text-[11.5px] font-normal text-muted-foreground'
 const stepClass = 'font-ui text-[10.5px] font-bold uppercase tracking-[0.14em] text-amber-400'
 
-function Field({ label, hint, error, children }: { label: string; hint?: string; error?: string; children: React.ReactNode }) {
+/** "23 / 60 words", in red once past the limit. */
+function Count({ n, max, unit = '' }: { n: number; max: number; unit?: string }) {
+  return (
+    <span className={`float-right font-ui text-[11.5px] font-normal tabular-nums ${n > max ? 'font-bold text-red-400' : 'text-muted-foreground'}`}>
+      {n} / {max}
+      {unit}
+    </span>
+  )
+}
+
+function Field({ label, hint, error, count, children }: { label: string; hint?: string; error?: string; count?: React.ReactNode; children: React.ReactNode }) {
   return (
     <label className="block">
       <span className={labelClass}>
         {label} {hint && <span className={hintClass}>{hint}</span>}
+        {count}
       </span>
       {children}
       {error && <span className="mt-1 block font-ui text-[12px] text-red-400" role="alert">{error}</span>}
@@ -39,9 +59,11 @@ function Field({ label, hint, error, children }: { label: string; hint?: string;
   )
 }
 
-export function SponsorBuilder({ openWeeks }: { openWeeks: string[] }) {
+export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; taken: Taken[] }) {
   const [packageId, setPackageId] = useState<string>('month')
   const [startsOn, setStartsOn] = useState(openWeeks[0] ?? '')
+  const [logoSize, setLogoSize] = useState<{ w: number; h: number } | null>(null)
+  const [restored, setRestored] = useState(false)
   const [company, setCompany] = useState('')
   const [tagline, setTagline] = useState('')
   const [blurb, setBlurb] = useState('')
@@ -64,6 +86,52 @@ export function SponsorBuilder({ openWeeks }: { openWeeks: string[] }) {
   const pkg = packageOf(packageId) ?? PACKAGES[1]
   const words = wordCount(blurb)
 
+  // The Mondays this length could start on: every day of the run has to be free, not only its first week.
+  const starts = useMemo(() => openWeeks.filter((d) => runIsFree(d, pkg, taken)), [openWeeks, pkg, taken])
+  useEffect(() => {
+    if (starts.length && !starts.includes(startsOn)) setStartsOn(starts[0])
+  }, [starts, startsOn])
+
+  // An unfinished ad is kept on this device and put back on the next visit.
+  useEffect(() => {
+    try {
+      const d = JSON.parse(window.localStorage.getItem(DRAFT_KEY) ?? 'null')
+      if (d && typeof d === 'object') {
+        if (packageOf(d.packageId)) setPackageId(d.packageId)
+        if (typeof d.startsOn === 'string' && openMondays(today(), taken).includes(d.startsOn)) setStartsOn(d.startsOn)
+        const put = (v: unknown, set: (s: string) => void) => { if (typeof v === 'string' && v) set(v) }
+        put(d.company, setCompany); put(d.tagline, setTagline); put(d.blurb, setBlurb); put(d.ctaUrl, setCtaUrl); put(d.ctaText, setCtaText)
+        put(d.contactName, setContactName); put(d.email, setEmail); put(d.website, setWebsite); put(d.notes, setNotes)
+        if (typeof d.logoData === 'string' && d.logoData.startsWith('data:image/')) { setLogoData(d.logoData); put(d.logoName, setLogoName); if (d.logoSize?.w) setLogoSize(d.logoSize) }
+        if (d.company || d.blurb || d.logoData) setRestored(true)
+      }
+    } catch {
+      // nothing kept, or storage blocked: start empty
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  useEffect(() => {
+    if (status === 'sent') return
+    const timer = window.setTimeout(() => {
+      try {
+        window.localStorage.setItem(DRAFT_KEY, JSON.stringify({ packageId, startsOn, company, tagline, blurb, ctaUrl, ctaText, contactName, email, website, notes, logoData, logoName, logoSize }))
+      } catch {
+        // storage full or blocked: the form still works, it just will not survive a reload
+      }
+    }, 500)
+    return () => window.clearTimeout(timer)
+  }, [status, packageId, startsOn, company, tagline, blurb, ctaUrl, ctaText, contactName, email, website, notes, logoData, logoName, logoSize])
+
+  function startOver() {
+    try { window.localStorage.removeItem(DRAFT_KEY) } catch { /* nothing to clear */ }
+    setCompany(''); setTagline(''); setBlurb(''); setCtaUrl(''); setCtaText(''); setLogoData(null); setLogoName(''); setLogoSize(null)
+    setContactName(''); setEmail(''); setWebsite(''); setNotes(''); setErrors({}); setMessage(''); setRestored(false)
+  }
+
+  // The link as it will be opened, once it is one.
+  const link = asUrl(ctaUrl)
+  const linkOk = isWebUrl(link)
+
   // The ad as the site would draw it right now. Until there is a name it is the dashed "your logo here" stand-in.
   const draft: SlotSponsor = useMemo(
     () => ({
@@ -73,20 +141,31 @@ export function SponsorBuilder({ openWeeks }: { openWeeks: string[] }) {
       ctaUrl: '#',
       ctaText: ctaText.trim() || undefined,
       logoUrl: logoData ?? undefined,
+      logoWidth: logoData && logoSize ? emailLogoWidth(logoSize.w, logoSize.h) : undefined,
       sample: !company.trim() && !logoData,
     }),
-    [company, tagline, blurb, ctaText, logoData],
+    [company, tagline, blurb, ctaText, logoData, logoSize],
   )
 
   function onLogo(file: File | undefined) {
     setErrors((e) => ({ ...e, logo: '' }))
     if (!file) return
     if (!/^image\/(png|jpeg)$/.test(file.type)) return setErrors((e) => ({ ...e, logo: 'A PNG or JPEG file, please.' }))
-    if (file.size > LOGO_MAX_BYTES) return setErrors((e) => ({ ...e, logo: 'Keep the file under 400 KB.' }))
+    if (file.size > LOGO_RULES.maxBytes) return setErrors((e) => ({ ...e, logo: 'Keep the file under 400 KB.' }))
     const reader = new FileReader()
     reader.onload = () => {
-      setLogoData(String(reader.result))
-      setLogoName(file.name)
+      const data = String(reader.result)
+      // Measured before it is accepted: a logo too small to be sharp is said so now, not after it is sent.
+      const img = new Image()
+      img.onload = () => {
+        if (img.naturalWidth < LOGO_RULES.minWidth) return setErrors((e) => ({ ...e, logo: `That file is only ${img.naturalWidth} pixels wide. Use one at least ${LOGO_RULES.minWidth} pixels wide so it stays sharp.` }))
+        if (Math.max(img.naturalWidth, img.naturalHeight) > LOGO_RULES.maxSide) return setErrors((e) => ({ ...e, logo: `That file is very large. Use one under ${LOGO_RULES.maxSide} pixels a side.` }))
+        setLogoData(data)
+        setLogoName(file.name)
+        setLogoSize({ w: img.naturalWidth, h: img.naturalHeight })
+      }
+      img.onerror = () => setErrors((e) => ({ ...e, logo: 'That file could not be read as a picture. Try saving it again as a PNG.' }))
+      img.src = data
     }
     reader.readAsDataURL(file)
   }
@@ -130,6 +209,7 @@ export function SponsorBuilder({ openWeeks }: { openWeeks: string[] }) {
         setErrors(data.errors ?? {})
         throw new Error(data.error || 'That could not be sent.')
       }
+      try { window.localStorage.removeItem(DRAFT_KEY) } catch { /* nothing to clear */ }
       setStatus('sent')
     } catch (err) {
       setStatus('error')
@@ -146,7 +226,7 @@ export function SponsorBuilder({ openWeeks }: { openWeeks: string[] }) {
         </p>
         <p className="mt-2 max-w-[60ch] font-news text-[17px] leading-[1.45] text-foreground/85">
           {company} for {pkg.name.toLowerCase()} from {longDay(startsOn)}. A copy is on its way to {email}. We read every ad before it runs: you will
-          have a yes or a no within one business day, and nothing is charged until then.
+          have a yes or a no within one business day. Nothing is charged now; if it is a yes, an invoice follows.
         </p>
       </div>
     )
@@ -161,7 +241,17 @@ export function SponsorBuilder({ openWeeks }: { openWeeks: string[] }) {
   }
 
   return (
-    <form ref={formRef} onSubmit={submit} noValidate className="grid gap-x-8 gap-y-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+    <form ref={formRef} onSubmit={submit} noValidate className="grid gap-x-8 gap-y-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+      {/* ─── The strip, at its real width, and it stays in view while the ad is written: it is the first thing every visitor sees ─── */}
+      <figure className="sticky top-[46px] z-20 -mx-1 bg-background/95 px-1 pb-2 pt-2 backdrop-blur-sm lg:col-span-2">
+        <figcaption className="pb-1.5 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+          Your ad on the site · above the stories, on every page
+        </figcaption>
+        <div inert aria-hidden="true" className="pointer-events-none select-none">
+          <SponsorStripView sponsor={draft} line="" />
+        </div>
+      </figure>
+
       {/* ─── The form ─── */}
       <div className="space-y-7">
         <fieldset>
@@ -191,24 +281,34 @@ export function SponsorBuilder({ openWeeks }: { openWeeks: string[] }) {
           <legend className={stepClass}>2 · From when</legend>
           <Field label="First day" hint="Runs start on a Monday." error={errors.startsOn}>
             <select value={startsOn} onChange={(e) => setStartsOn(e.target.value)} className={inputClass}>
-              {openWeeks.map((d) => (
+              {starts.map((d) => (
                 <option key={d} value={d}>
                   {longDay(d)}
                 </option>
               ))}
             </select>
           </Field>
-          {startsOn && <p className="mt-1.5 font-ui text-[12.5px] text-muted-foreground">Your last day would be {longDay(runEnd(startsOn, pkg))}.</p>}
+          {starts.length === 0 ? (
+            <p className="mt-1.5 font-ui text-[12.5px] text-red-400" role="alert">No {pkg.name.toLowerCase()} run is free in the weeks ahead. Choose a shorter length, or write to sponsor@fundopshq.com.</p>
+          ) : (
+            startsOn && <p className="mt-1.5 font-ui text-[12.5px] text-muted-foreground">Your last day would be {longDay(runEnd(startsOn, pkg))}.{starts.length < openWeeks.length ? ' Some Mondays are not offered because part of the run is already booked.' : ''}</p>
+          )}
         </fieldset>
 
         <fieldset className="space-y-3.5">
           <legend className={stepClass}>3 · Your ad</legend>
-          <Field label="Firm name" hint="As it should appear." error={errors.company}>
+          {restored && (
+            <p className="font-ui text-[12.5px] text-muted-foreground">
+              Your draft from last time is back, kept on this device.{' '}
+              <button type="button" onClick={startOver} className="underline underline-offset-2 hover:text-foreground">Start over</button>
+            </p>
+          )}
+          <Field label="Firm name" hint="As it should appear." error={errors.company} count={<Count n={company.length} max={LIMITS.company} />}>
             <input value={company} onChange={(e) => setCompany(e.target.value)} maxLength={LIMITS.company} autoComplete="organization" className={inputClass} placeholder="Northgate Fund Services" />
           </Field>
           <div>
             <span className={labelClass}>
-              Logo <span className={hintClass}>PNG or JPEG, under 400 KB. Optional: without one your name is set as a wordmark.</span>
+              Logo <span className={hintClass}>Optional. PNG or JPEG, under 400 KB, at least {LOGO_RULES.minWidth} pixels wide. A wide logo on a white or clear background works best; without one your name is set as a wordmark.</span>
             </span>
             <div className="mt-1 flex flex-wrap items-center gap-3">
               <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-sm border border-foreground/30 bg-card px-3.5 font-ui text-[12px] font-bold uppercase tracking-[0.06em] hover:border-foreground">
@@ -226,18 +326,24 @@ export function SponsorBuilder({ openWeeks }: { openWeeks: string[] }) {
               )}
             </div>
             {errors.logo && <span className="mt-1 block font-ui text-[12px] text-red-400" role="alert">{errors.logo}</span>}
+            {logoData && logoSize && !errors.logo && (
+              <span className="mt-1 block font-ui text-[12px] text-muted-foreground">
+                {logoSize.w} × {logoSize.h} pixels.{' '}
+                {logoSize.h > logoSize.w * 0.8 ? 'It is close to square, so it will sit smaller than a wide logo would: see the preview.' : 'It will be drawn as you see it in the preview.'}
+              </span>
+            )}
           </div>
-          <Field label="Your copy" hint={`${words} of ${LIMITS.blurbWords} words`} error={errors.blurb}>
+          <Field label="Your copy" error={errors.blurb} count={<Count n={words} max={LIMITS.blurbWords} unit=" words" />}>
             <textarea value={blurb} onChange={(e) => setBlurb(e.target.value)} rows={4} maxLength={LIMITS.blurbChars} className={`${inputClass} resize-y font-news text-[16px] leading-[1.4]`} placeholder="What your firm does for the people who run private funds, and why they should look this morning." />
           </Field>
-          <Field label="One line for the top of the site" hint="Optional. Shown beside your name above the stories." error={errors.tagline}>
+          <Field label="One line for the top of the site" hint="Optional. Beside your name above the stories; your copy is used if this is empty." error={errors.tagline} count={<Count n={tagline.length} max={LIMITS.tagline} />}>
             <input value={tagline} onChange={(e) => setTagline(e.target.value)} maxLength={LIMITS.tagline} className={inputClass} placeholder="Fund administration for managers raising their first three funds." />
           </Field>
           <div className="grid gap-3.5 sm:grid-cols-[minmax(0,1fr)_170px]">
             <Field label="Where your link goes" error={errors.ctaUrl}>
-              <input value={ctaUrl} onChange={(e) => setCtaUrl(e.target.value)} inputMode="url" autoCapitalize="none" className={inputClass} placeholder="yourfirm.com/funds" />
+              <input value={ctaUrl} onChange={(e) => setCtaUrl(e.target.value)} inputMode="url" autoCapitalize="none" maxLength={300} className={inputClass} placeholder="yourfirm.com/funds" />
             </Field>
-            <Field label="Button" hint="Optional." error={errors.ctaText}>
+            <Field label="Button" hint="Optional." error={errors.ctaText} count={<Count n={ctaText.length} max={LIMITS.ctaText} />}>
               <input value={ctaText} onChange={(e) => setCtaText(e.target.value)} maxLength={LIMITS.ctaText} className={inputClass} placeholder="Learn more" />
             </Field>
           </div>
@@ -269,36 +375,42 @@ export function SponsorBuilder({ openWeeks }: { openWeeks: string[] }) {
         </fieldset>
 
         <div>
+          <dl className="mb-3 border-y border-border/70 py-2.5 font-ui text-[13.5px] leading-relaxed">
+            <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Run</dt><dd className="text-right font-semibold">{pkg.name}{startsOn ? `, ${longDay(startsOn)} to ${longDay(runEnd(startsOn, pkg))}` : ''}</dd></div>
+            <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Where</dt><dd className="text-right font-semibold">{pkg.editions} editions of the email, and the site every day</dd></div>
+            <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Price</dt><dd className="text-right font-semibold">{usd(pkg.priceUsd)}, invoiced after we say yes</dd></div>
+          </dl>
           <button
             type="submit"
-            disabled={status === 'sending'}
+            disabled={status === 'sending' || starts.length === 0}
             className="group inline-flex h-12 items-center gap-2 rounded-sm px-6 font-ui text-[13.5px] font-extrabold uppercase tracking-[0.06em] transition-[filter] hover:brightness-95 disabled:opacity-50"
             style={{ background: 'var(--tab)', color: 'var(--ink)' }}
           >
             {status === 'sending' ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Submit for approval · {usd(pkg.priceUsd)} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden /></>}
           </button>
           <p className="mt-2 max-w-[52ch] font-ui text-[12.5px] leading-snug text-muted-foreground">
-            Nothing is charged now. We read every ad and answer within one business day; payment is due once we say yes, before your first edition.
+            Nothing is charged now. We read every ad and answer within one business day. If it is a yes, the dates are yours and we send an invoice.
           </p>
           {message && <p className="mt-2 font-ui text-[13px] text-red-400" role="alert">{message}</p>}
         </div>
       </div>
 
       {/* ─── The ad, as it will run ─── */}
-      <div className="lg:sticky lg:top-16 lg:self-start">
-        <p className={stepClass}>Your ad, as it will run</p>
+      <div className="lg:sticky lg:top-[150px] lg:self-start">
+        <p className={stepClass}>And as it will run elsewhere</p>
         <figure className="mt-2">
-          <figcaption className="pb-1.5 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">On the site · above the stories, on every page</figcaption>
-          <div inert aria-hidden="true" className="pointer-events-none select-none">
-            <SponsorStripView sponsor={draft} line="" />
-          </div>
-        </figure>
-        <figure className="mt-5">
           <figcaption className="pb-1.5 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">On the site · beside the stories</figcaption>
           <div inert aria-hidden="true" className="pointer-events-none max-w-[340px] select-none">
             <SponsorCardView sponsor={draft} />
           </div>
         </figure>
+        <p className="mt-3 break-all font-ui text-[12.5px] leading-snug text-muted-foreground">
+          {linkOk ? (
+            <>Your name, logo and button all open <span className="font-semibold text-foreground">{link}</span></>
+          ) : (
+            'Your name, logo and button will open the link you give in step 3.'
+          )}
+        </p>
         <div className="mt-5">
           <p className="pb-1.5 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">In the email · under the masthead and at the foot</p>
           <button

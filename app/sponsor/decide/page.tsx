@@ -23,7 +23,7 @@ export default async function DecidePage({ searchParams }: { searchParams: Promi
   const r = token ? await requestByToken(token) : null
   const pkg = r ? packageOf(r.package) : undefined
   const logo = r ? hostedLogo(r.logo_link) : null
-  const ad: SlotSponsor | null = r ? { name: r.company, tagline: r.tagline, blurb: r.blurb, ctaUrl: r.cta_url, ctaText: r.cta_text ?? undefined, logoUrl: logo ?? undefined } : null
+  const ad: SlotSponsor | null = r ? { name: r.company, tagline: r.tagline, blurb: r.blurb, ctaUrl: r.cta_url, ctaText: r.cta_text ?? undefined, logoUrl: logo ?? undefined, logoWidth: logo ? r.logo_width ?? undefined : undefined } : null
 
   let emailHtml: string | null = null
   if (r) {
@@ -32,7 +32,7 @@ export default async function DecidePage({ searchParams }: { searchParams: Promi
       emailHtml = renderNewsletterEmail({
         ...sample,
         unsubscribeUrl: 'https://fundopshq.com/sponsor',
-        sponsorSlate: { label: SPONSOR_LABEL.toUpperCase(), sponsors: [{ name: r.company, blurb: r.blurb, ctaUrl: r.cta_url, ctaText: r.cta_text ?? undefined, logoUrl: logo ?? undefined, logoWidth: logo ? 160 : undefined }], sample: true },
+        sponsorSlate: { label: SPONSOR_LABEL.toUpperCase(), sponsors: [{ name: r.company, blurb: r.blurb, ctaUrl: r.cta_url, ctaText: r.cta_text ?? undefined, logoUrl: logo ?? undefined, logoWidth: logo ? r.logo_width ?? 160 : undefined }], sample: true },
       })
     } catch {
       emailHtml = null

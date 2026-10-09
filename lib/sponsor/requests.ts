@@ -14,30 +14,52 @@ import { revalidateTag } from 'next/cache'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { fetchBookingRows } from './bookings'
-import { checkBooking, packageOf, runEnd, runIsFree, type BookingInput } from './packages'
+import { LOGO_RULES, checkBooking, emailLogoWidth, packageOf, runEnd, runIsFree, type BookingInput } from './packages'
 import { approvedMail, decideMail, declinedMail, receivedMail, send, type RequestRow } from './mail'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Db = SupabaseClient<any, any>
 
 export const LOGO_BUCKET = 'sponsors'
-export const LOGO_MAX_BYTES = 400_000
+export const LOGO_MAX_BYTES = LOGO_RULES.maxBytes
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 export const isUuid = (v: unknown): v is string => typeof v === 'string' && UUID.test(v)
 
 export const todayET = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
 
-/** A logo sent with the form: a PNG or JPEG, read from its own first bytes, not from what the browser called it. */
-export function readLogo(dataUrl: unknown): { bytes: Buffer; ext: 'png' | 'jpg'; type: string } | { error: string } | null {
+/** A picture's size in pixels, read from its own header: a PNG's first chunk, a JPEG's frame marker. Null when it cannot be read. */
+export function imageSize(bytes: Buffer): { width: number; height: number } | null {
+  if (bytes.length > 24 && bytes[0] === 0x89 && bytes[1] === 0x50) return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) }
+  if (bytes.length > 4 && bytes[0] === 0xff && bytes[1] === 0xd8) {
+    let i = 2
+    while (i + 9 < bytes.length) {
+      if (bytes[i] !== 0xff) return null
+      const marker = bytes[i + 1]
+      // The frame headers (SOF0 to SOF15) carry the size; C4, C8 and CC are other tables.
+      if (marker >= 0xc0 && marker <= 0xcf && marker !== 0xc4 && marker !== 0xc8 && marker !== 0xcc) return { height: bytes.readUInt16BE(i + 5), width: bytes.readUInt16BE(i + 7) }
+      i += 2 + bytes.readUInt16BE(i + 2)
+    }
+  }
+  return null
+}
+
+export type Logo = { bytes: Buffer; ext: 'png' | 'jpg'; type: string; width: number; height: number }
+
+/** A logo sent with the form: a PNG or JPEG of a sensible size, read from its own first bytes, not from what the browser called it. */
+export function readLogo(dataUrl: unknown): Logo | { error: string } | null {
   if (typeof dataUrl !== 'string' || !dataUrl) return null
   const m = /^data:image\/(png|jpeg);base64,([A-Za-z0-9+/=]+)$/.exec(dataUrl)
   if (!m) return { error: 'The logo must be a PNG or JPEG file.' }
   const bytes = Buffer.from(m[2], 'base64')
-  if (bytes.length > LOGO_MAX_BYTES) return { error: 'The logo is too large: keep it under 400 KB.' }
+  if (bytes.length > LOGO_RULES.maxBytes) return { error: 'The logo is too large: keep it under 400 KB.' }
   const png = bytes.length > 8 && bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4e && bytes[3] === 0x47
   const jpg = bytes.length > 3 && bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff
   if (!png && !jpg) return { error: 'The logo must be a PNG or JPEG file.' }
-  return png ? { bytes, ext: 'png', type: 'image/png' } : { bytes, ext: 'jpg', type: 'image/jpeg' }
+  const size = imageSize(bytes)
+  if (!size || size.width < 1 || size.height < 1) return { error: 'That logo file could not be read. Try saving it again as a PNG.' }
+  if (size.width < LOGO_RULES.minWidth) return { error: `That logo is only ${size.width} pixels wide. Use one at least ${LOGO_RULES.minWidth} pixels wide so it stays sharp.` }
+  if (size.width > LOGO_RULES.maxSide || size.height > LOGO_RULES.maxSide) return { error: `That logo is very large. Use one under ${LOGO_RULES.maxSide} pixels a side.` }
+  return { bytes, ...size, ...(png ? { ext: 'png' as const, type: 'image/png' } : { ext: 'jpg' as const, type: 'image/jpeg' }) }
 }
 
 export type SubmitResult = { ok: true; id: string } | { ok: false; status: number; error: string; errors?: Record<string, string> }
@@ -86,6 +108,8 @@ export async function submitRequest(raw: Record<string, unknown>, db: Db = getSu
       cta_url: input.ctaUrl,
       cta_text: input.ctaText || null,
       logo_link: logoLink ?? (input.logoLink || null),
+      // How wide the email draws it, from the file's own shape; kept so the booking draws it as the preview did.
+      logo_width: logo && logoLink ? emailLogoWidth(logo.width, logo.height) : null,
       notes: input.notes || null,
       arrived_from: typeof raw.arrivedFrom === 'string' ? raw.arrivedFrom.slice(0, 120) : null,
     })
@@ -138,7 +162,7 @@ export async function decideRequest(token: string, action: 'approve' | 'decline'
       cta_url: row.cta_url,
       cta_text: row.cta_text,
       logo_url: logo,
-      logo_width: logo ? 160 : null,
+      logo_width: logo ? row.logo_width ?? 160 : null,
       starts_on: row.starts_on,
       ends_on: row.ends_on,
       status: 'booked',

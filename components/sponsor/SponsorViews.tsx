@@ -21,8 +21,11 @@ export type SlotSponsor = Pick<BookedSponsor, 'name' | 'blurb' | 'tagline' | 'ct
 /** The sponsor's logo, or its name set as a wordmark. */
 function Mark({ sponsor, height }: { sponsor: SlotSponsor; height: number }) {
   if (sponsor.logoUrl) {
-    // A sponsor's logo is hosted wherever the sponsor keeps it, so a plain <img>: next/image would need each host configured.
-    return <img src={sponsor.logoUrl} alt={sponsor.name} style={{ height, width: 'auto', maxWidth: 220 }} className="block" />
+    // A square mark set at a wordmark's height is a speck. `logoWidth` is the email's width for the logo, worked out from
+    // its shape (lib/sponsor/packages.ts emailLogoWidth): at the bottom of its range the logo is near square, and gets more height here.
+    if (sponsor.logoWidth != null && sponsor.logoWidth <= 80) height = Math.round(height * 1.45)
+    // A plain <img>: next/image would need each host configured. `contain` keeps a very wide logo's shape when the width limit bites.
+    return <img src={sponsor.logoUrl} alt={sponsor.name} style={{ height, width: 'auto', maxWidth: 220, objectFit: 'contain' }} className="block" />
   }
   return (
     <span
