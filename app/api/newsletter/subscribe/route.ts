@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { renderWelcomeEmail } from '@/lib/newsletter/welcome-email'
 import { insertSubscriber } from '@/lib/newsletter/insert-subscriber'
 import { sanitizeSignupSource } from '@/lib/newsletter/signup-source'
+import { preferenceColumns, sanitizeInterests, sanitizeRole, sanitizeSignupForm } from '@/lib/newsletter/interests'
 
 export async function POST(req: Request) {
   try {
@@ -19,6 +20,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Invalid email address' }, { status: 400 })
     }
 
+    // What the signup card asked alongside the address. Only ids on our own
+    // lists survive; a form that sends none of this stores none of it.
+    const preferences = {
+      interests: sanitizeInterests(body.interests),
+      role: sanitizeRole(body.role),
+      form: sanitizeSignupForm(body.form),
+    }
+
     const supabase = getSupabaseAdmin()
 
     // Check if subscriber already exists
@@ -28,6 +37,9 @@ export async function POST(req: Request) {
       .eq('email', trimmed)
       .single()
 
+    // A live subscription is left exactly as it is: anyone can type an address
+    // here, so this route never changes a subscriber's choices. They change
+    // them from the link in their own email (/preferences).
     if (existing?.status === 'confirmed') {
       return NextResponse.json({ success: true, message: 'Already subscribed' })
     }
@@ -45,6 +57,9 @@ export async function POST(req: Request) {
           confirmed_at: nowIso,
           unsubscribed_at: null,
           updated_at: nowIso,
+          // Coming back through the card, their choices come with them. The
+          // form name stays as first recorded.
+          ...preferenceColumns({ interests: preferences.interests, role: preferences.role }),
         })
         .eq('id', existing.id)
 
@@ -62,6 +77,7 @@ export async function POST(req: Request) {
         trimmed,
         nowIso,
         sanitizeSignupSource(body.attribution),
+        preferences,
       )
 
       if (error) {
@@ -77,6 +93,7 @@ export async function POST(req: Request) {
     if (apiKey) {
       const from = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
       const unsubscribeUrl = `https://fundopshq.com/api/newsletter/unsubscribe?token=${unsubscribeToken}`
+      const preferencesUrl = `https://fundopshq.com/preferences?token=${unsubscribeToken}`
       await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
@@ -89,7 +106,7 @@ export async function POST(req: Request) {
           // Replies land directly in Danny's personal gmail.
           reply_to: 'dbloomstine@gmail.com',
           subject: 'Welcome to FundOps Daily — a note from Danny',
-          html: renderWelcomeEmail(unsubscribeUrl),
+          html: renderWelcomeEmail(unsubscribeUrl, { preferencesUrl, interests: preferences.interests }),
           headers: {
             'List-Unsubscribe': `<${unsubscribeUrl}>`,
             'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',

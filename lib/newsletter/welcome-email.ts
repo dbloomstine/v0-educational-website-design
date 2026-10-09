@@ -14,6 +14,7 @@
  *  - Inline `color` on every <a> — class color loses to Gmail's
  *    user-agent `a:link` cascade.
  */
+import { interestWords } from './interests'
 
 const NAVY = '#1E3A5F'
 const NAVY_DEEP = '#0F1E33'
@@ -36,8 +37,27 @@ function escapeHtml(str: string): string {
     .replace(/"/g, '&quot;')
 }
 
-export function renderWelcomeEmail(unsubscribeUrl: string): string {
+export function renderWelcomeEmail(
+  unsubscribeUrl: string,
+  options: { preferencesUrl?: string; interests?: string[] } = {},
+): string {
   const safeUnsub = escapeHtml(unsubscribeUrl)
+  // The reader's own page for what they follow. Absent (the preview scripts),
+  // the paragraph and the footer link are simply not there.
+  const safePrefs = options.preferencesUrl ? escapeHtml(options.preferencesUrl) : ''
+  const follows = interestWords(options.interests ?? [])
+  const linkStyle = `color:${INK};text-decoration:underline;font-weight:600;`
+  const tailored = !safePrefs
+    ? ''
+    : `
+              <p style="margin:0 0 16px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
+                ${
+                  follows
+                    ? `You said you follow ${escapeHtml(follows)}, so each edition groups those stories for you under &ldquo;What you follow&rdquo;. <a href="${safePrefs}" style="${linkStyle}">Change that any time</a>.`
+                    : `Want it tailored? <a href="${safePrefs}" style="${linkStyle}">Pick the strategies you follow</a> and each edition groups those stories for you.`
+                }
+              </p>
+`
 
   return `<!DOCTYPE html>
 <html lang="en" style="color-scheme:only light;supported-color-schemes:only light;">
@@ -141,6 +161,7 @@ export function renderWelcomeEmail(unsubscribeUrl: string): string {
                 Between editions, the newsroom runs all day at <a href="https://fundopshq.com/news" style="color:${INK};text-decoration:underline;font-weight:600;">fundopshq.com/news</a> and the full calendar lives at <a href="https://fundopshq.com/events" style="color:${INK};text-decoration:underline;font-weight:600;">fundopshq.com/events</a>.
               </p>
 
+${tailored}
               <!-- Feedback callout -->
               <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:28px 0;">
                 <tr>
@@ -189,7 +210,13 @@ export function renderWelcomeEmail(unsubscribeUrl: string): string {
                     </p>
                     <p style="margin:6px 0 0;">
                       <a href="${safeUnsub}" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Unsubscribe</a>
-                      &nbsp;&middot;&nbsp;
+                      &nbsp;&middot;&nbsp;${
+                        safePrefs
+                          ? `
+                      <a href="${safePrefs}" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Choose what you follow</a>
+                      &nbsp;&middot;&nbsp;`
+                          : ''
+                      }
                       <a href="https://fundopshq.com" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Visit FundOpsHQ</a>
                       &nbsp;&middot;&nbsp;
                       <a href="https://fundopshq.com/about" style="color:rgba(248,245,236,0.65);text-decoration:underline;">About</a>

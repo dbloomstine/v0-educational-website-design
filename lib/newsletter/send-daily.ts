@@ -18,6 +18,7 @@ import { sendPipelineAlert } from '@/lib/pipeline/alert'
 import { slateFor, sponsorForEdition } from '@/lib/sponsor/bookings'
 import { readerFirmDomains } from '@/lib/sponsor/reader-firms'
 import { lastWeeksCloses } from './recap'
+import { interestKey } from './interests'
 
 // The events section is bounded by the DATE WINDOW, not by a count. A cap of
 // 24 silently truncated it to ~8 days once the board grew past ~24 events in
@@ -109,10 +110,7 @@ export async function sendDailyNewsletter(
   }
 
   // ─── 3. Get subscribers ───────────────────────────────────────────────────
-  const { data: subscribers, error: subError } = await supabase
-    .from('newsletter_subscribers')
-    .select('email, unsubscribe_token')
-    .eq('status', 'confirmed')
+  const { subscribers, error: subError } = await confirmedSubscribers(supabase)
 
   if (subError) {
     throw new Error(`Failed to query subscribers: ${subError.message}`)
@@ -157,29 +155,48 @@ export async function sendDailyNewsletter(
   const subject = buildSubject(content)
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
 
-  // Render the full HTML body once with a sentinel token, then per-subscriber
-  // string-replace the sentinel with the personalized unsubscribe URL. This
-  // is load-bearing at scale: at 97 subs either approach is fine, but
-  // renderNewsletterEmail allocates thousands of strings per call and the
-  // body is otherwise byte-identical across recipients. Keeping the render
-  // O(1) in subscriber count is a cheap win now and prevents the send cron
-  // from running long as the list grows.
+  // Render the full HTML body once with sentinel tokens, then per-subscriber
+  // string-replace them with that reader's own links. This is load-bearing at
+  // scale: renderNewsletterEmail allocates thousands of strings per call and
+  // the body is otherwise byte-identical across recipients.
+  //
+  // Readers who have said what they follow get their stories grouped
+  // (lib/newsletter/personalize.ts), so there is one render per distinct set
+  // of choices rather than one in all: at most 2^7, in practice a handful.
+  // The '' key is the edition everyone else gets, and the one kept on record.
   const UNSUB_SENTINEL = '__FUNDOPS_UNSUB_URL_SENTINEL__'
-  const templateHtml = renderNewsletterEmail({
-    groups: content.groups,
-    totalArticles: content.totalArticles,
-    editionDate,
-    unsubscribeUrl: UNSUB_SENTINEL,
-    subscriberCount: subscribers.length,
-    events: upcomingEvents,
-    sponsorSlate: slateFor(sponsor),
-    readerFirms: readerFirmDomains(subscribers.map((s) => String(s.email))).size,
-    recap,
-  })
+  const PREFS_SENTINEL = '__FUNDOPS_PREFS_URL_SENTINEL__'
+  const readerFirms = readerFirmDomains(subscribers.map((s) => String(s.email))).size
+  const renders = new Map<string, string>()
+  const templateFor = (interests: string[]): string => {
+    const key = interestKey(interests)
+    let html = renders.get(key)
+    if (html === undefined) {
+      html = renderNewsletterEmail({
+        groups: content.groups,
+        totalArticles: content.totalArticles,
+        editionDate,
+        unsubscribeUrl: UNSUB_SENTINEL,
+        preferencesUrl: PREFS_SENTINEL,
+        subscriberCount: subscribers.length,
+        events: upcomingEvents,
+        sponsorSlate: slateFor(sponsor),
+        readerFirms,
+        recap,
+        interests: key ? key.split(',') : undefined,
+      })
+      renders.set(key, html)
+    }
+    return html
+  }
+  const templateHtml = templateFor([])
 
   const emails = subscribers.map((sub) => {
     const unsubscribeUrl = `https://fundopshq.com/api/newsletter/unsubscribe?token=${sub.unsubscribe_token}`
-    const html = templateHtml.replaceAll(UNSUB_SENTINEL, unsubscribeUrl)
+    const preferencesUrl = `https://fundopshq.com/preferences?token=${sub.unsubscribe_token}`
+    const html = templateFor(sub.interests ?? [])
+      .replaceAll(UNSUB_SENTINEL, unsubscribeUrl)
+      .replaceAll(PREFS_SENTINEL, preferencesUrl)
 
     return {
       from: `FundOps Daily <${fromEmail}>`,
@@ -241,7 +258,7 @@ export async function sendDailyNewsletter(
   // Stored body is the rendered template with the unsub URL replaced by a
   // harmless anchor — same bytes as what recipients got, minus a per-user
   // token. Skips a redundant second render.
-  const placeholderHtml = templateHtml.replaceAll(UNSUB_SENTINEL, '#')
+  const placeholderHtml = templateHtml.replaceAll(UNSUB_SENTINEL, '#').replaceAll(PREFS_SENTINEL, 'https://fundopshq.com/#subscribe')
 
   const status = totalSent > 0 ? 'sent' : 'failed'
 
@@ -270,6 +287,32 @@ export async function sendDailyNewsletter(
     articleCount: content.totalArticles,
     recipientCount: totalSent,
   }
+}
+
+export interface Recipient {
+  email: string
+  unsubscribe_token: string
+  interests?: string[] | null
+}
+
+/**
+ * The confirmed list, with what each reader follows. If the `interests`
+ * column is not there (a deploy ahead of its migration), the list is read
+ * without it: the edition goes out the same for everyone rather than not at all.
+ */
+export async function confirmedSubscribers(
+  supabase: DbClient,
+): Promise<{ subscribers: Recipient[] | null; error: { message: string } | null }> {
+  const read = (columns: string) =>
+    supabase.from('newsletter_subscribers').select(columns).eq('status', 'confirmed')
+
+  const first = await read('email, unsubscribe_token, interests')
+  if (!first.error) return { subscribers: first.data as unknown as Recipient[] | null, error: null }
+  if (!/interests/.test(first.error.message ?? '')) return { subscribers: null, error: first.error }
+
+  console.warn('[send-daily] newsletter_subscribers has no interests column yet; sending one edition to all')
+  const plain = await read('email, unsubscribe_token')
+  return { subscribers: plain.data as unknown as Recipient[] | null, error: plain.error }
 }
 
 /**

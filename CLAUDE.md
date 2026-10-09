@@ -463,6 +463,19 @@ A sponsor is a row in `sponsor_bookings` with a start and an end date. The morni
 - **Never insert a test row in production**: it is live on the site within ten minutes and in the next send. Test with `sponsorOn()` in a unit test, or `/newsletter/sample`.
 - The site strip sits directly above the stories on `/`, `/news`, `/news/[section]`, `/story/[id]`, `/league-tables`, `/firms`, `/firm/[slug]` and `/events` — in view when the page loads, on Danny's instruction.
 
+## The signup card, and what a reader follows (2026-10-08)
+
+Danny asked for "a polite gentle pop up" that asks for an address and "a few boxes for which strategies", and for the email to be curated by them.
+
+- **The card** (`components/newsletter/SubscribePrompt.tsx`, mounted once in the root layout) is a card in the corner, a sheet along the bottom on a phone. It never covers the page, dims it, locks scrolling or takes focus. It closes on the X, "No thanks", "I already subscribe" or Esc.
+- **When it appears** is decided by pure functions in `lib/newsletter/prompt-rules.ts`: a public reading page only (never Lead Desk, admin, legal, sponsor, preferences or the submit form); 35 seconds with the page actually on screen, added up across the visit; and either a scroll of 500px or a second page. Never to a browser marked as a subscriber (`fops_subscribed` in localStorage, set by every subscribe form on success and by `/preferences`), never twice in a visit, never over someone typing. Closed once it stays away 30 days, closed twice 180. A visitor arriving on a link from their own copy of the email (`utm_source=newsletter&utm_medium=email`, which the email's links to our own pages now carry) is marked a subscriber; a forwarded copy (`?ref=fwd`) is not.
+- **The choices** are defined once in `lib/newsletter/interests.ts`: seven asset classes (ids are the classifier's `fund_categories`; "Secondaries & GP stakes" covers both) and a role (GP, LP, service provider). Both are optional. The server keeps only ids on those lists.
+- **Stored** on `newsletter_subscribers` as `interests text[]`, `reader_role`, and `signup_form` (`popup`, `hero`, `feed`, `widget`: which form brought the signup) by `supabase/migrations/20261008_subscriber_interests.sql`. All nullable; rows from before are null. The public subscribe route writes them for a new or returning address only. It never changes a live subscriber's choices, because anyone can type an address into it.
+- **Changed later** at `/preferences?token=<the unsubscribe token>` (linked as "Choose what you follow" in the foot of every edition and in the welcome email), saved by `POST /api/newsletter/preferences`. The token is the proof of who is asking. The page is `noindex` and never cached.
+- **In the email** (`lib/newsletter/personalize.ts`): a reader with choices gets the matching stories under "What you follow", straight after the top stories, at most six. Stories move there from their usual section; none is added, dropped or printed twice. No choices, or every box ticked, is the standard edition, byte for byte. `sendDailyNewsletter` renders once per distinct set of choices (the `''` key is the standard edition and the one stored on `newsletter_editions`). If the `interests` column is missing, the send reads the list without it rather than failing.
+- **Preview** a reader's edition: `FOLLOWS=credit,real_estate NO_OPEN=1 npx tsx --env-file=.env.local scripts/preview-newsletter.ts`.
+- **Count** what the card brings: `select signup_form, count(*) from newsletter_subscribers where created_at > now() - interval '30 days' group by 1`. There is no count of how often the card is shown.
+
 ## Where subscribers come from (2026-10-08)
 
 Every first signup records how the visitor arrived, so the owner can tell which surface produces subscribers.

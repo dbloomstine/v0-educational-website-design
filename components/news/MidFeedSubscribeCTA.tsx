@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Mail, CheckCircle2, Loader2, ArrowRight } from 'lucide-react'
 import { signupSourceForRequest } from '@/lib/newsletter/signup-source'
+import { markSubscribed } from '@/lib/newsletter/subscribed-flag'
 
 /**
  * Mid-feed CTA card. Lives inside the NewsFeed render loop, injected
@@ -29,12 +30,13 @@ export function MidFeedSubscribeCTA() {
       const res = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), attribution: signupSourceForRequest() }),
+        body: JSON.stringify({ email: email.trim(), attribution: signupSourceForRequest(), form: 'feed' }),
       })
       if (!res.ok) {
         const data = await res.json()
         throw new Error(data.error || 'Failed to subscribe')
       }
+      markSubscribed()
       setStatus('success')
     } catch (err) {
       setStatus('error')

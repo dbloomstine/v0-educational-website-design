@@ -14,6 +14,8 @@
  * Usage:
  *   npx tsx --env-file=.env.local scripts/preview-newsletter.ts
  *   SAMPLE_SLATE=1 npx tsx …   # with the one-sponsor placeholder a prospect sees
+ *   FOLLOWS=credit,real_estate npx tsx …   # as a reader who follows those (lib/newsletter/interests.ts)
+ *   NO_OPEN=1 npx tsx …        # write the file, do not open a browser
  *
  * Re-run after every template tweak — the browser tab just needs Cmd+R.
  */
@@ -28,6 +30,7 @@ import { SAMPLE_SPONSOR_SLATE } from '../lib/newsletter/sponsors'
 import { slateFor, sponsorForEdition } from '../lib/sponsor/bookings'
 import { readerFirmDomains } from '../lib/sponsor/reader-firms'
 import { lastWeeksCloses } from '../lib/newsletter/recap'
+import { sanitizeInterests } from '../lib/newsletter/interests'
 
 // The events section is bounded by the DATE WINDOW, not by a count. A cap of
 // 24 silently truncated it to ~8 days once the board grew past ~24 events in
@@ -154,6 +157,8 @@ async function main() {
     readerFirms: subscribers ? readerFirmDomains(subscribers.map((s) => String(s.email))).size : undefined,
     recap: monday ? await lastWeeksCloses() : null,
     events: upcomingEvents,
+    interests: process.env.FOLLOWS ? sanitizeInterests(process.env.FOLLOWS.split(',')) : undefined,
+    preferencesUrl: 'https://fundopshq.com/preferences?token=PREVIEW',
   })
 
   // Fetch every external favicon the template references and inline

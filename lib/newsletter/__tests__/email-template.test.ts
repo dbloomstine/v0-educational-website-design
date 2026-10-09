@@ -247,7 +247,9 @@ describe('the furniture', () => {
   it('has no "Section A / Section B" labels, and links the site’s pages from the footer', () => {
     const html = render()
     expect(html).not.toMatch(/Section [AB]/)
-    for (const path of ['/news', '/league-tables', '/firms', '/events', '/sponsor', '/about']) expect(html).toContain(`href="https://fundopshq.com${path}"`)
+    // Links to our own reading pages say they come from the email, so the site's signup card leaves a subscriber alone.
+    for (const path of ['/news', '/league-tables', '/firms', '/events']) expect(html).toContain(`href="https://fundopshq.com${path}?utm_source=newsletter&amp;utm_medium=email"`)
+    for (const path of ['/sponsor', '/about']) expect(html).toContain(`href="https://fundopshq.com${path}"`)
   })
   it('sends none of this file’s notes to the reader, and keeps Outlook’s conditional block', () => {
     const html = render()
@@ -265,5 +267,50 @@ describe('the furniture', () => {
   })
   it('stays well under the size at which Gmail clips a message', () => {
     expect(render({ readerFirms: 76 }).length).toBeLessThan(60_000)
+  })
+})
+
+describe('a reader who has said what they follow', () => {
+  const ALL = ['PE', 'VC', 'credit', 'real_estate', 'infrastructure', 'secondaries', 'hedge']
+
+  it('gets the same edition as everyone when they have chosen nothing, or everything', () => {
+    seq = 0
+    const plain = render()
+    seq = 0
+    expect(render({ interests: [] })).toBe(plain)
+    seq = 0
+    expect(render({ interests: ALL })).toBe(plain)
+    expect(plain).not.toContain('What you follow')
+    expect(plain).not.toContain('Choose what you follow')
+  })
+
+  it('gathers their stories under one heading, after the top stories and before the sections', () => {
+    const { groups, total } = busyMorning()
+    // The fixture tags every story PE; these two are made credit.
+    const clo = (groups[1].articles[1] = { ...groups[1].articles[1], fundCategories: ['credit'] })
+    // Not the section's first hire: that one can be picked as a top story.
+    const hire = (groups[3].articles[4] = { ...groups[3].articles[4], fundCategories: ['credit'] })
+    const html = renderNewsletterEmail({ groups, totalArticles: total, editionDate: '2026-10-02', unsubscribeUrl: 'https://example.com/u', interests: ['credit'] })
+    const at = (needle: string) => html.indexOf(needle)
+    const link = (a: NewsletterArticle) => at(`href="${a.sourceUrl}"`)
+    expect(at('What you follow')).toBeGreaterThan(at('top stories.'))
+    expect(link(clo)).toBeGreaterThan(at('What you follow'))
+    expect(link(hire)).toBeGreaterThan(link(clo))
+    expect(link(hire)).toBeLessThan(at('People Moves'))
+    // A story that is not theirs stays in its section, below.
+    expect(link(groups[3].articles[1])).toBeGreaterThan(at('People Moves'))
+  })
+
+  it('prints every story once, and the same stories as the standard edition', () => {
+    const { groups, total } = busyMorning()
+    const all = groups.flatMap((g) => g.articles)
+    const html = renderNewsletterEmail({ groups, totalArticles: total, editionDate: '2026-10-02', unsubscribeUrl: 'https://example.com/u', interests: ['PE', 'credit'] })
+    for (const a of all) expect(count(html, `href="${a.sourceUrl}"`)).toBe(1)
+  })
+
+  it('links to the reader\'s own preferences page when the send supplies it', () => {
+    const html = render({ preferencesUrl: 'https://fundopshq.com/preferences?token=t' })
+    expect(html).toContain('href="https://fundopshq.com/preferences?token=t"')
+    expect(html).toContain('Choose what you follow')
   })
 })

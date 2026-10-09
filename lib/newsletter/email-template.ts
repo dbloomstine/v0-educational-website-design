@@ -28,6 +28,7 @@ import type { IndustryEvent } from '@/lib/events/types'
 import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponsors'
 import { arrangeEdition, kickerParts, sizeWords, type TopPick } from './top-stories'
 import { entityKey, keysMatch } from './story-links'
+import { pullFollowed } from './personalize'
 
 interface TemplateParams {
   groups: ArticleGroup[]
@@ -60,6 +61,14 @@ interface TemplateParams {
    * passes it on Mondays ("Last week's largest closes"); otherwise absent.
    */
   recap?: WeekRecap | null
+  /**
+   * What this reader said they follow (lib/newsletter/interests.ts). Their
+   * stories are pulled under one heading after the top stories. Absent or
+   * empty, the edition is the same for everyone.
+   */
+  interests?: string[]
+  /** The reader's own page for changing what they follow; a footer link when given. */
+  preferencesUrl?: string
 }
 
 /** One row of the weekly recap: a close as the league table has it. */
@@ -812,6 +821,13 @@ export function buildPreheader(top: TopPick[], groups: ArticleGroup[], totalArti
 
 // ─── Main render ───────────────────────────────────────────────────────────
 
+/**
+ * On the email's links to our own pages. A visitor arriving with it is reading
+ * their own copy, so the site's signup card never asks them to subscribe
+ * (lib/newsletter/prompt-rules.ts: arrivedAsSubscriber).
+ */
+const FROM_EMAIL = '?utm_source=newsletter&amp;utm_medium=email'
+
 export function renderNewsletterEmail(params: TemplateParams): string {
   const {
     groups,
@@ -823,9 +839,15 @@ export function renderNewsletterEmail(params: TemplateParams): string {
     events = [],
     readerFirms,
     recap,
+    interests,
+    preferencesUrl,
   } = params
-  // The edition in reading order: the top stories, then the sections without them.
-  const { top, sections } = arrangeEdition(groups, totalArticles)
+  // The edition in reading order: the top stories, the reader's own section
+  // if they have one, then the sections without either.
+  const arranged = arrangeEdition(groups, totalArticles)
+  const top = arranged.top
+  const { followed, sections } = pullFollowed(arranged.sections, interests)
+  const followedBlock = followed ? renderCategory(followed) : ''
   const preheader = buildPreheader(top, groups, totalArticles)
   const formattedDate = formatDate(editionDate)
   const mastheadDate = formatMastheadDate(editionDate)
@@ -939,7 +961,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
               <div class="fops-serif fops-ink" style="font-size:20px;font-weight:700;line-height:1.2;margin-bottom:${top.length > 0 ? 8 : 16}px;">
                 This morning&rsquo;s <span class="fops-amber" style="font-style:italic;">top stories.</span>
               </div>
-              ${topBlock}
+              ${topBlock}${followedBlock}
               ${categoryBlocks}
             </td>
           </tr>
@@ -947,7 +969,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
           <!-- ─── Main CTA ─── -->
           <tr>
             <td class="fops-bg-cream fops-px" style="padding:8px 16px 24px;background-color:${CREAM};text-align:center;">
-              <a href="https://fundopshq.com/news" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:11px;font-weight:700;padding:14px 28px;border-radius:2px;text-decoration:none;letter-spacing:2px;text-transform:uppercase;">Read the full feed &rarr;</a>
+              <a href="https://fundopshq.com/news${FROM_EMAIL}" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:11px;font-weight:700;padding:14px 28px;border-radius:2px;text-decoration:none;letter-spacing:2px;text-transform:uppercase;">Read the full feed &rarr;</a>
             </td>
           </tr>
 
@@ -995,13 +1017,13 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                   <td class="fops-sans" style="padding-top:14px;font-size:11px;color:rgba(248,245,236,0.55);line-height:1.65;">
                     <p style="margin:0 0 10px;">
                       <span style="color:rgba(248,245,236,0.45);">On the site:&nbsp;</span>
-                      <a href="https://fundopshq.com/news" style="color:rgba(248,245,236,0.8);text-decoration:underline;">Latest</a>
+                      <a href="https://fundopshq.com/news${FROM_EMAIL}" style="color:rgba(248,245,236,0.8);text-decoration:underline;">Latest</a>
                       &nbsp;·&nbsp;
-                      <a href="https://fundopshq.com/league-tables" style="color:rgba(248,245,236,0.8);text-decoration:underline;">League tables</a>
+                      <a href="https://fundopshq.com/league-tables${FROM_EMAIL}" style="color:rgba(248,245,236,0.8);text-decoration:underline;">League tables</a>
                       &nbsp;·&nbsp;
-                      <a href="https://fundopshq.com/firms" style="color:rgba(248,245,236,0.8);text-decoration:underline;">Firms</a>
+                      <a href="https://fundopshq.com/firms${FROM_EMAIL}" style="color:rgba(248,245,236,0.8);text-decoration:underline;">Firms</a>
                       &nbsp;·&nbsp;
-                      <a href="https://fundopshq.com/events" style="color:rgba(248,245,236,0.8);text-decoration:underline;">Events</a>
+                      <a href="https://fundopshq.com/events${FROM_EMAIL}" style="color:rgba(248,245,236,0.8);text-decoration:underline;">Events</a>
                     </p>${
                       covered.length > 0
                         ? `
@@ -1015,7 +1037,13 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                     </p>
                     <p style="margin:6px 0 0;">
                       <a href="${escapeHtml(unsubscribeUrl)}" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Unsubscribe</a>
-                      &nbsp;·&nbsp;
+                      &nbsp;·&nbsp;${
+                        preferencesUrl
+                          ? `
+                      <a href="${escapeHtml(preferencesUrl)}" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Choose what you follow</a>
+                      &nbsp;·&nbsp;`
+                          : ''
+                      }
                       <a href="https://fundopshq.com" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Visit FundOpsHQ</a>
                       &nbsp;·&nbsp;
                       <a href="https://fundopshq.com/about" style="color:rgba(248,245,236,0.65);text-decoration:underline;">About</a>

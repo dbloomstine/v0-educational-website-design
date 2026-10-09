@@ -4,6 +4,7 @@ import { Inter, DM_Sans, Fraunces, JetBrains_Mono, Newsreader, Libre_Franklin } 
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "sonner"
 import { SignupSourceCapture } from "@/components/signup-source-capture"
+import { SubscribePrompt } from "@/components/newsletter/SubscribePrompt"
 import "./globals.css"
 
 // FundOpsHQ Brand Fonts:
@@ -166,6 +167,7 @@ export default function RootLayout({
         />
         <Analytics />
         <SignupSourceCapture />
+        <SubscribePrompt />
       </body>
     </html>
   )

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Mail, CheckCircle2, Loader2 } from 'lucide-react'
 import { signupSourceForRequest } from '@/lib/newsletter/signup-source'
+import { markSubscribed } from '@/lib/newsletter/subscribed-flag'
 
 export function SubscribeWidget() {
   const [email, setEmail] = useState('')
@@ -20,7 +21,7 @@ export function SubscribeWidget() {
       const res = await fetch('/api/newsletter/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), attribution: signupSourceForRequest() }),
+        body: JSON.stringify({ email: email.trim(), attribution: signupSourceForRequest(), form: 'widget' }),
       })
 
       if (!res.ok) {
@@ -28,6 +29,7 @@ export function SubscribeWidget() {
         throw new Error(data.error || 'Failed to subscribe')
       }
 
+      markSubscribed()
       setStatus('success')
     } catch (err) {
       setStatus('error')

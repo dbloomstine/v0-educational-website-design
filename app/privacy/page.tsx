@@ -89,13 +89,20 @@ export default function PrivacyPolicyPage() {
                     in the link you followed, and the first page you opened. We use this only to learn which
                     places bring us readers. It is kept with your subscription and is removed with it.
                   </p>
+                  <p className="text-muted-foreground leading-relaxed mt-3">
+                    You may also tell us which strategies you follow and what kind of firm you work at, when you
+                    subscribe or later from the link in any edition. This is optional. We use it to group the
+                    stories in your own email and to understand, in total, who reads us. It is kept with your
+                    subscription and is removed with it.
+                  </p>
 
                   <h3 className="text-xl font-semibold mb-3 mt-6">Local Storage</h3>
                   <p className="text-muted-foreground leading-relaxed">
                     Our Site may use your browser&apos;s local storage to save preferences. This data is stored
                     only on your device and is not transmitted to our servers, with one exception: for the length
                     of a visit, your browser remembers how you arrived (described under Newsletter Signup above),
-                    and that is sent to us only if you subscribe.
+                    and that is sent to us only if you subscribe. Your browser also remembers, on your device only,
+                    that you have subscribed or closed the signup card, so that we do not ask you again.
                   </p>
                 </div>
 
