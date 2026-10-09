@@ -35,7 +35,7 @@ export const ROLES = [
 ] as const
 
 /** Which form a signup came through. Kept on the row so each form's yield can be counted. */
-export const SIGNUP_FORMS = ['popup', 'hero', 'feed', 'widget'] as const
+export const SIGNUP_FORMS = ['popup', 'hero', 'feed', 'widget', 'rail'] as const
 
 /** The known ids among whatever was sent, once each, in list order. */
 export function sanitizeInterests(raw: unknown): string[] {

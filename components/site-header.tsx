@@ -7,6 +7,7 @@ import { Logo } from "@/components/logo"
 import { ArrowRight, ChevronLeft, ChevronRight, Search, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { SECTIONS, sectionHref } from "@/lib/news/sections"
+import { openSignupCard } from "@/components/newsletter/SubscribePrompt"
 
 /**
  * Masthead + section tabs (2026-10 redesign).
@@ -94,9 +95,15 @@ export function SiteHeader() {
 
   // On the homepage the subscribe form is on the page: scroll to it and focus
   // the field rather than navigating to where we already are.
+  // Anywhere else the signup card opens over the page the reader is on, with
+  // the cursor in its field: they do not have to leave a story to subscribe.
   const handleSubscribeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (pathname !== "/") return
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return
     e.preventDefault()
+    if (pathname !== "/") {
+      openSignupCard()
+      return
+    }
     document.getElementById("subscribe")?.scrollIntoView({ behavior: "smooth", block: "center" })
     window.setTimeout(() => {
       document.getElementById("newsletter-email")?.focus({ preventScroll: true })

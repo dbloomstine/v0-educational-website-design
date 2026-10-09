@@ -7,6 +7,7 @@ import { STAGE_LABEL, type FundClose } from '@/lib/news/league'
 import { Headline } from '@/components/story/Headline'
 import { LatestRow, MoreLink, Panel, SectionFlag } from '@/components/story/StoryBlocks'
 import { HeadlineLink, SourceLink } from '@/components/story/StoryLink'
+import { RailSubscribe } from '@/components/newsletter/RailSubscribe'
 
 /** The newest stories on the site, newest first. Front page and story pages. */
 export function LatestRail({ stories }: { stories: Story[] }) {
@@ -221,13 +222,7 @@ export function SubscribePanel({ title, body }: { title: string; body: string })
     <section aria-label="Newsletter" className="panel-ink">
       <h2 className="font-news text-[20px] font-medium leading-tight">{title}</h2>
       <p className="mt-1 font-news text-[15px] leading-snug opacity-80">{body}</p>
-      <Link
-        href="/#subscribe"
-        className="mt-3 inline-flex h-9 items-center rounded-sm px-4 font-ui text-[12px] font-bold uppercase tracking-[0.06em] transition-opacity hover:opacity-90"
-        style={{ background: 'var(--tab)', color: 'var(--ink)' }}
-      >
-        Subscribe free
-      </Link>
+      <RailSubscribe />
     </section>
   )
 }

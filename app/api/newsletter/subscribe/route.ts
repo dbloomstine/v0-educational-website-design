@@ -115,7 +115,12 @@ export async function POST(req: Request) {
       }).catch((err) => console.error('Failed to send welcome email:', err))
     }
 
-    return NextResponse.json({ success: true })
+    // The card asks what the reader follows straight after they sign up, and
+    // saves it with this token (POST /api/newsletter/preferences). It is given
+    // only for a subscription this request has just started: never for an
+    // address that was already on the list (the early return above), so
+    // typing someone's address here cannot be used to change their choices.
+    return NextResponse.json({ success: true, preferencesToken: unsubscribeToken })
   } catch {
     return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
   }

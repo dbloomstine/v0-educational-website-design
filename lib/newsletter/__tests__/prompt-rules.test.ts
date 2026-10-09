@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest'
-import { ENGAGED_SECONDS, QUIET_DAYS_FIRST, QUIET_DAYS_REPEAT, SCROLL_PX, arrivedAsSubscriber, isQuiet, isReadingPage, nextDismissal, parseDismissal, shouldShowPrompt, type PromptState } from '../prompt-rules'
+import { ENGAGED_SECONDS, ENGAGED_SECONDS_NO_SCROLL, EXIT_SECONDS, QUIET_DAYS_FIRST, QUIET_DAYS_REPEAT, SCROLL_PX, SECOND_PAGE_SECONDS, SETTLE_SECONDS, arrivedAsSubscriber, isQuiet, isReadingPage, nextDismissal, parseDismissal, shouldShowPrompt, type PromptState } from '../prompt-rules'
 
 const DAY = 24 * 60 * 60 * 1000
 const NOW = Date.UTC(2026, 9, 8)
 const ready: PromptState = {
   pathname: '/story/abc', subscribed: false, shownThisVisit: false, dismissal: null, now: NOW,
-  engagedSeconds: ENGAGED_SECONDS, pageViews: 1, scrolledPx: SCROLL_PX, typing: false, viewportHeight: 800,
+  engagedSeconds: ENGAGED_SECONDS, secondsOnPage: ENGAGED_SECONDS, pageViews: 1, scrolledPx: SCROLL_PX, typing: false, viewportHeight: 800,
 }
 
 describe('where the signup card may appear', () => {
@@ -18,13 +18,25 @@ describe('where the signup card may appear', () => {
 })
 
 describe('when the signup card appears', () => {
-  it('after real reading time and a scroll, or a second page', () => {
+  it('after a quarter of a minute and a scroll', () => {
     expect(shouldShowPrompt(ready)).toBe(true)
-    expect(shouldShowPrompt({ ...ready, scrolledPx: 0, pageViews: 2 })).toBe(true)
-  })
-  it('not on arrival, and not to someone who has only left the tab open at the top', () => {
     expect(shouldShowPrompt({ ...ready, engagedSeconds: ENGAGED_SECONDS - 1 })).toBe(false)
-    expect(shouldShowPrompt({ ...ready, scrolledPx: 0, pageViews: 1 })).toBe(false)
+  })
+  it('on a page with nothing to scroll, a little later', () => {
+    expect(shouldShowPrompt({ ...ready, scrolledPx: 0 })).toBe(false)
+    expect(shouldShowPrompt({ ...ready, scrolledPx: 0, engagedSeconds: ENGAGED_SECONDS_NO_SCROLL })).toBe(true)
+  })
+  it('a few seconds into a second page, once they have settled on it', () => {
+    const second = { ...ready, scrolledPx: 0, pageViews: 2, engagedSeconds: SECOND_PAGE_SECONDS }
+    expect(shouldShowPrompt({ ...second, secondsOnPage: SETTLE_SECONDS })).toBe(true)
+    expect(shouldShowPrompt({ ...second, secondsOnPage: SETTLE_SECONDS - 1 })).toBe(false)
+    expect(shouldShowPrompt({ ...second, engagedSeconds: SECOND_PAGE_SECONDS - 1, secondsOnPage: SETTLE_SECONDS })).toBe(false)
+  })
+  it('as a reader makes to leave, but not to someone who bounced', () => {
+    const leaving = { ...ready, scrolledPx: 0, leaving: true }
+    expect(shouldShowPrompt({ ...leaving, engagedSeconds: EXIT_SECONDS })).toBe(true)
+    expect(shouldShowPrompt({ ...leaving, engagedSeconds: EXIT_SECONDS - 1 })).toBe(false)
+    expect(shouldShowPrompt({ ...leaving, engagedSeconds: 60, subscribed: true })).toBe(false)
   })
   it('never to a subscriber, twice in a visit, or over someone typing', () => {
     expect(shouldShowPrompt({ ...ready, subscribed: true })).toBe(false)
@@ -37,7 +49,7 @@ describe('when the signup card appears', () => {
 })
 
 describe('after it is closed', () => {
-  it('stays away a month the first time and half a year after the second', () => {
+  it('stays away a fortnight the first time and three months after the second', () => {
     const once = nextDismissal(null, NOW)
     expect(isQuiet(once, NOW + (QUIET_DAYS_FIRST - 1) * DAY)).toBe(true)
     expect(isQuiet(once, NOW + (QUIET_DAYS_FIRST + 1) * DAY)).toBe(false)
