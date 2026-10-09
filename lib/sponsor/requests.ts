@@ -14,7 +14,7 @@ import { revalidateTag } from 'next/cache'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { fetchBookingRows } from './bookings'
-import { LOGO_RULES, checkBooking, emailLogoWidth, packageOf, runEnd, runIsFree, type BookingInput } from './packages'
+import { LOGO_RULES, NO_LOGO, checkBooking, emailLogoWidth, packageOf, runEnd, runIsFree, type BookingInput } from './packages'
 import { approvedMail, decideMail, declinedMail, receivedMail, send, type RequestRow } from './mail'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -73,6 +73,8 @@ export async function submitRequest(raw: Record<string, unknown>, db: Db = getSu
 
   const logo = readLogo(raw.logoData)
   if (logo && 'error' in logo) return { ok: false, status: 400, error: logo.error, errors: { logo: logo.error } }
+  // An ad has its logo (Danny, 2026-10-09: "the logo should be in the ads. The image of their logo").
+  if (!logo) return { ok: false, status: 400, error: NO_LOGO, errors: { logo: NO_LOGO } }
 
   const booked = await fetchBookingRows(db)
   if (!runIsFree(input.startsOn, pkg, booked)) {

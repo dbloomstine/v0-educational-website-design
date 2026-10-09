@@ -25,18 +25,24 @@ export async function POST(req: Request) {
   const interests = sanitizeInterests(body.interests)
   const role = sanitizeRole(body.role)
 
+  // A reader who has unsubscribed and follows the link in an old email can come back from the same page:
+  // the token is theirs, so the yes is theirs to give.
+  const comeBack = body.resubscribe === true
+  const now = new Date().toISOString()
+
   const supabase = getSupabaseAdmin()
-  const { data, error } = await supabase
+  let query = supabase
     .from('newsletter_subscribers')
     .update({
       // An empty list is stored as null: no choices, the edition as everyone gets it.
       interests: interests.length > 0 ? interests : null,
       reader_role: role ?? null,
-      updated_at: new Date().toISOString(),
+      updated_at: now,
+      ...(comeBack ? { status: 'confirmed', confirmed_at: now, unsubscribed_at: null } : {}),
     })
     .eq('unsubscribe_token', token)
-    .eq('status', 'confirmed')
-    .select('id')
+  if (!comeBack) query = query.eq('status', 'confirmed')
+  const { data, error } = await query.select('id')
 
   if (error) {
     console.error('Failed to save preferences:', error.code, error.message)

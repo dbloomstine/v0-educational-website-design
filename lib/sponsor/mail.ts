@@ -77,7 +77,7 @@ ${row('Firm', esc(r.company))}
 ${r.tagline ? row('One line', esc(r.tagline)) : ''}
 ${row('Copy', esc(r.blurb))}
 ${row('Link', `<a href="${esc(r.cta_url)}" style="color:${INK};">${esc(r.cta_url)}</a>${r.cta_text ? ` &nbsp;(button: ${esc(r.cta_text)})` : ''}`)}
-${row('Logo', r.logo_link ? `<a href="${esc(r.logo_link)}" style="color:${INK};">uploaded</a>` : 'none sent: the firm’s name is set as a wordmark')}
+${row('Logo', r.logo_link ? `<img src="${esc(r.logo_link)}" alt="${esc(r.company)} logo" width="${r.logo_width ?? 160}" style="display:block;width:${r.logo_width ?? 160}px;height:auto;max-width:100%;background:#fff;border:1px solid #DDD5C3;padding:6px;">` : 'none sent: the firm’s name is set as a wordmark')}
 </table>`
 
 /** How a sponsor pays for a package, if a payment link has been set for it (a Stripe Payment Link, in the environment). */
@@ -148,7 +148,7 @@ ${
     ? `${p(`<b>Payment.</b> ${esc(usd(r.price_usd))}, by card, before the first edition:`)}<p style="margin:0 0 14px;">${button(pay, `Pay ${usd(r.price_usd)}`)}</p>`
     : p(`<b>Payment.</b> ${esc(usd(r.price_usd))}, by invoice. Danny will send it to this address; there is nothing you need to do now, and your run starts on its date either way.`)
 }
-${p(r.logo_link ? 'Your logo is in place.' : '<b>Your logo.</b> Reply with a PNG and we will place it; until then your firm’s name is set as a wordmark.')}
+${p(r.logo_link ? 'Your logo is in place, as you saw it in the builder.' : '<b>Your logo.</b> Reply with a PNG and we will place it; until then your firm’s name is set as a wordmark.')}
 ${p('Want to change the copy before or during the run? Reply with the new wording. At the end of the run you get a short report: editions sent, opens and clicks.')}
 ${p('Thank you for backing the brief.')}
 ${p('Danny Bloomstine<br>FundOpsHQ')}`,

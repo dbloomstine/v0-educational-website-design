@@ -38,7 +38,7 @@ function placement(open: string): { label: string; value: string }[] {
       value:
         'In the email, under the masthead and again at the foot of every edition in your run. On the site, above the stories on every page and in the column beside them.',
     },
-    { label: 'What', value: 'Your logo, up to 60 words, and one link. You write it in the builder below and see it as it will run; we read it before anything ships.' },
+    { label: 'What', value: 'Your logo, up to 60 words, and one link. You add them in the builder below and see the ad as it will run; we read it before anything ships.' },
     { label: 'Run', value: 'A full takeover for one week, four weeks or a quarter, starting on a Monday. One sponsor at a time: for your dates, the newsletter and the site are yours alone.' },
     { label: 'Open', value: open },
     { label: 'Report', value: 'Delivery, opens and clicks for the email, at the end of the run.' },

@@ -21,11 +21,10 @@ async function findSubscriber(token: string | undefined) {
   if (!token || !UUID.test(token)) return null
   const { data } = await getSupabaseAdmin()
     .from('newsletter_subscribers')
-    .select('interests, reader_role')
+    .select('status, interests, reader_role')
     .eq('unsubscribe_token', token)
-    .eq('status', 'confirmed')
     .maybeSingle()
-  return data as { interests: string[] | null; reader_role: string | null } | null
+  return data as { status: string; interests: string[] | null; reader_role: string | null } | null
 }
 
 export default async function PreferencesPage({ searchParams }: { searchParams: Promise<{ token?: string }> }) {
@@ -46,9 +45,12 @@ export default async function PreferencesPage({ searchParams }: { searchParams: 
           {subscriber && token ? (
             <>
               <p className="mt-3 max-w-[60ch] font-news text-[18px] leading-[1.45] text-foreground/80">
-                Tick the strategies you care about and each morning’s edition gathers those stories for you.
+                {subscriber.status === 'confirmed'
+                  ? 'Tick the strategies you care about and each morning’s edition gathers those stories for you.'
+                  : 'This address is not on the list at the moment, so no editions are going to it. Tick what you follow and press the button, and you are back on it.'}
               </p>
               <PreferencesForm
+                resubscribe={subscriber.status !== 'confirmed'}
                 token={token}
                 initialInterests={sanitizeInterests(subscriber.interests)}
                 initialRole={sanitizeRole(subscriber.reader_role) ?? null}

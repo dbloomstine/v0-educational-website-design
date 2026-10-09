@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { ArrowRight, CheckCircle2, Loader2, Mail, Upload, X } from 'lucide-react'
 import { signupSourceForRequest } from '@/lib/newsletter/signup-source'
-import { LIMITS, LOGO_RULES, PACKAGES, asUrl, checkBooking, emailLogoWidth, isWebUrl, longDay, openMondays, packageOf, runEnd, runIsFree, usd, wordCount, type Taken } from '@/lib/sponsor/packages'
+import { LIMITS, LOGO_OUT, LOGO_RULES, NO_LOGO, PACKAGES, asUrl, checkBooking, emailLogoWidth, isWebUrl, longDay, openMondays, packageOf, runEnd, runIsFree, usd, wordCount, type Taken } from '@/lib/sponsor/packages'
 import { SponsorCardView, SponsorStripView, type SlotSponsor } from './SponsorViews'
 
 /**
@@ -180,37 +180,60 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
   // The ad as the site would draw it right now. Until there is a name it is the dashed "your logo here" stand-in.
   const draft: SlotSponsor = useMemo(
     () => ({
-      name: company.trim() || 'Your firm',
+      name: logoData ? company.trim() || 'Your firm' : 'Your logo here',
       tagline: tagline.trim() || null,
       blurb: blurb.trim() || 'Your copy appears here: up to 60 words, in your own voice, on what your firm does for the people who run private funds.',
       ctaUrl: '#',
       ctaText: ctaText.trim() || undefined,
       logoUrl: logoData ?? undefined,
       logoWidth: logoData && logoSize ? emailLogoWidth(logoSize.w, logoSize.h) : undefined,
-      sample: !company.trim() && !logoData,
+      // Until a logo is chosen the mark is the dashed "your logo here" box: an ad has its logo.
+      sample: !logoData,
     }),
     [company, tagline, blurb, ctaText, logoData, logoSize],
   )
 
+  /**
+   * Whatever picture file the sponsor has (PNG, JPEG, SVG, WebP), it is redrawn here as a PNG of a sensible size:
+   * the one kind every mail app shows. So a logo straight from a brand kit works, and what is sent is what was previewed.
+   */
   function onLogo(file: File | undefined) {
     setErrors((e) => ({ ...e, logo: '' }))
     if (!file) return
-    if (!/^image\/(png|jpeg)$/.test(file.type)) return setErrors((e) => ({ ...e, logo: 'A PNG or JPEG file, please.' }))
-    if (file.size > LOGO_RULES.maxBytes) return setErrors((e) => ({ ...e, logo: 'Keep the file under 400 KB.' }))
+    if (!file.type.startsWith('image/')) return setErrors((e) => ({ ...e, logo: 'That is not a picture file. A PNG, JPEG, SVG or WebP, please.' }))
+    if (file.size > LOGO_OUT.pickBytes) return setErrors((e) => ({ ...e, logo: 'That file is very large. Use one under 12 MB.' }))
+    const vector = file.type === 'image/svg+xml'
     const reader = new FileReader()
     reader.onload = () => {
-      const data = String(reader.result)
-      // Measured before it is accepted: a logo too small to be sharp is said so now, not after it is sent.
       const img = new Image()
       img.onload = () => {
-        if (img.naturalWidth < LOGO_RULES.minWidth) return setErrors((e) => ({ ...e, logo: `That file is only ${img.naturalWidth} pixels wide. Use one at least ${LOGO_RULES.minWidth} pixels wide so it stays sharp.` }))
-        if (Math.max(img.naturalWidth, img.naturalHeight) > LOGO_RULES.maxSide) return setErrors((e) => ({ ...e, logo: `That file is very large. Use one under ${LOGO_RULES.maxSide} pixels a side.` }))
+        // A vector has no size of its own worth trusting; anything else has to be big enough to stay sharp.
+        const w0 = img.naturalWidth || 800, h0 = img.naturalHeight || 200
+        if (!vector && w0 < LOGO_RULES.minWidth) return setErrors((e) => ({ ...e, logo: `That file is only ${w0} pixels wide. Use one at least ${LOGO_RULES.minWidth} pixels wide so it stays sharp.` }))
+        let w = vector ? LOGO_OUT.maxWidth : Math.min(w0, LOGO_OUT.maxWidth)
+        let h = Math.round((w * h0) / w0)
+        if (h > LOGO_OUT.maxHeight) { h = LOGO_OUT.maxHeight; w = Math.round((h * w0) / h0) }
+        let data = ''
+        // Drawn smaller until it is light enough to send (a photograph saved as a logo can be heavy).
+        for (let tries = 0; tries < 5; tries++) {
+          const canvas = document.createElement('canvas')
+          canvas.width = w
+          canvas.height = h
+          const ctx = canvas.getContext('2d')
+          if (!ctx) break
+          ctx.drawImage(img, 0, 0, w, h)
+          data = canvas.toDataURL('image/png')
+          if (data.length * 0.75 <= LOGO_RULES.maxBytes) break
+          w = Math.round(w * 0.75)
+          h = Math.round(h * 0.75)
+        }
+        if (!data || data.length * 0.75 > LOGO_RULES.maxBytes || w < LOGO_RULES.minWidth) return setErrors((e) => ({ ...e, logo: 'That picture is too detailed to use as a logo. Try a simpler file, or a PNG of the logo alone.' }))
         setLogoData(data)
         setLogoName(file.name)
-        setLogoSize({ w: img.naturalWidth, h: img.naturalHeight })
+        setLogoSize({ w, h })
       }
       img.onerror = () => setErrors((e) => ({ ...e, logo: 'That file could not be read as a picture. Try saving it again as a PNG.' }))
-      img.src = data
+      img.src = String(reader.result)
     }
     reader.readAsDataURL(file)
   }
@@ -234,6 +257,7 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
     e.preventDefault()
     const fields = { packageId, startsOn, company, contactName, email, website, tagline, blurb, ctaUrl, ctaText, logoLink: '', notes }
     const checked = checkBooking(fields, today())
+    if (!logoData) checked.errors.logo = NO_LOGO
     if (Object.keys(checked.errors).length) {
       setErrors(checked.errors)
       setStatus('error')
@@ -355,13 +379,13 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
           </Field>
           <div>
             <span className={labelClass}>
-              Logo <span className={hintClass}>Optional. PNG or JPEG, under 400 KB, at least {LOGO_RULES.minWidth} pixels wide. A wide logo on a white or clear background works best; without one your name is set as a wordmark.</span>
+              Logo <span className={hintClass}>PNG, JPEG, SVG or WebP: we size it for you. A wide logo on a white or clear background works best.</span>
             </span>
             <div className="mt-1 flex flex-wrap items-center gap-3">
               <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-sm border border-foreground/30 bg-card px-3.5 font-ui text-[12px] font-bold uppercase tracking-[0.06em] hover:border-foreground">
                 <Upload className="h-3.5 w-3.5" aria-hidden />
                 {logoData ? 'Replace' : 'Choose a file'}
-                <input type="file" accept="image/png,image/jpeg" className="sr-only" onChange={(e) => onLogo(e.target.files?.[0])} />
+                <input type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" className="sr-only" onChange={(e) => onLogo(e.target.files?.[0])} />
               </label>
               {logoData && (
                 <span className="inline-flex items-center gap-1.5 font-ui text-[12.5px] text-muted-foreground">
@@ -375,8 +399,7 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
             {errors.logo && <span className="mt-1 block font-ui text-[12px] text-red-400" role="alert">{errors.logo}</span>}
             {logoData && logoSize && !errors.logo && (
               <span className="mt-1 block font-ui text-[12px] text-muted-foreground">
-                {logoSize.w} × {logoSize.h} pixels.{' '}
-                {logoSize.h > logoSize.w * 0.8 ? 'It is close to square, so it will sit smaller than a wide logo would: see the preview.' : 'It will be drawn as you see it in the preview.'}
+                {logoSize.h > logoSize.w * 0.8 ? 'In. It is close to square, so it sits smaller than a wide logo would: see the previews.' : 'In. It is drawn in the previews exactly as it will run.'}
               </span>
             )}
           </div>

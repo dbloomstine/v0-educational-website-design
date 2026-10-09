@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { renderNewsletterEmail } from '@/lib/newsletter/email-template'
 import { getSampleContent } from '@/lib/newsletter/sample-content'
 import { SPONSOR_LABEL } from '@/lib/sponsor/label'
+import { SAMPLE_SPONSOR } from '@/lib/newsletter/sponsors'
 import { LIMITS, emailLogoWidth } from '@/lib/sponsor/packages'
 import { readLogo } from '@/lib/sponsor/requests'
 
@@ -32,7 +33,8 @@ export async function POST(req: Request) {
     const email = renderNewsletterEmail({
       ...sample,
       unsubscribeUrl: 'https://fundopshq.com/sponsor',
-      sponsorSlate: { label: SPONSOR_LABEL.toUpperCase(), sponsors: [{ name, blurb, ctaUrl: 'https://fundopshq.com/sponsor', ctaText, logoUrl, logoWidth: ok ? emailLogoWidth(ok.width, ok.height) : undefined }], sample: true },
+      sponsorSlate: { label: SPONSOR_LABEL.toUpperCase(), // Until a logo is chosen the edition shows the dashed "your logo here" box where it will go, not the firm's name set in type.
+      sponsors: [{ name, blurb, ctaUrl: 'https://fundopshq.com/sponsor', ctaText, logoUrl, logoWidth: ok ? emailLogoWidth(ok.width, ok.height) : undefined, wordmarkHtml: logoUrl ? undefined : SAMPLE_SPONSOR.wordmarkHtml }], sample: true },
     })
     return new Response(email, { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Robots-Tag': 'noindex' } })
   } catch (err) {

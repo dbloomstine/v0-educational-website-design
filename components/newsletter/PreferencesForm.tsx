@@ -14,10 +14,13 @@ export function PreferencesForm({
   token,
   initialInterests,
   initialRole,
+  resubscribe = false,
 }: {
   token: string
   initialInterests: string[]
   initialRole: string | null
+  /** The address is not on the list: saving puts it back. */
+  resubscribe?: boolean
 }) {
   const [interests, setInterests] = useState<string[]>(initialInterests)
   const [role, setRole] = useState<string[]>(initialRole ? [initialRole] : [])
@@ -26,8 +29,8 @@ export function PreferencesForm({
 
   // Whoever opens this page from their email subscribes: the signup card stays away.
   useEffect(() => {
-    markSubscribed()
-  }, [])
+    if (!resubscribe) markSubscribed()
+  }, [resubscribe])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -37,10 +40,11 @@ export function PreferencesForm({
       const res = await fetch('/api/newsletter/preferences', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, interests, role: role[0] }),
+        body: JSON.stringify({ token, interests, role: role[0], resubscribe: resubscribe || undefined }),
       })
       const data = await res.json().catch(() => ({}))
       if (!res.ok) throw new Error(data.error || 'Could not save')
+      markSubscribed()
       setStatus('saved')
     } catch (err) {
       setStatus('error')
@@ -80,12 +84,12 @@ export function PreferencesForm({
           disabled={status === 'loading'}
           className="inline-flex h-10 items-center justify-center gap-2 rounded-sm bg-foreground px-5 font-ui text-[12px] font-bold uppercase tracking-[0.08em] text-background transition-colors hover:bg-foreground/85 disabled:opacity-50"
         >
-          {status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Save'}
+          {status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : resubscribe ? 'Subscribe again and save' : 'Save'}
         </button>
         {status === 'saved' && (
           <p className="flex items-center gap-1.5 font-ui text-[13.5px] text-emerald-400" role="status">
             <CheckCircle2 className="h-4 w-4" aria-hidden />
-            {interests.length > 0 ? 'Saved. It takes effect with tomorrow’s edition.' : 'Saved. You’ll get the edition as everyone does.'}
+            {resubscribe ? 'You’re back on the list. ' : ''}{interests.length > 0 ? 'Saved. It takes effect with tomorrow’s edition.' : 'Saved. You’ll get the edition as everyone does.'}
           </p>
         )}
         {status === 'error' && <p className="font-ui text-[13px] text-red-400" role="alert">{errorMsg}</p>}

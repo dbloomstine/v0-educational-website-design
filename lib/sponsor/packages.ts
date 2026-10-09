@@ -107,6 +107,9 @@ export const LIMITS = { company: 40, contact: 80, tagline: 110, blurbWords: 60, 
 
 /** What a logo file must be: small enough to send, large enough to be sharp, not absurd. */
 export const LOGO_RULES = { maxBytes: 400_000, minWidth: 120, maxSide: 4000 } as const
+/** What the builder turns any logo into before it is sent: a PNG no wider or taller than this (email draws nothing else reliably). */
+export const LOGO_OUT = { maxWidth: 800, maxHeight: 400, pickBytes: 12_000_000 } as const
+export const NO_LOGO = 'Add your logo: it is the ad’s picture, in the newsletter and on the site.'
 
 /**
  * How wide a logo is drawn in the email, from its own shape, so that a wide wordmark and a square
