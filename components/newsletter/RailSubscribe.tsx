@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { ArrowRight, CheckCircle2, Loader2 } from 'lucide-react'
 import { useSubscribe } from '@/lib/newsletter/use-subscribe'
 import { openSignupCard } from './SubscribePrompt'
@@ -12,6 +13,11 @@ import { openSignupCard } from './SubscribePrompt'
  */
 export function RailSubscribe() {
   const sub = useSubscribe('rail')
+
+  // Once they are in, the signup box opens at its tick-boxes: every way of subscribing asks what the reader follows.
+  useEffect(() => {
+    if (sub.status === 'success' && sub.preferencesToken) openSignupCard({ token: sub.preferencesToken })
+  }, [sub.status, sub.preferencesToken])
 
   if (sub.status === 'success' || sub.status === 'already') {
     return (

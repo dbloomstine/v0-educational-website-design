@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Mail, CheckCircle2, Loader2 } from 'lucide-react'
 import { signupSourceForRequest } from '@/lib/newsletter/signup-source'
 import { markSubscribed } from '@/lib/newsletter/subscribed-flag'
+import { openSignupCard } from '@/components/newsletter/SubscribePrompt'
 
 export function SubscribeWidget() {
   const [email, setEmail] = useState('')
@@ -24,13 +25,13 @@ export function SubscribeWidget() {
         body: JSON.stringify({ email: email.trim(), attribution: signupSourceForRequest(), form: 'widget' }),
       })
 
-      if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || 'Failed to subscribe')
-      }
-
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || 'Failed to subscribe')
       markSubscribed()
       setStatus('success')
+      // They are in. The same question the signup box asks is asked here, after the fact: what do you follow?
+      // (A token comes back only for a subscription that has just started.)
+      if (typeof data.preferencesToken === 'string') openSignupCard({ token: data.preferencesToken })
     } catch (err) {
       setStatus('error')
       setErrorMsg(err instanceof Error ? err.message : 'Something went wrong')

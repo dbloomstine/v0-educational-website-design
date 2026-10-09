@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { X } from 'lucide-react'
+import { SubscribeLink } from '@/components/newsletter/SubscribeLink'
 
 /**
  * Mobile-only sticky CTA bar that appears after the user scrolls past
- * the hero subscribe card. Links to the in-page subscribe anchor so
- * tapping jumps the user back to the hero with the input focused (the
- * hash listener in hero-subscribe.tsx handles the focus).
+ * the hero subscribe card. Its button opens the signup box, which asks
+ * what the reader follows (until 2026-10-09 it jumped back to the hero's
+ * one-line form).
  *
  * Dismissible for the session — once closed, we set a sessionStorage
  * flag so it doesn't re-appear on the same visit. Session-scoped (not
@@ -60,12 +61,9 @@ export function StickySubscribeBar() {
             Every morning. Free.
           </p>
         </div>
-        <a
-          href="#subscribe"
-          className="shrink-0 rounded-sm bg-foreground px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-background hover:bg-foreground/90 transition-colors"
-        >
+        <SubscribeLink className="shrink-0 rounded-sm bg-foreground px-4 py-2 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-background hover:bg-foreground/90 transition-colors">
           Subscribe
-        </a>
+        </SubscribeLink>
         <button
           type="button"
           onClick={handleDismiss}

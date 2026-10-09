@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
+import { SubscribeLink } from '@/components/newsletter/SubscribeLink'
 import { BackToTop } from '@/components/back-to-top'
 import { ArrowRight, Linkedin } from 'lucide-react'
 import { SectionFlag } from '@/components/story/StoryBlocks'
@@ -188,14 +189,13 @@ export default function AboutPage() {
           </section>
 
           <div className="panel-ink mt-10 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <Link
-              href="/#subscribe"
+            <SubscribeLink
               className="group inline-flex h-10 items-center gap-2 rounded-sm px-5 font-ui text-[13px] font-bold uppercase tracking-[0.06em] transition-opacity hover:opacity-90"
               style={{ background: 'var(--tab)', color: 'var(--ink)' }}
             >
               Subscribe free
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-            </Link>
+            </SubscribeLink>
             <p className="font-ui text-[13px] opacity-85">
               Story tips and corrections:{' '}
               <a href="mailto:dbloomstine@gmail.com" className="font-semibold underline underline-offset-4 hover:no-underline">

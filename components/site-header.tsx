@@ -93,24 +93,13 @@ export function SiteHeader() {
     if (searchOpen) searchRef.current?.focus()
   }, [searchOpen])
 
-  // On the homepage the subscribe form is on the page: scroll to it and focus
-  // the field rather than navigating to where we already are.
-  // Anywhere else the signup card opens over the page the reader is on, with
-  // the cursor in its field: they do not have to leave a story to subscribe.
+  // Subscribe opens the signup box over the page the reader is on, the homepage included, so that every
+  // way of subscribing asks what they follow (Danny, 2026-10-09). Until then the homepage scrolled to its
+  // own one-line form, which asks for an address and nothing else.
   const handleSubscribeClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return
     e.preventDefault()
-    if (pathname !== "/") {
-      openSignupCard()
-      return
-    }
-    document.getElementById("subscribe")?.scrollIntoView({ behavior: "smooth", block: "center" })
-    window.setTimeout(() => {
-      document.getElementById("newsletter-email")?.focus({ preventScroll: true })
-    }, 450)
-    if (window.location.hash !== "#subscribe") {
-      window.history.pushState(null, "", "/#subscribe")
-    }
+    openSignupCard()
   }
 
   const today = new Date().toLocaleDateString("en-US", {

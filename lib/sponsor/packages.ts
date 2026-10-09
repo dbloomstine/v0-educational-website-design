@@ -5,6 +5,11 @@
  * offer... keep it simple... someone able to read it, digest it, understand
  * it, nod their head and say yes... assume some pricing... pretty self-serve."
  *
+ * A FULL TAKEOVER (Danny, 2026-10-09: "to keep it simple it should be a full takeover: if someone
+ * sponsors the platform for a week, they get the website sponsorship and the newsletter
+ * sponsorship"). There is no newsletter-only or site-only option and never a second sponsor: the
+ * buyer chooses how long, and nothing else.
+ *
  * ONE PRODUCT, THREE LENGTHS. There is one sponsor slot (the email, top and
  * foot, and the site: lib/sponsor/bookings.ts), so the offer is that slot for
  * a week, four weeks or a quarter. A run starts on a Monday. Everything a
@@ -41,9 +46,9 @@ export interface SponsorPackage {
 }
 
 export const PACKAGES: SponsorPackage[] = [
-  { id: 'week', name: 'One week', days: 7, editions: 7, priceUsd: 400, line: 'Seven editions and seven days on the site. For a launch, a hire or an event.' },
+  { id: 'week', name: 'One week', days: 7, editions: 7, priceUsd: 400, line: 'The whole of FundOpsHQ for a week. For a launch, a hire or an event.' },
   { id: 'month', name: 'Four weeks', days: 28, editions: 28, priceUsd: 1200, line: 'A month of mornings, at a quarter off the weekly rate. Where most sponsors should start.' },
-  { id: 'quarter', name: 'A quarter', days: 91, editions: 91, priceUsd: 3000, line: 'Thirteen weeks: the space is yours for a season, at the lowest rate.' },
+  { id: 'quarter', name: 'A quarter', days: 91, editions: 91, priceUsd: 3000, line: 'Thirteen weeks: yours for a season, at the lowest rate.' },
 ]
 
 export const packageOf = (id: unknown): SponsorPackage | undefined => PACKAGES.find((p) => p.id === id)

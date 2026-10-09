@@ -39,7 +39,7 @@ function placement(open: string): { label: string; value: string }[] {
         'In the email, under the masthead and again at the foot of every edition in your run. On the site, above the stories on every page and in the column beside them.',
     },
     { label: 'What', value: 'Your logo, up to 60 words, and one link. You write it in the builder below and see it as it will run; we read it before anything ships.' },
-    { label: 'Run', value: 'One week, four weeks or a quarter, starting on a Monday. One sponsor at a time: for your dates, the space is yours alone.' },
+    { label: 'Run', value: 'A full takeover for one week, four weeks or a quarter, starting on a Monday. One sponsor at a time: for your dates, the newsletter and the site are yours alone.' },
     { label: 'Open', value: open },
     { label: 'Report', value: 'Delivery, opens and clicks for the email, at the end of the run.' },
   ]
@@ -60,7 +60,7 @@ const STEPS = [
   { n: '1', title: 'Build it', body: 'Choose a length and a start date, write your ad, add your logo. You see it as it will run while you type.' },
   { n: '2', title: 'We read it', body: 'Every ad is read by the editor before it runs. You have a yes or a no within one business day.' },
   { n: '3', title: 'We invoice you', body: 'Only after a yes. Nothing is charged when you submit, and there is no card to enter.' },
-  { n: '4', title: 'It runs', body: 'From your Monday, in every edition and on every news page, and it ends by itself. A short report follows.' },
+  { n: '4', title: 'It runs', body: 'From your Monday you are the sponsor of all of it: every edition and every news page. It ends by itself, and a short report follows.' },
 ]
 
 const FAQS = [
@@ -140,6 +140,10 @@ export default async function SponsorPage() {
               )}{' '}
               at fund managers, their investors, and the law firms, banks, auditors, administrators and software companies
               that serve them. It goes out seven mornings a week, before the open.
+            </p>
+            <p className="mt-2 max-w-[62ch] font-news text-[18px] leading-[1.45] text-foreground/80">
+              Sponsorship is a <strong className="font-bold text-foreground">full takeover</strong>: one sponsor at a time, in every
+              edition of the newsletter and on every news page of the site.
             </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <a
@@ -221,21 +225,22 @@ export default async function SponsorPage() {
 
           {/* ─── What it costs ─── */}
           <section aria-label="Rates" className="mt-10">
-            <SectionFlag label="What it costs" note="One sponsor at a time" />
+            <SectionFlag label="What it costs" note="The newsletter and the website, together" />
             <div className="grid gap-3 pt-3 sm:grid-cols-3">
               {PACKAGES.map((p) => (
                 <div key={p.id} className="panel px-4 pb-4 pt-3.5">
                   <h3 className="font-ui text-[12px] font-extrabold uppercase tracking-[0.1em] text-foreground">{p.name}</h3>
                   <p className="mt-1.5 font-news text-[40px] font-medium leading-none tracking-[-0.02em] text-foreground">{usd(p.priceUsd)}</p>
                   <p className="mt-1.5 font-ui text-[12px] text-muted-foreground">
-                    {p.editions} editions and {p.days} days on the site
+                    {p.editions} editions of the newsletter + {p.days} days across the website
                   </p>
                   <p className="mt-2 font-news text-[15.5px] leading-[1.4] text-foreground/85">{p.line}</p>
                 </div>
               ))}
             </div>
             <p className="mt-2 font-ui text-[11.5px] leading-snug text-muted-foreground">
-              Flat prices in US dollars. Each includes the email, top and foot, and both places on the site, for every day of the run.
+              Flat prices in US dollars. Every length is the full takeover: the top and the foot of each edition, and both places on
+              the site, every day of the run. There is no newsletter-only or site-only option, and never a second sponsor.
             </p>
           </section>
 
@@ -255,7 +260,7 @@ export default async function SponsorPage() {
 
           {/* ─── The builder: write it, see it, send it for approval ─── */}
           <section id="book" aria-label="Build your ad" className="mt-10 scroll-mt-16">
-            <SectionFlag label="Build your ad" note="Drawn with the site’s own components, as you type" />
+            <SectionFlag label="Build your ad" note="The site and the newsletter, drawn as you type" />
             <div className="pt-4">
               <SponsorBuilder openWeeks={openWeeks} taken={booked.map((b) => ({ starts_on: b.starts_on, ends_on: b.ends_on }))} />
             </div>

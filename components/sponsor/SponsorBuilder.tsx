@@ -28,6 +28,9 @@ import { SponsorCardView, SponsorStripView, type SlotSponsor } from './SponsorVi
 
 /** Where an unfinished ad is kept on the visitor's own device, so a reload or a second visit does not lose it. */
 const DRAFT_KEY = 'fops_sponsor_draft_v1'
+/** The email is 680 px wide in a shell with a little room each side; the small preview is that page scaled to the column. */
+const EMAIL_WIDTH = 700
+const EMAIL_SHOWN = 640
 const today = () => new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
 
 const inputClass =
@@ -81,6 +84,12 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
   const [message, setMessage] = useState('')
   const [emailHtml, setEmailHtml] = useState<string | null>(null)
   const [emailLoading, setEmailLoading] = useState(false)
+  // The newsletter half of the takeover, drawn small beside the form: today's real edition with the ad in it.
+  const [mini, setMini] = useState<string | null>(null)
+  const [miniBusy, setMiniBusy] = useState(false)
+  const [inView, setInView] = useState(false)
+  const [scale, setScale] = useState(0.6)
+  const miniRef = useRef<HTMLDivElement>(null)
   const formRef = useRef<HTMLFormElement>(null)
 
   const pkg = packageOf(packageId) ?? PACKAGES[1]
@@ -121,6 +130,42 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
     }, 500)
     return () => window.clearTimeout(timer)
   }, [status, packageId, startsOn, company, tagline, blurb, ctaUrl, ctaText, contactName, email, website, notes, logoData, logoName, logoSize])
+
+  // The email preview is asked for only once the builder is on screen (a visitor who never scrolls this far costs
+  // nothing), then again a moment after the ad stops changing.
+  useEffect(() => {
+    const el = miniRef.current
+    if (!el) return
+    const fit = () => setScale(Math.min(1, el.clientWidth / EMAIL_WIDTH))
+    fit()
+    const size = new ResizeObserver(fit)
+    size.observe(el)
+    // Two ways of noticing the preview has come near the screen: the observer, and a plain look once a second for
+    // browsers (and background tabs) where the observer is slow to speak.
+    const near = () => { const r = el.getBoundingClientRect(); return r.top < window.innerHeight + 200 && r.bottom > -200 }
+    const seen = new IntersectionObserver((entries) => { if (entries.some((e) => e.isIntersecting)) setInView(true) }, { rootMargin: '200px' })
+    seen.observe(el)
+    const look = window.setInterval(() => { if (near()) { setInView(true); window.clearInterval(look) } }, 1000)
+    return () => { size.disconnect(); seen.disconnect(); window.clearInterval(look) }
+  }, [])
+  useEffect(() => {
+    if (!inView || status === 'sent') return
+    const stop = new AbortController()
+    const timer = window.setTimeout(async () => {
+      setMiniBusy(true)
+      try {
+        const res = await fetch('/api/sponsor/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ company, blurb, ctaText, logoData }), signal: stop.signal })
+        if (res.ok) setMini(await res.text())
+      } catch {
+        // superseded by a newer draft, or offline: the last picture stays
+      } finally {
+        if (!stop.signal.aborted) setMiniBusy(false)
+      }
+    }, mini === null ? 0 : 800)
+    return () => { window.clearTimeout(timer); stop.abort() }
+    // `mini` is left out on purpose: it is what this effect sets.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView, status, company, blurb, ctaText, logoData])
 
   function startOver() {
     try { window.localStorage.removeItem(DRAFT_KEY) } catch { /* nothing to clear */ }
@@ -171,6 +216,8 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
   }
 
   async function showInEmail() {
+    // The small preview is the same page: when it is up to date, open that.
+    if (mini && !miniBusy) return setEmailHtml(mini)
     setEmailLoading(true)
     try {
       const res = await fetch('/api/sponsor/preview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ company, blurb, ctaText, logoData }) })
@@ -245,7 +292,7 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
       {/* ─── The strip, at its real width, and it stays in view while the ad is written: it is the first thing every visitor sees ─── */}
       <figure className="sticky top-[46px] z-20 -mx-1 bg-background/95 px-1 pb-2 pt-2 backdrop-blur-sm lg:col-span-2">
         <figcaption className="pb-1.5 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-          Your ad on the site · above the stories, on every page
+          The website · above the stories, on every page
         </figcaption>
         <div inert aria-hidden="true" className="pointer-events-none select-none">
           <SponsorStripView sponsor={draft} line="" />
@@ -397,9 +444,9 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
 
       {/* ─── The ad, as it will run ─── */}
       <div className="lg:sticky lg:top-[150px] lg:self-start">
-        <p className={stepClass}>And as it will run elsewhere</p>
+        <p className={stepClass}>The rest of your takeover</p>
         <figure className="mt-2">
-          <figcaption className="pb-1.5 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">On the site · beside the stories</figcaption>
+          <figcaption className="pb-1.5 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">The website · beside the stories</figcaption>
           <div inert aria-hidden="true" className="pointer-events-none max-w-[340px] select-none">
             <SponsorCardView sponsor={draft} />
           </div>
@@ -411,19 +458,41 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
             'Your name, logo and button will open the link you give in step 3.'
           )}
         </p>
-        <div className="mt-5">
-          <p className="pb-1.5 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">In the email · under the masthead and at the foot</p>
-          <button
-            type="button"
-            onClick={showInEmail}
-            disabled={emailLoading}
-            className="inline-flex h-10 items-center gap-2 rounded-sm border border-foreground/30 bg-card px-4 font-ui text-[12.5px] font-bold uppercase tracking-[0.06em] transition-colors hover:border-foreground disabled:opacity-60"
-          >
-            {emailLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" aria-hidden />}
-            See it in today&rsquo;s email
-          </button>
-          <p className="mt-1.5 max-w-[46ch] font-ui text-[12px] leading-snug text-muted-foreground">This morning&rsquo;s real edition, with what you have typed so far in the sponsor&rsquo;s place.</p>
-        </div>
+        <figure className="mt-5">
+          <figcaption className="flex items-baseline justify-between gap-3 pb-1.5 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+            <span>The newsletter · top and foot of every edition</span>
+            {miniBusy && mini && <span className="font-semibold normal-case tracking-normal">updating…</span>}
+          </figcaption>
+          <div ref={miniRef} className="relative overflow-hidden border border-border bg-[#0F1E33]" style={{ height: Math.round(EMAIL_SHOWN * scale) }}>
+            {mini ? (
+              <iframe
+                title="Your ad in today's newsletter"
+                srcDoc={mini}
+                sandbox=""
+                tabIndex={-1}
+                aria-hidden="true"
+                className="pointer-events-none absolute left-0 top-0 border-0 bg-white"
+                style={{ width: EMAIL_WIDTH, height: EMAIL_SHOWN, transform: `scale(${scale})`, transformOrigin: 'top left' }}
+              />
+            ) : (
+              <p className="flex h-full items-center justify-center gap-2 font-ui text-[12.5px] text-white/70">
+                <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> Drawing this morning&rsquo;s edition with your ad
+              </p>
+            )}
+          </div>
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1">
+            <button
+              type="button"
+              onClick={showInEmail}
+              disabled={emailLoading}
+              className="inline-flex h-9 items-center gap-2 rounded-sm border border-foreground/30 bg-card px-3.5 font-ui text-[12px] font-bold uppercase tracking-[0.06em] transition-colors hover:border-foreground disabled:opacity-60"
+            >
+              {emailLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Mail className="h-4 w-4" aria-hidden />}
+              Open the whole edition
+            </button>
+            <p className="font-ui text-[12px] leading-snug text-muted-foreground">This morning&rsquo;s real edition, with your ad as typed.</p>
+          </div>
+        </figure>
       </div>
 
       {emailHtml && (

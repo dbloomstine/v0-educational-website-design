@@ -2,6 +2,7 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { SECTIONS, sectionHref } from "@/lib/news/sections"
+import { SubscribeLink } from "@/components/newsletter/SubscribeLink"
 
 const COMPANY_LINKS = [
   { label: "About", href: "/about" },
@@ -35,13 +36,10 @@ export function SiteFooter() {
               Fund closes, launches, deals and moves across private markets — reported by 200+ sources, read in one
               place. Edited by Danny Bloomstine.
             </p>
-            <Link
-              href="/#subscribe"
-              className="group mt-4 inline-flex h-9 items-center gap-2 rounded-sm bg-[#E6B045] px-4 font-ui text-[12px] font-bold uppercase tracking-[0.08em] text-[#13233A] transition-colors hover:bg-white"
-            >
+            <SubscribeLink className="group mt-4 inline-flex h-9 items-center gap-2 rounded-sm bg-[#E6B045] px-4 font-ui text-[12px] font-bold uppercase tracking-[0.08em] text-[#13233A] transition-colors hover:bg-white">
               Get FundOps Daily
               <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-            </Link>
+            </SubscribeLink>
           </div>
 
           <nav aria-label="News by story">
