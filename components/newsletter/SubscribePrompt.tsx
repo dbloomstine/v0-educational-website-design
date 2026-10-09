@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { ArrowRight, CheckCircle2, Loader2, X } from 'lucide-react'
 import { captureSignupSource } from '@/lib/newsletter/signup-source'
-import { interestWords } from '@/lib/newsletter/interests'
+import { INTERESTS, ROLES, interestWords } from '@/lib/newsletter/interests'
 import { isMarkedSubscribed, markSubscribed } from '@/lib/newsletter/subscribed-flag'
 import { useSubscribe } from '@/lib/newsletter/use-subscribe'
 import {
@@ -20,21 +20,27 @@ import {
   parseDismissal,
   shouldShowPrompt,
 } from '@/lib/newsletter/prompt-rules'
+import { ChoiceChips } from './ChoiceChips'
 import { FollowChoices } from './FollowChoices'
 
 /**
- * The signup card (2026-10-08, Danny: "a polite gentle pop up... lets them
- * click out or x out... check a few boxes for which strategies"; 2026-10-09:
- * "more obvious... sooner... really easy and not too many clicks").
+ * The signup card. Three passes on Danny's word:
+ *   2026-10-08  "a polite gentle pop up... check a few boxes for which strategies"
+ *   2026-10-09  "more obvious... sooner... really easy"
+ *   2026-10-09  "keep [the boxes]... those are engaging clicks... in the middle
+ *               of the screen... a tint out where it blurs the background...
+ *               like how Substack does it, maybe not as takeover"
  *
- * Two steps, and only the first is asked for. One: an email field and one
- * button. Two, once they are in: the tick-boxes for what they follow, each
- * saved as it is ticked, with nothing left to press.
+ * So: a box in the middle of the screen over a tinted, lightly blurred page.
+ * The tick-boxes (what the reader follows, where they sit) come first and are
+ * optional; then the email and one button. Not a wall: the X, "No thanks",
+ * Esc or a click anywhere outside closes it, and the page is still there.
  *
- * A card in the corner (a sheet along the bottom on a phone), never a box
- * over the page: nothing behind it is dimmed or locked. It appears by itself
- * when lib/newsletter/prompt-rules.ts says so, and at once when a Subscribe
- * button asks for it (`OPEN_SIGNUP_EVENT`). Mounted once, in the root layout.
+ * It appears by itself when lib/newsletter/prompt-rules.ts says so, and at
+ * once when a Subscribe button asks for it (`OPEN_SIGNUP_EVENT`). Being a
+ * real dialog now, it takes the keyboard focus, keeps Tab inside itself,
+ * holds the page still behind it, and gives all of that back when it closes.
+ * Mounted once, in the root layout.
  */
 
 function read(store: 'local' | 'session', key: string): string | null {
@@ -83,8 +89,10 @@ export function SubscribePrompt() {
   const [handedToken, setHandedToken] = useState<string | null>(null)
   const [firms, setFirms] = useState<number | null>(null)
   const [followed, setFollowed] = useState<string[]>([])
-  const sub = useSubscribe('popup')
+  const [role, setRole] = useState<string[]>([])
+  const sub = useSubscribe('popup', () => ({ interests: followed, role: role[0] }))
   const emailRef = useRef<HTMLInputElement>(null)
+  const boxRef = useRef<HTMLDivElement>(null)
   const viewCounted = useRef<string | null>(null)
 
   // The clock: runs only while the card could still appear on this visit.
@@ -170,13 +178,27 @@ export function SubscribePrompt() {
     return () => window.removeEventListener(OPEN_SIGNUP_EVENT, onRequest)
   }, [])
 
-  const token = sub.preferencesToken ?? handedToken
   const finished = sub.status === 'success' || sub.status === 'already' || !!handedToken
 
-  // They pressed Subscribe: put the cursor in the field so they can just type.
+  const shown = open && (requested || isReadingPage(pathname))
+
+  // A dialog: the page behind holds still, the focus comes in, and both go
+  // back as they were when it closes. A reader who pressed Subscribe gets the
+  // cursor in the email field; one it appeared to does not (on a phone that
+  // would throw the keyboard up over what they were reading).
   useEffect(() => {
-    if (open && requested && !finished) emailRef.current?.focus({ preventScroll: true })
-  }, [open, requested, finished])
+    if (!shown) return
+    const before = document.activeElement as HTMLElement | null
+    const root = document.documentElement
+    const overflow = root.style.overflow
+    root.style.overflow = 'hidden'
+    if (requested && !finished) emailRef.current?.focus({ preventScroll: true })
+    else boxRef.current?.focus({ preventScroll: true })
+    return () => {
+      root.style.overflow = overflow
+      before?.focus?.({ preventScroll: true })
+    }
+  }, [shown, requested, finished])
 
   function close(remember: 'dismissed' | 'subscribed' | 'none') {
     if (remember === 'dismissed') {
@@ -189,27 +211,55 @@ export function SubscribePrompt() {
   // Closing a card they asked for is not a "no": the clock may still offer it another day.
   const closeKind = finished || requested ? 'none' : 'dismissed'
 
-  // Esc closes it, as the X does.
+  // Esc closes it, as the X does; Tab stays inside it.
   useEffect(() => {
-    if (!open) return
+    if (!shown) return
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close(closeKind)
+      if (e.key === 'Escape') return close(closeKind)
+      if (e.key !== 'Tab' || !boxRef.current) return
+      const stops = [...boxRef.current.querySelectorAll<HTMLElement>('button, input, a[href]')].filter((el) => !el.hasAttribute('disabled'))
+      if (stops.length === 0) return
+      const first = stops[0]
+      const last = stops[stops.length - 1]
+      const at = document.activeElement
+      if (e.shiftKey && (at === first || at === boxRef.current)) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && at === last) {
+        e.preventDefault()
+        first.focus()
+      } else if (!boxRef.current.contains(at)) {
+        e.preventDefault()
+        first.focus()
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [open, closeKind])
+  }, [shown, closeKind])
 
-  if (!open || !(requested || isReadingPage(pathname))) return null
+  if (!shown) return null
 
   const followedWords = interestWords(followed)
 
   return (
-    <aside
-      aria-label="Subscribe to FundOps Daily"
-      className="paper pointer-events-none fixed inset-x-0 bottom-0 z-50 sm:inset-x-auto sm:bottom-5 sm:right-5 sm:w-[440px]"
-    >
-      <div className="signup-card pointer-events-auto border-t-[3px] border-[var(--tab)] bg-card text-foreground shadow-[0_-12px_40px_rgba(19,35,58,0.3)] sm:shadow-[0_18px_56px_rgba(19,35,58,0.38)]">
-        <div className="flex items-center justify-between gap-3 bg-[var(--ink)] py-1.5 pl-4 pr-1.5 text-[var(--ink-foreground)]">
+    // `.paper` brings the newsprint colours for the box; it also paints a cream
+    // ground, which here would hide the page the tint is meant to show.
+    <div className="paper fixed inset-0 z-[70] flex items-center justify-center overflow-y-auto p-3 sm:p-6" style={{ background: 'transparent' }}>
+      {/* The tint. A click on it closes the box: this is an ask, not a wall. */}
+      <div
+        aria-hidden
+        onClick={() => close(closeKind)}
+        className="signup-veil fixed inset-0 bg-[rgba(15,28,48,0.5)] backdrop-blur-[3px]"
+      />
+      <div
+        ref={boxRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Subscribe to FundOps Daily"
+        tabIndex={-1}
+        className="signup-card relative my-auto w-full max-w-[540px] border-t-[3px] border-[var(--tab)] bg-card text-foreground shadow-[0_24px_80px_rgba(8,16,30,0.55)] outline-none"
+      >
+        <div className="flex items-center justify-between gap-3 bg-[var(--ink)] py-2 pl-4 pr-2 text-[var(--ink-foreground)] sm:pl-6">
           <p className="font-ui text-[11px] font-bold uppercase tracking-[0.14em]">
             FundOps Daily
             <span className="ml-2 font-semibold tracking-[0.08em] text-[var(--tab)]">Free, every morning</span>
@@ -220,12 +270,12 @@ export function SubscribePrompt() {
             aria-label="Close"
             className="rounded-sm p-1.5 opacity-80 transition-opacity hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--tab)]"
           >
-            <X className="h-4 w-4" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
         {finished ? (
-          <div className="px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] pt-4 sm:px-5 sm:pb-4">
+          <div className="px-4 pb-5 pt-5 sm:px-6">
             <p className="flex items-start gap-2 font-news text-[22px] font-medium leading-[1.2]">
               <CheckCircle2 className="mt-[3px] h-5 w-5 shrink-0 text-emerald-400" aria-hidden />
               {sub.status === 'already' ? 'You’re already on the list.' : 'You’re in.'}
@@ -236,12 +286,12 @@ export function SubscribePrompt() {
                 : `Your first edition lands tomorrow morning.${followedWords ? ` Stories on ${followedWords} will be grouped for you.` : ''}`}
             </p>
 
-            {token && sub.status !== 'already' && (
+            {handedToken && sub.status !== 'already' && (
               <div className="mt-3.5 border-t border-border pt-3">
                 <p className="mb-2.5 font-news text-[16.5px] leading-snug">
                   One more thing, if you like: tick what you follow and those stories are grouped for you.
                 </p>
-                <FollowChoices token={token} onChange={setFollowed} />
+                <FollowChoices token={handedToken} onChange={setFollowed} />
               </div>
             )}
 
@@ -250,16 +300,16 @@ export function SubscribePrompt() {
               onClick={() => close('none')}
               className="mt-2 inline-flex h-9 items-center rounded-sm border border-foreground/30 px-3.5 font-ui text-[12px] font-bold uppercase tracking-[0.08em] transition-colors hover:border-foreground"
             >
-              {token && sub.status !== 'already' ? 'Done' : 'Back to the news'}
+              {handedToken && sub.status !== 'already' ? 'Done' : 'Back to the news'}
             </button>
           </div>
         ) : (
-          <form onSubmit={sub.submit} className="px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-4 sm:px-5 sm:pb-3.5">
-            <h2 className="font-news text-[24px] font-medium leading-[1.12] tracking-[-0.012em] sm:text-[27px]">
+          <form onSubmit={sub.submit} className="px-4 pb-4 pt-5 sm:px-6 sm:pb-5 sm:pt-6">
+            <h2 className="font-news text-[25px] font-medium leading-[1.1] tracking-[-0.014em] sm:text-[32px]">
               Every fund close, deal and move,{' '}
               <span className="italic" style={{ color: 'var(--display-accent)' }}>in one morning email.</span>
             </h2>
-            <p className="mt-2 font-ui text-[13.5px] leading-snug text-foreground/75">
+            <p className="mt-2 font-ui text-[13.5px] leading-snug text-foreground/75 sm:text-[14.5px]">
               {firms && firms >= 25 ? (
                 <>
                   Read each morning at <strong className="font-bold text-foreground">{firms.toLocaleString('en-US')} firms</strong>: GPs, LPs and
@@ -267,10 +317,20 @@ export function SubscribePrompt() {
                 </>
               ) : (
                 'Read each morning by GPs, LPs and fund service providers.'
-              )}
+              )}{' '}
+              Tick what you follow and we’ll group those stories for you.
             </p>
 
-            <div className="mt-3.5 flex items-stretch gap-2">
+            <div className="mt-4 space-y-3 sm:hidden">
+              <ChoiceChips legend="I follow" options={INTERESTS} selected={followed} onChange={setFollowed} compact />
+              <ChoiceChips legend="I’m at a" options={ROLES} selected={role} onChange={setRole} single compact inline />
+            </div>
+            <div className="mt-5 hidden space-y-4 sm:block">
+              <ChoiceChips legend="I follow" options={INTERESTS} selected={followed} onChange={setFollowed} />
+              <ChoiceChips legend="I’m at a" options={ROLES} selected={role} onChange={setRole} single inline />
+            </div>
+
+            <div className="mt-4 flex items-stretch gap-2 sm:mt-5">
               <input
                 ref={emailRef}
                 type="email"
@@ -286,7 +346,7 @@ export function SubscribePrompt() {
               <button
                 type="submit"
                 disabled={sub.status === 'loading'}
-                className="group inline-flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-sm px-4 font-ui text-[13px] font-extrabold uppercase tracking-[0.07em] transition-[filter] hover:brightness-95 disabled:opacity-50"
+                className="group inline-flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-sm px-4 font-ui text-[13px] font-extrabold uppercase tracking-[0.07em] transition-[filter] hover:brightness-95 disabled:opacity-50 sm:px-5"
                 style={{ background: 'var(--tab)', color: 'var(--ink)' }}
               >
                 {sub.status === 'loading' ? (
@@ -303,9 +363,9 @@ export function SubscribePrompt() {
             </div>
             {sub.status === 'error' && <p className="mt-1.5 font-ui text-xs text-red-400" role="alert">{sub.errorMsg}</p>}
 
-            <div className="mt-2 flex items-center justify-between gap-3 font-ui text-[12px] text-muted-foreground">
+            <div className="mt-2.5 flex items-center justify-between gap-3 font-ui text-[12px] text-muted-foreground">
               <span>
-                <span className="hidden sm:inline">One email a day. </span>Unsubscribe in one click.
+                Free. <span className="hidden sm:inline">One email a day. </span>Unsubscribe in one click.
               </span>
               <span className="flex shrink-0 items-center gap-3">
                 <button type="button" onClick={() => close('subscribed')} className="rounded-sm py-1 underline underline-offset-2 hover:text-foreground">
@@ -319,6 +379,6 @@ export function SubscribePrompt() {
           </form>
         )}
       </div>
-    </aside>
+    </div>
   )
 }

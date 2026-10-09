@@ -19,8 +19,10 @@
  * A reader who presses a Subscribe button gets the card at once, whatever the
  * rules above say: they asked (see `OPEN_SIGNUP_EVENT`).
  *
- * It is a card in the corner, not a screen-covering box: the page stays
- * readable and usable behind it, and it closes on the X, "No thanks" or Esc.
+ * Since 2026-10-09 (Danny: "in the middle of the screen... a tint out...
+ * like how Substack does it, maybe not as takeover") it is a box in the
+ * middle of the screen over a tinted page. It closes on the X, "No thanks",
+ * Esc or a click outside it, and never appears on arrival.
  *
  * Pure functions here; the component (components/newsletter/SubscribePrompt.tsx)
  * owns the timers and the storage.
