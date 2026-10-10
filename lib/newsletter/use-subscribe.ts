@@ -19,6 +19,8 @@ export function useSubscribe(form: string, extra?: () => Record<string, unknown>
   const [status, setStatus] = useState<SubscribeStatus>('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [preferencesToken, setPreferencesToken] = useState<string | null>(null)
+  /** For an address already on the list that has never said what it follows (lib/newsletter/ticket.ts). */
+  const [preferencesTicket, setPreferencesTicket] = useState<string | null>(null)
 
   async function submit(e?: React.FormEvent) {
     e?.preventDefault()
@@ -35,6 +37,7 @@ export function useSubscribe(form: string, extra?: () => Record<string, unknown>
       if (!res.ok) throw new Error(data.error || 'Failed to subscribe')
       markSubscribed()
       setPreferencesToken(typeof data.preferencesToken === 'string' ? data.preferencesToken : null)
+      setPreferencesTicket(typeof data.preferencesTicket === 'string' ? data.preferencesTicket : null)
       setStatus(data.message === 'Already subscribed' ? 'already' : 'success')
     } catch (err) {
       setStatus('error')
@@ -42,5 +45,5 @@ export function useSubscribe(form: string, extra?: () => Record<string, unknown>
     }
   }
 
-  return { email, setEmail, status, errorMsg, preferencesToken, submit }
+  return { email, setEmail, status, errorMsg, preferencesToken, preferencesTicket, submit }
 }

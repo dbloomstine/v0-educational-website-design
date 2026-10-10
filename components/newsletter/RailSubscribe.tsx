@@ -17,7 +17,9 @@ export function RailSubscribe() {
   // Once they are in, the signup box opens at its tick-boxes: every way of subscribing asks what the reader follows.
   useEffect(() => {
     if (sub.status === 'success' && sub.preferencesToken) openSignupCard({ token: sub.preferencesToken })
-  }, [sub.status, sub.preferencesToken])
+    // Already on the list and never asked: asked now.
+    if (sub.status === 'already' && sub.preferencesTicket) openSignupCard({ ticket: sub.preferencesTicket, already: true })
+  }, [sub.status, sub.preferencesToken, sub.preferencesTicket])
 
   if (sub.status === 'success' || sub.status === 'already') {
     return (

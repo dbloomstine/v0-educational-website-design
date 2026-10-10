@@ -39,6 +39,7 @@ function decodePrefillEmail(): string | null {
 export function HeroSubscribe() {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [already, setAlready] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [prefilled, setPrefilled] = useState(false)
   const emailInputRef = useRef<HTMLInputElement>(null)
@@ -85,8 +86,12 @@ export function HeroSubscribe() {
       markSubscribed()
       setStatus('success')
       // They are in. The same question the signup box asks is asked here, after the fact: what do you follow?
-      // (A token comes back only for a subscription that has just started.)
+      // A new signup comes back with a token. An address already on the list that has never said comes back with a
+      // ticket (lib/newsletter/ticket.ts), and is asked too; one that has already chosen is told it is on the list.
+      const was = data.message === 'Already subscribed'
+      setAlready(was)
       if (typeof data.preferencesToken === 'string') openSignupCard({ token: data.preferencesToken })
+      else if (typeof data.preferencesTicket === 'string') openSignupCard({ ticket: data.preferencesTicket, already: true })
     } catch (err) {
       setStatus('error')
       setErrorMsg(err instanceof Error ? err.message : 'Something went wrong')
@@ -106,7 +111,7 @@ export function HeroSubscribe() {
           {status === 'success' ? (
             <div className="flex items-center gap-2 rounded-sm border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5">
               <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-400" />
-              <span className="font-ui text-[13px] text-emerald-300">Subscribed — your first edition lands tomorrow morning.</span>
+              <span className="font-ui text-[13px] text-emerald-300">{already ? 'You’re already on the list.' : 'Subscribed — your first edition lands tomorrow morning.'}</span>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="flex w-full items-stretch gap-2 sm:w-[390px]">

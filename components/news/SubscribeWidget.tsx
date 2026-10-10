@@ -9,6 +9,7 @@ import { openSignupCard } from '@/components/newsletter/SubscribePrompt'
 export function SubscribeWidget() {
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [already, setAlready] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
 
   async function handleSubmit(e: React.FormEvent) {
@@ -30,8 +31,12 @@ export function SubscribeWidget() {
       markSubscribed()
       setStatus('success')
       // They are in. The same question the signup box asks is asked here, after the fact: what do you follow?
-      // (A token comes back only for a subscription that has just started.)
+      // A new signup comes back with a token. An address already on the list that has never said comes back with a
+      // ticket (lib/newsletter/ticket.ts), and is asked too; one that has already chosen is told it is on the list.
+      const was = data.message === 'Already subscribed'
+      setAlready(was)
       if (typeof data.preferencesToken === 'string') openSignupCard({ token: data.preferencesToken })
+      else if (typeof data.preferencesTicket === 'string') openSignupCard({ ticket: data.preferencesTicket, already: true })
     } catch (err) {
       setStatus('error')
       setErrorMsg(err instanceof Error ? err.message : 'Something went wrong')
@@ -42,7 +47,7 @@ export function SubscribeWidget() {
     return (
       <div className="flex items-center gap-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2.5">
         <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-        <span className="text-sm text-emerald-300">You&apos;re subscribed. Your first edition lands tomorrow morning.</span>
+        <span className="text-sm text-emerald-300">{already ? 'You’re already on the list.' : 'You’re subscribed. Your first edition lands tomorrow morning.'}</span>
       </div>
     )
   }

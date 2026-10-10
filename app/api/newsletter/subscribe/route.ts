@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { renderWelcomeEmail } from '@/lib/newsletter/welcome-email'
 import { insertSubscriber } from '@/lib/newsletter/insert-subscriber'
 import { sanitizeSignupSource } from '@/lib/newsletter/signup-source'
+import { makeTicket } from '@/lib/newsletter/ticket'
 import { preferenceColumns, sanitizeInterests, sanitizeRole, sanitizeSignupForm } from '@/lib/newsletter/interests'
 
 export async function POST(req: Request) {
@@ -33,7 +34,7 @@ export async function POST(req: Request) {
     // Check if subscriber already exists
     const { data: existing } = await supabase
       .from('newsletter_subscribers')
-      .select('id, status, unsubscribe_token')
+      .select('id, status, unsubscribe_token, interests, reader_role')
       .eq('email', trimmed)
       .single()
 
@@ -41,7 +42,15 @@ export async function POST(req: Request) {
     // here, so this route never changes a subscriber's choices. They change
     // them from the link in their own email (/preferences).
     if (existing?.status === 'confirmed') {
-      return NextResponse.json({ success: true, message: 'Already subscribed' })
+      // ...with one exception. A reader who has never said what they follow is still asked: they get a
+      // short-lived ticket that can only fill in choices that are not there (lib/newsletter/ticket.ts).
+      const never = !existing.interests?.length && !existing.reader_role
+      return NextResponse.json({
+        success: true,
+        message: 'Already subscribed',
+        hasPreferences: !never,
+        ...(never ? { preferencesTicket: makeTicket(existing.id) ?? undefined } : {}),
+      })
     }
 
     let unsubscribeToken: string

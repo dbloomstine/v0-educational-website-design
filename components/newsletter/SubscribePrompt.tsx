@@ -21,7 +21,7 @@ import {
   shouldShowPrompt,
 } from '@/lib/newsletter/prompt-rules'
 import { ChoiceChips } from './ChoiceChips'
-import { FollowChoices } from './FollowChoices'
+import { FollowChoices, type FollowPass } from './FollowChoices'
 
 /**
  * The signup card. Three passes on Danny's word:
@@ -76,8 +76,13 @@ function isTyping(): boolean {
   return !!el && (/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || (el as HTMLElement).isContentEditable)
 }
 
-/** Ask the card to open now. `token` skips to the tick-boxes, for a form that has just signed the reader up. */
-export function openSignupCard(detail: { token?: string } = {}): void {
+/** What another form hands the box so it opens at its tick-boxes: the key to save with, and whether the reader was already on the list. */
+export interface Handed extends FollowPass {
+  already?: boolean
+}
+
+/** Ask the box to open now. With a `token` or a `ticket` it skips to the tick-boxes, for a form that has just taken the reader's address. */
+export function openSignupCard(detail: Handed = {}): void {
   window.dispatchEvent(new CustomEvent(OPEN_SIGNUP_EVENT, { detail }))
 }
 
@@ -86,7 +91,11 @@ export function SubscribePrompt() {
   const [open, setOpen] = useState(false)
   /** Opened by a button rather than by the clock: shown on any page, and the field takes the cursor. */
   const [requested, setRequested] = useState(false)
-  const [handedToken, setHandedToken] = useState<string | null>(null)
+  const [handed, setHanded] = useState<Handed | null>(null)
+  /** The boxes ticked before an address turned out to be on the list already: saved for them with the ticket. */
+  const [carried, setCarried] = useState(false)
+  /** ...or, when none were ticked, the question is put now. Decided once, when the ticket arrives. */
+  const [askNow, setAskNow] = useState(false)
   const [firms, setFirms] = useState<number | null>(null)
   const [followed, setFollowed] = useState<string[]>([])
   const [role, setRole] = useState<string[]>([])
@@ -166,11 +175,13 @@ export function SubscribePrompt() {
   // A Subscribe button asked for it: open now, whatever the clock says.
   useEffect(() => {
     const onRequest = (e: Event) => {
-      const token = (e as CustomEvent<{ token?: string }>).detail?.token
+      const d = (e as CustomEvent<Handed>).detail ?? {}
       shownInMemory = true
       write('session', SHOWN_KEY, '1')
       readerFirms().then(setFirms)
-      setHandedToken(typeof token === 'string' ? token : null)
+      setHanded(typeof d.token === 'string' ? { token: d.token } : typeof d.ticket === 'string' ? { ticket: d.ticket, already: Boolean(d.already) } : null)
+      setCarried(false)
+      setAskNow(false)
       setRequested(true)
       setOpen(true)
     }
@@ -178,7 +189,24 @@ export function SubscribePrompt() {
     return () => window.removeEventListener(OPEN_SIGNUP_EVENT, onRequest)
   }, [])
 
-  const finished = sub.status === 'success' || sub.status === 'already' || !!handedToken
+  const finished = sub.status === 'success' || sub.status === 'already' || !!handed
+  // Whoever is here was already on the list: told so, not promised a first edition.
+  const already = sub.status === 'already' || Boolean(handed?.already)
+  // The key the tick-boxes save with, when they are still to be asked: handed over by another form, or this box's own
+  // ticket for an address that turned out to be on the list.
+  const ownTicket = sub.status === 'already' && sub.preferencesTicket ? sub.preferencesTicket : null
+  const pass: FollowPass | null = handed ? (handed.token ? { token: handed.token } : { ticket: handed.ticket }) : ownTicket && askNow ? { ticket: ownTicket } : null
+
+  // They ticked boxes in this box and then gave an address already on the list: the boxes were not stored with a
+  // signup (there was none), so they are stored now.
+  useEffect(() => {
+    if (!ownTicket || carried || askNow || handed) return
+    if (!followed.length && !role.length) return setAskNow(true)
+    setCarried(true)
+    fetch('/api/newsletter/preferences', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ticket: ownTicket, interests: followed, role: role[0] }) }).catch(() => {})
+    // Once, when the ticket arrives.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ownTicket])
 
   const shown = open && (requested || isReadingPage(pathname))
 
@@ -278,20 +306,24 @@ export function SubscribePrompt() {
           <div className="px-4 pb-5 pt-5 sm:px-6">
             <p className="flex items-start gap-2 font-news text-[22px] font-medium leading-[1.2]">
               <CheckCircle2 className="mt-[3px] h-5 w-5 shrink-0 text-emerald-400" aria-hidden />
-              {sub.status === 'already' ? 'You’re already on the list.' : 'You’re in.'}
+              {already ? 'You’re already on the list.' : 'You’re in.'}
             </p>
             <p className="mt-1.5 font-ui text-[13.5px] leading-snug text-foreground/75" role="status">
-              {sub.status === 'already'
-                ? 'This address already gets FundOps Daily. To choose what you follow, use the link at the foot of any edition.'
+              {already
+                ? carried
+                  ? `This address already gets FundOps Daily.${followedWords ? ` Stories on ${followedWords} will now be grouped for you.` : ' Your choices are saved.'}`
+                  : pass
+                    ? 'This address already gets FundOps Daily, so nothing changes there.'
+                    : 'This address already gets FundOps Daily. To change what you follow, use the link at the foot of any edition.'
                 : `Your first edition lands tomorrow morning.${followedWords ? ` Stories on ${followedWords} will be grouped for you.` : ''}`}
             </p>
 
-            {handedToken && sub.status !== 'already' && (
+            {pass && (
               <div className="mt-3.5 border-t border-border pt-3">
                 <p className="mb-2.5 font-news text-[16.5px] leading-snug">
-                  One more thing, if you like: tick what you follow and those stories are grouped for you.
+                  {already ? 'One thing we never asked: tick what you follow and those stories are grouped for you.' : 'One more thing, if you like: tick what you follow and those stories are grouped for you.'}
                 </p>
-                <FollowChoices token={handedToken} onChange={setFollowed} />
+                <FollowChoices pass={pass} onChange={setFollowed} />
               </div>
             )}
 
@@ -300,7 +332,7 @@ export function SubscribePrompt() {
               onClick={() => close('none')}
               className="mt-2 inline-flex h-9 items-center rounded-sm border border-foreground/30 px-3.5 font-ui text-[12px] font-bold uppercase tracking-[0.08em] transition-colors hover:border-foreground"
             >
-              {handedToken && sub.status !== 'already' ? 'Done' : 'Back to the news'}
+              {pass ? 'Done' : 'Back to the news'}
             </button>
           </div>
         ) : (
