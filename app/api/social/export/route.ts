@@ -4,7 +4,8 @@ import { loadStories } from '@/lib/news/front-page'
 import { loadLeagueReport } from '@/lib/news/league-data'
 import { getEventFeed } from '@/lib/events/api'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
-import { pickLongSummary } from '@/lib/news/story-summary'
+import { pickLongSummary, type SourceRow } from '@/lib/news/story-summary'
+import { materialIds, materialStories, reportsOf, type Report } from '@/lib/social/material'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -38,8 +39,29 @@ async function longSummaries(): Promise<Map<string, LongRow>> {
 }
 
 /**
+ * The reports' own text for the newest, best-covered stories (lib/social/material.ts): rows by primary
+ * key, a hundred at a time, never a scan. A failure is logged and the stories go out without it.
+ */
+async function reportRows(ids: string[]): Promise<Map<string, SourceRow>> {
+  const out = new Map<string, SourceRow>()
+  for (let i = 0; i < ids.length; i += 100) {
+    const { data, error } = await getSupabaseAdmin()
+      .from('news_items')
+      .select('id, title, description, full_text, source_name, published_date')
+      .in('id', ids.slice(i, i + 100))
+    if (error) {
+      console.error('[social] reports unavailable:', error.message)
+      return new Map()
+    }
+    for (const r of (data ?? []) as SourceRow[]) out.set(r.id, r)
+  }
+  return out
+}
+
+/**
  * Everything the nightly social job works from, in one read: the stories the
- * site is showing (ten days, each with its fuller summary where one has been written), the league table, the events board for the next
+ * site is showing (ten days, each with its fuller summary where one has been written, and the newest
+ * best-covered ones with their reports' text), the league table, the events board for the next
  * thirty days, and what the job has already posted.
  *
  * The stories, league and events come from the same caches the pages use
@@ -75,10 +97,21 @@ export async function GET(req: Request) {
       return summaryLong ? { ...s, summaryLong } : s
     })
 
+    // The best-covered stories of the last three days also carry what each report says, so a post on one
+    // can be several slides of substance (Danny, 2026-10-10: "better and deeper… with multiple photos and slides").
+    const deep = materialStories(withLong, (s) => 'summaryLong' in s, Date.now())
+    const rows = deep.length ? await reportRows(materialIds(deep)) : new Map<string, SourceRow>()
+    const reports = new Map<string, Report[]>()
+    for (const s of deep) {
+      const r = reportsOf(s, rows)
+      if (r) reports.set(s.id, r)
+    }
+    const out = withLong.map((s) => (reports.has(s.id) ? { ...s, reports: reports.get(s.id) } : s))
+
     return NextResponse.json(
       {
         exportedAt: new Date().toISOString(),
-        stories: withLong,
+        stories: out,
         league: { asOf: league.asOf, closes: league.closes },
         events: events.events,
         posted: posted.data ?? [],
