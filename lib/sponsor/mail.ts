@@ -193,7 +193,8 @@ export function interestMail(reader: { email: string; role: string | null; since
   return {
     to: OWNER_EMAIL(),
     replyTo: OWNER_EMAIL(),
-    subject: `A reader at ${domain} looked at the sponsor page`,
+    // The count is in a repeat's subject so that each notice is its own line in the inbox, not folded into the first one's thread.
+    subject: visits > 1 ? `A reader at ${domain} looked at the sponsor page again (visit ${visits})` : `A reader at ${domain} looked at the sponsor page`,
     html: letter(
       'A reader is looking at sponsorship.',
       `${p(`<b>${esc(reader.email)}</b> opened the sponsor page from the link in their own copy of FundOps Daily.`)}
@@ -203,7 +204,7 @@ ${reader.role ? row('Says they are', esc(reader.role.replace('_', ' '))) : ''}
 ${reader.since ? row('Subscribed', esc(new Date(reader.since).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }))) : ''}
 ${row('Visits on record', String(visits))}
 </table>
-${p(`<span style="color:${MUTED};font-size:13px;">A forwarded copy would show the person who forwarded it. You are told at most once a week about the same reader.</span>`)}`,
+${p(`<span style="color:${MUTED};font-size:13px;">A forwarded copy would show the person who forwarded it. You are told every time; two looks within ten minutes count as one.</span>`)}`,
     ),
   }
 }

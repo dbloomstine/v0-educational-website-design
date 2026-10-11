@@ -3,13 +3,13 @@ import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { interestMail, send } from '@/lib/sponsor/mail'
 import { isUuid } from '@/lib/sponsor/requests'
 
-const WEEK_MS = 7 * 24 * 60 * 60 * 1000
-
 /**
  * A subscriber has opened /sponsor from the link in their own copy of the
  * email (the link carries their subscriber id; components/sponsor/ReaderBeacon.tsx
  * posts it here from the page). The visit is recorded, and the owner is told
- * which reader is looking, at most once a week per reader.
+ * which reader is looking, every visit (Danny, 2026-10-11: "every time someone
+ * looks at this or clicks the link, not just once a week"). Two looks within
+ * ten minutes are one visit, so a reload or a second tab is one email.
  *
  * It takes a real browser running the page to get here, which keeps out the
  * mail scanners that follow every link in an email. An id that is not a
@@ -33,10 +33,9 @@ export async function POST(req: Request) {
     const visits = earlier ?? []
     // Two looks within ten minutes are one visit: a reload, a second tab.
     if (visits[0] && Date.now() - new Date(visits[0].seen_at).getTime() < 10 * 60 * 1000) return NextResponse.json({ ok: true })
-    const toldLately = visits.some((v) => v.notified && Date.now() - new Date(v.seen_at).getTime() < WEEK_MS)
 
-    await db.from('sponsor_interest').insert({ subscriber_id: reader.id, notified: !toldLately })
-    if (!toldLately) await send(interestMail({ email: String(reader.email), role: reader.reader_role ?? null, since: reader.created_at ?? null }, visits.length + 1))
+    await db.from('sponsor_interest').insert({ subscriber_id: reader.id, notified: true })
+    await send(interestMail({ email: String(reader.email), role: reader.reader_role ?? null, since: reader.created_at ?? null }, visits.length + 1))
   } catch (err) {
     console.error('[sponsor interest]', err instanceof Error ? err.message : err)
   }

@@ -153,9 +153,14 @@ describe('the letters', () => {
     delete process.env.SPONSOR_PAY_URL_WEEK
   })
   it('tell the owner which reader looked, by address and firm', () => {
-    const mail = interestMail({ email: 'cfo@bigfund.example', role: 'gp', since: '2026-05-02T00:00:00Z' }, 2)
+    const mail = interestMail({ email: 'cfo@bigfund.example', role: 'gp', since: '2026-05-02T00:00:00Z' }, 1)
     expect(mail.subject).toBe('A reader at bigfund.example looked at the sponsor page')
     expect(mail.html).toContain('cfo@bigfund.example')
+    // Every visit is told (Danny, 2026-10-11), and a repeat says which visit it is.
+    const again = interestMail({ email: 'cfo@bigfund.example', role: 'gp', since: '2026-05-02T00:00:00Z' }, 3)
+    expect(again.subject).toBe('A reader at bigfund.example looked at the sponsor page again (visit 3)')
+    expect(again.html).toMatch(/You are told every time/)
+    expect(again.html).not.toMatch(/once a week/)
   })
 })
 
