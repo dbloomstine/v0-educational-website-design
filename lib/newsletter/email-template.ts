@@ -29,6 +29,7 @@ import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponso
 import { arrangeEdition, kickerParts, sizeWords, type TopPick } from './top-stories'
 import { entityKey, keysMatch } from './story-links'
 import { pullFollowed } from './personalize'
+import { followLineHtml } from './follow-line'
 
 interface TemplateParams {
   groups: ArticleGroup[]
@@ -1039,6 +1040,9 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                     </p>`
                         : ''
                     }
+                    <p style="margin:0 0 10px;">
+                      ${followLineHtml()}
+                    </p>
                     <p style="margin:0;">
                       You&rsquo;re receiving this because you subscribed at <a href="https://fundopshq.com" style="color:rgba(248,245,236,0.75);text-decoration:none;">fundopshq.com</a>.
                     </p>

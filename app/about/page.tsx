@@ -9,6 +9,7 @@ import { ArrowRight, Linkedin } from 'lucide-react'
 import { SectionFlag } from '@/components/story/StoryBlocks'
 import { SECTIONS, sectionHref } from '@/lib/news/sections'
 import { OG_IMAGES } from '@/lib/seo'
+import { EDITOR, SOCIAL } from '@/lib/brand/social'
 
 export const metadata: Metadata = {
   title: 'About',
@@ -175,15 +176,27 @@ export default function AboutPage() {
                   administration, compliance, tax and CFO solutions. He started FundOpsHQ to give the
                   operational side of the industry the coverage it does not otherwise get.
                 </p>
-                <a
-                  href="https://www.linkedin.com/in/danny-bloomstine/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-3 inline-flex items-center gap-1.5 font-ui text-[12.5px] font-semibold text-foreground underline decoration-foreground/25 underline-offset-4 hover:decoration-foreground"
-                >
-                  <Linkedin className="h-3.5 w-3.5" aria-hidden="true" />
-                  Connect on LinkedIn
-                </a>
+                {/* Both, side by side: his own profile and the FundOpsHQ page (Danny, 2026-10-11). */}
+                <p className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5 font-ui text-[12.5px] font-semibold text-foreground">
+                  <a
+                    href={EDITOR.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 underline decoration-foreground/25 underline-offset-4 hover:decoration-foreground"
+                  >
+                    <Linkedin className="h-3.5 w-3.5" aria-hidden="true" />
+                    Connect with Danny
+                  </a>
+                  <a
+                    href={SOCIAL[0].href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 underline decoration-foreground/25 underline-offset-4 hover:decoration-foreground"
+                  >
+                    <Linkedin className="h-3.5 w-3.5" aria-hidden="true" />
+                    Follow FundOpsHQ
+                  </a>
+                </p>
               </div>
             </div>
           </section>

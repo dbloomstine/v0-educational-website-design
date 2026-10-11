@@ -14,12 +14,14 @@ import {
   SHOWN_KEY,
   VIEWS_KEY,
   arrivedAsSubscriber,
+  arrivedFromPost,
   isQuiet,
   isReadingPage,
   nextDismissal,
   parseDismissal,
   shouldShowPrompt,
 } from '@/lib/newsletter/prompt-rules'
+import { FOLLOW } from '@/lib/brand/social'
 import { ChoiceChips } from './ChoiceChips'
 import { FollowChoices, type FollowPass } from './FollowChoices'
 
@@ -97,6 +99,8 @@ export function SubscribePrompt() {
   /** ...or, when none were ticked, the question is put now. Decided once, when the ticket arrives. */
   const [askNow, setAskNow] = useState(false)
   const [firms, setFirms] = useState<number | null>(null)
+  /** Came over from one of our posts: the box says so. Read when it opens, never during the first render. */
+  const [cameFrom, setCameFrom] = useState<ReturnType<typeof arrivedFromPost>>(null)
   const [followed, setFollowed] = useState<string[]>([])
   const [role, setRole] = useState<string[]>([])
   const sub = useSubscribe('popup', () => ({ interests: followed, role: role[0] }))
@@ -126,8 +130,12 @@ export function SubscribePrompt() {
       scrolledPx = Math.max(scrolledPx, window.scrollY)
     }
 
+    const fromPost = arrivedFromPost(captureSignupSource())
+    setCameFrom(fromPost)
+
     const check = (leaving: boolean) => {
       const show = shouldShowPrompt({
+        fromPost: !!fromPost,
         pathname,
         subscribed: isMarkedSubscribed(),
         shownThisVisit: false,
@@ -179,6 +187,7 @@ export function SubscribePrompt() {
       shownInMemory = true
       write('session', SHOWN_KEY, '1')
       readerFirms().then(setFirms)
+      setCameFrom(arrivedFromPost(captureSignupSource()))
       setHanded(typeof d.token === 'string' ? { token: d.token } : typeof d.ticket === 'string' ? { ticket: d.ticket, already: Boolean(d.already) } : null)
       setCarried(false)
       setAskNow(false)
@@ -334,12 +343,35 @@ export function SubscribePrompt() {
             >
               {pass ? 'Done' : 'Back to the news'}
             </button>
+
+            {/* The one moment a follow costs nothing: they have just said yes. */}
+            <p className="mt-4 border-t border-border pt-3 font-ui text-[12.5px] leading-snug text-foreground/65">
+              Through the day, follow{' '}
+              {FOLLOW.map((x, i) => (
+                <span key={x.href}>
+                  {i === 0 ? '' : i === FOLLOW.length - 1 ? ' and ' : ', '}
+                  <a href={x.href} target="_blank" rel="noopener noreferrer" className="font-semibold text-foreground/85 underline decoration-foreground/30 underline-offset-2 hover:text-foreground">
+                    {x.label}
+                  </a>
+                </span>
+              ))}
+              .
+            </p>
           </div>
         ) : (
           <form onSubmit={sub.submit} className="px-4 pb-4 pt-5 sm:px-6 sm:pb-5 sm:pt-6">
             <h2 className="font-news text-[25px] font-medium leading-[1.1] tracking-[-0.014em] sm:text-[32px]">
-              Every fund close, deal and move,{' '}
-              <span className="italic" style={{ color: 'var(--display-accent)' }}>in one morning email.</span>
+              {cameFrom ? (
+                <>
+                  You found {cameFrom.story ? 'this' : 'us'} on {cameFrom.network}.{' '}
+                  <span className="italic" style={{ color: 'var(--display-accent)' }}>Get the whole day in one morning email.</span>
+                </>
+              ) : (
+                <>
+                  Every fund close, deal and move,{' '}
+                  <span className="italic" style={{ color: 'var(--display-accent)' }}>in one morning email.</span>
+                </>
+              )}
             </h2>
             <p className="mt-2 font-ui text-[13.5px] leading-snug text-foreground/75 sm:text-[14.5px]">
               {firms && firms >= 25 ? (

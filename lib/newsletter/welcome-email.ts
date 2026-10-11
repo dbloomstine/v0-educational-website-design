@@ -15,6 +15,7 @@
  *    user-agent `a:link` cascade.
  */
 import { interestWords } from './interests'
+import { followLineHtml } from './follow-line'
 
 const NAVY = '#1E3A5F'
 const NAVY_DEEP = '#0F1E33'
@@ -205,6 +206,9 @@ ${tailored}
                 </tr>
                 <tr>
                   <td style="padding-top:14px;font-family:${FONT_SANS};font-size:11px;color:rgba(248,245,236,0.55);line-height:1.65;">
+                    <p style="margin:0 0 10px;">
+                      ${followLineHtml()}
+                    </p>
                     <p style="margin:0;">
                       You&rsquo;re receiving this because you just signed up at <a href="https://fundopshq.com" style="color:rgba(248,245,236,0.75);text-decoration:none;">fundopshq.com</a>.
                     </p>

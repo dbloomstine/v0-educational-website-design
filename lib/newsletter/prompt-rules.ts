@@ -12,7 +12,9 @@
  *   - one of: a quarter of a minute's reading and a scroll; 25 seconds'
  *     reading without one (a short story page has nothing to scroll); a few
  *     seconds into a second page; or the pointer leaving through the top of
- *     the window after a few seconds (desktop: the reader is about to go)
+ *     the window after a few seconds (desktop: the reader is about to go);
+ *     or, for a reader who came over from one of our LinkedIn or TikTok
+ *     posts, eight seconds (2026-10-11: they followed a link to be here)
  *   - they are not known to subscribe already, and are not typing
  *   - it has not been shown this visit, and was not closed recently
  *
@@ -37,6 +39,8 @@ export const ENGAGED_SECONDS_NO_SCROLL = 25
 export const SECOND_PAGE_SECONDS = 6
 /** ...and long enough on the new page to have started reading it. */
 export const SETTLE_SECONDS = 3
+/** A reader who followed one of our own posts here came for this story: asked this soon, scroll or none. */
+export const POST_SECONDS = 8
 /** Leaving after less than this is a bounce, not a reader. */
 export const EXIT_SECONDS = 5
 /** How far down a page counts as reading it. */
@@ -100,6 +104,19 @@ export function arrivedAsSubscriber(source: SignupSource): boolean {
   return source.source === 'newsletter' && source.medium === 'email' && source.campaign !== 'forward'
 }
 
+/** The networks our posts go out on, as the box names them. */
+const POST_NETWORKS: Record<string, string> = { linkedin: 'LinkedIn', tiktok: 'TikTok' }
+
+/**
+ * The network a reader came over from, when it is one we post on (2026-10-11): the box then says so
+ * and comes a little sooner. Null for every other arrival, and for anything not a plain own-key match.
+ */
+export function arrivedFromPost(source: SignupSource): { network: string; story: boolean } | null {
+  const network = Object.hasOwn(POST_NETWORKS, source.source ?? '') ? POST_NETWORKS[source.source as string] : undefined
+  if (!network) return null
+  return { network, story: (source.path ?? '').startsWith('/story/') }
+}
+
 export interface PromptState {
   pathname: string
   subscribed: boolean
@@ -115,6 +132,8 @@ export interface PromptState {
   viewportHeight: number
   /** The pointer has just left through the top of the window. */
   leaving?: boolean
+  /** They came over from one of our posts (`arrivedFromPost`). */
+  fromPost?: boolean
 }
 
 export function shouldShowPrompt(s: PromptState): boolean {
@@ -124,6 +143,7 @@ export function shouldShowPrompt(s: PromptState): boolean {
   if (s.viewportHeight < MIN_VIEWPORT_HEIGHT) return false
   if (s.leaving) return s.engagedSeconds >= EXIT_SECONDS
   if (s.pageViews >= 2) return s.engagedSeconds >= SECOND_PAGE_SECONDS && s.secondsOnPage >= SETTLE_SECONDS
+  if (s.fromPost && s.engagedSeconds >= POST_SECONDS) return true
   if (s.engagedSeconds >= ENGAGED_SECONDS_NO_SCROLL) return true
   return s.engagedSeconds >= ENGAGED_SECONDS && s.scrolledPx >= SCROLL_PX
 }

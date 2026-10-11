@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { SOCIAL } from '@/lib/brand/social'
+import { EDITOR, SOCIAL } from '@/lib/brand/social'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
@@ -52,8 +52,9 @@ const organizationJsonLd = {
     'FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed and morning newsletter. Built for GPs, LPs, and fund service providers across private markets.',
   founder: {
     '@type': 'Person',
-    name: 'Danny Bloomstine',
-    url: 'https://www.linkedin.com/in/danny-bloomstine/',
+    name: EDITOR.name,
+    url: EDITOR.href,
+    sameAs: [EDITOR.href],
   },
   // The organisation's own accounts (lib/brand/social.ts); the founder's profile is his, above.
   sameAs: SOCIAL.map((x) => x.href),

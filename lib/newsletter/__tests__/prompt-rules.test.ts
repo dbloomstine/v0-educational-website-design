@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { ENGAGED_SECONDS, ENGAGED_SECONDS_NO_SCROLL, EXIT_SECONDS, QUIET_DAYS_FIRST, QUIET_DAYS_REPEAT, SCROLL_PX, SECOND_PAGE_SECONDS, SETTLE_SECONDS, arrivedAsSubscriber, isQuiet, isReadingPage, nextDismissal, parseDismissal, shouldShowPrompt, type PromptState } from '../prompt-rules'
+import { ENGAGED_SECONDS, ENGAGED_SECONDS_NO_SCROLL, EXIT_SECONDS, POST_SECONDS, QUIET_DAYS_FIRST, QUIET_DAYS_REPEAT, SCROLL_PX, SECOND_PAGE_SECONDS, SETTLE_SECONDS, arrivedAsSubscriber, arrivedFromPost, isQuiet, isReadingPage, nextDismissal, parseDismissal, shouldShowPrompt, type PromptState } from '../prompt-rules'
 
 const DAY = 24 * 60 * 60 * 1000
 const NOW = Date.UTC(2026, 9, 8)
@@ -75,5 +75,24 @@ describe('a visitor arriving from the email', () => {
     expect(arrivedAsSubscriber({ source: 'newsletter', medium: 'email', campaign: 'forward' })).toBe(false)
     expect(arrivedAsSubscriber({ source: 'newsletter', medium: 'share' })).toBe(false)
     expect(arrivedAsSubscriber({ source: 'tiktok', medium: 'bio' })).toBe(false)
+  })
+})
+
+describe('a reader who came over from one of our posts', () => {
+  it('is known by the network, and by whether they landed on a story', () => {
+    expect(arrivedFromPost({ source: 'linkedin', medium: 'social', path: '/story/abc' })).toEqual({ network: 'LinkedIn', story: true })
+    expect(arrivedFromPost({ source: 'tiktok', medium: 'bio', path: '/' })).toEqual({ network: 'TikTok', story: false })
+  })
+  it('nobody else is: search, direct, the email, a network we do not post on, a name borrowed from Object', () => {
+    for (const source of ['google', 'direct', 'newsletter', 'instagram', 'x', 'constructor', 'toString', undefined]) expect(arrivedFromPost({ source, path: '/story/abc' })).toBeNull()
+  })
+  it('is asked sooner, scroll or none, and under every other rule as before', () => {
+    const fresh = { ...ready, scrolledPx: 0, engagedSeconds: POST_SECONDS, secondsOnPage: POST_SECONDS }
+    expect(shouldShowPrompt(fresh)).toBe(false)
+    expect(shouldShowPrompt({ ...fresh, fromPost: true })).toBe(true)
+    expect(shouldShowPrompt({ ...fresh, fromPost: true, engagedSeconds: POST_SECONDS - 1 })).toBe(false)
+    expect(shouldShowPrompt({ ...fresh, fromPost: true, subscribed: true })).toBe(false)
+    expect(shouldShowPrompt({ ...fresh, fromPost: true, dismissal: { at: NOW - DAY, times: 1 } })).toBe(false)
+    expect(shouldShowPrompt({ ...fresh, fromPost: true, pathname: '/sponsor' })).toBe(false)
   })
 })

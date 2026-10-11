@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { SECTIONS, sectionHref } from "@/lib/news/sections"
 import { SubscribeLink } from "@/components/newsletter/SubscribeLink"
-import { SOCIAL } from "@/lib/brand/social"
+import { EDITOR, SOCIAL } from "@/lib/brand/social"
 
 const COMPANY_LINKS = [
   { label: "About", href: "/about" },
@@ -96,7 +96,7 @@ export function SiteFooter() {
             © {new Date().getFullYear()} FundOpsHQ · Headlines link to their original publishers
           </p>
           <a
-            href="https://www.linkedin.com/in/danny-bloomstine/"
+            href={EDITOR.href}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/60 transition-colors hover:text-foreground"
