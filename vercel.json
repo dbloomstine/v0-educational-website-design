@@ -41,6 +41,10 @@
     {
       "path": "/api/pipeline/sponsor-followup",
       "schedule": "0 13 * * *"
+    },
+    {
+      "path": "/api/pipeline/weekly-scorecard",
+      "schedule": "30 12 * * 1"
     }
   ]
 }

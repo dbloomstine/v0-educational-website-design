@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { SOCIAL } from '@/lib/brand/social'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
@@ -54,7 +55,8 @@ const organizationJsonLd = {
     name: 'Danny Bloomstine',
     url: 'https://www.linkedin.com/in/danny-bloomstine/',
   },
-  sameAs: ['https://www.linkedin.com/in/danny-bloomstine/'],
+  // The organisation's own accounts (lib/brand/social.ts); the founder's profile is his, above.
+  sameAs: SOCIAL.map((x) => x.href),
 }
 
 const websiteJsonLd = {

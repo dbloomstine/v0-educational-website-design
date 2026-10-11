@@ -3,6 +3,7 @@ import { ArrowRight } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { SECTIONS, sectionHref } from "@/lib/news/sections"
 import { SubscribeLink } from "@/components/newsletter/SubscribeLink"
+import { SOCIAL } from "@/lib/brand/social"
 
 const COMPANY_LINKS = [
   { label: "About", href: "/about" },
@@ -40,6 +41,19 @@ export function SiteFooter() {
               Get FundOps Daily
               <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
             </SubscribeLink>
+            {/* The same stories go out each day as posts: a quiet line, for the reader who would rather follow there. */}
+            <p className="mt-4 font-ui text-[12px] text-foreground/60">
+              Also daily on{" "}
+              {SOCIAL.map((x, i) => (
+                <span key={x.href}>
+                  {i > 0 ? " and " : ""}
+                  <a href={x.href} target="_blank" rel="noopener noreferrer" className="font-semibold text-foreground/80 underline decoration-foreground/25 underline-offset-2 transition-colors hover:text-foreground">
+                    {x.name}
+                  </a>
+                </span>
+              ))}
+              .
+            </p>
           </div>
 
           <nav aria-label="News by story">
