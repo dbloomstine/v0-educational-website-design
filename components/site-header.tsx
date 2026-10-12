@@ -1,13 +1,14 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Logo } from "@/components/logo"
-import { ArrowRight, ChevronLeft, ChevronRight, Search, X } from "lucide-react"
+import { ArrowRight, ChevronLeft, ChevronRight, Menu, Search, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { SECTIONS, sectionHref } from "@/lib/news/sections"
 import { openSignupCard } from "@/components/newsletter/SubscribePrompt"
+import { SiteMenu } from "@/components/site-menu"
 
 /**
  * Masthead + section tabs (2026-10 redesign).
@@ -50,6 +51,10 @@ const EVENTS_TAB = { label: "Events", href: "/events", match: (p: string) => p.s
 export function SiteHeader() {
   const pathname = usePathname() || "/"
   const [searchOpen, setSearchOpen] = useState(false)
+  // The phone's menu (components/site-menu.tsx), remembered with the page it was opened on: a new page shuts it.
+  const [menuAt, setMenuAt] = useState<string | null>(null)
+  const menuOpen = menuAt === pathname
+  const closeMenu = useCallback(() => setMenuAt(null), [])
   const searchRef = useRef<HTMLInputElement>(null)
   const stripRef = useRef<HTMLDivElement>(null)
   const activeRef = useRef<HTMLAnchorElement>(null)
@@ -181,6 +186,18 @@ export function SiteHeader() {
         className="sticky top-0 z-50 w-full border-y border-foreground/15 bg-background/97 text-foreground shadow-[0_1px_0_rgba(0,0,0,0.12)] backdrop-blur supports-[backdrop-filter]:bg-background/90"
       >
         <div className="mx-auto flex max-w-[1320px] items-stretch">
+          {/* Phones only: everything on one screen. Here, on the pinned strip, so it is in reach wherever the reader is. */}
+          <button
+            type="button"
+            onClick={() => setMenuAt(pathname)}
+            aria-label="Menu"
+            aria-haspopup="dialog"
+            aria-expanded={menuOpen}
+            aria-controls="site-menu"
+            className="flex h-10 w-11 shrink-0 items-center justify-center border-r border-foreground/15 text-foreground/85 active:text-foreground md:hidden"
+          >
+            <Menu className="h-5 w-5" aria-hidden="true" />
+          </button>
           <div className="relative min-w-0 flex-1">
             <div ref={stripRef} className="tab-scroll flex items-stretch overflow-x-auto px-2 lg:px-4">
               {TABS.map((tab) => {
@@ -242,6 +259,18 @@ export function SiteHeader() {
           </Link>
         </div>
       </nav>
+
+      {/* Beside the strip, not inside it: the strip's blur would pin a fixed child to the strip. */}
+      {menuOpen && (
+        <SiteMenu
+          pathname={pathname}
+          onClose={closeMenu}
+          onSubscribe={() => {
+            closeMenu()
+            openSignupCard()
+          }}
+        />
+      )}
     </>
   )
 }

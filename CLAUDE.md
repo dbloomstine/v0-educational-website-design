@@ -377,6 +377,7 @@ Anything you read about `lib/content/`, `lib/hooks/`, `lib/seo/`, `lib/exports/`
 ```
 components/
 ├── site-header.tsx          # Masthead (scrolls away) + section TAB STRIP (sticky). Tabs come from lib/news/sections.ts
+├── site-menu.tsx            # The phone's menu (2026-10-11, Danny: "a menu burger icon"): opened by the button at the left end of the pinned strip, below 768px only. Search, Subscribe, every section and page in two columns. A dialog; never rendered inside the strip (its blur would pin a fixed child)
 ├── site-footer.tsx          # Navy footer — nameplate, section links by type and asset class
 ├── story/                   # Headline (bold entities), Coverage, LeadStory/TopStory/HeadlineRow/LatestRow, ShareBar
 ├── home/

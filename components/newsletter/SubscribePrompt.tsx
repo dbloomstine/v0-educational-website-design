@@ -134,6 +134,8 @@ export function SubscribePrompt() {
     setCameFrom(fromPost)
 
     const check = (leaving: boolean) => {
+      // Not over the phone's menu: the reader is on their way somewhere. The clock asks again a second later.
+      if (document.getElementById('site-menu')) return
       const show = shouldShowPrompt({
         fromPost: !!fromPost,
         pathname,
