@@ -88,6 +88,24 @@ export function openSignupCard(detail: Handed = {}): void {
   window.dispatchEvent(new CustomEvent(OPEN_SIGNUP_EVENT, { detail }))
 }
 
+/**
+ * The outreach emails' subscribe link carries the recipient's address as
+ * `?e=<base64url>` (lib/outreach/template.ts). Null on any failure — bad
+ * base64, not an email, a mangled share — so the field just starts empty.
+ */
+function decodePrefillEmail(): string | null {
+  try {
+    const token = new URLSearchParams(window.location.search).get('e')
+    if (!token) return null
+    const b64 = token.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = b64 + '==='.slice(0, (4 - (b64.length % 4)) % 4)
+    const decoded = atob(padded)
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(decoded) ? decoded : null
+  } catch {
+    return null
+  }
+}
+
 export function SubscribePrompt() {
   const pathname = usePathname() ?? '/'
   const [open, setOpen] = useState(false)
@@ -198,6 +216,18 @@ export function SubscribePrompt() {
     }
     window.addEventListener(OPEN_SIGNUP_EVENT, onRequest)
     return () => window.removeEventListener(OPEN_SIGNUP_EVENT, onRequest)
+  }, [])
+
+  // Until 2026-10-12 the homepage had a one-line subscribe band (`#subscribe`, removed on Danny's word: enough
+  // other places ask). The links that pointed at it still do — the Subscribe buttons' no-script href, the
+  // preferences and 404 pages, the unsubscribe email's "Resubscribe" — and the outreach emails' `?e=` deep-link
+  // pre-filled its field. Both land here now: the box opens, with the address in when the link carried one.
+  useEffect(() => {
+    const prefill = decodePrefillEmail()
+    if (prefill) sub.setEmail(prefill)
+    if (prefill || window.location.hash === '#subscribe') openSignupCard()
+    // Once, on arrival.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const finished = sub.status === 'success' || sub.status === 'already' || !!handed

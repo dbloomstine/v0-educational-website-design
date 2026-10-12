@@ -3,7 +3,6 @@ import { EDITOR, SOCIAL } from '@/lib/brand/social'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
-import { HeroSubscribe } from '@/components/home/hero-subscribe'
 import { EventsRail, LargestCloses, LatestRail, SectionBlock } from '@/components/home/Rail'
 import { LeadStory, SectionFlag, TopStory } from '@/components/story/StoryBlocks'
 import { StickySubscribeBar } from '@/components/news/StickySubscribeBar'
@@ -132,8 +131,6 @@ export default async function HomePage() {
 
       <main id="main-content" className="paper flex-1">
         <h1 className="sr-only">FundOpsHQ — fund news, events and the FundOps Daily newsletter</h1>
-        <HeroSubscribe />
-
         <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-4 lg:px-6">
           <InTheNews firms={inTheNews} />
           <SponsorStrip className="mb-5" />

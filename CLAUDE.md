@@ -53,8 +53,9 @@ The site was aggressively consolidated on 2026-04-10. These are the public route
 ```
 /                       → The FRONT PAGE (redesigned 2026-10-01 as a news site, not a feed).
                            Server-rendered from lib/news/stories.ts, revalidate 600:
-                           · HeroSubscribe (now a one-line subscribe band; anchor #subscribe, input #newsletter-email)
                            · "Firms in the news" line, then the sponsor strip (see "Sponsors" below)
+                             (the one-line subscribe band above them was removed 2026-10-12, Danny: enough other
+                             places ask; `/#subscribe` and the outreach `?e=` link now open the signup box)
                            · LeadStory + six TopStory (ranked: size, coverage breadth, source tier, recency)
                            · rail: the fundraising chart, Latest, Largest closes (7 days), Events (week ahead)
                            · section blocks by story type, then by asset class; a story appears once per page
@@ -381,9 +382,8 @@ components/
 ├── site-footer.tsx          # Navy footer — nameplate, section links by type and asset class
 ├── story/                   # Headline (bold entities), Coverage, LeadStory/TopStory/HeadlineRow/LatestRow, ShareBar
 ├── home/
-│   ├── hero-subscribe.tsx   # One-line subscribe band under the tabs (homepage only)
 │   ├── Rail.tsx             # LatestRail, LargestCloses, EventsRail, SectionBlock
-│   ├── InTheNews.tsx        # "Firms in the news" line under the subscribe band
+│   ├── InTheNews.tsx        # "Firms in the news" line at the top of the front page
 │   └── live-show-feature.tsx # "Channel 02" broadcast section with latest video
 ├── charts/
 │   └── FundraisingChart.tsx # The rail chart (client). Hover explores, click pins — see below
@@ -506,7 +506,7 @@ Danny asked for "a polite gentle pop up" with "a few boxes for which strategies"
 
 Every first signup records how the visitor arrived, so the owner can tell which surface produces subscribers.
 
-- **Captured** in the browser on the first page view of a session (`SignupSourceCapture` in the root layout → `lib/newsletter/signup-source.ts`), kept in `sessionStorage` under `fops_signup_src` (no cookie, no script, no banner), and sent as `attribution` by the three subscribe forms (`hero-subscribe`, `SubscribeWidget`, `MidFeedSubscribeCTA`). It is first-touch: later pages in the session do not change it.
+- **Captured** in the browser on the first page view of a session (`SignupSourceCapture` in the root layout → `lib/newsletter/signup-source.ts`), kept in `sessionStorage` under `fops_signup_src` (no cookie, no script, no banner), and sent as `attribution` by every subscribe form (the signup box, `SubscribeWidget`, `MidFeedSubscribeCTA`; the homepage band `hero-subscribe` until 2026-10-12). It is first-touch: later pages in the session do not change it.
   - `source`: `utm_source` if present, else the referrer reduced to `tiktok`, `linkedin`, `instagram`, `facebook`, `x`, `google`, `bing`, `duckduckgo`, another site's bare host (`reddit.com`), or `direct` (no referrer, or our own site). `medium` and `campaign` come from `utm_medium` and `utm_campaign`. `path` is the first path landed on, without query or hash.
   - Links already in the wild are read too: `?ref=fwd` (the "Forwarded to you?" link in the email) is `newsletter / email / forward`, `?ref=share` is `newsletter / share`, and the outreach emails' `?e=` link is `outreach / email`. A click from Gmail's website shows as `mail.google.com`, not `google`.
 - **Validated again on the server** (`sanitizeSignupSource`): lower-case; letters, digits, `.`, `-`, `_`; at most 40 characters (a path 120). Anything else is dropped, never stored.

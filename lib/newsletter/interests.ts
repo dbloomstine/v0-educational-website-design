@@ -34,7 +34,10 @@ export const ROLES = [
   { id: 'service_provider', label: 'Service provider' },
 ] as const
 
-/** Which form a signup came through. Kept on the row so each form's yield can be counted. */
+/**
+ * Which form a signup came through. Kept on the row so each form's yield can be counted.
+ * `hero` was the homepage's one-line band, removed 2026-10-12; the value stays for the rows that carry it.
+ */
 export const SIGNUP_FORMS = ['popup', 'hero', 'feed', 'widget', 'rail'] as const
 
 /** The known ids among whatever was sent, once each, in list order. */

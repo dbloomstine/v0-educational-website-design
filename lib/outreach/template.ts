@@ -134,8 +134,8 @@ function buildStoryHook(article: Article, firmShort: string): string {
 
 /**
  * Encode the recipient email as a URL-safe base64 deep-link parameter.
- * The homepage's HeroSubscribe reads ?e=<token>, decodes, and pre-fills
- * the subscribe form + swaps the button to a one-click "Subscribe <email>".
+ * The site's signup box (components/newsletter/SubscribePrompt.tsx) reads
+ * ?e=<token>, decodes it, opens with the address filled in.
  * Using base64url (not raw email) to keep the URL clean and keep emails
  * with special chars (+, %) out of the visible URL in link previews.
  */
