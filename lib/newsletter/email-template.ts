@@ -30,6 +30,7 @@ import { arrangeEdition, kickerParts, sizeWords, type TopPick } from './top-stor
 import { entityKey, keysMatch } from './story-links'
 import { pullFollowed } from './personalize'
 import { followLineHtml } from './follow-line'
+import { pickEventsForEmail } from './email-events'
 
 interface TemplateParams {
   groups: ArticleGroup[]
@@ -509,21 +510,24 @@ function renderEvent(event: IndustryEvent): string {
 function renderEventsSection(events: IndustryEvent[]): string {
   if (events.length === 0) return ''
 
-  // Group consecutive events by start date — the list arrives date-sorted.
-  const days: { heading: string; events: IndustryEvent[] }[] = []
-  for (const event of events) {
-    const heading = formatEventDayHeading(event.startDate)
-    const last = days[days.length - 1]
-    if (last && last.heading === heading) last.events.push(event)
-    else days.push({ heading, events: [event] })
-  }
+  // Grouped by day, each day cut to its best two (lib/newsletter/email-events.ts; 2026-10-12, Danny: the
+  // whole week was "too long"). The rest of a day is a count that leads to the calendar.
+  const days = pickEventsForEmail(events, (e) => formatEventDayHeading(e.startDate))
 
   const dayBlocks = days
     .map(
       (day) => `
               <div class="fops-eday">${escapeHtml(day.heading)}</div>
               <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
-                ${day.events.map(renderEvent).join('')}
+                ${day.shown.map(renderEvent).join('')}${
+                  day.more > 0
+                    ? `
+                <tr>
+                  <td class="fops-etd"></td>
+                  <td class="fops-ecell"><a href="https://fundopshq.com/events" class="fops-emeta" style="color:${INK_MUTED};text-decoration:underline;" target="_blank">${day.more === 1 ? 'One more' : `${day.more} more`} on the calendar</a></td>
+                </tr>`
+                    : ''
+                }
               </table>`,
     )
     .join('')
