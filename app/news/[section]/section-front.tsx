@@ -11,7 +11,8 @@ import { LeadStory, RiverRow, SectionFlag, TopStory } from '@/components/story/S
 import { loadStories, STORY_WINDOW_DAYS } from '@/lib/news/front-page'
 import { rankSection, type Story } from '@/lib/news/stories'
 import { ASSET_LABEL, KIND_LABEL, SECTIONS, SECTION_BY_SLUG, sectionHref, sectionNoun, storyInSection } from '@/lib/news/sections'
-import { OG_IMAGES } from '@/lib/seo'
+import { OG_IMAGES, breadcrumbJsonLd } from '@/lib/seo'
+import { jsonLdScript } from '@/lib/news/story-jsonld'
 import { FilterTabs } from '@/components/news/FilterTabs'
 import { FundraisingChart } from '@/components/charts/FundraisingChart'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
@@ -123,10 +124,13 @@ export async function SectionFront({ slug, facetKey }: { slug: string; facetKey?
     url: `https://fundopshq.com${sectionHref(slug)}`,
     isPartOf: { '@type': 'WebSite', name: 'FundOpsHQ', url: 'https://fundopshq.com' },
   }
+  // A cut is a view of its section, so its breadcrumb ends at the section too.
+  const breadcrumbs = breadcrumbJsonLd([{ name: section.title }])
 
   return (
     <div className="flex min-h-screen flex-col">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbs) }} />
       <SiteHeader />
 
       <main id="main-content" className="paper flex-1">

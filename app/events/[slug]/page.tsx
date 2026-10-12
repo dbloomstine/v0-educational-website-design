@@ -17,7 +17,8 @@ import {
 import { googleCalendarUrl } from '@/lib/events/ics'
 import { CATEGORY_LABELS } from '@/lib/news/constants'
 import { cn } from '@/lib/utils'
-import { OG_IMAGES } from '@/lib/seo'
+import { breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
+import { jsonLdScript } from '@/lib/news/story-jsonld'
 import { Panel } from '@/components/story/StoryBlocks'
 import type { IndustryEvent } from '@/lib/events/types'
 
@@ -37,21 +38,22 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: { absolute: title },
       description: collection.blurb,
       alternates: { canonical: `https://fundopshq.com/events/${slug}` },
-      openGraph: { title, description: collection.blurb, type: 'website', url: `https://fundopshq.com/events/${slug}`, images: OG_IMAGES },
+      ...shareCard(title, collection.blurb, `/events/${slug}`),
     }
   }
   const event = await queryEventBySlug(slug)
   if (!event) return { title: 'Event not found' }
   const dates = formatEventDates(event.startDate, event.endDate)
   const title = `${event.name} — ${dates} | FundOpsHQ Events`
+  // The organiser's description is cut to a search result's length (it was sent whole, up to 300 characters).
   const description = event.description
-    ? event.description.slice(0, 300)
+    ? metaDescription(event.description)
     : `${event.name} by ${event.organizerName}, ${dates}${event.city ? ` in ${event.city}` : ''}. Dates verified by FundOpsHQ.`
   return {
     title: { absolute: title },
     description,
     alternates: { canonical: `https://fundopshq.com/events/${slug}` },
-    openGraph: { title, description, type: 'website', url: `https://fundopshq.com/events/${slug}`, images: OG_IMAGES },
+    ...shareCard(title, description, `/events/${slug}`),
   }
 }
 
@@ -123,7 +125,7 @@ async function CollectionPage({ collection }: { collection: EventCollection }) {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
       <SiteHeader />
       <main id="main-content" className="paper flex-1">
         <div className="band">
@@ -206,10 +208,13 @@ function EventDetailPage({ event, related }: { event: IndustryEvent; related: In
     organizer: { '@type': 'Organization', name: event.organizerName },
     url: `https://fundopshq.com/events/${event.slug}`,
   }
+  // Front page → Events → this event, as the "All events" link above the name reads.
+  const breadcrumbs = breadcrumbJsonLd([{ name: 'Events', path: '/events' }, { name: event.name }])
 
   return (
     <div className="flex min-h-screen flex-col">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbs) }} />
       <SiteHeader />
       <main id="main-content" className="paper flex-1">
         <div className="band">

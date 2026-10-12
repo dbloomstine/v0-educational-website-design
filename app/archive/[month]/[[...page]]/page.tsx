@@ -9,7 +9,8 @@ import { SubscribePanel } from '@/components/home/Rail'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { ArchiveList } from '@/components/archive/ArchiveList'
 import { archiveHref, isArchiveMonth, loadArchiveMonth, monthLabel, parseArchivePath, shiftMonth } from '@/lib/news/archive'
-import { OG_IMAGES } from '@/lib/seo'
+import { OG_IMAGES, breadcrumbJsonLd } from '@/lib/seo'
+import { jsonLdScript } from '@/lib/news/story-jsonld'
 
 // One month of the archive: the stories with a fuller summary, newest first,
 // fifty to a page. /archive/2026-10 is the first page, /archive/2026-10/2 the
@@ -64,9 +65,12 @@ export default async function ArchiveMonthPage(props: Params) {
   const label = monthLabel(month)
   const earlier = shiftMonth(month, -1)
   const later = shiftMonth(month, 1)
+  // Front page → Archive → the month; a later page of the month is still the month.
+  const breadcrumbs = breadcrumbJsonLd([{ name: 'Archive', path: '/archive' }, { name: label }])
 
   return (
     <div className="flex min-h-screen flex-col">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbs) }} />
       <SiteHeader />
 
       <main id="main-content" className="paper flex-1">

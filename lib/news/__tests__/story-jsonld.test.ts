@@ -27,7 +27,7 @@ describe('the story’s structured data', () => {
     expect(ld.image).toEqual([`https://fundopshq.com/story/${story.id}/opengraph-image`])
     expect(storyImageUrl(story)).toBe(ld.image[0])
     expect(ld.author).toEqual({ '@type': 'Organization', name: 'FundOpsHQ', url: 'https://fundopshq.com' })
-    expect(ld.publisher).toEqual(ld.author)
+    expect(ld.publisher).toEqual({ ...ld.author, logo: { '@type': 'ImageObject', url: 'https://fundopshq.com/apple-icon.png', width: 180, height: 180 } })
     // It says what it is based on, and does not claim the publisher's article as its own text.
     expect(ld.isBasedOn).toBe('https://example.com/original')
     expect(ld).not.toHaveProperty('articleBody')

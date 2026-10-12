@@ -4,12 +4,17 @@ import { ArrowLeft } from 'lucide-react'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { SubmitEventForm } from '@/components/events/SubmitEventForm'
+import { shareCard } from '@/lib/seo'
+
+const DESCRIPTION =
+  'Submit a private markets industry event — conference, forum, webinar, or networking — for the FundOpsHQ events calendar. Free listings, dates verified before publishing.'
 
 export const metadata: Metadata = {
   title: 'Submit an Event',
-  description:
-    'Submit a private markets industry event — conference, forum, webinar, or networking — for the FundOpsHQ events calendar. Free listings, dates verified before publishing.',
+  description: DESCRIPTION,
   alternates: { canonical: 'https://fundopshq.com/events/submit' },
+  // Without a card of its own the page shared as the homepage, address included.
+  ...shareCard('Submit an event | FundOpsHQ', DESCRIPTION, '/events/submit'),
 }
 
 export default function SubmitEventPage() {

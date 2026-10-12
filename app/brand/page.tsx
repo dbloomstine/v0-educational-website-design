@@ -5,17 +5,13 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { ArrowDownToLine, ArrowRight, Package } from 'lucide-react'
+import { shareCard } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Brand Kit',
   description:
     'Logos, monograms, patterns, backgrounds and posters for FundOpsHQ — free to download for press, partners, and guests.',
-  openGraph: {
-    title: 'FundOpsHQ Brand Kit',
-    description: 'Logos, monograms, patterns and backgrounds for FundOpsHQ.',
-    type: 'website',
-    url: 'https://fundopshq.com/brand',
-  },
+  ...shareCard('FundOpsHQ Brand Kit', 'Logos, monograms, patterns and backgrounds for FundOpsHQ.', '/brand'),
   alternates: {
     canonical: 'https://fundopshq.com/brand',
   },

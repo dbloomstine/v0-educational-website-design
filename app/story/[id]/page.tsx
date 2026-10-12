@@ -24,6 +24,7 @@ import { rankSection, type Story } from '@/lib/news/stories'
 import { ASSET_LABEL, homeSectionFor, sectionHref, storyInSection } from '@/lib/news/sections'
 import { kickerLabel, sizeLabel, stageLabel } from '@/lib/news/format'
 import { entityKey, keysMatch } from '@/lib/newsletter/story-links'
+import { breadcrumbJsonLd } from '@/lib/seo'
 
 export const revalidate = 1800
 
@@ -138,10 +139,13 @@ export default async function StoryPage({ params }: Params) {
   })
 
   const jsonLd = storyJsonLd(story, long?.at)
+  // Where the page sits: front page, its section (the kicker above the headline), the story.
+  const breadcrumbs = breadcrumbJsonLd([...(section ? [{ name: section.title, path: sectionHref(section.slug) }] : []), { name: story.headline }])
 
   return (
     <div className="flex min-h-screen flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbs) }} />
       <SiteHeader />
 
       <main id="main-content" className="paper flex-1">

@@ -13,7 +13,8 @@ import type { Story } from '@/lib/news/stories'
 import { LEAGUE_ASSET_LABEL as ASSET_LABEL, STAGE_LABEL } from '@/lib/news/league'
 import { KIND_LABEL } from '@/lib/news/sections'
 import { sizeLabel, totalLabel } from '@/lib/news/format'
-import { OG_IMAGES } from '@/lib/seo'
+import { OG_IMAGES, breadcrumbJsonLd } from '@/lib/seo'
+import { jsonLdScript } from '@/lib/news/story-jsonld'
 
 // A firm's page: every story we have carried about it in the past year, and
 // the fund closes among them. Reached from the league tables, the lead
@@ -64,9 +65,12 @@ export default async function FirmPage({ params }: Params) {
     finals.length > 0 ? `${finals.length} final ${finals.length === 1 ? 'close' : 'closes'} totalling ${totalLabel(capital)}` : null,
     firm.mentions.length > 0 ? `named in ${firm.mentions.length} more` : null,
   ].filter(Boolean)
+  // Front page → Firms → this firm, as the header above the name reads.
+  const breadcrumbs = breadcrumbJsonLd([{ name: 'Firms', path: '/firms' }, { name: firm.name }])
 
   return (
     <div className="flex min-h-screen flex-col">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbs) }} />
       <SiteHeader />
 
       <main id="main-content" className="paper flex-1">

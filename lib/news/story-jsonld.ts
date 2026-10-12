@@ -29,6 +29,8 @@ export function storyJsonLd(story: Story, modifiedAt?: string | null) {
   const modified = modifiedAt ? new Date(modifiedAt).getTime() : NaN
   const dateModified = Number.isNaN(modified) || modified < published ? story.firstSeen : new Date(modified).toISOString()
   const organization = { '@type': 'Organization', name: 'FundOpsHQ', url: SITE }
+  // The publisher carries a logo too (public/apple-icon.png, 180 × 180): the mark a search result shows beside the outlet's name.
+  const publisher = { ...organization, logo: { '@type': 'ImageObject', url: `${SITE}/apple-icon.png`, width: 180, height: 180 } }
   return {
     '@context': 'https://schema.org',
     '@type': 'NewsArticle',
@@ -41,7 +43,7 @@ export function storyJsonLd(story: Story, modifiedAt?: string | null) {
     image: [storyImageUrl(story)],
     isBasedOn: story.url,
     author: organization,
-    publisher: organization,
+    publisher,
   }
 }
 

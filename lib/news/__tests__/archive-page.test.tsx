@@ -47,6 +47,10 @@ describe('a month of the archive', () => {
     expect(screen.getByRole('link', { name: 'Headline 1' }).getAttribute('href')).toBe(`/story/${entry(1).id}`)
     expect(document.querySelectorAll('time[datetime="2026-10-09"]').length).toBe(2)
     expect(loadMonth).toHaveBeenCalledWith('2026-10', 1)
+    // And tells a search engine where it sits: front page → Archive → the month.
+    const crumbs = JSON.parse(document.querySelector('script[type="application/ld+json"]')!.textContent!)
+    expect(crumbs['@type']).toBe('BreadcrumbList')
+    expect(crumbs.itemListElement.map((c: { name: string }) => c.name)).toEqual(['FundOpsHQ', 'Archive', 'October 2026'])
   })
 
   it('pages through a long month by path, never by query string', async () => {

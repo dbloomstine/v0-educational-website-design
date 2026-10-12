@@ -9,17 +9,13 @@ import { fetchBookingRows, getSiteSponsorState } from '@/lib/sponsor/bookings'
 import { PACKAGES, openMondays, usd } from '@/lib/sponsor/packages'
 import { SponsorBuilder } from '@/components/sponsor/SponsorBuilder'
 import { ReaderBeacon } from '@/components/sponsor/ReaderBeacon'
+import { shareCard } from '@/lib/seo'
 
 export const metadata: Metadata = {
   title: 'Sponsor FundOps Daily',
   description:
     'Sponsor the morning news brief read by GPs, LPs and fund service providers in private markets. Who reads it, what it costs, and a builder to write your ad, see it as it will run, and book it.',
-  openGraph: {
-    title: 'Sponsor FundOps Daily',
-    description: 'The morning news brief for private markets. Who reads it, what a sponsor gets, and how to book.',
-    type: 'website',
-    url: 'https://fundopshq.com/sponsor',
-  },
+  ...shareCard('Sponsor FundOps Daily', 'The morning news brief for private markets. Who reads it, what a sponsor gets, and how to book.', '/sponsor'),
   alternates: { canonical: 'https://fundopshq.com/sponsor' },
 }
 
