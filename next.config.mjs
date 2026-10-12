@@ -55,6 +55,12 @@ const nextConfig = {
       { source: '/roles/:path*', destination: '/about', permanent: true },
       { source: '/contact', destination: '/about', permanent: true },
       { source: '/newsletter', destination: '/#subscribe', permanent: true },
+      // Short addresses for the social profiles' link fields (2026-10-12), so a visit from a profile is counted
+      // as one (lib/newsletter/signup-source.ts reads the utm) and the signup box knows where the reader came from.
+      // Not permanent: where they land may change.
+      { source: '/tiktok', destination: '/?utm_source=tiktok&utm_medium=bio', permanent: false },
+      { source: '/linkedin', destination: '/?utm_source=linkedin&utm_medium=page', permanent: false },
+      { source: '/instagram', destination: '/?utm_source=instagram&utm_medium=bio', permanent: false },
     ]
   },
   async headers() {

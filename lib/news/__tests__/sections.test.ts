@@ -59,3 +59,15 @@ describe('sections', () => {
     for (const s of SECTIONS) expect(Boolean(s.kind) !== Boolean(s.assetClasses?.length), s.slug).toBe(true)
   })
 })
+
+describe('the short addresses for the social profiles', () => {
+  it('each sends the visitor home with the network and the medium in the address, and is not cached as permanent', async () => {
+    const { default: config } = await import('../../../next.config.mjs')
+    const redirects = (await config.redirects!()) as { source: string; destination: string; permanent: boolean }[]
+    for (const [path, source, medium] of [['/tiktok', 'tiktok', 'bio'], ['/linkedin', 'linkedin', 'page'], ['/instagram', 'instagram', 'bio']]) {
+      const r = redirects.find((x) => x.source === path)
+      expect(r?.destination).toBe(`/?utm_source=${source}&utm_medium=${medium}`)
+      expect(r?.permanent).toBe(false)
+    }
+  })
+})
