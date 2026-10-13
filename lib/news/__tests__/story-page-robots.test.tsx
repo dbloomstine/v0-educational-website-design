@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import type { Story } from '../stories'
+import { storyPath } from '../story-path'
 
 // What a story page tells search engines, with its neighbours stubbed. The rule
 // is decided at render from the story as it is then, so each case below is a
@@ -20,7 +21,10 @@ let story: Story = base
 let long: string | null = null
 let readFails = false
 
-vi.mock('next/navigation', () => ({ notFound: () => { throw new Error('NEXT_NOT_FOUND') } }))
+vi.mock('next/navigation', () => ({
+  notFound: () => { throw new Error('NEXT_NOT_FOUND') },
+  permanentRedirect: (to: string) => { throw new Error(`REDIRECT ${to}`) },
+}))
 vi.mock('@/lib/news/front-page', () => ({ getStory: async () => ({ story, all: [story] }) }))
 vi.mock('@/lib/supabase/client', () => ({ getSupabaseAdmin: () => ({}) }))
 vi.mock('@/lib/news/story-long', () => ({
@@ -40,9 +44,11 @@ vi.mock('@/components/story/ShareBar', () => ({ ShareBar: () => null }))
 vi.mock('@/components/story/StoryBlocks', () => ({ HeadlineRow: () => null, SectionFlag: () => null }))
 vi.mock('@/components/home/Rail', () => ({ LatestRail: () => null, SubscribePanel: () => null }))
 
+/** The segment of the story's canonical address: what a request at it hands the page as `id`. */
+const param = (s: Story) => storyPath(s).slice('/story/'.length)
 const meta = async () => {
   const { generateMetadata } = await import('@/app/story/[id]/page')
-  return generateMetadata({ params: Promise.resolve({ id: story.id }) })
+  return generateMetadata({ params: Promise.resolve({ id: param(story) }) })
 }
 const second = { source: 'Law360', url: 'https://example.com/law360', headline: 'Conversant wraps $845M fund' }
 
@@ -79,7 +85,7 @@ describe('a story page and search engines', () => {
     readFails = true
     const { render, screen } = await import('@testing-library/react')
     const { default: StoryPage } = await import('@/app/story/[id]/page')
-    render(await StoryPage({ params: Promise.resolve({ id: story.id }) }))
+    render(await StoryPage({ params: Promise.resolve({ id: param(story) }) }))
     expect(screen.getByText(base.summary as string)).toBeTruthy()
   })
 
@@ -87,7 +93,34 @@ describe('a story page and search engines', () => {
     const thin = await meta()
     story = { ...base, coverage: [second] }
     const rich = await meta()
-    expect(thin.alternates?.canonical).toBe(`https://fundopshq.com/story/${base.id}`)
+    expect(thin.alternates?.canonical).toBe('https://fundopshq.com/story/conversant-beats-debut-real-estate-fund-target-by-40-with-705m-close-00000000')
     expect(rich.alternates?.canonical).toBe(thin.alternates?.canonical)
+  })
+})
+
+// One address per story (2026-10-12): the uuid form every older link uses, a
+// member row's id, a stale slug — all are answered with a permanent redirect
+// to the slug address, and no metadata is written for the address left behind.
+describe('a story page at any other address', () => {
+  const canonical = '/story/conversant-beats-debut-real-estate-fund-target-by-40-with-705m-close-00000000'
+  const page = async (id: string) => {
+    const { default: StoryPage } = await import('@/app/story/[id]/page')
+    return StoryPage({ params: Promise.resolve({ id }) })
+  }
+
+  it('redirects the old /story/<uuid> link, permanently, to the slug address', async () => {
+    await expect(page(base.id)).rejects.toThrow(`REDIRECT ${canonical}`)
+    await expect(page(base.id.toUpperCase())).rejects.toThrow(`REDIRECT ${canonical}`)
+  })
+
+  it('redirects a stale or wrong slug with the right short id', async () => {
+    await expect(page('an-old-headline-00000000')).rejects.toThrow(`REDIRECT ${canonical}`)
+    await expect(page('00000000')).rejects.toThrow(`REDIRECT ${canonical}`)
+  })
+
+  it('serves the canonical address itself, and says nothing about an address it redirects', async () => {
+    await expect(page(param(base))).resolves.toBeTruthy()
+    const { generateMetadata } = await import('@/app/story/[id]/page')
+    expect(await generateMetadata({ params: Promise.resolve({ id: base.id }) })).toEqual({})
   })
 })

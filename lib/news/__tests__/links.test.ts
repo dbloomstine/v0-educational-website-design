@@ -12,7 +12,7 @@ import { join } from 'node:path'
  * at deploy, and it is what makes a tab open instantly.)
  */
 const ROOT = join(__dirname, '..', '..', '..')
-const ON_DEMAND = /^\{`\/story\/\$\{|^\{`\/firm\/\$\{|^\{`\/events\/\$\{(?:event|e)\.slug|^\{firmHref\(|^\{f\.href\}|^\{bar\.href\}|^\{archiveHref\(|^"\/archive"/
+const ON_DEMAND = /^\{`\/story\/\$\{|^\{storyPath(?:Of)?\(|^\{`\/firm\/\$\{|^\{`\/events\/\$\{(?:event|e)\.slug|^\{firmHref\(|^\{f\.href\}|^\{bar\.href\}|^\{archiveHref\(|^"\/archive"/
 
 function sources(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
@@ -75,6 +75,22 @@ describe('headlines in the story lists', () => {
 
   it('go through HeadlineLink, which prefetches nothing', () => {
     const link = readFileSync(join(ROOT, 'components/story/StoryLink.tsx'), 'utf8')
-    expect(link).toMatch(/href=\{`\/story\/\$\{story\.id\}`\} prefetch=\{false\}/)
+    expect(link).toMatch(/href=\{storyPath\(story\)\} prefetch=\{false\}/)
+  })
+})
+
+/**
+ * A story's address is built in one place (lib/news/story-path.ts, 2026-10-12).
+ * A template literal spelling `/story/${…}` in a page or component is a link
+ * to the uuid form, which now redirects: it should be storyPath(…) instead.
+ */
+describe('story addresses', () => {
+  it('are built by storyPath, never spelled out', () => {
+    const offenders: string[] = []
+    for (const file of [...sources(join(ROOT, 'app')), ...sources(join(ROOT, 'components'))]) {
+      const src = readFileSync(file, 'utf8')
+      for (const m of src.matchAll(/`[^`\n]*\/story\/\$\{[^`\n]*`/g)) offenders.push(`${file.replace(ROOT, '')}: ${m[0]}`)
+    }
+    expect(offenders).toEqual([])
   })
 })

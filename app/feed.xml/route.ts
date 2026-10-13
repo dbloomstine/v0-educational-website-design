@@ -1,9 +1,14 @@
 import { loadStories } from '@/lib/news/front-page'
 import { KIND_LABEL } from '@/lib/news/sections'
+import { storyPermalink } from '@/lib/news/story-jsonld'
 
 // RSS for people who read news in a reader. Each item is a story — one event,
 // however many outlets reported it — and links to our page for it, which
 // carries the summary and every publisher's report.
+//
+// The guid stays the uuid address it has always been (2026-10-12): a reader
+// that has seen an item must not see it again as new because the link changed
+// shape. It is still a working address — it redirects to the link.
 
 export const revalidate = 900
 
@@ -22,7 +27,7 @@ export async function GET() {
       const description = [s.summary, via ? `Reported by ${via}.` : null].filter(Boolean).join(' ')
       return `    <item>
       <title>${esc(s.headline)}</title>
-      <link>https://fundopshq.com/story/${s.id}</link>
+      <link>${storyPermalink(s)}</link>
       <guid isPermaLink="true">https://fundopshq.com/story/${s.id}</guid>
       <pubDate>${new Date(s.firstSeen).toUTCString()}</pubDate>
       <category>${esc(KIND_LABEL[s.kind])}</category>

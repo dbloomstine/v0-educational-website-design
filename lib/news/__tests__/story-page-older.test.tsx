@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import type { Story } from '../stories'
+import { storyPath } from '../story-path'
 
 // An older story's page, with its neighbours stubbed: which stories it puts in
 // its rails, and that none of them is today's.
@@ -23,7 +24,7 @@ let found: { story: Story; all: Story[]; older?: { siblings: Story[] } } | null
 let day: Story[] | Error = []
 const loadDay = vi.fn(async (d: string) => { if (day instanceof Error) throw day; void d; return day })
 
-vi.mock('next/navigation', () => ({ notFound: () => { throw new Error('NEXT_NOT_FOUND') }, useRouter: () => ({}), usePathname: () => '/', useSearchParams: () => new URLSearchParams() }))
+vi.mock('next/navigation', () => ({ notFound: () => { throw new Error('NEXT_NOT_FOUND') }, permanentRedirect: (to: string) => { throw new Error(`REDIRECT ${to}`) }, useRouter: () => ({}), usePathname: () => '/', useSearchParams: () => new URLSearchParams() }))
 vi.mock('@/lib/news/front-page', () => ({ getStory: async () => found }))
 vi.mock('@/lib/news/older-story', async () => {
   const actual = await vi.importActual<typeof import('@/lib/news/older-story')>('@/lib/news/older-story')
@@ -45,7 +46,8 @@ vi.mock('@/components/home/Rail', () => ({ LatestRail: () => <aside>Latest rail<
 
 async function renderPage() {
   const { default: StoryPage } = await import('@/app/story/[id]/page')
-  render(await StoryPage({ params: Promise.resolve({ id: OLD.id }) }))
+  // At its canonical address (lib/news/story-path.ts); the uuid form would redirect.
+  render(await StoryPage({ params: Promise.resolve({ id: storyPath(OLD).slice('/story/'.length) }) }))
 }
 const rows = () => screen.queryAllByTestId('row').map((r) => r.textContent)
 
@@ -102,7 +104,7 @@ describe('an older story’s page', () => {
     const ld = JSON.parse(document.querySelector('script[type="application/ld+json"]')!.textContent as string)
     expect(ld.dateModified).toBe('2026-09-11T10:00:00.000Z')
     expect(ld.description).toBe(OLD.summary)
-    expect(ld.image).toEqual([`https://fundopshq.com/story/${OLD.id}/opengraph-image`])
+    expect(ld.image).toEqual([`https://fundopshq.com${storyPath(OLD)}/opengraph-image`])
     expect(ld.author.name).toBe('FundOpsHQ')
     expect(JSON.stringify(ld)).not.toContain('The fuller summary.')
   })

@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import type { ArchiveEntry } from '@/lib/news/archive'
+import { storyPath } from '@/lib/news/story-path'
 
 const shortDate = (iso: string) =>
   new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' })
@@ -18,7 +19,7 @@ export function ArchiveList({ entries }: { entries: ArchiveEntry[] }) {
             {e.firm && <span className="font-ui font-bold normal-case tracking-normal text-foreground/70"> · {e.firm}</span>}
           </p>
           <h3 className="mt-0.5 font-news text-[19px] font-medium leading-[1.2] tracking-[-0.01em] text-foreground">
-            <Link href={`/story/${e.id}`} prefetch={false} className="hl">{e.headline}</Link>
+            <Link href={storyPath(e)} prefetch={false} className="hl">{e.headline}</Link>
           </h3>
           <p className="mt-1 max-w-[70ch] font-news text-[15.5px] leading-[1.45] text-foreground/75">{e.blurb}</p>
         </li>

@@ -43,6 +43,10 @@ vi.mock('@/lib/news/archive', async () => {
 import sitemap from '../../../app/sitemap'
 import { SITEMAP_STORY_CAP } from '../archive'
 import { GLOSSARY_TERMS } from '../../glossary/terms'
+import { storyPath } from '../story-path'
+
+// Story addresses are the slug form (lib/news/story-path.ts): a sitemap lists the address a page answers at.
+const S2 = storyPath(STORIES[0])
 
 describe('the sitemap', () => {
   it('dates a page by when its content changed, never by when the sitemap was built', async () => {
@@ -59,7 +63,8 @@ describe('the sitemap', () => {
     expect(iso('/firm/oaktree')).toBe('2026-07-14T12:00:00.000Z')
     // An event: its row's last edit. A story: when it was first reported.
     expect(iso('/events/ilpa-summit-2026')).toBe('2026-09-10T15:00:00.000Z')
-    expect(iso('/story/s2')).toBe('2026-09-02T09:00:00.000Z')
+    expect(S2).toBe('/story/ares-management-closes-fund-s2')
+    expect(iso(S2)).toBe('2026-09-02T09:00:00.000Z')
     // The front page and a section: their newest story.
     expect(iso('/')).toBe('2026-09-02T09:00:00.000Z')
     expect(iso('/news/private-equity')).toBe('2026-09-02T09:00:00.000Z')
@@ -81,7 +86,7 @@ describe('the sitemap', () => {
   })
 
   describe('the archive', () => {
-    const written = (id: string, date: string, at: string | null) => ({ id, published_date: date, summary_long_at: at })
+    const written = (id: string, date: string, at: string | null) => ({ id, title: `Written ${id}`, tldr: null, source_name: 'PE Hub', published_date: date, summary_long_at: at })
 
     it('lists the archive pages and every story with a fuller summary, dated by when the summary was written', async () => {
       WRITTEN_ROWS = [
@@ -93,11 +98,12 @@ describe('the sitemap', () => {
       const byUrl = new Map(entries.map((e) => [e.url.replace('https://fundopshq.com', '') || '/', e]))
       const iso = (path: string) => (byUrl.get(path)?.lastModified as Date | undefined)?.toISOString()
 
-      expect(iso('/story/w-new')).toBe('2026-11-03T15:45:00.000Z')
-      expect(iso('/story/w-nodate')).toBe('2026-10-20T12:00:00.000Z') // the day it was published
-      // A story that is already listed is listed once, as it was.
-      expect(entries.filter((e) => e.url.endsWith('/story/s2'))).toHaveLength(1)
-      expect(iso('/story/s2')).toBe('2026-09-02T09:00:00.000Z')
+      // Addressed by the headline the site shows and the id, as the archive links them.
+      expect(iso('/story/written-w-new-w-new')).toBe('2026-11-03T15:45:00.000Z')
+      expect(iso('/story/written-w-nodate-w-nodate')).toBe('2026-10-20T12:00:00.000Z') // the day it was published
+      // A story that is already listed is listed once, as it was: by the in-window story's own address.
+      expect(entries.filter((e) => e.url.includes('-s2'))).toHaveLength(1)
+      expect(iso(S2)).toBe('2026-09-02T09:00:00.000Z')
 
       expect(iso('/archive')).toBe('2026-11-03T12:00:00.000Z')
       // Months, newest first in the span; each dated by its newest story, none by a guess.
@@ -109,14 +115,14 @@ describe('the sitemap', () => {
     it('stops at the cap', async () => {
       WRITTEN_ROWS = Array.from({ length: SITEMAP_STORY_CAP + 250 }, (_, i) => written(`w-${i}`, '2026-10-02', '2026-10-02T10:00:00Z'))
       const entries = await sitemap()
-      expect(entries.filter((e) => /\/story\/w-/.test(e.url))).toHaveLength(SITEMAP_STORY_CAP)
+      expect(entries.filter((e) => /\/story\/written-w-/.test(e.url))).toHaveLength(SITEMAP_STORY_CAP)
     })
 
     it('has no archive, and is otherwise the same, when nothing is written yet', async () => {
       WRITTEN_ROWS = []
       const entries = await sitemap()
       expect(entries.some((e) => e.url.includes('/archive'))).toBe(false)
-      expect(entries.some((e) => e.url.endsWith('/story/s2'))).toBe(true)
+      expect(entries.some((e) => e.url.endsWith(S2))).toBe(true)
     })
   })
 })

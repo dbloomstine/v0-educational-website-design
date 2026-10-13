@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { fetchDayStories, fetchOlderStory, firmWindow, olderRails, shiftDay, DAY_ROW_LIMIT, OLDER_DAYS_EITHER_SIDE, OLDER_ROW_LIMIT } from '../older-story'
+import { fetchDayStories, fetchOlderStory, fetchRowsByShortId, firmWindow, olderRails, shiftDay, DAY_ROW_LIMIT, OLDER_DAYS_EITHER_SIDE, OLDER_ROW_LIMIT } from '../older-story'
 import { buildStories, type Story } from '../stories'
 import { SECTION_BY_SLUG } from '../sections'
 
@@ -187,5 +187,26 @@ describe('a day’s stories', () => {
   it('are none for something that is not a day, and throw when the query fails', async () => {
     expect(await fetchDayStories(fakeDb([]).db, 'yesterday')).toEqual([])
     await expect(fetchDayStories(fakeDb([{ error: { message: 'boom' } }]).db, '2026-09-10')).rejects.toThrow('boom')
+  })
+})
+
+// A short id (lib/news/story-path.ts) finds its rows with one range scan on
+// the primary key: `id >= <short>-0000… and id <= <short>-ffff…`, no new index.
+describe('rows by short id', () => {
+  it('is one range query on the primary key, answering the headline the site shows', async () => {
+    const { db, queries } = fakeDb([{ data: [{ id: '3f9a2b7c-1d4e-4a6b-9c8d-0123456789ab', title: 'Ares Management closes $7bn credit fund', tldr: null, source_name: 'PE Hub' }] }])
+    const rows = await fetchRowsByShortId(db, '3f9a2b7c')
+    expect(rows).toEqual([{ id: '3f9a2b7c-1d4e-4a6b-9c8d-0123456789ab', headline: 'Ares Management closes $7bn credit fund' }])
+    const [q] = queries
+    expect(queries).toHaveLength(1)
+    expect(called(q, 'gte')).toEqual([['id', '3f9a2b7c-0000-0000-0000-000000000000']])
+    expect(called(q, 'lte')).toEqual([['id', '3f9a2b7c-ffff-ffff-ffff-ffffffffffff']])
+    expect(called(q, 'eq')).toEqual([['classification_status', 'complete']])
+    expect(called(q, 'limit')).toEqual([[5]])
+  })
+
+  it('answers nothing for an unknown prefix, and throws when the lookup fails', async () => {
+    expect(await fetchRowsByShortId(fakeDb([{ data: [] }]).db, 'deadbeef')).toEqual([])
+    await expect(fetchRowsByShortId(fakeDb([{ error: { message: 'timeout' } }]).db, 'deadbeef')).rejects.toThrow('timeout')
   })
 })

@@ -7,6 +7,7 @@ import { firmIndex } from '@/lib/news/firms'
 import { loadLeague } from '@/lib/news/league-data'
 import { archiveHref, loadArchiveSpan, loadSitemapStories, monthsBetween, type ArchiveSpan, type SitemapStory } from '@/lib/news/archive'
 import { GLOSSARY_TERMS, glossaryHref } from '@/lib/glossary/terms'
+import { storyPath } from '@/lib/news/story-path'
 
 /**
  * The sitemap, with HONEST dates.
@@ -87,7 +88,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const storyPages: MetadataRoute.Sitemap = stories
     .filter((s) => !s.roundup && s.coverage.length > 0)
     .map((s) => ({
-      url: `${baseUrl}/story/${s.id}`,
+      url: `${baseUrl}${storyPath(s)}`,
       lastModified: at(s.firstSeen),
       changeFrequency: 'daily' as const,
       priority: 0.5,
@@ -104,11 +105,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   } catch (err) {
     console.error('[sitemap] the archive could not be read, leaving it out:', err)
   }
-  const onPage = new Set(storyPages.map((p) => p.url))
+  // A story is listed once: an in-window story is matched by its id, since the
+  // written row may be a member of a story whose address is another row's.
+  const onPage = new Set(stories.flatMap((s) => [s.id, ...(s.memberIds ?? [])]))
   const writtenPages: MetadataRoute.Sitemap = written
-    .filter((s) => !onPage.has(`${baseUrl}/story/${s.id}`))
+    .filter((s) => !onPage.has(s.id))
     .map((s) => ({
-      url: `${baseUrl}/story/${s.id}`,
+      url: `${baseUrl}${storyPath(s)}`,
       // When the fuller summary was written; otherwise the day it was published.
       lastModified: at(s.at ?? s.date),
       changeFrequency: 'monthly' as const,

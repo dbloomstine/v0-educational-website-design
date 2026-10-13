@@ -7,6 +7,7 @@ import {
   barValue, barsFor, inWindow, usd,
   type Bar, type ChartClose, type ChartMeasure, type ChartPeriod, type ChartViewKey,
 } from '@/lib/news/chart-math'
+import { storyPathOf } from '@/lib/news/story-path'
 
 /**
  * Fundraising, charted — a small instrument a reader can play with.
@@ -152,7 +153,7 @@ function BarCard({
             <li key={c.id} className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-x-2 border-b border-border/60 py-[5px] last:border-0">
               <span className="min-w-0">
                 <Link prefetch={false} href={`/firm/${c.s}`} className="hl font-news text-[14.5px] font-bold leading-tight text-foreground">{c.f}</Link>
-                <Link prefetch={false} href={`/story/${c.id}`} title="The reports of this close" className="block truncate font-ui text-[11.5px] text-muted-foreground hover:text-foreground hover:underline">
+                <Link prefetch={false} href={storyPathOf(c.id, c.p)} title="The reports of this close" className="block truncate font-ui text-[11.5px] text-muted-foreground hover:text-foreground hover:underline">
                   {c.n ?? 'Fund not named'} · {shortDate(c.d)} · {c.o} {c.o === 1 ? 'source' : 'sources'}
                 </Link>
               </span>
@@ -165,7 +166,7 @@ function BarCard({
       <div className="border-t border-border bg-background px-2.5 py-1.5 font-ui text-[11.5px] leading-snug text-muted-foreground">
         {single ? (
           <p className="flex flex-wrap gap-x-4 gap-y-0.5">
-            <Link prefetch={false} href={`/story/${first.id}`} className={more}>The {first.o === 1 ? 'report' : `${first.o} reports`} →</Link>
+            <Link prefetch={false} href={storyPathOf(first.id, first.p)} className={more}>The {first.o === 1 ? 'report' : `${first.o} reports`} →</Link>
             <Link prefetch={false} href={`/firm/${first.s}`} className={more}>Everything on {first.f} →</Link>
           </p>
         ) : (

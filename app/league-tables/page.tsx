@@ -12,6 +12,8 @@ import { loadLeagueReport, LEAGUE_SINCE } from '@/lib/news/league-data'
 import { capitalByAsset, leagueRows, LEAGUE_ASSET_LABEL as ASSET_LABEL, LEAGUE_PERIODS, STAGE_LABEL, type FundClose, type LeaguePeriod } from '@/lib/news/league'
 import { sizeLabel, totalLabel } from '@/lib/news/format'
 import { OG_IMAGES } from '@/lib/seo'
+import { storyPath } from '@/lib/news/story-path'
+import { storyPermalink } from '@/lib/news/story-jsonld'
 
 // League tables: the largest fund closes, ranked. The rules for what gets in
 // are in lib/news/league.ts; `npx tsx scripts/league-audit.ts` checks them
@@ -85,7 +87,7 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
     '@type': 'ItemList',
     name: 'Largest private fund closes',
     url: 'https://fundopshq.com/league-tables',
-    itemListElement: shown.slice(0, 25).map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: `${c.firm}${c.fund ? ` — ${c.fund}` : ''} (${sizeLabel(c.sizeUsdM)})`, url: `https://fundopshq.com/story/${c.id}` })),
+    itemListElement: shown.slice(0, 25).map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: `${c.firm}${c.fund ? ` — ${c.fund}` : ''} (${sizeLabel(c.sizeUsdM)})`, url: storyPermalink(c) })),
   }
 
   return (
@@ -232,7 +234,7 @@ function Row({ c, rank, showStage }: { c: FundClose; rank: number; showStage: bo
         </Link>
         <span className="block font-ui text-[12px] leading-snug text-muted-foreground">
           {/* The fund's name opens our page for the close; the source cell is the citation and stays out. */}
-          {c.fund && <Link prefetch={false} href={`/story/${c.id}`} className="hl text-foreground/80">{c.fund}</Link>}
+          {c.fund && <Link prefetch={false} href={storyPath(c)} className="hl text-foreground/80">{c.fund}</Link>}
           {c.fund && showStage && ' · '}
           {showStage && STAGE_LABEL[c.stage]}
           {!c.fund && !showStage && 'Fund not named in the reports'}
@@ -250,7 +252,7 @@ function Row({ c, rank, showStage }: { c: FundClose; rank: number; showStage: bo
           {c.source ?? 'Report'}
         </a>
         {c.sources > 1 && (
-          <Link prefetch={false} href={`/story/${c.id}`} className="block whitespace-nowrap text-[11.5px] text-muted-foreground hover:text-foreground hover:underline">
+          <Link prefetch={false} href={storyPath(c)} className="block whitespace-nowrap text-[11.5px] text-muted-foreground hover:text-foreground hover:underline">
             {c.sources} sources
           </Link>
         )}

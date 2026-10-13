@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { barValue, barsBiggest, barsByManager, barsByMarket, barsByRegion, barsBySize, barsByWeek, barsFor, inWindow, mondayOf, usd, type ChartClose } from '../chart-math'
 
 let seq = 0
-const mk = (o: Partial<ChartClose>): ChartClose => ({ id: `c${++seq}`, f: 'Firm', s: 'firm', n: null, v: 100, d: '2026-09-20', a: 'PE', r: null, o: 1, ...o })
+const mk = (o: Partial<ChartClose>): ChartClose => ({ id: `c${++seq}`, p: 'firm-closes-fund', f: 'Firm', s: 'firm', n: null, v: 100, d: '2026-09-20', a: 'PE', r: null, o: 1, ...o })
 const TODAY = '2026-09-30' // a Wednesday
 const LABELS = { PE: 'Private equity', VC: 'Venture & growth', credit: 'Credit' }
 

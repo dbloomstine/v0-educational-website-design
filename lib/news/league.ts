@@ -28,11 +28,12 @@ import { entityKey, keysMatch } from '@/lib/newsletter/story-links'
 import { fundSizesMatch } from './story-dedup'
 import { headlineFigureFor, headlineMoney } from './money'
 import { barsByMarket, barsBySize, barsByWeek, SIZE_BANDS, type ChartClose } from './chart-math'
+import { storySlug } from './story-path'
 
 export type CloseStage = 'final' | 'first' | 'interim'
 
 export interface FundClose {
-  /** Story id — `/story/<id>` is the row's evidence page. */
+  /** Story id — `storyPath(close)` (lib/news/story-path.ts) is the row's evidence page. */
   id: string
   memberIds: string[]
   firm: string
@@ -647,7 +648,7 @@ export function leagueRows(all: FundClose[], f: LeagueFilter, nowMs: number): Fu
 /** A close, trimmed to what the chart needs and what is worth sending to the page. */
 export function toChartClose(c: FundClose): ChartClose {
   return {
-    id: c.id, f: c.firm, s: c.firmSlug, n: c.fund, v: c.sizeUsdM, d: c.date, a: c.assetClass, r: c.region, o: c.sources,
+    id: c.id, p: storySlug(c.headline), f: c.firm, s: c.firmSlug, n: c.fund, v: c.sizeUsdM, d: c.date, a: c.assetClass, r: c.region, o: c.sources,
     ...(c.converted ? { c: 1 as const } : {}),
     ...(c.altSizeUsdM ? { alt: c.altSizeUsdM } : {}),
   }

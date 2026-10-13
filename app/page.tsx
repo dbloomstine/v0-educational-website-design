@@ -19,12 +19,15 @@ import { composeFrontPage, rankSection } from '@/lib/news/stories'
 import { SECTIONS, sectionHref, storyInSection } from '@/lib/news/sections'
 import type { IndustryEvent } from '@/lib/events/types'
 
+// The front page's title is the one a search result shows for the brand: under
+// 60 characters (it was 76, and cut), brand first, "private markets news" in it.
+// `lib/__tests__/site-title.test.ts` holds the limit.
 export const metadata: Metadata = {
-  title: 'FundOpsHQ | News, Events & Daily Newsletter for the Investment Funds Industry',
+  title: { absolute: 'FundOpsHQ — Private Markets News and Daily Newsletter' },
   description:
-    'The hub for the investment funds industry. Real-time fund news, the verified industry events calendar, and the FundOps Daily morning newsletter — across PE, VC, private credit, real estate, and infrastructure.',
+    'Private markets news for GPs, LPs, and fund service providers: fund closes, deals, people moves and events, with the FundOps Daily morning newsletter.',
   openGraph: {
-    title: 'FundOpsHQ | News, Events & Daily Newsletter for the Investment Funds Industry',
+    title: 'FundOpsHQ — Private Markets News and Daily Newsletter',
     description:
       'The hub for the investment funds industry. Real-time fund news, the industry events calendar, and a morning newsletter — built for GPs, LPs, and fund service providers across private markets.',
     type: 'website',
@@ -32,7 +35,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FundOpsHQ | News, Events & Daily Newsletter for the Investment Funds Industry',
+    title: 'FundOpsHQ — Private Markets News and Daily Newsletter',
     description:
       'The hub for the investment funds industry — news, events, and the FundOps Daily newsletter. Built for GPs, LPs, and fund service providers across private markets.',
   },

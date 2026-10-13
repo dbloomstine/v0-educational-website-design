@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { jsonLdScript, storyImageUrl, storyJsonLd, storyPermalink } from '../story-jsonld'
 import { readLongSummaryDetail } from '../story-long'
+import { storyPath } from '../story-path'
 import type { Story } from '../stories'
 
 const story: Story = {
@@ -22,9 +23,11 @@ describe('the story’s structured data', () => {
     expect(ld.headline).toBe(story.headline)
     expect(ld.datePublished).toBe('2026-10-07T14:00:00Z')
     expect(ld.dateModified).toBe('2026-10-08T09:45:00.000Z')
-    expect(ld.url).toBe(`https://fundopshq.com/story/${story.id}`)
-    expect(ld.mainEntityOfPage).toEqual({ '@type': 'WebPage', '@id': `https://fundopshq.com/story/${story.id}` })
-    expect(ld.image).toEqual([`https://fundopshq.com/story/${story.id}/opengraph-image`])
+    // The slug address (lib/news/story-path.ts), everywhere the page names itself.
+    const permalink = 'https://fundopshq.com/story/conversant-beats-debut-real-estate-fund-target-by-40-with-705m-close-00000000'
+    expect(ld.url).toBe(permalink)
+    expect(ld.mainEntityOfPage).toEqual({ '@type': 'WebPage', '@id': permalink })
+    expect(ld.image).toEqual([`${permalink}/opengraph-image`])
     expect(storyImageUrl(story)).toBe(ld.image[0])
     expect(ld.author).toEqual({ '@type': 'Organization', name: 'FundOpsHQ', url: 'https://fundopshq.com' })
     expect(ld.publisher).toEqual({ ...ld.author, logo: { '@type': 'ImageObject', url: 'https://fundopshq.com/apple-icon.png', width: 180, height: 180 } })
@@ -49,7 +52,7 @@ describe('the story’s structured data', () => {
     const out = jsonLdScript(storyJsonLd({ ...story, headline: 'A </script><script>alert(1)</script> close' }))
     expect(out).not.toContain('</script>')
     expect(JSON.parse(out).headline).toBe('A </script><script>alert(1)</script> close')
-    expect(storyPermalink(story)).toBe(`https://fundopshq.com/story/${story.id}`)
+    expect(storyPermalink(story)).toBe(`https://fundopshq.com${storyPath(story)}`)
   })
 })
 

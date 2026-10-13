@@ -27,13 +27,14 @@
 import { unstable_cache } from 'next/cache'
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
-import { ALL_NEWSLETTER_TYPES } from '@/lib/newsletter/query-articles'
+import { ALL_NEWSLETTER_TYPES, plainHeadline } from '@/lib/newsletter/query-articles'
 import { entityKey, keysMatch } from '@/lib/newsletter/story-links'
 import { firmHref } from './league'
 import { firmLookup, lookupFilter } from './firm-lookup'
 import { storyInSection, type SectionDef } from './sections'
 import { buildStories, rankSection, type Story } from './stories'
 import { STORY_COLUMNS } from './story-columns'
+import { shortIdRange } from './story-path'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>
@@ -187,7 +188,44 @@ export function olderRails(
   return { sameFirm, moreInSection }
 }
 
+/** A row as a short id finds it: enough to tell two rows sharing a prefix apart by their headline. */
+export interface ShortIdRow {
+  id: string
+  headline: string
+}
+
+/**
+ * The rows whose id starts with a short id (lib/news/story-path.ts): a range
+ * scan on the primary key — `id >= <short>-0000… and id <= <short>-ffff…` —
+ * so it needs no index of its own and touches as many rows as share the
+ * prefix (none did, among 67,902, on 2026-10-12). Only rows the site would
+ * show are answered. The headline is the one the site shows (plainHeadline),
+ * so the slug made from it is the slug in the address.
+ */
+export async function fetchRowsByShortId(db: DbClient, short: string): Promise<ShortIdRow[]> {
+  const { lo, hi } = shortIdRange(short)
+  const { data, error } = await db
+    .from('news_items')
+    .select('id, title, tldr, source_name')
+    .gte('id', lo)
+    .lte('id', hi)
+    .eq('classification_status', 'complete')
+    .limit(5)
+  if (error) throw new Error(`short id lookup failed: ${error.message}`)
+  return ((data ?? []) as { id: string; title: string | null; tldr: string | null; source_name: string | null }[]).map((r) => ({
+    id: r.id,
+    headline: plainHeadline(r.title ?? '', r.tldr, r.source_name),
+  }))
+}
+
 // ─── What the site calls ────────────────────────────────────────────────────
+
+/** Which rows a short id names; kept a day, like the stories themselves. */
+export const loadRowsByShortId = unstable_cache(
+  (short: string): Promise<ShortIdRow[]> => fetchRowsByShortId(getSupabaseAdmin(), short),
+  ['short-id-rows-v1'],
+  { revalidate: 86_400, tags: ['stories'] },
+)
 
 /**
  * An old report does not change, so the answer — the story, or that there is

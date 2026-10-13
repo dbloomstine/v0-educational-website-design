@@ -15,6 +15,7 @@ import { KIND_LABEL } from '@/lib/news/sections'
 import { sizeLabel, totalLabel } from '@/lib/news/format'
 import { OG_IMAGES, breadcrumbJsonLd } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
+import { storyPath } from '@/lib/news/story-path'
 
 // A firm's page: every story we have carried about it in the past year, and
 // the fund closes among them. Reached from the league tables, the lead
@@ -107,7 +108,7 @@ export default async function FirmPage({ params }: Params) {
                             <td className="py-2 pl-3.5 pr-2 font-news text-[15.5px] leading-tight text-foreground">
                               {c.fund ? (
                                 // The fund's name opens our page for the close; the Source cell is the citation and stays out.
-                                <Link prefetch={false} href={`/story/${c.id}`} className="hl">{c.fund}</Link>
+                                <Link prefetch={false} href={storyPath(c)} className="hl">{c.fund}</Link>
                               ) : (
                                 <span className="text-muted-foreground">Not named in the reports</span>
                               )}
@@ -124,7 +125,7 @@ export default async function FirmPage({ params }: Params) {
                               <a href={c.url} {...OUTBOUND} title={c.headline} className="font-semibold text-foreground underline decoration-foreground/25 underline-offset-2 hover:decoration-foreground">
                                 {c.source ?? 'Report'}
                               </a>
-                              {c.sources > 1 && <Link prefetch={false} href={`/story/${c.id}`} className="ml-1.5 whitespace-nowrap text-[11.5px] text-muted-foreground hover:underline">+{c.sources - 1}</Link>}
+                              {c.sources > 1 && <Link prefetch={false} href={storyPath(c)} className="ml-1.5 whitespace-nowrap text-[11.5px] text-muted-foreground hover:underline">+{c.sources - 1}</Link>}
                             </td>
                           </tr>
                         ))}

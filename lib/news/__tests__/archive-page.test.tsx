@@ -44,7 +44,7 @@ describe('a month of the archive', () => {
     expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('October 2026')
     expect(screen.getByText('The first sentence of story 1.')).toBeTruthy()
     expect(screen.getAllByText(/Conversant Capital/).length).toBe(2)
-    expect(screen.getByRole('link', { name: 'Headline 1' }).getAttribute('href')).toBe(`/story/${entry(1).id}`)
+    expect(screen.getByRole('link', { name: 'Headline 1' }).getAttribute('href')).toBe('/story/headline-1-00000000')
     expect(document.querySelectorAll('time[datetime="2026-10-09"]').length).toBe(2)
     expect(loadMonth).toHaveBeenCalledWith('2026-10', 1)
     // And tells a search engine where it sits: front page → Archive → the month.

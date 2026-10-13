@@ -167,13 +167,16 @@ describe('the archive’s span', () => {
 })
 
 describe('the sitemap’s stories', () => {
-  it('are one query for the newest written rows, capped, with three small columns', async () => {
-    const { db, queries } = fakeDb([{ data: [{ id: 'a', published_date: '2026-10-09', summary_long_at: '2026-10-09T15:45:00Z' }, { id: 'b', published_date: '2026-10-08', summary_long_at: null }] }])
+  it('are one query for the newest written rows, capped, with the headline the address is made from', async () => {
+    const { db, queries } = fakeDb([{ data: [
+      { id: 'a', title: 'Headline A', tldr: null, source_name: 'PE Hub', published_date: '2026-10-09', summary_long_at: '2026-10-09T15:45:00Z' },
+      { id: 'b', title: 'Headline B', tldr: null, source_name: 'PE Hub', published_date: '2026-10-08', summary_long_at: null },
+    ] }])
     const rows = await fetchSitemapStories(db)
-    expect(rows).toEqual([{ id: 'a', date: '2026-10-09', at: '2026-10-09T15:45:00Z' }, { id: 'b', date: '2026-10-08', at: null }])
+    expect(rows).toEqual([{ id: 'a', headline: 'Headline A', date: '2026-10-09', at: '2026-10-09T15:45:00Z' }, { id: 'b', headline: 'Headline B', date: '2026-10-08', at: null }])
     const [q] = queries
     expect(queries).toHaveLength(1)
-    expect(called(q, 'select')).toEqual([['id, published_date, summary_long_at']])
+    expect(called(q, 'select')).toEqual([['id, title, tldr, source_name, published_date, summary_long_at']])
     expect(called(q, 'eq')).toEqual([['summary_long_status', 'written']])
     expect(called(q, 'order')[0]).toEqual(['published_date', { ascending: false }])
     expect(called(q, 'limit')).toEqual([[SITEMAP_STORY_CAP]])

@@ -14,8 +14,10 @@
 
 /** What the chart needs to know about one close. Short keys: the list is sent to the page. */
 export interface ChartClose {
-  /** Story id: `/story/<id>` shows the reports. */
+  /** Story id. With `p`, its page: `storyPathOf(id, p)` (lib/news/story-path.ts) shows the reports. */
   id: string
+  /** The slug of the story's address, made from its headline on the server; the page need not carry the headline. */
+  p: string
   /** Manager. */
   f: string
   /** Its page: `/firm/<s>`. */

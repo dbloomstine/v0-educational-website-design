@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import type { Story } from '@/lib/news/stories'
+import { storyPath } from '@/lib/news/story-path'
 
 /** How every link out to a publisher opens: a new tab, with no hold on ours. */
 // `noopener` without `noreferrer`: the publisher's own figures then show that the reader came from us. An
@@ -9,7 +10,8 @@ export const OUTBOUND = { target: '_blank', rel: 'noopener' } as const
 
 /**
  * A story's headline, wherever one is listed. It opens OUR page for the story
- * (/story/<id>): the summary, every outlet that reported it, then the way out.
+ * (/story/<slug>-<short id>, lib/news/story-path.ts): the summary, every outlet
+ * that reported it, then the way out.
  * Decided 2026-10-08, on the owner's ask: a page of ours per story is what a
  * search engine can index, and the reader still gets to the publisher in one
  * click (SourceLink).
@@ -26,7 +28,7 @@ export function HeadlineLink({
   title,
   children,
 }: {
-  story: Pick<Story, 'id' | 'url' | 'roundup'>
+  story: Pick<Story, 'id' | 'headline' | 'url' | 'roundup'>
   className?: string
   title?: string
   children: React.ReactNode
@@ -39,7 +41,7 @@ export function HeadlineLink({
     )
   }
   return (
-    <Link href={`/story/${story.id}`} prefetch={false} title={title} className={className}>
+    <Link href={storyPath(story)} prefetch={false} title={title} className={className}>
       {children}
     </Link>
   )

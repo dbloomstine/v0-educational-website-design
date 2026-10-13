@@ -3,7 +3,7 @@ import { firmHref } from '@/lib/news/league'
 import type { Metadata } from 'next'
 import { cache } from 'react'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import { ArrowUpRight } from 'lucide-react'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
@@ -19,6 +19,7 @@ import { pageSummary } from '@/lib/news/story-summary'
 import { readLongSummaryDetail } from '@/lib/news/story-long'
 import { storyRobots } from '@/lib/news/story-index'
 import { jsonLdScript, storyJsonLd, storyPermalink } from '@/lib/news/story-jsonld'
+import { isCanonicalStoryParam, storyPath } from '@/lib/news/story-path'
 import { loadDayStories, olderRails } from '@/lib/news/older-story'
 import { rankSection, type Story } from '@/lib/news/stories'
 import { ASSET_LABEL, homeSectionFor, sectionHref, storyInSection } from '@/lib/news/sections'
@@ -62,6 +63,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { id } = await params
   const found = await loadStoryPage(id)
   if (!found) return { title: 'Story not found' }
+  // A request at any other address is redirected by the page; no metadata for it.
+  if (!isCanonicalStoryParam(id, found.story)) return {}
   const { story } = found
   const description = story.summary ?? `${story.headline} — reported by ${story.source ?? 'the original publisher'}.`
   const url = storyPermalink(story)
@@ -90,6 +93,11 @@ export default async function StoryPage({ params }: Params) {
   const { id } = await params
   const found = await loadStoryPage(id)
   if (!found) notFound()
+  // One address per story (lib/news/story-path.ts): a whole uuid — every link
+  // minted before 2026-10-12, in emails, posts and search results — a member
+  // row's id, a stale slug or odd casing all go, permanently, to the slug form.
+  const canonical = storyPath(found.story)
+  if (!isCanonicalStoryParam(id, found.story)) permanentRedirect(canonical)
   const { story, all, older, long } = found
   const nowMs = Date.now()
   // The fuller summary, when the job has written one for any row of the story.

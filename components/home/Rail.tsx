@@ -7,6 +7,7 @@ import { STAGE_LABEL, type FundClose } from '@/lib/news/league'
 import { Headline } from '@/components/story/Headline'
 import { LatestRow, MoreLink, Panel, SectionFlag } from '@/components/story/StoryBlocks'
 import { HeadlineLink, SourceLink } from '@/components/story/StoryLink'
+import { storyPath } from '@/lib/news/story-path'
 import { RailSubscribe } from '@/components/newsletter/RailSubscribe'
 
 /** The newest stories on the site, newest first. Front page and story pages. */
@@ -80,7 +81,7 @@ export function LargestCloses({ week }: { week: { rows: FundClose[]; finals: num
         {week.rows.map((c, i) => (
           <li key={c.id} className="border-b border-border/70 last:border-0">
             <Link
-              href={`/story/${c.id}`}
+              href={storyPath(c)}
               prefetch={false}
               title={c.headline}
               className="group grid grid-cols-[18px_minmax(0,1fr)_auto] items-baseline gap-2 py-[7px]"
@@ -134,7 +135,7 @@ export function LargestBySize({ label, stories, note = 'Past 7 days' }: { label:
         {stories.map((s, i) => (
           <li key={s.id} className="border-b border-border/70 last:border-0">
             <Link
-              href={`/story/${s.id}`}
+              href={storyPath(s)}
               prefetch={false}
               title={s.headline}
               className="group grid grid-cols-[18px_minmax(0,1fr)_auto] items-baseline gap-2 py-[7px]"

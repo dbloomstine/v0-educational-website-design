@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import type { Story } from '../stories'
+import { storyPath } from '../story-path'
 
 // The story page with its neighbours stubbed: what it puts under the headline, and what it leaves alone.
 let long: string | null = null
@@ -17,8 +18,10 @@ const story: Story = {
   leadEligible: true, roundup: false, firstSeen: '2026-10-07T14:00:00Z', publishedDate: '2026-10-07', weight: 1,
 }
 
-vi.mock('next/navigation', () => ({ notFound: () => { throw new Error('NEXT_NOT_FOUND') }, useRouter: () => ({}), usePathname: () => '/', useSearchParams: () => new URLSearchParams() }))
+vi.mock('next/navigation', () => ({ notFound: () => { throw new Error('NEXT_NOT_FOUND') }, permanentRedirect: (to: string) => { throw new Error(`REDIRECT ${to}`) }, useRouter: () => ({}), usePathname: () => '/', useSearchParams: () => new URLSearchParams() }))
 vi.mock('@/lib/news/front-page', () => ({ getStory: async () => ({ story, all: [story] }) }))
+// The page is asked for at its canonical address (lib/news/story-path.ts); any other redirects.
+const PARAM = storyPath(story).slice('/story/'.length)
 vi.mock('@/lib/supabase/client', () => ({ getSupabaseAdmin: () => ({}) }))
 vi.mock('@/lib/news/story-long', () => ({ readLongSummaryDetail: async () => (long ? { text: long, at: null } : null) }))
 vi.mock('@/components/sponsor/SponsorSlot', () => ({ SponsorStrip: () => null, SponsorCard: () => null }))
@@ -32,7 +35,7 @@ vi.mock('@/components/home/Rail', () => ({ LatestRail: () => null, SubscribePane
 
 async function renderPage() {
   const { default: StoryPage } = await import('@/app/story/[id]/page')
-  render(await StoryPage({ params: Promise.resolve({ id: story.id }) }))
+  render(await StoryPage({ params: Promise.resolve({ id: PARAM }) }))
 }
 
 beforeEach(() => { long = null })
@@ -79,7 +82,7 @@ describe('the story page summary', () => {
   it('leaves the meta description on the short summary', async () => {
     long = 'The long summary.'
     const { generateMetadata } = await import('@/app/story/[id]/page')
-    const meta = await generateMetadata({ params: Promise.resolve({ id: story.id }) })
+    const meta = await generateMetadata({ params: Promise.resolve({ id: PARAM }) })
     expect(meta.description).toBe(story.summary)
   })
 

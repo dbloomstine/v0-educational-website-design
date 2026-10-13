@@ -59,13 +59,15 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://fundopshq.com'),
+  // Under 60 characters, brand first, "private markets news" in it: a longer
+  // title (76 characters until 2026-10-12) is cut in a search result.
   title: {
-    default: "FundOpsHQ — News & Daily Newsletter for the Investment Funds Industry",
+    default: "FundOpsHQ — Private Markets News and Daily Newsletter",
     template: "%s | FundOpsHQ"
   },
   alternates: { types: { 'application/rss+xml': [{ url: '/feed.xml', title: 'FundOpsHQ' }] } },
   description:
-    "FundOpsHQ is the hub for the investment funds industry — home to the FundOps Daily news feed and morning newsletter. Built for GPs, LPs, and the fund service providers working in and around private markets.",
+    "FundOpsHQ is the hub for the investment funds industry: the FundOps Daily news feed and morning newsletter, built for GPs, LPs, and fund service providers.",
   keywords: [
     "investment funds",
     "private markets",
@@ -96,12 +98,12 @@ export const metadata: Metadata = {
     locale: 'en_US',
     url: 'https://fundopshq.com',
     siteName: 'FundOpsHQ',
-    title: 'FundOpsHQ — News & Daily Newsletter for the Investment Funds Industry',
+    title: 'FundOpsHQ — Private Markets News and Daily Newsletter',
     description: 'The hub for the investment funds industry. Home to the FundOps Daily news feed and morning newsletter — built for GPs, LPs, and fund service providers across private markets.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'FundOpsHQ — News & Daily Newsletter for the Investment Funds Industry',
+    title: 'FundOpsHQ — Private Markets News and Daily Newsletter',
     description: 'The hub for the investment funds industry. Built for GPs, LPs, and fund service providers across private markets.',
   },
   robots: {

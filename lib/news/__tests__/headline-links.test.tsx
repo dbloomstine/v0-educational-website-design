@@ -4,6 +4,7 @@ import type { Story } from '../stories'
 import type { FundClose } from '../league'
 import { LeadStory, TopStory, HeadlineRow, LatestRow, RiverRow } from '@/components/story/StoryBlocks'
 import { LatestRail, MostCovered, SectionBlock } from '@/components/home/Rail'
+import { storyPath } from '../story-path'
 
 // Where a headline goes. Decided 2026-10-08: to our page for the story, with
 // the outlet beside it as the way out to the publisher. Roundups, and the
@@ -28,7 +29,9 @@ const wire = mk({
 })
 const solo = mk({ id: '00000000-0000-4000-8000-000000000003', headline: 'Ares hires a head of ABF', url: 'https://pei.example/ares', source: 'PEI', coverage: [] })
 
-const STORY = `/story/${ID}`
+// The slug address (lib/news/story-path.ts), which every list builds with storyPath.
+const STORY = storyPath(story)
+const SOLO = storyPath(solo)
 // By the link's text content: a bold firm name leaves no space in the accessible name.
 const hrefOf = (name: RegExp | string) => {
   const hit = screen.getAllByRole('link').find((a) => (typeof name === 'string' ? a.textContent === name : name.test(a.textContent ?? '')))
@@ -65,7 +68,7 @@ describe('lead and top stories', () => {
 
   it('a story with one outlet still has its way out', () => {
     render(<TopStory story={solo} />)
-    expect(hrefOf(/Ares hires/)).toBe(`/story/${solo.id}`)
+    expect(hrefOf(/Ares hires/)).toBe(SOLO)
     expectOutbound(screen.getByRole('link', { name: 'PEI' }), solo.url)
   })
 })
@@ -87,14 +90,14 @@ describe('headline rows', () => {
   it('the Latest rail', () => {
     render(<LatestRail stories={[story, solo]} />)
     expect(hrefOf(/Conversant Capital closes/)).toBe(STORY)
-    expect(hrefOf(/Ares hires/)).toBe(`/story/${solo.id}`)
+    expect(hrefOf(/Ares hires/)).toBe(SOLO)
     expect(outbound()).toHaveLength(0)
   })
 
   it('a section block on the front page', () => {
     render(<SectionBlock label="Private equity" href="/news/private-equity" moreLabel="More" stories={[story, solo]} />)
     expect(hrefOf(/Conversant Capital closes/)).toBe(STORY)
-    expect(hrefOf(/Ares hires/)).toBe(`/story/${solo.id}`)
+    expect(hrefOf(/Ares hires/)).toBe(SOLO)
     expect(outbound()).toHaveLength(0)
   })
 })
@@ -203,7 +206,7 @@ describe('league tables and firm pages', () => {
     // the stories: headline in, outlet out; the wire goes out
     expect(hrefOf(/^Conversant Capital closes \$705m/)).toBe(STORY)
     expectOutbound(screen.getAllByRole('link', { name: /Field Notes/ })[0], wire.url)
-    expect(hrefOf(/Ares hires/)).toBe(`/story/${solo.id}`)
+    expect(hrefOf(/Ares hires/)).toBe(SOLO)
     expectOutbound(screen.getByRole('link', { name: 'PEI' }), solo.url)
   })
 })

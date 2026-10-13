@@ -10,7 +10,8 @@ import { buildOnce } from '@/lib/cache/build-once'
 import { ALL_NEWSLETTER_TYPES } from '@/lib/newsletter/query-articles'
 import { buildStories, type Story } from './stories'
 import { STORY_COLUMNS } from './story-columns'
-import { loadOlderStory, type OlderContext } from './older-story'
+import { loadOlderStory, loadRowsByShortId, type OlderContext } from './older-story'
+import { findStoryByRef, parseStoryParam, pickBySlug } from './story-path'
 
 /** Days of stories the site keeps "on the page". The archive lives at /news. */
 export const STORY_WINDOW_DAYS = 10
@@ -137,11 +138,19 @@ export async function searchStories(query: string): Promise<Story[]> {
  * outlet that reported it. `older` is set for those, and carries what the page
  * needs for its rails: stories of the same firm from about the same time.
  */
-export async function getStory(id: string): Promise<{ story: Story; all: Story[]; older?: OlderContext } | null> {
-  if (!/^[0-9a-f-]{36}$/i.test(id)) return null
+export async function getStory(param: string): Promise<{ story: Story; all: Story[]; older?: OlderContext } | null> {
+  // `param` is whatever followed /story/: a whole uuid (the old links) or
+  // `<slug>-<short id>` (lib/news/story-path.ts). The page compares the answer's
+  // canonical path with the address it was asked for, and redirects.
+  const ref = parseStoryParam(param)
+  if (!ref) return null
   const all = await loadStories()
-  const hit = all.find((s) => s.id === id || s.memberIds?.includes(id))
+  const hit = findStoryByRef(ref, all)
   if (hit) return { story: hit, all }
-  const older = await loadOlderStory(id.toLowerCase())
+  // Off the page: find the row (a short id is one small range scan on the
+  // primary key), then build the older story from it as before.
+  const id = ref.kind === 'uuid' ? ref.id : pickBySlug(await loadRowsByShortId(ref.short), ref.slug)?.id
+  if (!id) return null
+  const older = await loadOlderStory(id)
   return older ? { story: older.story, all, older: { siblings: older.siblings } } : null
 }

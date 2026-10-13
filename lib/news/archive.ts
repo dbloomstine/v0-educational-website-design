@@ -206,25 +206,37 @@ export async function fetchArchiveSpan(db: DbClient): Promise<ArchiveSpan | null
 
 export interface SitemapStory {
   id: string
+  /** The headline as the site shows it (plainHeadline): the story's address is made from it. */
+  headline: string
   /** "yyyy-mm-dd". */
   date: string
   /** When the summary was written, if the row says. */
   at: string | null
 }
 
-/** The newest written stories for the sitemap: one query, `cap` rows, three small columns. */
+/**
+ * The newest written stories for the sitemap: one query, `cap` rows. The
+ * headline columns are read too (2026-10-12), because a story's address carries
+ * its headline (lib/news/story-path.ts) and a sitemap must list the address a
+ * page answers at, not one that redirects to it.
+ */
 export async function fetchSitemapStories(db: DbClient, cap: number = SITEMAP_STORY_CAP): Promise<SitemapStory[]> {
   const { data, error } = await db
     .from('news_items')
-    .select('id, published_date, summary_long_at')
+    .select('id, title, tldr, source_name, published_date, summary_long_at')
     .eq('summary_long_status', 'written')
     .gte('published_date', `${ARCHIVE_FIRST_MONTH}-01`)
     .order('published_date', { ascending: false })
     .order('id', { ascending: true })
     .limit(cap)
   if (error) throw new Error(`sitemap stories query failed: ${error.message}`)
-  return ((data ?? []) as { id: string; published_date: string | null; summary_long_at: string | null }[])
-    .map((r) => ({ id: r.id, date: String(r.published_date ?? '').slice(0, 10), at: r.summary_long_at ?? null }))
+  return ((data ?? []) as { id: string; title?: string | null; tldr?: string | null; source_name?: string | null; published_date: string | null; summary_long_at: string | null }[])
+    .map((r) => ({
+      id: r.id,
+      headline: plainHeadline((r.title ?? '').trim(), r.tldr ?? null, r.source_name ?? null),
+      date: String(r.published_date ?? '').slice(0, 10),
+      at: r.summary_long_at ?? null,
+    }))
     .filter((r) => /^\d{4}-\d{2}-\d{2}$/.test(r.date))
     .slice(0, cap)
 }

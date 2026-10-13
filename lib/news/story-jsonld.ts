@@ -7,15 +7,17 @@
  * property would claim the publisher's article as ours.
  */
 import type { Story } from './stories'
+import { storyPath } from './story-path'
 
 const SITE = 'https://fundopshq.com'
 
-export function storyPermalink(story: Pick<Story, 'id'>): string {
-  return `${SITE}/story/${story.id}`
+/** The story's absolute, canonical address: the slug form (lib/news/story-path.ts). */
+export function storyPermalink(story: Pick<Story, 'id' | 'headline'>): string {
+  return `${SITE}${storyPath(story)}`
 }
 
 /** The page's Open Graph image (app/story/[id]/opengraph-image.tsx). */
-export function storyImageUrl(story: Pick<Story, 'id'>): string {
+export function storyImageUrl(story: Pick<Story, 'id' | 'headline'>): string {
   return `${storyPermalink(story)}/opengraph-image`
 }
 
