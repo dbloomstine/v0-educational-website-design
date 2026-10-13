@@ -90,9 +90,48 @@ function worthLeadingOnAThinDay(p: { article: NewsletterArticle; kind: StoryKind
   return size >= THIN_DAY_FLOOR_USD_M
 }
 
+/**
+ * Where the reader is. The list is North American and Danny's word (2026-10-13)
+ * is to "skew towards US focused stories"; that morning led with Square Peg
+ * (Australia), then Carta's Luxembourg fund and Bajaj Alts (India), with Apogem
+ * the one home story in five. So a story's weight is multiplied by where it
+ * is: at home or everywhere it counts for more, from elsewhere for less.
+ * Nothing is excluded: a story from elsewhere still leads when it is far
+ * bigger or far more widely reported (1.35 against 0.6 is about the weight gap
+ * between a $100M close nobody else carried and a $10B one three desks did).
+ *
+ * A story the classifier placed nowhere — a third of rows, mostly from the
+ * North American and UK trade press — counts a little under one placed at
+ * home, not a third under: at 1.0 the two $1.35B US closes of 10-13 (Consonance,
+ * Sheridan, both untagged) fell out of the top for a $472M close and a CIO
+ * hire. Such a story is from elsewhere when its headline states a figure in
+ * another currency or its outlet reports only its own market; the figure test
+ * also reads a "Global" tag that sits beside a region elsewhere (Oraseya's
+ * "AED 1 Billion" fund was Middle East + Global).
+ */
+export const HOME_FACTOR = { home: 1.35, unknown: 1.2, elsewhere: 0.6 } as const
+/** A figure in the headline in a currency that is not the dollar: "€13M first close", "₹9,000 crore", "A$4.5bn". */
+const FOREIGN_FIGURE = /€|£|₹|\b(?:A|S|NZ|HK)\$|\bAED\b|\bcrore\b/
+/** Outlets that report their own market and nothing else; the trade press that covers everyone is not here. */
+const FOREIGN_OUTLETS = new Set([
+  'afr', 'australian financial review', 'business standard', 'the economic times', 'economic times', 'mint', 'livemint',
+  'moneycontrol', 'vccircle', 'hdfc sky', 'dealstreetasia', 'nikkei asia', 'the business times', 'zawya', 'arabian business',
+  'gulf business', 'khaleej times', 'the national',
+])
+
+export function homeFactor(a: Pick<NewsletterArticle, 'geography' | 'title' | 'sourceName'>): number {
+  const regions = (a.geography ?? []).map((g) => String(g).trim()).filter(Boolean)
+  if (regions.includes('North America')) return HOME_FACTOR.home
+  if (FOREIGN_FIGURE.test(a.title)) return HOME_FACTOR.elsewhere
+  if (regions.includes('Global')) return HOME_FACTOR.home
+  if (regions.length > 0) return HOME_FACTOR.elsewhere
+  if (a.sourceName && FOREIGN_OUTLETS.has(a.sourceName.toLowerCase().trim())) return HOME_FACTOR.elsewhere
+  return HOME_FACTOR.unknown
+}
+
 function weightOf(article: NewsletterArticle, kind: StoryKind): number {
   const size = sizeOf(article)
-  return storyWeight(
+  return homeFactor(article) * storyWeight(
     {
       kind,
       sizeUsdM: size,
@@ -146,7 +185,8 @@ export function pickTopStories(groups: ArticleGroup[], total: number): TopPick[]
   // among the deals, the larger is named first — the order the subject line
   // names them in, and the order a reader of league tables expects. Weight
   // alone put a $1.3bn close that five desks reported above a $10bn one that
-  // two did. Each kind keeps the places it won.
+  // two did. Each kind keeps the places it won. The figure is read from where
+  // the reader is (HOME_FACTOR), as the weight was.
   for (const kind of ['fundraising', 'deals'] as StoryKind[]) {
     const places = picked.map((p, i) => (p.kind === kind ? i : -1)).filter((i) => i >= 0)
     const bySize = places.map((i) => picked[i]).sort((a, b) => raiseSize(b) - raiseSize(a))
@@ -157,7 +197,7 @@ export function pickTopStories(groups: ArticleGroup[], total: number): TopPick[]
 
 /** A story's figure for ordering: nothing for a story that is not "Firm raises $X" (a wind-down, a CLO pricing). */
 function raiseSize(p: { article: NewsletterArticle }): number {
-  return p.article.leadEligible ? sizeOf(p.article) ?? 0 : 0
+  return p.article.leadEligible ? (sizeOf(p.article) ?? 0) * homeFactor(p.article) : 0
 }
 
 /** The edition in reading order: the top stories, then the sections without them. */

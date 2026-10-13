@@ -60,6 +60,7 @@ function group(category: string, articles: Array<Record<string, unknown>>) {
       fundName?: string | null
       fundSizeUsdMillions: number | null
       eventType: string | null
+      geography?: string[]
     }[]
   }
 }
@@ -77,6 +78,20 @@ describe('buildSubject', () => {
       ],
     })
     expect(subject).toBe('Adams Street, Apollo, Blackstone + 2 more')
+  })
+
+  it('names a home raise before a slightly larger one from elsewhere (HOME_FACTOR, 2026-10-13)', () => {
+    const subject = buildSubject({
+      totalArticles: 3,
+      groups: [
+        group('PE', [
+          { firmName: 'Square Peg', fundSizeUsdMillions: 1000, eventType: 'fund_close', geography: ['Asia-Pacific'] },
+          { firmName: 'Apogem Capital', fundSizeUsdMillions: 800, eventType: 'fund_close', geography: ['North America'] },
+          { firmName: 'Bajaj Alts', fundSizeUsdMillions: 600, eventType: 'fund_close', geography: ['Asia-Pacific'] },
+        ]),
+      ],
+    })
+    expect(subject).toBe('Apogem, Square Peg, Bajaj Alts')
   })
 
   it('leads with the biggest raise; close/launch/raise only breaks ties', () => {

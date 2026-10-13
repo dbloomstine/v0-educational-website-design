@@ -11,7 +11,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles, isLikelyAumLeak, isDescriptiveFirmName } from './query-articles'
 import { isRoundup } from './story-links'
-import { kickerParts, pickTopStories, type TopPick } from './top-stories'
+import { homeFactor, kickerParts, pickTopStories, type TopPick } from './top-stories'
 import { renderNewsletterEmail } from './email-template'
 import { queryEventFeed } from '@/lib/events/api'
 import type { IndustryEvent } from '@/lib/events/types'
@@ -536,6 +536,8 @@ export function buildSubject(content: {
       /** With the names and the outlet, a multi-story wire is recognised and left out. */
       headlineEntities?: string[]
       sourceName?: string | null
+      /** Where the story is; with the headline and the outlet it is read by homeFactor(). */
+      geography?: string[]
     }[]
   }[]
   totalArticles: number
@@ -588,7 +590,11 @@ export function buildSubject(content: {
       // with a $9bn sale in the same email. A raise of SUBJECT_RAISE_FLOOR or
       // more still leads, biggest first.
       const band = tier === 0 ? (lead && size >= SUBJECT_RAISE_FLOOR ? 0 : 2) : tier === 1 ? 1 : tier + 1
-      const ranked = lead || (tier === 1 && !leak) ? size : 0
+      // Read from where the reader is, as the top stories are (HOME_FACTOR in
+      // top-stories.ts): a home raise is named before one from elsewhere of
+      // about the same size.
+      const home = homeFactor({ geography: article.geography ?? [], title: article.title, sourceName: article.sourceName ?? null })
+      const ranked = lead || (tier === 1 && !leak) ? size * home : 0
       cands.push({ name, tier: band, lead, prio: leak ? 0 : prio, size: ranked, seq })
     }
   }

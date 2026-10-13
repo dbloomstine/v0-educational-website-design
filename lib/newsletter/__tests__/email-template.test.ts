@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { buildPreheader, renderNewsletterEmail, topStoryLine, TOP_LINE_MAX, type WeekRecap } from '../email-template'
-import { arrangeEdition, kickerParts, pickTopStories, topCount } from '../top-stories'
+import { arrangeEdition, HOME_FACTOR, homeFactor, kickerParts, pickTopStories, topCount } from '../top-stories'
 import type { ArticleGroup, NewsletterArticle } from '../query-articles'
 import type { SponsorSlate } from '../sponsors'
 
@@ -32,7 +32,7 @@ function busyMorning(): { groups: ArticleGroup[]; total: number } {
       article({ title: 'Monroe prices second new-issue CLO at $399m', firmName: 'Monroe Capital', fundSizeUsdMillions: 399, leadEligible: false }),
     ]),
     group('deals', 'Deals', [
-      article({ title: 'CPP Investments sells A$4.5bn Australian toll road stakes to Transurban', firmName: 'CPP Investments', eventType: 'acquisition', fundSizeUsdMillions: 3100, alsoCoveredBy: ['IPE Real Assets'] }),
+      article({ title: 'CPP Investments sells A$4.5bn Australian toll road stakes to Transurban', firmName: 'CPP Investments', eventType: 'acquisition', fundSizeUsdMillions: 3100, alsoCoveredBy: ['IPE Real Assets'], geography: ['North America'] }),
       ...filler(8, 'Deal').map((a) => ({ ...a, eventType: 'acquisition' })),
     ]),
     group('people_moves', 'People Moves', filler(8, 'People')),
@@ -49,6 +49,52 @@ const render = (o: Partial<Parameters<typeof renderNewsletterEmail>[0]> = {}) =>
   return renderNewsletterEmail({ groups, totalArticles: total, editionDate: '2026-10-02', unsubscribeUrl: 'https://example.com/u', ...o })
 }
 const count = (html: string, needle: string) => html.split(needle).length - 1
+
+describe('where the reader is (HOME_FACTOR, 2026-10-13)', () => {
+  it('reads the region, then a foreign figure or a one-market outlet, and is neutral when there is nothing to read', () => {
+    expect(homeFactor({ geography: ['North America'], title: 'x', sourceName: 'PE Hub' })).toBe(HOME_FACTOR.home)
+    expect(homeFactor({ geography: ['Global'], title: 'x', sourceName: 'PE Hub' })).toBe(HOME_FACTOR.home)
+    expect(homeFactor({ geography: ['Europe', 'North America'], title: 'x', sourceName: 'PE Hub' })).toBe(HOME_FACTOR.home)
+    expect(homeFactor({ geography: ['Asia-Pacific'], title: 'x', sourceName: 'PE Hub' })).toBe(HOME_FACTOR.elsewhere)
+    // "Global" beside a region elsewhere, with the figure in that region's currency (Oraseya, 10-13).
+    expect(homeFactor({ geography: ['Middle East', 'Global'], title: 'Oraseya Capital Expands Venture Fund To AED 1 Billion', sourceName: 'Pulse 2.0' })).toBe(HOME_FACTOR.elsewhere)
+    expect(homeFactor({ geography: ['North America', 'Europe'], title: 'Fund closes at €1bn for US and Europe', sourceName: 'PE Hub' })).toBe(HOME_FACTOR.home)
+    expect(homeFactor({ geography: [], title: 'Monte Carlo Capital Secures €13M First Close for Fund II', sourceName: 'PE Hub' })).toBe(HOME_FACTOR.elsewhere)
+    expect(homeFactor({ geography: [], title: 'Brigade Group to Invest ₹40,000 Cr in Real Estate Expansion', sourceName: null })).toBe(HOME_FACTOR.elsewhere)
+    expect(homeFactor({ geography: [], title: 'Square Peg closes $1B fund', sourceName: 'AFR' })).toBe(HOME_FACTOR.elsewhere)
+    expect(homeFactor({ geography: [], title: 'Apogem closes $1.3B fund', sourceName: 'PE Hub' })).toBe(HOME_FACTOR.unknown)
+    // A dollar figure, or a currency code in a word, is not a foreign sign.
+    expect(homeFactor({ geography: [], title: 'US$500M for USA Fund', sourceName: null })).toBe(HOME_FACTOR.unknown)
+  })
+  it('a mid-size home close leads a slightly larger one from Europe (10-13 led with Square Peg, Australia)', () => {
+    const busy = busyMorning()
+    busy.groups[0].articles = [
+      article({ title: 'Nordic Capital closes Fund XII at $900m', firmName: 'Nordic Capital', fundSizeUsdMillions: 900, closeType: 'final_close', geography: ['Europe'] }),
+      article({ title: 'Apogem closes fund at $700m', firmName: 'Apogem', fundSizeUsdMillions: 700, closeType: 'final_close', geography: ['North America'] }),
+    ]
+    busy.groups[1].articles = []
+    const names = pickTopStories(busy.groups, 26).map((t) => t.article.firmName)
+    expect(names.indexOf('Apogem')).toBeLessThan(names.indexOf('Nordic Capital'))
+  })
+  it('a far larger close from elsewhere still leads', () => {
+    const busy = busyMorning()
+    busy.groups[0].articles = [
+      article({ title: 'CVC closes Fund X at $10bn', firmName: 'CVC', fundSizeUsdMillions: 10000, closeType: 'final_close', geography: ['Europe'], sourceName: 'Bloomberg', alsoCoveredBy: ['Reuters', 'FT'] }),
+      article({ title: 'Small Street closes $150m fund', firmName: 'Small Street', fundSizeUsdMillions: 150, closeType: 'final_close', geography: ['North America'] }),
+    ]
+    busy.groups[1].articles = []
+    const names = pickTopStories(busy.groups, 26).map((t) => t.article.firmName)
+    expect(names).toContain('CVC')
+    expect(names.indexOf('CVC')).toBeLessThan(names.indexOf('Small Street'))
+  })
+  it('a story placed nowhere ranks as it did', () => {
+    const busy = busyMorning()
+    const before = pickTopStories(busy.groups, busy.total).map((t) => t.article.title)
+    // Every fixture story but CPP's (a Canadian pension, tagged) has an empty geography and no foreign sign: the top is the one the weights alone give.
+    for (const g of busy.groups) for (const a of g.articles) expect(homeFactor(a)).toBe(a.firmName === 'CPP Investments' ? HOME_FACTOR.home : HOME_FACTOR.unknown)
+    expect(before[0]).toBe('Apax Sets $13.5 Billion Target for Fund XII')
+  })
+})
 
 describe('the top of the edition', () => {
   it('leads with the biggest stories across sections, not the first section', () => {
