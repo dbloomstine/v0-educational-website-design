@@ -1378,11 +1378,36 @@ export function storyFingerprints(
   return out
 }
 
+/**
+ * A firm "name" that is really a description: "Malvern PE firm", "New London
+ * private equity firm", "Norwegian wealth fund". The classifier returns one when
+ * the article never names the manager. A real name is title-cased, so a plain
+ * lowercase noun for what the thing is ("firm", "fund", "manager") gives the
+ * description away; so do two lowercase words in a row (2026-10-12: "Malvern PE
+ * firm" passed the two-word test because "PE" is capitals, and opened the
+ * subject line).
+ */
+const DESCRIPTION_WORDS =
+  /\b(firm|firms|manager|managers|investor|investors|company|companies|lender|lenders|fund|funds|office|pension|allocator|sponsor|buyer|owner|wealth|equity|capital|credit|venture|private|infrastructure|estate|asset|assets|group|bank)\b/
+export function isDescriptiveFirmName(name: string | null | undefined): boolean {
+  if (!name) return false
+  return /\b[a-z]{3,}\s+[a-z]{3,}\b/.test(name) || DESCRIPTION_WORDS.test(name)
+}
+
 /** A fund-activity event already published in the extended lookback window. */
 export interface PriorFundEvent {
   firm: string
   sizeMillions: number
+  /** The candidate's "firm" is a description (isDescriptiveFirmName), so its name cannot be matched. */
+  described?: boolean
 }
+
+/**
+ * A described firm's raise is matched on its size alone, and only when the
+ * figure is all but the same: "Malvern private equity firm raises $301M in
+ * third fund" (10-12) was Taurus Private Markets' $301M close of 10-09.
+ */
+const DESCRIBED_SIZE_TOLERANCE = 0.05
 
 /**
  * Build the extended-window record for one article, or null if it can't
@@ -1397,12 +1422,16 @@ export function priorFundEvent(
   const firm = normalizeFirmName(firmName)
   if (!firm) return null
   if (!fundSizeUsdMillions || fundSizeUsdMillions <= 0) return null
-  return { firm, sizeMillions: fundSizeUsdMillions }
+  return isDescriptiveFirmName(firmName)
+    ? { firm, sizeMillions: fundSizeUsdMillions, described: true }
+    : { firm, sizeMillions: fundSizeUsdMillions }
 }
 
 /**
  * True when a candidate repeats a fund event already published in the extended
- * window — same firm, and a size within EXTENDED_SIZE_TOLERANCE.
+ * window — same firm, and a size within EXTENDED_SIZE_TOLERANCE; or, for a
+ * candidate whose firm is only a description, the same size to within
+ * DESCRIBED_SIZE_TOLERANCE under any firm.
  *
  * Event type is intentionally not compared: close/launch/raise are the same
  * underlying event wearing different verbs (see EXTENDED_FINGERPRINT_TYPES).
@@ -1414,8 +1443,10 @@ export function matchesPriorFundEvent(
   if (!candidate) return false
   return priorEvents.some(
     (prior) =>
-      prior.firm === candidate.firm &&
-      fundSizesMatch(prior.sizeMillions, candidate.sizeMillions, EXTENDED_SIZE_TOLERANCE)
+      (prior.firm === candidate.firm &&
+        fundSizesMatch(prior.sizeMillions, candidate.sizeMillions, EXTENDED_SIZE_TOLERANCE)) ||
+      (candidate.described === true &&
+        fundSizesMatch(prior.sizeMillions, candidate.sizeMillions, DESCRIBED_SIZE_TOLERANCE))
   )
 }
 

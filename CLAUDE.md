@@ -566,6 +566,17 @@ Masthead → sponsor (or the house strip) → **top stories** → sections → o
 - **Monday recap** (`lib/newsletter/recap.ts`): the six largest closes of the past week, from the league table, each linked to its story page. It is an extra — if the league cannot be built in 25 s the edition goes without it.
 - Rows are headlines only (Danny, 2026-08-30). Do not add summaries, source lines or logos back.
 
+### Audit of 2026-10-12: what changed, and what was measured
+
+Danny: the newsletter is "priority number one… best in class… keep people engaged so people don't unsubscribe." Measured first (list 154 confirmed, +23 in 30 days, 0 real unsubscribes; opens 55–65% by Resend's `last_event`, clicks 27–30%; Mondays average 7 stories against 35 on a weekday), then these cheap wins, all template and selection code, nothing in the send path. The before/after renders are in `~/fundopshq-workspace/docs/newsletter-audit-2026-10-12/`.
+
+- **The subject opens on the top stories** (`buildSubject(content, pickTopStories(…))` in send-daily.ts): the same picks the email opens on, in the same order, and the first name carries its figure ("GTCR $14.2B, ADD Capital, TA Associates + 29 more"). Until then raises were ranked by size and every deal came after every raise, so the subject and the preview text named different firms. The old ranking still fills the line, and is the whole line when there is no top block. A described "firm" never opens the line (`isDescriptiveFirmName` in query-articles.ts: "Malvern PE firm" did on 10-12).
+- **A described firm's raise is matched on its size alone** within 5% in the 14-edition fund-event memory (`matchesPriorFundEvent`, `described`): Taurus's $301M close of 10-09 ran again on 10-12 as "Malvern private equity firm raises $301M".
+- **One regulation story at the top at most** (`MAX_REGULATION_AT_TOP`), and on a thin morning a regulator leads only when North American (`NA_REGULATOR`) or widely reported: 10-11 led with ASIC, the FCA and the SEC, and ASIC stop orders led 10-08 and 10-09.
+- **Each top story carries one line from its summary** (`topStoryLine`: the first sentence, remarks off via `cleanSummary`, at most ~170 characters, left out when it repeats the headline). The section rows are still headlines only, per the rule above. This is the one change Danny has not seen and may want reverted.
+- **The first screen is the masthead and the first story**: the "Forwarded to you? Subscribe" strip moved from above the masthead to the share block at the foot. The masthead's right-hand line is "READ AT N FIRMS" (the house notice's figure) on one line, and the date lost its year, because "MONDAY, OCTOBER 12, 2026 · READ BY 154 IN PRIVATE MARKETS" wrapped to three lines on a phone.
+- **Not changed, for Danny's call**: Mondays are thin because Sunday is quiet (a 72-hour window would only re-find what Saturday and Sunday ran); the send is 11:30 UTC, 7:30 ET until the clocks change; there is no plain-text part; only two readers have chosen what they follow; the subject shape is the same every day by his own 2026-09-12 ask.
+
 ### The anchor color gotcha — every `<a>` needs inline `color`
 
 **Every `<a>` tag in the template has both a class AND inline `color` + `text-decoration:none`.** This is not redundant — it's mandatory.

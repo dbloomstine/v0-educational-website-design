@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { buildSubject, subjectFirmName, shortenFirmName, resolveLookback } from '../send-daily'
+import type { TopPick } from '../top-stories'
 
 /** Minimal supabase stub returning the given date as the last 'sent' edition. */
 function dbWithLastSent(lastSent: string | null) {
@@ -251,5 +252,39 @@ describe('buildSubject', () => {
 
   it('falls back to a count when no article names a firm', () => {
     expect(buildSubject({ totalArticles: 7, groups: [group('PE', [{ firmName: null, eventType: 'fund_close' }])] })).toBe('7 moves across private markets')
+  })
+
+  it('never opens on a description the classifier returned as a firm ("Malvern PE firm", 2026-10-12)', () => {
+    const subject = buildSubject({
+      totalArticles: 3,
+      groups: [
+        group('PE', [
+          { firmName: 'Malvern PE firm', fundSizeUsdMillions: 301, eventType: 'capital_raise' },
+          { firmName: 'Gaius Capital', fundSizeUsdMillions: 56, eventType: 'fund_close' },
+        ]),
+        group('deals', [{ firmName: 'Elliott', eventType: 'acquisition' }]),
+      ],
+    })
+    expect(subject).toBe('Elliott, Gaius Capital + 1 more')
+  })
+
+  it('opens on the top stories, in their order, with the lead\'s figure (2026-10-09: Sycamore\'s $8.9bn sale sat fifth)', () => {
+    const groups = [
+      group('PE', [
+        { firmName: 'Spectrum Equity', fundName: 'Spectrum Equity XI', fundSizeUsdMillions: 2500, eventType: 'fund_close', leadEligible: true },
+        { firmName: 'Taurus Private Markets', fundSizeUsdMillions: 301, eventType: 'fund_close', leadEligible: true },
+        { firmName: 'Nabventures', fundSizeUsdMillions: 120, eventType: 'fund_close', leadEligible: true },
+      ]),
+      group('deals', [{ firmName: 'Sycamore Partners', fundSizeUsdMillions: 8900, eventType: 'acquisition', leadEligible: true }]),
+      group('regulatory', [{ firmName: 'ASIC', eventType: 'regulatory_action' }]),
+    ]
+    const pick = (category: string, i: number) => {
+      const article = groups.find((g) => g.category === category)!.articles[i] as unknown as TopPick['article']
+      return { article, category, label: category === 'PE' ? 'Private Equity' : category === 'deals' ? 'Deals' : 'Regulation' }
+    }
+    const top = [pick('PE', 0), pick('deals', 0), pick('PE', 1), pick('regulatory', 0)]
+    expect(buildSubject({ totalArticles: 40, groups }, top)).toBe('Spectrum $2.5B, Sycamore, Taurus, ASIC, Nabventures + 35 more')
+    // With no top block (a thin morning) the line is the ranking alone, as before.
+    expect(buildSubject({ totalArticles: 5, groups })).toBe('Spectrum, Taurus, Nabventures, Sycamore, ASIC')
   })
 })

@@ -3,6 +3,7 @@ import {
   storyFingerprints,
   priorFundEvent,
   matchesPriorFundEvent,
+  isDescriptiveFirmName,
   capPerFirm,
   isLpCommitment,
   isStartupRound,
@@ -249,6 +250,18 @@ describe('extended fund-event lookback (relative size matching)', () => {
     expect(
       matchesPriorFundEvent(priorFundEvent('Acme Capital', 'fund_launch', 1000), published)
     ).toBe(true)
+  })
+
+  it('catches a repeat whose "firm" is only a description, on its size alone (Taurus, 10-09 → "Malvern PE firm", 10-12)', () => {
+    const published = [prior('Taurus Private Markets', 'fund_close', 301), prior('Acme Capital', 'fund_close', 1000)]
+    expect(matchesPriorFundEvent(priorFundEvent('Malvern PE firm', 'capital_raise', 301), published)).toBe(true)
+    // Only when the figure is all but the same: a described $280M raise is not Taurus's $301M.
+    expect(matchesPriorFundEvent(priorFundEvent('Malvern PE firm', 'capital_raise', 280), published)).toBe(false)
+    // A named firm still needs its name to match.
+    expect(matchesPriorFundEvent(priorFundEvent('Corre Partners', 'fund_close', 301), published)).toBe(false)
+    expect(isDescriptiveFirmName('New London private equity firm')).toBe(true)
+    expect(isDescriptiveFirmName('Norwegian wealth fund')).toBe(true)
+    for (const real of ['Bain Capital', 'Partners Group', 'Energy Capital Partners', 'Taurus Private Markets', 'KKR']) expect(isDescriptiveFirmName(real)).toBe(false)
   })
 
   it('keeps a first close and a final close of the same fund distinct by size', () => {

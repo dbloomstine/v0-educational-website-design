@@ -70,9 +70,19 @@ function sizeOf(article: NewsletterArticle): number | null {
 export const THIN_DAY_FLOOR_USD_M = 250
 const MIN_TOP_ON_A_THIN_DAY = 2
 
+/**
+ * A North American regulator, named in the headline. On a thin morning a
+ * regulation story leads on this or on being widely reported: 2026-10-11, a
+ * Sunday, led with ASIC (Australia), the FCA (UK) and the SEC, three regulators
+ * in a row, and ASIC stop orders led on 10-08 and 10-09 as well.
+ */
+const NA_REGULATOR = /\b(SEC|FINRA|CFTC|FTC|DOJ|OCC|FDIC|IRS|Fed|Federal Reserve|Treasury|Department of Labor|DOL|Congress|Senate|OSC|CSA|AMF|Ontario Securities)\b/
+/** At most this many regulation stories lead an edition, however many there are. */
+const MAX_REGULATION_AT_TOP = 1
+
 function worthLeadingOnAThinDay(p: { article: NewsletterArticle; kind: StoryKind }): boolean {
   const widely = p.article.alsoCoveredBy.length >= 2
-  if (p.kind === 'regulation') return true
+  if (p.kind === 'regulation') return widely || NA_REGULATOR.test(p.article.title)
   if (p.kind === 'people' || p.kind === 'providers') return widely
   if (p.kind === 'deals' && dealStage(p.article.title) === 0) return false
   const size = sizeOf(p.article)
@@ -119,6 +129,9 @@ export function pickTopStories(groups: ArticleGroup[], total: number): TopPick[]
     pool.forEach((p, i) => {
       const firm = (p.article.firmName ?? '').toLowerCase()
       if (firm && firms.has(firm)) return
+      // The brake above (each further story of a kind counts for less) was not
+      // enough to stop three regulators leading 2026-10-11: one is the limit.
+      if (p.kind === 'regulation' && (kinds.get('regulation') ?? 0) >= MAX_REGULATION_AT_TOP) return
       const score = p.weight * Math.pow(0.8, kinds.get(p.kind) ?? 0)
       if (score > bestScore) { bestScore = score; best = i }
     })

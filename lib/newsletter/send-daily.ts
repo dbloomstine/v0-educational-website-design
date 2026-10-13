@@ -9,8 +9,9 @@
  */
 
 import type { SupabaseClient } from '@supabase/supabase-js'
-import { queryNewsletterArticles, isLikelyAumLeak } from './query-articles'
+import { queryNewsletterArticles, isLikelyAumLeak, isDescriptiveFirmName } from './query-articles'
 import { isRoundup } from './story-links'
+import { kickerParts, pickTopStories, type TopPick } from './top-stories'
 import { renderNewsletterEmail } from './email-template'
 import { queryEventFeed } from '@/lib/events/api'
 import type { IndustryEvent } from '@/lib/events/types'
@@ -152,7 +153,9 @@ export async function sendDailyNewsletter(
   // events, it rides along: if it cannot be built, the edition goes without it.
   const recap = dayOfWeek === 1 ? await lastWeeksCloses() : null
 
-  const subject = buildSubject(content)
+  // The names the subject opens on are the stories the email opens on
+  // (2026-10-12): the same picks the template makes, in the same order.
+  const subject = buildSubject(content, pickTopStories(content.groups, content.totalArticles))
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
 
   // Render the full HTML body once with sentinel tokens, then per-subscriber
@@ -430,6 +433,16 @@ async function alertOnSkip(supabase: DbClient, editionDate: string): Promise<voi
  *
  * No "FundOps Daily —" prefix — the From: name already carries the brand.
  * Format: "KKR, Arini, EIG, ARCHIMED + 40 more".
+ *
+ * Since 2026-10-12 the subject opens on the firms of the top stories, in the
+ * order the email shows them, and the first name carries its figure: "GTCR
+ * $14.2B, ADD Capital, TA Associates + 29 more". Until then the subject
+ * ranked raises by size and put every deal after every raise, so on 10-09 it
+ * read "Spectrum, Aphias, Taurus, Nabventures, Sycamore…" while the email's
+ * second story was Sycamore's $8.9bn Boots sale; and the two lines an inbox
+ * shows (the subject, then the preview text) named different firms. The
+ * ranking below still fills the line after the top stories, and is the whole
+ * line on a morning with no top block.
  */
 const BARE_PLACE = /^(korea|south korea|china|india|japan|singapore|australia|canada|france|germany|italy|spain|saudi arabia|uae|uk|us|eu|europe|asia|africa)$/i
 export const SUBJECT_MAX_CHARS = 70
@@ -526,7 +539,7 @@ export function buildSubject(content: {
     }[]
   }[]
   totalArticles: number
-}): string {
+}, top: TopPick[] = []): string {
   const typePriority: Record<string, number> = {
     fund_close: 3,
     fund_launch: 2,
@@ -560,9 +573,9 @@ export function buildSubject(content: {
       const name = subjectFirmName(article.firmName)
       if (!name) continue
       // Not names a reader would recognise as a firm: a description the
-      // classifier returned as one ("New London private equity firm"), or a
-      // bare country ("Korea launches $250M fund of funds").
-      if (/\b[a-z]{3,}\s+[a-z]{3,}\b/.test(name) || BARE_PLACE.test(name)) continue
+      // classifier returned as one ("New London private equity firm",
+      // "Malvern PE firm"), or a bare country ("Korea launches $250M fund of funds").
+      if (isDescriptiveFirmName(article.firmName) || BARE_PLACE.test(name)) continue
       const size = article.fundSizeUsdMillions ?? 0
       // AUM safety rail — see isLikelyAumLeak() in query-articles.ts. Such a
       // row still names a real firm; it just must not lead on its "size".
@@ -589,21 +602,35 @@ export function buildSubject(content: {
 
   const names: string[] = []
   const seen: string[] = []
-  for (const c of cands) {
-    const key = c.name.toLowerCase()
+  const add = (name: string) => {
+    const key = name.toLowerCase()
     // "IIT Madras" and "IIT Madras Research Park" are one name to a reader.
-    if (seen.some((k) => k === key || k.startsWith(key + ' ') || key.startsWith(k + ' '))) continue
+    if (seen.some((k) => k === key || k.startsWith(key + ' ') || key.startsWith(k + ' '))) return
     seen.push(key)
-    names.push(c.name)
+    names.push(name)
   }
+  // The top stories' firms first, as the email shows them. The same tests as
+  // above: a described or allocator "firm" is not a name to open on.
+  let figure = ''
+  for (const pick of top) {
+    const firm = pick.article.firmName
+    if (!firm || pick.category === 'lp_commitments' || isDescriptiveFirmName(firm)) continue
+    const name = subjectFirmName(firm)
+    if (!name || BARE_PLACE.test(name)) continue
+    if (names.length === 0) figure = kickerParts(pick).find((p) => p.startsWith('$')) ?? ''
+    add(name)
+  }
+  for (const c of cands) add(c.name)
 
   if (names.length === 0) {
     return `${content.totalArticles} moves across private markets`
   }
 
   const render = (picked: string[]) => {
+    const lead = figure ? `${picked[0]} ${figure}` : picked[0]
+    const line = [lead, ...picked.slice(1)].join(', ')
     const remaining = Math.max(0, content.totalArticles - picked.length)
-    return remaining === 0 ? picked.join(', ') : `${picked.join(', ')} + ${remaining} more`
+    return remaining === 0 ? line : `${line} + ${remaining} more`
   }
   let picked = [names[0]]
   for (const n of names.slice(1, SUBJECT_MAX_NAMES)) {

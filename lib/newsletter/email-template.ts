@@ -31,6 +31,8 @@ import { entityKey, keysMatch } from './story-links'
 import { pullFollowed } from './personalize'
 import { followLineHtml } from './follow-line'
 import { pickEventsForEmail } from './email-events'
+import { cleanSummary } from '@/lib/news/summary-clean'
+import { titleJaccard } from '@/lib/news/story-dedup'
 
 interface TemplateParams {
   groups: ArticleGroup[]
@@ -415,6 +417,11 @@ function formatDate(dateStr: string): string {
   })
 }
 
+/**
+ * "MONDAY, OCTOBER 12": no year (2026-10-12), so the date and the readership
+ * line share one row on a phone; with it the row wrapped to three lines. The
+ * year is in the email's title.
+ */
 function formatMastheadDate(dateStr: string): string {
   const d = new Date(dateStr + 'T12:00:00Z')
   return d
@@ -422,7 +429,6 @@ function formatMastheadDate(dateStr: string): string {
       weekday: 'long',
       month: 'long',
       day: 'numeric',
-      year: 'numeric',
       timeZone: 'America/New_York',
     })
     .toUpperCase()
@@ -587,13 +593,42 @@ function renderCategory(group: ArticleGroup): string {
 // a forwarded copy loses the block, and the top of the email is what gets
 // forwarded.
 
+/** The summary line is cut here, at a word, when its first sentence runs longer. */
+export const TOP_LINE_MAX = 170
+
+/**
+ * One line under a top story: the first sentence of the classifier's summary,
+ * without its remarks (lib/news/summary-clean.ts), and only when it says more
+ * than the headline does. The section rows stay headlines only (Danny,
+ * 2026-08-30); this is the five stories the email opens on (2026-10-12), where
+ * a reader decides whether the morning is worth a scroll.
+ */
+export function topStoryLine(article: Pick<ArticleGroup['articles'][0], 'title' | 'tldr'>): string | null {
+  if (!article.tldr) return null
+  // The first sentence ("Fund XI. A first close…" splits; "U.S. Treasury" does not), then its remarks off.
+  const first = article.tldr.trim().split(/(?<=(?:[a-z0-9)”"]|\b[A-Z]{2,})[.!?])\s+(?=[A-Z0-9“"$€£])/)[0]
+  const cleaned = cleanSummary(first)
+  if (!cleaned) return null
+  let line = cleaned.trim()
+  if (line.length > TOP_LINE_MAX + 20) {
+    const cut = line.lastIndexOf(' ', TOP_LINE_MAX)
+    line = `${line.slice(0, cut > 60 ? cut : TOP_LINE_MAX).replace(/[,;:]$/, '')}…`
+  }
+  if (line.length < 25) return null
+  // The same words as the headline add nothing.
+  if (titleJaccard(article.title, line) >= 0.6) return null
+  return line
+}
+
 function renderTopStory(pick: TopPick, isLast: boolean): string {
   const kicker = kickerParts(pick).map(escapeHtml).join(' &nbsp;&middot;&nbsp; ')
+  const line = topStoryLine(pick.article)
   return `
     <tr>
       <td style="padding:9px 0 10px;${isLast ? '' : `border-bottom:1px solid ${HAIRLINE};`}">
         <div class="fops-kicker" style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:1.5px;color:${OCHRE};text-transform:uppercase;margin:0 0 3px;">${kicker}</div>
         <div><a href="${escapeHtml(pick.article.sourceUrl)}" class="fops-top" style="color:${INK};text-decoration:none;font-family:${FONT_SERIF};font-size:18px;font-weight:400;line-height:1.27;" target="_blank">${renderHeadline(pick.article)}</a></div>
+        ${line ? `<div class="fops-blurb" style="color:${INK_MUTED};font-size:13px;line-height:1.45;font-family:${FONT_SANS};margin:3px 0 0;">${escapeHtml(line)}</div>` : ''}
       </td>
     </tr>`
 }
@@ -871,14 +906,17 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   const eventsSection = renderEventsSection(events)
   const covered = sponsorsInTheNews(sponsorSlate, groups)
 
-  // Social-proof eyebrow fragment. Omitted when count is unavailable
-  // (test sends) or absurdly small. "In private markets" is the
-  // canonical short-form audience phrase (per workspace CLAUDE.md) —
-  // covers GPs, LPs, and fund service providers without overclaiming.
+  // Social-proof eyebrow fragment: the firms the list is read at, the same
+  // figure as the house notice (2026-10-12; "READ BY 154 IN PRIVATE MARKETS"
+  // wrapped onto three lines on a phone and said a small number). Falls back
+  // to the reader count, and to a plain label when neither is known or
+  // either is too small to be the point.
   const socialProof =
-    subscriberCount && subscriberCount >= 25
-      ? `READ BY ${subscriberCount} IN PRIVATE MARKETS`
-      : 'THE DAILY BRIEF'
+    readerFirms && readerFirms >= 24
+      ? `READ AT ${readerFirms.toLocaleString('en-US')} FIRMS`
+      : subscriberCount && subscriberCount >= 25
+        ? `READ BY ${subscriberCount}`
+        : 'THE DAILY BRIEF'
 
   // Biggest story of the day for the bottom share block. Falls back to
   // the first group's first article when category ordering lands deals
@@ -920,21 +958,12 @@ export function renderNewsletterEmail(params: TemplateParams): string {
       <td align="center" class="fops-shell" style="padding:24px 10px;">
         <table cellpadding="0" cellspacing="0" border="0" width="680" style="max-width:680px;width:100%;">
 
-          <!-- ─── Forwarded-to-you strip ─── -->
-          <!-- Shown at the very top of every edition. Readers who got
-               the email forwarded by a peer see a direct "subscribe"
-               path. Near-zero cost to people who are already subscribers
-               (they scroll past) but a meaningful conversion path for
-               the (harder-to-measure) forwards. -->
-          <tr>
-            <td class="fops-bg-cream fops-px" style="padding:10px 16px;background-color:${CREAM};border-bottom:1px solid rgba(30,58,95,0.08);">
-              <div class="fops-mono" style="font-size:10px;color:rgba(30,58,95,0.7);letter-spacing:1.5px;text-transform:uppercase;text-align:center;">
-                Forwarded to you? &nbsp;<a href="https://fundopshq.com/?ref=fwd" style="color:${INK};text-decoration:underline;font-weight:700;">Subscribe to FundOps Daily &rarr;</a>
-              </div>
-            </td>
-          </tr>
-
           <!-- ─── Masthead ─── -->
+          <!-- The "Forwarded to you? Subscribe" strip that used to sit above
+               the masthead now sits in the share block at the foot
+               (2026-10-12): on a phone it was the first line of every edition,
+               ahead of the masthead and the first story, for the few readers
+               who had been forwarded a copy. -->
           <tr>
             <td class="fops-bg-navy" style="padding:0;background-color:${NAVY};">
 
@@ -953,8 +982,8 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                   <td class="fops-px" style="padding:8px 16px 10px;border-top:1px solid ${HAIRLINE_DARK};">
                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                       <tr>
-                        <td class="fops-eyebrow-light">${escapeHtml(mastheadDate)}</td>
-                        <td align="right" class="fops-eyebrow-light">${escapeHtml(socialProof)}</td>
+                        <td class="fops-eyebrow-light" style="white-space:nowrap;">${escapeHtml(mastheadDate)}</td>
+                        <td align="right" class="fops-eyebrow-light" style="white-space:nowrap;padding-left:12px;">${escapeHtml(socialProof)}</td>
                       </tr>
                     </table>
                   </td>
@@ -1011,6 +1040,9 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                 <a href="${escapeHtml(shareMailto)}" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Forward by email</a>
                 <a href="${escapeHtml(shareLinkedIn)}" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Post to LinkedIn</a>
                 <a href="${escapeHtml(shareX)}" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Share on X</a>
+              </div>
+              <div class="fops-mono" style="padding-top:12px;font-size:10px;color:rgba(30,58,95,0.7);letter-spacing:1.5px;text-transform:uppercase;">
+                Forwarded to you? &nbsp;<a href="https://fundopshq.com/?ref=fwd" style="color:${INK};text-decoration:underline;font-weight:700;">Subscribe to FundOps Daily &rarr;</a>
               </div>
             </td>
           </tr>

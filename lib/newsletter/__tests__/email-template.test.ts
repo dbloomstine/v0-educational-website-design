@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildPreheader, renderNewsletterEmail, type WeekRecap } from '../email-template'
+import { buildPreheader, renderNewsletterEmail, topStoryLine, TOP_LINE_MAX, type WeekRecap } from '../email-template'
 import { arrangeEdition, kickerParts, pickTopStories, topCount } from '../top-stories'
 import type { ArticleGroup, NewsletterArticle } from '../query-articles'
 import type { SponsorSlate } from '../sponsors'
@@ -133,6 +133,38 @@ describe('the top of the edition', () => {
     busy.groups[2].articles.push(article({ title: 'Sycamore nears $9bn sale of Boots to Weston family', firmName: 'Sycamore Partners', eventType: 'acquisition', fundSizeUsdMillions: 9000, alsoCoveredBy: ['Reuters', 'Bloomberg', 'FT'] }))
     expect(pickTopStories(busy.groups, busy.total + 1).map((t) => t.article.firmName)).toContain('Sycamore Partners')
   })
+  it('lets one regulation story lead, never three (2026-10-11 led with ASIC, the FCA and the SEC)', () => {
+    const busy = busyMorning()
+    busy.groups[4].articles.push(
+      article({ title: 'ASIC issues stop order against three funds holding $250m', firmName: 'ASIC', eventType: 'regulatory_action', sourceName: 'Reuters', alsoCoveredBy: ['Bloomberg', 'FT', 'AFR'] }),
+      article({ title: 'U.K. regulator proposes 90-day redemption notice for property funds', firmName: 'FCA', eventType: 'regulatory_action', sourceName: 'Reuters', alsoCoveredBy: ['Bloomberg', 'FT', 'IPE'] }),
+    )
+    const top = pickTopStories(busy.groups, busy.total + 2)
+    expect(top.filter((t) => t.category === 'regulatory')).toHaveLength(1)
+    // On a thin morning a regulator abroad does not lead unless widely reported; a North American one does.
+    const thin = (reg: NewsletterArticle[]) => [
+      group('deals', 'Deals', [article({ title: 'CPP Investments sells A$4.5bn Australian toll road stakes to Transurban', firmName: 'CPP Investments', eventType: 'acquisition', fundSizeUsdMillions: 3100 })]),
+      group('regulatory', 'Regulation', reg),
+      group('people_moves', 'People Moves', filler(11, 'P')),
+    ]
+    const asic = article({ title: 'ASIC stop order halts Australian Secure Capital Fund unit offers', firmName: 'ASIC', eventType: 'regulatory_action' })
+    const sec = article({ title: "SEC Proposes Restoring Funds' Ability To Cross-Trade Bonds", firmName: 'SEC', eventType: 'regulatory_action' })
+    expect(pickTopStories(thin([asic]), 13).map((t) => t.article.firmName)).not.toContain('ASIC')
+    expect(pickTopStories(thin([sec]), 13).map((t) => t.article.firmName)).toContain('SEC')
+    expect(pickTopStories(thin([{ ...asic, alsoCoveredBy: ['Reuters', 'Bloomberg'] }]), 13).map((t) => t.article.firmName)).toContain('ASIC')
+  })
+  it('gives each top story one line from its summary, when the summary says more than the headline (2026-10-12)', () => {
+    expect(topStoryLine({ title: 'Apax Sets $13.5 Billion Target for Fund XII', tldr: 'Apax Partners is targeting $13.5bn for its twelfth flagship buyout fund, up from the $11bn raised for Fund XI; size not disclosed in snippet. A first close is expected in Q1.' }))
+      .toBe('Apax Partners is targeting $13.5bn for its twelfth flagship buyout fund, up from the $11bn raised for Fund XI.')
+    expect(topStoryLine({ title: 'Apax Sets $13.5 Billion Target for Fund XII', tldr: 'Apax sets $13.5 billion target for Fund XII.' })).toBeNull()
+    expect(topStoryLine({ title: 'Anything', tldr: null })).toBeNull()
+    const long = topStoryLine({ title: 'Anything', tldr: `${'Word '.repeat(60)}end.` })!
+    expect(long.length).toBeLessThanOrEqual(TOP_LINE_MAX + 1)
+    expect(long.endsWith('…')).toBe(true)
+    const html = render()
+    expect(count(html, 'class="fops-blurb"')).toBe(5)
+    expect(html.indexOf('class="fops-blurb"')).toBeLessThan(html.indexOf('class="fops-cat-label'))
+  })
   it('scales with the morning, and stands down on a thin one', () => {
     expect([40, 25, 24, 16, 15, 12, 11, 3].map(topCount)).toEqual([5, 5, 4, 4, 3, 3, 0, 0])
     const groups = [group('PE', 'Private Equity', filler(6, 'Thin'))]
@@ -189,6 +221,15 @@ describe('the sponsor slot', () => {
   it('never states a reader figure it was not given, or one too small to be the point', () => {
     expect(render()).toContain('the morning brief for GPs, LPs, and fund service providers')
     expect(render({ readerFirms: 9 })).not.toMatch(/at 9 firms/)
+    expect(render({ readerFirms: 9, subscriberCount: 12 })).toContain('THE DAILY BRIEF')
+  })
+  it('puts the firms the list is read at in the masthead, on one line (2026-10-12)', () => {
+    const html = render({ readerFirms: 94, subscriberCount: 154 })
+    expect(html).toContain('style="white-space:nowrap;padding-left:12px;">READ AT 94 FIRMS</td>')
+    expect(html).toContain('style="white-space:nowrap;">FRIDAY, OCTOBER 2</td>')
+    expect(html).toContain('<title>FundOps Daily — Friday, October 2, 2026</title>')
+    expect(html).not.toContain('READ BY 154')
+    expect(render({ subscriberCount: 154 })).toContain('>READ BY 154</td>')
   })
   const slate: SponsorSlate = {
     label: 'PRESENTED BY',
@@ -244,6 +285,13 @@ describe('Monday’s recap', () => {
 })
 
 describe('the furniture', () => {
+  it('keeps the "Forwarded to you?" line at the foot, not above the masthead (2026-10-12)', () => {
+    const html = render()
+    expect(count(html, 'Forwarded to you?')).toBe(1)
+    expect(html.indexOf('Forwarded to you?')).toBeGreaterThan(html.indexOf('Share this edition'))
+    // The masthead is the first thing in the body after the hidden preview text.
+    expect(html.indexOf('>FundOps</span>')).toBeLessThan(html.indexOf('top stories.'))
+  })
   it('has no "Section A / Section B" labels, and links the site’s pages from the footer', () => {
     const html = render()
     expect(html).not.toMatch(/Section [AB]/)
