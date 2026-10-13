@@ -10,7 +10,7 @@ const ready: PromptState = {
 
 describe('where the signup card may appear', () => {
   it('on the reading pages', () => {
-    for (const p of ['/', '/news', '/news/private-credit', '/story/123', '/firm/kkr', '/firms', '/league-tables', '/events', '/archive/2026-09', '/about']) expect(isReadingPage(p)).toBe(true)
+    for (const p of ['/', '/news', '/news/private-credit', '/story/123', '/firm/kkr', '/firms', '/league-tables', '/events', '/archive/2026-09', '/about', '/glossary', '/glossary/clawback']) expect(isReadingPage(p)).toBe(true)
   })
   it('never on the desk, admin, legal, sponsor, preferences or form pages', () => {
     for (const p of ['/desk', '/desk/leads', '/admin', '/privacy', '/terms', '/sponsor', '/preferences', '/newsletter/sample', '/events/submit', '/brand', '/newsroom']) expect(isReadingPage(p)).toBe(false)

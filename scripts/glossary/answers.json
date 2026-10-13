@@ -1,0 +1,1234 @@
+{
+  "carried-interest": {
+    "text": "{\"explanation\": \"Carry is set out in the LPA's distribution provisions and usually paid to the GP's management company or to individual professionals through a carry vehicle. Whether it is paid deal by deal or only after the whole fund returns capital changes its timing and risk. It is often confused with the management fee, which is paid regardless of performance.\", \"related\": [\"waterfall\", \"hurdle-rate\", \"catch-up\", \"clawback\", \"european-waterfall\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:14.241Z",
+    "explanation": "Carry is set out in the LPA's distribution provisions and usually paid to the GP's management company or to individual professionals through a carry vehicle. Whether it is paid deal by deal or only after the whole fund returns capital changes its timing and risk. It is often confused with the management fee, which is paid regardless of performance.",
+    "related": [
+      "waterfall",
+      "hurdle-rate",
+      "catch-up",
+      "clawback",
+      "european-waterfall"
+    ]
+  },
+  "nav-loan": {
+    "text": "{\"explanation\": \"Lenders size the loan as a loan-to-value ratio against the portfolio's reported NAV, so diversified portfolios with audited valuations borrow more easily. Terms usually sit in the LPA, which often requires LPAC consent or caps leverage. It is often confused with a subscription line, which is secured on LP commitments and is used earlier in a fund's life.\", \"related\": [\"subscription-line\", \"nav\", \"lpac\", \"lpa\", \"dpi\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:14.348Z",
+    "explanation": "Lenders size the loan as a loan-to-value ratio against the portfolio's reported NAV, so diversified portfolios with audited valuations borrow more easily. Terms usually sit in the LPA, which often requires LPAC consent or caps leverage. It is often confused with a subscription line, which is secured on LP commitments and is used earlier in a fund's life.",
+    "related": [
+      "subscription-line",
+      "nav",
+      "lpac",
+      "lpa",
+      "dpi"
+    ]
+  },
+  "waterfall": {
+    "text": "{\"explanation\": \"The waterfall is written into the LPA's distribution provisions, and it applies each time the fund distributes after an exit, not just at the end. Terms vary on whether the return test runs across the whole fund or deal by deal, and on whether the catch-up is full, partial or absent. Often confused with the carry percentage, which is only the last tier.\", \"related\": [\"european-waterfall\", \"american-waterfall\", \"hurdle-rate\", \"catch-up\", \"carried-interest\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:43.440Z",
+    "explanation": "The waterfall is written into the LPA's distribution provisions, and it applies each time the fund distributes after an exit, not just at the end. Terms vary on whether the return test runs across the whole fund or deal by deal, and on whether the catch-up is full, partial or absent. Often confused with the carry percentage, which is only the last tier.",
+    "related": [
+      "european-waterfall",
+      "american-waterfall",
+      "hurdle-rate",
+      "catch-up",
+      "carried-interest"
+    ]
+  },
+  "catch-up": {
+    "text": "{\"explanation\": \"The catch-up rate is set in the LPA's distribution provisions and varies: 100% is a full catch-up, while 50% or 80% splits each dollar with investors during the phase. Some funds have none, so carry is paid only on profit above the hurdle. It is often confused with the hurdle itself, which it follows, and with clawback, which corrects over-distribution later.\", \"related\": [\"waterfall\", \"hurdle-rate\", \"carried-interest\", \"clawback\", \"lpa\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:43.442Z",
+    "explanation": "The catch-up rate is set in the LPA's distribution provisions and varies: 100% is a full catch-up, while 50% or 80% splits each dollar with investors during the phase. Some funds have none, so carry is paid only on profit above the hurdle. It is often confused with the hurdle itself, which it follows, and with clawback, which corrects over-distribution later.",
+    "related": [
+      "waterfall",
+      "hurdle-rate",
+      "carried-interest",
+      "clawback",
+      "lpa"
+    ]
+  },
+  "clawback": {
+    "text": "{\"explanation\": \"The obligation sits in the LPA and usually applies at the fund's end, though some agreements also test it at interim dates. It is typically capped at carry received after tax, and individual partners often give guarantees, sometimes joint and several. Escrow accounts or carry holdbacks are common backstops. It is often confused with a fee clawback, which recovers other payments.\", \"related\": [\"american-waterfall\", \"carried-interest\", \"waterfall\", \"lpa\", \"european-waterfall\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:43.568Z",
+    "explanation": "The obligation sits in the LPA and usually applies at the fund's end, though some agreements also test it at interim dates. It is typically capped at carry received after tax, and individual partners often give guarantees, sometimes joint and several. Escrow accounts or carry holdbacks are common backstops. It is often confused with a fee clawback, which recovers other payments.",
+    "related": [
+      "american-waterfall",
+      "carried-interest",
+      "waterfall",
+      "lpa",
+      "european-waterfall"
+    ]
+  },
+  "hurdle-rate": {
+    "text": "{\"explanation\": \"The hurdle sits in the LPA's distribution waterfall and usually compounds annually on contributed capital from the date each capital call is funded. It is often confused with a fee-style threshold, but it is a payout-ordering rule. With a catch-up, the manager can then recover carry on the whole profit; without one, carry applies only above the hurdle.\", \"related\": [\"catch-up\", \"carried-interest\", \"waterfall\", \"lpa\", \"irr\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:13:34.367Z",
+    "explanation": "The hurdle sits in the LPA's distribution waterfall and usually compounds annually on contributed capital from the date each capital call is funded. It is often confused with a fee-style threshold, but it is a payout-ordering rule. With a catch-up, the manager can then recover carry on the whole profit; without one, carry applies only above the hurdle.",
+    "related": [
+      "catch-up",
+      "carried-interest",
+      "waterfall",
+      "lpa",
+      "irr"
+    ]
+  },
+  "american-waterfall": {
+    "text": "{\"explanation\": \"Set out in the distribution provisions of the LPA, this structure is common in US venture and real estate funds and less so in buyout funds. Terms vary: some versions require recovery of realized losses and write-downs on earlier deals, which makes them closer to a whole-fund test. It is often called deal-by-deal and contrasted with the European waterfall.\", \"related\": [\"european-waterfall\", \"clawback\", \"waterfall\", \"carried-interest\", \"lpa\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:45.556Z",
+    "explanation": "Set out in the distribution provisions of the LPA, this structure is common in US venture and real estate funds and less so in buyout funds. Terms vary: some versions require recovery of realized losses and write-downs on earlier deals, which makes them closer to a whole-fund test. It is often called deal-by-deal and contrasted with the European waterfall.",
+    "related": [
+      "european-waterfall",
+      "clawback",
+      "waterfall",
+      "carried-interest",
+      "lpa"
+    ]
+  },
+  "european-waterfall": {
+    "text": "{\"explanation\": \"The distribution terms sit in the LPA, usually with the carry percentage, hurdle and catch-up. Because carry starts late, it often arrives near the end of a fund's life, and the clawback matters less than under a deal-by-deal structure. Often called a whole-fund waterfall, it is the usual structure in European buyout funds and is contrasted with the American, deal-by-deal waterfall.\", \"related\": [\"american-waterfall\", \"waterfall\", \"hurdle-rate\", \"catch-up\", \"clawback\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:45.643Z",
+    "explanation": "The distribution terms sit in the LPA, usually with the carry percentage, hurdle and catch-up. Because carry starts late, it often arrives near the end of a fund's life, and the clawback matters less than under a deal-by-deal structure. Often called a whole-fund waterfall, it is the usual structure in European buyout funds and is contrasted with the American, deal-by-deal waterfall.",
+    "related": [
+      "american-waterfall",
+      "waterfall",
+      "hurdle-rate",
+      "catch-up",
+      "clawback"
+    ]
+  },
+  "management-fee": {
+    "text": "{\"explanation\": \"The fee is set in the LPA and usually paid quarterly or semiannually, often in advance, with drawn capital funding it. After the investment period it typically steps down or moves to a base of invested capital or net asset value. Fund-level offsets for transaction or monitoring fees often reduce it. It is distinct from carried interest, which is performance-based.\", \"related\": [\"fee-step-down\", \"fee-offset\", \"carried-interest\", \"lpa\", \"investment-period\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:46.146Z",
+    "explanation": "The fee is set in the LPA and usually paid quarterly or semiannually, often in advance, with drawn capital funding it. After the investment period it typically steps down or moves to a base of invested capital or net asset value. Fund-level offsets for transaction or monitoring fees often reduce it. It is distinct from carried interest, which is performance-based.",
+    "related": [
+      "fee-step-down",
+      "fee-offset",
+      "carried-interest",
+      "lpa",
+      "investment-period"
+    ]
+  },
+  "fee-offset": {
+    "text": "{\"explanation\": \"The offset is set out in the LPA's fee provisions, and the percentage varies: 100% is common in buyout funds, while some funds offset only part. Excess offsets may carry forward or be paid out at fund end. Often confused with fee waivers, where the manager gives up fees to fund its GP commitment.\", \"related\": [\"management-fee\", \"lpa\", \"fee-step-down\", \"gp-commitment\", \"ilpa\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:47.449Z",
+    "explanation": "The offset is set out in the LPA's fee provisions, and the percentage varies: 100% is common in buyout funds, while some funds offset only part. Excess offsets may carry forward or be paid out at fund end. Often confused with fee waivers, where the manager gives up fees to fund its GP commitment.",
+    "related": [
+      "management-fee",
+      "lpa",
+      "fee-step-down",
+      "gp-commitment",
+      "ilpa"
+    ]
+  },
+  "fee-step-down": {
+    "text": "{\"explanation\": \"The step-down is set out in the LPA's management fee provision and is usually triggered by the end of the investment period or by the launch of a successor fund. Funds vary in whether they cut the rate, change the base, or do both. Net invested capital is often reduced by write-downs and realizations. It is often confused with a fee offset, which reduces fees by other income.\", \"related\": [\"management-fee\", \"investment-period\", \"lpa\", \"fee-offset\", \"commitment\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:47.538Z",
+    "explanation": "The step-down is set out in the LPA's management fee provision and is usually triggered by the end of the investment period or by the launch of a successor fund. Funds vary in whether they cut the rate, change the base, or do both. Net invested capital is often reduced by write-downs and realizations. It is often confused with a fee offset, which reduces fees by other income.",
+    "related": [
+      "management-fee",
+      "investment-period",
+      "lpa",
+      "fee-offset",
+      "commitment"
+    ]
+  },
+  "gp-commitment": {
+    "text": "{\"explanation\": \"The commitment is set out in the LPA and is drawn through capital calls pro rata with other investors. It is often funded partly by waiving management fees rather than paying cash, which some investors accept and others resist. It is separate from carried interest, which is a share of profits and requires no capital.\", \"related\": [\"lpa\", \"carried-interest\", \"management-fee\", \"key-person\", \"capital-call\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:47.604Z",
+    "explanation": "The commitment is set out in the LPA and is drawn through capital calls pro rata with other investors. It is often funded partly by waiving management fees rather than paying cash, which some investors accept and others resist. It is separate from carried interest, which is a share of profits and requires no capital.",
+    "related": [
+      "lpa",
+      "carried-interest",
+      "management-fee",
+      "key-person",
+      "capital-call"
+    ]
+  },
+  "key-person": {
+    "text": "{\"explanation\": \"The clause sits in the LPA and usually names two to four senior people, with a trigger tied either to departure or to a minimum share of working time. A suspension often starts automatically and lasts a set period, such as 180 days, while the GP proposes replacements for investor approval. It is separate from no-fault removal, which does not depend on any departure.\", \"related\": [\"lpa\", \"no-fault-removal\", \"investment-period\", \"lpac\", \"general-partner\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:48.207Z",
+    "explanation": "The clause sits in the LPA and usually names two to four senior people, with a trigger tied either to departure or to a minimum share of working time. A suspension often starts automatically and lasts a set period, such as 180 days, while the GP proposes replacements for investor approval. It is separate from no-fault removal, which does not depend on any departure.",
+    "related": [
+      "lpa",
+      "no-fault-removal",
+      "investment-period",
+      "lpac",
+      "general-partner"
+    ]
+  },
+  "mfn": {
+    "text": "{\"explanation\": \"The MFN right usually sits in a side letter, and the manager typically delivers a disclosure of other side letters after the final close, giving a short window to elect. Carve-outs are common: LPAC seats, regulatory or tax-driven terms, and rights tied to an investor's legal status are often excluded. It is often confused with fee discounts tied to commitment size.\", \"related\": [\"side-letter\", \"lpa\", \"lpac\", \"final-close\", \"management-fee\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:49.581Z",
+    "explanation": "The MFN right usually sits in a side letter, and the manager typically delivers a disclosure of other side letters after the final close, giving a short window to elect. Carve-outs are common: LPAC seats, regulatory or tax-driven terms, and rights tied to an investor's legal status are often excluded. It is often confused with fee discounts tied to commitment size.",
+    "related": [
+      "side-letter",
+      "lpa",
+      "lpac",
+      "final-close",
+      "management-fee"
+    ]
+  },
+  "side-letter": {
+    "text": "{\"explanation\": \"Side letters are usually signed at or shortly after an investor's closing, and they sit alongside the LPA and subscription agreement. Common contents beyond fees include excuse rights, LPAC seats, co-investment access, and tax or regulatory provisions for specific investor types. Often confused with amendments to the LPA, which bind every partner; a side letter binds only the parties who sign it.\", \"related\": [\"mfn\", \"lpa\", \"lpac\", \"anchor-investor\", \"management-fee\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:49.604Z",
+    "explanation": "Side letters are usually signed at or shortly after an investor's closing, and they sit alongside the LPA and subscription agreement. Common contents beyond fees include excuse rights, LPAC seats, co-investment access, and tax or regulatory provisions for specific investor types. Often confused with amendments to the LPA, which bind every partner; a side letter binds only the parties who sign it.",
+    "related": [
+      "mfn",
+      "lpa",
+      "lpac",
+      "anchor-investor",
+      "management-fee"
+    ]
+  },
+  "no-fault-removal": {
+    "text": "{\"explanation\": \"The right sits in the LPA and is usually separate from for-cause removal, which turns on a defined event such as fraud or material breach. Thresholds are typically measured by commitments, often excluding the GP's and its affiliates' interests, and can differ for removal versus early termination. Terms often include a notice period, a delay after the first close, and a payout of fees or carry on removal.\", \"related\": [\"lpa\", \"key-person\", \"lpac\", \"carried-interest\", \"general-partner\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:49.635Z",
+    "explanation": "The right sits in the LPA and is usually separate from for-cause removal, which turns on a defined event such as fraud or material breach. Thresholds are typically measured by commitments, often excluding the GP's and its affiliates' interests, and can differ for removal versus early termination. Terms often include a notice period, a delay after the first close, and a payout of fees or carry on removal.",
+    "related": [
+      "lpa",
+      "key-person",
+      "lpac",
+      "carried-interest",
+      "general-partner"
+    ]
+  },
+  "lpac": {
+    "text": "{\"explanation\": \"The committee is created by the LPA, which sets its size, how members are chosen and what it must approve. Seats typically go to larger or earlier investors, sometimes through side letters. Members act for their own institutions and are usually not paid. It advises rather than governs: it cannot direct investments or replace the manager, and it is distinct from the full investor meeting.\", \"related\": [\"lpa\", \"limited-partner\", \"general-partner\", \"side-letter\", \"key-person\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:50.503Z",
+    "explanation": "The committee is created by the LPA, which sets its size, how members are chosen and what it must approve. Seats typically go to larger or earlier investors, sometimes through side letters. Members act for their own institutions and are usually not paid. It advises rather than governs: it cannot direct investments or replace the manager, and it is distinct from the full investor meeting.",
+    "related": [
+      "lpa",
+      "limited-partner",
+      "general-partner",
+      "side-letter",
+      "key-person"
+    ]
+  },
+  "ilpa": {
+    "text": "{\"explanation\": \"ILPA's guidance is voluntary and has no legal force. It surfaces in LPA negotiations, side letter requests and due diligence questionnaires, where investors often measure a fund's terms against its principles. Its best-known outputs are the Principles document and the reporting templates for fees, expenses and performance. Not to be confused with an LPA, which is the binding contract.\", \"related\": [\"lpa\", \"limited-partner\", \"lpac\", \"management-fee\", \"side-letter\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:51.487Z",
+    "explanation": "ILPA's guidance is voluntary and has no legal force. It surfaces in LPA negotiations, side letter requests and due diligence questionnaires, where investors often measure a fund's terms against its principles. Its best-known outputs are the Principles document and the reporting templates for fees, expenses and performance. Not to be confused with an LPA, which is the binding contract.",
+    "related": [
+      "lpa",
+      "limited-partner",
+      "lpac",
+      "management-fee",
+      "side-letter"
+    ]
+  },
+  "lpa": {
+    "text": "{\"explanation\": \"The LPA is negotiated between the sponsor's counsel and prospective investors before the first close, usually starting from the sponsor's draft and the private placement memorandum. Later closers sign on to the same terms. Side letters adjust it for individual investors, and amendments typically require a stated percentage of investors by interest. It is often confused with the subscription agreement, which only covers an investor's admission.\", \"related\": [\"side-letter\", \"lpac\", \"ppm\", \"general-partner\", \"limited-partner\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:51.576Z",
+    "explanation": "The LPA is negotiated between the sponsor's counsel and prospective investors before the first close, usually starting from the sponsor's draft and the private placement memorandum. Later closers sign on to the same terms. Side letters adjust it for individual investors, and amendments typically require a stated percentage of investors by interest. It is often confused with the subscription agreement, which only covers an investor's admission.",
+    "related": [
+      "side-letter",
+      "lpac",
+      "ppm",
+      "general-partner",
+      "limited-partner"
+    ]
+  },
+  "first-close": {
+    "text": "{\"explanation\": \"The LPA usually sets a window, often 12 to 18 months, for further closes after the first. Investors admitted later typically pay their share of fees and costs back to the first-close date, plus interest, which is the job of equalization. Early investors sometimes get fee discounts. First close is often confused with the fund's formation date.\", \"related\": [\"final-close\", \"equalization\", \"anchor-investor\", \"lpa\", \"hard-cap\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:51.647Z",
+    "explanation": "The LPA usually sets a window, often 12 to 18 months, for further closes after the first. Investors admitted later typically pay their share of fees and costs back to the first-close date, plus interest, which is the job of equalization. Early investors sometimes get fee discounts. First close is often confused with the fund's formation date.",
+    "related": [
+      "final-close",
+      "equalization",
+      "anchor-investor",
+      "lpa",
+      "hard-cap"
+    ]
+  },
+  "final-close": {
+    "text": "{\"explanation\": \"The LPA sets a deadline, typically 12 to 18 months after the first close, and the GP may extend it with LPAC consent. Investors admitted after the first close usually pay a catch-up of management fees back to that date, plus interest. The close is also capped by the fund's hard cap, if there is one. It is not the end of the investment period.\", \"related\": [\"first-close\", \"hard-cap\", \"equalization\", \"lpa\", \"investment-period\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:52.619Z",
+    "explanation": "The LPA sets a deadline, typically 12 to 18 months after the first close, and the GP may extend it with LPAC consent. Investors admitted after the first close usually pay a catch-up of management fees back to that date, plus interest. The close is also capped by the fund's hard cap, if there is one. It is not the end of the investment period.",
+    "related": [
+      "first-close",
+      "hard-cap",
+      "equalization",
+      "lpa",
+      "investment-period"
+    ]
+  },
+  "hard-cap": {
+    "text": "{\"explanation\": \"The hard cap is set in the PPM and the LPA, usually alongside a target size, and often sits 10% to 25% above it. Raising it generally needs LPAC or investor consent and an amendment. Managers often reach it at the final close, after oversubscribed demand. It is distinct from the target, which is only a goal, and from a soft cap.\", \"related\": [\"final-close\", \"commitment\", \"first-close\", \"lpa\", \"ppm\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:53.421Z",
+    "explanation": "The hard cap is set in the PPM and the LPA, usually alongside a target size, and often sits 10% to 25% above it. Raising it generally needs LPAC or investor consent and an amendment. Managers often reach it at the final close, after oversubscribed demand. It is distinct from the target, which is only a goal, and from a soft cap.",
+    "related": [
+      "final-close",
+      "commitment",
+      "first-close",
+      "lpa",
+      "ppm"
+    ]
+  },
+  "anchor-investor": {
+    "text": "{\"explanation\": \"Anchor terms are usually negotiated before the first close and written into the LPA or a side letter. Common perks include reduced fees, a share of carried interest or management company economics, co-investment rights, and a seat on the LPAC. Anchors are typical in first-time and specialized strategies. The term is sometimes confused with a seed investor, who often takes a stake in the manager.\", \"related\": [\"first-close\", \"side-letter\", \"gp-stake\", \"fee-step-down\", \"co-investment\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:53.631Z",
+    "explanation": "Anchor terms are usually negotiated before the first close and written into the LPA or a side letter. Common perks include reduced fees, a share of carried interest or management company economics, co-investment rights, and a seat on the LPAC. Anchors are typical in first-time and specialized strategies. The term is sometimes confused with a seed investor, who often takes a stake in the manager.",
+    "related": [
+      "first-close",
+      "side-letter",
+      "gp-stake",
+      "fee-step-down",
+      "co-investment"
+    ]
+  },
+  "placement-agent": {
+    "text": "{\"explanation\": \"Agents are engaged under a written mandate, often with exclusivity and a tail period that keeps the fee payable on investors introduced during the engagement. Fees are typically paid by the management company, sometimes with an offset against the management fee. Agents are often confused with finders, and in the U.S. must be registered broker-dealers.\", \"related\": [\"first-close\", \"lpa\", \"ppm\", \"anchor-investor\", \"ddq\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:53.840Z",
+    "explanation": "Agents are engaged under a written mandate, often with exclusivity and a tail period that keeps the fee payable on investors introduced during the engagement. Fees are typically paid by the management company, sometimes with an offset against the management fee. Agents are often confused with finders, and in the U.S. must be registered broker-dealers.",
+    "related": [
+      "first-close",
+      "lpa",
+      "ppm",
+      "anchor-investor",
+      "ddq"
+    ]
+  },
+  "re-up": {
+    "text": "{\"explanation\": \"Re-ups usually come out of an investor's annual review of a manager's track record, reporting and team, and often precede or follow the first close of the successor fund. The commitment may be larger, smaller or flat versus the prior fund. Re-up rates are sometimes counted by investor number and sometimes by dollars committed, which can give different answers.\", \"related\": [\"first-close\", \"limited-partner\", \"commitment\", \"anchor-investor\", \"vintage\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:54.677Z",
+    "explanation": "Re-ups usually come out of an investor's annual review of a manager's track record, reporting and team, and often precede or follow the first close of the successor fund. The commitment may be larger, smaller or flat versus the prior fund. Re-up rates are sometimes counted by investor number and sometimes by dollars committed, which can give different answers.",
+    "related": [
+      "first-close",
+      "limited-partner",
+      "commitment",
+      "anchor-investor",
+      "vintage"
+    ]
+  },
+  "commitment": {
+    "text": "{\"explanation\": \"A commitment is made in the subscription agreement and governed by the LPA, usually at the investor's admission to the fund. It is often confused with paid-in capital, which is only the part already called. Unfunded commitments can be called during the investment period, and some can be called later for fees, expenses or follow-on investments. Defaulting investors typically face penalties.\", \"related\": [\"capital-call\", \"limited-partner\", \"lpa\", \"investment-period\", \"dry-powder\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:55.335Z",
+    "explanation": "A commitment is made in the subscription agreement and governed by the LPA, usually at the investor's admission to the fund. It is often confused with paid-in capital, which is only the part already called. Unfunded commitments can be called during the investment period, and some can be called later for fees, expenses or follow-on investments. Defaulting investors typically face penalties.",
+    "related": [
+      "capital-call",
+      "limited-partner",
+      "lpa",
+      "investment-period",
+      "dry-powder"
+    ]
+  },
+  "ppm": {
+    "text": "{\"explanation\": \"The PPM is usually issued with the LPA and subscription agreement, and its summary of terms is meant to track the LPA, which controls if the two conflict. Lawyers draft it largely to support antifraud protection under securities law. It often includes a long risk-factor and conflicts-of-interest section. Managers sometimes call it an offering memorandum or confidential information memorandum.\", \"related\": [\"lpa\", \"ddq\", \"side-letter\", \"reg-d-506b\", \"first-close\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:55.725Z",
+    "explanation": "The PPM is usually issued with the LPA and subscription agreement, and its summary of terms is meant to track the LPA, which controls if the two conflict. Lawyers draft it largely to support antifraud protection under securities law. It often includes a long risk-factor and conflicts-of-interest section. Managers sometimes call it an offering memorandum or confidential information memorandum.",
+    "related": [
+      "lpa",
+      "ddq",
+      "side-letter",
+      "reg-d-506b",
+      "first-close"
+    ]
+  },
+  "fund-of-funds": {
+    "text": "{\"explanation\": \"Funds of funds are usually organized as limited partnerships with their own LPA, and often sit in the same strategy or region, such as venture or buyout. Many also buy secondaries or make co-investments alongside the underlying managers. Fee levels and carry vary and are often lower than a direct fund's. Not to be confused with a feeder fund, which invests in one fund.\", \"related\": [\"limited-partner\", \"feeder-fund\", \"management-fee\", \"co-investment\", \"lp-led-secondary\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:55.817Z",
+    "explanation": "Funds of funds are usually organized as limited partnerships with their own LPA, and often sit in the same strategy or region, such as venture or buyout. Many also buy secondaries or make co-investments alongside the underlying managers. Fee levels and carry vary and are often lower than a direct fund's. Not to be confused with a feeder fund, which invests in one fund.",
+    "related": [
+      "limited-partner",
+      "feeder-fund",
+      "management-fee",
+      "co-investment",
+      "lp-led-secondary"
+    ]
+  },
+  "ddq": {
+    "text": "{\"explanation\": \"Most DDQs arrive after an LP's initial interest, alongside the PPM and before onsite meetings. Content ranges from investment strategy and track record to valuation, cybersecurity, ESG and business continuity. Managers typically keep a master answer set and tailor it per investor. ILPA publishes a standard template. A DDQ is separate from the AML and KYC onboarding forms completed at subscription.\", \"related\": [\"ppm\", \"ilpa\", \"limited-partner\", \"aml-kyc\", \"first-close\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:56.838Z",
+    "explanation": "Most DDQs arrive after an LP's initial interest, alongside the PPM and before onsite meetings. Content ranges from investment strategy and track record to valuation, cybersecurity, ESG and business continuity. Managers typically keep a master answer set and tailor it per investor. ILPA publishes a standard template. A DDQ is separate from the AML and KYC onboarding forms completed at subscription.",
+    "related": [
+      "ppm",
+      "ilpa",
+      "limited-partner",
+      "aml-kyc",
+      "first-close"
+    ]
+  },
+  "limited-partner": {
+    "text": "{\"explanation\": \"An LP's rights and obligations sit in the limited partnership agreement and any side letter, not in the label. Limited liability usually depends on the LP staying out of management, which is why oversight is channeled through the advisory committee (LPAC) and consent votes. LPs fund capital calls over time, and a fund is often a limited partnership but can be another vehicle.\", \"related\": [\"general-partner\", \"lpa\", \"commitment\", \"capital-call\", \"lpac\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:57.207Z",
+    "explanation": "An LP's rights and obligations sit in the limited partnership agreement and any side letter, not in the label. Limited liability usually depends on the LP staying out of management, which is why oversight is channeled through the advisory committee (LPAC) and consent votes. LPs fund capital calls over time, and a fund is often a limited partnership but can be another vehicle.",
+    "related": [
+      "general-partner",
+      "lpa",
+      "commitment",
+      "capital-call",
+      "lpac"
+    ]
+  },
+  "general-partner": {
+    "text": "{\"explanation\": \"In a limited partnership, the GP is usually a separate legal entity from the management company that employs the investment team, and it often has unlimited liability for the fund's obligations, typically through a special-purpose vehicle. Its powers and limits are set out in the LPA. It is often confused with the manager, and it is the counterparty to the limited partners.\", \"related\": [\"limited-partner\", \"lpa\", \"gp-commitment\", \"carried-interest\", \"key-person\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:57.657Z",
+    "explanation": "In a limited partnership, the GP is usually a separate legal entity from the management company that employs the investment team, and it often has unlimited liability for the fund's obligations, typically through a special-purpose vehicle. Its powers and limits are set out in the LPA. It is often confused with the manager, and it is the counterparty to the limited partners.",
+    "related": [
+      "limited-partner",
+      "lpa",
+      "gp-commitment",
+      "carried-interest",
+      "key-person"
+    ]
+  },
+  "capital-call": {
+    "text": "{\"explanation\": \"Calls fund new investments, fees and fund expenses, and the notice states the amount, purpose and due date. Each investor pays its pro rata share, and the LPA sets the notice period and default remedies, such as forfeiting part of the interest. Funds often bridge calls with a subscription line, which delays the cash needed from investors. Not the same as a distribution.\", \"related\": [\"commitment\", \"subscription-line\", \"lpa\", \"investment-period\", \"recycling\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:57.987Z",
+    "explanation": "Calls fund new investments, fees and fund expenses, and the notice states the amount, purpose and due date. Each investor pays its pro rata share, and the LPA sets the notice period and default remedies, such as forfeiting part of the interest. Funds often bridge calls with a subscription line, which delays the cash needed from investors. Not the same as a distribution.",
+    "related": [
+      "commitment",
+      "subscription-line",
+      "lpa",
+      "investment-period",
+      "recycling"
+    ]
+  },
+  "investment-period": {
+    "text": "{\"explanation\": \"The investment period is set in the LPA and runs from the first close or initial closing date. It often ends early if a successor fund begins investing or the key-person provisions are triggered, and the LPA may allow an extension with LPAC consent. Some funds permit follow-ons and recycling afterward. It is often called the commitment period.\", \"related\": [\"lpa\", \"fee-step-down\", \"recycling\", \"key-person\", \"capital-call\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:59.006Z",
+    "explanation": "The investment period is set in the LPA and runs from the first close or initial closing date. It often ends early if a successor fund begins investing or the key-person provisions are triggered, and the LPA may allow an extension with LPAC consent. Some funds permit follow-ons and recycling afterward. It is often called the commitment period.",
+    "related": [
+      "lpa",
+      "fee-step-down",
+      "recycling",
+      "key-person",
+      "capital-call"
+    ]
+  },
+  "recycling": {
+    "text": "{\"explanation\": \"Recycling rights sit in the LPA and vary in scope. Some funds recycle only proceeds from investments sold within a set period, often the investment period, or only the cost of those investments. Others also recycle returned fees or expenses. A cap, often a share of commitments, limits the total. It differs from recallable distributions, which are returned capital that investors must fund again.\", \"related\": [\"investment-period\", \"lpa\", \"capital-call\", \"commitment\", \"dpi\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:59.514Z",
+    "explanation": "Recycling rights sit in the LPA and vary in scope. Some funds recycle only proceeds from investments sold within a set period, often the investment period, or only the cost of those investments. Others also recycle returned fees or expenses. A cap, often a share of commitments, limits the total. It differs from recallable distributions, which are returned capital that investors must fund again.",
+    "related": [
+      "investment-period",
+      "lpa",
+      "capital-call",
+      "commitment",
+      "dpi"
+    ]
+  },
+  "subscription-line": {
+    "text": "{\"explanation\": \"The facility is set out in the LPA, which caps borrowing and how long a draw can stay outstanding, often 90 to 180 days. Lenders underwrite the investors' creditworthiness and their obligation to fund, not the portfolio. Also called a capital call line or credit facility. Distinct from a NAV loan, which is secured on portfolio assets.\", \"related\": [\"capital-call\", \"nav-loan\", \"irr\", \"commitment\", \"lpa\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:11:59.752Z",
+    "explanation": "The facility is set out in the LPA, which caps borrowing and how long a draw can stay outstanding, often 90 to 180 days. Lenders underwrite the investors' creditworthiness and their obligation to fund, not the portfolio. Also called a capital call line or credit facility. Distinct from a NAV loan, which is secured on portfolio assets.",
+    "related": [
+      "capital-call",
+      "nav-loan",
+      "irr",
+      "commitment",
+      "lpa"
+    ]
+  },
+  "continuation-vehicle": {
+    "text": "{\"explanation\": \"Usually run as a single-asset or multi-asset deal, the vehicle is typically funded by new secondary investors, often led by one investor who sets the price. The manager normally commits fresh capital and resets carry terms. An LPAC usually must approve the conflict, and a fairness opinion is common. It is a type of GP-led secondary.\", \"related\": [\"gp-led-secondary\", \"lpac\", \"fair-value\", \"lp-led-secondary\", \"carried-interest\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:00.231Z",
+    "explanation": "Usually run as a single-asset or multi-asset deal, the vehicle is typically funded by new secondary investors, often led by one investor who sets the price. The manager normally commits fresh capital and resets carry terms. An LPAC usually must approve the conflict, and a fairness opinion is common. It is a type of GP-led secondary.",
+    "related": [
+      "gp-led-secondary",
+      "lpac",
+      "fair-value",
+      "lp-led-secondary",
+      "carried-interest"
+    ]
+  },
+  "gp-led-secondary": {
+    "text": "{\"explanation\": \"Typically arises near the end of a fund's term, when the manager wants more time to hold a strong asset. A third-party price is usually set through a competitive process, often with a fairness opinion, and the LPAC is commonly asked to approve the conflict. Rolling investors often get new terms. Distinct from an LP-led secondary, where an investor sells its own fund interest.\", \"related\": [\"continuation-vehicle\", \"lp-led-secondary\", \"lpac\", \"fair-value\", \"tender-offer\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:00.893Z",
+    "explanation": "Typically arises near the end of a fund's term, when the manager wants more time to hold a strong asset. A third-party price is usually set through a competitive process, often with a fairness opinion, and the LPAC is commonly asked to approve the conflict. Rolling investors often get new terms. Distinct from an LP-led secondary, where an investor sells its own fund interest.",
+    "related": [
+      "continuation-vehicle",
+      "lp-led-secondary",
+      "lpac",
+      "fair-value",
+      "tender-offer"
+    ]
+  },
+  "lp-led-secondary": {
+    "text": "{\"explanation\": \"Pricing is usually quoted as a percentage of the latest reported NAV, adjusted for cash flows since that date. The GP typically must consent to the transfer under the LPA, and the buyer takes on any unfunded commitment. Often confused with a GP-led secondary, where the manager runs the process, usually moving assets into a continuation vehicle.\", \"related\": [\"gp-led-secondary\", \"nav\", \"commitment\", \"tender-offer\", \"lpa\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:01.469Z",
+    "explanation": "Pricing is usually quoted as a percentage of the latest reported NAV, adjusted for cash flows since that date. The GP typically must consent to the transfer under the LPA, and the buyer takes on any unfunded commitment. Often confused with a GP-led secondary, where the manager runs the process, usually moving assets into a continuation vehicle.",
+    "related": [
+      "gp-led-secondary",
+      "nav",
+      "commitment",
+      "tender-offer",
+      "lpa"
+    ]
+  },
+  "tender-offer": {
+    "text": "{\"explanation\": \"In private markets, tender offers are most common in secondaries, where a buyer or the manager offers to purchase LP interests, and in public-company deals, where an acquirer goes straight to shareholders. Terms usually include a minimum acceptance level and can be extended. Often confused with a GP-led restructuring, which typically asks holders to choose between selling and rolling.\", \"related\": [\"lp-led-secondary\", \"gp-led-secondary\", \"take-private\", \"continuation-vehicle\", \"interval-fund\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:01.909Z",
+    "explanation": "In private markets, tender offers are most common in secondaries, where a buyer or the manager offers to purchase LP interests, and in public-company deals, where an acquirer goes straight to shareholders. Terms usually include a minimum acceptance level and can be extended. Often confused with a GP-led restructuring, which typically asks holders to choose between selling and rolling.",
+    "related": [
+      "lp-led-secondary",
+      "gp-led-secondary",
+      "take-private",
+      "continuation-vehicle",
+      "interval-fund"
+    ]
+  },
+  "distribution-in-kind": {
+    "text": "{\"explanation\": \"The LPA usually permits distributions in kind, often limiting them to marketable securities and sometimes requiring LP consent or an option to receive cash. Shares are valued at a trading-price average over a set period, which fixes the amount treated as distributed. Lock-up periods may delay sales. Often confused with a secondary sale of fund interests.\", \"related\": [\"lpa\", \"limited-partner\", \"waterfall\", \"dpi\", \"nav\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:02.296Z",
+    "explanation": "The LPA usually permits distributions in kind, often limiting them to marketable securities and sometimes requiring LP consent or an option to receive cash. Shares are valued at a trading-price average over a set period, which fixes the amount treated as distributed. Lock-up periods may delay sales. Often confused with a secondary sale of fund interests.",
+    "related": [
+      "lpa",
+      "limited-partner",
+      "waterfall",
+      "dpi",
+      "nav"
+    ]
+  },
+  "dpi": {
+    "text": "{\"explanation\": \"DPI appears in quarterly LP reports and in fund performance tables, usually next to RVPI and TVPI. Distributions are typically counted net of fees and carried interest, so it reflects what investors actually received. Because it ignores unrealized value, it is often near zero in a young fund and is sometimes confused with MOIC, which includes unrealized value.\", \"related\": [\"tvpi\", \"rvpi\", \"moic\", \"irr\", \"j-curve\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:02.707Z",
+    "explanation": "DPI appears in quarterly LP reports and in fund performance tables, usually next to RVPI and TVPI. Distributions are typically counted net of fees and carried interest, so it reflects what investors actually received. Because it ignores unrealized value, it is often near zero in a young fund and is sometimes confused with MOIC, which includes unrealized value.",
+    "related": [
+      "tvpi",
+      "rvpi",
+      "moic",
+      "irr",
+      "j-curve"
+    ]
+  },
+  "tvpi": {
+    "text": "{\"explanation\": \"TVPI is the sum of DPI and RVPI, so it appears next to them in quarterly LP reports and fund performance tables. It is usually stated net of fees and carried interest, though gross figures exist. It is often confused with MOIC, which is typically measured at the deal level or gross. Unlike IRR, it ignores timing.\", \"related\": [\"dpi\", \"rvpi\", \"moic\", \"irr\", \"nav\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:03.278Z",
+    "explanation": "TVPI is the sum of DPI and RVPI, so it appears next to them in quarterly LP reports and fund performance tables. It is usually stated net of fees and carried interest, though gross figures exist. It is often confused with MOIC, which is typically measured at the deal level or gross. Unlike IRR, it ignores timing.",
+    "related": [
+      "dpi",
+      "rvpi",
+      "moic",
+      "irr",
+      "nav"
+    ]
+  },
+  "rvpi": {
+    "text": "{\"explanation\": \"RVPI appears in quarterly LP reports next to DPI, and the two add up to TVPI. It usually uses reported NAV as the numerator, net of fees and carried interest, so it is a net figure. It tends to be high in a fund's early and middle years and falls toward zero as investments are sold. It is sometimes mistaken for a measure of cash returned.\", \"related\": [\"dpi\", \"tvpi\", \"nav\", \"moic\", \"j-curve\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:03.856Z",
+    "explanation": "RVPI appears in quarterly LP reports next to DPI, and the two add up to TVPI. It usually uses reported NAV as the numerator, net of fees and carried interest, so it is a net figure. It tends to be high in a fund's early and middle years and falls toward zero as investments are sold. It is sometimes mistaken for a measure of cash returned.",
+    "related": [
+      "dpi",
+      "tvpi",
+      "nav",
+      "moic",
+      "j-curve"
+    ]
+  },
+  "moic": {
+    "text": "{\"explanation\": \"MOIC can be measured per deal or across a whole fund, and it counts unrealized value as well as cash returned, so a figure for an active investment depends on the current valuation. It is often confused with TVPI, which is the fund-level version net of fees and carry. Gross MOIC is usually quoted before fees and carry. Pairing it with IRR covers the timing it leaves out.\", \"related\": [\"tvpi\", \"irr\", \"dpi\", \"rvpi\", \"j-curve\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:04.477Z",
+    "explanation": "MOIC can be measured per deal or across a whole fund, and it counts unrealized value as well as cash returned, so a figure for an active investment depends on the current valuation. It is often confused with TVPI, which is the fund-level version net of fees and carry. Gross MOIC is usually quoted before fees and carry. Pairing it with IRR covers the timing it leaves out.",
+    "related": [
+      "tvpi",
+      "irr",
+      "dpi",
+      "rvpi",
+      "j-curve"
+    ]
+  },
+  "irr": {
+    "text": "{\"explanation\": \"Fund IRR is calculated from dated capital calls and distributions, plus remaining NAV, and is usually reported net of fees and carry. Gross IRR, which excludes them, is often confused with net. It is commonly paired with a multiple such as TVPI, which ignores timing. Early in a fund's life, IRR is often distorted by the J-curve.\", \"related\": [\"tvpi\", \"moic\", \"dpi\", \"j-curve\", \"subscription-line\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:04.717Z",
+    "explanation": "Fund IRR is calculated from dated capital calls and distributions, plus remaining NAV, and is usually reported net of fees and carry. Gross IRR, which excludes them, is often confused with net. It is commonly paired with a multiple such as TVPI, which ignores timing. Early in a fund's life, IRR is often distorted by the J-curve.",
+    "related": [
+      "tvpi",
+      "moic",
+      "dpi",
+      "j-curve",
+      "subscription-line"
+    ]
+  },
+  "j-curve": {
+    "text": "{\"explanation\": \"The dip comes mainly from management fees and organizational expenses charged on committed capital while little is yet invested, and from holding investments at cost early on. It shows up in net IRR and TVPI, not usually in gross figures. Subscription lines can shorten or flatten it. Credit and secondaries funds tend to show a shallower curve than venture or buyout funds.\", \"related\": [\"irr\", \"tvpi\", \"management-fee\", \"subscription-line\", \"vintage\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:05.422Z",
+    "explanation": "The dip comes mainly from management fees and organizational expenses charged on committed capital while little is yet invested, and from holding investments at cost early on. It shows up in net IRR and TVPI, not usually in gross figures. Subscription lines can shorten or flatten it. Credit and secondaries funds tend to show a shallower curve than venture or buyout funds.",
+    "related": [
+      "irr",
+      "tvpi",
+      "management-fee",
+      "subscription-line",
+      "vintage"
+    ]
+  },
+  "vintage": {
+    "text": "{\"explanation\": \"Vintage is used in benchmarking and in LP portfolio reporting, where commitments are grouped by year to spread exposure across market cycles. Definitions vary: some data providers use the first close, the first capital call or the first investment, so the same fund can carry different vintages in different databases. It is not the fund's formation date or its closing year.\", \"related\": [\"j-curve\", \"irr\", \"tvpi\", \"dpi\", \"first-close\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:05.924Z",
+    "explanation": "Vintage is used in benchmarking and in LP portfolio reporting, where commitments are grouped by year to spread exposure across market cycles. Definitions vary: some data providers use the first close, the first capital call or the first investment, so the same fund can carry different vintages in different databases. It is not the fund's formation date or its closing year.",
+    "related": [
+      "j-curve",
+      "irr",
+      "tvpi",
+      "dpi",
+      "first-close"
+    ]
+  },
+  "dry-powder": {
+    "text": "{\"explanation\": \"Dry powder is usually measured at the fund level from commitments less drawn capital, and then summed across funds. Some counts also net out amounts reserved for fees, follow-on investments or expenses, so totals differ by source. It is often confused with cash held by a fund, which is only the part already called from investors.\", \"related\": [\"commitment\", \"capital-call\", \"investment-period\", \"recycling\", \"subscription-line\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:06.568Z",
+    "explanation": "Dry powder is usually measured at the fund level from commitments less drawn capital, and then summed across funds. Some counts also net out amounts reserved for fees, follow-on investments or expenses, so totals differ by source. It is often confused with cash held by a fund, which is only the part already called from investors.",
+    "related": [
+      "commitment",
+      "capital-call",
+      "investment-period",
+      "recycling",
+      "subscription-line"
+    ]
+  },
+  "nav": {
+    "text": "{\"explanation\": \"NAV appears in quarterly capital account statements and financial statements, and in open-ended funds it sets the price for subscriptions and redemptions. Valuations are typically prepared by the manager under a fair value policy, sometimes reviewed by an administrator or auditor. It is often confused with an investor's capital account balance, which is that investor's share of NAV.\", \"related\": [\"fair-value\", \"rvpi\", \"tvpi\", \"fund-administrator\", \"nav-loan\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:06.807Z",
+    "explanation": "NAV appears in quarterly capital account statements and financial statements, and in open-ended funds it sets the price for subscriptions and redemptions. Valuations are typically prepared by the manager under a fair value policy, sometimes reviewed by an administrator or auditor. It is often confused with an investor's capital account balance, which is that investor's share of NAV.",
+    "related": [
+      "fair-value",
+      "rvpi",
+      "tvpi",
+      "fund-administrator",
+      "nav-loan"
+    ]
+  },
+  "feeder-fund": {
+    "text": "{\"explanation\": \"Feeders are usually set up in the fund's formation documents, with the master and each feeder governed by their own partnership agreements, which typically mirror one another. Master-feeder structures appear mostly in hedge funds and some large buyout or credit funds. A feeder is often confused with a parallel fund, which invests directly alongside the main fund rather than through it.\", \"related\": [\"parallel-fund\", \"blocker\", \"spv\", \"limited-partner\", \"lpa\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:07.399Z",
+    "explanation": "Feeders are usually set up in the fund's formation documents, with the master and each feeder governed by their own partnership agreements, which typically mirror one another. Master-feeder structures appear mostly in hedge funds and some large buyout or credit funds. A feeder is often confused with a parallel fund, which invests directly alongside the main fund rather than through it.",
+    "related": [
+      "parallel-fund",
+      "blocker",
+      "spv",
+      "limited-partner",
+      "lpa"
+    ]
+  },
+  "parallel-fund": {
+    "text": "{\"explanation\": \"Parallel funds are usually set up as separate partnerships under their own LPA, typically mirroring the main fund's economic terms. They often arise in Europe or for tax-exempt, sovereign or regulated investors. Not to be confused with a feeder fund, which invests through the main fund rather than directly in deals. Parallel funds typically share expenses and exit alongside the main fund.\", \"related\": [\"feeder-fund\", \"blocker\", \"lpa\", \"co-investment\", \"spv\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:07.930Z",
+    "explanation": "Parallel funds are usually set up as separate partnerships under their own LPA, typically mirroring the main fund's economic terms. They often arise in Europe or for tax-exempt, sovereign or regulated investors. Not to be confused with a feeder fund, which invests through the main fund rather than directly in deals. Parallel funds typically share expenses and exit alongside the main fund.",
+    "related": [
+      "feeder-fund",
+      "blocker",
+      "lpa",
+      "co-investment",
+      "spv"
+    ]
+  },
+  "blocker": {
+    "text": "{\"explanation\": \"Blockers usually appear in the fund structure for investors facing UBTI (unrelated business taxable income) or ECI (effectively connected income), and are common where a fund uses leverage or holds operating partnerships. Some are set up by the fund for all affected investors; others are chosen by individual investors. Often confused with a feeder fund, which pools investors rather than converting income.\", \"related\": [\"feeder-fund\", \"parallel-fund\", \"k-1\", \"spv\", \"limited-partner\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:08.617Z",
+    "explanation": "Blockers usually appear in the fund structure for investors facing UBTI (unrelated business taxable income) or ECI (effectively connected income), and are common where a fund uses leverage or holds operating partnerships. Some are set up by the fund for all affected investors; others are chosen by individual investors. Often confused with a feeder fund, which pools investors rather than converting income.",
+    "related": [
+      "feeder-fund",
+      "parallel-fund",
+      "k-1",
+      "spv",
+      "limited-partner"
+    ]
+  },
+  "spv": {
+    "text": "{\"explanation\": \"SPVs are usually an LLC, limited partnership or similar company, formed in a jurisdiction chosen for tax and legal reasons. They turn up in co-investments, syndicated deals, GP-led secondaries and financing structures. The sponsor typically manages the SPV and may charge reduced or no fees. An SPV is often confused with a feeder fund, which pools investors into another fund rather than a single asset.\", \"related\": [\"co-investment\", \"feeder-fund\", \"blocker\", \"continuation-vehicle\", \"parallel-fund\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:08.861Z",
+    "explanation": "SPVs are usually an LLC, limited partnership or similar company, formed in a jurisdiction chosen for tax and legal reasons. They turn up in co-investments, syndicated deals, GP-led secondaries and financing structures. The sponsor typically manages the SPV and may charge reduced or no fees. An SPV is often confused with a feeder fund, which pools investors into another fund rather than a single asset.",
+    "related": [
+      "co-investment",
+      "feeder-fund",
+      "blocker",
+      "continuation-vehicle",
+      "parallel-fund"
+    ]
+  },
+  "co-investment": {
+    "text": "{\"explanation\": \"Co-investment rights are usually set out in the LPA or a side letter, and offers typically go to a subset of LPs with little time to respond. Capital often sits in an SPV formed for the deal. Allocation is at the GP's discretion, and terms vary. It is often confused with a parallel fund, which invests in every deal alongside the main fund.\", \"related\": [\"spv\", \"side-letter\", \"parallel-fund\", \"carried-interest\", \"limited-partner\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:09.347Z",
+    "explanation": "Co-investment rights are usually set out in the LPA or a side letter, and offers typically go to a subset of LPs with little time to respond. Capital often sits in an SPV formed for the deal. Allocation is at the GP's discretion, and terms vary. It is often confused with a parallel fund, which invests in every deal alongside the main fund.",
+    "related": [
+      "spv",
+      "side-letter",
+      "parallel-fund",
+      "carried-interest",
+      "limited-partner"
+    ]
+  },
+  "evergreen-fund": {
+    "text": "{\"explanation\": \"Evergreen funds are usually open-ended, with subscriptions and redemptions priced off a periodic NAV, so valuation policy matters a great deal. Redemption terms vary: gates, notice periods, early-redemption charges and suspension rights are common. They are often confused with interval funds, which are a registered form with mandated repurchase offers, and with closed-end funds that have a fixed term.\", \"related\": [\"interval-fund\", \"nav\", \"fair-value\", \"bdc\", \"lpa\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:09.912Z",
+    "explanation": "Evergreen funds are usually open-ended, with subscriptions and redemptions priced off a periodic NAV, so valuation policy matters a great deal. Redemption terms vary: gates, notice periods, early-redemption charges and suspension rights are common. They are often confused with interval funds, which are a registered form with mandated repurchase offers, and with closed-end funds that have a fixed term.",
+    "related": [
+      "interval-fund",
+      "nav",
+      "fair-value",
+      "bdc",
+      "lpa"
+    ]
+  },
+  "interval-fund": {
+    "text": "{\"explanation\": \"Interval funds operate under SEC Rule 23c-3 and usually continuously offer new shares at NAV, unlike traded closed-end funds. Repurchase pricing is set shortly before the offer expires. Common holdings include private credit, real estate debt and other illiquid assets. They are often confused with open-end mutual funds, which allow daily redemptions, and with tender offer funds, whose repurchases are discretionary.\", \"related\": [\"evergreen-fund\", \"bdc\", \"private-credit\", \"tender-offer\", \"nav\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:10.635Z",
+    "explanation": "Interval funds operate under SEC Rule 23c-3 and usually continuously offer new shares at NAV, unlike traded closed-end funds. Repurchase pricing is set shortly before the offer expires. Common holdings include private credit, real estate debt and other illiquid assets. They are often confused with open-end mutual funds, which allow daily redemptions, and with tender offer funds, whose repurchases are discretionary.",
+    "related": [
+      "evergreen-fund",
+      "bdc",
+      "private-credit",
+      "tender-offer",
+      "nav"
+    ]
+  },
+  "clo": {
+    "text": "{\"explanation\": \"A CLO is run by a collateral manager, who can trade the loan pool within limits set in the indenture. Those limits include a reinvestment period, rating-based caps and coverage tests. If tests fail, cash flow is diverted from the equity to repay senior notes. Tranches are rated AAA down to BB. CLOs are often confused with CDOs, which pooled mortgage securities.\", \"related\": [\"private-credit\", \"unitranche\", \"bdc\", \"spv\", \"sma\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:11.478Z",
+    "explanation": "A CLO is run by a collateral manager, who can trade the loan pool within limits set in the indenture. Those limits include a reinvestment period, rating-based caps and coverage tests. If tests fail, cash flow is diverted from the equity to repay senior notes. Tranches are rated AAA down to BB. CLOs are often confused with CDOs, which pooled mortgage securities.",
+    "related": [
+      "private-credit",
+      "unitranche",
+      "bdc",
+      "spv",
+      "sma"
+    ]
+  },
+  "unitranche": {
+    "text": "{\"explanation\": \"Lenders in a unitranche often split the loan into a first-out and a last-out piece through an agreement among lenders, which sets who is repaid first after a default. Documentation is a single credit agreement. It is typically used in sponsor-backed buyouts and add-on acquisitions. It is often confused with mezzanine, which sits below senior debt as a separate instrument.\", \"related\": [\"private-credit\", \"mezzanine\", \"lbo\", \"add-on\", \"club-deal\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:12.023Z",
+    "explanation": "Lenders in a unitranche often split the loan into a first-out and a last-out piece through an agreement among lenders, which sets who is repaid first after a default. Documentation is a single credit agreement. It is typically used in sponsor-backed buyouts and add-on acquisitions. It is often confused with mezzanine, which sits below senior debt as a separate instrument.",
+    "related": [
+      "private-credit",
+      "mezzanine",
+      "lbo",
+      "add-on",
+      "club-deal"
+    ]
+  },
+  "sma": {
+    "text": "{\"explanation\": \"The account is usually governed by an investment management agreement and guidelines rather than an LPA. The investor typically owns the assets directly or through a vehicle it controls. Fees are often lower than in a pooled fund, and the investor may set reporting, liquidity and exit terms. An SMA is often confused with a fund-of-one, which is a legal fund entity with a single investor.\", \"related\": [\"co-investment\", \"lpa\", \"side-letter\", \"limited-partner\", \"fund-of-funds\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:12.717Z",
+    "explanation": "The account is usually governed by an investment management agreement and guidelines rather than an LPA. The investor typically owns the assets directly or through a vehicle it controls. Fees are often lower than in a pooled fund, and the investor may set reporting, liquidity and exit terms. An SMA is often confused with a fund-of-one, which is a legal fund entity with a single investor.",
+    "related": [
+      "co-investment",
+      "lpa",
+      "side-letter",
+      "limited-partner",
+      "fund-of-funds"
+    ]
+  },
+  "bdc": {
+    "text": "{\"explanation\": \"A BDC is formed under the Investment Company Act of 1940 and elects BDC status, which allows a closed-end structure with limits on leverage and affiliated dealings. It usually qualifies as a regulated investment company for tax purposes, which drives the payout. Variants include publicly traded, non-traded and private BDCs. It is often confused with an interval fund.\", \"related\": [\"private-credit\", \"interval-fund\", \"unitranche\", \"evergreen-fund\", \"accredited-investor\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:13:21.118Z",
+    "explanation": "A BDC is formed under the Investment Company Act of 1940 and elects BDC status, which allows a closed-end structure with limits on leverage and affiliated dealings. It usually qualifies as a regulated investment company for tax purposes, which drives the payout. Variants include publicly traded, non-traded and private BDCs. It is often confused with an interval fund.",
+    "related": [
+      "private-credit",
+      "interval-fund",
+      "unitranche",
+      "evergreen-fund",
+      "accredited-investor"
+    ]
+  },
+  "gp-stake": {
+    "text": "{\"explanation\": \"Specialist funds typically buy these stakes, usually in mid-sized and larger managers, and structure them as passive, non-controlling holdings. Terms vary: some stakes cover only fee income, others add carry and a share of the manager's balance-sheet investments. Sellers often use the proceeds for succession, GP commitments or growth. It is not an LP interest in a fund, which backs one portfolio.\", \"related\": [\"general-partner\", \"management-fee\", \"carried-interest\", \"gp-commitment\", \"fund-of-funds\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:13.700Z",
+    "explanation": "Specialist funds typically buy these stakes, usually in mid-sized and larger managers, and structure them as passive, non-controlling holdings. Terms vary: some stakes cover only fee income, others add carry and a share of the manager's balance-sheet investments. Sellers often use the proceeds for succession, GP commitments or growth. It is not an LP interest in a fund, which backs one portfolio.",
+    "related": [
+      "general-partner",
+      "management-fee",
+      "carried-interest",
+      "gp-commitment",
+      "fund-of-funds"
+    ]
+  },
+  "private-credit": {
+    "text": "{\"explanation\": \"Private credit covers several strategies: senior direct lending, unitranche, mezzanine, distressed and special situations. Loans are usually negotiated with one lender or a small group and often carry covenants. Vehicles include closed-end funds, BDCs, evergreen funds and SMAs. It is often confused with broadly syndicated loans, which are arranged by banks and traded.\", \"related\": [\"unitranche\", \"mezzanine\", \"bdc\", \"clo\", \"sma\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:14.075Z",
+    "explanation": "Private credit covers several strategies: senior direct lending, unitranche, mezzanine, distressed and special situations. Loans are usually negotiated with one lender or a small group and often carry covenants. Vehicles include closed-end funds, BDCs, evergreen funds and SMAs. It is often confused with broadly syndicated loans, which are arranged by banks and traded.",
+    "related": [
+      "unitranche",
+      "mezzanine",
+      "bdc",
+      "clo",
+      "sma"
+    ]
+  },
+  "mezzanine": {
+    "text": "{\"explanation\": \"Mezzanine is usually documented as a separate subordinated loan or note, governed by an intercreditor agreement with the senior lenders that limits its repayment rights and enforcement. It is typically unsecured or secured only by a second lien, and it is often bullet-repaid after the senior debt matures. It is sometimes confused with preferred equity, which is an ownership instrument rather than a loan.\", \"related\": [\"pik\", \"lbo\", \"unitranche\", \"private-credit\", \"enterprise-value\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:14.868Z",
+    "explanation": "Mezzanine is usually documented as a separate subordinated loan or note, governed by an intercreditor agreement with the senior lenders that limits its repayment rights and enforcement. It is typically unsecured or secured only by a second lien, and it is often bullet-repaid after the senior debt matures. It is sometimes confused with preferred equity, which is an ownership instrument rather than a loan.",
+    "related": [
+      "pik",
+      "lbo",
+      "unitranche",
+      "private-credit",
+      "enterprise-value"
+    ]
+  },
+  "take-private": {
+    "text": "{\"explanation\": \"Most take-privates are funded with a mix of sponsor equity and acquisition debt, so they are usually leveraged buyouts of listed companies. The buyer typically signs a merger agreement with the board, which often runs a fairness process, and a shareholder vote or tender offer then completes it. Management may roll over shares. Not to be confused with a PIPE, a minority investment in a listed company.\", \"related\": [\"lbo\", \"enterprise-value\", \"club-deal\", \"platform\", \"ebitda\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:15.092Z",
+    "explanation": "Most take-privates are funded with a mix of sponsor equity and acquisition debt, so they are usually leveraged buyouts of listed companies. The buyer typically signs a merger agreement with the board, which often runs a fairness process, and a shareholder vote or tender offer then completes it. Management may roll over shares. Not to be confused with a PIPE, a minority investment in a listed company.",
+    "related": [
+      "lbo",
+      "enterprise-value",
+      "club-deal",
+      "platform",
+      "ebitda"
+    ]
+  },
+  "add-on": {
+    "text": "{\"explanation\": \"Add-ons usually appear in buy-and-build strategies, often in fragmented sectors, and are typically paid for with a mix of fund equity, cash from the platform and acquisition debt. Financing is often arranged in advance through a delayed-draw term loan or an accordion. Add-ons are sometimes confused with a platform deal, which is the first acquisition, and the fund's LPA may cap follow-on investment.\", \"related\": [\"platform\", \"lbo\", \"enterprise-value\", \"ebitda\", \"carve-out\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:15.793Z",
+    "explanation": "Add-ons usually appear in buy-and-build strategies, often in fragmented sectors, and are typically paid for with a mix of fund equity, cash from the platform and acquisition debt. Financing is often arranged in advance through a delayed-draw term loan or an accordion. Add-ons are sometimes confused with a platform deal, which is the first acquisition, and the fund's LPA may cap follow-on investment.",
+    "related": [
+      "platform",
+      "lbo",
+      "enterprise-value",
+      "ebitda",
+      "carve-out"
+    ]
+  },
+  "platform": {
+    "text": "{\"explanation\": \"A platform is usually chosen for its management team, systems and capacity to integrate acquisitions, not only for its standalone earnings. Acquisition financing is often arranged up front, for example as a delayed-draw term loan. Buy-and-build is the common label for the strategy. A platform is often confused with a portfolio company in general, though not every holding is meant to grow by acquisition.\", \"related\": [\"add-on\", \"lbo\", \"secondary-buyout\", \"enterprise-value\", \"carve-out\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:16.332Z",
+    "explanation": "A platform is usually chosen for its management team, systems and capacity to integrate acquisitions, not only for its standalone earnings. Acquisition financing is often arranged up front, for example as a delayed-draw term loan. Buy-and-build is the common label for the strategy. A platform is often confused with a portfolio company in general, though not every holding is meant to grow by acquisition.",
+    "related": [
+      "add-on",
+      "lbo",
+      "secondary-buyout",
+      "enterprise-value",
+      "carve-out"
+    ]
+  },
+  "carve-out": {
+    "text": "{\"explanation\": \"Carve-outs usually involve a transition services agreement (TSA), under which the seller keeps providing IT, payroll or other back-office support for a fixed period while the buyer builds standalone functions. Financials are often carved from consolidated accounts, so historical figures can be hard to verify. Not to be confused with a spin-off, where shares go to the parent's shareholders rather than a buyer.\", \"related\": [\"lbo\", \"platform\", \"add-on\", \"enterprise-value\", \"secondary-buyout\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:16.831Z",
+    "explanation": "Carve-outs usually involve a transition services agreement (TSA), under which the seller keeps providing IT, payroll or other back-office support for a fixed period while the buyer builds standalone functions. Financials are often carved from consolidated accounts, so historical figures can be hard to verify. Not to be confused with a spin-off, where shares go to the parent's shareholders rather than a buyer.",
+    "related": [
+      "lbo",
+      "platform",
+      "add-on",
+      "enterprise-value",
+      "secondary-buyout"
+    ]
+  },
+  "dividend-recap": {
+    "text": "{\"explanation\": \"Dividend recaps usually follow a few years of growth or debt paydown, when leverage has fallen enough for lenders to lend again, often through a refinancing or an add-on to the existing loan. Credit agreements and bond indentures typically restrict dividends, so lender consent or an available basket is needed. The proceeds count as a distribution to the fund's LPs, which lifts DPI but not total value.\", \"related\": [\"lbo\", \"dpi\", \"pik\", \"secondary-buyout\", \"ebitda\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:17.269Z",
+    "explanation": "Dividend recaps usually follow a few years of growth or debt paydown, when leverage has fallen enough for lenders to lend again, often through a refinancing or an add-on to the existing loan. Credit agreements and bond indentures typically restrict dividends, so lender consent or an available basket is needed. The proceeds count as a distribution to the fund's LPs, which lifts DPI but not total value.",
+    "related": [
+      "lbo",
+      "dpi",
+      "pik",
+      "secondary-buyout",
+      "ebitda"
+    ]
+  },
+  "earn-out": {
+    "text": "{\"explanation\": \"Earn-out terms sit in the purchase agreement, which sets the metric, the measurement period and how the buyer must run the business meanwhile. Metrics are often revenue or EBITDA, sometimes milestones such as regulatory approval. Payments may be all-or-nothing or sliding. It is often confused with deferred consideration, which is owed regardless of performance, and with a management incentive plan.\", \"related\": [\"enterprise-value\", \"ebitda\", \"lbo\", \"carve-out\", \"add-on\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:17.764Z",
+    "explanation": "Earn-out terms sit in the purchase agreement, which sets the metric, the measurement period and how the buyer must run the business meanwhile. Metrics are often revenue or EBITDA, sometimes milestones such as regulatory approval. Payments may be all-or-nothing or sliding. It is often confused with deferred consideration, which is owed regardless of performance, and with a management incentive plan.",
+    "related": [
+      "enterprise-value",
+      "ebitda",
+      "lbo",
+      "carve-out",
+      "add-on"
+    ]
+  },
+  "pik": {
+    "text": "{\"explanation\": \"PIK terms usually appear in mezzanine, holdco and some unitranche debt, and sometimes as a PIK toggle that lets the borrower choose cash or PIK each period. The accrued interest compounds, and is typically repaid with principal at maturity or on a refinancing or sale. Lenders often charge a higher rate for PIK. It is also called capitalized interest.\", \"related\": [\"mezzanine\", \"unitranche\", \"private-credit\", \"lbo\", \"dividend-recap\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:18.309Z",
+    "explanation": "PIK terms usually appear in mezzanine, holdco and some unitranche debt, and sometimes as a PIK toggle that lets the borrower choose cash or PIK each period. The accrued interest compounds, and is typically repaid with principal at maturity or on a refinancing or sale. Lenders often charge a higher rate for PIK. It is also called capitalized interest.",
+    "related": [
+      "mezzanine",
+      "unitranche",
+      "private-credit",
+      "lbo",
+      "dividend-recap"
+    ]
+  },
+  "lbo": {
+    "text": "{\"explanation\": \"In practice, the debt usually sits in the acquisition vehicle and is repaid from the target's cash flow or from sale proceeds. It typically combines senior loans with junior layers such as mezzanine or high-yield bonds. Lenders size it against EBITDA and set covenants. An LBO is a financing structure, not a fund strategy, though buyout funds use it most.\", \"related\": [\"ebitda\", \"enterprise-value\", \"unitranche\", \"mezzanine\", \"take-private\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:18.867Z",
+    "explanation": "In practice, the debt usually sits in the acquisition vehicle and is repaid from the target's cash flow or from sale proceeds. It typically combines senior loans with junior layers such as mezzanine or high-yield bonds. Lenders size it against EBITDA and set covenants. An LBO is a financing structure, not a fund strategy, though buyout funds use it most.",
+    "related": [
+      "ebitda",
+      "enterprise-value",
+      "unitranche",
+      "mezzanine",
+      "take-private"
+    ]
+  },
+  "club-deal": {
+    "text": "{\"explanation\": \"Club deals are most common in large take-privates and buyouts where the equity check exceeds what one fund can hold under its concentration limits. Sponsors usually sign a consortium or co-investment agreement covering governance, voting, and exit rights. Often confused with co-investment, where LPs rather than other sponsors join a deal, and with a consortium bid, which describes the bidding stage.\", \"related\": [\"lbo\", \"co-investment\", \"take-private\", \"secondary-buyout\", \"enterprise-value\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:19.261Z",
+    "explanation": "Club deals are most common in large take-privates and buyouts where the equity check exceeds what one fund can hold under its concentration limits. Sponsors usually sign a consortium or co-investment agreement covering governance, voting, and exit rights. Often confused with co-investment, where LPs rather than other sponsors join a deal, and with a consortium bid, which describes the bidding stage.",
+    "related": [
+      "lbo",
+      "co-investment",
+      "take-private",
+      "secondary-buyout",
+      "enterprise-value"
+    ]
+  },
+  "secondary-buyout": {
+    "text": "{\"explanation\": \"Usually run as an auction, often with the seller's advisers and a buyer funding the price with new acquisition debt, so the existing financing is typically repaid at closing. The selling fund realizes the exit, while the buyer's fund books a new investment. Often confused with a GP-led secondary or continuation vehicle, where the seller's own manager keeps the asset.\", \"related\": [\"lbo\", \"add-on\", \"platform\", \"continuation-vehicle\", \"club-deal\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:19.798Z",
+    "explanation": "Usually run as an auction, often with the seller's advisers and a buyer funding the price with new acquisition debt, so the existing financing is typically repaid at closing. The selling fund realizes the exit, while the buyer's fund books a new investment. Often confused with a GP-led secondary or continuation vehicle, where the seller's own manager keeps the asset.",
+    "related": [
+      "lbo",
+      "add-on",
+      "platform",
+      "continuation-vehicle",
+      "club-deal"
+    ]
+  },
+  "enterprise-value": {
+    "text": "{\"explanation\": \"Enterprise value is the denominator in the multiples used to price buyouts, such as EV/EBITDA, and it is the figure that purchase prices and leverage ratios are measured against. Adjustments vary by deal: minority interests, preferred stock, leases and pension deficits are often added, and cash is netted off. It is often confused with equity value, which is the price of the shares alone.\", \"related\": [\"ebitda\", \"lbo\", \"take-private\", \"fair-value\", \"platform\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:20.324Z",
+    "explanation": "Enterprise value is the denominator in the multiples used to price buyouts, such as EV/EBITDA, and it is the figure that purchase prices and leverage ratios are measured against. Adjustments vary by deal: minority interests, preferred stock, leases and pension deficits are often added, and cash is netted off. It is often confused with equity value, which is the price of the shares alone.",
+    "related": [
+      "ebitda",
+      "lbo",
+      "take-private",
+      "fair-value",
+      "platform"
+    ]
+  },
+  "ebitda": {
+    "text": "{\"explanation\": \"EBITDA is a non-GAAP figure, so its calculation varies by deal. Marketing materials and credit agreements typically start from reported numbers and add back items such as one-off costs and projected cost savings, giving \\\"adjusted\\\" or \\\"pro forma\\\" EBITDA. It is often confused with cash flow, though it ignores capital spending and working capital.\", \"related\": [\"enterprise-value\", \"lbo\", \"unitranche\", \"add-on\", \"fair-value\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:20.928Z",
+    "explanation": "EBITDA is a non-GAAP figure, so its calculation varies by deal. Marketing materials and credit agreements typically start from reported numbers and add back items such as one-off costs and projected cost savings, giving \"adjusted\" or \"pro forma\" EBITDA. It is often confused with cash flow, though it ignores capital spending and working capital.",
+    "related": [
+      "enterprise-value",
+      "lbo",
+      "unitranche",
+      "add-on",
+      "fair-value"
+    ]
+  },
+  "down-round": {
+    "text": "{\"explanation\": \"Comparison is usually on price per share or post-money valuation. Anti-dilution provisions in earlier preferred stock, typically broad-based weighted average and sometimes full ratchet, adjust conversion prices. Investors may also seek pay-to-play terms. Often confused with a flat round (same valuation) and a bridge round (interim financing, which may be priced up or down). Venture-backed companies are the usual setting.\", \"related\": [\"fair-value\", \"nav\", \"enterprise-value\", \"side-letter\", \"tvpi\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:21.497Z",
+    "explanation": "Comparison is usually on price per share or post-money valuation. Anti-dilution provisions in earlier preferred stock, typically broad-based weighted average and sometimes full ratchet, adjust conversion prices. Investors may also seek pay-to-play terms. Often confused with a flat round (same valuation) and a bridge round (interim financing, which may be priced up or down). Venture-backed companies are the usual setting.",
+    "related": [
+      "fair-value",
+      "nav",
+      "enterprise-value",
+      "side-letter",
+      "tvpi"
+    ]
+  },
+  "fund-administrator": {
+    "text": "{\"explanation\": \"Administrators are appointed by the GP and paid from fund expenses, with duties set out in a services agreement. Scope varies: many also run investor onboarding, AML and KYC checks, and the preparation of financial statements and tax filings such as Schedule K-1s. The role is often confused with the auditor or custodian, which are separate appointments.\", \"related\": [\"nav\", \"capital-call\", \"aml-kyc\", \"k-1\", \"fair-value\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:21.766Z",
+    "explanation": "Administrators are appointed by the GP and paid from fund expenses, with duties set out in a services agreement. Scope varies: many also run investor onboarding, AML and KYC checks, and the preparation of financial statements and tax filings such as Schedule K-1s. The role is often confused with the auditor or custodian, which are separate appointments.",
+    "related": [
+      "nav",
+      "capital-call",
+      "aml-kyc",
+      "k-1",
+      "fair-value"
+    ]
+  },
+  "fair-value": {
+    "text": "{\"explanation\": \"Fair value for private holdings is usually set by the manager, often with a third-party valuation firm's help, using comparable-company multiples, recent transactions or discounted cash flows. Standards such as ASC 820 and IFRS 13 rank inputs by how observable they are. It appears in quarterly NAV reports and audited financials. It is not cost, and it is not a realized sale price.\", \"related\": [\"nav\", \"rvpi\", \"tvpi\", \"fund-administrator\", \"ebitda\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:22.296Z",
+    "explanation": "Fair value for private holdings is usually set by the manager, often with a third-party valuation firm's help, using comparable-company multiples, recent transactions or discounted cash flows. Standards such as ASC 820 and IFRS 13 rank inputs by how observable they are. It appears in quarterly NAV reports and audited financials. It is not cost, and it is not a realized sale price.",
+    "related": [
+      "nav",
+      "rvpi",
+      "tvpi",
+      "fund-administrator",
+      "ebitda"
+    ]
+  },
+  "side-pocket": {
+    "text": "{\"explanation\": \"Side pockets are set up under the fund's offering documents, usually when an asset loses liquidity or a private holding is hard to price. Each investor's share is fixed at the time of the transfer, so later subscribers do not participate. Fees on the pocket are often charged only on realization. A side pocket differs from a gate, which limits redemptions across the whole fund.\", \"related\": [\"nav\", \"fair-value\", \"equalization\", \"fund-administrator\", \"evergreen-fund\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:22.792Z",
+    "explanation": "Side pockets are set up under the fund's offering documents, usually when an asset loses liquidity or a private holding is hard to price. Each investor's share is fixed at the time of the transfer, so later subscribers do not participate. Fees on the pocket are often charged only on realization. A side pocket differs from a gate, which limits redemptions across the whole fund.",
+    "related": [
+      "nav",
+      "fair-value",
+      "equalization",
+      "fund-administrator",
+      "evergreen-fund"
+    ]
+  },
+  "equalization": {
+    "text": "{\"explanation\": \"Equalization is set out in the LPA and handled by the administrator at each subsequent close. The later investor's payment is usually distributed to earlier investors, and sometimes partly to the fund, rather than kept by the GP. The interest rate varies, often a stated rate or a benchmark plus a spread. Not to be confused with a subscription line, which delays calls, or with fee step-downs.\", \"related\": [\"first-close\", \"final-close\", \"capital-call\", \"lpa\", \"fund-administrator\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:23.661Z",
+    "explanation": "Equalization is set out in the LPA and handled by the administrator at each subsequent close. The later investor's payment is usually distributed to earlier investors, and sometimes partly to the fund, rather than kept by the GP. The interest rate varies, often a stated rate or a benchmark plus a spread. Not to be confused with a subscription line, which delays calls, or with fee step-downs.",
+    "related": [
+      "first-close",
+      "final-close",
+      "capital-call",
+      "lpa",
+      "fund-administrator"
+    ]
+  },
+  "form-pf": {
+    "text": "{\"explanation\": \"Form PF is filed electronically through a SEC-designated system, and it is the fund administrator or compliance team that usually gathers the data. Advisers file annually or quarterly, and what they must report grows with fund type and size: large hedge fund advisers report more often and in more detail. It is separate from Form ADV, the adviser's public registration.\", \"related\": [\"fund-administrator\", \"nav\", \"subscription-line\", \"private-credit\", \"aifmd\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:24.013Z",
+    "explanation": "Form PF is filed electronically through a SEC-designated system, and it is the fund administrator or compliance team that usually gathers the data. Advisers file annually or quarterly, and what they must report grows with fund type and size: large hedge fund advisers report more often and in more detail. It is separate from Form ADV, the adviser's public registration.",
+    "related": [
+      "fund-administrator",
+      "nav",
+      "subscription-line",
+      "private-credit",
+      "aifmd"
+    ]
+  },
+  "reg-d-506b": {
+    "text": "{\"explanation\": \"Most private fund offerings rely on 506(b), and the fund files a Form D after the first sale. The exemption depends on a substantive pre-existing relationship with each investor, which placement agents often supply. Non-accredited participants trigger extra disclosure duties, so managers usually limit sales to accredited investors. Often confused with 506(c), which permits advertising but requires verifying accredited status.\", \"related\": [\"reg-d-506c\", \"accredited-investor\", \"placement-agent\", \"ppm\", \"first-close\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:24.831Z",
+    "explanation": "Most private fund offerings rely on 506(b), and the fund files a Form D after the first sale. The exemption depends on a substantive pre-existing relationship with each investor, which placement agents often supply. Non-accredited participants trigger extra disclosure duties, so managers usually limit sales to accredited investors. Often confused with 506(c), which permits advertising but requires verifying accredited status.",
+    "related": [
+      "reg-d-506c",
+      "accredited-investor",
+      "placement-agent",
+      "ppm",
+      "first-close"
+    ]
+  },
+  "aifmd": {
+    "text": "{\"explanation\": \"AIFMD regulates the manager rather than the fund. EU managers are authorized under it, while non-EU managers usually market through national private placement regimes, since the broader passport for them was never switched on. Requirements typically include a depositary or depositary-lite arrangement, Annex IV regulatory reporting and investor disclosures. Often confused with UCITS, which governs retail funds.\", \"related\": [\"form-pf\", \"placement-agent\", \"ppm\", \"fund-administrator\", \"aml-kyc\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:25.087Z",
+    "explanation": "AIFMD regulates the manager rather than the fund. EU managers are authorized under it, while non-EU managers usually market through national private placement regimes, since the broader passport for them was never switched on. Requirements typically include a depositary or depositary-lite arrangement, Annex IV regulatory reporting and investor disclosures. Often confused with UCITS, which governs retail funds.",
+    "related": [
+      "form-pf",
+      "placement-agent",
+      "ppm",
+      "fund-administrator",
+      "aml-kyc"
+    ]
+  },
+  "reg-d-506c": {
+    "text": "{\"explanation\": \"Verification is often done by reviewing tax returns or bank and brokerage statements, or by obtaining a written confirmation from a registered broker-dealer, investment adviser, attorney or CPA. A signed questionnaire alone is not enough. Funds may also file Form D. It is often confused with 506(b), which bars general solicitation but lets investors self-certify.\", \"related\": [\"reg-d-506b\", \"accredited-investor\", \"aml-kyc\", \"ppm\", \"placement-agent\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:25.445Z",
+    "explanation": "Verification is often done by reviewing tax returns or bank and brokerage statements, or by obtaining a written confirmation from a registered broker-dealer, investment adviser, attorney or CPA. A signed questionnaire alone is not enough. Funds may also file Form D. It is often confused with 506(b), which bars general solicitation but lets investors self-certify.",
+    "related": [
+      "reg-d-506b",
+      "accredited-investor",
+      "aml-kyc",
+      "ppm",
+      "placement-agent"
+    ]
+  },
+  "erisa-25": {
+    "text": "{\"explanation\": \"The test is applied class by class and is measured at each acquisition or redemption of an interest, not only at closing. Interests held by the GP and its affiliates with discretion over fund assets are usually excluded from the calculation. It is the main alternative to qualifying as a venture capital operating company (VCOC) or real estate operating company (REOC). LPAs typically include covenants to monitor it.\", \"related\": [\"lpa\", \"general-partner\", \"limited-partner\", \"side-letter\", \"accredited-investor\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:25.949Z",
+    "explanation": "The test is applied class by class and is measured at each acquisition or redemption of an interest, not only at closing. Interests held by the GP and its affiliates with discretion over fund assets are usually excluded from the calculation. It is the main alternative to qualifying as a venture capital operating company (VCOC) or real estate operating company (REOC). LPAs typically include covenants to monitor it.",
+    "related": [
+      "lpa",
+      "general-partner",
+      "limited-partner",
+      "side-letter",
+      "accredited-investor"
+    ]
+  },
+  "aml-kyc": {
+    "text": "{\"explanation\": \"KYC documents are usually collected with the subscription agreement, and the administrator often runs the checks. Entity investors must identify their beneficial owners, and sanctions screening is typically part of the process. Checks are repeated or refreshed over the fund's life, and the required depth varies with investor type and the investor's home jurisdiction.\", \"related\": [\"fund-administrator\", \"limited-partner\", \"commitment\", \"accredited-investor\", \"first-close\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:26.753Z",
+    "explanation": "KYC documents are usually collected with the subscription agreement, and the administrator often runs the checks. Entity investors must identify their beneficial owners, and sanctions screening is typically part of the process. Checks are repeated or refreshed over the fund's life, and the required depth varies with investor type and the investor's home jurisdiction.",
+    "related": [
+      "fund-administrator",
+      "limited-partner",
+      "commitment",
+      "accredited-investor",
+      "first-close"
+    ]
+  },
+  "accredited-investor": {
+    "text": "{\"explanation\": \"The status comes from Regulation D under the Securities Act, so it appears in subscription agreements, investor questionnaires and offering documents for private placements. Individuals usually qualify on income or net worth, or by holding certain licenses; entities qualify on assets or ownership. It is often confused with the narrower qualified purchaser test, which funds relying on the 3(c)(7) exemption must apply.\", \"related\": [\"reg-d-506b\", \"reg-d-506c\", \"aml-kyc\", \"limited-partner\", \"ppm\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:27.276Z",
+    "explanation": "The status comes from Regulation D under the Securities Act, so it appears in subscription agreements, investor questionnaires and offering documents for private placements. Individuals usually qualify on income or net worth, or by holding certain licenses; entities qualify on assets or ownership. It is often confused with the narrower qualified purchaser test, which funds relying on the 3(c)(7) exemption must apply.",
+    "related": [
+      "reg-d-506b",
+      "reg-d-506c",
+      "aml-kyc",
+      "limited-partner",
+      "ppm"
+    ]
+  },
+  "k-1": {
+    "text": "{\"explanation\": \"Funds issue K-1s after the year closes, usually once the audit and the underlying portfolio companies' own K-1s are in, so delivery often runs past the personal filing deadline and extensions are common. The figures are taxable allocations, not cash received, and can differ from distributions. Non-U.S. investors typically get other forms, such as a 1042-S, and often invest through a blocker.\", \"related\": [\"fund-administrator\", \"blocker\", \"limited-partner\", \"lpa\", \"feeder-fund\"]}",
+    "stop": "end_turn",
+    "model": "claude-sonnet-5-5",
+    "at": "2026-10-13T00:12:27.683Z",
+    "explanation": "Funds issue K-1s after the year closes, usually once the audit and the underlying portfolio companies' own K-1s are in, so delivery often runs past the personal filing deadline and extensions are common. The figures are taxable allocations, not cash received, and can differ from distributions. Non-U.S. investors typically get other forms, such as a 1042-S, and often invest through a blocker.",
+    "related": [
+      "fund-administrator",
+      "blocker",
+      "limited-partner",
+      "lpa",
+      "feeder-fund"
+    ]
+  }
+}

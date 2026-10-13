@@ -84,6 +84,7 @@ export function SiteFooter() {
               {/* Not prefetched: the archive is built on request, and this link is on every page. */}
               <li><Link href="/archive" prefetch={false} className={linkClass}>Archive</Link></li>
               <li><Link href="/events" className={linkClass}>Events calendar</Link></li>
+              <li><Link href="/glossary" className={linkClass}>Glossary</Link></li>
               {COMPANY_LINKS.map((l) => (
                 <li key={l.href}><Link href={l.href} className={linkClass}>{l.label}</Link></li>
               ))}

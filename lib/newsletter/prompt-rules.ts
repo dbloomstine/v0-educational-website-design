@@ -62,7 +62,8 @@ export const SHOWN_KEY = 'fops_prompt_shown'
 export const SECONDS_KEY = 'fops_prompt_secs'
 export const VIEWS_KEY = 'fops_prompt_views'
 
-const READING_PATHS = [/^\/$/, /^\/news(\/|$)/, /^\/story\//, /^\/firm\//, /^\/firms$/, /^\/league-tables$/, /^\/events(\/|$)/, /^\/archive(\/|$)/, /^\/about$/]
+// The glossary (2026-10-12) is a reading page: a reader who looked up a term came from a search and is new here.
+const READING_PATHS = [/^\/$/, /^\/news(\/|$)/, /^\/story\//, /^\/firm\//, /^\/firms$/, /^\/league-tables$/, /^\/events(\/|$)/, /^\/archive(\/|$)/, /^\/about$/, /^\/glossary(\/|$)/]
 /** Pages inside those sections where an ask would be in the way. */
 const NEVER = [/^\/events\/submit/]
 

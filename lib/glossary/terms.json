@@ -1,0 +1,1867 @@
+{
+  "groups": [
+    "Fund economics",
+    "Fundraising",
+    "Fund life",
+    "Structures",
+    "Deals",
+    "Operations and rules"
+  ],
+  "terms": [
+    {
+      "slug": "carried-interest",
+      "term": "Carried interest",
+      "title": "What is carried interest?",
+      "group": "Fund economics",
+      "define": "Carried interest is the share of a fund’s profits, typically 20%, that the manager earns after investors get their money back and clear the preferred return.",
+      "why": "It is the manager’s main reward for performance, and the reason fund terms are fought over line by line.",
+      "example": "Say a fund returns $900 million on $500 million invested. With the hurdle cleared and a full catch-up, 20% carry pays the manager $80 million of the $400 million profit.",
+      "match": {
+        "source": "carried interest",
+        "flags": "i"
+      },
+      "explanation": "Carry is set out in the LPA’s distribution provisions and usually paid to the GP’s management company or to individual professionals through a carry vehicle. Whether it is paid deal by deal or only after the whole fund returns capital changes its timing and risk. It is often confused with the management fee, which is paid regardless of performance.",
+      "related": [
+        "waterfall",
+        "hurdle-rate",
+        "catch-up",
+        "clawback",
+        "european-waterfall"
+      ]
+    },
+    {
+      "slug": "hurdle-rate",
+      "term": "Hurdle rate",
+      "title": "What is a hurdle rate?",
+      "group": "Fund economics",
+      "define": "A hurdle rate, or preferred return, is the minimum yearly return, often 8%, that investors must receive before the manager can start earning carried interest.",
+      "why": "It stops a manager collecting performance fees on returns investors could have had from something safer.",
+      "example": "Say a fund has an 8% hurdle and returns 6% a year. The manager earns no carry. Only returns above the hurdle start paying it.",
+      "match": {
+        "source": "hurdle (rate|return)|preferred return|\\bpref(erred)? rate",
+        "flags": "i"
+      },
+      "explanation": "The hurdle sits in the LPA’s distribution waterfall and usually compounds annually on contributed capital from the date each capital call is funded. It is not a guarantee: a fund that never clears it simply pays no carry. With a catch-up, the manager then takes most of the next distributions until it holds its full share of the profit; without one, carry is paid only on the profit above the hurdle.",
+      "related": [
+        "catch-up",
+        "carried-interest",
+        "waterfall",
+        "lpa",
+        "irr"
+      ]
+    },
+    {
+      "slug": "catch-up",
+      "term": "GP catch-up",
+      "title": "What is a GP catch-up?",
+      "group": "Fund economics",
+      "define": "The catch-up is the part of a fund’s waterfall, after the hurdle, where the manager takes most or all distributions until it holds its full share of the profit.",
+      "why": "It decides how quickly a manager gets from nothing to its full carry, and so how much it matters when returns only just clear the hurdle.",
+      "example": "Say a fund has an 8% hurdle, 20% carry and a full catch-up. Once investors get their 8%, the manager takes every dollar next, until it holds 20% of all profit.",
+      "match": {
+        "source": "catch-?up",
+        "flags": "i"
+      },
+      "explanation": "The catch-up rate is set in the LPA’s distribution provisions and varies: 100% is a full catch-up, while 50% or 80% splits each dollar with investors during the phase. Some funds have none, so carry is paid only on profit above the hurdle. It is often confused with the hurdle itself, which it follows, and with clawback, which corrects over-distribution later.",
+      "related": [
+        "waterfall",
+        "hurdle-rate",
+        "carried-interest",
+        "clawback",
+        "lpa"
+      ]
+    },
+    {
+      "slug": "clawback",
+      "term": "Clawback",
+      "title": "What is a clawback?",
+      "group": "Fund economics",
+      "define": "A clawback makes a manager return carried interest it was paid early, if later losses mean it received more than its agreed share of the fund’s total profit.",
+      "why": "It is the safeguard for investors in funds that pay carry deal by deal, and it bites managers who were paid early and then lost money.",
+      "example": "Say a fund pays its manager $20 million of carry after a strong first deal, then loses money on the rest. If the manager’s final share is only $5 million, it returns $15 million.",
+      "match": {
+        "source": "claw-?backs?",
+        "flags": "i"
+      },
+      "explanation": "The obligation sits in the LPA and usually applies at the fund’s end, though some agreements also test it at interim dates. It is typically capped at the carry received net of taxes, and individual partners often guarantee it, sometimes jointly and severally. Escrow accounts or carry holdbacks are common backstops.",
+      "related": [
+        "american-waterfall",
+        "carried-interest",
+        "waterfall",
+        "lpa",
+        "european-waterfall"
+      ]
+    },
+    {
+      "slug": "waterfall",
+      "term": "Distribution waterfall",
+      "title": "What is a distribution waterfall?",
+      "group": "Fund economics",
+      "define": "A distribution waterfall is the order a fund pays out proceeds: investors’ capital, then the preferred return, then the manager’s catch-up, then the split of what remains.",
+      "why": "It decides who gets paid first, and so when a manager’s carry actually starts.",
+      "example": "Say a fund has $130 million to distribute on $100 million invested, with an 8% hurdle. Investors get their $100 million, then the hurdle amount, and only then can the manager earn carry.",
+      "match": {
+        "source": "waterfall",
+        "flags": "i"
+      },
+      "explanation": "The waterfall is written into the LPA’s distribution provisions, and it applies each time the fund distributes after an exit, not just at the end. Terms vary on whether the return test runs across the whole fund or deal by deal, and on whether the catch-up is full, partial or absent. Often confused with the carry percentage, which is only the last tier.",
+      "related": [
+        "european-waterfall",
+        "american-waterfall",
+        "hurdle-rate",
+        "catch-up",
+        "carried-interest"
+      ]
+    },
+    {
+      "slug": "european-waterfall",
+      "term": "European waterfall",
+      "title": "What is a European waterfall?",
+      "group": "Fund economics",
+      "define": "A European, or whole-fund, waterfall pays the manager carry only after investors have received all their paid-in capital, plus the preferred return, across the entire fund.",
+      "why": "It is the version investors prefer, because the manager cannot be paid on early wins while later deals are still unproven.",
+      "example": "Say a fund has made three investments and sold one at a $30 million gain. Under a whole-fund waterfall, the manager waits for carry until investors have all they paid in, plus the hurdle.",
+      "match": {
+        "source": "european waterfall|whole-?fund waterfall",
+        "flags": "i"
+      },
+      "explanation": "The distribution terms sit in the LPA, usually with the carry percentage, hurdle and catch-up. Because carry starts late, it often arrives near the end of a fund’s life, and the clawback matters less than under a deal-by-deal structure. Often called a whole-fund waterfall, it is the usual structure in European buyout funds and is contrasted with the American, deal-by-deal waterfall.",
+      "related": [
+        "american-waterfall",
+        "waterfall",
+        "hurdle-rate",
+        "catch-up",
+        "clawback"
+      ]
+    },
+    {
+      "slug": "american-waterfall",
+      "term": "American waterfall",
+      "title": "What is an American waterfall?",
+      "group": "Fund economics",
+      "define": "An American, or deal-by-deal, waterfall lets the manager earn carry on each sale as it happens, usually after investors recover that deal’s cost and a share of fees.",
+      "why": "Managers get paid sooner under it, which is why it usually comes with a clawback.",
+      "example": "Say a fund sells its first company at a $30 million gain. Under a deal-by-deal waterfall the manager can take carry on that gain right away, subject to a later clawback.",
+      "match": {
+        "source": "american waterfall|deal-by-deal waterfall",
+        "flags": "i"
+      },
+      "explanation": "Set out in the distribution provisions of the LPA, this structure has been common in US buyout, venture and real estate funds and is rare in Europe. Terms vary: some versions require recovery of realized losses and write-downs on earlier deals before carry is paid, which brings them closer to a whole-fund test. It is often called deal-by-deal and contrasted with the European waterfall.",
+      "related": [
+        "european-waterfall",
+        "clawback",
+        "waterfall",
+        "carried-interest",
+        "lpa"
+      ]
+    },
+    {
+      "slug": "management-fee",
+      "term": "Management fee",
+      "title": "What is a management fee?",
+      "group": "Fund economics",
+      "define": "The management fee is the annual charge investors pay a manager to run a fund, often 1% to 2% of committed capital during the investment period.",
+      "why": "It pays the manager’s costs whether or not the fund makes money, so investors compare it across funds first.",
+      "example": "Say a $1 billion fund charges a 2% fee on committed capital. Investors pay the manager $20 million a year, even before the fund has made a single investment.",
+      "match": {
+        "source": "management fees?",
+        "flags": "i"
+      },
+      "generic": true,
+      "explanation": "The fee is set in the LPA and usually paid quarterly or semiannually, often in advance, with drawn capital funding it. After the investment period it typically steps down or moves to a base of invested capital or net asset value. Fund-level offsets for transaction or monitoring fees often reduce it. It is distinct from carried interest, which is performance-based.",
+      "related": [
+        "fee-step-down",
+        "fee-offset",
+        "carried-interest",
+        "lpa",
+        "investment-period"
+      ]
+    },
+    {
+      "slug": "fee-offset",
+      "term": "Management fee offset",
+      "title": "What is a management fee offset?",
+      "group": "Fund economics",
+      "define": "A fee offset reduces the management fee by some or all of the transaction, monitoring or director fees the manager collects from the companies a fund owns.",
+      "why": "It settles whether investors or the manager keep the fees the manager charges the fund’s own portfolio companies.",
+      "example": "Say a manager’s fee is $20 million a year and it charges portfolio companies $4 million in monitoring fees. With a full offset, investors pay $16 million.",
+      "match": {
+        "source": "fee offsets?|management fee offsets?",
+        "flags": "i"
+      },
+      "explanation": "The offset is set out in the LPA’s fee provisions, and the percentage varies: 100% is common in buyout funds, while some funds offset only part. Excess offsets may carry forward or be paid out at fund end. Often confused with fee waivers, where the manager gives up fees to fund its GP commitment.",
+      "related": [
+        "management-fee",
+        "lpa",
+        "fee-step-down",
+        "gp-commitment",
+        "ilpa"
+      ]
+    },
+    {
+      "slug": "fee-step-down",
+      "term": "Fee step-down",
+      "title": "What is a fee step-down?",
+      "group": "Fund economics",
+      "define": "A fee step-down lowers the management fee once the investment period ends, often by moving the fee base from committed capital to the cost of investments still held.",
+      "why": "It matters most to investors in funds that sit on assets for years, because it is where later-life fees fall.",
+      "example": "Say a fund charges 2% on $1 billion committed. Afterward it charges 1.5% on the $600 million still invested, so the fee falls from $20 million to $9 million a year.",
+      "match": {
+        "source": "fee step-?downs?",
+        "flags": "i"
+      },
+      "explanation": "The step-down is set out in the LPA’s management fee provision and is usually triggered by the end of the investment period or by the launch of a successor fund. Funds vary in whether they cut the rate, change the base, or do both. Net invested capital is often reduced by write-downs and realizations. It is often confused with a fee offset, which reduces fees by other income.",
+      "related": [
+        "management-fee",
+        "investment-period",
+        "lpa",
+        "fee-offset",
+        "commitment"
+      ]
+    },
+    {
+      "slug": "gp-commitment",
+      "term": "GP commitment",
+      "title": "What is a GP commitment?",
+      "group": "Fund economics",
+      "define": "The GP commitment is the money a manager and its partners invest in their own fund alongside investors, often a few percent of the fund’s total.",
+      "why": "Investors read it as skin in the game, and a low or all-borrowed commitment can raise questions.",
+      "example": "Say a $1 billion fund has a 2% GP commitment. The manager and its partners put in $20 million of their own money next to their investors’.",
+      "match": {
+        "source": "gp commitment|general partner commitment|sponsor commitment",
+        "flags": "i"
+      },
+      "explanation": "The commitment is set out in the LPA and is drawn through capital calls pro rata with other investors. It is often funded partly by waiving management fees rather than paying cash, which some investors accept and others resist. It is separate from carried interest, which is a share of profits and requires no capital.",
+      "related": [
+        "lpa",
+        "carried-interest",
+        "management-fee",
+        "key-person",
+        "capital-call"
+      ]
+    },
+    {
+      "slug": "key-person",
+      "term": "Key person",
+      "title": "What is a key person clause?",
+      "group": "Fund economics",
+      "define": "A key person clause lets investors pause new investments, or sometimes end the fund’s investing, if named senior people leave or stop giving the fund enough of their time.",
+      "why": "It ties a fund’s life to the few people investors are really backing.",
+      "example": "Say a fund names two founders as key people and one retires. It may have to stop new investments until investors, often by a 75% vote, agree to carry on.",
+      "match": {
+        "source": "key[- ]person|key[- ]man",
+        "flags": "i"
+      },
+      "explanation": "The clause sits in the LPA and usually names two to four senior people, with a trigger tied either to departure or to a minimum share of working time. A suspension often starts automatically and lasts a set period, such as 180 days, while the GP proposes replacements for investor approval. It is separate from no-fault removal, which does not depend on any departure.",
+      "related": [
+        "lpa",
+        "no-fault-removal",
+        "investment-period",
+        "lpac",
+        "general-partner"
+      ]
+    },
+    {
+      "slug": "no-fault-removal",
+      "term": "No-fault removal",
+      "title": "What is no-fault removal?",
+      "group": "Fund economics",
+      "define": "No-fault removal lets a set share of investors, usually a supermajority, remove the manager or end the fund’s investing without having to prove it did anything wrong.",
+      "why": "It is the strongest lever investors have over a manager, which is why managers push for a high threshold.",
+      "example": "Say a fund needs 75% of investors to vote for no-fault removal. If investors holding that share agree, the manager can be replaced with no finding of misconduct.",
+      "match": {
+        "source": "no-?fault (removal|divorce)",
+        "flags": "i"
+      },
+      "explanation": "The right sits in the LPA and is usually separate from for-cause removal, which turns on a defined event such as fraud or material breach. Thresholds are typically measured by commitments, often excluding the GP’s and its affiliates' interests, and can differ for removal versus early termination. Terms often include a notice period, a delay after the first close, and a payout of fees or carry on removal.",
+      "related": [
+        "lpa",
+        "key-person",
+        "lpac",
+        "carried-interest",
+        "general-partner"
+      ]
+    },
+    {
+      "slug": "side-letter",
+      "term": "Side letter",
+      "title": "What is a side letter?",
+      "group": "Fund economics",
+      "define": "A side letter is a separate agreement between a manager and one investor that gives that investor terms beyond the fund’s main documents, such as lower fees or extra reporting.",
+      "why": "It is how large investors get special treatment, and why other investors ask what is in them.",
+      "example": "Say an investor committing $200 million gets a side letter with a fee discount. Smaller investors do not get it unless an MFN clause applies.",
+      "match": {
+        "source": "side[- ]letters?",
+        "flags": "i"
+      },
+      "explanation": "Side letters are usually signed at or shortly after an investor’s closing, and they sit alongside the LPA and subscription agreement. Common contents beyond fees include excuse rights, LPAC seats, co-investment access, and tax or regulatory provisions for specific investor types. Often confused with amendments to the LPA, which bind every partner; a side letter binds only the parties who sign it.",
+      "related": [
+        "mfn",
+        "lpa",
+        "lpac",
+        "anchor-investor",
+        "management-fee"
+      ]
+    },
+    {
+      "slug": "mfn",
+      "term": "MFN clause",
+      "title": "What is an MFN clause?",
+      "group": "Fund economics",
+      "define": "A most favored nation clause lets an investor choose terms the manager has given other investors in side letters, usually those given to investors with similar or smaller commitments.",
+      "why": "It is how investors make sure a bigger or earlier investor cannot quietly get a better deal than they do.",
+      "example": "Say a manager gives a $100 million investor a fee discount. A $50 million investor with an MFN clause can usually elect that discount too, if the terms are open to it.",
+      "match": {
+        "source": "\\bMFN\\b|most[- ]favou?red[- ]nation",
+        "flags": "i"
+      },
+      "explanation": "The MFN right usually sits in a side letter, and the manager typically delivers a disclosure of other side letters after the final close, giving a short window to elect. Carve-outs are common: LPAC seats, regulatory or tax-driven terms, and rights tied to an investor’s legal status are often excluded. It is often confused with fee discounts tied to commitment size.",
+      "related": [
+        "side-letter",
+        "lpa",
+        "lpac",
+        "final-close",
+        "management-fee"
+      ]
+    },
+    {
+      "slug": "lpac",
+      "term": "LPAC",
+      "title": "What is an LPAC?",
+      "group": "Fund economics",
+      "define": "The LPAC, or limited partner advisory committee, is a small group of investors that advises the manager and usually approves conflicts of interest and certain term waivers.",
+      "why": "It is the investors’ standing check on the manager between annual meetings.",
+      "example": "Say a manager wants to sell a company from its 2018 fund to its newer fund. The LPAC is usually asked to approve that conflict before the deal can happen.",
+      "match": {
+        "source": "\\bLPACs?\\b|limited partner advisory committee|investor advisory committee",
+        "flags": "i"
+      },
+      "explanation": "The committee is created by the LPA, which sets its size, how members are chosen and what it must approve. Seats typically go to larger or earlier investors, sometimes through side letters. Members act for their own institutions and are usually not paid. It advises rather than governs: it cannot direct investments or replace the manager, and it is distinct from the full investor meeting.",
+      "related": [
+        "lpa",
+        "limited-partner",
+        "general-partner",
+        "side-letter",
+        "key-person"
+      ]
+    },
+    {
+      "slug": "lpa",
+      "term": "LPA",
+      "title": "What is an LPA?",
+      "group": "Fund economics",
+      "define": "The limited partnership agreement, or LPA, is a private fund’s main contract. It sets the fees, carry, investment limits and the rights of the manager and the investors.",
+      "why": "Almost every argument about a fund’s terms ends in this document.",
+      "example": "Say an investor wants to know whether a fund may borrow more than 15% of its commitments. The answer is in the LPA, and changing it usually needs investors’ approval.",
+      "match": {
+        "source": "\\bLPAs?\\b|limited partnership agreement",
+        "flags": "i"
+      },
+      "explanation": "The LPA is negotiated between the sponsor’s counsel and prospective investors before the first close, usually starting from the sponsor’s draft and the private placement memorandum. Later closers sign on to the same terms. Side letters adjust it for individual investors, and amendments typically require a stated percentage of investors by interest. It is often confused with the subscription agreement, which only covers an investor’s admission.",
+      "related": [
+        "side-letter",
+        "lpac",
+        "ppm",
+        "general-partner",
+        "limited-partner"
+      ]
+    },
+    {
+      "slug": "ilpa",
+      "term": "ILPA",
+      "title": "What is ILPA?",
+      "group": "Fund economics",
+      "define": "ILPA is the Institutional Limited Partners Association, an industry body of investors that publishes best-practice principles on fund terms, fee reporting and governance.",
+      "why": "Investors cite its principles when negotiating, and managers often adopt its templates.",
+      "example": "Say an investor asks 20 managers to report fees in the ILPA template. Everyone reports in the same layout, so fees can be compared across funds.",
+      "match": {
+        "source": "\\bILPA\\b",
+        "flags": "i"
+      },
+      "explanation": "ILPA’s guidance is voluntary and has no legal force. It surfaces in LPA negotiations, side letter requests and due diligence questionnaires, where investors often measure a fund’s terms against its principles. Its best-known outputs are the Principles document and the reporting templates for fees, expenses and performance. Not to be confused with an LPA, which is the binding contract.",
+      "related": [
+        "lpa",
+        "limited-partner",
+        "lpac",
+        "management-fee",
+        "side-letter"
+      ]
+    },
+    {
+      "slug": "first-close",
+      "term": "First close",
+      "title": "What is a first close?",
+      "group": "Fundraising",
+      "define": "A first close is the first time a fund accepts investors’ commitments and gets going, even though it keeps raising money toward its full target.",
+      "why": "It is the first sign a fund will exist, and it sets the date from which later investors are usually measured.",
+      "example": "Say a fund targets $2 billion. It holds a first close at $800 million, starts investing, and keeps raising from new investors for months.",
+      "match": {
+        "source": "first close",
+        "flags": "i"
+      },
+      "explanation": "The LPA usually sets a window, often 12 to 18 months, for further closes after the first. Investors admitted later typically pay their share of fees and costs back to the first-close date, plus interest, which is the job of equalization. Early investors sometimes get fee discounts. First close is often confused with the fund’s formation date.",
+      "related": [
+        "final-close",
+        "equalization",
+        "anchor-investor",
+        "lpa",
+        "hard-cap"
+      ]
+    },
+    {
+      "slug": "final-close",
+      "term": "Final close",
+      "title": "What is a final close?",
+      "group": "Fundraising",
+      "define": "A final close is when a fund stops accepting new investors. Its commitments are locked and its size is set.",
+      "why": "It is the number the fund is judged by, and where a fund counts in league tables.",
+      "example": "Say a fund held a first close at $800 million, then added investors until a final close at $2.1 billion. After that, no one else can join.",
+      "match": {
+        "source": "final close",
+        "flags": "i"
+      },
+      "explanation": "The LPA sets a deadline, typically 12 to 18 months after the first close, and the GP may extend it with LPAC consent. Investors admitted after the first close usually pay a catch-up of management fees back to that date, plus interest. The close is also capped by the fund’s hard cap, if there is one. It is not the end of the investment period.",
+      "related": [
+        "first-close",
+        "hard-cap",
+        "equalization",
+        "lpa",
+        "investment-period"
+      ]
+    },
+    {
+      "slug": "hard-cap",
+      "term": "Hard cap",
+      "title": "What is a hard cap?",
+      "group": "Fundraising",
+      "define": "A hard cap is the most a fund’s documents allow it to raise. The manager cannot accept commitments beyond it without changing the terms.",
+      "why": "It tells investors the fund will not grow past the size they signed up for, and it is a sign of demand when a fund reaches it.",
+      "example": "Say a fund targets $2 billion with a $2.5 billion hard cap. Even if investors offer $4 billion, the fund can take only $2.5 billion.",
+      "match": {
+        "source": "hard[- ]cap",
+        "flags": "i"
+      },
+      "explanation": "The hard cap is set in the PPM and the LPA, usually alongside a target size and somewhat above it. Raising it generally needs LPAC or investor consent and an amendment. Managers often reach it at the final close, after oversubscribed demand. It is distinct from the target, which is only a goal, and from a soft cap, which a manager may pass.",
+      "related": [
+        "final-close",
+        "commitment",
+        "first-close",
+        "lpa",
+        "ppm"
+      ]
+    },
+    {
+      "slug": "anchor-investor",
+      "term": "Anchor investor",
+      "title": "What is an anchor investor?",
+      "group": "Fundraising",
+      "define": "An anchor investor is a large early backer that commits a big amount to a new fund, helping it get started and often receiving better terms for doing so.",
+      "why": "An anchor can make a first-time fund possible, and its name helps persuade others to join.",
+      "example": "Say a new credit fund targets $1 billion. A pension plan commits $200 million up front, which helps persuade other investors to join.",
+      "match": {
+        "source": "anchor (investor|commitment|investment|lp)",
+        "flags": "i"
+      },
+      "explanation": "Anchor terms are usually negotiated before the first close and written into the LPA or a side letter. Common perks include reduced fees, a share of carried interest or management company economics, co-investment rights, and a seat on the LPAC. Anchors are typical in first-time and specialized strategies. The term is sometimes confused with a seed investor, who often takes a stake in the manager.",
+      "related": [
+        "first-close",
+        "side-letter",
+        "gp-stake",
+        "management-fee",
+        "co-investment"
+      ]
+    },
+    {
+      "slug": "placement-agent",
+      "term": "Placement agent",
+      "title": "What is a placement agent?",
+      "group": "Fundraising",
+      "define": "A placement agent is a firm a manager hires to find and pitch investors for a fund, usually paid a percentage of the capital it brings in.",
+      "why": "Agents open doors for new managers, and their fees and conflicts are a recurring question for public pension investors.",
+      "example": "Say a manager hires a placement agent for a $1 billion fund. If the agent brings in $300 million at a 1% fee, it earns $3 million.",
+      "match": {
+        "source": "placement agent",
+        "flags": "i"
+      },
+      "explanation": "Agents are engaged under a written mandate, often with exclusivity and a tail period that keeps the fee payable on investors introduced during the engagement. Fees are typically paid by the management company, sometimes with an offset against the management fee. Agents are often confused with finders, and in the U.S. must be registered broker-dealers.",
+      "related": [
+        "first-close",
+        "lpa",
+        "ppm",
+        "anchor-investor",
+        "ddq"
+      ]
+    },
+    {
+      "slug": "re-up",
+      "term": "Re-up",
+      "title": "What is a re-up?",
+      "group": "Fundraising",
+      "define": "A re-up is when an existing investor commits to a manager’s next fund. Managers and investors watch re-up rates as a sign of investor satisfaction.",
+      "why": "A strong re-up rate lets a manager raise its next fund faster, and a weak one is often the first sign of trouble.",
+      "example": "Say a manager’s fourth fund has 100 investors and 85 of them commit to the fifth. Its re-up rate is 85%.",
+      "match": {
+        "source": "\\bre-?ups?\\b",
+        "flags": "i"
+      },
+      "explanation": "Re-ups usually come out of an investor’s annual review of a manager’s track record, reporting and team, and often precede or follow the first close of the successor fund. The commitment may be larger, smaller or flat versus the prior fund. Re-up rates are sometimes counted by investor number and sometimes by dollars committed, which can give different answers.",
+      "related": [
+        "first-close",
+        "limited-partner",
+        "commitment",
+        "anchor-investor",
+        "vintage"
+      ]
+    },
+    {
+      "slug": "commitment",
+      "term": "Commitment",
+      "title": "What is a commitment in a fund?",
+      "group": "Fundraising",
+      "define": "A commitment is the total amount an investor legally agrees to provide to a fund, which the manager draws down gradually through capital calls.",
+      "why": "It is the figure that sets an investor’s share of everything in the fund, and it is a promise, not cash in the bank.",
+      "example": "Say an investor commits $50 million. The manager calls $10 million in the first year, so $40 million is still to come.",
+      "match": {
+        "source": "\\bcommitments?\\b",
+        "flags": "i"
+      },
+      "generic": true,
+      "explanation": "A commitment is made in the subscription agreement and governed by the LPA, usually at the investor’s admission to the fund. It is often confused with paid-in capital, which is only the part already called. Unfunded commitments can be called during the investment period, and some can be called later for fees, expenses or follow-on investments. Defaulting investors typically face penalties.",
+      "related": [
+        "capital-call",
+        "limited-partner",
+        "lpa",
+        "investment-period",
+        "dry-powder"
+      ]
+    },
+    {
+      "slug": "fund-of-funds",
+      "term": "Fund of funds",
+      "title": "What is a fund of funds?",
+      "group": "Fundraising",
+      "define": "A fund of funds pools investors’ money to invest in other private funds rather than directly in companies, which adds a second layer of fees.",
+      "why": "It gives smaller investors access to many managers, at the price of paying two sets of fees.",
+      "example": "Say a fund of funds raises $500 million and commits $50 million each to ten buyout funds. Investors in it pay its fee on top of what each underlying fund charges.",
+      "match": {
+        "source": "fund[- ]of[- ]funds|funds[- ]of[- ]funds",
+        "flags": "i"
+      },
+      "explanation": "Funds of funds are usually organized as limited partnerships with their own LPA, and often sit in the same strategy or region, such as venture or buyout. Many also buy secondaries or make co-investments alongside the underlying managers. Fee levels and carry vary and are often lower than a direct fund’s. Not to be confused with a feeder fund, which invests in one fund.",
+      "related": [
+        "limited-partner",
+        "feeder-fund",
+        "management-fee",
+        "co-investment",
+        "lp-led-secondary"
+      ]
+    },
+    {
+      "slug": "ppm",
+      "term": "PPM",
+      "title": "What is a PPM?",
+      "group": "Fundraising",
+      "define": "A private placement memorandum, or PPM, is the offering document that tells prospective investors about a fund’s strategy, terms, risks and manager.",
+      "why": "It is where a manager must disclose the risks, which is why investors and their lawyers read it closely.",
+      "example": "Say a manager launches a $500 million fund. Before an investor signs, it receives the PPM, which sets out the strategy, the fees and the risks of losing money.",
+      "match": {
+        "source": "\\bPPMs?\\b|private placement memorand",
+        "flags": "i"
+      },
+      "explanation": "The PPM is usually issued with the LPA and subscription agreement, and its summary of terms is meant to track the LPA, which controls if the two conflict. Much of it is written to meet securities-law disclosure duties, which is why the risk factors and the conflicts-of-interest section run long. Managers sometimes call it an offering memorandum or confidential information memorandum.",
+      "related": [
+        "lpa",
+        "ddq",
+        "side-letter",
+        "reg-d-506b",
+        "first-close"
+      ]
+    },
+    {
+      "slug": "ddq",
+      "term": "DDQ",
+      "title": "What is a DDQ?",
+      "group": "Fundraising",
+      "define": "A due diligence questionnaire, or DDQ, is the standard list of questions investors send a manager to assess its team, process, controls and compliance.",
+      "why": "Answering one is a large part of a manager’s fundraising work, and the answers are kept for the life of the investment.",
+      "example": "Say a pension plan is considering a fund. Before any meeting it sends a DDQ of 200 questions, and the manager’s team answers them in writing.",
+      "match": {
+        "source": "\\bDDQs?\\b|due diligence questionnaire",
+        "flags": "i"
+      },
+      "explanation": "Most DDQs arrive after an LP’s initial interest, alongside the PPM and before onsite meetings. Content ranges from investment strategy and track record to valuation, cybersecurity, ESG and business continuity. Managers typically keep a master answer set and tailor it per investor. ILPA publishes a standard template. A DDQ is separate from the AML and KYC onboarding forms completed at subscription.",
+      "related": [
+        "ppm",
+        "ilpa",
+        "limited-partner",
+        "aml-kyc",
+        "first-close"
+      ]
+    },
+    {
+      "slug": "limited-partner",
+      "term": "Limited partner",
+      "title": "What is a limited partner?",
+      "group": "Fundraising",
+      "define": "A limited partner, or LP, is an investor in a fund. It supplies most of the capital, takes no part in running it, and typically risks only its commitment.",
+      "why": "LPs, from pensions to family offices, are the buyers of everything private markets sell, so their appetite drives the market.",
+      "example": "Say a pension plan commits $100 million to a fund. It is an LP: it provides money but does not choose investments, and its loss is generally limited to its commitment.",
+      "match": {
+        "source": "limited partners?\\b",
+        "flags": "i"
+      },
+      "generic": true,
+      "explanation": "An LP’s rights and obligations sit in the limited partnership agreement and any side letter, not in the label. Limited liability usually depends on the LP staying out of management, which is why oversight is channeled through the advisory committee (LPAC) and consent votes. LPs fund capital calls over time, and a fund is often a limited partnership but can be another vehicle.",
+      "related": [
+        "general-partner",
+        "lpa",
+        "commitment",
+        "capital-call",
+        "lpac"
+      ]
+    },
+    {
+      "slug": "general-partner",
+      "term": "General partner",
+      "title": "What is a general partner?",
+      "group": "Fundraising",
+      "define": "A general partner, or GP, is the firm that runs a fund, makes its investment decisions and carries legal responsibility for it. The term is also used for the manager.",
+      "why": "The GP is who investors are really backing, and the one they hold to account.",
+      "example": "Say a firm raises a $1 billion fund. The firm is the GP: it picks the investments, runs the fund and earns the management fee and carry.",
+      "match": {
+        "source": "general partners?\\b",
+        "flags": "i"
+      },
+      "generic": true,
+      "explanation": "In a limited partnership, the GP is usually a separate legal entity from the management company that employs the investment team. Because a general partner has unlimited liability for the partnership’s obligations, it is usually a thinly capitalized special-purpose entity formed for the one fund. Its powers and limits are set out in the LPA, and it is the counterparty to the limited partners.",
+      "related": [
+        "limited-partner",
+        "lpa",
+        "gp-commitment",
+        "carried-interest",
+        "key-person"
+      ]
+    },
+    {
+      "slug": "capital-call",
+      "term": "Capital call",
+      "title": "What is a capital call?",
+      "group": "Fund life",
+      "define": "A capital call is a notice asking investors to send part of their commitment, usually a week or two before the money is needed. It is also called a drawdown.",
+      "why": "Investors have to keep cash ready, and a missed call can carry penalties.",
+      "example": "Say an investor has committed $50 million. The fund finds a deal and calls 10%. The investor wires $5 million, and $45 million stays to be called.",
+      "match": {
+        "source": "capital calls?|drawdown notice",
+        "flags": "i"
+      },
+      "explanation": "Calls fund new investments, fees and fund expenses, and the notice states the amount, purpose and due date. Each investor pays its pro rata share, and the LPA sets the notice period and default remedies, such as forfeiting part of the interest. Funds often bridge calls with a subscription line, which delays the cash needed from investors. Not the same as a distribution.",
+      "related": [
+        "commitment",
+        "subscription-line",
+        "lpa",
+        "investment-period",
+        "recycling"
+      ]
+    },
+    {
+      "slug": "investment-period",
+      "term": "Investment period",
+      "title": "What is an investment period?",
+      "group": "Fund life",
+      "define": "The investment period is the first years of a fund, often about five, when the manager can make new investments. Afterward it mostly manages and sells what it holds.",
+      "why": "It sets how long the manager can keep putting money to work, and when the fee usually steps down.",
+      "example": "Say a 10-year fund has a 5-year investment period. After year 5 it can still add to existing companies, but it generally cannot buy new ones.",
+      "match": {
+        "source": "investment period",
+        "flags": "i"
+      },
+      "explanation": "The investment period is set in the LPA and runs from the first close or initial closing date. It often ends early if a successor fund begins investing or the key-person provisions are triggered, and the LPA may allow an extension with LPAC consent. Some funds permit follow-ons and recycling afterward. It is often called the commitment period.",
+      "related": [
+        "lpa",
+        "fee-step-down",
+        "recycling",
+        "key-person",
+        "capital-call"
+      ]
+    },
+    {
+      "slug": "recycling",
+      "term": "Recycling",
+      "title": "What is recycling in a fund?",
+      "group": "Fund life",
+      "define": "Recycling lets a fund reinvest proceeds from early sales instead of distributing them, so it can invest more than investors committed, usually up to a stated limit.",
+      "why": "It lets a manager put more capital to work, and delays investors getting cash back.",
+      "example": "Say a fund with $1 billion committed sells a company for $150 million early on. If its terms allow recycling, it can reinvest that money instead of paying it out.",
+      "match": {
+        "source": "\\brecycl(ing|e|ed)\\b.{0,40}(proceeds|capital|distributions)|recycling provision",
+        "flags": "i"
+      },
+      "explanation": "Recycling rights sit in the LPA and vary in scope. Some funds recycle only proceeds from investments sold within a set period, often the investment period, or only the cost of those investments. Others also recycle returned fees or expenses. A cap, often a share of commitments, limits the total. It differs from recallable distributions, which are returned capital that investors must fund again.",
+      "related": [
+        "investment-period",
+        "lpa",
+        "capital-call",
+        "commitment",
+        "dpi"
+      ]
+    },
+    {
+      "slug": "subscription-line",
+      "term": "Subscription line",
+      "title": "What is a subscription line?",
+      "group": "Fund life",
+      "define": "A subscription line is a short-term loan to a fund, backed by investors’ unfunded commitments, that lets the manager invest before calling investors’ cash.",
+      "why": "It makes a fund’s reported returns look better, and investors weigh that against its cost and risk.",
+      "example": "Say a fund borrows $50 million on its subscription line to buy a company, then calls $50 million from investors three months later to repay it.",
+      "match": {
+        "source": "subscription (line|facility|credit|financing)|capital call (line|facility)",
+        "flags": "i"
+      },
+      "explanation": "The facility is set out in the LPA, which caps borrowing and how long a draw can stay outstanding, often 90 to 180 days. Lenders underwrite the investors' creditworthiness and their obligation to fund, not the portfolio. Also called a capital call line or credit facility. Distinct from a NAV loan, which is secured on portfolio assets.",
+      "related": [
+        "capital-call",
+        "nav-loan",
+        "irr",
+        "commitment",
+        "lpa"
+      ]
+    },
+    {
+      "slug": "nav-loan",
+      "term": "NAV loan",
+      "title": "What is a NAV loan?",
+      "group": "Fund life",
+      "define": "A NAV loan is borrowing by a fund against the value of the investments it already owns, rather than against investors’ unfunded commitments.",
+      "why": "Managers use it to pay investors, support companies or fund deals late in a fund’s life, which investors look at closely.",
+      "example": "Say a fund owns companies valued at $1 billion and borrows $150 million against them. It might use the cash to pay investors, fund follow-on investments or support a company.",
+      "match": {
+        "source": "nav (loan|lending|financing|facility|facilities)|nav-based",
+        "flags": "i"
+      },
+      "explanation": "Lenders size the loan as a loan-to-value ratio against the portfolio’s reported NAV, so a diversified portfolio with audited valuations borrows more easily. Whether a fund may take one turns on the LPA’s borrowing limits, which older agreements wrote with subscription lines in mind, and LPAC consent is often sought. It is often confused with a subscription line, which is secured on LP commitments and used earlier in a fund’s life.",
+      "related": [
+        "subscription-line",
+        "nav",
+        "lpac",
+        "lpa",
+        "dpi"
+      ]
+    },
+    {
+      "slug": "continuation-vehicle",
+      "term": "Continuation vehicle",
+      "title": "What is a continuation vehicle?",
+      "group": "Fund life",
+      "define": "A continuation vehicle is a new fund that buys one or more assets from a manager’s older fund, so existing investors can cash out or roll over.",
+      "why": "It gives managers more time with their best assets, and it raises the question of who set the price.",
+      "example": "Say a 10-year-old fund holds one company the manager still likes. A new vehicle buys it, and old investors choose to take cash or roll into the new one.",
+      "match": {
+        "source": "continuation (vehicle|fund)s?|\\bCVs?\\b",
+        "flags": "i"
+      },
+      "explanation": "Usually run as a single-asset or multi-asset deal, the vehicle is typically funded by new secondary investors, often led by one investor who sets the price. The manager normally commits fresh capital and resets carry terms. An LPAC usually must approve the conflict, and a fairness opinion is common. It is a type of GP-led secondary.",
+      "related": [
+        "gp-led-secondary",
+        "lpac",
+        "fair-value",
+        "lp-led-secondary",
+        "carried-interest"
+      ]
+    },
+    {
+      "slug": "gp-led-secondary",
+      "term": "GP-led secondary",
+      "title": "What is a GP-led secondary?",
+      "group": "Fund life",
+      "define": "A GP-led secondary is a deal run by a fund manager to move assets out of an existing fund, usually into a continuation vehicle, with new investors buying in.",
+      "why": "It is now a major route to liquidity, and a conflict of interest, because the manager sits on both sides.",
+      "example": "Say a manager moves two companies from an older fund into a new vehicle. Secondary investors put in $400 million, and existing investors can sell or roll.",
+      "match": {
+        "source": "gp-?led secondar|gp-?led (deal|transaction|process)",
+        "flags": "i"
+      },
+      "explanation": "Typically arises near the end of a fund’s term, when the manager wants more time to hold a strong asset. A third-party price is usually set through a competitive process, often with a fairness opinion, and the LPAC is commonly asked to approve the conflict. Rolling investors often get new terms. Distinct from an LP-led secondary, where an investor sells its own fund interest.",
+      "related": [
+        "continuation-vehicle",
+        "lp-led-secondary",
+        "lpac",
+        "fair-value",
+        "tender-offer"
+      ]
+    },
+    {
+      "slug": "lp-led-secondary",
+      "term": "LP-led secondary",
+      "title": "What is an LP-led secondary?",
+      "group": "Fund life",
+      "define": "An LP-led secondary is a sale by an investor of its stakes in one or more funds to a buyer, often to raise cash or rebalance its portfolio.",
+      "why": "It gives investors a way out before a fund ends, usually at a discount or premium to the reported value.",
+      "example": "Say a pension plan sells fund stakes carried at $500 million to a secondaries buyer for $450 million. The buyer takes over the stakes and their future payments.",
+      "match": {
+        "source": "lp-?led secondar|(portfolio|stake|stakes) sale.*(lp|pension|endowment)|secondary (sale|portfolio) of (fund )?(interests|stakes)",
+        "flags": "i"
+      },
+      "explanation": "Pricing is usually quoted as a percentage of the latest reported NAV, adjusted for cash flows since that date. The GP typically must consent to the transfer under the LPA, and the buyer takes on any unfunded commitment. Often confused with a GP-led secondary, where the manager runs the process, usually moving assets into a continuation vehicle.",
+      "related": [
+        "gp-led-secondary",
+        "nav",
+        "commitment",
+        "tender-offer",
+        "lpa"
+      ]
+    },
+    {
+      "slug": "tender-offer",
+      "term": "Tender offer",
+      "title": "What is a tender offer?",
+      "group": "Fund life",
+      "define": "A tender offer is a bid made directly to holders to buy their shares or fund interests at a stated price within a set time window.",
+      "why": "Holders can say yes or no individually, which makes it a flexible route to liquidity and to taking control.",
+      "example": "Say a buyer offers $12 per share, open for 20 days. Holders who want out sell at that price. Those who do not simply keep their shares.",
+      "match": {
+        "source": "tender offers?",
+        "flags": "i"
+      },
+      "generic": true,
+      "explanation": "In private markets, tender offers are most common in secondaries, where a buyer or the manager offers to purchase LP interests, and in public-company deals, where an acquirer goes straight to shareholders. Terms usually include a minimum acceptance level and can be extended. Often confused with a GP-led restructuring, which typically asks holders to choose between selling and rolling.",
+      "related": [
+        "lp-led-secondary",
+        "gp-led-secondary",
+        "take-private",
+        "continuation-vehicle",
+        "interval-fund"
+      ]
+    },
+    {
+      "slug": "distribution-in-kind",
+      "term": "Distribution in kind",
+      "title": "What is a distribution in kind?",
+      "group": "Fund life",
+      "define": "A distribution in kind hands investors a fund’s assets, usually shares of a company that has gone public, instead of paying them cash.",
+      "why": "It leaves the investor deciding when to sell, and some investors cannot hold shares at all.",
+      "example": "Say a fund owns 10% of a company that lists. Instead of selling, it gives investors the shares in proportion to their stakes, and they decide when to sell.",
+      "match": {
+        "source": "distributions? in kind|in-kind distribution",
+        "flags": "i"
+      },
+      "explanation": "The LPA usually permits distributions in kind, often limiting them to marketable securities and sometimes requiring LP consent or an option to receive cash. Shares are valued at a trading-price average over a set period, which fixes the amount treated as distributed. Lock-up periods may delay sales. Often confused with a secondary sale of fund interests.",
+      "related": [
+        "lpa",
+        "limited-partner",
+        "waterfall",
+        "dpi",
+        "nav"
+      ]
+    },
+    {
+      "slug": "dpi",
+      "term": "DPI",
+      "title": "What is DPI?",
+      "group": "Fund life",
+      "define": "DPI, distributions to paid-in capital, divides the cash a fund has returned to investors by the cash they paid in. A DPI of 1.0x means they have their money back.",
+      "why": "It is the return investors can spend, which is why it carries more weight as a fund ages.",
+      "example": "Say investors paid in $100 million and have received $60 million back. DPI is 0.6. Whatever value remains in the fund is not counted in it.",
+      "match": {
+        "source": "\\bDPI\\b|distributions to paid-in",
+        "flags": "i"
+      },
+      "explanation": "DPI appears in quarterly LP reports and in fund performance tables, usually next to RVPI and TVPI. Distributions are typically counted net of fees and carried interest, so it reflects what investors actually received. Because it ignores unrealized value, it is often near zero in a young fund and is sometimes confused with MOIC, which includes unrealized value.",
+      "related": [
+        "tvpi",
+        "rvpi",
+        "moic",
+        "irr",
+        "j-curve"
+      ]
+    },
+    {
+      "slug": "tvpi",
+      "term": "TVPI",
+      "title": "What is TVPI?",
+      "group": "Fund life",
+      "define": "TVPI, total value to paid-in capital, adds the cash a fund has already returned to the value it still holds, then divides by the money investors paid in.",
+      "why": "It shows the whole return so far, but its unrealized part rests on the manager’s own valuations.",
+      "example": "Say investors paid in $100 million, received $60 million, and the remaining stake is valued at $90 million. TVPI is 1.5, made up of 0.6 in cash and 0.9 on paper.",
+      "match": {
+        "source": "\\bTVPI\\b|total value to paid-in",
+        "flags": "i"
+      },
+      "explanation": "TVPI is the sum of DPI and RVPI, so it appears next to them in quarterly LP reports and fund performance tables. It is usually stated net of fees and carried interest, though gross figures exist. It is often confused with MOIC, which is typically measured at the deal level or gross. Unlike IRR, it ignores timing.",
+      "related": [
+        "dpi",
+        "rvpi",
+        "moic",
+        "irr",
+        "nav"
+      ]
+    },
+    {
+      "slug": "rvpi",
+      "term": "RVPI",
+      "title": "What is RVPI?",
+      "group": "Fund life",
+      "define": "RVPI, residual value to paid-in capital, divides the value of what a fund still holds by the money investors paid in. It is the unrealized part of the return.",
+      "why": "It tells investors how much of the reported gain still depends on the manager’s valuations.",
+      "example": "Say investors paid in $100 million and the fund’s remaining investments are valued at $90 million. RVPI is 0.9.",
+      "match": {
+        "source": "\\bRVPI\\b|residual value to paid-in",
+        "flags": "i"
+      },
+      "explanation": "RVPI appears in quarterly LP reports next to DPI, and the two add up to TVPI. It usually uses reported NAV as the numerator, net of fees and carried interest, so it is a net figure. It tends to be high in a fund’s early and middle years and falls toward zero as investments are sold. It is sometimes mistaken for a measure of cash returned.",
+      "related": [
+        "dpi",
+        "tvpi",
+        "nav",
+        "moic",
+        "j-curve"
+      ]
+    },
+    {
+      "slug": "moic",
+      "term": "MOIC",
+      "title": "What is MOIC?",
+      "group": "Fund life",
+      "define": "MOIC, multiple on invested capital, is the total value an investment has returned or still holds, divided by the money put into it. It ignores how long that took.",
+      "why": "It is the simplest way to compare returns, and its blind spot is time.",
+      "example": "Say a firm invests $100 million in a company and sells it for $250 million. The MOIC is 2.5x, whether that took three years or nine.",
+      "match": {
+        "source": "\\bMOIC\\b|multiple on invested capital",
+        "flags": "i"
+      },
+      "explanation": "MOIC can be measured per deal or across a whole fund, and it counts unrealized value as well as cash returned, so a figure for an active investment depends on the current valuation. It is often confused with TVPI, which is the fund-level version net of fees and carry. Gross MOIC is usually quoted before fees and carry. Pairing it with IRR covers the timing it leaves out.",
+      "related": [
+        "tvpi",
+        "irr",
+        "dpi",
+        "rvpi",
+        "j-curve"
+      ]
+    },
+    {
+      "slug": "irr",
+      "term": "IRR",
+      "title": "What is IRR?",
+      "group": "Fund life",
+      "define": "IRR, internal rate of return, is the yearly return that accounts for when money goes into and comes out of a fund, so earlier payouts raise it.",
+      "why": "It rewards speed, which is why managers can lift it with early sales or fund borrowing.",
+      "example": "Say $100 million becomes $200 million after five years: an IRR of about 15%. If it becomes $200 million in three years, IRR jumps to about 26%.",
+      "match": {
+        "source": "\\bIRR\\b|internal rate of return",
+        "flags": "i"
+      },
+      "explanation": "Fund IRR is calculated from dated capital calls and distributions, plus remaining NAV, and is usually reported net of fees and carry. Gross IRR, which excludes them, is often confused with net. It is commonly paired with a multiple such as TVPI, which ignores timing. Early in a fund’s life, IRR is often distorted by the J-curve.",
+      "related": [
+        "tvpi",
+        "moic",
+        "dpi",
+        "j-curve",
+        "subscription-line"
+      ]
+    },
+    {
+      "slug": "j-curve",
+      "term": "J-curve",
+      "title": "What is the J-curve?",
+      "group": "Fund life",
+      "define": "The J-curve is the usual pattern where a fund’s reported returns dip below zero in its early years, because of fees and costs before investments mature, and then climb.",
+      "why": "It tells new investors not to panic at early negative returns, and tells everyone to be suspicious when a young fund has none.",
+      "example": "Say a fund is down 5% after year two, flat after year four, and up 15% after year seven. Plotted, it looks like the letter J.",
+      "match": {
+        "source": "j-?curve",
+        "flags": "i"
+      },
+      "explanation": "The dip comes mainly from management fees and organizational expenses charged on committed capital while little is yet invested, and from holding investments at cost early on. It shows up in net IRR and TVPI, not usually in gross figures. Subscription lines can shorten or flatten it. Credit and secondaries funds tend to show a shallower curve than venture or buyout funds.",
+      "related": [
+        "irr",
+        "tvpi",
+        "management-fee",
+        "subscription-line",
+        "vintage"
+      ]
+    },
+    {
+      "slug": "vintage",
+      "term": "Vintage year",
+      "title": "What is a vintage year?",
+      "group": "Fund life",
+      "define": "A fund’s vintage year is usually the year it first called capital or made its first investment. Funds are compared with others from the same vintage.",
+      "why": "Funds that invested in the same market conditions are the fair comparison, so vintage shapes how a fund is ranked.",
+      "example": "Say two funds both started in 2019. Their returns are compared with each other and with other 2019 funds, not with a fund that began after a market crash.",
+      "match": {
+        "source": "vintage[- ]years?|\\d{4} vintage|vintage funds?",
+        "flags": "i"
+      },
+      "generic": true,
+      "explanation": "Vintage is used in benchmarking and in LP portfolio reporting, where commitments are grouped by year to spread exposure across market cycles. Definitions vary: some data providers use the first close, the first capital call or the first investment, so the same fund can carry different vintages in different databases. It is not the fund’s formation date or its closing year.",
+      "related": [
+        "j-curve",
+        "irr",
+        "tvpi",
+        "dpi",
+        "first-close"
+      ]
+    },
+    {
+      "slug": "dry-powder",
+      "term": "Dry powder",
+      "title": "What is dry powder?",
+      "group": "Fund life",
+      "define": "Dry powder is money that investors have committed to funds but managers have not yet invested. Industry-wide, the total is closely watched.",
+      "why": "A large pile of it means competition for deals, and pressure on managers to spend before their investment periods end.",
+      "example": "Say a fund has $2 billion committed and has invested $1.2 billion of it so far. The other $800 million is still uninvested: that is the fund’s dry powder.",
+      "match": {
+        "source": "dry powder",
+        "flags": "i"
+      },
+      "explanation": "Dry powder is usually measured at the fund level from commitments less drawn capital, and then summed across funds. Some counts also net out amounts reserved for fees, follow-on investments or expenses, so totals differ by source. It is often confused with cash held by a fund, which is only the part already called from investors.",
+      "related": [
+        "commitment",
+        "capital-call",
+        "investment-period",
+        "recycling",
+        "subscription-line"
+      ]
+    },
+    {
+      "slug": "nav",
+      "term": "NAV",
+      "title": "What is NAV?",
+      "group": "Fund life",
+      "define": "Net asset value, or NAV, is a fund’s assets minus its liabilities. In private funds it is usually reported quarterly and rests on the manager’s valuations.",
+      "why": "It is the number investors’ statements and fees are often built on, and it is an estimate until an asset is actually sold.",
+      "example": "Say a fund owns investments valued at $900 million and has $100 million of borrowing. Its NAV is $800 million.",
+      "match": {
+        "source": "net asset value|\\bNAV\\b(?! (loan|lending|financing|facilit))",
+        "flags": "i"
+      },
+      "generic": true,
+      "explanation": "NAV appears in quarterly capital account statements and financial statements, and in open-ended funds it sets the price for subscriptions and redemptions. Valuations are typically prepared by the manager under a fair value policy, sometimes reviewed by an administrator or auditor. It is often confused with an investor’s capital account balance, which is that investor’s share of NAV.",
+      "related": [
+        "fair-value",
+        "rvpi",
+        "tvpi",
+        "fund-administrator",
+        "nav-loan"
+      ]
+    },
+    {
+      "slug": "feeder-fund",
+      "term": "Feeder fund",
+      "title": "What is a feeder fund?",
+      "group": "Structures",
+      "define": "A feeder fund pools investors’ money and invests it all into a larger master fund, often so investors with different tax or legal needs can share one portfolio.",
+      "why": "It is why one fund can have investors from many countries and tax positions without separate portfolios.",
+      "example": "Say a $300 million U.S. feeder and a $200 million Cayman feeder each invest in one master fund. Both own pieces of the same portfolio, but each suits its own investors’ tax position.",
+      "match": {
+        "source": "feeder (fund|vehicle|structure)s?|master[- ]feeder",
+        "flags": "i"
+      },
+      "explanation": "Feeders are usually set up in the fund’s formation documents, with the master and each feeder governed by their own partnership agreements, which typically mirror one another. Master-feeder structures appear mostly in hedge funds and some large buyout or credit funds. A feeder is often confused with a parallel fund, which invests directly alongside the main fund rather than through it.",
+      "related": [
+        "parallel-fund",
+        "blocker",
+        "spv",
+        "limited-partner",
+        "lpa"
+      ]
+    },
+    {
+      "slug": "parallel-fund",
+      "term": "Parallel fund",
+      "title": "What is a parallel fund?",
+      "group": "Structures",
+      "define": "A parallel fund invests alongside the main fund on the same terms and at the same time, usually for investors with legal or tax needs the main fund cannot meet.",
+      "why": "It lets one strategy accept investors from different jurisdictions without changing how deals are done.",
+      "example": "Say a manager raises a $1 billion main fund and a $200 million parallel fund for investors needing a different structure. Each deal is split between them in proportion to commitments.",
+      "match": {
+        "source": "parallel (fund|vehicle|funds)",
+        "flags": "i"
+      },
+      "explanation": "Parallel funds are usually set up as separate partnerships under their own LPA, typically mirroring the main fund’s economic terms. They often arise in Europe or for tax-exempt, sovereign or regulated investors. Not to be confused with a feeder fund, which invests through the main fund rather than directly in deals. Parallel funds typically share expenses and exit alongside the main fund.",
+      "related": [
+        "feeder-fund",
+        "blocker",
+        "lpa",
+        "co-investment",
+        "spv"
+      ]
+    },
+    {
+      "slug": "blocker",
+      "term": "Blocker",
+      "title": "What is a blocker?",
+      "group": "Structures",
+      "define": "A blocker is a corporation placed between certain investors and an investment, so those investors, often tax-exempt or foreign, receive dividends instead of pass-through business income.",
+      "why": "It is a tax tool: it helps some investors avoid filing or tax they would otherwise face, at the cost of tax inside the corporation.",
+      "example": "Say an endowment invests $50 million through a blocker corporation rather than directly into a fund’s operating business. The endowment receives a dividend from the corporation, not business income.",
+      "match": {
+        "source": "\\bblockers?\\b|blocker (corporation|entity|structure)",
+        "flags": "i"
+      },
+      "explanation": "Blockers usually appear in the fund structure for investors facing UBTI (unrelated business taxable income) or ECI (effectively connected income), and are common where a fund uses leverage or holds operating partnerships. Some are set up by the fund for all affected investors; others are chosen by individual investors. Often confused with a feeder fund, which pools investors rather than converting income.",
+      "related": [
+        "feeder-fund",
+        "parallel-fund",
+        "k-1",
+        "spv",
+        "limited-partner"
+      ]
+    },
+    {
+      "slug": "spv",
+      "term": "SPV",
+      "title": "What is an SPV?",
+      "group": "Structures",
+      "define": "An SPV, or special purpose vehicle, is a separate legal entity set up to hold one investment or deal, keeping its assets and liabilities apart from the sponsor’s.",
+      "why": "It lets investors back a single deal and limits what a problem in one investment can touch.",
+      "example": "Say a manager wants to buy one company with $300 million from several investors. It creates an SPV that owns only that company and takes the investors’ money.",
+      "match": {
+        "source": "\\bSPVs?\\b|special purpose vehicle|special-purpose vehicle",
+        "flags": "i"
+      },
+      "explanation": "SPVs are usually an LLC, limited partnership or similar company, formed in a jurisdiction chosen for tax and legal reasons. They turn up in co-investments, syndicated deals, GP-led secondaries and financing structures. The sponsor typically manages the SPV and may charge reduced or no fees. An SPV is often confused with a feeder fund, which pools investors into another fund rather than a single asset.",
+      "related": [
+        "co-investment",
+        "feeder-fund",
+        "blocker",
+        "continuation-vehicle",
+        "parallel-fund"
+      ]
+    },
+    {
+      "slug": "co-investment",
+      "term": "Co-investment",
+      "title": "What is co-investment?",
+      "group": "Structures",
+      "define": "Co-investment is when investors put money directly into a deal alongside a fund, usually with lower or no fees and no carried interest.",
+      "why": "It is a cheaper way to own more of a deal, and a perk managers use to keep their biggest investors.",
+      "example": "Say a fund buys a company for $500 million. It puts in $350 million itself and offers $150 million to its investors as co-investment, with no carry.",
+      "match": {
+        "source": "co-?invest(ment|ments|ing|or|ors)?\\b",
+        "flags": "i"
+      },
+      "explanation": "Co-investment rights are usually set out in the LPA or a side letter, and offers typically go to a subset of LPs with little time to respond. Capital often sits in an SPV formed for the deal. Allocation is at the GP’s discretion, and terms vary. It is often confused with a parallel fund, which invests in every deal alongside the main fund.",
+      "related": [
+        "spv",
+        "side-letter",
+        "parallel-fund",
+        "carried-interest",
+        "limited-partner"
+      ]
+    },
+    {
+      "slug": "evergreen-fund",
+      "term": "Evergreen fund",
+      "title": "What is an evergreen fund?",
+      "group": "Structures",
+      "define": "An evergreen fund has no fixed end date and lets investors join and redeem on a regular schedule, often quarterly, instead of locking money up for a decade.",
+      "why": "It is how private assets are being sold to smaller investors, and its liquidity depends on how the fund manages its limits.",
+      "example": "Say an evergreen fund lets investors redeem up to 5% of its value each quarter. If more ask, the fund may pay out only part of each request.",
+      "match": {
+        "source": "evergreen",
+        "flags": "i"
+      },
+      "explanation": "Evergreen funds are usually open-ended, with subscriptions and redemptions priced off a periodic NAV, so valuation policy matters a great deal. Redemption terms vary: gates, notice periods, early-redemption charges and suspension rights are common. They are often confused with interval funds, which are a registered form with mandated repurchase offers, and with closed-end funds that have a fixed term.",
+      "related": [
+        "interval-fund",
+        "nav",
+        "fair-value",
+        "bdc",
+        "lpa"
+      ]
+    },
+    {
+      "slug": "interval-fund",
+      "term": "Interval fund",
+      "title": "What is an interval fund?",
+      "group": "Structures",
+      "define": "An interval fund is a registered closed-end fund that offers to buy back a set share of its shares, between 5% and 25%, at regular intervals such as quarterly.",
+      "why": "It is a way for retail investors to hold less liquid assets, with limits on how much can leave at once.",
+      "example": "Say an interval fund offers to repurchase 5% of its shares each quarter. If investors ask to sell more, the fund pays out in proportion.",
+      "match": {
+        "source": "interval funds?",
+        "flags": "i"
+      },
+      "explanation": "Interval funds operate under SEC Rule 23c-3 and usually offer new shares continuously at NAV, unlike traded closed-end funds. The repurchase price is the NAV struck shortly after the offer closes. Common holdings include private credit, real estate debt and other illiquid assets. They are often confused with open-end mutual funds, which allow daily redemptions, and with tender offer funds, whose repurchases are at the board’s discretion.",
+      "related": [
+        "evergreen-fund",
+        "bdc",
+        "private-credit",
+        "tender-offer",
+        "nav"
+      ]
+    },
+    {
+      "slug": "bdc",
+      "term": "BDC",
+      "title": "What is a BDC?",
+      "group": "Structures",
+      "define": "A BDC, or business development company, is a U.S. investment company that lends to or invests in private mid-sized businesses, and typically passes most of its income to shareholders.",
+      "why": "It is a common way for individual investors to own private credit, and some BDCs trade on an exchange while others do not.",
+      "example": "Say a BDC raises $1 billion and lends it to mid-sized companies at an average 11% interest. It generally pays most of that income out to shareholders.",
+      "match": {
+        "source": "\\bBDCs?\\b|business development compan(y|ies)",
+        "flags": "i"
+      },
+      "explanation": "A BDC is formed under the Investment Company Act of 1940 and elects BDC status, which allows a closed-end structure with limits on leverage and affiliated dealings. It usually qualifies as a regulated investment company for tax purposes, which drives the payout. Variants include publicly traded, non-traded and private BDCs. It is often confused with an interval fund.",
+      "related": [
+        "private-credit",
+        "interval-fund",
+        "unitranche",
+        "evergreen-fund",
+        "accredited-investor"
+      ]
+    },
+    {
+      "slug": "clo",
+      "term": "CLO",
+      "title": "What is a CLO?",
+      "group": "Structures",
+      "define": "A CLO, or collateralized loan obligation, pools hundreds of leveraged loans and funds them by selling slices of debt and equity with different levels of risk.",
+      "why": "CLOs are among the biggest buyers of leveraged loans, so their demand moves lending markets.",
+      "example": "Say a CLO owns $500 million of loans. It sells safer slices to cautious investors at lower yields and the riskiest slice, the equity, to investors seeking higher returns.",
+      "match": {
+        "source": "\\bCLOs?\\b|collateri[sz]ed loan obligations?",
+        "flags": "i"
+      },
+      "explanation": "A CLO is run by a collateral manager, who can trade the loan pool within limits set in the indenture. Those limits include a reinvestment period, rating-based caps and coverage tests; if a test fails, cash flow is diverted from the equity to repay the senior notes. Tranches are rated from AAA down to BB. CLOs are often confused with CDOs, the pre-2008 structures that often pooled mortgage securities.",
+      "related": [
+        "private-credit",
+        "unitranche",
+        "bdc",
+        "spv",
+        "sma"
+      ]
+    },
+    {
+      "slug": "unitranche",
+      "term": "Unitranche",
+      "title": "What is a unitranche loan?",
+      "group": "Structures",
+      "define": "A unitranche loan combines senior and junior debt into one loan with a single blended interest rate, usually from one direct lender or a small group.",
+      "why": "It makes borrowing quicker and simpler for a company, and is a staple of private credit.",
+      "example": "Say a company needs $200 million. One direct lender provides it all as a unitranche at a blended rate, instead of separate senior and junior loans from different lenders.",
+      "match": {
+        "source": "unitranche",
+        "flags": "i"
+      },
+      "explanation": "Lenders in a unitranche often split the loan into a first-out and a last-out piece through an agreement among lenders, which sets who is repaid first after a default. Documentation is a single credit agreement. It is typically used in sponsor-backed buyouts and add-on acquisitions. It is often confused with mezzanine, which sits below senior debt as a separate instrument.",
+      "related": [
+        "private-credit",
+        "mezzanine",
+        "lbo",
+        "add-on",
+        "club-deal"
+      ]
+    },
+    {
+      "slug": "sma",
+      "term": "Separately managed account",
+      "title": "What is a separately managed account?",
+      "group": "Structures",
+      "define": "A separately managed account is an arrangement where a manager invests one investor’s money alone, to terms that investor negotiates, instead of in a pooled fund.",
+      "why": "It gives large investors control over terms and holdings, and managers a steadier relationship.",
+      "example": "Say a pension plan gives a manager $500 million in a separate account. The plan sets the limits on what it can buy, and nobody else’s money is in it.",
+      "match": {
+        "source": "separately managed account|\\bSMAs?\\b",
+        "flags": "i"
+      },
+      "explanation": "The account is usually governed by an investment management agreement and guidelines rather than an LPA. The investor typically owns the assets directly or through a vehicle it controls. Fees are often lower than in a pooled fund, and the investor may set reporting, liquidity and exit terms. An SMA is often confused with a fund-of-one, which is a legal fund entity with a single investor.",
+      "related": [
+        "co-investment",
+        "lpa",
+        "side-letter",
+        "limited-partner",
+        "fund-of-funds"
+      ]
+    },
+    {
+      "slug": "gp-stake",
+      "term": "GP stake",
+      "title": "What is a GP stake?",
+      "group": "Structures",
+      "define": "A GP stake is a minority ownership in an asset manager itself, giving the investor a share of the manager’s management fees and often of its carried interest.",
+      "why": "It lets managers raise capital without selling, and investors back a manager’s whole business rather than one fund.",
+      "example": "Say an investor buys a 10% stake in a manager that earns $300 million a year in fees. It then receives a corresponding share of the manager’s earnings.",
+      "match": {
+        "source": "gp stakes?|general partner stakes?|minority stake in .{0,40}(manager|firm)",
+        "flags": "i"
+      },
+      "explanation": "Specialist funds typically buy these stakes, usually in mid-sized and larger managers, and structure them as passive, non-controlling holdings. Terms vary: some stakes cover only fee income, others add carry and a share of the manager’s balance-sheet investments. Sellers often use the proceeds for succession, GP commitments or growth. It is not an LP interest in a fund, which backs one portfolio.",
+      "related": [
+        "general-partner",
+        "management-fee",
+        "carried-interest",
+        "gp-commitment",
+        "fund-of-funds"
+      ]
+    },
+    {
+      "slug": "private-credit",
+      "term": "Private credit",
+      "title": "What is private credit?",
+      "group": "Structures",
+      "define": "Private credit is lending by investment firms rather than banks, directly to companies, with the loans held in funds rather than traded on markets.",
+      "why": "It has grown fast as banks pulled back, which is why regulators and investors watch it closely.",
+      "example": "Say a $1 billion credit fund lends directly to mid-sized companies at floating interest rates, holds the loans to maturity, and returns the interest to its investors.",
+      "match": {
+        "source": "private credit|private debt|direct lending",
+        "flags": "i"
+      },
+      "generic": true,
+      "explanation": "Private credit covers several strategies: senior direct lending, unitranche, mezzanine, distressed and special situations. Loans are usually negotiated with one lender or a small group and often carry covenants. Vehicles include closed-end funds, BDCs, evergreen funds and SMAs. It is often confused with broadly syndicated loans, which are arranged by banks and traded.",
+      "related": [
+        "unitranche",
+        "mezzanine",
+        "bdc",
+        "clo",
+        "sma"
+      ]
+    },
+    {
+      "slug": "mezzanine",
+      "term": "Mezzanine",
+      "title": "What is mezzanine debt?",
+      "group": "Structures",
+      "define": "Mezzanine debt ranks below senior loans and above equity, so it is riskier. It usually pays a higher interest rate, often partly paid in kind, sometimes with equity warrants.",
+      "why": "It fills the gap between a company’s senior debt and the equity cheque in a buyout.",
+      "example": "Say a buyout is financed with $100 million of senior loans, $30 million of mezzanine and $70 million of equity. Mezzanine is repaid after the loans and before the equity.",
+      "match": {
+        "source": "mezzanine",
+        "flags": "i"
+      },
+      "explanation": "Mezzanine is usually documented as a separate subordinated loan or note, governed by an intercreditor agreement with the senior lenders that limits its repayment rights and enforcement. It is typically unsecured or secured only by a second lien, and it is often bullet-repaid after the senior debt matures. It is sometimes confused with preferred equity, which is an ownership instrument rather than a loan.",
+      "related": [
+        "pik",
+        "lbo",
+        "unitranche",
+        "private-credit",
+        "enterprise-value"
+      ]
+    },
+    {
+      "slug": "take-private",
+      "term": "Take-private",
+      "title": "What is a take-private?",
+      "group": "Deals",
+      "define": "A take-private is when an investor buys all of a listed company’s shares and delists it, so the company becomes privately owned.",
+      "why": "It is how private equity buys public companies, and shareholders usually receive a premium to the share price.",
+      "example": "Say a firm offers $50 per share for a listed company trading at $40, a 25% premium. If shareholders accept, the company is delisted and owned privately.",
+      "match": {
+        "source": "take[- ]privates?|taking .{3,40} private|go(es|ing)? private|public-to-private|\\bP2P\\b",
+        "flags": "i"
+      },
+      "explanation": "Most take-privates are funded with a mix of sponsor equity and acquisition debt, so they are usually leveraged buyouts of listed companies. The buyer typically signs a merger agreement with the board, which often runs a fairness process, and a shareholder vote or tender offer then completes it. Management may roll over shares. Not to be confused with a PIPE, a minority investment in a listed company.",
+      "related": [
+        "lbo",
+        "enterprise-value",
+        "club-deal",
+        "platform",
+        "ebitda"
+      ]
+    },
+    {
+      "slug": "add-on",
+      "term": "Add-on acquisition",
+      "title": "What is an add-on acquisition?",
+      "group": "Deals",
+      "define": "An add-on is a smaller company that a private equity-owned company buys to grow, folded into the platform company the firm already holds.",
+      "why": "Buying several add-ons is how many buyout firms build bigger companies, and a way to spread the cost of a high entry price.",
+      "example": "Say a firm owns a $200 million-revenue software business and buys a $20 million-revenue rival. The rival joins the existing business as an add-on.",
+      "match": {
+        "source": "add-?on acquisitions?|bolt-?on|add-?on (deal|purchase)",
+        "flags": "i"
+      },
+      "explanation": "Add-ons usually appear in buy-and-build strategies, often in fragmented sectors, and are typically paid for with a mix of fund equity, cash from the platform and acquisition debt. Financing is often arranged in advance through a delayed-draw term loan or an accordion. Add-ons are sometimes confused with a platform deal, which is the first acquisition, and the fund’s LPA may cap follow-on investment.",
+      "related": [
+        "platform",
+        "lbo",
+        "enterprise-value",
+        "ebitda",
+        "carve-out"
+      ]
+    },
+    {
+      "slug": "platform",
+      "term": "Platform company",
+      "title": "What is a platform company?",
+      "group": "Deals",
+      "define": "A platform is the first company a private equity firm buys in a sector, meant to be built up, often through add-on acquisitions.",
+      "why": "A good platform lets a firm buy smaller rivals cheaply, so the bigger company can be sold for more.",
+      "example": "Say a firm buys a regional dental chain as a platform, then adds 10 smaller practices over four years before selling the larger group.",
+      "match": {
+        "source": "platform (investment|company|acquisition|business|deal)|new platform|add-?on to .{3,30}platform",
+        "flags": "i"
+      },
+      "explanation": "A platform is usually chosen for its management team, systems and capacity to integrate acquisitions, not only for its standalone earnings. Acquisition financing is often arranged up front, for example as a delayed-draw term loan. Buy-and-build is the common label for the strategy. A platform is often confused with a portfolio company in general, though not every holding is meant to grow by acquisition.",
+      "related": [
+        "add-on",
+        "lbo",
+        "secondary-buyout",
+        "enterprise-value",
+        "carve-out"
+      ]
+    },
+    {
+      "slug": "carve-out",
+      "term": "Carve-out",
+      "title": "What is a carve-out?",
+      "group": "Deals",
+      "define": "A carve-out is the purchase of a division or business unit from a larger company, which then becomes a standalone company.",
+      "why": "Buyers often pay less for a neglected unit, but it needs its own systems, staff and contracts from the first day.",
+      "example": "Say a large company sells its $400 million-revenue packaging division to a private equity firm. The division must now run its own payroll, IT and finance.",
+      "match": {
+        "source": "carve-?outs?|carved out|carving out",
+        "flags": "i"
+      },
+      "explanation": "Carve-outs usually involve a transition services agreement (TSA), under which the seller keeps providing IT, payroll or other back-office support for a fixed period while the buyer builds standalone functions. Financials are often carved from consolidated accounts, so historical figures can be hard to verify. Not to be confused with a spin-off, where shares go to the parent’s shareholders rather than a buyer.",
+      "related": [
+        "lbo",
+        "platform",
+        "add-on",
+        "enterprise-value",
+        "secondary-buyout"
+      ]
+    },
+    {
+      "slug": "dividend-recap",
+      "term": "Dividend recap",
+      "title": "What is a dividend recap?",
+      "group": "Deals",
+      "define": "A dividend recapitalization is when a company borrows new debt and uses the money to pay a dividend to its owners, usually a private equity fund.",
+      "why": "It returns cash early without selling, and leaves the company with more debt.",
+      "example": "Say a company owned by a fund borrows $100 million and pays it to the fund as a dividend. The fund gets cash back, and the company carries $100 million more debt.",
+      "match": {
+        "source": "dividend recap(italization|italisation)?s?|dividend recapitali[sz]ation|leveraged recap",
+        "flags": "i"
+      },
+      "explanation": "Dividend recaps usually follow a few years of growth or debt paydown, when leverage has fallen enough for lenders to lend again, often through a refinancing or an add-on to the existing loan. Credit agreements and bond indentures typically restrict dividends, so lender consent or an available basket is needed. The proceeds count as a distribution to the fund’s LPs, which lifts DPI but not total value.",
+      "related": [
+        "lbo",
+        "dpi",
+        "pik",
+        "secondary-buyout",
+        "ebitda"
+      ]
+    },
+    {
+      "slug": "earn-out",
+      "term": "Earn-out",
+      "title": "What is an earn-out?",
+      "group": "Deals",
+      "define": "An earn-out makes part of an acquisition price depend on the business hitting agreed targets after the deal closes.",
+      "why": "It bridges a gap between what a seller wants and a buyer is willing to risk, and it is a common source of later disputes.",
+      "example": "Say a buyer pays $80 million for a company, plus up to $20 million more if its revenue reaches an agreed level in two years.",
+      "match": {
+        "source": "earn-?outs?",
+        "flags": "i"
+      },
+      "explanation": "Earn-out terms sit in the purchase agreement, which sets the metric, the measurement period and how the buyer must run the business meanwhile. Metrics are often revenue or EBITDA, sometimes milestones such as regulatory approval. Payments may be all-or-nothing or sliding. It is often confused with deferred consideration, which is owed regardless of performance, and with a management incentive plan.",
+      "related": [
+        "enterprise-value",
+        "ebitda",
+        "lbo",
+        "carve-out",
+        "add-on"
+      ]
+    },
+    {
+      "slug": "pik",
+      "term": "PIK",
+      "title": "What is PIK interest?",
+      "group": "Deals",
+      "define": "PIK, or payment in kind, means interest on a loan is added to its balance instead of being paid in cash.",
+      "why": "It eases a borrower’s cash pinch today, and its growing balance is a worry for lenders later.",
+      "example": "Say a company owes $100 million with 10% PIK interest. After a year it owes $110 million, having paid no cash interest.",
+      "match": {
+        "source": "\\bPIK\\b|payment[- ]in[- ]kind|paid[- ]in[- ]kind",
+        "flags": "i"
+      },
+      "explanation": "PIK terms usually appear in mezzanine, holdco and some unitranche debt, and sometimes as a PIK toggle that lets the borrower choose cash or PIK each period. The accrued interest compounds, and is typically repaid with principal at maturity or on a refinancing or sale. Lenders often charge a higher rate for PIK. It is also called capitalized interest.",
+      "related": [
+        "mezzanine",
+        "unitranche",
+        "private-credit",
+        "lbo",
+        "dividend-recap"
+      ]
+    },
+    {
+      "slug": "lbo",
+      "term": "Leveraged buyout",
+      "title": "What is a leveraged buyout?",
+      "group": "Deals",
+      "define": "A leveraged buyout, or LBO, buys a company using mostly borrowed money, with the company’s own assets and cash flow backing the debt.",
+      "why": "Debt magnifies returns when a deal goes well and losses when it does not.",
+      "example": "Say a firm buys a company for $500 million, using $300 million of debt and $200 million of its own equity. The company’s cash flow pays down that debt.",
+      "match": {
+        "source": "leveraged buy-?outs?|\\bLBOs?\\b",
+        "flags": "i"
+      },
+      "explanation": "In practice, the debt usually sits in the acquisition vehicle and is repaid from the target’s cash flow or from sale proceeds. It typically combines senior loans with junior layers such as mezzanine or high-yield bonds. Lenders size it against EBITDA and set covenants. An LBO is a financing structure, not a fund strategy, though buyout funds use it most.",
+      "related": [
+        "ebitda",
+        "enterprise-value",
+        "unitranche",
+        "mezzanine",
+        "take-private"
+      ]
+    },
+    {
+      "slug": "club-deal",
+      "term": "Club deal",
+      "title": "What is a club deal?",
+      "group": "Deals",
+      "define": "A club deal is an acquisition made jointly by several investment firms, each putting in part of the equity.",
+      "why": "It lets firms buy companies bigger than any would take alone, and spreads the risk of a single deal.",
+      "example": "Say three firms buy a company for $3 billion. Each puts in $400 million of equity and borrows the rest, and all three sit on the company’s board.",
+      "match": {
+        "source": "club deals?|consortium of (private equity|investors|firms)",
+        "flags": "i"
+      },
+      "explanation": "Club deals are most common in large take-privates and buyouts where the equity check exceeds what one fund can hold under its concentration limits. Sponsors usually sign a consortium or co-investment agreement covering governance, voting, and exit rights. Often confused with co-investment, where LPs rather than other sponsors join a deal, and with a consortium bid, which describes the bidding stage.",
+      "related": [
+        "lbo",
+        "co-investment",
+        "take-private",
+        "secondary-buyout",
+        "enterprise-value"
+      ]
+    },
+    {
+      "slug": "secondary-buyout",
+      "term": "Secondary buyout",
+      "title": "What is a secondary buyout?",
+      "group": "Deals",
+      "define": "A secondary buyout is when a private equity firm sells a company it owns to another private equity firm.",
+      "why": "It is now a common exit route, and buyers must find new ways to grow a company already improved once.",
+      "example": "Say Firm A bought a company for $300 million and sells it to Firm B for $450 million. Firm B is buying a company a financial owner has already built up.",
+      "match": {
+        "source": "secondary buy-?outs?|sponsor-to-sponsor|\\bSBOs?\\b",
+        "flags": "i"
+      },
+      "explanation": "Usually run as an auction, often with the seller’s advisers and a buyer funding the price with new acquisition debt, so the existing financing is typically repaid at closing. The selling fund realizes the exit, while the buyer’s fund books a new investment. Often confused with a GP-led secondary or continuation vehicle, where the seller’s own manager keeps the asset.",
+      "related": [
+        "lbo",
+        "add-on",
+        "platform",
+        "continuation-vehicle",
+        "club-deal"
+      ]
+    },
+    {
+      "slug": "enterprise-value",
+      "term": "Enterprise value",
+      "title": "What is enterprise value?",
+      "group": "Deals",
+      "define": "Enterprise value is the price of a whole business: the value of its equity plus its net debt, typically. It is what a buyer pays for the company, debt included.",
+      "why": "Headlines often quote it rather than the equity value, so deal sizes can differ by the amount of debt.",
+      "example": "Say a company’s shares are worth $700 million and it has $300 million of net debt. Its enterprise value is $1 billion.",
+      "match": {
+        "source": "enterprise value",
+        "flags": "i"
+      },
+      "explanation": "Enterprise value is the denominator in the multiples used to price buyouts, such as EV/EBITDA, and it is the figure that purchase prices and leverage ratios are measured against. Adjustments vary by deal: minority interests, preferred stock, leases and pension deficits are often added, and cash is netted off. It is often confused with equity value, which is the price of the shares alone.",
+      "related": [
+        "ebitda",
+        "lbo",
+        "take-private",
+        "fair-value",
+        "platform"
+      ]
+    },
+    {
+      "slug": "ebitda",
+      "term": "EBITDA",
+      "title": "What is EBITDA?",
+      "group": "Deals",
+      "define": "EBITDA is earnings before interest, taxes, depreciation and amortization, a measure of a company’s operating profit. Buyouts are often priced as a multiple of it.",
+      "why": "Buyers and lenders quote their price and debt in multiples of it, so how it is adjusted matters a great deal.",
+      "example": "Say a company earns $50 million of EBITDA and a firm buys it at 10 times EBITDA. The price is $500 million, before any adjustments.",
+      "match": {
+        "source": "\\bEBITDA\\b",
+        "flags": "i"
+      },
+      "explanation": "EBITDA is a non-GAAP figure, so its calculation varies by deal. Marketing materials and credit agreements typically start from reported numbers and add back items such as one-off costs and projected cost savings, giving “adjusted” or “pro forma” EBITDA. It is often confused with cash flow, though it ignores capital spending and working capital.",
+      "related": [
+        "enterprise-value",
+        "lbo",
+        "unitranche",
+        "add-on",
+        "fair-value"
+      ]
+    },
+    {
+      "slug": "down-round",
+      "term": "Down round",
+      "title": "What is a down round?",
+      "group": "Deals",
+      "define": "A down round is a funding round for a startup at a lower valuation than its previous round.",
+      "why": "It dilutes earlier investors and founders, and often triggers protections written into earlier deals.",
+      "example": "Say a startup was valued at $500 million in its last round and raises new money at $350 million. That is a down round.",
+      "match": {
+        "source": "down[- ]rounds?",
+        "flags": "i"
+      },
+      "explanation": "The comparison is usually on price per share or on the new pre-money valuation against the last post-money. Anti-dilution provisions in earlier preferred stock, typically broad-based weighted average and sometimes full ratchet, adjust those investors’ conversion prices. Investors may also seek pay-to-play terms. Often confused with a flat round, at the same valuation, and a bridge round, an interim financing that may be priced up or down.",
+      "related": [
+        "fair-value",
+        "enterprise-value",
+        "nav",
+        "tvpi"
+      ]
+    },
+    {
+      "slug": "fund-administrator",
+      "term": "Fund administrator",
+      "title": "What is a fund administrator?",
+      "group": "Operations and rules",
+      "define": "A fund administrator is an independent firm that keeps a fund’s books, calculates its net asset value, processes capital calls and distributions, and handles investor reporting.",
+      "why": "Investors rely on it as a check on the manager, so its independence and accuracy matter.",
+      "example": "Say a manager sends a capital call for $50 million. The administrator works out each investor’s share, issues the notices, tracks the cash arriving and records it.",
+      "match": {
+        "source": "fund administrat(or|ors|ion)|third-party administrat",
+        "flags": "i"
+      },
+      "explanation": "Administrators are appointed by the GP and paid from fund expenses, with duties set out in a services agreement. Scope varies: many also run investor onboarding, AML and KYC checks, and the preparation of financial statements and tax filings such as Schedule K-1s. The role is often confused with the auditor or custodian, which are separate appointments.",
+      "related": [
+        "nav",
+        "capital-call",
+        "aml-kyc",
+        "k-1",
+        "fair-value"
+      ]
+    },
+    {
+      "slug": "fair-value",
+      "term": "Fair value",
+      "title": "What is fair value?",
+      "group": "Operations and rules",
+      "define": "Fair value is what an asset would fetch in an orderly sale between willing buyers and sellers on the measurement day. Accounting standards require funds to report it.",
+      "why": "It is how private funds value what they hold between sales, so investors’ statements and fees rest on it.",
+      "example": "Say a fund owns a company with no market price. It estimates fair value, such as 8 times earnings, from similar companies’ multiples, and updates it every quarter.",
+      "match": {
+        "source": "fair[- ]value",
+        "flags": "i"
+      },
+      "explanation": "Fair value for private holdings is usually set by the manager, often with a third-party valuation firm’s help, using comparable-company multiples, recent transactions or discounted cash flows. Standards such as ASC 820 and IFRS 13 rank inputs by how observable they are. It appears in quarterly NAV reports and audited financials. It is not cost, and it is not a realized sale price.",
+      "related": [
+        "nav",
+        "rvpi",
+        "tvpi",
+        "fund-administrator",
+        "ebitda"
+      ]
+    },
+    {
+      "slug": "side-pocket",
+      "term": "Side pocket",
+      "title": "What is a side pocket?",
+      "group": "Operations and rules",
+      "define": "A side pocket separates hard-to-value or illiquid assets from the rest of a fund, typically a hedge fund, so redemptions do not force a sale of them.",
+      "why": "It protects investors who stay from being left with the illiquid assets, and it traps those who wanted to leave.",
+      "example": "Say a hedge fund holds $20 million of assets it cannot sell. It moves them into a side pocket. Investors who redeem get cash for the rest and keep their share of the pocket.",
+      "match": {
+        "source": "side[- ]pockets?",
+        "flags": "i"
+      },
+      "explanation": "Side pockets are set up under the fund’s offering documents, usually when an asset loses liquidity or a private holding is hard to price. Each investor’s share is fixed at the time of the transfer, so later subscribers do not participate. Fees on the pocket are often charged only on realization. A side pocket differs from a gate, which limits redemptions across the whole fund.",
+      "related": [
+        "nav",
+        "fair-value",
+        "equalization",
+        "fund-administrator",
+        "evergreen-fund"
+      ]
+    },
+    {
+      "slug": "equalization",
+      "term": "Equalization",
+      "title": "What is equalization?",
+      "group": "Operations and rules",
+      "define": "In a private fund, equalization is the true-up for investors joining at a later close: they pay as if they had joined at the first, plus interest.",
+      "why": "It is why late investors do not get a free ride on early deals, and why later closes can mean a surprise payment.",
+      "example": "Say an investor joins a fund at its second close, 6 months after the first. It pays its share of earlier calls and fees, plus interest, so it ends up level with first-close investors.",
+      "match": {
+        "source": "equali[sz]ation",
+        "flags": "i"
+      },
+      "explanation": "Equalization is set out in the LPA and handled by the administrator at each subsequent close. The later investor’s payment is usually distributed to earlier investors, and sometimes partly to the fund, rather than kept by the GP. The interest rate varies, often a stated rate or a benchmark plus a spread. Not to be confused with a subscription line, which delays calls, or with fee step-downs.",
+      "related": [
+        "first-close",
+        "final-close",
+        "capital-call",
+        "lpa",
+        "fund-administrator"
+      ]
+    },
+    {
+      "slug": "form-pf",
+      "term": "Form PF",
+      "title": "What is Form PF?",
+      "group": "Operations and rules",
+      "define": "Form PF is a confidential report that private fund advisers registered with the SEC file on their funds’ size, borrowing, investors and performance, to help regulators monitor risk.",
+      "why": "It is a regular compliance task for registered advisers, and its rules change over time, so the details matter.",
+      "example": "Say a registered adviser runs 3 private funds holding $2 billion. It files Form PF, with figures on each fund’s assets and borrowing, and the SEC uses the data to watch for risk.",
+      "match": {
+        "source": "form PF",
+        "flags": "i"
+      },
+      "explanation": "Form PF is filed electronically through a SEC-designated system, and it is the fund administrator or compliance team that usually gathers the data. Advisers file annually or quarterly, and what they must report grows with fund type and size: large hedge fund advisers report more often and in more detail. It is separate from Form ADV, the adviser’s public registration.",
+      "related": [
+        "fund-administrator",
+        "aifmd",
+        "nav",
+        "reg-d-506b",
+        "subscription-line"
+      ]
+    },
+    {
+      "slug": "aifmd",
+      "term": "AIFMD",
+      "title": "What is the AIFMD?",
+      "group": "Operations and rules",
+      "define": "The Alternative Investment Fund Managers Directive is the EU framework for managers of alternative funds. It covers authorization, reporting, risk controls and marketing to investors.",
+      "why": "It decides whether and how a non-EU manager can market a fund in Europe, and it is regularly updated.",
+      "example": "Say a U.S. manager wants to market a fund to investors in 3 EU countries. It must work out which AIFMD route applies, and meet that route’s reporting and disclosure rules.",
+      "match": {
+        "source": "\\bAIFMD\\b|alternative investment fund managers directive",
+        "flags": "i"
+      },
+      "explanation": "AIFMD regulates the manager rather than the fund. EU managers are authorized under it, while non-EU managers usually market through national private placement regimes, since the broader passport for them was never switched on. Requirements typically include a depositary or depositary-lite arrangement, Annex IV regulatory reporting and investor disclosures. Often confused with UCITS, which governs retail funds.",
+      "related": [
+        "form-pf",
+        "placement-agent",
+        "ppm",
+        "fund-administrator",
+        "aml-kyc"
+      ]
+    },
+    {
+      "slug": "reg-d-506b",
+      "term": "Rule 506(b)",
+      "title": "What is Rule 506(b)?",
+      "group": "Operations and rules",
+      "define": "Rule 506(b) of Regulation D lets a fund raise unlimited money privately, without general solicitation, from accredited investors and up to 35 sophisticated non-accredited ones.",
+      "why": "It is the traditional route for private fundraising, and its ban on advertising shapes how managers talk about funds.",
+      "example": "Say a manager raises a fund under 506(b). It can approach investors it already has a relationship with, but it cannot advertise the fund to the public.",
+      "match": {
+        "source": "506\\(b\\)|rule 506b|506b",
+        "flags": "i"
+      },
+      "explanation": "Most private fund offerings rely on 506(b), and the fund files a Form D after the first sale. The exemption depends on a substantive pre-existing relationship with each investor, which placement agents often supply. Non-accredited participants trigger extra disclosure duties, so managers usually limit sales to accredited investors. Often confused with 506(c), which permits advertising but requires verifying accredited status.",
+      "related": [
+        "reg-d-506c",
+        "accredited-investor",
+        "placement-agent",
+        "ppm",
+        "first-close"
+      ]
+    },
+    {
+      "slug": "reg-d-506c",
+      "term": "Rule 506(c)",
+      "title": "What is Rule 506(c)?",
+      "group": "Operations and rules",
+      "define": "Rule 506(c) of Regulation D lets a fund advertise publicly, but only accredited investors may buy, and the fund must take reasonable steps to verify they are accredited.",
+      "why": "It is the route for managers who want to market openly, at the cost of checking each investor’s status.",
+      "example": "Say a manager posts about its new fund online under 506(c). Before accepting an investor’s money, it must verify that investor is accredited, for instance through documents.",
+      "match": {
+        "source": "506\\(c\\)|rule 506c|506c",
+        "flags": "i"
+      },
+      "explanation": "Verification is often done by reviewing tax returns or bank and brokerage statements, or by obtaining a written confirmation from a registered broker-dealer, investment adviser, attorney or CPA. A signed questionnaire alone is not enough. Funds may also file Form D. It is often confused with 506(b), which bars general solicitation but lets investors self-certify.",
+      "related": [
+        "reg-d-506b",
+        "accredited-investor",
+        "aml-kyc",
+        "ppm",
+        "placement-agent"
+      ]
+    },
+    {
+      "slug": "erisa-25",
+      "term": "ERISA 25% test",
+      "title": "What is the ERISA 25% test?",
+      "group": "Operations and rules",
+      "define": "Under the ERISA 25% test, a fund’s assets are generally not treated as plan assets if benefit plan investors hold less than 25% of any class of its equity.",
+      "why": "Staying under it spares a manager the fiduciary rules that would otherwise apply to the fund’s own assets.",
+      "example": "Say a fund has $400 million of commitments in one class. If benefit plans commit $100 million or more, they hold 25% or more, and the manager must plan around that.",
+      "match": {
+        "source": "ERISA",
+        "flags": "i"
+      },
+      "explanation": "The test is applied class by class and is measured at each acquisition or redemption of an interest, not only at closing. Interests held by the GP and its affiliates with discretion over fund assets are usually excluded from the calculation. It is the main alternative to qualifying as a venture capital operating company (VCOC) or real estate operating company (REOC). LPAs typically include covenants to monitor it.",
+      "related": [
+        "lpa",
+        "general-partner",
+        "limited-partner",
+        "side-letter",
+        "accredited-investor"
+      ]
+    },
+    {
+      "slug": "aml-kyc",
+      "term": "AML and KYC",
+      "title": "What are AML and KYC?",
+      "group": "Operations and rules",
+      "define": "AML rules aim to stop money laundering. KYC, know your customer, is the checking of who an investor is and where its money comes from before a fund accepts it.",
+      "why": "Funds and administrators must do it for every investor, so onboarding and each new investor’s paperwork can take weeks.",
+      "example": "Say a new investor wants to commit $20 million. The fund’s administrator asks for identity documents, ownership details and the source of funds before accepting the commitment.",
+      "match": {
+        "source": "\\bAML\\b|\\bKYC\\b|anti-money[- ]laundering|know[- ]your[- ]customer",
+        "flags": "i"
+      },
+      "explanation": "KYC documents are usually collected with the subscription agreement, and the administrator often runs the checks. Entity investors must identify their beneficial owners, and sanctions screening is typically part of the process. Checks are repeated or refreshed over the fund’s life, and the required depth varies with investor type and the investor’s home jurisdiction.",
+      "related": [
+        "fund-administrator",
+        "limited-partner",
+        "commitment",
+        "accredited-investor",
+        "first-close"
+      ]
+    },
+    {
+      "slug": "accredited-investor",
+      "term": "Accredited investor",
+      "title": "What is an accredited investor?",
+      "group": "Operations and rules",
+      "define": "An accredited investor is a person or institution that meets SEC income or net worth tests, or holds certain professional licenses, and so may invest in private offerings.",
+      "why": "It decides who can be sold a private fund, and who is shut out of them.",
+      "example": "Say a fund is offered only to accredited investors. A manager must confirm each of its 40 buyers meets the SEC’s tests before it accepts their money.",
+      "match": {
+        "source": "accredited investors?",
+        "flags": "i"
+      },
+      "explanation": "The status comes from Regulation D under the Securities Act, so it appears in subscription agreements, investor questionnaires and offering documents for private placements. Individuals usually qualify on income or net worth, or by holding certain licenses; entities qualify on assets or ownership. It is often confused with the narrower qualified purchaser test, which funds relying on the 3(c)(7) exemption must apply.",
+      "related": [
+        "reg-d-506b",
+        "reg-d-506c",
+        "aml-kyc",
+        "limited-partner",
+        "ppm"
+      ]
+    },
+    {
+      "slug": "k-1",
+      "term": "Schedule K-1",
+      "title": "What is a K-1?",
+      "group": "Operations and rules",
+      "define": "A Schedule K-1 is the U.S. tax form a partnership, such as a private fund, sends each partner to report that partner’s share of its income, gains and losses.",
+      "why": "Investors cannot file until they have it, and late K-1s are a familiar annual complaint about private funds.",
+      "example": "Say an investor owns part of a fund. It receives a K-1 showing its share of the fund’s income and gains for the year, and uses those figures in its own return.",
+      "match": {
+        "source": "\\bK-?1s?\\b",
+        "flags": "i"
+      },
+      "explanation": "Funds issue K-1s after the year closes, usually once the audit and the underlying portfolio companies' own K-1s are in, so delivery often runs past the personal filing deadline and extensions are common. The figures are taxable allocations, not cash received, and can differ from distributions. Non-U.S. investors typically get other forms, such as a 1042-S, and often invest through a blocker.",
+      "related": [
+        "fund-administrator",
+        "blocker",
+        "limited-partner",
+        "lpa",
+        "feeder-fund"
+      ]
+    }
+  ]
+}

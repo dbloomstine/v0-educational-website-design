@@ -92,6 +92,8 @@ The site was aggressively consolidated on 2026-04-10. These are the public route
                            events). Past events stay up as archived pages for SEO.
 /events/submit          → Public "Submit an event" form → event_submissions pending queue
 /about                  → About page (rebuilt 2026-04-09)
+/glossary               → 88 private-markets terms, grouped, each with its definition (added 2026-10-12; see "The glossary")
+/glossary/[slug]        → One term: definition, explanation, example, why it matters, related terms, recent stories using it
 /brand                  → Brand kit — logos, monograms, backgrounds (added 2026-04-09)
 /privacy, /terms        → Legal
 /admin/newsletter       → Internal newsletter prep UI (not in sitemap/robots)
@@ -743,3 +745,12 @@ The subject line is chosen by `buildSubject` in `lib/newsletter/send-daily.ts` �
 ## The daily email's events (2026-10-12)
 
 The foot of each edition used to list the whole week of the board (47 to 69 events in early October). Danny: "the events list is too long… for a daily email… maybe we just do like a few… I'd rather keep it clean." Now each day shows its best two (`lib/newsletter/email-events.ts`: featured first, then `ops_relevance` high, then size, an invitation-only event last) and a "N more on the calendar" line to `/events`. The board itself is unchanged. Per-link clicks in the email are not measured (Resend reports a recipient's last event only), so whether readers clicked the long list is not known; Resend's own dashboard shows clicks per link if that is ever wanted.
+
+## The glossary (2026-10-12)
+
+`/glossary` and `/glossary/<slug>`: 88 private-markets terms (carried interest, waterfalls, NAV loans, continuation vehicles, DPI, Form PF…) for the reader who searches "what is a clawback". A reference page, not a course: never call the site educational. The terms are the social desk's (`fundopshq-social`, `engine/terms.mjs`), where one is explained a day in a short video; each term's definition, example and "why it matters" were written once and checked by a person there, and the two copies are the same word for word. `/glossary/<slug>` is the page an explainer's caption can link to.
+
+- **Source:** `lib/glossary/terms.json` (committed; edit it to correct a term, and keep the social desk's copy in step). `lib/glossary/terms.ts` types it and has the helpers (`getTerm`, `termsByGroup`, `relatedTerms`, `storiesUsing`).
+- **The writer:** `node scripts/glossary/write-terms.mjs` wrote the explanation and related terms with the Claude API (`claude-sonnet-5-5`, about $0.35 for all 88). Every answer is cached in `scripts/glossary/answers.json`, so a re-run writes only what is missing; `--force` writes everything again and pays again; `--only a,b` for named terms. Read what it writes before committing: ten of 88 explanations and three related-term lists were corrected by hand the first time.
+- **Pages:** both static. The index reads nothing; a term page's only read is the shared story window (`loadStories`), for "In the news" — the stories of the past days whose headline or summary uses the term (`match` in the JSON, the social desk's own pattern). All 88 are built at deploy (`generateStaticParams`, `dynamicParams = false`) and rebuilt once a day. Each has a `DefinedTerm` JSON-LD pointing at the index's `DefinedTermSet`, plus breadcrumbs.
+- **Links:** footer and phone menu (FundOpsHQ column), the sitemap (undated: the text does not change), and the signup card's reading pages.

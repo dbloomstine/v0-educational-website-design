@@ -33,6 +33,7 @@ const MORE = [
   { label: "League tables", href: "/league-tables" },
   { label: "Firms", href: "/firms" },
   { label: "Archive", href: "/archive" },
+  { label: "Glossary", href: "/glossary" },
   { label: "About", href: "/about" },
   { label: "Sponsor", href: "/sponsor" },
   { label: "Submit an event", href: "/events/submit" },

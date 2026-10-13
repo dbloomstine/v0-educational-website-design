@@ -42,6 +42,7 @@ vi.mock('@/lib/news/archive', async () => {
 
 import sitemap from '../../../app/sitemap'
 import { SITEMAP_STORY_CAP } from '../archive'
+import { GLOSSARY_TERMS } from '../../glossary/terms'
 
 describe('the sitemap', () => {
   it('dates a page by when its content changed, never by when the sitemap was built', async () => {
@@ -63,11 +64,20 @@ describe('the sitemap', () => {
     expect(iso('/')).toBe('2026-09-02T09:00:00.000Z')
     expect(iso('/news/private-equity')).toBe('2026-09-02T09:00:00.000Z')
     // Pages that do not change carry no date.
-    for (const path of ['/about', '/terms', '/privacy', '/sponsor', '/events/submit']) expect(byUrl.get(path)?.lastModified, path).toBeUndefined()
+    for (const path of ['/about', '/terms', '/privacy', '/sponsor', '/events/submit', '/glossary', '/glossary/clawback']) expect(byUrl.get(path)?.lastModified, path).toBeUndefined()
     // And nothing at all is stamped with the present.
     for (const e of entries) {
       if (e.lastModified) expect(built - new Date(e.lastModified).getTime(), e.url).toBeGreaterThan(86_400_000)
     }
+  })
+
+  it('lists the glossary and every one of its terms', async () => {
+    const entries = await sitemap()
+    const urls = new Set(entries.map((e) => e.url))
+    expect(urls.has('https://fundopshq.com/glossary')).toBe(true)
+    const terms = entries.filter((e) => /\/glossary\/[a-z0-9-]+$/.test(e.url))
+    expect(terms).toHaveLength(GLOSSARY_TERMS.length)
+    for (const t of GLOSSARY_TERMS) expect(urls.has(`https://fundopshq.com/glossary/${t.slug}`), t.slug).toBe(true)
   })
 
   describe('the archive', () => {

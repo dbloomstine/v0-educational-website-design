@@ -6,6 +6,7 @@ import { loadArchive, loadStories } from '@/lib/news/front-page'
 import { firmIndex } from '@/lib/news/firms'
 import { loadLeague } from '@/lib/news/league-data'
 import { archiveHref, loadArchiveSpan, loadSitemapStories, monthsBetween, type ArchiveSpan, type SitemapStory } from '@/lib/news/archive'
+import { GLOSSARY_TERMS, glossaryHref } from '@/lib/glossary/terms'
 
 /**
  * The sitemap, with HONEST dates.
@@ -53,6 +54,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/events`, lastModified: newestEvent, changeFrequency: 'daily', priority: 0.9 },
     { url: `${baseUrl}/events/submit`, changeFrequency: 'monthly', priority: 0.4 },
     { url: `${baseUrl}/about`, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/glossary`, changeFrequency: 'monthly', priority: 0.7 },
     { url: `${baseUrl}/sponsor`, changeFrequency: 'weekly', priority: 0.5 },
     { url: `${baseUrl}/privacy`, changeFrequency: 'yearly', priority: 0.3 },
     { url: `${baseUrl}/terms`, changeFrequency: 'yearly', priority: 0.3 },
@@ -147,5 +149,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }))
 
-  return [...staticPages, ...sectionPages, ...storyPages, ...archivePages, ...writtenPages, ...firmPages, ...collectionPages, ...eventPages]
+  // The glossary's terms: fixed text, so no date (a date here would be a guess; see the header).
+  const glossaryPages: MetadataRoute.Sitemap = GLOSSARY_TERMS.map((t) => ({
+    url: `${baseUrl}${glossaryHref(t.slug)}`,
+    changeFrequency: 'monthly' as const,
+    priority: 0.5,
+  }))
+
+  return [...staticPages, ...sectionPages, ...glossaryPages, ...storyPages, ...archivePages, ...writtenPages, ...firmPages, ...collectionPages, ...eventPages]
 }
