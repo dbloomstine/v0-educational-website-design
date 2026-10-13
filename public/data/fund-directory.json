@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-12T12:38:27.421Z",
+  "generated_at": "2026-10-13T12:23:15.275Z",
   "funds": [
     {
       "fund_name": "21 NEXT",
@@ -71608,8 +71608,8 @@
     {
       "feed_name": "Alternative Credit Investor",
       "feed_url": "https://alternativecreditinvestor.com/feed/",
-      "last_fetch": "2026-10-12T12:35:42.439Z",
-      "last_success": "2026-10-12T12:35:42.439Z",
+      "last_fetch": "2026-10-13T12:20:55.431Z",
+      "last_success": "2026-10-13T12:20:55.431Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71658,8 +71658,8 @@
     {
       "feed_name": "ESG Today",
       "feed_url": "https://www.esgtoday.com/feed/",
-      "last_fetch": "2026-10-12T12:35:43.299Z",
-      "last_success": "2026-10-12T12:35:43.299Z",
+      "last_fetch": "2026-10-13T12:20:56.182Z",
+      "last_success": "2026-10-13T12:20:56.182Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71678,8 +71678,8 @@
     {
       "feed_name": "Hedgeweek",
       "feed_url": "https://www.hedgeweek.com/feed/",
-      "last_fetch": "2026-10-12T12:35:46.797Z",
-      "last_success": "2026-10-12T12:35:46.797Z",
+      "last_fetch": "2026-10-13T12:20:59.784Z",
+      "last_success": "2026-10-13T12:20:59.784Z",
       "error_count": 0,
       "article_count": 100,
       "last_error": "",
@@ -71688,18 +71688,18 @@
     {
       "feed_name": "Infrastructure Investor",
       "feed_url": "https://www.infrastructureinvestor.com/feed/",
-      "last_fetch": "2026-10-12T12:36:43.607Z",
+      "last_fetch": "2026-10-13T12:20:52.827Z",
       "last_success": null,
-      "error_count": 23,
+      "error_count": 24,
       "article_count": 0,
-      "last_error": "Attribute without value\nLine: 0\nColumn: 54871\nChar: i",
+      "last_error": "Attribute without value\nLine: 0\nColumn: 54884\nChar: i",
       "enabled": false
     },
     {
       "feed_name": "PE Hub",
       "feed_url": "https://www.pehub.com/feed/",
-      "last_fetch": "2026-10-12T12:35:30.206Z",
-      "last_success": "2026-10-12T12:35:30.206Z",
+      "last_fetch": "2026-10-13T12:20:47.473Z",
+      "last_success": "2026-10-13T12:20:47.473Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71708,9 +71708,9 @@
     {
       "feed_name": "PERE",
       "feed_url": "https://www.perenews.com/feed/",
-      "last_fetch": "2026-10-12T12:36:44.687Z",
+      "last_fetch": "2026-10-13T12:20:53.976Z",
       "last_success": "2026-09-04T06:00:14.155827",
-      "error_count": 22,
+      "error_count": 23,
       "article_count": 0,
       "last_error": "Feed not recognized as RSS 1 or 2.",
       "enabled": false
@@ -71718,8 +71718,8 @@
     {
       "feed_name": "PR Newswire - Financial Services",
       "feed_url": "https://www.prnewswire.com/rss/financial-services-latest-news/financial-services-latest-news-list.rss",
-      "last_fetch": "2026-10-12T12:35:28.283Z",
-      "last_success": "2026-10-12T12:35:28.283Z",
+      "last_fetch": "2026-10-13T12:20:45.620Z",
+      "last_success": "2026-10-13T12:20:45.620Z",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -71728,19 +71728,19 @@
     {
       "feed_name": "Private Debt Investor",
       "feed_url": "https://www.privatedebtinvestor.com/feed/",
-      "last_fetch": "2026-10-12T12:36:41.290Z",
+      "last_fetch": "2026-10-13T12:20:50.230Z",
       "last_success": null,
-      "error_count": 23,
+      "error_count": 24,
       "article_count": 0,
-      "last_error": "Attribute without value\nLine: 0\nColumn: 53608\nChar: i",
+      "last_error": "Attribute without value\nLine: 0\nColumn: 53621\nChar: i",
       "enabled": false
     },
     {
       "feed_name": "Secondaries Investor",
       "feed_url": "https://www.secondariesinvestor.com/feed/",
-      "last_fetch": "2026-10-12T12:36:42.443Z",
+      "last_fetch": "2026-10-13T12:20:51.476Z",
       "last_success": null,
-      "error_count": 23,
+      "error_count": 24,
       "article_count": 0,
       "last_error": "Feed not recognized as RSS 1 or 2.",
       "enabled": false
@@ -71748,8 +71748,8 @@
     {
       "feed_name": "TechCrunch - Venture",
       "feed_url": "https://techcrunch.com/category/venture/feed/",
-      "last_fetch": "2026-10-12T12:35:29.571Z",
-      "last_success": "2026-10-12T12:35:29.571Z",
+      "last_fetch": "2026-10-13T12:20:46.918Z",
+      "last_success": "2026-10-13T12:20:46.918Z",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -71758,18 +71758,18 @@
     {
       "feed_name": "Business Wire - Finance",
       "feed_url": "https://feed.businesswire.com/rss/home/?rss=G1QFDERJXkJeGVtTWg==",
-      "last_fetch": "2026-10-12T12:35:28.898Z",
-      "last_success": "2026-10-12T12:35:28.898Z",
+      "last_fetch": "2026-10-13T12:20:46.269Z",
+      "last_success": "2026-10-13T12:20:46.269Z",
       "error_count": 0,
-      "article_count": 5,
+      "article_count": 3,
       "last_error": "",
       "enabled": true
     },
     {
       "feed_name": "AltAssets",
       "feed_url": "https://www.altassets.net/feed/",
-      "last_fetch": "2026-10-12T12:35:43.981Z",
-      "last_success": "2026-10-12T12:35:43.981Z",
+      "last_fetch": "2026-10-13T12:20:56.787Z",
+      "last_success": "2026-10-13T12:20:56.787Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71778,18 +71778,18 @@
     {
       "feed_name": "Financial Times",
       "feed_url": "https://ft.com/rss/home",
-      "last_fetch": "2026-10-12T12:35:48.888Z",
-      "last_success": "2026-10-12T12:35:48.888Z",
+      "last_fetch": "2026-10-13T12:21:01.517Z",
+      "last_success": "2026-10-13T12:21:01.517Z",
       "error_count": 0,
-      "article_count": 12,
+      "article_count": 10,
       "last_error": "",
       "enabled": true
     },
     {
       "feed_name": "Buyouts Insider",
       "feed_url": "https://buyoutsinsider.com/feed",
-      "last_fetch": "2026-10-12T12:35:50.549Z",
-      "last_success": "2026-10-12T12:35:50.549Z",
+      "last_fetch": "2026-10-13T12:21:02.610Z",
+      "last_success": "2026-10-13T12:21:02.610Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71798,8 +71798,8 @@
     {
       "feed_name": "PE International",
       "feed_url": "https://privateequityinternational.com/feed",
-      "last_fetch": "2026-10-12T12:35:54.218Z",
-      "last_success": "2026-10-12T12:35:54.218Z",
+      "last_fetch": "2026-10-13T12:21:05.861Z",
+      "last_success": "2026-10-13T12:21:05.861Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71808,8 +71808,8 @@
     {
       "feed_name": "VC Journal",
       "feed_url": "https://venturecapitaljournal.com/feed",
-      "last_fetch": "2026-10-12T12:35:57.774Z",
-      "last_success": "2026-10-12T12:35:57.774Z",
+      "last_fetch": "2026-10-13T12:21:08.864Z",
+      "last_success": "2026-10-13T12:21:08.864Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71818,8 +71818,8 @@
     {
       "feed_name": "Private Equity Wire",
       "feed_url": "https://privateequitywire.co.uk/feed",
-      "last_fetch": "2026-10-12T12:36:01.311Z",
-      "last_success": "2026-10-12T12:36:01.311Z",
+      "last_fetch": "2026-10-13T12:21:11.540Z",
+      "last_success": "2026-10-13T12:21:11.540Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71828,9 +71828,9 @@
     {
       "feed_name": "GlobeNewswire PE",
       "feed_url": "https://www.globenewswire.com/RssFeed/subjectcode/25-Private%20Equity/feedTitle/GlobeNewswire%20-%20Private%20Equity",
-      "last_fetch": "2026-10-12T12:36:45.823Z",
+      "last_fetch": "2026-10-13T12:21:13.708Z",
       "last_success": null,
-      "error_count": 22,
+      "error_count": 23,
       "article_count": 0,
       "last_error": "Status code 403",
       "enabled": false
@@ -71838,8 +71838,8 @@
     {
       "feed_name": "Crunchbase News",
       "feed_url": "https://news.crunchbase.com/feed/",
-      "last_fetch": "2026-10-12T12:36:04.571Z",
-      "last_success": "2026-10-12T12:36:04.571Z",
+      "last_fetch": "2026-10-13T12:21:14.377Z",
+      "last_success": "2026-10-13T12:21:14.377Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71848,9 +71848,9 @@
     {
       "feed_name": "VentureBeat",
       "feed_url": "https://venturebeat.com/feed/",
-      "last_fetch": "2026-10-12T12:36:46.454Z",
+      "last_fetch": "2026-10-13T12:21:15.041Z",
       "last_success": null,
-      "error_count": 22,
+      "error_count": 23,
       "article_count": 0,
       "last_error": "Status code 429",
       "enabled": false
@@ -71858,8 +71858,8 @@
     {
       "feed_name": "Fortune",
       "feed_url": "https://fortune.com/feed/",
-      "last_fetch": "2026-10-12T12:36:05.870Z",
-      "last_success": "2026-10-12T12:36:05.870Z",
+      "last_fetch": "2026-10-13T12:21:15.688Z",
+      "last_success": "2026-10-13T12:21:15.688Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71868,8 +71868,8 @@
     {
       "feed_name": "Axios",
       "feed_url": "https://www.axios.com/feeds/feed.rss",
-      "last_fetch": "2026-10-12T12:36:06.549Z",
-      "last_success": "2026-10-12T12:36:06.549Z",
+      "last_fetch": "2026-10-13T12:21:16.370Z",
+      "last_success": "2026-10-13T12:21:16.370Z",
       "error_count": 0,
       "article_count": 100,
       "last_error": "",
@@ -71878,8 +71878,8 @@
     {
       "feed_name": "StrictlyVC",
       "feed_url": "https://www.strictlyvc.com/feed/",
-      "last_fetch": "2026-10-12T12:36:07.462Z",
-      "last_success": "2026-10-12T12:36:07.462Z",
+      "last_fetch": "2026-10-13T12:21:17.222Z",
+      "last_success": "2026-10-13T12:21:17.222Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71888,9 +71888,9 @@
     {
       "feed_name": "Creditflux",
       "feed_url": "https://www.creditflux.com/rss/",
-      "last_fetch": "2026-10-12T12:36:47.070Z",
+      "last_fetch": "2026-10-13T12:21:17.918Z",
       "last_success": "2026-09-23T09:39:54.006Z",
-      "error_count": 12,
+      "error_count": 13,
       "article_count": 50,
       "last_error": "Invalid character in entity name\nLine: 0\nColumn: 1012\nChar: &",
       "enabled": false
@@ -71898,8 +71898,8 @@
     {
       "feed_name": "Commercial Observer",
       "feed_url": "https://commercialobserver.com/feed/",
-      "last_fetch": "2026-10-12T12:36:09.399Z",
-      "last_success": "2026-10-12T12:36:09.399Z",
+      "last_fetch": "2026-10-13T12:21:19.293Z",
+      "last_success": "2026-10-13T12:21:19.293Z",
       "error_count": 0,
       "article_count": 17,
       "last_error": "",
@@ -71908,8 +71908,8 @@
     {
       "feed_name": "Bisnow",
       "feed_url": "https://www.bisnow.com/rss/",
-      "last_fetch": "2026-10-12T12:36:10.304Z",
-      "last_success": "2026-10-12T12:36:10.304Z",
+      "last_fetch": "2026-10-13T12:21:20.004Z",
+      "last_success": "2026-10-13T12:21:20.004Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71918,8 +71918,8 @@
     {
       "feed_name": "Mingtiandi",
       "feed_url": "https://www.mingtiandi.com/feed/",
-      "last_fetch": "2026-10-12T12:36:11.214Z",
-      "last_success": "2026-10-12T12:36:11.214Z",
+      "last_fetch": "2026-10-13T12:21:20.952Z",
+      "last_success": "2026-10-13T12:21:20.952Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71928,8 +71928,8 @@
     {
       "feed_name": "Connect CRE",
       "feed_url": "https://www.connectcre.com/feed/",
-      "last_fetch": "2026-10-12T12:36:12.685Z",
-      "last_success": "2026-10-12T12:36:12.685Z",
+      "last_fetch": "2026-10-13T12:21:22.440Z",
+      "last_success": "2026-10-13T12:21:22.440Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71938,9 +71938,9 @@
     {
       "feed_name": "Energy Investor",
       "feed_url": "https://www.energyinvestor.net/feed/",
-      "last_fetch": "2026-10-12T12:36:48.492Z",
+      "last_fetch": "2026-10-13T12:21:23.109Z",
       "last_success": "2026-09-30T10:50:20.529Z",
-      "error_count": 7,
+      "error_count": 8,
       "article_count": 1,
       "last_error": "Status code 526",
       "enabled": false
@@ -71948,8 +71948,8 @@
     {
       "feed_name": "China Money Network",
       "feed_url": "https://www.chinamoneynetwork.com/feed/",
-      "last_fetch": "2026-10-12T12:36:14.141Z",
-      "last_success": "2026-10-12T12:36:14.141Z",
+      "last_fetch": "2026-10-13T12:21:23.860Z",
+      "last_success": "2026-10-13T12:21:23.860Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71958,8 +71958,8 @@
     {
       "feed_name": "Tech in Asia",
       "feed_url": "https://www.techinasia.com/feed/",
-      "last_fetch": "2026-10-12T12:36:16.182Z",
-      "last_success": "2026-10-12T12:36:16.182Z",
+      "last_fetch": "2026-10-13T12:21:25.907Z",
+      "last_success": "2026-10-13T12:21:25.907Z",
       "error_count": 0,
       "article_count": 36,
       "last_error": "",
@@ -71968,8 +71968,8 @@
     {
       "feed_name": "Growth Business",
       "feed_url": "https://www.growthbusiness.co.uk/feed/",
-      "last_fetch": "2026-10-12T12:36:18.947Z",
-      "last_success": "2026-10-12T12:36:18.947Z",
+      "last_fetch": "2026-10-13T12:21:28.942Z",
+      "last_success": "2026-10-13T12:21:28.942Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71978,8 +71978,8 @@
     {
       "feed_name": "EU-Startups",
       "feed_url": "https://www.eu-startups.com/feed/",
-      "last_fetch": "2026-10-12T12:36:24.862Z",
-      "last_success": "2026-10-12T12:36:24.862Z",
+      "last_fetch": "2026-10-13T12:21:31.020Z",
+      "last_success": "2026-10-13T12:21:31.020Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -71988,9 +71988,9 @@
     {
       "feed_name": "LAVCA",
       "feed_url": "https://lavca.org/feed/",
-      "last_fetch": "2026-10-12T12:36:49.191Z",
+      "last_fetch": "2026-10-13T12:21:32.950Z",
       "last_success": null,
-      "error_count": 22,
+      "error_count": 23,
       "article_count": 0,
       "last_error": "Status code 403",
       "enabled": false
@@ -71998,9 +71998,9 @@
     {
       "feed_name": "Latin Finance",
       "feed_url": "https://www.latinfinance.com/feed/",
-      "last_fetch": "2026-10-12T12:36:28.317Z",
+      "last_fetch": "2026-10-13T12:21:33.545Z",
       "last_success": "2026-10-10T10:53:48.719Z",
-      "error_count": 1,
+      "error_count": 2,
       "article_count": 10,
       "last_error": "Status code 429",
       "enabled": true
@@ -72008,8 +72008,8 @@
     {
       "feed_name": "Africa PE News",
       "feed_url": "https://www.africaprivateequitynews.com/feed/",
-      "last_fetch": "2026-10-12T12:36:29.132Z",
-      "last_success": "2026-10-12T12:36:29.132Z",
+      "last_fetch": "2026-10-13T12:21:34.283Z",
+      "last_success": "2026-10-13T12:21:34.283Z",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -72018,8 +72018,8 @@
     {
       "feed_name": "Wamda",
       "feed_url": "https://www.wamda.com/feed/",
-      "last_fetch": "2026-10-12T12:36:30.459Z",
-      "last_success": "2026-10-12T12:36:30.459Z",
+      "last_fetch": "2026-10-13T12:21:35.406Z",
+      "last_success": "2026-10-13T12:21:35.406Z",
       "error_count": 0,
       "article_count": 20,
       "last_error": "",
@@ -72028,8 +72028,8 @@
     {
       "feed_name": "Chief Investment Officer",
       "feed_url": "https://www.ai-cio.com/feed/",
-      "last_fetch": "2026-10-12T12:36:33.003Z",
-      "last_success": "2026-10-12T12:36:33.003Z",
+      "last_fetch": "2026-10-13T12:21:37.385Z",
+      "last_success": "2026-10-13T12:21:37.385Z",
       "error_count": 0,
       "article_count": 5,
       "last_error": "",
@@ -72038,8 +72038,8 @@
     {
       "feed_name": "Family Capital",
       "feed_url": "https://www.famcap.com/feed/",
-      "last_fetch": "2026-10-12T12:36:34.149Z",
-      "last_success": "2026-10-12T12:36:34.149Z",
+      "last_fetch": "2026-10-13T12:21:38.376Z",
+      "last_success": "2026-10-13T12:21:38.376Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -72048,8 +72048,8 @@
     {
       "feed_name": "Private Funds CFO",
       "feed_url": "https://www.privatefundscfo.com/feed/",
-      "last_fetch": "2026-10-12T12:36:35.242Z",
-      "last_success": "2026-10-12T12:36:35.242Z",
+      "last_fetch": "2026-10-13T12:21:39.495Z",
+      "last_success": "2026-10-13T12:21:39.495Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -72058,8 +72058,8 @@
     {
       "feed_name": "Middle Market Growth",
       "feed_url": "https://middlemarketgrowth.org/feed/",
-      "last_fetch": "2026-10-12T12:36:37.617Z",
-      "last_success": "2026-10-12T12:36:37.617Z",
+      "last_fetch": "2026-10-13T12:21:41.286Z",
+      "last_success": "2026-10-13T12:21:41.286Z",
       "error_count": 0,
       "article_count": 10,
       "last_error": "",
@@ -72068,8 +72068,8 @@
     {
       "feed_name": "AgFunder",
       "feed_url": "https://agfundernews.com/feed/",
-      "last_fetch": "2026-10-12T12:36:38.878Z",
-      "last_success": "2026-10-12T12:36:38.878Z",
+      "last_fetch": "2026-10-13T12:21:42.450Z",
+      "last_success": "2026-10-13T12:21:42.450Z",
       "error_count": 0,
       "article_count": 50,
       "last_error": "",
@@ -72078,8 +72078,8 @@
     {
       "feed_name": "CleanTechnica",
       "feed_url": "https://cleantechnica.com/feed/",
-      "last_fetch": "2026-10-12T12:36:39.994Z",
-      "last_success": "2026-10-12T12:36:39.994Z",
+      "last_fetch": "2026-10-13T12:21:43.360Z",
+      "last_success": "2026-10-13T12:21:43.360Z",
       "error_count": 0,
       "article_count": 45,
       "last_error": "",
@@ -72088,9 +72088,9 @@
     {
       "feed_name": "Impact Alpha",
       "feed_url": "https://impactalpha.com/feed/",
-      "last_fetch": "2026-10-12T12:36:49.756Z",
+      "last_fetch": "2026-10-13T12:21:44.018Z",
       "last_success": null,
-      "error_count": 22,
+      "error_count": 23,
       "article_count": 0,
       "last_error": "Status code 403",
       "enabled": false
