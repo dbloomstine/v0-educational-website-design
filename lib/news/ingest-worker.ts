@@ -39,6 +39,8 @@ export interface IngestionResult {
   articlesFound: number;
   articlesInserted: number;
   articlesDuplicate: number;
+  /** Items a feed listed that were published too long ago to be news (see MAX_ARTICLE_AGE_DAYS). */
+  articlesStale: number;
   errors: string[];
   durationMs: number;
 }
@@ -59,6 +61,31 @@ interface FeedSourceRow {
 const DEFAULT_CONCURRENCY = 5;
 const DOMAIN_DELAY_MS = 100;
 
+/**
+ * An item published longer ago than this is not news and is not ingested.
+ *
+ * Google News search feeds list whatever matches the query, and a `when:7d`
+ * clause does not stop it: in the fortnight to 2026-10-12 about 250 rows (6%
+ * of ingest) carried a publication date more than a month old — "CPPIB's
+ * Wiseman heads to BlackRock" (2017), "PIMCO targets $1bn for its latest credit
+ * fund" (2019), "Hedge funds should form a larger part of multi-asset
+ * allocations" (2006) — each one classified at a cost, written to firm pages
+ * and the league's past years, and never shown on a front (which look back ten
+ * days). Thirty days is three times the fronts' window and covers a publisher
+ * whose feed is slow to list an item. An item with no date is kept: the
+ * uncertainty is the feed's, not the item's.
+ */
+export const MAX_ARTICLE_AGE_DAYS = 30;
+
+/** True when the feed's publication day is more than MAX_ARTICLE_AGE_DAYS before the day of `now` (both UTC). */
+export function isStaleAtIngest(pubDate: string | null | undefined, now: number = Date.now()): boolean {
+  if (!pubDate) return false;
+  const published = new Date(`${pubDate.slice(0, 10)}T00:00:00Z`).getTime();
+  if (Number.isNaN(published)) return false;
+  const DAY_MS = 24 * 60 * 60 * 1000;
+  return Math.floor(now / DAY_MS) - Math.floor(published / DAY_MS) > MAX_ARTICLE_AGE_DAYS;
+}
+
 // ─── Main ───────────────────────────────────────────────────────────────────
 
 export async function runIngestion(config: IngestionConfig): Promise<IngestionResult> {
@@ -71,6 +98,7 @@ export async function runIngestion(config: IngestionConfig): Promise<IngestionRe
     articlesFound: 0,
     articlesInserted: 0,
     articlesDuplicate: 0,
+    articlesStale: 0,
     errors: [],
     durationMs: 0,
   };
@@ -115,6 +143,7 @@ export async function runIngestion(config: IngestionConfig): Promise<IngestionRe
         result.articlesFound += fr.articlesFound;
         result.articlesInserted += fr.inserted;
         result.articlesDuplicate += fr.duplicate;
+        result.articlesStale += fr.stale;
 
         // Update feed_sources with success. is_active is set explicitly so a
         // re-probe of an auto-disabled feed brings it back the moment the
@@ -216,6 +245,7 @@ interface FeedProcessResult {
   articlesFound: number;
   inserted: number;
   duplicate: number;
+  stale: number;
   totalIngested: number;
   errors: string[];
 }
@@ -228,6 +258,7 @@ async function processFeed(
     articlesFound: 0,
     inserted: 0,
     duplicate: 0,
+    stale: 0,
     totalIngested: 0,
     errors: [],
   };
@@ -249,8 +280,14 @@ async function processFeed(
 
   let currentTotal = (currentFeed?.total_articles_ingested as number) ?? 0;
 
+  // An item published more than MAX_ARTICLE_AGE_DAYS ago is not news. Judged
+  // before the Google News resolution below, which costs a request per item.
+  const now = Date.now();
+  const fresh = feedResult.articles.filter((article) => !isStaleAtIngest(article.pubDate, now));
+  result.stale = feedResult.articles.length - fresh.length;
+
   // Resolve Google News redirect URLs to actual destinations (batch, max 5 concurrent)
-  const articlesWithLinks = feedResult.articles.filter((article) => !!article.link);
+  const articlesWithLinks = fresh.filter((article) => !!article.link);
   for (let ri = 0; ri < articlesWithLinks.length; ri += 5) {
     const batch = articlesWithLinks.slice(ri, ri + 5);
     const resolved = await Promise.all(

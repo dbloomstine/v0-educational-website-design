@@ -29,6 +29,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { alignClassifications } from './classification-align';
 import { withOwnAmounts } from './amount-guard';
+import { retypeHiddenDeal } from './deal-retype';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>;
@@ -141,6 +142,17 @@ const RUN_BUDGET_MS = 260_000;
  */
 const INITIAL_BATCH_ESTIMATE_MS = 25_000;
 const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+
+/**
+ * The model that classifies. Haiku 4.5 since 2026-06; `NEWS_CLASSIFIER_MODEL`
+ * in Vercel overrides it (a redeploy applies it), so a newer Haiku can be
+ * tried without a code change — after a side-by-side replay, not before
+ * (`scripts/amount-replay.ts` sends a saved batch through this module; CLAUDE.md,
+ * "The classifier model", has the plan). Haiku 5.5 thinks by default and
+ * rejects `temperature`; neither is sent here, so the request shape carries over.
+ */
+const DEFAULT_MODEL = 'claude-haiku-4-5-20251001';
+export const CLASSIFIER_MODEL = process.env.NEWS_CLASSIFIER_MODEL?.trim() || DEFAULT_MODEL;
 
 const SYSTEM_PROMPT = `You are classifying news articles about investment funds and alternative asset management for a professional intelligence database used by business development professionals.
 
@@ -287,13 +299,17 @@ export async function classifyPendingArticles(
         // A sum of money the article itself does not give came from somewhere
         // else, usually a neighbour in the batch: that article is classified
         // again on its own (see amount-guard.ts).
-        const classification = await ownAmounts(article, classifications[j], claudeApiKey);
+        const checked = await ownAmounts(article, classifications[j], claudeApiKey);
 
-        if (!classification) {
+        if (!checked) {
           await markFailed(supabase, article.id);
           result.articlesFailed++;
           continue;
         }
+
+        // A plain deal filed as `other` or commentary is shown nowhere; the
+        // headline decides (deal-retype.ts). Only the type changes.
+        const classification = retypeHiddenDeal(article.title, checked);
 
         // Firm-domain resolution was removed 2026-08-30 with the favicons:
         // it cost a Clearbit lookup per classified article and nothing renders
@@ -429,7 +445,7 @@ async function classifyBatch(
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
+      model: CLASSIFIER_MODEL,
       // ~410 output tokens/article × BATCH_SIZE (15) — keeps the same per-item
       // budget as the prior 4096/10 config while halving call count.
       max_tokens: 6144,
