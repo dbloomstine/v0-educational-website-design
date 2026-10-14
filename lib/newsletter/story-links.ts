@@ -320,6 +320,71 @@ function daysBetween(a: string | null | undefined, b: string | null | undefined)
 }
 
 /**
+ * What kind of vehicle a fund headline says it is, read for one question:
+ * is it a secondaries vehicle (GP-led, continuation, LP-led), a GP-stakes
+ * vehicle, or a primary fund with a named strategy? Two reports of one raise
+ * never disagree about that, and two raises by one firm often do: 2026-09-30,
+ * "LA pension among backers of TPG's second GP-led fund" was clustered under
+ * "TPG Gets $10 Billion for Climate PE Fund" (same firm, same day, neither
+ * report naming the other's vehicle) and never ran on its own.
+ *
+ * The primary strategies are never set against each other: one fund is
+ * "renewable-energy" in one headline and "infrastructure" in another (CIP's
+ * Fund VI, 2026-10-08 and 10-14), "real estate" and "credit" in a third.
+ * Not "venture" either: it is a joint venture and half the names in the
+ * industry. The firm's own name is read past ("Energy Capital", "Ares Real
+ * Estate").
+ */
+const SECONDARIES_MARK = /\b([gl]p[- ]led|continuation (funds?|vehicles?|deals?)|secondar(y|ies))\b/i
+const GP_STAKES_MARK = /\bgp[- ]?stakes?\b/i
+const PRIMARY_MARK = /\b(climate|energy transition|decarboni[sz]\w*|clean energy|renewables?|credit|debt|lending|loans?|mezzanine|real estate|property|properties|reit|infrastructure|buyouts?)\b/i
+
+export function fundStrategy(text: string): 'secondaries' | 'gp stakes' | 'primary' | null {
+  if (SECONDARIES_MARK.test(text)) return 'secondaries'
+  if (GP_STAKES_MARK.test(text)) return 'gp stakes'
+  if (PRIMARY_MARK.test(text)) return 'primary'
+  return null
+}
+
+/**
+ * Two fund events whose headlines put them in different strategies are two
+ * raises — whatever else they share (the firm, a day, an investor). A
+ * headline that says nothing either way conflicts with neither. The same
+ * vehicle name, or the very same figure, overrides it: that is one fund an
+ * outlet described oddly.
+ */
+type StrategyFields = Pick<StoryLike, 'title' | 'eventType' | 'fundName' | 'firmName' | 'fundSizeUsdMillions' | 'entityKeys'>
+
+/**
+ * The strategy a fund event's headline and vehicle name state, read past the
+ * names of the firm and of every company in the story — "Sabey Data Center
+ * Properties" is a company, not a property fund — but not past the fund's
+ * own name, which is where "TPG Rise Climate II" says what it is.
+ */
+function statedStrategy(x: StrategyFields): ReturnType<typeof fundStrategy> {
+  const fund = entityKey(x.fundName)
+  const firm = entityKey(x.firmName)
+  const names = [firm, ...(x.entityKeys ?? []).filter((k) => !keysMatch(k, fund))]
+  return fundStrategy(`${withoutNames(x.title, names)} ${withoutNames(x.fundName ?? '', [firm])}`)
+}
+
+export function fundStrategiesConflict(a: StrategyFields, b: StrategyFields): boolean {
+  if (storyFamily(a.eventType) !== 'fund' || storyFamily(b.eventType) !== 'fund') return false
+  const fundA = entityKey(a.fundName)
+  if (fundA && fundA === entityKey(b.fundName) && fundA.split(' ').length >= 2) return false
+  if (fundSizesMatch(a.fundSizeUsdMillions, b.fundSizeUsdMillions, 0.02)) return false
+  const sa = statedStrategy(a)
+  const sb = statedStrategy(b)
+  return !!sa && !!sb && sa !== sb
+}
+
+/** A headline without the words of the names it shares with another story: "Hamilton Lane" is not evidence that two Hamilton Lane stories are one. */
+function withoutNames(title: string, keys: string[]): string {
+  const drop = new Set(keys.flatMap((k) => k.split(' ')).filter((t) => t.length >= 2))
+  return title.split(/\s+/).filter((w) => !drop.has(entityKey(w).replace(/ /g, '')) && !drop.has(entityKey(w.replace(/['’]s$/i, '')).replace(/ /g, ''))).join(' ')
+}
+
+/**
  * Same story, by the names in it. `crossEdition` tightens the fund rule: over
  * several days one firm can genuinely announce two different vehicles, so two
  * disjoint fund names are never merged there.
@@ -372,6 +437,7 @@ export function sameStoryLoose(a: StoryLike, b: StoryLike, opts: { crossEdition?
   }
 
   if (famA === 'fund' && famB === 'fund') {
+    if (fundStrategiesConflict(a, b)) return false
     const closeCompatible = !a.closeType || !b.closeType || a.closeType === b.closeType
     const bothSized = !!a.fundSizeUsdMillions && !!b.fundSizeUsdMillions
     const sizeCompatible = !bothSized || fundSizesMatch(a.fundSizeUsdMillions, b.fundSizeUsdMillions, 0.25)
@@ -391,18 +457,40 @@ export function sameStoryLoose(a: StoryLike, b: StoryLike, opts: { crossEdition?
     if (fundA && fundA === fundB && fundA.split(' ').length >= 2) return true
 
     if (sameFirm && closeCompatible && sizeCompatible && !namesDisjoint) {
-      if (!opts.crossEdition) return true
-      // Across days a large firm really does announce unrelated vehicles
+      // A large firm really does announce unrelated vehicles, across days
       // ("Blackstone launches multi-asset fund", then "Blackstone to launch
-      // Nordics warehouse platform"), so the same firm alone is not a repeat.
-      // Something must tie the two headlines to one raise.
-      const stage = a.closeType && a.closeType === b.closeType && /close/.test(a.closeType)
+      // Nordics warehouse platform") and on one day ("Nuveen secures A$1bn
+      // for Australian real estate debt" beside "Nuveen Natural Capital
+      // raises $100m for nature-based solutions fund", 2026-10-12), so the
+      // same firm alone is not one story. Something must tie the two to one
+      // raise.
+      const stage = a.closeType && a.closeType === b.closeType && /close|hard_cap/.test(a.closeType)
       const fundOverlap = !!fundA && !!fundB
+      // The headlines are compared without the firm's name: two Hamilton Lane
+      // stories share "Hamilton Lane" and "million" and nothing else
+      // ("telMAX Secures $215 Million in Growth Financing from Hamilton Lane
+      // and PSIC", 09-22; "Hamilton Lane surpasses $430 million for debut
+      // GP-led fund", 09-24), and that was a 0.21 overlap.
+      const firmKeys = [firmA, firmB]
       if (
         stage || fundOverlap || bothSized ||
-        contentJaccard(a.title, b.title) >= 0.2 ||
+        contentJaccard(withoutNames(a.title, firmKeys), withoutNames(b.title, firmKeys)) >= 0.2 ||
         titlesShareSignificantNumber(a.title, b.title)
       ) return true
+      // On one day the tie can be looser: the same kind of event, a launch
+      // beside a launch ("NVM Ventures, a new multi-fund venture capital
+      // fund" and "NVM Ventures launches with €23.6M first close", 10-06) or
+      // a raise beside a close (the classifier files one close under either:
+      // "Audax Private Debt Raises Third Direct-Lending Fund" and "…Closes
+      // Largest Fund in Firm's History", 09-30), or two reports that carry
+      // nothing to compare. A launch and an LP's commitment by "the same
+      // firm" that share nothing else are two stories: "The O.H.I.O. Fund is
+      // just two years old. It's already raising a new fund." was filed
+      // under "Ohio Police & Fire Pension Fund allocates $100 million…"
+      // (10-05/06), and "LGPS Central to launch social housing fund" under
+      // "LGPS Central partner funds commit an additional £2bn" (10-07).
+      const isLaunch = (x: StoryLike) => x.eventType === 'fund_launch'
+      if (!opts.crossEdition && (isLaunch(a) === isLaunch(b) || (!a.fundSizeUsdMillions && !b.fundSizeUsdMillions && !fundA && !fundB))) return true
     }
     if (sameFirm && closeCompatible && sizeCompatible) {
       // Two outlets inventing different names for one size-less announcement
@@ -483,13 +571,28 @@ export function findPriorStory<T extends StoryLike>(candidate: StoryLike, priors
   return null
 }
 
-/** Union-find clustering, so A~B and B~C lands A, B and C in one story. */
-export function clusterBy<T>(items: T[], same: (a: T, b: T) => boolean): T[][] {
+/**
+ * Union-find clustering, so A~B and B~C lands A, B and C in one story.
+ *
+ * `apart` names pairs that are never one story. Two groups are not joined
+ * while any member of one is apart from any member of the other, so a vague
+ * report ("TPG reportedly hits hard-cap…", no fund named) cannot bridge two
+ * stories that conflict ("…TPG's second GP-led fund" and "TPG Gets $10
+ * Billion for Climate PE Fund").
+ */
+export function clusterBy<T>(items: T[], same: (a: T, b: T) => boolean, apart?: (a: T, b: T) => boolean): T[][] {
   const parent = items.map((_, i) => i)
+  const members = items.map((_, i) => [i])
   const find = (i: number): number => (parent[i] === i ? i : (parent[i] = find(parent[i])))
   for (let i = 0; i < items.length; i++) {
     for (let j = i + 1; j < items.length; j++) {
-      if (find(i) !== find(j) && same(items[i], items[j])) parent[find(j)] = find(i)
+      const ri = find(i)
+      const rj = find(j)
+      if (ri === rj || !same(items[i], items[j])) continue
+      if (apart && members[ri].some((x) => members[rj].some((y) => apart(items[x], items[y])))) continue
+      parent[rj] = ri
+      members[ri].push(...members[rj])
+      members[rj] = []
     }
   }
   const groups = new Map<number, T[]>()

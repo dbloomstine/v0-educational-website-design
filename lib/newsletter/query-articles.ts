@@ -31,6 +31,7 @@ import {
   isDigest,
   isRoundup,
   findPriorStory,
+  fundStrategiesConflict,
   sameStoryLoose,
   storyFamily,
   tellsAnItemOf,
@@ -1279,7 +1280,7 @@ function deduplicateByStory(articles: NewsletterArticle[]): NewsletterArticle[] 
   // first close and a variant escaped as a "distinct" story; 2026-09-27, four
   // rows of one IIT Madras first close ran in a single edition because each
   // had been extracted under a different firm name.
-  const stories = clusterBy(singles, (a, b) => isSameStory(a, b) || sameStoryLoose(a, b))
+  const stories = clusterBy(singles, (a, b) => isSameStory(a, b) || sameStoryLoose(a, b), fundStrategiesConflict)
 
   for (const r of roundups) {
     if (singles.some((s) => tellsAnItemOf(s, r))) continue

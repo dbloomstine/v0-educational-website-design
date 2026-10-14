@@ -14,7 +14,7 @@ import {
   rowToArticle, screenArticle, gateArticle, placeArticle, mergeStoryGroup, plainHeadline,
   sourceTier, isLikelyAumLeak, isRoundupArticle, type NewsletterArticle, type ArticleSection,
 } from '@/lib/newsletter/query-articles'
-import { clusterBy, dealStage, entityKey, entityMentioned, keysMatch, sameStoryLoose, storyFamily, tellsAnItemOf } from '@/lib/newsletter/story-links'
+import { clusterBy, dealStage, entityKey, entityMentioned, fundStrategiesConflict, keysMatch, sameStoryLoose, storyFamily, tellsAnItemOf } from '@/lib/newsletter/story-links'
 import { fundSizesMatch, isSameStory } from './story-dedup'
 import { normalizeSourceName } from './constants'
 import { cleanSummary } from './summary-clean'
@@ -220,7 +220,7 @@ export function buildStories(rows: Row[]): Story[] {
     }
     return isSameStory(a.article, b.article) || sameStoryLoose(a.article, b.article, { crossEdition: gap > 1 })
   }
-  const groups = clusterBy(singles, same)
+  const groups = clusterBy(singles, same, (a, b) => fundStrategiesConflict(a.article, b.article))
   // The rows that tell one of a wire's items on their own. Read now: merging
   // a group rewrites its best row's summary and size.
   const tellers = new Map(roundups.map((r) => [r, singles.filter((s) => Math.abs(s.day - r.day) <= 4 && tellsAnItemOf(s.article, r.article))]))

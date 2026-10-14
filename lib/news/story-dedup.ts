@@ -173,6 +173,11 @@ function firmsSharePrefix(firmA: string, firmB: string): boolean {
   return true
 }
 
+/** Both sized, more than 25% apart, and no headline figure in common. */
+function sizesDisagree(a: StoryCandidate, b: StoryCandidate): boolean {
+  return !!a.fundSizeUsdMillions && !!b.fundSizeUsdMillions && !fundSizesMatch(a.fundSizeUsdMillions, b.fundSizeUsdMillions, 0.25) && !titlesShareSignificantNumber(a.title, b.title)
+}
+
 export function isSameStory(a: StoryCandidate, b: StoryCandidate): boolean {
   // Near-identical titles are one story no matter what the classifier
   // extracted. Real case, 2026-08-16: the same Hedgeweek article arrived
@@ -287,8 +292,13 @@ export function isSameStory(a: StoryCandidate, b: StoryCandidate): boolean {
       return true
     }
 
-    // Very similar titles are one story regardless of fund-name variance.
-    if (titleJaccard(a.title, b.title) >= 0.5) return true
+    // Very similar titles are one story regardless of fund-name variance —
+    // unless the two report different sizes and no figure in common. Then the
+    // likeness is the firm's name and the words of every fund headline:
+    // "Ares raises $1.15bn for PE secondaries Fund I" (09-29) and "Ares raises
+    // $4.2bn for first structured solutions secondaries fund" (10-02) are two
+    // funds, and the first was filed under the second.
+    if (titleJaccard(a.title, b.title) >= 0.5 && !sizesDisagree(a, b)) return true
 
     // Same close stage + shared headline figure — the target-vs-close-amount
     // split (one outlet leads with the ₹1,800cr corpus, another with the

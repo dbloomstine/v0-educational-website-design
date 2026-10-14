@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import {
-  clusterBy, dealStage, entityKey, entityMentioned, findPriorStory, isDigest, isRoundup,
+  clusterBy, dealStage, entityKey, entityMentioned, findPriorStory, fundStrategiesConflict, isDigest, isRoundup,
   keysMatch, sameStoryLoose, tellsAnItemOf, type StoryLike,
 } from '../story-links'
+import { isSameStory } from '@/lib/news/story-dedup'
 
 const story = (o: Partial<StoryLike> & { title: string; eventType: string }): StoryLike => ({
   firmName: null, fundName: null, fundSizeUsdMillions: null, closeType: null,
@@ -316,5 +317,90 @@ describe('tellsAnItemOf — a wire’s items, not only its first', () => {
     const own = story({ title: 'Sojourner unveils $279m Lornamead-AMG Brands merger to form LPNA Group', eventType: 'acquisition', firmName: 'Sojourner Capital', fundSizeUsdMillions: 279, entityKeys: keys('Sojourner Capital', 'Lornamead', 'AMG Brands') })
     const w = story({ title: 'Sojourner aims to broaden personal care capabilities with LPNA merger; Main Capital, Gemspring, One Equity bet on cybersecurity', eventType: 'acquisition', firmName: 'Sojourner', entityKeys: keys('Sojourner', 'LPNA') })
     expect(tellsAnItemOf(own, w)).toBe(true)
+  })
+})
+
+// The real rows behind each case, as rowToArticle reads them (2026-10-14 audit:
+// a different story filed under another one never runs on its own).
+describe('different stories by one firm stay apart (2026-10-14 audit)', () => {
+  const tpgGpLed = story({ title: "LA pension among backers of TPG's second GP-led fund", eventType: 'capital_raise', firmName: 'TPG', entityKeys: ['tpg'], publishedDate: '2026-09-30' })
+  const tpgClimate = story({ title: 'TPG Gets $10 Billion for Climate PE Fund; to Close for New Cash', eventType: 'capital_raise', firmName: 'TPG', fundName: 'TPG Climate PE Fund', fundSizeUsdMillions: 10000, closeType: 'hard_cap', entityKeys: ['tpg', 'tpg climate pe'], publishedDate: '2026-09-30' })
+  const tpgHardCap = story({ title: 'TPG reportedly hits hard-cap for largest-ever PE climate fund', eventType: 'capital_raise', firmName: 'TPG', closeType: 'hard_cap', entityKeys: ['tpg'], publishedDate: '2026-10-01' })
+  const tpgRise = story({ title: 'TPG raises $10bn for second climate private equity fund', eventType: 'fund_close', firmName: 'TPG', fundName: 'TPG Rise Climate II', fundSizeUsdMillions: 10000, closeType: 'final_close', entityKeys: ['tpg', 'tpg rise climate ii', 'new york city employees retirement system'], publishedDate: '2026-10-01' })
+
+  it("TPG's GP-led fund is not its climate fund, on the same day", () => {
+    expect(fundStrategiesConflict(tpgGpLed, tpgClimate)).toBe(true)
+    expect(sameStoryLoose(tpgGpLed, tpgClimate)).toBe(false)
+    expect(sameStoryLoose(tpgGpLed, tpgHardCap)).toBe(false)
+  })
+  it('the climate fund\'s own reports still cluster, and none of them pulls the GP-led fund in', () => {
+    const same = (a: StoryLike, b: StoryLike) => isSameStory(a, b) || sameStoryLoose(a, b)
+    const groups = clusterBy([tpgGpLed, tpgClimate, tpgHardCap, tpgRise], same, fundStrategiesConflict)
+    expect(groups.map((g) => g.length).sort()).toEqual([1, 3])
+    expect(groups.find((g) => g.length === 1)![0]).toBe(tpgGpLed)
+  })
+  it('clusterBy does not let a report that conflicts with nobody bridge two that conflict', () => {
+    const vague = story({ title: 'TPG raises new fund', eventType: 'capital_raise', firmName: 'TPG', entityKeys: ['tpg'] })
+    const same = () => true
+    const groups = clusterBy([tpgGpLed, vague, tpgClimate], same, fundStrategiesConflict)
+    expect(groups).toHaveLength(2)
+  })
+  it('a hard-cap report the next day is still a repeat of the climate close', () => {
+    expect(findPriorStory(tpgHardCap, [tpgClimate])).toBe(tpgClimate)
+  })
+
+  it("Hamilton Lane's GP-led fund is not its telMAX financing two days earlier", () => {
+    const telmax = story({ title: 'telMAX Secures $215 Million in Growth Financing from Hamilton Lane and PSIC', eventType: 'capital_raise', firmName: 'Hamilton Lane', entityKeys: ['hamilton lane', 'power sustainable infrastructure credit', 'palistar', 'midstar', 'telmax'] })
+    const gpLed = story({ title: 'Hamilton Lane surpasses $430 million for debut GP-led fund', eventType: 'capital_raise', firmName: 'Hamilton Lane', fundSizeUsdMillions: 430, entityKeys: ['hamilton lane'] })
+    expect(findPriorStory(gpLed, [telmax])).toBeNull()
+  })
+  it("Partners Group's new credit income fund is not its evergreen restructuring a week earlier", () => {
+    const restructure = story({ title: 'Partners Group restructures €6.6bn evergreen fund after redemption cap', eventType: 'fund_close', firmName: 'Partners Group', fundName: 'Partners Group Global Value SICAV', fundSizeUsdMillions: 7260, entityKeys: ['partners group', 'value sicav'] })
+    const launch = story({ title: 'Partners Group launches private credit income fund', eventType: 'fund_launch', firmName: 'Partners Group', closeType: 'launch', entityKeys: ['partners group'] })
+    expect(findPriorStory(launch, [restructure])).toBeNull()
+  })
+  it('a launch and a commitment that share only the firm are two stories on one day', () => {
+    const ohioFund = story({ title: 'The O.H.I.O. Fund is just two years old. It’s already raising a new fund.', eventType: 'fund_launch', firmName: 'The O.H.I.O. Fund', closeType: 'launch', entityKeys: ['ohio'] })
+    const ohioPension = story({ title: 'Ohio Police & Fire Pension Fund allocates $100 million to open-end real estate fund', eventType: 'capital_raise', firmName: 'Ohio Police & Fire Pension Fund', fundSizeUsdMillions: 100, entityKeys: ['ohio police fire pension'] })
+    expect(sameStoryLoose(ohioFund, ohioPension)).toBe(false)
+    const natural = story({ title: 'Nuveen Natural Capital raises $100m for nature-based solutions fund', eventType: 'fund_launch', firmName: 'Nuveen Natural Capital', fundSizeUsdMillions: 100, entityKeys: ['nuveen natural'] })
+    const debt = story({ title: 'CPPIB and Temasek re-invest with Nuveen for second Australian debt fund', eventType: 'capital_raise', firmName: 'Nuveen', entityKeys: ['nuveen', 'cppib', 'temasek'] })
+    expect(sameStoryLoose(natural, debt)).toBe(false)
+    const housing = story({ title: 'LGPS Central to launch social housing fund as part of enhanced strategy', eventType: 'fund_launch', firmName: 'LGPS Central', fundName: 'LGPS Central Social Housing Fund', closeType: 'launch', entityKeys: ['lgps central', 'lgps central social housing'] })
+    const pool = story({ title: 'LGPS Central partner funds commit an additional £2bn to private markets', eventType: 'capital_raise', firmName: 'LGPS Central', fundSizeUsdMillions: 2475, entityKeys: ['lgps central'] })
+    expect(sameStoryLoose(housing, pool)).toBe(false)
+  })
+  it('two Ares secondaries funds of different sizes are not one story for sharing "Ares raises … secondaries fund"', () => {
+    const fundI = story({ title: 'Ares raises $1.15bn for PE secondaries Fund I', eventType: 'fund_close', firmName: 'Ares', fundName: 'PE secondaries Fund I', fundSizeUsdMillions: 1150, closeType: 'final_close' })
+    const structured = story({ title: 'Ares raises $4.2bn for first structured solutions secondaries fund', eventType: 'fund_close', firmName: 'Ares', fundName: 'Ares Global Structured Solutions Fund', fundSizeUsdMillions: 4200, closeType: 'final_close' })
+    expect(isSameStory(fundI, structured)).toBe(false)
+  })
+})
+
+describe('one story told several ways still clusters (2026-10-14 audit)', () => {
+  it('StepStone: "GP-led fund" and "PE secondaries fundraise" are one raise', () => {
+    const a = story({ title: 'StepStone reaches over half of combined target for sixth flagship and GP-led fund', eventType: 'capital_raise', firmName: 'StepStone', entityKeys: ['stepstone'] })
+    const b = story({ title: 'StepStone’s sixth PE secondaries fundraise passes halfway mark, as manager pursues $6bn target', eventType: 'capital_raise', firmName: 'StepStone Group', fundName: 'StepStone PE Secondaries Fund VI', fundSizeUsdMillions: 6000, closeType: 'target', entityKeys: ['stepstone', 'stepstone pe secondaries vi'] })
+    expect(sameStoryLoose(a, b)).toBe(true)
+  })
+  it('Ares/Sabey: a company called "…Properties" is not a property fund', () => {
+    const a = story({ title: 'Sabey Data Center Properties secures additional investment from Ares to support continued growth', eventType: 'capital_raise', firmName: 'Ares', entityKeys: ['ares', 'sabey data center properties'] })
+    const b = story({ title: 'Ares secondaries arm boosts investment in Sabey Data Center Properties', eventType: 'capital_raise', firmName: 'Ares', fundName: 'Sabey Data Center Properties', entityKeys: ['ares', 'sabey data center properties'] })
+    expect(fundStrategiesConflict(a, b)).toBe(false)
+    expect(sameStoryLoose(a, b)).toBe(true)
+  })
+  it('CIP Fund VI: "renewable-energy" and "infrastructure" describe one fund', () => {
+    const a = story({ title: 'Norges Bank Investment Management slates €1.2b for CIP’s sixth flagship renewable-energy fund', eventType: 'capital_raise', firmName: 'Copenhagen Infrastructure Partners', fundName: 'CI VI', fundSizeUsdMillions: 1300, entityKeys: ['copenhagen infrastructure', 'ci vi', 'norges bank'] })
+    const b = story({ title: 'Norway wealth fund raises CIP commitment level by a third with €1.2bn Fund VI pledge', eventType: 'capital_raise', firmName: 'Norges Bank Investment Management', fundName: 'Copenhagen Infrastructure Partners Fund VI', fundSizeUsdMillions: 1320, entityKeys: ['norges bank', 'copenhagen infrastructure vi', 'copenhagen infrastructure'] })
+    expect(fundStrategiesConflict(a, b)).toBe(false)
+    expect(findPriorStory(b, [a])).toBe(a)
+  })
+  it('NVM and Naveli launches: the same kind of event on one day, however vaguely told', () => {
+    const a = story({ title: 'NVM Ventures, a new multi-fund venture capital fund', eventType: 'fund_launch', firmName: 'NVM Ventures', entityKeys: ['nvm'] })
+    const b = story({ title: 'NVM Ventures launches with €23.6M first close for dual-use startups', eventType: 'fund_launch', firmName: 'NVM Ventures', fundSizeUsdMillions: 26, closeType: 'first_close', entityKeys: ['nvm'] })
+    expect(sameStoryLoose(a, b)).toBe(true)
+    const c = story({ title: 'Navya Naveli Nanda Introduces Naveli Ventures To Invest In Deep-Tech, AI And Clean Energy', eventType: 'fund_launch', firmName: 'Naveli Ventures', closeType: 'launch', entityKeys: ['naveli'] })
+    const d = story({ title: 'Navya Naveli Nanda’s venture to back deeptech, frontier tech ambitions', eventType: 'fund_launch', firmName: 'Naveli Ventures', closeType: 'launch', entityKeys: ['naveli'] })
+    expect(sameStoryLoose(c, d)).toBe(true)
   })
 })
