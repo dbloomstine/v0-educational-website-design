@@ -3,8 +3,8 @@
  * never anywhere else. A logo file on the firm's domain (or a subdomain) is
  * taken as it is; one served from elsewhere (a site builder's CDN) is taken
  * only when the firm's homepage itself links to that exact file. Given only
- * the domain, the logo is looked for on the homepage: an <img> whose name
- * says logo, else the site's touch icon or its vector favicon (the mark).
+ * the domain, the logo is looked for on the homepage: the logo its structured
+ * data names, an <img> whose name says logo, else the site's touch icon or its vector favicon (the mark).
  *
  * Pure: the fetching is in app/api/sponsor/logo/route.ts.
  */
@@ -42,6 +42,9 @@ const attr = (tag: string, name: string) => tag.match(new RegExp(`\\b${name}\\s*
 /** True when the homepage HTML refers to this exact file (absolute, or relative to the page). */
 export function homepageLinksTo(html: string, pageUrl: string, logo: URL): boolean {
   const target = logo.href.split('#')[0]
+  // Named anywhere on the page as an absolute address: the site's own structured data ("logo": {"url": …}), a
+  // stylesheet's url(…), a script's settings. Escaped slashes count too.
+  if (html.includes(target) || html.includes(target.replace(/\//g, '\\/'))) return true
   for (const m of html.matchAll(/(?:src|href|content|srcset)\s*=\s*["']([^"']+)["']/gi)) {
     for (const part of m[1].split(',')) {
       const raw = part.trim().split(/\s+/)[0]
@@ -67,6 +70,10 @@ export function findLogoInHomepage(html: string, pageUrl: string): URL | null {
       return null
     }
   }
+  // The site's own structured data says which picture is its logo: schema.org Organization "logo".
+  const ld = html.match(/"logo"\s*:\s*(?:\{[^{}]*?"(?:url|contentUrl)"\s*:\s*)?"(https:[^"]+)"/i)
+  const fromLd = ld ? resolve(ld[1].replace(/\\\//g, '/')) : null
+  if (fromLd) return fromLd
   for (const m of html.matchAll(/<img\b[^>]*>/gi)) {
     const tag = m[0]
     const hint = `${attr(tag, 'src') ?? ''} ${attr(tag, 'alt') ?? ''} ${attr(tag, 'class') ?? ''} ${attr(tag, 'id') ?? ''}`

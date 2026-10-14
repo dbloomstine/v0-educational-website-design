@@ -66,6 +66,30 @@ export function pickCandidates(stories: Story[]): { picked: NoteCandidate[]; dro
   return { picked, dropped }
 }
 
+const money = (m: number) => (m >= 1000 ? `$${(Math.round(m / 100) / 10).toString()}bn` : `$${Math.round(m)}M`)
+
+/** A few words for what we covered, read after "We covered <Firm>'s …": "$200M Fund III close", "latest deal". */
+export function newsPhrase(s: Pick<Story, 'eventType' | 'kind' | 'fundName' | 'sizeUsdM' | 'closeType'>): string {
+  const size = s.sizeUsdM ? `${money(s.sizeUsdM)} ` : ''
+  const fund = s.fundName?.trim()
+  switch (s.eventType) {
+    case 'fund_close':
+      return `${size}${fund ?? 'fund'} ${s.closeType && /first|interim|second/i.test(s.closeType) ? `${s.closeType.toLowerCase()} close` : 'close'}`.replace(/\s+/g, ' ')
+    case 'fund_launch':
+      return `${size}${fund ?? 'new fund'} launch`
+    case 'capital_raise':
+      return size ? `${size}raise` : 'latest raise'
+    case 'acquisition':
+      return 'latest deal'
+    case 'executive_hire':
+      return 'new hire'
+    case 'executive_change':
+      return 'promotions'
+    default:
+      return s.kind === 'deals' ? 'latest deal' : s.kind === 'people' ? 'people news' : 'news'
+  }
+}
+
 export interface FoundContact {
   personId: string
   email: string
@@ -243,7 +267,7 @@ export async function runNewsNotes(db: DbClient, apollo: ApolloPort, now: Date =
     screen: async (email) => (await screenEmails(db, [email], { program: 'news_note', now })).get(email) ?? null,
     store: async (c, contact) => {
       const unsubToken = newToken()
-      const r = renderNewsNote({ firstName: contact.firstName, company: c.firm, unsubToken, headline: c.story.headline, storyUrl: c.url })
+      const r = renderNewsNote({ firstName: contact.firstName, company: c.firm, unsubToken, news: newsPhrase(c.story), storyUrl: c.url })
       const { error } = await db.from('outreach_v2_messages').insert({
         program: 'news_note',
         kind: 'initial',

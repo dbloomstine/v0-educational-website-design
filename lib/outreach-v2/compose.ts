@@ -190,7 +190,8 @@ export function renderSponsorFollowup(p: FollowupInput): Rendered {
 /* ───────────────────────── news note ───────────────────────── */
 
 export interface NewsNoteInput extends Recipient {
-  headline: string
+  /** A few words for what we covered, e.g. "$200M Fund III close" (newsPhrase in news-notes.ts). */
+  news: string
   storyUrl: string
 }
 
@@ -206,8 +207,8 @@ export function renderNewsNote(p: NewsNoteInput): Rendered {
     newsNoteSubject(c),
     [
       [greet(p.firstName)],
-      [`${c} is in today's FundOps Daily: `, { text: p.headline.trim(), href: p.storyUrl }],
-      ['Feel free to share it. The morning email is free for GPs, LPs and the firms that serve them: ', { text: 'subscribe here', href: SUBSCRIBE_URL }, '.'],
+      [`We covered ${possessive(c)} ${p.news.trim()} in this morning's FundOps Daily: `, { text: 'read it here', href: p.storyUrl }, '. Feel free to share it with your team or on LinkedIn.'],
+      ["FundOps Daily is a free morning email on private-markets news for GPs, LPs and fund service providers. If it's useful, ", { text: 'you can get it here', href: SUBSCRIBE_URL }, '.'],
     ],
     SIGN,
     p.unsubToken,

@@ -28,6 +28,12 @@ describe('mock-up logos come from the firm’s own website only', () => {
     expect(homepageLinksTo(html, 'https://toltiq.com/', new URL('https://cdn.site-builder.com/abc/other.svg'))).toBe(false)
   })
 
+  it('accepts a file the homepage names in its structured data', () => {
+    const html = '<script type="application/ld+json">{"@type":"Organization","logo":{"@type":"ImageObject","url":"https://framerusercontent.com/assets/abc.svg"}}</script>'
+    expect(homepageLinksTo(html, 'https://toltiq.com/', new URL('https://framerusercontent.com/assets/abc.svg'))).toBe(true)
+    expect(findLogoInHomepage(html, 'https://toltiq.com/')?.href).toBe('https://framerusercontent.com/assets/abc.svg')
+  })
+
   it('finds the logo a homepage shows, or its touch icon', () => {
     expect(findLogoInHomepage('<img src="/img/hero.jpg"><img src="/img/brand.svg" alt="Acme logo">', 'https://acme.com/')?.href).toBe('https://acme.com/img/brand.svg')
     expect(findLogoInHomepage('<link rel="apple-touch-icon" href="/icon.png">', 'https://acme.com/')?.href).toBe('https://acme.com/icon.png')

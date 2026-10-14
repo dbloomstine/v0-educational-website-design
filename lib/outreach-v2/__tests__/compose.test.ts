@@ -5,6 +5,7 @@ import {
 } from '../compose'
 import { buildPayload } from '../send'
 import { freshClause } from '../sponsor-pitch'
+import { newsPhrase } from '../news-notes'
 
 const TOKEN = 'a'.repeat(32)
 const MOCK = 'https://fundopshq.com/sponsor/m/6ddb4d12'
@@ -64,7 +65,7 @@ describe('sponsor pitch (Danny’s copy, 2026-10-14)', () => {
   it('never shows a raw URL in the HTML body (only the hrefs carry them)', () => {
     const visible = pitch().html.replace(/<a [^>]*>/g, '<a>').replace(/<[^>]+>/g, ' ')
     expect(visible).not.toMatch(/https?:\/\//)
-    const note = renderNewsNote({ firstName: 'Sam', company: 'Savory', unsubToken: TOKEN, headline: 'Savory closes Fund III', storyUrl: 'https://fundopshq.com/story/x-12345678' })
+    const note = renderNewsNote({ firstName: 'Sam', company: 'Savory', unsubToken: TOKEN, news: '$200M Fund III close', storyUrl: 'https://fundopshq.com/story/x-12345678' })
     expect(note.html.replace(/<a [^>]*>/g, '<a>').replace(/<[^>]+>/g, ' ')).not.toMatch(/https?:\/\//)
   })
 
@@ -120,22 +121,28 @@ describe('sponsor pitch (Danny’s copy, 2026-10-14)', () => {
 
 describe('news note', () => {
   const r = renderNewsNote({
-    firstName: 'Sam',
-    company: 'AE Industrial Partners',
+    firstName: 'Alex',
+    company: 'Savory',
     unsubToken: TOKEN,
-    headline: 'AE Industrial promotes Chris Aguemon and Bill Strobel to principal',
-    storyUrl: 'https://fundopshq.com/story/ae-industrial-promotes-chris-aguemon-and-bill-strobel-to-principal-1a2b3c4d',
+    news: newsPhrase({ eventType: 'fund_close', kind: 'fundraising', fundName: 'Fund III', sizeUsdM: 200, closeType: 'final' }),
+    storyUrl: 'https://fundopshq.com/story/savory-raises-more-than-200m-f1076843',
   })
-  it('is short and leads with them', () => {
-    expect(readerWords(r)).toBeLessThanOrEqual(60)
-    expect(bodyOf(r.text)).toMatch(/^Hi Sam,\n\nAE Industrial Partners is in today's FundOps Daily: /)
+  it('is 50 to 80 words and leads with them', () => {
+    expect(readerWords(r)).toBeGreaterThanOrEqual(50)
+    expect(readerWords(r)).toBeLessThanOrEqual(80)
+    expect(bodyOf(r.text)).toMatch(/^Hi Alex,\n\nWe covered Savory's \$200M Fund III close in this morning's FundOps Daily: read it here: https/)
   })
   it('names the firm in the subject, links the story and the free signup as text', () => {
-    expect(r.subject).toBe('AE Industrial Partners in FundOps Daily today')
-    expect(r.html).toContain('>AE Industrial promotes Chris Aguemon and Bill Strobel to principal</a>')
-    expect(r.html).toContain('>subscribe here</a>')
-    expect(r.text).toContain('Feel free to share it')
+    expect(r.subject).toBe('Savory in FundOps Daily today')
+    expect(r.html).toContain('>read it here</a>')
+    expect(r.html).toContain('>you can get it here</a>')
+    expect(r.text).toContain('Feel free to share it with your team or on LinkedIn.')
     expect(r.text).toContain('https://fundopshq.com/?utm_source=outreach&utm_medium=email&utm_campaign=news_note#subscribe')
     expect(r.text).not.toMatch(/\?e=/)
+  })
+  it('says what was covered in a few words', () => {
+    expect(newsPhrase({ eventType: 'fund_close', kind: 'fundraising', fundName: 'Fund III', sizeUsdM: 1700, closeType: 'final' })).toBe('$1.7bn Fund III close')
+    expect(newsPhrase({ eventType: 'fund_close', kind: 'fundraising', fundName: null, sizeUsdM: 50, closeType: 'second' })).toBe('$50M fund second close')
+    expect(newsPhrase({ eventType: 'acquisition', kind: 'deals', fundName: null, sizeUsdM: null, closeType: null })).toBe('latest deal')
   })
 })
