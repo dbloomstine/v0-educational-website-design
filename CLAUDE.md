@@ -121,7 +121,7 @@ Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/cont
 /api/pipeline/news-process              → Cron: Claude-API classification + clustering
 /api/pipeline/story-summaries           → Cron (:45 hourly): long summaries for story pages. SHIPS DARK — does nothing
                                            unless STORY_SUMMARIES_ENABLED=false. See "Long story summaries".
-/api/pipeline/newsletter-send           → Cron (10:30 + 11:30 UTC): assemble + send FundOps Daily via Resend at 6:30 ET (see "When the email goes out")
+/api/pipeline/newsletter-send           → Cron (11:30 + 12:30 UTC): assemble + send FundOps Daily via Resend at 7:30 ET (see "When the email goes out")
 /api/pipeline/outreach-send             → Cron: daily "we covered your firm" outreach via Gmail API
 /api/pipeline/outreach-monitor          → Cron: hourly reply/bounce detection for outreach
 /api/pipeline/backfill-domains          → One-shot: backfill firm domains for logos
@@ -135,9 +135,9 @@ FundOps Daily flipped to **single opt-in** on 2026-04-10. The `subscribe` route 
 
 Cron schedules live in `vercel.json`.
 
-### When the email goes out: 6:30 ET (since 2026-10-15)
+### When the email goes out: 7:30 ET
 
-Danny, 2026-10-14: 6:30 in the morning New York time, every day (it was 7:30). Vercel's crons are UTC and New York is UTC-4 in summer, UTC-5 from the first Sunday of November, so `newsletter-send` fires twice: 10:30 UTC (`?fire=1030utc`) and 11:30 UTC (`?fire=1130utc`). `lib/newsletter/send-time.ts` turns away a fire before 6:00 ET (the winter 10:30 UTC fire, which is 5:30 EST); the edition's own "already sent" check turns away the second fire in summer, which is also the retry if 6:30 failed. `?anyTime=1` lets a manual catch-up run go out before 6:00. The edition reads everything classified by the :30 classifier run an hour before it (articles ingested at :00 of that hour); measured over 10-01 to 10-14, no edition carried an article ingested later than that, so moving the send an hour earlier dropped nothing and nothing upstream was moved. No page or email states the hour ("before the open", "tomorrow morning"); if one ever does, it says 6:30 ET.
+Danny, 2026-10-14: chose 6:30, then the same afternoon "leave the time at 7:30am ET. don't move it to 6:30am ET". So 7:30 New York time, every day. Vercel's crons are UTC and New York is UTC-4 in summer, UTC-5 from the first Sunday of November, so `newsletter-send` fires twice: 11:30 UTC (`?fire=1130utc`) and 12:30 UTC (`?fire=1230utc`). `lib/newsletter/send-time.ts` turns away a fire before 7:00 ET (the winter 11:30 UTC fire, which is 6:30 EST); the edition's own "already sent" check turns away the second fire in summer, which is also the retry if 7:30 failed. `?anyTime=1` lets a manual catch-up run go out before 7:00. No page or email states the hour ("before the open", "tomorrow morning").
 
 ### The plain-text part (since 2026-10-14)
 
@@ -590,7 +590,7 @@ Danny: the newsletter is "priority number one… best in class… keep people en
 - The factors are strong against the log size term: a $1B close from Australia loses to a $23M US one, and a $10B European close beats small home raises but not a well-reported multi-billion home story. Tune in the one constant, and measure the ranking both ways on a real morning before changing it.
 - **Each top story carries one line from its summary** (`topStoryLine`: the first sentence, remarks off via `cleanSummary`, at most ~170 characters, left out when it repeats the headline). The section rows are still headlines only, per the rule above. This is the one change Danny has not seen and may want reverted.
 - **The first screen is the masthead and the first story**: the "Forwarded to you? Subscribe" strip moved from above the masthead to the share block at the foot. The masthead's right-hand line is "READ AT N FIRMS" (the house notice's figure) on one line, and the date lost its year, because "MONDAY, OCTOBER 12, 2026 · READ BY 154 IN PRIVATE MARKETS" wrapped to three lines on a phone.
-- **Not changed, for Danny's call**: Mondays are thin because Sunday is quiet (a 72-hour window would only re-find what Saturday and Sunday ran); only two readers have chosen what they follow. (The send time, 7:30 then, and the missing plain-text part were also on this list; Danny chose both changes on 2026-10-14: 6:30 ET, and a text part. Every story stays in, no cap, and both weekend editions stay: his word, same day.)
+- **Not changed, for Danny's call**: Mondays are thin because Sunday is quiet (a 72-hour window would only re-find what Saturday and Sunday ran); only two readers have chosen what they follow. (The send time, 7:30 then, and the missing plain-text part were also on this list; Danny chose both on 2026-10-14: a text part, and 6:30 ET, which he took back the same afternoon (it stays 7:30). Every story stays in, no cap, and both weekend editions stay: his word, same day.)
 
 ### Subject-line test: 2026-10-15 to 2026-10-28
 

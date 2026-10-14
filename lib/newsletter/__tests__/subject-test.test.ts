@@ -58,6 +58,14 @@ describe('style B: the lead headline and a count', () => {
     expect(buildHeadlineSubject(top, 48)).toBe('Audax Private Credit: $6.3B final close, plus 47 more')
   })
 
+  it('a long headline whose figure is a target: the cut headline, never "Firm: $6B target"', () => {
+    const top = [pick({ title: 'StepStone’s sixth PE secondaries fundraise passes halfway mark with $3.1bn raised against $6bn target', firmName: 'StepStone Group', fundSizeUsdMillions: 6000, closeType: 'target' }, 'private_equity', 'Private Equity')]
+    const s = buildHeadlineSubject(top, 69)!
+    expect(s.length).toBeLessThanOrEqual(SUBJECT_MAX_CHARS)
+    expect(s).not.toMatch(/target, plus/i)
+    expect(s).toMatch(/^StepStone’s sixth PE secondaries fundraise .*…, plus 68 more$/)
+  })
+
   it('a long firm name falls back to the cut headline, still under the limit', () => {
     const top = [pick({
       title: 'The Teacher Retirement System of Texas Private Markets Opportunity Vehicle closes its continuation fund on $2.1bn',

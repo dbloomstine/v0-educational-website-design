@@ -1,26 +1,29 @@
 /**
- * When FundOps Daily goes out: 6:30 in the morning, New York time, every day
- * (Danny, 2026-10-14; it was 7:30 until then).
+ * When FundOps Daily goes out: 7:30 in the morning, New York time, every day.
+ * (Danny chose 6:30 on 2026-10-14 and took it back the same afternoon: "leave
+ * the time at 7:30am ET". The daylight-saving handling below stayed.)
  *
  * Vercel's crons run on UTC and New York moves between UTC-4 (EDT, from the
  * second Sunday of March) and UTC-5 (EST, from the first Sunday of November).
- * So vercel.json fires the send twice a morning, at 10:30 and at 11:30 UTC:
+ * Until 2026-10-14 there was one cron at 11:30 UTC, which would have slipped
+ * to 6:30 EST in November. So vercel.json fires the send twice a morning, at
+ * 11:30 and at 12:30 UTC:
  *
- *   EDT: 10:30 UTC is 6:30, and sends. 11:30 UTC is 7:30: the edition is
- *        already sent, and send-daily's own check skips it (or, if 6:30
+ *   EDT: 11:30 UTC is 7:30, and sends. 12:30 UTC is 8:30: the edition is
+ *        already sent, and send-daily's own check skips it (or, if 7:30
  *        failed, it is the retry).
- *   EST: 10:30 UTC is 5:30, before the window, and does nothing. 11:30 UTC
- *        is 6:30, and sends.
+ *   EST: 11:30 UTC is 6:30, before the window, and does nothing. 12:30 UTC
+ *        is 7:30, and sends.
  *
- * The window opens at 6:00, not 6:30, on purpose: its only job is to turn
- * away the winter 5:30 fire, and a fire a few seconds early must still send.
+ * The window opens at 7:00, not 7:30, on purpose: its only job is to turn
+ * away the winter 6:30 fire, and a fire a few seconds early must still send.
  */
 
 /** The time readers are told, and the time the edition goes out. */
-export const SEND_TIME_ET = { hour: 6, minute: 30 } as const
+export const SEND_TIME_ET = { hour: 7, minute: 30 } as const
 
 /** The earliest New York time at which a scheduled fire sends (minutes after midnight). */
-export const WINDOW_OPENS_ET_MINUTES = 6 * 60
+export const WINDOW_OPENS_ET_MINUTES = 7 * 60
 
 /** Minutes after midnight in New York at `now`. */
 export function minutesIntoDayET(now: Date): number {

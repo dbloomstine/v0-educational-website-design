@@ -23,10 +23,10 @@ export async function GET(req: Request) {
   try {
     const url = new URL(req.url)
 
-    // Two crons a morning (10:30 and 11:30 UTC) keep the send at 6:30 New York
+    // Two crons a morning (11:30 and 12:30 UTC) keep the send at 7:30 New York
     // time on both sides of daylight saving; the one that lands at 5:30 in
     // winter stops here (lib/newsletter/send-time.ts). ?anyTime=1 lets a
-    // manual catch-up run go out before 6:00.
+    // manual catch-up run go out before 7:00.
     if (!sendWindowOpen(new Date()) && url.searchParams.get('anyTime') !== '1') {
       return NextResponse.json({ ok: true, skipped: 'before_send_time' })
     }

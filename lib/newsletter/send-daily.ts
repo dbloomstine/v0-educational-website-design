@@ -723,7 +723,10 @@ export function buildHeadlineSubject(top: TopPick[], totalArticles: number): str
   // The firm and its figure, in the kicker's words: "Audax Private: $6.3B final close".
   const [, ...facts] = kickerParts(lead)
   const firm = a.firmName && !isDescriptiveFirmName(a.firmName) ? subjectFirmName(a.firmName) : ''
-  if (firm && facts.some((f) => f.startsWith('$'))) {
+  // Only for money in hand. A target is not a raise: StepStone's $3.1B raised
+  // against a $6B target read "StepStone: $6B target" in the first preview
+  // (2026-10-14), so a target or launch falls through to the cut headline.
+  if (firm && facts.some((f) => f.startsWith('$')) && !facts.some((f) => /target|launch|hard cap|raising/i.test(f))) {
     const short = `${firm}: ${facts.map((f, i) => (i === 0 ? f : f.toLowerCase())).join(' ')}`
     if (fits(short)) return `${short}${suffix}`
   }
