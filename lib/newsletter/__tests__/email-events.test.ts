@@ -7,7 +7,7 @@ const ev = (o: Partial<IndustryEvent>): IndustryEvent =>
   ({
     id: 'x', slug: 'x', name: 'An event', description: null, eventUrl: 'https://example.com', registrationUrl: null, organizerName: 'ACG', organizerType: 'association',
     startDate: '2026-10-14', endDate: null, timeNote: null, city: 'New York', stateRegion: 'NY', country: 'US', venue: null, eventFormat: 'in_person', eventKind: 'conference',
-    costType: 'paid', priceNote: null, fundCategories: [], topics: [], opsRelevance: 'medium', region: 'north_america', isFeatured: false, expectedAttendance: null, boardException: false, clickCount: 0,
+    costType: 'paid', priceNote: null, fundCategories: [], topics: [], opsRelevance: 'medium', region: 'north_america', isFeatured: false, expectedAttendance: null, isSubmitted: false, boardException: false, clickCount: 0,
     ...o,
   }) as IndustryEvent
 
@@ -44,5 +44,24 @@ describe('the events the daily email shows', () => {
     const one = renderNewsletterEmail({ groups: [], totalArticles: 0, editionDate: '2026-10-13', unsubscribeUrl: 'https://fundopshq.com/u', events: events.slice(0, 3) })
     expect(one).toContain('One more on the calendar')
     expect(renderNewsletterEmail({ groups: [], totalArticles: 0, editionDate: '2026-10-13', unsubscribeUrl: 'https://fundopshq.com/u', events: events.slice(0, 2) })).not.toContain('on the calendar')
+  })
+  it('an event its organizer submitted is always shown on its day, first; the rest of the two is the best of the others', () => {
+    const day = [
+      ev({ slug: 'cfo', opsRelevance: 'high' }),
+      ev({ slug: 'star', isFeatured: true }),
+      ev({ slug: 'webinar', opsRelevance: 'low', isSubmitted: true }),
+      ev({ slug: 'social', opsRelevance: 'low' }),
+    ]
+    const [d] = pickEventsForEmail(day, () => 'd')
+    expect(d.shown.map((e) => e.slug)).toEqual(['webinar', 'star'])
+    expect(d.more).toBe(2)
+    // Three submitted on one day: all three, and nothing else.
+    const three = [ev({ slug: 'a', isSubmitted: true }), ev({ slug: 'b', isSubmitted: true }), ev({ slug: 'c', isSubmitted: true }), ev({ slug: 'cfo', opsRelevance: 'high' })]
+    const [t] = pickEventsForEmail(three, () => 'd')
+    expect(t.shown.map((e) => e.slug)).toEqual(['a', 'b', 'c'])
+    expect(t.more).toBe(1)
+    const html = renderNewsletterEmail({ groups: [], totalArticles: 0, editionDate: '2026-10-21', unsubscribeUrl: 'https://fundopshq.com/u', events: day.map((e, i) => ({ ...e, name: `Event ${e.slug}`, id: String(i) })) })
+    expect(html).toContain('Event webinar')
+    expect(html).not.toContain('Event cfo')
   })
 })

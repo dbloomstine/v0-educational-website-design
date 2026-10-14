@@ -24,6 +24,8 @@ export interface IndustryEvent {
   region: string
   isFeatured: boolean
   expectedAttendance: number | null
+  /** The organizer sent it in through /events/submit. The daily email always shows it on its day. */
+  isSubmitted: boolean
 }
 
 export interface EventFacetCounts {

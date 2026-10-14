@@ -64,7 +64,8 @@ const RESERVED_SLUGS = new Set([
 ])
 
 function slugify(name, takenSlugs) {
-  let base = String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80)
+  // Cut at 80, then the hyphen the cut may leave at the end comes off (a slug ended "…a-practitioner-" on 2026-10-13).
+  let base = String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80).replace(/-+$/, '')
   if (!base || RESERVED_SLUGS.has(base)) base = `${base || 'event'}-listing`
   let slug = base
   let n = 2
@@ -144,7 +145,11 @@ for (const file of process.argv.slice(2)) {
       ops_relevance: r.ops_relevance ?? 'medium',
       region: r.region,
       status: 'published',
-      source_notes: `seeded ${TODAY} from verified research batch (${file.split('/').pop()})`,
+      // A batch row may say where it came from ("public submission (name) 2026-10-13; verified at …"); until 2026-10-13
+      // this line overwrote it, so no event on the board could be told from a scouted one.
+      source_notes: typeof r.source_notes === 'string' && r.source_notes.trim() ? r.source_notes.trim().slice(0, 500) : `seeded ${TODAY} from verified research batch (${file.split('/').pop()})`,
+      // The organizer sent it in through /events/submit: the daily email always shows it on its day.
+      is_submitted: r.is_submitted === true,
       verified_at: new Date().toISOString(),
     })
     if (error) { skipped.push(`${r.name}: insert error ${error.message}`); continue }

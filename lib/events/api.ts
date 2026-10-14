@@ -166,6 +166,7 @@ function mapRowToEvent(row: any): IndustryEvent {
     region: row.region,
     isFeatured: row.is_featured ?? false,
     expectedAttendance: row.expected_attendance ?? null,
+    isSubmitted: row.is_submitted ?? false,
   }
 }
 

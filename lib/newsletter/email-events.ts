@@ -12,6 +12,12 @@
  * aimed at fund operations (`opsRelevance` high, then medium), then the larger
  * ones (`expectedAttendance`), then an open event over an invitation-only one.
  * Within a tie the list's own order (the board sorts by date) stands.
+ *
+ * An event its organizer sent in through /events/submit is always shown on its
+ * day (2026-10-13, Danny: "if someone submits one proactively it should
+ * automatically get shown when it's in the window that we show them"). It
+ * comes first, and the day's best others fill what is left of the two; a day
+ * with three submitted events shows all three.
  */
 import type { IndustryEvent } from '@/lib/events/types'
 
@@ -23,7 +29,7 @@ const RELEVANCE: Record<string, number> = { high: 0, medium: 1, low: 2 }
 export function eventRank(e: IndustryEvent): number {
   const relevance = RELEVANCE[e.opsRelevance] ?? 2
   const size = Math.min(e.expectedAttendance ?? 0, 5000) / 5000
-  return (e.isFeatured ? 0 : 10) + relevance * 3 + (e.costType === 'invite_only' ? 1 : 0) - size
+  return (e.isSubmitted ? -20 : 0) + (e.isFeatured ? 0 : 10) + relevance * 3 + (e.costType === 'invite_only' ? 1 : 0) - size
 }
 
 export interface EmailDay {
@@ -50,6 +56,8 @@ export function pickEventsForEmail(events: IndustryEvent[], headingOf: (e: Indus
   return days.map(({ heading, all }) => {
     // A stable sort: ties keep the board's order.
     const ranked = all.map((e, i) => ({ e, i, r: eventRank(e) })).sort((a, b) => a.r - b.r || a.i - b.i).map((x) => x.e)
-    return { heading, shown: ranked.slice(0, perDay), more: Math.max(0, all.length - perDay) }
+    // Every submitted event, then the best of the rest up to the day's two.
+    const keep = Math.max(perDay, ranked.filter((e) => e.isSubmitted).length)
+    return { heading, shown: ranked.slice(0, keep), more: Math.max(0, all.length - keep) }
   })
 }
