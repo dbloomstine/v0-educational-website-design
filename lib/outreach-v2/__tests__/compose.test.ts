@@ -1,14 +1,25 @@
 import { describe, expect, it } from 'vitest'
-import { bodyOf, footer, listUnsubscribeHeaders, mockupShortUrl, mockupUrl, renderNewsNote, renderSponsorFollowup, renderSponsorPitch, unsubscribeUrl, wordCount } from '../compose'
+import {
+  audienceLine, bodyOf, footer, listUnsubscribeHeaders, mockupShortUrl, mockupUrl, pitchMonth, possessive, readerWords,
+  renderNewsNote, renderSponsorFollowup, renderSponsorPitch, unsubscribeUrl,
+} from '../compose'
 import { buildPayload } from '../send'
+import { freshClause } from '../sponsor-pitch'
 
 const TOKEN = 'a'.repeat(32)
+const MOCK = 'https://fundopshq.com/sponsor/m/6ddb4d12'
+
+const pitch = (over: Partial<Parameters<typeof renderSponsorPitch>[0]> = {}) =>
+  renderSponsorPitch({ firstName: 'David', company: 'ToltIQ', unsubToken: TOKEN, hookClause: null, audience: audienceLine(152, 64), month: 'November', mockup: MOCK, ...over })
 
 describe('footer and unsubscribe', () => {
-  it('carries the postal address and a visible unsubscribe link', () => {
-    const f = footer(TOKEN)
-    expect(f).toContain('FundOpsHQ, 76 Ensign Dr, Mystic, CT 06355')
-    expect(f).toContain(`https://fundopshq.com/api/outreach/unsubscribe?t=${TOKEN}`)
+  it('carries the postal address and a visible unsubscribe link, in both parts', () => {
+    const r = pitch()
+    expect(footer(TOKEN)).toContain('FundOpsHQ, 76 Ensign Dr, Mystic, CT 06355')
+    expect(r.text.endsWith(footer(TOKEN))).toBe(true)
+    expect(r.html).toContain('FundOpsHQ, 76 Ensign Dr, Mystic, CT 06355')
+    expect(r.html).toContain(`<a href="${unsubscribeUrl(TOKEN)}"`)
+    expect(r.html).toContain('unsubscribe here</a>')
   })
 
   it('sets RFC 8058 one-click headers with the link and the mailbox', () => {
@@ -16,94 +27,94 @@ describe('footer and unsubscribe', () => {
     expect(h['List-Unsubscribe']).toBe(`<${unsubscribeUrl(TOKEN)}>, <mailto:unsubscribe@reply.fundopshq.com?subject=unsubscribe-${TOKEN}>`)
     expect(h['List-Unsubscribe-Post']).toBe('List-Unsubscribe=One-Click')
   })
-
-  it('every rendered email ends with the footer', () => {
-    const pitch = renderSponsorPitch({ firstName: 'Jane', company: 'Acme', unsubToken: TOKEN, hook: 'Saw your launch last week.', subscribers: 157, mockup: 'https://fundopshq.com/sponsor?firm=Acme#book' })
-    const note = renderNewsNote({ firstName: 'Jane', company: 'Acme', unsubToken: TOKEN, headline: 'Acme closes Fund II', storyUrl: 'https://fundopshq.com/story/x-12345678' })
-    for (const r of [pitch, note]) {
-      expect(r.text.endsWith(footer(TOKEN))).toBe(true)
-      expect(r.text).toContain('Danny Bloomstine\nFounder, FundOpsHQ')
-    }
-  })
 })
 
 describe('the Resend payload', () => {
-  const row = { id: '11111111-2222-3333-4444-555555555555', email: 'jane@acme.com', subject: 'S', body_text: 'T', unsub_token: TOKEN, program: 'sponsor_pitch' as const, kind: 'initial' as const }
-  it('is plain text only (no HTML part, so Resend adds no pixel and rewrites no links), from Danny, replies to the reply domain', () => {
+  const r = pitch()
+  const row = { id: '11111111-2222-3333-4444-555555555555', email: 'd@toltiq.com', subject: r.subject, body_text: r.text, body_html: r.html, unsub_token: TOKEN, program: 'sponsor_pitch' as const, kind: 'initial' as const }
+  it('carries the HTML and the same email as text, from Danny, replies to the reply domain', () => {
     const p = buildPayload(row)
-    expect(p).not.toHaveProperty('html')
-    expect(p.text).toBe('T')
+    expect(p.html).toBe(r.html)
+    expect(p.text).toBe(r.text)
     expect(p.from).toBe('Danny Bloomstine <danny@fundopshq.com>')
     expect(p.reply_to).toBe('Danny Bloomstine <danny@reply.fundopshq.com>')
     expect(p.headers['List-Unsubscribe-Post']).toBe('List-Unsubscribe=One-Click')
     // Resend's mail server sets the Message-ID; we read it back after sending.
     expect(p.headers['Message-ID']).toBeUndefined()
-    expect(p.headers['In-Reply-To']).toBeUndefined()
   })
   it('threads a follow-up under its pitch', () => {
-    const p = buildPayload({ ...row, kind: 'followup' }, '<parent@fundopshq.com>')
-    expect(p.headers['In-Reply-To']).toBe('<parent@fundopshq.com>')
-    expect(p.headers['References']).toBe('<parent@fundopshq.com>')
+    const p = buildPayload({ ...row, kind: 'followup' }, '<parent@email.amazonses.com>')
+    expect(p.headers['In-Reply-To']).toBe('<parent@email.amazonses.com>')
+    expect(p.headers['References']).toBe('<parent@email.amazonses.com>')
   })
 })
 
-describe('sponsor pitch', () => {
-  const hook = 'I saw that PwC Deals named ToltIQ its sole professional-services AI adviser in June, which is quite a vote of confidence.'
-  const mockup = mockupUrl({ company: 'ToltIQ', domain: 'toltiq.com', logoUrl: 'https://toltiq.com/logo.svg', adLine: 'AI diligence for private markets.' })
-  const r = renderSponsorPitch({ firstName: 'Jane', company: 'ToltIQ', unsubToken: TOKEN, hook, subscribers: 157, mockup })
-
-  it('is 90 to 120 words above the footer with a one-sentence hook', () => {
-    const n = wordCount(bodyOf(r.text))
-    expect(n).toBeGreaterThanOrEqual(90)
-    expect(n).toBeLessThanOrEqual(120)
+describe('sponsor pitch (Danny’s copy, 2026-10-14)', () => {
+  it('leads with them, links the mock-up as text, states the audience and the rate, asks for a month', () => {
+    const r = pitch({ hookClause: 'Congrats on the Series A.' })
+    expect(r.subject).toBe('ToltIQ in FundOps Daily?')
+    expect(r.text).toMatch(/^Hi David,\n\nToltIQ's buyers read FundOps Daily every morning: ops, finance and deal teams at GPs, LPs and the firms that serve them\. Congrats on the Series A\./)
+    expect(r.html).toContain(`<a href="${MOCK}" style="color:#1a4fa0">See ToltIQ&#39;s ad →</a>`.replace('&#39;', "'"))
+    expect(r.text).toContain("about 150 readers at 60+ firms, plus daily TikTok and LinkedIn")
+    expect(r.text).toContain("it's a founding rate of $150 a week")
+    expect(r.text).toContain('Worth trying a week in November?')
+    expect(r.text).toContain('Danny\nFounder, FundOpsHQ')
   })
 
-  it('stays inside 90 to 120 words for any hook of 4 to 24 words', () => {
-    for (const words of [4, 12, 24]) {
-      const h = Array.from({ length: words }, () => 'word').join(' ')
-      const n = wordCount(bodyOf(renderSponsorPitch({ firstName: 'Jane', company: 'ToltIQ', unsubToken: TOKEN, hook: h, subscribers: 157, mockup }).text))
-      expect(n).toBeGreaterThanOrEqual(90)
-      expect(n).toBeLessThanOrEqual(120)
-    }
+  it('never shows a raw URL in the HTML body (only the hrefs carry them)', () => {
+    const visible = pitch().html.replace(/<a [^>]*>/g, '<a>').replace(/<[^>]+>/g, ' ')
+    expect(visible).not.toMatch(/https?:\/\//)
+    const note = renderNewsNote({ firstName: 'Sam', company: 'Savory', unsubToken: TOKEN, headline: 'Savory closes Fund III', storyUrl: 'https://fundopshq.com/story/x-12345678' })
+    expect(note.html.replace(/<a [^>]*>/g, '<a>').replace(/<[^>]+>/g, ' ')).not.toMatch(/https?:\/\//)
   })
 
-  it('says who we are, the honest size, the founding rates, the mock-up and the hook', () => {
-    expect(r.text).toContain('GPs, LPs and fund service providers')
-    expect(r.text).toContain('about 157 subscribers')
-    expect(r.text).toContain('TikTok and LinkedIn')
-    expect(r.text).toContain('$150 a week, $450 for four weeks or $1,200 a quarter')
-    expect(r.text).toContain(mockup)
-    expect(r.text).toContain(hook)
-    expect(r.subject).toBe('A FundOps Daily ad for ToltIQ')
+  it('is about 85 words before the footer, with a clause', () => {
+    expect(readerWords(pitch({ hookClause: 'Congrats on the Callisto acquisition.' }))).toBeLessThanOrEqual(90)
   })
 
-  it('never claims readers at named firms', () => {
-    expect(r.text).not.toMatch(/read(?:ers|s)? (?:at|by|from) [A-Z]/)
-    expect(r.text).not.toMatch(/\bfirms? (?:like|such as)\b/i)
+  it('leaves the audience out rather than guess', () => {
+    expect(audienceLine(null, 60)).toBeNull()
+    const r = pitch({ audience: null })
+    expect(r.text).not.toMatch(/readers at/)
+    expect(r.text).toContain("While the list is young it's a founding rate of $150 a week.")
   })
 
-  it('puts a short mock-up link in the email', () => {
+  it('rounds the figures down to ten', () => {
+    expect(audienceLine(159, 67)).toBe('about 150 readers at 60+ firms, plus daily TikTok and LinkedIn')
+  })
+
+  it('suggests the next month, or the one after late in a month', () => {
+    expect(pitchMonth('2026-10-14')).toBe('November')
+    expect(pitchMonth('2026-10-25')).toBe('December')
+    expect(pitchMonth('2026-12-03')).toBe('January')
+  })
+
+  it('uses a hook only when it is fresh and about them', () => {
+    expect(freshClause({ hook_clause: 'Congrats on the Series A', hook_date: '2026-10-01' }, '2026-10-14')).toBe('Congrats on the Series A.')
+    expect(freshClause({ hook_clause: 'Congrats on the Series A.', hook_date: '2026-08-01' }, '2026-10-14')).toBeNull()
+    expect(freshClause({ hook_clause: 'I saw your great launch.', hook_date: '2026-10-01' }, '2026-10-14')).toBeNull()
+    expect(freshClause({ hook_clause: 'Congrats on the Series A.', hook_date: null }, '2026-10-14')).toBeNull()
+  })
+
+  it('writes possessives the way people do', () => {
+    expect(possessive('ToltIQ')).toBe("ToltIQ's")
+    expect(possessive('73 Strings')).toBe("73 Strings'")
+  })
+
+  it('opens the ad builder on their ad preview', () => {
+    const u = new URL(mockupUrl({ company: 'ToltIQ', domain: 'toltiq.com', logoUrl: 'https://toltiq.com/logo.svg', adLine: 'AI diligence.' }))
+    expect(u.pathname).toBe('/sponsor')
+    expect(u.hash).toBe('#ad-preview')
+    expect(Object.fromEntries(u.searchParams)).toEqual({ firm: 'ToltIQ', site: 'toltiq.com', logo: 'https://toltiq.com/logo.svg', line: 'AI diligence.' })
     expect(mockupShortUrl('6DDB4D12-06ce-4582-8c35-cf9552999acd')).toBe('https://fundopshq.com/sponsor/m/6ddb4d12')
   })
 
-  it('builds the mock-up link the ad builder reads', () => {
-    const u = new URL(mockup)
-    expect(u.pathname).toBe('/sponsor')
-    expect(u.hash).toBe('#book')
-    expect(u.searchParams.get('firm')).toBe('ToltIQ')
-    expect(u.searchParams.get('site')).toBe('toltiq.com')
-    expect(u.searchParams.get('logo')).toBe('https://toltiq.com/logo.svg')
-    expect(u.searchParams.get('line')).toBe('AI diligence for private markets.')
-  })
-
-  it('follows up once, as a reply, quoting the pitch', () => {
-    const f = renderSponsorFollowup({ firstName: 'Jane', company: 'ToltIQ', unsubToken: TOKEN, mockup, original: { subject: r.subject, text: r.text, sentAt: new Date('2026-10-15T14:00:00Z') } })
-    expect(f.subject).toBe(`Re: ${r.subject}`)
-    expect(f.text).toContain('> Here is a mock-up')
+  it('follows up once, as a reply, with the mock-up link', () => {
+    const f = renderSponsorFollowup({ firstName: 'David', company: 'ToltIQ', unsubToken: TOKEN, mockup: MOCK, original: { subject: 'ToltIQ in FundOps Daily?' } })
+    expect(f.subject).toBe('Re: ToltIQ in FundOps Daily?')
+    expect(f.html).toContain(`href="${MOCK}"`)
     expect(f.text).toContain("I won't write again")
     expect(f.text.endsWith(footer(TOKEN))).toBe(true)
-    // The quote does not carry the pitch's own footer twice.
-    expect(f.text.split('76 Ensign Dr').length).toBe(2)
   })
 })
 
@@ -115,18 +126,16 @@ describe('news note', () => {
     headline: 'AE Industrial promotes Chris Aguemon and Bill Strobel to principal',
     storyUrl: 'https://fundopshq.com/story/ae-industrial-promotes-chris-aguemon-and-bill-strobel-to-principal-1a2b3c4d',
   })
-  it('is 50 to 80 words above the footer', () => {
-    const n = wordCount(bodyOf(r.text))
-    expect(n).toBeGreaterThanOrEqual(50)
-    expect(n).toBeLessThanOrEqual(80)
+  it('is short and leads with them', () => {
+    expect(readerWords(r)).toBeLessThanOrEqual(60)
+    expect(bodyOf(r.text)).toMatch(/^Hi Sam,\n\nAE Industrial Partners is in today's FundOps Daily: /)
   })
-  it('names the firm in the subject, links the story and the free signup', () => {
+  it('names the firm in the subject, links the story and the free signup as text', () => {
     expect(r.subject).toBe('AE Industrial Partners in FundOps Daily today')
-    expect(r.text).toContain('https://fundopshq.com/story/')
+    expect(r.html).toContain('>AE Industrial promotes Chris Aguemon and Bill Strobel to principal</a>')
+    expect(r.html).toContain('>subscribe here</a>')
     expect(r.text).toContain('Feel free to share it')
-    expect(r.text).toContain('free morning email')
     expect(r.text).toContain('https://fundopshq.com/?utm_source=outreach&utm_medium=email&utm_campaign=news_note#subscribe')
-    // No address of theirs in any link.
     expect(r.text).not.toMatch(/\?e=/)
   })
 })

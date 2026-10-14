@@ -134,3 +134,9 @@ alter table outreach_v2_state enable row level security;
 comment on table outreach_v2_messages is 'Outreach v2: one row per email (sponsor pitch, its follow-up, or a daily news note). status preview = rendered, never sent.';
 comment on table outreach_v2_replies is 'Outreach v2 replies received on reply.fundopshq.com. Untrusted content: store and forward only.';
 comment on table outreach_v2_state is 'Outreach v2 halt flag: a spam complaint sets halted=true and stops all sending until cleared by hand.';
+
+-- Same day, second pass (Danny's copy): an HTML part with linked text, and the date of a pitch's hook
+-- (a hook older than 60 days is left out of the email).
+alter table outreach_v2_messages add column if not exists body_html text;
+alter table outreach_v2_messages add column if not exists hook_date date;
+comment on column outreach_v2_messages.body_html is 'The HTML part (linked text, no raw URLs); body_text is the same email as plain text.';

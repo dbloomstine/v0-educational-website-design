@@ -20,6 +20,26 @@ import { bodyOf, wordCount } from '../../lib/outreach-v2/compose'
 import { parseBatchFile, prepareSponsorBatch } from '../../lib/outreach-v2/sponsor-pitch'
 import { readHalt } from '../../lib/outreach-v2/store'
 
+/** The HTML part as Markdown quote lines: paragraphs, <br> as line breaks, links as [text](url). */
+function asMarkdown(html: string): string[] {
+  const body = html.replace(/^[\s\S]*?<div[^>]*>/, '').replace(/<\/div>[\s\S]*$/, '')
+  return body
+    .split(/<\/p>/)
+    .map((p) =>
+      p
+        .replace(/<a href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g, '[$2]($1)')
+        .replace(/<br\s*\/?>/g, '  \n')
+        .replace(/<[^>]+>/g, '')
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .trim(),
+    )
+    .filter(Boolean)
+    .flatMap((p, i) => (i ? ['', ...p.split('\n')] : p.split('\n')))
+}
+
 function arg(name: string): string | null {
   const i = process.argv.indexOf(`--${name}`)
   return i > 0 ? process.argv[i + 1] ?? null : null
@@ -44,7 +64,7 @@ async function main() {
     '',
     `- ${prepared.length} leads in the file; **${ready.length} ready** to send; ${prepared.length - ready.length} held back (reasons below).`,
     `- From: Danny Bloomstine <danny@fundopshq.com>. Replies go to danny@reply.fundopshq.com (stored, and a copy forwarded to Gmail).`,
-    `- Plain text, no tracking. One-click unsubscribe header and a visible unsubscribe link; postal address in the footer.`,
+    `- HTML with linked text, plus the same email as plain text. One-click unsubscribe header and a visible unsubscribe link; postal address in the footer. Resend's domain-wide open and click tracking applies to the HTML part (it cannot be switched off per email).`,
     `- Sending, once released: one every five minutes, weekdays 9am to 6pm New York, at most 30 outreach emails a day. One follow-up five business days later unless they reply or opt out.`,
     `- Mode now: \`${envMode()}\` here (production is set in Vercel)${halt.halted ? `; HALTED: ${halt.halted_reason}` : ''}.`,
     '',
@@ -68,9 +88,9 @@ async function main() {
       `- Words (above the footer): ${wordCount(bodyOf(r.body_text))}`,
       ...(p.warnings.length ? [`- Check: ${p.warnings.join('; ')}`] : []),
       '',
-      '```text',
-      r.body_text,
-      '```',
+      `As it reads (links are linked text in the email; the plain-text part writes them out):`,
+      '',
+      ...asMarkdown(r.body_html ?? r.body_text).map((l) => `> ${l}`),
       '',
     )
   })

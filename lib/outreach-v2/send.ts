@@ -15,16 +15,18 @@ export interface ResendPayload {
   reply_to: string
   subject: string
   text: string
+  html?: string
   headers: Record<string, string>
   tags: { name: string; value: string }[]
 }
 
 /**
- * What goes to Resend for one message: plain text only (no tracking can be added to it), with the unsubscribe headers.
+ * What goes to Resend for one message: the HTML part (linked text) and the same email as plain text, with the
+ * unsubscribe headers. Resend's domain-wide open and click tracking applies to the HTML part (see compose.ts).
  * No Message-ID of our own: Resend's mail server replaces it (seen 2026-10-14). The real one is read back from Resend
  * after sending (backfillMessageIds) and is what a reply's In-Reply-To carries.
  */
-export function buildPayload(row: Pick<MessageRow, 'id' | 'email' | 'subject' | 'body_text' | 'unsub_token' | 'program' | 'kind'>, parentMessageId?: string | null): ResendPayload {
+export function buildPayload(row: Pick<MessageRow, 'id' | 'email' | 'subject' | 'body_text' | 'unsub_token' | 'program' | 'kind'> & { body_html?: string | null }, parentMessageId?: string | null): ResendPayload {
   const headers: Record<string, string> = { ...listUnsubscribeHeaders(row.unsub_token) }
   if (parentMessageId) {
     headers['In-Reply-To'] = parentMessageId
@@ -36,6 +38,7 @@ export function buildPayload(row: Pick<MessageRow, 'id' | 'email' | 'subject' | 
     reply_to: REPLY_TO,
     subject: row.subject,
     text: row.body_text,
+    ...(row.body_html ? { html: row.body_html } : {}),
     headers,
     tags: [
       { name: 'program', value: row.program },

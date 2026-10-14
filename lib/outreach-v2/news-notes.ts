@@ -261,6 +261,7 @@ export async function runNewsNotes(db: DbClient, apollo: ApolloPort, now: Date =
         story_headline: c.story.headline,
         subject: r.subject,
         body_text: r.text,
+        body_html: r.html,
         unsub_token: unsubToken,
         status,
         queued_at: status === 'queued' ? new Date().toISOString() : null,

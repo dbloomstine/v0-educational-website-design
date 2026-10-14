@@ -15,7 +15,9 @@
  *       "email": "jane@toltiq.com",                // at the company's domain
  *       "apollo_person_id": "64a...",              // or null
  *       "country": "United States",                // optional
- *       "hook": "One sentence of at most 24 words, read as written, on why we are writing now.",
+ *       "hook": "Research note: what happened and when.",
+ *       "hook_clause": "Congrats on the Series A.",  // optional: one short clause about THEM, used as written
+ *       "hook_date": "2026-10-08",                 // the hook's date; older than 60 days → no clause
  *       "source_url": "https://...",               // where the hook was checked
  *       "logo_url": "https://toltiq.com/logo.svg", // optional: a file on the company's own site
  *       "ad_line": "One sentence for their mock ad." // optional, <= 60 words
@@ -26,12 +28,16 @@
  * field names (batch 1, 2026-10-14): contact_first_name, contact_last_name,
  * contact_title, contact_email, contact_location ("Austin, TX, US"),
  * hook_source_url, what_they_sell (the mock ad's copy when there is no
- * ad_line) and email_status. `hook_line`, when present, is the sentence the
- * email uses; `hook` is then kept as the research note it came from.
+ * ad_line) and email_status.
+ *
+ * The hook clause (Danny, 2026-10-14) goes in only when it is dated within
+ * HOOK_FRESH_DAYS and reads as one short clause about them; otherwise the
+ * email simply leaves it out. Never "I saw…".
  */
 import { LIMITS } from '@/lib/sponsor/packages'
+import { readerFirmDomains } from '@/lib/sponsor/reader-firms'
 import { FOLLOWUP_BUSINESS_DAYS, followupDue, nyDay } from './config'
-import { bodyOf, mockupShortUrl, mockupUrl, renderSponsorFollowup, renderSponsorPitch, wordCount } from './compose'
+import { audienceLine, mockupShortUrl, mockupUrl, pitchMonth, readerWords, renderSponsorFollowup, renderSponsorPitch, wordCount } from './compose'
 import { isExcludedFirm, isIqeqEmail, isUsCountry } from './exclusions'
 import { effectiveMode, newToken, screenEmails, type DbClient, type MessageRow } from './store'
 
@@ -45,6 +51,8 @@ export interface SponsorLead {
   apollo_person_id: string | null
   country: string | null
   hook: string
+  hook_clause: string | null
+  hook_date: string | null
   source_url: string
   logo_url: string | null
   ad_line: string | null
@@ -85,7 +93,9 @@ export function checkLead(raw: unknown): { lead: SponsorLead; errors: string[]; 
     email: pick('email', 'contact_email').toLowerCase(),
     apollo_person_id: optional(r.apollo_person_id),
     country: optional(r.country) ?? countryOf(str(r.contact_location)),
-    hook: pick('hook_line', 'hook'),
+    hook: pick('hook'),
+    hook_clause: optional(r.hook_clause),
+    hook_date: /^\d{4}-\d\d-\d\d$/.test(str(r.hook_date)) ? str(r.hook_date) : null,
     source_url: pick('source_url', 'hook_source_url'),
     logo_url: optional(r.logo_url),
     ad_line: optional(r.ad_line) ?? optional(r.what_they_sell),
@@ -103,10 +113,9 @@ export function checkLead(raw: unknown): { lead: SponsorLead; errors: string[]; 
   else if (lead.domain && !sameOrSub(m[1], lead.domain)) errors.push(`email is not at ${lead.domain}`)
   if (isIqeqEmail(lead.email)) errors.push('iqeq.com address')
   if (isExcludedFirm(lead.company, lead.title)) errors.push('reads as a fund administrator / IQ-EQ competitor')
-  if (lead.hook.length < 20) errors.push('hook is missing or too short')
-  else if (lead.hook.length > 240 || wordCount(lead.hook) > 30) errors.push('hook is longer than one sentence should be (at most 24 words keeps the email under 120)')
-  else if (wordCount(lead.hook) > 24) warnings.push(`hook is ${wordCount(lead.hook)} words: the email may run past 120`)
-  else if (!/[.!?]["”’)]?$/.test(lead.hook)) warnings.push('hook does not end like a sentence')
+  if (lead.hook_clause && /^i\b/i.test(lead.hook_clause)) errors.push('hook_clause must be about them, not "I saw…"')
+  if (lead.hook_clause && wordCount(lead.hook_clause) > 14) errors.push('hook_clause is longer than one short clause (14 words)')
+  if (lead.hook_clause && !lead.hook_date) warnings.push('hook_clause has no hook_date, so it is left out')
   if (!/^https?:\/\//.test(lead.source_url)) warnings.push('no source_url for the hook')
   if (lead.logo_url) {
     try {
@@ -123,10 +132,24 @@ export function checkLead(raw: unknown): { lead: SponsorLead; errors: string[]; 
   return { lead, errors, warnings }
 }
 
-export async function confirmedSubscriberCount(db: DbClient): Promise<number> {
-  const { count, error } = await db.from('newsletter_subscribers').select('id', { count: 'exact', head: true }).eq('status', 'confirmed')
-  if (error || count == null) throw new Error(`subscriber count: ${error?.message ?? 'none'}`)
-  return count
+/** A hook is used only this long after its date. */
+export const HOOK_FRESH_DAYS = 60
+
+/** The clause the email uses, or null: present, dated, no older than HOOK_FRESH_DAYS, about them. */
+export function freshClause(lead: Pick<SponsorLead, 'hook_clause' | 'hook_date'>, today: string): string | null {
+  const clause = (lead.hook_clause ?? '').trim()
+  if (!clause || !lead.hook_date || /^i\b/i.test(clause) || wordCount(clause) > 14) return null
+  const age = (Date.parse(`${today}T12:00:00Z`) - Date.parse(`${lead.hook_date}T12:00:00Z`)) / 86_400_000
+  if (!(age >= 0 && age <= HOOK_FRESH_DAYS)) return null
+  return /[.!?]$/.test(clause) ? clause : `${clause}.`
+}
+
+/** Confirmed subscribers and the firms they read at (the same counts /sponsor shows), or nulls. */
+export async function audienceFigures(db: DbClient): Promise<{ subscribers: number | null; firms: number | null }> {
+  const { data, error } = await db.from('newsletter_subscribers').select('email').eq('status', 'confirmed').limit(10000)
+  if (error || !data) return { subscribers: null, firms: null }
+  const emails = data.map((r) => String(r.email))
+  return { subscribers: emails.length, firms: readerFirmDomains(emails).size }
 }
 
 export interface PreparedLead {
@@ -143,7 +166,10 @@ export interface PreparedLead {
  * sent is left as it is.
  */
 export async function prepareSponsorBatch(db: DbClient, batch: string, rawLeads: unknown[], now: Date = new Date()): Promise<PreparedLead[]> {
-  const subscribers = await confirmedSubscriberCount(db)
+  const { subscribers, firms } = await audienceFigures(db)
+  const audience = audienceLine(subscribers, firms)
+  const today = nyDay(now)
+  const month = pitchMonth(today)
   const checked = rawLeads.map(checkLead)
   const seen = new Set<string>()
   const screen = await screenEmails(db, checked.map((c) => c.lead.email).filter(Boolean), { program: 'sponsor_pitch', now })
@@ -192,6 +218,7 @@ export async function prepareSponsorBatch(db: DbClient, batch: string, rawLeads:
       apollo_person_id: lead.apollo_person_id,
       country: lead.country,
       hook: lead.hook,
+      hook_date: lead.hook_date,
       source_url: lead.source_url,
       logo_url: lead.logo_url,
       ad_line: lead.ad_line,
@@ -201,15 +228,18 @@ export async function prepareSponsorBatch(db: DbClient, batch: string, rawLeads:
     }
     const unsubToken = prior?.unsub_token ?? newToken()
     const id = prior?.id ?? crypto.randomUUID()
-    const rendered = renderSponsorPitch({ firstName: lead.first_name, company: lead.company, unsubToken, hook: lead.hook, subscribers, mockup: mockupShortUrl(id) })
-    const full = { ...fields, unsub_token: unsubToken, subject: rendered.subject, body_text: rendered.text }
+    const clause = freshClause(lead, today)
+    const rendered = renderSponsorPitch({ firstName: lead.first_name, company: lead.company, unsubToken, hookClause: clause, audience, month, mockup: mockupShortUrl(id) })
+    const full = { ...fields, unsub_token: unsubToken, subject: rendered.subject, body_text: rendered.text, body_html: rendered.html }
     const saved = prior
       ? await db.from('outreach_v2_messages').update(full).eq('id', prior.id).select('*').single()
       : await db.from('outreach_v2_messages').insert({ id, ...full }).select('*').single()
     if (saved.error) throw new Error(`save ${lead.email}: ${saved.error.message}`)
-    const words = wordCount(bodyOf(rendered.text))
+    const words = readerWords(rendered)
     const warnings = [...c.warnings]
-    if (words < 90 || words > 120) warnings.push(`body is ${words} words (aim: 90 to 120)`)
+    if (lead.hook_clause && !clause) warnings.push(`hook clause left out (dated ${lead.hook_date ?? 'never'}: more than ${HOOK_FRESH_DAYS} days old, or not a short clause about them)`)
+    if (!audience) warnings.push('audience figures unavailable: the parenthetical is left out')
+    if (words > 90) warnings.push(`body is ${words} words (aim: about 85)`)
     out.push({ ...c, warnings, skipReason, row: saved.data as MessageRow })
   }
   return out
@@ -286,9 +316,9 @@ export async function createFollowups(db: DbClient, now: Date = new Date()): Pro
       company: parent.company,
       unsubToken,
       mockup: mockupShortUrl(parent.id),
-      original: { subject: parent.subject, text: parent.body_text, sentAt: new Date(parent.sent_at!) },
+      original: { subject: parent.subject },
     })
-    const ins = await db.from('outreach_v2_messages').insert({ ...base, unsub_token: unsubToken, subject: r.subject, body_text: r.text, status: 'queued', queued_at: new Date().toISOString() })
+    const ins = await db.from('outreach_v2_messages').insert({ ...base, unsub_token: unsubToken, subject: r.subject, body_text: r.text, body_html: r.html, status: 'queued', queued_at: new Date().toISOString() })
     if (ins.error) {
       skipped.push({ email: parent.email, reason: ins.error.message })
       continue

@@ -349,7 +349,7 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
   return (
     <form ref={formRef} onSubmit={submit} noValidate className="grid gap-x-8 gap-y-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
       {/* ─── The strip, at its real width, and it stays in view while the ad is written: it is the first thing every visitor sees ─── */}
-      <figure className="sticky top-[46px] z-20 -mx-1 bg-background/95 px-1 pb-2 pt-2 backdrop-blur-sm lg:col-span-2">
+      <figure id="ad-preview" className="sticky top-[46px] z-20 -mx-1 scroll-mt-24 bg-background/95 px-1 pb-2 pt-2 backdrop-blur-sm lg:col-span-2">
         <figcaption className="pb-1.5 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
           The website · above the stories, on every page
         </figcaption>

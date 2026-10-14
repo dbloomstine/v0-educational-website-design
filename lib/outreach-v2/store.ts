@@ -37,6 +37,8 @@ export interface MessageRow {
   story_headline: string | null
   subject: string
   body_text: string
+  body_html: string | null
+  hook_date: string | null
   status: 'preview' | 'queued' | 'sending' | 'sent' | 'failed' | 'skipped' | 'cancelled'
   skip_reason: string | null
   unsub_token: string

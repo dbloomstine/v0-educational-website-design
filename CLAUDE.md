@@ -842,8 +842,10 @@ contact at US firms in that morning's edition; Apollo, at most ten credits a day
 - **Switch:** Vercel env `OUTREACH_V2_MODE` = `off` (default) | `preview` (build and store every email, send nothing) | `live`.
   A spam complaint on any outreach email sets `outreach_v2_state.halted` and everything stops until a person clears it.
   An env change needs a redeploy (see the kill-switch note in memory); probe the news route with `?credits=0`, which spends nothing.
-- **Plain text only**, on purpose: Resend's open/click tracking is on for the whole domain (the newsletter needs it) and cannot be
-  turned off per email; an email with no HTML part carries no pixel and no rewritten links.
+- **Copy (Danny, 2026-10-14):** lead with them, short, linked text (never a raw URL in the HTML body), signed "Danny";
+  HTML plus the same email as text (`lib/outreach-v2/compose.ts`). Resend's open/click tracking is on for the whole domain
+  (the newsletter's figures need it) and cannot be switched off per email, so the HTML part is tracked like the newsletter.
+  A pitch's hook clause appears only when dated within 60 days; the mock-up link is `/sponsor/m/<8 hex>` → the builder at `#ad-preview`.
 - **Replies** go to `danny@reply.fundopshq.com` (Resend receiving on the subdomain; MX + DKIM added 2026-10-14; the apex MX is
   ImprovMX and untouched). Stored in `outreach_v2_replies` (untrusted: store and forward only), linked by In-Reply-To or sender,
   copy forwarded to Danny's Gmail. `handled_at` is for the task that answers routine replies.

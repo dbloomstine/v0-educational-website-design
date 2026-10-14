@@ -240,17 +240,17 @@ describe('the sponsor list file', () => {
   it('reads the list agent’s own field names, preferring the written hook line', () => {
     const c = checkLead({
       company: '6lock', domain: '6lock.com', contact_first_name: 'David', contact_last_name: 'B', contact_title: 'COO', contact_email: 'db@6lock.com',
-      contact_location: 'Austin, TX, US', hook: 'Oct 8, 2026: research note.', hook_line: 'I saw that 6lock transactions now carry insurance cover.',
+      contact_location: 'Austin, TX, US', hook: 'Oct 8, 2026: research note.', hook_clause: 'Congrats on the new insurance cover.', hook_date: '2026-10-08',
       hook_source_url: 'https://6lock.com/blog', what_they_sell: 'Verified money movement for private markets.', email_status: 'verified',
     })
     expect(c.errors).toEqual([])
-    expect(c.lead).toMatchObject({ first_name: 'David', email: 'db@6lock.com', country: 'United States', hook: 'I saw that 6lock transactions now carry insurance cover.', source_url: 'https://6lock.com/blog', ad_line: 'Verified money movement for private markets.' })
+    expect(c.lead).toMatchObject({ first_name: 'David', email: 'db@6lock.com', country: 'United States', hook_clause: 'Congrats on the new insurance cover.', hook_date: '2026-10-08', source_url: 'https://6lock.com/blog', ad_line: 'Verified money movement for private markets.' })
   })
 
-  it('refuses an address off the company domain, a competitor, an IQ-EQ address and a missing hook', () => {
+  it('refuses an address off the company domain, a competitor, an IQ-EQ address and an "I saw" clause', () => {
     expect(checkLead({ ...good, email: 'jane@gmail.com' }).errors.join()).toMatch(/not at toltiq\.com/)
     expect(checkLead({ ...good, company: 'Apex Group', domain: 'apexgroup.com', email: 'a@apexgroup.com' }).errors.join()).toMatch(/competitor/)
     expect(checkLead({ ...good, domain: 'iqeq.com', email: 'a@iqeq.com' }).errors.join()).toMatch(/iqeq/)
-    expect(checkLead({ ...good, hook: '' }).errors.join()).toMatch(/hook/)
+    expect(checkLead({ ...good, hook_clause: 'I saw your launch.', hook_date: '2026-10-01' }).errors.join()).toMatch(/about them/)
   })
 })
