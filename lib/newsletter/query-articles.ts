@@ -36,6 +36,7 @@ import {
   tellsAnItemOf,
   type StoryLike,
 } from './story-links'
+import { reportMarksSecondaries, secondariesClass } from './secondaries'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>
@@ -63,12 +64,23 @@ export const ALL_NEWSLETTER_TYPES = [
   ...REGULATORY_TYPES,
 ]
 
+/**
+ * The email's fund sections, in the order of the site's asset-class tabs
+ * (lib/news/sections.ts; a test holds the two together). GP stakes run inside
+ * Secondaries, as on the site's Secondaries tab (Danny, 2026-10-14).
+ */
 const CATEGORY_ORDER = [
-  'PE', 'VC', 'credit', 'hedge', 'real_estate',
-  'infrastructure', 'secondaries', 'gp_stakes',
+  'PE', 'VC', 'credit', 'real_estate',
+  'infrastructure', 'secondaries', 'hedge',
 ]
 
-const ASSET_CLASSES = new Set(CATEGORY_ORDER)
+/** The email section an asset class runs under. */
+const SECTION_OF_ASSET: Record<string, string> = { gp_stakes: 'secondaries' }
+
+const ASSET_CLASSES = new Set([...CATEGORY_ORDER, 'gp_stakes'])
+
+/** The fund sections' order, for the test that holds it to the site's tabs. */
+export const FUND_SECTION_ORDER: readonly string[] = CATEGORY_ORDER
 
 const CATEGORY_LABELS: Record<string, string> = {
   PE: 'Private Equity',
@@ -77,8 +89,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   hedge: 'Hedge Funds',
   real_estate: 'Real Estate',
   infrastructure: 'Infrastructure',
-  secondaries: 'Secondaries',
-  gp_stakes: 'GP Stakes',
+  secondaries: 'Secondaries & GP Stakes',
   lp_commitments: 'LP Commitments',
   service_providers: 'Service Providers',
   people_moves: 'People Moves',
@@ -888,6 +899,10 @@ const FUND_RELEVANT =
   /private (equity|credit|capital|markets?|funds?|debt)|\bPE\b|\bVC\b|funds? (formation|finance|administration|administrators?|services|solutions|practice|group|team|launch|lawyers?|partners?)|\b(investment|private|venture|hedge|credit|secondar(y|ies)) funds?\b|asset management|investment management|secondar(y|ies)|buyouts?|venture capital|hedge funds?|alternative (assets?|investments?|asset)|real estate|infrastructure|financial sponsors?|\bM&A\b|fund (admin|tech)\w*/i
 
 function assetClassFor(a: NewsletterArticle): string {
+  // Secondaries first: a "PE, secondaries" fund, or a continuation vehicle
+  // the classifier tagged by what it holds, runs under Secondaries.
+  const secondaries = secondariesClass(a)
+  if (secondaries) return secondaries
   for (const cat of a.fundCategories) if (ASSET_CLASSES.has(cat)) return cat
   const t = `${a.title} ${a.fundStrategy ?? ''} ${a.tldr ?? ''}`.toLowerCase()
   if (/\bsecondar(y|ies)\b|continuation (fund|vehicle)|gp-led/.test(t)) return 'secondaries'
@@ -1102,7 +1117,8 @@ export function assembleNewsletter(
   // Group fund activity by asset class
   const grouped: Record<string, NewsletterArticle[]> = {}
   for (const article of cappedFundActivity) {
-    const cat = assetClassFor(article)
+    const asset = assetClassFor(article)
+    const cat = SECTION_OF_ASSET[asset] ?? asset
     if (!grouped[cat]) grouped[cat] = []
     grouped[cat].push(article)
   }
@@ -1292,6 +1308,15 @@ export function mergeStoryGroup(group: NewsletterArticle[]): NewsletterArticle {
   })
 
   const best = group[0]
+  // The story is a secondaries story if another report of the same fund
+  // says so (lib/newsletter/secondaries.ts, reportMarksSecondaries).
+  if (!secondariesClass(best) && best.fundSizeUsdMillions) {
+    const tag = group
+      .filter((a) => a !== best && a.fundSizeUsdMillions && fundSizesMatch(a.fundSizeUsdMillions, best.fundSizeUsdMillions))
+      .map(reportMarksSecondaries)
+      .find((c) => c)
+    if (tag) best.fundCategories = [...best.fundCategories, tag]
+  }
   const otherSources = Array.from(new Set(
     group.slice(1)
       .map((a) => a.sourceName)

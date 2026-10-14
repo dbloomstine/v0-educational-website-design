@@ -9,14 +9,22 @@
  */
 import type { ArticleGroup, NewsletterArticle } from './query-articles'
 import { INTERESTS, interestCategories, sanitizeInterests } from './interests'
+import { secondariesClass } from './secondaries'
 
 /** More than this and the reader's section stops being a short list; the rest stay where they were. */
 export const FOLLOWED_MAX = 6
 
 export const FOLLOWED_LABEL = 'What you follow'
 
-export function followsStory(article: Pick<NewsletterArticle, 'fundCategories'>, categories: Set<string>): boolean {
-  return article.fundCategories.some((c) => categories.has(c))
+export function followsStory(
+  article: Pick<NewsletterArticle, 'fundCategories' | 'title' | 'fundStrategy' | 'eventType'>,
+  categories: Set<string>,
+): boolean {
+  if (article.fundCategories.some((c) => categories.has(c))) return true
+  // A continuation vehicle tagged PE, or a secondaries hire tagged by the
+  // firm's other business, is still news to a reader who follows secondaries.
+  const secondaries = secondariesClass(article)
+  return !!secondaries && categories.has(secondaries)
 }
 
 /**

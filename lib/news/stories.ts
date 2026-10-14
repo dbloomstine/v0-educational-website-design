@@ -9,6 +9,7 @@
  *
  * Pure: no I/O. lib/news/front-page.ts does the fetching and caching.
  */
+import { secondariesClass } from '@/lib/newsletter/secondaries'
 import {
   rowToArticle, screenArticle, gateArticle, placeArticle, mergeStoryGroup, plainHeadline,
   sourceTier, isLikelyAumLeak, isRoundupArticle, type NewsletterArticle, type ArticleSection,
@@ -240,6 +241,11 @@ export function buildStories(rows: Row[]): Story[] {
     for (const c of group) shown.add(c)
 
     const tags = best.fundCategories.filter((c) => ASSET_TAGS.has(c))
+    // A hire or a deal whose headline says secondaries, GP-led or
+    // continuation vehicle belongs on the Secondaries tab even when the
+    // classifier tagged it otherwise (lib/newsletter/secondaries.ts).
+    const secondaries = secondariesClass(best)
+    if (secondaries && !tags.some((t) => t === 'secondaries' || t === 'gp_stakes')) tags.push(secondaries)
     const assetClasses = placement.assetClass
       ? [placement.assetClass, ...tags.filter((t) => t !== placement.assetClass)]
       : tags
