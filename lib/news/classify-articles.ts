@@ -84,6 +84,8 @@ interface ClassificationOutput {
   is_high_signal: boolean;
   signal_reason: string | null;
   relevance_score: number;
+  /** The model's own remarks (why this type, what the article left out). Stored, never shown. */
+  classification_note?: string | null;
   summary_ai: string;
   entities: Array<{
     name: string;
@@ -165,7 +167,8 @@ For each article, return a JSON object with exactly these fields:
   "is_high_signal": boolean,       // true for: fund launch/close with named firm, C-suite/partner hire at fund manager, regulatory enforcement, M&A between GPs or service providers
   "signal_reason": string | null,  // brief reason if is_high_signal
   "relevance_score": number,       // 0.0–1.0 — use scoring guide below
-  "summary_ai": string,            // 1-2 sentence data-forward summary. Lead with specific facts: fund size, strategy, LP base, close type, key terms. NO filler phrases like "demonstrates", "represents a significant", "marks the firm's entry", "reflects institutional investor confidence". If the article lacks specific details beyond the headline, write ONE short sentence. Write for a senior BD professional who reads 50 of these a day — every word must earn its place.
+  "classification_note": string | null,  // INTERNAL, never shown to readers. At most 15 words: why this type and relevance, and what the article did not tell you ("portfolio company M&A, not fund activity", "size not given in the snippet", "seniority unclear"). null if nothing to add. This is the ONLY place for remarks about the article, snippet or headline, about missing detail, or about how you filed the story.
+  "summary_ai": string,            // REQUIRED for every article, never null or empty: an article that is not about funds still gets one sentence saying what it reports. PRINTED TO READERS VERBATIM under the headline. 1-2 sentence data-forward summary. Lead with specific facts: fund size, strategy, LP base, close type, key terms. NO filler phrases like "demonstrates", "represents a significant", "marks the firm's entry", "reflects institutional investor confidence". If the article lacks specific details beyond the headline, write ONE short sentence. Write for a senior BD professional who reads 50 of these a day — every word must earn its place. Say what happened and nothing else: NEVER mention the article, snippet or headline; NEVER say what is missing or unclear ("size not disclosed", "no details provided") unless the article itself reports that it was withheld; NEVER add a label or a verdict on the story ("executive hire at a credit manager", "not fund-related"). All of that goes in classification_note.
   "entities": [
     { "name": string, "type": "firm"|"fund"|"person", "role": string | null, "confidence": number }
   ],
@@ -346,6 +349,7 @@ export async function classifyPendingArticles(
               person_title: classification.person_title,
               city: classification.city,
               fund_number: classification.fund_number,
+              classification_note: classification.classification_note ?? null,
             },
           })
           .eq('id', article.id);
@@ -446,9 +450,10 @@ async function classifyBatch(
     },
     body: JSON.stringify({
       model: CLASSIFIER_MODEL,
-      // ~410 output tokens/article × BATCH_SIZE (15) — keeps the same per-item
-      // budget as the prior 4096/10 config while halving call count.
-      max_tokens: 6144,
+      // 15 articles a call. 6144 was cut off on 1 of 32 replays even before
+      // the classification_note field (+~325 tokens a batch, max seen 6,725);
+      // a cut-off answer fails the whole batch, so there is headroom here.
+      max_tokens: 10000,
       // Structured system block with an ephemeral cache breakpoint — the prompt
       // is byte-identical across every batch, so this caches it (5-min TTL).
       // Requires no beta header on anthropic-version 2023-06-01.

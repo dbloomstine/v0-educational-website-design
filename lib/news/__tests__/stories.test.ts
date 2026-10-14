@@ -128,16 +128,32 @@ describe('buildStories', () => {
     expect(stories[0].memberIds).toHaveLength(1) // the column is not inside the story either: it lends it nothing
   })
 
-  it('a wire still runs when the only row that tells its item was turned away by the quality gate', () => {
+  it('a deal whose summary says the value was not disclosed runs, and its wire is not a second story', () => {
     // 2026-08-06: PE Hub's own article on the deal ends "deal valuation not
-    // disclosed" and has no size, which the gate reads as a placeholder.
+    // disclosed" and has no size. Until 2026-10-14 the quality gate read that
+    // as a placeholder and only the wire ran; the gate now reads fund events only.
     const stories = buildStories([
       row({ title: 'Partners Group to acquire Aroma-Zone from Eurazeo', event_type: 'acquisition', firm: 'Partners Group', ents: ['Partners Group', 'Aroma-Zone', 'Eurazeo'], tldr: 'Partners Group acquires Aroma-Zone (beauty/wellness brand founded 1999) from Eurazeo; deal valuation not disclosed.' }),
       row({ title: 'Partners Group in talks to buy beauty biz Aroma-Zone from Eurazeo; CVC, Veritas Capital vie for Bodycote', event_type: 'acquisition', firm: 'Partners Group', ents: ['Partners Group', 'Aroma-Zone', 'Eurazeo'], tldr: 'Partners Group is in talks to buy Aroma-Zone from Eurazeo; CVC and Veritas Capital are bidding for Bodycote.' }),
     ])
-    expect(stories).toHaveLength(1)
-    expect(stories[0].roundup).toBe(true)
-    expect(stories[0].headline).toMatch(/^Partners Group in talks/)
+    expect(stories.map((s) => [s.headline, s.roundup])).toEqual([['Partners Group to acquire Aroma-Zone from Eurazeo', false]])
+  })
+
+  it('the placeholder test turns away a sizeless fund event only, never a deal or a hire', () => {
+    const stories = buildStories([
+      // Fund event, no size, nothing in the summary but the remark: turned away.
+      row({ title: 'Coastal Ridge holds first close for debut student housing fund', event_type: 'fund_close', firm: 'Coastal Ridge', close: 'first_close', fund_categories: ['real_estate'], source_name: 'PERE', tldr: 'Coastal Ridge held a first close for its debut student housing fund; size not disclosed in snippet.' }),
+      // The same remark with a size: runs.
+      row({ title: 'Seine Capital closes debut fund above target at $300m', event_type: 'fund_close', firm: 'Seine Capital', size: 300, close: 'final_close', source_name: 'PEI Secondaries Investor', tldr: 'Seine Capital closed its debut fund at $300m, above target; LP base not disclosed.' }),
+      // A deal and a hire with no size and the same words: run (2026-10-05 measurement).
+      row({ title: 'Frazier Healthcare to acquire health tech firm MatrixCare', event_type: 'acquisition', firm: 'Frazier Healthcare', ents: ['Frazier Healthcare', 'MatrixCare'], tldr: 'Frazier Healthcare acquired MatrixCare from ResMed; deal size not disclosed.' }),
+      row({ title: 'Warburg Pincus appoints Philip Nolan as head of US wealth', event_type: 'executive_hire', firm: 'Warburg Pincus', person: 'Philip Nolan', role: 'Head of US Wealth', tldr: 'Warburg Pincus appointed Philip Nolan head of US wealth; appointment details not provided.' }),
+    ])
+    expect(stories.map((s) => s.headline).sort()).toEqual([
+      'Frazier Healthcare to acquire health tech firm MatrixCare',
+      'Seine Capital closes debut fund above target at $300m',
+      'Warburg Pincus appoints Philip Nolan as head of US wealth',
+    ])
   })
 
   it('a PE Hub wire is a roundup whatever names the classifier listed for it', () => {

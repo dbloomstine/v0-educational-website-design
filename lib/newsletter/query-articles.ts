@@ -258,7 +258,7 @@ export function isStartupRound(article: NewsletterArticle): boolean {
   return STARTUP_ROUND_PATTERNS.some((p) => p.test(article.title))
 }
 
-/** Placeholder tldr markers — stories with no real information. */
+/** Placeholder tldr markers — a fund event with no real information (see passesQualityGate). */
 const PLACEHOLDER_TLDR_PATTERNS = [
   /not (detailed|disclosed|specified|publicly|available)/i,
   /not provided/i,
@@ -529,14 +529,22 @@ function isGovtProgram(article: NewsletterArticle): boolean {
 /**
  * Quality gate: drop articles with no identifiable entity or real info.
  * - No firm AND no fund → unknown issuer
- * - Placeholder tldr AND no fund size → no real information
+ * - A fund event with no size and a placeholder tldr → no real information
+ *
+ * The placeholder test reads fund events only (launches, closes, raises) since
+ * 2026-10-14, Danny's approval of option (c) in the workspace's
+ * docs/quality-gate-measurement-2026-10-05.md. On deals and hires it was
+ * turning away real stories: "deal value not disclosed" is what a reporter
+ * writes about a deal read in full (28 in 100 days, 24 of them real). It reads
+ * the summary (tldr), never the classifier's classification_note, which says
+ * "size not disclosed" on real fund launches too.
  */
 function passesQualityGate(article: NewsletterArticle): boolean {
   // A regulator's own action often has no "firm" at all ("SEC Risk Alert
   // Highlights…"); the headline is the identity.
   if (storyFamily(article.eventType) === 'regulatory') return true
   if (!article.firmName && !article.fundName) return false
-  if (!article.fundSizeUsdMillions && article.tldr) {
+  if (storyFamily(article.eventType) === 'fund' && !article.fundSizeUsdMillions && article.tldr) {
     if (PLACEHOLDER_TLDR_PATTERNS.some((p) => p.test(article.tldr!))) {
       return false
     }

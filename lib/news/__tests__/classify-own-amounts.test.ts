@@ -162,3 +162,35 @@ describe('a figure from a batch neighbour is never stored', () => {
     expect(updates.some((u) => u.ids[0] === 'acuon' && u.values.classification_status === 'pending' && u.values.processing_attempts === 1)).toBe(true)
   })
 })
+
+describe('the classifier’s own remarks', () => {
+  it('are stored in extracted_data.classification_note, apart from the summary readers see', async () => {
+    const { db, updates } = pretendDb([VICINITY])
+    pretendClaude([[answer(0, { ...VICINITY_OK, classification_note: 'M&A of a portfolio company, not fund activity' })]])
+    await classifyPendingArticles(db, 'sk-test')
+    const [vicinity] = stored(updates, 'vicinity')
+    expect(vicinity.tldr).toBe(VICINITY_OK.summary_ai)
+    expect((vicinity.extracted_data as { classification_note: string | null }).classification_note).toBe('M&A of a portfolio company, not fund activity')
+  })
+
+  it('a missing note is stored as null', async () => {
+    const { db, updates } = pretendDb([VICINITY])
+    pretendClaude([[answer(0, VICINITY_OK)]])
+    await classifyPendingArticles(db, 'sk-test')
+    const [vicinity] = stored(updates, 'vicinity')
+    expect((vicinity.extracted_data as { classification_note: string | null }).classification_note).toBeNull()
+  })
+
+  it('the request leaves room for fifteen answers with notes', async () => {
+    const { db } = pretendDb([VICINITY])
+    let body: { max_tokens: number; system: { text: string }[] } | null = null
+    vi.stubGlobal('fetch', vi.fn(async (_url: string, init: { body: string }) => {
+      body = JSON.parse(init.body)
+      return new Response(JSON.stringify({ content: [{ text: JSON.stringify([answer(0, VICINITY_OK)]) }] }), { status: 200 })
+    }))
+    await classifyPendingArticles(db, 'sk-test')
+    expect(body!.max_tokens).toBe(10000)
+    expect(body!.system[0].text).toContain('"classification_note": string | null')
+    expect(body!.system[0].text).toContain('PRINTED TO READERS VERBATIM')
+  })
+})
