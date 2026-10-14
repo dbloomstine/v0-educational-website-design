@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { cleanLogoUrl, cleanSite, findLogoInHomepage, homepageLinksTo, onSite } from '../logo-source'
-import { readPrefill } from '@/components/sponsor/SponsorBuilder'
+import { plateFor, readPrefill } from '@/components/sponsor/SponsorBuilder'
 
 describe('mock-up logos come from the firm’s own website only', () => {
   it('accepts a public domain and refuses addresses and local names', () => {
@@ -54,5 +54,18 @@ describe('the ad builder reads a mock-up link', () => {
   })
   it('holds the firm name to the form’s limit', () => {
     expect(readPrefill(`?firm=${'x'.repeat(80)}`)?.firm).toHaveLength(40)
+  })
+})
+
+describe('a mark keeps its contrast in the ad', () => {
+  const px = (rgba: number[], n: number) => Array.from({ length: n }, () => rgba).flat()
+  it('a white mark on a clear ground gets a dark plate', () => {
+    expect(plateFor([...px([255, 255, 255, 255], 40), ...px([0, 0, 0, 0], 60)])).toBe('dark')
+  })
+  it('a dark mark on a clear ground gets a light plate', () => {
+    expect(plateFor([...px([20, 30, 60, 255], 40), ...px([0, 0, 0, 0], 60)])).toBe('light')
+  })
+  it('a logo with its own background gets none', () => {
+    expect(plateFor(px([255, 255, 255, 255], 100))).toBeNull()
   })
 })

@@ -140,3 +140,23 @@ comment on table outreach_v2_state is 'Outreach v2 halt flag: a spam complaint s
 alter table outreach_v2_messages add column if not exists body_html text;
 alter table outreach_v2_messages add column if not exists hook_date date;
 comment on column outreach_v2_messages.body_html is 'The HTML part (linked text, no raw URLs); body_text is the same email as plain text.';
+
+-- Third pass: mock-up logos resolved from each company's own homepage header, hosted by us.
+create table if not exists outreach_v2_logos (
+  domain text primary key,
+  company text not null,
+  source_page text,
+  source_kind text not null check (source_kind in ('header', 'header-img', 'jsonld', 'icon', 'none')),
+  storage_path text,
+  public_url text,
+  width integer,
+  height integer,
+  tone text check (tone in ('light', 'dark')),
+  note text,
+  resolved_at timestamptz not null default now()
+);
+alter table outreach_v2_logos enable row level security;
+comment on table outreach_v2_logos is 'Mock-up logos for sponsor pitches: taken from each company''s own homepage header in headless Chrome (scripts/outreach-v2/resolve-logos.ts), stored as PNG in the public mockup-logos bucket. source_kind none = show the name in type.';
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('mockup-logos', 'mockup-logos', true, 2000000, array['image/png'])
+on conflict (id) do nothing;

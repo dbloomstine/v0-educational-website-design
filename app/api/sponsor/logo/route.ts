@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { cleanLogoUrl, cleanSite, findLogoInHomepage, homepageLinksTo, onSite } from '@/lib/sponsor/logo-source'
 
 export const dynamic = 'force-dynamic'
@@ -7,6 +8,9 @@ export const maxDuration = 20
 /**
  * GET /api/sponsor/logo?site=<firm domain>&logo=<file URL, optional>
  *
+ * A logo already resolved from the firm's homepage header and hosted by us
+ * (outreach_v2_logos, scripts/outreach-v2/resolve-logos.ts) is served first;
+ * a firm resolved to "none" gets its name in type. Otherwise:
  * The logo for an outreach mock-up of the /sponsor ad builder, fetched from the
  * firm's own website only (rules in lib/sponsor/logo-source.ts) and handed to
  * the builder, which redraws it as a PNG. 404 when there is none: the ad then
@@ -64,6 +68,21 @@ export async function GET(req: Request) {
   const q = new URL(req.url).searchParams
   const site = cleanSite(q.get('site'))
   if (!site) return none()
+  // Resolved and hosted by us (from the firm's own homepage header): that, and nothing else.
+  const { data: kept } = await getSupabaseAdmin().from('outreach_v2_logos').select('public_url, source_kind, tone').eq('domain', site).maybeSingle()
+  if (kept) {
+    if (!kept.public_url || kept.source_kind === 'none') return none()
+    try {
+      const res = await get(kept.public_url, 'image/png')
+      const bytes = res.ok ? await readCapped(res, MAX_IMAGE) : null
+      if (!bytes) return none()
+      return new NextResponse(Buffer.from(bytes), {
+        headers: { 'Content-Type': 'image/png', 'Cache-Control': 'public, s-maxage=3600', 'X-Content-Type-Options': 'nosniff', 'X-Logo-Tone': String(kept.tone ?? '') },
+      })
+    } catch {
+      return none()
+    }
+  }
   const asked = q.get('logo')
   let logo = asked && /^https:\/\//i.test(asked) ? cleanLogoUrl(asked) : null
 

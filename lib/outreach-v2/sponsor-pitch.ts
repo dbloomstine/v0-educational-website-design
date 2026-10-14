@@ -208,7 +208,8 @@ export async function prepareSponsorBatch(db: DbClient, batch: string, rawLeads:
       continue
     }
 
-    const mockup = mockupUrl({ company: lead.company, domain: lead.domain, logoUrl: lead.logo_url, adLine: lead.ad_line })
+    // The logo is not in the link: /api/sponsor/logo serves the one resolved from the company's own header (resolve-logos.ts).
+    const mockup = mockupUrl({ company: lead.company, domain: lead.domain, adLine: lead.ad_line })
     const fields = {
       program: 'sponsor_pitch',
       kind: 'initial',

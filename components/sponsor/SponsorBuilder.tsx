@@ -66,6 +66,36 @@ function Field({ label, hint, error, count, children }: { label: string; hint?: 
  * What a mock-up link asks for: `firm` (required), `site` (the firm's domain), `logo` (a file on that site) and
  * `line` (the ad's copy). Each is trimmed to what the form itself allows; anything malformed is dropped.
  */
+/**
+ * Whether a logo needs a plate behind it, measured from its own pixels: only a mark on a clear ground does (a logo
+ * with its own background already carries its contrast). Mostly light where it is drawn → a dark plate; else a light one.
+ */
+export function logoPlate(img: CanvasImageSource & { naturalWidth?: number; naturalHeight?: number }): 'dark' | 'light' | null {
+  const w0 = img.naturalWidth || 800, h0 = img.naturalHeight || 200
+  const w = Math.max(1, Math.min(240, w0)), h = Math.max(1, Math.round((w * h0) / w0))
+  const c = document.createElement('canvas')
+  c.width = w
+  c.height = h
+  const ctx = c.getContext('2d', { willReadFrequently: true })
+  if (!ctx) return null
+  ctx.drawImage(img, 0, 0, w, h)
+  let d: Uint8ClampedArray
+  try { d = ctx.getImageData(0, 0, w, h).data } catch { return null }
+  return plateFor(d)
+}
+
+/** The rule on raw RGBA pixels (tested): clear ground on at least 2% of the picture, then light if 60% of the drawn pixels are. */
+export function plateFor(d: ArrayLike<number>): 'dark' | 'light' | null {
+  let drawn = 0, light = 0, clear = 0
+  for (let i = 0; i + 3 < d.length; i += 4) {
+    if (d[i + 3] < 128) { clear++; continue }
+    drawn++
+    if (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2] > 200) light++
+  }
+  if (!drawn || clear / (drawn + clear) < 0.02) return null
+  return light / drawn > 0.6 ? 'dark' : 'light'
+}
+
 export function readPrefill(search: string): { firm: string; site: string | null; logo: string | null; line: string | null } | null {
   let q: URLSearchParams
   try { q = new URLSearchParams(search) } catch { return null }
@@ -252,16 +282,28 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
         let h = Math.round((w * h0) / w0)
         if (h > LOGO_OUT.maxHeight) { h = LOGO_OUT.maxHeight; w = Math.round((h * w0) / h0) }
         let data = ''
+        // A mark drawn on a clear ground keeps its contrast whatever it sits on: a light one goes on a dark plate, a
+        // dark one on a light plate, baked into the picture so the site and the email both show it (logoPlate).
+        const plate = logoPlate(img)
         // Drawn smaller until it is light enough to send (a photograph saved as a logo can be heavy).
         for (let tries = 0; tries < 5; tries++) {
           const canvas = document.createElement('canvas')
-          canvas.width = w
-          canvas.height = h
+          const padY = plate ? Math.round(h * 0.28) : 0
+          const padX = plate ? Math.round(h * 0.4) : 0
+          canvas.width = w + 2 * padX
+          canvas.height = h + 2 * padY
           const ctx = canvas.getContext('2d')
           if (!ctx) break
-          ctx.drawImage(img, 0, 0, w, h)
+          if (plate) {
+            ctx.fillStyle = plate === 'dark' ? '#14213d' : '#ffffff'
+            const r = Math.round(h * 0.18)
+            ctx.beginPath()
+            ctx.roundRect(0, 0, canvas.width, canvas.height, r)
+            ctx.fill()
+          }
+          ctx.drawImage(img, padX, padY, w, h)
           data = canvas.toDataURL('image/png')
-          if (data.length * 0.75 <= LOGO_RULES.maxBytes) break
+          if (data.length * 0.75 <= LOGO_RULES.maxBytes) { w = canvas.width; h = canvas.height; break }
           w = Math.round(w * 0.75)
           h = Math.round(h * 0.75)
         }
