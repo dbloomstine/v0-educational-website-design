@@ -128,11 +128,12 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
       setCompany(pre.firm)
       if (pre.line) setBlurb(pre.line)
       if (pre.site) { setWebsite(pre.site); setCtaUrl(pre.site) }
-      if (pre.site && pre.logo) {
-        // Only through our own route, which fetches the file from the firm's own website and nowhere else.
-        fetch(`/api/sponsor/logo?${new URLSearchParams({ site: pre.site, logo: pre.logo })}`)
+      if (pre.site) {
+        // Only through our own route, which fetches the file from the firm's own website and nowhere else (with no
+        // file named, it looks for the logo the homepage shows).
+        fetch(`/api/sponsor/logo?${new URLSearchParams(pre.logo ? { site: pre.site, logo: pre.logo } : { site: pre.site })}`)
           .then((res) => (res.ok ? res.blob() : null))
-          .then((blob) => { if (blob && blob.type.startsWith('image/')) onLogo(new File([blob], 'logo', { type: blob.type })) })
+          .then((blob) => { if (blob && blob.type.startsWith('image/')) onLogo(new File([blob], 'logo', { type: blob.type }), true) })
           .catch(() => { /* no logo: the ad shows the firm's name */ })
       }
       return
@@ -232,11 +233,13 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
    * Whatever picture file the sponsor has (PNG, JPEG, SVG, WebP), it is redrawn here as a PNG of a sensible size:
    * the one kind every mail app shows. So a logo straight from a brand kit works, and what is sent is what was previewed.
    */
-  function onLogo(file: File | undefined) {
-    setErrors((e) => ({ ...e, logo: '' }))
+  function onLogo(file: File | undefined, quiet = false) {
+    // A logo fetched for a mock-up that will not do is simply left out (the ad shows the name): no error to a visitor who chose nothing.
+    const fail = (message: string) => { if (!quiet) setErrors((e) => ({ ...e, logo: message })) }
+    fail('')
     if (!file) return
-    if (!file.type.startsWith('image/')) return setErrors((e) => ({ ...e, logo: 'That is not a picture file. A PNG, JPEG, SVG or WebP, please.' }))
-    if (file.size > LOGO_OUT.pickBytes) return setErrors((e) => ({ ...e, logo: 'That file is very large. Use one under 12 MB.' }))
+    if (!file.type.startsWith('image/')) return fail('That is not a picture file. A PNG, JPEG, SVG or WebP, please.')
+    if (file.size > LOGO_OUT.pickBytes) return fail('That file is very large. Use one under 12 MB.')
     const vector = file.type === 'image/svg+xml'
     const reader = new FileReader()
     reader.onload = () => {
@@ -244,7 +247,7 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
       img.onload = () => {
         // A vector has no size of its own worth trusting; anything else has to be big enough to stay sharp.
         const w0 = img.naturalWidth || 800, h0 = img.naturalHeight || 200
-        if (!vector && w0 < LOGO_RULES.minWidth) return setErrors((e) => ({ ...e, logo: `That file is only ${w0} pixels wide. Use one at least ${LOGO_RULES.minWidth} pixels wide so it stays sharp.` }))
+        if (!vector && w0 < LOGO_RULES.minWidth) return fail(`That file is only ${w0} pixels wide. Use one at least ${LOGO_RULES.minWidth} pixels wide so it stays sharp.`)
         let w = vector ? LOGO_OUT.maxWidth : Math.min(w0, LOGO_OUT.maxWidth)
         let h = Math.round((w * h0) / w0)
         if (h > LOGO_OUT.maxHeight) { h = LOGO_OUT.maxHeight; w = Math.round((h * w0) / h0) }
@@ -262,12 +265,12 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
           w = Math.round(w * 0.75)
           h = Math.round(h * 0.75)
         }
-        if (!data || data.length * 0.75 > LOGO_RULES.maxBytes || w < LOGO_RULES.minWidth) return setErrors((e) => ({ ...e, logo: 'That picture is too detailed to use as a logo. Try a simpler file, or a PNG of the logo alone.' }))
+        if (!data || data.length * 0.75 > LOGO_RULES.maxBytes || w < LOGO_RULES.minWidth) return fail('That picture is too detailed to use as a logo. Try a simpler file, or a PNG of the logo alone.')
         setLogoData(data)
         setLogoName(file.name)
         setLogoSize({ w, h })
       }
-      img.onerror = () => setErrors((e) => ({ ...e, logo: 'That file could not be read as a picture. Try saving it again as a PNG.' }))
+      img.onerror = () => fail('That file could not be read as a picture. Try saving it again as a PNG.')
       img.src = String(reader.result)
     }
     reader.readAsDataURL(file)

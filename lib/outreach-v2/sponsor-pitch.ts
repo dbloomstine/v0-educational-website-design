@@ -27,8 +27,8 @@
  * A bare array of leads is accepted too, and so are the list agent's own
  * field names (batch 1, 2026-10-14): contact_first_name, contact_last_name,
  * contact_title, contact_email, contact_location ("Austin, TX, US"),
- * hook_source_url, what_they_sell (the mock ad's copy when there is no
- * ad_line) and email_status.
+ * hook_source_url and email_status. `email_domain_ok` names a second mail
+ * domain the company really uses. `what_they_sell` is never used as ad copy.
  *
  * The hook clause (Danny, 2026-10-14) goes in only when it is dated within
  * HOOK_FRESH_DAYS and reads as one short clause about them; otherwise the
@@ -56,6 +56,8 @@ export interface SponsorLead {
   source_url: string
   logo_url: string | null
   ad_line: string | null
+  /** A second mail domain the company really uses (Nasdaq Private Market: npm.com), checked by whoever built the list. */
+  email_domain_ok: string | null
 }
 
 const str = (v: unknown) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim() : '')
@@ -98,7 +100,9 @@ export function checkLead(raw: unknown): { lead: SponsorLead; errors: string[]; 
     hook_date: /^\d{4}-\d\d-\d\d$/.test(str(r.hook_date)) ? str(r.hook_date) : null,
     source_url: pick('source_url', 'hook_source_url'),
     logo_url: optional(r.logo_url),
-    ad_line: optional(r.ad_line) ?? optional(r.what_they_sell),
+    // The mock ad's copy is ad_line only: what_they_sell is an analyst's note ("(software only)"), never ad copy.
+    ad_line: optional(r.ad_line),
+    email_domain_ok: bareDomain(str(r.email_domain_ok)) || null,
   }
   const errors: string[] = []
   const warnings: string[] = []
@@ -110,7 +114,7 @@ export function checkLead(raw: unknown): { lead: SponsorLead; errors: string[]; 
   if (!lead.first_name) errors.push('first_name is missing')
   const m = lead.email.match(EMAIL)
   if (!m) errors.push('email is not an email address')
-  else if (lead.domain && !sameOrSub(m[1], lead.domain)) errors.push(`email is not at ${lead.domain}`)
+  else if (lead.domain && !sameOrSub(m[1], lead.domain) && !(lead.email_domain_ok && sameOrSub(m[1], lead.email_domain_ok))) errors.push(`email is not at ${lead.domain}`)
   if (isIqeqEmail(lead.email)) errors.push('iqeq.com address')
   if (isExcludedFirm(lead.company, lead.title)) errors.push('reads as a fund administrator / IQ-EQ competitor')
   if (lead.hook_clause && /^i\b/i.test(lead.hook_clause)) errors.push('hook_clause must be about them, not "I saw…"')

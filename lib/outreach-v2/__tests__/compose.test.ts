@@ -143,6 +143,12 @@ describe('news note', () => {
   it('says what was covered in a few words', () => {
     expect(newsPhrase({ eventType: 'fund_close', kind: 'fundraising', fundName: 'Fund III', sizeUsdM: 1700, closeType: 'final' })).toBe('$1.7bn Fund III close')
     expect(newsPhrase({ eventType: 'fund_close', kind: 'fundraising', fundName: null, sizeUsdM: 50, closeType: 'second' })).toBe('$50M fund second close')
+    // Danny, 2026-10-14: "Savory's $200M Savory Fund III close" repeats the firm.
+    expect(newsPhrase({ eventType: 'fund_close', kind: 'fundraising', fundName: 'Savory Fund III', sizeUsdM: 200, closeType: 'final' }, 'Savory')).toBe('$200M Fund III close')
+    expect(newsPhrase({ eventType: 'fund_close', kind: 'fundraising', fundName: 'Audax Private Equity Fund VII', sizeUsdM: null, closeType: 'final' }, 'Audax Private Equity')).toBe('Fund VII close')
+    expect(newsPhrase({ eventType: 'fund_close', kind: 'fundraising', fundName: 'Castlelake Aviation V', sizeUsdM: null, closeType: 'final' }, 'Castlelake LP')).toBe('Aviation V close')
+    expect(newsPhrase({ eventType: 'fund_close', kind: 'fundraising', fundName: 'Savory', sizeUsdM: 200, closeType: 'final' }, 'Savory')).toBe('$200M fund close')
+    expect(newsPhrase({ eventType: 'fund_close', kind: 'fundraising', fundName: 'Growth Fund II', sizeUsdM: null, closeType: 'final' }, 'Savory')).toBe('Growth Fund II close')
     expect(newsPhrase({ eventType: 'acquisition', kind: 'deals', fundName: null, sizeUsdM: null, closeType: null })).toBe('latest deal')
   })
 })

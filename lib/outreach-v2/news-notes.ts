@@ -68,10 +68,25 @@ export function pickCandidates(stories: Story[]): { picked: NoteCandidate[]; dro
 
 const money = (m: number) => (m >= 1000 ? `$${(Math.round(m / 100) / 10).toString()}bn` : `$${Math.round(m)}M`)
 
+/**
+ * "Savory Fund III" under "Savory's …" reads twice: the fund's name loses the firm's name (or its first word) when it
+ * starts with it. A fund name that is nothing but the firm's name is dropped.
+ */
+export function withoutFirm(fund: string, firm: string): string {
+  const f = fund.trim()
+  const words = firm.trim().split(/\s+/).filter(Boolean)
+  for (const prefix of [firm.trim(), words[0] ?? '']) {
+    if (prefix.length < 2) continue
+    const re = new RegExp(`^${prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?:'s)?\\b\\s*`, 'i')
+    if (re.test(f)) return f.replace(re, '').trim()
+  }
+  return f
+}
+
 /** A few words for what we covered, read after "We covered <Firm>'s …": "$200M Fund III close", "latest deal". */
-export function newsPhrase(s: Pick<Story, 'eventType' | 'kind' | 'fundName' | 'sizeUsdM' | 'closeType'>): string {
+export function newsPhrase(s: Pick<Story, 'eventType' | 'kind' | 'fundName' | 'sizeUsdM' | 'closeType'>, firm?: string | null): string {
   const size = s.sizeUsdM ? `${money(s.sizeUsdM)} ` : ''
-  const fund = s.fundName?.trim()
+  const fund = withoutFirm(s.fundName?.trim() ?? '', firm ?? '') || undefined
   switch (s.eventType) {
     case 'fund_close':
       return `${size}${fund ?? 'fund'} ${s.closeType && /first|interim|second/i.test(s.closeType) ? `${s.closeType.toLowerCase()} close` : 'close'}`.replace(/\s+/g, ' ')
@@ -267,7 +282,7 @@ export async function runNewsNotes(db: DbClient, apollo: ApolloPort, now: Date =
     screen: async (email) => (await screenEmails(db, [email], { program: 'news_note', now })).get(email) ?? null,
     store: async (c, contact) => {
       const unsubToken = newToken()
-      const r = renderNewsNote({ firstName: contact.firstName, company: c.firm, unsubToken, news: newsPhrase(c.story), storyUrl: c.url })
+      const r = renderNewsNote({ firstName: contact.firstName, company: c.firm, unsubToken, news: newsPhrase(c.story, c.firm), storyUrl: c.url })
       const { error } = await db.from('outreach_v2_messages').insert({
         program: 'news_note',
         kind: 'initial',

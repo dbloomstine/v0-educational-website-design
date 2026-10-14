@@ -244,7 +244,13 @@ describe('the sponsor list file', () => {
       hook_source_url: 'https://6lock.com/blog', what_they_sell: 'Verified money movement for private markets.', email_status: 'verified',
     })
     expect(c.errors).toEqual([])
-    expect(c.lead).toMatchObject({ first_name: 'David', email: 'db@6lock.com', country: 'United States', hook_clause: 'Congrats on the new insurance cover.', hook_date: '2026-10-08', source_url: 'https://6lock.com/blog', ad_line: 'Verified money movement for private markets.' })
+    expect(c.lead).toMatchObject({ first_name: 'David', email: 'db@6lock.com', country: 'United States', hook_clause: 'Congrats on the new insurance cover.', hook_date: '2026-10-08', source_url: 'https://6lock.com/blog', ad_line: null })
+  })
+
+  it('takes a second mail domain only when the lead names it', () => {
+    const npm = { ...good, company: 'Nasdaq Private Market', domain: 'nasdaqprivatemarket.com', email: 'c@npm.com' }
+    expect(checkLead(npm).errors.join()).toMatch(/not at nasdaqprivatemarket\.com/)
+    expect(checkLead({ ...npm, email_domain_ok: 'npm.com' }).errors).toEqual([])
   })
 
   it('refuses an address off the company domain, a competitor, an IQ-EQ address and an "I saw" clause', () => {
