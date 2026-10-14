@@ -92,12 +92,13 @@ export function SubmitEventForm() {
         <div>
           <label htmlFor="ev-format" className={labelClass}>Format</label>
           <select id="ev-format" name="event_format" className={inputClass} defaultValue="">
-            {/* Per Danny (2026-09-05): the board is in-person only, so
-                virtual-only events are not accepted. Offering the option would
-                invite submissions that could never be published. */}
+            {/* The board lists in-person events only (Danny, 2026-09-05), with one way in for a
+                webinar: its organizer submits it (2026-10-13). Until then the form offered no virtual
+                option, and an organizer with a webinar chose "hybrid". */}
             <option value="">Select...</option>
             <option value="in_person">In-person</option>
             <option value="hybrid">Hybrid (in-person + streamed)</option>
+            <option value="virtual">Virtual / webinar</option>
           </select>
         </div>
         <div>

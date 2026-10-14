@@ -48,6 +48,12 @@ const BOARD_SCOPE = `region.eq.${BOARD_REGION},board_exception.eq.true`
 // not a re-scout — same approach as BOARD_REGION above.
 const BOARD_FORMATS = ['in_person', 'hybrid'] as const
 
+// The one way a virtual event is listed (Danny, 2026-10-13): its organizer sent it in through /events/submit
+// (`is_submitted`). A fund administrator's webinar had been approved, relabelled virtual from its own page, and
+// then appeared nowhere but its detail page. What we find ourselves stays in-person only; what someone takes
+// the trouble to submit is on the board and in the daily email, labelled for what it is.
+const BOARD_FORMAT_SCOPE = `event_format.in.(${BOARD_FORMATS.join(',')}),is_submitted.eq.true`
+
 /**
  * The feed, kept for five minutes — what pages and the board's API read.
  *
@@ -73,7 +79,7 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
     .select('*')
     .eq('status', 'published')
     .or(BOARD_SCOPE)
-    .in('event_format', BOARD_FORMATS)
+    .or(BOARD_FORMAT_SCOPE)
     .gte('start_date', today)
     .order('start_date', { ascending: true })
     .order('name', { ascending: true })
@@ -95,7 +101,8 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
     // is EMPTY — an empty `in` list matches no rows. Falling back to
     // BOARD_FORMATS here would answer "show me virtual events" with a full
     // page of in-person ones, which is worse than returning nothing.
-    const requested = params.format.split(',').filter((f) => BOARD_FORMATS.includes(f as never))
+    // `virtual` may be asked for since 2026-10-13: the scope above already lets through only the submitted ones.
+    const requested = params.format.split(',').filter((f) => BOARD_FORMATS.includes(f as never) || f === 'virtual')
     query = query.in('event_format', requested)
   }
   if (params.cost) {
@@ -195,7 +202,7 @@ export async function queryRelatedEvents(event: IndustryEvent, limit = 5): Promi
       .select('*')
       .eq('status', 'published')
       .or(BOARD_SCOPE)
-      .in('event_format', BOARD_FORMATS)
+      .or(BOARD_FORMAT_SCOPE)
       .gte('start_date', today)
       .order('start_date', { ascending: true })
       .limit(limit + 1)
@@ -228,7 +235,7 @@ export async function queryAllEventSlugs(): Promise<{ slug: string; startDate: s
     .select('slug, start_date, created_at, updated_at, verified_at')
     .neq('status', 'draft')
     .or(BOARD_SCOPE)
-    .in('event_format', BOARD_FORMATS)
+    .or(BOARD_FORMAT_SCOPE)
     .order('start_date', { ascending: true })
     .limit(1000)
   return (data ?? []).map((r) => ({
@@ -246,7 +253,7 @@ async function queryEventFacets(today: string): Promise<EventFacetCounts> {
     .select('event_kind, event_format, cost_type, region, fund_categories, topics, city, ops_relevance')
     .eq('status', 'published')
     .or(BOARD_SCOPE)
-    .in('event_format', BOARD_FORMATS)
+    .or(BOARD_FORMAT_SCOPE)
     .gte('start_date', today)
 
   const kinds: Record<string, number> = {}
