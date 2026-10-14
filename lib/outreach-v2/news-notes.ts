@@ -14,7 +14,7 @@ import { STORY_COLUMNS } from '@/lib/news/story-columns'
 import { buildStories, type Story } from '@/lib/news/stories'
 import { storyPath } from '@/lib/news/story-path'
 import { isDescriptiveFirmName } from '@/lib/newsletter/query-articles'
-import { APOLLO_CREDITS_PER_DAY, FIRM_NEWS_NOTE_DAYS, NEWS_NOTES_PER_DAY, SITE, nyDay, type Mode } from './config'
+import { APOLLO_CREDITS_PER_DAY, FIRM_NEWS_NOTE_DAYS, NEWS_NOTES_PER_DAY, SITE, nyDay, newsMode, type Mode } from './config'
 import { renderNewsNote } from './compose'
 import { isBadNews, isExcludedFirm, isIqeqEmail, isUsCountry, noteTitleRank, sameFirm } from './exclusions'
 import { creditsUsedToday, effectiveMode, logRun, newToken, screenEmails, statusForMode, type DbClient } from './store'
@@ -248,7 +248,9 @@ export async function collectNotes(
 }
 
 export async function runNewsNotes(db: DbClient, apollo: ApolloPort, now: Date = new Date(), opts: { creditCap?: number; noteCap?: number } = {}): Promise<NewsRunResult> {
-  const { mode, halted } = await effectiveMode(db)
+  const shared = await effectiveMode(db)
+  const halted = shared.halted
+  const mode = newsMode(shared.mode)
   if (mode === 'off') return { ok: true, mode, skipped: halted ? `halted: ${halted.halted_reason}` : 'mode off' }
 
   const today = nyDay(now)

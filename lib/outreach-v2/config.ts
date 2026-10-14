@@ -66,6 +66,20 @@ export function envMode(value: string | undefined = process.env.OUTREACH_V2_MODE
   return v === 'preview' || v === 'live' ? v : 'off'
 }
 
+/**
+ * The news notes have a switch of their own on top of OUTREACH_V2_MODE
+ * (2026-10-14: the sponsor batch went live the same day, and the first news
+ * notes are read by hand before any is sent). OUTREACH_V2_NEWS_MODE can only
+ * lower the shared mode, never raise it: unset, the news notes stay in
+ * `preview` at most.
+ */
+export function newsMode(shared: Mode, value: string | undefined = process.env.OUTREACH_V2_NEWS_MODE): Mode {
+  const rank: Record<Mode, number> = { off: 0, preview: 1, live: 2 }
+  const own = (value ?? '').trim().toLowerCase()
+  const cap: Mode = own === 'live' ? 'live' : own === 'off' ? 'off' : 'preview'
+  return rank[cap] < rank[shared] ? cap : shared
+}
+
 export function isOutreachReplyAddress(address: string | null | undefined): boolean {
   const a = bareAddress(address)
   return a.endsWith(`@${REPLY_DOMAIN}`)

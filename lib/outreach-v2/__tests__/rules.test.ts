@@ -260,3 +260,14 @@ describe('the sponsor list file', () => {
     expect(checkLead({ ...good, hook_clause: 'I saw your launch.', hook_date: '2026-10-01' }).errors.join()).toMatch(/about them/)
   })
 })
+
+describe('the news notes switch (OUTREACH_V2_NEWS_MODE)', () => {
+  it('caps the news notes at preview unless set live, and never raises the shared mode', async () => {
+    const { newsMode } = await import('../config')
+    expect(newsMode('live', undefined)).toBe('preview')
+    expect(newsMode('live', 'live')).toBe('live')
+    expect(newsMode('live', 'off')).toBe('off')
+    expect(newsMode('preview', 'live')).toBe('preview')
+    expect(newsMode('off', 'live')).toBe('off')
+  })
+})
