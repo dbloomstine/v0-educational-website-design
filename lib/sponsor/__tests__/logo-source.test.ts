@@ -31,6 +31,8 @@ describe('mock-up logos come from the firm’s own website only', () => {
   it('finds the logo a homepage shows, or its touch icon', () => {
     expect(findLogoInHomepage('<img src="/img/hero.jpg"><img src="/img/brand.svg" alt="Acme logo">', 'https://acme.com/')?.href).toBe('https://acme.com/img/brand.svg')
     expect(findLogoInHomepage('<link rel="apple-touch-icon" href="/icon.png">', 'https://acme.com/')?.href).toBe('https://acme.com/icon.png')
+    expect(findLogoInHomepage('<link href="https://cdn.framer.com/a.svg" rel="icon" media="(prefers-color-scheme: dark)"><link href="https://cdn.framer.com/b.svg" rel="icon" media="(prefers-color-scheme: light)">', 'https://acme.com/')?.href).toBe('https://cdn.framer.com/b.svg')
+    expect(findLogoInHomepage('<link rel="icon" href="/favicon-16.png" sizes="16x16">', 'https://acme.com/')).toBeNull()
     expect(findLogoInHomepage('<p>nothing</p>', 'https://acme.com/')).toBeNull()
   })
 })

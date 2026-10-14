@@ -63,7 +63,7 @@ async function main() {
       '',
       `- To: ${r.email}`,
       `- Subject: **${r.subject}**`,
-      `- Mock-up: ${r.mockup_url}`,
+      `- Mock-up (the short link in the email opens this): ${r.mockup_url}`,
       `- Hook source: ${r.source_url || '(none)'}`,
       `- Words (above the footer): ${wordCount(bodyOf(r.body_text))}`,
       ...(p.warnings.length ? [`- Check: ${p.warnings.join('; ')}`] : []),

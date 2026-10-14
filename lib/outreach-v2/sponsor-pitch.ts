@@ -22,11 +22,16 @@
  *     }]
  *   }
  *
- * A bare array of leads is accepted too.
+ * A bare array of leads is accepted too, and so are the list agent's own
+ * field names (batch 1, 2026-10-14): contact_first_name, contact_last_name,
+ * contact_title, contact_email, contact_location ("Austin, TX, US"),
+ * hook_source_url, what_they_sell (the mock ad's copy when there is no
+ * ad_line) and email_status. `hook_line`, when present, is the sentence the
+ * email uses; `hook` is then kept as the research note it came from.
  */
 import { LIMITS } from '@/lib/sponsor/packages'
 import { FOLLOWUP_BUSINESS_DAYS, followupDue, nyDay } from './config'
-import { bodyOf, mockupUrl, renderSponsorFollowup, renderSponsorPitch, wordCount } from './compose'
+import { bodyOf, mockupShortUrl, mockupUrl, renderSponsorFollowup, renderSponsorPitch, wordCount } from './compose'
 import { isExcludedFirm, isIqeqEmail, isUsCountry } from './exclusions'
 import { effectiveMode, newToken, screenEmails, type DbClient, type MessageRow } from './store'
 
@@ -51,6 +56,13 @@ const EMAIL = /^[^\s@]+@([^\s@]+\.[^\s@]{2,})$/
 const bareDomain = (d: string) => d.toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0]
 const sameOrSub = (host: string, domain: string) => host === domain || host.endsWith(`.${domain}`)
 
+/** "Austin, TX, US" → "United States"; any other last part is returned as it is; nothing → null. */
+export function countryOf(location: string): string | null {
+  const last = location.split(',').map((p) => p.trim()).filter(Boolean).pop()
+  if (!last) return null
+  return isUsCountry(last) ? 'United States' : last
+}
+
 export function parseBatchFile(json: unknown): { batch: string | null; leads: unknown[] } {
   if (Array.isArray(json)) return { batch: null, leads: json }
   if (json && typeof json === 'object') {
@@ -63,22 +75,25 @@ export function parseBatchFile(json: unknown): { batch: string | null; leads: un
 /** Tidies one lead and says what is wrong with it (errors stop it; warnings are shown in the preview). */
 export function checkLead(raw: unknown): { lead: SponsorLead; errors: string[]; warnings: string[] } {
   const r = (raw && typeof raw === 'object' ? raw : {}) as Record<string, unknown>
+  const pick = (...keys: string[]) => keys.map((k) => str(r[k])).find(Boolean) ?? ''
   const lead: SponsorLead = {
     company: str(r.company),
     domain: bareDomain(str(r.domain)),
-    first_name: str(r.first_name),
-    last_name: str(r.last_name),
-    title: str(r.title),
-    email: str(r.email).toLowerCase(),
+    first_name: pick('first_name', 'contact_first_name'),
+    last_name: pick('last_name', 'contact_last_name'),
+    title: pick('title', 'contact_title'),
+    email: pick('email', 'contact_email').toLowerCase(),
     apollo_person_id: optional(r.apollo_person_id),
-    country: optional(r.country),
-    hook: str(r.hook),
-    source_url: str(r.source_url),
+    country: optional(r.country) ?? countryOf(str(r.contact_location)),
+    hook: pick('hook_line', 'hook'),
+    source_url: pick('source_url', 'hook_source_url'),
     logo_url: optional(r.logo_url),
-    ad_line: optional(r.ad_line),
+    ad_line: optional(r.ad_line) ?? optional(r.what_they_sell),
   }
   const errors: string[] = []
   const warnings: string[] = []
+  const status = str(r.email_status)
+  if (status && status !== 'verified') warnings.push(`Apollo email status is ${status}, not verified`)
   if (lead.company.length < 2) errors.push('company is missing')
   if (lead.company.length > LIMITS.company) errors.push(`company is longer than ${LIMITS.company} characters (the ad builder's limit)`)
   if (!/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(lead.domain)) errors.push('domain is not a web domain')
@@ -137,6 +152,14 @@ export async function prepareSponsorBatch(db: DbClient, batch: string, rawLeads:
   if (error) throw new Error(`existing batch rows: ${error.message}`)
   const byEmail = new Map(((existing ?? []) as MessageRow[]).map((r) => [r.email, r]))
 
+  // A lead taken out of the file since the last run is taken out of the batch too (only while still unsent).
+  const inFile = new Set(checked.map((c) => c.lead.email).filter(Boolean))
+  const dropped = [...byEmail.values()].filter((r) => !inFile.has(r.email) && ['preview', 'queued'].includes(r.status))
+  if (dropped.length) {
+    const { error: dropErr } = await db.from('outreach_v2_messages').update({ status: 'cancelled', skip_reason: 'removed from the list' }).in('id', dropped.map((r) => r.id))
+    if (dropErr) throw new Error(`drop removed leads: ${dropErr.message}`)
+  }
+
   const out: PreparedLead[] = []
   for (const c of checked) {
     const { lead } = c
@@ -177,11 +200,12 @@ export async function prepareSponsorBatch(db: DbClient, batch: string, rawLeads:
       skip_reason: skipReason,
     }
     const unsubToken = prior?.unsub_token ?? newToken()
-    const rendered = renderSponsorPitch({ firstName: lead.first_name, company: lead.company, unsubToken, hook: lead.hook, subscribers, mockup })
+    const id = prior?.id ?? crypto.randomUUID()
+    const rendered = renderSponsorPitch({ firstName: lead.first_name, company: lead.company, unsubToken, hook: lead.hook, subscribers, mockup: mockupShortUrl(id) })
     const full = { ...fields, unsub_token: unsubToken, subject: rendered.subject, body_text: rendered.text }
     const saved = prior
       ? await db.from('outreach_v2_messages').update(full).eq('id', prior.id).select('*').single()
-      : await db.from('outreach_v2_messages').insert(full).select('*').single()
+      : await db.from('outreach_v2_messages').insert({ id, ...full }).select('*').single()
     if (saved.error) throw new Error(`save ${lead.email}: ${saved.error.message}`)
     const words = wordCount(bodyOf(rendered.text))
     const warnings = [...c.warnings]
@@ -261,7 +285,7 @@ export async function createFollowups(db: DbClient, now: Date = new Date()): Pro
       firstName: parent.first_name ?? '',
       company: parent.company,
       unsubToken,
-      mockup: parent.mockup_url ?? mockupUrl({ company: parent.company, domain: parent.domain }),
+      mockup: mockupShortUrl(parent.id),
       original: { subject: parent.subject, text: parent.body_text, sentAt: new Date(parent.sent_at!) },
     })
     const ins = await db.from('outreach_v2_messages').insert({ ...base, unsub_token: unsubToken, subject: r.subject, body_text: r.text, status: 'queued', queued_at: new Date().toISOString() })

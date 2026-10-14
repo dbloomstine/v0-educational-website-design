@@ -150,6 +150,16 @@ describe('picking firms from the edition', () => {
   })
 })
 
+describe('the firm the story is about', () => {
+  it('puts a firm that leads its headline ahead of one named further on', () => {
+    const { picked } = pickCandidates([
+      story({ id: 'a1000000-0000', firmName: 'BlackRock', headline: 'WCAS sells $2.8bn CenterWell clinic stake to BlackRock’s HPS', weight: 5 }),
+      story({ id: 'b1000000-0000', firmName: 'Savory', headline: 'Savory Closes $200M Fund III for Restaurant Growth', weight: 1 }),
+    ])
+    expect(picked.map((p) => p.firm)).toEqual(['Savory', 'BlackRock'])
+  })
+})
+
 describe('the Apollo contact checks', () => {
   const person = {
     id: 'p1',
@@ -227,6 +237,16 @@ describe('the sponsor list file', () => {
     expect(c.errors).toEqual([])
     expect(c.lead.email).toBe('jane@toltiq.com')
   })
+  it('reads the list agent’s own field names, preferring the written hook line', () => {
+    const c = checkLead({
+      company: '6lock', domain: '6lock.com', contact_first_name: 'David', contact_last_name: 'B', contact_title: 'COO', contact_email: 'db@6lock.com',
+      contact_location: 'Austin, TX, US', hook: 'Oct 8, 2026: research note.', hook_line: 'I saw that 6lock transactions now carry insurance cover.',
+      hook_source_url: 'https://6lock.com/blog', what_they_sell: 'Verified money movement for private markets.', email_status: 'verified',
+    })
+    expect(c.errors).toEqual([])
+    expect(c.lead).toMatchObject({ first_name: 'David', email: 'db@6lock.com', country: 'United States', hook: 'I saw that 6lock transactions now carry insurance cover.', source_url: 'https://6lock.com/blog', ad_line: 'Verified money movement for private markets.' })
+  })
+
   it('refuses an address off the company domain, a competitor, an IQ-EQ address and a missing hook', () => {
     expect(checkLead({ ...good, email: 'jane@gmail.com' }).errors.join()).toMatch(/not at toltiq\.com/)
     expect(checkLead({ ...good, company: 'Apex Group', domain: 'apexgroup.com', email: 'a@apexgroup.com' }).errors.join()).toMatch(/competitor/)

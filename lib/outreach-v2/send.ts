@@ -19,15 +19,13 @@ export interface ResendPayload {
   tags: { name: string; value: string }[]
 }
 
-/** The Message-ID we give a message, so a reply's In-Reply-To finds it. */
-export const messageIdFor = (id: string) => `<${id}@fundopshq.com>`
-
-/** What goes to Resend for one message: plain text only (no tracking can be added to it), with the unsubscribe headers. */
+/**
+ * What goes to Resend for one message: plain text only (no tracking can be added to it), with the unsubscribe headers.
+ * No Message-ID of our own: Resend's mail server replaces it (seen 2026-10-14). The real one is read back from Resend
+ * after sending (backfillMessageIds) and is what a reply's In-Reply-To carries.
+ */
 export function buildPayload(row: Pick<MessageRow, 'id' | 'email' | 'subject' | 'body_text' | 'unsub_token' | 'program' | 'kind'>, parentMessageId?: string | null): ResendPayload {
-  const headers: Record<string, string> = {
-    ...listUnsubscribeHeaders(row.unsub_token),
-    'Message-ID': messageIdFor(row.id),
-  }
+  const headers: Record<string, string> = { ...listUnsubscribeHeaders(row.unsub_token) }
   if (parentMessageId) {
     headers['In-Reply-To'] = parentMessageId
     headers['References'] = parentMessageId
@@ -58,6 +56,37 @@ export async function resendSend(payload: object, idempotencyKey: string, apiKey
   const id = (JSON.parse(body) as { id?: string }).id
   if (!id) throw new Error('Resend returned no id')
   return { id }
+}
+
+/**
+ * The Message-ID each sent message really went out with (Resend reports it a moment after sending), stored so a
+ * reply's In-Reply-To finds its message and a follow-up threads under its pitch.
+ */
+export async function backfillMessageIds(db: DbClient, limit = 5, apiKey: string | undefined = process.env.RESEND_API_KEY): Promise<number> {
+  if (!apiKey) return 0
+  const { data } = await db
+    .from('outreach_v2_messages')
+    .select('id, resend_id')
+    .eq('status', 'sent')
+    .is('message_id_header', null)
+    .not('resend_id', 'is', null)
+    .order('sent_at', { ascending: false })
+    .limit(limit)
+  let n = 0
+  for (const r of data ?? []) {
+    try {
+      const res = await fetch(`https://api.resend.com/emails/${encodeURIComponent(String(r.resend_id))}`, { headers: { Authorization: `Bearer ${apiKey}` } })
+      if (!res.ok) continue
+      const mid = ((await res.json()) as { message_id?: string | null }).message_id
+      if (mid && /^<[^<>\s]+>$/.test(mid)) {
+        await db.from('outreach_v2_messages').update({ message_id_header: mid }).eq('id', r.id)
+        n++
+      }
+    } catch {
+      // next tick
+    }
+  }
+  return n
 }
 
 /** A plain note to Danny (alerts, forwarded replies). Never to anyone else. */
@@ -94,6 +123,7 @@ export interface DispatchResult {
 export async function dispatchOne(db: DbClient, now: Date = new Date(), opts: { ignoreHours?: boolean } = {}): Promise<DispatchResult> {
   const { mode, halted } = await effectiveMode(db)
   if (mode !== 'live') return { ok: true, skipped: halted ? `halted: ${halted.halted_reason}` : `mode ${mode}` }
+  await backfillMessageIds(db)
   if (!opts.ignoreHours && !inSendingHours(now)) return { ok: true, skipped: 'outside sending hours' }
   if ((await remainingSendsToday(db, now)) <= 0) return { ok: true, skipped: 'daily cap reached' }
 
@@ -143,7 +173,7 @@ export async function dispatchOne(db: DbClient, now: Date = new Date(), opts: { 
       const { id: resendId } = await resendSend(payload, `outreach-v2-${row.id}`)
       await db
         .from('outreach_v2_messages')
-        .update({ status: 'sent', sent_at: new Date().toISOString(), resend_id: resendId, message_id_header: payload.headers['Message-ID'], error: null })
+        .update({ status: 'sent', sent_at: new Date().toISOString(), resend_id: resendId, error: null })
         .eq('id', row.id)
       return { ok: true, sent: { id: row.id, email: row.email, program: row.program, resendId }, passedOver }
     } catch (err) {

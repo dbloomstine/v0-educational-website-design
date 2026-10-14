@@ -4,7 +4,7 @@
  * taken as it is; one served from elsewhere (a site builder's CDN) is taken
  * only when the firm's homepage itself links to that exact file. Given only
  * the domain, the logo is looked for on the homepage: an <img> whose name
- * says logo, else the site's touch icon.
+ * says logo, else the site's touch icon or its vector favicon (the mark).
  *
  * Pure: the fetching is in app/api/sponsor/logo/route.ts.
  */
@@ -75,12 +75,17 @@ export function findLogoInHomepage(html: string, pageUrl: string): URL | null {
       if (u && !u.href.startsWith('data:')) return u
     }
   }
-  for (const m of html.matchAll(/<link\b[^>]*>/gi)) {
-    const tag = m[0]
-    if (/apple-touch-icon/i.test(attr(tag, 'rel') ?? '')) {
-      const u = resolve(attr(tag, 'href'))
-      if (u) return u
-    }
+  const links = [...html.matchAll(/<link\b[^>]*>/gi)].map((m) => m[0])
+  const rels = (tag: string) => (attr(tag, 'rel') ?? '').toLowerCase().split(/\s+/)
+  // The touch icon is drawn large; then a vector favicon (a site built with Framer or Webflow often has no <img> logo in
+  // its HTML at all, only the mark as an SVG icon); then a favicon at least 96 pixels across. Light-scheme icons first.
+  const touch = links.find((t) => rels(t).includes('apple-touch-icon'))
+  const icons = links.filter((t) => rels(t).includes('icon') && !/prefers-color-scheme:\s*dark/i.test(attr(t, 'media') ?? ''))
+  const svg = icons.find((t) => /\.svg(\?|$)/i.test(attr(t, 'href') ?? '') || /svg/i.test(attr(t, 'type') ?? ''))
+  const big = icons.find((t) => Number((attr(t, 'sizes') ?? '').split('x')[0]) >= 96)
+  for (const tag of [touch, svg, big]) {
+    const u = tag ? resolve(attr(tag, 'href')) : null
+    if (u) return u
   }
   return null
 }

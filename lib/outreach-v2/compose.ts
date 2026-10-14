@@ -80,6 +80,14 @@ export function mockupUrl(m: SponsorMockup): string {
   return `${SITE}/sponsor?${q.toString()}#book`
 }
 
+/**
+ * The short form that goes in the email: /sponsor/m/<first 8 of the pitch's id> redirects to the full mockupUrl
+ * (app/sponsor/m/[code]/route.ts). A long query string reads badly in a plain-text email. Nothing is counted.
+ */
+export function mockupShortUrl(messageId: string): string {
+  return `${SITE}/sponsor/m/${messageId.slice(0, 8).toLowerCase()}`
+}
+
 export interface PitchInput extends Recipient {
   /** One sentence, written to be read as-is, about why we are writing to them now. */
   hook: string

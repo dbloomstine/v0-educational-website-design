@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { bodyOf, footer, listUnsubscribeHeaders, mockupUrl, renderNewsNote, renderSponsorFollowup, renderSponsorPitch, unsubscribeUrl, wordCount } from '../compose'
+import { bodyOf, footer, listUnsubscribeHeaders, mockupShortUrl, mockupUrl, renderNewsNote, renderSponsorFollowup, renderSponsorPitch, unsubscribeUrl, wordCount } from '../compose'
 import { buildPayload } from '../send'
 
 const TOKEN = 'a'.repeat(32)
@@ -36,7 +36,8 @@ describe('the Resend payload', () => {
     expect(p.from).toBe('Danny Bloomstine <danny@fundopshq.com>')
     expect(p.reply_to).toBe('Danny Bloomstine <danny@reply.fundopshq.com>')
     expect(p.headers['List-Unsubscribe-Post']).toBe('List-Unsubscribe=One-Click')
-    expect(p.headers['Message-ID']).toBe(`<${row.id}@fundopshq.com>`)
+    // Resend's mail server sets the Message-ID; we read it back after sending.
+    expect(p.headers['Message-ID']).toBeUndefined()
     expect(p.headers['In-Reply-To']).toBeUndefined()
   })
   it('threads a follow-up under its pitch', () => {
@@ -79,6 +80,10 @@ describe('sponsor pitch', () => {
   it('never claims readers at named firms', () => {
     expect(r.text).not.toMatch(/read(?:ers|s)? (?:at|by|from) [A-Z]/)
     expect(r.text).not.toMatch(/\bfirms? (?:like|such as)\b/i)
+  })
+
+  it('puts a short mock-up link in the email', () => {
+    expect(mockupShortUrl('6DDB4D12-06ce-4582-8c35-cf9552999acd')).toBe('https://fundopshq.com/sponsor/m/6ddb4d12')
   })
 
   it('builds the mock-up link the ad builder reads', () => {

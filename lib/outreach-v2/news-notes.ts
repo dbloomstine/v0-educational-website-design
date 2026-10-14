@@ -33,14 +33,24 @@ export interface NoteCandidate {
 
 const northAmerican = (s: Story) => s.geography.some((g) => /north america|united states|\bus\b/i.test(g))
 
+/** The firm is what the headline is about ("Savory closes…"), not a party named further on ("WCAS sells… to BlackRock's HPS"). */
+export function headlineLeadsWith(headline: string, firm: string): boolean {
+  const first = firm.trim().split(/\s+/)[0]?.toLowerCase().replace(/[^a-z0-9]/g, '')
+  if (!first) return false
+  const opening = headline.toLowerCase().split(/\s+/).slice(0, 3).map((w) => w.replace(/[^a-z0-9]/g, ''))
+  return opening.some((w) => w === first || w === `${first}s`)
+}
+
 /**
  * The firms a note could go to, best first: one per firm, the subject firm of
  * each story, never a roundup, a described firm ("a Texas PE firm"), bad news
- * or an excluded firm. North American stories first, then by weight.
+ * or an excluded firm. North American stories first, then those whose
+ * headline is about the firm, then by weight.
  */
 export function pickCandidates(stories: Story[]): { picked: NoteCandidate[]; dropped: { firm: string | null; headline: string; reason: string }[] } {
   const dropped: { firm: string | null; headline: string; reason: string }[] = []
-  const ordered = [...stories].sort((a, b) => Number(northAmerican(b)) - Number(northAmerican(a)) || b.weight - a.weight)
+  const leads = (s: Story) => Number(headlineLeadsWith(s.headline, s.firmName ?? ''))
+  const ordered = [...stories].sort((a, b) => Number(northAmerican(b)) - Number(northAmerican(a)) || leads(b) - leads(a) || b.weight - a.weight)
   const picked: NoteCandidate[] = []
   for (const story of ordered) {
     const firm = (story.firmName ?? '').trim()
