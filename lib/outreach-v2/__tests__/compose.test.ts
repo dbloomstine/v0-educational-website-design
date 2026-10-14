@@ -90,8 +90,8 @@ describe('sponsor pitch (Danny’s copy, 2026-10-14)', () => {
     expect(pitchMonth('2026-12-03')).toBe('January')
   })
 
-  it('uses a hook only when it is fresh and about them', () => {
-    expect(freshClause({ hook_clause: 'Congrats on the Series A', hook_date: '2026-10-01' }, '2026-10-14')).toBe('Congrats on the Series A.')
+  it('never uses a hook line (Danny, 2026-10-14)', () => {
+    expect(freshClause({ hook_clause: 'Congrats on the Series A', hook_date: '2026-10-01' }, '2026-10-14')).toBeNull()
     expect(freshClause({ hook_clause: 'Congrats on the Series A.', hook_date: '2026-08-01' }, '2026-10-14')).toBeNull()
     expect(freshClause({ hook_clause: 'I saw your great launch.', hook_date: '2026-10-01' }, '2026-10-14')).toBeNull()
     expect(freshClause({ hook_clause: 'Congrats on the Series A.', hook_date: null }, '2026-10-14')).toBeNull()

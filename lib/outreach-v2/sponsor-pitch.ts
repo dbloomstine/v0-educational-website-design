@@ -139,8 +139,14 @@ export function checkLead(raw: unknown): { lead: SponsorLead; errors: string[]; 
 /** A hook is used only this long after its date. */
 export const HOOK_FRESH_DAYS = 60
 
+/** Off since 2026-10-14 (Danny). */
+export const HOOK_LINES = false
+
 /** The clause the email uses, or null: present, dated, no older than HOOK_FRESH_DAYS, about them. */
 export function freshClause(lead: Pick<SponsorLead, 'hook_clause' | 'hook_date'>, today: string): string | null {
+  // Danny, 2026-10-14, on the first sent pitch ("Congrats on the Q2 Family Office Report"): "that seems weird… not sure
+  // we need lines like that". No hook line in any pitch. The rest of this function is kept for the record.
+  if (!HOOK_LINES) return null
   const clause = (lead.hook_clause ?? '').trim()
   if (!clause || !lead.hook_date || /^i\b/i.test(clause) || wordCount(clause) > 14) return null
   const age = (Date.parse(`${today}T12:00:00Z`) - Date.parse(`${lead.hook_date}T12:00:00Z`)) / 86_400_000
