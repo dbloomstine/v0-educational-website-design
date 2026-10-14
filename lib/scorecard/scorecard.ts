@@ -9,6 +9,7 @@
  * What cannot be known is said to be unknown (followers: neither network gives them to the scheduler).
  */
 import { OWNER_EMAIL, esc, type Mail } from '@/lib/sponsor/mail'
+import { emailWeek, type EditionRow, type EmailWeek } from './engagement'
 
 export interface SubscriberRow { status: string; created_at: string; unsubscribed_at: string | null; signup_source: string | null; signup_form: string | null }
 export interface PostRow { id: string; post_date: string; slug: string; format: string; channel: string; status: string; permalink: string | null; caption: string | null }
@@ -32,14 +33,20 @@ export interface Scorecard {
   networks: { channel: string; name: string; posts: number; views: number; typical: number; acts: number; postsBefore: number; viewsBefore: number; typicalBefore: number }[]
   formats: { name: string; channel: string; posts: number; typical: number }[]
   best: { title: string; channel: string; views: number; link: string | null }[]
+  /** The daily email: people who clicked a link, edition by edition, against the week before (lib/scorecard/engagement.ts). */
+  email: EmailWeek
   sponsorLooks: number
+  // ── SITE TRAFFIC: NOT BUILT YET (left for later, 2026-10-14) ──
+  // Visits to fundopshq.com for the week against the week before belong here, as a `site` field, summed by a pure
+  // function beside emailWeek and drawn in scorecardMail at the marked place. Vercel's analytics have them today;
+  // nothing reads them into the scorecard.
 }
 
 /**
  * The week that ended at `now` (seven days), beside the week before it. A post counts in the week it went out; its
  * numbers are the latest reading Buffer has given. A post still waiting, a test's, a skipped or failed one: not counted.
  */
-export function scorecard({ subscribers, posts, metrics, sponsorLooks, now }: { subscribers: SubscriberRow[]; posts: PostRow[]; metrics: MetricRow[]; sponsorLooks: number; now: number }): Scorecard {
+export function scorecard({ subscribers, posts, metrics, editions = [], sponsorLooks, now }: { subscribers: SubscriberRow[]; posts: PostRow[]; metrics: MetricRow[]; editions?: Pick<EditionRow, 'edition_date' | 'status' | 'engagement'>[]; sponsorLooks: number; now: number }): Scorecard {
   const start = now - 7 * DAY, before = now - 14 * DAY
   const within = (iso: string | null, a: number, b: number) => { const t = iso ? Date.parse(iso) : NaN; return t >= a && t < b }
   const real = subscribers.filter((s) => s.signup_form !== 'test')
@@ -59,8 +66,9 @@ export function scorecard({ subscribers, posts, metrics, sponsorLooks, now }: { 
   const channels = [...new Set(out.map((p) => p.channel))].sort((a, b) => (a === 'tiktok' ? -1 : b === 'tiktok' ? 1 : a.localeCompare(b)))
   const title = (p: PostRow) => (p.caption ?? '').split('\n')[0].replace(/\s+/g, ' ').trim().slice(0, 90) || p.slug
 
+  const from = new Date(start).toISOString().slice(0, 10), to = new Date(now - DAY).toISOString().slice(0, 10)
   return {
-    from: new Date(start).toISOString().slice(0, 10), to: new Date(now - DAY).toISOString().slice(0, 10),
+    from, to,
     list: {
       confirmed: real.filter((s) => s.status === 'confirmed').length,
       joined: joined.length, joinedBefore: real.filter((s) => within(s.created_at, before, start)).length,
@@ -74,6 +82,7 @@ export function scorecard({ subscribers, posts, metrics, sponsorLooks, now }: { 
     // A format is compared only where it has had three posts on a network in the week: fewer says nothing.
     formats: channels.flatMap((channel) => count(thisWeek.filter((p) => p.channel === channel), (p) => p.format).filter(([, n]) => n >= 3).map(([f, n]) => ({ name: FORMATS[f] ?? f, channel: NETWORKS[channel] ?? channel, posts: n, typical: median(thisWeek.filter((p) => p.channel === channel && p.format === f).map(views)) }))).sort((x, y) => y.typical - x.typical),
     best: [...thisWeek].sort((x, y) => views(y) - views(x)).slice(0, 3).filter((p) => views(p) > 0).map((p) => ({ title: title(p), channel: NETWORKS[p.channel] ?? p.channel, views: views(p), link: p.permalink })),
+    email: emailWeek(editions, from, to),
     sponsorLooks,
   }
 }
@@ -85,7 +94,22 @@ const change = (now: number, before: number) => (before ? ` <span style="color:$
 const day = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })
 const h = (text: string) => `<h2 style="margin:22px 0 8px;font-family:${SANS};font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:${MUTED};">${esc(text)}</h2>`
 const line = (html: string) => `<p style="margin:0 0 8px;font-family:${SANS};font-size:15px;line-height:1.55;color:${INK};">${html}</p>`
+const weekday = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', timeZone: 'UTC' }).replace(',', '')
 const list = (pairs: [string, number][]) => pairs.map(([k, v]) => `${esc(k)} ${n(v)}`).join(' · ')
+
+/** The daily email's clicks, as lines of the Monday letter. */
+function emailLines(e: EmailWeek): string[] {
+  const out = [h('The daily email: who clicked')]
+  if (!e.editions.length) {
+    out.push(line(e.unmeasured.length ? 'Not counted yet: each edition’s clicks are counted from a day after it goes out.' : 'No edition went out this week.'))
+    return out
+  }
+  const before = e.before.editions ? ` <span style="color:${MUTED};">(${n(e.before.perEdition)}, ${e.before.share}%, the week before)</span>` : ''
+  out.push(line(`<b>${n(e.perEdition)}</b> people clicked a link in an average edition, <b>${e.share}%</b> of those it went to${before}.`))
+  out.push(line(`Edition by edition: ${e.editions.map((x) => `${esc(weekday(x.date))} ${n(x.clicked)} of ${n(x.recipients)} (${x.share}%)${x.final ? '' : ' so far'}`).join(' · ')}.`))
+  if (e.unmeasured.length) out.push(line(`<span style="color:${MUTED};">Not counted yet: ${e.unmeasured.map((d) => esc(weekday(d))).join(', ')}.</span>`))
+  return out
+}
 
 /** The scorecard as the Monday email. */
 export function scorecardMail(s: Scorecard): Mail {
@@ -94,6 +118,8 @@ export function scorecardMail(s: Scorecard): Mail {
     line(`<b>${n(s.list.confirmed)}</b> readers. <b>${n(s.list.joined)}</b> joined this week${change(s.list.joined, s.list.joinedBefore)}${s.list.left ? `; ${n(s.list.left)} left` : ''}.`),
     s.list.joined ? line(`Where they came from: ${list(s.list.sources)}.`) : '',
     s.list.joined ? line(`Where they signed up: ${list(s.list.forms)}.`) : '',
+    ...emailLines(s.email),
+    // ── SITE TRAFFIC goes here, between the email and the posts, once it is built (see the Scorecard type). ──
     h('The posts'),
     ...(s.networks.length ? s.networks.map((x) => line(`<b>${esc(x.name)}</b>: ${n(x.posts)} posts${change(x.posts, x.postsBefore)}, ${n(x.views)} views in all${change(x.views, x.viewsBefore)}, ${n(x.typical)} for a typical post${change(x.typical, x.typicalBefore)}, ${n(x.acts)} likes, comments and shares.`)) : [line('No post went out this week.')]),
     s.formats.length ? h('What kind of post travelled (a typical post, three or more in the week)') : '',
@@ -102,7 +128,7 @@ export function scorecardMail(s: Scorecard): Mail {
     ...s.best.map((b) => line(`${n(b.views)} views on ${esc(b.channel)}: ${b.link ? `<a href="${esc(b.link)}" style="color:${INK};">${esc(b.title)}</a>` : esc(b.title)}`)),
     h('Sponsors'),
     line(s.sponsorLooks ? `${n(s.sponsorLooks)} look${s.sponsorLooks === 1 ? '' : 's'} at the sponsor page from readers’ own copies of the email.` : 'No reader opened the sponsor page from the email this week.'),
-    `<p style="margin:18px 0 0;font-family:${SANS};font-size:12px;line-height:1.5;color:${MUTED};">A post’s numbers are the latest the scheduler has read; the last day or two are still rising. Followers are not here: neither network gives them to the scheduler. Visits to the site from each network are in Vercel’s analytics (the LinkedIn links say where a reader came from).</p>`,
+    `<p style="margin:18px 0 0;font-family:${SANS};font-size:12px;line-height:1.5;color:${MUTED};">A post’s numbers are the latest the scheduler has read; the last day or two are still rising. Followers are not here: neither network gives them to the scheduler. An email click is a reader whose last event at Resend was a click, counted up to three days after the send (“so far” means the count is younger than that); a reader who clicked and opened it again later can show as an open, so the clicks are a floor. Visits to the site from each network are in Vercel’s analytics (the LinkedIn links say where a reader came from).</p>`,
   ].filter(Boolean).join('\n')
   const html = `<!doctype html><html lang="en"><body style="margin:0;padding:0;background:${CREAM};">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CREAM};"><tr><td align="center" style="padding:28px 14px;">

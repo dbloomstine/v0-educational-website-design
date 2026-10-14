@@ -18,17 +18,20 @@
  * (TikTok wants paid promotion labelled and our scheduler cannot set the
  * label), and sponsored articles (we do not sell coverage).
  *
- * THE PRICES are flat fees for a young list, set on 2026-10-09 from what small
- * newsletters publish (research: a survey of 321 newsletters put the middle
- * price of a main slot on a list under 5,000 at $150 an issue; small lists
- * are priced flat, not per subscriber; bundles run 12 to 25% off; nobody
- * offers more than four products). A week of seven editions plus the site at
- * $400 sits under that per issue because the list is small; four weeks is a
- * quarter off. No comparable B2B finance list of this size publishes a price,
- * so these are a judgement. They are the only figures typed anywhere in the
- * sponsorship pages; the audience numbers beside them
- * are counted (lib/sponsor/stats.ts). Change a price here and the page, the
- * form, the emails and the stored request all follow.
+ * THE PRICES are founding rates (Danny, 2026-10-14): a week $150, four weeks
+ * $450, a quarter $1,200, flat, in US dollars. They replace the first guesses
+ * of 2026-10-09 ($400 / $1,200 / $3,000, from what small newsletters publish:
+ * a survey of 321 newsletters put the middle price of a main slot on a list
+ * under 5,000 at $150 an issue; small lists are priced flat, not per
+ * subscriber; bundles run 12 to 25% off). Founding means they are set for a
+ * young list and will rise as it grows: the page says so in one quiet line
+ * (FOUNDING_NOTE), with no countdown and no scarcity. Four weeks is still a
+ * quarter off the weekly rate. Payment is by invoice, which Danny sends
+ * himself ("Invoice for now", 2026-10-14); nothing on the site takes a card.
+ * These are the only figures typed anywhere in the sponsorship pages; the
+ * audience numbers beside them are counted (lib/sponsor/stats.ts). Change a
+ * price here and the page, the form, the emails and the stored request all
+ * follow (a request keeps the price it was made at: sponsor_requests.price_usd).
  *
  * Browser-safe: no server imports.
  */
@@ -46,10 +49,13 @@ export interface SponsorPackage {
 }
 
 export const PACKAGES: SponsorPackage[] = [
-  { id: 'week', name: 'One week', days: 7, editions: 7, priceUsd: 400, line: 'The whole of FundOpsHQ for a week. For a launch, a hire or an event.' },
-  { id: 'month', name: 'Four weeks', days: 28, editions: 28, priceUsd: 1200, line: 'A month of mornings, at a quarter off the weekly rate. Where most sponsors should start.' },
-  { id: 'quarter', name: 'A quarter', days: 91, editions: 91, priceUsd: 3000, line: 'Thirteen weeks: yours for a season, at the lowest rate.' },
+  { id: 'week', name: 'One week', days: 7, editions: 7, priceUsd: 150, line: 'The whole of FundOpsHQ for a week. For a launch, a hire or an event.' },
+  { id: 'month', name: 'Four weeks', days: 28, editions: 28, priceUsd: 450, line: 'A month of mornings, at a quarter off the weekly rate. Where most sponsors should start.' },
+  { id: 'quarter', name: 'A quarter', days: 91, editions: 91, priceUsd: 1200, line: 'Thirteen weeks: yours for a season, at the lowest rate.' },
 ]
+
+/** The one line that says these are founding rates. Quiet on purpose: no countdown, no "limited". */
+export const FOUNDING_NOTE = 'These are founding rates, set while the list is young. They will rise as it grows.'
 
 export const packageOf = (id: unknown): SponsorPackage | undefined => PACKAGES.find((p) => p.id === id)
 

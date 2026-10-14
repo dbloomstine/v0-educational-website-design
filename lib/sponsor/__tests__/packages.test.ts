@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { PACKAGES, LEAD_DAYS, LIMITS, LOGO_RULES, checkBooking, emailLogoWidth, isMonday, openMondays, packageOf, runEnd, runIsFree } from '../packages'
+import { FOUNDING_NOTE, PACKAGES, LEAD_DAYS, LIMITS, LOGO_RULES, checkBooking, emailLogoWidth, isMonday, openMondays, packageOf, runEnd, runIsFree } from '../packages'
 import { readLogo, hostedLogo, imageSize, LOGO_MAX_BYTES } from '../requests'
-import { approvedMail, decideMail, receivedMail, interestMail, payUrl, type RequestRow } from '../mail'
+import { approvedMail, decideMail, receivedMail, interestMail, type RequestRow } from '../mail'
 import { tagSponsorLinks } from '@/lib/newsletter/email-template'
 
 const week = packageOf('week')!, month = packageOf('month')!
@@ -14,6 +14,13 @@ describe('what is for sale', () => {
     expect(each[1]).toBeLessThan(each[0])
     expect(each[2]).toBeLessThan(each[1])
     for (const p of PACKAGES) expect(p.days % 7).toBe(0)
+  })
+  it('at the founding rates Danny set on 2026-10-14, said once and quietly', () => {
+    expect(PACKAGES.map((p) => p.priceUsd)).toEqual([150, 450, 1200])
+    // "A quarter off the weekly rate" stays true of four weeks.
+    expect(PACKAGES[1].priceUsd).toBe(PACKAGES[0].priceUsd * 4 * 0.75)
+    expect(FOUNDING_NOTE).toMatch(/founding rates/)
+    expect(FOUNDING_NOTE).not.toMatch(/limited|only|hurry|left|ends/i)
   })
 })
 
@@ -125,7 +132,7 @@ describe('a logo sent with a request', () => {
 })
 
 const row: RequestRow = {
-  id: 'r1', created_at: '2026-10-09T12:00:00Z', status: 'pending', package: 'week', price_usd: 400, starts_on: '2026-10-19', ends_on: '2026-10-25',
+  id: 'r1', created_at: '2026-10-09T12:00:00Z', status: 'pending', package: 'week', price_usd: 150, starts_on: '2026-10-19', ends_on: '2026-10-25',
   company: 'Acme <b>Bold</b>', contact_name: 'Ana Reyes', email: 'ana@acme.example', website: 'https://acme.example', tagline: null,
   blurb: 'We do <script>alert(1)</script> fund administration.', cta_url: 'https://acme.example/x?a=1&b=2', cta_text: null, logo_link: null, notes: 'Hello "there"',
   arrived_from: 'linkedin / post', action_token: '11111111-1111-4111-8111-111111111111', decided_at: null, booking_id: null, reminded_at: null,
@@ -144,13 +151,13 @@ describe('the letters', () => {
     expect(mail.html).not.toMatch(/action=approve|do=approve/)
     expect(mail.replyTo).toBe('ana@acme.example')
   })
-  it('say how to pay: by the link when one is set, by invoice when not', () => {
-    delete process.env.SPONSOR_PAY_URL_WEEK
-    expect(payUrl('week')).toBeNull()
-    expect(approvedMail(row).html).toMatch(/by invoice/)
+  it('say how to pay: by invoice, never a card or a pay button, whatever is set', () => {
     process.env.SPONSOR_PAY_URL_WEEK = 'https://buy.stripe.com/test_123'
-    expect(approvedMail(row).html).toContain('href="https://buy.stripe.com/test_123"')
+    const html = approvedMail(row).html
+    expect(html).toMatch(/\$150, by invoice/)
+    expect(html).not.toMatch(/stripe|by card|>Pay /i)
     delete process.env.SPONSOR_PAY_URL_WEEK
+    for (const mail of [receivedMail(row), decideMail(row)]) expect(mail.html).not.toMatch(/by card|stripe/i)
   })
   it('tell the owner which reader looked, by address and firm', () => {
     const mail = interestMail({ email: 'cfo@bigfund.example', role: 'gp', since: '2026-05-02T00:00:00Z' }, 1)

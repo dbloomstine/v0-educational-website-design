@@ -14,6 +14,7 @@
 import { unstable_cache } from 'next/cache'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { currentReaderFirms, readerFirmDomains, type ReaderGroup } from './reader-firms'
+import { resendEvents } from '@/lib/newsletter/resend-events'
 
 export interface SponsorStats {
   /** Confirmed subscribers. */
@@ -43,29 +44,6 @@ const OPENED = new Set(['opened', 'clicked'])
 const DELIVERED = new Set(['delivered', 'opened', 'clicked'])
 /** Editions the engagement figures are measured over. */
 const ENGAGEMENT_EDITIONS = 7
-
-interface ResendRow { id: string; last_event: string | null; created_at: string }
-
-/** Page Resend's email list back to `untilMs`, collecting the last event per email id. */
-async function resendEvents(apiKey: string, wanted: Set<string>, untilMs: number): Promise<Map<string, string>> {
-  const events = new Map<string, string>()
-  let after: string | null = null
-  for (let page = 0; page < 30; page++) {
-    const url = `https://api.resend.com/emails?limit=100${after ? `&after=${after}` : ''}`
-    const res = await fetch(url, { headers: { Authorization: `Bearer ${apiKey}` }, cache: 'no-store' })
-    if (!res.ok) throw new Error(`Resend list ${res.status}`)
-    const body = (await res.json()) as { data?: ResendRow[]; has_more?: boolean }
-    const rows = body.data ?? []
-    for (const r of rows) if (wanted.has(r.id) && r.last_event) events.set(r.id, r.last_event)
-    const last = rows[rows.length - 1]
-    if (!last || !body.has_more) break
-    if (events.size >= wanted.size || new Date(last.created_at).getTime() < untilMs) break
-    after = last.id
-    // Resend allows two requests a second.
-    await new Promise((r) => setTimeout(r, 600))
-  }
-  return events
-}
 
 export interface SponsorAudience {
   subscribers: number | null

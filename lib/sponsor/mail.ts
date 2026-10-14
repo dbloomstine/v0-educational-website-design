@@ -80,12 +80,6 @@ ${row('Link', `<a href="${esc(r.cta_url)}" style="color:${INK};">${esc(r.cta_url
 ${row('Logo', r.logo_link ? `<img src="${esc(r.logo_link)}" alt="${esc(r.company)} logo" width="${r.logo_width ?? 160}" style="display:block;width:${r.logo_width ?? 160}px;height:auto;max-width:100%;background:#fff;border:1px solid #DDD5C3;padding:6px;">` : 'none sent: the firm’s name is set as a wordmark')}
 </table>`
 
-/** How a sponsor pays for a package, if a payment link has been set for it (a Stripe Payment Link, in the environment). */
-export function payUrl(packageId: string): string | null {
-  const v = process.env[`SPONSOR_PAY_URL_${packageId.toUpperCase()}`]
-  return v && /^https:\/\//.test(v) ? v : null
-}
-
 export interface Mail {
   to: string
   subject: string
@@ -133,7 +127,6 @@ ${p(`<span style="color:${MUTED};font-size:13px;">Replying to this email writes 
 
 /** To the prospect, on a yes. */
 export function approvedMail(r: RequestRow): Mail {
-  const pay = payUrl(r.package)
   return {
     to: r.email,
     replyTo: OWNER_EMAIL(),
@@ -144,9 +137,9 @@ export function approvedMail(r: RequestRow): Mail {
 ${p(`${esc(r.company)} is the sponsor of FundOps Daily from <b>${esc(longDay(r.starts_on))}</b> to <b>${esc(longDay(r.ends_on))}</b>: at the top and the foot of every edition, and on every news page of the site. The dates are yours alone.`)}
 ${adTable(r)}
 ${
-  pay
-    ? `${p(`<b>Payment.</b> ${esc(usd(r.price_usd))}, by card, before the first edition:`)}<p style="margin:0 0 14px;">${button(pay, `Pay ${usd(r.price_usd)}`)}</p>`
-    : p(`<b>Payment.</b> ${esc(usd(r.price_usd))}, by invoice. Danny will send it to this address; there is nothing you need to do now, and your run starts on its date either way.`)
+  // Invoice only (Danny, 2026-10-14: "Invoice for now"). There is no card payment and no pay button; the optional
+  // Stripe links (SPONSOR_PAY_URL_*) were taken out the same day so a stray setting cannot put one in this email.
+  p(`<b>Payment.</b> ${esc(usd(r.price_usd))}, by invoice. Danny will send it to this address; there is nothing you need to do now, and your run starts on its date either way.`)
 }
 ${p(r.logo_link ? 'Your logo is in place, as you saw it in the builder.' : '<b>Your logo.</b> Reply with a PNG and we will place it; until then your firm’s name is set as a wordmark.')}
 ${p('Want to change the copy before or during the run? Reply with the new wording. At the end of the run you get a short report: editions sent, opens and clicks.')}

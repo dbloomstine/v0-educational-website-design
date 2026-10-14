@@ -6,7 +6,7 @@ import { BackToTop } from '@/components/back-to-top'
 import { SectionFlag } from '@/components/story/StoryBlocks'
 import { getSponsorStats, type SponsorStats } from '@/lib/sponsor/stats'
 import { fetchBookingRows, getSiteSponsorState } from '@/lib/sponsor/bookings'
-import { PACKAGES, openMondays, usd } from '@/lib/sponsor/packages'
+import { FOUNDING_NOTE, PACKAGES, openMondays, usd } from '@/lib/sponsor/packages'
 import { SponsorBuilder } from '@/components/sponsor/SponsorBuilder'
 import { ReaderBeacon } from '@/components/sponsor/ReaderBeacon'
 import { shareCard } from '@/lib/seo'
@@ -234,8 +234,9 @@ export default async function SponsorPage() {
                 </div>
               ))}
             </div>
-            <p className="mt-2 font-ui text-[11.5px] leading-snug text-muted-foreground">
-              Flat prices in US dollars. Every length is the full takeover: the top and the foot of each edition, and both places on
+            <p className="mt-3 font-news text-[15.5px] leading-[1.4] text-foreground/85">{FOUNDING_NOTE}</p>
+            <p className="mt-1 font-ui text-[11.5px] leading-snug text-muted-foreground">
+              Flat prices in US dollars, paid by invoice after we say yes. Every length is the full takeover: the top and the foot of each edition, and both places on
               the site, every day of the run. There is no newsletter-only or site-only option, and never a second sponsor.
             </p>
           </section>

@@ -47,6 +47,10 @@
       "schedule": "0 13 * * *"
     },
     {
+      "path": "/api/pipeline/edition-engagement",
+      "schedule": "0 12 * * *"
+    },
+    {
       "path": "/api/pipeline/weekly-scorecard",
       "schedule": "30 12 * * 1"
     }
