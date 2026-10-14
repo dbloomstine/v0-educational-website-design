@@ -53,6 +53,18 @@
     {
       "path": "/api/pipeline/weekly-scorecard",
       "schedule": "30 12 * * 1"
+    },
+    {
+      "path": "/api/pipeline/outreach-v2-followups",
+      "schedule": "0 13 * * 1-5"
+    },
+    {
+      "path": "/api/pipeline/outreach-v2-news",
+      "schedule": "0 15 * * 1-5"
+    },
+    {
+      "path": "/api/pipeline/outreach-v2-dispatch",
+      "schedule": "*/5 13-21 * * 1-5"
     }
   ]
 }

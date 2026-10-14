@@ -20,7 +20,7 @@ import { titleMatchesSegment, isCompetitor, industryMatchesSegment, type Lookali
 
 const APOLLO_BASE = 'https://api.apollo.io/api/v1'
 
-interface ApolloSearchPerson {
+export interface ApolloSearchPerson {
   id: string
   first_name?: string
   last_name_obfuscated?: string
@@ -32,7 +32,7 @@ interface ApolloSearchPerson {
   }
 }
 
-interface ApolloMatchPerson {
+export interface ApolloMatchPerson {
   id: string
   first_name?: string
   last_name?: string
@@ -41,6 +41,9 @@ interface ApolloMatchPerson {
   email?: string | null
   email_status?: string | null
   email_domain_catchall?: boolean
+  country?: string | null
+  state?: string | null
+  city?: string | null
   organization?: {
     name?: string
     primary_domain?: string
@@ -566,4 +569,37 @@ export function applyLookalikeGuards(
     segmentKey: seg.key,
   }
   return { ok: true, contact }
+}
+
+// ─── Outreach v2: the news-note contact (2026-10-14) ─────────────────────────
+// Who looks after a firm's own news: marketing, communications, investor
+// relations, in the United States. The search is free; the caller pays one
+// credit per matchPersonById and keeps its own count (lib/outreach-v2/news-notes.ts).
+
+export async function searchPeopleAtFirmByTitles(
+  firmName: string,
+  titles: string[],
+  opts: { perPage?: number } = {},
+): Promise<ApolloSearchPerson[]> {
+  const apiKey = process.env.OUTREACH_APOLLO_API_KEY
+  if (!apiKey) throw new Error('Missing OUTREACH_APOLLO_API_KEY')
+  const body: Record<string, unknown> = {
+    q_keywords: firmName,
+    person_titles: titles,
+    person_locations: ['United States'],
+    contact_email_status: ['verified'],
+    per_page: opts.perPage ?? 10,
+    page: 1,
+  }
+  const res = await fetch(`${APOLLO_BASE}/mixed_people/api_search`, {
+    method: 'POST',
+    headers: { 'x-api-key': apiKey, 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Apollo firm search failed ${res.status}: ${text.slice(0, 200)}`)
+  }
+  const data = (await res.json()) as { people?: ApolloSearchPerson[] }
+  return data.people ?? []
 }

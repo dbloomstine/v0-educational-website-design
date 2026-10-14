@@ -62,11 +62,30 @@ function Field({ label, hint, error, count, children }: { label: string; hint?: 
   )
 }
 
+/**
+ * What a mock-up link asks for: `firm` (required), `site` (the firm's domain), `logo` (a file on that site) and
+ * `line` (the ad's copy). Each is trimmed to what the form itself allows; anything malformed is dropped.
+ */
+export function readPrefill(search: string): { firm: string; site: string | null; logo: string | null; line: string | null } | null {
+  let q: URLSearchParams
+  try { q = new URLSearchParams(search) } catch { return null }
+  const clean = (v: string | null) => (v ?? '').replace(/\s+/g, ' ').trim()
+  const firm = clean(q.get('firm')).slice(0, LIMITS.company)
+  if (firm.length < 2) return null
+  const siteRaw = clean(q.get('site')).toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').split('/')[0]
+  const site = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(siteRaw) ? siteRaw : null
+  const logo = clean(q.get('logo')).slice(0, 500) || null
+  const line = clean(q.get('line')).slice(0, LIMITS.blurbChars) || null
+  return { firm, site, logo, line }
+}
+
 export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; taken: Taken[] }) {
   const [packageId, setPackageId] = useState<string>('month')
   const [startsOn, setStartsOn] = useState(openWeeks[0] ?? '')
   const [logoSize, setLogoSize] = useState<{ w: number; h: number } | null>(null)
   const [restored, setRestored] = useState(false)
+  // Opened from an outreach email's mock-up link (?firm=…&site=…&logo=…&line=…): the firm's ad, drawn for them.
+  const [prefilled, setPrefilled] = useState<string | null>(null)
   const [company, setCompany] = useState('')
   const [tagline, setTagline] = useState('')
   const [blurb, setBlurb] = useState('')
@@ -101,8 +120,23 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
     if (starts.length && !starts.includes(startsOn)) setStartsOn(starts[0])
   }, [starts, startsOn])
 
-  // An unfinished ad is kept on this device and put back on the next visit.
+  // An unfinished ad is kept on this device and put back on the next visit. A mock-up link wins over a kept draft.
   useEffect(() => {
+    const pre = readPrefill(window.location.search)
+    if (pre) {
+      setPrefilled(pre.firm)
+      setCompany(pre.firm)
+      if (pre.line) setBlurb(pre.line)
+      if (pre.site) { setWebsite(pre.site); setCtaUrl(pre.site) }
+      if (pre.site && pre.logo) {
+        // Only through our own route, which fetches the file from the firm's own website and nowhere else.
+        fetch(`/api/sponsor/logo?${new URLSearchParams({ site: pre.site, logo: pre.logo })}`)
+          .then((res) => (res.ok ? res.blob() : null))
+          .then((blob) => { if (blob && blob.type.startsWith('image/')) onLogo(new File([blob], 'logo', { type: blob.type })) })
+          .catch(() => { /* no logo: the ad shows the firm's name */ })
+      }
+      return
+    }
     try {
       const d = JSON.parse(window.localStorage.getItem(DRAFT_KEY) ?? 'null')
       if (d && typeof d === 'object') {
@@ -170,7 +204,7 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
   function startOver() {
     try { window.localStorage.removeItem(DRAFT_KEY) } catch { /* nothing to clear */ }
     setCompany(''); setTagline(''); setBlurb(''); setCtaUrl(''); setCtaText(''); setLogoData(null); setLogoName(''); setLogoSize(null)
-    setContactName(''); setEmail(''); setWebsite(''); setNotes(''); setErrors({}); setMessage(''); setRestored(false)
+    setContactName(''); setEmail(''); setWebsite(''); setNotes(''); setErrors({}); setMessage(''); setRestored(false); setPrefilled(null)
   }
 
   // The link as it will be opened, once it is one.
@@ -180,7 +214,8 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
   // The ad as the site would draw it right now. Until there is a name it is the dashed "your logo here" stand-in.
   const draft: SlotSponsor = useMemo(
     () => ({
-      name: logoData ? company.trim() || 'Your firm' : 'Your logo here',
+      // A mock-up drawn for a firm with no logo on file shows the firm's name set as its mark.
+      name: logoData || prefilled ? company.trim() || 'Your firm' : 'Your logo here',
       tagline: tagline.trim() || null,
       blurb: blurb.trim() || 'Your copy appears here: up to 60 words, in your own voice, on what your firm does for the people who run private funds.',
       ctaUrl: '#',
@@ -188,9 +223,9 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
       logoUrl: logoData ?? undefined,
       logoWidth: logoData && logoSize ? emailLogoWidth(logoSize.w, logoSize.h) : undefined,
       // Until a logo is chosen the mark is the dashed "your logo here" box: an ad has its logo.
-      sample: !logoData,
+      sample: !logoData && !prefilled,
     }),
-    [company, tagline, blurb, ctaText, logoData, logoSize],
+    [company, tagline, blurb, ctaText, logoData, logoSize, prefilled],
   )
 
   /**
@@ -368,6 +403,11 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
 
         <fieldset className="space-y-3.5">
           <legend className={stepClass}>3 · Your ad</legend>
+          {prefilled && (
+            <p className="font-ui text-[12.5px] text-muted-foreground">
+              A mock-up of an ad for {prefilled}, drawn from your website. Change any of it and the preview follows.
+            </p>
+          )}
           {restored && (
             <p className="font-ui text-[12.5px] text-muted-foreground">
               Your draft from last time is back, kept on this device.{' '}

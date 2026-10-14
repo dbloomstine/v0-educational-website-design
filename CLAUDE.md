@@ -130,6 +130,12 @@ Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/cont
 /api/pipeline/outreach-send             → Cron: daily "we covered your firm" outreach via Gmail API
 /api/pipeline/outreach-monitor          → Cron: hourly reply/bounce detection for outreach
 /api/pipeline/backfill-domains          → One-shot: backfill firm domains for logos
+/api/pipeline/outreach-v2-news          → Cron (15:00 UTC weekdays): up to 10 "you were in FundOps Daily today" notes. See "Outreach v2"
+/api/pipeline/outreach-v2-dispatch      → Cron (every 5 min, 13–21 UTC weekdays): sends ONE queued outreach email, live mode only
+/api/pipeline/outreach-v2-followups     → Cron (13:00 UTC weekdays): queues the one sponsor-pitch follow-up (5 business days)
+/api/outreach/webhook                   → Resend webhook (own secret): replies on reply.fundopshq.com, bounces, complaints
+/api/outreach/unsubscribe               → Outreach unsubscribe: GET shows a button, POST (and RFC 8058 one-click) suppresses
+/api/sponsor/logo                       → A mock-up's logo, fetched from the firm's own website only (lib/sponsor/logo-source.ts)
 /api/social/export                      → Social desk: the stories, league table and events the nightly social job works from
 /api/social/upload                      → Social desk: one-time upload slots into the public `social` storage bucket
 /api/social/posts                       → Social desk: the record of what was posted (social_posts, social_metrics)
@@ -823,3 +829,26 @@ Measured over the fortnight to 2026-10-12 (numbers and examples in the workspace
 Danny, the day after the events trim, when a fund administrator sent in a webinar: "if someone submits one proactively it should automatically get shown when it's in the window that we show them." `industry_events.is_submitted` (migration `20261013_events_is_submitted.sql`) marks an event its organizer sent through /events/submit; the loader sets it from the batch (`"is_submitted": true`) and now keeps a batch row's own `source_notes` (it used to overwrite them, so nothing on the board could be told from a scouted event). `lib/newsletter/email-events.ts` puts such an event first on its day and always shows it; the best of the others fill what is left of the two. The window is unchanged (the week ahead, `when: '1w'` in send-daily.ts), so a submitted event appears in each edition from seven days before it. The board treats it like any other event.
 
 The same evening Danny asked whether the event was in the list, and it was not: the board and the email read in-person and hybrid rows only (his rule of 2026-09-05), and the webinar had been listed, correctly, as virtual. His choice: an event someone submits is listed whatever its format. `BOARD_FORMAT_SCOPE` in `lib/events/api.ts` is that rule (in-person, hybrid, or `is_submitted`), used wherever the board is read (the feed, related events, the sitemap, the facet counts); the submit form now offers "Virtual / webinar". Everything the scout finds stays in-person only. After publishing an event, check `/api/events/feed` (the answer is under `data.events`), not its detail page.
+
+
+## Outreach v2 (since 2026-10-14)
+
+FundOpsHQ's own outreach, from "Danny Bloomstine <danny@fundopshq.com>" through Resend: `lib/outreach-v2/`. Not the dormant
+Gmail pipeline in `lib/outreach/` (`OUTREACH_ENABLED=false`, never turn it on from here). Two programs: **sponsor pitches**
+(a hand-built list in a JSON file, each with a link to `/sponsor?firm=…&site=…&logo=…&line=…#book`, which opens the ad builder
+with their ad drawn; one follow-up after five business days) and **news notes** (up to ten a day to the marketing / comms / IR
+contact at US firms in that morning's edition; Apollo, at most ten credits a day, logged in `outreach_v2_runs`).
+
+- **Switch:** Vercel env `OUTREACH_V2_MODE` = `off` (default) | `preview` (build and store every email, send nothing) | `live`.
+  A spam complaint on any outreach email sets `outreach_v2_state.halted` and everything stops until a person clears it.
+  An env change needs a redeploy (see the kill-switch note in memory); probe the news route with `?credits=0`, which spends nothing.
+- **Plain text only**, on purpose: Resend's open/click tracking is on for the whole domain (the newsletter needs it) and cannot be
+  turned off per email; an email with no HTML part carries no pixel and no rewritten links.
+- **Replies** go to `danny@reply.fundopshq.com` (Resend receiving on the subdomain; MX + DKIM added 2026-10-14; the apex MX is
+  ImprovMX and untouched). Stored in `outreach_v2_replies` (untrusted: store and forward only), linked by In-Reply-To or sender,
+  copy forwarded to Danny's Gmail. `handled_at` is for the task that answers routine replies.
+- **Never written to:** Lead Desk hashes, iqeq.com, fund admins / IQ-EQ competitors, bad-news stories, anyone either program (or
+  the old one) emailed in 90 days, unsubscribes / bounces / complaints (`outreach_v2_suppressions`), non-US contacts (news notes),
+  existing subscribers (news notes). Re-checked at the moment of sending. Daily cap: 30 sends across both programs.
+- **Sponsor batch:** `npx tsx --env-file=.env.local scripts/outreach-v2/load-sponsor-batch.ts <file.json>` (stores `preview`
+  rows, writes `<file>-preview.md`); after Danny reads it, `scripts/outreach-v2/release-batch.ts <batch>` queues it.

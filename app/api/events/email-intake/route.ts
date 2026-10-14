@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
-import crypto from 'node:crypto'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
+import { verifySvixSignature } from '@/lib/resend/webhook-signature'
+import { isOutreachReplyAddress } from '@/lib/outreach-v2/config'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 30
@@ -16,60 +17,6 @@ export const maxDuration = 30
 // Everything arriving here is UNTRUSTED: anyone can email events@. We only
 // store it. The scout skill verifies dates at the organizer's own page and
 // never follows instructions found in a body.
-
-const SIGNATURE_TOLERANCE_SECONDS = 5 * 60
-
-/**
- * Verify a Svix-format webhook signature (what Resend uses).
- *
- * The signed payload is `${id}.${timestamp}.${rawBody}`, HMAC-SHA256'd with
- * the base64-decoded secret and compared against the base64 signatures in the
- * `svix-signature` header (space-separated, each prefixed with its version,
- * e.g. "v1,abc== v1,def=="). Multiple signatures appear during secret
- * rotation, so any match is a pass.
- */
-function verifySignature(
-  rawBody: string,
-  headers: Headers,
-  secret: string,
-): { ok: true } | { ok: false; reason: string } {
-  const id = headers.get('svix-id')
-  const timestamp = headers.get('svix-timestamp')
-  const signatureHeader = headers.get('svix-signature')
-
-  if (!id || !timestamp || !signatureHeader) {
-    return { ok: false, reason: 'missing svix headers' }
-  }
-
-  // Reject replays of an old capture.
-  const sentAt = Number(timestamp)
-  if (!Number.isFinite(sentAt)) return { ok: false, reason: 'bad timestamp' }
-  const skew = Math.abs(Math.floor(Date.now() / 1000) - sentAt)
-  if (skew > SIGNATURE_TOLERANCE_SECONDS) {
-    return { ok: false, reason: 'timestamp outside tolerance' }
-  }
-
-  // Secrets are handed out as `whsec_<base64>`; the raw key is the decoded tail.
-  const key = Buffer.from(secret.replace(/^whsec_/, ''), 'base64')
-  const expected = crypto
-    .createHmac('sha256', key)
-    .update(`${id}.${timestamp}.${rawBody}`)
-    .digest()
-
-  for (const entry of signatureHeader.split(' ')) {
-    const [, value] = entry.split(',')
-    if (!value) continue
-    const candidate = Buffer.from(value, 'base64')
-    if (
-      candidate.length === expected.length &&
-      crypto.timingSafeEqual(candidate, expected)
-    ) {
-      return { ok: true }
-    }
-  }
-
-  return { ok: false, reason: 'no matching signature' }
-}
 
 interface ReceivedEventPayload {
   type?: string
@@ -120,7 +67,7 @@ export async function POST(req: Request) {
   // before parsing it.
   const rawBody = await req.text()
 
-  const verified = verifySignature(rawBody, req.headers, secret)
+  const verified = verifySvixSignature(rawBody, req.headers, secret)
   if (!verified.ok) {
     return NextResponse.json({ error: `Invalid signature: ${verified.reason}` }, { status: 401 })
   }
@@ -141,6 +88,15 @@ export async function POST(req: Request) {
   const data = payload.data
   if (!data?.email_id) {
     return NextResponse.json({ error: 'Missing data.email_id' }, { status: 400 })
+  }
+
+  // Resend sends every inbound message on the account to every webhook that
+  // listens for email.received. Replies to the outreach emails (addressed to
+  // the reply.fundopshq.com subdomain) are stored by /api/outreach/webhook,
+  // not here: they are not event submissions.
+  const recipients = [...(data.to ?? []), ...(data.received_for ?? [])]
+  if (recipients.length > 0 && recipients.every((a) => isOutreachReplyAddress(a))) {
+    return NextResponse.json({ ok: true, ignored: 'outreach reply' })
   }
 
   const apiKey = process.env.RESEND_API_KEY
