@@ -13,6 +13,7 @@ import { queryNewsletterArticles, isLikelyAumLeak, isDescriptiveFirmName } from 
 import { isRoundup } from './story-links'
 import { homeFactor, kickerParts, pickTopStories, type TopPick } from './top-stories'
 import { renderNewsletterEmail } from './email-template'
+import { renderNewsletterText } from './email-text'
 import { queryEventFeed } from '@/lib/events/api'
 import type { IndustryEvent } from '@/lib/events/types'
 import { sendPipelineAlert } from '@/lib/pipeline/alert'
@@ -155,7 +156,14 @@ export async function sendDailyNewsletter(
 
   // The names the subject opens on are the stories the email opens on
   // (2026-10-12): the same picks the template makes, in the same order.
-  const subject = buildSubject(content, pickTopStories(content.groups, content.totalArticles))
+  //
+  // Until 2026-10-28 every other edition leads with the top story's headline
+  // instead (style B, the subject-line test below); a morning with no top
+  // story goes out with style A, and records A.
+  const topPicks = pickTopStories(content.groups, content.totalArticles)
+  const headlineSubject = subjectStyleFor(editionDate) === 'B' ? buildHeadlineSubject(topPicks, content.totalArticles) : null
+  const subjectStyle: SubjectStyle = headlineSubject ? 'B' : 'A'
+  const subject = headlineSubject ?? buildSubject(content, topPicks)
   const fromEmail = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
 
   // Render the full HTML body once with sentinel tokens, then per-subscriber
@@ -172,12 +180,14 @@ export async function sendDailyNewsletter(
   // On the links to the sponsor page: each reader's own id, so the page can say which reader came to look.
   const READER_SENTINEL = '__FUNDOPS_READER_SENTINEL__'
   const readerFirms = readerFirmDomains(subscribers.map((s) => String(s.email))).size
-  const renders = new Map<string, string>()
-  const templateFor = (interests: string[]): string => {
+  // Each render is the HTML and its plain-text twin (lib/newsletter/email-text.ts,
+  // 2026-10-14), built from the same parameters and the same sentinels.
+  const renders = new Map<string, { html: string; text: string }>()
+  const templateFor = (interests: string[]): { html: string; text: string } => {
     const key = interestKey(interests)
-    let html = renders.get(key)
-    if (html === undefined) {
-      html = renderNewsletterEmail({
+    let render = renders.get(key)
+    if (render === undefined) {
+      const params = {
         groups: content.groups,
         totalArticles: content.totalArticles,
         editionDate,
@@ -190,20 +200,26 @@ export async function sendDailyNewsletter(
         readerFirms,
         recap,
         interests: key ? key.split(',') : undefined,
-      })
-      renders.set(key, html)
+        subjectStyle,
+      }
+      render = { html: renderNewsletterEmail(params), text: renderNewsletterText(params) }
+      renders.set(key, render)
     }
-    return html
+    return render
   }
-  const templateHtml = templateFor([])
+  const templateHtml = templateFor([]).html
 
   const emails = subscribers.map((sub) => {
     const unsubscribeUrl = `https://fundopshq.com/api/newsletter/unsubscribe?token=${sub.unsubscribe_token}`
     const preferencesUrl = `https://fundopshq.com/preferences?token=${sub.unsubscribe_token}`
-    const html = templateFor(sub.interests ?? [])
-      .replaceAll(UNSUB_SENTINEL, unsubscribeUrl)
-      .replaceAll(PREFS_SENTINEL, preferencesUrl)
-      .replaceAll(READER_SENTINEL, sub.id ?? '')
+    const render = templateFor(sub.interests ?? [])
+    const personal = (body: string) =>
+      body
+        .replaceAll(UNSUB_SENTINEL, unsubscribeUrl)
+        .replaceAll(PREFS_SENTINEL, preferencesUrl)
+        .replaceAll(READER_SENTINEL, sub.id ?? '')
+    const html = personal(render.html)
+    const text = personal(render.text)
 
     return {
       from: `FundOps Daily <${fromEmail}>`,
@@ -213,6 +229,7 @@ export async function sendDailyNewsletter(
       reply_to: 'dbloomstine@gmail.com',
       subject,
       html,
+      text,
       headers: {
         'List-Unsubscribe': `<${unsubscribeUrl}>`,
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
@@ -282,6 +299,7 @@ export async function sendDailyNewsletter(
     resend_email_ids: Object.keys(emailIdMap).length > 0 ? emailIdMap : null,
     error_message: errors.length > 0 ? errors.join('; ') : null,
     article_ids: content.articleIds,
+    subject_style: subjectStyle,
   }, { onConflict: 'edition_date' })
 
   if (errors.length > 0 && totalSent === 0) {
@@ -645,4 +663,76 @@ export function buildSubject(content: {
     picked = next
   }
   return render(picked)
+}
+
+// ─── Subject-line test, 2026-10-15 to 2026-10-28 (Danny, 2026-10-14) ────────
+// Style A is the names list above ("Audax Private $6.3B, BlackRock, BBAM +
+// 44 more"). Style B leads with the top story as a headline and a count
+// ("Audax raises $6.3B for private debt, plus 47 more"). Editions alternate by
+// day of the year, so every weekday gets both inside the fortnight. Each
+// edition records the style it went out with (`newsletter_editions.subject_style`);
+// the test is judged on the share of recipients who clicked. After the last
+// day every edition is style A again until the winner is chosen.
+
+export type SubjectStyle = 'A' | 'B'
+export const SUBJECT_TEST_STARTS = '2026-10-15'
+export const SUBJECT_TEST_ENDS = '2026-10-28'
+
+/** The style an edition date is assigned: odd day of the year B, even A, inside the test. */
+export function subjectStyleFor(editionDate: string): SubjectStyle {
+  if (editionDate < SUBJECT_TEST_STARTS || editionDate > SUBJECT_TEST_ENDS) return 'A'
+  const day = Date.parse(`${editionDate}T00:00:00Z`)
+  const jan1 = Date.UTC(Number(editionDate.slice(0, 4)), 0, 1)
+  const dayOfYear = Math.round((day - jan1) / 86_400_000) + 1
+  return dayOfYear % 2 === 1 ? 'B' : 'A'
+}
+
+/** Words a cut headline must not end on: "Audax raises $6.3B for…" reads, "Audax raises $6.3B for the…" does not. */
+const DANGLING = new Set(['a', 'an', 'the', 'of', 'and', '&', 'to', 'in', 'on', 'at', 'with', 'by', 'from', 'as', 'its', 'their', 'into'])
+
+/** The headline as a subject: the outlet's own tag (" - WSJ", " | PE Hub") and a closing full stop off. */
+export function subjectHeadline(title: string, outlets: string[]): string {
+  let t = title.replace(/\s+/g, ' ').trim()
+  const tail = t.match(/\s+[-–—|]\s+([^-–—|]+)$/)
+  if (tail) {
+    const name = tail[1].trim().toLowerCase()
+    if (outlets.some((o) => o && (o.toLowerCase() === name || name.startsWith(o.toLowerCase())))) t = t.slice(0, tail.index).trim()
+  }
+  return t.replace(/\.$/, '')
+}
+
+/**
+ * Style B: the top story the edition opens on, as its own headline, and how
+ * many more stories follow. Built only from that story: its headline as
+ * written; if that is too long, its firm with its figure and stage (the
+ * kicker's own words); if that too is too long or there is no figure, the
+ * headline cut at a word with an ellipsis. Null when there is no top story,
+ * and the edition goes out with style A.
+ */
+export function buildHeadlineSubject(top: TopPick[], totalArticles: number): string | null {
+  const lead = top[0]
+  if (!lead) return null
+  const a = lead.article
+  const more = Math.max(0, totalArticles - 1)
+  const suffix = more > 0 ? `, plus ${more} more` : ''
+  const fits = (s: string) => s.length + suffix.length <= SUBJECT_MAX_CHARS
+
+  const headline = subjectHeadline(a.title, [a.sourceName ?? '', ...(a.alsoCoveredBy ?? [])])
+  if (headline && fits(headline)) return `${headline}${suffix}`
+
+  // The firm and its figure, in the kicker's words: "Audax Private: $6.3B final close".
+  const [, ...facts] = kickerParts(lead)
+  const firm = a.firmName && !isDescriptiveFirmName(a.firmName) ? subjectFirmName(a.firmName) : ''
+  if (firm && facts.some((f) => f.startsWith('$'))) {
+    const short = `${firm}: ${facts.map((f, i) => (i === 0 ? f : f.toLowerCase())).join(' ')}`
+    if (fits(short)) return `${short}${suffix}`
+  }
+
+  // The headline cut at a word.
+  const words = headline.split(' ')
+  while (words.length > 1 && !fits(`${words.join(' ')}…`)) words.pop()
+  while (words.length > 1 && DANGLING.has(words[words.length - 1].toLowerCase())) words.pop()
+  const cut = words.join(' ').replace(/[,;:–—-]+$/, '').trim()
+  if (cut.length < 25 || !fits(`${cut}…`)) return null
+  return `${cut}…${suffix}`
 }

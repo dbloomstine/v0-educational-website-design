@@ -121,7 +121,7 @@ Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/cont
 /api/pipeline/news-process              → Cron: Claude-API classification + clustering
 /api/pipeline/story-summaries           → Cron (:45 hourly): long summaries for story pages. SHIPS DARK — does nothing
                                            unless STORY_SUMMARIES_ENABLED=false. See "Long story summaries".
-/api/pipeline/newsletter-send           → Cron: assemble + send FundOps Daily via Resend
+/api/pipeline/newsletter-send           → Cron (10:30 + 11:30 UTC): assemble + send FundOps Daily via Resend at 6:30 ET (see "When the email goes out")
 /api/pipeline/outreach-send             → Cron: daily "we covered your firm" outreach via Gmail API
 /api/pipeline/outreach-monitor          → Cron: hourly reply/bounce detection for outreach
 /api/pipeline/backfill-domains          → One-shot: backfill firm domains for logos
@@ -134,6 +134,18 @@ Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/cont
 FundOps Daily flipped to **single opt-in** on 2026-04-10. The `subscribe` route now sets `status = 'confirmed'` + `confirmed_at = now()` on insert and fires a welcome email via `lib/newsletter/welcome-email.ts`. The `confirm` route is still wired up so any stale confirmation-email links already in inboxes land on the homepage instead of 404ing. Don't reintroduce double opt-in without an explicit ask — we measured ~36% drop-off on the confirmation step before the flip.
 
 Cron schedules live in `vercel.json`.
+
+### When the email goes out: 6:30 ET (since 2026-10-15)
+
+Danny, 2026-10-14: 6:30 in the morning New York time, every day (it was 7:30). Vercel's crons are UTC and New York is UTC-4 in summer, UTC-5 from the first Sunday of November, so `newsletter-send` fires twice: 10:30 UTC (`?fire=1030utc`) and 11:30 UTC (`?fire=1130utc`). `lib/newsletter/send-time.ts` turns away a fire before 6:00 ET (the winter 10:30 UTC fire, which is 5:30 EST); the edition's own "already sent" check turns away the second fire in summer, which is also the retry if 6:30 failed. `?anyTime=1` lets a manual catch-up run go out before 6:00. The edition reads everything classified by the :30 classifier run an hour before it (articles ingested at :00 of that hour); measured over 10-01 to 10-14, no edition carried an article ingested later than that, so moving the send an hour earlier dropped nothing and nothing upstream was moved. No page or email states the hour ("before the open", "tomorrow morning"); if one ever does, it says 6:30 ET.
+
+### The plain-text part (since 2026-10-14)
+
+Every daily edition and the welcome email carry a `text` part beside the HTML: `lib/newsletter/email-text.ts` (`renderNewsletterText`, the same parameters as `renderNewsletterEmail`, the same top stories, sections, recap, events, sponsor or house notice, and footer, links written out; the reader's sentinels are swapped in the text too) and `renderWelcomeText` in `welcome-email.ts`. Change a section in the HTML, change it here. `scripts/preview-newsletter.ts` writes it to `/tmp/fundops-newsletter-preview.txt`.
+
+### Dead addresses
+
+There is no bounce webhook. On 2026-10-14 five confirmed addresses that Resend had suppressed in every one of the last five editions (one each at maybern.com, arkpes.com, iqeq.com, gmail.com, investec.com) were set to `status = 'unsubscribed'` with `unsubscribed_at`, the same change the unsubscribe route makes (the status check allows only `pending_confirmation`, `confirmed`, `unsubscribed`; never delete a row). An address that bounced and was later delivered (one at arkpes.com, bounced 10-10 to 10-12, opened 10-13 and 10-14) was left on. To repeat: Resend's `GET /emails` list (100 a page, carries `last_event`) matched against `newsletter_editions.resend_email_ids`.
 
 ## Cold Outreach Pipeline (Path B) — added 2026-04-14
 
@@ -577,7 +589,16 @@ Danny: the newsletter is "priority number one… best in class… keep people en
 - The factors are strong against the log size term: a $1B close from Australia loses to a $23M US one, and a $10B European close beats small home raises but not a well-reported multi-billion home story. Tune in the one constant, and measure the ranking both ways on a real morning before changing it.
 - **Each top story carries one line from its summary** (`topStoryLine`: the first sentence, remarks off via `cleanSummary`, at most ~170 characters, left out when it repeats the headline). The section rows are still headlines only, per the rule above. This is the one change Danny has not seen and may want reverted.
 - **The first screen is the masthead and the first story**: the "Forwarded to you? Subscribe" strip moved from above the masthead to the share block at the foot. The masthead's right-hand line is "READ AT N FIRMS" (the house notice's figure) on one line, and the date lost its year, because "MONDAY, OCTOBER 12, 2026 · READ BY 154 IN PRIVATE MARKETS" wrapped to three lines on a phone.
-- **Not changed, for Danny's call**: Mondays are thin because Sunday is quiet (a 72-hour window would only re-find what Saturday and Sunday ran); the send is 11:30 UTC, 7:30 ET until the clocks change; there is no plain-text part; only two readers have chosen what they follow; the subject shape is the same every day by his own 2026-09-12 ask.
+- **Not changed, for Danny's call**: Mondays are thin because Sunday is quiet (a 72-hour window would only re-find what Saturday and Sunday ran); only two readers have chosen what they follow. (The send time, 7:30 then, and the missing plain-text part were also on this list; Danny chose both changes on 2026-10-14: 6:30 ET, and a text part. Every story stays in, no cap, and both weekend editions stay: his word, same day.)
+
+### Subject-line test: 2026-10-15 to 2026-10-28
+
+Danny, 2026-10-14: test two subject styles for two weeks. **Style A** is the names list (`buildSubject`: "Audax Private $6.3B, BlackRock, BBAM, Atlantic Ridge + 44 more"). **Style B** (`buildHeadlineSubject`) leads with the top story the email opens on, as its own headline, and a count: "Audax raises $6.3B for private debt, plus 47 more". Only that story's own words: its headline (the outlet's " - Tag" and a full stop off); if too long for 70 characters, its firm with its figure and stage in the kicker's words ("StepStone: $6B target, plus 68 more"); else the headline cut at a word with "…". With no top story the edition goes out as A. Under B the preview text starts at the second story, so the inbox does not show the lead twice.
+
+- **Which edition gets which**: `subjectStyleFor(editionDate)` in send-daily.ts: odd day of the year B, even A, from `SUBJECT_TEST_STARTS` to `SUBJECT_TEST_ENDS`; consecutive days alternate, so each weekday gets both in the fortnight. Outside the dates every edition is A.
+- **Recorded** on `newsletter_editions.subject_style` ('A' or 'B', the style actually sent; null before the test; migration `20261014_edition_subject_style.sql`).
+- **The test ends with the 2026-10-28 edition and is judged on the share of recipients who clicked** (Resend's `last_event = 'clicked'` for each address in `resend_email_ids`, summed per style, over recipients; opens are not the measure). Then Danny picks; until he does, editions are A. Seven editions a side is a small sample: report the per-edition spread, not just the totals.
+
 
 ### The anchor color gotcha — every `<a>` needs inline `color`
 

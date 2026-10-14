@@ -25,6 +25,9 @@ import { execSync } from 'node:child_process'
 import { createClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles } from '../lib/newsletter/query-articles'
 import { renderNewsletterEmail } from '../lib/newsletter/email-template'
+import { renderNewsletterText } from '../lib/newsletter/email-text'
+import { buildHeadlineSubject, buildSubject } from '../lib/newsletter/send-daily'
+import { pickTopStories } from '../lib/newsletter/top-stories'
 import { queryEventFeed } from '../lib/events/api'
 import { SAMPLE_SPONSOR_SLATE } from '../lib/newsletter/sponsors'
 import { slateFor, sponsorForEdition } from '../lib/sponsor/bookings'
@@ -41,6 +44,8 @@ const EVENTS_LIMIT = 150
 
 
 const OUTPUT_PATH = '/tmp/fundops-newsletter-preview.html'
+/** The plain-text part, written beside the HTML. */
+const TEXT_OUTPUT_PATH = '/tmp/fundops-newsletter-preview.txt'
 const HOURS_BACK = 72
 
 /**
@@ -147,7 +152,7 @@ async function main() {
   const { data: subscribers } = await supabase.from('newsletter_subscribers').select('email').eq('status', 'confirmed').limit(10000)
   const monday = new Date(`${editionDate}T12:00:00-05:00`).getUTCDay() === 1
 
-  let html = renderNewsletterEmail({
+  const renderParams = {
     groups: content.groups,
     totalArticles: content.totalArticles,
     editionDate,
@@ -159,7 +164,15 @@ async function main() {
     events: upcomingEvents,
     interests: process.env.FOLLOWS ? sanitizeInterests(process.env.FOLLOWS.split(',')) : undefined,
     preferencesUrl: 'https://fundopshq.com/preferences?token=PREVIEW',
-  })
+  }
+  let html = renderNewsletterEmail(renderParams)
+
+  // Both subject-line styles (the 2026-10 test in send-daily.ts) and the plain-text part.
+  const top = pickTopStories(content.groups, content.totalArticles)
+  console.log(`  Subject A: ${buildSubject(content, top)}`)
+  console.log(`  Subject B: ${buildHeadlineSubject(top, content.totalArticles) ?? '(no top story: A)'}`)
+  writeFileSync(TEXT_OUTPUT_PATH, renderNewsletterText(renderParams), 'utf8')
+  console.log(`Wrote ${TEXT_OUTPUT_PATH}`)
 
   // Fetch every external favicon the template references and inline
   // each one as a base64 data URI so the saved mockup file is fully

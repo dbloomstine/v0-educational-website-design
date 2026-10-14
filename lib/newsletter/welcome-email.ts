@@ -16,6 +16,7 @@
  */
 import { interestWords } from './interests'
 import { followLineHtml } from './follow-line'
+import { FOLLOW } from '@/lib/brand/social'
 
 const NAVY = '#1E3A5F'
 const NAVY_DEEP = '#0F1E33'
@@ -237,4 +238,56 @@ ${tailored}
   </table>
 </body>
 </html>`
+}
+
+/**
+ * The welcome note as plain text, sent beside the HTML (2026-10-14): the same
+ * words, links written out in full.
+ */
+export function renderWelcomeText(
+  unsubscribeUrl: string,
+  options: { preferencesUrl?: string; interests?: string[] } = {},
+): string {
+  const follows = interestWords(options.interests ?? [])
+  const tailored = !options.preferencesUrl
+    ? []
+    : [
+        follows
+          ? `You said you follow ${follows}, so each edition groups those stories for you under “What you follow”. Change that any time: ${options.preferencesUrl}`
+          : `Want it tailored? Pick the strategies you follow and each edition groups those stories for you: ${options.preferencesUrl}`,
+        '',
+      ]
+  return [
+    'FUNDOPS DAILY',
+    'Welcome to the brief.',
+    '',
+    'Hey —',
+    '',
+    'Thanks for subscribing to FundOps Daily. Your first edition lands tomorrow morning.',
+    '',
+    'I built FundOpsHQ to have one place for what’s actually happening across the funds industry, and which events are worth the trip, without checking a dozen trade publications every morning.',
+    '',
+    'Each edition, before the open:',
+    '- News: the morning’s headlines by strategy: launches, closes, LP commitments, people moves, M&A and regulatory action, de-duplicated across 200+ publications and linked to the original reporting',
+    '- Events: the week ahead in conferences, forums and networking events across North America, grouped by day, every date verified at the organizer',
+    '',
+    'Between editions, the newsroom runs all day at https://fundopshq.com/news and the full calendar lives at https://fundopshq.com/events',
+    '',
+    ...tailored,
+    'Reply any time with questions, story tips, or an event worth listing. I read everything.',
+    '',
+    'Thanks for being here.',
+    '',
+    'Danny Bloomstine',
+    'Founder, FundOpsHQ',
+    '',
+    '----------------------------------------',
+    'FundOps Daily, by FundOpsHQ',
+    `Through the day: ${FOLLOW.map((f) => `${f.label} ${f.href}`).join(' · ')}`,
+    'You’re receiving this because you just signed up at fundopshq.com.',
+    `Unsubscribe: ${unsubscribeUrl}`,
+    ...(options.preferencesUrl ? [`Choose what you follow: ${options.preferencesUrl}`] : []),
+    'Visit FundOpsHQ: https://fundopshq.com',
+    '',
+  ].join('\n')
 }

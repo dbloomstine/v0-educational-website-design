@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
-import { renderWelcomeEmail } from '@/lib/newsletter/welcome-email'
+import { renderWelcomeEmail, renderWelcomeText } from '@/lib/newsletter/welcome-email'
 import { insertSubscriber } from '@/lib/newsletter/insert-subscriber'
 import { sanitizeSignupSource } from '@/lib/newsletter/signup-source'
 import { makeTicket } from '@/lib/newsletter/ticket'
@@ -116,6 +116,7 @@ export async function POST(req: Request) {
           reply_to: 'dbloomstine@gmail.com',
           subject: 'Welcome to FundOps Daily — a note from Danny',
           html: renderWelcomeEmail(unsubscribeUrl, { preferencesUrl, interests: preferences.interests }),
+          text: renderWelcomeText(unsubscribeUrl, { preferencesUrl, interests: preferences.interests }),
           headers: {
             'List-Unsubscribe': `<${unsubscribeUrl}>`,
             'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',

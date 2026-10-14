@@ -34,7 +34,7 @@ import { pickEventsForEmail } from './email-events'
 import { cleanSummary } from '@/lib/news/summary-clean'
 import { titleJaccard } from '@/lib/news/story-dedup'
 
-interface TemplateParams {
+export interface TemplateParams {
   groups: ArticleGroup[]
   totalArticles: number
   editionDate: string
@@ -79,6 +79,12 @@ interface TemplateParams {
    * The send passes a sentinel and swaps in each subscriber's id.
    */
   readerTag?: string
+  /**
+   * The subject-line style this edition went out with (send-daily.ts, the
+   * 2026-10 test). Under style B the subject is the lead headline, so the
+   * preview text starts at the second story rather than say it twice.
+   */
+  subjectStyle?: 'A' | 'B'
 }
 
 /** One row of the weekly recap: a close as the league table has it. */
@@ -404,7 +410,7 @@ function escapeHtml(str: string): string {
     .replace(/"/g, '&quot;')
 }
 
-function formatDate(dateStr: string): string {
+export function formatDate(dateStr: string): string {
   // Append noon UTC to prevent date-string parsing (midnight UTC) from
   // rolling back a day when converted to America/New_York.
   const d = new Date(dateStr + 'T12:00:00Z')
@@ -779,7 +785,7 @@ function renderHouseTop(): string {
 }
 
 /** The line about who reads it. The number is counted at send time, never typed. */
-function readerLine(readerFirms: number | undefined): string {
+export function readerLine(readerFirms: number | undefined): string {
   return readerFirms && readerFirms >= 24
     ? `FundOps Daily is read each morning at ${readerFirms.toLocaleString('en-US')} firms: GPs, LPs, and fund service providers.`
     : 'FundOps Daily is the morning brief for GPs, LPs, and fund service providers.'
@@ -830,7 +836,7 @@ function renderSponsorBottom(slate: SponsorSlate, readerFirms: number | undefine
  * Sponsors that are also in this edition's news. The sponsor page promises
  * that such an edition says so; this is where it is found out.
  */
-function sponsorsInTheNews(slate: SponsorSlate, groups: ArticleGroup[]): string[] {
+export function sponsorsInTheNews(slate: SponsorSlate, groups: ArticleGroup[]): string[] {
   return slate.sponsors
     .filter((sponsor) => {
       const key = entityKey(sponsor.name)
@@ -855,7 +861,13 @@ function sponsorsInTheNews(slate: SponsorSlate, groups: ArticleGroup[]): string[
  * text repeated those names with a figure, so the two lines an inbox shows
  * said the same thing twice.
  */
-export function buildPreheader(top: TopPick[], groups: ArticleGroup[], totalArticles: number): string {
+export function buildPreheader(top: TopPick[], groups: ArticleGroup[], totalArticles: number, skipLead = false): string {
+  // Style B's subject is the lead headline: the preview goes on from the next story.
+  if (skipLead && top.length > 0 && totalArticles > 1) {
+    const leadId = top[0].article.id
+    const rest = groups.map((g) => ({ ...g, articles: g.articles.filter((a) => a.id !== leadId) })).filter((g) => g.articles.length > 0)
+    if (rest.length > 0) return buildPreheader(top.slice(1), rest, totalArticles - 1)
+  }
   const lead = top[0]?.article.title ?? groups[0]?.articles[0]?.title
   if (!lead) return `${totalArticles} moves across private markets this morning.`
   const second = top[1]?.article.title ?? (top.length === 0 ? groups[0]?.articles[1]?.title : undefined)
@@ -888,6 +900,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
     interests,
     preferencesUrl,
     readerTag,
+    subjectStyle,
   } = params
   // The edition in reading order: the top stories, the reader's own section
   // if they have one, then the sections without either.
@@ -895,7 +908,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   const top = arranged.top
   const { followed, sections } = pullFollowed(arranged.sections, interests)
   const followedBlock = followed ? renderCategory(followed) : ''
-  const preheader = buildPreheader(top, groups, totalArticles)
+  const preheader = buildPreheader(top, groups, totalArticles, subjectStyle === 'B')
   const formattedDate = formatDate(editionDate)
   const mastheadDate = formatMastheadDate(editionDate)
   const topBlock = renderTopStories(top)
