@@ -852,5 +852,10 @@ contact at US firms in that morning's edition; Apollo, at most ten credits a day
 - **Never written to:** Lead Desk hashes, iqeq.com, fund admins / IQ-EQ competitors, bad-news stories, anyone either program (or
   the old one) emailed in 90 days, unsubscribes / bounces / complaints (`outreach_v2_suppressions`), non-US contacts (news notes),
   existing subscribers (news notes). Re-checked at the moment of sending. Daily cap: 30 sends across both programs.
+- **Mock-up logos:** `npx tsx --env-file=.env.local scripts/outreach-v2/resolve-logos.ts <file.json> --shots <dir>` takes each
+  company's logo from its own homepage header in headless Chrome (the home link, top left; img or inline SVG as drawn),
+  stores a PNG in the public `mockup-logos` bucket (`outreach_v2_logos`: source page, kind, tone); `/api/sponsor/logo` serves it
+  first. The builder bakes a dark plate behind a light mark and a light plate behind a dark one. Check by eye with
+  `scripts/outreach-v2/logo-sheet.ts mockups <batch> <headers dir> <out.png>` before a batch goes.
 - **Sponsor batch:** `npx tsx --env-file=.env.local scripts/outreach-v2/load-sponsor-batch.ts <file.json>` (stores `preview`
   rows, writes `<file>-preview.md`); after Danny reads it, `scripts/outreach-v2/release-batch.ts <batch>` queues it.
