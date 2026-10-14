@@ -3,7 +3,8 @@ import { EDITOR, SOCIAL } from '@/lib/brand/social'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
-import { EventsRail, LargestCloses, LatestRail, SectionBlock } from '@/components/home/Rail'
+import { EventsRail, LatestRail, SectionBlock } from '@/components/home/Rail'
+import { LeagueStrip } from '@/components/home/LeagueStrip'
 import { LeadStory, SectionFlag, TopStory } from '@/components/story/StoryBlocks'
 import { StickySubscribeBar } from '@/components/news/StickySubscribeBar'
 import { InTheNews } from '@/components/home/InTheNews'
@@ -12,7 +13,7 @@ import { firmsInTheNews } from '@/lib/news/firms'
 import { FundraisingChart } from '@/components/charts/FundraisingChart'
 import { loadLeagueReport } from '@/lib/news/league-data'
 import { chartData } from '@/lib/news/chart-views'
-import { weekCloses } from '@/lib/news/league'
+import { biggestRaises } from '@/lib/news/league'
 import { getEventFeed } from '@/lib/events/api'
 import { loadStories } from '@/lib/news/front-page'
 import { composeFrontPage, rankSection } from '@/lib/news/stories'
@@ -105,8 +106,10 @@ export default async function HomePage() {
 
   const nowMs = Date.now()
   const chart = chartData(league, nowMs)
-  // The week's closes come from the league, like the chart above them: one definition of a close on the page.
-  const week = weekCloses(league.closes, nowMs)
+  // The biggest raises come from the league, like the chart: one definition
+  // of a close on the page. They lead the page (Danny, 2026-10-14: "League
+  // table up top"), so the rail no longer repeats them as "Largest closes".
+  const raises = biggestRaises(league.closes, nowMs)
   const inTheNews = firmsInTheNews(stories, nowMs, 7, 10)
   const front = composeFrontPage(stories, nowMs)
 
@@ -138,9 +141,12 @@ export default async function HomePage() {
           <InTheNews firms={inTheNews} />
           <SponsorStrip className="mb-5" />
 
-          {/* ─── Front: lead + top stories, with the running rail ─── */}
-          <div className="grid gap-x-9 gap-y-8 lg:grid-cols-[minmax(0,1fr)_332px] lg:grid-rows-[auto_1fr]">
-            <div className="min-w-0 lg:col-start-1">
+          {/* ─── Front: the league strip, lead + top stories, with the running rail ───
+              On a desk the strip runs across the top of both columns. On a
+              phone the document order holds: the lead opens the page, the
+              strip follows it, then the top stories. */}
+          <div className="grid gap-x-9 gap-y-6 lg:grid-cols-[minmax(0,1fr)_332px] lg:grid-rows-[auto_auto_auto_1fr]">
+            <div className="min-w-0 lg:col-start-1 lg:row-start-2">
               {front.lead ? (
                 <LeadStory story={front.lead} />
               ) : (
@@ -148,34 +154,34 @@ export default async function HomePage() {
                   The newsroom is catching up. The full feed is at <a href="/news" className="underline">Latest</a>.
                 </p>
               )}
-
-              {front.top.length > 0 && (
-                <section aria-label="Top stories" className="mt-6">
-                  <SectionFlag label="Top stories" />
-                  <div className="col-rule grid gap-x-10 gap-y-4 sm:grid-cols-2">
-                    {front.top.map((s) => (
-                      <TopStory key={s.id} story={s} />
-                    ))}
-                  </div>
-                </section>
-              )}
-
             </div>
 
-            {/* The running rail. Second in the document so a phone shows it
-                right after the top stories; on a desk it is the right column. */}
-            <aside className="min-w-0 space-y-5 lg:col-start-2 lg:row-span-2 lg:row-start-1">
+            <LeagueStrip raises={raises} className="min-w-0 lg:col-span-2 lg:row-start-1" />
+
+            {front.top.length > 0 && (
+              <section aria-label="Top stories" className="min-w-0 lg:col-start-1 lg:row-start-3">
+                <SectionFlag label="Top stories" />
+                <div className="col-rule grid gap-x-10 gap-y-4 sm:grid-cols-2">
+                  {front.top.map((s) => (
+                    <TopStory key={s.id} story={s} />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* The running rail. After the top stories in the document so a
+                phone shows it next; on a desk it is the right column. */}
+            <aside className="min-w-0 space-y-5 lg:col-start-2 lg:row-span-3 lg:row-start-2">
               {/* The chart leads the rail: it is the one thing on the page a
                   reader can play with, so it sits where it is seen first. */}
               <FundraisingChart {...chart} href="/league-tables" />
               <SponsorCard />
               <LatestRail stories={front.latest.slice(0, LATEST_COUNT)} />
-              <LargestCloses week={week} />
               <EventsRail events={events} />
             </aside>
 
             {/* By story type — under the top stories, beside the rail */}
-            <div className="min-w-0 lg:col-start-1">
+            <div className="min-w-0 pt-2 lg:col-start-1 lg:row-start-4">
               <div className="col-rule grid gap-x-10 gap-y-8 sm:grid-cols-2">
                 {typeBlocks.map(({ section, picks }) => (
                   <SectionBlock

@@ -608,6 +608,69 @@
 .paper .panel-lead { border-top: 3px solid var(--ink); padding: 16px 20px 18px; }
 @media (max-width: 640px) { .paper .panel-lead { padding: 13px 14px 15px; } }
 .paper .panel-ink { background: var(--ink); color: var(--ink-foreground); border-left: 4px solid var(--tab); padding: 14px 16px 16px; }
+/* "Biggest raises" (components/home/LeagueStrip.tsx). A phone gets a panel:
+   navy head, a ranked list, the total and the way on. A desk gets one row
+   across the page: the head stands as a navy block on the left, the five
+   closes as columns, each figure set large over a bar for its size. */
+.paper .league-strip {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 2px oklch(0.245 0.042 255 / 0.05);
+}
+.paper .league-strip .ls-head {
+  background: var(--ink); color: var(--ink-foreground);
+  border-left: 4px solid var(--tab);
+  padding: 7px 12px 7px 10px;
+}
+.paper .league-strip .ls-title { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.paper .league-strip .ls-head h2 { color: var(--ink-foreground); }
+.paper .league-strip .ls-note { color: color-mix(in oklab, var(--ink-foreground) 62%, transparent); white-space: nowrap; }
+.paper .league-strip .ls-foot-desk { display: none; }
+.paper .league-strip .ls-list { padding: 2px 14px 0; }
+.paper .league-strip .ls-row {
+  display: grid; grid-template-columns: 18px minmax(0, 1fr) auto; column-gap: 8px; row-gap: 1px; align-items: baseline;
+  grid-template-areas: "rank firm amt" "rank fund stage";
+  padding: 6px 0; border-bottom: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
+}
+.paper .league-strip .ls-fund, .paper .league-strip .ls-stage { line-height: 1.3; }
+.paper .league-strip .ls-row:last-child { border-bottom: 0; }
+.paper .league-strip .ls-rank { grid-area: rank; }
+.paper .league-strip .ls-stage { grid-area: stage; justify-self: end; white-space: nowrap; }
+.paper .league-strip .ls-amt { grid-area: amt; justify-self: end; font-size: 14px; }
+.paper .league-strip .ls-bar { display: none; }
+.paper .league-strip .ls-firm { grid-area: firm; min-width: 0; }
+.paper .league-strip .ls-fund { grid-area: fund; min-width: 0; }
+.paper .league-strip .ls-foot-phone { padding: 4px 14px 9px; border-top: 1px solid var(--border); }
+@media (min-width: 1024px) {
+  .paper .league-strip { display: grid; grid-template-columns: 208px minmax(0, 1fr); }
+  .paper .league-strip .ls-head {
+    display: flex; flex-direction: column; justify-content: space-between; gap: 10px;
+    padding: 11px 14px 11px 12px;
+  }
+  .paper .league-strip .ls-title { flex-direction: column; gap: 3px; }
+  .paper .league-strip .ls-foot-desk { display: block; }
+  .paper .league-strip .ls-foot-desk p { color: color-mix(in oklab, var(--ink-foreground) 78%, transparent); }
+  .paper .league-strip .ls-foot-desk p span { color: var(--ink-foreground); }
+  .paper .league-strip .ls-foot-desk a { color: var(--tab); }
+  .paper .league-strip .ls-foot-phone { display: none; }
+  .paper .league-strip .ls-list { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); padding: 0; }
+  .paper .league-strip .ls-row {
+    grid-template-columns: auto minmax(0, 1fr); row-gap: 0;
+    grid-template-areas: "rank stage" "amt amt" "bar bar" "firm firm" "fund fund";
+    align-content: start; padding: 10px 16px 11px; border-bottom: 0;
+    border-left: 1px solid var(--border);
+    transition: background-color 120ms;
+  }
+  .paper .league-strip .ls-row:first-child { border-left: 0; }
+  .paper .league-strip .ls-row:hover { background: color-mix(in oklab, var(--band) 60%, var(--card)); }
+  .paper .league-strip .ls-amt { justify-self: start; font-family: var(--font-newsreader), Georgia, serif; font-size: 30px; font-weight: 600; letter-spacing: -0.015em; margin-top: 4px; }
+  .paper .league-strip .ls-bar {
+    display: block; grid-area: bar; height: 3px; margin: 7px 0 8px;
+    background: color-mix(in oklab, var(--foreground) 9%, transparent);
+  }
+  .paper .league-strip .ls-bar > span { display: block; height: 100%; background: var(--tab); }
+  .paper .league-strip .ls-row:hover .ls-bar > span { background: var(--ink); }
+}
 /* A long list reads as rows once the row under the pointer lifts. */
 .paper .river > li { transition: background-color 120ms, box-shadow 120ms; }
 .paper .river > li:hover { background: var(--card); box-shadow: -8px 0 0 var(--card), 8px 0 0 var(--card); }

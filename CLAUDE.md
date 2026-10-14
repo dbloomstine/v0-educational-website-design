@@ -56,8 +56,13 @@ The site was aggressively consolidated on 2026-04-10. These are the public route
                            · "Firms in the news" line, then the sponsor strip (see "Sponsors" below)
                              (the one-line subscribe band above them was removed 2026-10-12, Danny: enough other
                              places ask; `/#subscribe` and the outreach `?e=` link now open the signup box)
+                           · "Biggest raises" (components/home/LeagueStrip.tsx, added 2026-10-14, Danny: "League
+                             table up top"): the five largest league closes of the past 7 days (30 if the week has
+                             fewer than five), from `biggestRaises` in lib/news/league.ts. One row across the page
+                             above the lead on a desk; a ranked list right under the lead on a phone
                            · LeadStory + six TopStory (ranked: size, coverage breadth, source tier, recency)
-                           · rail: the fundraising chart, Latest, Largest closes (7 days), Events (week ahead)
+                           · rail: the fundraising chart, Latest, Events (week ahead). "Largest closes" left the
+                             front page's rail when the strip came in; section fronts keep it
                            · section blocks by story type, then by asset class; a story appears once per page
 /news                   → "Latest": the full archive with search and filters (client NewsFeed, unchanged logic)
 /news/[section]         → Section fronts — the TABS in the header. 13 sections defined in lib/news/sections.ts:
@@ -397,7 +402,7 @@ components/
 ├── site-footer.tsx          # Navy footer — nameplate, section links by type and asset class
 ├── story/                   # Headline (bold entities), Coverage, LeadStory/TopStory/HeadlineRow/LatestRow, ShareBar
 ├── home/
-│   ├── Rail.tsx             # LatestRail, LargestCloses, EventsRail, SectionBlock
+│   ├── Rail.tsx             # LatestRail, LargestCloses, EventsRail, SectionBlock (LeagueStrip.tsx: the front page's "Biggest raises")
 │   ├── InTheNews.tsx        # "Firms in the news" line at the top of the front page
 │   └── live-show-feature.tsx # "Channel 02" broadcast section with latest video
 ├── charts/
@@ -463,7 +468,7 @@ Rules that follow:
 
 ## League tables, the chart and firm pages (2026-10)
 
-**One definition of a fund close.** `lib/news/league.ts` turns stories into closes; the league tables, the rail chart, "Largest closes" and Monday's recap in the email all read it, so a number is the same wherever it appears. A close needs a named manager, a stated size and a headline that says the fund closed — targets, "nears", continuation vehicles, CLOs, mandates and evergreen vehicles are news, not closes. Reports of one close are merged (`sameClose`); when they disagree on the size the table takes the **lower** figure and marks the row † (`altSizeUsdM`) — the higher is usually leverage or sister vehicles added in. ≈ marks a size converted from another currency. A wrong row is fixed with a `league_overrides` row, not with code. After any change to the classifier, the story rules or `league.ts`, run `npx tsx scripts/league-audit.ts` (`--pairs` lists same-manager rows that might be one fund).
+**One definition of a fund close.** `lib/news/league.ts` turns stories into closes; the league tables, the rail chart, "Largest closes", the front page's "Biggest raises" and Monday's recap in the email all read it, so a number is the same wherever it appears. A close needs a named manager, a stated size and a headline that says the fund closed — targets, "nears", continuation vehicles, CLOs, mandates and evergreen vehicles are news, not closes. Reports of one close are merged (`sameClose`); when they disagree on the size the table takes the **lower** figure and marks the row † (`altSizeUsdM`) — the higher is usually leverage or sister vehicles added in. ≈ marks a size converted from another currency. A wrong row is fixed with a `league_overrides` row, not with code. After any change to the classifier, the story rules or `league.ts`, run `npx tsx scripts/league-audit.ts` (`--pairs` lists same-manager rows that might be one fund).
 
 **The chart (`components/charts/FundraisingChart.tsx`).** The closes of the last 92 days are sent to the page and the views (market, weeks, size, funds, firms, region) are computed in the browser by `lib/news/chart-math.ts`. Interaction model, on Danny's instruction (2026-10-02 — "should react and or be active on hover. should not require a click"): **hover explores, click sets.** Pointing at a bar opens a pop-out listing the funds in it, each linked to its reports and its firm; pointing at a view tab switches the view after a short dwell; clicking a bar pins its pop-out. Period, measure and the table view are click-only: they sit on the pointer's path to the bars. On a touch screen the pinned card opens inline. Do not gate a value behind hover — every bar prints its figure.
 

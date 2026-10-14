@@ -633,6 +633,21 @@ export function weekCloses(
   }
 }
 
+/**
+ * The front page's "Biggest raises" strip: the week's largest closes, the
+ * same rows as weekCloses. A week with fewer than `count` closes reaches back
+ * to thirty days rather than print a short strip; the strip says which.
+ */
+export function biggestRaises(
+  all: FundClose[],
+  nowMs: number,
+  count = 5,
+): { rows: FundClose[]; days: 7 | 30; finals: number; capitalUsdM: number } {
+  const week = weekCloses(all, nowMs, { days: 7, limit: count })
+  if (week.rows.length >= count) return { ...week, days: 7 }
+  return { ...weekCloses(all, nowMs, { days: 30, limit: count }), days: 30 }
+}
+
 export function leagueRows(all: FundClose[], f: LeagueFilter, nowMs: number): FundClose[] {
   const stage = f.stage ?? 'final'
   return all.filter(

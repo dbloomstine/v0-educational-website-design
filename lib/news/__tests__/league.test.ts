@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   buildLeague, buildLeagueReport, capitalByAsset, capitalByWeek, closesBySize, firmSlug, fundLabel, fundNameTokens, fundNumbers,
-  leagueRows, regionOf, sameFirmName, settleSize, sizeIsTarget, weekCloses, type FundClose,
+  leagueRows, regionOf, sameFirmName, settleSize, sizeIsTarget, weekCloses, biggestRaises, type FundClose,
 } from '../league'
 
 let seq = 0
@@ -315,6 +315,25 @@ describe('small things the pages rely on', () => {
     expect(week.rows.map((c) => c.sizeUsdM)).toEqual([900, 400])
     expect(week).toMatchObject({ finals: 1, capitalUsdM: 900 })
     expect(weekCloses(all, NOW, { assetClasses: ['VC'] }).rows).toHaveLength(1)
+  })
+})
+
+describe('the front page strip', () => {
+  const mk = (o: Partial<FundClose>): FundClose => ({
+    id: uuid(), memberIds: [], firm: 'Firm', firmSlug: 'firm', fund: null, sizeUsdM: 100, stage: 'final', date: '2026-09-28',
+    assetClass: 'PE', headline: '', source: null, url: '', sources: 1, outlets: [], converted: false, region: null, altSizeUsdM: null, ...o,
+  })
+  it('shows the week when the week has five closes, largest first', () => {
+    const all = [100, 700, 300, 500, 200, 900].map((v) => mk({ sizeUsdM: v }))
+    const s = biggestRaises(all, NOW)
+    expect(s.days).toBe(7)
+    expect(s.rows.map((c) => c.sizeUsdM)).toEqual([900, 700, 500, 300, 200])
+  })
+  it('reaches back thirty days when the week is thin, and never past it', () => {
+    const all = [mk({ sizeUsdM: 400 }), mk({ sizeUsdM: 5000, date: '2026-09-10' }), mk({ sizeUsdM: 8000, date: '2026-08-01' })]
+    const s = biggestRaises(all, NOW)
+    expect(s.days).toBe(30)
+    expect(s.rows.map((c) => c.sizeUsdM)).toEqual([5000, 400])
   })
 })
 
