@@ -77,7 +77,7 @@ export async function GET(req: Request) {
       const bytes = res.ok ? await readCapped(res, MAX_IMAGE) : null
       if (!bytes) return none()
       return new NextResponse(Buffer.from(bytes), {
-        headers: { 'Content-Type': 'image/png', 'Cache-Control': 'public, s-maxage=3600', 'X-Content-Type-Options': 'nosniff', 'X-Logo-Tone': String(kept.tone ?? '') },
+        headers: { 'Content-Type': 'image/png', 'Cache-Control': 'public, s-maxage=300', 'X-Content-Type-Options': 'nosniff', 'X-Logo-Tone': String(kept.tone ?? '') },
       })
     } catch {
       return none()

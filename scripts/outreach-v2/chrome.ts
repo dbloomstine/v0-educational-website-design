@@ -17,7 +17,7 @@ export interface Page {
   goto(url: string, timeoutMs?: number): Promise<void>
   eval<T = unknown>(expression: string): Promise<T>
   transparent(on: boolean): Promise<void>
-  shot(clip?: { x: number; y: number; width: number; height: number }): Promise<Buffer>
+  shot(clip?: { x: number; y: number; width: number; height: number }, zoom?: number): Promise<Buffer>
   close(): Promise<void>
 }
 
@@ -86,8 +86,8 @@ export async function launch({ width = 1440, height = 900, scale = 2 } = {}): Pr
     async transparent(on) {
       await s('Emulation.setDefaultBackgroundColorOverride', on ? { color: { r: 0, g: 0, b: 0, a: 0 } } : {})
     },
-    async shot(clip) {
-      const r = await s('Page.captureScreenshot', { format: 'png', ...(clip ? { clip: { ...clip, scale: 1 } } : {}), captureBeyondViewport: !!clip })
+    async shot(clip, zoom = 1) {
+      const r = await s('Page.captureScreenshot', { format: 'png', ...(clip ? { clip: { ...clip, scale: zoom } } : {}), captureBeyondViewport: !!clip })
       return Buffer.from(r.data, 'base64')
     },
     async close() {

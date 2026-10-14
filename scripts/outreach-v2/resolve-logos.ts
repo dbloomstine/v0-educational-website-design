@@ -168,7 +168,9 @@ async function main() {
         if (found) {
           await page.eval(ISOLATE)
           await page.transparent(true)
-          png = await page.shot(pad(found.rect))
+          // A small mark is photographed larger (re-drawn, not stretched) so it stays sharp at the ad's size.
+          const zoom = Math.min(4, Math.max(1, Math.ceil(160 / Math.max(1, found.rect.width))))
+          png = await page.shot(pad(found.rect), zoom)
           kind = found.kind
           how = found.how
         }
