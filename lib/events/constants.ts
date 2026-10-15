@@ -147,16 +147,36 @@ export function formatWeekHeader(startDate: string): string {
 
 /**
  * Compress verbose time notes to a scannable token: "Begins 12:30 PM ET" →
- * "12:30pm ET", "1:00 PM ET (60 minutes)" → "1pm ET". Null when no clock
- * time is present (e.g. "All day"). Same idiom as the Circuit email.
+ * "12:30pm ET", "1:00 PM ET (60 minutes)" → "1pm ET", and a range keeps both
+ * ends: "5:00-8:00 PM ET" → "5–8pm ET", "11:30 AM - 1:00 PM ET" →
+ * "11:30am–1pm ET". The earliest time in the note wins, so "5:00-8:00 PM ET in
+ * person; 5:30-7:00 PM ET by Zoom" reads "5–8pm ET". Until 2026-10-15 only a
+ * time carrying its own am/pm was read, so "5:00-8:00 PM" showed as 8pm (Danny
+ * caught it on Lowenstein's VentureCrushFG). Null when no clock time is present.
  */
-export function compactTimeNote(timeNote: string | null): string | null {
-  if (!timeNote) return null
-  const m = timeNote.match(/(\d{1,2})(?::(\d{2}))?\s?(am|pm)/i)
-  if (!m) return null
-  const minutes = m[2] && m[2] !== '00' ? `:${m[2]}` : ''
-  const tz = timeNote.match(/\b(ET|EST|EDT|CT|PT|PST|PDT|GMT|BST|CET|CEST|HKT|SGT|JST|AEST)\b/i)
-  return `${m[1]}${minutes}${m[3].toLowerCase()}${tz ? ` ${tz[1].toUpperCase()}` : ''}`
+export function compactTimeNote(raw: string | null): string | null {
+  if (!raw) return null
+  // A 24-hour French-style time ("17h00 ET", from Quebec organisers) is read as 5:00 PM.
+  const timeNote = raw.replace(/\b(\d{1,2})h(\d{2})\b/g, (_, h: string, m: string) => { const n = Number(h); return `${n % 12 || 12}:${m} ${n >= 12 ? 'PM' : 'AM'}` })
+  const clock = (h: string, min: string | undefined) => `${Number(h)}${min && min !== '00' ? `:${min}` : ''}`
+  const tzm = timeNote.match(/\b(ET|EST|EDT|CT|CST|CDT|MT|MST|MDT|PT|PST|PDT|GMT|BST|CET|CEST|HKT|SGT|JST|AEST)\b/i)
+  const tz = tzm ? ` ${tzm[1].toUpperCase()}` : ''
+  const range = /(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?\s*(?:-|–|—|to)\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)/i.exec(timeNote)
+  const single = /(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)/i.exec(timeNote)
+  const ap = (x: string | undefined) => (x ? (x[0].toLowerCase() === 'a' ? 'am' : 'pm') : undefined)
+  if (range && (!single || range.index <= single.index)) {
+    const endAp = ap(range[6]) as string
+    const h1 = Number(range[1])
+    const h2 = Number(range[4])
+    // "5:00-8:00 PM": the start shares the end's am/pm, unless that would put it after the end ("11:30-1 PM" is 11:30am).
+    let startAp = ap(range[3])
+    if (!startAp) startAp = endAp === 'pm' && h1 !== 12 && h2 !== 12 && h1 > h2 ? 'am' : endAp === 'pm' && h2 === 12 && h1 !== 12 ? 'am' : endAp
+    const a = clock(range[1], range[2])
+    const b = clock(range[4], range[5])
+    return startAp === endAp ? `${a}–${b}${endAp}${tz}` : `${a}${startAp}–${b}${endAp}${tz}`
+  }
+  if (!single) return null
+  return `${clock(single[1], single[2])}${ap(single[3])}${tz}`
 }
 
 /** "New York, NY" · "London, UK" · falls back to "Virtual" for online events. */
