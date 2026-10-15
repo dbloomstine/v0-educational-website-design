@@ -4,10 +4,12 @@ import Link from 'next/link'
 import { ExternalLink, Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
-  COST_LABELS,
   compactTimeNote,
+  costLabel,
   formatEventDates,
   formatEventLocation,
+  isVerifiedFree,
+  verifiedPriceNote,
 } from '@/lib/events/constants'
 import { cleanEntityName } from '@/lib/news/constants'
 import type { IndustryEvent } from '@/lib/events/types'
@@ -16,11 +18,13 @@ import type { IndustryEvent } from '@/lib/events/types'
  * Board row — the same shape as Section B of the daily email and the homepage
  * rail (2026-08-30): the time sits in a narrow left column so a day scans by
  * clock, the event name carries the row, and organizer / city / cost recede
- * beneath it. The board keeps the full cost label (it is a planning surface);
- * the email and rail only flag free events.
+ * beneath it. Cost is said only where we saw it (2026-10-15): "Free" when the
+ * registration page was checked, "Invite only" / "Members only" for access,
+ * and nothing otherwise. The email and rail only flag free events.
  */
 export function EventRow({ event }: { event: IndustryEvent }) {
-  const cost = COST_LABELS[event.costType] ?? COST_LABELS.paid
+  const cost = costLabel(event)
+  const free = isVerifiedFree(event)
   const time = compactTimeNote(event.timeNote)
   const isRange = Boolean(event.endDate && event.endDate !== event.startDate)
   const when = time ?? (isRange ? formatEventDates(event.startDate, event.endDate) : 'All day')
@@ -73,20 +77,15 @@ export function EventRow({ event }: { event: IndustryEvent }) {
         </span>
         <span className="mt-0.5 block truncate font-mono text-[11px] uppercase tracking-wide text-muted-foreground">
           {under}
-          <span className="sm:hidden">
-            {event.costType === 'free' ? ' · Free' : ` · ${cost.label}`}
-          </span>
+          {cost && <span className="sm:hidden"> · {cost}</span>}
         </span>
       </span>
 
       <span
-        className={cn(
-          'hidden text-right text-[12px] font-medium sm:block',
-          event.costType === 'free' ? 'text-emerald-400' : cost.color,
-        )}
-        title={event.priceNote ?? undefined}
+        className={cn('hidden whitespace-nowrap text-right text-[12px] font-medium sm:block', free ? 'text-emerald-400' : 'text-muted-foreground')}
+        title={verifiedPriceNote(event) ?? undefined}
       >
-        {event.costType === 'free' ? 'Free' : cost.label}
+        {cost}
       </span>
     </Link>
   )

@@ -35,11 +35,12 @@ const KIND_OPTIONS = Object.entries(EVENT_KIND_LABELS)
 
 const FORMAT_OPTIONS = Object.entries(EVENT_FORMAT_LABELS).map(([value, label]) => ({ value, label }))
 
+// "Free" filters on the free events whose registration page we checked (2026-10-15); "Paid" went with the
+// "Paid" label, since nearly everything is paid and an unchecked "paid" is a guess. Access filters stay.
 const COST_OPTIONS = [
   { value: 'free', label: 'Free' },
-  { value: 'paid', label: 'Paid' },
-  { value: 'member_only', label: 'Members Only' },
-  { value: 'invite_only', label: 'Invite Only' },
+  { value: 'member_only', label: 'Members only' },
+  { value: 'invite_only', label: 'Invite only' },
 ] as const
 
 const PAGE_SIZE = 100

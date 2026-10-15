@@ -20,12 +20,46 @@ export const EVENT_FORMAT_LABELS: Record<string, string> = {
   hybrid: 'Hybrid',
 }
 
-export const COST_LABELS: Record<string, { label: string; color: string }> = {
-  free: { label: 'Free', color: 'text-emerald-400' },
-  paid: { label: 'Paid', color: 'text-muted-foreground' },
-  member_only: { label: 'Members', color: 'text-muted-foreground' },
-  invite_only: { label: 'Invite', color: 'text-muted-foreground' },
-  mixed: { label: 'Mixed', color: 'text-muted-foreground' },
+// ── Cost: said only where we saw it (2026-10-15) ──────────────────
+//
+// Danny: the board called McDermott's HPE NYC 2026 "Free" and its registration page charges $1,400 to $2,500.
+// "We either need to be better at that stuff or remove the free vs paid thing." The scout had marked law-firm
+// events free from the event page alone. So: "Free" only when cost_type is free AND cost_verified (someone saw
+// the free registration on the organizer's own registration page); "Invite only" and "Members only" stay, as
+// they say who can go, not what it costs; "Paid" and "Mixed" are no longer said at all (nearly everything is
+// paid, and "Mixed" told a reader nothing). A price note is shown only when it was verified too.
+
+interface CostFields {
+  costType: string
+  priceNote: string | null
+  costVerified: boolean
+}
+
+const ACCESS_LABELS: Record<string, string> = {
+  invite_only: 'Invite only',
+  member_only: 'Members only',
+}
+
+/** Free, and we saw that on the registration page. The only case anything is called free. */
+export function isVerifiedFree(event: Pick<CostFields, 'costType' | 'costVerified'>): boolean {
+  return event.costType === 'free' && event.costVerified === true
+}
+
+/** The short label a row carries: "Free", "Invite only", "Members only", or nothing. */
+export function costLabel(event: Pick<CostFields, 'costType' | 'costVerified'>): string | null {
+  if (isVerifiedFree(event)) return 'Free'
+  return ACCESS_LABELS[event.costType] ?? null
+}
+
+/** The verified price note, or null. Never an unverified one: those are guesses as often as not. */
+export function verifiedPriceNote(event: CostFields): string | null {
+  const note = event.priceNote?.trim()
+  return event.costVerified && note ? note : null
+}
+
+/** What an event's page says under "Cost": the verified note, else the row label, else nothing (no Cost line). */
+export function costDetail(event: CostFields): string | null {
+  return verifiedPriceNote(event) ?? costLabel(event)
 }
 
 export const EVENT_REGION_LABELS: Record<string, { label: string; short: string }> = {

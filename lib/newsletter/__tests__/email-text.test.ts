@@ -47,7 +47,7 @@ const ev = (o: Partial<IndustryEvent>): IndustryEvent =>
   ({
     id: 'x', slug: 'x', name: 'An event', description: null, eventUrl: 'https://example.com', registrationUrl: null, organizerName: 'ACG', organizerType: 'association',
     startDate: '2026-10-14', endDate: null, timeNote: null, city: 'New York', stateRegion: 'NY', country: 'US', venue: null, eventFormat: 'in_person', eventKind: 'conference',
-    costType: 'paid', priceNote: null, fundCategories: [], topics: [], opsRelevance: 'medium', region: 'north_america', isFeatured: false, expectedAttendance: null, isSubmitted: false,
+    costType: 'paid', priceNote: null, costVerified: false, fundCategories: [], topics: [], opsRelevance: 'medium', region: 'north_america', isFeatured: false, expectedAttendance: null, isSubmitted: false,
     ...o,
   }) as IndustryEvent
 
@@ -103,7 +103,7 @@ describe('the plain-text part of the daily edition', () => {
 
   it('lists the week’s events by day, two a day, with the rest counted', () => {
     const events = [
-      ev({ slug: 'cfo', name: 'PE CFO Forum', opsRelevance: 'high', timeNote: 'Begins 8:30 AM ET', costType: 'free' }),
+      ev({ slug: 'cfo', name: 'PE CFO Forum', opsRelevance: 'high', timeNote: 'Begins 8:30 AM ET', costType: 'free', costVerified: true }),
       ev({ slug: 'b', name: 'Event B' }),
       ev({ slug: 'c', name: 'Event C' }),
     ]
@@ -113,6 +113,19 @@ describe('the plain-text part of the daily edition', () => {
     expect(text).toContain('One more on the calendar: https://fundopshq.com/events')
     expect(text).not.toContain('Event C')
     expect(renderNewsletterText(params())).not.toContain('THE WEEK AHEAD')
+  })
+
+  it('calls an event free only when its registration page was checked, and never says paid', () => {
+    const events = [
+      ev({ slug: 'checked', name: 'Checked', costType: 'free', costVerified: true, startDate: '2026-10-14' }),
+      ev({ slug: 'guessed', name: 'Guessed', costType: 'free', costVerified: false, startDate: '2026-10-15' }),
+      ev({ slug: 'paid', name: 'Third one', costType: 'paid', costVerified: true, priceNote: '$2,500', startDate: '2026-10-16' }),
+    ]
+    const text = renderNewsletterText(params({ events }))
+    expect(text).toMatch(/Checked\n {2}ACG · New York, NY · Free\n/)
+    expect(text).toMatch(/Guessed\n {2}ACG · New York, NY\n/)
+    expect(text).toMatch(/Third one\n {2}ACG · New York, NY\n/)
+    expect(text).not.toMatch(/Paid\b|\$2,500/)
   })
 
   it('shows a sponsor’s card, or the house notice when there is none', () => {

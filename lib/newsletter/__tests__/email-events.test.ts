@@ -7,7 +7,7 @@ const ev = (o: Partial<IndustryEvent>): IndustryEvent =>
   ({
     id: 'x', slug: 'x', name: 'An event', description: null, eventUrl: 'https://example.com', registrationUrl: null, organizerName: 'ACG', organizerType: 'association',
     startDate: '2026-10-14', endDate: null, timeNote: null, city: 'New York', stateRegion: 'NY', country: 'US', venue: null, eventFormat: 'in_person', eventKind: 'conference',
-    costType: 'paid', priceNote: null, fundCategories: [], topics: [], opsRelevance: 'medium', region: 'north_america', isFeatured: false, expectedAttendance: null, isSubmitted: false, boardException: false, clickCount: 0,
+    costType: 'paid', priceNote: null, costVerified: false, fundCategories: [], topics: [], opsRelevance: 'medium', region: 'north_america', isFeatured: false, expectedAttendance: null, isSubmitted: false, boardException: false, clickCount: 0,
     ...o,
   }) as IndustryEvent
 
@@ -44,6 +44,13 @@ describe('the events the daily email shows', () => {
     const one = renderNewsletterEmail({ groups: [], totalArticles: 0, editionDate: '2026-10-13', unsubscribeUrl: 'https://fundopshq.com/u', events: events.slice(0, 3) })
     expect(one).toContain('One more on the calendar')
     expect(renderNewsletterEmail({ groups: [], totalArticles: 0, editionDate: '2026-10-13', unsubscribeUrl: 'https://fundopshq.com/u', events: events.slice(0, 2) })).not.toContain('on the calendar')
+  })
+  it('in the email: "Free" only for an event whose registration page was checked', () => {
+    const html = (costVerified: boolean) =>
+      renderNewsletterEmail({ groups: [], totalArticles: 0, editionDate: '2026-10-13', unsubscribeUrl: 'https://fundopshq.com/u', events: [ev({ slug: 'f', name: 'A free one', costType: 'free', costVerified })] })
+    expect(html(true)).toContain('ACG \u00b7 New York, NY \u00b7 Free')
+    expect(html(false)).toContain('ACG \u00b7 New York, NY')
+    expect(html(false)).not.toContain('\u00b7 Free')
   })
   it('an event its organizer submitted is always shown on its day, first; the rest of the two is the best of the others', () => {
     const day = [

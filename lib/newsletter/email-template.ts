@@ -23,6 +23,7 @@ import {
   formatEventLocation,
   formatEventDayHeading,
   compactTimeNote,
+  isVerifiedFree,
 } from '@/lib/events/constants'
 import type { IndustryEvent } from '@/lib/events/types'
 import { DEFAULT_SPONSOR_SLATE, type Sponsor, type SponsorSlate } from './sponsors'
@@ -504,7 +505,7 @@ function renderEvent(event: IndustryEvent): string {
   const under = [
     cleanEntityName(event.organizerName),
     formatEventLocation(event),
-    event.costType === 'free' ? 'Free' : undefined,
+    isVerifiedFree(event) ? 'Free' : undefined,
   ]
     .filter(Boolean)
     .join(' \u00b7 ')

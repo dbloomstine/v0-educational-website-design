@@ -106,7 +106,7 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
     query = query.in('event_format', requested)
   }
   if (params.cost) {
-    query = query.in('cost_type', params.cost.split(','))
+    query = query.or(costFilter(params.cost))
   }
   // params.region is accepted but cannot widen past the NA board scope
   if (params.category) {
@@ -145,6 +145,20 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
   return { events, facets, hasMore, offset, limit }
 }
 
+const COST_TYPES = ['free', 'paid', 'member_only', 'invite_only', 'mixed']
+
+/**
+ * The PostgREST `or` filter for `?cost=` (2026-10-15). "free" means free AND checked on the registration page
+ * (cost_verified): an unchecked "free" is not called free anywhere, so it must not answer the Free filter or
+ * the /events/free page either. Unknown values are dropped; nothing known left means no rows, not every row.
+ */
+export function costFilter(cost: string): string {
+  const asked = cost.split(',').filter((c) => COST_TYPES.includes(c))
+  const parts = asked.map((c) => (c === 'free' ? 'and(cost_type.eq.free,cost_verified.is.true)' : `cost_type.eq.${c}`))
+  // 'none' is not a cost_type (the column's check forbids it), so an empty ask matches nothing.
+  return parts.length ? parts.join(',') : 'cost_type.eq.none'
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function mapRowToEvent(row: any): IndustryEvent {
   return {
@@ -167,6 +181,7 @@ function mapRowToEvent(row: any): IndustryEvent {
     eventKind: row.event_kind,
     costType: row.cost_type,
     priceNote: row.price_note,
+    costVerified: row.cost_verified ?? false,
     fundCategories: row.fund_categories ?? [],
     topics: row.topics ?? [],
     opsRelevance: row.ops_relevance,
@@ -250,7 +265,7 @@ async function queryEventFacets(today: string): Promise<EventFacetCounts> {
   // how the news feed computes its counts.
   const { data: rows } = await getSupabaseAdmin()
     .from('industry_events')
-    .select('event_kind, event_format, cost_type, region, fund_categories, topics, city, ops_relevance')
+    .select('event_kind, event_format, cost_type, cost_verified, region, fund_categories, topics, city, ops_relevance')
     .eq('status', 'published')
     .or(BOARD_SCOPE)
     .or(BOARD_FORMAT_SCOPE)
@@ -268,7 +283,8 @@ async function queryEventFacets(today: string): Promise<EventFacetCounts> {
   for (const row of rows ?? []) {
     if (row.event_kind) kinds[row.event_kind] = (kinds[row.event_kind] ?? 0) + 1
     if (row.event_format) formats[row.event_format] = (formats[row.event_format] ?? 0) + 1
-    if (row.cost_type) costs[row.cost_type] = (costs[row.cost_type] ?? 0) + 1
+    // "Free" counts only the free events we checked, as the filter and the labels do.
+    if (row.cost_type && (row.cost_type !== 'free' || row.cost_verified)) costs[row.cost_type] = (costs[row.cost_type] ?? 0) + 1
     if (row.region) regions[row.region] = (regions[row.region] ?? 0) + 1
     for (const cat of (row.fund_categories as string[]) ?? []) {
       categories[cat] = (categories[cat] ?? 0) + 1

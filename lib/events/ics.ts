@@ -1,5 +1,5 @@
 import type { IndustryEvent } from './types'
-import { formatEventLocation } from './constants'
+import { costDetail, formatEventLocation } from './constants'
 
 // iCalendar (RFC 5545) generation for the events board. Events are emitted as
 // all-day entries (we store dates, not structured times — time_note is
@@ -43,7 +43,7 @@ function eventToVevent(event: IndustryEvent): string[] {
   const descParts = [
     event.description ?? '',
     event.timeNote ? `Time: ${event.timeNote}` : '',
-    event.costType === 'free' ? 'Cost: Free' : event.priceNote ? `Cost: ${event.priceNote}` : '',
+    costDetail(event) ? `Cost: ${costDetail(event)}` : '', // said only where we saw it (2026-10-15)
     `Details: ${event.eventUrl}`,
     'Via fundopshq.com/events',
   ].filter(Boolean)

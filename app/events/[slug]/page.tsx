@@ -10,9 +10,11 @@ import {
   EVENT_KIND_LABELS,
   EVENT_FORMAT_LABELS,
   EVENT_TOPIC_LABELS,
-  COST_LABELS,
+  costDetail,
+  costLabel,
   formatEventDates,
   formatEventLocation,
+  isVerifiedFree,
 } from '@/lib/events/constants'
 import { googleCalendarUrl } from '@/lib/events/ics'
 import { CATEGORY_LABELS } from '@/lib/news/constants'
@@ -91,8 +93,8 @@ function MiniEventRow({ event }: { event: IndustryEvent }) {
       <span className="hidden md:block w-[160px] shrink-0 truncate text-right text-[12px] text-muted-foreground">
         {formatEventLocation(event)}
       </span>
-      <span className={cn('w-[52px] shrink-0 text-right text-[12px] font-medium', event.costType === 'free' ? 'text-emerald-400' : 'text-muted-foreground')}>
-        {event.costType === 'free' ? 'Free' : (COST_LABELS[event.costType] ?? COST_LABELS.paid).label}
+      <span className={cn('w-[84px] shrink-0 whitespace-nowrap text-right text-[12px] font-medium', isVerifiedFree(event) ? 'text-emerald-400' : 'text-muted-foreground')}>
+        {costLabel(event)}
       </span>
     </Link>
   )
@@ -174,7 +176,8 @@ async function CollectionPage({ collection }: { collection: EventCollection }) {
 
 function EventDetailPage({ event, related }: { event: IndustryEvent; related: IndustryEvent[] }) {
   const kind = EVENT_KIND_LABELS[event.eventKind] ?? EVENT_KIND_LABELS.other
-  const cost = COST_LABELS[event.costType] ?? COST_LABELS.paid
+  // Said only where we saw it (2026-10-15): no Cost line at all rather than a guess.
+  const cost = costDetail(event)
   const dates = formatEventDates(event.startDate, event.endDate)
   const location = formatEventLocation(event)
   const isPast = event.startDate < new Date().toISOString().split('T')[0]
@@ -275,13 +278,15 @@ function EventDetailPage({ event, related }: { event: IndustryEvent; related: In
                     </span>
                   </dd>
                 </div>
-                <div>
-                  <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/60">Cost</dt>
-                  <dd className={cn('mt-1 flex items-start gap-1.5 text-sm', event.costType === 'free' ? 'text-emerald-400' : 'text-foreground')}>
-                    <Ticket className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                    <span>{event.priceNote ?? cost.label}</span>
-                  </dd>
-                </div>
+                {cost && (
+                  <div>
+                    <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/60">Cost</dt>
+                    <dd className={cn('mt-1 flex items-start gap-1.5 text-sm', isVerifiedFree(event) ? 'text-emerald-400' : 'text-foreground')}>
+                      <Ticket className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      <span>{cost}</span>
+                    </dd>
+                  </div>
+                )}
                 {event.expectedAttendance && (
                   <div>
                     <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/60">Expected Attendance</dt>

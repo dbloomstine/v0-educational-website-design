@@ -98,6 +98,7 @@ let inserted = 0
 const skipped = []
 const perSource = new Map()   // event_source_id -> rows inserted this run
 const unattributed = []       // inserted rows whose source_key resolved to nothing
+const unverifiedFree = []     // inserted as free without cost_verified: shown with no cost at all
 for (const file of process.argv.slice(2)) {
   const rows = JSON.parse(readFileSync(file, 'utf8'))
   for (const r of rows) {
@@ -139,6 +140,9 @@ for (const file of process.argv.slice(2)) {
       event_kind: r.event_kind ?? 'conference',
       cost_type: r.cost_type ?? 'paid',
       price_note: r.price_note ?? null,
+      // True only when the agent saw the price, or the free registration, on the organizer's registration page
+      // itself (2026-10-15). The board says "Free", and shows a price note, only when this is true.
+      cost_verified: r.cost_verified === true,
       fund_categories: cats,
       topics,
       expected_attendance: Number.isInteger(r.expected_attendance) && r.expected_attendance > 0 ? r.expected_attendance : null,
@@ -154,6 +158,7 @@ for (const file of process.argv.slice(2)) {
     })
     if (error) { skipped.push(`${r.name}: insert error ${error.message}`); continue }
     inserted++
+    if ((r.cost_type ?? 'paid') === 'free' && r.cost_verified !== true) unverifiedFree.push(r.name)
     const sid = resolveSource(r.source_key)
     if (sid) perSource.set(sid, (perSource.get(sid) ?? 0) + 1)
     else unattributed.push(r.name)
@@ -190,6 +195,13 @@ if (unattributed.length) {
     `WARNING: ${unattributed.length} event(s) had an unresolvable source_key and were NOT counted ` +
     `against any source (fix source_key or add the source to event_sources):\n  ` +
     unattributed.join('\n  ')
+  )
+}
+// Free without cost_verified is shown with no cost: check each registration page and set it, or leave it.
+if (unverifiedFree.length) {
+  console.log(
+    `NOTE: ${unverifiedFree.length} event(s) loaded as free without cost_verified; the board shows no cost for them ` +
+    `until someone checks the registration page:\n  ` + unverifiedFree.join('\n  ')
   )
 }
 if (skipped.length) console.log('skipped:\n  ' + skipped.join('\n  '))

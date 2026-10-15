@@ -18,6 +18,12 @@ export interface IndustryEvent {
   eventKind: string
   costType: string
   priceNote: string | null
+  /**
+   * We saw the cost ourselves on the organizer's registration page (2026-10-15). "Free" is shown only when
+   * this is true, and so is the price note: the scout had called a $2,500 law-firm conference free from its
+   * event page alone. See costLabel / costDetail in ./constants.
+   */
+  costVerified: boolean
   fundCategories: string[]
   topics: string[]
   opsRelevance: string

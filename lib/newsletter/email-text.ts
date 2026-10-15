@@ -15,7 +15,7 @@
  */
 
 import type { ArticleGroup } from './query-articles'
-import { formatEventDates, formatEventLocation, formatEventDayHeading, compactTimeNote } from '@/lib/events/constants'
+import { formatEventDates, formatEventLocation, formatEventDayHeading, compactTimeNote, isVerifiedFree } from '@/lib/events/constants'
 import { cleanEntityName } from '@/lib/news/constants'
 import type { IndustryEvent } from '@/lib/events/types'
 import { DEFAULT_SPONSOR_SLATE, type SponsorSlate } from './sponsors'
@@ -76,7 +76,7 @@ function eventText(event: IndustryEvent): string {
   const time = compactTimeNote(event.timeNote)
   const isRange = event.endDate && event.endDate !== event.startDate
   const when = time ?? (isRange ? formatEventDates(event.startDate, event.endDate) : 'All day')
-  const under = [cleanEntityName(event.organizerName), formatEventLocation(event), event.costType === 'free' ? 'Free' : undefined]
+  const under = [cleanEntityName(event.organizerName), formatEventLocation(event), isVerifiedFree(event) ? 'Free' : undefined]
     .filter(Boolean)
     .join(' · ')
   return `- ${when}: ${event.name}${under ? `\n  ${under}` : ''}\n  https://fundopshq.com/events/${event.slug}`
