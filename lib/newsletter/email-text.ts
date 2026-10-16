@@ -148,9 +148,9 @@ export function renderNewsletterText(params: TemplateParams): string {
 
   const blocks: string[] = []
 
-  const masthead = [`FUNDOPS DAILY`, formatDate(editionDate)]
-  if (readerFirms && readerFirms >= 24) masthead.push(`Read at ${readerFirms.toLocaleString('en-US')} firms`)
-  blocks.push(masthead.join('\n'))
+  // The date alone: the "Read at N firms" line left the masthead on 2026-10-16
+  // (email-template.ts says why). The house notice still states the figure.
+  blocks.push([`FUNDOPS DAILY`, formatDate(editionDate)].join('\n'))
 
   const sponsorTop = sponsorTopText(sponsorSlate, readerTag)
   if (sponsorTop) blocks.push(sponsorTop)

@@ -92,7 +92,8 @@ describe('the plain-text part of the daily edition', () => {
 
   it('carries the reader’s own links, the sender and the date', () => {
     const text = renderNewsletterText(params({ preferencesUrl: 'https://fundopshq.com/preferences?token=T', readerTag: 'R1', readerFirms: 120 }))
-    expect(text.startsWith('FUNDOPS DAILY\nWednesday, October 14, 2026\nRead at 120 firms')).toBe(true)
+    expect(text.startsWith('FUNDOPS DAILY\nWednesday, October 14, 2026\n\n')).toBe(true)
+    expect(text).not.toContain('Read at 120 firms')
     expect(text).toContain('Unsubscribe: https://fundopshq.com/api/newsletter/unsubscribe?token=T')
     expect(text).toContain('Choose what you follow: https://fundopshq.com/preferences?token=T')
     expect(text).toContain('You’re receiving this because you subscribed at fundopshq.com.')

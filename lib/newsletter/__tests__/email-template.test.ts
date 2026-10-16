@@ -255,7 +255,7 @@ describe('the preview text', () => {
 describe('the sponsor slot', () => {
   it('shows the house notice, top and bottom, while nobody is booked', () => {
     const html = render({ readerFirms: 76 })
-    expect(count(html, 'Your firm here')).toBe(2)
+    expect(html.match(/Your(&nbsp;| )firm(&nbsp;| )here/g)).toHaveLength(2)
     expect(count(html, 'Space available')).toBe(2)
     expect(html).toContain('read each morning at 76 firms')
     expect(html).toContain('https://fundopshq.com/sponsor?ref=email-top')
@@ -267,15 +267,28 @@ describe('the sponsor slot', () => {
   it('never states a reader figure it was not given, or one too small to be the point', () => {
     expect(render()).toContain('the morning brief for GPs, LPs, and fund service providers')
     expect(render({ readerFirms: 9 })).not.toMatch(/at 9 firms/)
-    expect(render({ readerFirms: 9, subscriberCount: 12 })).toContain('THE DAILY BRIEF')
   })
-  it('puts the firms the list is read at in the masthead, on one line (2026-10-12)', () => {
+  it('the masthead strip is the date alone, and nothing in it is held on one line (2026-10-16)', () => {
     const html = render({ readerFirms: 94, subscriberCount: 154 })
-    expect(html).toContain('style="white-space:nowrap;padding-left:12px;">READ AT 94 FIRMS</td>')
-    expect(html).toContain('style="white-space:nowrap;">FRIDAY, OCTOBER 2</td>')
+    expect(html).toContain('<td class="fops-eyebrow-light">FRIDAY, OCTOBER 2</td>')
     expect(html).toContain('<title>FundOps Daily — Friday, October 2, 2026</title>')
-    expect(html).not.toContain('READ BY 154')
-    expect(render({ subscriberCount: 154 })).toContain('>READ BY 154</td>')
+    // The readership count left the masthead: it was small, it moved day to
+    // day, and its cell could not wrap, which made every edition 417px wide.
+    expect(html).not.toMatch(/READ AT \d+ FIRMS|READ BY \d+|THE DAILY BRIEF/)
+    expect(html).not.toContain('class="fops-eyebrow-light" style="white-space:nowrap')
+    // The house strip's two halves wrap too.
+    expect(html).not.toContain('white-space:nowrap;">&nbsp;Your&nbsp;firm&nbsp;here')
+    expect(html).not.toContain('white-space:nowrap;padding-left:10px;')
+  })
+  it('on a phone no type is under 12px: every size set below it carries the class the floor rule reaches', () => {
+    const html = render({ readerFirms: 94, events: [] })
+    expect(html).toContain('.fops-xs {font-size: 12px !important;')
+    const styleEnd = html.indexOf('</style>')
+    const body = html.slice(styleEnd)
+    const small = [...body.matchAll(/<[^>]*font-size:(?:9|9\.5|10|10\.5|11|11\.5)px[^>]*>/g)].map((m) => m[0])
+    expect(small.length).toBeGreaterThan(5)
+    for (const tag of small) expect(tag).toMatch(/class="[^"]*\bfops-(xs|kicker|eyebrow|eyebrow-light|eyebrow-amber|source|etd|eday|emeta|cta-outline|cta-solid|house-cta|sponsor-blurb)\b/)
+    expect(html).not.toMatch(/font-size:\s*9(\.5)?px/)
   })
   const slate: SponsorSlate = {
     label: 'PRESENTED BY',

@@ -42,11 +42,9 @@ export interface TemplateParams {
   unsubscribeUrl: string
   sponsorSlate?: SponsorSlate
   /**
-   * Confirmed subscriber count at send time. Renders into the masthead
-   * eyebrow as social proof ("Read by 97 GPs, LPs, and fund service
-   * providers") and gently motivates forwards — people are more likely
-   * to share a newsletter that a peer group is already reading. Defaults
-   * to undefined for test-send contexts where the count is unavailable.
+   * Confirmed subscriber count at send time. The send still passes it; the
+   * template stopped showing it on 2026-10-16 (it was "READ BY 154" in the
+   * masthead, a small number said large). Kept so the send's call compiles.
    */
   subscriberCount?: number
   /**
@@ -378,6 +376,17 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
     padding-left: 8px !important;
     padding-right: 8px !important;
   }
+  /* Phone floor (2026-10-16): nothing under 12px. The 10px mono eyebrows read
+     on a desktop; on a phone, held at arm's length, they did not. The tracking
+     comes in so the wider type still fits a 375px screen. Every element set
+     under 12px inline carries .fops-xs so this rule can reach it. */
+  .fops-kicker, .fops-eyebrow, .fops-eyebrow-light, .fops-eyebrow-amber, .fops-source,
+  .fops-etd, .fops-eday, .fops-emeta, .fops-cta-outline, .fops-cta-solid, .fops-house-cta,
+  .fops-sponsor-blurb, .fops-xs {
+    font-size: 12px !important;
+    letter-spacing: 1px !important;
+  }
+  .fops-etd { width: 84px !important; }
 }
 
 /* Dark-mode opt-out re-pinning — Gmail iOS/Android auto-invert otherwise. */
@@ -425,8 +434,7 @@ export function formatDate(dateStr: string): string {
 }
 
 /**
- * "MONDAY, OCTOBER 12": no year (2026-10-12), so the date and the readership
- * line share one row on a phone; with it the row wrapped to three lines. The
+ * "MONDAY, OCTOBER 12": no year (2026-10-12), as a newspaper's dateline; the
  * year is in the email's title.
  */
 function formatMastheadDate(dateStr: string): string {
@@ -551,12 +559,12 @@ function renderEventsSection(events: IndustryEvent[]): string {
               <div class="fops-serif fops-ink" style="font-size:20px;font-weight:700;line-height:1.2;margin-bottom:2px;">
                 The week <span class="fops-amber" style="font-style:italic;">ahead.</span>
               </div>
-              <div style="font-family:${FONT_MONO};font-size:10px;line-height:15px;color:${INK_MUTED};text-transform:uppercase;">Every date verified at the organizer</div>
+              <div class="fops-xs" style="font-family:${FONT_MONO};font-size:10px;line-height:15px;color:${INK_MUTED};text-transform:uppercase;">Every date verified at the organizer</div>
               ${dayBlocks}
               <div style="padding-top:12px;">
-                <a href="https://fundopshq.com/events" class="fops-mono" style="color:${INK};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;">Full calendar &rarr;</a>
+                <a href="https://fundopshq.com/events" class="fops-mono fops-xs" style="color:${INK};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;">Full calendar &rarr;</a>
                 <span style="color:rgba(90,107,130,0.4);">&nbsp;&nbsp;</span>
-                <a href="https://fundopshq.com/events/submit" class="fops-mono" style="color:${INK};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;">Submit an event &mdash; free</a>
+                <a href="https://fundopshq.com/events/submit" class="fops-mono fops-xs" style="color:${INK};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;">Submit an event &mdash; free</a>
               </div>
             </td>
           </tr>`
@@ -658,7 +666,7 @@ function renderRecap(recap: WeekRecap | null | undefined): string {
     .map(
       (r, i) => `
       <tr>
-        <td style="padding:7px 8px 7px 0;vertical-align:top;width:18px;font-family:${FONT_MONO};font-size:11px;line-height:20px;color:${INK_MUTED};border-bottom:1px solid ${HAIRLINE};">${i + 1}</td>
+        <td class="fops-xs" style="padding:7px 8px 7px 0;vertical-align:top;width:18px;font-family:${FONT_MONO};font-size:11px;line-height:20px;color:${INK_MUTED};border-bottom:1px solid ${HAIRLINE};">${i + 1}</td>
         <td style="padding:7px 8px 7px 0;vertical-align:top;border-bottom:1px solid ${HAIRLINE};">
           <a href="https://fundopshq.com/story/${escapeHtml(r.id)}" style="color:${INK};text-decoration:none;font-family:${FONT_SERIF};font-size:15.5px;font-weight:700;line-height:1.3;" target="_blank">${escapeHtml(r.firm)}</a>
           <div style="font-family:${FONT_SANS};font-size:12px;line-height:17px;color:${INK_MUTED};">${escapeHtml([r.fund, r.stage].filter(Boolean).join(' \u00b7 '))}</div>
@@ -731,16 +739,16 @@ function framed(inner: string, cellStyle: string): string {
 const SPONSOR_PAGE = 'https://fundopshq.com/sponsor'
 /** A caret after "Your firm here": the name is still to be typed. Drawn, not animated — most mail clients do not animate. */
 const CARET = `<span style="display:inline-block;width:2px;height:0.78em;margin-left:3px;background-color:${AMBER};vertical-align:-0.06em;">&#8203;</span>`
-const kickerStyle = `font-family:${FONT_MONO};font-size:9.5px;font-weight:700;letter-spacing:2px;color:${OCHRE};text-transform:uppercase;`
+const kickerStyle = `font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:2px;color:${OCHRE};text-transform:uppercase;`
 
 function renderSponsorCardTop(sponsor: Sponsor, label: string): string {
   const mark = renderSponsorMark(sponsor, 17)
   return framed(
     `
-      <div style="${kickerStyle}margin:0 0 7px;">${escapeHtml(label)}</div>
+      <div class="fops-xs" style="${kickerStyle}margin:0 0 7px;">${escapeHtml(label)}</div>
       <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;margin:0 0 6px;">${mark}</a>
       <p class="fops-sponsor-blurb" style="margin:0 0 6px;font-size:13px;">${escapeHtml(sponsor.blurb)}</p>
-      ${sponsor.ctaText ? `<a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:${INK};text-decoration:underline;">${escapeHtml(sponsor.ctaText)} &rarr;</a>` : ''}`,
+      ${sponsor.ctaText ? `<a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-xs" style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:${INK};text-decoration:underline;">${escapeHtml(sponsor.ctaText)} &rarr;</a>` : ''}`,
     'padding:11px 14px 12px;',
   )
 }
@@ -749,7 +757,7 @@ function renderSponsorCardBottom(sponsor: Sponsor, label: string): string {
   const mark = renderSponsorMark(sponsor, 22)
   return framed(
     `
-      <div style="${kickerStyle}margin:0 0 10px;">${escapeHtml(label)}</div>
+      <div class="fops-xs" style="${kickerStyle}margin:0 0 10px;">${escapeHtml(label)}</div>
       <a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" style="text-decoration:none;color:${INK};display:inline-block;margin:0 0 10px;">${mark}</a>
       <p class="fops-sponsor-blurb-lg" style="margin:0 0 14px;">${escapeHtml(sponsor.blurb)}</p>
       ${sponsor.ctaText ? `<a href="${escapeHtml(sponsor.ctaUrl)}" target="_blank" class="fops-cta-solid" style="color:${CREAM};background-color:${INK};text-decoration:none;">${escapeHtml(sponsor.ctaText)} &rarr;</a>` : ''}`,
@@ -769,11 +777,11 @@ function renderHouseTop(): string {
                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                     <tr>
                       <td style="vertical-align:middle;">
-                        <span style="${kickerStyle}">Space available</span>
-                        <span style="font-family:${FONT_SERIF};font-size:19px;font-style:italic;line-height:1.1;color:${INK};white-space:nowrap;">&nbsp;Your firm here${CARET}</span>
+                        <span class="fops-xs" style="${kickerStyle}">Space available</span>
+                        <span style="font-family:${FONT_SERIF};font-size:19px;font-style:italic;line-height:1.1;color:${INK};">&nbsp;Your&nbsp;firm&nbsp;here${CARET}</span>
                       </td>
-                      <td align="right" style="vertical-align:middle;white-space:nowrap;padding-left:10px;">
-                        <a href="${SPONSOR_PAGE}?ref=email-top" target="_blank" style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${INK};text-decoration:underline;">Sponsor this brief &rarr;</a>
+                      <td align="right" style="vertical-align:middle;padding-left:10px;">
+                        <a href="${SPONSOR_PAGE}?ref=email-top" target="_blank" class="fops-xs" style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:${INK};text-decoration:underline;">Sponsor this brief&nbsp;&rarr;</a>
                       </td>
                     </tr>
                   </table>`
@@ -795,13 +803,13 @@ export function readerLine(readerFirms: number | undefined): string {
 /** The house notice, bottom: the whole tombstone. */
 function renderHouseBottom(readerFirms: number | undefined): string {
   const inner = `
-                  <div style="${kickerStyle}">Space available</div>
+                  <div class="fops-xs" style="${kickerStyle}">Space available</div>
                   <div style="font-family:${FONT_SERIF};font-size:30px;font-style:italic;line-height:1.1;color:${INK};padding-top:8px;">Your firm here${CARET}</div>
                   <div style="font-family:${FONT_SERIF};font-size:15px;line-height:1.45;color:${INK_MUTED};padding-top:9px;max-width:400px;margin:0 auto;">${escapeHtml(readerLine(readerFirms))}</div>
                   <div style="padding-top:14px;">
                     <a href="${SPONSOR_PAGE}?ref=email" target="_blank" class="fops-cta-solid" style="color:${CREAM};background-color:${INK};text-decoration:none;">Sponsor FundOps Daily &rarr;</a>
                   </div>
-                  <div style="margin-top:15px;padding-top:8px;border-top:1px solid ${HAIRLINE};font-family:${FONT_MONO};font-size:9px;letter-spacing:1.4px;text-transform:uppercase;color:${INK_MUTED};">This announcement appears as a matter of record only.</div>`
+                  <div class="fops-xs" style="margin-top:15px;padding-top:8px;border-top:1px solid ${HAIRLINE};font-family:${FONT_MONO};font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:${INK_MUTED};">This announcement appears as a matter of record only.</div>`
   return `
     <tr>
       <td class="fops-bg-cream fops-px" style="padding:22px 16px 22px;background-color:${CREAM};border-top:1px solid ${HAIRLINE};">
@@ -828,7 +836,7 @@ function renderSponsorBottom(slate: SponsorSlate, readerFirms: number | undefine
     <tr>
       <td class="fops-bg-cream fops-px" style="padding:22px 16px 20px;background-color:${CREAM};border-top:1px solid ${HAIRLINE};">
         ${cards}
-        ${slate.sample ? '' : `<p style="margin:12px 0 0;font-family:${FONT_SANS};font-size:11px;line-height:1.5;color:${INK_MUTED};font-style:italic;">Your firm here next. <a href="${SPONSOR_PAGE}?ref=email" target="_blank" style="color:${INK};text-decoration:none;font-weight:600;font-style:normal;">Sponsor FundOps Daily &rarr;</a></p>`}
+        ${slate.sample ? '' : `<p class="fops-xs" style="margin:12px 0 0;font-family:${FONT_SANS};font-size:11px;line-height:1.5;color:${INK_MUTED};font-style:italic;">Your firm here next. <a href="${SPONSOR_PAGE}?ref=email" target="_blank" style="color:${INK};text-decoration:none;font-weight:600;font-style:normal;">Sponsor FundOps Daily &rarr;</a></p>`}
       </td>
     </tr>`
 }
@@ -894,7 +902,6 @@ export function renderNewsletterEmail(params: TemplateParams): string {
     editionDate,
     unsubscribeUrl,
     sponsorSlate = DEFAULT_SPONSOR_SLATE,
-    subscriberCount,
     events = [],
     readerFirms,
     recap,
@@ -920,17 +927,12 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   const eventsSection = renderEventsSection(events)
   const covered = sponsorsInTheNews(sponsorSlate, groups)
 
-  // Social-proof eyebrow fragment: the firms the list is read at, the same
-  // figure as the house notice (2026-10-12; "READ BY 154 IN PRIVATE MARKETS"
-  // wrapped onto three lines on a phone and said a small number). Falls back
-  // to the reader count, and to a plain label when neither is known or
-  // either is too small to be the point.
-  const socialProof =
-    readerFirms && readerFirms >= 24
-      ? `READ AT ${readerFirms.toLocaleString('en-US')} FIRMS`
-      : subscriberCount && subscriberCount >= 25
-        ? `READ BY ${subscriberCount}`
-        : 'THE DAILY BRIEF'
+  // The masthead strip carries the date alone. Until 2026-10-16 it also said
+  // "READ AT 84 FIRMS" on the right, in a cell that could not wrap: the two
+  // cells together were 417px, so every edition panned sideways on an iPhone
+  // and Gmail shrank the whole mail to fit. The count was also small and moved
+  // (83, 84): it advertised a short list. The house notice at the foot still
+  // states the figure where it is the point, to a would-be sponsor.
 
   // Biggest story of the day for the bottom share block. Falls back to
   // the first group's first article when category ordering lands deals
@@ -996,8 +998,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                   <td class="fops-px" style="padding:8px 16px 10px;border-top:1px solid ${HAIRLINE_DARK};">
                     <table cellpadding="0" cellspacing="0" border="0" width="100%">
                       <tr>
-                        <td class="fops-eyebrow-light" style="white-space:nowrap;">${escapeHtml(mastheadDate)}</td>
-                        <td align="right" class="fops-eyebrow-light" style="white-space:nowrap;padding-left:12px;">${escapeHtml(socialProof)}</td>
+                        <td class="fops-eyebrow-light">${escapeHtml(mastheadDate)}</td>
                       </tr>
                     </table>
                   </td>
@@ -1024,7 +1025,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
           <!-- ─── Main CTA ─── -->
           <tr>
             <td class="fops-bg-cream fops-px" style="padding:8px 16px 24px;background-color:${CREAM};text-align:center;">
-              <a href="https://fundopshq.com/news${FROM_EMAIL}" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:11px;font-weight:700;padding:14px 28px;border-radius:2px;text-decoration:none;letter-spacing:2px;text-transform:uppercase;">Read the full feed &rarr;</a>
+              <a href="https://fundopshq.com/news${FROM_EMAIL}" class="fops-mono fops-xs" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:11px;font-weight:700;padding:14px 28px;border-radius:2px;text-decoration:none;letter-spacing:2px;text-transform:uppercase;">Read the full feed &rarr;</a>
             </td>
           </tr>
 
@@ -1051,11 +1052,11 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                 If today&rsquo;s brief was useful, forward it to a peer &mdash; that&rsquo;s how this list grows.
               </div>
               <div>
-                <a href="${escapeHtml(shareMailto)}" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Forward by email</a>
-                <a href="${escapeHtml(shareLinkedIn)}" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Post to LinkedIn</a>
-                <a href="${escapeHtml(shareX)}" class="fops-mono" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Share on X</a>
+                <a href="${escapeHtml(shareMailto)}" class="fops-mono fops-xs" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Forward by email</a>
+                <a href="${escapeHtml(shareLinkedIn)}" class="fops-mono fops-xs" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Post to LinkedIn</a>
+                <a href="${escapeHtml(shareX)}" class="fops-mono fops-xs" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Share on X</a>
               </div>
-              <div class="fops-mono" style="padding-top:12px;font-size:10px;color:rgba(30,58,95,0.7);letter-spacing:1.5px;text-transform:uppercase;">
+              <div class="fops-mono fops-xs" style="padding-top:12px;font-size:10px;color:rgba(30,58,95,0.7);letter-spacing:1.5px;text-transform:uppercase;">
                 Forwarded to you? &nbsp;<a href="https://fundopshq.com/?ref=fwd" style="color:${INK};text-decoration:underline;font-weight:700;">Subscribe to FundOps Daily &rarr;</a>
               </div>
             </td>
@@ -1068,11 +1069,11 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                 <tr>
                   <td style="padding-bottom:10px;border-bottom:1px solid ${HAIRLINE_DARK};">
                     <span class="fops-serif fops-cream" style="font-size:18px;font-weight:700;letter-spacing:-0.3px;">FundOps</span><span class="fops-serif fops-amber" style="font-size:18px;font-weight:700;font-style:italic;letter-spacing:-0.3px;">Daily</span>
-                    <span class="fops-mono" style="font-size:10px;color:rgba(248,245,236,0.5);letter-spacing:1.5px;margin-left:10px;text-transform:uppercase;">by FundOpsHQ</span>
+                    <span class="fops-mono fops-xs" style="font-size:10px;color:rgba(248,245,236,0.5);letter-spacing:1.5px;margin-left:10px;text-transform:uppercase;">by FundOpsHQ</span>
                   </td>
                 </tr>
                 <tr>
-                  <td class="fops-sans" style="padding-top:14px;font-size:11px;color:rgba(248,245,236,0.55);line-height:1.65;">
+                  <td class="fops-sans fops-xs" style="padding-top:14px;font-size:11px;color:rgba(248,245,236,0.55);line-height:1.65;">
                     <p style="margin:0 0 10px;">
                       <span style="color:rgba(248,245,236,0.45);">On the site:&nbsp;</span>
                       <a href="https://fundopshq.com/news${FROM_EMAIL}" style="color:rgba(248,245,236,0.8);text-decoration:underline;">Latest</a>
