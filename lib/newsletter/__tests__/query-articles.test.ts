@@ -262,6 +262,9 @@ describe('extended fund-event lookback (relative size matching)', () => {
     expect(isDescriptiveFirmName('New London private equity firm')).toBe(true)
     expect(isDescriptiveFirmName('Norwegian wealth fund')).toBe(true)
     for (const real of ['Bain Capital', 'Partners Group', 'Energy Capital Partners', 'Taurus Private Markets', 'KKR']) expect(isDescriptiveFirmName(real)).toBe(false)
+    // "<Place> PE firm" and its cousins (2026-10-16): a hyphenated qualifier or a lowercase noun for what the thing is.
+    for (const described of ['Malvern PE firm', 'Boston-based PE firm', 'Texas-based manager', 'KKR-backed platform', 'London VC shop', 'Midwest PE shop', 'Chicago-based buyout house', 'Nordic buyout group', 'Florida PE sponsor']) expect(isDescriptiveFirmName(described)).toBe(true)
+    for (const real of ['Malvern Capital', 'Boston Partners', 'Hudson Bay Capital', 'Great Hill Partners', 'Thoma Bravo', 'General Atlantic']) expect(isDescriptiveFirmName(real)).toBe(false)
   })
 
   it('keeps a first close and a final close of the same fund distinct by size', () => {

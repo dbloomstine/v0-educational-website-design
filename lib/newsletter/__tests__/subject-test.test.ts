@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildHeadlineSubject, subjectHeadline, subjectStyleFor, SUBJECT_MAX_CHARS } from '../send-daily'
+import { buildHeadlineSubject, leadSentence, subjectHeadline, subjectStyleFor, SUBJECT_MAX_CHARS } from '../send-daily'
 import { buildPreheader } from '../email-template'
 import type { TopPick } from '../top-stories'
 import type { NewsletterArticle } from '../query-articles'
@@ -31,10 +31,10 @@ describe('the subject-line test: which style an edition gets', () => {
   })
 })
 
-describe('style B: the lead headline and a count', () => {
-  it('uses the headline as written when it fits', () => {
+describe('style B: the lead headline as one line that reads', () => {
+  it('uses the headline as written when it fits, with no count of the other stories', () => {
     const top = [pick({ title: 'Audax raises $6.3B for private debt', firmName: 'Audax Private Debt', fundSizeUsdMillions: 6300, closeType: 'final_close' })]
-    expect(buildHeadlineSubject(top, 48)).toBe('Audax raises $6.3B for private debt, plus 47 more')
+    expect(buildHeadlineSubject(top, 48)).toBe('Audax raises $6.3B for private debt')
     expect(buildHeadlineSubject(top, 1)).toBe('Audax raises $6.3B for private debt')
   })
 
@@ -49,21 +49,41 @@ describe('style B: the lead headline and a count', () => {
     const top = [pick({ title: 'Blackstone names longtime credit executive as new global head of insurance solutions and asset-backed finance', firmName: 'Blackstone' }, 'people_moves', 'People Moves')]
     const s = buildHeadlineSubject(top, 30)!
     expect(s.length).toBeLessThanOrEqual(SUBJECT_MAX_CHARS)
-    expect(s).toMatch(/^Blackstone names longtime credit executive .*…, plus 29 more$/)
+    expect(s).toMatch(/^Blackstone names longtime credit executive .*…$/)
     expect(s).not.toMatch(/\b(as|of|and|the)…/)
+    expect(s).not.toMatch(/plus \d+ more/)
   })
 
-  it('a long headline with a figure: the firm, its figure and stage, in the kicker’s words', () => {
-    const top = [pick({ title: 'Audax Private Credit blows past its target to close its seventh senior debt fund on $6.3 billion after a year on the road', firmName: 'Audax Private Credit, LLC', fundSizeUsdMillions: 6300, closeType: 'final_close' })]
-    expect(buildHeadlineSubject(top, 48)).toBe('Audax Private Credit: $6.3B final close, plus 47 more')
+  it('a long headline whose cut would lose the figure: a sentence from the story’s own fields, never "Firm: $6.3B final close"', () => {
+    const top = [pick({ title: 'Audax Private Credit blows past its target to close its seventh senior debt fund on $6.3 billion after a year on the road', firmName: 'Audax Private Credit, LLC', fundSizeUsdMillions: 6300, fundStrategy: 'Senior Debt', closeType: 'final_close' })]
+    expect(buildHeadlineSubject(top, 48)).toBe('Audax Private Credit closes $6.3B for senior debt')
   })
 
-  it('a long headline whose figure is a target: the cut headline, never "Firm: $6B target"', () => {
+  it('the sentence’s verb follows the stage, then the event; its "what" is the strategy, else the fund, else the section', () => {
+    expect(leadSentence(pick({ title: 't', firmName: 'StepStone Group', fundSizeUsdMillions: 6000, closeType: 'target', fundName: 'StepStone Secondaries Fund VI' }, 'private_equity', 'Private Equity'))).toBe('StepStone targets $6B for StepStone Secondaries Fund VI')
+    expect(leadSentence(pick({ title: 't', firmName: 'Apax Partners', fundSizeUsdMillions: 13500, eventType: 'fund_launch', closeType: null }, 'private_equity', 'Private Equity'))).toBe('Apax Partners launches $13.5B for private equity')
+    expect(leadSentence(pick({ title: 't', firmName: 'Mirae Asset', fundSizeUsdMillions: 210, closeType: 'first_close', fundStrategy: 'Private Credit Fund' }))).toBe('Mirae Asset raises $210M for private credit')
+    // No figure, no verb, a described firm or an AUM-sized "fund": no sentence.
+    expect(leadSentence(pick({ title: 't', firmName: 'Apax Partners', closeType: 'final_close' }))).toBeNull()
+    expect(leadSentence(pick({ title: 't', firmName: 'Apax Partners', fundSizeUsdMillions: 500, eventType: 'acquisition', closeType: null }, 'deals', 'Deals'))).toBeNull()
+    expect(leadSentence(pick({ title: 't', firmName: 'Malvern PE firm', fundSizeUsdMillions: 301, closeType: 'final_close' }))).toBeNull()
+    expect(leadSentence(pick({ title: 't', firmName: 'Ares Management', fundSizeUsdMillions: 623_000, eventType: 'capital_raise', closeType: null }))).toBeNull()
+  })
+
+  it('a long headline whose figure is a target: never "Firm: $6B target"', () => {
     const top = [pick({ title: 'StepStone’s sixth PE secondaries fundraise passes halfway mark with $3.1bn raised against $6bn target', firmName: 'StepStone Group', fundSizeUsdMillions: 6000, closeType: 'target' }, 'private_equity', 'Private Equity')]
     const s = buildHeadlineSubject(top, 69)!
     expect(s.length).toBeLessThanOrEqual(SUBJECT_MAX_CHARS)
-    expect(s).not.toMatch(/target, plus/i)
-    expect(s).toMatch(/^StepStone’s sixth PE secondaries fundraise .*…, plus 68 more$/)
+    expect(s).not.toMatch(/: \$6B target/i)
+    expect(s).not.toMatch(/plus \d+ more/)
+    expect(s).toMatch(/^(StepStone’s sixth PE secondaries fundraise .*…|StepStone targets \$6B for .+)$/)
+  })
+
+  it('a long headline with a figure that survives the cut: the cut headline is preferred to the sentence', () => {
+    const top = [pick({ title: 'Audax closes $6.3B seventh senior debt fund after a year on the road and a hard cap raised twice', firmName: 'Audax Private Credit, LLC', fundSizeUsdMillions: 6300, fundStrategy: 'Senior Debt', closeType: 'final_close' })]
+    const s = buildHeadlineSubject(top, 48)!
+    expect(s.startsWith('Audax closes $6.3B seventh senior debt fund')).toBe(true)
+    expect(s.endsWith('…')).toBe(true)
   })
 
   it('a long firm name falls back to the cut headline, still under the limit', () => {
@@ -73,7 +93,7 @@ describe('style B: the lead headline and a count', () => {
     })]
     const s = buildHeadlineSubject(top, 12)!
     expect(s.length).toBeLessThanOrEqual(SUBJECT_MAX_CHARS)
-    expect(s.endsWith('…, plus 11 more')).toBe(true)
+    expect(s.endsWith('…')).toBe(true)
     expect(s.startsWith('The Teacher Retirement System of Texas')).toBe(true)
   })
 

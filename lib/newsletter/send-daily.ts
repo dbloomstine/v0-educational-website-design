@@ -11,7 +11,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { queryNewsletterArticles, isLikelyAumLeak, isDescriptiveFirmName } from './query-articles'
 import { isRoundup } from './story-links'
-import { homeFactor, kickerParts, pickTopStories, type TopPick } from './top-stories'
+import { homeFactor, kickerParts, pickTopStories, type TopPick, sizeWords } from './top-stories'
 import { renderNewsletterEmail } from './email-template'
 import { renderNewsletterText } from './email-text'
 import { queryEventFeed } from '@/lib/events/api'
@@ -701,41 +701,70 @@ export function subjectHeadline(title: string, outlets: string[]): string {
   return t.replace(/\.$/, '')
 }
 
+/** The verb a stage or event is reported with: "closes", "raises", "targets", "launches". */
+const STAGE_VERB: Record<string, string> = {
+  final_close: 'closes',
+  hard_cap: 'closes',
+  first_close: 'raises',
+  interim_close: 'raises',
+  second_close: 'raises',
+  target: 'targets',
+  launch: 'launches',
+}
+const EVENT_VERB: Record<string, string> = { fund_close: 'closes', capital_raise: 'raises', fund_launch: 'launches' }
+
 /**
- * Style B: the top story the edition opens on, as its own headline, and how
- * many more stories follow. Built only from that story: its headline as
- * written; if that is too long, its firm with its figure and stage (the
- * kicker's own words); if that too is too long or there is no figure, the
- * headline cut at a word with an ellipsis. Null when there is no top story,
- * and the edition goes out with style A.
+ * The lead as one short sentence from its own fields, or null: "Audax raises
+ * $6.3B for private debt", "StepStone targets $6B for Secondaries Fund VI".
+ * Firm, verb (the stage's, else the event's) and figure are all required; the
+ * "what" is the fund's strategy, else its name, else the section it is in.
+ * Nothing is read from the headline, so nothing can be misquoted.
  */
-export function buildHeadlineSubject(top: TopPick[], totalArticles: number): string | null {
+export function leadSentence(lead: TopPick): string | null {
+  const a = lead.article
+  const firm = a.firmName && !isDescriptiveFirmName(a.firmName) ? subjectFirmName(a.firmName) : ''
+  if (!firm || BARE_PLACE.test(firm)) return null
+  const verb = STAGE_VERB[a.closeType ?? ''] ?? EVENT_VERB[a.eventType ?? ''] ?? ''
+  const size = a.fundSizeUsdMillions ?? 0
+  if (!verb || !a.leadEligible || size <= 0 || isLikelyAumLeak(size, a.fundName)) return null
+  const strategy = (a.fundStrategy ?? '').replace(/\s+/g, ' ').trim()
+  const what = strategy
+    ? strategy.toLowerCase().replace(/\b(funds?|strategy|strategies|investing|investments?)$/i, '').trim()
+    : (a.fundName ?? '').trim() || (lead.category === 'deals' || lead.category === 'lp_commitments' ? '' : lead.label.toLowerCase())
+  const sentence = `${firm} ${verb} ${sizeWords(size)}${what ? ` for ${what}` : ''}`
+  return sentence.length <= SUBJECT_MAX_CHARS ? sentence : null
+}
+
+/** A headline fragment still carries the story's figure ("$6.3bn", "€21bn", "$500 million", "Rs 500 crore"). */
+const FIGURE_RE = /[$€£¥₹]\s?\d|\b\d[\d.,]*\s?(bn|billion|million|mn|m|b|crore|cr)\b/i
+
+/**
+ * Style B: the top story the edition opens on, as one line that reads as a
+ * sentence. Built only from that story: its headline as written; if that is
+ * too long, the headline cut at a word (unless the cut loses the story's
+ * figure); then the story's own fields as a short sentence ("Audax raises
+ * $6.3B for private debt"); then the cut headline anyway. Never a count of
+ * the other stories (2026-10-16: "OrbiMed: $3B, plus 44 more" was a label, not
+ * a line a reader would open), and never "Firm: figure". Null when there is
+ * no top story or no line reads, and the edition goes out with style A.
+ */
+export function buildHeadlineSubject(top: TopPick[], _totalArticles: number): string | null {
   const lead = top[0]
   if (!lead) return null
   const a = lead.article
-  const more = Math.max(0, totalArticles - 1)
-  const suffix = more > 0 ? `, plus ${more} more` : ''
-  const fits = (s: string) => s.length + suffix.length <= SUBJECT_MAX_CHARS
+  const fits = (s: string) => s.length <= SUBJECT_MAX_CHARS
 
   const headline = subjectHeadline(a.title, [a.sourceName ?? '', ...(a.alsoCoveredBy ?? [])])
-  if (headline && fits(headline)) return `${headline}${suffix}`
-
-  // The firm and its figure, in the kicker's words: "Audax Private: $6.3B final close".
-  const [, ...facts] = kickerParts(lead)
-  const firm = a.firmName && !isDescriptiveFirmName(a.firmName) ? subjectFirmName(a.firmName) : ''
-  // Only for money in hand. A target is not a raise: StepStone's $3.1B raised
-  // against a $6B target read "StepStone: $6B target" in the first preview
-  // (2026-10-14), so a target or launch falls through to the cut headline.
-  if (firm && facts.some((f) => f.startsWith('$')) && !facts.some((f) => /target|launch|hard cap|raising/i.test(f))) {
-    const short = `${firm}: ${facts.map((f, i) => (i === 0 ? f : f.toLowerCase())).join(' ')}`
-    if (fits(short)) return `${short}${suffix}`
-  }
+  if (headline && fits(headline)) return headline
 
   // The headline cut at a word.
   const words = headline.split(' ')
   while (words.length > 1 && !fits(`${words.join(' ')}…`)) words.pop()
   while (words.length > 1 && DANGLING.has(words[words.length - 1].toLowerCase())) words.pop()
-  const cut = words.join(' ').replace(/[,;:–—-]+$/, '').trim()
-  if (cut.length < 25 || !fits(`${cut}…`)) return null
-  return `${cut}…${suffix}`
+  const cutWords = words.join(' ').replace(/[,;:–—-]+$/, '').trim()
+  const cut = cutWords.length >= 25 && fits(`${cutWords}…`) ? `${cutWords}…` : null
+
+  const sentence = leadSentence(lead)
+  if (cut && (!sentence || !FIGURE_RE.test(headline) || FIGURE_RE.test(cut))) return cut
+  return sentence ?? cut
 }

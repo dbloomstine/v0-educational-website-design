@@ -1422,10 +1422,16 @@ export function storyFingerprints(
  * subject line).
  */
 const DESCRIPTION_WORDS =
-  /\b(firm|firms|manager|managers|investor|investors|company|companies|lender|lenders|fund|funds|office|pension|allocator|sponsor|buyer|owner|wealth|equity|capital|credit|venture|private|infrastructure|estate|asset|assets|group|bank)\b/
+  /\b(firm|firms|manager|managers|investor|investors|company|companies|lender|lenders|fund|funds|office|pension|allocator|sponsor|buyer|owner|wealth|equity|capital|credit|venture|private|infrastructure|estate|asset|assets|group|bank|shop|house|player|giant|startup|platform|vehicle|arm|unit|boutique|specialist|insurer|consortium|syndicate|affiliate|subsidiary|spinout|spin-out|newcomer|veteran|veterans|duo|trio)\b/
+/**
+ * "Boston-based PE firm", "KKR-backed", "Texas-led consortium": a hyphenated
+ * qualifier is how a report describes a firm it does not name. "<Place> PE
+ * firm" and "<Place> VC shop" are the same thing with the hyphen dropped.
+ */
+const DESCRIPTION_SHAPES = /-(based|backed|led|focused|owned|headquartered|listed)\b|\b(PE|VC|LBO|LP|GP)\s+(firm|shop|house|manager|investor|player|giant|sponsor|group)\b/i
 export function isDescriptiveFirmName(name: string | null | undefined): boolean {
   if (!name) return false
-  return /\b[a-z]{3,}\s+[a-z]{3,}\b/.test(name) || DESCRIPTION_WORDS.test(name)
+  return /\b[a-z]{3,}\s+[a-z]{3,}\b/.test(name) || DESCRIPTION_WORDS.test(name) || DESCRIPTION_SHAPES.test(name)
 }
 
 /** A fund-activity event already published in the extended lookback window. */
