@@ -884,3 +884,12 @@ contact at US firms in that morning's edition; Apollo, at most ten credits a day
   `scripts/outreach-v2/logo-sheet.ts mockups <batch> <headers dir> <out.png>` before a batch goes.
 - **Sponsor batch:** `npx tsx --env-file=.env.local scripts/outreach-v2/load-sponsor-batch.ts <file.json>` (stores `preview`
   rows, writes `<file>-preview.md`); after Danny reads it, `scripts/outreach-v2/release-batch.ts <batch>` queues it.
+
+## Site audit fixes, 2026-10-16
+
+Danny asked for an audit and fixes (2026-10-16); these were product decisions delegated to Claude, none changing his standing rules.
+
+- **Top stories rank by size, coverage and home** (`topScore`, `lib/news/stories.ts`): heat × where the story is from (`lib/news/home-factor.ts`, the email's `HOME_FACTOR`) × coverage (+15% an outlet, five at most), ×0.8 for a lone report from below the trade press. `rankTop`'s kind penalty went 0.8 → 0.93 a step: it was slotting the top by section (a $250m target from TradingView and a $15M first close made the six; a $6bn two-desk deal did not). Section rails are untouched.
+- **Headlines** (`cleanHeadline`): a section or column label in front ("News | …", "PE Daily: …") goes, and every publisher or section tail, not just the last ("… | News | Real Assets"). "Side Letter:" and "Loan Note:" stay, because `isDigest` / `isRoundup` read them after.
+- **One outlet, one name** (`normalizeSourceName`, applied in `rowToArticle` so every surface sees it): "Hedge Week" / "hedgeweek.com" / "Hedgeweek", "AltAssets Private Equity News", "HedgeCo Insights" / "HedgeCo.Net", "Institutional Real Estate, Inc." / "irei.com" each count once in "N sources"; a feed that names itself by its address shows as its host ("connectmoney.com"). `cleanHeadline` still gets the raw name (the mirror's "- pei" tail is matched against it).
+- **Low-grade outlets in one place** (`BLOCKED_SOURCES`, `LOW_GRADE_SOURCES`, `lowGradeSource` in constants.ts; `screenArticle` and the old feed API both read it): reprint sites (ad-hoc-news.de, Pulse 2.0, TokenPost, IndexBox, mexc…) never show; aggregators (TradingView, citybiz, MarketBeat…) only at relevance ≥ 0.7. Before this the list lived in the unused feed API and the fronts never applied it.

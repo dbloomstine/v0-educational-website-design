@@ -92,7 +92,7 @@ describe('buildWriterInput', () => {
   it('lists outlets, titles, descriptions and no machine-extracted fields', () => {
     const input = buildWriterInput(prepareRows(OPTION_CARE))
     expect(input.user).toContain('OUTLETS (2): ')
-    expect(input.user).toContain('HedgeCo Insights')
+    expect(input.user).toContain('HedgeCo')
     expect(input.user).toContain('Title: CD&R and McKesson ink $5.8bn take-private deal for Option Care Health')
     expect(input.user).toContain('$32.05 per share')
     expect(input.user).not.toMatch(/EXTRACTED|firm_name|fund_size|FROM OUR OWN RECORDS/)

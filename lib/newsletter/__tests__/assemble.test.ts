@@ -310,3 +310,21 @@ describe('assembleNewsletter — a stage change is news, a repeat is not', () =>
     expect(section(content, 'deals')).toEqual([])
   })
 })
+
+describe('cleanHeadline: labels and tails from the 2026-10-16 audit', () => {
+  it('strips a section label in front and a column label', () => {
+    expect(cleanHeadline('News | Alea European Living Fund targeting up to €200 million hits first close', 'CoStar')).toBe('Alea European Living Fund targeting up to €200 million hits first close')
+    expect(cleanHeadline('PE Daily: Liberty Mutual, Elda River Launch $500M Energy Infrastructure Partnership', 'WSJ')).toBe('Liberty Mutual, Elda River Launch $500M Energy Infrastructure Partnership')
+  })
+  it('strips every section and publisher tail, not just the last', () => {
+    expect(cleanHeadline('Expo Real 2026: Asset management replaces macro as real estate returns driver | News | Real Assets', 'IPE Real Assets')).toBe('Expo Real 2026: Asset management replaces macro as real estate returns driver')
+    expect(cleanHeadline('KKR to Buy Fund Administrator Gen II in $5.1 Billion Deal Including Debt - U.S. News', 'U.S. News - Money')).toBe('KKR to Buy Fund Administrator Gen II in $5.1 Billion Deal Including Debt')
+    expect(cleanHeadline('LS Power Closes $6 Billion Fund VI to Invest in Energy Infrastructure - News and Statistics', 'IndexBox')).toBe('LS Power Closes $6 Billion Fund VI to Invest in Energy Infrastructure')
+  })
+  it('leaves a digest label and a real trailing clause alone', () => {
+    expect(cleanHeadline('Side Letter: Self-inflicted illiquidity?', 'Private Equity International')).toBe('Side Letter: Self-inflicted illiquidity?')
+    expect(cleanHeadline('Loan Note: Orion, Liberty in infra debt partnership; Hayfin launches in Seoul - pei', 'pei-privatecredit.com')).toBe('Loan Note: Orion, Liberty in infra debt partnership; Hayfin launches in Seoul')
+    expect(cleanHeadline('Hedge funds push Mag 7 exposure to highest level since 2022 - Goldman', 'TradingView')).toBe('Hedge funds push Mag 7 exposure to highest level since 2022 - Goldman')
+    expect(cleanHeadline('International Fraud & Asset Tracing Law Guide: Greece - Market Insights', 'Global Legal Post')).toBe('International Fraud & Asset Tracing Law Guide: Greece - Market Insights')
+  })
+})

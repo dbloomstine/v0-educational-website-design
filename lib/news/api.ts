@@ -1,5 +1,5 @@
 import { getSupabaseAdmin } from '@/lib/supabase/client'
-import { normalizeSourceName } from './constants'
+import { lowGradeSource, normalizeSourceName } from './constants'
 import { isSameStory, normalizeFirmName, type StoryCandidate } from './story-dedup'
 import type { NewsArticle, ArticleGroup, FacetCounts, ArticleFeedResponse } from './types'
 
@@ -23,25 +23,8 @@ const RANGE_TO_DAYS: Record<string, number> = {
   '90d': 90,
 }
 
-// Pure syndication / press-release reprint sites — always blocked regardless of relevance.
-// These never add original reporting; high relevance scores reflect the story, not the source.
-const BLOCKED_SOURCES = new Set([
-  'mexc.co', 'mexc', 'waya.media', 'the malone telegram', 'national today',
-  'the manila times',
-])
-
-// Stock-screener and low-quality aggregators — allowed only if highly relevant.
-const LOW_QUALITY_SOURCES = new Set([
-  'marketbeat', 'quiver quantitative', 'stock titan', 'defense world',
-  'usa today', 'citybiz',
-])
-
 function filterLowQualitySources(article: NewsArticle): boolean {
-  if (!article.sourceName) return true
-  const src = article.sourceName.trim().toLowerCase()
-  if (BLOCKED_SOURCES.has(src)) return false
-  if (LOW_QUALITY_SOURCES.has(src) && (article.relevanceScore ?? 0) < 0.6) return false
-  return true
+  return lowGradeSource(article.sourceName, article.relevanceScore) === null
 }
 
 export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeedResponse> {

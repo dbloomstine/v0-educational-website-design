@@ -22,7 +22,7 @@ import {
   titleJaccard,
   titlesShareSignificantNumber,
 } from '@/lib/news/story-dedup'
-import { cleanHeadline } from '@/lib/news/constants'
+import { cleanHeadline, lowGradeSource, normalizeSourceName } from '@/lib/news/constants'
 import {
   clusterBy,
   dealStage,
@@ -210,7 +210,7 @@ const SOURCE_TIER_RAW: Record<string, number> = {
   'The Business Journals': 12,
   'Yahoo Finance': 15, MSN: 15,
   'Digital Journal': 20, citybiz: 20, 'Pulse 2.0': 20,
-  'The Tech Buzz': 25, 'HedgeCo.Net': 25,
+  'The Tech Buzz': 25, 'HedgeCo.Net': 25, HedgeCo: 25, 'HedgeCo Insights': 25, IREI: 8, TradingView: 20,
   'news.google.com': 30,
   'mexc.co': 40, 'The Manila Times': 40, 'National Today': 40, 'USA Today': 30,
 }
@@ -747,7 +747,10 @@ export function rowToArticle(row: any): NewsletterArticle {
     id: row.id,
     title,
     sourceUrl: row.source_url,
-    sourceName: row.source_name,
+    // One name per outlet (normalizeSourceName): the direct feed's "Hedge Week"
+    // and the mirror's "hedgeweek.com" are one source, and a feed that names
+    // itself by its address shows as its host.
+    sourceName: normalizeSourceName(row.source_name),
     publishedDate: row.published_date,
     articleType: row.article_type,
     eventType,
@@ -925,6 +928,8 @@ function assetClassFor(a: NewsletterArticle): string {
 /** Why a mapped row is not a story we publish, or null if it is. */
 export function screenArticle(a: NewsletterArticle): string | null {
   if (isGovtProgram(a)) return 'govt/blocked source'
+  const grade = lowGradeSource(a.sourceName, a.relevanceScore)
+  if (grade) return grade
   if (isStartupRound(a)) return 'startup round'
   if (isDigest(a.title)) return 'digest column'
   if (NOT_FUND_NEWS.test(a.title)) return 'not fund news'

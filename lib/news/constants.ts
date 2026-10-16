@@ -70,11 +70,76 @@ export const SOURCE_NAME_MAP: Record<string, string> = {
   'law360 asset management': 'Law360',
   'jd supra securities law': 'JD Supra',
   'jd supra finance & banking': 'JD Supra',
+  // One outlet under two names counted as two sources (2026-10-16 audit).
+  'hedgeweek.com': 'Hedgeweek',
+  'hedgeco insights': 'HedgeCo',
+  'hedgeco.net': 'HedgeCo',
+  'altassets.net': 'AltAssets',
+  'irei.com': 'IREI',
+  'dakota.com': 'Dakota',
+  'tokenpost': 'TokenPost',
+  'tokenpost.com': 'TokenPost',
+  'moneycontrol.com': 'Moneycontrol',
+  'thestreet.com': 'TheStreet',
+  'private equity international | pei': 'Private Equity International',
 }
 
+/**
+ * A feed that gives its site's address as its name ("https://www.connectmoney.com/",
+ * "www.dakota.com"): the host, without scheme, "www." or a trailing slash.
+ */
+export function hostFromSourceName(raw: string): string | null {
+  const t = raw.trim()
+  if (!/^(https?:\/\/|www\.)/i.test(t) && !/^[a-z0-9-]+(\.[a-z0-9-]+)+\/?$/i.test(t)) return null
+  try {
+    const u = new URL(/^https?:\/\//i.test(t) ? t : `https://${t}`)
+    return u.hostname.replace(/^www\./i, '').toLowerCase() || null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * One name per outlet. The map first (by the name as written, or by its
+ * host); failing that a bare address shows as its host ("connectmoney.com"),
+ * never as "https://www.connectmoney.com/".
+ */
 export function normalizeSourceName(raw: string | null): string | null {
   if (!raw) return null
-  return SOURCE_NAME_MAP[raw.toLowerCase().trim()] ?? raw
+  const key = raw.toLowerCase().trim()
+  const mapped = SOURCE_NAME_MAP[key]
+  if (mapped) return mapped
+  const host = hostFromSourceName(raw)
+  if (host) return SOURCE_NAME_MAP[host] ?? host
+  return raw.trim()
+}
+
+/**
+ * Outlets that add nothing of their own. BLOCKED: syndication and
+ * press-release reprint sites, never shown whatever the story's relevance.
+ * LOW_GRADE: aggregators and stock-screener pages, shown only when the row is
+ * plainly about funds (relevance 0.7 or more) — TradingView carries Reuters
+ * wires beside filings, citybiz reprints releases. Keys are lower-case
+ * canonical names (normalizeSourceName). The one list for the fronts
+ * (`screenArticle`) and the old feed API.
+ */
+export const BLOCKED_SOURCES = new Set([
+  'mexc.co', 'mexc', 'waya.media', 'the malone telegram', 'national today', 'the manila times',
+  'ad-hoc-news.de', 'pulse 2.0', 'tokenpost', 'indexbox',
+])
+export const LOW_GRADE_SOURCES = new Set([
+  'marketbeat', 'quiver quantitative', 'stock titan', 'defense world', 'usa today', 'citybiz', 'tradingview',
+  'digital journal', 'the tech buzz',
+])
+export const LOW_GRADE_MIN_RELEVANCE = 0.7
+
+/** Why a row from this outlet is not shown, or null. */
+export function lowGradeSource(sourceName: string | null | undefined, relevance: number | null | undefined): string | null {
+  const name = (normalizeSourceName(sourceName ?? null) ?? '').toLowerCase()
+  if (!name) return null
+  if (BLOCKED_SOURCES.has(name)) return 'reprint site'
+  if (LOW_GRADE_SOURCES.has(name) && (relevance ?? 0) < LOW_GRADE_MIN_RELEVANCE) return 'low-grade source'
+  return null
 }
 
 export function decodeHtmlEntities(text: string): string {
@@ -187,11 +252,21 @@ export function cleanHeadline(title: string, sourceName?: string | null): string
   let t = decodeHtmlEntities(title).replace(/[®™]/g, '').replace(/\s+/g, ' ').trim()
 
   t = t.replace(/^(exclusive|breaking|updated?|in brief|news brief|watch|video|podcast)\s*[|:–—-]\s*/i, '')
+  // A section or column label in front: "News | …" (CoStar), "PE Daily: …"
+  // (WSJ's column, one story under it). Not "Side Letter:" or "Loan Note:",
+  // which name a digest that isDigest / isRoundup must still see.
+  t = t.replace(/^(news|business|markets|money|finance|real assets|real estate)\s*\|\s*/i, '')
+  t = t.replace(/^(pe daily|pe briefing|deal brief|news analysis)\s*:\s*/i, '')
   t = t.replace(/\s*[–—-]\s*exclusive\s*$/i, '')
 
-  const m = t.match(/^(.*\S)\s+([-–—|])\s+([^-–—|]{1,40})$/)
-  if (m && m[1].split(' ').length >= 4 && looksLikePublisher(m[3].trim(), sourceName, m[2] === '-')) {
-    t = m[1]
+  // Publisher and section tails, however many: "… | News | Real Assets" (IPE).
+  for (let i = 0; i < 3; i++) {
+    const m = t.match(/^(.*\S)\s+([-–—|])\s+([^-–—|]{1,40})$/)
+    if (m && m[1].split(' ').length >= 4 && looksLikePublisher(m[3].trim(), sourceName, m[2] === '-')) {
+      t = m[1]
+      continue
+    }
+    break
   }
 
   // Some feeds (HedgeCo) end headlines with a dangling colon.
@@ -203,6 +278,8 @@ function looksLikePublisher(tail: string, sourceName: string | null | undefined,
   const tailKey = squash(tail)
   const sourceKey = squash(sourceName ?? '')
   if (tailKey && sourceKey && (sourceKey.includes(tailKey) || tailKey.includes(sourceKey))) return true
+  // A section name after a pipe: "| News", "| Investing", "| Money".
+  if (!plainHyphen && /^(news|business|markets|money|finance|investing|real assets|real estate|economy)$/i.test(tail)) return true
   // The mirror always joins with a plain hyphen; an en or em dash is the
   // headline writer's own punctuation ("Citadel rehires Matt Giannini – again").
   if (plainHyphen) {
