@@ -39,6 +39,8 @@ export interface FundClose {
   firm: string
   firmSlug: string
   fund: string | null
+  /** The classifier's fund number ("VI") when the reports never named the fund; for matching, never shown as a name. */
+  fundNumber?: string | null
   sizeUsdM: number
   stage: CloseStage
   /** ISO date of the first report. */
@@ -256,7 +258,9 @@ function toFundClose(story: Story, rowById: Map<string, Row>): FundClose {
   const currencies = rows.map((r) => String(r.extracted_data?.original_currency ?? '').toUpperCase()).filter(Boolean)
   const foreign = currencies.filter((c) => c !== 'USD').length
   const converted = stated ? stated.currency !== 'USD' : foreign > currencies.length / 2
-  // "Fund III" lives in fund_number when the reports never spelled out a fund name.
+  // "Fund III" lives in fund_number when the reports never spelled out a fund
+  // name. It helps match reports of one close (fundNumbers) and is never shown
+  // as the fund's name (2026-10-16): a row read "Fund I" for every debut fund.
   const fundNumber = rows.map((r) => r.extracted_data?.fund_number).find((n) => typeof n === 'string' && n.trim()) as string | undefined
   const date = rows.map((r) => String(r.published_date).slice(0, 10)).sort()[0] ?? story.publishedDate ?? story.firstSeen.slice(0, 10)
   return {
@@ -264,7 +268,8 @@ function toFundClose(story: Story, rowById: Map<string, Row>): FundClose {
     memberIds: story.memberIds,
     firm: story.firmName as string,
     firmSlug: firmSlug(story.firmName),
-    fund: fundLabel(story.fundName ?? fundNumber ?? null),
+    fund: story.fundName ? fundLabel(story.fundName) : null,
+    fundNumber: fundNumber ?? null,
     sizeUsdM,
     stage: STAGE_OF[story.closeType as string],
     date,
@@ -343,9 +348,9 @@ function roman(token: string): number | null {
  * fund"). Two reports that give different numbers are about different funds,
  * whatever else they share. "First close" is a stage, not a number.
  */
-export function fundNumbers(c: Pick<FundClose, 'fund' | 'headline'>): Set<number> {
+export function fundNumbers(c: Pick<FundClose, 'fund' | 'headline' | 'fundNumber'>): Set<number> {
   const out = new Set<number>()
-  for (const tok of (c.fund ?? '').split(/[^A-Za-z0-9]+/)) {
+  for (const tok of `${c.fund ?? ''} ${c.fundNumber ?? ''}`.split(/[^A-Za-z0-9]+/)) {
     if (!tok) continue
     const r = roman(tok)
     if (r) out.add(r)

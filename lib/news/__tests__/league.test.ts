@@ -8,7 +8,7 @@ let seq = 0
 const uuid = () => `00000000-0000-4000-8000-${String(++seq).padStart(12, '0')}`
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function row(o: Record<string, any>) {
-  const { firm, fund, size, close = 'final_close', currency, ...rest } = o
+  const { firm, fund, size, close = 'final_close', currency, fund_number, ...rest } = o
   return {
     id: uuid(),
     source_url: `https://example.com/${seq}`,
@@ -22,7 +22,7 @@ function row(o: Record<string, any>) {
     article_type: 'fund_close',
     event_type: 'fund_close',
     entities_raw: [{ name: firm, type: 'firm', role: null, confidence: 0.95 }],
-    extracted_data: { firm_name: firm, fund_name: fund ?? null, fund_size_usd_millions: size ?? null, close_type: close, original_currency: currency ?? null },
+    extracted_data: { firm_name: firm, fund_name: fund ?? null, fund_size_usd_millions: size ?? null, close_type: close, original_currency: currency ?? null, fund_number: fund_number ?? null },
     ...rest,
   }
 }
@@ -190,6 +190,17 @@ describe('one fund reported with two figures is one row', () => {
       { sizeUsdM: 2000, date: '2026-05-01', sources: 4 },
       { sizeUsdM: 300, date: '2026-05-02', sources: 1 },
     ])).toEqual({ sizeUsdM: 2000, altSizeUsdM: null })
+  })
+  it('never shows a bare fund number as the fund’s name (2026-10-16), but still matches on it', () => {
+    const rows = [
+      row({ firm: 'Griffis Residential', size: 207, close: 'first_close', published_date: '2026-10-09', fund_number: 'I', title: 'Griffis Residential raises $207m in first fund close' }),
+      row({ firm: 'Griffis Residential', size: 207, close: 'first_close', published_date: '2026-10-10', fund_number: 'Fund I', source_name: 'IREI', title: 'Griffis Residential holds $207m first close on debut fund' }),
+    ]
+    const league = buildLeague(rows)
+    expect(league).toHaveLength(1)
+    expect(league[0].fund).toBeNull()
+    expect(league[0].fundNumber).toBe('I')
+    expect(fundNumbers({ fund: null, fundNumber: 'Fund VI', headline: 'A sixth close' })).toEqual(new Set([6]))
   })
   it('joins an unnamed report to a numbered one on the same fund number', () => {
     const rows = [
