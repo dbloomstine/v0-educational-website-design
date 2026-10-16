@@ -1,0 +1,1333 @@
+{
+ "note": "Firms whose own website is known, for checking an Apollo contact's domain against (lib/outreach-v2/firm-domains.ts). Copied read-only from the social desk's library/firm-sites.json on 2026-10-16; add a firm only when sure of its own domain.",
+ "firms": [
+  {
+   "names": [
+    "KKR",
+    "Kohlberg Kravis Roberts"
+   ],
+   "site": "https://www.kkr.com/"
+  },
+  {
+   "names": [
+    "Blackstone"
+   ],
+   "site": "https://www.blackstone.com/"
+  },
+  {
+   "names": [
+    "Apollo",
+    "Apollo Global Management"
+   ],
+   "site": "https://www.apollo.com/"
+  },
+  {
+   "names": [
+    "Carlyle",
+    "Carlyle Group"
+   ],
+   "site": "https://www.carlyle.com/"
+  },
+  {
+   "names": [
+    "Ares",
+    "Ares Management"
+   ],
+   "site": "https://www.aresmgmt.com/"
+  },
+  {
+   "names": [
+    "TPG"
+   ],
+   "site": "https://www.tpg.com/"
+  },
+  {
+   "names": [
+    "Brookfield",
+    "Brookfield Asset Management"
+   ],
+   "site": "https://www.brookfield.com/"
+  },
+  {
+   "names": [
+    "Warburg Pincus"
+   ],
+   "site": "https://www.warburgpincus.com/"
+  },
+  {
+   "names": [
+    "Bain Capital"
+   ],
+   "site": "https://www.baincapital.com/"
+  },
+  {
+   "names": [
+    "Advent",
+    "Advent International"
+   ],
+   "site": "https://www.adventinternational.com/"
+  },
+  {
+   "names": [
+    "CVC",
+    "CVC Capital Partners"
+   ],
+   "site": "https://www.cvc.com/"
+  },
+  {
+   "names": [
+    "EQT"
+   ],
+   "site": "https://www.eqtgroup.com/"
+  },
+  {
+   "names": [
+    "Permira"
+   ],
+   "site": "https://www.permira.com/"
+  },
+  {
+   "names": [
+    "Cinven"
+   ],
+   "site": "https://www.cinven.com/"
+  },
+  {
+   "names": [
+    "Thoma Bravo"
+   ],
+   "site": "https://www.thomabravo.com/"
+  },
+  {
+   "names": [
+    "Vista",
+    "Vista Equity Partners"
+   ],
+   "site": "https://www.vistaequitypartners.com/"
+  },
+  {
+   "names": [
+    "Silver Lake"
+   ],
+   "site": "https://www.silverlake.com/"
+  },
+  {
+   "names": [
+    "Hellman & Friedman"
+   ],
+   "site": "https://www.hf.com/"
+  },
+  {
+   "names": [
+    "General Atlantic"
+   ],
+   "site": "https://www.generalatlantic.com/"
+  },
+  {
+   "names": [
+    "Oaktree",
+    "Oaktree Capital Management"
+   ],
+   "site": "https://www.oaktreecapital.com/"
+  },
+  {
+   "names": [
+    "Blue Owl",
+    "Blue Owl Capital"
+   ],
+   "site": "https://www.blueowl.com/"
+  },
+  {
+   "names": [
+    "Barings"
+   ],
+   "site": "https://www.barings.com/"
+  },
+  {
+   "names": [
+    "Nuveen"
+   ],
+   "site": "https://www.nuveen.com/"
+  },
+  {
+   "names": [
+    "DWS",
+    "DWS Group"
+   ],
+   "site": "https://www.dws.com/"
+  },
+  {
+   "names": [
+    "M&G",
+    "M&G Investments"
+   ],
+   "site": "https://www.mandg.com/"
+  },
+  {
+   "names": [
+    "Partners Group"
+   ],
+   "site": "https://www.partnersgroup.com/"
+  },
+  {
+   "names": [
+    "StepStone",
+    "StepStone Group"
+   ],
+   "site": "https://www.stepstonegroup.com/"
+  },
+  {
+   "names": [
+    "Hamilton Lane"
+   ],
+   "site": "https://www.hamiltonlane.com/"
+  },
+  {
+   "names": [
+    "HarbourVest",
+    "HarbourVest Partners"
+   ],
+   "site": "https://www.harbourvest.com/"
+  },
+  {
+   "names": [
+    "Ardian"
+   ],
+   "site": "https://www.ardian.com/"
+  },
+  {
+   "names": [
+    "Tikehau",
+    "Tikehau Capital"
+   ],
+   "site": "https://www.tikehaucapital.com/"
+  },
+  {
+   "names": [
+    "Eurazeo"
+   ],
+   "site": "https://www.eurazeo.com/"
+  },
+  {
+   "names": [
+    "Bridgepoint"
+   ],
+   "site": "https://www.bridgepoint.eu/"
+  },
+  {
+   "names": [
+    "Apax",
+    "Apax Partners"
+   ],
+   "site": "https://www.apax.com/"
+  },
+  {
+   "names": [
+    "BC Partners"
+   ],
+   "site": "https://www.bcpartners.com/"
+  },
+  {
+   "names": [
+    "PAI Partners"
+   ],
+   "site": "https://www.paipartners.com/"
+  },
+  {
+   "names": [
+    "Nordic Capital"
+   ],
+   "site": "https://www.nordiccapital.com/"
+  },
+  {
+   "names": [
+    "Insight Partners"
+   ],
+   "site": "https://www.insightpartners.com/"
+  },
+  {
+   "names": [
+    "Clearlake",
+    "Clearlake Capital",
+    "Clearlake Capital Group"
+   ],
+   "site": "https://www.clearlake.com/"
+  },
+  {
+   "names": [
+    "Golub Capital"
+   ],
+   "site": "https://www.golubcapital.com/"
+  },
+  {
+   "names": [
+    "Sixth Street"
+   ],
+   "site": "https://www.sixthstreet.com/"
+  },
+  {
+   "names": [
+    "Centerbridge",
+    "Centerbridge Partners"
+   ],
+   "site": "https://www.centerbridge.com/"
+  },
+  {
+   "names": [
+    "Stonepeak"
+   ],
+   "site": "https://www.stonepeak.com/"
+  },
+  {
+   "names": [
+    "I Squared",
+    "I Squared Capital"
+   ],
+   "site": "https://www.isquaredcapital.com/"
+  },
+  {
+   "names": [
+    "Macquarie",
+    "Macquarie Asset Management"
+   ],
+   "site": "https://www.macquarie.com/"
+  },
+  {
+   "names": [
+    "Starwood",
+    "Starwood Capital",
+    "Starwood Capital Group"
+   ],
+   "site": "https://www.starwoodcapital.com/"
+  },
+  {
+   "names": [
+    "Lone Star",
+    "Lone Star Funds"
+   ],
+   "site": "https://www.lonestarfunds.com/"
+  },
+  {
+   "names": [
+    "Cerberus",
+    "Cerberus Capital Management"
+   ],
+   "site": "https://www.cerberus.com/"
+  },
+  {
+   "names": [
+    "Fortress",
+    "Fortress Investment Group"
+   ],
+   "site": "https://www.fortress.com/"
+  },
+  {
+   "names": [
+    "Neuberger Berman"
+   ],
+   "site": "https://www.nb.com/"
+  },
+  {
+   "names": [
+    "Goldman Sachs",
+    "Goldman Sachs Asset Management",
+    "Goldman Sachs Alternatives"
+   ],
+   "site": "https://www.goldmansachs.com/"
+  },
+  {
+   "names": [
+    "Morgan Stanley"
+   ],
+   "site": "https://www.morganstanley.com/"
+  },
+  {
+   "names": [
+    "BlackRock"
+   ],
+   "site": "https://www.blackrock.com/"
+  },
+  {
+   "names": [
+    "Franklin Templeton"
+   ],
+   "site": "https://www.franklintempleton.com/"
+  },
+  {
+   "names": [
+    "Invesco"
+   ],
+   "site": "https://www.invesco.com/"
+  },
+  {
+   "names": [
+    "PGIM"
+   ],
+   "site": "https://www.pgim.com/"
+  },
+  {
+   "names": [
+    "Forbion"
+   ],
+   "site": "https://www.forbion.com/"
+  },
+  {
+   "names": [
+    "Accel"
+   ],
+   "site": "https://www.accel.com/"
+  },
+  {
+   "names": [
+    "Andreessen Horowitz",
+    "a16z"
+   ],
+   "site": "https://www.a16z.com/"
+  },
+  {
+   "names": [
+    "General Catalyst"
+   ],
+   "site": "https://www.generalcatalyst.com/"
+  },
+  {
+   "names": [
+    "Founders Fund"
+   ],
+   "site": "https://www.foundersfund.com/"
+  },
+  {
+   "names": [
+    "Kleiner Perkins"
+   ],
+   "site": "https://www.kleinerperkins.com/"
+  },
+  {
+   "names": [
+    "Bessemer",
+    "Bessemer Venture Partners"
+   ],
+   "site": "https://www.bvp.com/"
+  },
+  {
+   "names": [
+    "Index Ventures"
+   ],
+   "site": "https://www.indexventures.com/"
+  },
+  {
+   "names": [
+    "Tiger Global",
+    "Tiger Global Management"
+   ],
+   "site": "https://www.tigerglobal.com/"
+  },
+  {
+   "names": [
+    "Coatue"
+   ],
+   "site": "https://www.coatue.com/"
+  },
+  {
+   "names": [
+    "Energy Capital Partners",
+    "ECP"
+   ],
+   "site": "https://www.ecpgroup.com/"
+  },
+  {
+   "names": [
+    "LS Power"
+   ],
+   "site": "https://www.lspower.com/"
+  },
+  {
+   "names": [
+    "Meridiam"
+   ],
+   "site": "https://www.meridiam.com/"
+  },
+  {
+   "names": [
+    "Hines"
+   ],
+   "site": "https://www.hines.com/"
+  },
+  {
+   "names": [
+    "Tishman Speyer"
+   ],
+   "site": "https://www.tishmanspeyer.com/"
+  },
+  {
+   "names": [
+    "Greystar"
+   ],
+   "site": "https://www.greystar.com/"
+  },
+  {
+   "names": [
+    "Prologis"
+   ],
+   "site": "https://www.prologis.com/"
+  },
+  {
+   "names": [
+    "Canyon Partners"
+   ],
+   "site": "https://www.canyonpartners.com/"
+  },
+  {
+   "names": [
+    "Octagon Credit",
+    "Octagon Credit Investors"
+   ],
+   "site": "https://www.octagoncredit.com/"
+  },
+  {
+   "names": [
+    "Antares",
+    "Antares Capital"
+   ],
+   "site": "https://www.antares.com/"
+  },
+  {
+   "names": [
+    "Monroe Capital"
+   ],
+   "site": "https://www.monroecap.com/"
+  },
+  {
+   "names": [
+    "Audax",
+    "Audax Group"
+   ],
+   "site": "https://www.audaxgroup.com/"
+  },
+  {
+   "names": [
+    "Jefferies"
+   ],
+   "site": "https://www.jefferies.com/"
+  },
+  {
+   "names": [
+    "Evercore"
+   ],
+   "site": "https://www.evercore.com/"
+  },
+  {
+   "names": [
+    "Lazard"
+   ],
+   "site": "https://www.lazard.com/"
+  },
+  {
+   "names": [
+    "Houlihan Lokey"
+   ],
+   "site": "https://www.hl.com/"
+  },
+  {
+   "names": [
+    "PJT Partners"
+   ],
+   "site": "https://www.pjtpartners.com/"
+  },
+  {
+   "names": [
+    "Janus Henderson",
+    "Janus Henderson Investors"
+   ],
+   "site": "https://www.janushenderson.com/"
+  },
+  {
+   "names": [
+    "Schroders",
+    "Schroders Capital"
+   ],
+   "site": "https://www.schroders.com/"
+  },
+  {
+   "names": [
+    "Amundi"
+   ],
+   "site": "https://www.amundi.com/"
+  },
+  {
+   "names": [
+    "Citco"
+   ],
+   "site": "https://www.citco.com/"
+  },
+  {
+   "names": [
+    "Alter Domus"
+   ],
+   "site": "https://www.alterdomus.com/"
+  },
+  {
+   "names": [
+    "Apex Group"
+   ],
+   "site": "https://www.apexgroup.com/"
+  },
+  {
+   "names": [
+    "SS&C",
+    "SS&C Technologies"
+   ],
+   "site": "https://www.ssctech.com/"
+  },
+  {
+   "names": [
+    "State Street"
+   ],
+   "site": "https://www.statestreet.com/"
+  },
+  {
+   "names": [
+    "Northern Trust"
+   ],
+   "site": "https://www.northerntrust.com/"
+  },
+  {
+   "names": [
+    "Waystone"
+   ],
+   "site": "https://www.waystone.com/"
+  },
+  {
+   "names": [
+    "CPP Investments",
+    "CPPIB"
+   ],
+   "site": "https://www.cppinvestments.com/"
+  },
+  {
+   "names": [
+    "CDPQ"
+   ],
+   "site": "https://www.cdpq.com/"
+  },
+  {
+   "names": [
+    "Temasek"
+   ],
+   "site": "https://www.temasek.com.sg/"
+  },
+  {
+   "names": [
+    "Mubadala"
+   ],
+   "site": "https://www.mubadala.com/"
+  },
+  {
+   "names": [
+    "Investcorp"
+   ],
+   "site": "https://www.investcorp.com/"
+  },
+  {
+   "names": [
+    "Mutares"
+   ],
+   "site": "https://www.mutares.com/"
+  },
+  {
+   "names": [
+    "Sycamore",
+    "Sycamore Partners"
+   ],
+   "site": "https://www.sycamorepartners.com/"
+  },
+  {
+   "names": [
+    "Leonard Green",
+    "Leonard Green & Partners"
+   ],
+   "site": "https://www.leonardgreen.com/"
+  },
+  {
+   "names": [
+    "Platinum Equity"
+   ],
+   "site": "https://www.platinumequity.com/"
+  },
+  {
+   "names": [
+    "Francisco Partners"
+   ],
+   "site": "https://www.franciscopartners.com/"
+  },
+  {
+   "names": [
+    "GTCR"
+   ],
+   "site": "https://www.gtcr.com/"
+  },
+  {
+   "names": [
+    "New Mountain",
+    "New Mountain Capital"
+   ],
+   "site": "https://www.newmountaincapital.com/"
+  },
+  {
+   "names": [
+    "Roark",
+    "Roark Capital"
+   ],
+   "site": "https://www.roarkcapital.com/"
+  },
+  {
+   "names": [
+    "TA Associates"
+   ],
+   "site": "https://www.ta.com/"
+  },
+  {
+   "names": [
+    "Summit Partners"
+   ],
+   "site": "https://www.summitpartners.com/"
+  },
+  {
+   "names": [
+    "THL",
+    "Thomas H. Lee Partners",
+    "THL Partners"
+   ],
+   "site": "https://www.thl.com/"
+  },
+  {
+   "names": [
+    "Veritas Capital"
+   ],
+   "site": "https://www.veritascapital.com/"
+  },
+  {
+   "names": [
+    "Stone Point",
+    "Stone Point Capital"
+   ],
+   "site": "https://www.stonepoint.com/"
+  },
+  {
+   "names": [
+    "H.I.G.",
+    "H.I.G. Capital",
+    "HIG Capital"
+   ],
+   "site": "https://www.hig.com/"
+  },
+  {
+   "names": [
+    "L Catterton"
+   ],
+   "site": "https://www.lcatterton.com/"
+  },
+  {
+   "names": [
+    "Onex"
+   ],
+   "site": "https://www.onex.com/"
+  },
+  {
+   "names": [
+    "Elliott",
+    "Elliott Management",
+    "Elliott Investment Management"
+   ],
+   "site": "https://www.elliottmgmt.com/"
+  },
+  {
+   "names": [
+    "Millennium",
+    "Millennium Management"
+   ],
+   "site": "https://www.mlp.com/"
+  },
+  {
+   "names": [
+    "Citadel"
+   ],
+   "site": "https://www.citadel.com/"
+  },
+  {
+   "names": [
+    "Point72"
+   ],
+   "site": "https://www.point72.com/"
+  },
+  {
+   "names": [
+    "Bridgewater",
+    "Bridgewater Associates"
+   ],
+   "site": "https://www.bridgewater.com/"
+  },
+  {
+   "names": [
+    "Jain Global"
+   ],
+   "site": "https://www.jainglobal.com/"
+  },
+  {
+   "names": [
+    "Man Group"
+   ],
+   "site": "https://www.man.com/"
+  },
+  {
+   "names": [
+    "Kirkland & Ellis"
+   ],
+   "site": "https://www.kirkland.com/"
+  },
+  {
+   "names": [
+    "Simpson Thacher",
+    "Simpson Thacher & Bartlett"
+   ],
+   "site": "https://www.stblaw.com/"
+  },
+  {
+   "names": [
+    "Latham & Watkins"
+   ],
+   "site": "https://www.lw.com/"
+  },
+  {
+   "names": [
+    "Skadden"
+   ],
+   "site": "https://www.skadden.com/"
+  },
+  {
+   "names": [
+    "Ropes & Gray"
+   ],
+   "site": "https://www.ropesgray.com/"
+  },
+  {
+   "names": [
+    "Proskauer"
+   ],
+   "site": "https://www.proskauer.com/"
+  },
+  {
+   "names": [
+    "Debevoise",
+    "Debevoise & Plimpton"
+   ],
+   "site": "https://www.debevoise.com/"
+  },
+  {
+   "names": [
+    "Goodwin"
+   ],
+   "site": "https://www.goodwinlaw.com/"
+  },
+  {
+   "names": [
+    "Davis Polk"
+   ],
+   "site": "https://www.davispolk.com/"
+  },
+  {
+   "names": [
+    "Fried Frank"
+   ],
+   "site": "https://www.friedfrank.com/"
+  },
+  {
+   "names": [
+    "Weil",
+    "Weil, Gotshal & Manges"
+   ],
+   "site": "https://www.weil.com/"
+  },
+  {
+   "names": [
+    "Pemberton",
+    "Pemberton Asset Management"
+   ],
+   "site": "https://www.pembertonam.com/"
+  },
+  {
+   "names": [
+    "Antin",
+    "Antin Infrastructure Partners"
+   ],
+   "site": "https://www.antin-ip.com/"
+  },
+  {
+   "names": [
+    "Sofinnova",
+    "Sofinnova Partners"
+   ],
+   "site": "https://www.sofinnovapartners.com/"
+  },
+  {
+   "names": [
+    "Siris",
+    "Siris Capital"
+   ],
+   "site": "https://www.siris.com/"
+  },
+  {
+   "names": [
+    "Lovell Minnick",
+    "Lovell Minnick Partners"
+   ],
+   "site": "https://www.lmpartners.com/"
+  },
+  {
+   "names": [
+    "Aphias"
+   ],
+   "site": "https://aphias.com/"
+  },
+  {
+   "names": [
+    "Conversant Capital"
+   ],
+   "site": "https://conversantcap.com/"
+  },
+  {
+   "names": [
+    "Audax Private Debt"
+   ],
+   "site": "https://audaxprivatedebt.com/"
+  },
+  {
+   "names": [
+    "Consonance Capital Partners"
+   ],
+   "site": "https://consonancecapitalpartners.com/"
+  },
+  {
+   "names": [
+    "Sheridan Capital Partners"
+   ],
+   "site": "https://sheridancp.com/"
+  },
+  {
+   "names": [
+    "CAZ Investments"
+   ],
+   "site": "https://cazinvestments.com/"
+  },
+  {
+   "names": [
+    "Stonelake Capital Partners"
+   ],
+   "site": "https://stonelake.com/"
+  },
+  {
+   "names": [
+    "Rising Point Capital Management"
+   ],
+   "site": "https://risingpointcapital.com/"
+  },
+  {
+   "names": [
+    "Abry Partners"
+   ],
+   "site": "https://abry.com/"
+  },
+  {
+   "names": [
+    "One Rock Capital Partners"
+   ],
+   "site": "https://onerock.com/"
+  },
+  {
+   "names": [
+    "Digital Realty"
+   ],
+   "site": "https://digitalrealty.com/"
+  },
+  {
+   "names": [
+    "Old Ironsides"
+   ],
+   "site": "https://oldironsidesenergy.com/"
+  },
+  {
+   "names": [
+    "Corre Partners"
+   ],
+   "site": "https://correpartners.com/"
+  },
+  {
+   "names": [
+    "BDT & MSD"
+   ],
+   "site": "https://bdtmsd.com/"
+  },
+  {
+   "names": [
+    "Griffis Residential"
+   ],
+   "site": "https://griffisresidential.com/"
+  },
+  {
+   "names": [
+    "Linse Capital"
+   ],
+   "site": "https://linsecapital.com/"
+  },
+  {
+   "names": [
+    "Bertram Capital"
+   ],
+   "site": "https://bertramcapital.com/"
+  },
+  {
+   "names": [
+    "Brennan Investment Group"
+   ],
+   "site": "https://brennanllc.com/"
+  },
+  {
+   "names": [
+    "Ohio Police & Fire Pension Fund"
+   ],
+   "site": "https://op-f.org/"
+  },
+  {
+   "names": [
+    "Trilantic North America"
+   ],
+   "site": "https://trilanticnorthamerica.com/"
+  },
+  {
+   "names": [
+    "Vestar"
+   ],
+   "site": "https://vestarcapital.com/"
+  },
+  {
+   "names": [
+    "AEW"
+   ],
+   "site": "https://aew.com/"
+  },
+  {
+   "names": [
+    "Stride Consumer Partners"
+   ],
+   "site": "https://strideconsumer.com/"
+  },
+  {
+   "names": [
+    "AE Industrial"
+   ],
+   "site": "https://aeroequity.com/"
+  },
+  {
+   "names": [
+    "Copenhagen Infrastructure Partners"
+   ],
+   "site": "https://cip.com/"
+  },
+  {
+   "names": [
+    "Brightwood Capital Advisors"
+   ],
+   "site": "https://brightwoodlp.com/"
+  },
+  {
+   "names": [
+    "Harrison Street"
+   ],
+   "site": "https://harrisonst.com/"
+  },
+  {
+   "names": [
+    "Kohlberg"
+   ],
+   "site": "https://kohlberg.com/"
+  },
+  {
+   "names": [
+    "One Equity Partners"
+   ],
+   "site": "https://oneequity.com/"
+  },
+  {
+   "names": [
+    "Bernhard Capital"
+   ],
+   "site": "https://bernhardcapital.com/"
+  },
+  {
+   "names": [
+    "Altaris"
+   ],
+   "site": "https://altariscap.com/"
+  },
+  {
+   "names": [
+    "Gallant Capital"
+   ],
+   "site": "https://gallantcapital.com/"
+  },
+  {
+   "names": [
+    "SAMY"
+   ],
+   "site": "https://samy.com/"
+  },
+  {
+   "names": [
+    "Prelude Growth"
+   ],
+   "site": "https://preludegrowth.com/"
+  },
+  {
+   "names": [
+    "OceanSound Partners"
+   ],
+   "site": "https://oceansoundpartners.com/"
+  },
+  {
+   "names": [
+    "Blue Point Capital"
+   ],
+   "site": "https://bluepointcapital.com/"
+  },
+  {
+   "names": [
+    "Manna Tree"
+   ],
+   "site": "https://mannatreepartners.com/"
+  },
+  {
+   "names": [
+    "LFM Capital"
+   ],
+   "site": "https://lfmcapital.com/"
+  },
+  {
+   "names": [
+    "Fvlcrum Funds"
+   ],
+   "site": "https://fvlcrum.com/"
+  },
+  {
+   "names": [
+    "McDermott Will & Schulte"
+   ],
+   "site": "https://mcdermottlaw.com/"
+  },
+  {
+   "names": [
+    "Jonathan Rose Cos."
+   ],
+   "site": "https://rosecompanies.com/"
+  },
+  {
+   "names": [
+    "New York Life"
+   ],
+   "site": "https://newyorklife.com/"
+  },
+  {
+   "names": [
+    "AlphaGrep"
+   ],
+   "site": "https://alpha-grep.com/"
+  },
+  {
+   "names": [
+    "Gridiron Capital"
+   ],
+   "site": "https://gridironcapital.com/"
+  },
+  {
+   "names": [
+    "Fiera Capital"
+   ],
+   "site": "https://fieracapital.com/"
+  },
+  {
+   "names": [
+    "WSP"
+   ],
+   "site": "https://wsp.com/"
+  },
+  {
+   "names": [
+    "One Rock Capital"
+   ],
+   "site": "https://onerock.com/"
+  },
+  {
+   "names": [
+    "Rokos Capital Management"
+   ],
+   "site": "https://rokoscapital.com/"
+  },
+  {
+   "names": [
+    "Phillips Edison & Co."
+   ],
+   "site": "https://phillipsedison.com/"
+  },
+  {
+   "names": [
+    "FFL Partners"
+   ],
+   "site": "https://fflpartners.com/"
+  },
+  {
+   "names": [
+    "Jupiter Asset Management"
+   ],
+   "site": "https://jupiteram.com/"
+  },
+  {
+   "names": [
+    "Salt Creek Capital"
+   ],
+   "site": "https://saltcreekcap.com/"
+  },
+  {
+   "names": [
+    "Meyer Global Management"
+   ],
+   "site": "https://meyerglobalmgmt.com/"
+  },
+  {
+   "names": [
+    "Canyon Partners Real Estate"
+   ],
+   "site": "https://canyonpartners.com/"
+  },
+  {
+   "names": [
+    "Cutler Capital Management"
+   ],
+   "site": "https://cutlercapital.com/"
+  },
+  {
+   "names": [
+    "Kite Lake Capital Management"
+   ],
+   "site": "https://kitelake.com/"
+  },
+  {
+   "names": [
+    "Searchlight Capital"
+   ],
+   "site": "https://searchlightcap.com/"
+  },
+  {
+   "names": [
+    "SRS Acquiom"
+   ],
+   "site": "https://srsacquiom.com/"
+  },
+  {
+   "names": [
+    "Andover Properties"
+   ],
+   "site": "https://andoverprop.com/"
+  },
+  {
+   "names": [
+    "Incline Equity Partners"
+   ],
+   "site": "https://inclineequity.com/"
+  },
+  {
+   "names": [
+    "Sidley"
+   ],
+   "site": "https://sidley.com/"
+  },
+  {
+   "names": [
+    "Gibson Dunn"
+   ],
+   "site": "https://gibsondunn.com/"
+  },
+  {
+   "names": [
+    "Qube Research & Technologies"
+   ],
+   "site": "https://qube-rt.com/"
+  },
+  {
+   "names": [
+    "Brio Platform"
+   ],
+   "site": "https://brioplatform.com/"
+  },
+  {
+   "names": [
+    "Greenbriar Equity Group"
+   ],
+   "site": "https://greenbriar.com/"
+  },
+  {
+   "names": [
+    "Seabury Global Markets"
+   ],
+   "site": "https://seaburyglobalmarkets.com/"
+  },
+  {
+   "names": [
+    "Otipêy"
+   ],
+   "site": "https://otipey.com/"
+  },
+  {
+   "names": [
+    "Colorado Fire & Police Pension Association"
+   ],
+   "site": "https://fppaco.org/"
+  },
+  {
+   "names": [
+    "Pomona"
+   ],
+   "site": "https://pomonacapital.com/"
+  },
+  {
+   "names": [
+    "Evolution Equity Partners"
+   ],
+   "site": "https://evolutionequity.com/"
+  },
+  {
+   "names": [
+    "HFRRF"
+   ],
+   "site": "https://hfrrf.org/"
+  },
+  {
+   "names": [
+    "Adams Street"
+   ],
+   "site": "https://adamsstreetpartners.com/"
+  },
+  {
+   "names": [
+    "Jones Day"
+   ],
+   "site": "https://jonesday.com/"
+  },
+  {
+   "names": [
+    "Clayton Dubilier & Rice",
+    "CD&R",
+    "Clayton, Dubilier & Rice"
+   ],
+   "site": "https://www.cdr.com/"
+  }
+ ]
+}

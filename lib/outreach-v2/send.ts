@@ -132,7 +132,7 @@ export async function dispatchOne(db: DbClient, now: Date = new Date(), opts: { 
 
   // A news note is about today's edition: one that did not go out today never goes.
   const todayBatch = `news-${nyDay(now)}`
-  await db.from('outreach_v2_messages').update({ status: 'cancelled', skip_reason: 'stale news note' }).eq('program', 'news_note').eq('status', 'queued').neq('batch', todayBatch)
+  await db.from('outreach_v2_messages').update({ status: 'cancelled', skip_reason: 'stale news note' }).eq('program', 'news_note').in('status', ['queued', 'preview']).neq('batch', todayBatch)
 
   const { data, error } = await db
     .from('outreach_v2_messages')

@@ -17,6 +17,7 @@ import { isDescriptiveFirmName } from '@/lib/newsletter/query-articles'
 import { APOLLO_CREDITS_PER_DAY, FIRM_NEWS_NOTE_DAYS, NEWS_NOTES_PER_DAY, SITE, nyDay, newsMode, type Mode } from './config'
 import { renderNewsNote } from './compose'
 import { isBadNews, isExcludedFirm, isIqeqEmail, isUsCountry, noteTitleRank, sameFirm } from './exclusions'
+import { bareDomain, domainCheck, knownFirmDomains } from './firm-domains'
 import { creditsUsedToday, effectiveMode, logRun, newToken, screenEmails, statusForMode, type DbClient } from './store'
 
 export interface ApolloPort {
@@ -30,6 +31,13 @@ export interface NoteCandidate {
   story: Story
   url: string
 }
+
+/**
+ * What a note is sent about (2026-10-16): a fund close, launch or raise, or a
+ * hire. A deal, a promotion, a regulatory story or an LP's commitment is news
+ * the firm did not put out to be shared, and is left alone.
+ */
+export const NOTE_EVENTS = new Set(['fund_close', 'fund_launch', 'capital_raise', 'executive_hire'])
 
 const northAmerican = (s: Story) => s.geography.some((g) => /north america|united states|\bus\b/i.test(g))
 
@@ -59,6 +67,7 @@ export function pickCandidates(stories: Story[]): { picked: NoteCandidate[]; dro
     if (story.roundup) { drop('roundup'); continue }
     if (isDescriptiveFirmName(firm)) { drop('firm is a description'); continue }
     if (isBadNews({ eventType: story.eventType, headline: story.headline, summary: story.summary })) { drop('bad news'); continue }
+    if (!NOTE_EVENTS.has(story.eventType ?? '')) { drop('not a close, launch, raise or hire'); continue }
     if (isExcludedFirm(firm)) { drop('fund administrator / IQ-EQ competitor'); continue }
     if (picked.some((p) => sameFirm(p.firm, firm))) { drop('firm already picked'); continue }
     picked.push({ firm, story, url: `${SITE}${storyPath(story)}` })
@@ -129,8 +138,35 @@ export function bestHit(firm: string, hits: ApolloSearchPerson[]): ApolloSearchP
   return ranked[0]?.h ?? null
 }
 
-/** Every check on the revealed person: verified email at the firm's own domain, a first name, the right firm, the US. */
-export function checkMatch(firm: string, p: ApolloMatchPerson | null): { ok: true; contact: FoundContact } | { ok: false; reason: string } {
+/** The domains the story was reported on: a firm's own press release is one of them. Publishers and wires are not a firm's domain, so only what matches the firm counts (domainCheck). */
+export function storyDomains(story: Pick<Story, 'url' | 'coverage'>): string[] {
+  const out = new Set<string>()
+  for (const u of [story.url, ...story.coverage.map((c) => c.url)]) {
+    try { out.add(bareDomain(new URL(u).hostname)) } catch { /* not a URL */ }
+  }
+  return [...out].filter(Boolean)
+}
+
+/** What is known of a firm's domains: the hand-kept list, and the story's own sources that carry the firm's name. */
+export function knownDomainsFor(firm: string, story?: Pick<Story, 'url' | 'coverage'>): string[] {
+  const known = knownFirmDomains(firm)
+  if (story) {
+    const key = firm.toLowerCase().replace(/[^a-z0-9]/g, '')
+    for (const d of storyDomains(story)) {
+      // Only a source whose domain is the firm's own name ("eqtgroup.com" for EQT, "kkr.com" for KKR).
+      const host = d.split('.').slice(0, -1).join('').replace(/[^a-z0-9]/g, '')
+      if (key.length >= 3 && host && (host === key || host.startsWith(key) || key.startsWith(host) && host.length >= 4)) known.push(d)
+    }
+  }
+  return [...new Set(known)]
+}
+
+/**
+ * Every check on the revealed person: verified email at the firm's own domain, a first name, the right firm, the US;
+ * and (2026-10-16) the company's domain agrees with what is known of the firm's (`known`), or, for a firm with no
+ * known domain, the name is long enough to be matched on its own.
+ */
+export function checkMatch(firm: string, p: ApolloMatchPerson | null, known: string[] = knownFirmDomains(firm)): { ok: true; contact: FoundContact } | { ok: false; reason: string } {
   if (!p) return { ok: false, reason: 'apollo returned nobody' }
   if (p.email_status !== 'verified' || !p.email) return { ok: false, reason: 'no verified email' }
   if (!p.first_name?.trim()) return { ok: false, reason: 'no first name' }
@@ -141,6 +177,8 @@ export function checkMatch(firm: string, p: ApolloMatchPerson | null): { ok: tru
   if (isExcludedFirm(org, p.title)) return { ok: false, reason: 'fund administrator / IQ-EQ competitor' }
   const domain = p.organization?.primary_domain ? normDomain(p.organization.primary_domain) : ''
   if (!domain) return { ok: false, reason: 'no firm domain' }
+  const agreed = domainCheck(firm, domain, known)
+  if (!agreed.ok) return agreed
   const emailDomain = p.email.split('@')[1]?.toLowerCase() ?? ''
   if (emailDomain !== domain && !emailDomain.endsWith(`.${domain}`)) return { ok: false, reason: 'email not at the firm domain' }
   if (isIqeqEmail(p.email)) return { ok: false, reason: 'iqeq.com' }
@@ -230,7 +268,7 @@ export async function collectNotes(
       passed.push({ firm: c.firm, reason: `match failed: ${err instanceof Error ? err.message : String(err)}` })
       continue
     }
-    const checked = checkMatch(c.firm, person)
+    const checked = checkMatch(c.firm, person, knownDomainsFor(c.firm, c.story))
     if (!checked.ok) { passed.push({ firm: c.firm, reason: checked.reason }); continue }
     try {
       const reason = await deps.screen(checked.contact.email)
@@ -255,6 +293,9 @@ export async function runNewsNotes(db: DbClient, apollo: ApolloPort, now: Date =
 
   const today = nyDay(now)
   const batch = `news-${today}`
+  // A note says "this morning's FundOps Daily": a preview from an earlier day is stale by midnight New York and
+  // is retired, so flipping the mode to live can never send one (the dispatcher retires a queued one the same way).
+  await db.from('outreach_v2_messages').update({ status: 'cancelled', skip_reason: 'stale preview: past midnight ET' }).eq('program', 'news_note').eq('status', 'preview').neq('batch', batch)
   const { data: edition, error: edErr } = await db.from('newsletter_editions').select('edition_date, status, article_ids').eq('edition_date', today).maybeSingle()
   if (edErr) return { ok: false, mode, error: edErr.message }
   if (!edition || edition.status !== 'sent') return { ok: true, mode, skipped: `today's edition (${today}) has not gone out` }
