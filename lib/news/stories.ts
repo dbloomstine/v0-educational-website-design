@@ -16,6 +16,7 @@ import {
 } from '@/lib/newsletter/query-articles'
 import { clusterBy, dealStage, entityKey, entityMentioned, fundStrategiesConflict, keysMatch, sameStoryLoose, storyFamily, tellsAnItemOf } from '@/lib/newsletter/story-links'
 import { fundSizesMatch, isSameStory } from './story-dedup'
+import { homeFactor } from './home-factor'
 import { normalizeSourceName } from './constants'
 import { cleanSummary } from './summary-clean'
 
@@ -134,6 +135,20 @@ export function storyWeight(s: Pick<Story, 'kind' | 'sizeUsdM' | 'coverage' | 's
 export function storyHeat(story: Story, nowMs: number): number {
   const ageH = Math.max(0, (nowMs - new Date(story.firstSeen).getTime()) / 3_600_000)
   return story.weight * Math.pow(0.5, ageH / 28)
+}
+
+/**
+ * What puts a story at the top of the front page (2026-10-16): its heat, read
+ * from where the reader is (homeFactor, as the email's top stories are), and
+ * how many desks carried it — each further outlet multiplies, so a $5bn deal
+ * two desks reported outranks a $250m target one aggregator ran. A lone
+ * report from an outlet below the trade press counts for less.
+ */
+export function topScore(story: Story, nowMs: number): number {
+  const home = homeFactor({ geography: story.geography, title: story.headline, sourceName: story.source })
+  const coverage = 1 + 0.15 * Math.min(story.coverage.length, 5)
+  const lone = story.coverage.length === 0 && sourceTier(story.source) > 10 ? 0.8 : 1
+  return storyHeat(story, nowMs) * home * coverage * lone
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -322,10 +337,14 @@ export interface FrontPage {
 }
 
 /**
- * Pick the lead and the top stories. Greedy by heat, with two brakes so the
- * top of the page is a front page and not a list of the six largest closes:
- * each further story of a kind already shown counts for less, and one firm
- * appears once.
+ * Pick the lead and the top stories. Greedy by topScore — the biggest,
+ * most-covered stories from where the reader is — with two light brakes so
+ * the top of the page is a front page and not a list of the six largest
+ * closes: one firm appears once, and each further story of a kind already
+ * shown counts a little less. Until 2026-10-16 that penalty was 0.8 a step,
+ * which slotted the top by section: a $250m target from an aggregator and a
+ * $15M VC first close made the six while a $6bn deal two desks carried did
+ * not. It is 0.93 now, and home and coverage count.
  */
 export function rankTop(stories: Story[], nowMs: number, count: number, exclude: Set<string> = new Set()): Story[] {
   const pool = stories.filter((s) => !exclude.has(s.id) && !s.roundup)
@@ -338,7 +357,7 @@ export function rankTop(stories: Story[], nowMs: number, count: number, exclude:
     pool.forEach((s, i) => {
       const firm = (s.firmName ?? '').toLowerCase()
       if (firm && firms.has(firm)) return
-      const score = storyHeat(s, nowMs) * Math.pow(0.8, kindCount.get(s.kind) ?? 0)
+      const score = topScore(s, nowMs) * Math.pow(0.93, kindCount.get(s.kind) ?? 0)
       if (score > bestScore) { bestScore = score; bestIdx = i }
     })
     if (bestIdx < 0) break
@@ -359,7 +378,7 @@ export function composeFrontPage(stories: Story[], nowMs: number): FrontPage {
   const leadPool = stories.filter((s) => s.leadEligible && s.summary)
   const deckBonus = (s: Story) => ((s.summary?.length ?? 0) >= 80 ? 1 : 0.85)
   const lead =
-    [...leadPool].filter((s) => !s.roundup).sort((a, b) => storyHeat(b, nowMs) * deckBonus(b) - storyHeat(a, nowMs) * deckBonus(a))[0] ??
+    [...leadPool].filter((s) => !s.roundup).sort((a, b) => topScore(b, nowMs) * deckBonus(b) - topScore(a, nowMs) * deckBonus(a))[0] ??
     rankTop(stories, nowMs, 1)[0] ??
     null
   const used = new Set(lead ? [lead.id] : [])

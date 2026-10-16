@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildStories, composeFrontPage, rankTop, storyHeat, type Story } from '../stories'
+import { buildStories, composeFrontPage, rankTop, storyHeat, topScore, type Story } from '../stories'
 import { SECTIONS, homeSectionFor, storyInSection } from '../sections'
 import { kickerLabel, sizeLabel, stageLabel, timeLabel } from '../format'
 import { leagueRejection } from '../league'
@@ -355,5 +355,24 @@ describe('a deal story’s size is the deal’s (Antin / HP Helicopters, 2026-10
     ])
     expect(story.kind).toBe('deals')
     expect(story.sizeUsdM).toBeNull()
+  })
+})
+
+describe('top stories rank by size, coverage and home (2026-10-16)', () => {
+  it('a $6bn deal two desks carried outranks a $250m target one aggregator ran, and a $15M first close', () => {
+    const deal = story({ kind: 'deals', eventType: 'acquisition', closeType: null, sizeUsdM: 6100, firmName: 'GTCR', geography: ['North America'], source: 'PE Hub', coverage: [{ source: 'Hedgeweek', url: 'https://h', headline: 'x' }], weight: 2.2 })
+    const target = story({ kind: 'fundraising', eventType: 'capital_raise', closeType: 'target', sizeUsdM: 250, firmName: 'Cornerstone Ventures', geography: [], source: 'TradingView', weight: 1.9 })
+    const small = story({ kind: 'fundraising', eventType: 'fund_close', closeType: 'first_close', sizeUsdM: 15, firmName: 'A Ukrainian VC', geography: ['Europe'], source: 'EU-Startups', weight: 1.6 })
+    const close = story({ kind: 'fundraising', sizeUsdM: 885, firmName: 'Aldaron', geography: ['North America'], source: 'PE Hub', coverage: [{ source: 'Buyouts', url: 'https://b', headline: 'x' }, { source: 'WSJ', url: 'https://w', headline: 'x' }], weight: 2.0 })
+    expect(topScore(deal, NOW)).toBeGreaterThan(topScore(target, NOW))
+    expect(topScore(close, NOW)).toBeGreaterThan(topScore(target, NOW))
+    expect(rankTop([target, small, deal, close], NOW, 2).map((s) => s.firmName)).toEqual(['Aldaron', 'GTCR'])
+  })
+  it('reads home and coverage: the same story from elsewhere, or alone, scores less', () => {
+    const home = story({ geography: ['North America'], weight: 2, coverage: [{ source: 'Buyouts', url: 'https://b', headline: 'x' }] })
+    const abroad = story({ geography: ['Asia'], weight: 2, coverage: [{ source: 'Buyouts', url: 'https://b', headline: 'x' }] })
+    const alone = story({ geography: ['North America'], weight: 2 })
+    expect(topScore(home, NOW)).toBeGreaterThan(topScore(abroad, NOW))
+    expect(topScore(home, NOW)).toBeGreaterThan(topScore(alone, NOW))
   })
 })
