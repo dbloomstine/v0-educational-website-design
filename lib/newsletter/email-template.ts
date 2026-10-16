@@ -22,7 +22,7 @@ import {
   formatEventDates,
   formatEventLocation,
   formatEventDayHeading,
-  compactTimeNote,
+  eventTimeLabel,
   isVerifiedFree,
 } from '@/lib/events/constants'
 import type { IndustryEvent } from '@/lib/events/types'
@@ -515,7 +515,7 @@ function renderHeadline(article: ArticleGroup['articles'][0]): string {
  * the row with organizer and city beneath it.
  */
 function renderEvent(event: IndustryEvent): string {
-  const time = compactTimeNote(event.timeNote)
+  const time = eventTimeLabel(event)
   const isRange = event.endDate && event.endDate !== event.startDate
   const when = time ?? (isRange ? formatEventDates(event.startDate, event.endDate) : 'All day')
 

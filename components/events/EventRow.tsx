@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ExternalLink, Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
-  compactTimeNote,
+  eventTimeLabel,
   costLabel,
   formatEventDates,
   formatEventLocation,
@@ -25,7 +25,7 @@ import type { IndustryEvent } from '@/lib/events/types'
 export function EventRow({ event }: { event: IndustryEvent }) {
   const cost = costLabel(event)
   const free = isVerifiedFree(event)
-  const time = compactTimeNote(event.timeNote)
+  const time = eventTimeLabel(event)
   const isRange = Boolean(event.endDate && event.endDate !== event.startDate)
   const when = time ?? (isRange ? formatEventDates(event.startDate, event.endDate) : 'All day')
 

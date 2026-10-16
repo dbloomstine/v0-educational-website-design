@@ -154,12 +154,70 @@ export function formatWeekHeader(startDate: string): string {
  * time carrying its own am/pm was read, so "5:00-8:00 PM" showed as 8pm (Danny
  * caught it on Lowenstein's VentureCrushFG). Null when no clock time is present.
  */
+/**
+ * The zone an event's clock times are in, from where it is, for a note that
+ * names none (2026-10-16: "8:30 AM-4:30 PM" in Chicago showed with no zone).
+ * US states and Canadian provinces by zone; a few countries by their one
+ * zone; London and Manchester as "UK" (GMT or BST by the date). Null when
+ * the place does not settle it.
+ */
+const ZONE_BY_STATE: Record<string, string> = {
+  // Eastern
+  CT: 'ET', DE: 'ET', DC: 'ET', FL: 'ET', GA: 'ET', ME: 'ET', MD: 'ET', MA: 'ET', MI: 'ET', NH: 'ET', NJ: 'ET', NY: 'ET',
+  NC: 'ET', OH: 'ET', PA: 'ET', RI: 'ET', SC: 'ET', VT: 'ET', VA: 'ET', WV: 'ET', ON: 'ET', QC: 'ET',
+  // Central
+  AL: 'CT', AR: 'CT', IL: 'CT', IA: 'CT', KS: 'CT', KY: 'CT', LA: 'CT', MN: 'CT', MS: 'CT', MO: 'CT', NE: 'CT', ND: 'CT',
+  OK: 'CT', SD: 'CT', TN: 'CT', TX: 'CT', WI: 'CT', MB: 'CT', SK: 'CT',
+  // Mountain
+  AZ: 'MT', CO: 'MT', ID: 'MT', MT: 'MT', NM: 'MT', UT: 'MT', WY: 'MT', AB: 'MT',
+  // Pacific
+  CA: 'PT', NV: 'PT', OR: 'PT', WA: 'PT', BC: 'PT',
+}
+const ZONE_BY_COUNTRY: Record<string, string> = {
+  'united kingdom': 'UK', uk: 'UK', england: 'UK', scotland: 'UK', 'hong kong': 'HKT', singapore: 'SGT', japan: 'JST',
+  germany: 'CET', france: 'CET', netherlands: 'CET', luxembourg: 'CET', switzerland: 'CET', spain: 'CET', italy: 'CET',
+  belgium: 'CET', austria: 'CET', denmark: 'CET', sweden: 'CET', norway: 'CET', ireland: 'UK',
+}
+const ZONE_BY_CITY: Record<string, string> = {
+  'new york': 'ET', boston: 'ET', 'washington dc': 'ET', washington: 'ET', miami: 'ET', atlanta: 'ET', philadelphia: 'ET',
+  toronto: 'ET', montreal: 'ET', chicago: 'CT', dallas: 'CT', houston: 'CT', austin: 'CT', nashville: 'CT', denver: 'MT',
+  'san francisco': 'PT', 'los angeles': 'PT', seattle: 'PT', 'san diego': 'PT', vancouver: 'PT', london: 'UK', manchester: 'UK',
+  edinburgh: 'UK', dublin: 'UK', 'hong kong': 'HKT', singapore: 'SGT', tokyo: 'JST', paris: 'CET', frankfurt: 'CET',
+  amsterdam: 'CET', luxembourg: 'CET', zurich: 'CET', geneva: 'CET', madrid: 'CET', milan: 'CET',
+}
+export function eventTimeZone(event: { city: string | null; stateRegion: string | null; country: string | null }): string | null {
+  const state = (event.stateRegion ?? '').trim().toUpperCase()
+  if (state && ZONE_BY_STATE[state]) return ZONE_BY_STATE[state]
+  const city = (event.city ?? '').trim().toLowerCase().replace(/[.,]/g, '')
+  if (city && ZONE_BY_CITY[city]) return ZONE_BY_CITY[city]
+  const country = (event.country ?? '').trim().toLowerCase().replace(/[.]/g, '')
+  if (country && ZONE_BY_COUNTRY[country]) return ZONE_BY_COUNTRY[country]
+  return null
+}
+
+const ZONE_IN_NOTE = /\b(ET|EST|EDT|CT|CST|CDT|MT|MST|MDT|PT|PST|PDT|GMT|BST|CET|CEST|HKT|SGT|JST|AEST|AEDT|UTC|UK)\b/i
+
+/** A raw time note with the event's zone added when it names none and states a clock time. */
+export function timeNoteWithZone(raw: string | null, zone: string | null): string | null {
+  if (!raw) return null
+  if (!zone || ZONE_IN_NOTE.test(raw) || !/\d{1,2}(?::\d{2})?\s*(am|pm|a\.m\.|p\.m\.)|\b\d{1,2}h\d{2}\b/i.test(raw)) return raw
+  return `${raw} ${zone}`
+}
+
+/**
+ * The compact time for a row, in the event's zone when the note names none:
+ * compactTimeNote(timeNoteWithZone(…)).
+ */
+export function eventTimeLabel(event: { timeNote: string | null; city: string | null; stateRegion: string | null; country: string | null }): string | null {
+  return compactTimeNote(timeNoteWithZone(event.timeNote, eventTimeZone(event)))
+}
+
 export function compactTimeNote(raw: string | null): string | null {
   if (!raw) return null
   // A 24-hour French-style time ("17h00 ET", from Quebec organisers) is read as 5:00 PM.
   const timeNote = raw.replace(/\b(\d{1,2})h(\d{2})\b/g, (_, h: string, m: string) => { const n = Number(h); return `${n % 12 || 12}:${m} ${n >= 12 ? 'PM' : 'AM'}` })
   const clock = (h: string, min: string | undefined) => `${Number(h)}${min && min !== '00' ? `:${min}` : ''}`
-  const tzm = timeNote.match(/\b(ET|EST|EDT|CT|CST|CDT|MT|MST|MDT|PT|PST|PDT|GMT|BST|CET|CEST|HKT|SGT|JST|AEST)\b/i)
+  const tzm = timeNote.match(/\b(ET|EST|EDT|CT|CST|CDT|MT|MST|MDT|PT|PST|PDT|GMT|BST|CET|CEST|HKT|SGT|JST|AEST|AEDT|UTC|UK)\b/i)
   const tz = tzm ? ` ${tzm[1].toUpperCase()}` : ''
   const range = /(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?\s*(?:-|–|—|to)\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)/i.exec(timeNote)
   const single = /(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)/i.exec(timeNote)

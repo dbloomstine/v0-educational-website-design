@@ -17,7 +17,7 @@
 import type { ArticleGroup } from './query-articles'
 import { EMAIL_FOLLOW_ROW } from './interests'
 import { interestLink } from './interest-link'
-import { formatEventDates, formatEventLocation, formatEventDayHeading, compactTimeNote, isVerifiedFree } from '@/lib/events/constants'
+import { formatEventDates, formatEventLocation, formatEventDayHeading, eventTimeLabel, isVerifiedFree } from '@/lib/events/constants'
 import { cleanEntityName } from '@/lib/news/constants'
 import type { IndustryEvent } from '@/lib/events/types'
 import { DEFAULT_SPONSOR_SLATE, type SponsorSlate } from './sponsors'
@@ -75,7 +75,7 @@ function recapText(recap: WeekRecap | null | undefined): string {
 }
 
 function eventText(event: IndustryEvent): string {
-  const time = compactTimeNote(event.timeNote)
+  const time = eventTimeLabel(event)
   const isRange = event.endDate && event.endDate !== event.startDate
   const when = time ?? (isRange ? formatEventDates(event.startDate, event.endDate) : 'All day')
   const under = [cleanEntityName(event.organizerName), formatEventLocation(event), isVerifiedFree(event) ? 'Free' : undefined]

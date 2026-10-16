@@ -15,6 +15,8 @@ import {
   formatEventDates,
   formatEventLocation,
   isVerifiedFree,
+  eventTimeZone,
+  timeNoteWithZone,
 } from '@/lib/events/constants'
 import { googleCalendarUrl } from '@/lib/events/ics'
 import { CATEGORY_LABELS } from '@/lib/news/constants'
@@ -263,7 +265,7 @@ function EventDetailPage({ event, related }: { event: IndustryEvent; related: In
                   <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/60">When</dt>
                   <dd className="mt-1 text-sm text-foreground">
                     {dates}
-                    {event.timeNote && <span className="text-muted-foreground"> · {event.timeNote}</span>}
+                    {event.timeNote && <span className="text-muted-foreground"> · {timeNoteWithZone(event.timeNote, eventTimeZone(event))}</span>}
                   </dd>
                 </div>
                 <div>
