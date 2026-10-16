@@ -12,7 +12,11 @@
  *   6. Same firm, both people moves, and one move (sameMove, at the foot of
  *      this file): the same surname, or — when one report names nobody — the
  *      same job, within a couple of days
+ *
+ * Headline figures are compared as money (headlinesShareFigure): "€1bn" and
+ * "1 Billion Euro" are one figure, and so are "₹950 crore" and "$99.2M".
  */
+import { headlineMoney, moneyMatchesUsd } from './money'
 
 /**
  * Legal-form / stop-word tokens — always safe to strip. An all-caps firm
@@ -128,9 +132,86 @@ export function titlesShareSignificantNumber(a: string, b: string): boolean {
     )
   const A = nums(a)
   const B = nums(b)
-  if (A.size === 0 || B.size === 0) return false
-  for (const n of A) if (B.has(n)) return true
+  if (A.size > 0 && B.size > 0) for (const n of A) if (B.has(n)) return true
+  return headlinesShareFigure(a, b)
+}
+
+/**
+ * Two headlines state the same sum of money, read as money: "€1bn" and "1
+ * Billion Euro" (Hg's first close, 2026-10-14, stored at $1,100M and, from
+ * the target in the other report, $1,925M). The same currency, within 2%;
+ * digits alone ("1" in both) are never enough. Figures in two currencies are
+ * not compared here: the dollar band money.ts allows for a conversion is wide
+ * enough that "$500m" and "€400m" fall inside it (CVC's Montagu deal and a
+ * CVC CLO, 2026-10-09/13), so a cross-currency match is only ever a weak sign
+ * (headlinesShareFigureLoose), never proof of one figure.
+ */
+export function headlinesShareFigure(a: string, b: string): boolean {
+  return shareFigure(a, b, false)
+}
+
+/** As above, and a dollar figure that is a plausible conversion of the other headline's figure ("₹950 crore" / "$99.2M", Bajaj Alts, 2026-10-12). */
+export function headlinesShareFigureLoose(a: string, b: string): boolean {
+  return shareFigure(a, b, true)
+}
+
+function shareFigure(a: string, b: string, crossCurrency: boolean): boolean {
+  const A = headlineMoney(a)
+  const B = headlineMoney(b)
+  if (A.length === 0 || B.length === 0) return false
+  for (const x of A) {
+    for (const y of B) {
+      if (x.currency === y.currency) {
+        if (fundSizesMatch(x.amountM, y.amountM, 0.02)) return true
+        continue
+      }
+      if (!crossCurrency) continue
+      if (x.currency === 'USD' && moneyMatchesUsd(y, x.amountM)) return true
+      if (y.currency === 'USD' && moneyMatchesUsd(x, y.amountM)) return true
+    }
+  }
   return false
+}
+
+const ORDINAL_WORDS: Record<string, number> = {
+  first: 1, debut: 1, maiden: 1, inaugural: 1, second: 2, third: 3, fourth: 4, fifth: 5, sixth: 6, seventh: 7,
+  eighth: 8, ninth: 9, tenth: 10, eleventh: 11, twelfth: 12,
+}
+const ROMAN: Record<string, number> = {
+  i: 1, ii: 2, iii: 3, iv: 4, v: 5, vi: 6, vii: 7, viii: 8, ix: 9, x: 10, xi: 11, xii: 12, xiii: 13, xiv: 14, xv: 15,
+  xvi: 16, xvii: 17, xviii: 18, xix: 19, xx: 20,
+}
+
+/**
+ * Which fund in a manager's series a report is about, when it says: "Fund VI",
+ * "Fund 6", a fund_number of "VI", or "sixth flagship" / "sixth PE secondaries
+ * fund" in the headline. 2026-10-13/14: "StepStone reaches over half of
+ * combined target for sixth flagship and GP-led fund" (no fund named, no
+ * size) and "StepStone's sixth PE secondaries fundraise passes halfway mark…"
+ * (StepStone PE Secondaries Fund VI, $6bn target) ran on consecutive days.
+ * An ordinal word counts only just ahead of a fund word, so "first close",
+ * "first-time buyer" and "third quarter" are not read. Null when nothing says.
+ */
+export function fundOrdinal(x: { title: string; fundName?: string | null; fundNumber?: string | null }): number | null {
+  const fromNumber = (s: string | null | undefined): number | null => {
+    if (!s) return null
+    const m = /^\s*(?:funds?\s+)?([ivx]+|\d{1,2})\s*$/i.exec(s)
+    if (!m) return null
+    const t = m[1].toLowerCase()
+    return /^\d+$/.test(t) ? Number(t) : ROMAN[t] ?? null
+  }
+  const fromName = (s: string | null | undefined): number | null => {
+    if (!s) return null
+    const m = /\b(?:fund|partners|opportunities|capital|credit|secondaries|ventures?|growth|infrastructure|equity|debt|lending|solutions|program(?:me)?)\s+([IVX]{1,5}|\d{1,2})\b(?![\d.,%])/i.exec(s)
+    if (!m) return null
+    const t = m[1].toLowerCase()
+    return /^\d+$/.test(t) ? Number(t) : ROMAN[t] ?? null
+  }
+  const fromWords = (s: string): number | null => {
+    const m = /\b(first|debut|maiden|inaugural|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|eleventh|twelfth)(?![- ](?:close|closing|time|half|quarter|round|year|day|week|month)\b)(?:[- ][a-z&-]+){0,2}?[- ](?:fund|flagship|vehicle|vintage|fundraise|raise)\b/i.exec(s)
+    return m ? ORDINAL_WORDS[m[1].toLowerCase()] ?? null : null
+  }
+  return fromNumber(x.fundNumber) ?? fromName(x.fundName) ?? fromName(x.title) ?? fromWords(x.title)
 }
 
 export interface StoryCandidate {
@@ -353,6 +434,12 @@ const ROLE_SHORT_FORMS: Array<[RegExp, string]> = [
   [/\bcco\b/g, 'chief compliance officer'],
   [/\bcto\b/g, 'chief technology officer'],
   [/\bgc\b/g, 'general counsel'],
+  // One job, three words for it: "Foley Hoag Lands Private Equity M&A Lawyer
+  // Brandon Cuffy in DC" / "Foley Hoag Hires Miles & Stockbridge M&A Atty In
+  // DC" (2026-10-15, two rows in one edition).
+  [/\batty\b/g, 'attorney'],
+  [/\battys\b/g, 'attorneys'],
+  [/\blawyers?\b/g, 'attorney'],
 ]
 
 /**
@@ -417,6 +504,8 @@ export interface MoveLike {
   personKeys?: string[]
   publishedDate?: string | null
   eventType?: string | null
+  /** Keys of every firm the report names (story-links): the prior employer is not part of the job. */
+  entityKeys?: string[]
 }
 
 const personNames = (m: MoveLike): string[] => [
@@ -429,7 +518,7 @@ const personNames = (m: MoveLike): string[] => [
  * firm's own name, the person's, rank, the verbs of a move, or a place.
  */
 export function roleWords(m: MoveLike): Set<string> {
-  const skip = new Set([...words(m.firmName), ...personNames(m).flatMap((n) => words(n))])
+  const skip = new Set([...words(m.firmName), ...personNames(m).flatMap((n) => words(n)), ...(m.entityKeys ?? []).flatMap((k) => words(k))])
   return new Set(
     [...words(m.title), ...words(m.personTitle)]
       .filter((w) => !skip.has(w) && !ROLE_GENERIC.has(w) && !ROLE_PLACES.has(w) && !/^\d+$/.test(w))

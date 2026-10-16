@@ -579,3 +579,53 @@ describe('isSameStory — an accent is not a separator (LBP AM, 2026-10-02 and 1
     expect(isSameStory(a, b)).toBe(true)
   })
 })
+
+describe('headline figures read as money (2026-10-16 audit)', () => {
+  it('"€1bn" and "1 Billion Euro" are one figure; "$500m" and "€400m" are not', async () => {
+    const { headlinesShareFigure, headlinesShareFigureLoose } = await import('../story-dedup')
+    expect(headlinesShareFigure('Hg raises €1bn first close for debut secondary fund', 'Hg Hits 1 Billion Euro First Close for Debut Secondary Fund')).toBe(true)
+    expect(headlinesShareFigure('Hg said to raise €1bn for debut GP-led secondaries fund, over halfway to target', 'Hg Hits 1 Billion Euro First Close for Debut Secondary Fund')).toBe(true)
+    // The dollar band for a euro is wide enough to hold $500m against €400m: never proof of one figure.
+    expect(headlinesShareFigure('CVC leads Montagu’s latest ~$500m single-asset fund', 'CVC prices second European CLO of 2026 at €400m')).toBe(false)
+    // A rupee figure and its dollar conversion are a weak sign only.
+    expect(headlinesShareFigure('Bajaj Alts raises ₹950 crore in initial close of maiden real estate fund', 'Bajaj Alts raises $99.2M in first close of maiden real estate fund')).toBe(false)
+    expect(headlinesShareFigureLoose('Bajaj Alts raises ₹950 crore in initial close of maiden real estate fund', 'Bajaj Alts raises $99.2M in first close of maiden real estate fund')).toBe(true)
+    // Digits alone are not money.
+    expect(headlinesShareFigure('Top 10 funds of 2026', 'The 10 largest closes of 2026')).toBe(false)
+  })
+  it('titlesShareSignificantNumber also reads the figure as money', () => {
+    expect(titlesShareSignificantNumber('Hg raises €1bn first close', 'Hg Hits 1 Billion Euro First Close')).toBe(true)
+  })
+})
+
+describe('fundOrdinal', () => {
+  it('reads a fund number, a fund name, or an ordinal ahead of a fund word', async () => {
+    const { fundOrdinal } = await import('../story-dedup')
+    expect(fundOrdinal({ title: 'StepStone reaches over half of combined target for sixth flagship and GP-led fund', fundNumber: 'Fund VI' })).toBe(6)
+    expect(fundOrdinal({ title: 'StepStone reaches over half of combined target for sixth flagship and GP-led fund' })).toBe(6)
+    expect(fundOrdinal({ title: 'StepStone’s sixth PE secondaries fundraise passes halfway mark, as manager pursues $6bn target', fundName: 'StepStone PE Secondaries Fund VI', fundNumber: 'VI' })).toBe(6)
+    expect(fundOrdinal({ title: 'Monte Carlo Capital lands $15M first close for DeepTech Fund II', fundName: 'DeepTech Fund II' })).toBe(2)
+    expect(fundOrdinal({ title: 'Audax Private Debt Raises Third Direct-Lending Fund' })).toBe(3)
+    expect(fundOrdinal({ title: 'Hg raises €1bn first close for debut secondary fund' })).toBe(1)
+  })
+  it('does not read "first close", "first-time" or a quarter as a fund number', async () => {
+    const { fundOrdinal } = await import('../story-dedup')
+    expect(fundOrdinal({ title: 'Bajaj Alts raises $99.2M in first close of maiden real estate fund' })).toBe(1) // "maiden … fund"
+    expect(fundOrdinal({ title: 'Nordic manager holds first close on $300m' })).toBeNull()
+    expect(fundOrdinal({ title: 'First-time managers raised less in the third quarter' })).toBeNull()
+    expect(fundOrdinal({ title: 'CVC prices second European CLO of 2026 at €400m', fundName: 'Cordatus XXXIX', fundNumber: '39' })).toBe(39)
+  })
+})
+
+describe('isSameStory — one hire under three words for the job (2026-10-15 Foley Hoag)', () => {
+  const bloomberg = move({ title: 'Foley Hoag Lands Private Equity M&A Lawyer Brandon Cuffy in DC', firmName: 'Foley Hoag', personName: 'Brandon Cuffy', personTitle: 'Private Equity M&A Lawyer', publishedDate: '2026-10-15' })
+  const law360 = move({ title: 'Foley Hoag Hires Miles & Stockbridge M&A Atty In DC', firmName: 'Foley Hoag LLP', personTitle: 'Partner', publishedDate: '2026-10-15', entityKeys: ['foley hoag', 'miles stockbridge pc'] } as Partial<StoryCandidate> & { title: string; firmName: string })
+  it('"M&A Atty" from a named prior employer is the "Private Equity M&A Lawyer"', () => {
+    expect(sameMove(bloomberg, { ...law360, entityKeys: ['foley hoag', 'miles stockbridge pc'] })).toBe(true)
+    expect(isSameStory(bloomberg, { ...law360, entityKeys: ['foley hoag', 'miles stockbridge pc'] } as StoryCandidate)).toBe(true)
+  })
+  it('without the prior employer set aside, its name still outweighs the job', () => {
+    // The guard that keeps two different hires on one day apart is the 3-in-4 rule; this documents what entityKeys buys.
+    expect(roleWords({ ...law360, entityKeys: ['foley hoag', 'miles stockbridge pc'] })).toEqual(new Set(['merger', 'acquisition', 'attorney']))
+  })
+})

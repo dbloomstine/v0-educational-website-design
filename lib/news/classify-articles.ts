@@ -30,6 +30,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { alignClassifications } from './classification-align';
 import { withOwnAmounts } from './amount-guard';
 import { retypeHiddenDeal } from './deal-retype';
+import { batchDuplicateMarks, type BatchRow } from './batch-duplicates';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>;
@@ -52,6 +53,8 @@ export interface ClassificationResult {
   articlesDeferred: number;
   /** Articles resurrected from a terminal 'failed' state by the recovery sweep. */
   articlesRecovered: number;
+  /** Rows marked is_duplicate on the classifier's own note (batch-duplicates.ts). */
+  articlesMarkedDuplicate: number;
   errors: string[];
 }
 
@@ -253,6 +256,7 @@ export async function classifyPendingArticles(
     articlesFailed: 0,
     apiOutage: false,
     articlesDeferred: 0,
+    articlesMarkedDuplicate: 0,
     articlesRecovered: 0,
     errors: [],
   };
@@ -304,6 +308,9 @@ export async function classifyPendingArticles(
 
     try {
       const classifications = await classifyBatch(batch, claudeApiKey);
+
+      // What was stored for each batch position, for the duplicate notes below.
+      const applied: (ClassificationOutput | null)[] = batch.map(() => null);
 
       // Apply classifications
       for (let j = 0; j < batch.length; j++) {
@@ -371,7 +378,35 @@ export async function classifyPendingArticles(
           result.articlesFailed++;
         } else {
           result.articlesProcessed++;
+          applied[j] = classification;
         }
+      }
+
+      // The model's own word that one row copies another in the batch
+      // ("Duplicate of article id 5"), kept only when the rows bear it out.
+      const rows: BatchRow[] = batch.map((article, j) => {
+        const c = applied[j];
+        return {
+          id: article.id,
+          title: article.title,
+          sourceName: article.source_name,
+          textLength: (article.description?.length ?? 0) + (article.full_text?.length ?? 0),
+          firmName: c?.firm_name ?? null,
+          fundName: c?.fund_name ?? null,
+          fundSizeUsdMillions: c?.fund_size_usd_millions ?? null,
+          personName: c?.person_name ?? null,
+          closeType: c?.close_type ?? null,
+          eventType: c?.article_type ?? null,
+          note: c ? c.classification_note ?? null : null,
+        };
+      });
+      for (const mark of batchDuplicateMarks(rows)) {
+        const { error: dupError } = await supabase
+          .from('news_items')
+          .update({ is_duplicate: true, canonical_article_id: mark.canonicalId, updated_at: new Date().toISOString() })
+          .eq('id', mark.id);
+        if (dupError) result.errors.push(`Duplicate mark ${mark.id}: ${dupError.message}`);
+        else result.articlesMarkedDuplicate++;
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : 'Unknown';

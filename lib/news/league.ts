@@ -220,11 +220,39 @@ export function regionOf(geography: string[] | null | undefined): string | null 
 
 function toFundClose(story: Story, rowById: Map<string, Row>): FundClose {
   const rows = story.memberIds.map((id) => rowById.get(id)).filter(Boolean)
+  // One story, two figures. The story rules (2026-10-16: headline figures read
+  // as money) now join reports the league used to meet as two closes, so the
+  // reports' sizes are settled here as they are between closes: the lower
+  // figure, the higher kept as a note, and the headline from a report that
+  // carries the figure shown (EIG's $1.9bn fund inside a "$4.0 Billion …
+  // platform" total, 2026-09; Charterhouse's €1bn at $1,100M and at $1,640M).
+  let sizeUsdM = story.sizeUsdM as number
+  let altSizeUsdM: number | null = null
+  let headline = story.headline
+  let url = story.url
+  let source = story.source
+  const memberSizes = rows
+    .map((r) => ({ sizeUsdM: Number(r.extracted_data?.fund_size_usd_millions) || 0, date: String(r.published_date).slice(0, 10), sources: 1, url: String(r.source_url ?? '') }))
+    .filter((x) => x.sizeUsdM > 0)
+  if (memberSizes.length >= 2 && Math.max(...memberSizes.map((x) => x.sizeUsdM)) > Math.min(...memberSizes.map((x) => x.sizeUsdM)) * 1.1) {
+    const settled = settleSize(memberSizes)
+    sizeUsdM = settled.sizeUsdM
+    altSizeUsdM = settled.altSizeUsdM
+    if (!fundSizesMatch(story.sizeUsdM, sizeUsdM, 0.08)) {
+      const agreeing = new Set(memberSizes.filter((x) => fundSizesMatch(x.sizeUsdM, sizeUsdM, 0.08)).map((x) => x.url))
+      const c = story.coverage.find((x) => agreeing.has(x.url))
+      if (c) {
+        headline = c.headline
+        url = c.url
+        source = c.source
+      }
+    }
+  }
   // Was the size converted from another currency? The headline says so when it
   // states the figure ("€2.1bn" is, "$2bn" is not). Failing that, most of the
   // reports' own currency fields — one stray "GBP" among dollar reports is the
   // classifier, not the fund.
-  const stated = headlineFigureFor(story.sizeUsdM as number, story.headline)
+  const stated = headlineFigureFor(sizeUsdM, headline)
   const currencies = rows.map((r) => String(r.extracted_data?.original_currency ?? '').toUpperCase()).filter(Boolean)
   const foreign = currencies.filter((c) => c !== 'USD').length
   const converted = stated ? stated.currency !== 'USD' : foreign > currencies.length / 2
@@ -237,18 +265,18 @@ function toFundClose(story: Story, rowById: Map<string, Row>): FundClose {
     firm: story.firmName as string,
     firmSlug: firmSlug(story.firmName),
     fund: fundLabel(story.fundName ?? fundNumber ?? null),
-    sizeUsdM: story.sizeUsdM as number,
+    sizeUsdM,
     stage: STAGE_OF[story.closeType as string],
     date,
     assetClass: story.assetClasses[0] ?? null,
-    headline: story.headline,
-    source: story.source,
-    url: story.url,
+    headline,
+    source,
+    url,
     sources: story.coverage.length + 1,
     outlets: Array.from(new Set([story.source, ...story.coverage.map((c) => c.source)].filter((x): x is string => !!x))),
     converted,
     region: regionOf(story.geography),
-    altSizeUsdM: null,
+    altSizeUsdM,
   }
 }
 

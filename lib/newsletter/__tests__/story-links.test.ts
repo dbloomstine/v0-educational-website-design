@@ -404,3 +404,44 @@ describe('one story told several ways still clusters (2026-10-14 audit)', () => 
     expect(sameStoryLoose(c, d)).toBe(true)
   })
 })
+
+describe('2026-10-16 audit: the pairs that ran twice', () => {
+  it('(a) Hg: "€1bn" at first close and "1 Billion Euro" at first close, one stored at the target', () => {
+    const wsj = story({ title: 'Hg Hits 1 Billion Euro First Close for Debut Secondary Fund', eventType: 'fund_close', firmName: 'Hg', fundName: 'Hg Secondary Fund I', fundSizeUsdMillions: 1100, closeType: 'first_close', publishedDate: '2026-10-14' })
+    const alt = story({ title: 'Hg said to raise €1bn for debut GP-led secondaries fund, over halfway to target', eventType: 'capital_raise', firmName: 'Hg', fundName: null, fundSizeUsdMillions: 1925, closeType: 'first_close', publishedDate: '2026-10-15' })
+    expect(sameStoryLoose(wsj, alt)).toBe(true)
+    expect(sameStoryLoose(alt, wsj, { crossEdition: true })).toBe(true)
+  })
+  it('(b) Bajaj Finserv and Bajaj Alts: one ₹950 crore first close under a parent and its arm', () => {
+    const rediff = story({ title: "Bajaj Finserv's New Fund Raises ₹950 Cr for Realty Bets", eventType: 'fund_launch', firmName: 'Bajaj Finserv', fundSizeUsdMillions: 114, closeType: null, publishedDate: '2026-10-12' })
+    const et = story({ title: 'Bajaj Alts raises Rs 950 crore in initial close of maiden real estate fund', eventType: 'fund_close', firmName: 'Bajaj Alts', fundSizeUsdMillions: 114, closeType: 'first_close', publishedDate: '2026-10-12' })
+    const dealroom = story({ title: 'Bajaj Alts raises $99.2M in first close of maiden real estate fund', eventType: 'fund_close', firmName: 'Bajaj Alts', fundName: 'Bajaj Alts Real Estate Fund I', fundSizeUsdMillions: 99.2, closeType: 'first_close', publishedDate: '2026-10-12' })
+    expect(sameStoryLoose(rediff, et)).toBe(true)
+    expect(sameStoryLoose(dealroom, et)).toBe(true)
+    expect(clusterBy([rediff, et, dealroom], (a, b) => isSameStory(a, b) || sameStoryLoose(a, b), fundStrategiesConflict)).toHaveLength(1)
+  })
+  it('(b) but two public funds that open with the same state are not kin', () => {
+    const tcdrs = story({ title: 'Texas County & District Retirement System slots $100 million for private equity', eventType: 'capital_raise', firmName: 'Texas County & District Retirement System', fundSizeUsdMillions: 100, publishedDate: '2026-10-14' })
+    const psf = story({ title: 'Texas Permanent School Fund commits $100m to KKR US real estate fund', eventType: 'capital_raise', firmName: 'Texas Permanent School Fund', fundName: 'KKR US Real Estate Fund', fundSizeUsdMillions: 100, publishedDate: '2026-10-09', entityKeys: keys('Texas Permanent School Fund', 'KKR US Real Estate Fund', 'KKR') })
+    expect(sameStoryLoose(tcdrs, psf, { crossEdition: true })).toBe(false)
+    expect(findPriorStory(tcdrs, [psf])).toBeNull()
+  })
+  it('(b) and a dollar figure inside the euro band is not the same figure: CVC’s Montagu deal is not CVC’s CLO', () => {
+    const montagu = story({ title: 'CVC leads Montagu’s latest ~$500m single-asset fund', eventType: 'capital_raise', firmName: 'CVC', fundSizeUsdMillions: 500, closeType: 'target', publishedDate: '2026-10-13', entityKeys: keys('CVC', 'Montagu') })
+    const clo = story({ title: 'CVC prices second European CLO of 2026 at €400m', eventType: 'fund_close', firmName: 'CVC Credit', fundName: 'Cordatus XXXIX', fundNumber: '39', fundSizeUsdMillions: 440, closeType: 'final_close', publishedDate: '2026-10-09', entityKeys: keys('CVC Credit', 'Cordatus XXXIX', 'CVC CLO Equity IV') })
+    expect(findPriorStory(montagu, [clo])).toBeNull()
+  })
+  it('(c) Foley Hoag: the hire with the name and the hire without it, in one edition', () => {
+    const bloomberg = story({ title: 'Foley Hoag Lands Private Equity M&A Lawyer Brandon Cuffy in DC', eventType: 'executive_hire', firmName: 'Foley Hoag', personName: 'Brandon Cuffy', personTitle: 'Private Equity M&A Lawyer', personKeys: keys('Brandon Cuffy'), publishedDate: '2026-10-15' })
+    const law360 = story({ title: 'Foley Hoag Hires Miles & Stockbridge M&A Atty In DC', eventType: 'executive_hire', firmName: 'Foley Hoag LLP', personTitle: 'Partner', entityKeys: keys('Foley Hoag LLP', 'Miles & Stockbridge PC'), publishedDate: '2026-10-15' })
+    expect(sameStoryLoose(bloomberg, law360)).toBe(true)
+  })
+  it('(d) StepStone: "sixth flagship" on 10-13 and "Fund VI … $6bn target" on 10-14 are one raise across editions', () => {
+    const pei = story({ title: 'StepStone reaches over half of combined target for sixth flagship and GP-led fund', eventType: 'capital_raise', firmName: 'StepStone', fundNumber: 'Fund VI', publishedDate: '2026-10-13' })
+    const alt = story({ title: 'StepStone’s sixth PE secondaries fundraise passes halfway mark, as manager pursues $6bn target', eventType: 'capital_raise', firmName: 'StepStone Group', fundName: 'StepStone PE Secondaries Fund VI', fundNumber: 'VI', fundSizeUsdMillions: 6000, closeType: 'target', publishedDate: '2026-10-14', entityKeys: keys('StepStone Group', 'StepStone PE Secondaries Fund VI') })
+    expect(findPriorStory(alt, [pei])).toBe(pei)
+    // A different fund in the series is a different raise.
+    const five: StoryLike = { ...pei, fundNumber: 'Fund V', title: 'StepStone closes fifth flagship fund' }
+    expect(findPriorStory(alt, [five])).toBeNull()
+  })
+})

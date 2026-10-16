@@ -26,6 +26,9 @@ import {
   titleJaccard,
   fundSizesMatch,
   titlesShareSignificantNumber,
+  headlinesShareFigure,
+  headlinesShareFigureLoose,
+  fundOrdinal,
   sameMove,
 } from '@/lib/news/story-dedup'
 
@@ -254,6 +257,44 @@ export interface StoryLike {
   personName?: string | null
   personTitle?: string | null
   publishedDate?: string | null
+  /** The classifier's fund_number ("VI", "Fund VI") when the reports never spelled out a name. */
+  fundNumber?: string | null
+}
+
+/**
+ * Names that open with a place are not kin: "Texas County & District
+ * Retirement System" and "Texas Permanent School Fund" each committed $100m
+ * in the week of 2026-10-09, to different managers.
+ */
+const PLACE_LEAD = new Set([
+  'alabama', 'alaska', 'arizona', 'arkansas', 'california', 'colorado', 'connecticut', 'delaware', 'florida',
+  'georgia', 'hawaii', 'idaho', 'illinois', 'indiana', 'iowa', 'kansas', 'kentucky', 'louisiana', 'maine',
+  'maryland', 'massachusetts', 'michigan', 'minnesota', 'mississippi', 'missouri', 'montana', 'nebraska',
+  'nevada', 'hampshire', 'jersey', 'mexico', 'york', 'carolina', 'dakota', 'ohio', 'oklahoma', 'oregon',
+  'pennsylvania', 'rhode', 'tennessee', 'texas', 'utah', 'vermont', 'virginia', 'washington', 'wisconsin',
+  'wyoming', 'ontario', 'quebec', 'alberta', 'london', 'paris', 'tokyo', 'hong', 'boston', 'chicago',
+  'dallas', 'houston', 'miami', 'denver', 'seattle', 'toronto', 'sydney', 'melbourne', 'mumbai', 'delhi',
+  'shanghai', 'beijing', 'seoul', 'dubai', 'riyadh', 'qatar', 'kuwait', 'abu', 'germany', 'german', 'france',
+  'french', 'italy', 'italian', 'spain', 'spanish', 'dutch', 'swiss', 'swedish', 'norwegian', 'danish',
+  'finnish', 'irish', 'scottish', 'welsh', 'israel', 'brazil', 'mexican', 'chile', 'colombia', 'peru',
+  'indonesia', 'malaysia', 'thailand', 'vietnam', 'philippine', 'taiwan', 'ireland', 'scotland', 'wales',
+  'england', 'britain', 'nigeria', 'kenya', 'egypt', 'turkey', 'greece', 'poland', 'austria', 'belgium',
+  'portugal', 'luxembourg', 'netherlands', 'norway', 'sweden', 'denmark', 'finland', 'switzerland',
+  'texas', 'federal', 'public', 'county', 'municipal', 'employees', 'teachers', 'police', 'school', 'university',
+])
+
+/**
+ * A firm and its arm, named differently: "Bajaj Alts" and "Bajaj Finserv"
+ * (2026-10-12, one ₹950 crore first close, two rows in the next edition),
+ * "KKR" and "KKR Credit Advisors". The two keys open with the same distinctive
+ * word, and that word is not a place or a public body's. Never enough on its
+ * own — the caller pairs it with the same figure.
+ */
+export function relatedFirms(a: string, b: string): boolean {
+  if (!a || !b || a === b || keysMatch(a, b)) return false
+  const la = a.split(' ')[0]
+  const lb = b.split(' ')[0]
+  return la === lb && la.length >= 4 && !WEAK_PREFIX.has(la) && !PLACE_LEAD.has(la)
 }
 
 const stem = (s: string) => s.replace(/\b(\w{4,})s\b/g, '$1')
@@ -449,8 +490,11 @@ export function sameStoryLoose(a: StoryLike, b: StoryLike, opts: { crossEdition?
 
     // A first close and a final close, or a $400M and a $900M close, are two
     // events however much else matches — unless the two reports carry the
-    // very same figure, in which case one of them mislabelled the stage.
-    const sameFigure = bothSized && fundSizesMatch(a.fundSizeUsdMillions, b.fundSizeUsdMillions, 0.02)
+    // very same figure, in which case one of them mislabelled the stage. The
+    // figure is read from the extracted sizes or from the headlines as money
+    // ("€1bn" / "1 Billion Euro": Hg, 2026-10-14, stored at $1,100M and at
+    // the $1,925M target).
+    const sameFigure = (bothSized && fundSizesMatch(a.fundSizeUsdMillions, b.fundSizeUsdMillions, 0.02)) || headlinesShareFigure(a.title, b.title)
     if ((!closeCompatible || !sizeCompatible) && !sameFigure) return false
 
     // The identical vehicle, whoever was extracted as the manager.
@@ -472,10 +516,15 @@ export function sameStoryLoose(a: StoryLike, b: StoryLike, opts: { crossEdition?
       // and PSIC", 09-22; "Hamilton Lane surpasses $430 million for debut
       // GP-led fund", 09-24), and that was a 0.21 overlap.
       const firmKeys = [firmA, firmB]
+      // The same fund in the manager's series ("sixth flagship" / "StepStone
+      // PE Secondaries Fund VI") is one raise, across days too (StepStone,
+      // 2026-10-13 and 10-14).
+      const ordA = fundOrdinal(a)
+      const ordinalTie = ordA !== null && ordA === fundOrdinal(b)
       if (
-        stage || fundOverlap || bothSized ||
+        stage || fundOverlap || bothSized || ordinalTie ||
         contentJaccard(withoutNames(a.title, firmKeys), withoutNames(b.title, firmKeys)) >= 0.2 ||
-        titlesShareSignificantNumber(a.title, b.title)
+        titlesShareSignificantNumber(a.title, b.title) || headlinesShareFigureLoose(a.title, b.title)
       ) return true
       // On one day the tie can be looser: the same kind of event, a launch
       // beside a launch ("NVM Ventures, a new multi-fund venture capital
@@ -502,6 +551,9 @@ export function sameStoryLoose(a: StoryLike, b: StoryLike, opts: { crossEdition?
     // Different extracted firms, same raise: an all-but-identical size plus a
     // party in common, or two parties in common at a compatible stage.
     if (sameFigure && shared >= 1) return true
+    // The same figure at a firm and its arm ("Bajaj Alts" / "Bajaj Finserv",
+    // one ₹950 crore first close): the names relate and the sum is the same.
+    if (sameFigure && closeCompatible && relatedFirms(firmA, firmB)) return true
     // The same number under a near-identical headline, whoever was extracted
     // as the firm: "NYC pension chief proposes $5bn private markets climate
     // investment expansion" / "NYC comptroller proposes $5bn private markets

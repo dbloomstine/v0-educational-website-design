@@ -450,6 +450,8 @@ export interface NewsletterArticle {
   personName: string | null
   personTitle: string | null
   closeType: string | null
+  /** The classifier's fund_number ("VI", "Fund VI"), for story identity when no fund is named. */
+  fundNumber?: string | null
   /**
    * Other firms involved in the story (co-managers, acquirer/target,
    * JV partners) from entity extraction — high-confidence firm entities
@@ -762,6 +764,7 @@ export function rowToArticle(row: any): NewsletterArticle {
     personName,
     personTitle: (extractedData?.person_title as string) ?? null,
     closeType: (extractedData?.close_type as string) ?? null,
+    fundNumber: typeof extractedData?.fund_number === 'string' && extractedData.fund_number.trim() ? (extractedData.fund_number as string) : null,
     coFirms,
     alsoCoveredBy: [],
     headlineEntities,
