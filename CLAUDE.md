@@ -834,7 +834,7 @@ The same evening Danny asked whether the event was in the list, and it was not: 
 
 ## Outreach v2 (since 2026-10-14)
 
-FundOpsHQ's own outreach, from "Danny Bloomstine <danny@fundopshq.com>" through Resend: `lib/outreach-v2/`. Not the dormant
+FundOpsHQ's own outreach, from "Danny Bloomstine <danny@mail.fundopshq.com>" through Resend: `lib/outreach-v2/`. Not the dormant
 Gmail pipeline in `lib/outreach/` (`OUTREACH_ENABLED=false`, never turn it on from here). Two programs: **sponsor pitches**
 (a hand-built list in a JSON file, each with a link to `/sponsor?firm=…&site=…&logo=…&line=…#book`, which opens the ad builder
 with their ad drawn; one follow-up after five business days) and **news notes** (up to ten a day to the marketing / comms / IR
@@ -847,6 +847,19 @@ contact at US firms in that morning's edition; Apollo, at most ten credits a day
   HTML plus the same email as text (`lib/outreach-v2/compose.ts`). Resend's open/click tracking is on for the whole domain
   (the newsletter's figures need it) and cannot be switched off per email, so the HTML part is tracked like the newsletter.
   A pitch's hook clause appears only when dated within 60 days; the mock-up link is `/sponsor/m/<8 hex>` → the builder at `#ad-preview`.
+- **Sending domain (2026-10-16):** outreach sends from `mail.fundopshq.com` (`SENDING_DOMAIN` in `lib/outreach-v2/config.ts`),
+  its own Resend domain with its own DKIM/SPF records in Vercel DNS (`resend._domainkey.mail`, `send.mail` MX + TXT,
+  `rsend.mail` CNAME), so a complaint about a pitch never touches the daily email's reputation on `fundopshq.com`. The apex
+  MX (ImprovMX), `send`, `reply`, SPF and DMARC records are untouched. A follow-up threads under its pitch by In-Reply-To
+  whatever From it carries; Reply-To stays `reply.fundopshq.com`.
+- **Engagement events (2026-10-16):** a second Resend webhook (`email.delivered`/`opened`/`clicked`, secret
+  `NEWSLETTER_RESEND_WEBHOOK_SECRET`) posts to `/api/newsletter/events`: outreach mail's events land in `outreach_v2_events`
+  (first open, first click per message), the daily email's in `newsletter_events` for the human click count
+  (`lib/newsletter/engagement-events.ts`). The bounce/complaint/reply webhook is unchanged.
+- **News-note contacts (2026-10-16):** a contact's company domain must agree with the firm's known domain
+  (`lib/outreach-v2/firm-sites.json`, copied from the social desk's list; or a story source on the firm's own domain), and a
+  firm of four letters or fewer is never matched on its name alone (the EQT draft went to eqt.co, a record label). Notes are
+  only about a close, launch, raise or hire; a preview older than today is retired at the next run.
 - **Replies** go to `danny@reply.fundopshq.com` (Resend receiving on the subdomain; MX + DKIM added 2026-10-14; the apex MX is
   ImprovMX and untouched). Stored in `outreach_v2_replies` (untrusted: store and forward only), linked by In-Reply-To or sender,
   copy forwarded to Danny's Gmail. `handled_at` is for the task that answers routine replies.

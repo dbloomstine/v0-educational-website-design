@@ -20,7 +20,16 @@
  */
 
 export const SENDER_NAME = 'Danny Bloomstine'
-export const SENDER_EMAIL = 'danny@fundopshq.com'
+/**
+ * Outreach goes out from its own subdomain (2026-10-16), so its reputation is
+ * its own: the daily email sends from fundopshq.com, and a complaint about a
+ * pitch must not touch it. mail.fundopshq.com is verified at Resend with its
+ * own DKIM and SPF records in Vercel DNS (the apex MX, send, reply, SPF and
+ * DMARC records are untouched). Replies still go to reply.fundopshq.com, so a
+ * follow-up in a thread started before the move threads and answers the same.
+ */
+export const SENDING_DOMAIN = 'mail.fundopshq.com'
+export const SENDER_EMAIL = `danny@${SENDING_DOMAIN}`
 export const FROM = `${SENDER_NAME} <${SENDER_EMAIL}>`
 export const SIGNATURE = ['Danny Bloomstine', 'Founder, FundOpsHQ']
 

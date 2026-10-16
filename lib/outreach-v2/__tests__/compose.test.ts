@@ -37,7 +37,7 @@ describe('the Resend payload', () => {
     const p = buildPayload(row)
     expect(p.html).toBe(r.html)
     expect(p.text).toBe(r.text)
-    expect(p.from).toBe('Danny Bloomstine <danny@fundopshq.com>')
+    expect(p.from).toBe('Danny Bloomstine <danny@mail.fundopshq.com>')
     expect(p.reply_to).toBe('Danny Bloomstine <danny@reply.fundopshq.com>')
     expect(p.headers['List-Unsubscribe-Post']).toBe('List-Unsubscribe=One-Click')
     // Resend's mail server sets the Message-ID; we read it back after sending.
