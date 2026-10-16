@@ -34,6 +34,13 @@ import { retypeHiddenDeal } from './deal-retype';
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>;
 
+/** `extracted_data.google_url` as stored at ingest, else null. */
+function googleUrlOf(article: { extracted_data?: unknown }): string | null {
+  const ed = article.extracted_data
+  const v = ed && typeof ed === 'object' ? (ed as Record<string, unknown>).google_url : null
+  return typeof v === 'string' && v ? v : null
+}
+
 // ─── Types ──────────────────────────────────────────────────────────────────
 
 export interface ClassificationResult {
@@ -75,6 +82,8 @@ interface ArticleForClassification {
   description: string | null;
   full_text: string | null;
   source_name: string | null;
+  /** As stored; only `google_url` (from ingest) is read here. */
+  extracted_data?: unknown;
 }
 
 interface ClassificationOutput {
@@ -255,7 +264,7 @@ export async function classifyPendingArticles(
   // Fetch pending articles
   const { data: pending, error: fetchError } = await supabase
     .from('news_items')
-    .select('id, title, description, full_text, source_name')
+    .select('id, title, description, full_text, source_name, extracted_data')
     .eq('classification_status', 'pending')
     .order('created_at', { ascending: true })
     .limit(MAX_ARTICLES_PER_RUN);
@@ -350,6 +359,9 @@ export async function classifyPendingArticles(
               city: classification.city,
               fund_number: classification.fund_number,
               classification_note: classification.classification_note ?? null,
+              // The Google News link the row arrived by, kept from ingest
+              // (google-news-url.ts); the classifier rewrites the whole object.
+              ...(googleUrlOf(article) ? { google_url: googleUrlOf(article) } : {}),
             },
           })
           .eq('id', article.id);
