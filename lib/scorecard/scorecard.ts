@@ -11,7 +11,15 @@
 import { OWNER_EMAIL, esc, type Mail } from '@/lib/sponsor/mail'
 import { emailWeek, type EditionRow, type EmailWeek } from './engagement'
 
-export interface SubscriberRow { status: string; created_at: string; unsubscribed_at: string | null; signup_source: string | null; signup_form: string | null }
+export interface SubscriberRow { status: string; created_at: string; unsubscribed_at: string | null; signup_source: string | null; signup_form: string | null; /** utm_campaign at signup: which post or link brought them (2026-10-16). */ signup_campaign?: string | null }
+/** An outreach v2 message, for the week's outreach figures (2026-10-16). */
+export interface OutreachMessageRow { id: string; program: string; kind: string; status: string; sent_at: string | null; replied_at: string | null }
+/** A Resend event on an outreach message (outreach_v2_events): email.delivered, email.opened, email.clicked, email.bounced, email.complained. */
+export interface OutreachEventRow { message_id: string | null; type: string }
+
+export interface OutreachWeek { sent: number; pitches: number; notes: number; followups: number; delivered: number; opened: number; clicked: number; replied: number; bounced: number; complained: number }
+/** This week's unsubscribes against the average of the four weeks before (2026-10-16): a spike is more than twice the average, and at least three. */
+export interface UnsubSpike { left: number; averageBefore: number; flagged: boolean }
 export interface PostRow { id: string; post_date: string; slug: string; format: string; channel: string; status: string; permalink: string | null; caption: string | null }
 export interface MetricRow { post_id: string; captured_at: string; metrics: Record<string, number | null> | null }
 
@@ -29,7 +37,11 @@ const actsOf = (m: MetricRow['metrics']) => (Number(m?.reactions ?? 0) || 0) + (
 
 export interface Scorecard {
   from: string; to: string
-  list: { confirmed: number; joined: number; joinedBefore: number; left: number; sources: [string, number][]; forms: [string, number][] }
+  list: { confirmed: number; joined: number; joinedBefore: number; left: number; sources: [string, number][]; forms: [string, number][]; /** Which post or link brought them (utm_campaign), the week's joiners only. */ campaigns: [string, number][]; unsubSpike: UnsubSpike }
+  /** Requests on the sponsor page in the week. */
+  sponsorRequests: number
+  /** Outreach v2 sends in the week and what happened to them, against the week before (null when nothing went either week). */
+  outreach: { week: OutreachWeek; before: OutreachWeek } | null
   networks: { channel: string; name: string; posts: number; views: number; typical: number; acts: number; postsBefore: number; viewsBefore: number; typicalBefore: number }[]
   formats: { name: string; channel: string; posts: number; typical: number }[]
   best: { title: string; channel: string; views: number; link: string | null }[]
@@ -46,13 +58,38 @@ export interface Scorecard {
  * The week that ended at `now` (seven days), beside the week before it. A post counts in the week it went out; its
  * numbers are the latest reading Buffer has given. A post still waiting, a test's, a skipped or failed one: not counted.
  */
-export function scorecard({ subscribers, posts, metrics, editions = [], sponsorLooks, now }: { subscribers: SubscriberRow[]; posts: PostRow[]; metrics: MetricRow[]; editions?: Pick<EditionRow, 'edition_date' | 'status' | 'engagement'>[]; sponsorLooks: number; now: number }): Scorecard {
+export function outreachWeek(messages: OutreachMessageRow[], events: OutreachEventRow[], start: number, end: number): OutreachWeek {
+  const sent = messages.filter((m) => m.sent_at && Date.parse(m.sent_at) >= start && Date.parse(m.sent_at) < end && ['sent', 'sending'].includes(m.status))
+  const ids = new Set(sent.map((m) => m.id))
+  const withEvent = (type: string) => new Set(events.filter((e) => e.message_id && ids.has(e.message_id) && e.type === type).map((e) => e.message_id)).size
+  return {
+    sent: sent.length,
+    pitches: sent.filter((m) => m.program === 'sponsor_pitch' && m.kind === 'initial').length,
+    notes: sent.filter((m) => m.program === 'news_note').length,
+    followups: sent.filter((m) => m.kind !== 'initial').length,
+    delivered: withEvent('email.delivered'), opened: withEvent('email.opened'), clicked: withEvent('email.clicked'),
+    replied: sent.filter((m) => m.replied_at).length,
+    bounced: withEvent('email.bounced'), complained: withEvent('email.complained'),
+  }
+}
+
+/** Unsubscribes in the week against the four weeks before it. */
+export function unsubSpike(subscribers: Pick<SubscriberRow, 'unsubscribed_at' | 'signup_form'>[], now: number): UnsubSpike {
+  const left = (a: number, b: number) => subscribers.filter((s) => s.signup_form !== 'test' && s.unsubscribed_at && Date.parse(s.unsubscribed_at) >= a && Date.parse(s.unsubscribed_at) < b).length
+  const week = left(now - 7 * DAY, now)
+  const before = [1, 2, 3, 4].map((w) => left(now - (w + 1) * 7 * DAY, now - w * 7 * DAY))
+  const averageBefore = Math.round((before.reduce((n, x) => n + x, 0) / 4) * 10) / 10
+  return { left: week, averageBefore, flagged: week >= 3 && week > 2 * averageBefore }
+}
+
+export function scorecard({ subscribers, posts, metrics, editions = [], sponsorLooks, sponsorRequests = 0, outreachMessages = [], outreachEvents = [], now }: { subscribers: SubscriberRow[]; posts: PostRow[]; metrics: MetricRow[]; editions?: Pick<EditionRow, 'edition_date' | 'status' | 'engagement'>[]; sponsorLooks: number; sponsorRequests?: number; outreachMessages?: OutreachMessageRow[]; outreachEvents?: OutreachEventRow[]; now: number }): Scorecard {
   const start = now - 7 * DAY, before = now - 14 * DAY
   const within = (iso: string | null, a: number, b: number) => { const t = iso ? Date.parse(iso) : NaN; return t >= a && t < b }
   const real = subscribers.filter((s) => s.signup_form !== 'test')
   const joined = real.filter((s) => within(s.created_at, start, now))
   const source = (s: SubscriberRow) => (s.signup_source ?? '').trim().toLowerCase() || 'not recorded'
   const form = (s: SubscriberRow) => ({ popup: 'the signup box', hero: 'the homepage field', feed: 'the field in the feed', widget: 'the side panel', rail: 'the rail panel' } as Record<string, string>)[s.signup_form ?? ''] ?? 'not recorded'
+  const campaign = (s: SubscriberRow) => (s.signup_campaign ?? '').trim().toLowerCase() || 'not recorded'
 
   // The latest reading for each post.
   const latest = new Map<string, MetricRow>()
@@ -74,7 +111,14 @@ export function scorecard({ subscribers, posts, metrics, editions = [], sponsorL
       joined: joined.length, joinedBefore: real.filter((s) => within(s.created_at, before, start)).length,
       left: real.filter((s) => within(s.unsubscribed_at, start, now)).length,
       sources: count(joined, source), forms: count(joined, form),
+      campaigns: count(joined, campaign),
+      unsubSpike: unsubSpike(real, now),
     },
+    sponsorRequests,
+    outreach: (() => {
+      const week = outreachWeek(outreachMessages, outreachEvents, start, now), b = outreachWeek(outreachMessages, outreachEvents, before, start)
+      return week.sent || b.sent ? { week, before: b } : null
+    })(),
     networks: channels.map((channel) => {
       const a = thisWeek.filter((p) => p.channel === channel), b = lastWeek.filter((p) => p.channel === channel)
       return { channel, name: NETWORKS[channel] ?? channel, posts: a.length, views: sum(a), typical: median(a.map(views)), acts: a.reduce((n, p) => n + actsOf(latest.get(p.id)?.metrics ?? null), 0), postsBefore: b.length, viewsBefore: sum(b), typicalBefore: median(b.map(views)) }
@@ -115,6 +159,17 @@ function emailLines(e: EmailWeek): string[] {
   return out
 }
 
+/** Outreach v2 (sponsor pitches and news notes), as lines of the Monday letter. */
+function outreachLines(o: Scorecard['outreach']): string[] {
+  if (!o) return []
+  const w = o.week, b = o.before
+  const what = [w.pitches ? `${n(w.pitches)} sponsor pitch${w.pitches === 1 ? '' : 'es'}` : '', w.followups ? `${n(w.followups)} follow-up${w.followups === 1 ? '' : 's'}` : '', w.notes ? `${n(w.notes)} news note${w.notes === 1 ? '' : 's'}` : ''].filter(Boolean).join(', ')
+  return [
+    h('Outreach'),
+    line(w.sent ? `<b>${n(w.sent)}</b> sent${what ? ` (${what})` : ''}${change(w.sent, b.sent)}: ${n(w.delivered)} delivered, <b>${n(w.opened)}</b> opened, <b>${n(w.clicked)}</b> clicked, <b>${n(w.replied)}</b> replied${w.bounced ? `, ${n(w.bounced)} bounced` : ''}${w.complained ? `, <b style="color:#9C2F1A;">${n(w.complained)} marked as spam</b>` : ''}.` : `Nothing went out this week${b.sent ? ` <span style="color:${MUTED};">(${n(b.sent)} the week before: ${n(b.opened)} opened, ${n(b.clicked)} clicked, ${n(b.replied)} replied)</span>` : ''}.`),
+  ]
+}
+
 /** The scorecard as the Monday email. */
 export function scorecardMail(s: Scorecard): Mail {
   const body = [
@@ -122,6 +177,8 @@ export function scorecardMail(s: Scorecard): Mail {
     line(`<b>${n(s.list.confirmed)}</b> readers. <b>${n(s.list.joined)}</b> joined this week${change(s.list.joined, s.list.joinedBefore)}${s.list.left ? `; ${n(s.list.left)} left` : ''}.`),
     s.list.joined ? line(`Where they came from: ${list(s.list.sources)}.`) : '',
     s.list.joined ? line(`Where they signed up: ${list(s.list.forms)}.`) : '',
+    s.list.joined && s.list.campaigns.some(([k]) => k !== 'not recorded') ? line(`Which post or link (utm_campaign): ${list(s.list.campaigns)}.`) : '',
+    s.list.unsubSpike.flagged ? line(`<b style="color:#9C2F1A;">Unsubscribes are up:</b> ${n(s.list.unsubSpike.left)} this week against ${s.list.unsubSpike.averageBefore} a week on average over the four before. Look at what changed in the editions.`) : '',
     ...emailLines(s.email),
     // ── SITE TRAFFIC goes here, between the email and the posts, once it is built (see the Scorecard type). ──
     h('The posts'),
@@ -132,7 +189,9 @@ export function scorecardMail(s: Scorecard): Mail {
     ...s.best.map((b) => line(`${n(b.views)} views on ${esc(b.channel)}: ${b.link ? `<a href="${esc(b.link)}" style="color:${INK};">${esc(b.title)}</a>` : esc(b.title)}`)),
     h('Sponsors'),
     line(s.sponsorLooks ? `${n(s.sponsorLooks)} look${s.sponsorLooks === 1 ? '' : 's'} at the sponsor page from readers’ own copies of the email.` : 'No reader opened the sponsor page from the email this week.'),
-    `<p style="margin:18px 0 0;font-family:${SANS};font-size:12px;line-height:1.5;color:${MUTED};">A post’s numbers are the latest the scheduler has read; the last day or two are still rising. Followers are not here: neither network gives them to the scheduler. An email click is a reader whose last event at Resend was a click, counted up to three days after the send (“so far” means the count is younger than that); a reader who clicked and opened it again later can show as an open, so the clicks are a floor. Visits to the site from each network are in Vercel’s analytics (the LinkedIn links say where a reader came from).</p>`,
+    line(s.sponsorRequests ? `<b>${n(s.sponsorRequests)}</b> sponsor request${s.sponsorRequests === 1 ? '' : 's'} on the sponsor page this week.` : 'No sponsor request this week.'),
+    ...outreachLines(s.outreach),
+    `<p style="margin:18px 0 0;font-family:${SANS};font-size:12px;line-height:1.5;color:${MUTED};">A post’s numbers are the latest the scheduler has read; the last day or two are still rising. Followers are not here: neither network gives them to the scheduler, and nothing stores them. Outreach opens and clicks are Resend’s webhook events per message, first of each. An email click is a reader whose last event at Resend was a click, counted up to three days after the send (“so far” means the count is younger than that); a reader who clicked and opened it again later can show as an open, so the clicks are a floor. Visits to the site from each network are in Vercel’s analytics (the LinkedIn links say where a reader came from).</p>`,
   ].filter(Boolean).join('\n')
   const html = `<!doctype html><html lang="en"><body style="margin:0;padding:0;background:${CREAM};">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${CREAM};"><tr><td align="center" style="padding:28px 14px;">
