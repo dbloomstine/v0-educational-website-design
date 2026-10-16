@@ -32,6 +32,8 @@ import { entityKey, keysMatch } from './story-links'
 import { pullFollowed } from './personalize'
 import { followLineHtml } from './follow-line'
 import { pickEventsForEmail } from './email-events'
+import { EMAIL_FOLLOW_ROW } from './interests'
+import { interestLink } from './interest-link'
 import { cleanSummary } from '@/lib/news/summary-clean'
 import { titleJaccard } from '@/lib/news/story-dedup'
 
@@ -78,6 +80,13 @@ export interface TemplateParams {
    * The send passes a sentinel and swaps in each subscriber's id.
    */
   readerTag?: string
+  /**
+   * This reader's signed token for the one-click "follow" links
+   * (lib/newsletter/interest-link.ts). With it, and no choices on file, the
+   * foot carries a row of links, one per interest. The send passes a sentinel
+   * and swaps in each reader's own.
+   */
+  interestToken?: string
   /**
    * The subject-line style this edition went out with (send-daily.ts, the
    * 2026-10 test). Under style B the subject is the lead headline, so the
@@ -909,7 +918,9 @@ export function renderNewsletterEmail(params: TemplateParams): string {
     preferencesUrl,
     readerTag,
     subjectStyle,
+    interestToken,
   } = params
+  const followRow = renderFollowRow(interestToken, interests)
   // The edition in reading order: the top stories, the reader's own section
   // if they have one, then the sections without either.
   const arranged = arrangeEdition(groups, totalArticles)
@@ -1029,6 +1040,9 @@ export function renderNewsletterEmail(params: TemplateParams): string {
             </td>
           </tr>
 
+          <!-- ─── One click to say what you follow ─── -->
+          ${followRow}
+
           <!-- ─── Monday: last week's largest closes ─── -->
           ${recapSection}
 
@@ -1127,6 +1141,28 @@ export function renderNewsletterEmail(params: TemplateParams): string {
 
   const out = collapseTemplateWhitespace(html)
   return readerTag ? tagSponsorLinks(out, readerTag) : out
+}
+
+/**
+ * One line, one link per interest, for a reader who has never said what they
+ * follow (2026-10-16: 146 of 154 had not, so "What you follow" reached almost
+ * nobody). A tap opens a small page that asks once and saves; from the next
+ * edition those stories lead. A reader with choices on file does not see it.
+ */
+export function renderFollowRow(token: string | undefined, interests: string[] | undefined): string {
+  if (!token || (interests && interests.length > 0)) return ''
+  const links = EMAIL_FOLLOW_ROW.map(
+    (f) => `<a href="${escapeHtml(interestLink(token, f.id))}" class="fops-mono fops-xs" style="color:${INK};font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:underline;white-space:nowrap;">${escapeHtml(f.label)}</a>`,
+  )
+  return `
+          <tr>
+            <td class="fops-bg-cream fops-px" style="padding:0 16px 18px;background-color:${CREAM};text-align:center;">
+              <div style="border-top:1px solid ${HAIRLINE};padding-top:12px;">
+                <span class="fops-sans" style="font-size:13px;color:${INK_MUTED};">One click and it leads your edition. Follow:</span>
+                <div style="padding-top:6px;line-height:2;">${links.join(' <span class="fops-ink-muted" style="color:${INK_MUTED};">&middot;</span> ')}</div>
+              </div>
+            </td>
+          </tr>`
 }
 
 /** Every link to our own sponsor page gains `r=<tag>`: the house notice's two buttons and the footer's link. */

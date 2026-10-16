@@ -21,6 +21,7 @@ import { slateFor, sponsorForEdition } from '@/lib/sponsor/bookings'
 import { readerFirmDomains } from '@/lib/sponsor/reader-firms'
 import { lastWeeksCloses } from './recap'
 import { interestKey } from './interests'
+import { makeInterestToken } from './interest-link'
 
 // The events section is bounded by the DATE WINDOW, not by a count. A cap of
 // 24 silently truncated it to ~8 days once the board grew past ~24 events in
@@ -179,6 +180,8 @@ export async function sendDailyNewsletter(
   const PREFS_SENTINEL = '__FUNDOPS_PREFS_URL_SENTINEL__'
   // On the links to the sponsor page: each reader's own id, so the page can say which reader came to look.
   const READER_SENTINEL = '__FUNDOPS_READER_SENTINEL__'
+  // On the one-click "follow" links: each reader's own signed token (lib/newsletter/interest-link.ts).
+  const INTEREST_SENTINEL = '__FUNDOPS_INTEREST_SENTINEL__'
   const readerFirms = readerFirmDomains(subscribers.map((s) => String(s.email))).size
   // Each render is the HTML and its plain-text twin (lib/newsletter/email-text.ts,
   // 2026-10-14), built from the same parameters and the same sentinels.
@@ -194,6 +197,7 @@ export async function sendDailyNewsletter(
         unsubscribeUrl: UNSUB_SENTINEL,
         preferencesUrl: PREFS_SENTINEL,
         readerTag: READER_SENTINEL,
+        interestToken: INTEREST_SENTINEL,
         subscriberCount: subscribers.length,
         events: upcomingEvents,
         sponsorSlate: slateFor(sponsor),
@@ -213,11 +217,13 @@ export async function sendDailyNewsletter(
     const unsubscribeUrl = `https://fundopshq.com/api/newsletter/unsubscribe?token=${sub.unsubscribe_token}`
     const preferencesUrl = `https://fundopshq.com/preferences?token=${sub.unsubscribe_token}`
     const render = templateFor(sub.interests ?? [])
+    const interestToken = sub.id ? makeInterestToken(sub.id) ?? '' : ''
     const personal = (body: string) =>
       body
         .replaceAll(UNSUB_SENTINEL, unsubscribeUrl)
         .replaceAll(PREFS_SENTINEL, preferencesUrl)
         .replaceAll(READER_SENTINEL, sub.id ?? '')
+        .replaceAll(INTEREST_SENTINEL, interestToken)
     const html = personal(render.html)
     const text = personal(render.text)
 

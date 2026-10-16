@@ -8,7 +8,7 @@
  * or with every box ticked, gets the edition exactly as it always was.
  */
 import type { ArticleGroup, NewsletterArticle } from './query-articles'
-import { INTERESTS, interestCategories, sanitizeInterests } from './interests'
+import { ALL_INTERESTS, INTERESTS, interestCategories, interestSections, sanitizeInterests } from './interests'
 import { secondariesClass } from './secondaries'
 
 /** More than this and the reader's section stops being a short list; the rest stay where they were. */
@@ -36,16 +36,21 @@ export function pullFollowed(
   interests: string[] | undefined,
 ): { followed: ArticleGroup | null; sections: ArticleGroup[] } {
   const chosen = sanitizeInterests(interests ?? [])
-  // Every box ticked is the whole edition: there is nothing to single out.
-  if (chosen.length === 0 || chosen.length === INTERESTS.length) return { followed: null, sections }
+  // Every box ticked is the whole edition: there is nothing to single out. The
+  // forms offer the asset classes only, so all of those with no section is
+  // "everything" too (the section choices come from the email's follow row).
+  const wholeSections = interestSections(chosen)
+  const everyAssetClass = INTERESTS.every((i) => chosen.includes(i.id))
+  if (chosen.length === 0 || chosen.length === ALL_INTERESTS.length || (everyAssetClass && wholeSections.size === 0)) return { followed: null, sections }
 
   const categories = interestCategories(chosen)
+  // A section followed whole (LPs, people moves, regulation): its stories come too.
   const taken = new Set<string>()
   const articles: NewsletterArticle[] = []
   for (const group of sections) {
     for (const article of group.articles) {
       if (articles.length >= FOLLOWED_MAX) break
-      if (followsStory(article, categories)) {
+      if (wholeSections.has(group.category) || followsStory(article, categories)) {
         articles.push(article)
         taken.add(article.id)
       }

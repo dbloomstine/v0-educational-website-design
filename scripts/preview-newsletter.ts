@@ -164,6 +164,8 @@ async function main() {
     events: upcomingEvents,
     interests: process.env.FOLLOWS ? sanitizeInterests(process.env.FOLLOWS.split(',')) : undefined,
     preferencesUrl: 'https://fundopshq.com/preferences?token=PREVIEW',
+    // The one-click follow row, as a reader with no choices sees it (the links do not work from a preview).
+    interestToken: 'PREVIEW.token',
   }
   let html = renderNewsletterEmail(renderParams)
 

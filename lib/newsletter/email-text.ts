@@ -15,6 +15,8 @@
  */
 
 import type { ArticleGroup } from './query-articles'
+import { EMAIL_FOLLOW_ROW } from './interests'
+import { interestLink } from './interest-link'
 import { formatEventDates, formatEventLocation, formatEventDayHeading, compactTimeNote, isVerifiedFree } from '@/lib/events/constants'
 import { cleanEntityName } from '@/lib/news/constants'
 import type { IndustryEvent } from '@/lib/events/types'
@@ -140,6 +142,7 @@ export function renderNewsletterText(params: TemplateParams): string {
     interests,
     preferencesUrl,
     readerTag,
+    interestToken,
   } = params
   const arranged = arrangeEdition(groups, totalArticles)
   const top = arranged.top
@@ -162,6 +165,10 @@ export function renderNewsletterText(params: TemplateParams): string {
   for (const group of sections) blocks.push(sectionText(group))
 
   blocks.push(`Read the full feed: https://fundopshq.com/news${FROM_EMAIL}`)
+
+  if (interestToken && !(interests && interests.length > 0)) {
+    blocks.push(['One click and it leads your edition. Follow:', ...EMAIL_FOLLOW_ROW.map((f) => `${f.label}: ${interestLink(interestToken, f.id)}`)].join('\n'))
+  }
 
   const recapBlock = recapText(recap)
   if (recapBlock) blocks.push(recapBlock)
