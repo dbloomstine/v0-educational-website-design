@@ -163,7 +163,7 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
         // file named, it looks for the logo the homepage shows).
         fetch(`/api/sponsor/logo?${new URLSearchParams(pre.logo ? { site: pre.site, logo: pre.logo } : { site: pre.site })}`)
           .then((res) => (res.ok ? res.blob() : null))
-          .then((blob) => { if (blob && blob.type.startsWith('image/')) onLogo(new File([blob], 'logo', { type: blob.type }), true) })
+          .then((blob) => { if (blob && blob.type.startsWith('image/')) onLogo(new File([blob], 'logo', { type: blob.type }), true, pre.firm) })
           .catch(() => { /* no logo: the ad shows the firm's name */ })
       }
       return
@@ -263,7 +263,14 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
    * Whatever picture file the sponsor has (PNG, JPEG, SVG, WebP), it is redrawn here as a PNG of a sensible size:
    * the one kind every mail app shows. So a logo straight from a brand kit works, and what is sent is what was previewed.
    */
-  function onLogo(file: File | undefined, quiet = false) {
+  /**
+   * A mark that is near enough square reads as an icon, not a logo (73 Strings' header has only its mark, 2026-10-16).
+   * For a mock-up drawn from a website, such a mark is set beside the firm's name in type, as a lockup; a logo the
+   * sponsor uploads is drawn as given.
+   */
+  const LOCKUP_BELOW_ASPECT = 1.5
+
+  function onLogo(file: File | undefined, quiet = false, lockupName?: string) {
     // A logo fetched for a mock-up that will not do is simply left out (the ad shows the name): no error to a visitor who chose nothing.
     const fail = (message: string) => { if (!quiet) setErrors((e) => ({ ...e, logo: message })) }
     fail('')
@@ -281,6 +288,8 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
         let w = vector ? LOGO_OUT.maxWidth : Math.min(w0, LOGO_OUT.maxWidth)
         let h = Math.round((w * h0) / w0)
         if (h > LOGO_OUT.maxHeight) { h = LOGO_OUT.maxHeight; w = Math.round((h * w0) / h0) }
+        const lockup = lockupName && w0 / Math.max(1, h0) < LOCKUP_BELOW_ASPECT ? lockupName.trim() : ''
+        if (lockup) { h = Math.min(h, Math.round(LOGO_OUT.maxHeight * 0.8)); w = Math.round((h * w0) / h0) }
         let data = ''
         // A mark drawn on a clear ground keeps its contrast whatever it sits on: a light one goes on a dark plate, a
         // dark one on a light plate, baked into the picture so the site and the email both show it (logoPlate).
@@ -290,7 +299,13 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
           const canvas = document.createElement('canvas')
           const padY = plate ? Math.round(h * 0.28) : 0
           const padX = plate ? Math.round(h * 0.4) : 0
-          canvas.width = w + 2 * padX
+          // The name in type beside the mark: Georgia bold at just over half the mark's height, a gap of a third.
+          const ctx0 = canvas.getContext('2d')
+          const font = `700 ${Math.round(h * 0.58)}px Georgia, 'Times New Roman', serif`
+          let textW = 0
+          if (lockup && ctx0) { ctx0.font = font; textW = Math.ceil(ctx0.measureText(lockup).width) }
+          const gap = lockup ? Math.round(h * 0.33) : 0
+          canvas.width = w + gap + textW + 2 * padX
           canvas.height = h + 2 * padY
           const ctx = canvas.getContext('2d')
           if (!ctx) break
@@ -302,6 +317,12 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
             ctx.fill()
           }
           ctx.drawImage(img, padX, padY, w, h)
+          if (lockup) {
+            ctx.font = font
+            ctx.textBaseline = 'middle'
+            ctx.fillStyle = plate === 'dark' ? '#F8F5EC' : '#1E3A5F'
+            ctx.fillText(lockup, padX + w + gap, padY + h / 2 + Math.round(h * 0.03))
+          }
           data = canvas.toDataURL('image/png')
           if (data.length * 0.75 <= LOGO_RULES.maxBytes) { w = canvas.width; h = canvas.height; break }
           w = Math.round(w * 0.75)
@@ -460,7 +481,7 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
             </p>
           )}
           <Field label="Firm name" hint="As it should appear." error={errors.company} count={<Count n={company.length} max={LIMITS.company} />}>
-            <input value={company} onChange={(e) => setCompany(e.target.value)} maxLength={LIMITS.company} autoComplete="organization" className={inputClass} placeholder="Northgate Fund Services" />
+            <input value={company} onChange={(e) => setCompany(e.target.value)} maxLength={LIMITS.company} autoComplete="organization" className={inputClass} placeholder="Northgate Software" />
           </Field>
           <div>
             <span className={labelClass}>
@@ -492,7 +513,7 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
             <textarea value={blurb} onChange={(e) => setBlurb(e.target.value)} rows={4} maxLength={LIMITS.blurbChars} className={`${inputClass} resize-y font-news text-[16px] leading-[1.4]`} placeholder="What your firm does for the people who run private funds, and why they should look this morning." />
           </Field>
           <Field label="One line for the top of the site" hint="Optional. Beside your name above the stories; your copy is used if this is empty." error={errors.tagline} count={<Count n={tagline.length} max={LIMITS.tagline} />}>
-            <input value={tagline} onChange={(e) => setTagline(e.target.value)} maxLength={LIMITS.tagline} className={inputClass} placeholder="Fund administration for managers raising their first three funds." />
+            <input value={tagline} onChange={(e) => setTagline(e.target.value)} maxLength={LIMITS.tagline} className={inputClass} placeholder="Portfolio monitoring for GPs, from the data room to the LP report." />
           </Field>
           <div className="grid gap-3.5 sm:grid-cols-[minmax(0,1fr)_170px]">
             <Field label="Where your link goes" error={errors.ctaUrl}>
