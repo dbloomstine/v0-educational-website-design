@@ -105,8 +105,12 @@ function emailLines(e: EmailWeek): string[] {
     return out
   }
   const before = e.before.editions ? ` <span style="color:${MUTED};">(${n(e.before.perEdition)}, ${e.before.share}%, the week before)</span>` : ''
-  out.push(line(`<b>${n(e.perEdition)}</b> people clicked a link in an average edition, <b>${e.share}%</b> of those it went to${before}.`))
-  out.push(line(`Edition by edition: ${e.editions.map((x) => `${esc(weekday(x.date))} ${n(x.clicked)} of ${n(x.recipients)} (${x.share}%)${x.final ? '' : ' so far'}`).join(' · ')}.`))
+  out.push(line(`<b>${n(e.perEdition)}</b> people clicked a link in an average edition by Resend’s last event, <b>${e.share}%</b> of those it went to${before}.`))
+  if (e.humanEditions) {
+    const hb = e.before.humanEditions ? ` <span style="color:${MUTED};">(${n(e.before.humanPerEdition)} the week before)</span>` : ''
+    out.push(line(`<b>${n(e.humanPerEdition)}</b> of them were people, not link scanners, in an average edition (<b>${e.humanShare}%</b>; a click more than a minute after delivery, not in the same instant as an open; ${n(e.humanEditions)} of ${n(e.editions.length)} editions have the count)${hb}.`))
+  }
+  out.push(line(`Edition by edition: ${e.editions.map((x) => `${esc(weekday(x.date))} ${n(x.clicked)} of ${n(x.recipients)} (${x.share}%)${x.human != null ? `, ${n(x.human)} people` : ''}${x.final ? '' : ' so far'}`).join(' · ')}.`))
   if (e.unmeasured.length) out.push(line(`<span style="color:${MUTED};">Not counted yet: ${e.unmeasured.map((d) => esc(weekday(d))).join(', ')}.</span>`))
   return out
 }

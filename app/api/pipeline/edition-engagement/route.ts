@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { isAuthorizedPipelineRequest } from '@/lib/pipeline/auth'
 import { resendEventById, resendEvents } from '@/lib/newsletter/resend-events'
 import { LOOKBACK_MS, countEngagement, editionsToCount, type EditionRow } from '@/lib/scorecard/engagement'
+import type { EngagementEvent } from '@/lib/newsletter/engagement-events'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 120
@@ -47,9 +48,25 @@ export async function GET(req: Request) {
       if (e) events.set(id, e)
     }
 
+    // The webhook's events for these editions (newsletter_events, since 2026-10-16): the human click count.
+    const webhook = new Map<string, EngagementEvent[]>()
+    for (let i = 0; i < due.length; i += 5) {
+      const { data: rows, error: wErr } = await db
+        .from('newsletter_events')
+        .select('edition_id, resend_email_id, type, occurred_at')
+        .in('edition_id', due.slice(i, i + 5).map((e) => e.id))
+        .limit(20000)
+      if (wErr) throw new Error(`events: ${wErr.message}`)
+      for (const r of (rows ?? []) as (EngagementEvent & { edition_id: string })[]) {
+        const list = webhook.get(r.edition_id) ?? []
+        list.push(r)
+        webhook.set(r.edition_id, list)
+      }
+    }
+
     const counted = []
     for (const e of due) {
-      const engagement = countEngagement(e.resend_email_ids, events, e.sent_at as string, now)
+      const engagement = countEngagement(e.resend_email_ids, events, e.sent_at as string, now, webhook.get(e.id))
       counted.push({ edition_date: e.edition_date, ...engagement })
       if (dry) continue
       const { error: upErr } = await db.from('newsletter_editions').update({ engagement }).eq('id', e.id)

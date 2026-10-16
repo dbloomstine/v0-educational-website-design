@@ -10,10 +10,15 @@
  * until it is three days old, then left alone: its count is final. The scorecard only reads the stored counts.
  *
  * WHAT A CLICK IS. Resend gives one `last_event` per email. "clicked" is a click. A reader who clicked and later
- * opened the same email again may show as an open, so the counts are a floor, never an estimate pushed up.
+ * opened the same email again may show as an open, so the counts are a floor, never an estimate pushed up. A link
+ * scanner at a reader's firm counts as a click here too (the clicks sat at 40 to 48 a day whatever went out), which
+ * is why, since 2026-10-16, the webhook's events are counted beside it as `human_clicked`
+ * (lib/newsletter/engagement-events.ts): the figure to watch.
  *
  * Everything in this file is pure: the route fetches, this file counts.
  */
+
+import { countHumanClicks, type EngagementEvent } from '@/lib/newsletter/engagement-events'
 
 export const DAY_MS = 86_400_000
 /** An edition is counted until it is this old; after that its stored count is final. */
@@ -37,6 +42,18 @@ export interface EditionEngagement {
   measured_at: string
   /** True once the count was taken three days or more after the send. */
   final: boolean
+  /**
+   * From the webhook's events (lib/newsletter/engagement-events.ts), kept
+   * since 2026-10-16; absent for editions before it. `human_clicked` is the
+   * count a link scanner cannot inflate: a click more than a minute after
+   * delivery and not in the same instant as an open. `event_clicked` is
+   * every recipient with a click event; `event_opened` every one with an open.
+   */
+  human_clicked?: number
+  event_clicked?: number
+  event_opened?: number
+  /** Click events in all, scanners included. */
+  click_events?: number
 }
 
 export interface EditionRow {
@@ -52,8 +69,15 @@ const DELIVERED = new Set(['delivered', 'opened', 'clicked'])
 const OPENED = new Set(['opened', 'clicked'])
 
 /** One edition's counts, from its address → Resend id map and the last event Resend gave each id. */
-export function countEngagement(ids: Record<string, string> | null, events: Map<string, string>, sentAt: string, measuredAt: number): EditionEngagement {
+export function countEngagement(ids: Record<string, string> | null, events: Map<string, string>, sentAt: string, measuredAt: number, webhook?: EngagementEvent[]): EditionEngagement {
   const out: EditionEngagement = { recipients: 0, measured: 0, delivered: 0, opened: 0, clicked: 0, bounced: 0, complained: 0, measured_at: new Date(measuredAt).toISOString(), final: measuredAt - Date.parse(sentAt) >= FINAL_AFTER_MS }
+  if (webhook && webhook.length) {
+    const h = countHumanClicks(webhook, sentAt)
+    out.human_clicked = h.human
+    out.event_clicked = h.clickers
+    out.event_opened = h.openers
+    out.click_events = h.clicks
+  }
   for (const id of Object.values(ids ?? {})) {
     out.recipients++
     const e = events.get(id)
@@ -79,7 +103,7 @@ export function editionsToCount(editions: EditionRow[], now: number): EditionRow
 
 /* ───────── the scorecard's sums ───────── */
 
-export interface EditionClicks { date: string; recipients: number; clicked: number; share: number; final: boolean }
+export interface EditionClicks { date: string; recipients: number; clicked: number; share: number; final: boolean; /** The webhook's human count, when the edition has one. */ human: number | null }
 export interface EmailWeek {
   /** Editions in the week that have a count, oldest first. */
   editions: EditionClicks[]
@@ -89,7 +113,9 @@ export interface EmailWeek {
   clicked: number; recipients: number; share: number
   /** Clickers on an average counted edition. */
   perEdition: number
-  before: { editions: number; clicked: number; recipients: number; share: number; perEdition: number }
+  /** Human clickers (webhook) summed over the editions that have the count, and how many editions that is. */
+  human: number; humanEditions: number; humanPerEdition: number; humanShare: number
+  before: { editions: number; clicked: number; recipients: number; share: number; perEdition: number; human: number; humanEditions: number; humanPerEdition: number }
 }
 
 const pct = (a: number, b: number) => (b ? Math.round((a / b) * 1000) / 10 : 0)
@@ -106,14 +132,21 @@ export function emailWeek(editions: Pick<EditionRow, 'edition_date' | 'status' |
     const counted = rows.filter((e) => e.engagement)
     const clicked = counted.reduce((n, e) => n + (e.engagement as EditionEngagement).clicked, 0)
     const recipients = counted.reduce((n, e) => n + (e.engagement as EditionEngagement).recipients, 0)
-    return { editions: counted.length, clicked, recipients, share: pct(clicked, recipients), perEdition: counted.length ? Math.round(clicked / counted.length) : 0 }
+    const withHuman = counted.filter((e) => typeof (e.engagement as EditionEngagement).human_clicked === 'number')
+    const human = withHuman.reduce((n, e) => n + ((e.engagement as EditionEngagement).human_clicked as number), 0)
+    const humanRecipients = withHuman.reduce((n, e) => n + (e.engagement as EditionEngagement).recipients, 0)
+    return {
+      editions: counted.length, clicked, recipients, share: pct(clicked, recipients), perEdition: counted.length ? Math.round(clicked / counted.length) : 0,
+      human, humanEditions: withHuman.length, humanPerEdition: withHuman.length ? Math.round(human / withHuman.length) : 0, humanShare: pct(human, humanRecipients),
+    }
   }
   const week = inRange(from, to)
   const now = sum(week)
   return {
-    editions: week.filter((e) => e.engagement).map((e) => { const g = e.engagement as EditionEngagement; return { date: e.edition_date, recipients: g.recipients, clicked: g.clicked, share: pct(g.clicked, g.recipients), final: g.final } }),
+    editions: week.filter((e) => e.engagement).map((e) => { const g = e.engagement as EditionEngagement; return { date: e.edition_date, recipients: g.recipients, clicked: g.clicked, share: pct(g.clicked, g.recipients), final: g.final, human: typeof g.human_clicked === 'number' ? g.human_clicked : null } }),
     unmeasured: week.filter((e) => !e.engagement).map((e) => e.edition_date),
     clicked: now.clicked, recipients: now.recipients, share: now.share, perEdition: now.perEdition,
-    before: sum(inRange(shift(from, -7), shift(to, -7))),
+    human: now.human, humanEditions: now.humanEditions, humanPerEdition: now.humanPerEdition, humanShare: now.humanShare,
+    before: (() => { const b = sum(inRange(shift(from, -7), shift(to, -7))); return { editions: b.editions, clicked: b.clicked, recipients: b.recipients, share: b.share, perEdition: b.perEdition, human: b.human, humanEditions: b.humanEditions, humanPerEdition: b.humanPerEdition } })(),
   }
 }
