@@ -39,7 +39,7 @@ export function ShareBar({ url, title }: { url: string; title: string }) {
         <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
           <path d={LINKEDIN_PATH} />
         </svg>
-        Share
+        LinkedIn
       </a>
       <a
         href={`mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(`${title}\n\n${url}\n\nvia FundOpsHQ`)}`}
