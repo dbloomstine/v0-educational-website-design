@@ -92,8 +92,11 @@ export function withoutFirm(fund: string, firm: string): string {
   return f
 }
 
+/** A firm as people say it: no legal suffix ("Greenberg Traurig LLP" → "Greenberg Traurig", 2026-10-17). */
+export const plainFirm = (name: string) => name.trim().replace(/,?\s+(LLP|LLC|L\.?L\.?C\.?|L\.?P\.?|Inc\.?|Ltd\.?|Corp\.?|PLLC|P\.?C\.?)$/i, '').trim()
+
 /** A few words for what we covered, read after "We covered <Firm>'s …": "$200M Fund III close", "latest deal". */
-export function newsPhrase(s: Pick<Story, 'eventType' | 'kind' | 'fundName' | 'sizeUsdM' | 'closeType'>, firm?: string | null): string {
+export function newsPhrase(s: Pick<Story, 'eventType' | 'kind' | 'fundName' | 'sizeUsdM' | 'closeType'> & { headline?: string | null }, firm?: string | null): string {
   const size = s.sizeUsdM ? `${money(s.sizeUsdM)} ` : ''
   const fund = withoutFirm(s.fundName?.trim() ?? '', firm ?? '') || undefined
   switch (s.eventType) {
@@ -101,8 +104,12 @@ export function newsPhrase(s: Pick<Story, 'eventType' | 'kind' | 'fundName' | 's
       return `${size}${fund ?? 'fund'} ${s.closeType && /first|interim|second/i.test(s.closeType) ? `${s.closeType.toLowerCase()} close` : 'close'}`.replace(/\s+/g, ' ')
     case 'fund_launch':
       return `${size}${fund ?? 'new fund'} launch`
-    case 'capital_raise':
-      return size ? `${size}raise` : 'latest raise'
+    case 'capital_raise': {
+      // Only a raise when the headline says so (2026-10-17: MidOcean's "$225M small biz lending JV" was filed as a raise).
+      const h = s.headline ?? ''
+      if (/\b(joint venture|JV)\b/i.test(h)) return `new ${size}joint venture`.replace(/\s+/g, ' ')
+      return /\b(rais|clos|fund|secur)/i.test(h) || !h ? (size ? `${size}raise` : 'latest raise') : 'news'
+    }
     case 'acquisition':
       return 'latest deal'
     case 'executive_hire':
@@ -325,7 +332,7 @@ export async function runNewsNotes(db: DbClient, apollo: ApolloPort, now: Date =
     screen: async (email) => (await screenEmails(db, [email], { program: 'news_note', now })).get(email) ?? null,
     store: async (c, contact) => {
       const unsubToken = newToken()
-      const r = renderNewsNote({ firstName: contact.firstName, company: c.firm, unsubToken, news: newsPhrase(c.story, c.firm), storyUrl: c.url })
+      const r = renderNewsNote({ firstName: contact.firstName, company: plainFirm(c.firm), unsubToken, news: newsPhrase(c.story, c.firm), storyUrl: c.url })
       const { error } = await db.from('outreach_v2_messages').insert({
         program: 'news_note',
         kind: 'initial',

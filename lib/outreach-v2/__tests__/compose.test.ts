@@ -152,3 +152,15 @@ describe('news note', () => {
     expect(newsPhrase({ eventType: 'acquisition', kind: 'deals', fundName: null, sizeUsdM: null, closeType: null })).toBe('latest deal')
   })
 })
+
+describe('news note wording (2026-10-17, the first live batch)', () => {
+  it('calls a raise a raise only when the headline does, and a JV a joint venture', async () => {
+    const { newsPhrase, plainFirm } = await import('../news-notes')
+    expect(newsPhrase({ eventType: 'capital_raise', kind: 'fundraising', fundName: null, sizeUsdM: 225, closeType: null, headline: 'MidOcean enters $225m small biz lending JV' } as never)).toBe('new $225M joint venture')
+    expect(newsPhrase({ eventType: 'capital_raise', kind: 'fundraising', fundName: null, sizeUsdM: 50, closeType: null, headline: 'Acme raises $50m for growth' } as never)).toBe('$50M raise')
+    expect(newsPhrase({ eventType: 'capital_raise', kind: 'fundraising', fundName: null, sizeUsdM: null, closeType: null, headline: 'Acme partners with Beta' } as never)).toBe('news')
+    expect(plainFirm('Greenberg Traurig LLP')).toBe('Greenberg Traurig')
+    expect(plainFirm('Blue Owl Capital Inc.')).toBe('Blue Owl Capital')
+    expect(plainFirm('Blackstone')).toBe('Blackstone')
+  })
+})
