@@ -18,7 +18,10 @@ export async function GET(req: Request) {
   if (!isAuthorizedPipelineRequest(req)) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (envMode() !== 'live') return NextResponse.json({ ok: true, skipped: `mode ${envMode()}` })
   try {
-    const result = await dispatchOne(getSupabaseAdmin())
+    // `?anyTime=1` on an authorised manual call sends outside weekday hours (Danny, 2026-10-17: "send some today",
+    // a Saturday). The daily cap, the halt flag and every exclusion still apply.
+    const anyTime = new URL(req.url).searchParams.get('anyTime') === '1'
+    const result = await dispatchOne(getSupabaseAdmin(), new Date(), { ignoreHours: anyTime })
     return NextResponse.json(result, { status: result.ok ? 200 : 500 })
   } catch (err) {
     return NextResponse.json({ ok: false, error: err instanceof Error ? err.message : String(err) }, { status: 500 })
