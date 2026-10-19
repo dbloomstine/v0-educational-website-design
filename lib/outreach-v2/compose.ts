@@ -193,21 +193,24 @@ export interface NewsNoteInput extends Recipient {
   /** A few words for what we covered, e.g. "$200M Fund III close" (newsPhrase in news-notes.ts). */
   news: string
   storyUrl: string
+  /** Which edition carried it: "this morning's" (the default), or e.g. "Saturday's" for a weekend story on Monday. */
+  edition?: string
 }
 
 export const SUBSCRIBE_URL = `${SITE}/?utm_source=outreach&utm_medium=email&utm_campaign=news_note#subscribe`
 
-export function newsNoteSubject(company: string): string {
-  return `${company.trim()} in FundOps Daily today`
+export function newsNoteSubject(company: string, edition?: string): string {
+  // A weekend story sent on Monday is not "today".
+  return edition && edition !== "this morning's" ? `${company.trim()} in FundOps Daily` : `${company.trim()} in FundOps Daily today`
 }
 
 export function renderNewsNote(p: NewsNoteInput): Rendered {
   const c = p.company.trim()
   return render(
-    newsNoteSubject(c),
+    newsNoteSubject(c, p.edition),
     [
       [greet(p.firstName)],
-      [`We covered ${possessive(c)} ${p.news.trim()} in this morning's FundOps Daily: `, { text: 'read it here', href: p.storyUrl }, '. Feel free to share it with your team or on LinkedIn.'],
+      [`We covered ${possessive(c)} ${p.news.trim()} in ${p.edition ?? "this morning's"} FundOps Daily: `, { text: 'read it here', href: p.storyUrl }, '. Feel free to share it with your team or on LinkedIn.'],
       ["FundOps Daily is a free morning email on private-markets news for GPs, LPs and fund service providers. If it's useful, ", { text: 'you can get it here', href: SUBSCRIBE_URL }, '.'],
     ],
     SIGN,

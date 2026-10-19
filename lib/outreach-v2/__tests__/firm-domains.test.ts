@@ -53,7 +53,7 @@ describe('the EQT draft of 2026-10-15', () => {
 })
 
 describe('what a note is about', () => {
-  it('a close, a launch, a raise or a hire; never a deal, a promotion or a commitment', () => {
+  it('a close, a launch, a raise, a hire or a deal (deals since 2026-10-19); never a promotion or a commitment', () => {
     const { picked, dropped } = pickCandidates([
       story({ id: 'a0000000-0000', firmName: 'Acme Capital', eventType: 'fund_close', headline: 'Acme Capital closes Fund III', geography: ['North America'] }),
       story({ id: 'b0000000-0000', firmName: 'Beta Partners', eventType: 'executive_hire', headline: 'Beta Partners hires a CFO', geography: ['North America'] }),
@@ -61,7 +61,7 @@ describe('what a note is about', () => {
       story({ id: 'd0000000-0000', firmName: 'Delta Advisors', eventType: 'executive_change', headline: 'Delta Advisors promotes three', geography: ['North America'] }),
       story({ id: 'e0000000-0000', firmName: 'Epsilon', eventType: 'fund_launch', headline: 'Epsilon launches Fund II', geography: ['North America'] }),
     ])
-    expect(picked.map((p) => p.firm)).toEqual(['Acme Capital', 'Beta Partners', 'Epsilon'])
-    expect(dropped.map((d) => d.reason)).toEqual(['not a close, launch, raise or hire', 'not a close, launch, raise or hire'])
+    expect(picked.map((p) => p.firm).sort()).toEqual(['Acme Capital', 'Beta Partners', 'Epsilon', 'Gamma Group'])
+    expect(dropped.map((d) => d.reason)).toEqual(['not a close, launch, raise, hire or deal'])
   })
 })

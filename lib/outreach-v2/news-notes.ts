@@ -37,7 +37,8 @@ export interface NoteCandidate {
  * hire. A deal, a promotion, a regulatory story or an LP's commitment is news
  * the firm did not put out to be shared, and is left alone.
  */
-export const NOTE_EVENTS = new Set(['fund_close', 'fund_launch', 'capital_raise', 'executive_hire'])
+// 2026-10-19: deals too (Danny wants a steady five a day; Mondays carried no closes). Bad news is excluded separately.
+export const NOTE_EVENTS = new Set(['fund_close', 'fund_launch', 'capital_raise', 'executive_hire', 'acquisition'])
 
 const northAmerican = (s: Story) => s.geography.some((g) => /north america|united states|\bus\b/i.test(g))
 
@@ -67,7 +68,7 @@ export function pickCandidates(stories: Story[]): { picked: NoteCandidate[]; dro
     if (story.roundup) { drop('roundup'); continue }
     if (isDescriptiveFirmName(firm)) { drop('firm is a description'); continue }
     if (isBadNews({ eventType: story.eventType, headline: story.headline, summary: story.summary })) { drop('bad news'); continue }
-    if (!NOTE_EVENTS.has(story.eventType ?? '')) { drop('not a close, launch, raise or hire'); continue }
+    if (!NOTE_EVENTS.has(story.eventType ?? '')) { drop('not a close, launch, raise, hire or deal'); continue }
     if (isExcludedFirm(firm)) { drop('fund administrator / IQ-EQ competitor'); continue }
     if (picked.some((p) => sameFirm(p.firm, firm))) { drop('firm already picked'); continue }
     picked.push({ firm, story, url: `${SITE}${storyPath(story)}` })
@@ -91,6 +92,16 @@ export function withoutFirm(fund: string, firm: string): string {
   }
   return f
 }
+
+/** "this morning's" for today's edition, else the weekday ("Saturday's"). */
+export function editionLabel(story: { id: string; memberIds?: string[] }, editionOf: Map<string, string>, today: string): string {
+  const dates = [story.id, ...(story.memberIds ?? [])].map((id) => editionOf.get(id)).filter(Boolean) as string[]
+  if (!dates.length || dates.includes(today)) return "this morning's"
+  const d = dates.sort().at(-1) as string
+  return `${['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date(`${d}T12:00:00Z`).getUTCDay()]}'s`
+}
+
+const addDaysIso = (date: string, n: number) => new Date(Date.parse(`${date}T12:00:00Z`) + n * 86_400_000).toISOString().slice(0, 10)
 
 /** A firm as people say it: no legal suffix ("Greenberg Traurig LLP" → "Greenberg Traurig", 2026-10-17). */
 export const plainFirm = (name: string) => name.trim().replace(/,?\s+(LLP|LLC|L\.?L\.?C\.?|L\.?P\.?|Inc\.?|Ltd\.?|Corp\.?|PLLC|P\.?C\.?)$/i, '').trim()
@@ -306,13 +317,21 @@ export async function runNewsNotes(db: DbClient, apollo: ApolloPort, now: Date =
   const { data: edition, error: edErr } = await db.from('newsletter_editions').select('edition_date, status, article_ids').eq('edition_date', today).maybeSingle()
   if (edErr) return { ok: false, mode, error: edErr.message }
   if (!edition || edition.status !== 'sent') return { ok: true, mode, skipped: `today's edition (${today}) has not gone out` }
-  const ids = (edition.article_ids ?? []) as string[]
+  // On a Monday the weekend's two editions count too (2026-10-19: Monday's edition is thin; the note then names the
+  // day: "in Saturday's FundOps Daily"). Today's stories come first.
+  const editionOf = new Map<string, string>()
+  for (const id of (edition.article_ids ?? []) as string[]) editionOf.set(id, today)
+  if (new Date(`${today}T12:00:00Z`).getUTCDay() === 1) {
+    const { data: weekend } = await db.from('newsletter_editions').select('edition_date, status, article_ids').in('edition_date', [addDaysIso(today, -1), addDaysIso(today, -2)]).eq('status', 'sent')
+    for (const e of weekend ?? []) for (const id of (e.article_ids ?? []) as string[]) if (!editionOf.has(id)) editionOf.set(id, e.edition_date as string)
+  }
+  const ids = [...editionOf.keys()]
   if (!ids.length) return { ok: true, mode, skipped: 'edition has no stories' }
 
   const { count: madeToday } = await db.from('outreach_v2_messages').select('id', { count: 'exact', head: true }).eq('batch', batch).in('status', ['preview', 'queued', 'sending', 'sent'])
   const noteCap = Math.min(opts.noteCap ?? NEWS_NOTES_PER_DAY, NEWS_NOTES_PER_DAY) - (madeToday ?? 0)
   const creditCap = Math.min(opts.creditCap ?? APOLLO_CREDITS_PER_DAY, APOLLO_CREDITS_PER_DAY) - (await creditsUsedToday(db, 'news_note', now))
-  if (noteCap <= 0) return { ok: true, mode, skipped: 'ten notes already made today' }
+  if (noteCap <= 0) return { ok: true, mode, skipped: `${NEWS_NOTES_PER_DAY} notes already made today` }
   if (creditCap <= 0) return { ok: true, mode, skipped: 'Apollo credit cap reached today' }
 
   const rows: unknown[] = []
@@ -332,7 +351,7 @@ export async function runNewsNotes(db: DbClient, apollo: ApolloPort, now: Date =
     screen: async (email) => (await screenEmails(db, [email], { program: 'news_note', now })).get(email) ?? null,
     store: async (c, contact) => {
       const unsubToken = newToken()
-      const r = renderNewsNote({ firstName: contact.firstName, company: plainFirm(c.firm), unsubToken, news: newsPhrase(c.story, c.firm), storyUrl: c.url })
+      const r = renderNewsNote({ firstName: contact.firstName, company: plainFirm(c.firm), unsubToken, news: newsPhrase(c.story, c.firm), storyUrl: c.url, edition: editionLabel(c.story, editionOf, today) })
       const { error } = await db.from('outreach_v2_messages').insert({
         program: 'news_note',
         kind: 'initial',

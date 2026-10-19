@@ -164,3 +164,18 @@ describe('news note wording (2026-10-17, the first live batch)', () => {
     expect(plainFirm('Blackstone')).toBe('Blackstone')
   })
 })
+
+describe('weekend stories on a Monday (2026-10-19)', () => {
+  it('names the edition a story ran in', async () => {
+    const { editionLabel } = await import('../news-notes')
+    const m = new Map([['a', '2026-10-19'], ['b', '2026-10-17'], ['c', '2026-10-18']])
+    expect(editionLabel({ id: 'a' }, m, '2026-10-19')).toBe("this morning's")
+    expect(editionLabel({ id: 'b' }, m, '2026-10-19')).toBe("Saturday's")
+    expect(editionLabel({ id: 'x', memberIds: ['c'] }, m, '2026-10-19')).toBe("Sunday's")
+  })
+  it('the note uses it', async () => {
+    const { renderNewsNote } = await import('../compose')
+    const r = renderNewsNote({ firstName: 'Alex', company: 'Acme', unsubToken: 't', news: '$200M Fund III close', storyUrl: 'https://x', edition: "Saturday's" } as never)
+    expect(r.text).toMatch(/in Saturday's FundOps Daily/)
+  })
+})

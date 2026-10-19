@@ -51,9 +51,9 @@ export const SITE = 'https://fundopshq.com'
 /** All sends across both programs, per New York day. */
 export const DAILY_SEND_CAP = 30
 /** News notes created per day (each costs about one Apollo credit). */
-export const NEWS_NOTES_PER_DAY = 10
+export const NEWS_NOTES_PER_DAY = 5 // Danny, 2026-10-19: "maybe just do five a day"
 /** Apollo credits the news-note program may spend per New York day. Hard. */
-export const APOLLO_CREDITS_PER_DAY = 10
+export const APOLLO_CREDITS_PER_DAY = 8
 /** Nobody is emailed twice by either program inside this window (a follow-up in the same thread excepted). */
 export const RECONTACT_DAYS = 90
 /** A firm gets at most one news note in this window, whoever it went to. */
