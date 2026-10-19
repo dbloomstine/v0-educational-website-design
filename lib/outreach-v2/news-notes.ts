@@ -122,7 +122,8 @@ export function newsPhrase(s: Pick<Story, 'eventType' | 'kind' | 'fundName' | 's
       return /\b(rais|clos|fund|secur)/i.test(h) || !h ? (size ? `${size}raise` : 'latest raise') : 'news'
     }
     case 'acquisition':
-      return 'latest deal'
+      // "$6.3B deal" reads better than "latest deal" (2026-10-19, the first Monday batch).
+      return size ? `${size}deal` : 'deal'
     case 'executive_hire':
       return 'new hire'
     case 'executive_change':

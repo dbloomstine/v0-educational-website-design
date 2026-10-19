@@ -149,7 +149,7 @@ describe('news note', () => {
     expect(newsPhrase({ eventType: 'fund_close', kind: 'fundraising', fundName: 'Castlelake Aviation V', sizeUsdM: null, closeType: 'final' }, 'Castlelake LP')).toBe('Aviation V close')
     expect(newsPhrase({ eventType: 'fund_close', kind: 'fundraising', fundName: 'Savory', sizeUsdM: 200, closeType: 'final' }, 'Savory')).toBe('$200M fund close')
     expect(newsPhrase({ eventType: 'fund_close', kind: 'fundraising', fundName: 'Growth Fund II', sizeUsdM: null, closeType: 'final' }, 'Savory')).toBe('Growth Fund II close')
-    expect(newsPhrase({ eventType: 'acquisition', kind: 'deals', fundName: null, sizeUsdM: null, closeType: null })).toBe('latest deal')
+    expect(newsPhrase({ eventType: 'acquisition', kind: 'deals', fundName: null, sizeUsdM: null, closeType: null })).toBe('deal')
   })
 })
 
@@ -177,5 +177,13 @@ describe('weekend stories on a Monday (2026-10-19)', () => {
     const { renderNewsNote } = await import('../compose')
     const r = renderNewsNote({ firstName: 'Alex', company: 'Acme', unsubToken: 't', news: '$200M Fund III close', storyUrl: 'https://x', edition: "Saturday's" } as never)
     expect(r.text).toMatch(/in Saturday's FundOps Daily/)
+  })
+})
+
+describe('deal wording (2026-10-19)', () => {
+  it('names the size of a deal', async () => {
+    const { newsPhrase } = await import('../news-notes')
+    expect(newsPhrase({ eventType: 'acquisition', kind: 'deals', fundName: null, sizeUsdM: 6300, closeType: null } as never)).toBe('$6.3bn deal')
+    expect(newsPhrase({ eventType: 'acquisition', kind: 'deals', fundName: null, sizeUsdM: null, closeType: null } as never)).toBe('deal')
   })
 })
