@@ -11,7 +11,6 @@ import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { loadLeagueReport, LEAGUE_SINCE } from '@/lib/news/league-data'
 import { capitalByAsset, leagueRows, LEAGUE_ASSET_LABEL as ASSET_LABEL, LEAGUE_PERIODS, STAGE_LABEL, type FundClose, type LeaguePeriod } from '@/lib/news/league'
 import { sizeLabel, totalLabel } from '@/lib/news/format'
-import { OG_IMAGES } from '@/lib/seo'
 import { storyPath } from '@/lib/news/story-path'
 import { storyPermalink } from '@/lib/news/story-jsonld'
 
@@ -23,6 +22,8 @@ type Params = { searchParams: Promise<{ period?: string; asset?: string; stage?:
 
 const ROWS_SHOWN = 100
 const ASSETS = Object.keys(ASSET_LABEL)
+// The page's own share card (opengraph-image.tsx beside this file): the year's largest closes.
+const LEAGUE_OG = [{ url: 'https://fundopshq.com/league-tables/opengraph-image', width: 1200, height: 630, alt: 'FundOpsHQ league tables: the largest private fund closes of the year' }]
 const DESCRIPTION =
   'The largest private fund closes, ranked by size — private equity, venture, credit, real estate, infrastructure and secondaries. Every row links to the report it came from.'
 
@@ -34,8 +35,8 @@ export async function generateMetadata({ searchParams }: Params): Promise<Metada
     description: DESCRIPTION,
     alternates: { canonical: 'https://fundopshq.com/league-tables' },
     robots: filtered ? { index: false, follow: true } : undefined,
-    openGraph: { title: 'League tables: the largest fund closes | FundOpsHQ', description: DESCRIPTION, type: 'website', url: 'https://fundopshq.com/league-tables', images: OG_IMAGES },
-    twitter: { card: 'summary_large_image', title: 'League tables | FundOpsHQ', description: DESCRIPTION, images: OG_IMAGES.map((i) => i.url) },
+    openGraph: { title: 'League tables: the largest fund closes | FundOpsHQ', description: DESCRIPTION, type: 'website', url: 'https://fundopshq.com/league-tables', images: LEAGUE_OG },
+    twitter: { card: 'summary_large_image', title: 'League tables | FundOpsHQ', description: DESCRIPTION, images: LEAGUE_OG.map((i) => i.url) },
   }
 }
 
