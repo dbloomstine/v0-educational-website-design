@@ -7,18 +7,27 @@ export function SeasonalO() {
   return (
     <>
       <g className="wm-season wm-halloween" transform="translate(132.8 35.4) scale(1.13) translate(-132.8 -35.4)">
-        <ellipse cx="123.6" cy="21.6" rx="10.2" ry="13.4" fill="url(#fq-pks)" />
-        <ellipse cx="142" cy="21.6" rx="10.2" ry="13.4" fill="url(#fq-pks)" />
-        <ellipse cx="132.8" cy="21.4" rx="11.6" ry="13.9" fill="url(#fq-pk)" />
-        <path d="M127.2 9.6 Q125 21.5 127.4 33.6" stroke="#B85A16" strokeOpacity=".45" strokeWidth=".8" fill="none" />
-        <path d="M138.4 9.6 Q140.6 21.5 138.2 33.6" stroke="#B85A16" strokeOpacity=".45" strokeWidth=".8" fill="none" />
-        <path d="M131.2 9.2 C131 5.6 132.2 2.6 135 0.4 L137.2 1.9 C135.3 3.7 134.6 6.1 134.7 9.2 Z" fill="#5E6B2E" />
-        <path d="M135.6 3.2 C139 1.6 141.6 3.2 141 5.6 C140.4 4.2 138.6 3.6 136.6 4.6" fill="none" stroke="#5E6B2E" strokeWidth=".9" strokeLinecap="round" />
-        <g className="wm-face" filter="url(#fq-glow)" fill="url(#fq-fire)" stroke="#7A3510" strokeWidth=".55" strokeLinejoin="round">
-          <path d="M124 20 L128.2 13.2 L131.4 20 Z" />
-          <path className="wm-eye" d="M134.2 20 L137.4 13.2 L141.6 20 Z" />
-          <path className="wm-wink" d="M134.6 18 Q137.8 14.6 141 18" fill="none" stroke="url(#fq-fire)" strokeWidth="1.6" strokeLinecap="round" />
-          <path d="M123.8 23.4 Q132.8 32.4 141.8 23.4 Q139.6 25.6 137.8 25.4 L136.8 27.6 L134.8 25.8 Q132.8 26.4 130.8 25.8 L128.8 27.6 L127.8 25.4 Q126 25.6 123.8 23.4 Z" />
+        <g className="wm-leaves">
+          <g transform="translate(127 14) scale(.55)"><use className="wm-lf wm-lf1" href="#fq-lf" fill="#E0702A" /></g>
+          <g transform="translate(138 12) scale(.55)"><use className="wm-lf wm-lf2" href="#fq-lf" fill="#F2B23A" /></g>
+          <g transform="translate(132 20) scale(.55)"><use className="wm-lf wm-lf3" href="#fq-lf" fill="#B8401F" /></g>
+          <g transform="translate(124 22) scale(.55)"><use className="wm-lf wm-lf4" href="#fq-lf" fill="#E6B045" /></g>
+          <g transform="translate(141 21) scale(.55)"><use className="wm-lf wm-lf5" href="#fq-lf" fill="#C8562A" /></g>
+        </g>
+        <g className="wm-pk">
+          <ellipse cx="123.6" cy="21.6" rx="10.2" ry="13.4" fill="url(#fq-pks)" />
+          <ellipse cx="142" cy="21.6" rx="10.2" ry="13.4" fill="url(#fq-pks)" />
+          <ellipse cx="132.8" cy="21.4" rx="11.6" ry="13.9" fill="url(#fq-pk)" />
+          <path d="M127.2 9.6 Q125 21.5 127.4 33.6" stroke="#B85A16" strokeOpacity=".45" strokeWidth=".8" fill="none" />
+          <path d="M138.4 9.6 Q140.6 21.5 138.2 33.6" stroke="#B85A16" strokeOpacity=".45" strokeWidth=".8" fill="none" />
+          <path d="M131.2 9.2 C131 5.6 132.2 2.6 135 0.4 L137.2 1.9 C135.3 3.7 134.6 6.1 134.7 9.2 Z" fill="#5E6B2E" />
+          <path d="M135.6 3.2 C139 1.6 141.6 3.2 141 5.6 C140.4 4.2 138.6 3.6 136.6 4.6" fill="none" stroke="#5E6B2E" strokeWidth=".9" strokeLinecap="round" />
+          <g className="wm-face" filter="url(#fq-glow)" fill="url(#fq-fire)" stroke="#7A3510" strokeWidth=".55" strokeLinejoin="round">
+            <path d="M124 20 L128.2 13.2 L131.4 20 Z" />
+            <path className="wm-eye" d="M134.2 20 L137.4 13.2 L141.6 20 Z" />
+            <path className="wm-wink" d="M134.6 18 Q137.8 14.6 141 18" fill="none" stroke="url(#fq-fire)" strokeWidth="1.6" strokeLinecap="round" />
+            <path d="M123.8 23.4 Q132.8 32.4 141.8 23.4 Q139.6 25.6 137.8 25.4 L136.8 27.6 L134.8 25.8 Q132.8 26.4 130.8 25.8 L128.8 27.6 L127.8 25.4 Q126 25.6 123.8 23.4 Z" />
+          </g>
         </g>
       </g>
       <g className="wm-season wm-thanksgiving">
@@ -61,6 +70,7 @@ export function SeasonalDefs() {
         <filter id="fq-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.4" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
         <radialGradient id="fq-gold" cx="38%" cy="32%" r="75%"><stop offset="0" stopColor="#FFF0B8" /><stop offset=".45" stopColor="#E6B045" /><stop offset="1" stopColor="#A9701A" /></radialGradient>
         <radialGradient id="fq-orn" cx="36%" cy="32%" r="75%"><stop offset="0" stopColor="#FF8A7A" /><stop offset=".4" stopColor="#C8312B" /><stop offset="1" stopColor="#7E1717" /></radialGradient>
+        <g id="fq-lf"><path d="M0.5 -13 C8.5 -7.5 9.5 4.5 0.5 12 C-8.5 5 -8 -7 0.5 -13 Z" /><path d="M0.5 -10 Q0 2 0.6 16" stroke="#7A3510" strokeOpacity=".55" strokeWidth="1.2" fill="none" strokeLinecap="round" /></g>
         <linearGradient id="fq-leaf" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stopColor="#F2B23A" /><stop offset=".55" stopColor="#E0702A" /><stop offset="1" stopColor="#B8401F" /></linearGradient>
       </defs>
     </svg>

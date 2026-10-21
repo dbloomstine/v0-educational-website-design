@@ -753,3 +753,20 @@ svg:hover .wm-halloween .wm-eye { opacity: 0; }
 @media (prefers-reduced-motion: reduce) { .wm-halloween .wm-face { animation: none; } }
 /* Halloween: the amber tick before a section label becomes a candy corn. */
 html[data-season="halloween"] .sec-tick { width: 9px !important; height: 12px !important; background: linear-gradient(to bottom, #FFFDF6 0 30%, #F08A24 30% 66%, #F3C04A 66%) !important; clip-path: path('M4.5 0 C5.4 0 9 9.6 9 11 C9 12 7 12 4.5 12 C2 12 0 12 0 11 C0 9.6 3.6 0 4.5 0 Z'); }
+
+/* Hover the pumpkin (or tap it): it hops, and a few autumn leaves tumble out from behind it and fade.
+   The class is set by SEASON_SCRIPT for 2.2s, so the fall finishes even if the pointer moves on. */
+.wm-halloween .wm-lf { opacity: 0; transform-box: fill-box; transform-origin: center; }
+.wm-halloween.fq-play .wm-pk { animation: fq-hop .55s cubic-bezier(.3,1.6,.5,1); transform-box: fill-box; transform-origin: 50% 100%; }
+.wm-halloween.fq-play .wm-lf1 { animation: fq-lf1 1.9s ease-in forwards; }
+.wm-halloween.fq-play .wm-lf2 { animation: fq-lf2 2.1s ease-in .08s forwards; }
+.wm-halloween.fq-play .wm-lf3 { animation: fq-lf3 1.8s ease-in .16s forwards; }
+.wm-halloween.fq-play .wm-lf4 { animation: fq-lf4 2s ease-in .05s forwards; }
+.wm-halloween.fq-play .wm-lf5 { animation: fq-lf5 2.2s ease-in .2s forwards; }
+@keyframes fq-hop { 0% { transform: translateY(0) scale(1); } 35% { transform: translateY(-5px) scale(1.04, .97); } 70% { transform: translateY(0) scale(1.03, .96); } 100% { transform: translateY(0) scale(1); } }
+@keyframes fq-lf1 { 0% { opacity: 0; transform: translate(0, 0) rotate(0) scale(.5); } 12% { opacity: 1; transform: translate(-15px, -18px) rotate(-40deg) scale(1); } 45% { transform: translate(-42px, 12px) rotate(-120deg); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-66px, 72px) rotate(-220deg); } }
+@keyframes fq-lf2 { 0% { opacity: 0; transform: translate(0, 0) rotate(0) scale(.5); } 12% { opacity: 1; transform: translate(15px, -21px) rotate(30deg) scale(1); } 45% { transform: translate(48px, 9px) rotate(110deg); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(75px, 69px) rotate(240deg); } }
+@keyframes fq-lf3 { 0% { opacity: 0; transform: translate(0, 0) rotate(0) scale(.5); } 12% { opacity: 1; transform: translate(-3px, -12px) rotate(20deg) scale(1); } 50% { transform: translate(-18px, 30px) rotate(-60deg); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(6px, 78px) rotate(90deg); } }
+@keyframes fq-lf4 { 0% { opacity: 0; transform: translate(0, 0) rotate(0) scale(.5); } 12% { opacity: 1; transform: translate(-18px, -6px) rotate(-60deg) scale(1); } 50% { transform: translate(-36px, 33px) rotate(-150deg); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(-27px, 75px) rotate(-260deg); } }
+@keyframes fq-lf5 { 0% { opacity: 0; transform: translate(0, 0) rotate(0) scale(.5); } 12% { opacity: 1; transform: translate(18px, -9px) rotate(50deg) scale(1); } 50% { transform: translate(33px, 30px) rotate(160deg); } 80% { opacity: 1; } 100% { opacity: 0; transform: translate(24px, 78px) rotate(280deg); } }
+@media (prefers-reduced-motion: reduce) { .wm-halloween.fq-play .wm-pk, .wm-halloween.fq-play .wm-lf { animation: none; } }
