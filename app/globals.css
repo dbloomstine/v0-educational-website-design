@@ -736,3 +736,20 @@
 .site-menu { animation: site-menu-in 180ms ease-out both; }
 @keyframes site-menu-in { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .site-menu { animation: none; } }
+
+/* Holiday marks (lib/seasonal.ts, components/seasonal-mark.tsx). <html data-season> is set before paint. */
+.wm-season { display: none; }
+html[data-season] .wm-o { display: none; }
+html[data-season="halloween"] .wm-halloween,
+html[data-season="thanksgiving"] .wm-thanksgiving,
+html[data-season="hanukkah"] .wm-hanukkah,
+html[data-season="christmas"] .wm-christmas { display: inline; }
+/* The jack-o'-lantern's candle flickers, and it winks when the wordmark is hovered. */
+.wm-halloween .wm-wink { opacity: 0; }
+svg:hover .wm-halloween .wm-wink { opacity: 1; }
+svg:hover .wm-halloween .wm-eye { opacity: 0; }
+@keyframes fq-flicker { 0%, 100% { opacity: 1; } 18% { opacity: .84; } 31% { opacity: .97; } 47% { opacity: .8; } 63% { opacity: .95; } 79% { opacity: .86; } }
+.wm-halloween .wm-face { animation: fq-flicker 2.6s steps(12, end) infinite; }
+@media (prefers-reduced-motion: reduce) { .wm-halloween .wm-face { animation: none; } }
+/* Halloween: the amber tick before a section label becomes a candy corn. */
+html[data-season="halloween"] .sec-tick { width: 9px !important; height: 12px !important; background: linear-gradient(to bottom, #FFFDF6 0 30%, #F08A24 30% 66%, #F3C04A 66%) !important; clip-path: path('M4.5 0 C5.4 0 9 9.6 9 11 C9 12 7 12 4.5 12 C2 12 0 12 0 11 C0 9.6 3.6 0 4.5 0 Z'); }

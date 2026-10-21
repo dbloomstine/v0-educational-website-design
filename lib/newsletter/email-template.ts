@@ -17,6 +17,7 @@
  */
 
 import type { ArticleGroup } from './query-articles'
+import { seasonOn, SEASON_O_IMAGE } from '@/lib/seasonal'
 import { cleanEntityName, splitHeadlineByEntities } from '@/lib/news/constants'
 import {
   formatEventDates,
@@ -904,6 +905,14 @@ export function buildPreheader(top: TopPick[], groups: ArticleGroup[], totalArti
  */
 const FROM_EMAIL = '?utm_source=newsletter&amp;utm_medium=email'
 
+/** "FundOps" in the masthead, its O swapped for the season's mark on holiday dates (lib/seasonal.ts); alt "O" keeps the word for text-only readers. */
+export function seasonalFundOps(editionDate: string): string {
+  const season = seasonOn(editionDate)
+  if (!season) return 'FundOps'
+  const o = SEASON_O_IMAGE[season]
+  return `Fund<img src="${o.src}" alt="O" width="${o.width}" height="30" style="height:30px;width:${o.width}px;vertical-align:-3px;margin:0 1px 0 0;border:0;display:inline-block;">ps`
+}
+
 export function renderNewsletterEmail(params: TemplateParams): string {
   const {
     groups,
@@ -998,7 +1007,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
               <table cellpadding="0" cellspacing="0" border="0" width="100%">
                 <tr>
                   <td class="fops-px" style="padding:14px 16px 10px;text-align:left;">
-                    <span class="fops-serif fops-cream" style="font-size:34px;font-weight:700;letter-spacing:-0.5px;line-height:1;">FundOps</span><span class="fops-serif fops-amber" style="font-size:34px;font-weight:700;font-style:italic;letter-spacing:-0.5px;line-height:1;">Daily</span>
+                    <span class="fops-serif fops-cream" style="font-size:34px;font-weight:700;letter-spacing:-0.5px;line-height:1;">${seasonalFundOps(editionDate)}</span><span class="fops-serif fops-amber" style="font-size:34px;font-weight:700;font-style:italic;letter-spacing:-0.5px;line-height:1;">Daily</span>
                   </td>
                 </tr>
               </table>

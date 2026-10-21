@@ -1,4 +1,6 @@
 import type React from "react"
+import { SEASON_SCRIPT } from "@/lib/seasonal"
+import { SeasonalDefs } from "@/components/seasonal-mark"
 import type { Metadata } from "next"
 import { Inter, DM_Sans, Fraunces, JetBrains_Mono, Newsreader, Libre_Franklin } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
@@ -147,7 +149,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: SEASON_SCRIPT }} />
+      </head>
       <body className={`${inter.variable} ${dmSans.variable} ${fraunces.variable} ${jetbrainsMono.variable} ${newsreader.variable} ${franklin.variable} font-sans antialiased`}>
         <a
           href="#main-content"
@@ -155,6 +160,7 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
+        <SeasonalDefs />
         {children}
         <Toaster
           position="bottom-right"
