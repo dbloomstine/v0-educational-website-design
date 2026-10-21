@@ -1,5 +1,5 @@
 import type React from "react"
-import { SEASON_SCRIPT } from "@/lib/seasonal"
+import { SEASON_SCRIPT, seasonOn, todayInNewYork } from "@/lib/seasonal"
 import { SeasonalDefs } from "@/components/seasonal-mark"
 import type { Metadata } from "next"
 import { Inter, DM_Sans, Fraunces, JetBrains_Mono, Newsreader, Libre_Franklin } from "next/font/google"
@@ -149,7 +149,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark" suppressHydrationWarning>
+    <html lang="en" className="dark" data-season={seasonOn(todayInNewYork()) ?? undefined} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: SEASON_SCRIPT }} />
       </head>

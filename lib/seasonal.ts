@@ -30,8 +30,18 @@ export const SEASON_O_IMAGE: Record<Season, { src: string; width: number }> = {
   christmas: { src: 'https://fundopshq.com/seasonal/o-ornament.png', width: 23 },
 }
 
+/** Today in New York as YYYY-MM-DD, built from the date's parts (a locale's own date format differs between browsers). */
+export function todayInNewYork(now: Date = new Date()): string {
+  const parts = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(now)
+  const get = (t: string) => parts.find((p) => p.type === t)?.value ?? ''
+  return `${get('year')}-${get('month')}-${get('day')}`
+}
+
 /**
- * Runs in <head> before the page paints: sets <html data-season="…"> from today's date in New York.
- * `?season=halloween` (or `none`) overrides it, for checking a look on any day.
+ * Runs in <head> before the page paints: sets (or clears) <html data-season="…"> from today's date in New York.
+ * The server also stamps the season it saw when it made the page, so the mark shows even where this script cannot
+ * run; this script corrects a page made on another day. `?season=halloween` (or `none`) overrides it, for checking.
+ * 2026-10-21: the first version read the date from a locale format ('en-CA') that not every browser writes as
+ * YYYY-MM-DD, and Danny saw a plain O; the date now comes from its parts.
  */
-export const SEASON_SCRIPT = `(function(){try{var q=new URLSearchParams(location.search).get('season');var s=null;if(q){s=q==='none'?null:q}else{var p=new Intl.DateTimeFormat('en-CA',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());var w=${JSON.stringify(SEASONS.map((s) => [s.from, s.to, s.season]))};for(var i=0;i<w.length;i++){if(p>=w[i][0]&&p<=w[i][1]){s=w[i][2];break}}}if(s)document.documentElement.setAttribute('data-season',s)}catch(e){}})();`
+export const SEASON_SCRIPT = `(function(){try{var q=new URLSearchParams(location.search).get('season');var s=null;if(q){s=q==='none'?null:q}else{var f=new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());var g=function(t){for(var i=0;i<f.length;i++){if(f[i].type===t)return f[i].value}return''};var p=g('year')+'-'+g('month')+'-'+g('day');var w=${JSON.stringify(SEASONS.map((s) => [s.from, s.to, s.season]))};for(var i=0;i<w.length;i++){if(p>=w[i][0]&&p<=w[i][1]){s=w[i][2];break}}}var h=document.documentElement;if(s)h.setAttribute('data-season',s);else h.removeAttribute('data-season')}catch(e){}})();`

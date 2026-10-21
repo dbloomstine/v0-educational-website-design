@@ -7,7 +7,8 @@
 /** The public storage bucket the finished slides and videos live in. */
 export const SOCIAL_BUCKET = 'social'
 
-export const SOCIAL_CHANNELS = ['tiktok', 'instagram', 'linkedin'] as const
+// YouTube Shorts since 2026-10-20 (Danny: LinkedIn off, YouTube on); the table's check allows it (migration social_posts_channel_youtube).
+export const SOCIAL_CHANNELS = ['tiktok', 'instagram', 'linkedin', 'youtube'] as const
 export const SOCIAL_KINDS = ['carousel', 'video'] as const
 /**
  * draft: in the scheduler, not due to go out (a dry run). scheduled: due to go
