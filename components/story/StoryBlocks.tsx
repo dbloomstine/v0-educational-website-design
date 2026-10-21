@@ -127,7 +127,7 @@ export function SectionFlag({ label, href, note, live }: { label: string; href?:
   return (
     <div className="mb-1 flex items-baseline justify-between gap-3 border-t-2 border-foreground pt-1.5">
       <h2 className="flex items-center gap-2 font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">
-        <span className="sec-tick h-[11px] w-[4px] shrink-0" style={{ background: 'var(--tab)' }} aria-hidden="true" />
+        <span className="h-[11px] w-[4px] shrink-0" style={{ background: 'var(--tab)' }} aria-hidden="true" />
         {live && (
           <span className="relative flex h-1.5 w-1.5" aria-hidden="true">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-70" />

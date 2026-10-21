@@ -12,7 +12,7 @@ export function InTheNews({ firms }: { firms: FirmEntry[] }) {
   return (
     <nav aria-label="Firms in the news" className="tab-scroll mb-4 flex items-baseline gap-x-5 overflow-x-auto border-b border-border pb-2.5">
       <span className="flex shrink-0 items-center gap-2 font-ui text-[10.5px] font-extrabold uppercase tracking-[0.14em] text-foreground">
-        <span className="sec-tick h-[11px] w-[4px]" style={{ background: 'var(--tab)' }} aria-hidden="true" />
+        <span className="h-[11px] w-[4px]" style={{ background: 'var(--tab)' }} aria-hidden="true" />
         Firms in the news
       </span>
       {firms.map((f) => (

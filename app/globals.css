@@ -751,8 +751,6 @@ svg:hover .wm-halloween .wm-eye { opacity: 0; }
 @keyframes fq-flicker { 0%, 100% { opacity: 1; } 18% { opacity: .84; } 31% { opacity: .97; } 47% { opacity: .8; } 63% { opacity: .95; } 79% { opacity: .86; } }
 .wm-halloween .wm-face { animation: fq-flicker 2.6s steps(12, end) infinite; }
 @media (prefers-reduced-motion: reduce) { .wm-halloween .wm-face { animation: none; } }
-/* Halloween: the amber tick before a section label becomes a candy corn. */
-html[data-season="halloween"] .sec-tick { width: 9px !important; height: 12px !important; background: linear-gradient(to bottom, #FFFDF6 0 30%, #F08A24 30% 66%, #F3C04A 66%) !important; clip-path: path('M4.5 0 C5.4 0 9 9.6 9 11 C9 12 7 12 4.5 12 C2 12 0 12 0 11 C0 9.6 3.6 0 4.5 0 Z'); }
 
 /* Hover the pumpkin (or tap it): it hops, and a few autumn leaves tumble out from behind it and fade.
    The class is set by SEASON_SCRIPT for 2.2s, so the fall finishes even if the pointer moves on. */
