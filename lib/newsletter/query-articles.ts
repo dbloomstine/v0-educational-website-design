@@ -955,6 +955,29 @@ export function isRoundupArticle(a: Pick<NewsletterArticle, 'title' | 'headlineE
   return isRoundup(a.title, a.headlineEntities, a.sourceName)
 }
 
+/**
+ * A deal the classifier filed as "other" (2026-10-22: of the fortnight's headlines in which a firm acquires or takes a
+ * stake in something, 80 were typed "other" and so placed nowhere, against 139 typed as acquisitions). About two in
+ * three were private-markets deals (Vista and HID's PKI unit, Fengate and CRWF, Kennedy Wilson in San Jose); the rest
+ * were ETF lists, merger clearances, corporate buyers and a fraud case. So one is placed in Deals only when the firm on
+ * the record is named as an investment firm and is the one in the headline, the headline says it bought or took a
+ * stake, and it is not a roundup, a list or a court or clearance story. Fewer are rescued than could be; none of the
+ * noise is.
+ */
+const OTHER_DEAL_VERB = /\b(acquires?|acquired|to acquire|agrees? to (buy|acquire)|buys|to buy|completes? (the )?(acquisition|purchase)|takes? (a |an )?(\d+(\.\d+)?% |majority |minority |controlling |strategic )?stake in)\b/i
+const INVESTOR_NAME = /\b(capital|partners|equity|investors|investments?|asset management|investment management|infrastructure)\b/i
+const NOT_A_DEAL_STORY = /\b(round-?ups?|deals of the week|tracker|etfs?|stocks? to buy|how to buy|pre-ipo|clears?|cleared|greenlights?|fraud|charged|sues|sued|lawsuit)\b/i
+
+export function isOtherDeal(a: Pick<NewsletterArticle, 'eventType' | 'firmName' | 'title' | 'headlineEntities' | 'sourceName'>): boolean {
+  if (storyFamily(a.eventType) !== 'other') return false
+  const firm = (a.firmName ?? '').trim()
+  if (!firm || !INVESTOR_NAME.test(firm)) return false
+  if (!OTHER_DEAL_VERB.test(a.title) || NOT_A_DEAL_STORY.test(a.title) || isRoundupArticle(a)) return false
+  // The firm on the record is the one in the headline ("Vista agrees to acquire…" for Vista Equity Partners).
+  const first = firm.split(/\s+/)[0].replace(/[’']s$/i, '').toLowerCase()
+  return first.length >= 2 && a.title.toLowerCase().includes(first)
+}
+
 export type ArticleSection = 'fund' | 'lp_commitments' | 'service_providers' | 'people_moves' | 'deals' | 'regulatory'
 
 export interface ArticlePlacement {
@@ -996,6 +1019,8 @@ export function placeArticle(a: NewsletterArticle): ArticlePlacement | null {
   }
   if (family === 'people') return { section: 'people_moves', assetClass: null, leadEligible: true }
   if (family === 'deal') return { section: 'deals', assetClass: null, leadEligible: true }
+  // Filed as "other" but plainly an investment firm's deal: in Deals, never a lead (its fields were not read as one).
+  if (isOtherDeal(a)) return { section: 'deals', assetClass: null, leadEligible: false }
   return null
 }
 
