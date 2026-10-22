@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { ArrowRight, CheckCircle2, Loader2 } from 'lucide-react'
 import { useSubscribe } from '@/lib/newsletter/use-subscribe'
 import { openSignupCard } from './SubscribePrompt'
+import { firstEditionSentence } from '@/lib/newsletter/first-edition'
 
 /**
  * The email field inside the rail's navy "subscribe" panel on story, firm,
@@ -26,7 +27,7 @@ export function RailSubscribe() {
       <div className="mt-3">
         <p className="flex items-start gap-2 font-ui text-[13.5px] leading-snug">
           <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" style={{ color: 'var(--tab)' }} aria-hidden />
-          {sub.status === 'already' ? 'You’re already on the list.' : 'You’re in. Your first edition lands tomorrow morning.'}
+          {sub.status === 'already' ? 'You’re already on the list.' : `You’re in. ${firstEditionSentence()}`}
         </p>
         {sub.status === 'success' && sub.preferencesToken && (
           <button

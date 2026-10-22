@@ -5,6 +5,7 @@ import { Loader2 } from 'lucide-react'
 import { signupSourceForRequest } from '@/lib/newsletter/signup-source'
 import { markSubscribed } from '@/lib/newsletter/subscribed-flag'
 import { openSignupCard } from '@/components/newsletter/SubscribePrompt'
+import { firstEditionSentence } from '@/lib/newsletter/first-edition'
 
 /**
  * The one field on /join (2026-10-22). Same route and same after-the-fact question as the other forms
@@ -44,7 +45,7 @@ export function JoinForm() {
   if (status === 'success') {
     return (
       <p role="status" className="font-news text-[19px] leading-snug text-foreground">
-        {already ? 'You’re already on the list. See you at 7:30am ET.' : 'You’re in. Your first edition lands tomorrow by 7:30am ET.'}
+        {already ? 'You’re already on the list. See you at 7:30am ET.' : `You’re in. ${firstEditionSentence()}`}
       </p>
     )
   }

@@ -17,6 +17,7 @@
 import { interestWords } from './interests'
 import { followLineHtml } from './follow-line'
 import { FOLLOW } from '@/lib/brand/social'
+import { firstEditionSentence } from '@/lib/newsletter/first-edition'
 
 const NAVY = '#1E3A5F'
 const NAVY_DEEP = '#0F1E33'
@@ -142,7 +143,7 @@ export function renderWelcomeEmail(
               </p>
 
               <p style="margin:0 0 16px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
-                Thanks for subscribing to <strong>FundOps Daily</strong>. Your first edition lands tomorrow morning.
+                Thanks for subscribing to <strong>FundOps Daily</strong>. ${firstEditionSentence()}
               </p>
 
               <p style="margin:0 0 16px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
@@ -263,7 +264,7 @@ export function renderWelcomeText(
     '',
     'Hey —',
     '',
-    'Thanks for subscribing to FundOps Daily. Your first edition lands tomorrow morning.',
+    `Thanks for subscribing to FundOps Daily. ${firstEditionSentence()}`,
     '',
     'I built FundOpsHQ to have one place for what’s actually happening across the funds industry, and which events are worth the trip, without checking a dozen trade publications every morning.',
     '',

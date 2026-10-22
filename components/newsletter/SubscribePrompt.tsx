@@ -31,6 +31,7 @@ import {
 import { FOLLOW } from '@/lib/brand/social'
 import { ChoiceChips } from './ChoiceChips'
 import { FollowChoices, type FollowPass } from './FollowChoices'
+import { firstEditionSentence } from '@/lib/newsletter/first-edition'
 
 /**
  * The signup card. Three passes on Danny's word:
@@ -518,7 +519,7 @@ export function SubscribePrompt() {
                   : pass
                     ? 'This address already gets FundOps Daily, so nothing changes there.'
                     : 'This address already gets FundOps Daily. To change what you follow, use the link at the foot of any edition.'
-                : `Your first edition lands tomorrow morning.${followedWords ? ` Stories on ${followedWords} will be grouped for you.` : ''}`}
+                : `${firstEditionSentence()}${followedWords ? ` Stories on ${followedWords} will be grouped for you.` : ''}`}
             </p>
 
             {pass && (
