@@ -26,7 +26,8 @@ import { pullFollowed } from './personalize'
 import { pickEventsForEmail } from './email-events'
 import { pickRanks, rankHref, type RankList } from './ranks'
 import { FOLLOW } from '@/lib/brand/social'
-import { formatDate, readerLine, sponsorsInTheNews, topStoryLine, type TemplateParams, type WeekRecap } from './email-template'
+import { formatDate, readerLine, sponsorsInTheNews, topStoryLine, webinarsForEdition, type TemplateParams, type WeekRecap } from './email-template'
+import type { EmailWebinar } from './email-webinars'
 
 /** Plain-text twin of the HTML's FROM_EMAIL: marks a visit from the reader's own copy. */
 const FROM_EMAIL = '?utm_source=newsletter&utm_medium=email'
@@ -117,6 +118,23 @@ function eventsText(events: IndustryEvent[]): string {
   ].join('\n')
 }
 
+/** "This week's free webinars" (2026-10-22): the HTML's picks, a line each, the host and the page under it. */
+export function webinarsText(picks: EmailWebinar[]): string {
+  if (picks.length === 0) return ''
+  const rows = picks.map(
+    ({ event, day, time }) =>
+      `- ${day} · ${time}: ${event.name}\n  ${cleanEntityName(event.organizerName)}\n  https://fundopshq.com/events/${event.slug}${FROM_EMAIL}`,
+  )
+  return [
+    heading('THIS WEEK’S FREE WEBINARS'),
+    'Free, with the date and time checked at the host.',
+    '',
+    rows.join('\n'),
+    '',
+    `Every webinar: https://fundopshq.com/events/webinars${FROM_EMAIL}`,
+  ].join('\n')
+}
+
 function sponsorTopText(slate: SponsorSlate, readerTag?: string): string {
   // The house notice is one slim line in the HTML; in text it waits for the foot.
   return slate.sponsors
@@ -191,6 +209,8 @@ export function renderNewsletterText(params: TemplateParams): string {
   if (recapBlock) blocks.push(recapBlock)
   const eventsBlock = eventsText(events)
   if (eventsBlock) blocks.push(eventsBlock)
+  const webinarsBlock = webinarsText(webinarsForEdition(params))
+  if (webinarsBlock) blocks.push(webinarsBlock)
 
   blocks.push(sponsorBottomText(sponsorSlate, readerFirms, readerTag))
 

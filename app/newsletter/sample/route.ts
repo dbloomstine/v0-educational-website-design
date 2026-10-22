@@ -63,6 +63,10 @@ export async function GET() {
     const events = await queryEventFeed({ when: '1w', limit: 150 })
       .then((feed) => feed.events)
       .catch<IndustryEvent[]>(() => [])
+    // The webinars lane's week, for "This week's free webinars" (2026-10-22).
+    const webinars = await queryEventFeed({ when: '1w', format: 'virtual', limit: 150 })
+      .then((feed) => feed.events)
+      .catch<IndustryEvent[]>(() => [])
     const monday = new Date(`${editionDate}T12:00:00-05:00`).getUTCDay() === 1
 
     const email = renderNewsletterEmail({
@@ -73,6 +77,7 @@ export async function GET() {
       subscriberCount: subs?.length || undefined,
       readerFirms: subs ? readerFirmDomains(subs.map((s) => String(s.email))).size : undefined,
       events,
+      webinars,
       recap: monday ? await lastWeeksCloses() : null,
       // One sponsor, top and bottom: exactly what a sponsor gets.
       sponsorSlate: SAMPLE_SPONSOR_SLATE,

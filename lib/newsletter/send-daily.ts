@@ -146,6 +146,14 @@ export async function sendDailyNewsletter(
   } catch (err) {
     console.error('[send-daily] events lookup failed, sending without Section B:', err)
   }
+  // The webinars lane's week, for "This week's free webinars" (2026-10-22, Danny). The template picks the
+  // few it lists (lib/newsletter/email-webinars.ts). Like the events, a failure only leaves the block out.
+  let upcomingWebinars: IndustryEvent[] = []
+  try {
+    upcomingWebinars = (await queryEventFeed({ when: '1w', format: 'virtual', limit: EVENTS_LIMIT })).events
+  } catch (err) {
+    console.error('[send-daily] webinars lookup failed, sending without the webinars block:', err)
+  }
 
   // The sponsor whose run covers this edition, if there is one; otherwise the
   // template shows the house notice. Never throws.
@@ -200,6 +208,7 @@ export async function sendDailyNewsletter(
         interestToken: INTEREST_SENTINEL,
         subscriberCount: subscribers.length,
         events: upcomingEvents,
+        webinars: upcomingWebinars,
         sponsorSlate: slateFor(sponsor),
         readerFirms,
         recap,

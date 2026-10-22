@@ -18,6 +18,8 @@ export interface SampleContent {
   totalArticles: number
   editionDate: string
   events: IndustryEvent[]
+  /** The webinars lane's week, for "This week's free webinars" (2026-10-22). */
+  webinars: IndustryEvent[]
   subscriberCount?: number
   readerFirms?: number
 }
@@ -28,14 +30,16 @@ async function load(): Promise<SampleContent> {
   const editionDate = new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' })
   const { data: subs } = await db.from('newsletter_subscribers').select('email').eq('status', 'confirmed').limit(10000)
   const events = await queryEventFeed({ when: '1w', limit: 150 }).then((f) => f.events).catch<IndustryEvent[]>(() => [])
+  const webinars = await queryEventFeed({ when: '1w', format: 'virtual', limit: 150 }).then((f) => f.events).catch<IndustryEvent[]>(() => [])
   return {
     groups: content.groups,
     totalArticles: content.totalArticles,
     editionDate,
     events,
+    webinars,
     subscriberCount: subs?.length || undefined,
     readerFirms: subs ? readerFirmDomains(subs.map((s) => String(s.email))).size : undefined,
   }
 }
 
-export const getSampleContent = unstable_cache(load, ['newsletter-sample-content-v1'], { revalidate: 600 })
+export const getSampleContent = unstable_cache(load, ['newsletter-sample-content-v2'], { revalidate: 600 })

@@ -149,6 +149,8 @@ async function main() {
   console.log(useSampleSlate ? '  Sponsor: the one-sponsor placeholder (SAMPLE_SLATE).' : `  Sponsor: ${booked ? booked.name : 'none booked — house notice'}.`)
 
   const upcomingEvents = (await queryEventFeed({ when: '1w', limit: EVENTS_LIMIT })).events
+  // The webinars lane's week, as the send reads it (2026-10-22).
+  const upcomingWebinars = (await queryEventFeed({ when: '1w', format: 'virtual', limit: EVENTS_LIMIT })).events
   const { data: subscribers } = await supabase.from('newsletter_subscribers').select('email').eq('status', 'confirmed').limit(10000)
   const monday = new Date(`${editionDate}T12:00:00-05:00`).getUTCDay() === 1
 
@@ -162,6 +164,7 @@ async function main() {
     readerFirms: subscribers ? readerFirmDomains(subscribers.map((s) => String(s.email))).size : undefined,
     recap: monday ? await lastWeeksCloses() : null,
     events: upcomingEvents,
+    webinars: upcomingWebinars,
     interests: process.env.FOLLOWS ? sanitizeInterests(process.env.FOLLOWS.split(',')) : undefined,
     preferencesUrl: 'https://fundopshq.com/preferences?token=PREVIEW',
     // The one-click follow row, as a reader with no choices sees it (the links do not work from a preview).

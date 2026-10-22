@@ -33,6 +33,7 @@ import { entityKey, keysMatch } from './story-links'
 import { pullFollowed } from './personalize'
 import { followLineHtml } from './follow-line'
 import { pickEventsForEmail } from './email-events'
+import { pickWebinarsForEmail, type EmailWebinar } from './email-webinars'
 import { pickRanks, rankHref, type RankList, type RankRow } from './ranks'
 import { EMAIL_FOLLOW_ROW } from './interests'
 import { interestLink } from './interest-link'
@@ -57,6 +58,14 @@ export interface TemplateParams {
    * instead — one send, one habit. Empty array renders no section.
    */
   events?: IndustryEvent[]
+  /**
+   * The webinars lane's next week (queryEventFeed with format 'virtual'). The template picks the few it
+   * lists under "This week's free webinars" (lib/newsletter/email-webinars.ts, 2026-10-22, Danny). Absent or
+   * too few that qualify, no block.
+   */
+  webinars?: IndustryEvent[]
+  /** When the edition is built: a webinar already under way that morning is left out. Defaults to now. */
+  now?: Date
   /**
    * How many firms the list is read at (distinct work domains among confirmed
    * subscribers), counted at send time. Used by the house "Your firm here"
@@ -620,6 +629,61 @@ function renderEventsSection(events: IndustryEvent[]): string {
           </tr>`
 }
 
+// ─── This week's free webinars ─────────────────────────────────────────────
+
+/**
+ * The ids the week ahead lists, so a webinar its organizer submitted (which shows there) is not listed twice.
+ */
+export function weekAheadIds(events: IndustryEvent[]): Set<string> {
+  const days = pickEventsForEmail(events, (e) => formatEventDayHeading(e.startDate))
+  return new Set(days.flatMap((d) => d.shown.map((e) => e.id)))
+}
+
+/** The block's picks, from the template's own parameters; the HTML and the text part both call this. */
+export function webinarsForEdition(params: Pick<TemplateParams, 'webinars' | 'events' | 'editionDate' | 'now'>): EmailWebinar[] {
+  if (!params.webinars?.length) return []
+  return pickWebinarsForEmail(params.webinars, {
+    today: params.editionDate,
+    now: params.now ?? new Date(),
+    exclude: weekAheadIds(params.events ?? []),
+  })
+}
+
+/** One webinar: the day and time in the narrow left column, as the week ahead; the host under the name. */
+function renderWebinar({ event, day, time }: EmailWebinar): string {
+  return `
+    <tr>
+      <td class="fops-etd">${escapeHtml(day)}<br>${escapeHtml(time)}</td>
+      <td class="fops-ecell">
+        <a href="https://fundopshq.com/events/${escapeHtml(event.slug)}${FROM_EMAIL}" class="fops-etitle" style="color:${INK};text-decoration:none;" target="_blank">${escapeHtml(event.name)}</a>
+        <div class="fops-emeta">${escapeHtml(cleanEntityName(event.organizerName))}</div>
+      </td>
+    </tr>`
+}
+
+/**
+ * "This week's free webinars" (2026-10-22, Danny: "a short block… 3-5 lines under the events section"). It
+ * wears the week ahead's clothes exactly: the same heading, the same rows, the same links at its foot.
+ */
+function renderWebinarsSection(picks: EmailWebinar[]): string {
+  if (picks.length === 0) return ''
+  return `
+          <tr>
+            <td class="fops-bg-cream fops-px" style="padding:4px 16px 12px;background-color:${CREAM};">
+              <div class="fops-serif fops-ink" style="font-size:20px;font-weight:700;line-height:1.2;margin-bottom:2px;">
+                This week&rsquo;s free <span class="fops-amber" style="font-style:italic;">webinars.</span>
+              </div>
+              <div class="fops-xs" style="font-family:${FONT_MONO};font-size:10px;line-height:15px;color:${INK_MUTED};text-transform:uppercase;">Free, with the date and time checked at the host</div>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:8px;">
+                ${picks.map(renderWebinar).join('')}
+              </table>
+              <div style="padding-top:12px;">
+                <a href="https://fundopshq.com/events/webinars${FROM_EMAIL}" class="fops-mono fops-xs" style="color:${INK};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;">Every webinar &rarr;</a>
+              </div>
+            </td>
+          </tr>`
+}
+
 // ─── Single story row ──────────────────────────────────────────────────────
 
 function renderArticle(article: ArticleGroup['articles'][0]): string {
@@ -1024,6 +1088,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   const sponsorBottom = renderSponsorBottom(sponsorSlate, readerFirms)
   const recapSection = renderRecap(recap)
   const eventsSection = renderEventsSection(events)
+  const webinarsSection = renderWebinarsSection(webinarsForEdition(params))
   const covered = sponsorsInTheNews(sponsorSlate, groups)
 
   // The masthead strip carries the date alone. Until 2026-10-16 it also said
@@ -1136,6 +1201,9 @@ export function renderNewsletterEmail(params: TemplateParams): string {
 
           <!-- ─── The week ahead ─── -->
           ${eventsSection}
+
+          <!-- ─── This week's free webinars ─── -->
+          ${webinarsSection}
 
           <!-- ─── Sponsor: bottom ─── -->
           ${sponsorBottom}
