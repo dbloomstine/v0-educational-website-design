@@ -245,6 +245,19 @@
   * {
     @apply border-border outline-ring/50;
   }
+  /* A visible keyboard focus everywhere (WCAG 2.4.7, 2026-10-22 audit). The browser's own ring was drawn 1px wide
+     in the 50% slate above, close to invisible on the navy header and faint on cream. The ring takes the ground's
+     ink: navy on the cream paper, cream on the navy header and footer, cream again inside the paper's navy bands.
+     Anything with its own focus style (a utility class) still wins: this sits in the base layer. */
+  :focus-visible {
+    outline: 2px solid var(--foreground);
+    outline-offset: 2px;
+  }
+  .paper .panel-head :focus-visible,
+  .paper .panel-ink :focus-visible,
+  .paper .league-strip .ls-head :focus-visible {
+    outline-color: var(--ink-foreground);
+  }
   body {
     @apply bg-background text-foreground;
   }

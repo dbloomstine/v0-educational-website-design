@@ -433,7 +433,7 @@ export function SubscribePrompt() {
                 aria-label="Close"
                 className="-mr-1.5 -mt-1 shrink-0 rounded-sm p-1.5 text-foreground/70 hover:text-foreground"
               >
-                <X className="h-4 w-4" />
+                <X className="h-4 w-4" aria-hidden />
               </button>
             </div>
             <div className="mt-2 flex items-stretch gap-2">
@@ -455,10 +455,10 @@ export function SubscribePrompt() {
                 className="inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-sm px-3.5 font-ui text-[12.5px] font-extrabold uppercase tracking-[0.07em] disabled:opacity-50"
                 style={{ background: 'var(--tab)', color: 'var(--ink)' }}
               >
-                {sub.status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Get it free <ArrowRight className="h-3.5 w-3.5" aria-hidden /></>}
+                {sub.status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" aria-label="Subscribing" role="img" /> : <>Get it free <ArrowRight className="h-3.5 w-3.5" aria-hidden /></>}
               </button>
             </div>
-            {sub.status === 'error' && <p className="mt-1 font-ui text-xs text-red-400" role="alert">{sub.errorMsg}</p>}
+            {sub.status === 'error' && <p className="mt-1 font-ui text-xs text-red-700" role="alert">{sub.errorMsg}</p>}
             <div className="mt-1 flex items-center justify-between gap-3 font-ui text-[12.5px] text-muted-foreground">
               <button type="button" onClick={() => close(closeKind)} className="rounded-sm py-1.5 font-semibold text-foreground/75 underline underline-offset-2 hover:text-foreground">
                 {skipLabel}
@@ -502,7 +502,7 @@ export function SubscribePrompt() {
             aria-label="Close"
             className="rounded-sm p-1.5 opacity-80 transition-opacity hover:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--tab)]"
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5" aria-hidden />
           </button>
         </div>
 
@@ -614,7 +614,7 @@ export function SubscribePrompt() {
                 style={{ background: 'var(--tab)', color: 'var(--ink)' }}
               >
                 {sub.status === 'loading' ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-4 w-4 animate-spin" aria-label="Subscribing" role="img" />
                 ) : (
                   <>
                     <span>
@@ -625,7 +625,7 @@ export function SubscribePrompt() {
                 )}
               </button>
             </div>
-            {sub.status === 'error' && <p className="mt-1.5 font-ui text-xs text-red-400" role="alert">{sub.errorMsg}</p>}
+            {sub.status === 'error' && <p className="mt-1.5 font-ui text-xs text-red-700" role="alert">{sub.errorMsg}</p>}
 
             {/* The way past it, said plainly: it is an ask, and the page is right there. */}
             {!requested && (

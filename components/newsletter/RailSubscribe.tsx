@@ -63,7 +63,7 @@ export function RailSubscribe() {
           className="group inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-sm px-3.5 font-ui text-[12px] font-bold uppercase tracking-[0.06em] transition-opacity hover:opacity-90 disabled:opacity-50"
           style={{ background: 'var(--tab)', color: 'var(--ink)' }}
         >
-          {sub.status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Subscribe <ArrowRight className="h-3 w-3" aria-hidden /></>}
+          {sub.status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <>Subscribe <ArrowRight className="h-3 w-3" aria-hidden /></>}
         </button>
       </div>
       {sub.status === 'error' && <p className="mt-1.5 font-ui text-xs" role="alert">{sub.errorMsg}</p>}

@@ -25,7 +25,7 @@ export function EventsFinder({ facets }: { facets: EventFacetCounts | null }) {
           name="q"
           aria-label="Search events"
           placeholder={facets?.totalUpcoming ? `Search ${facets.totalUpcoming} events by name, city or host` : 'Search events by name, city or host'}
-          className="w-full rounded-[3px] border border-foreground/25 bg-background py-2.5 pl-10 pr-24 font-ui text-[15px] text-foreground placeholder:text-muted-foreground/80 focus:border-foreground/60 focus:outline-none"
+          className="w-full rounded-[3px] border border-foreground/25 bg-background py-2.5 pl-10 pr-24 font-ui text-[15px] text-foreground placeholder:text-muted-foreground/80 focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground"
         />
         <button type="submit" className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-[3px] bg-foreground px-3.5 py-1.5 font-ui text-[13px] font-semibold text-background hover:opacity-90">
           Search
@@ -36,7 +36,7 @@ export function EventsFinder({ facets }: { facets: EventFacetCounts | null }) {
           <a
             key={p.label}
             href={p.href}
-            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-foreground/20 bg-background px-3 py-1.5 font-ui text-[13px] font-medium text-foreground hover:border-foreground/50"
+            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-foreground/20 bg-background px-3 py-1.5 font-ui text-[13px] font-medium text-foreground hover:border-foreground/50 focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-foreground"
           >
             {p.label}
             {p.count ? <span className="tabular-nums text-[11.5px] text-muted-foreground">{p.count}</span> : null}

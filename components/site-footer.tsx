@@ -19,7 +19,7 @@ const COMPANY_LINKS = [
 const LINKEDIN_PATH =
   "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
 
-const linkClass = "font-ui text-[13px] text-foreground/70 transition-colors hover:text-foreground"
+const linkClass = "inline-block py-1 font-ui text-[13px] text-foreground/70 transition-colors hover:text-foreground"
 const headClass = "mb-3 font-ui text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground"
 
 export function SiteFooter() {
@@ -62,7 +62,7 @@ export function SiteFooter() {
 
           <nav aria-label="News by story">
             <p className={headClass}>News</p>
-            <ul className="space-y-1.5">
+            <ul className="space-y-0.5">
               <li><Link href="/" className={linkClass}>Top stories</Link></li>
               <li><Link href="/news" className={linkClass}>Latest</Link></li>
               {typeSections.map((s) => (
@@ -73,7 +73,7 @@ export function SiteFooter() {
 
           <nav aria-label="News by asset class">
             <p className={headClass}>Asset classes</p>
-            <ul className="space-y-1.5">
+            <ul className="space-y-0.5">
               {assetSections.map((s) => (
                 <li key={s.slug}><Link href={sectionHref(s.slug)} className={linkClass}>{s.title}</Link></li>
               ))}
@@ -82,7 +82,7 @@ export function SiteFooter() {
 
           <nav aria-label="FundOpsHQ">
             <p className={headClass}>FundOpsHQ</p>
-            <ul className="space-y-1.5">
+            <ul className="space-y-0.5">
               <li><Link href="/league-tables" className={linkClass}>League tables</Link></li>
               <li><Link href="/firms" className={linkClass}>Firms</Link></li>
               {/* Not prefetched: the archive is built on request, and this link is on every page. */}
@@ -104,7 +104,7 @@ export function SiteFooter() {
             href={EDITOR.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/70 transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-2 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/70 transition-colors hover:text-foreground"
           >
             <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d={LINKEDIN_PATH} />

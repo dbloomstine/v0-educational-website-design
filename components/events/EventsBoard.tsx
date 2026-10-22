@@ -318,8 +318,9 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
   // One house chip: cream with a hairline, navy when chosen, with the count beside the label so a tap's worth is visible.
   const chip = (on: boolean) =>
     cn(
-      'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 font-ui text-[13px] font-medium transition-colors',
-      on ? 'border-foreground bg-foreground text-background' : 'border-foreground/20 bg-background text-foreground hover:border-foreground/50',
+      // Focus ring drawn inside the chip: the rows scroll sideways, which clips anything drawn outside them.
+      'inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 py-1.5 font-ui text-[13px] font-medium transition-colors focus-visible:outline-2 focus-visible:-outline-offset-4',
+      on ? 'border-foreground bg-foreground text-background focus-visible:outline-background' : 'border-foreground/20 bg-background text-foreground hover:border-foreground/50 focus-visible:outline-foreground',
     )
   const countOf = (n: number | undefined, on: boolean) =>
     n ? <span className={cn('tabular-nums text-[11.5px]', on ? 'text-background/70' : 'text-muted-foreground')}>{n}</span> : null
@@ -356,22 +357,23 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
     <div className="space-y-3">
       {/* ── Search ───────────────────────────────────────────── */}
       <div className="relative">
-        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden />
         <input
           type="search"
           aria-label="Search events"
           placeholder={facets?.totalUpcoming ? `Search ${facets.totalUpcoming} events by name, city or host` : 'Search events by name, city or host'}
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          className="w-full rounded-[3px] border border-foreground/25 bg-background py-2.5 pl-10 pr-9 font-ui text-[15px] text-foreground placeholder:text-muted-foreground/80 focus:border-foreground/60 focus:outline-none"
+          className="w-full rounded-[3px] border border-foreground/25 bg-background py-2.5 pl-10 pr-9 font-ui text-[15px] text-foreground placeholder:text-muted-foreground/80 focus:border-foreground focus:outline-none focus:ring-1 focus:ring-foreground"
         />
         {searchInput && (
           <button
+            type="button"
             aria-label="Clear the search"
             onClick={() => { setSearchInput(''); setQuery('') }}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-sm p-1.5 text-muted-foreground hover:text-foreground"
           >
-            <X className="h-4 w-4" />
+            <X className="h-4 w-4" aria-hidden />
           </button>
         )}
       </div>
@@ -417,9 +419,10 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
         <button
           onClick={() => setFiltersOpen(!filtersOpen)}
           aria-expanded={filtersOpen}
+          aria-controls="events-more-filters"
           className={cn(chip(filtersOpen), 'gap-1.5')}
         >
-          <SlidersHorizontal className="h-3.5 w-3.5" />
+          <SlidersHorizontal className="h-3.5 w-3.5" aria-hidden />
           {filtersOpen ? 'Fewer filters' : 'More filters'}
           {morePicked > 0 && !filtersOpen && <span className="rounded-full bg-foreground px-1.5 text-[11px] text-background">{morePicked}</span>}
         </button>
@@ -427,7 +430,7 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
 
       {/* ── More filters ─────────────────────────────────────── */}
       {filtersOpen && (
-        <div className="space-y-4 border border-foreground/15 bg-background p-4">
+        <div id="events-more-filters" className="space-y-4 border border-foreground/15 bg-background p-4">
           {group('Topic', TOPIC_OPTIONS.map((opt) => {
             const on = hasFilter(topic, opt.value)
             return <button key={opt.value} onClick={() => setTopic(toggleFilter(topic, opt.value))} aria-pressed={on} className={chip(on)}>{opt.label} {countOf(facets?.topics[opt.value], on)}</button>
@@ -463,7 +466,7 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
         </span>
         {chosen.map((c) => (
           <button key={c.key} onClick={c.off} aria-label={`Remove ${c.label}`} className="inline-flex items-center gap-1 rounded-full bg-foreground/[0.07] px-2.5 py-1 font-ui text-[12.5px] text-foreground hover:bg-foreground/15">
-            {c.label} <X className="h-3 w-3" />
+            {c.label} <X className="h-3 w-3" aria-hidden />
           </button>
         ))}
         {chosen.length > 1 && (
@@ -477,8 +480,8 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
             title="Copies a webcal:// address for this view: paste it into Google, Outlook or Apple Calendar under 'subscribe from URL' and new events appear on their own"
             className="inline-flex items-center gap-1.5 py-1.5 font-ui text-[12.5px] text-muted-foreground hover:text-foreground"
           >
-            {feedCopied ? <Check className="h-3.5 w-3.5 text-emerald-700" /> : <CalendarPlus className="h-3.5 w-3.5" />}
-            {feedCopied ? 'Calendar address copied' : 'Add to your calendar'}
+            {feedCopied ? <Check className="h-3.5 w-3.5 text-emerald-700" aria-hidden /> : <CalendarPlus className="h-3.5 w-3.5" aria-hidden />}
+            <span aria-live="polite">{feedCopied ? 'Calendar address copied' : 'Add to your calendar'}</span>
           </button>
           <Link href="/events/submit" className="py-1.5 font-ui text-[12.5px] text-muted-foreground hover:text-foreground">
             Submit an event

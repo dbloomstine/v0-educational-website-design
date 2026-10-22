@@ -71,9 +71,9 @@ export function EventRow({ event }: { event: IndustryEvent }) {
               beacon()
               window.open(event.eventUrl, '_blank', 'noopener,noreferrer')
             }}
-            className="shrink-0 text-muted-foreground/0 transition-colors group-hover:text-muted-foreground/60 hover:!text-foreground"
+            className="-my-1.5 shrink-0 rounded-sm p-1.5 text-muted-foreground/0 transition-colors group-hover:text-muted-foreground/60 hover:!text-foreground focus-visible:!text-foreground [@media(hover:none)]:hidden"
           >
-            <ExternalLink className="h-3 w-3" />
+            <ExternalLink className="h-3 w-3" aria-hidden />
           </button>
         </span>
         <span className="mt-0.5 block truncate font-mono text-[11px] uppercase tracking-wide text-muted-foreground">

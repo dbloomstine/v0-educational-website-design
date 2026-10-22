@@ -30,7 +30,7 @@ export function EventsWeekStrip({ events, className = '' }: { events: IndustryEv
       <ol className={`tab-scroll -mx-4 mt-1.5 flex snap-x scroll-px-4 gap-0 overflow-x-auto px-4 lg:mx-0 lg:grid lg:overflow-visible lg:px-0 ${COLS[events.length] ?? 'lg:grid-cols-5'}`}>
         {events.map((e) => (
           <li key={e.id} className="w-[230px] shrink-0 snap-start border-l border-border/70 px-3 first:border-l-0 first:pl-0 lg:w-auto">
-            <Link href={`/events/${e.slug}`} prefetch={false} className="group block min-w-0">
+            <Link href={`/events/${e.slug}`} prefetch={false} className="group block min-w-0 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground">
               <span className="block font-mono text-[10.5px] uppercase tracking-tight text-muted-foreground">
                 {formatEventDates(e.startDate, e.endDate)}
                 {e.city && e.eventFormat !== 'virtual' ? ` · ${e.city}` : ''}

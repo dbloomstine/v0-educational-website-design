@@ -92,7 +92,7 @@ export function PreferencesForm({
             {resubscribe ? 'You’re back on the list. ' : ''}{interests.length > 0 ? 'Saved. It takes effect with tomorrow’s edition.' : 'Saved. You’ll get the edition as everyone does.'}
           </p>
         )}
-        {status === 'error' && <p className="font-ui text-[13px] text-red-400" role="alert">{errorMsg}</p>}
+        {status === 'error' && <p className="font-ui text-[13px] text-red-700" role="alert">{errorMsg}</p>}
       </div>
 
       <p className="mt-4 font-ui text-[12.5px] leading-snug text-muted-foreground">

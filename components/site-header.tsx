@@ -136,7 +136,7 @@ export function SiteHeader() {
                   name="q"
                   placeholder="Search fund news"
                   aria-label="Search fund news"
-                  className="h-8 w-40 rounded-sm border border-foreground/25 bg-foreground/5 px-2.5 font-ui text-[13px] text-foreground placeholder:text-foreground/40 focus:border-foreground/60 focus:outline-none sm:w-56"
+                  className="h-8 w-40 rounded-sm border border-foreground/25 bg-foreground/5 px-2.5 font-ui text-[13px] text-foreground placeholder:text-foreground/40 focus:border-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground sm:w-56"
                 />
                 <button
                   type="button"
@@ -161,7 +161,7 @@ export function SiteHeader() {
               href="/#subscribe"
               onClick={handleSubscribeClick}
               className={cn(
-                "group h-8 items-center gap-1.5 rounded-sm bg-[#E6B045] px-3.5 font-ui text-[12px] font-bold uppercase tracking-[0.08em] text-[#13233A] transition-colors hover:bg-white",
+                "group h-8 items-center gap-1.5 rounded-sm bg-[#E6B045] px-3.5 font-ui text-[12px] font-bold uppercase tracking-[0.08em] text-[#13233A] transition-colors hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#E6B045]",
                 searchOpen ? "hidden sm:inline-flex" : "inline-flex",
               )}
             >
@@ -219,6 +219,8 @@ export function SiteHeader() {
               <button
                 type="button"
                 onClick={() => nudge(-1)}
+                tabIndex={-1}
+                aria-hidden="true"
                 aria-label="Earlier sections"
                 className="absolute inset-y-0 left-0 flex w-9 items-center justify-start bg-gradient-to-r from-background from-55% to-transparent pl-1 text-foreground/80 hover:text-foreground"
               >
@@ -229,6 +231,8 @@ export function SiteHeader() {
               <button
                 type="button"
                 onClick={() => nudge(1)}
+                tabIndex={-1}
+                aria-hidden="true"
                 aria-label="More sections"
                 className="absolute inset-y-0 right-0 flex w-10 items-center justify-end bg-gradient-to-l from-background from-55% to-transparent pr-1 text-foreground/80 hover:text-foreground"
               >

@@ -60,18 +60,18 @@ export function JoinForm() {
         autoComplete="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        placeholder="you@firm.com"
+        placeholder="name@firm.com"
         required
-        className="min-w-0 flex-1 rounded-[3px] border border-foreground/25 bg-background px-3.5 py-3 font-ui text-[17px] text-foreground placeholder:text-muted-foreground/60 focus:border-foreground/60 focus:outline-none"
+        className="min-w-0 flex-1 rounded-[3px] border border-foreground/25 bg-background px-3.5 py-3 font-ui text-[17px] text-foreground placeholder:text-muted-foreground/60 focus:border-foreground focus:ring-1 focus:ring-foreground focus:outline-none"
       />
       <button
         type="submit"
         disabled={status === 'loading'}
         className="shrink-0 rounded-[3px] bg-foreground px-6 py-3 font-ui text-[16px] font-semibold text-background transition-opacity hover:opacity-90 disabled:opacity-50"
       >
-        {status === 'loading' ? <Loader2 className="mx-auto h-5 w-5 animate-spin" /> : 'Get it free'}
+        {status === 'loading' ? <Loader2 className="mx-auto h-5 w-5 animate-spin" aria-label="Subscribing" role="img" /> : 'Get it free'}
       </button>
-      {status === 'error' && <p className="font-ui text-[13px] text-red-700 sm:basis-full">{errorMsg}</p>}
+      {status === 'error' && <p className="font-ui text-[13px] text-red-700 sm:basis-full" role="alert">{errorMsg}</p>}
     </form>
   )
 }

@@ -36,7 +36,7 @@ export function FilterTabs({
           scroll={false}
           aria-current={item.active ? 'true' : undefined}
           className={cn(
-            '-mb-px shrink-0 whitespace-nowrap border-b-[3px] pb-2 pt-2 font-ui text-[13.5px] transition-colors',
+            '-mb-px shrink-0 whitespace-nowrap border-b-[3px] pb-2 pt-2 font-ui text-[13.5px] transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground',
             item.active
               ? 'border-foreground font-bold text-foreground'
               : 'border-transparent font-medium text-foreground/70 hover:border-foreground/25 hover:text-foreground',
