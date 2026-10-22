@@ -6,12 +6,12 @@
  * city, or "date", "venue", "cost". So the page's title answers in those words,
  * from the event's own fields and only for what the page can answer (no
  * "venue" without a venue, no "cost" without a cost we checked), and the
- * structured data (schema.org Event) carries the same facts.
+ * structured data (schema.org Event, ./event-jsonld.ts) carries the same facts.
  *
  * Pure, browser-safe.
  */
 import { metaDescription } from '@/lib/seo'
-import { costDetail, formatEventLocation, isVerifiedFree, verifiedPriceNote } from './constants'
+import { costDetail, formatEventLocation } from './constants'
 import type { IndustryEvent } from './types'
 
 /** A search result shows about this much of a title. */
@@ -79,66 +79,4 @@ export function eventMetaDescription(e: IndustryEvent): string {
   const lead = `${longEventDates(e.startDate, e.endDate)}${where ? `, ${where}` : ''}.${cost ? ` Cost: ${cost.replace(/\.$/, '')}.` : ''}`
   const rest = e.description?.trim() || `${e.name} by ${e.organizerName}. Date verified by FundOpsHQ.`
   return metaDescription(`${lead} ${rest}`)
-}
-
-/** Dollar amounts in a price note: "$1,025 member, $1,800 non-member" → [1025, 1800]. */
-export function priceAmounts(note: string | null | undefined): number[] {
-  if (!note) return []
-  return Array.from(note.matchAll(/\$\s?(\d{1,3}(?:,\d{3})+|\d+)(?:\.(\d{2}))?/g))
-    .map((m) => Number(m[1].replace(/,/g, '')) + (m[2] ? Number(m[2]) / 100 : 0))
-    .filter((n) => Number.isFinite(n) && n > 0)
-}
-
-const MODE = {
-  virtual: 'https://schema.org/OnlineEventAttendanceMode',
-  hybrid: 'https://schema.org/MixedEventAttendanceMode',
-  in_person: 'https://schema.org/OfflineEventAttendanceMode',
-} as const
-
-/**
- * What the page can say about the price, as schema.org offers. Only what we checked on the registration page
- * (costVerified): free; or the dollar figures in the checked price note, when it names no free places
- * ("Free for members; $795 non-members" says nothing usable as a single price). Otherwise just where to register.
- */
-export function eventOffers(e: IndustryEvent): Record<string, unknown> | null {
-  const url = e.registrationUrl || e.eventUrl
-  if (!url) return null
-  if (isVerifiedFree(e)) return { '@type': 'Offer', url, price: 0, priceCurrency: 'USD', availability: 'https://schema.org/InStock' }
-  const note = verifiedPriceNote(e)
-  const amounts = note && !/\b(free|complimentary|no cost|no charge)\b/i.test(note) ? priceAmounts(note) : []
-  if (amounts.length === 1) return { '@type': 'Offer', url, price: amounts[0], priceCurrency: 'USD' }
-  if (amounts.length > 1) return { '@type': 'AggregateOffer', url, lowPrice: Math.min(...amounts), highPrice: Math.max(...amounts), priceCurrency: 'USD' }
-  return { '@type': 'Offer', url }
-}
-
-/** schema.org Event for an event's page. */
-export function eventJsonLd(e: IndustryEvent, pageUrl = `https://fundopshq.com/events/${e.slug}`) {
-  const offers = eventOffers(e)
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'Event',
-    name: e.name,
-    startDate: e.startDate,
-    ...(e.endDate ? { endDate: e.endDate } : {}),
-    ...(e.description ? { description: e.description } : {}),
-    eventStatus: 'https://schema.org/EventScheduled',
-    eventAttendanceMode: MODE[e.eventFormat as keyof typeof MODE] ?? MODE.in_person,
-    location:
-      e.eventFormat === 'virtual'
-        ? { '@type': 'VirtualLocation', url: e.eventUrl }
-        : {
-            '@type': 'Place',
-            name: e.venue ?? e.city ?? 'TBA',
-            address: {
-              '@type': 'PostalAddress',
-              ...(e.city ? { addressLocality: e.city } : {}),
-              ...(e.stateRegion ? { addressRegion: e.stateRegion } : {}),
-              ...(e.country ? { addressCountry: e.country } : {}),
-            },
-          },
-    organizer: { '@type': 'Organization', name: e.organizerName },
-    ...(offers ? { offers } : {}),
-    ...(isVerifiedFree(e) ? { isAccessibleForFree: true } : {}),
-    url: pageUrl,
-  }
 }

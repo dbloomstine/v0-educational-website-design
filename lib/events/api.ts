@@ -197,6 +197,7 @@ function mapRowToEvent(row: any): IndustryEvent {
     isFeatured: row.is_featured ?? false,
     expectedAttendance: row.expected_attendance ?? null,
     isSubmitted: row.is_submitted ?? false,
+    status: row.status ?? 'published',
   }
 }
 

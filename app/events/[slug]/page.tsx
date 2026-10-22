@@ -27,7 +27,8 @@ import type { IndustryEvent } from '@/lib/events/types'
 import { EventsSignup } from '@/components/events/EventsSignup'
 import { mondayEmailLive } from '@/lib/events/weekly-mode'
 import { MiniEventRow } from '@/components/events/MiniEventRow'
-import { buildEventTitle, eventJsonLd, eventMetaDescription } from '@/lib/events/seo'
+import { buildEventTitle, eventMetaDescription } from '@/lib/events/seo'
+import { eventJsonLd, eventListJsonLd } from '@/lib/events/event-jsonld'
 import { pickNextEdition } from '@/lib/events/similar'
 
 export const revalidate = 3600
@@ -100,17 +101,8 @@ async function CollectionPage({ collection }: { collection: EventCollection }) {
 
   const boardQs = new URLSearchParams(collection.boardParams).toString()
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: collection.title,
-    url: `https://fundopshq.com/events/${collection.slug}`,
-    itemListElement: events.slice(0, 25).map((e, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      url: `https://fundopshq.com/events/${e.slug}`,
-    })),
-  }
+  // The first 25 as full Events, each pointing to its own page, built as the event page's is (2026-10-22: was links alone).
+  const jsonLd = eventListJsonLd(collection.title, `https://fundopshq.com/events/${collection.slug}`, events.slice(0, 25))
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -178,8 +170,10 @@ function EventDetailPage({
   const cost = costDetail(event)
   const dates = formatEventDates(event.startDate, event.endDate)
   const location = formatEventLocation(event)
-  // schema.org Event: dates, place, organizer, status, and the price only where we checked it (lib/events/seo.ts).
+  // schema.org Event for Google's event results (lib/events/event-jsonld.ts): the time and zone when the note
+  // states them, end date, place, image, organizer and its site, status, and the price only where we checked it.
   const jsonLd = eventJsonLd(event)
+  const isCancelled = event.status === 'cancelled'
   // Front page → Events → this event, as the "All events" link above the name reads.
   const breadcrumbs = breadcrumbJsonLd([{ name: 'Events', path: '/events' }, { name: event.name }])
 
@@ -212,7 +206,14 @@ function EventDetailPage({
           <h1 className="mt-3 font-news text-[32px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[42px]">{event.name}</h1>
           <p className="mt-1.5 font-news text-[17px] text-foreground/70">by {event.organizerName}</p>
 
-          {isPast && (
+          {/* Said on the page as in the markup (2026-10-22): a cancelled event's page stays up, marked. */}
+          {isCancelled && (
+            <p className="mt-4 max-w-[72ch] border-l-[3px] border-[var(--tab)] bg-card px-3 py-2 font-ui text-[13.5px] leading-snug text-foreground">
+              <strong className="font-bold">This event has been cancelled.</strong> Check the organizer&apos;s site for any new date.
+            </p>
+          )}
+
+          {isPast && !isCancelled && (
             <p className="mt-4 max-w-[72ch] border-l-[3px] border-[var(--tab)] bg-card px-3 py-2 font-ui text-[13.5px] leading-snug text-foreground">
               <strong className="font-bold">This event has passed.</strong>{' '}
               {next ? (

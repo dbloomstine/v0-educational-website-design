@@ -15,6 +15,8 @@ import { EventsSignup } from '@/components/events/EventsSignup'
 import { mondayEmailLive } from '@/lib/events/weekly-mode'
 import { newYorkToday, splitWeeks } from '@/lib/events/highlights'
 import type { EventFeedResponse, IndustryEvent } from '@/lib/events/types'
+import { eventListJsonLd } from '@/lib/events/event-jsonld'
+import { jsonLdScript } from '@/lib/news/story-jsonld'
 
 // Re-rendered on a timer, so the board and its structured data track the
 // table without a query per request. The board fetches for itself only when a
@@ -44,48 +46,6 @@ export const metadata: Metadata = {
   },
 }
 
-// schema.org Event markup for the next ~25 events — this is what lets the
-// board rank for searches like "private equity events new york".
-function buildEventsJsonLd(events: IndustryEvent[]) {
-  return {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: 'Upcoming private markets industry events',
-    url: 'https://fundopshq.com/events',
-    itemListElement: events.map((e, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      item: {
-        '@type': 'Event',
-        name: e.name,
-        startDate: e.startDate,
-        ...(e.endDate ? { endDate: e.endDate } : {}),
-        eventAttendanceMode:
-          e.eventFormat === 'virtual'
-            ? 'https://schema.org/OnlineEventAttendanceMode'
-            : e.eventFormat === 'hybrid'
-              ? 'https://schema.org/MixedEventAttendanceMode'
-              : 'https://schema.org/OfflineEventAttendanceMode',
-        location:
-          e.eventFormat === 'virtual'
-            ? { '@type': 'VirtualLocation', url: e.eventUrl }
-            : {
-                '@type': 'Place',
-                name: e.venue ?? e.city ?? 'TBA',
-                address: {
-                  '@type': 'PostalAddress',
-                  ...(e.city ? { addressLocality: e.city } : {}),
-                  ...(e.stateRegion ? { addressRegion: e.stateRegion } : {}),
-                  ...(e.country ? { addressCountry: e.country } : {}),
-                },
-              },
-        organizer: { '@type': 'Organization', name: e.organizerName },
-        url: e.eventUrl,
-      },
-    })),
-  }
-}
-
 /** The board's page size. The server sends the first page with the HTML. */
 const BOARD_PAGE_SIZE = 100
 
@@ -110,7 +70,11 @@ export default async function EventsPage() {
       {jsonLdEvents.length > 0 && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(buildEventsJsonLd(jsonLdEvents)) }}
+          // schema.org Event markup for the next ~25 events, built as each event's own page builds it
+          // (lib/events/event-jsonld.ts, 2026-10-22); each Event's url is its page here, no longer the organizer's.
+          dangerouslySetInnerHTML={{
+            __html: jsonLdScript(eventListJsonLd('Upcoming private markets industry events', 'https://fundopshq.com/events', jsonLdEvents)),
+          }}
         />
       )}
       <SiteHeader />

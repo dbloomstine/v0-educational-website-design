@@ -32,6 +32,11 @@ export interface IndustryEvent {
   expectedAttendance: number | null
   /** The organizer sent it in through /events/submit. The daily email always shows it on its day. */
   isSubmitted: boolean
+  /**
+   * The row's status: 'published', 'cancelled' or 'archived' (drafts never reach a page). Optional because only
+   * the database read sets it (2026-10-22, for the Event markup's eventStatus and the page's cancelled notice).
+   */
+  status?: string
 }
 
 export interface EventFacetCounts {

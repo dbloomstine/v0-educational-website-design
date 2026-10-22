@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { EVENT_TITLE_MAX, buildEventTitle, eventJsonLd, eventMetaDescription, eventOffers, eventTitleBase, longEventDates, priceAmounts } from '../seo'
+import { EVENT_TITLE_MAX, buildEventTitle, eventMetaDescription, eventTitleBase, longEventDates } from '../seo'
 import type { IndustryEvent } from '../types'
 
 const lpgp: IndustryEvent = {
@@ -74,45 +74,7 @@ describe('an event page description', () => {
   })
 })
 
-describe('the structured data', () => {
-  it('is a schema.org Event with status, mode, place and organizer', () => {
-    const ld = eventJsonLd(lpgp)
-    expect(ld).toMatchObject({
-      '@type': 'Event',
-      name: lpgp.name,
-      startDate: '2026-10-22',
-      eventStatus: 'https://schema.org/EventScheduled',
-      eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
-      location: { '@type': 'Place', name: lpgp.venue, address: { addressLocality: 'Chicago', addressRegion: 'IL' } },
-      organizer: { '@type': 'Organization', name: 'LPGP Connect' },
-      url: 'https://fundopshq.com/events/8th-annual-lpgp-connect-cfo-coo-forum-chicago',
-    })
-    expect(ld).not.toHaveProperty('endDate')
-    expect(ld).not.toHaveProperty('isAccessibleForFree')
-  })
-  it('calls an event free only when we checked it', () => {
-    const free = eventJsonLd({ ...lpgp, costType: 'free', costVerified: true })
-    expect(free.isAccessibleForFree).toBe(true)
-    expect(free.offers).toMatchObject({ price: 0, priceCurrency: 'USD' })
-    expect(eventJsonLd({ ...lpgp, costType: 'free', costVerified: false })).not.toHaveProperty('isAccessibleForFree')
-  })
-  it('gives prices from a checked note, and none from a note that mixes in free places', () => {
-    expect(eventOffers({ ...lpgp, priceNote: '$1,940' })).toMatchObject({ '@type': 'Offer', price: 1940 })
-    expect(eventOffers({ ...lpgp, priceNote: '$1,025 member, $1,800 non-member' })).toMatchObject({ '@type': 'AggregateOffer', lowPrice: 1025, highPrice: 1800 })
-    expect(eventOffers({ ...lpgp, priceNote: 'Free for IVCA members; $795 non-members' })).toEqual({ '@type': 'Offer', url: lpgp.eventUrl })
-    expect(eventOffers({ ...lpgp, priceNote: '$1,940', costVerified: false })).toEqual({ '@type': 'Offer', url: lpgp.eventUrl })
-  })
-  it('marks a virtual event as online', () => {
-    const ld = eventJsonLd({ ...lpgp, eventFormat: 'virtual', city: null })
-    expect(ld.eventAttendanceMode).toBe('https://schema.org/OnlineEventAttendanceMode')
-    expect(ld.location).toEqual({ '@type': 'VirtualLocation', url: lpgp.eventUrl })
-  })
-  it('reads dollar amounts', () => {
-    expect(priceAmounts('$930 early bird, rises to $1,130 after October 1')).toEqual([930, 1130])
-    expect(priceAmounts('$99.50')).toEqual([99.5])
-    expect(priceAmounts(null)).toEqual([])
-  })
-})
+// The structured data (schema.org Event) is tested in event-jsonld.test.ts.
 
 describe('a title for a name with its own colon', () => {
   it('takes a comma rather than a second colon', () => {
