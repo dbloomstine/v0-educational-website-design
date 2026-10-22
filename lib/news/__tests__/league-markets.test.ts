@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { LEAGUE_MARKETS, marketBySlug, marketForAsset, marketSummary, marketTitle } from '../league-markets'
+import { LEAGUE_MARKETS, marketBySlug, marketForAsset, marketQuestions, marketSummary, marketTitle } from '../league-markets'
 import { LEAGUE_ASSET_LABEL, type FundClose } from '../league'
 
 const close = (firm: string, fund: string | null, sizeUsdM: number, date: string, o: Partial<FundClose> = {}): FundClose =>
@@ -32,5 +32,22 @@ describe('the league market pages', () => {
     expect(marketSummary(m, [close('Northwind Group', null, 1000, '2026-10-21')], 2026)).toContain('is a fund from Northwind Group at $1B')
     expect(marketSummary(m, [close('Northwind Group', null, 1000, '2026-10-21')], 2026)).toContain('one final close in private credit')
     expect(marketSummary(m, [], 2026)).toBe('No final close in private credit has been reported with a size in 2026 so far.')
+  })
+})
+
+describe('the market page’s quick answers', () => {
+  it('answers the largest, the total and the latest from the rows, and nothing without a close', () => {
+    const m = marketBySlug('private-credit')!
+    const rows = [close('Arini', 'Arini Direct Lending Fund I', 4000, '2026-10-20'), close('Northwind Group', 'Debt Fund III', 1000, '2026-10-21')]
+    const qs = marketQuestions(m, rows, 2026)
+    expect(qs.map((x) => x.q)).toEqual([
+      'What is the largest private credit fund close of 2026?',
+      'How much have private credit funds raised in 2026?',
+      'What was the latest private credit fund close?',
+    ])
+    expect(qs[0].a).toBe('Arini Direct Lending Fund I at $4B, first reported October 20.')
+    expect(qs[1].a).toBe('$5B across 2 final closes that FundOpsHQ has reported so far this year.')
+    expect(qs[2].a).toBe('Northwind Group’s Debt Fund III at $1B, reported October 21.')
+    expect(marketQuestions(m, [], 2026)).toEqual([])
   })
 })

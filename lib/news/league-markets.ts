@@ -58,3 +58,29 @@ export function marketSummary(m: LeagueMarket, rows: FundClose[], year: number):
   const count = rows.length === 1 ? 'one final close' : `${rows.length.toLocaleString('en-US')} final closes`
   return `The largest ${m.name} fund close reported in ${year} so far is ${fund} at ${size}, first reported ${day(top.date)}. FundOpsHQ has ranked ${count} in ${m.name} this year, totalling ${totalLabel(total)}.`
 }
+
+export interface MarketAnswer {
+  q: string
+  a: string
+}
+
+/**
+ * Three plain questions and their answers, from the same rows (2026-10-22 SEO audit: make the market pages quotable by
+ * search and by AI assistants). Shown as text, not FAQ markup (Google gives FAQ results to few sites now). Nothing when
+ * the market has no close this year.
+ */
+export function marketQuestions(m: LeagueMarket, rows: FundClose[], year: number): MarketAnswer[] {
+  if (rows.length === 0) return []
+  const size = (c: FundClose) => `${c.converted ? 'about ' : ''}${sizeLabel(c.sizeUsdM)}`
+  const firstWord = (c: FundClose) => c.firm.split(/\s+/)[0].toLowerCase()
+  const fund = (c: FundClose) => (!c.fund ? `an unnamed ${c.firm} fund` : c.fund.toLowerCase().includes(firstWord(c)) ? c.fund : `${c.firm}’s ${c.fund}`)
+  const top = rows[0]
+  const latest = [...rows].sort((a, b) => b.date.localeCompare(a.date))[0]
+  const total = rows.reduce((s, c) => s + c.sizeUsdM, 0)
+  const count = rows.length === 1 ? 'one final close' : `${rows.length.toLocaleString('en-US')} final closes`
+  return [
+    { q: `What is the largest ${m.name} fund close of ${year}?`, a: `${fund(top)} at ${size(top)}, first reported ${day(top.date)}.` },
+    { q: `How much have ${m.name} funds raised in ${year}?`, a: `${totalLabel(total)} across ${count} that FundOpsHQ has reported so far this year.` },
+    { q: `What was the latest ${m.name} fund close?`, a: `${fund(latest)} at ${size(latest)}, reported ${day(latest.date)}.` },
+  ]
+}
