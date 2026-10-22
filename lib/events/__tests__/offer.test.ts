@@ -14,4 +14,13 @@ describe('the events offer', () => {
     expect(possessive('Washington DC')).toBe('Washington DC’s')
     expect(possessive('Dallas')).toBe('Dallas’')
   })
+
+  it('promises the Monday email only when the page says it is live', () => {
+    expect(eventsOfferHeadline('Chicago', { monday: false })).toBe('Get the week’s Chicago and North American fund events, with the morning news.')
+    expect(eventsOfferHeadline('Chicago', {})).not.toMatch(/Monday/)
+    expect(eventsOfferHeadline(null)).not.toMatch(/Monday/)
+    expect(eventsOfferHeadline('Chicago', { monday: true })).toBe('Get Chicago’s fund events every Monday, plus the morning news.')
+    expect(eventsOfferHeadline('Dallas', { monday: true })).toBe('Get Dallas’ fund events every Monday, plus the morning news.')
+    expect(eventsOfferHeadline(null, { monday: true })).toBe('Get the week’s fund events every Monday, plus the morning news.')
+  })
 })

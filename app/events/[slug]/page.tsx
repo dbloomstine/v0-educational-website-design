@@ -25,6 +25,7 @@ import { jsonLdScript } from '@/lib/news/story-jsonld'
 import { Panel } from '@/components/story/StoryBlocks'
 import type { IndustryEvent } from '@/lib/events/types'
 import { EventsSignup } from '@/components/events/EventsSignup'
+import { mondayEmailLive } from '@/lib/events/weekly-mode'
 import { MiniEventRow } from '@/components/events/MiniEventRow'
 import { buildEventTitle, eventJsonLd, eventMetaDescription } from '@/lib/events/seo'
 import { pickNextEdition } from '@/lib/events/similar'
@@ -137,7 +138,7 @@ async function CollectionPage({ collection }: { collection: EventCollection }) {
           </div>
         </div>
         <div className="mx-auto max-w-[1100px] px-4 pb-12 pt-6 lg:px-6">
-          <EventsSignup city={collection.filter.city ?? null} className="mb-6" />
+          <EventsSignup city={collection.filter.city ?? null} monday={mondayEmailLive()} className="mb-6" />
           <div className="panel overflow-hidden">
             {events.length === 0 ? (
               <p className="px-4 py-12 text-center text-sm text-muted-foreground">
@@ -318,7 +319,7 @@ function EventDetailPage({
           </div>
 
           {/* The offer, right under the details: the reader came for this event; the next ones are a field away. */}
-          <EventsSignup city={event.eventFormat === 'virtual' ? null : event.city} className="mt-5" />
+          <EventsSignup city={event.eventFormat === 'virtual' ? null : event.city} monday={mondayEmailLive()} className="mt-5" />
 
           {related.length > 0 && (
             <div className="mt-6">

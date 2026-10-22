@@ -23,6 +23,14 @@
       "schedule": "30 * * * *"
     },
     {
+      "path": "/api/pipeline/events-weekly?fire=1045utc",
+      "schedule": "45 10 * * 1"
+    },
+    {
+      "path": "/api/pipeline/events-weekly?fire=1145utc",
+      "schedule": "45 11 * * 1"
+    },
+    {
       "path": "/api/pipeline/newsletter-send?fire=1130utc",
       "schedule": "30 11 * * *"
     },

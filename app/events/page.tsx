@@ -11,6 +11,7 @@ import { getEventFeed } from '@/lib/events/api'
 import { EVENT_COLLECTIONS } from '@/lib/events/collections'
 import { EventsUpFront } from '@/components/events/EventsUpFront'
 import { EventsSignup } from '@/components/events/EventsSignup'
+import { mondayEmailLive } from '@/lib/events/weekly-mode'
 import { newYorkToday, splitWeeks } from '@/lib/events/highlights'
 import type { EventFeedResponse, IndustryEvent } from '@/lib/events/types'
 
@@ -136,7 +137,7 @@ export default async function EventsPage() {
           <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
             <SponsorStrip className="mb-5" />
             {initial && <EventsUpFront thisWeek={thisWeek} nextWeek={nextWeek} />}
-            <EventsSignup city={null} className="my-5" />
+            <EventsSignup city={null} monday={mondayEmailLive()} className="my-5" />
             <h2 id="board" className="mb-3 scroll-mt-14 font-news text-[24px] font-medium leading-none tracking-[-0.01em] text-foreground">
               All upcoming events
             </h2>

@@ -120,3 +120,30 @@ describe('event opt-ins (2026-10-22)', () => {
     expect(sanitizeSignupForm('firstvisit')).toBe('firstvisit')
   })
 })
+
+describe('the Monday events email’s readers (2026-10-22)', () => {
+  it('are those whose interests carry the events tag (or a city tag, which implies it)', async () => {
+    const { wantsEventsEmail } = await import('../interests')
+    expect(wantsEventsEmail(['PE', 'events', 'city:chicago'])).toBe(true)
+    expect(wantsEventsEmail(['city:chicago'])).toBe(true)
+    expect(wantsEventsEmail(['PE', 'credit'])).toBe(false)
+    expect(wantsEventsEmail([])).toBe(false)
+    expect(wantsEventsEmail(null)).toBe(false)
+    expect(wantsEventsEmail(['city:'])).toBe(false)
+  })
+
+  it('know their cities', async () => {
+    const { readerCitySlugs } = await import('../interests')
+    expect(readerCitySlugs(['PE', 'events', 'city:chicago', 'city:new-york', 'city:chicago'])).toEqual(['chicago', 'new-york'])
+    expect(readerCitySlugs(['events'])).toEqual([])
+    expect(readerCitySlugs(['city:Bad Slug'])).toEqual([])
+  })
+
+  it('stop it by losing every event tag, and only those', async () => {
+    const { withoutEventTags, wantsEventsEmail } = await import('../interests')
+    const left = withoutEventTags(['PE', 'events', 'city:chicago', 'lps'])
+    expect(left).toEqual(['PE', 'lps'])
+    expect(wantsEventsEmail(left)).toBe(false)
+    expect(withoutEventTags(null)).toEqual([])
+  })
+})

@@ -203,3 +203,27 @@ export function mergeSignupInterests(sent: string[], onFile: unknown): string[] 
   const events = sanitizeEventTags([...(Array.isArray(onFile) ? onFile : []), ...sent], 50)
   return [...(story.length ? story : sanitizeInterests(onFile)), ...events]
 }
+
+// ── The Monday events email (2026-10-22, lib/events/weekly-email.ts) ──
+
+/** True when a reader's stored interests ask for the Monday events email ("events", or a city tag, which implies it). */
+export function wantsEventsEmail(onFile: unknown): boolean {
+  return sanitizeEventTags(onFile, 50).length > 0
+}
+
+/** The city slugs a reader asked for ("city:chicago" → "chicago"), in stored order, once each. */
+export function readerCitySlugs(onFile: unknown): string[] {
+  return sanitizeEventTags(onFile, 50)
+    .filter((t) => t !== EVENTS_TAG)
+    .map((t) => t.slice(CITY_PREFIX.length))
+}
+
+/**
+ * Stored interests with every event tag taken out: what "stop the Monday events email" writes. The city tags
+ * go too, because a city tag on its own still counts as an events opt-in (sanitizeEventTags). Everything
+ * else on the row is kept as it is.
+ */
+export function withoutEventTags(onFile: unknown): string[] {
+  if (!Array.isArray(onFile)) return []
+  return onFile.filter((v): v is string => typeof v === 'string' && v !== EVENTS_TAG && !v.startsWith(CITY_PREFIX))
+}

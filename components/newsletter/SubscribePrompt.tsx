@@ -88,11 +88,14 @@ function readerFirms(): Promise<number | null> {
   return firmsRequest
 }
 
-/** The events page the box is on, if any: the city from the page's events block ("" for none), or the events section. */
-function readEventsContext(pathname: string): { city: string | null } | null {
+/**
+ * The events page the box is on, if any: the city from the page's events block ("" for none), or the events section;
+ * and whether that block says the Monday events email is live (lib/events/weekly-mode.ts), so the box promises it only then.
+ */
+function readEventsContext(pathname: string): { city: string | null; monday: boolean } | null {
   const block = document.querySelector('[data-signup-events]')
-  if (block) return { city: block.getAttribute('data-signup-events') || null }
-  return /^\/events(\/|$)/.test(pathname) ? { city: null } : null
+  if (block) return { city: block.getAttribute('data-signup-events') || null, monday: block.getAttribute('data-signup-events-monday') === '1' }
+  return /^\/events(\/|$)/.test(pathname) ? { city: null, monday: false } : null
 }
 
 function isTyping(): boolean {
@@ -150,7 +153,7 @@ export function SubscribePrompt() {
   /** The page it appeared on, stored with a signup (`signup_page`). */
   const [appearedAt, setAppearedAt] = useState<string | null>(null)
   /** On an events page: the city the page is about, if any. */
-  const [eventsCtx, setEventsCtx] = useState<{ city: string | null } | null>(null)
+  const [eventsCtx, setEventsCtx] = useState<{ city: string | null; monday: boolean } | null>(null)
   const sub = useSubscribe(promptForm(firstVisit && !requested), () => ({
     interests: [...followed, ...(eventsCtx ? eventSignupTags(eventsCtx.city) : [])],
     role: role[0],
@@ -415,7 +418,7 @@ export function SubscribePrompt() {
               <p className="font-news text-[17px] font-medium leading-[1.2] tracking-[-0.01em]">
                 {eventsCtx ? (
                   <>
-                    {eventsOfferHeadline(eventsCtx.city)} <span className="italic" style={{ color: 'var(--display-accent)' }}>Free.</span>
+                    {eventsOfferHeadline(eventsCtx.city, { monday: eventsCtx.monday })} <span className="italic" style={{ color: 'var(--display-accent)' }}>Free.</span>
                   </>
                 ) : (
                   <>
@@ -554,7 +557,7 @@ export function SubscribePrompt() {
             <h2 className="font-news text-[25px] font-medium leading-[1.1] tracking-[-0.014em] sm:text-[32px]">
               {eventsCtx ? (
                 <>
-                  {eventsOfferHeadline(eventsCtx.city)}{' '}
+                  {eventsOfferHeadline(eventsCtx.city, { monday: eventsCtx.monday })}{' '}
                   <span className="italic" style={{ color: 'var(--display-accent)' }}>Free.</span>
                 </>
               ) : cameFrom ? (

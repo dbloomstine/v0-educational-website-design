@@ -20,9 +20,13 @@ import { eventsOfferHeadline } from '@/lib/events/offer'
  * Like the rail's form, it then opens the signup box at its tick-boxes.
  *
  * `data-signup-events` tells the signup box it is on an events page, and for
- * which city, so its wording can follow (components/newsletter/SubscribePrompt.tsx).
+ * which city, so its wording can follow (components/newsletter/SubscribePrompt.tsx);
+ * `data-signup-events-monday` tells it whether the Monday events email is live.
+ *
+ * `monday`: the page passes `mondayEmailLive()` (lib/events/weekly-mode.ts). Only
+ * then does the line promise a Monday email.
  */
-export function EventsSignup({ city, className = '' }: { city: string | null; className?: string }) {
+export function EventsSignup({ city, monday = false, className = '' }: { city: string | null; monday?: boolean; className?: string }) {
   const sub = useSubscribe('events', () => ({ interests: eventSignupTags(city) }))
 
   useEffect(() => {
@@ -30,12 +34,13 @@ export function EventsSignup({ city, className = '' }: { city: string | null; cl
     if (sub.status === 'already' && sub.preferencesTicket) openSignupCard({ ticket: sub.preferencesTicket, already: true })
   }, [sub.status, sub.preferencesToken, sub.preferencesTicket])
 
-  const headline = eventsOfferHeadline(city)
+  const headline = eventsOfferHeadline(city, { monday })
 
   return (
     <section
       aria-label="Get the week's events by email"
       data-signup-events={city ?? ''}
+      data-signup-events-monday={monday ? '1' : '0'}
       className={`events-offer border-t-[3px] border-[var(--tab)] bg-card px-4 py-4 sm:px-5 ${className}`}
     >
       {sub.status === 'success' || sub.status === 'already' ? (
