@@ -81,7 +81,7 @@ export default async function ArchiveMonthPage(props: Params) {
             </p>
             <h1 className="mt-1.5 font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">
               {label}
-              {page > 1 && <span className="text-foreground/50"> · page {page}</span>}
+              {page > 1 && <span className="text-foreground/70"> · page {page}</span>}
             </h1>
             <p className="mt-2 max-w-[72ch] font-news text-[16px] leading-snug text-foreground/70">
               Fund closes, deals, people moves and LP commitments from {label}, newest first. Each story links to our

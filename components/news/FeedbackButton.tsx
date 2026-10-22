@@ -103,7 +103,7 @@ export function FeedbackButton() {
             <div className="space-y-4">
               {/* Category pills */}
               <div>
-                <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">
+                <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5 block">
                   Category
                 </label>
                 <div className="flex flex-wrap gap-1.5">
@@ -126,7 +126,7 @@ export function FeedbackButton() {
 
               {/* Message */}
               <div>
-                <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">
+                <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5 block">
                   Message
                 </label>
                 <textarea
@@ -147,7 +147,7 @@ export function FeedbackButton() {
 
               {/* Email (optional) */}
               <div>
-                <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">
+                <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5 block">
                   Email <span className="normal-case tracking-normal font-normal">(optional — if you want a reply)</span>
                 </label>
                 <input

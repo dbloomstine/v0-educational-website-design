@@ -31,7 +31,7 @@ function Mark({ sponsor, height }: { sponsor: SlotSponsor; height: number }) {
     <span
       className={
         sponsor.sample
-          ? 'inline-block border border-dashed border-foreground/40 px-3 py-1 font-news text-[15px] font-bold uppercase tracking-[0.06em] text-foreground/60'
+          ? 'inline-block border border-dashed border-foreground/40 px-3 py-1 font-news text-[15px] font-bold uppercase tracking-[0.06em] text-foreground/70'
           : 'font-news font-bold leading-none tracking-[-0.01em] text-foreground'
       }
       style={sponsor.sample ? undefined : { fontSize: Math.round(height * 0.82) }}

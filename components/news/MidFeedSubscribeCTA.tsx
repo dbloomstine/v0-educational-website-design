@@ -53,7 +53,7 @@ export function MidFeedSubscribeCTA() {
 
   return (
     <div className="my-6 rounded-lg border-2 border-foreground/15 bg-card/95 px-5 py-5 sm:px-6 sm:py-6">
-      <div className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/70">
+      <div className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
         <span className="h-px w-6 bg-foreground/40" />
         In Your Inbox
       </div>
@@ -83,7 +83,7 @@ export function MidFeedSubscribeCTA() {
       ) : (
         <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-2 sm:flex-row">
           <div className="relative flex-1">
-            <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground/50" />
+            <Mail className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="email"
               value={email}

@@ -294,7 +294,7 @@ export function FundraisingChart({
               onMouseEnter={() => restOn(v)}
               className={cn(
                 '-mb-px shrink-0 border-b-[3px] pb-1.5 pt-2 font-ui text-[12.5px] transition-colors',
-                v === view ? 'border-foreground font-bold text-foreground' : 'border-transparent font-medium text-foreground/60 hover:text-foreground',
+                v === view ? 'border-foreground font-bold text-foreground' : 'border-transparent font-medium text-foreground/70 hover:text-foreground',
               )}
             >
               {TAB[v]}

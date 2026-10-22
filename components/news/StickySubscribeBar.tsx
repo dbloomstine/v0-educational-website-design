@@ -68,7 +68,7 @@ export function StickySubscribeBar() {
           type="button"
           onClick={handleDismiss}
           aria-label="Dismiss"
-          className="shrink-0 rounded-sm p-1.5 text-muted-foreground/70 hover:text-foreground transition-colors"
+          className="shrink-0 rounded-sm p-1.5 text-muted-foreground hover:text-foreground transition-colors"
         >
           <X className="h-4 w-4" />
         </button>

@@ -29,7 +29,7 @@ export function ClusterExpander({ relatedArticles, clusterSize, dateRange }: Clu
         onClick={() => setExpanded(!expanded)}
         className={cn(
           'w-full flex items-center gap-1.5 rounded px-2 py-0.5 text-[10px] hover:bg-muted/30 transition-colors',
-          expanded ? 'bg-muted/20 text-muted-foreground' : 'text-muted-foreground/50'
+          expanded ? 'bg-muted/20 text-muted-foreground' : 'text-muted-foreground'
         )}
       >
         <ChevronRight
@@ -48,7 +48,7 @@ export function ClusterExpander({ relatedArticles, clusterSize, dateRange }: Clu
       {/* Expanded related articles */}
       {expanded && (
         <div className="bg-muted/10 border-l-2 border-muted-foreground/20 ml-4">
-          <div className="px-4 py-1 text-[10px] uppercase tracking-wider text-muted-foreground/40 font-medium">
+          <div className="px-4 py-1 text-[10px] uppercase tracking-wider text-muted-foreground font-medium">
             Also covering this story
           </div>
           {relatedArticles.map((article) => (

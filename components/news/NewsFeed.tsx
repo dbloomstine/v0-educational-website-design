@@ -454,7 +454,7 @@ export function NewsFeed() {
             {fundSizeOpen && (
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-medium text-muted-foreground/60 uppercase">Min</span>
+                  <span className="text-[10px] font-medium text-muted-foreground uppercase">Min</span>
                   <select
                     value={fundSizeMin}
                     onChange={(e) => setFundSizeMin(e.target.value)}
@@ -465,9 +465,9 @@ export function NewsFeed() {
                     ))}
                   </select>
                 </div>
-                <span className="text-[11px] text-muted-foreground/40">–</span>
+                <span className="text-[11px] text-muted-foreground">–</span>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-[10px] font-medium text-muted-foreground/60 uppercase">Max</span>
+                  <span className="text-[10px] font-medium text-muted-foreground uppercase">Max</span>
                   <select
                     value={fundSizeMax}
                     onChange={(e) => setFundSizeMax(e.target.value)}
@@ -492,7 +492,7 @@ export function NewsFeed() {
 
           {/* Fund Type pills */}
           <div>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">Fund Type</span>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5 block">Fund Type</span>
             <div className="flex flex-wrap gap-1">
               {FUND_CATEGORIES.map((cat) => {
                 const count = facets?.categories[cat.value] ?? 0
@@ -509,7 +509,7 @@ export function NewsFeed() {
                   >
                     {cat.label}
                     {count > 0 && (
-                      <span className={cn('text-[9px]', hasFilter(category, cat.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
+                      <span className={cn('text-[9px]', hasFilter(category, cat.value) ? 'text-blue-200' : 'text-muted-foreground')}>
                         {count}
                       </span>
                     )}
@@ -521,7 +521,7 @@ export function NewsFeed() {
 
           {/* Event Type groups — compact horizontal flow */}
           <div>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">Event Type</span>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5 block">Event Type</span>
             <div className="flex flex-wrap items-center gap-x-1 gap-y-1.5">
               {EVENT_TYPE_GROUPS.map((group, gi) => {
                 const groupValues = group.types.map((t) => t.value)
@@ -541,7 +541,7 @@ export function NewsFeed() {
                           ? 'text-blue-300'
                           : someSelected
                             ? 'text-blue-400/70'
-                            : 'text-muted-foreground/40 hover:text-muted-foreground/70'
+                            : 'text-muted-foreground hover:text-muted-foreground/70'
                       )}
                     >
                       {group.label}
@@ -563,7 +563,7 @@ export function NewsFeed() {
                         >
                           {type.label}
                           {count > 0 && (
-                            <span className={cn('text-[9px]', hasFilter(eventType, type.value) ? 'text-blue-200' : 'text-muted-foreground/50')}>
+                            <span className={cn('text-[9px]', hasFilter(eventType, type.value) ? 'text-blue-200' : 'text-muted-foreground')}>
                               {count}
                             </span>
                           )}
@@ -578,7 +578,7 @@ export function NewsFeed() {
 
           {/* Geography pills */}
           <div>
-            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 mb-1.5 block">Geography</span>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-1.5 block">Geography</span>
             <div className="flex flex-wrap gap-1">
               {GEOGRAPHY_OPTIONS.map((geo) => (
                 <button

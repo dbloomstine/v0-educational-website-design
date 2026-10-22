@@ -430,7 +430,7 @@ export function SubscribePrompt() {
                 type="button"
                 onClick={() => close(closeKind)}
                 aria-label="Close"
-                className="-mr-1.5 -mt-1 shrink-0 rounded-sm p-1.5 text-foreground/60 hover:text-foreground"
+                className="-mr-1.5 -mt-1 shrink-0 rounded-sm p-1.5 text-foreground/70 hover:text-foreground"
               >
                 <X className="h-4 w-4" />
               </button>

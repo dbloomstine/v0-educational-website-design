@@ -186,7 +186,7 @@ export function SiteMenu({ pathname, onClose, onSubscribe }: Props) {
           <ul className="grid grid-cols-2 gap-x-5">{MORE.map((l) => item(l.label, l.href, l.href === "/archive" ? false : undefined))}</ul>
         </nav>
 
-        <p className="mt-6 font-ui text-[13px] text-foreground/60">
+        <p className="mt-6 font-ui text-[13px] text-foreground/70">
           Also daily on{" "}
           {SOCIAL.map((x, i) => (
             <span key={x.href}>

@@ -150,7 +150,7 @@ export function SiteHeader() {
                   type="button"
                   onClick={() => setSearchOpen(false)}
                   aria-label="Close search"
-                  className="flex h-8 w-8 items-center justify-center text-foreground/60 hover:text-foreground"
+                  className="flex h-8 w-8 items-center justify-center text-foreground/70 hover:text-foreground"
                 >
                   <X className="h-4 w-4" aria-hidden="true" />
                 </button>
@@ -160,7 +160,7 @@ export function SiteHeader() {
                 type="button"
                 onClick={() => setSearchOpen(true)}
                 aria-label="Search fund news"
-                className="flex h-8 w-8 items-center justify-center rounded-sm text-foreground/60 transition-colors hover:bg-foreground/10 hover:text-foreground"
+                className="flex h-8 w-8 items-center justify-center rounded-sm text-foreground/70 transition-colors hover:bg-foreground/10 hover:text-foreground"
               >
                 <Search className="h-4 w-4" aria-hidden="true" />
               </button>

@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils'
 // Modelled on components/events/SubmitEventForm.tsx: the same field styles, honeypot and states.
 const inputClass =
   'w-full rounded-lg border border-border bg-muted px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring'
-const labelClass = 'mb-1 block font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/70'
+const labelClass = 'mb-1 block font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground'
 const noteClass = 'normal-case tracking-normal font-sans font-normal'
 
 type Newsletter = 'subscribed' | 'already' | 'failed' | null

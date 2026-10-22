@@ -172,7 +172,7 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
         <span className="text-[11.5px] text-muted-foreground truncate">
           {article.sourceName || ''}
           {clusterSize && clusterSize > 1 && (
-            <span className="text-muted-foreground/40"> +{clusterSize - 1}</span>
+            <span className="text-muted-foreground"> +{clusterSize - 1}</span>
           )}
         </span>
       </div>
@@ -194,7 +194,7 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
             )}>
               {headlineNodes}
             </span>
-            <ChevronDown className={cn('h-3 w-3 shrink-0 text-muted-foreground/40 transition-transform mt-0.5', mobileExpanded && 'rotate-180')} />
+            <ChevronDown className={cn('h-3 w-3 shrink-0 text-muted-foreground transition-transform mt-0.5', mobileExpanded && 'rotate-180')} />
           </div>
 
           {/* Row 2: firm + quiet classification + date. No logo indent to sit
@@ -202,7 +202,7 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
           <div className="mt-0.5 flex items-center gap-1.5">
             <span className="text-[11px] font-mono uppercase tracking-wide text-muted-foreground truncate">
               {showFirm && (
-                <span className="font-semibold text-muted-foreground/80">{showFirm}</span>
+                <span className="font-semibold text-muted-foreground">{showFirm}</span>
               )}
               {showFirm && metaTrail ? ' · ' : ''}
               {metaTrail}
@@ -221,19 +221,19 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
             {(article.firmName || article.fundName || article.personName) && (
               <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
                 {article.firmName && (
-                  <span><span className="text-muted-foreground/50">Firm:</span> <span className="font-medium text-foreground/80">{article.firmName}{article.coFirms.length > 0 ? ` · ${article.coFirms.join(' · ')}` : ''}</span></span>
+                  <span><span className="text-muted-foreground">Firm:</span> <span className="font-medium text-foreground/80">{article.firmName}{article.coFirms.length > 0 ? ` · ${article.coFirms.join(' · ')}` : ''}</span></span>
                 )}
                 {article.fundName && (
-                  <span><span className="text-muted-foreground/50">Fund:</span> <span className="font-medium text-foreground/80">{article.fundName}</span></span>
+                  <span><span className="text-muted-foreground">Fund:</span> <span className="font-medium text-foreground/80">{article.fundName}</span></span>
                 )}
                 {article.personName && (
-                  <span><span className="text-muted-foreground/50">{article.personTitle || 'Person'}:</span> <span className="font-medium text-foreground/80">{article.personName}</span></span>
+                  <span><span className="text-muted-foreground">{article.personTitle || 'Person'}:</span> <span className="font-medium text-foreground/80">{article.personName}</span></span>
                 )}
                 {article.fundStrategy && (
-                  <span><span className="text-muted-foreground/50">Strategy:</span> <span className="font-medium text-foreground/80 capitalize">{article.fundStrategy}</span></span>
+                  <span><span className="text-muted-foreground">Strategy:</span> <span className="font-medium text-foreground/80 capitalize">{article.fundStrategy}</span></span>
                 )}
                 {article.geography.length > 0 && (
-                  <span><span className="text-muted-foreground/50">Geo:</span> <span className="font-medium text-foreground/80">{article.geography.join(', ')}</span></span>
+                  <span><span className="text-muted-foreground">Geo:</span> <span className="font-medium text-foreground/80">{article.geography.join(', ')}</span></span>
                 )}
               </div>
             )}
@@ -257,7 +257,7 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
                 Read article
                 <ExternalLink className="h-3 w-3 shrink-0" />
               </a>
-              <span className="text-[10px] text-muted-foreground/50">
+              <span className="text-[10px] text-muted-foreground">
                 {article.sourceName}{article.publishedDate ? ` · ${formatRelativeDate(article.publishedDate)}` : ''}
               </span>
             </div>
@@ -314,19 +314,19 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
             {(article.firmName || article.fundName || article.personName) && (
               <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-muted-foreground">
                 {article.firmName && (
-                  <span><span className="text-muted-foreground/50">Firm:</span> <span className="font-medium text-foreground/80">{article.firmName}</span></span>
+                  <span><span className="text-muted-foreground">Firm:</span> <span className="font-medium text-foreground/80">{article.firmName}</span></span>
                 )}
                 {article.fundName && (
-                  <span><span className="text-muted-foreground/50">Fund:</span> <span className="font-medium text-foreground/80">{article.fundName}</span></span>
+                  <span><span className="text-muted-foreground">Fund:</span> <span className="font-medium text-foreground/80">{article.fundName}</span></span>
                 )}
                 {article.personName && (
-                  <span><span className="text-muted-foreground/50">{article.personTitle ? article.personTitle : 'Person'}:</span> <span className="font-medium text-foreground/80">{article.personName}</span></span>
+                  <span><span className="text-muted-foreground">{article.personTitle ? article.personTitle : 'Person'}:</span> <span className="font-medium text-foreground/80">{article.personName}</span></span>
                 )}
                 {article.fundStrategy && (
-                  <span><span className="text-muted-foreground/50">Strategy:</span> <span className="font-medium text-foreground/80 capitalize">{article.fundStrategy}</span></span>
+                  <span><span className="text-muted-foreground">Strategy:</span> <span className="font-medium text-foreground/80 capitalize">{article.fundStrategy}</span></span>
                 )}
                 {article.geography.length > 0 && (
-                  <span><span className="text-muted-foreground/50">Geo:</span> <span className="font-medium text-foreground/80">{article.geography.join(', ')}</span></span>
+                  <span><span className="text-muted-foreground">Geo:</span> <span className="font-medium text-foreground/80">{article.geography.join(', ')}</span></span>
                 )}
               </div>
             )}
@@ -349,7 +349,7 @@ export function ArticleRow({ article, dateRange, clusterSize }: ArticleRowProps)
                 Read full article
                 <ExternalLink className="h-3 w-3 shrink-0" />
               </a>
-              <span className="text-[11px] text-muted-foreground/50">{article.sourceName}{article.publishedDate ? ` · ${formatRelativeDate(article.publishedDate)}` : ''}</span>
+              <span className="text-[11px] text-muted-foreground">{article.sourceName}{article.publishedDate ? ` · ${formatRelativeDate(article.publishedDate)}` : ''}</span>
             </div>
           </div>
         </div>,

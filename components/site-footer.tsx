@@ -43,7 +43,7 @@ export function SiteFooter() {
               <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
             </SubscribeLink>
             {/* The same stories go out each day as posts: a quiet line, for the reader who would rather follow there. */}
-            <p className="mt-4 font-ui text-[12px] text-foreground/60">
+            <p className="mt-4 font-ui text-[12px] text-foreground/70">
               Also daily on{" "}
               {SOCIAL.map((x, i) => (
                 <span key={x.href}>
@@ -56,7 +56,7 @@ export function SiteFooter() {
               .
             </p>
             {/* News sent in by firms (/submit, 2026-10-22): leads for the desk, checked before anything runs. */}
-            <GotNews className="mt-2 text-[12px] text-foreground/60" />
+            <GotNews className="mt-2 text-[12px] text-foreground/70" />
           </div>
 
           <nav aria-label="News by story">
@@ -96,14 +96,14 @@ export function SiteFooter() {
         </div>
 
         <div className="mt-10 flex flex-col gap-3 border-t border-foreground/15 pt-5 sm:flex-row sm:items-center sm:justify-between">
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/50">
+          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/70">
             © {new Date().getFullYear()} FundOpsHQ · Headlines link to their original publishers
           </p>
           <a
             href={EDITOR.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/60 transition-colors hover:text-foreground"
+            className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/70 transition-colors hover:text-foreground"
           >
             <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d={LINKEDIN_PATH} />

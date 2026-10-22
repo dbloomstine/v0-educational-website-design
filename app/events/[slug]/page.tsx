@@ -149,7 +149,7 @@ async function CollectionPage({ collection }: { collection: EventCollection }) {
             )}
           </div>
 
-          <p className="mt-8 text-[12px] text-muted-foreground/70">
+          <p className="mt-8 text-[12px] text-muted-foreground">
             Know an event that belongs here?{' '}
             <Link href="/events/submit" className="font-semibold text-foreground/80 underline underline-offset-2 hover:no-underline">Submit it</Link>.
           </p>
@@ -247,14 +247,14 @@ function EventDetailPage({
 
               <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-2 max-w-2xl">
                 <div>
-                  <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/60">When</dt>
+                  <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">When</dt>
                   <dd className="mt-1 text-sm text-foreground">
                     {dates}
                     {event.timeNote && <span className="text-muted-foreground"> · {timeNoteWithZone(event.timeNote, eventTimeZone(event))}</span>}
                   </dd>
                 </div>
                 <div>
-                  <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/60">Where</dt>
+                  <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">Where</dt>
                   <dd className="mt-1 flex items-start gap-1.5 text-sm text-foreground">
                     <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                     <span>
@@ -267,7 +267,7 @@ function EventDetailPage({
                 </div>
                 {cost && (
                   <div>
-                    <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/60">Cost</dt>
+                    <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">Cost</dt>
                     <dd className={cn('mt-1 flex items-start gap-1.5 text-sm', isVerifiedFree(event) ? 'text-emerald-700' : 'text-foreground')}>
                       <Ticket className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                       <span>{cost}</span>
@@ -276,7 +276,7 @@ function EventDetailPage({
                 )}
                 {event.expectedAttendance && (
                   <div>
-                    <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/60">Expected Attendance</dt>
+                    <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">Expected Attendance</dt>
                     <dd className="mt-1 flex items-start gap-1.5 text-sm text-foreground">
                       <Users className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                       <span>{event.expectedAttendance.toLocaleString()}+</span>
@@ -312,7 +312,7 @@ function EventDetailPage({
                   <CalendarPlus className="h-3 w-3" /> .ics
                 </a>
               </div>
-              <p className="text-[11px] leading-relaxed text-muted-foreground/70">
+              <p className="text-[11px] leading-relaxed text-muted-foreground">
                 Date verified at the organizer&apos;s site by FundOpsHQ. Registration and pricing are handled by the organizer.
               </p>
             </div>

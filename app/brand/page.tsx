@@ -174,7 +174,7 @@ function AssetTile({ asset }: { asset: Asset }) {
           <p className="truncate font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-foreground">
             {asset.name}
           </p>
-          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/50">
+          <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
             {asset.format}
           </p>
         </div>
@@ -192,7 +192,7 @@ function SectionMasthead({ id, no, label, right }: { id: string; no: string; lab
   return (
     <div id={id} className="border-y border-foreground/10 scroll-mt-16">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+        <div className="flex items-center justify-between gap-3 py-2.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
           <span className="flex items-center gap-3">
             <span className="text-foreground/80">{no}</span>
             <span aria-hidden="true" className="text-foreground/20">·</span>
@@ -230,7 +230,7 @@ function SectionHeadline({ left, italic, right }: { left: string; italic: string
       </div>
       {right && (
         <div className="lg:col-span-4">
-          <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground/60 leading-relaxed">
+          <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-muted-foreground leading-relaxed">
             {right}
           </p>
         </div>
@@ -249,7 +249,7 @@ export default function BrandPage() {
       <main id="main-content" className="flex-1">
         {/* ─── Top masthead bar ─── */}
         <div className="border-b border-foreground/10">
-          <div className="container mx-auto flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
+          <div className="container mx-auto flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             <span className="flex items-center gap-3">
               <span className="text-foreground/90">Vol. I</span>
               <span aria-hidden="true" className="text-foreground/20">·</span>
@@ -300,7 +300,7 @@ export default function BrandPage() {
           <div className="relative z-10 container mx-auto px-4 py-16 sm:py-24">
             <div className="grid gap-10 lg:grid-cols-12 lg:items-end">
               <div className="lg:col-span-8">
-                <div className="mb-5 inline-flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground/70">
+                <div className="mb-5 inline-flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
                   <span className="h-px w-8 bg-foreground/40" />
                   Press Kit · Free to Download
                 </div>
@@ -345,7 +345,7 @@ export default function BrandPage() {
             </div>
 
             {/* Quick nav */}
-            <div className="mt-12 flex flex-wrap gap-x-6 gap-y-2 border-t border-foreground/10 pt-6 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">
+            <div className="mt-12 flex flex-wrap gap-x-6 gap-y-2 border-t border-foreground/10 pt-6 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
               {[
                 ['#colors', 'Colors'],
                 ['#wordmarks', 'Wordmarks'],
@@ -401,11 +401,11 @@ export default function BrandPage() {
                   </div>
                   <div className="space-y-1 border-t-2 border-foreground/15 px-5 py-3">
                     <div className="flex items-center justify-between font-mono text-[11px]">
-                      <span className="uppercase tracking-[0.15em] text-muted-foreground/60">Hex</span>
+                      <span className="uppercase tracking-[0.15em] text-muted-foreground">Hex</span>
                       <span className="font-bold text-foreground">{c.hex}</span>
                     </div>
                     <div className="flex items-center justify-between font-mono text-[11px]">
-                      <span className="uppercase tracking-[0.15em] text-muted-foreground/60">OKLCH</span>
+                      <span className="uppercase tracking-[0.15em] text-muted-foreground">OKLCH</span>
                       <span className="text-foreground/80 truncate ml-3">{c.oklch}</span>
                     </div>
                   </div>
@@ -517,7 +517,7 @@ export default function BrandPage() {
                 rel="noopener noreferrer"
                 className="group flex flex-col rounded-sm border-2 border-foreground/15 bg-card/40 p-7 transition-all hover:border-amber-400/50 hover:bg-card/70"
               >
-                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 mb-2">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-2">
                   Display · Variable Serif
                 </p>
                 <h3 className="font-display text-5xl text-foreground" style={{ fontVariationSettings: '"opsz" 144, "SOFT" 30', letterSpacing: '-0.025em' }}>
@@ -545,7 +545,7 @@ export default function BrandPage() {
                 rel="noopener noreferrer"
                 className="group flex flex-col rounded-sm border-2 border-foreground/15 bg-card/40 p-7 transition-all hover:border-amber-400/50 hover:bg-card/70"
               >
-                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 mb-2">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-2">
                   Body · Sans-serif
                 </p>
                 <h3 className="text-5xl font-bold text-foreground tracking-tight">Inter</h3>
@@ -565,7 +565,7 @@ export default function BrandPage() {
                 rel="noopener noreferrer"
                 className="group flex flex-col rounded-sm border-2 border-foreground/15 bg-card/40 p-7 transition-all hover:border-amber-400/50 hover:bg-card/70"
               >
-                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60 mb-2">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground mb-2">
                   Editorial Labels · Mono
                 </p>
                 <h3 className="font-mono text-4xl font-bold text-foreground tracking-tight">JetBrains</h3>
@@ -612,7 +612,7 @@ export default function BrandPage() {
                     <p className="font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-foreground">
                       Danny Bloomstine · Transparent
                     </p>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/50">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
                       PNG · 423×423
                     </p>
                   </div>
@@ -640,7 +640,7 @@ export default function BrandPage() {
                     <p className="font-mono text-[11px] font-bold uppercase tracking-[0.15em] text-foreground">
                       Danny Bloomstine · Full
                     </p>
-                    <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/50">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground">
                       PNG · 533×471
                     </p>
                   </div>
@@ -685,7 +685,7 @@ export default function BrandPage() {
               <div className="mb-5 flex flex-wrap items-center gap-3 border-b border-foreground/10 pb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400">
                 <span className="h-px w-8 bg-amber-400/60" />
                 <span>YouTube Channel Banners</span>
-                <span className="text-muted-foreground/50">· 2560 × 1440 · Safe-area tested</span>
+                <span className="text-muted-foreground">· 2560 × 1440 · Safe-area tested</span>
               </div>
               <div className="grid gap-4 sm:grid-cols-4">
                 {YOUTUBE_BANNERS.map((a) => (
@@ -699,7 +699,7 @@ export default function BrandPage() {
               <div className="mb-5 flex flex-wrap items-center gap-3 border-b border-foreground/10 pb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400">
                 <span className="h-px w-8 bg-amber-400/60" />
                 <span>Podcast Covers</span>
-                <span className="text-muted-foreground/50">· 1500 × 1500 · Square · Apple/Spotify-ready</span>
+                <span className="text-muted-foreground">· 1500 × 1500 · Square · Apple/Spotify-ready</span>
               </div>
               <div className="grid gap-4 sm:grid-cols-4 lg:grid-cols-5">
                 {PODCAST_COVERS.map((a) => (
@@ -713,7 +713,7 @@ export default function BrandPage() {
               <div className="mb-5 flex flex-wrap items-center gap-3 border-b border-foreground/10 pb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400">
                 <span className="h-px w-8 bg-amber-400/60" />
                 <span>LinkedIn Company Icons</span>
-                <span className="text-muted-foreground/50">· 400 × 400 · Round-crop safe</span>
+                <span className="text-muted-foreground">· 400 × 400 · Round-crop safe</span>
               </div>
               <div className="grid gap-4 sm:grid-cols-4 lg:grid-cols-5">
                 {LINKEDIN_ICONS.map((a) => (
@@ -727,7 +727,7 @@ export default function BrandPage() {
               <div className="mb-5 flex flex-wrap items-center gap-3 border-b border-foreground/10 pb-3 font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-amber-400">
                 <span className="h-px w-8 bg-amber-400/60" />
                 <span>LinkedIn Cover Banners</span>
-                <span className="text-muted-foreground/50">· 2256 × 382 · Company-page header</span>
+                <span className="text-muted-foreground">· 2256 × 382 · Company-page header</span>
               </div>
               <div className="grid gap-4 sm:grid-cols-4">
                 {LINKEDIN_COVERS.map((a) => (
@@ -742,7 +742,7 @@ export default function BrandPage() {
         <section className="relative bg-background">
           <div className="container mx-auto px-4 py-16 sm:py-20">
             <div className="mx-auto max-w-3xl text-center">
-              <div className="mb-5 inline-flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground/70">
+              <div className="mb-5 inline-flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
                 <span className="h-px w-8 bg-foreground/40" />
                 Get the Bundle
                 <span className="h-px w-8 bg-foreground/40" />
