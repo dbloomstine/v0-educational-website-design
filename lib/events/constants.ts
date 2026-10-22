@@ -2,16 +2,17 @@
 // (not event_type) — the news domain already uses eventType to mean "kind of
 // news story", and the two vocabularies must not blur together.
 
+// One neutral pill for every kind (2026-10-22): the colours were the old dark theme's and read poorly on the cream page.
 export const EVENT_KIND_LABELS: Record<string, { label: string; color: string }> = {
-  conference: { label: 'Conference', color: 'bg-indigo-900/50 text-indigo-300 border-indigo-800' },
-  summit: { label: 'Summit', color: 'bg-red-900/50 text-red-300 border-red-800' },
-  forum: { label: 'Forum', color: 'bg-blue-900/50 text-blue-300 border-blue-800' },
-  webinar: { label: 'Webinar', color: 'bg-emerald-900/50 text-emerald-300 border-emerald-800' },
-  training: { label: 'Training', color: 'bg-violet-900/50 text-violet-300 border-violet-800' },
-  networking: { label: 'Networking', color: 'bg-sky-900/50 text-sky-300 border-sky-800' },
-  awards: { label: 'Awards', color: 'bg-rose-900/50 text-rose-300 border-rose-800' },
-  roundtable: { label: 'Roundtable', color: 'bg-teal-900/50 text-teal-300 border-teal-800' },
-  other: { label: 'Other', color: 'bg-muted text-muted-foreground border-border' },
+  conference: { label: 'Conference', color: 'bg-background text-foreground/75 border-foreground/20' },
+  summit: { label: 'Summit', color: 'bg-background text-foreground/75 border-foreground/20' },
+  forum: { label: 'Forum', color: 'bg-background text-foreground/75 border-foreground/20' },
+  webinar: { label: 'Webinar', color: 'bg-background text-foreground/75 border-foreground/20' },
+  training: { label: 'Training', color: 'bg-background text-foreground/75 border-foreground/20' },
+  networking: { label: 'Networking', color: 'bg-background text-foreground/75 border-foreground/20' },
+  awards: { label: 'Awards', color: 'bg-background text-foreground/75 border-foreground/20' },
+  roundtable: { label: 'Roundtable', color: 'bg-background text-foreground/75 border-foreground/20' },
+  other: { label: 'Other', color: 'bg-background text-muted-foreground border-foreground/15' },
 }
 
 export const EVENT_FORMAT_LABELS: Record<string, string> = {

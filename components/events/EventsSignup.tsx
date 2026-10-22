@@ -45,7 +45,7 @@ export function EventsSignup({ city, monday = false, className = '' }: { city: s
     >
       {sub.status === 'success' || sub.status === 'already' ? (
         <p className="flex items-start gap-2 font-news text-[17px] leading-snug text-foreground" role="status">
-          <CheckCircle2 className="mt-[3px] h-4 w-4 shrink-0 text-emerald-400" aria-hidden />
+          <CheckCircle2 className="mt-[3px] h-4 w-4 shrink-0 text-emerald-700" aria-hidden />
           {sub.status === 'already'
             ? 'You’re already on the list. The morning email carries the week’s events.'
             : `You’re in. ${city ? `${city} events and the` : 'The week’s events and the'} morning news are on their way.`}

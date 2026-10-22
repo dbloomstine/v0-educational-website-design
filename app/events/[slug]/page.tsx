@@ -142,7 +142,7 @@ async function CollectionPage({ collection }: { collection: EventCollection }) {
           <div className="panel overflow-hidden">
             {events.length === 0 ? (
               <p className="px-4 py-12 text-center text-sm text-muted-foreground">
-                Nothing upcoming here right now — check the <Link href="/events" className="text-amber-400 hover:text-amber-300">full board</Link>.
+                Nothing upcoming here right now — check the <Link href="/events" className="font-semibold text-foreground underline underline-offset-2 hover:no-underline">full board</Link>.
               </p>
             ) : (
               events.map((e) => <MiniEventRow key={e.id} event={e} />)
@@ -151,7 +151,7 @@ async function CollectionPage({ collection }: { collection: EventCollection }) {
 
           <p className="mt-8 text-[12px] text-muted-foreground/70">
             Know an event that belongs here?{' '}
-            <Link href="/events/submit" className="text-amber-400/90 hover:text-amber-300">Submit it</Link>.
+            <Link href="/events/submit" className="font-semibold text-foreground/80 underline underline-offset-2 hover:no-underline">Submit it</Link>.
           </p>
         </div>
       </main>
@@ -268,7 +268,7 @@ function EventDetailPage({
                 {cost && (
                   <div>
                     <dt className="font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground/60">Cost</dt>
-                    <dd className={cn('mt-1 flex items-start gap-1.5 text-sm', isVerifiedFree(event) ? 'text-emerald-400' : 'text-foreground')}>
+                    <dd className={cn('mt-1 flex items-start gap-1.5 text-sm', isVerifiedFree(event) ? 'text-emerald-700' : 'text-foreground')}>
                       <Ticket className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                       <span>{cost}</span>
                     </dd>
@@ -291,7 +291,7 @@ function EventDetailPage({
                 href={event.eventUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex items-center justify-center gap-2 rounded-sm bg-foreground px-5 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-background transition-all hover:bg-amber-400"
+                className="group flex items-center justify-center gap-2 rounded-sm bg-foreground px-5 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-background transition-opacity hover:opacity-90"
               >
                 Visit Event Site
                 <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

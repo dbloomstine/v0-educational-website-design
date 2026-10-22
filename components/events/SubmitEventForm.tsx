@@ -42,8 +42,8 @@ export function SubmitEventForm() {
 
   if (status === 'done') {
     return (
-      <div className="rounded-lg border border-emerald-800 bg-emerald-900/20 px-5 py-8 text-center">
-        <p className="text-sm font-medium text-emerald-300">Submission received — thank you.</p>
+      <div className="rounded-[3px] border border-emerald-700/40 bg-emerald-50 px-5 py-8 text-center">
+        <p className="text-sm font-medium text-emerald-800">Submission received — thank you.</p>
         <p className="mt-2 text-[13px] text-muted-foreground">
           We verify every date at the organizer&apos;s site before publishing. If it checks out, it&apos;ll be on the board within a day.
         </p>
@@ -151,7 +151,7 @@ export function SubmitEventForm() {
         type="submit"
         disabled={status === 'sending'}
         className={cn(
-          'inline-flex items-center gap-2 rounded-sm bg-foreground px-6 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-background transition-all hover:bg-amber-400 disabled:opacity-60'
+          'inline-flex items-center gap-2 rounded-sm bg-foreground px-6 py-3 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-background transition-opacity hover:opacity-90 disabled:opacity-60'
         )}
       >
         {status === 'sending' && <Loader2 className="h-3.5 w-3.5 animate-spin" />}

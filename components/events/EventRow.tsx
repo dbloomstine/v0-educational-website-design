@@ -57,9 +57,9 @@ export function EventRow({ event }: { event: IndustryEvent }) {
       <span className="min-w-0">
         <span className="flex items-center gap-1.5">
           {event.isFeatured && (
-            <Star className="h-3 w-3 shrink-0 fill-amber-400 text-amber-400" aria-label="Featured" />
+            <Star className="h-3 w-3 shrink-0 fill-[#D4A63A] text-[#D4A63A]" aria-label="Featured" />
           )}
-          <span className="text-[15px] font-semibold leading-normal text-foreground transition-colors group-hover:text-amber-400">
+          <span className="text-[15px] font-semibold leading-normal text-foreground decoration-[#D4A63A] decoration-2 underline-offset-[3px] group-hover:underline">
             {event.name}
           </span>
           <button
@@ -71,7 +71,7 @@ export function EventRow({ event }: { event: IndustryEvent }) {
               beacon()
               window.open(event.eventUrl, '_blank', 'noopener,noreferrer')
             }}
-            className="shrink-0 text-muted-foreground/0 transition-colors group-hover:text-muted-foreground/60 hover:!text-amber-400"
+            className="shrink-0 text-muted-foreground/0 transition-colors group-hover:text-muted-foreground/60 hover:!text-foreground"
           >
             <ExternalLink className="h-3 w-3" />
           </button>
@@ -83,7 +83,7 @@ export function EventRow({ event }: { event: IndustryEvent }) {
       </span>
 
       <span
-        className={cn('hidden whitespace-nowrap text-right text-[12px] font-medium sm:block', free ? 'text-emerald-400' : 'text-muted-foreground')}
+        className={cn('hidden whitespace-nowrap text-right text-[12px] font-medium sm:block', free ? 'text-emerald-700' : 'text-muted-foreground')}
         title={verifiedPriceNote(event) ?? undefined}
       >
         {cost}
