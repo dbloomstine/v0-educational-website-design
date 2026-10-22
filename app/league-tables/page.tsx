@@ -6,12 +6,12 @@ import { BackToTop } from '@/components/back-to-top'
 import { FilterTabs } from '@/components/news/FilterTabs'
 import { Panel } from '@/components/story/StoryBlocks'
 import { SubscribePanel } from '@/components/home/Rail'
-import { OUTBOUND } from '@/components/story/StoryLink'
+import { LeagueRow as Row, LeagueTableHead } from '@/components/league/LeagueRow'
+import { LEAGUE_MARKETS } from '@/lib/news/league-markets'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { loadLeagueReport, LEAGUE_SINCE } from '@/lib/news/league-data'
 import { capitalByAsset, leagueRows, LEAGUE_ASSET_LABEL as ASSET_LABEL, LEAGUE_PERIODS, STAGE_LABEL, type FundClose, type LeaguePeriod } from '@/lib/news/league'
 import { sizeLabel, totalLabel } from '@/lib/news/format'
-import { storyPath } from '@/lib/news/story-path'
 import { storyPermalink } from '@/lib/news/story-jsonld'
 
 // League tables: the largest fund closes, ranked. The rules for what gets in
@@ -48,8 +48,6 @@ function href(p: { period: LeaguePeriod; asset?: string; stage: 'final' | 'all' 
   const qs = sp.toString()
   return qs ? `/league-tables?${qs}` : '/league-tables'
 }
-
-const day = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' })
 
 export default async function LeagueTablesPage({ searchParams }: Params) {
   const sp = await searchParams
@@ -150,16 +148,7 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
                 ) : (
                   <div className="overflow-x-auto">
                     <table className="w-full border-collapse text-left">
-                      <thead>
-                        <tr className="border-b border-border font-ui text-[10.5px] font-bold uppercase tracking-[0.1em] text-muted-foreground">
-                          <th scope="col" className="w-9 py-2 pl-3.5 pr-1 font-bold">#</th>
-                          <th scope="col" className="px-2 py-2 font-bold">Manager and fund</th>
-                          <th scope="col" className="px-2 py-2 text-right font-bold">Size</th>
-                          <th scope="col" className="hidden px-2 py-2 font-bold md:table-cell">Market</th>
-                          <th scope="col" className="hidden px-2 py-2 font-bold sm:table-cell">Reported</th>
-                          <th scope="col" className="py-2 pl-2 pr-3.5 font-bold">Source</th>
-                        </tr>
-                      </thead>
+                      <LeagueTableHead />
                       <tbody className="river-rows">
                         {shown.map((c, i) => (
                           <Row key={c.id} c={c} rank={i + 1} showStage={stage === 'all'} />
@@ -176,6 +165,15 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
                 {disputed && <> † the reports also give a higher figure (usually a total that adds leverage or sister vehicles); the lower one is ranked.</>}
                 {updated && <> Updated {updated}.</>}
               </p>
+              <nav aria-label="Each market this year" className="mt-4 font-ui text-[13px] leading-relaxed text-muted-foreground">
+                <span className="font-semibold text-foreground/80">Each market, this year:</span>{' '}
+                {LEAGUE_MARKETS.map((m, i) => (
+                  <span key={m.slug}>
+                    {i > 0 && ' · '}
+                    <Link href={`/league-tables/${m.slug}`} className="underline underline-offset-2 hover:text-foreground">{m.name}</Link>
+                  </span>
+                ))}
+              </nav>
             </section>
 
             <aside className="min-w-0 space-y-5">
@@ -222,42 +220,5 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
       <SiteFooter />
       <BackToTop />
     </div>
-  )
-}
-
-function Row({ c, rank, showStage }: { c: FundClose; rank: number; showStage: boolean }) {
-  return (
-    <tr className="border-b border-border/70 align-baseline last:border-0 hover:bg-background">
-      <td className="py-2 pl-3.5 pr-1 font-mono text-[11px] tabular-nums text-muted-foreground">{rank}</td>
-      <td className="px-2 py-2">
-        <Link prefetch={false} href={`/firm/${c.firmSlug}`} className="hl font-news text-[16px] font-bold leading-tight text-foreground">
-          {c.firm}
-        </Link>
-        <span className="block font-ui text-[12px] leading-snug text-muted-foreground">
-          {/* The fund's name opens our page for the close; the source cell is the citation and stays out. */}
-          {c.fund && <Link prefetch={false} href={storyPath(c)} className="hl text-foreground/80">{c.fund}</Link>}
-          {c.fund && showStage && ' · '}
-          {showStage && STAGE_LABEL[c.stage]}
-          {!c.fund && !showStage && 'Fund not named in the reports'}
-        </span>
-      </td>
-      <td className="whitespace-nowrap px-2 py-2 text-right font-mono text-[14px] font-bold tabular-nums text-foreground">
-        {c.converted && <span className="font-normal text-muted-foreground" title="Reported in another currency; converted to dollars">≈</span>}
-        {sizeLabel(c.sizeUsdM)}
-        {c.altSizeUsdM && <span className="font-normal text-muted-foreground" title={`Reports also give ${sizeLabel(c.altSizeUsdM)}`}>†</span>}
-      </td>
-      <td className="hidden whitespace-nowrap px-2 py-2 font-ui text-[12.5px] text-foreground/80 md:table-cell">{c.assetClass ? ASSET_LABEL[c.assetClass] ?? '—' : '—'}</td>
-      <td className="hidden whitespace-nowrap px-2 py-2 font-mono text-[11px] uppercase tracking-tight text-muted-foreground sm:table-cell">{day(c.date)}</td>
-      <td className="py-2 pl-2 pr-3.5 font-ui text-[12.5px]">
-        <a href={c.url} {...OUTBOUND} title={c.headline} className="font-semibold text-foreground underline decoration-foreground/25 underline-offset-2 hover:decoration-foreground">
-          {c.source ?? 'Report'}
-        </a>
-        {c.sources > 1 && (
-          <Link prefetch={false} href={storyPath(c)} className="block whitespace-nowrap text-[11.5px] text-muted-foreground hover:text-foreground hover:underline">
-            {c.sources} sources
-          </Link>
-        )}
-      </td>
-    </tr>
   )
 }

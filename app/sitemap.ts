@@ -5,6 +5,7 @@ import { SECTIONS, sectionHref, storyInSection } from '@/lib/news/sections'
 import { loadArchive, loadStories } from '@/lib/news/front-page'
 import { firmIndex } from '@/lib/news/firms'
 import { loadLeague } from '@/lib/news/league-data'
+import { LEAGUE_MARKETS } from '@/lib/news/league-markets'
 import { archiveHref, loadArchiveSpan, loadSitemapStories, monthsBetween, type ArchiveSpan, type SitemapStory } from '@/lib/news/archive'
 import { GLOSSARY_TERMS, glossaryHref } from '@/lib/glossary/terms'
 import { storyPath } from '@/lib/news/story-path'
@@ -51,6 +52,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: baseUrl, lastModified: newest, changeFrequency: 'hourly', priority: 1 },
     { url: `${baseUrl}/news`, lastModified: newest, changeFrequency: 'hourly', priority: 0.9 },
     { url: `${baseUrl}/league-tables`, lastModified: newest, changeFrequency: 'daily', priority: 0.8 },
+    ...LEAGUE_MARKETS.map((m) => ({ url: `${baseUrl}/league-tables/${m.slug}`, lastModified: newest, changeFrequency: 'daily' as const, priority: 0.7 })),
     { url: `${baseUrl}/firms`, lastModified: newest, changeFrequency: 'daily', priority: 0.6 },
     { url: `${baseUrl}/events`, lastModified: newestEvent, changeFrequency: 'daily', priority: 0.9 },
     { url: `${baseUrl}/events/submit`, changeFrequency: 'monthly', priority: 0.4 },
