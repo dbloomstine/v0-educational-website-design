@@ -6,6 +6,12 @@
  *
  *   npx tsx --env-file=.env.local scripts/news/requeue-resolved.ts --dry
  *   npx tsx --env-file=.env.local scripts/news/requeue-resolved.ts --apply --days 7
+ *   npx tsx --env-file=.env.local scripts/news/requeue-resolved.ts --apply --days 7 --limit 40   (one hour's share)
+ *
+ * --limit (2026-10-22): the classifier (:30) takes up to 100 pending rows whether or not enrichment (:15, 60 a run,
+ * newest first) has fetched their text yet, and a pending row is off the site and out of the email until it is
+ * classified. So the rows go back an hour's worth at a time, a few minutes before enrichment, rather than all at once.
+ * A row requeued has its enrichment_error cleared, so it is not picked again.
  *
  * Selects rows whose extracted_data.google_url is set (resolved) and whose
  * enrichment_error says the Google interstitial was skipped, i.e. rows whose text
@@ -19,9 +25,10 @@ const args = process.argv.slice(2)
 const flag = (n: string) => args.includes(`--${n}`)
 const opt = (n: string, d: string) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] : d }
 const days = Number(opt('days', '7'))
+const limit = Number(opt('limit', '5000'))
 const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
 const since = new Date(Date.now() - days * 86_400_000).toISOString()
-const { data, error } = await db.from('news_items').select('id, title').gte('published_date', since.slice(0, 10)).not('extracted_data->>google_url', 'is', null).ilike('enrichment_error', '%google news redirect%').limit(5000)
+const { data, error } = await db.from('news_items').select('id, title').gte('published_date', since.slice(0, 10)).not('extracted_data->>google_url', 'is', null).ilike('enrichment_error', '%google news redirect%').order('published_date', { ascending: false }).limit(limit)
 if (error) throw error
 console.log(`${data!.length} rows resolved in the last ${days} days whose text was never fetched`)
 if (!flag('apply')) { console.log(data!.slice(0, 5).map((r) => ` - ${r.title}`).join('\n')); return }
