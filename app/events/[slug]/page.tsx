@@ -26,6 +26,9 @@ import { jsonLdScript } from '@/lib/news/story-jsonld'
 import { Panel } from '@/components/story/StoryBlocks'
 import type { IndustryEvent } from '@/lib/events/types'
 import { EventsSignup } from '@/components/events/EventsSignup'
+import { InlineSignup } from '@/components/newsletter/InlineSignup'
+import { eventsOfferHeadline } from '@/lib/events/offer'
+import { eventSignupTags } from '@/lib/newsletter/interests'
 import { mondayEmailLive } from '@/lib/events/weekly-mode'
 import { MiniEventRow } from '@/components/events/MiniEventRow'
 import { buildEventTitle, eventMetaDescription } from '@/lib/events/seo'
@@ -207,6 +210,8 @@ function EventDetailPage({
   // Said only where we saw it (2026-10-15): no Cost line at all rather than a guess.
   const cost = costDetail(event)
   const dates = formatEventDates(event.startDate, event.endDate)
+  const offerCity = event.eventFormat === 'virtual' ? null : event.city
+  const monday = mondayEmailLive()
   const location = formatEventLocation(event)
   // schema.org Event for Google's event results (lib/events/event-jsonld.ts): the time and zone when the note
   // states them, end date, place, image, organizer and its site, status, and the price only where we checked it.
@@ -323,6 +328,13 @@ function EventDetailPage({
                   </div>
                 )}
               </dl>
+
+              {/* The offer, right under the date and venue (2026-10-22; until then a block below the details): the
+                  reader came for this event, the next ones are a field away. One ask on the page. The wrapper is
+                  rendered on the server so the signup box and the welcome screen know the city even for a subscriber. */}
+              <div data-signup-events={offerCity ?? ''} data-signup-events-monday={monday ? '1' : '0'}>
+                <InlineSignup form="inline-event" line={eventsOfferHeadline(offerCity, { monday })} button="Get them" interests={eventSignupTags(offerCity)} />
+              </div>
             </div>
 
             <div className="panel panel-pad space-y-3 self-start">
@@ -357,8 +369,6 @@ function EventDetailPage({
             </div>
           </div>
 
-          {/* The offer, right under the details: the reader came for this event; the next ones are a field away. */}
-          <EventsSignup city={event.eventFormat === 'virtual' ? null : event.city} monday={mondayEmailLive()} className="mt-5" />
 
           {related.length > 0 && (
             <div className="mt-6">

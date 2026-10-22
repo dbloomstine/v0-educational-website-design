@@ -29,6 +29,8 @@ import { ASSET_LABEL, homeSectionFor, sectionHref, storyInSection } from '@/lib/
 import { kickerLabel, sizeLabel, stageLabel } from '@/lib/news/format'
 import { entityKey, keysMatch } from '@/lib/newsletter/story-links'
 import { breadcrumbJsonLd } from '@/lib/seo'
+import { InlineSignup } from '@/components/newsletter/InlineSignup'
+import { STORY_LINE } from '@/lib/newsletter/inline-copy'
 
 export const revalidate = 1800
 
@@ -206,6 +208,9 @@ export default async function StoryPage({ params }: Params) {
                   {summary.text}
                 </p>
               )}
+
+              {/* The ask, where the reader has just read (2026-10-22): one line, in the browser only, never to a subscriber. */}
+              <InlineSignup form="inline-story" line={STORY_LINE} className="mt-6" />
 
               {/* The story itself lives with its publisher. */}
               <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">

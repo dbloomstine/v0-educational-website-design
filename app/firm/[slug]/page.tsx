@@ -1,3 +1,5 @@
+import { InlineSignup } from '@/components/newsletter/InlineSignup'
+import { firmLine } from '@/lib/newsletter/inline-copy'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -105,6 +107,8 @@ export default async function FirmPage({ params }: Params) {
             <p className="mt-2 font-news text-[16px] leading-snug text-foreground/70">{summary.join(' · ')}</p>
             {/* "Send us your news" (2026-10-22): the form opens with this firm's name filled in. */}
             <GotNews className="mt-1.5" ask="Is this your firm?" href={submitNewsHref(firm.name)} />
+            {/* The ask under the answer (2026-10-22): one line, in the browser only, never to a subscriber. */}
+            <InlineSignup form="inline-firm" line={firmLine(firm.name, firm.closes.length > 0)} className="mt-3 max-w-[820px]" />
           </header>
         </div>
 

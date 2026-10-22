@@ -11,7 +11,7 @@
 import { OWNER_EMAIL, esc, type Mail } from '@/lib/sponsor/mail'
 import { emailWeek, type EditionRow, type EmailWeek } from './engagement'
 
-export interface SubscriberRow { status: string; created_at: string; unsubscribed_at: string | null; signup_source: string | null; signup_form: string | null; /** utm_campaign at signup: which post or link brought them (2026-10-16). */ signup_campaign?: string | null; /** The page the form was on (2026-10-22). */ signup_page?: string | null }
+export interface SubscriberRow { status: string; created_at: string; unsubscribed_at: string | null; signup_source: string | null; signup_form: string | null; /** utm_campaign at signup: which post or link brought them (2026-10-16). */ signup_campaign?: string | null; /** The page the form was on (2026-10-22). */ signup_page?: string | null; /** The first page of the visit they signed up on (lib/newsletter/signup-source.ts). */ signup_landing_path?: string | null }
 /** An outreach v2 message, for the week's outreach figures (2026-10-16). */
 export interface OutreachMessageRow { id: string; program: string; kind: string; status: string; sent_at: string | null; replied_at: string | null }
 /** A Resend event on an outreach message (outreach_v2_events): email.delivered, email.opened, email.clicked, email.bounced, email.complained. */
@@ -32,9 +32,11 @@ const NETWORKS: Record<string, string> = { tiktok: 'TikTok', linkedin: 'LinkedIn
 /** The formats new on 2026-10-22, called out in the letter until they have a record of their own. */
 export const NEW_FORMATS = ['meme', 'fastStory'] as const
 /** The signup forms (lib/newsletter/interests.ts SIGNUP_FORMS), as the letter names them. */
-const FORM_NAMES: Record<string, string> = { popup: 'the signup box', firstvisit: 'the first-visit ask', events: 'the events offer', hero: 'the homepage field', feed: 'the field in the feed', widget: 'the side panel', rail: 'the rail panel', submit: 'the news submission form', takeover: 'the welcome screen', join: 'the join page' }
+const FORM_NAMES: Record<string, string> = { popup: 'the signup box', firstvisit: 'the first-visit ask', events: 'the events offer', hero: 'the homepage field', feed: 'the field in the feed', widget: 'the side panel', rail: 'the rail panel', submit: 'the news submission form', takeover: 'the welcome screen', join: 'the join page', 'inline-story': 'the line under a story', 'inline-event': 'the line under an event', 'inline-firm': 'the line on a firm page', 'inline-league': 'the line on the league tables' }
 /** Always listed, at 0 too, when anyone joined: the box, the two forms new on 2026-10-22 and the welcome screen that replaced the box's asks. */
 const FORMS_ALWAYS = ['takeover', 'popup', 'firstvisit', 'events']
+/** The conversion section lists these at 0 too: the welcome screen and the in-page lines, all new on 2026-10-22. */
+const CONVERSION_ALWAYS = ['takeover', 'inline-story', 'inline-event', 'inline-firm', 'inline-league']
 const PROGRAMS: [string, string][] = [['sponsor_pitch', 'Sponsor pitches'], ['news_note', 'News notes'], ['organizer_note', 'Organizer notes']]
 
 const median = (xs: number[]) => { if (!xs.length) return 0; const s = [...xs].sort((a, b) => a - b); const m = s.length >> 1; return s.length % 2 ? s[m] : Math.round((s[m - 1] + s[m]) / 2) }
@@ -46,11 +48,41 @@ export const viewsOf = (m: MetricRow['metrics']) => Number(m?.views ?? m?.impres
 export const hasViews = (m: MetricRow['metrics'] | undefined) => m?.views != null || m?.impressions != null
 const actsOf = (m: MetricRow['metrics']) => (Number(m?.reactions ?? 0) || 0) + (Number(m?.comments ?? 0) || 0) + (Number(m?.shares ?? 0) || 0)
 
+/** One form's week (2026-10-22): who joined through it, and how many of them are confirmed now (the rest left or are pending). */
+export interface FormConversion { form: string; name: string; joined: number; confirmed: number }
+export interface Conversion {
+  forms: FormConversion[]
+  /** The first page of the visit they joined on (signup_landing_path), the week's joiners. */
+  landings: [string, number][]
+  /** Where they came from and where they landed, together ("linkedin → /story/x"). */
+  sourceLandings: [string, number][]
+}
+
+/**
+ * The week's signups as a conversion report (2026-10-22, Danny: "we're getting visitors. We need to convert more of
+ * them"): by form, confirmed and not; by the page the visit began on; and by source and landing page together.
+ * Rows of the form `test` are left out, as everywhere in the scorecard.
+ */
+export function conversionWeek(joined: SubscriberRow[]): Conversion {
+  const key = (s: SubscriberRow) => (s.signup_form ?? '').trim() || 'not recorded'
+  const by = new Map<string, SubscriberRow[]>()
+  for (const s of joined) by.set(key(s), [...(by.get(key(s)) ?? []), s])
+  if (joined.length) for (const f of CONVERSION_ALWAYS) if (!by.has(f)) by.set(f, [])
+  const forms = [...by]
+    .map(([form, rows]) => ({ form, name: FORM_NAMES[form] ?? form, joined: rows.length, confirmed: rows.filter((s) => s.status === 'confirmed').length }))
+    .sort((a, b) => b.joined - a.joined || a.name.localeCompare(b.name))
+  const landing = (s: SubscriberRow) => (s.signup_landing_path ?? '').trim() || 'not recorded'
+  const source = (s: SubscriberRow) => (s.signup_source ?? '').trim().toLowerCase() || 'not recorded'
+  return { forms, landings: count(joined, landing), sourceLandings: count(joined, (s) => `${source(s)} → ${landing(s)}`) }
+}
+
 export interface FormatWeek { format: string; name: string; posts: number; measured: number; average: number; isNew: boolean }
 
 export interface Scorecard {
   from: string; to: string
   list: { confirmed: number; joined: number; joinedBefore: number; left: number; sources: [string, number][]; forms: [string, number][]; /** Which post or link brought them (utm_campaign), the week's joiners only. */ campaigns: [string, number][]; /** The page the form was on (signup_page), the week's joiners only. */ pages: [string, number][]; unsubSpike: UnsubSpike }
+  /** The week's signups by form (confirmed and not), landing page and source (2026-10-22). */
+  conversion: Conversion
   /** Requests on the sponsor page in the week. */
   sponsorRequests: number
   /** Outreach v2 sends in the week and what happened to them, against the week before (null when nothing went either week). */
@@ -157,6 +189,7 @@ export function scorecard({ subscribers, posts, metrics, editions = [], sponsorL
       pages: count(joined, page),
       unsubSpike: unsubSpike(real, now),
     },
+    conversion: conversionWeek(joined),
     sponsorRequests,
     outreach: (() => {
       const week = outreachWeek(outreachMessages, outreachEvents, start, now), b = outreachWeek(outreachMessages, outreachEvents, before, start)
@@ -229,6 +262,19 @@ function outreachLines(o: Scorecard['outreach']): string[] {
   ].filter(Boolean)
 }
 
+/** The conversion report, as lines of the Monday letter (2026-10-22). Nothing when nobody joined. */
+function conversionLines(c: Conversion): string[] {
+  if (!c.forms.some((f) => f.joined)) return []
+  const form = (f: FormConversion) => (f.joined ? `${esc(f.name)} <b>${n(f.joined)}</b> (${n(f.confirmed)} confirmed${f.joined > f.confirmed ? `, ${n(f.joined - f.confirmed)} not` : ''})` : `${esc(f.name)} 0`)
+  return [
+    h('Conversion: where this week’s readers signed up'),
+    line(`By form: ${c.forms.map(form).join(' · ')}.`),
+    line(`The page their visit began on: ${list(c.landings.slice(0, 8))}.`),
+    line(`Source and landing page: ${list(c.sourceLandings.slice(0, 6))}.`),
+    `<p style="margin:0 0 8px;font-family:${SANS};font-size:12px;line-height:1.5;color:${MUTED};">Confirmed is the row’s status now: signup is single opt-in, so “not” means they have since left (or the row is pending).</p>`,
+  ]
+}
+
 /** The scorecard as the Monday email. */
 export function scorecardMail(s: Scorecard): Mail {
   const body = [
@@ -238,6 +284,7 @@ export function scorecardMail(s: Scorecard): Mail {
     s.list.joined ? line(`Where they signed up: ${list(s.list.forms)}.`) : '',
     s.list.joined && s.list.campaigns.some(([k]) => k !== 'not recorded') ? line(`Which post or link (utm_campaign): ${list(s.list.campaigns)}.`) : '',
     s.list.joined && s.list.pages.some(([k]) => k !== 'not recorded') ? line(`On which page: ${list(s.list.pages.slice(0, 6))}.`) : '',
+    ...conversionLines(s.conversion),
     s.list.unsubSpike.flagged ? line(`<b style="color:#9C2F1A;">Unsubscribes are up:</b> ${n(s.list.unsubSpike.left)} this week against ${s.list.unsubSpike.averageBefore} a week on average over the four before. Look at what changed in the editions.`) : '',
     ...emailLines(s.email),
     // ── SITE TRAFFIC goes here, between the email and the posts, once it is built (see the Scorecard type). ──

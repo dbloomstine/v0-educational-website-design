@@ -1,3 +1,5 @@
+import { InlineSignup } from '@/components/newsletter/InlineSignup'
+import { leagueLine } from '@/lib/newsletter/inline-copy'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -81,6 +83,8 @@ export default async function LeagueMarketPage({ params }: Params) {
             </p>
             <h1 className="mt-1 font-news text-[30px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[40px]">{title}</h1>
             <p className="mt-2 max-w-[72ch] font-news text-[17px] leading-snug text-foreground/80">{answer}</p>
+            {/* The ask under the answer (2026-10-22): one line, in the browser only, never to a subscriber. */}
+            <InlineSignup form="inline-league" line={leagueLine(m.name)} className="mt-3 max-w-[820px]" />
           </header>
         </div>
         <div className="mx-auto grid max-w-[1080px] gap-6 px-4 pb-12 pt-5 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-6">

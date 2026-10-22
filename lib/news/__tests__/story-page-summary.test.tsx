@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { cleanup, render, screen, within } from '@testing-library/react'
 import type { Story } from '../stories'
 import { storyPath } from '../story-path'
 
@@ -33,6 +33,9 @@ vi.mock('@/components/back-to-top', () => ({ BackToTop: () => null }))
 vi.mock('@/components/story/Headline', () => ({ Headline: ({ story: s }: { story: Story }) => <>{s.headline}</> }))
 vi.mock('@/components/story/ShareBar', () => ({ ShareBar: () => null }))
 vi.mock('@/components/story/StoryBlocks', () => ({ HeadlineRow: () => null, SectionFlag: () => null }))
+// The browser's "this is a subscriber" flag (lib/newsletter/subscribed-flag.ts), set per test.
+let subscribed = false
+vi.mock('@/lib/newsletter/subscribed-flag', () => ({ isMarkedSubscribed: () => subscribed, markSubscribed: () => { subscribed = true } }))
 vi.mock('@/components/home/Rail', () => ({ LatestRail: () => null, SubscribePanel: () => null }))
 
 async function renderPage() {
@@ -40,7 +43,7 @@ async function renderPage() {
   render(await StoryPage({ params: Promise.resolve({ id: PARAM }) }))
 }
 
-beforeEach(() => { long = null })
+beforeEach(() => { long = null; subscribed = false })
 
 describe('the story page summary', () => {
   it('shows today’s short summary, as the pull-quote, when no row has a long one', async () => {
@@ -67,11 +70,24 @@ describe('the story page summary', () => {
     const para = screen.getByText('One paragraph of the long summary.')
     const button = screen.getByRole('link', { name: /Read the full story at AltAssets/ })
     expect(button.getAttribute('href')).toBe('https://example.com/original')
-    // paragraphs block, then the button row, as siblings in that order
+    // paragraphs block, the one-line signup ask (2026-10-22), then the button row, as siblings in that order
     const block = para.parentElement as HTMLElement
-    expect(block.nextElementSibling).toBe(button.parentElement)
+    const ask = block.nextElementSibling as HTMLElement
+    expect(ask.getAttribute('data-signup-inline')).toBe('inline-story')
+    expect(ask.nextElementSibling).toBe(button.parentElement)
     expect(screen.getByText(/can contain errors/)).toBeTruthy()
     expect(within(document.body).getAllByText(/The linked/).length).toBeGreaterThan(0)
+  })
+
+  it('asks for the email under the summary, with the line as the field’s label, and never asks a subscriber', async () => {
+    await renderPage()
+    const field = screen.getByLabelText(/Get stories like this every morning by 7:30am ET/)
+    expect(field.getAttribute('type')).toBe('email')
+    cleanup()
+    subscribed = true
+    await renderPage()
+    expect(document.querySelector('[data-signup-inline]')).toBeNull()
+    expect(screen.getByRole('link', { name: /Read the full story at AltAssets/ })).toBeTruthy()
   })
 
   it('leaves the JSON-LD description on the short summary', async () => {

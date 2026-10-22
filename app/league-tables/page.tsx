@@ -1,3 +1,5 @@
+import { InlineSignup } from '@/components/newsletter/InlineSignup'
+import { leagueLine } from '@/lib/newsletter/inline-copy'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
@@ -102,6 +104,8 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
               The largest fund closes across private markets, ranked by size. Every row is a close a publication
               reported, and links to that report.
             </p>
+            {/* The ask under the answer (2026-10-22): one line, in the browser only, never to a subscriber. */}
+            <InlineSignup form="inline-league" line={leagueLine()} className="mt-3 max-w-[820px]" />
             <FilterTabs
               ariaLabel="Period"
               label="Period"
