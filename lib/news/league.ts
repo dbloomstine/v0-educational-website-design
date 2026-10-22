@@ -147,6 +147,10 @@ const NOT_A_BLIND_POOL_RE = /\b(continuation (fund|vehicle)s?|single-asset|multi
  * platform to $17.1bn" and "Fund III, part of its credit platform, closes at
  * $2bn" name the fund the figure belongs to and stay in.
  */
+/** "$1bn SMA", "$500m single-investor account": the figure is for one investor's account. */
+const RAISED_AN_SMA_RE = /(?:bn|billion|m|million|\d)\s+(?:SMA|separately[- ]managed account|single[- ]investor (?:account|vehicle|fund))\b/i
+/** "across four funds", "across its three vehicles": a figure summed over several funds. */
+const ACROSS_FUNDS_RE = /\bacross (?:its |the )?(?:\d+|two|three|four|five|six|several|multiple) funds\b/i
 const PLATFORM_AFTER_RE = /^[^.;,:()]*?\bplatforms?\b/i
 const FUND_BEFORE_PLATFORM_RE = /\b(funds?|vehicles?|SMAs?|accounts?)\b[^.;,:()]*\bplatforms?\b/i
 const CLAUSE_BREAK_RE = /\b(as|after|while|with|amid|bringing|taking|lifting|pushing|and|but|which|where|that)\b[^.;,:()]*\bplatforms?\b/i
@@ -231,6 +235,13 @@ export function leagueRejection(
   if (NOT_A_FUND_CLOSE_RE.test(headline)) return 'not a private fund close (IPO, soft close, wind-down…)'
   if (NOT_A_BLIND_POOL_RE.test(`${story.headline} ${story.fundName ?? ''}`)) return 'not a closed-end fund (continuation vehicle, CLO, mandate, evergreen…)'
   if (story.sizeUsdM && sizeIsPlatformTotal(headline, story.summary, story.sizeUsdM)) return 'a platform total (fund plus accounts and other vehicles), not one fund'
+  // The money raised is itself a separate account: "Slate secures $1bn SMA"
+  // (2026-10-22). A fund that also mentions its SMAs alongside still ranks.
+  if (RAISED_AN_SMA_RE.test(headline)) return 'not a closed-end fund (continuation vehicle, CLO, mandate, evergreen…)'
+  // A sum over several funds is a platform total too: "Crane … $484m across four
+  // funds" (2026-10-22). One fund's close is what ranks.
+  // The headline only: a summary often adds "across the fund and its side vehicles" to one fund's own close.
+  if (ACROSS_FUNDS_RE.test(headline)) return 'a platform total (fund plus accounts and other vehicles), not one fund'
   if (STAGE_OF[story.closeType] === 'final' && NOT_YET_RE.test(headline)) return 'headline says it has not closed yet'
   // No fund named and the headline does not call it one: admit it only when a
   // second outlet reported it and the summary describes a fund.

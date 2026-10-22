@@ -393,3 +393,14 @@ describe('a later write-up that rounds the figure (Kayne Anderson, 2026-10-22)',
     expect(buildLeague([base, far])).toHaveLength(2)
   })
 })
+
+describe('separate accounts and sums over several funds are not one fund (2026-10-22)', () => {
+  it('keeps out an SMA and a total across four funds', () => {
+    const rows = [
+      row({ firm: 'Slate Asset Management', size: 1000, title: 'Slate secures $1bn SMA to expand senior lending platform' }),
+      row({ firm: 'Crane Venture Partners', size: 484, title: 'Crane raises $484m across four funds to build out its platform' }),
+      row({ firm: 'Northcote Equity', fund: 'Northcote Equity Fund II', size: 318, title: 'Northcote Equity closes Fund II at $318m' }),
+    ]
+    expect(buildLeague(rows).map((c) => c.firm)).toEqual(['Northcote Equity'])
+  })
+})
