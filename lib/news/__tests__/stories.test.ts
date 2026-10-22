@@ -316,7 +316,7 @@ describe('one hire, told with and without the name (Barings, 2026-10-05)', () =>
 
   it('does not tie a nameless report to a named one from the week before', () => {
     const [nameless, named] = barings()
-    const stories = buildStories([{ ...nameless, published_date: '2026-10-09', created_at: '2026-10-09T14:00:00Z' }, named])
+    const stories = buildStories([{ ...nameless, published_date: '2026-10-13', created_at: '2026-10-13T14:00:00Z' }, named])
     expect(stories).toHaveLength(2)
   })
 })

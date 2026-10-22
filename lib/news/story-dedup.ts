@@ -536,6 +536,25 @@ function daysApart(a: MoveLike, b: MoveLike): number | null {
 /** A nameless report and its named twin appear within this many days. */
 const NAMELESS_MOVE_WINDOW_DAYS = 2
 
+/** The same stated job at one firm is one move across this many days (Suntera, 10-13 and 10-20, was seven). */
+const SAME_TITLE_MOVE_WINDOW_DAYS = 7
+
+/** Both reports state the same job, word for word once folded, in three words or more. */
+function sameStatedJob(a: MoveLike, b: MoveLike): boolean {
+  const ta = words(a.personTitle).map(singular).join(' ')
+  const tb = words(b.personTitle).map(singular).join(' ')
+  return ta.split(' ').length >= 3 && ta === tb
+}
+
+/** A firm both reports name that is not the hiring firm itself. */
+function shareOtherFirm(a: MoveLike, b: MoveLike): boolean {
+  const own = (m: MoveLike) => words(m.firmName).join(' ')
+  const others = (m: MoveLike) =>
+    (m.entityKeys ?? []).map((k) => words(k).join(' ')).filter((k) => k && !k.includes(own(m)) && !own(m).includes(k))
+  const ob = new Set(others(b))
+  return others(a).some((k) => ob.has(k))
+}
+
 /** A firm's leadership transition is reported over a longer stretch (Hines: 10-02 to 10-05). */
 const LEADERSHIP_MOVE_WINDOW_DAYS = 4
 const LEADERSHIP_HEADLINE = /\b(top )?leadership (transitions?|changes?|shake-?ups?|reshuffle|succession)\b|\bsuccession plan/i
@@ -598,7 +617,24 @@ export function sameMove(a: MoveLike, b: MoveLike, opts: { crossEdition?: boolea
   }
 
   const gap = daysApart(a, b)
+
+  // The very same stated job at one firm, a week apart: a trade outlet often
+  // writes a hire up days after the release. 2026-10-22: "Suntera appoints Sng
+  // as Head of Fund Services" (10-13) and "Suntera appoints Singapore head of
+  // fund services" (10-20), both stated as "Head of Fund Services", ran as two
+  // stories. Only a title of three words or more, only with dates, and a
+  // week at most: past that the same job filled again is another hire.
+  if (gap !== null && gap <= SAME_TITLE_MOVE_WINDOW_DAYS && sameStatedJob(a, b)) return true
+
   if (gap === null ? opts.crossEdition : gap > NAMELESS_MOVE_WINDOW_DAYS) return false
+
+  // Neither report names the person, the same day, and both name the same
+  // other firm (where the person came from). 2026-10-22: "LaSalle names
+  // Brookfield exec to lead $10bn indirect investment platform" and "LaSalle
+  // hires ex-Brookfield secondaries veteran to grow indirect business" (both
+  // 10-13) share one job word, but they are one hire. A firm rarely makes two
+  // nameless hires from one rival on one day.
+  if (namesA.length === 0 && namesB.length === 0 && gap !== null && gap <= 1 && shareOtherFirm(a, b)) return true
 
   const ra = roleWords(a)
   const rb = roleWords(b)

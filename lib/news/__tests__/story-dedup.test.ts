@@ -436,7 +436,7 @@ describe('isSameStory — identical titles with conflicting firm extraction (202
 // ─── People moves: one hire, told with and without the name ─────────────────
 // Every headline, name, job and date below is a real row.
 
-const move = (o: Partial<StoryCandidate> & { title: string; firmName: string }): StoryCandidate =>
+const move = (o: Partial<StoryCandidate> & { title: string; firmName: string; entityKeys?: string[] }): StoryCandidate & { entityKeys?: string[] } =>
   candidate({ eventType: 'executive_hire', ...o })
 
 describe('isSameStory — one hire, told with and without the name (2026-10-05 Barings)', () => {
@@ -540,11 +540,34 @@ describe('isSameStory — one hire, told with and without the name (2026-10-05 B
 
   it('only within a couple of days, and never a hire against a departure', () => {
     expect(sameMove(pi, { ...aci, publishedDate: '2026-10-07' })).toBe(true)
-    expect(sameMove(pi, { ...aci, publishedDate: '2026-10-08' })).toBe(false)
+    // (Read from the headlines: the very same stated job has a longer window, below.)
+    expect(sameMove(pi, { ...aci, personTitle: null, publishedDate: '2026-10-08' })).toBe(false)
     // Across editions a pair with no dates cannot be placed in the window.
     expect(sameMove({ ...pi, publishedDate: null }, aci, { crossEdition: true })).toBe(false)
     expect(sameMove({ ...pi, publishedDate: null }, aci)).toBe(true)
     expect(sameMove({ ...pi, eventType: 'executive_departure' }, aci)).toBe(false)
+  })
+
+  it('the very same stated job, up to a week apart (Suntera, 2026-10-13 and 10-20)', () => {
+    const named = move({ title: 'Suntera appoints Sng as Head of Fund Services', firmName: 'Suntera', personName: 'Sng', personTitle: 'Head of Fund Services', publishedDate: '2026-10-13' })
+    const nameless = move({ title: 'Suntera appoints Singapore head of fund services', firmName: 'Suntera', personTitle: 'Head of Fund Services', publishedDate: '2026-10-20' })
+    expect(sameMove(named, nameless)).toBe(true)
+    expect(sameMove(named, { ...nameless, publishedDate: '2026-10-21' })).toBe(false)
+    // Two words is too little to be sure ("Head of Credit" is a common job); a different job never joins.
+    expect(sameMove({ ...named, personTitle: 'Head Credit' }, { ...nameless, personTitle: 'Head Credit' })).toBe(false)
+    expect(sameMove(named, { ...nameless, personTitle: 'Head of Client Services' })).toBe(false)
+    // Two named people are still two moves.
+    expect(sameMove(named, { ...nameless, personName: 'Jane Tan' })).toBe(false)
+  })
+
+  it('two nameless hires on one day from the same rival firm (LaSalle and Brookfield, 2026-10-13)', () => {
+    const a = move({ title: 'LaSalle names Brookfield exec to lead $10bn indirect investment platform', firmName: 'LaSalle', personTitle: 'platform head', publishedDate: '2026-10-13', entityKeys: ['lasalle', 'brookfield'] })
+    const b = move({ title: 'LaSalle hires ex-Brookfield secondaries veteran to grow indirect business', firmName: 'LaSalle', publishedDate: '2026-10-13', entityKeys: ['lasalle', 'brookfield'] })
+    expect(sameMove(a, b)).toBe(true)
+    expect(sameMove(a, { ...b, publishedDate: '2026-10-16' })).toBe(false)
+    expect(sameMove(a, { ...b, entityKeys: ['lasalle', 'blackstone'] })).toBe(false)
+    // The hiring firm alone is no tie.
+    expect(sameMove({ ...a, entityKeys: ['lasalle'] }, { ...b, entityKeys: ['lasalle'] })).toBe(false)
   })
 
   it('is a rule for people moves only', () => {

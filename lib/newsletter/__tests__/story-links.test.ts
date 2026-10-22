@@ -74,8 +74,8 @@ describe('sameStoryLoose — same edition', () => {
     const named = story({ title: 'Barings hires global head of ABF', eventType: 'executive_hire', firmName: 'Barings', personName: 'Sloan Sutta', personKeys: keys('Sloan Sutta'), personTitle: 'Global Head of Asset-Based Finance', publishedDate: '2026-10-05' })
     expect(sameStoryLoose(nameless, named)).toBe(true)
     expect(sameStoryLoose(nameless, named, { crossEdition: true })).toBe(true)
-    // A week on, the same job filled again is another story.
-    expect(sameStoryLoose(nameless, { ...named, publishedDate: '2026-10-12' }, { crossEdition: true })).toBe(false)
+    // More than a week on, the same job filled again is another story.
+    expect(sameStoryLoose(nameless, { ...named, publishedDate: '2026-10-13' }, { crossEdition: true })).toBe(false)
     // Another firm's head of ABF is another hire.
     expect(sameStoryLoose(nameless, { ...named, firmName: 'Ares', entityKeys: keys('Ares') })).toBe(false)
   })
