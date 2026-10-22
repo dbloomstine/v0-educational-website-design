@@ -23,6 +23,12 @@ const nextConfig = {
       // Section fronts live at /news/<section> (2026-10 redesign), so the
       // legacy-article redirect must step around them. Keep SECTION_SLUGS in
       // step with lib/news/sections.ts — a test checks the two agree.
+      // "Send us your news" lives at /submit (2026-10-22). The other names people
+      // guess go there too; /news/submit must come before the legacy /news/<slug>
+      // redirect below, which would otherwise send it to /news. Temporary
+      // redirects, so ?firm= passes through and the route can still move.
+      { source: '/news/submit', destination: '/submit', permanent: false },
+      { source: '/submit-news', destination: '/submit', permanent: false },
       { source: `/news/:slug((?!(?:${SECTION_SLUGS.join('|')})$)[^/]+)`, destination: '/news', permanent: true },
       // A cut of a section lives one level down (/news/private-equity/deals,
       // 2026-10-02), so the two-level legacy redirect steps around sections too.

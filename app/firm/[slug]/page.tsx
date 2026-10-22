@@ -8,6 +8,8 @@ import { Panel, RiverRow, SectionFlag } from '@/components/story/StoryBlocks'
 import { SubscribePanel } from '@/components/home/Rail'
 import { OUTBOUND } from '@/components/story/StoryLink'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
+import { GotNews } from '@/components/news/GotNews'
+import { submitNewsHref } from '@/lib/submit/fields'
 import { FIRM_WINDOW_DAYS, getFirm } from '@/lib/news/firm-data'
 import { storyFirmRef } from '@/lib/news/firms'
 import { loadFirmPages } from '@/lib/news/firm-pages'
@@ -101,6 +103,8 @@ export default async function FirmPage({ params }: Params) {
             <h1 className="mt-1.5 font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">{firm.name}</h1>
             {answer && <p className="mt-2 max-w-[72ch] font-news text-[17px] leading-snug text-foreground/80">{answer}</p>}
             <p className="mt-2 font-news text-[16px] leading-snug text-foreground/70">{summary.join(' · ')}</p>
+            {/* "Send us your news" (2026-10-22): the form opens with this firm's name filled in. */}
+            <GotNews className="mt-1.5" ask="Is this your firm?" href={submitNewsHref(firm.name)} />
           </header>
         </div>
 
