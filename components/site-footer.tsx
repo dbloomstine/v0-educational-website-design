@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { SECTIONS, sectionHref } from "@/lib/news/sections"
 import { SubscribeLink } from "@/components/newsletter/SubscribeLink"
-import { EDITOR, SOCIAL } from "@/lib/brand/social"
+import { DAILY_SOCIAL, EDITOR } from "@/lib/brand/social"
 import { GotNews } from "@/components/news/GotNews"
 
 const COMPANY_LINKS = [
@@ -46,9 +46,9 @@ export function SiteFooter() {
             {/* The same stories go out each day as posts: a quiet line, for the reader who would rather follow there. */}
             <p className="mt-4 font-ui text-[12px] text-foreground/70">
               Also daily on{" "}
-              {SOCIAL.map((x, i) => (
+              {DAILY_SOCIAL.map((x, i, all) => (
                 <span key={x.href}>
-                  {i > 0 ? " and " : ""}
+                  {i === 0 ? "" : i === all.length - 1 ? " and " : ", "}
                   <a href={x.href} target="_blank" rel="noopener noreferrer" className="font-semibold text-foreground/80 underline decoration-foreground/25 underline-offset-2 transition-colors hover:text-foreground">
                     {x.name}
                   </a>

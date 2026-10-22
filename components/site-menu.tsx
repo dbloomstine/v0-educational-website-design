@@ -6,7 +6,7 @@ import { ArrowRight, Search, X } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { cn } from "@/lib/utils"
 import { SECTIONS, sectionHref } from "@/lib/news/sections"
-import { SOCIAL } from "@/lib/brand/social"
+import { DAILY_SOCIAL } from "@/lib/brand/social"
 
 /**
  * The phone's menu (2026-10-11). Danny: "the mobile responsive website...
@@ -188,9 +188,9 @@ export function SiteMenu({ pathname, onClose, onSubscribe }: Props) {
 
         <p className="mt-6 font-ui text-[13px] text-foreground/70">
           Also daily on{" "}
-          {SOCIAL.map((x, i) => (
+          {DAILY_SOCIAL.map((x, i, all) => (
             <span key={x.href}>
-              {i > 0 ? " and " : ""}
+              {i === 0 ? "" : i === all.length - 1 ? " and " : ", "}
               <a href={x.href} target="_blank" rel="noopener noreferrer" className="font-semibold text-foreground/85 underline decoration-foreground/30 underline-offset-2">
                 {x.name}
               </a>
