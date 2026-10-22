@@ -80,7 +80,7 @@ export const FUND_ADMIN_TERMS: readonly AdminTerm[] = [
   term('\\mOcorian\\M'),
   term('\\mVistra\\M'),
   term('\\mStandish\\M', false),
-  term('\\mNAV Fund\\M'),
+  term('\\mNAV Fund\\M', false), // organizer only: "NAV fund finance" is a topic, not this firm
   term('\\mNAV Consulting\\M'),
   term('\\mTrident Trust\\M'),
   term('\\mUltimus\\M'),
