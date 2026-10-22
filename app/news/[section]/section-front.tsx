@@ -19,6 +19,7 @@ import { FundraisingChart } from '@/components/charts/FundraisingChart'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { loadLeagueReport } from '@/lib/news/league-data'
 import { weekCloses } from '@/lib/news/league'
+import { marketForAsset } from '@/lib/news/league-markets'
 import { chartData } from '@/lib/news/chart-views'
 import { kickerLabel } from '@/lib/news/format'
 import { cn } from '@/lib/utils'
@@ -114,7 +115,9 @@ export async function SectionFront({ slug, facetKey }: { slug: string; facetKey?
     : '/events'
   const chart = league ? chartData(league, nowMs, scope) : null
   const showChart = !!chart && chart.closes.length > 0
-  const leagueHref = section.group === 'asset' && section.assetClasses?.[0] ? `/league-tables?asset=${section.assetClasses[0]}` : '/league-tables'
+  // The market's own league page (2026-10-22: indexable, unlike /league-tables?asset=…, which is noindex), else the full table.
+  const market = section.group === 'asset' ? marketForAsset(section.assetClasses?.[0]) : null
+  const leagueHref = market ? `/league-tables/${market.slug}` : '/league-tables'
   const hasRail = showChart || showCloses || largest.length >= 3 || covered.length >= 3 || events.length > 0
 
   const jsonLd = {
