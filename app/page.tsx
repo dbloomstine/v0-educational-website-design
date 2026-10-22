@@ -11,7 +11,8 @@ import { LeadStory, SectionFlag, TopStory } from '@/components/story/StoryBlocks
 import { StickySubscribeBar } from '@/components/news/StickySubscribeBar'
 import { InTheNews } from '@/components/home/InTheNews'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
-import { firmsInTheNews } from '@/lib/news/firms'
+import { firmsInTheNews, storyFirmRef } from '@/lib/news/firms'
+import { loadFirmPages } from '@/lib/news/firm-pages'
 import { FundraisingChart } from '@/components/charts/FundraisingChart'
 import { loadLeagueReport } from '@/lib/news/league-data'
 import { chartData } from '@/lib/news/chart-views'
@@ -87,12 +88,14 @@ export default async function HomePage() {
   // Stories and the league throw if they cannot be had: this page is cached,
   // and failing to rebuild it keeps the last good copy on the site, where
   // rendering it empty would put the empty copy there for ten minutes.
-  const [stories, league, weekEvents] = await Promise.all([
+  const [stories, league, weekEvents, firmPages] = await Promise.all([
     loadStories(),
     loadLeagueReport(),
     getEventFeed({ when: '1w', limit: 40 })
       .then((feed) => feed.events)
       .catch<IndustryEvent[]>(() => []),
+    // Which firms have a page to link to: cached, never throws (lib/news/firm-pages.ts).
+    loadFirmPages(),
   ])
   // "Events this week" near the top (2026-10-22): the most notable five of the week ahead. The rail then lists
   // others from the week, at most two a day: six events all happening this afternoon say less than a spread.
@@ -154,7 +157,7 @@ export default async function HomePage() {
           <div className="grid gap-x-9 gap-y-6 lg:grid-cols-[minmax(0,1fr)_332px] lg:grid-rows-[auto_auto_auto_1fr]">
             <div className="min-w-0 lg:col-start-1 lg:row-start-2">
               {front.lead ? (
-                <LeadStory story={front.lead} />
+                <LeadStory story={front.lead} firm={storyFirmRef(front.lead, firmPages)} />
               ) : (
                 <p className="font-news text-lg text-muted-foreground">
                   The newsroom is catching up. The full feed is at <a href="/news" className="underline">Latest</a>.
@@ -169,7 +172,7 @@ export default async function HomePage() {
                 <SectionFlag label="Top stories" />
                 <div className="col-rule grid gap-x-10 gap-y-4 sm:grid-cols-2">
                   {front.top.map((s) => (
-                    <TopStory key={s.id} story={s} />
+                    <TopStory key={s.id} story={s} firm={storyFirmRef(s, firmPages)} />
                   ))}
                 </div>
               </section>

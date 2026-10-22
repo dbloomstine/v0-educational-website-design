@@ -26,6 +26,8 @@ vi.mock('next/navigation', () => ({
   permanentRedirect: (to: string) => { throw new Error(`REDIRECT ${to}`) },
 }))
 vi.mock('@/lib/news/front-page', () => ({ getStory: async () => ({ story, all: [story] }) }))
+// Which firms have a page (lib/news/firm-pages.ts) reads the data cache, which a test does not have.
+vi.mock('@/lib/news/firm-pages', () => ({ loadFirmPages: async () => new Set<string>() }))
 vi.mock('@/lib/supabase/client', () => ({ getSupabaseAdmin: () => ({}) }))
 vi.mock('@/lib/news/story-long', () => ({
   readLongSummaryDetail: async (_db: unknown, _s: unknown, opts?: { strict?: boolean }) => {

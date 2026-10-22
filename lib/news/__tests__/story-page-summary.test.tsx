@@ -20,6 +20,8 @@ const story: Story = {
 
 vi.mock('next/navigation', () => ({ notFound: () => { throw new Error('NEXT_NOT_FOUND') }, permanentRedirect: (to: string) => { throw new Error(`REDIRECT ${to}`) }, useRouter: () => ({}), usePathname: () => '/', useSearchParams: () => new URLSearchParams() }))
 vi.mock('@/lib/news/front-page', () => ({ getStory: async () => ({ story, all: [story] }) }))
+// Which firms have a page (lib/news/firm-pages.ts) reads the data cache, which a test does not have.
+vi.mock('@/lib/news/firm-pages', () => ({ loadFirmPages: async () => new Set<string>() }))
 // The page is asked for at its canonical address (lib/news/story-path.ts); any other redirects.
 const PARAM = storyPath(story).slice('/story/'.length)
 vi.mock('@/lib/supabase/client', () => ({ getSupabaseAdmin: () => ({}) }))

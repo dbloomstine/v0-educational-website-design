@@ -26,6 +26,8 @@ const loadDay = vi.fn(async (d: string) => { if (day instanceof Error) throw day
 
 vi.mock('next/navigation', () => ({ notFound: () => { throw new Error('NEXT_NOT_FOUND') }, permanentRedirect: (to: string) => { throw new Error(`REDIRECT ${to}`) }, useRouter: () => ({}), usePathname: () => '/', useSearchParams: () => new URLSearchParams() }))
 vi.mock('@/lib/news/front-page', () => ({ getStory: async () => found }))
+// Which firms have a page (lib/news/firm-pages.ts) reads the data cache, which a test does not have.
+vi.mock('@/lib/news/firm-pages', () => ({ loadFirmPages: async () => new Set<string>() }))
 vi.mock('@/lib/news/older-story', async () => {
   const actual = await vi.importActual<typeof import('@/lib/news/older-story')>('@/lib/news/older-story')
   return { ...actual, loadDayStories: (d: string) => loadDay(d) }

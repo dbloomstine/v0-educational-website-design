@@ -1,5 +1,7 @@
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { firmHref } from '@/lib/news/league'
+import { firmPageHref } from '@/lib/news/firms'
+import { loadFirmPages } from '@/lib/news/firm-pages'
 import type { Metadata } from 'next'
 import { cache } from 'react'
 import Link from 'next/link'
@@ -91,7 +93,8 @@ function Fact({ label, children }: { label: string; children: React.ReactNode })
 
 export default async function StoryPage({ params }: Params) {
   const { id } = await params
-  const found = await loadStoryPage(id)
+  // Which firms have a page to link to: cached, never throws (lib/news/firm-pages.ts).
+  const [found, firmPages] = await Promise.all([loadStoryPage(id), loadFirmPages()])
   if (!found) notFound()
   // One address per story (lib/news/story-path.ts): a whole uuid — every link
   // minted before 2026-10-12, in emails, posts and search results — a member
@@ -106,11 +109,14 @@ export default async function StoryPage({ params }: Params) {
 
   const section = homeSectionFor(story)
   const firmKey = entityKey(story.firmName)
-  // The other firms in the story, each with a page of its own.
+  // The other firms in the story. Each is linked when it has a page worth a
+  // link (2026-10-22: until then every one was, and a firm only named in
+  // passing has no page, so some of those links were 404s).
   const alsoNamed = (story.firms ?? [])
-    .filter((name) => !keysMatch(entityKey(name), firmKey || '\u0000'))
-    .map((name) => ({ name, href: firmHref(name) }))
-    .filter((f): f is { name: string; href: string } => !!f.href)
+    .filter((name) => !keysMatch(entityKey(name), firmKey || '\u0000') && !!firmHref(name))
+    .map((name) => ({ name, href: firmPageHref(name, firmPages) }))
+  // The bold firm names in the headline open their pages: the one headline on the site that is not itself a link.
+  const headlineFirmHref = (name: string) => firmPageHref(name, firmPages)
   // Under a story still on the page: its firm's stories and its section, from
   // the ten days. Under an older one the same two rails, about the story
   // itself — its firm's stories from the days around it, its section on its
@@ -170,7 +176,7 @@ export default async function StoryPage({ params }: Params) {
               </p>
 
               <h1 className="mt-2 font-news text-[30px] font-medium leading-[1.08] tracking-[-0.018em] text-foreground sm:text-[40px]">
-                <Headline story={story} />
+                <Headline story={story} firmHref={headlineFirmHref} />
               </h1>
 
               <p className="mt-2 font-ui text-[13px] text-muted-foreground">
@@ -215,9 +221,13 @@ export default async function StoryPage({ params }: Params) {
                 {alsoNamed.length > 0 && (
                   <Fact label="Also named">
                     {alsoNamed.map((f, i) => (
-                      <span key={f.href}>
+                      <span key={f.name}>
                         {i > 0 && ', '}
-                        <Link prefetch={false} href={f.href} className="underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground">{f.name}</Link>
+                        {f.href ? (
+                          <Link prefetch={false} href={f.href} className="underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground">{f.name}</Link>
+                        ) : (
+                          f.name
+                        )}
                       </span>
                     ))}
                   </Fact>

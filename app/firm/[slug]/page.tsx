@@ -9,6 +9,8 @@ import { SubscribePanel } from '@/components/home/Rail'
 import { OUTBOUND } from '@/components/story/StoryLink'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { FIRM_WINDOW_DAYS, getFirm } from '@/lib/news/firm-data'
+import { storyFirmRef } from '@/lib/news/firms'
+import { loadFirmPages } from '@/lib/news/firm-pages'
 import type { Story } from '@/lib/news/stories'
 import { LEAGUE_ASSET_LABEL as ASSET_LABEL, STAGE_LABEL } from '@/lib/news/league'
 import { KIND_LABEL } from '@/lib/news/sections'
@@ -59,8 +61,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function FirmPage({ params }: Params) {
   const { slug } = await params
-  const firm = await getFirm(slug)
+  const [firm, firmPages] = await Promise.all([getFirm(slug), loadFirmPages()])
   if (!firm) notFound()
+  // In "Also named in", each story's own firm, when it has a page and it is not this one.
+  const otherFirm = (s: Story) => {
+    const ref = storyFirmRef(s, firmPages)
+    return ref && ref.href !== `/firm/${slug}` ? ref : null
+  }
 
   const finals = firm.closes.filter((c) => c.stage === 'final')
   const capital = finals.reduce((s, c) => s + c.sizeUsdM, 0)
@@ -163,7 +170,7 @@ export default async function FirmPage({ params }: Params) {
                   <SectionFlag label="Also named in" note="The other side of a deal, a hire’s former firm" />
                   <ul className="river">
                     {firm.mentions.map((s) => (
-                      <RiverRow key={s.id} story={s} tags={[KIND_LABEL[s.kind]]} date={day(s.publishedDate ?? s.firstSeen)} />
+                      <RiverRow key={s.id} story={s} tags={[KIND_LABEL[s.kind]]} date={day(s.publishedDate ?? s.firstSeen)} firm={otherFirm(s)} />
                     ))}
                   </ul>
                 </section>

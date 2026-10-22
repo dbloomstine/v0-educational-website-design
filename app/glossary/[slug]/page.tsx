@@ -9,6 +9,8 @@ import { SubscribePanel } from '@/components/home/Rail'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { GLOSSARY_TERMS, getTerm, glossaryHref, relatedTerms, storiesUsing } from '@/lib/glossary/terms'
 import { loadStories } from '@/lib/news/front-page'
+import { storyFirmRef } from '@/lib/news/firms'
+import { loadFirmPages } from '@/lib/news/firm-pages'
 import { KIND_LABEL } from '@/lib/news/sections'
 import { breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
@@ -48,7 +50,8 @@ export default async function GlossaryTermPage({ params }: Params) {
   if (!t) notFound()
 
   const related = relatedTerms(t)
-  const stories = storiesUsing(t, await loadStories())
+  const [all, firmPages] = await Promise.all([loadStories(), loadFirmPages()])
+  const stories = storiesUsing(t, all)
   const url = `https://fundopshq.com${glossaryHref(t.slug)}`
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -104,7 +107,7 @@ export default async function GlossaryTermPage({ params }: Params) {
                   <SectionFlag label="In the news" href="/news" note="Recent stories that use the term" />
                   <ul className="river">
                     {stories.map((s) => (
-                      <RiverRow key={s.id} story={s} tags={[KIND_LABEL[s.kind]]} date={day(s.publishedDate ?? s.firstSeen)} />
+                      <RiverRow key={s.id} story={s} tags={[KIND_LABEL[s.kind]]} date={day(s.publishedDate ?? s.firstSeen)} firm={storyFirmRef(s, firmPages)} />
                     ))}
                   </ul>
                 </section>

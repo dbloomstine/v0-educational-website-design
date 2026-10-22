@@ -9,6 +9,8 @@ import { RiverRow, SectionFlag } from '@/components/story/StoryBlocks'
 import { SubscribePanel } from '@/components/home/Rail'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { searchFirms } from '@/lib/news/firm-data'
+import { storyFirmRef } from '@/lib/news/firms'
+import { loadFirmPages } from '@/lib/news/firm-pages'
 import { ARCHIVE_WINDOW_DAYS, loadArchive, searchStories } from '@/lib/news/front-page'
 import type { Story, StoryKind } from '@/lib/news/stories'
 import { ASSET_LABEL, KIND_LABEL } from '@/lib/news/sections'
@@ -69,7 +71,8 @@ export default async function NewsPage({ searchParams }: Params) {
   const page = Math.max(1, Math.min(50, parseInt(sp.page ?? '1', 10) || 1))
   const nowMs = Date.now()
 
-  const archive = await loadArchive()
+  // Which firms have a page to link to: cached, never throws (lib/news/firm-pages.ts).
+  const [archive, firmPages] = await Promise.all([loadArchive(), loadFirmPages()])
   // The firm line above the results is an extra: if its lookup fails, the story search still answers.
   const [pool, firmHits] = q ? await Promise.all([searchStories(q), searchFirms(q, 6).catch(() => [])]) : [archive, []]
   const base = [...pool].sort((a, b) => (b.publishedDate ?? '').localeCompare(a.publishedDate ?? '') || b.firstSeen.localeCompare(a.firstSeen))
@@ -179,6 +182,7 @@ export default async function NewsPage({ searchParams }: Params) {
                       story={s}
                       tags={[type ? null : KIND_LABEL[s.kind], asset ? null : s.assetClasses[0] ? ASSET_LABEL[s.assetClasses[0]] : null]}
                       date={dateTag(s, nowMs)}
+                      firm={storyFirmRef(s, firmPages)}
                     />
                   ))}
                 </ul>

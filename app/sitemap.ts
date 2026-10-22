@@ -3,7 +3,7 @@ import { queryAllEventSlugs } from '@/lib/events/api'
 import { EVENT_COLLECTIONS } from '@/lib/events/collections'
 import { SECTIONS, sectionHref, storyInSection } from '@/lib/news/sections'
 import { loadArchive, loadStories } from '@/lib/news/front-page'
-import { firmIndex } from '@/lib/news/firms'
+import { firmIndex, firmPageSlugs } from '@/lib/news/firms'
 import { loadLeague } from '@/lib/news/league-data'
 import { LEAGUE_MARKETS } from '@/lib/news/league-markets'
 import { archiveHref, loadArchiveSpan, loadSitemapStories, monthsBetween, type ArchiveSpan, type SitemapStory } from '@/lib/news/archive'
@@ -144,11 +144,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const note = (slug: string, date: string | null | undefined) => {
     if (date && date > (lastChange.get(slug) ?? '')) lastChange.set(slug, date)
   }
-  const active = firmIndex(await loadArchive()).filter((f) => f.stories >= 2)
-  for (const f of active) note(f.slug, f.lastSeen)
+  // The same rule picks the firms the news lists link to (firmPageSlugs, 2026-10-22).
+  const archive = await loadArchive()
+  for (const f of firmIndex(archive)) if (f.stories >= 2) note(f.slug, f.lastSeen)
   const league = await loadLeague()
   for (const c of league) note(c.firmSlug, c.date)
-  const firmSlugs = Array.from(new Set([...league.map((c) => c.firmSlug), ...active.map((f) => f.slug)])).slice(0, 900)
+  const firmSlugs = firmPageSlugs(archive, league).slice(0, 900)
   const firmPages: MetadataRoute.Sitemap = firmSlugs.map((slug) => ({
     url: `${baseUrl}/firm/${slug}`,
     lastModified: at(lastChange.get(slug)),

@@ -197,8 +197,10 @@ describe('league tables and firm pages', () => {
     vi.doMock('@/components/site-footer', () => ({ SiteFooter: () => null }))
     vi.doMock('@/components/back-to-top', () => ({ BackToTop: () => null }))
     vi.doMock('@/components/home/Rail', () => ({ SubscribePanel: () => null }))
+    vi.doMock('@/lib/news/firm-pages', () => ({ loadFirmPages: async () => new Set(['conversant']) }))
     const { default: Page } = await import('@/app/firm/[slug]/page')
-    render(await Page({ params: Promise.resolve({ slug: 'conversant-capital' }) }))
+    // The address "Conversant Capital" has (firmSlug drops "Capital"), so its stories are this page's own.
+    render(await Page({ params: Promise.resolve({ slug: 'conversant' }) }))
     // the close: fund name in, citation out
     expect(hrefOf('Conversant Real Estate Fund I')).toBe(STORY)
     const cells = screen.getAllByRole('link', { name: 'PE Hub' })
@@ -208,5 +210,8 @@ describe('league tables and firm pages', () => {
     expectOutbound(screen.getAllByRole('link', { name: /Field Notes/ })[0], wire.url)
     expect(hrefOf(/Ares hires/)).toBe(SOLO)
     expectOutbound(screen.getByRole('link', { name: 'PEI' }), solo.url)
+    // "Also named in" links a story's own firm (2026-10-22), but never back to the page it is on.
+    const alsoNamed = screen.getByRole('region', { name: 'Stories that mention Conversant Capital' })
+    expect(within(alsoNamed).queryAllByRole('link').filter((l) => l.getAttribute('href')?.startsWith('/firm/'))).toHaveLength(0)
   })
 })

@@ -22,6 +22,8 @@ import { weekCloses } from '@/lib/news/league'
 import { marketForAsset } from '@/lib/news/league-markets'
 import { chartData } from '@/lib/news/chart-views'
 import { kickerLabel } from '@/lib/news/format'
+import { storyFirmRef } from '@/lib/news/firms'
+import { loadFirmPages } from '@/lib/news/firm-pages'
 import { cn } from '@/lib/utils'
 
 /**
@@ -79,7 +81,7 @@ export async function SectionFront({ slug, facetKey }: { slug: string; facetKey?
         : null
   // Fundraising and the asset-class pages carry the chart, cut to the section.
   const charted = section.kind === 'fundraising' || section.group === 'asset'
-  const [all, league, events] = await Promise.all([
+  const [all, league, events, firmPages] = await Promise.all([
     loadStories(),
     charted ? loadLeagueReport() : Promise.resolve(null),
     eventQuery
@@ -87,6 +89,8 @@ export async function SectionFront({ slug, facetKey }: { slug: string; facetKey?
           .then((feed) => feed.events)
           .catch<IndustryEvent[]>(() => [])
       : Promise.resolve<IndustryEvent[]>([]),
+    // Which firms have a page to link to: cached, never throws (lib/news/firm-pages.ts).
+    loadFirmPages(),
   ])
   const nowMs = Date.now()
   const inSection = all.filter((s) => storyInSection(s, section))
@@ -168,7 +172,7 @@ export async function SectionFront({ slug, facetKey }: { slug: string; facetKey?
           <div className={cn('grid gap-x-9 gap-y-8', hasRail && 'lg:grid-cols-[minmax(0,1fr)_332px]')}>
             <div className="min-w-0">
               {lead ? (
-                <LeadStory story={lead} />
+                <LeadStory story={lead} firm={storyFirmRef(lead, firmPages)} />
               ) : (
                 <p className="font-news text-lg text-muted-foreground">
                   Nothing in the last {STORY_WINDOW_DAYS} days. The archive is at <Link href="/news" className="underline">Latest</Link>.
@@ -178,7 +182,7 @@ export async function SectionFront({ slug, facetKey }: { slug: string; facetKey?
               {top.length > 0 && (
                 <section aria-label="More top stories" className="col-rule mt-6 grid gap-x-10 gap-y-4 sm:grid-cols-2">
                   {top.map((s) => (
-                    <TopStory key={s.id} story={s} />
+                    <TopStory key={s.id} story={s} firm={storyFirmRef(s, firmPages)} />
                   ))}
                 </section>
               )}
@@ -195,7 +199,7 @@ export async function SectionFront({ slug, facetKey }: { slug: string; facetKey?
                       they'll trust that it's recent". */}
                   <ul className="river">
                     {stories.map((s) => (
-                      <RiverRow key={s.id} story={s} tags={[riverTag(s, section)]} />
+                      <RiverRow key={s.id} story={s} tags={[riverTag(s, section)]} firm={storyFirmRef(s, firmPages)} />
                     ))}
                   </ul>
                   <p className="mt-4 font-ui text-[12.5px] text-muted-foreground">

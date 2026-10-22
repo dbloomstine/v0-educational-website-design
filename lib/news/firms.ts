@@ -10,7 +10,8 @@
  */
 import type { Story, StoryKind } from './stories'
 import { firmHref, firmSlug } from './league'
-import { isRegulatorName } from '@/lib/newsletter/story-links'
+import { entityKey, isRegulatorName, keysMatch } from '@/lib/newsletter/story-links'
+import { splitHeadlineByEntities } from './constants'
 
 export interface FirmEntry {
   slug: string
@@ -95,4 +96,115 @@ export function firmsByLetter(firms: FirmEntry[]): { letter: string; firms: Firm
   return Array.from(groups.entries())
     .sort((a, b) => (a[0] === '#' ? 1 : b[0] === '#' ? -1 : a[0].localeCompare(b[0])))
     .map(([letter, list]) => ({ letter, firms: list.sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' })) }))
+}
+
+/**
+ * The firm pages worth a link (2026-10-22). Every name a story carries has a
+ * page (lib/news/firm-data.ts), but a page with one story on it is the story
+ * the reader came from. These are the pages the sitemap lists: every manager
+ * in the league table, which has at least a close to show, and every firm that
+ * is the subject of two stories or more in the thirty days. The 2026-10-22 SEO
+ * audit found 706 of them that no news list linked to.
+ */
+export function firmPageSlugs(archive: Story[], league: { firmSlug: string }[]): string[] {
+  const active = firmIndex(archive).filter((f) => f.stories >= 2)
+  return Array.from(new Set([...league.map((c) => c.firmSlug), ...active.map((f) => f.slug)]))
+}
+
+/**
+ * The firm page a name should link to, or null for none.
+ *
+ * The name's own page when it is one of `pages`: every spelling with the same
+ * key lands there ("H.I.G. Capital", "HIG" → /firm/hig; "Ares Management
+ * Corp." → /firm/ares). Otherwise the page of the firm it is a part of, by the
+ * rule the firm page itself uses to collect stories (isFirmName: the key, or a
+ * longer form of it), so the page linked to carries the story: "Goldman Sachs
+ * Alternatives" → /firm/goldman-sachs. Never a page that is not in `pages`.
+ */
+export function firmPageHref(name: string | null | undefined, pages: ReadonlySet<string>): string | null {
+  const clean = name?.trim()
+  if (!clean || looksLikeDescription(clean)) return null
+  const href = firmHref(clean)
+  if (!href) return null
+  const tokens = firmSlug(clean).split('-')
+  for (let n = tokens.length; n >= 1; n--) {
+    const slug = tokens.slice(0, n).join('-')
+    if (!pages.has(slug)) continue
+    // A shorter key must still be this firm: not three letters or fewer, not "Korea" or "First" (keysMatch).
+    if (n === tokens.length || keysMatch(tokens.slice(0, n).join(' '), tokens.join(' '))) return `/firm/${slug}`
+  }
+  return null
+}
+
+/** A firm's name and its page, for a link beside a story. */
+export interface FirmRef {
+  name: string
+  href: string
+}
+
+/**
+ * The link a story's row carries to its firm, or null. A wire is several
+ * stories under one headline and names no one firm; a name that is also the
+ * story's person is a person (never linked).
+ */
+export function storyFirmRef(story: Pick<Story, 'firmName' | 'personName' | 'roundup'>, pages: ReadonlySet<string>): FirmRef | null {
+  const name = story.firmName?.trim()
+  if (story.roundup || !name) return null
+  if (story.personName && entityKey(story.personName) === entityKey(name)) return null
+  const href = firmPageHref(name, pages)
+  return href ? { name, href } : null
+}
+
+/** A run of a headline: bold for a name, with the firm's page when the name is a firm that has one. */
+export interface HeadlineRun {
+  text: string
+  bold: boolean
+  href?: string
+}
+
+/** Where each bold run of `title` starts and ends, for these names. */
+function boldRanges(title: string, names: (string | null | undefined)[]): [number, number][] {
+  const out: [number, number][] = []
+  let at = 0
+  for (const seg of splitHeadlineByEntities(title, names)) {
+    if (seg.bold) out.push([at, at + seg.text.length])
+    at += seg.text.length
+  }
+  return out
+}
+
+/**
+ * A headline split as the site sets it (bold names, lib/news/constants.ts
+ * splitHeadlineByEntities), with each bold firm name given its page. Only a
+ * name the story lists as a FIRM is linked (`firmName`, `firms`); `entities`
+ * mixes in the people, and a run that is, or overlaps, a person's name is
+ * never linked. For a headline that is not itself a link: the story page's.
+ */
+export function headlineRuns(
+  story: Pick<Story, 'headline' | 'entities' | 'firmName' | 'personName' | 'firms'>,
+  hrefFor: (name: string) => string | null,
+): HeadlineRun[] {
+  const title = story.headline
+  const segments = splitHeadlineByEntities(title, story.entities.length ? story.entities : [story.firmName, story.personName])
+  const firms = Array.from(new Set([story.firmName, ...(story.firms ?? [])].map((n) => n?.trim()).filter((n): n is string => !!n)))
+  const firmKeys = new Set(firms.map((n) => entityKey(n)))
+  const people = [story.personName, ...story.entities.filter((e) => !firmKeys.has(entityKey(e)))]
+  const personRanges = boldRanges(title, people)
+  // Each firm's runs, found with that firm alone; the subject first, so it wins a tie.
+  const firmAt = new Map<string, string>()
+  for (const name of firms) {
+    for (const [s, e] of boldRanges(title, [name])) if (!firmAt.has(`${s}:${e}`)) firmAt.set(`${s}:${e}`, name)
+  }
+  const runs: HeadlineRun[] = []
+  let at = 0
+  for (const seg of segments) {
+    const start = at
+    const end = at + seg.text.length
+    at = end
+    const firm = seg.bold ? firmAt.get(`${start}:${end}`) : undefined
+    const person = personRanges.some(([s, e]) => start < e && end > s)
+    const href = firm && !person ? hrefFor(firm) : null
+    runs.push(href ? { ...seg, href } : { ...seg })
+  }
+  return runs
 }

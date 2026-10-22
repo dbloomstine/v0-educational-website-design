@@ -5,6 +5,8 @@ import { kickerLabel, sizeLabel, stageLabel } from '@/lib/news/format'
 import { Headline } from './Headline'
 import { Coverage } from './Coverage'
 import { HeadlineLink, SourceLink } from './StoryLink'
+import { FirmLink } from './FirmLink'
+import type { FirmRef } from '@/lib/news/firms'
 
 const kickerClass = 'font-ui text-[10.5px] font-bold uppercase tracking-[0.14em]'
 
@@ -36,8 +38,13 @@ function Facts({ story, className = '' }: { story: Story; className?: string }) 
  * The one story the page leads with. (A box of facts beside the headline was
  * tried on 2026-10-01 and taken out the same day — Danny: "i dont love the
  * facts on the right." The facts stay in the line under the summary.)
+ *
+ * `firm` (2026-10-22, here, in TopStory and in RiverRow): the story's firm,
+ * linked to its page, first in the line under the headline. The page passes it
+ * only when the firm has a page worth a link (lib/news/firm-pages.ts). It sits
+ * in that line, not in the headline, because the headline is already a link.
  */
-export function LeadStory({ story }: { story: Story }) {
+export function LeadStory({ story, firm }: { story: Story; firm?: FirmRef | null }) {
   return (
     <article className="panel panel-lead">
       <Kicker story={story} lead />
@@ -52,6 +59,7 @@ export function LeadStory({ story }: { story: Story }) {
         </p>
       )}
       <div className="mt-2.5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        {firm && <FirmLink firm={firm} className="font-ui text-[12px] font-semibold text-foreground/80" />}
         <Facts story={story} className="text-[12px]" />
         <Coverage story={story} max={4} />
       </div>
@@ -60,7 +68,7 @@ export function LeadStory({ story }: { story: Story }) {
 }
 
 /** Second tier: headline, one line of what happened, who reported it. */
-export function TopStory({ story }: { story: Story }) {
+export function TopStory({ story, firm }: { story: Story; firm?: FirmRef | null }) {
   return (
     <article className="border-t border-border pt-3">
       <div className="flex items-baseline justify-between gap-3">
@@ -76,6 +84,7 @@ export function TopStory({ story }: { story: Story }) {
         <p className="mt-1 line-clamp-2 font-news text-[14.5px] leading-[1.4] text-foreground/70">{story.summary}</p>
       )}
       <div className="mt-1.5 flex flex-wrap items-baseline gap-x-2.5">
+        {firm && <FirmLink firm={firm} className="font-ui text-[12px] font-semibold text-foreground/80" />}
         <Coverage story={story} max={2} />
       </div>
     </article>
@@ -185,9 +194,12 @@ export function MoreLink({ href, children }: { href: string; children: React.Rea
  * who reported it. The headline opens our page for the story; the outlet,
  * with its arrow, is the way out to the publisher, and "+N" counts the others.
  * `tags` is whatever the surrounding page does not already say (on a venture
- * page, the story type; on the fundraising page, the asset class).
+ * page, the story type; on the fundraising page, the asset class). `firm`
+ * leads the line when the firm has a page (see LeadStory).
  */
-export function RiverRow({ story, tags = [], date }: { story: Story; tags?: (string | null | undefined)[]; date?: string | null }) {
+export function RiverRow({
+  story, tags = [], date, firm,
+}: { story: Story; tags?: (string | null | undefined)[]; date?: string | null; firm?: FirmRef | null }) {
   const sized = story.kind === 'fundraising' || story.kind === 'deals' || story.kind === 'lps'
   const facts = [...tags, sized && story.leadEligible ? sizeLabel(story.sizeUsdM) : null, stageLabel(story)].filter(Boolean)
   const more = story.coverage.length
@@ -201,6 +213,7 @@ export function RiverRow({ story, tags = [], date }: { story: Story; tags?: (str
         <span className="hl"><Headline story={story} /></span>
       </HeadlineLink>
       <div className="mt-0.5 flex flex-wrap items-baseline gap-x-2 font-ui text-[11.5px] text-muted-foreground lg:mt-0 lg:justify-end">
+        {firm && <FirmLink firm={firm} className="whitespace-nowrap font-semibold text-foreground/70" />}
         {facts.length > 0 && <span className="font-mono text-[10.5px] uppercase tracking-tight">{facts.join(' · ')}</span>}
         <span className="whitespace-nowrap">
           <SourceLink story={story} className="text-foreground/65 hover:text-foreground" />
