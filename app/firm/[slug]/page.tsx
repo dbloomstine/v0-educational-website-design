@@ -16,6 +16,7 @@ import { sizeLabel, totalLabel } from '@/lib/news/format'
 import { OG_IMAGES, breadcrumbJsonLd } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 import { storyPath } from '@/lib/news/story-path'
+import { firmJsonLd, firmSummary, firmTitle, yearInNewYork } from '@/lib/news/firm-summary'
 
 // A firm's page: every story we have carried about it in the past year, and
 // the fund closes among them. Reached from the league tables, the lead
@@ -39,10 +40,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const firm = await getFirm(slug)
   if (!firm) return { title: 'Firm not found', robots: { index: false } }
   const total = firm.stories.length + firm.mentions.length
-  const description = `${firm.name} in the news: ${total} ${total === 1 ? 'story' : 'stories'} from the past year${firm.closes.length ? `, including ${firm.closes.length} fund ${firm.closes.length === 1 ? 'close' : 'closes'}` : ''} — fund closes, deals and people moves, each linked to its publisher.`
+  const year = yearInNewYork(Date.now())
+  // The answer at the top of the page is the description too: it is what a search result or an assistant quotes.
+  const answer = firmSummary(firm.name, firm.closes, year)
+  const description = answer ? `${answer} Each close links to the report it came from.` : `${firm.name} in the news: ${total} ${total === 1 ? 'story' : 'stories'} from the past year${firm.closes.length ? `, including ${firm.closes.length} fund ${firm.closes.length === 1 ? 'close' : 'closes'}` : ''} — fund closes, deals and people moves, each linked to its publisher.`
   const url = `https://fundopshq.com/firm/${slug}`
   return {
-    title: `${firm.name}: fund closes, deals and news`,
+    title: firmTitle(firm.name, firm.closes, year),
     description,
     alternates: { canonical: url },
     // A page with one or two stories adds nothing to the publishers' own.
@@ -59,19 +63,25 @@ export default async function FirmPage({ params }: Params) {
 
   const finals = firm.closes.filter((c) => c.stage === 'final')
   const capital = finals.reduce((s, c) => s + c.sizeUsdM, 0)
+  // The answer, computed from the closes in the table below (lib/news/firm-summary.ts). Same data as before: no query.
+  const year = yearInNewYork(Date.now())
+  const answer = firmSummary(firm.name, firm.closes, year)
   const kinds = new Map<Story['kind'], number>()
   for (const s of firm.stories) kinds.set(s.kind, (kinds.get(s.kind) ?? 0) + 1)
   const summary = [
     `${firm.stories.length} ${firm.stories.length === 1 ? 'story' : 'stories'} in the past ${FIRM_WINDOW_DAYS === 365 ? 'year' : `${FIRM_WINDOW_DAYS} days`}`,
-    finals.length > 0 ? `${finals.length} final ${finals.length === 1 ? 'close' : 'closes'} totalling ${totalLabel(capital)}` : null,
+    // The answer above already gives the closes; the line does not say them twice.
+    !answer && finals.length > 0 ? `${finals.length} final ${finals.length === 1 ? 'close' : 'closes'} totalling ${totalLabel(capital)}` : null,
     firm.mentions.length > 0 ? `named in ${firm.mentions.length} more` : null,
   ].filter(Boolean)
   // Front page → Firms → this firm, as the header above the name reads.
   const breadcrumbs = breadcrumbJsonLd([{ name: 'Firms', path: '/firms' }, { name: firm.name }])
+  const pageLd = firmJsonLd(slug, firm.name, firmTitle(firm.name, firm.closes, year), firm.closes, answer)
 
   return (
     <div className="flex min-h-screen flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbs) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(pageLd) }} />
       <SiteHeader />
 
       <main id="main-content" className="paper flex-1">
@@ -81,6 +91,7 @@ export default async function FirmPage({ params }: Params) {
               <Link href="/firms" className="hover:underline">Firms</Link>
             </p>
             <h1 className="mt-1.5 font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">{firm.name}</h1>
+            {answer && <p className="mt-2 max-w-[72ch] font-news text-[17px] leading-snug text-foreground/80">{answer}</p>}
             <p className="mt-2 font-news text-[16px] leading-snug text-foreground/70">{summary.join(' · ')}</p>
           </header>
         </div>
