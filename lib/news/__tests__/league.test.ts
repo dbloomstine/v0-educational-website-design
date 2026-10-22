@@ -358,3 +358,21 @@ describe('the ≈ mark', () => {
     expect(usd[0].converted).toBe(false)
   })
 })
+
+describe('a later write-up that rounds the figure (Kayne Anderson, 2026-10-22)', () => {
+  const re = (o: Record<string, unknown> = {}) => ({ fund_categories: ['real_estate'], ...o })
+  it('joins "$5bn" two weeks on to the $5.12B close', () => {
+    const rows = [
+      row(re({ firm: 'Kayne Anderson Real Estate', fund: 'Kayne Anderson Real Estate Opportunistic Equity Fund', size: 5120, published_date: '2026-05-22', created_at: '2026-05-22T14:00:00Z', title: 'Kayne Anderson Real Estate holds $5.12b final close for opportunistic equity fund' })),
+      row(re({ firm: 'Kayne Anderson', size: 5000, published_date: '2026-06-05', created_at: '2026-06-05T14:00:00Z', title: 'OCERS among investors supporting Kayne Anderson’s $5bn real estate fund close' })),
+    ]
+    expect(buildLeague(rows)).toHaveLength(1)
+  })
+  it('leaves apart two figures that are not a rounding, and a figure 10% off', () => {
+    const base = row(re({ firm: 'Kayne Anderson', fund: 'Kayne Anderson Opportunistic Equity Fund', size: 5120, published_date: '2026-05-22', created_at: '2026-05-22T14:00:00Z', title: 'Kayne Anderson closes $5.12bn fund' }))
+    const notRound = row(re({ firm: 'Kayne Anderson', size: 4990, published_date: '2026-06-05', created_at: '2026-06-05T14:00:00Z', title: 'Kayne Anderson closes $4.99bn real estate fund' }))
+    const far = row(re({ firm: 'Kayne Anderson', size: 4500, published_date: '2026-06-05', created_at: '2026-06-05T14:00:00Z', title: 'Kayne Anderson closes $4.5bn real estate fund' }))
+    expect(buildLeague([base, notRound])).toHaveLength(2)
+    expect(buildLeague([base, far])).toHaveLength(2)
+  })
+})

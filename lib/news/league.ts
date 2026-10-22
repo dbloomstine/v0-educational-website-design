@@ -421,6 +421,12 @@ function headlinesShareFigure(a: string, b: string): boolean {
   return headlineMoney(a).some((x) => fb.some((y) => x.currency === y.currency && Math.abs(x.amountM - y.amountM) <= 0.011 * Math.max(x.amountM, y.amountM)))
 }
 
+/** A figure an outlet rounded to: a whole $250M step at $1B and up, a whole $50M below. */
+function roundFigure(usdM: number): boolean {
+  const step = usdM >= 1000 ? 250 : 50
+  return usdM >= 100 && Math.abs(usdM / step - Math.round(usdM / step)) < 1e-6
+}
+
 /** How long after the first report a re-report can still be the same close. */
 const SAME_CLOSE_DAYS = 200
 /** Reports of one announcement that disagree on the figure arrive close together. */
@@ -468,6 +474,12 @@ export function sameClose(a: FundClose, b: FundClose): boolean {
   if (sharedNumber && ratio <= 1.1) return true
   const sameMarket = a.assetClass === b.assetClass
   if (sharedNumber && sameMarket) return ratio <= 2.05
+  // A later write-up that rounds the figure: "$5bn" for Kayne Anderson's $5.12B
+  // real estate close (IPE Real Assets, 2026-06-05, two weeks after the
+  // announcement) ran as a second row of the 2026 real estate table
+  // (Danny, 2026-10-22). One report names no fund, the same market, within
+  // five percent, and the smaller-precision figure is a round number.
+  if (sameMarket && ratio <= 1.05 && (roundFigure(a.sizeUsdM) || roundFigure(b.sizeUsdM))) return true
   return gap <= 1 && sameMarket && ratio <= 2.05
 }
 
