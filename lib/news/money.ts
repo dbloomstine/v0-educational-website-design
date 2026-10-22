@@ -102,3 +102,26 @@ export function moneyMatchesUsd(money: Money, sizeUsdM: number): boolean {
 export function headlineFigureFor(sizeUsdM: number, headline: string): Money | null {
   return headlineMoney(headline).find((m) => moneyMatchesUsd(m, sizeUsdM)) ?? null
 }
+
+/**
+ * A fund size the classifier left in its own currency: "£500m target" answered as 500 with original_currency GBP and
+ * original_amount 500, where the field is dollars (2026-10-22, seen on a Haiku 5.5 replay; the amount guard does not
+ * catch it, since 500 is in the article). It converts at the middle of the currency's band, so the answer is close, not
+ * exact. Null, and nothing changed, unless: the size equals the original amount; the currency is one the table knows
+ * and is worth more than 5% away from a dollar; and the text does not print that figure in dollars itself.
+ */
+export function unconvertedSize(
+  c: { fund_size_usd_millions?: number | null; original_currency?: string | null; original_amount_millions?: number | null },
+  text: string,
+): number | null {
+  const size = c.fund_size_usd_millions, original = c.original_amount_millions
+  const currency = (c.original_currency ?? '').toUpperCase()
+  if (!size || !original || size <= 0 || original <= 0 || !currency || currency === 'USD') return null
+  const band = USD_PER[currency]
+  if (!band) return null
+  const mid = (band[0] + band[1]) / 2
+  if (Math.abs(mid - 1) < 0.05) return null
+  if (Math.abs(size - original) / original > 0.01) return null
+  if (headlineMoney(text).some((m) => m.currency === 'USD' && Math.abs(m.amountM - size) / size <= 0.02)) return null
+  return Math.round(original * mid * 10) / 10
+}

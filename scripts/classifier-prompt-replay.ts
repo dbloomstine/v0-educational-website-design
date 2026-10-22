@@ -25,11 +25,14 @@ async function main() {
     const rows = data ?? []
     let appear = 0, vanish = 0, retyped = 0
     const lines: string[] = []
+    // Every answer, by row, for a side-by-side of two models (REPLAY_OUT=prefix writes them to prefix.<file>).
+    const answers: Record<string, { type: string; rel: number; firm: string | null; size: number | null; close: string | null } | null> = {}
     for (let i = 0; i < rows.length; i += 15) {
       const batch = rows.slice(i, i + 15)
       const out = await classifyBatch(batch as ArticleForClassification[], key)
       batch.forEach((r, k) => {
         const n = out[k]
+        answers[r.id] = n ? { type: n.article_type, rel: n.relevance_score, firm: n.firm_name ?? null, size: n.fund_size_usd_millions ?? null, close: n.close_type ?? null } : null
         if (!n) { lines.push(`  ?  ${r.title.slice(0, 90)} (no answer)`); return }
         const was = shown(r.article_type, Number(r.relevance_score)), now = shown(n.article_type, n.relevance_score)
         if (!was && now) appear++
@@ -38,6 +41,10 @@ async function main() {
         const mark = !was && now ? '+' : was && !now ? '-' : ' '
         if (mark !== ' ' || r.article_type !== n.article_type) lines.push(`  ${mark}  ${r.article_type}/${Number(r.relevance_score).toFixed(2)} -> ${n.article_type}/${n.relevance_score.toFixed(2)}  ${r.title.slice(0, 90)}`)
       })
+    }
+    if (process.env.REPLAY_OUT) {
+      const { writeFileSync } = await import('node:fs')
+      writeFileSync(`${process.env.REPLAY_OUT}.${file.split('/').pop()}`, JSON.stringify(answers, null, 1))
     }
     console.log(`\n${file}: ${rows.length} rows; ${appear} would newly show, ${vanish} would no longer show, ${retyped} retyped`)
     for (const l of lines) console.log(l)

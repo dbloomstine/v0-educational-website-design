@@ -30,6 +30,7 @@ import type { SupabaseClient } from '@supabase/supabase-js';
 import { alignClassifications } from './classification-align';
 import { withOwnAmounts } from './amount-guard';
 import { retypeHiddenDeal } from './deal-retype';
+import { unconvertedSize } from './money';
 import { batchDuplicateMarks, type BatchRow } from './batch-duplicates';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -329,7 +330,10 @@ export async function classifyPendingArticles(
 
         // A plain deal filed as `other` or commentary is shown nowhere; the
         // headline decides (deal-retype.ts). Only the type changes.
-        const classification = retypeHiddenDeal(article.title, checked);
+        const retyped = retypeHiddenDeal(article.title, checked);
+        // A size left in its own currency is converted (money.ts unconvertedSize).
+        const converted = unconvertedSize(retyped, `${article.title}\n${article.description ?? ''}`);
+        const classification = converted == null ? retyped : { ...retyped, fund_size_usd_millions: converted };
 
         // Firm-domain resolution was removed 2026-08-30 with the favicons:
         // it cost a Clearbit lookup per classified article and nothing renders
@@ -504,6 +508,9 @@ export async function classifyBatch(
       // the classification_note field (+~325 tokens a batch, max seen 6,725);
       // a cut-off answer fails the whole batch, so there is headroom here.
       max_tokens: 10000,
+      // Haiku 5.x thinks by default; a classification needs none (the answer is the JSON), and thinking would put a
+      // thinking block first in `content`. Disabled is allowed at its default effort. Haiku 4.5 takes no `thinking`.
+      ...(/^claude-haiku-5/.test(CLASSIFIER_MODEL) ? { thinking: { type: 'disabled' } } : {}),
       // Structured system block with an ephemeral cache breakpoint — the prompt
       // is byte-identical across every batch, so this caches it (5-min TTL).
       // Requires no beta header on anthropic-version 2023-06-01.
@@ -539,10 +546,11 @@ export async function classifyBatch(
   }
 
   const data = (await response.json()) as {
-    content: { text: string }[];
+    content: { type?: string; text?: string }[];
   };
 
-  const text = data.content?.[0]?.text ?? '';
+  // The first text block: a model that thinks puts its thinking block ahead of it.
+  const text = data.content?.find((b) => b.type === 'text' || typeof b.text === 'string')?.text ?? '';
   const jsonMatch = text.match(/\[[\s\S]*\]/);
   if (!jsonMatch) {
     throw new Error('Could not parse classification response as JSON array');
