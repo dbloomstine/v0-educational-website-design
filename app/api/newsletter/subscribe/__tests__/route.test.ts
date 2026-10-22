@@ -155,3 +155,50 @@ describe('before the migration is applied', () => {
     expect(logged).not.toContain('a@example.com')
   })
 })
+
+describe('the events offer (2026-10-22)', () => {
+  it('stores the events opt-in, the form and the page on a first signup', async () => {
+    const res = await post({ email: 'cfo@example.com', form: 'events', page: '/events/8th-annual-lpgp-connect-cfo-coo-forum-chicago', interests: ['events', 'city:chicago'] })
+    expect(res.status).toBe(200)
+    expect(inserts[0]).toMatchObject({
+      interests: ['events', 'city:chicago'],
+      signup_form: 'events',
+      signup_page: '/events/8th-annual-lpgp-connect-cfo-coo-forum-chicago',
+    })
+  })
+
+  it('keeps story interests first and drops tags it does not know', async () => {
+    await post({ email: 'a@example.com', form: 'firstvisit', interests: ['city:new-york', 'credit', 'city:boston', 'events', 'city:<x>', 'vip'] })
+    expect(inserts[0]).toMatchObject({ interests: ['credit', 'events', 'city:new-york'], signup_form: 'firstvisit' })
+  })
+
+  it('drops a page that is not a plain path', async () => {
+    await post({ email: 'a@example.com', form: 'events', page: 'https://evil.example/x' })
+    expect(inserts[0]).not.toHaveProperty('signup_page')
+  })
+
+  it('saves the signup with everything else when signup_page is not there yet', async () => {
+    failInsert = (row) => ('signup_page' in row ? { code: 'PGRST204', message: "Could not find the 'signup_page' column of 'newsletter_subscribers' in the schema cache" } : null)
+    const res = await post({ email: 'a@example.com', form: 'events', page: '/events/chicago', interests: ['events'], attribution: { source: 'google' } })
+    expect(res.status).toBe(200)
+    expect(inserts).toHaveLength(2)
+    expect(inserts[1]).toMatchObject({ signup_source: 'google', signup_form: 'events', interests: ['events'] })
+    expect(inserts[1]).not.toHaveProperty('signup_page')
+  })
+
+  it('keeps a returning reader’s story choices when they come back through the events block', async () => {
+    existing = { id: 1, status: 'unsubscribed', unsubscribe_token: 't', interests: ['PE', 'credit'] }
+    await post({ email: 'a@example.com', form: 'events', interests: ['events', 'city:miami'] })
+    expect(updates[0]).toMatchObject({ status: 'confirmed', interests: ['PE', 'credit', 'events', 'city:miami'] })
+  })
+
+  it('never writes to a live subscription, events block or not', async () => {
+    existing = { id: 1, status: 'confirmed', unsubscribe_token: 't', interests: ['events'] }
+    const res = await post({ email: 'a@example.com', form: 'events', interests: ['events', 'city:chicago'] })
+    const body = await res.json()
+    expect(body.message).toBe('Already subscribed')
+    // An events opt-in is not an answer to "what do you follow": they may still be asked.
+    expect(body.hasPreferences).toBe(false)
+    expect(updates).toEqual([])
+  })
+})

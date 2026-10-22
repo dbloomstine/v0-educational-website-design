@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { renderWelcomeEmail, renderWelcomeText } from '@/lib/newsletter/welcome-email'
 import { insertSubscriber } from '@/lib/newsletter/insert-subscriber'
-import { sanitizeSignupSource } from '@/lib/newsletter/signup-source'
+import { sanitizePagePath, sanitizeSignupSource } from '@/lib/newsletter/signup-source'
 import { makeTicket } from '@/lib/newsletter/ticket'
-import { preferenceColumns, sanitizeInterests, sanitizeRole, sanitizeSignupForm } from '@/lib/newsletter/interests'
+import { mergeSignupInterests, preferenceColumns, sanitizeInterests, sanitizeRole, sanitizeSignupForm, sanitizeSignupInterests } from '@/lib/newsletter/interests'
 
 export async function POST(req: Request) {
   try {
@@ -23,10 +23,12 @@ export async function POST(req: Request) {
 
     // What the signup card asked alongside the address. Only ids on our own
     // lists survive; a form that sends none of this stores none of it.
+    // Event opt-ins ("events", "city:chicago") ride in `interests` too, after the story interests.
     const preferences = {
-      interests: sanitizeInterests(body.interests),
+      interests: sanitizeSignupInterests(body.interests),
       role: sanitizeRole(body.role),
       form: sanitizeSignupForm(body.form),
+      page: sanitizePagePath(body.page),
     }
 
     const supabase = getSupabaseAdmin()
@@ -44,7 +46,8 @@ export async function POST(req: Request) {
     if (existing?.status === 'confirmed') {
       // ...with one exception. A reader who has never said what they follow is still asked: they get a
       // short-lived ticket that can only fill in choices that are not there (lib/newsletter/ticket.ts).
-      const never = !existing.interests?.length && !existing.reader_role
+      // Story interests only: an events opt-in on file is not an answer to "what do you follow".
+      const never = !sanitizeInterests(existing.interests).length && !existing.reader_role
       return NextResponse.json({
         success: true,
         message: 'Already subscribed',
@@ -68,7 +71,8 @@ export async function POST(req: Request) {
           updated_at: nowIso,
           // Coming back through the card, their choices come with them. The
           // form name stays as first recorded.
-          ...preferenceColumns({ interests: preferences.interests, role: preferences.role }),
+          // An events block sends no story interests: the ones on file stay, and its event tags join them.
+          ...preferenceColumns({ interests: mergeSignupInterests(preferences.interests, existing.interests), role: preferences.role }),
         })
         .eq('id', existing.id)
 

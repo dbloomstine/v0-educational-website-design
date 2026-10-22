@@ -1,5 +1,5 @@
 import { getSupabaseAdmin } from '@/lib/supabase/client'
-import { ALL_INTERESTS, interestWords, sanitizeInterests } from '@/lib/newsletter/interests'
+import { ALL_INTERESTS, interestWords, sanitizeInterests, withEventTags } from '@/lib/newsletter/interests'
 import { readInterestToken } from '@/lib/newsletter/interest-link'
 
 export const dynamic = 'force-dynamic'
@@ -67,7 +67,8 @@ export async function POST(req: Request) {
   const { data: row, error } = await db.from('newsletter_subscribers').select('id, status, interests, unsubscribe_token').eq('id', p.id).maybeSingle()
   if (error || !row || row.status !== 'confirmed') return page('No live subscription', `<h1>We could not find a live subscription.</h1><p>Subscribe again at <a href="https://fundopshq.com">fundopshq.com</a> and choose what you follow there.</p>`, 404)
   const interests = sanitizeInterests([...((row.interests as string[] | null) ?? []), p.interest])
-  const { error: upErr } = await db.from('newsletter_subscribers').update({ interests, updated_at: new Date().toISOString() }).eq('id', p.id)
+  // Event opt-ins on the row ("events", "city:…") are kept beside the story interests.
+  const { error: upErr } = await db.from('newsletter_subscribers').update({ interests: withEventTags(interests, row.interests), updated_at: new Date().toISOString() }).eq('id', p.id)
   if (upErr) return page('Could not save', `<h1>Could not save just now.</h1><p>Please try the link again in a moment.</p>`, 500)
   const prefs = `https://fundopshq.com/preferences?token=${encodeURIComponent(String(row.unsubscribe_token))}`
   return page(

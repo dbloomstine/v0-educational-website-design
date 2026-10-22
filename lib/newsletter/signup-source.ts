@@ -61,6 +61,11 @@ export function sanitizeSignupSource(raw: unknown): SignupSource {
   return out
 }
 
+/** The page a form was on when the reader signed up (`signup_page`), checked like the landing path. */
+export function sanitizePagePath(raw: unknown): string | undefined {
+  return clean(raw, PATH)
+}
+
 function hostIs(host: string, domain: string): boolean {
   return host === domain || host.endsWith(`.${domain}`)
 }

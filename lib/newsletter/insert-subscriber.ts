@@ -7,6 +7,8 @@ export interface SignupPreferences {
   interests?: string[]
   role?: string
   form?: string
+  /** The page the form was on (or, for the signup box, the page it appeared on): `signup_page`, 2026-10-22. */
+  page?: string
 }
 
 /**
@@ -20,8 +22,13 @@ export function isMissingSignupColumns(error: { code?: string; message?: string 
   return (
     error.code === 'PGRST204' ||
     error.code === '42703' ||
-    /signup_(source|medium|campaign|landing_path|form)|interests|reader_role/.test(error.message ?? '')
+    /signup_(source|medium|campaign|landing_path|form|page)|interests|reader_role/.test(error.message ?? '')
   )
+}
+
+/** True when the only thing missing is `signup_page` (20261022_signup_page.sql not applied yet). */
+export function isMissingSignupPage(error: { code?: string; message?: string } | null): boolean {
+  return isMissingSignupColumns(error) && /signup_page/.test(error?.message ?? '')
 }
 
 /**
@@ -44,10 +51,16 @@ export async function insertSubscriber(
   const insert = (row: Record<string, unknown>) =>
     supabase.from('newsletter_subscribers').insert(row).select('unsubscribe_token').single()
 
-  const columns = { ...signupColumns(source), ...preferenceColumns(preferences) }
+  const page = preferences.page ? { signup_page: preferences.page } : {}
+  const columns = { ...signupColumns(source), ...preferenceColumns(preferences), ...page }
   if (Object.keys(columns).length === 0) return insert(base)
 
-  const first = await insert({ ...base, ...columns })
+  let first = await insert({ ...base, ...columns })
+  // The newest column first: without it the rest (source, form, interests) still land.
+  if (first.error && preferences.page && isMissingSignupPage(first.error)) {
+    console.warn('newsletter_subscribers has no signup_page column yet; saved the signup without it')
+    first = await insert({ ...base, ...signupColumns(source), ...preferenceColumns(preferences) })
+  }
   if (first.error && isMissingSignupColumns(first.error)) {
     console.warn('newsletter_subscribers is missing signup or preference columns; saved the signup without them')
     return insert(base)

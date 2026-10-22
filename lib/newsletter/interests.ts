@@ -65,9 +65,11 @@ export const ROLES = [
 
 /**
  * Which form a signup came through. Kept on the row so each form's yield can be counted.
+ * `events` is the inline "Get <City>'s events every Monday" block on event and city pages (2026-10-22);
+ * `firstvisit` is the signup box shown on a first visit, as against `popup`, the box the reading clock opens.
  * `hero` was the homepage's one-line band, removed 2026-10-12; the value stays for the rows that carry it.
  */
-export const SIGNUP_FORMS = ['popup', 'hero', 'feed', 'widget', 'rail'] as const
+export const SIGNUP_FORMS = ['popup', 'hero', 'feed', 'widget', 'rail', 'events', 'firstvisit'] as const
 
 /** The known ids among whatever was sent, once each, in list order. */
 export function sanitizeInterests(raw: unknown): string[] {
@@ -117,4 +119,86 @@ export function preferenceColumns(p: { interests?: string[]; role?: string; form
   if (p.role) cols.reader_role = p.role
   if (p.form) cols.signup_form = p.form
   return cols
+}
+
+// ── Event opt-ins (2026-10-22) ──────────────────────────────────────
+//
+// The events signup block on event and city pages records that a reader wants the week's events, and for
+// which city, so a Monday events email can be sent to them later. The tags live in the same `interests`
+// column as the asset classes ("events", "city:chicago") but are not story interests: sanitizeInterests
+// drops them, so the daily email's grouping (personalize.ts, interestKey) never sees them, and the routes
+// that rewrite a reader's story choices keep them (withEventTags).
+
+/** The reader asked for the week's events. */
+export const EVENTS_TAG = 'events'
+const CITY_PREFIX = 'city:'
+const CITY_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+/** "Washington DC" → "washington-dc", the same slug the /events/<city> pages use. Empty for nothing usable. */
+export function citySlug(city: string | null | undefined): string {
+  return (city ?? '')
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40)
+    .replace(/-+$/, '')
+}
+
+/** The tag for a city ("city:chicago"), or null when the city gives no usable slug. */
+export function cityTag(city: string | null | undefined): string | null {
+  const slug = citySlug(city)
+  return slug && CITY_SLUG.test(slug) ? `${CITY_PREFIX}${slug}` : null
+}
+
+/** What an events signup asks to record: always "events", and the city when there is one. */
+export function eventSignupTags(city: string | null | undefined): string[] {
+  const tag = cityTag(city)
+  return tag ? [EVENTS_TAG, tag] : [EVENTS_TAG]
+}
+
+function isCityTag(v: string): boolean {
+  return v.startsWith(CITY_PREFIX) && v.length <= CITY_PREFIX.length + 40 && CITY_SLUG.test(v.slice(CITY_PREFIX.length))
+}
+
+/**
+ * The event tags among whatever was sent: "events" and well-formed city tags, once each.
+ * `maxCities` caps the city tags (a request may add one; a stored row keeps what it has).
+ */
+export function sanitizeEventTags(raw: unknown, maxCities = 1): string[] {
+  if (!Array.isArray(raw)) return []
+  const out: string[] = []
+  let cities = 0
+  for (const v of raw) {
+    if (typeof v !== 'string' || out.includes(v)) continue
+    if (v === EVENTS_TAG) out.push(v)
+    else if (isCityTag(v) && cities < maxCities) {
+      out.push(v)
+      cities++
+    }
+  }
+  // A city with no "events" is still an events opt-in: say so.
+  if (out.length > 0 && !out.includes(EVENTS_TAG)) out.unshift(EVENTS_TAG)
+  return out.sort((a, b) => (a === EVENTS_TAG ? -1 : b === EVENTS_TAG ? 1 : a.localeCompare(b)))
+}
+
+/** What a signup request may store in `interests`: story interests in list order, then its event tags. */
+export function sanitizeSignupInterests(raw: unknown): string[] {
+  return [...sanitizeInterests(raw), ...sanitizeEventTags(raw)]
+}
+
+/** Story interests (only ids on the lists) with the event tags already on the reader's row kept beside them. */
+export function withEventTags(storyInterests: string[], onFile: unknown): string[] {
+  return [...sanitizeInterests(storyInterests), ...sanitizeEventTags(onFile, 50)]
+}
+
+/**
+ * The interests to store when an address comes back through a signup form: the story interests it sent, or the
+ * ones on file when it sent none (an events block sends none), plus every event tag from both.
+ */
+export function mergeSignupInterests(sent: string[], onFile: unknown): string[] {
+  const story = sanitizeInterests(sent)
+  const events = sanitizeEventTags([...(Array.isArray(onFile) ? onFile : []), ...sent], 50)
+  return [...(story.length ? story : sanitizeInterests(onFile)), ...events]
 }

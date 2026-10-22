@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
-import { sanitizeInterests, sanitizeRole } from '@/lib/newsletter/interests'
+import { sanitizeInterests, sanitizeRole, withEventTags } from '@/lib/newsletter/interests'
 import { readTicket } from '@/lib/newsletter/ticket'
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -37,11 +37,17 @@ export async function POST(req: Request) {
   const now = new Date().toISOString()
 
   const supabase = getSupabaseAdmin()
+  // This page sets story interests only. Event opt-ins already on the row (lib/newsletter/interests.ts,
+  // "events", "city:…") are read first and kept, so saving these boxes never takes a reader off the events list.
+  const { data: current } = ticketFor
+    ? await supabase.from('newsletter_subscribers').select('interests').eq('id', ticketFor.id).maybeSingle()
+    : await supabase.from('newsletter_subscribers').select('interests').eq('unsubscribe_token', token).maybeSingle()
+  const stored = withEventTags(interests, current?.interests)
   let query = supabase
     .from('newsletter_subscribers')
     .update({
       // An empty list is stored as null: no choices, the edition as everyone gets it.
-      interests: interests.length > 0 ? interests : null,
+      interests: stored.length > 0 ? stored : null,
       reader_role: role ?? null,
       updated_at: now,
       ...(comeBack ? { status: 'confirmed', confirmed_at: now, unsubscribed_at: null } : {}),
@@ -51,7 +57,7 @@ export async function POST(req: Request) {
     if (readError || !onFile || onFile.status !== 'confirmed') return NextResponse.json({ error: 'We could not find a live subscription.' }, { status: 404 })
     // A ticket fills in choices that are not there. It may save again as boxes are ticked (choices written since it
     // was issued are its own), but it never changes choices that were on file before it was made.
-    const has = Boolean(onFile.interests?.length || onFile.reader_role)
+    const has = Boolean(sanitizeInterests(onFile.interests).length || onFile.reader_role)
     const sinceIssued = onFile.updated_at && new Date(onFile.updated_at).getTime() >= ticketFor.issuedAt - 1000
     if (has && !sinceIssued) {
       return NextResponse.json({ error: 'Your choices are already on file. Change them from the link at the foot of any edition.' }, { status: 409 })

@@ -25,6 +25,7 @@ import { breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 import { Panel } from '@/components/story/StoryBlocks'
 import type { IndustryEvent } from '@/lib/events/types'
+import { EventsSignup } from '@/components/events/EventsSignup'
 
 export const revalidate = 3600
 
@@ -153,6 +154,7 @@ async function CollectionPage({ collection }: { collection: EventCollection }) {
           </div>
         </div>
         <div className="mx-auto max-w-[1100px] px-4 pb-12 pt-6 lg:px-6">
+          <EventsSignup city={collection.filter.city ?? null} className="mb-6" />
           <div className="panel overflow-hidden">
             {events.length === 0 ? (
               <p className="px-4 py-12 text-center text-sm text-muted-foreground">
@@ -332,6 +334,9 @@ function EventDetailPage({ event, related }: { event: IndustryEvent; related: In
               </p>
             </div>
           </div>
+
+          {/* The offer, right under the details: the reader came for this event; the next ones are a field away. */}
+          <EventsSignup city={event.eventFormat === 'virtual' ? null : event.city} className="mt-5" />
 
           {related.length > 0 && (
             <div className="mt-6">

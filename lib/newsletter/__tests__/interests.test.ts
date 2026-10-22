@@ -71,3 +71,52 @@ describe('the reader\'s own section', () => {
     expect(sections[0].articles).toHaveLength(3)
   })
 })
+
+describe('event opt-ins (2026-10-22)', () => {
+  it('makes city tags from the same slugs as the city pages', async () => {
+    const { cityTag, citySlug, eventSignupTags } = await import('../interests')
+    expect(citySlug('Washington DC')).toBe('washington-dc')
+    expect(citySlug('Montréal')).toBe('montreal')
+    expect(cityTag('New York')).toBe('city:new-york')
+    expect(cityTag('  ')).toBeNull()
+    expect(cityTag(null)).toBeNull()
+    expect(eventSignupTags('Chicago')).toEqual(['events', 'city:chicago'])
+    expect(eventSignupTags(null)).toEqual(['events'])
+  })
+
+  it('keeps "events" and one well-formed city from a request', async () => {
+    const { sanitizeEventTags } = await import('../interests')
+    expect(sanitizeEventTags(['city:boston', 'events', 'city:miami'])).toEqual(['events', 'city:boston'])
+    expect(sanitizeEventTags(['city:chicago'])).toEqual(['events', 'city:chicago'])
+    expect(sanitizeEventTags(['city:Chicago', 'city:a b', 'city:', 'city:-x', 'PE', 7])).toEqual([])
+    expect(sanitizeEventTags('events')).toEqual([])
+  })
+
+  it('never lets event tags into the story interests the daily email reads', async () => {
+    const { sanitizeSignupInterests } = await import('../interests')
+    const stored = sanitizeSignupInterests(['events', 'city:chicago', 'credit'])
+    expect(stored).toEqual(['credit', 'events', 'city:chicago'])
+    expect(sanitizeInterests(stored)).toEqual(['credit'])
+    expect(interestKey(stored)).toBe('credit')
+    expect(interestWords(stored)).toBe('private credit')
+  })
+
+  it('keeps the event tags on file when story choices are rewritten', async () => {
+    const { withEventTags } = await import('../interests')
+    expect(withEventTags(['VC'], ['PE', 'events', 'city:boston', 'city:new-york'])).toEqual(['VC', 'events', 'city:boston', 'city:new-york'])
+    expect(withEventTags([], ['events'])).toEqual(['events'])
+    expect(withEventTags(['PE'], null)).toEqual(['PE'])
+  })
+
+  it('merges a returning signup: sent story choices win, else the ones on file; event tags from both', async () => {
+    const { mergeSignupInterests } = await import('../interests')
+    expect(mergeSignupInterests(['events', 'city:miami'], ['PE', 'events', 'city:boston'])).toEqual(['PE', 'events', 'city:boston', 'city:miami'])
+    expect(mergeSignupInterests(['credit'], ['PE'])).toEqual(['credit'])
+    expect(mergeSignupInterests([], null)).toEqual([])
+  })
+
+  it('knows the two new forms', () => {
+    expect(sanitizeSignupForm('events')).toBe('events')
+    expect(sanitizeSignupForm('firstvisit')).toBe('firstvisit')
+  })
+})
