@@ -269,6 +269,23 @@ describe('more things that are not a fund close', () => {
     ]
     expect(buildLeague(rows).map((c) => c.firm)).toEqual(['Siguler Guff'])
   })
+  it('keeps out a platform total, and keeps a fund whose report mentions its platform', () => {
+    const credit = { fund_categories: ['credit'] }
+    const rows = [
+      // 2026-10-22 (Danny): a platform total is the fund plus separate accounts and other vehicles.
+      row({ ...credit, firm: 'Barings', size: 19000, title: 'Barings closes over $19 billion for global direct lending platform' }),
+      row({ ...credit, firm: 'Adams Street Partners', size: 7500, title: 'Adams Street Partners holds $7.5bn final close', tldr: 'Adams Street Partners closed its third private credit platform at $7.5bn final close, focused on senior financing to US and European mid-market sponsored businesses.' }),
+      row({ ...credit, firm: 'Adams Street Partners', size: 7500, title: 'Adams Street closes $7.5B Private Credit III platform' }),
+      // Kept: the figure is the fund's.
+      row({ firm: 'Portage', fund: 'Portage Fund IV', size: 600, title: 'Portage closes $600m fintech fund slightly below predecessor as platform AUM reaches $7bn' }),
+      row({ firm: 'TPG', fund: 'TPG Rise Climate II', size: 10000, title: 'TPG raises $10bn for second climate private equity fund', tldr: "TPG Rise Climate II closes at $10bn, bringing firm's climate platform to $17.1bn." }),
+      row({ firm: 'Lightspring Capital Partners', fund: 'Lightspring Capital Partners Fund II', size: 218, title: 'Lightspring Capital closes $218m second fund as lower mid-market specialist expands SBIC platform' }),
+      row({ ...credit, firm: 'Northbeam', fund: 'Northbeam Credit Fund III', size: 2000, title: 'Northbeam Credit Fund III, part of its credit platform, closes at $2bn' }),
+      // The headline's platform figure is not the one on file: the fund's $1.9bn is.
+      row({ firm: 'EIG', fund: 'EIG Senior Infrastructure Debt Fund VI', size: 1900, fund_categories: ['infrastructure'], title: 'EIG raises $4bn across infrastructure debt platform', tldr: 'EIG closes Senior Infrastructure Debt Fund VI at $1.9bn; combined $4.0bn raised across fund and single-investor vehicles.' }),
+    ]
+    expect(buildLeague(rows).map((c) => c.firm).sort()).toEqual(['EIG', 'Lightspring Capital Partners', 'Northbeam', 'Portage', 'TPG'])
+  })
   it('does not rank a target as money closed', () => {
     const first = { close: 'first_close' }
     const rows = [

@@ -137,6 +137,38 @@ const NOT_A_FUND_CLOSE_RE =
 const NOT_A_BLIND_POOL_RE = /\b(continuation (fund|vehicle)s?|single-asset|multi-asset continuation|CVs?|CLO|CFO|SRT|CMBS|ABS|construction loans?|debt investments|credit facility|term loan|[Cc]ollaterali[sz]ed|[Ss]ecuriti[sz]ation|[Mm]andates?|[Ee]vergreen|[Pp]erpetual|[Oo]pen-end(ed)?|[Ss]emi-liquid|[Ii]nterval fund|[Nn]on-traded|BDC|[Ll]ong-running)\b/
 
 /**
+ * A platform total is the fund plus separate accounts, co-investment and other
+ * vehicles raised alongside it, so it does not rank against a single fund
+ * (Danny, 2026-10-22): "Barings closes over $19 billion for global direct
+ * lending platform", "Adams Street … closed its third private credit platform
+ * at $7.5bn". The test is about the story's own figure: the platform has to
+ * be what that figure is for. "Portage closes $600m fintech fund as platform
+ * AUM reaches $7bn", "TPG Rise Climate II closes at $10bn, bringing the climate
+ * platform to $17.1bn" and "Fund III, part of its credit platform, closes at
+ * $2bn" name the fund the figure belongs to and stay in.
+ */
+const PLATFORM_AFTER_RE = /^[^.;,:()]*?\bplatforms?\b/i
+const FUND_BEFORE_PLATFORM_RE = /\b(funds?|vehicles?|SMAs?|accounts?)\b[^.;,:()]*\bplatforms?\b/i
+const CLAUSE_BREAK_RE = /\b(as|after|while|with|amid|bringing|taking|lifting|pushing|and|but|which|where|that)\b[^.;,:()]*\bplatforms?\b/i
+const PLATFORM_BEFORE_RE = /\bplatforms?\s+(?:(?:raise|fundraise|fundraising|total|totall?ing|close|final close)\s+(?:of\s+)?|at\s+|of\s+|worth\s+)(?:over |more than |about |nearly |some |almost |approximately |roughly |~)?$/i
+
+function platformFigureIn(text: string, sizeUsdM: number): boolean {
+  const fig = headlineFigureFor(sizeUsdM, text)
+  if (!fig) return false
+  if (PLATFORM_BEFORE_RE.test(text.slice(Math.max(0, fig.index - 50), fig.index))) return true
+  const after = text.slice(fig.end, fig.end + 90)
+  const m = after.match(PLATFORM_AFTER_RE)
+  if (!m) return false
+  // "$600m fintech fund as platform AUM reaches $7bn": the figure is the fund's.
+  return !FUND_BEFORE_PLATFORM_RE.test(m[0]) && !CLAUSE_BREAK_RE.test(m[0])
+}
+
+/** True when the report gives the story's figure as a platform total rather than one fund's close. */
+export function sizeIsPlatformTotal(headline: string, summary: string | null, sizeUsdM: number): boolean {
+  return platformFigureIn(headline, sizeUsdM) || (!!summary && platformFigureIn(summary, sizeUsdM))
+}
+
+/**
  * The figure on file is a target when the headline says so: "eyes $70m for
  * fourth fund, hits $25m first close", "halfway mark in €350m-targeting debut
  * fundraise", "first close en route to $50m", "hits halfway mark for $1.5bn
@@ -198,6 +230,7 @@ export function leagueRejection(
   if (story.assetClasses[0] === 'hedge') return 'hedge fund (no final close)'
   if (NOT_A_FUND_CLOSE_RE.test(headline)) return 'not a private fund close (IPO, soft close, wind-down…)'
   if (NOT_A_BLIND_POOL_RE.test(`${story.headline} ${story.fundName ?? ''}`)) return 'not a closed-end fund (continuation vehicle, CLO, mandate, evergreen…)'
+  if (story.sizeUsdM && sizeIsPlatformTotal(headline, story.summary, story.sizeUsdM)) return 'a platform total (fund plus accounts and other vehicles), not one fund'
   if (STAGE_OF[story.closeType] === 'final' && NOT_YET_RE.test(headline)) return 'headline says it has not closed yet'
   // No fund named and the headline does not call it one: admit it only when a
   // second outlet reported it and the summary describes a fund.
