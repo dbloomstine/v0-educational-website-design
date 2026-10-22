@@ -10,6 +10,7 @@ import { buildOnce } from '@/lib/cache/build-once'
 import { ALL_NEWSLETTER_TYPES } from '@/lib/newsletter/query-articles'
 import { buildStories, type Story } from './stories'
 import { STORY_COLUMNS } from './story-columns'
+import { withSourceCredits } from './source-credit-rows'
 import { loadOlderStory, loadRowsByShortId, type OlderContext } from './older-story'
 import { findStoryByRef, parseStoryParam, pickBySlug } from './story-path'
 
@@ -41,7 +42,7 @@ async function fetchStories(windowDays: number = STORY_WINDOW_DAYS): Promise<Sto
     rows.push(...(data ?? []))
     if (!data || data.length < 1000) break
   }
-  return buildStories(rows)
+  return buildStories(await withSourceCredits(rows))
 }
 
 // Bump the version whenever the Story shape changes, or what a field holds:
@@ -50,12 +51,13 @@ async function fetchStories(windowDays: number = STORY_WINDOW_DAYS): Promise<Sto
 // (v6 / v3, 2026-10-05: a roundup carries no size, fund or stage, and more
 // rows are known to be roundups. v7 / v4, the same day: a summary is shown
 // without the classifier's remarks. v8 / v5, 2026-10-14: secondaries, GP
-// stakes and continuation vehicles lead with their own asset class.)
+// stakes and continuation vehicles lead with their own asset class. v9 / v6,
+// 2026-10-22: a JD Supra alert is credited "Firm via JD Supra".)
 //
 // buildOnce: when the cached entry goes stale, every request that notices
 // would rebuild it. Only one may (lib/cache/build-once.ts).
-const STORIES_KEY = 'front-page-stories-v8'
-const ARCHIVE_KEY = 'archive-stories-v5'
+const STORIES_KEY = 'front-page-stories-v9'
+const ARCHIVE_KEY = 'archive-stories-v6'
 
 const getStories = unstable_cache(() => buildOnce(STORIES_KEY, () => fetchStories(STORY_WINDOW_DAYS)), [STORIES_KEY], {
   revalidate: 600,
@@ -128,7 +130,7 @@ export async function searchStories(query: string): Promise<Story[]> {
   // A search that fails is an error, not "nothing found": the results page is
   // kept at the edge, and "no stories match" would be kept with it.
   if (error) throw new Error(`search failed: ${error.message}`)
-  return buildStories(data ?? [])
+  return buildStories(await withSourceCredits(data ?? []))
 }
 
 /**

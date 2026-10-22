@@ -126,7 +126,7 @@ describe('a month of the archive', () => {
     // LIMIT/OFFSET: fifty and one more, to know whether another page follows.
     expect(called(q, 'range')).toEqual([[0, ARCHIVE_PAGE_SIZE]])
     // The columns it shows, nothing wider (no full text, no extracted blob).
-    expect(String(called(q, 'select')[0][0])).toBe('id, title, tldr, source_name, published_date, summary_long, firm:extracted_data->>firm_name')
+    expect(String(called(q, 'select')[0][0])).toBe('id, title, tldr, source_name, author, published_date, summary_long, firm:extracted_data->>firm_name')
     expect(page.entries).toHaveLength(ARCHIVE_PAGE_SIZE)
     expect(page.hasMore).toBe(true)
   })

@@ -18,6 +18,7 @@ import { clusterBy, dealStage, entityKey, entityMentioned, fundStrategiesConflic
 import { fundSizesMatch, isSameStory } from './story-dedup'
 import { homeFactor } from './home-factor'
 import { normalizeSourceName } from './constants'
+import { creditOutlet } from './source-credit'
 import { cleanSummary } from './summary-clean'
 
 export type StoryKind = 'fundraising' | 'deals' | 'people' | 'lps' | 'regulation' | 'providers'
@@ -145,7 +146,7 @@ export function storyHeat(story: Story, nowMs: number): number {
  * report from an outlet below the trade press counts for less.
  */
 export function topScore(story: Story, nowMs: number): number {
-  const home = homeFactor({ geography: story.geography, title: story.headline, sourceName: story.source })
+  const home = homeFactor({ geography: story.geography, title: story.headline, sourceName: creditOutlet(story.source) })
   const coverage = 1 + 0.15 * Math.min(story.coverage.length, 5)
   const lone = story.coverage.length === 0 && sourceTier(story.source) > 10 ? 0.8 : 1
   return storyHeat(story, nowMs) * home * coverage * lone
@@ -266,13 +267,17 @@ export function buildStories(rows: Row[]): Story[] {
       : tags
 
     // One entry per outlet, best source first, never the primary outlet again.
-    const seenSources = new Set<string>([normalizeSourceName(best.sourceName) ?? ''])
+    // A republished alert is credited to the firm that wrote it ("Morgan
+    // Lewis via JD Supra", 2026-10-22, lib/news/source-credit.ts), so two
+    // firms' alerts on JD Supra are two entries.
+    const creditOf = (a: NewsletterArticle) => a.sourceCredit ?? normalizeSourceName(a.sourceName)
+    const seenSources = new Set<string>([creditOf(best) ?? ''])
     const coverage: StoryCoverage[] = []
     for (const c of group
       .map((g) => g.article)
       .filter((a) => a.id !== best.id)
       .sort((a, b) => sourceTier(a.sourceName) - sourceTier(b.sourceName))) {
-      const source = normalizeSourceName(c.sourceName)
+      const source = creditOf(c)
       if (!source || seenSources.has(source)) continue
       seenSources.add(source)
       coverage.push({ source, url: c.sourceUrl, headline: c.title })
@@ -295,7 +300,7 @@ export function buildStories(rows: Row[]): Story[] {
       kind: KIND_OF[placement.section],
       sizeUsdM: size,
       coverage,
-      source: normalizeSourceName(best.sourceName),
+      source: creditOf(best),
       closeType: roundup ? null : best.closeType,
       leadEligible: placement.leadEligible && !roundup,
       roundup,

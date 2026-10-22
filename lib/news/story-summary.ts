@@ -24,6 +24,7 @@
  */
 import { decodeHtmlEntities, normalizeSourceName } from './constants'
 import { figuresIn, foreignAmounts } from './amount-guard'
+import { sourceCredit, stripByline } from './source-credit'
 
 // ─── Constants ──────────────────────────────────────────────────────────────
 
@@ -93,6 +94,8 @@ export interface SourceRow {
   description: string | null
   full_text: string | null
   source_name: string | null
+  /** The firm behind a JD Supra alert, stored by ingest since 2026-10-22 (lib/news/source-credit.ts). */
+  author?: string | null
   published_date?: string | null
 }
 
@@ -162,7 +165,9 @@ export function prepareRows(rows: SourceRow[]): PreparedRow[] {
   for (const r of rows) for (const w of words(normalizeSourceName(r.source_name) ?? r.source_name ?? '')) headlineWords.add(w)
 
   const prepared = rows.map((r, i) => {
-    let description = cleanText(r.description)
+    // A JD Supra description ends "...By: <Firm>": the firm goes in the outlet's
+    // credit, not in the text (2026-10-22).
+    let description = cleanText(stripByline(r.description, r.source_name))
     let fullText = cleanText(r.full_text)
     if (informativeSentences(description, headlineWords).length === 0) description = ''
     if (informativeSentences(fullText, headlineWords).length === 0) fullText = ''
@@ -173,7 +178,7 @@ export function prepareRows(rows: SourceRow[]): PreparedRow[] {
     fullText = fullText.slice(0, ROW_CHARS - description.length)
     return {
       id: r.id,
-      outlet: normalizeSourceName(r.source_name) ?? r.source_name ?? 'Unknown outlet',
+      outlet: sourceCredit({ sourceName: r.source_name, author: r.author, description: r.description }) ?? r.source_name ?? 'Unknown outlet',
       date: r.published_date ? String(r.published_date).slice(0, 10) : null,
       title: titles[i],
       description,

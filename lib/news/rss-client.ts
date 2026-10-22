@@ -22,6 +22,8 @@ export interface RssArticle {
   description: string;
   pubDate: string | null;
   sourceName: string;
+  /** The feed's first <dc:creator>, when it has one (2026-10-22: the law firm on a JD Supra alert). */
+  author?: string | null;
 }
 
 export interface FeedResult {
@@ -137,7 +139,17 @@ function rssItemToArticle(
     description: encoded.length > described.length ? encoded : described,
     pubDate: parseDate(item.pubDate),
     sourceName: resolvedSource,
+    author: firstCreator(item['dc:creator']),
   };
+}
+
+/** The first <dc:creator> as text, or null. A feed may list several, or none. */
+function firstCreator(val: unknown): string | null {
+  const first = Array.isArray(val) ? val[0] : val;
+  if (first === undefined || first === null) return null;
+  const text = typeof first === 'object' ? (first as Record<string, unknown>)['#text'] : first;
+  const out = stripHtml(String(text ?? '')).trim();
+  return out || null;
 }
 
 function atomEntryToArticle(

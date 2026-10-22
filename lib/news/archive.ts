@@ -25,6 +25,8 @@ import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { buildOnce } from '@/lib/cache/build-once'
 import { plainHeadline } from '@/lib/newsletter/query-articles'
 import { summaryParagraphs } from './story-summary'
+import { sourceCredit } from './source-credit'
+import { withSourceCredits } from './source-credit-rows'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>
@@ -122,6 +124,9 @@ export interface ArchiveRow {
   title: string | null
   tldr?: string | null
   source_name?: string | null
+  /** The firm behind a JD Supra alert (2026-10-22, lib/news/source-credit.ts). */
+  author?: string | null
+  source_credit?: string | null
   published_date: string | null
   summary_long: string | null
   firm?: string | null
@@ -139,7 +144,8 @@ export function toEntry(row: ArchiveRow): ArchiveEntry | null {
     headline: plainHeadline(title, row.tldr ?? null, row.source_name ?? null),
     date,
     firm: firm || null,
-    source: row.source_name?.trim() || null,
+    // "Morgan Lewis via JD Supra" for a republished alert, else the outlet (2026-10-22).
+    source: row.source_credit ?? sourceCredit({ sourceName: row.source_name, author: row.author }),
     blurb,
   }
 }
@@ -163,7 +169,7 @@ export async function fetchArchiveMonth(db: DbClient, month: string, page: numbe
   const offset = (page - 1) * ARCHIVE_PAGE_SIZE
   const { data, error } = await db
     .from('news_items')
-    .select('id, title, tldr, source_name, published_date, summary_long, firm:extracted_data->>firm_name')
+    .select('id, title, tldr, source_name, author, published_date, summary_long, firm:extracted_data->>firm_name')
     .eq('summary_long_status', 'written')
     .gte('published_date', from)
     .lt('published_date', before)
@@ -172,7 +178,7 @@ export async function fetchArchiveMonth(db: DbClient, month: string, page: numbe
     .range(offset, offset + ARCHIVE_PAGE_SIZE)
   // An error is an error, not an empty month: the page is kept, and so would the empty answer be.
   if (error) throw new Error(`archive month query failed: ${error.message}`)
-  const rows = (data ?? []) as ArchiveRow[]
+  const rows = await withSourceCredits((data ?? []) as ArchiveRow[], db)
   const entries = rows.slice(0, ARCHIVE_PAGE_SIZE).map(toEntry).filter((e): e is ArchiveEntry => e !== null)
   return { entries, hasMore: rows.length > ARCHIVE_PAGE_SIZE }
 }
@@ -248,7 +254,7 @@ const SITEMAP_KEY = 'sitemap-written-v1'
 /** A month page's stories. Six hours in the data cache under a page that revalidates daily. */
 export const loadArchiveMonth = unstable_cache(
   (month: string, page: number): Promise<ArchivePage> => fetchArchiveMonth(getSupabaseAdmin(), month, page),
-  ['archive-month-v1'],
+  ['archive-month-v2'],
   { revalidate: 21_600, tags: ['archive'] },
 )
 

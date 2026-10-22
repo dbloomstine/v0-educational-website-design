@@ -23,6 +23,7 @@ import {
   titlesShareSignificantNumber,
 } from '@/lib/news/story-dedup'
 import { cleanHeadline, lowGradeSource, normalizeSourceName } from '@/lib/news/constants'
+import { creditOutlet, sourceCredit } from '@/lib/news/source-credit'
 import {
   clusterBy,
   dealStage,
@@ -223,7 +224,8 @@ const SOURCE_TIER: Record<string, number> = Object.fromEntries(
 
 export function sourceTier(name: string | null | undefined): number {
   if (!name) return 50
-  return SOURCE_TIER[name.toLowerCase()] ?? 50
+  // A credit ranks as its outlet: "Morgan Lewis via JD Supra" is JD Supra (2026-10-22).
+  return SOURCE_TIER[(creditOutlet(name) ?? name).toLowerCase()] ?? 50
 }
 
 /** Sources dropped outright — social platforms, low-quality aggregators. */
@@ -436,6 +438,8 @@ export interface NewsletterArticle {
   title: string
   sourceUrl: string
   sourceName: string | null
+  /** What a reader sees as the source: the outlet, or "Firm via JD Supra" (lib/news/source-credit.ts). */
+  sourceCredit?: string | null
   publishedDate: string | null
   articleType: string | null
   eventType: string | null
@@ -753,6 +757,10 @@ export function rowToArticle(row: any): NewsletterArticle {
     // and the mirror's "hedgeweek.com" are one source, and a feed that names
     // itself by its address shows as its host.
     sourceName: normalizeSourceName(row.source_name),
+    // Who to credit: "Morgan Lewis via JD Supra" for a republished alert
+    // (2026-10-22, lib/news/source-credit.ts). `source_credit` is set by
+    // withSourceCredits when the row was read without its description.
+    sourceCredit: row.source_credit ?? sourceCredit({ sourceName: row.source_name, author: row.author, description: row.description }),
     publishedDate: row.published_date,
     articleType: row.article_type,
     eventType,

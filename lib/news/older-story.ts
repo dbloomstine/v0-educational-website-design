@@ -34,6 +34,7 @@ import { firmLookup, lookupFilter } from './firm-lookup'
 import { storyInSection, type SectionDef } from './sections'
 import { buildStories, rankSection, type Story } from './stories'
 import { STORY_COLUMNS } from './story-columns'
+import { withSourceCredits } from './source-credit-rows'
 import { shortIdRange } from './story-path'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -125,7 +126,7 @@ export async function fetchOlderStory(db: DbClient, id: string): Promise<OlderSt
     rows = [row, ...(near.data ?? []).filter((r: { id: string }) => (seen.has(r.id) ? false : (seen.add(r.id), true)))]
   }
 
-  const stories = buildStories(rows)
+  const stories = buildStories(await withSourceCredits(rows, db))
   const story = stories.find((s) => s.id === id || s.memberIds.includes(id))
   if (!story) return null
   const firmKey = entityKey(story.firmName)
@@ -159,7 +160,7 @@ export async function fetchDayStories(db: DbClient, day: string): Promise<Story[
     .order('relevance_score', { ascending: false })
     .limit(DAY_ROW_LIMIT)
   if (error) throw new Error(`day stories lookup failed: ${error.message}`)
-  return buildStories(data ?? [])
+  return buildStories(await withSourceCredits(data ?? [], db))
 }
 
 /**

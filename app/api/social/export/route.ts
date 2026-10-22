@@ -47,7 +47,7 @@ async function reportRows(ids: string[]): Promise<Map<string, SourceRow>> {
   for (let i = 0; i < ids.length; i += 100) {
     const { data, error } = await getSupabaseAdmin()
       .from('news_items')
-      .select('id, title, description, full_text, source_name, published_date')
+      .select('id, title, description, full_text, source_name, author, published_date')
       .in('id', ids.slice(i, i + 100))
     if (error) {
       console.error('[social] reports unavailable:', error.message)

@@ -1,5 +1,7 @@
 import { getSupabaseAdmin } from '@/lib/supabase/client'
-import { lowGradeSource, normalizeSourceName } from './constants'
+import { lowGradeSource } from './constants'
+import { sourceCredit } from './source-credit'
+import { withSourceCredits } from './source-credit-rows'
 import { isSameStory, normalizeFirmName, type StoryCandidate } from './story-dedup'
 import type { NewsArticle, ArticleGroup, FacetCounts, ArticleFeedResponse } from './types'
 
@@ -38,7 +40,7 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
   // --- Main articles query ---
   let query = getSupabaseAdmin()
     .from('news_items')
-    .select('id, title, source_url, source_name, published_date, article_type, fund_categories, is_high_signal, relevance_score, tldr, extracted_data, event_type')
+    .select('id, title, source_url, source_name, author, published_date, article_type, fund_categories, is_high_signal, relevance_score, tldr, extracted_data, event_type')
     .eq('classification_status', 'complete')
     .eq('is_duplicate', false)
     .neq('title', '')
@@ -90,7 +92,7 @@ export async function queryArticleFeed(params: QueryParams): Promise<ArticleFeed
     throw new Error('Failed to query articles')
   }
 
-  const allRows = (rows ?? []).map(mapRowToArticle).filter(filterLowQualitySources)
+  const allRows = (await withSourceCredits(rows ?? [])).map(mapRowToArticle).filter(filterLowQualitySources)
 
   // Apply geography filter (client-side since it's in JSONB)
   const geoFiltered = params.geography
@@ -211,7 +213,8 @@ function mapRowToArticle(row: any): NewsArticle {
     id: row.id,
     title: ((row.title || row.tldr || 'Untitled article') as string).replace(/\s*:\s*$/, ''),
     sourceUrl: row.source_url,
-    sourceName: normalizeSourceName(row.source_name),
+    // The credit a reader sees: the outlet, or "Morgan Lewis via JD Supra" (2026-10-22).
+    sourceName: row.source_credit ?? sourceCredit({ sourceName: row.source_name, author: row.author }),
     publishedDate: row.published_date,
     articleType: row.article_type,
     fundCategories: row.fund_categories ?? [],

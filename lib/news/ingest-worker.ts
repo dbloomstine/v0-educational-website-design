@@ -18,6 +18,7 @@
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { alertOnSilentZeroFeeds } from '@/lib/pipeline/alert';
 import { fetchFeed, type RssArticle } from './rss-client';
+import { cleanFirmName, isRepublisher } from './source-credit';
 import { resolveGoogleNewsUrl } from './google-news-url';
 import { createHash } from 'crypto';
 
@@ -423,6 +424,10 @@ async function processFeed(
       source_name: article.sourceName,
       published_date: article.pubDate,
       description: article.description || null,
+      // The law firm behind a JD Supra alert, credited as "Firm via JD Supra"
+      // (2026-10-22, lib/news/source-credit.ts). Republishers only: elsewhere
+      // a feed's creator is a reporter, and nothing reads it.
+      ...(isRepublisher(article.sourceName) && cleanFirmName(article.author) ? { author: cleanFirmName(article.author) } : {}),
       url_hash: urlHash,
       content_hash: contentHash,
       feed_source_id: feed.id,
