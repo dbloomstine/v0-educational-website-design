@@ -75,6 +75,10 @@
       "schedule": "30 15 * * 1-5"
     },
     {
+      "path": "/api/pipeline/welcome-series",
+      "schedule": "30 16-20 * * 2-5"
+    },
+    {
       "path": "/api/pipeline/outreach-v2-dispatch",
       "schedule": "*/5 13-21 * * 1-5"
     }
