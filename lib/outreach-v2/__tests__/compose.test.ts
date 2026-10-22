@@ -14,13 +14,14 @@ const pitch = (over: Partial<Parameters<typeof renderSponsorPitch>[0]> = {}) =>
   renderSponsorPitch({ firstName: 'David', company: 'ToltIQ', unsubToken: TOKEN, hookClause: null, audience: audienceLine(152, 64), month: 'November', mockup: MOCK, ...over })
 
 describe('footer and unsubscribe', () => {
-  it('carries the postal address and a visible unsubscribe link, in both parts', () => {
+  it('is plain text: the address as one line under the signature, a reply-to-stop line, no unsubscribe link, no HTML (2026-10-22)', () => {
     const r = pitch()
-    expect(footer(TOKEN)).toContain('FundOpsHQ, 76 Ensign Dr, Mystic, CT 06355')
-    expect(r.text.endsWith(footer(TOKEN))).toBe(true)
-    expect(r.html).toContain('FundOpsHQ, 76 Ensign Dr, Mystic, CT 06355')
-    expect(r.html).toContain(`<a href="${unsubscribeUrl(TOKEN)}"`)
-    expect(r.html).toContain('unsubscribe here</a>')
+    expect(footer(TOKEN)).toBe('FundOpsHQ, 76 Ensign Dr, Mystic, CT 06355')
+    expect(r.text.endsWith('Danny\nFounder, FundOpsHQ\nFundOpsHQ, 76 Ensign Dr, Mystic, CT 06355\n')).toBe(true)
+    expect(r.text).toContain("If you'd rather I didn't write again, just reply and say so.")
+    expect(r.text).not.toContain(unsubscribeUrl(TOKEN))
+    expect(r.text).not.toContain('--')
+    expect(r.html).toBe('')
   })
 
   it('sets RFC 8058 one-click headers with the link and the mailbox', () => {
@@ -33,9 +34,9 @@ describe('footer and unsubscribe', () => {
 describe('the Resend payload', () => {
   const r = pitch()
   const row = { id: '11111111-2222-3333-4444-555555555555', email: 'd@toltiq.com', subject: r.subject, body_text: r.text, body_html: r.html, unsub_token: TOKEN, program: 'sponsor_pitch' as const, kind: 'initial' as const }
-  it('carries the HTML and the same email as text, from Danny, replies to the reply domain', () => {
+  it('carries the text only, from Danny, replies to the reply domain', () => {
     const p = buildPayload(row)
-    expect(p.html).toBe(r.html)
+    expect(p.html).toBeUndefined()
     expect(p.text).toBe(r.text)
     expect(p.from).toBe('Danny Bloomstine <danny@mail.fundopshq.com>')
     expect(p.reply_to).toBe('Danny Bloomstine <danny@reply.fundopshq.com>')
@@ -55,18 +56,17 @@ describe('sponsor pitch (Danny’s copy, 2026-10-14)', () => {
     const r = pitch({ hookClause: 'Congrats on the Series A.' })
     expect(r.subject).toBe('ToltIQ in FundOps Daily?')
     expect(r.text).toMatch(/^Hi David,\n\nToltIQ's buyers read FundOps Daily every morning: ops, finance and deal teams at GPs, LPs and the firms that serve them\. Congrats on the Series A\./)
-    expect(r.html).toContain(`<a href="${MOCK}" style="color:#1a4fa0">See ToltIQ&#39;s ad →</a>`.replace('&#39;', "'"))
-    expect(r.text).toContain("about 150 readers at 60+ firms, plus daily TikTok and LinkedIn")
+    expect(r.text).toContain(`I mocked up what a ToltIQ week would look like: ${MOCK}`)
+    expect(r.text).toContain("about 150 readers at 60+ firms, plus daily TikTok, Instagram and YouTube")
     expect(r.text).toContain("it's a founding rate of $150 a week")
     expect(r.text).toContain('Worth trying a week in November?')
     expect(r.text).toContain('Danny\nFounder, FundOpsHQ')
   })
 
-  it('never shows a raw URL in the HTML body (only the hrefs carry them)', () => {
-    const visible = pitch().html.replace(/<a [^>]*>/g, '<a>').replace(/<[^>]+>/g, ' ')
-    expect(visible).not.toMatch(/https?:\/\//)
+  it('carries one link at most', () => {
+    expect(pitch().text.match(/https?:\/\//g)).toHaveLength(1)
     const note = renderNewsNote({ firstName: 'Sam', company: 'Savory', unsubToken: TOKEN, news: '$200M Fund III close', storyUrl: 'https://fundopshq.com/story/x-12345678' })
-    expect(note.html.replace(/<a [^>]*>/g, '<a>').replace(/<[^>]+>/g, ' ')).not.toMatch(/https?:\/\//)
+    expect(note.text.match(/https?:\/\//g)).toHaveLength(1)
   })
 
   it('is about 85 words before the footer, with a clause', () => {
@@ -81,7 +81,7 @@ describe('sponsor pitch (Danny’s copy, 2026-10-14)', () => {
   })
 
   it('rounds the figures down to ten', () => {
-    expect(audienceLine(159, 67)).toBe('about 150 readers at 60+ firms, plus daily TikTok and LinkedIn')
+    expect(audienceLine(159, 67)).toBe('about 150 readers at 60+ firms, plus daily TikTok, Instagram and YouTube')
   })
 
   it('suggests the next month, or the one after late in a month', () => {
@@ -113,9 +113,9 @@ describe('sponsor pitch (Danny’s copy, 2026-10-14)', () => {
   it('follows up once, as a reply, with the mock-up link', () => {
     const f = renderSponsorFollowup({ firstName: 'David', company: 'ToltIQ', unsubToken: TOKEN, mockup: MOCK, original: { subject: 'ToltIQ in FundOps Daily?' } })
     expect(f.subject).toBe('Re: ToltIQ in FundOps Daily?')
-    expect(f.html).toContain(`href="${MOCK}"`)
+    expect(f.text).toContain(`Following up once on the FundOps Daily mock-up for ToltIQ: ${MOCK}`)
     expect(f.text).toContain("I won't write again")
-    expect(f.text.endsWith(footer(TOKEN))).toBe(true)
+    expect(f.text.trimEnd().endsWith(footer(TOKEN))).toBe(true)
   })
 })
 
@@ -127,17 +127,16 @@ describe('news note', () => {
     news: newsPhrase({ eventType: 'fund_close', kind: 'fundraising', fundName: 'Fund III', sizeUsdM: 200, closeType: 'final' }),
     storyUrl: 'https://fundopshq.com/story/savory-raises-more-than-200m-f1076843',
   })
-  it('is 50 to 80 words and leads with them', () => {
-    expect(readerWords(r)).toBeGreaterThanOrEqual(50)
+  it('is 40 to 80 words and leads with them (shorter since the 2026-10-22 plain-text rewrite)', () => {
+    expect(readerWords(r)).toBeGreaterThanOrEqual(40)
     expect(readerWords(r)).toBeLessThanOrEqual(80)
-    expect(bodyOf(r.text)).toMatch(/^Hi Alex,\n\nWe covered Savory's \$200M Fund III close in this morning's FundOps Daily: read it here: https/)
+    expect(bodyOf(r.text)).toMatch(/^Hi Alex,\n\nWe covered Savory's \$200M Fund III close in this morning's FundOps Daily\. Here's the story if you'd like to share it with your team: https:\/\/fundopshq\.com\/story\//)
   })
-  it('names the firm in the subject, links the story and the free signup as text', () => {
+  it('names the firm in the subject, gives the story as its one link and names the site without linking it', () => {
     expect(r.subject).toBe('Savory in FundOps Daily today')
-    expect(r.html).toContain('>read it here</a>')
-    expect(r.html).toContain('>you can get it here</a>')
-    expect(r.text).toContain('Feel free to share it with your team or on LinkedIn.')
-    expect(r.text).toContain('https://fundopshq.com/?utm_source=outreach&utm_medium=email&utm_campaign=news_note#subscribe')
+    expect(r.text).toContain('https://fundopshq.com/story/savory-raises-more-than-200m-f1076843')
+    expect(r.text).toContain("at fundopshq.com, if it's ever useful.")
+    expect(r.text).not.toContain('utm_')
     expect(r.text).not.toMatch(/\?e=/)
   })
   it('says what was covered in a few words', () => {

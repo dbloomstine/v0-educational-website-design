@@ -271,3 +271,20 @@ describe('the news notes switch (OUTREACH_V2_NEWS_MODE)', () => {
     expect(newsMode('off', 'live')).toBe('off')
   })
 })
+
+import { bounceVerdict } from '../store'
+import { BOUNCE_MIN_SENT, NEWS_NOTES_PER_DAY, SPONSOR_PITCHES_PER_DAY, APOLLO_CREDITS_PER_DAY } from '../config'
+
+describe('the ramp and its brake (2026-10-21)', () => {
+  it('sends ten news notes and ten new pitches a day, within 15 Apollo credits for the notes', () => {
+    expect(NEWS_NOTES_PER_DAY).toBe(10)
+    expect(SPONSOR_PITCHES_PER_DAY).toBe(10)
+    expect(APOLLO_CREDITS_PER_DAY).toBe(15)
+  })
+  it('halts on bounces over 3% once enough went out, and not before', () => {
+    expect(bounceVerdict(BOUNCE_MIN_SENT - 1, 10).halt).toBe(false)
+    expect(bounceVerdict(100, 3).halt).toBe(false)
+    expect(bounceVerdict(100, 4).halt).toBe(true)
+    expect(bounceVerdict(100, 4).reason).toMatch(/4 of the last 100 sends/)
+  })
+})

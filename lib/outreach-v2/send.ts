@@ -5,9 +5,9 @@
  * business hours), so a batch goes out paced about five minutes apart and the
  * daily cap is checked before every send.
  */
-import { FROM, REPLY_TO, SENDER_EMAIL, nyDay } from './config'
+import { ALERT_TO, FROM, REPLY_TO, SENDER_EMAIL, SPONSOR_PITCHES_PER_DAY, nyDay } from './config'
 import { listUnsubscribeHeaders } from './compose'
-import { remainingSendsToday, screenEmails, effectiveMode, type DbClient, type MessageRow } from './store'
+import { bounceCheck, remainingSendsToday, screenEmails, effectiveMode, setHalt, sponsorPitchesSentToday, type DbClient, type MessageRow } from './store'
 
 export interface ResendPayload {
   from: string
@@ -130,6 +130,16 @@ export async function dispatchOne(db: DbClient, now: Date = new Date(), opts: { 
   if (!opts.ignoreHours && !inSendingHours(now)) return { ok: true, skipped: 'outside sending hours' }
   if ((await remainingSendsToday(db, now)) <= 0) return { ok: true, skipped: 'daily cap reached' }
 
+  // Too many bounces lately: stop everything, as a complaint does, and tell Danny (2026-10-21, with the ramp).
+  const bounces = await bounceCheck(db, now)
+  if (bounces.halt && bounces.reason) {
+    await setHalt(db, bounces.reason)
+    await sendToDanny(ALERT_TO, 'FundOpsHQ outreach halted: bounces', `Outreach stopped by itself: ${bounces.reason}. Nothing more goes out until the halt is cleared (outreach_v2_state).`).catch(() => null)
+    return { ok: true, skipped: `halted: ${bounces.reason}` }
+  }
+  // New sponsor pitches stop for the day at SPONSOR_PITCHES_PER_DAY; news notes and follow-ups go on.
+  const pitchesDone = (await sponsorPitchesSentToday(db, now)) >= SPONSOR_PITCHES_PER_DAY
+
   // A news note is about today's edition: one that did not go out today never goes.
   const todayBatch = `news-${nyDay(now)}`
   await db.from('outreach_v2_messages').update({ status: 'cancelled', skip_reason: 'stale news note' }).eq('program', 'news_note').in('status', ['queued', 'preview']).neq('batch', todayBatch)
@@ -142,8 +152,8 @@ export async function dispatchOne(db: DbClient, now: Date = new Date(), opts: { 
     .order('queued_at', { ascending: true })
     .limit(10)
   if (error) return { ok: false, error: error.message }
-  const queue = (data ?? []) as MessageRow[]
-  if (!queue.length) return { ok: true, skipped: 'queue empty' }
+  const queue = ((data ?? []) as MessageRow[]).filter((r) => !(pitchesDone && r.program === 'sponsor_pitch' && r.kind === 'initial'))
+  if (!queue.length) return { ok: true, skipped: pitchesDone ? "queue empty for today (the day's sponsor pitches are sent)" : 'queue empty' }
 
   const passedOver: { id: string; reason: string }[] = []
   for (const row of queue) {

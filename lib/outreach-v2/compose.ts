@@ -4,12 +4,15 @@
  * email as plain text, and the headers that go with it.
  *
  * The copy is Danny's (2026-10-14, after the first test): lead with them,
- * short, linked text and never a raw URL in the HTML body, signed "Danny".
+ * short, signed "Danny".
  *
- * TRACKING: Resend's open and click tracking are switched on for the whole
- * fundopshq.com domain (the newsletter's figures depend on them) and cannot be
- * switched off per email, so the HTML part of these emails is tracked like the
- * newsletter. Sending text only would avoid it, at the cost of raw URLs.
+ * PLAIN TEXT ONLY since 2026-10-22 (Danny: the pitches and notes "all just say
+ * delivered… I wish we could just send those as like very generic plain text
+ * emails"): no HTML part, at most one link, no unsubscribe link in the body
+ * (a reply asking to stop is honoured, inbound.ts asksToStop; the invisible
+ * List-Unsubscribe header stays), the postal address as one plain line under
+ * the signature. It reads as an email a person typed, and with no HTML part
+ * nothing is tracked.
  *
  * Browser-safe: no server imports.
  */
@@ -29,8 +32,6 @@ export interface Rendered {
 
 export const wordCount = (s: string) => s.trim().split(/\s+/).filter(Boolean).length
 
-const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-
 /** "ToltIQ's", "73 Strings'". */
 export const possessive = (name: string) => (/s$/i.test(name.trim()) ? `${name.trim()}'` : `${name.trim()}'s`)
 
@@ -46,47 +47,38 @@ export function listUnsubscribeHeaders(token: string): Record<string, string> {
   }
 }
 
-/** The postal address and a visible way out, under the signature of every email (plain-text form). */
-export function footer(token: string): string {
-  return ['--', POSTAL_ADDRESS, `To get no more emails from FundOpsHQ: ${unsubscribeUrl(token)}`].join('\n')
+/** Under the signature: the postal address, as one plain line (the law asks for it on a commercial email). */
+export function footer(_token?: string): string {
+  return POSTAL_ADDRESS
 }
 
-function footerHtml(token: string): string {
-  return `<p style="margin:24px 0 0;color:#777;font-size:12px;line-height:1.5">${esc(POSTAL_ADDRESS)}<br>To get no more emails from FundOpsHQ, <a href="${esc(unsubscribeUrl(token))}" style="color:#777">unsubscribe here</a>.</p>`
-}
+/** The way out, in words: a reply asking to stop is honoured (inbound.ts asksToStop). */
+export const OPT_OUT = "If you'd rather I didn't write again, just reply and say so."
 
 /**
- * One email in both forms. Each paragraph is a list of pieces: plain strings,
- * or links ({ text, href }) that read as linked text in HTML and as
- * "text: url" in the plain-text part.
+ * One email as plain text. Each paragraph is a list of pieces: plain strings,
+ * or a link ({ text, href }) that is written as its address; an email carries
+ * one link at most. `html` stays empty: nothing but text is sent.
  */
 type Piece = string | { text: string; href: string }
 type Para = Piece[]
 
-function render(subject: string, paras: Para[], signature: string[], token: string): Rendered {
-  const textParas = paras.map((p) => p.map((x) => (typeof x === 'string' ? x : `${x.text.replace(/\s*→$/, '')}: ${x.href}`)).join(''))
-  const htmlParas = paras.map(
-    (p) => `<p style="margin:0 0 14px">${p.map((x) => (typeof x === 'string' ? esc(x) : `<a href="${esc(x.href)}" style="color:#1a4fa0">${esc(x.text)}</a>`)).join('')}</p>`,
-  )
-  const text = `${[...textParas, signature.join('\n')].join('\n\n')}\n\n${footer(token)}`
-  const html = `<!doctype html><html><body style="margin:0;padding:16px;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#222"><div style="max-width:560px">${htmlParas.join('')}<p style="margin:0">${signature.map(esc).join('<br>')}</p>${footerHtml(token)}</div></body></html>`
-  return { subject, text, html }
+function render(subject: string, paras: Para[], signature: string[], _token: string): Rendered {
+  const textParas = paras.map((p) => p.map((x) => (typeof x === 'string' ? x : x.href)).join(''))
+  const text = `${[...textParas, [...signature, footer()].join('\n')].join('\n\n')}\n`
+  return { subject, text, html: '' }
 }
 
 const SIGN = ['Danny', 'Founder, FundOpsHQ']
 
-/** What a reader reads: everything above the footer, with each link counted by its words only. */
+/** What a reader reads: the words above the signature, a link and the opt-out line counted as nothing. */
 export function readerWords(r: Rendered): number {
-  const body = r.html
-    .replace(/<p style="margin:24px 0 0[\s\S]*$/, '')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&[a-z#0-9]+;/g, ' ')
-  return wordCount(body.replace(/→/g, ''))
+  return wordCount(bodyOf(r.text).replace(OPT_OUT, ' ').replace(/https?:\/\/\S+/g, ' '))
 }
 
-/** The plain-text part above the footer. */
+/** The email above the signature. */
 export function bodyOf(text: string): string {
-  const cut = text.indexOf('\n--\n')
+  const cut = text.indexOf('\nDanny\n')
   return cut >= 0 ? text.slice(0, cut) : text
 }
 
@@ -130,7 +122,7 @@ export function pitchMonth(today: string): string {
 /** "about 150 readers at 60+ firms": each figure rounded down to ten. Null when either is unknown (then left out, never guessed). */
 export function audienceLine(subscribers: number | null, firms: number | null): string | null {
   if (subscribers == null || firms == null || subscribers < 10 || firms < 10) return null
-  return `about ${Math.floor(subscribers / 10) * 10} readers at ${Math.floor(firms / 10) * 10}+ firms, plus daily TikTok and LinkedIn`
+  return `about ${Math.floor(subscribers / 10) * 10} readers at ${Math.floor(firms / 10) * 10}+ firms, plus daily TikTok, Instagram and YouTube`
 }
 
 export interface PitchInput extends Recipient {
@@ -158,9 +150,10 @@ export function renderSponsorPitch(p: PitchInput): Rendered {
     [
       [greet(p.firstName)],
       [clause ? `${lead} ${clause}` : lead],
-      [`I mocked up what a ${c} week would look like: `, { text: `See ${possessive(c)} ad →`, href: p.mockup }],
+      [`I mocked up what a ${c} week would look like: `, { text: `See ${possessive(c)} ad`, href: p.mockup }],
       [young],
       [`Worth trying a week in ${p.month}?`],
+      [OPT_OUT],
     ],
     SIGN,
     p.unsubToken,
@@ -179,7 +172,7 @@ export function renderSponsorFollowup(p: FollowupInput): Rendered {
     subject,
     [
       [greet(p.firstName)],
-      [`Following up once on the FundOps Daily mock-up for ${c}: `, { text: `See ${possessive(c)} ad →`, href: p.mockup }],
+      [`Following up once on the FundOps Daily mock-up for ${c}: `, { text: `See ${possessive(c)} ad`, href: p.mockup }],
       ["If the timing isn't right, no need to reply, and I won't write again."],
     ],
     SIGN,
@@ -210,8 +203,9 @@ export function renderNewsNote(p: NewsNoteInput): Rendered {
     newsNoteSubject(c, p.edition),
     [
       [greet(p.firstName)],
-      [`We covered ${possessive(c)} ${p.news.trim()} in ${p.edition ?? "this morning's"} FundOps Daily: `, { text: 'read it here', href: p.storyUrl }, '. Feel free to share it with your team or on LinkedIn.'],
-      ["FundOps Daily is a free morning email on private-markets news for GPs, LPs and fund service providers. If it's useful, ", { text: 'you can get it here', href: SUBSCRIBE_URL }, '.'],
+      [`We covered ${possessive(c)} ${p.news.trim()} in ${p.edition ?? "this morning's"} FundOps Daily. Here's the story if you'd like to share it with your team: `, { text: 'the story', href: p.storyUrl }],
+      ["FundOps Daily is a free morning email on private-markets news for GPs, LPs and fund service providers, at fundopshq.com, if it's ever useful."],
+      [OPT_OUT],
     ],
     SIGN,
     p.unsubToken,

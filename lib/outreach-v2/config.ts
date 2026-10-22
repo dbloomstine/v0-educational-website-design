@@ -51,9 +51,18 @@ export const SITE = 'https://fundopshq.com'
 /** All sends across both programs, per New York day. */
 export const DAILY_SEND_CAP = 30
 /** News notes created per day (each costs about one Apollo credit). */
-export const NEWS_NOTES_PER_DAY = 5 // Danny, 2026-10-19: "maybe just do five a day"
+export const NEWS_NOTES_PER_DAY = 10 // Danny, 2026-10-21: "at least 10 a day" (was five from 2026-10-19)
 /** Apollo credits the news-note program may spend per New York day. Hard. */
-export const APOLLO_CREDITS_PER_DAY = 8
+export const APOLLO_CREDITS_PER_DAY = 15 // 2026-10-21: FundOpsHQ outreach may spend up to 25 a day in all (Danny); 15 here, the rest for sponsor lists
+/** New sponsor pitches sent per New York day (follow-ups not counted). Danny, 2026-10-21: ramp the advertiser outreach. */
+export const SPONSOR_PITCHES_PER_DAY = 10
+/**
+ * Sending stops (the halt flag, as for a complaint) when more than this share of the last
+ * BOUNCE_WINDOW_DAYS' sends bounced, once at least BOUNCE_MIN_SENT went out (2026-10-21, with the ramp).
+ */
+export const BOUNCE_HALT_RATE = 0.03
+export const BOUNCE_WINDOW_DAYS = 14
+export const BOUNCE_MIN_SENT = 40
 /** Nobody is emailed twice by either program inside this window (a follow-up in the same thread excepted). */
 export const RECONTACT_DAYS = 90
 /** A firm gets at most one news note in this window, whoever it went to. */

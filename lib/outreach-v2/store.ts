@@ -4,7 +4,7 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { filterSuppressed } from '@/lib/outreach/suppression'
-import { DAILY_SEND_CAP, RECONTACT_DAYS, envMode, nyDay, nyDayStart, type Mode, type Program } from './config'
+import { BOUNCE_HALT_RATE, BOUNCE_MIN_SENT, BOUNCE_WINDOW_DAYS, DAILY_SEND_CAP, RECONTACT_DAYS, envMode, nyDay, nyDayStart, type Mode, type Program } from './config'
 import { isIqeqEmail } from './exclusions'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -207,6 +207,39 @@ export async function sentToday(db: DbClient, now: Date = new Date()): Promise<n
 
 export async function remainingSendsToday(db: DbClient, now: Date = new Date()): Promise<number> {
   return Math.max(0, DAILY_SEND_CAP - (await sentToday(db, now)))
+}
+
+/** New sponsor pitches (not follow-ups) sent so far this New York day. */
+export async function sponsorPitchesSentToday(db: DbClient, now: Date = new Date()): Promise<number> {
+  const start = nyDayStart(nyDay(now)).toISOString()
+  const { count, error } = await db
+    .from('outreach_v2_messages')
+    .select('id', { count: 'exact', head: true })
+    .eq('program', 'sponsor_pitch')
+    .eq('kind', 'initial')
+    .gte('sent_at', start)
+    .in('status', ['sent', 'sending'])
+  if (error) throw new Error(`sponsorPitchesSentToday: ${error.message}`)
+  return count ?? 0
+}
+
+/** Pure: should sending stop for bounces? Only once enough went out for the share to mean something. */
+export function bounceVerdict(sent: number, bounced: number): { halt: boolean; reason: string | null } {
+  if (sent < BOUNCE_MIN_SENT) return { halt: false, reason: null }
+  const rate = bounced / sent
+  return rate > BOUNCE_HALT_RATE
+    ? { halt: true, reason: `bounces: ${bounced} of the last ${sent} sends (${(rate * 100).toFixed(1)}%) in ${BOUNCE_WINDOW_DAYS} days, over ${(BOUNCE_HALT_RATE * 100).toFixed(0)}%` }
+    : { halt: false, reason: null }
+}
+
+/** Sends and bounces over the last BOUNCE_WINDOW_DAYS, and the verdict. */
+export async function bounceCheck(db: DbClient, now: Date = new Date()): Promise<{ sent: number; bounced: number; halt: boolean; reason: string | null }> {
+  const since = new Date(now.getTime() - BOUNCE_WINDOW_DAYS * 86_400_000).toISOString()
+  const { data, error } = await db.from('outreach_v2_messages').select('bounced_at').gte('sent_at', since).eq('status', 'sent')
+  if (error) throw new Error(`bounceCheck: ${error.message}`)
+  const rows = (data ?? []) as { bounced_at: string | null }[]
+  const bounced = rows.filter((r) => r.bounced_at).length
+  return { sent: rows.length, bounced, ...bounceVerdict(rows.length, bounced) }
 }
 
 export async function creditsUsedToday(db: DbClient, program: Program, now: Date = new Date()): Promise<number> {
