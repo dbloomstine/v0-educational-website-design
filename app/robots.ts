@@ -5,7 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/api/', '/_next/', '/admin/', '/desk/'],
+      // Not /_next/ (2026-10-22 SEO audit): it holds the CSS, scripts and images Google needs to render a page.
+      disallow: ['/api/', '/admin/', '/desk/'],
     },
     sitemap: 'https://fundopshq.com/sitemap.xml',
   }

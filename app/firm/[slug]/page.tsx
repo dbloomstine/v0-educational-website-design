@@ -16,7 +16,7 @@ import { sizeLabel, totalLabel } from '@/lib/news/format'
 import { OG_IMAGES, breadcrumbJsonLd } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 import { storyPath } from '@/lib/news/story-path'
-import { firmJsonLd, firmSummary, firmTitle, yearInNewYork } from '@/lib/news/firm-summary'
+import { firmJsonLd, firmSummary, firmTitle, searchSnippet, yearInNewYork } from '@/lib/news/firm-summary'
 
 // A firm's page: every story we have carried about it in the past year, and
 // the fund closes among them. Reached from the league tables, the lead
@@ -43,7 +43,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const year = yearInNewYork(Date.now())
   // The answer at the top of the page is the description too: it is what a search result or an assistant quotes.
   const answer = firmSummary(firm.name, firm.closes, year)
-  const description = answer ? `${answer} Each close links to the report it came from.` : `${firm.name} in the news: ${total} ${total === 1 ? 'story' : 'stories'} from the past year${firm.closes.length ? `, including ${firm.closes.length} fund ${firm.closes.length === 1 ? 'close' : 'closes'}` : ''} — fund closes, deals and people moves, each linked to its publisher.`
+  // The answer's first sentence, at most 155 characters, which is what a search result shows (2026-10-22 SEO audit: KKR's ran to 251).
+  const description = answer ? searchSnippet(answer) : `${firm.name} in the news: ${total} ${total === 1 ? 'story' : 'stories'} from the past year${firm.closes.length ? `, including ${firm.closes.length} fund ${firm.closes.length === 1 ? 'close' : 'closes'}` : ''} — fund closes, deals and people moves, each linked to its publisher.`
   const url = `https://fundopshq.com/firm/${slug}`
   return {
     title: firmTitle(firm.name, firm.closes, year),
@@ -51,8 +52,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     alternates: { canonical: url },
     // A page with one or two stories adds nothing to the publishers' own.
     robots: total >= 3 ? undefined : { index: false, follow: true },
-    openGraph: { title: `${firm.name} | FundOpsHQ`, description, type: 'website', url, images: OG_IMAGES },
-    twitter: { card: 'summary_large_image', title: `${firm.name} | FundOpsHQ`, description, images: OG_IMAGES.map((i) => i.url) },
+    openGraph: { title: `${firmTitle(firm.name, firm.closes, year)} | FundOpsHQ`, description, type: 'website', url, images: OG_IMAGES },
+    twitter: { card: 'summary_large_image', title: `${firmTitle(firm.name, firm.closes, year)} | FundOpsHQ`, description, images: OG_IMAGES.map((i) => i.url) },
   }
 }
 

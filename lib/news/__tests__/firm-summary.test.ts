@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { firmJsonLd, firmSummary, firmTitle, yearInNewYork } from '../firm-summary'
+import { firmJsonLd, firmSummary, firmTitle, searchSnippet, yearInNewYork } from '../firm-summary'
 import type { FundClose } from '../league'
 
 let seq = 0
@@ -57,7 +57,7 @@ describe('the answer at the top of a firm page', () => {
 
   it('says so when the reports did not name the fund', () => {
     expect(firmSummary('Northwind', [close(null, 1_000, '2026-10-21')], 2026)).toBe(
-      'Northwind has held one final fund close in 2026 that FundOpsHQ has reported: a fund the reports did not name, at $1B, first reported October 21.',
+      'Northwind has held one final fund close in 2026 that FundOpsHQ has reported: an unnamed fund at $1B, first reported October 21.',
     )
   })
 
@@ -117,5 +117,16 @@ describe('the firm page structured data', () => {
     const ld = firmJsonLd('calpers', 'CalPERS', 'CalPERS: news, deals and people moves', [], null)
     expect(ld).not.toHaveProperty('mainEntity')
     expect(ld).not.toHaveProperty('description')
+  })
+})
+
+describe('the search snippet', () => {
+  it('is the first sentence, at most 155 characters, cut at a word', () => {
+    const a = 'KKR has held 3 final fund closes in 2026 that FundOpsHQ has reported, totalling $38.1B. The largest is North America Fund XIV at $19.2B.'
+    expect(searchSnippet(a)).toBe('KKR has held 3 final fund closes in 2026 that FundOpsHQ has reported, totalling $38.1B.')
+    const long = `${'Blackstone Real Estate Partners '.repeat(6)}closed.`
+    const s = searchSnippet(long)
+    expect(s.length).toBeLessThanOrEqual(155)
+    expect(s.endsWith('…')).toBe(true)
   })
 })

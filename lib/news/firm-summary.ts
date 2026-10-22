@@ -26,10 +26,10 @@ const about = (converted: boolean) => (converted ? 'about ' : '')
 /** Largest first; between equals, the earlier report. */
 const bySize = (a: FundClose, b: FundClose) => b.sizeUsdM - a.sizeUsdM || a.date.localeCompare(b.date)
 
-/** "Ares Pathfinder III at $12.7B"; "a fund the reports did not name, at about $1B". */
+/** "Ares Pathfinder III at $12.7B"; "an unnamed fund at about $1B". */
 function fundAt(c: FundClose): string {
   const size = `${about(c.converted)}${sizeLabel(c.sizeUsdM)}`
-  return c.fund ? `${c.fund} at ${size}` : `a fund the reports did not name, at ${size}`
+  return c.fund ? `${c.fund} at ${size}` : `an unnamed fund at ${size}`
 }
 
 /** "$18.2B", or "about $18.2B" when any of the closes added was converted from another currency. */
@@ -133,4 +133,12 @@ export function firmJsonLd(slug: string, name: string, title: string, closes: Fu
         }
       : {}),
   }
+}
+
+/** The first sentence of an answer, cut at a word to at most `max` characters: what a search result shows of a description. */
+export function searchSnippet(answer: string, max = 155): string {
+  const first = answer.match(/^.*?[.!?](?=\s|$)/)?.[0] ?? answer
+  if (first.length <= max) return first
+  const cut = first.slice(0, max - 1)
+  return `${cut.slice(0, cut.lastIndexOf(' ') > 40 ? cut.lastIndexOf(' ') : cut.length).replace(/[,;:]$/, '')}…`
 }
