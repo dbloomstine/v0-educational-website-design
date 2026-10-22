@@ -10,10 +10,13 @@ export function possessive(name: string): string {
   return /s$/i.test(n) ? `${n}’` : `${n}’s`
 }
 
-/** The block's line: the city's events when the page has one, the week's fund events when it does not (virtual, the board). */
+/**
+ * The block's line. It promises only what the morning email already carries: the week's North American events
+ * and the day's news (2026-10-22: "every Monday" was cut until a Monday events email exists; the tags are kept for it).
+ */
 export function eventsOfferHeadline(city: string | null | undefined): string {
   const c = city?.trim()
   return c
-    ? `Get ${possessive(c)} private-markets events every Monday, plus the morning news.`
-    : 'Get the week’s fund events every Monday, plus the morning news.'
+    ? `Get the week’s ${c} and North American fund events, with the morning news.`
+    : 'Get the week’s fund events and the morning news in one email.'
 }
