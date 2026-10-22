@@ -193,6 +193,15 @@ describe('the fund administrator guard (Danny, 2026-10-22)', () => {
     expect(fundAdminGuardFilter()).toContain('organizer_name.imatch.')
   })
 
+  it('lists EisnerAmper\'s webinars, typed fund_admin or not (Danny, 2026-10-22: like Carta and Juniper Square)', () => {
+    expect(isHiddenFundAdminEvent(virtual('EisnerAmper', 'fund_admin'))).toBe(false)
+    expect(isHiddenFundAdminEvent(virtual('EisnerAmper LLP', 'accounting_firm'))).toBe(false)
+    expect(isHiddenFundAdminEvent(virtual('Eisner Amper', 'fund_admin'))).toBe(false)
+    // Every other administrator stays out, and so does a co-host that names one.
+    expect(isHiddenFundAdminEvent(virtual('Some New Administrator', 'fund_admin'))).toBe(true)
+    expect(isHiddenFundAdminEvent(virtual('EisnerAmper', 'accounting_firm', 'EisnerAmper and Citco on NAV oversight'))).toBe(true)
+  })
+
   it('leaves out any virtual row typed fund_admin, whatever its name', () => {
     expect(isHiddenFundAdminEvent(virtual('Some New Administrator', 'fund_admin'))).toBe(true)
   })
@@ -231,8 +240,8 @@ describe('the fund administrator guard (Danny, 2026-10-22)', () => {
 
   it('is one PostgREST filter that passes any non-virtual row', () => {
     const f = fundAdminGuardFilter()
-    // The one nested clause is IQ-EQ's exception: typed fund_admin, but listed (2026-10-22).
-    const allowed = 'or(organizer_type.neq.fund_admin,organizer_name.imatch.\\mIQ-?EQ\\M)'
+    // The one nested clause is IQ-EQ's and EisnerAmper's exception: typed fund_admin, but listed (2026-10-22).
+    const allowed = 'or(organizer_type.neq.fund_admin,organizer_name.imatch.\\mIQ-?EQ\\M|\\mEisner ?Amper\\M)'
     expect(f.startsWith(`event_format.neq.virtual,and(${allowed},`)).toBe(true)
     expect(f).toContain('organizer_name.not.imatch.\\mCitco\\M')
     expect(f).toContain('name.not.imatch.\\mAlter Domus\\M')

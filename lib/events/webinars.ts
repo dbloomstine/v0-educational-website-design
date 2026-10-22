@@ -63,9 +63,10 @@ const term = (pattern: string, inName = true): AdminTerm => ({ pattern, inName }
 /**
  * Fund administrators, by name (2026-10-22): Danny's list, then the event_sources registry's `fund_admin` rows that
  * are administrators proper. Left out on purpose, as questions for Danny rather than exclusions: the fund-tech
- * platforms that also administer (Carta, Juniper Square, AngelList, Sydecar, Allocations, Repool) and the custodian
- * banks' fund services (State Street, BNY, Northern Trust, U.S. Bank). Never law firms, accounting firms or
- * software vendors. Kroll is valuation, not administration. "Maples Group" only: Maples and Calder is a law firm.
+ * platforms that also administer (Carta, Juniper Square, AngelList, Sydecar, Allocations, Repool), the custodian
+ * banks' fund services (State Street, BNY, Northern Trust, U.S. Bank) and EisnerAmper (listed, Danny 2026-10-22).
+ * Never law firms, accounting firms or software vendors. Kroll is valuation, not administration. "Maples Group" only:
+ * Maples and Calder is a law firm.
  */
 export const FUND_ADMIN_TERMS: readonly AdminTerm[] = [
   term('\\mCitco\\M'),
@@ -124,8 +125,10 @@ export const FUND_ADMIN_TERMS: readonly AdminTerm[] = [
  * IQ-EQ's own webinars are listed although IQ-EQ is a fund administrator (Danny, 2026-10-22: "include them"): the rule
  * keeps out his employer's competitors, and IQ-EQ is not one. The fund-tech platforms that also administer and the
  * custodian banks are listed too (same answer): they were never on the list, and the registry types them otherwise.
+ * EisnerAmper is listed as well (Danny, 2026-10-22): an accounting firm that also sells fund administration, counted
+ * with Carta and Juniper Square rather than with the administrators. Two alternatives, no parentheses (PostgREST).
  */
-export const ADMIN_ALLOWED = '\\mIQ-?EQ\\M'
+export const ADMIN_ALLOWED = '\\mIQ-?EQ\\M|\\mEisner ?Amper\\M'
 
 export function fundAdminGuardFilter(): string {
   const clear = [`or(organizer_type.neq.fund_admin,organizer_name.imatch.${ADMIN_ALLOWED})`]
