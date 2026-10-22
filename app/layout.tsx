@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "sonner"
 import { SignupSourceCapture } from "@/components/signup-source-capture"
 import { SubscribePrompt } from "@/components/newsletter/SubscribePrompt"
+import { SignupTakeover } from "@/components/newsletter/SignupTakeover"
 import "./globals.css"
 
 // FundOpsHQ Brand Fonts:
@@ -176,6 +177,7 @@ export default function RootLayout({
         <Analytics />
         <SignupSourceCapture />
         <SubscribePrompt />
+        <SignupTakeover />
       </body>
     </html>
   )

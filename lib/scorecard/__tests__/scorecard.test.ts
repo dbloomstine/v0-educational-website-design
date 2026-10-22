@@ -16,7 +16,7 @@ describe('the weekly scorecard', () => {
     const { list } = scorecard({ subscribers, posts: [], metrics: [], sponsorLooks: 0, now: NOW })
     expect(list).toMatchObject({ confirmed: 6, joined: 3, joinedBefore: 1, left: 1 })
     expect(list.sources).toEqual([['linkedin', 2], ['not recorded', 1]])
-    expect(list.forms).toEqual([['not recorded', 1], ['the homepage field', 1], ['the signup box', 1], ['the first-visit ask', 0], ['the events offer', 0]])
+    expect(list.forms).toEqual([['not recorded', 1], ['the homepage field', 1], ['the signup box', 1], ['the welcome screen', 0], ['the first-visit ask', 0], ['the events offer', 0]])
   })
 
   it('counts a post in the week it went out, at its latest reading; a network by its own measure', () => {
@@ -126,10 +126,10 @@ describe('the weekly scorecard', () => {
       sub(5, { signup_form: 'someday' }), sub(10, { signup_form: 'events' }),
     ]
     const card = scorecard({ subscribers, posts: [], metrics: [], sponsorLooks: 0, now: NOW })
-    expect(card.list.forms).toEqual([['the first-visit ask', 2], ['someday', 1], ['the events offer', 1], ['the signup box', 1]])
+    expect(card.list.forms).toEqual([['the first-visit ask', 2], ['someday', 1], ['the events offer', 1], ['the signup box', 1], ['the welcome screen', 0]])
     expect(card.list.pages).toEqual([['/', 2], ['/events/cfo-ops', 1], ['/story/x-1', 1], ['not recorded', 1]])
     const html = scorecardMail(card).html
-    expect(html).toContain('Where they signed up: the first-visit ask 2 · someday 1 · the events offer 1 · the signup box 1.')
+    expect(html).toContain('Where they signed up: the first-visit ask 2 · someday 1 · the events offer 1 · the signup box 1 · the welcome screen 0.')
     expect(html).toContain('On which page: / 2 · /events/cfo-ops 1 · /story/x-1 1 · not recorded 1.')
     // Nobody recorded a page: no page line.
     expect(scorecardMail(scorecard({ subscribers: [sub(1, { signup_form: 'popup' })], posts: [], metrics: [], sponsorLooks: 0, now: NOW })).html).not.toContain('On which page')

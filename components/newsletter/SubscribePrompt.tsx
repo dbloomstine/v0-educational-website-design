@@ -28,6 +28,7 @@ import {
   shouldShowOnArrival,
   shouldShowPrompt,
 } from '@/lib/newsletter/prompt-rules'
+import { TAKEOVER_ON } from '@/lib/newsletter/takeover-rules'
 import { FOLLOW } from '@/lib/brand/social'
 import { ChoiceChips } from './ChoiceChips'
 import { FollowChoices, type FollowPass } from './FollowChoices'
@@ -59,6 +60,10 @@ import { firstEditionSentence } from '@/lib/newsletter/first-edition'
  * (with the city, read from the page's events block) and records the opt-in.
  * A signup through it is stored with the form `firstvisit` or `popup` and the
  * page it appeared on.
+ *
+ * 2026-10-22, later: the welcome screen (SignupTakeover.tsx) replaces the box's
+ * arrival and reading-clock asks; the box stays for the Subscribe buttons and
+ * the tick-boxes after a signup. NEXT_PUBLIC_SIGNUP_TAKEOVER=off restores both.
  */
 
 function read(store: 'local' | 'session', key: string): string | null {
@@ -93,7 +98,7 @@ function readerFirms(): Promise<number | null> {
  * The events page the box is on, if any: the city from the page's events block ("" for none), or the events section;
  * and whether that block says the Monday events email is live (lib/events/weekly-mode.ts), so the box promises it only then.
  */
-function readEventsContext(pathname: string): { city: string | null; monday: boolean } | null {
+export function readEventsContext(pathname: string): { city: string | null; monday: boolean } | null {
   const block = document.querySelector('[data-signup-events]')
   if (block) return { city: block.getAttribute('data-signup-events') || null, monday: block.getAttribute('data-signup-events-monday') === '1' }
   return /^\/events(\/|$)/.test(pathname) ? { city: null, monday: false } : null
@@ -164,8 +169,12 @@ export function SubscribePrompt() {
   const boxRef = useRef<HTMLDivElement>(null)
   const viewCounted = useRef<string | null>(null)
 
-  // The clock: runs only while the card could still appear on this visit.
+  // The clock: runs only while the card could still appear on this visit. With the welcome screen on
+  // (components/newsletter/SignupTakeover.tsx, 2026-10-22) the box never comes by itself: the screen is the one
+  // ask, and the box opens only when a Subscribe button asks for it. NEXT_PUBLIC_SIGNUP_TAKEOVER=off brings the
+  // clock back as it was.
   useEffect(() => {
+    if (TAKEOVER_ON) return
     if (open || shownInMemory || !isReadingPage(pathname)) return
     if (arrivedAsSubscriber(captureSignupSource())) markSubscribed()
     if (isMarkedSubscribed() || read('session', SHOWN_KEY)) return
