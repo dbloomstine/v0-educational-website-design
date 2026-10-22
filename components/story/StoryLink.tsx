@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import type { Story } from '@/lib/news/stories'
 import { storyPath } from '@/lib/news/story-path'
+import { isOwnSiteUrl } from '@/lib/news/submission-source'
 
 /** How every link out to a publisher opens: a new tab, with no hold on ours. */
 // `noopener` without `noreferrer`: the publisher's own figures then show that the reader came from us. An
@@ -52,6 +53,8 @@ export function HeadlineLink({
  * that says it leaves the site. The other outlets are on the story's page.
  */
 export function SourceLink({ story, className = '' }: { story: Pick<Story, 'url' | 'source'>; className?: string }) {
+  // A firm's submission with no public announcement links to its own page here (2026-10-22): the name, no way out.
+  if (isOwnSiteUrl(story.url)) return <span className={`min-w-0 truncate ${className}`}>{story.source ?? 'Source'}</span>
   return (
     <a href={story.url} {...OUTBOUND} title="Read it at the publisher" className={`inline-flex items-baseline gap-px hover:underline ${className}`}>
       <span className="min-w-0 truncate">{story.source ?? 'Source'}</span>

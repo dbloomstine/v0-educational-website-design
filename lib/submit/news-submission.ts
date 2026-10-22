@@ -9,8 +9,9 @@
  *   unconfirmed --(the sender clicks the emailed link)--> pending (in review)
  *   pending --(the desk verifies it)--> approved | rejected | spam
  *
- * Nothing is published from here. An approved row becomes an ordinary story
- * labelled "Announced by the firm to FundOpsHQ", by a step not designed yet.
+ * Nothing is published from here. A verified row becomes an ordinary story
+ * labelled "announced by the firm to FundOpsHQ" through
+ * scripts/news/publish-submission.ts (lib/submit/publish-submission.ts).
  *
  * Everything here is typed by a stranger. This module checks its SHAPE:
  * lengths, a kind from our list, real web addresses, a work email address.

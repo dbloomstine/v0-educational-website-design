@@ -532,7 +532,7 @@ export function normalizeUrl(url: string): string {
 }
 
 /** Normalize text for content hashing */
-function normalizeText(text: string): string {
+export function normalizeText(text: string): string {
   return text
     .toLowerCase()
     .replace(/[^a-z0-9\s]/g, '')

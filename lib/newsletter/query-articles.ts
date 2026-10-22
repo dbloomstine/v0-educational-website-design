@@ -206,6 +206,8 @@ const SOURCE_TIER_RAW: Record<string, number> = {
   AltAssets: 7, 'AltAssets Private Equity News': 7,
   'Commercial Observer': 8, 'ESG Today': 8,
   'Business Wire': 10, 'PR Newswire': 10, 'PR Newswire Financial': 10,
+  // A firm's own news sent to us and checked by the desk (lib/news/submission-source.ts, 2026-10-22): a press release's weight.
+  'Announced to FundOpsHQ': 10,
   'Alternatives Watch': 10, "Crain's Chicago Business": 10,
   'The Business Journals': 12,
   'Yahoo Finance': 15, MSN: 15,

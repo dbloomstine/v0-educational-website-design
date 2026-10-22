@@ -13,6 +13,7 @@ import { BackToTop } from '@/components/back-to-top'
 import { Headline } from '@/components/story/Headline'
 import { ShareBar } from '@/components/story/ShareBar'
 import { OUTBOUND, SourceLink } from '@/components/story/StoryLink'
+import { isFirmSubmission, isOwnSiteUrl, SUBMISSION_BYLINE } from '@/lib/news/submission-source'
 import { HeadlineRow, SectionFlag } from '@/components/story/StoryBlocks'
 import { LatestRail, SubscribePanel } from '@/components/home/Rail'
 import { getStory } from '@/lib/news/front-page'
@@ -68,7 +69,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   // A request at any other address is redirected by the page; no metadata for it.
   if (!isCanonicalStoryParam(id, found.story)) return {}
   const { story } = found
-  const description = story.summary ?? `${story.headline} — reported by ${story.source ?? 'the original publisher'}.`
+  const description = story.summary ?? (isFirmSubmission(story.source) ? `${story.headline} — ${SUBMISSION_BYLINE}.` : `${story.headline} — reported by ${story.source ?? 'the original publisher'}.`)
   const url = storyPermalink(story)
   return {
     title: story.headline,
@@ -106,6 +107,9 @@ export default async function StoryPage({ params }: Params) {
   // The fuller summary, when the job has written one for any row of the story.
   // The meta description and the JSON-LD below keep the short one.
   const summary = pageSummary(story.summary, long?.text)
+  const fromFirm = isFirmSubmission(story.source)
+  // Every outlet's report, best first; a link to this site (a submission with no public announcement) is not one.
+  const reports = [{ source: story.source ?? 'Source', url: story.url, headline: story.headline }, ...story.coverage].filter((c) => !isOwnSiteUrl(c.url))
 
   const section = homeSectionFor(story)
   const firmKey = entityKey(story.firmName)
@@ -180,8 +184,15 @@ export default async function StoryPage({ params }: Params) {
               </h1>
 
               <p className="mt-2 font-ui text-[13px] text-muted-foreground">
-                {published} · first reported by{' '}
-                {story.source ? <SourceLink story={story} className="font-semibold text-foreground/80" /> : <span className="font-semibold text-foreground/80">the original publisher</span>}
+                {/* A firm's own submission (2026-10-22, lib/news/submission-source.ts) says so, in place of an outlet. */}
+                {fromFirm ? (
+                  <>{published} · <span className="font-semibold text-foreground/80">{SUBMISSION_BYLINE}</span></>
+                ) : (
+                  <>
+                    {published} · first reported by{' '}
+                    {story.source ? <SourceLink story={story} className="font-semibold text-foreground/80" /> : <span className="font-semibold text-foreground/80">the original publisher</span>}
+                  </>
+                )}
                 {story.coverage.length > 0 && ` and ${story.coverage.length} other${story.coverage.length === 1 ? '' : 's'}`}
               </p>
 
@@ -198,14 +209,17 @@ export default async function StoryPage({ params }: Params) {
 
               {/* The story itself lives with its publisher. */}
               <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3">
-                <a
-                  href={story.url}
-                  {...OUTBOUND}
-                  className="group inline-flex h-10 items-center gap-2 rounded-sm bg-foreground px-5 font-ui text-[13px] font-bold uppercase tracking-[0.06em] text-background transition-colors hover:bg-foreground/85"
-                >
-                  Read the full story at {story.source ?? 'the source'}
-                  <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
-                </a>
+                {/* A submission with no public announcement links to this very page: no way out to offer. */}
+                {!isOwnSiteUrl(story.url) && (
+                  <a
+                    href={story.url}
+                    {...OUTBOUND}
+                    className="group inline-flex h-10 items-center gap-2 rounded-sm bg-foreground px-5 font-ui text-[13px] font-bold uppercase tracking-[0.06em] text-background transition-colors hover:bg-foreground/85"
+                  >
+                    {fromFirm ? 'Read the firm’s announcement' : `Read the full story at ${story.source ?? 'the source'}`}
+                    <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+                  </a>
+                )}
                 <ShareBar url={permalink} title={story.headline} />
               </div>
 
@@ -242,15 +256,17 @@ export default async function StoryPage({ params }: Params) {
                 {story.geography.length > 0 && <Fact label="Geography">{story.geography.join(', ')}</Fact>}
               </dl>
               <p className="mt-2 font-ui text-[11.5px] leading-snug text-muted-foreground">
-                The summary and fields above are extracted from the published reports and can contain errors. The linked
-                articles are the source of record.
+                {fromFirm && story.coverage.length === 0
+                  ? 'The firm sent this news to FundOpsHQ, and we checked it before publishing. The summary and fields above are extracted from what the firm sent and can contain errors.'
+                  : 'The summary and fields above are extracted from the published reports and can contain errors. The linked articles are the source of record.'}
               </p>
 
               {/* Everyone who reported it */}
+              {reports.length > 0 && (
               <section aria-label="Coverage" className="mt-9">
-                <SectionFlag label="Coverage" note={`${story.coverage.length + 1} source${story.coverage.length === 0 ? '' : 's'}`} />
+                <SectionFlag label="Coverage" note={`${reports.length} source${reports.length === 1 ? '' : 's'}`} />
                 <ul>
-                  {[{ source: story.source ?? 'Source', url: story.url, headline: story.headline }, ...story.coverage].map((c) => (
+                  {reports.map((c) => (
                     <li key={c.url} className="border-b border-border/70 py-2 last:border-0">
                       <a href={c.url} {...OUTBOUND} className="group grid gap-x-4 sm:grid-cols-[170px_minmax(0,1fr)] sm:items-baseline">
                         <span className="font-ui text-[12.5px] font-bold text-foreground/85">{c.source}</span>
@@ -263,6 +279,7 @@ export default async function StoryPage({ params }: Params) {
                   ))}
                 </ul>
               </section>
+              )}
 
               {sameFirm.length > 0 && (
                 <section aria-label={`More on ${story.firmName}`} className="mt-9">
