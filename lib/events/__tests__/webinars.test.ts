@@ -183,9 +183,14 @@ describe('the fund administrator guard (Danny, 2026-10-22)', () => {
     'MUFG Investor Services',
     'Maples Group',
     'TMF Group',
-    'IQ-EQ',
   ])('leaves out a webinar hosted by %s', (organizerName) => {
     expect(isHiddenFundAdminEvent(virtual(organizerName))).toBe(true)
+  })
+
+  it("lists IQ-EQ's own webinars, typed fund_admin or not (Danny, 2026-10-22: IQ-EQ is not a competitor)", () => {
+    expect(isHiddenFundAdminEvent(virtual('IQ-EQ', 'fund_admin'))).toBe(false)
+    expect(isHiddenFundAdminEvent(virtual('IQ EQ'))).toBe(false)
+    expect(fundAdminGuardFilter()).toContain('organizer_name.imatch.')
   })
 
   it('leaves out any virtual row typed fund_admin, whatever its name', () => {
@@ -226,12 +231,14 @@ describe('the fund administrator guard (Danny, 2026-10-22)', () => {
 
   it('is one PostgREST filter that passes any non-virtual row', () => {
     const f = fundAdminGuardFilter()
-    expect(f.startsWith('event_format.neq.virtual,and(organizer_type.neq.fund_admin,')).toBe(true)
+    // The one nested clause is IQ-EQ's exception: typed fund_admin, but listed (2026-10-22).
+    const allowed = 'or(organizer_type.neq.fund_admin,organizer_name.imatch.\\mIQ-?EQ\\M)'
+    expect(f.startsWith(`event_format.neq.virtual,and(${allowed},`)).toBe(true)
     expect(f).toContain('organizer_name.not.imatch.\\mCitco\\M')
     expect(f).toContain('name.not.imatch.\\mAlter Domus\\M')
     expect(f).not.toContain(',name.not.imatch.\\mSEI\\M') // organizer only
     // No term may break PostgREST's or-syntax.
-    const inner = f.slice(f.indexOf('and(') + 4, -1)
+    const inner = f.slice(f.indexOf('and(') + 4, -1).replace(allowed, '')
     expect(inner).not.toMatch(/[()]/)
   })
 })

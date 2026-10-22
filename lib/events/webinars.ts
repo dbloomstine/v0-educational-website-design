@@ -84,7 +84,6 @@ export const FUND_ADMIN_TERMS: readonly AdminTerm[] = [
   term('\\mNAV Consulting\\M'),
   term('\\mTrident Trust\\M'),
   term('\\mUltimus\\M'),
-  term('\\mIQ-?EQ\\M'),
   term('\\mCSC\\M', false),
   term('\\mSEI\\M', false),
   term('\\mMUFG Investor Services\\M'),
@@ -121,8 +120,15 @@ export const FUND_ADMIN_TERMS: readonly AdminTerm[] = [
  * The guard as a PostgREST `or` filter: a row passes when it is not virtual, or when nothing marks its host as a
  * fund administrator. Added to every listing read with `.or()`, which PostgREST ANDs with the other filters.
  */
+/**
+ * IQ-EQ's own webinars are listed although IQ-EQ is a fund administrator (Danny, 2026-10-22: "include them"): the rule
+ * keeps out his employer's competitors, and IQ-EQ is not one. The fund-tech platforms that also administer and the
+ * custodian banks are listed too (same answer): they were never on the list, and the registry types them otherwise.
+ */
+export const ADMIN_ALLOWED = '\\mIQ-?EQ\\M'
+
 export function fundAdminGuardFilter(): string {
-  const clear = ['organizer_type.neq.fund_admin']
+  const clear = [`or(organizer_type.neq.fund_admin,organizer_name.imatch.${ADMIN_ALLOWED})`]
   for (const t of FUND_ADMIN_TERMS) {
     clear.push(`organizer_name.not.imatch.${t.pattern}`)
     if (t.inName) clear.push(`name.not.imatch.${t.pattern}`)
@@ -148,7 +154,7 @@ export function isHiddenFundAdminEvent(event: {
   name?: string | null
 }): boolean {
   if (event.eventFormat !== 'virtual') return false
-  return event.organizerType === 'fund_admin' || namesFundAdmin(event)
+  return (event.organizerType === 'fund_admin' && !matches(ADMIN_ALLOWED, event.organizerName)) || namesFundAdmin(event)
 }
 
 /**
