@@ -6,6 +6,9 @@ import { writeStorySummary } from '@/lib/news/story-summary'
 import { loadMarks, loadRows, saveStatus, saveWritten } from '@/lib/news/story-summary-store'
 import { loadRowTextState, loadThinStamps } from '@/lib/news/story-text-store'
 import { capFor, runStorySummaries, storySummariesEnabled } from '@/lib/news/story-summary-job'
+import { storyPath } from '@/lib/news/story-path'
+import type { Story } from '@/lib/news/stories'
+import { pingIndexNow } from '@/lib/seo/indexnow'
 
 // RUN_BUDGET_MS in story-summary-job tracks this value; change both together.
 export const maxDuration = 300
@@ -35,9 +38,18 @@ export async function GET(req: Request) {
   try {
     const db = getSupabaseAdmin()
     const cap = capFor(new URL(req.url).searchParams.get('limit'))
+    // A story given its fuller summary is indexable from now on (lib/news/story-index.ts):
+    // its page is sent to IndexNow when the run ends (2026-10-22). Collected from
+    // what the job already reads and saves, so no query of its own.
+    const byId = new Map<string, Story>()
+    const written: string[] = []
     const result = await runStorySummaries(
       {
-        loadStories,
+        loadStories: async () => {
+          const stories = await loadStories()
+          for (const s of stories) byId.set(s.id, s)
+          return stories
+        },
         loadMarks: () => loadMarks(db),
         loadRows: (ids) => loadRows(db, ids),
         loadEvidence: async (stories) => ({
@@ -45,13 +57,18 @@ export async function GET(req: Request) {
           rows: await loadRowTextState(db, stories.flatMap((s) => s.memberIds)),
         }),
         write: (rows) => writeStorySummary(rows, apiKey),
-        saveWritten: (id, summary, model) => saveWritten(db, id, summary, model),
+        saveWritten: async (id, summary, model) => {
+          await saveWritten(db, id, summary, model)
+          const story = byId.get(id)
+          if (story) written.push(storyPath(story))
+        },
         saveStatus: (id, status) => saveStatus(db, id, status),
         now: Date.now,
       },
       { cap },
     )
-    return NextResponse.json({ ok: true, ...result })
+    const indexNow = await pingIndexNow(written, { label: 'stories written up' })
+    return NextResponse.json({ ok: true, ...result, indexNow })
   } catch (error) {
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Story summaries failed' },

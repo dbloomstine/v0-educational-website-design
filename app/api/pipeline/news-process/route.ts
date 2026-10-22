@@ -3,6 +3,9 @@ import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { isAuthorizedPipelineRequest } from '@/lib/pipeline/auth'
 import { classifyPendingArticles } from '@/lib/news/classify-articles'
 import { sendPipelineAlert } from '@/lib/pipeline/alert'
+import { loadStories } from '@/lib/news/front-page'
+import { pingIndexNow, type PingResult } from '@/lib/seo/indexnow'
+import { HUB_PATHS, hubsDue, newStoryPaths } from '@/lib/seo/indexnow-pages'
 
 // 300s is the Vercel Pro ceiling for Node functions. A measured 15-article
 // batch takes ~20s, so the 100-article cap needs ~141s — that did not fit in
@@ -56,9 +59,12 @@ export async function GET(req: Request) {
       )
     }
 
+    const indexNow = await submitNewPages(Date.now())
+
     return NextResponse.json({
       ok: true,
       ...result,
+      indexNow,
     })
   } catch (error) {
     return NextResponse.json(
@@ -66,4 +72,22 @@ export async function GET(req: Request) {
       { status: 500 }
     )
   }
+}
+
+/**
+ * Tell IndexNow about the story pages that appeared in the previous clock hour
+ * (lib/seo/indexnow-pages.ts), and once a day about the front pages
+ * (2026-10-22). Read from the shared story cache, so no query of its own; it
+ * runs whatever happened to classification, since those stories were
+ * classified by the previous run. Never throws: a failed ping is a log line.
+ */
+async function submitNewPages(nowMs: number): Promise<{ stories: PingResult | null; hubs: PingResult | null }> {
+  let stories: PingResult | null = null
+  try {
+    stories = await pingIndexNow(newStoryPaths(await loadStories(), nowMs), { label: 'new stories' })
+  } catch (err) {
+    console.error('[indexnow] the stories could not be read:', err instanceof Error ? err.message : err)
+  }
+  const hubs = hubsDue(nowMs) ? await pingIndexNow(HUB_PATHS, { label: 'front pages' }) : null
+  return { stories, hubs }
 }

@@ -5,8 +5,11 @@
 // enum/date validation or already exist (case-insensitive event_url).
 // See ~/.claude/skills/scout-events for the weekly workflow that
 // produces the batch files.
+// After loading, the new event pages and /events are sent to IndexNow
+// (indexnow-ping.mjs, 2026-10-22); --no-ping leaves that out.
 import { readFileSync } from 'fs'
 import { createClient } from '@supabase/supabase-js'
+import { pingIndexNow } from './indexnow-ping.mjs'
 
 const env = Object.fromEntries(
   readFileSync(new URL('../../.env.local', import.meta.url).pathname, 'utf8')
@@ -96,6 +99,10 @@ const takenSlugs = new Set((existing ?? []).map((r) => r.slug).filter(Boolean))
 
 let inserted = 0
 const skipped = []
+const newPages = []             // paths of the event pages inserted this run, for IndexNow
+const args = process.argv.slice(2)
+const noPing = args.includes('--no-ping')
+const files = args.filter((a) => !a.startsWith('--'))
 
 // The fund-administrator guard (2026-10-22, Danny: never list webinars from fund administrators that compete with
 // IQ-EQ). The site already hides them (lib/events/webinars.ts); this keeps a scouted one out of the table at all. The
@@ -113,7 +120,7 @@ function isAdminWebinar(r) {
 const perSource = new Map()   // event_source_id -> rows inserted this run
 const unattributed = []       // inserted rows whose source_key resolved to nothing
 const unverifiedFree = []     // inserted as free without cost_verified: shown with no cost at all
-for (const file of process.argv.slice(2)) {
+for (const file of files) {
   const rows = JSON.parse(readFileSync(file, 'utf8'))
   for (const r of rows) {
     // Coerce common agent-output variants before validation
@@ -135,8 +142,9 @@ for (const file of process.argv.slice(2)) {
     if (seen.has(urlKey)) { skipped.push(`${r.name}: duplicate url`); continue }
     seen.add(urlKey)
 
+    const slug = slugify(r.name, takenSlugs)
     const { error } = await supabase.from('industry_events').insert({
-      slug: slugify(r.name, takenSlugs),
+      slug,
       name: r.name,
       description: r.description ?? null,
       event_url: r.event_url,
@@ -173,6 +181,8 @@ for (const file of process.argv.slice(2)) {
     })
     if (error) { skipped.push(`${r.name}: insert error ${error.message}`); continue }
     inserted++
+    newPages.push(`/events/${slug}`)
+    if ((r.event_kind ?? 'conference') === 'webinar') newPages.push('/events/webinars')
     if ((r.cost_type ?? 'paid') === 'free' && r.cost_verified !== true) unverifiedFree.push(r.name)
     const sid = resolveSource(r.source_key)
     if (sid) perSource.set(sid, (perSource.get(sid) ?? 0) + 1)
@@ -220,3 +230,7 @@ if (unverifiedFree.length) {
   )
 }
 if (skipped.length) console.log('skipped:\n  ' + skipped.join('\n  '))
+
+// The new pages, and the board they appear on, to IndexNow. Only when something
+// was inserted: the board is otherwise unchanged and a repeat ping is noise.
+if (newPages.length && !noPing) await pingIndexNow([...newPages, '/events'], 'new events')
