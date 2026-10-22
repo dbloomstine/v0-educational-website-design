@@ -90,7 +90,7 @@ async function main() {
       '',
       `As it reads (links are linked text in the email; the plain-text part writes them out):`,
       '',
-      ...asMarkdown(r.body_html ?? r.body_text).map((l) => `> ${l}`),
+      ...(r.body_html ? asMarkdown(r.body_html) : r.body_text.trimEnd().split("\n")).map((l) => `> ${l}`),
       '',
     )
   })
