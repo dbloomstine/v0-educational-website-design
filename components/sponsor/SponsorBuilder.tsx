@@ -414,160 +414,164 @@ export function SponsorBuilder({ openWeeks, taken }: { openWeeks: string[]; take
 
   return (
     <form ref={formRef} onSubmit={submit} noValidate className="grid gap-x-8 gap-y-7 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-      {/* ─── The strip, at its real width, and it stays in view while the ad is written: it is the first thing every visitor sees ─── */}
-      <figure id="ad-preview" className="sticky top-[46px] z-20 -mx-1 scroll-mt-24 bg-background/95 px-1 pb-2 pt-2 backdrop-blur-sm lg:col-span-2">
-        <figcaption className="pb-1.5 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
-          The website · above the stories, on every page
-        </figcaption>
-        <div inert aria-hidden="true" className="pointer-events-none select-none">
-          <SponsorStripView sponsor={draft} line="" />
-        </div>
-      </figure>
-
-      {/* ─── The form ─── */}
-      <div className="space-y-7">
-        <fieldset>
-          <legend className={stepClass}>1 · How long</legend>
-          <div className="mt-2 grid gap-2 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-            {PACKAGES.map((p) => {
-              const on = p.id === pkg.id
-              return (
-                <label key={p.id} className={`cursor-pointer rounded-sm border-2 px-3.5 py-3 transition-colors ${on ? 'border-foreground bg-card' : 'border-border bg-card/60 hover:border-foreground/50'}`}>
-                  <input type="radio" name="package" value={p.id} checked={on} onChange={() => setPackageId(p.id)} className="sr-only" />
-                  <span className="flex items-baseline justify-between gap-2">
-                    <span className="font-ui text-[13px] font-extrabold uppercase tracking-[0.06em]">{p.name}</span>
-                    {on && <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden />}
-                  </span>
-                  <span className="mt-1 block font-news text-[30px] font-medium leading-none tracking-[-0.02em]">{usd(p.priceUsd)}</span>
-                  <span className="mt-1 block font-ui text-[11.5px] text-muted-foreground">
-                    {p.editions} editions · about {usd(Math.round(p.priceUsd / p.editions))} each
-                  </span>
-                </label>
-              )
-            })}
+      {/* The strip and the form share a box on a phone, so the strip stays in view while the ad is written and lets go once the form
+          ends: in one column it would otherwise ride over the mock-ups below it. From lg the box dissolves (`contents`) into the grid. */}
+      <div className="grid gap-y-7 lg:contents">
+        {/* ─── The strip, at its real width, and it stays in view while the ad is written: it is the first thing every visitor sees ─── */}
+        <figure id="ad-preview" className="sticky top-[46px] z-20 -mx-1 scroll-mt-24 bg-background/95 px-1 pb-2 pt-2 backdrop-blur-sm lg:col-span-2">
+          <figcaption className="pb-1.5 font-ui text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+            The website · above the stories, on every page
+          </figcaption>
+          <div inert aria-hidden="true" className="pointer-events-none select-none">
+            <SponsorStripView sponsor={draft} line="" />
           </div>
-          <p className="mt-2 font-news text-[15px] leading-snug text-foreground/75">{pkg.line}</p>
-        </fieldset>
+        </figure>
 
-        <fieldset>
-          <legend className={stepClass}>2 · From when</legend>
-          <Field label="First day" hint="Runs start on a Monday." error={errors.startsOn}>
-            <select value={startsOn} onChange={(e) => setStartsOn(e.target.value)} className={inputClass}>
-              {starts.map((d) => (
-                <option key={d} value={d}>
-                  {longDay(d)}
-                </option>
-              ))}
-            </select>
-          </Field>
-          {starts.length === 0 ? (
-            <p className="mt-1.5 font-ui text-[12.5px] text-red-400" role="alert">No {pkg.name.toLowerCase()} run is free in the weeks ahead. Choose a shorter length, or write to sponsor@fundopshq.com.</p>
-          ) : (
-            startsOn && <p className="mt-1.5 font-ui text-[12.5px] text-muted-foreground">Your last day would be {longDay(runEnd(startsOn, pkg))}.{starts.length < openWeeks.length ? ' Some Mondays are not offered because part of the run is already booked.' : ''}</p>
-          )}
-        </fieldset>
+        {/* ─── The form ─── */}
+        <div className="space-y-7">
+          <fieldset>
+            <legend className={stepClass}>1 · How long</legend>
+            <div className="mt-2 grid gap-2 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+              {PACKAGES.map((p) => {
+                const on = p.id === pkg.id
+                return (
+                  <label key={p.id} className={`cursor-pointer rounded-sm border-2 px-3.5 py-3 transition-colors ${on ? 'border-foreground bg-card' : 'border-border bg-card/60 hover:border-foreground/50'}`}>
+                    <input type="radio" name="package" value={p.id} checked={on} onChange={() => setPackageId(p.id)} className="sr-only" />
+                    <span className="flex items-baseline justify-between gap-2">
+                      <span className="font-ui text-[13px] font-extrabold uppercase tracking-[0.06em]">{p.name}</span>
+                      {on && <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden />}
+                    </span>
+                    <span className="mt-1 block font-news text-[30px] font-medium leading-none tracking-[-0.02em]">{usd(p.priceUsd)}</span>
+                    <span className="mt-1 block font-ui text-[11.5px] text-muted-foreground">
+                      {p.editions} editions · about {usd(Math.round(p.priceUsd / p.editions))} each
+                    </span>
+                  </label>
+                )
+              })}
+            </div>
+            <p className="mt-2 font-news text-[15px] leading-snug text-foreground/75">{pkg.line}</p>
+          </fieldset>
 
-        <fieldset className="space-y-3.5">
-          <legend className={stepClass}>3 · Your ad</legend>
-          {prefilled && (
-            <p className="font-ui text-[12.5px] text-muted-foreground">
-              A mock-up of an ad for {prefilled}, drawn from your website. Change any of it and the preview follows.
-            </p>
-          )}
-          {restored && (
-            <p className="font-ui text-[12.5px] text-muted-foreground">
-              Your draft from last time is back, kept on this device.{' '}
-              <button type="button" onClick={startOver} className="underline underline-offset-2 hover:text-foreground">Start over</button>
-            </p>
-          )}
-          <Field label="Firm name" hint="As it should appear." error={errors.company} count={<Count n={company.length} max={LIMITS.company} />}>
-            <input value={company} onChange={(e) => setCompany(e.target.value)} maxLength={LIMITS.company} autoComplete="organization" className={inputClass} placeholder="Northgate Software" />
-          </Field>
-          <div>
-            <span className={labelClass}>
-              Logo <span className={hintClass}>PNG, JPEG, SVG or WebP: we size it for you. A wide logo on a white or clear background works best.</span>
-            </span>
-            <div className="mt-1 flex flex-wrap items-center gap-3">
-              <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-sm border border-foreground/30 bg-card px-3.5 font-ui text-[12px] font-bold uppercase tracking-[0.06em] hover:border-foreground">
-                <Upload className="h-3.5 w-3.5" aria-hidden />
-                {logoData ? 'Replace' : 'Choose a file'}
-                <input type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" className="sr-only" onChange={(e) => onLogo(e.target.files?.[0])} />
-              </label>
-              {logoData && (
-                <span className="inline-flex items-center gap-1.5 font-ui text-[12.5px] text-muted-foreground">
-                  {logoName}
-                  <button type="button" onClick={() => { setLogoData(null); setLogoName('') }} aria-label="Remove the logo" className="rounded-sm p-0.5 hover:text-foreground">
-                    <X className="h-3.5 w-3.5" />
-                  </button>
+          <fieldset>
+            <legend className={stepClass}>2 · From when</legend>
+            <Field label="First day" hint="Runs start on a Monday." error={errors.startsOn}>
+              <select value={startsOn} onChange={(e) => setStartsOn(e.target.value)} className={inputClass}>
+                {starts.map((d) => (
+                  <option key={d} value={d}>
+                    {longDay(d)}
+                  </option>
+                ))}
+              </select>
+            </Field>
+            {starts.length === 0 ? (
+              <p className="mt-1.5 font-ui text-[12.5px] text-red-400" role="alert">No {pkg.name.toLowerCase()} run is free in the weeks ahead. Choose a shorter length, or write to sponsor@fundopshq.com.</p>
+            ) : (
+              startsOn && <p className="mt-1.5 font-ui text-[12.5px] text-muted-foreground">Your last day would be {longDay(runEnd(startsOn, pkg))}.{starts.length < openWeeks.length ? ' Some Mondays are not offered because part of the run is already booked.' : ''}</p>
+            )}
+          </fieldset>
+
+          <fieldset className="space-y-3.5">
+            <legend className={stepClass}>3 · Your ad</legend>
+            {prefilled && (
+              <p className="font-ui text-[12.5px] text-muted-foreground">
+                A mock-up of an ad for {prefilled}, drawn from your website. Change any of it and the preview follows.
+              </p>
+            )}
+            {restored && (
+              <p className="font-ui text-[12.5px] text-muted-foreground">
+                Your draft from last time is back, kept on this device.{' '}
+                <button type="button" onClick={startOver} className="underline underline-offset-2 hover:text-foreground">Start over</button>
+              </p>
+            )}
+            <Field label="Firm name" hint="As it should appear." error={errors.company} count={<Count n={company.length} max={LIMITS.company} />}>
+              <input value={company} onChange={(e) => setCompany(e.target.value)} maxLength={LIMITS.company} autoComplete="organization" className={inputClass} placeholder="Northgate Software" />
+            </Field>
+            <div>
+              <span className={labelClass}>
+                Logo <span className={hintClass}>PNG, JPEG, SVG or WebP: we size it for you. A wide logo on a white or clear background works best.</span>
+              </span>
+              <div className="mt-1 flex flex-wrap items-center gap-3">
+                <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-sm border border-foreground/30 bg-card px-3.5 font-ui text-[12px] font-bold uppercase tracking-[0.06em] hover:border-foreground">
+                  <Upload className="h-3.5 w-3.5" aria-hidden />
+                  {logoData ? 'Replace' : 'Choose a file'}
+                  <input type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" className="sr-only" onChange={(e) => onLogo(e.target.files?.[0])} />
+                </label>
+                {logoData && (
+                  <span className="inline-flex items-center gap-1.5 font-ui text-[12.5px] text-muted-foreground">
+                    {logoName}
+                    <button type="button" onClick={() => { setLogoData(null); setLogoName('') }} aria-label="Remove the logo" className="rounded-sm p-0.5 hover:text-foreground">
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </span>
+                )}
+              </div>
+              {errors.logo && <span className="mt-1 block font-ui text-[12px] text-red-400" role="alert">{errors.logo}</span>}
+              {logoData && logoSize && !errors.logo && (
+                <span className="mt-1 block font-ui text-[12px] text-muted-foreground">
+                  {logoSize.h > logoSize.w * 0.8 ? 'In. It is close to square, so it sits smaller than a wide logo would: see the previews.' : 'In. It is drawn in the previews exactly as it will run.'}
                 </span>
               )}
             </div>
-            {errors.logo && <span className="mt-1 block font-ui text-[12px] text-red-400" role="alert">{errors.logo}</span>}
-            {logoData && logoSize && !errors.logo && (
-              <span className="mt-1 block font-ui text-[12px] text-muted-foreground">
-                {logoSize.h > logoSize.w * 0.8 ? 'In. It is close to square, so it sits smaller than a wide logo would: see the previews.' : 'In. It is drawn in the previews exactly as it will run.'}
-              </span>
-            )}
-          </div>
-          <Field label="Your copy" error={errors.blurb} count={<Count n={words} max={LIMITS.blurbWords} unit=" words" />}>
-            <textarea value={blurb} onChange={(e) => setBlurb(e.target.value)} rows={4} maxLength={LIMITS.blurbChars} className={`${inputClass} resize-y font-news text-[16px] leading-[1.4]`} placeholder="What your firm does for the people who run private funds, and why they should look this morning." />
-          </Field>
-          <Field label="One line for the top of the site" hint="Optional. Beside your name above the stories; your copy is used if this is empty." error={errors.tagline} count={<Count n={tagline.length} max={LIMITS.tagline} />}>
-            <input value={tagline} onChange={(e) => setTagline(e.target.value)} maxLength={LIMITS.tagline} className={inputClass} placeholder="Portfolio monitoring for GPs, from the data room to the LP report." />
-          </Field>
-          <div className="grid gap-3.5 sm:grid-cols-[minmax(0,1fr)_170px]">
-            <Field label="Where your link goes" error={errors.ctaUrl}>
-              <input value={ctaUrl} onChange={(e) => setCtaUrl(e.target.value)} inputMode="url" autoCapitalize="none" maxLength={300} className={inputClass} placeholder="yourfirm.com/funds" />
+            <Field label="Your copy" error={errors.blurb} count={<Count n={words} max={LIMITS.blurbWords} unit=" words" />}>
+              <textarea value={blurb} onChange={(e) => setBlurb(e.target.value)} rows={4} maxLength={LIMITS.blurbChars} className={`${inputClass} resize-y font-news text-[16px] leading-[1.4]`} placeholder="What your firm does for the people who run private funds, and why they should look this morning." />
             </Field>
-            <Field label="Button" hint="Optional." error={errors.ctaText} count={<Count n={ctaText.length} max={LIMITS.ctaText} />}>
-              <input value={ctaText} onChange={(e) => setCtaText(e.target.value)} maxLength={LIMITS.ctaText} className={inputClass} placeholder="Learn more" />
+            <Field label="One line for the top of the site" hint="Optional. Beside your name above the stories; your copy is used if this is empty." error={errors.tagline} count={<Count n={tagline.length} max={LIMITS.tagline} />}>
+              <input value={tagline} onChange={(e) => setTagline(e.target.value)} maxLength={LIMITS.tagline} className={inputClass} placeholder="Portfolio monitoring for GPs, from the data room to the LP report." />
             </Field>
-          </div>
-        </fieldset>
+            <div className="grid gap-3.5 sm:grid-cols-[minmax(0,1fr)_170px]">
+              <Field label="Where your link goes" error={errors.ctaUrl}>
+                <input value={ctaUrl} onChange={(e) => setCtaUrl(e.target.value)} inputMode="url" autoCapitalize="none" maxLength={300} className={inputClass} placeholder="yourfirm.com/funds" />
+              </Field>
+              <Field label="Button" hint="Optional." error={errors.ctaText} count={<Count n={ctaText.length} max={LIMITS.ctaText} />}>
+                <input value={ctaText} onChange={(e) => setCtaText(e.target.value)} maxLength={LIMITS.ctaText} className={inputClass} placeholder="Learn more" />
+              </Field>
+            </div>
+          </fieldset>
 
-        <fieldset className="space-y-3.5">
-          <legend className={stepClass}>4 · You</legend>
-          <div className="grid gap-3.5 sm:grid-cols-2">
-            <Field label="Your name" error={errors.contactName}>
-              <input value={contactName} onChange={(e) => setContactName(e.target.value)} autoComplete="name" className={inputClass} />
+          <fieldset className="space-y-3.5">
+            <legend className={stepClass}>4 · You</legend>
+            <div className="grid gap-3.5 sm:grid-cols-2">
+              <Field label="Your name" error={errors.contactName}>
+                <input value={contactName} onChange={(e) => setContactName(e.target.value)} autoComplete="name" className={inputClass} />
+              </Field>
+              <Field label="Work email" error={errors.email}>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" inputMode="email" className={inputClass} />
+              </Field>
+            </div>
+            <Field label="Firm website" error={errors.website}>
+              <input value={website} onChange={(e) => setWebsite(e.target.value)} inputMode="url" autoCapitalize="none" autoComplete="url" className={inputClass} placeholder="yourfirm.com" />
             </Field>
-            <Field label="Work email" error={errors.email}>
-              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" inputMode="email" className={inputClass} />
+            <Field label="Anything we should know" hint="Optional.">
+              <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} maxLength={LIMITS.notes} className={`${inputClass} resize-y`} />
             </Field>
-          </div>
-          <Field label="Firm website" error={errors.website}>
-            <input value={website} onChange={(e) => setWebsite(e.target.value)} inputMode="url" autoCapitalize="none" autoComplete="url" className={inputClass} placeholder="yourfirm.com" />
-          </Field>
-          <Field label="Anything we should know" hint="Optional.">
-            <textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} maxLength={LIMITS.notes} className={`${inputClass} resize-y`} />
-          </Field>
-          {/* Not for people: left empty by anyone who can see the form. */}
-          <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
-            <label>
-              Fax
-              <input tabIndex={-1} autoComplete="off" value={fax} onChange={(e) => setFax(e.target.value)} />
-            </label>
-          </div>
-        </fieldset>
+            {/* Not for people: left empty by anyone who can see the form. */}
+            <div aria-hidden="true" className="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+              <label>
+                Fax
+                <input tabIndex={-1} autoComplete="off" value={fax} onChange={(e) => setFax(e.target.value)} />
+              </label>
+            </div>
+          </fieldset>
 
-        <div>
-          <dl className="mb-3 border-y border-border/70 py-2.5 font-ui text-[13.5px] leading-relaxed">
-            <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Run</dt><dd className="text-right font-semibold">{pkg.name}{startsOn ? `, ${longDay(startsOn)} to ${longDay(runEnd(startsOn, pkg))}` : ''}</dd></div>
-            <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Where</dt><dd className="text-right font-semibold">{pkg.editions} editions of the email, and the site every day</dd></div>
-            <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Price</dt><dd className="text-right font-semibold">{usd(pkg.priceUsd)}, invoiced after we say yes</dd></div>
-          </dl>
-          <button
-            type="submit"
-            disabled={status === 'sending' || starts.length === 0}
-            className="group inline-flex h-12 items-center gap-2 rounded-sm px-6 font-ui text-[13.5px] font-extrabold uppercase tracking-[0.06em] transition-[filter] hover:brightness-95 disabled:opacity-50"
-            style={{ background: 'var(--tab)', color: 'var(--ink)' }}
-          >
-            {status === 'sending' ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Submit for approval · {usd(pkg.priceUsd)} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden /></>}
-          </button>
-          <p className="mt-2 max-w-[52ch] font-ui text-[12.5px] leading-snug text-muted-foreground">
-            Nothing is charged now. We read every ad and answer within one business day. If it is a yes, the dates are yours and we send an invoice.
-          </p>
-          {message && <p className="mt-2 font-ui text-[13px] text-red-400" role="alert">{message}</p>}
+          <div>
+            <dl className="mb-3 border-y border-border/70 py-2.5 font-ui text-[13.5px] leading-relaxed">
+              <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Run</dt><dd className="text-right font-semibold">{pkg.name}{startsOn ? `, ${longDay(startsOn)} to ${longDay(runEnd(startsOn, pkg))}` : ''}</dd></div>
+              <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Where</dt><dd className="text-right font-semibold">{pkg.editions} editions of the email, and the site every day</dd></div>
+              <div className="flex justify-between gap-4"><dt className="text-muted-foreground">Price</dt><dd className="text-right font-semibold">{usd(pkg.priceUsd)}, invoiced after we say yes</dd></div>
+            </dl>
+            <button
+              type="submit"
+              disabled={status === 'sending' || starts.length === 0}
+              className="group inline-flex h-12 items-center gap-2 rounded-sm px-6 font-ui text-[13.5px] font-extrabold uppercase tracking-[0.06em] transition-[filter] hover:brightness-95 disabled:opacity-50"
+              style={{ background: 'var(--tab)', color: 'var(--ink)' }}
+            >
+              {status === 'sending' ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Submit for approval · {usd(pkg.priceUsd)} <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden /></>}
+            </button>
+            <p className="mt-2 max-w-[52ch] font-ui text-[12.5px] leading-snug text-muted-foreground">
+              Nothing is charged now. We read every ad and answer within one business day. If it is a yes, the dates are yours and we send an invoice.
+            </p>
+            {message && <p className="mt-2 font-ui text-[13px] text-red-400" role="alert">{message}</p>}
+          </div>
         </div>
       </div>
 

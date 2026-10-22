@@ -50,15 +50,17 @@ export function SponsorStripView({ sponsor, line, className = '' }: { sponsor: S
   if (sponsor) {
     return (
       <section aria-label={`Sponsor: ${sponsor.name}`} className={`sponsor-slot ${className}`}>
-        <div className="sponsor-frame flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-2">
-          <a href={sponsor.ctaUrl} target="_blank" rel={SPONSORED_REL} className="flex shrink-0 items-center gap-x-3">
+        {/* On a phone the tagline is hidden and there is no room for one row: the label goes above the mark, and the mark and the
+            button share the row below, pushed to either side. If they cannot share it, the button sits under the mark, flush left. */}
+        <div className="sponsor-frame flex flex-wrap items-end justify-between gap-x-5 gap-y-2 px-4 py-2 md:items-center">
+          <a href={sponsor.ctaUrl} target="_blank" rel={SPONSORED_REL} className="flex min-w-0 flex-col items-start gap-y-1.5 md:shrink-0 md:flex-row md:items-center md:gap-x-3">
             <span className={kickerClass}>{SPONSOR_LABEL}</span>
             <Mark sponsor={sponsor} height={26} />
           </a>
           <p className="hidden min-w-0 flex-1 font-news text-[15px] leading-[1.35] text-foreground/80 md:line-clamp-2 md:border-l md:border-border md:pl-5">
             {sponsor.tagline ?? sponsor.blurb}
           </p>
-          <a href={sponsor.ctaUrl} target="_blank" rel={SPONSORED_REL} className={`${buttonClass} ml-auto`}>
+          <a href={sponsor.ctaUrl} target="_blank" rel={SPONSORED_REL} className={buttonClass}>
             {sponsor.ctaText ?? 'Learn more'}
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
           </a>
