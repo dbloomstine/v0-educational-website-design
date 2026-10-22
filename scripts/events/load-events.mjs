@@ -96,6 +96,20 @@ const takenSlugs = new Set((existing ?? []).map((r) => r.slug).filter(Boolean))
 
 let inserted = 0
 const skipped = []
+
+// The fund-administrator guard (2026-10-22, Danny: never list webinars from fund administrators that compete with
+// IQ-EQ). The site already hides them (lib/events/webinars.ts); this keeps a scouted one out of the table at all. The
+// patterns are read from that file, so there is one list: each term('…', inName) and ADMIN_ALLOWED (IQ-EQ, listed).
+const guardSource = readFileSync(new URL('../../lib/events/webinars.ts', import.meta.url), 'utf8')
+const toJs = (p) => new RegExp(p.replace(/\\\\/g, '\\').replace(/\\[mM]/g, '\\b'), 'i')
+const ADMIN_TERMS = [...guardSource.matchAll(/term\('((?:[^'\\]|\\.)*)'(?:,\s*(false|true))?\)/g)].map((m) => ({ re: toJs(m[1]), inName: m[2] !== 'false' }))
+const ALLOWED = (() => { const m = guardSource.match(/ADMIN_ALLOWED = '((?:[^'\\]|\\.)*)'/); return m ? toJs(m[1]) : null })()
+if (ADMIN_TERMS.length < 10) throw new Error(`fund-admin guard: read only ${ADMIN_TERMS.length} names from lib/events/webinars.ts`)
+function isAdminWebinar(r) {
+  if (r.event_format !== 'virtual') return false
+  if (r.organizer_type === 'fund_admin' && !(ALLOWED && ALLOWED.test(r.organizer_name ?? ''))) return true
+  return ADMIN_TERMS.some((t) => t.re.test(r.organizer_name ?? '') || (t.inName && t.re.test(r.name ?? '')))
+}
 const perSource = new Map()   // event_source_id -> rows inserted this run
 const unattributed = []       // inserted rows whose source_key resolved to nothing
 const unverifiedFree = []     // inserted as free without cost_verified: shown with no cost at all
@@ -115,6 +129,7 @@ for (const file of process.argv.slice(2)) {
     }
     const cats = (r.fund_categories ?? []).filter((c) => CATS.includes(c))
     const topics = (r.topics ?? []).filter((t) => TOPICS.includes(t))
+    if (isAdminWebinar(r)) problems.push('a fund administrator\'s webinar (never listed)')
     if (problems.length) { skipped.push(`${r.name}: ${problems.join('; ')}`); continue }
     const urlKey = r.event_url.toLowerCase()
     if (seen.has(urlKey)) { skipped.push(`${r.name}: duplicate url`); continue }
