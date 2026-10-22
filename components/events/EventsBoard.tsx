@@ -475,12 +475,12 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
           <button
             onClick={copyCalendarFeed}
             title="Copies a webcal:// address for this view: paste it into Google, Outlook or Apple Calendar under 'subscribe from URL' and new events appear on their own"
-            className="inline-flex items-center gap-1.5 font-ui text-[12.5px] text-muted-foreground hover:text-foreground"
+            className="inline-flex items-center gap-1.5 py-1.5 font-ui text-[12.5px] text-muted-foreground hover:text-foreground"
           >
             {feedCopied ? <Check className="h-3.5 w-3.5 text-emerald-700" /> : <CalendarPlus className="h-3.5 w-3.5" />}
             {feedCopied ? 'Calendar address copied' : 'Add to your calendar'}
           </button>
-          <Link href="/events/submit" className="font-ui text-[12.5px] text-muted-foreground hover:text-foreground">
+          <Link href="/events/submit" className="py-1.5 font-ui text-[12.5px] text-muted-foreground hover:text-foreground">
             Submit an event
           </Link>
         </span>

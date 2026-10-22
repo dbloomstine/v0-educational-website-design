@@ -5,6 +5,7 @@ import { Metadata } from 'next'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
+import { EventsFinder } from '@/components/events/EventsFinder'
 import { EventsBoard } from '@/components/events/EventsBoard'
 import Link from 'next/link'
 import { getEventFeed } from '@/lib/events/api'
@@ -116,20 +117,17 @@ export default async function EventsPage() {
 
       <main id="main-content" className="paper flex-1">
         <div className="band">
-          <div className="mx-auto flex max-w-[1320px] flex-wrap items-end justify-between gap-x-6 gap-y-3 px-4 pb-4 pt-5 lg:px-6">
-            <div>
-              <h1 className="font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">Events</h1>
-              <p className="mt-2 max-w-[72ch] font-news text-[16px] leading-snug text-foreground/70">
-                Conferences, forums, training and webinars for private markets across North America — every date
-                verified at the organizer.
-              </p>
-            </div>
-            <Link
-              href="/events/submit"
-              className="inline-flex h-9 items-center rounded-sm bg-foreground px-4 font-ui text-[12px] font-bold uppercase tracking-[0.06em] text-background transition-colors hover:bg-foreground/85"
-            >
-              Submit an event — free
-            </Link>
+          <div className="mx-auto max-w-[1320px] px-4 pb-5 pt-5 lg:px-6">
+            <h1 className="font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">Events</h1>
+            <p className="mt-2 max-w-[72ch] font-news text-[16px] leading-snug text-foreground/70">
+              Conferences, forums, training and webinars for private markets across North America — every date
+              verified at the organizer.{' '}
+              {/* For organizers: a link, not the page's strongest button (2026-10-22 design critique). */}
+              <Link href="/events/submit" className="whitespace-nowrap font-ui text-[13.5px] font-semibold text-foreground underline underline-offset-2 hover:no-underline">
+                Hosting one? Submit it free
+              </Link>
+            </p>
+            <EventsFinder facets={initial?.facets ?? null} />
           </div>
         </div>
 
