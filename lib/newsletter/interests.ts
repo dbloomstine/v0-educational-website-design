@@ -70,7 +70,7 @@ export const ROLES = [
  * `hero` was the homepage's one-line band, removed 2026-10-12; the value stays for the rows that carry it.
  * `submit` is the "Send me FundOps Daily" tick on /submit, where a firm sends in its news (2026-10-22).
  */
-export const SIGNUP_FORMS = ['popup', 'hero', 'feed', 'widget', 'rail', 'events', 'firstvisit', 'submit'] as const
+export const SIGNUP_FORMS = ['popup', 'hero', 'feed', 'widget', 'rail', 'events', 'firstvisit', 'submit', 'join'] as const
 
 /** The known ids among whatever was sent, once each, in list order. */
 export function sanitizeInterests(raw: unknown): string[] {

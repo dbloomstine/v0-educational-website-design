@@ -57,10 +57,13 @@ const nextConfig = {
       { source: '/newsletter', destination: '/#subscribe', permanent: true },
       // Short addresses for the social profiles' link fields (2026-10-12), so a visit from a profile is counted
       // as one (lib/newsletter/signup-source.ts reads the utm) and the signup box knows where the reader came from.
-      // Not permanent: where they land may change.
-      { source: '/tiktok', destination: '/?utm_source=tiktok&utm_medium=bio', permanent: false },
+      // Not permanent: where they land may change. Since 2026-10-22 the profiles land on /join, the one-field signup
+      // page (social sent 4 signups in 45 days to the homepage, against thousands of views a day). LinkedIn stays on
+      // the homepage: its readers come to read.
+      { source: '/tiktok', destination: '/join?utm_source=tiktok&utm_medium=bio', permanent: false },
       { source: '/linkedin', destination: '/?utm_source=linkedin&utm_medium=page', permanent: false },
-      { source: '/instagram', destination: '/?utm_source=instagram&utm_medium=bio', permanent: false },
+      { source: '/instagram', destination: '/join?utm_source=instagram&utm_medium=bio', permanent: false },
+      { source: '/youtube', destination: '/join?utm_source=youtube&utm_medium=bio', permanent: false },
     ]
   },
   async headers() {

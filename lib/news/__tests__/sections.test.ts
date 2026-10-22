@@ -61,12 +61,13 @@ describe('sections', () => {
 })
 
 describe('the short addresses for the social profiles', () => {
-  it('each sends the visitor home with the network and the medium in the address, and is not cached as permanent', async () => {
+  it('each sends the visitor to its page with the network and the medium in the address, and is not cached as permanent', async () => {
     const { default: config } = await import('../../../next.config.mjs')
     const redirects = (await config.redirects!()) as { source: string; destination: string; permanent: boolean }[]
-    for (const [path, source, medium] of [['/tiktok', 'tiktok', 'bio'], ['/linkedin', 'linkedin', 'page'], ['/instagram', 'instagram', 'bio']]) {
+    // The video networks land on the one-field signup page (2026-10-22); LinkedIn's readers on the homepage.
+    for (const [path, to, source, medium] of [['/tiktok', '/join', 'tiktok', 'bio'], ['/instagram', '/join', 'instagram', 'bio'], ['/youtube', '/join', 'youtube', 'bio'], ['/linkedin', '/', 'linkedin', 'page']]) {
       const r = redirects.find((x) => x.source === path)
-      expect(r?.destination).toBe(`/?utm_source=${source}&utm_medium=${medium}`)
+      expect(r?.destination).toBe(`${to}?utm_source=${source}&utm_medium=${medium}`)
       expect(r?.permanent).toBe(false)
     }
   })
