@@ -86,8 +86,15 @@ export default function PrivacyPolicyPage() {
                   <p className="text-muted-foreground leading-relaxed mt-3">
                     When you subscribe, we also record how you reached the Site on that visit: the name of the
                     site that linked to us (for example a search engine or a social network), any campaign label
-                    in the link you followed, and the first page you opened. We use this only to learn which
-                    places bring us readers. It is kept with your subscription and is removed with it.
+                    in the link you followed, the first page you opened, and the page you subscribed on. We use
+                    this only to learn which places bring us readers. It is kept with your subscription and is
+                    removed with it.
+                  </p>
+                  <p className="text-muted-foreground leading-relaxed mt-3">
+                    If you subscribe from an events page, or ask for events, we note that you want them and, when
+                    you name one, your city. We use it to send you a Monday email of the week&apos;s events, your
+                    city&apos;s first. You can stop the events email on its own from the link at the foot of any
+                    copy, and the note is removed with your subscription.
                   </p>
                   <p className="text-muted-foreground leading-relaxed mt-3">
                     You may also tell us which strategies you follow and what kind of firm you work at, when you
