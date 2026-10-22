@@ -423,7 +423,7 @@ export function SubscribePrompt() {
                   </>
                 ) : (
                   <>
-                    Every fund close, deal and move, <span className="italic" style={{ color: 'var(--display-accent)' }}>in one free morning email.</span>
+                    Every fund close, deal and hire, <span className="italic" style={{ color: 'var(--display-accent)' }}>in one free morning email.</span>
                   </>
                 )}
               </p>
@@ -455,7 +455,7 @@ export function SubscribePrompt() {
                 className="inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-sm px-3.5 font-ui text-[12.5px] font-extrabold uppercase tracking-[0.07em] disabled:opacity-50"
                 style={{ background: 'var(--tab)', color: 'var(--ink)' }}
               >
-                {sub.status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Subscribe <ArrowRight className="h-3.5 w-3.5" aria-hidden /></>}
+                {sub.status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Get it free <ArrowRight className="h-3.5 w-3.5" aria-hidden /></>}
               </button>
             </div>
             {sub.status === 'error' && <p className="mt-1 font-ui text-xs text-red-400" role="alert">{sub.errorMsg}</p>}
@@ -464,7 +464,7 @@ export function SubscribePrompt() {
                 {skipLabel}
               </button>
               <button type="button" onClick={() => close('subscribed')} className="rounded-sm py-1.5 underline underline-offset-2 hover:text-foreground">
-                I subscribe
+                I already get it
               </button>
             </div>
           </form>
@@ -494,7 +494,7 @@ export function SubscribePrompt() {
         <div className="flex items-center justify-between gap-3 bg-[var(--ink)] py-2 pl-4 pr-2 text-[var(--ink-foreground)] sm:pl-6">
           <p className="font-ui text-[11px] font-bold uppercase tracking-[0.14em]">
             FundOps Daily
-            <span className="ml-2 font-semibold tracking-[0.08em] text-[var(--tab)]">Free, every morning</span>
+            <span className="ml-2 font-semibold tracking-[0.08em] text-[var(--tab)]">Free, every morning by 7:30am ET</span>
           </p>
           <button
             type="button"
@@ -568,7 +568,7 @@ export function SubscribePrompt() {
                 </>
               ) : (
                 <>
-                  Every fund close, deal and move,{' '}
+                  Every fund close, deal and hire,{' '}
                   <span className="italic" style={{ color: 'var(--display-accent)' }}>in one morning email.</span>
                 </>
               )}
@@ -618,7 +618,7 @@ export function SubscribePrompt() {
                 ) : (
                   <>
                     <span>
-                      Subscribe<span className="hidden sm:inline"> free</span>
+                      Get it free
                     </span>
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                   </>
@@ -644,7 +644,7 @@ export function SubscribePrompt() {
               </span>
               <span className="flex shrink-0 items-center gap-3">
                 <button type="button" onClick={() => close('subscribed')} className="rounded-sm py-1 underline underline-offset-2 hover:text-foreground">
-                  I subscribe
+                  I already get it
                 </button>
                 {requested && (
                   <button type="button" onClick={() => close(closeKind)} className="rounded-sm py-1 underline underline-offset-2 hover:text-foreground">
