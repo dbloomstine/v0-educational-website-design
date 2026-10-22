@@ -18,6 +18,27 @@ export const MAX_EXAMINED_PER_RUN = 60
 /** Stories first seen within this many hours are candidates. */
 export const WINDOW_HOURS = 48
 /**
+ * A thin story that has changed is a candidate for this long after it was
+ * first seen: the days the site keeps a story on the page (STORY_WINDOW_DAYS
+ * in front-page.ts, not imported: that module brings Next's cache with it).
+ *
+ * Until 2026-10-22 it was the 48 hours above, so a fuller report that came
+ * later than that was never read. Measured that day over the fortnight's 611
+ * stories: 378 marked thin, 24 of them now holding enough text for a long
+ * summary. 7 had been looked at again (their answer failed a check); the other
+ * 17 were not, every one because the fuller report arrived 48 hours or more
+ * after the story was first seen: Vista's carve-out of HID's PKI unit (PE
+ * Hub's teaser, then Private Equity Professional's 7,500 characters four days
+ * on), Apax and
+ * Warburg's Odido stake, Sprints' €725m fifth fund, AP Moller and Portek,
+ * Carta's fund-administrator licence. A story nothing has happened to is still
+ * never re-read (thinStoryChanged), so the wider window costs a call only for
+ * a story that gained something and now has the text for it, about one a day.
+ * Replayed on that day's marks (scripts/thin-summary-audit.ts): 3 candidates
+ * with the 48 hours, 28 with ten days.
+ */
+export const THIN_WINDOW_HOURS = 10 * 24
+/**
  * Wall-clock budget, ms. The route's maxDuration is 300 s; twenty calls of
  * ~10 s fit, and a slow API ends the run early instead of being killed mid-call.
  */
@@ -89,13 +110,24 @@ export function thinStoryChanged(story: Pick<Story, 'memberIds'>, marks: Map<str
   })
 }
 
-/** Stories the selection could pick, before the evidence about them is read. */
-export function selectable<T extends Candidate>(stories: T[], marks: Map<string, SummaryStatus>, nowMs: number, windowHours = WINDOW_HOURS): T[] {
-  const since = nowMs - windowHours * 3_600_000
+/**
+ * Stories the selection could pick, before the evidence about them is read: a
+ * story not yet tried or awaiting its retry if first seen within `windowHours`,
+ * a thin one within `thinWindowHours` (it comes back only if it has changed).
+ */
+export function selectable<T extends Candidate>(
+  stories: T[],
+  marks: Map<string, SummaryStatus>,
+  nowMs: number,
+  windowHours = WINDOW_HOURS,
+  thinWindowHours = THIN_WINDOW_HOURS,
+): T[] {
   return stories.filter((s) => {
-    if (s.roundup || new Date(s.firstSeen).getTime() < since) return false
+    if (s.roundup) return false
     const m = storyMark(s, marks)
-    return m === null || m === 'retry' || m === 'thin'
+    if (m !== null && m !== 'retry' && m !== 'thin') return false
+    const hours = m === 'thin' ? Math.max(windowHours, thinWindowHours) : windowHours
+    return new Date(s.firstSeen).getTime() >= nowMs - hours * 3_600_000
   })
 }
 
@@ -105,13 +137,21 @@ export function selectable<T extends Candidate>(stories: T[], marks: Map<string,
  * Candidates: first seen in the last 48 hours, not a roundup (one headline over
  * several items: a summary would mix them), and no row of the story written or
  * given up. A thin story is a candidate only when it has changed since it was
- * marked (`thinStoryChanged`). A story whose first answer failed a check comes
- * back, after every story not yet tried. Order: stories with stored text first,
- * then the newer day, then the more outlets, then the newer story.
+ * marked (`thinStoryChanged`), and may have been first seen up to ten days ago
+ * (THIN_WINDOW_HOURS). A story whose first answer failed a check comes back,
+ * after every story not yet tried. Order: stories with stored text first, then
+ * the newer day, then the more outlets, then the newer story.
  */
-export function selectStories<T extends Candidate>(stories: T[], marks: Map<string, SummaryStatus>, nowMs: number, windowHours = WINDOW_HOURS, evidence?: StoryEvidence): T[] {
+export function selectStories<T extends Candidate>(
+  stories: T[],
+  marks: Map<string, SummaryStatus>,
+  nowMs: number,
+  windowHours = WINDOW_HOURS,
+  evidence?: StoryEvidence,
+  thinWindowHours = THIN_WINDOW_HOURS,
+): T[] {
   const rank = (s: T) => (storyMark(s, marks) === 'retry' ? 2 : storyHasText(s, evidence) ? 0 : 1)
-  return selectable(stories, marks, nowMs, windowHours)
+  return selectable(stories, marks, nowMs, windowHours, thinWindowHours)
     .filter((s) => storyMark(s, marks) !== 'thin' || thinStoryChanged(s, marks, evidence))
     .sort((a, b) =>
       rank(a) - rank(b) ||

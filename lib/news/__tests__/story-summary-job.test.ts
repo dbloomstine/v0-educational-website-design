@@ -134,6 +134,37 @@ describe('thin stories come back only when something has changed', () => {
     const ev = evidence([], [['w', state({ enrichedAt: hoursAgo(1), hasText: true })], ['f', state({ enrichedAt: hoursAgo(1), hasText: true })]])
     expect(selectStories([w, f], marks([['w', 'written'], ['f', 'failed']]), NOW, 48, ev)).toEqual([])
   })
+  // 2026-10-22: a fuller report that came after the 48 hours was never read (Vista/HID: PE Hub's teaser, then
+  // Private Equity Professional's 7,500 characters four days on).
+  it('brings back a thin story first seen days ago when a fuller report has arrived since its mark', () => {
+    const s = story({ id: 't', members: ['t1', 't2'], firstSeen: hoursAgo(96) })
+    const ev = evidence([['t1', hoursAgo(95)]], [['t1', state({ createdAt: hoursAgo(96) })], ['t2', state({ createdAt: hoursAgo(2) })]])
+    expect(ids(selectStories([s], marks([['t1', 'thin']]), NOW, 48, ev))).toEqual(['t'])
+    // The old rule, for comparison: the 48 hours for thin stories too.
+    expect(selectStories([s], marks([['t1', 'thin']]), NOW, 48, ev, 48)).toEqual([])
+  })
+  it('still leaves an old thin story alone when nothing has happened to it', () => {
+    const s = story({ id: 't', members: ['t1'], firstSeen: hoursAgo(96) })
+    const ev = evidence([['t1', hoursAgo(95)]], [['t1', state({ createdAt: hoursAgo(96) })]])
+    expect(selectStories([s], marks([['t1', 'thin']]), NOW, 48, ev)).toEqual([])
+  })
+  it('keeps the 48 hours for a story never tried or awaiting its retry', () => {
+    const untried = story({ id: 'u', firstSeen: hoursAgo(96) })
+    const retry = story({ id: 'r', firstSeen: hoursAgo(96) })
+    const ev = evidence([], [['u', state({ createdAt: hoursAgo(2) })], ['r', state({ createdAt: hoursAgo(2) })]])
+    expect(selectStories([untried, retry], marks([['r', 'retry']]), NOW, 48, ev)).toEqual([])
+  })
+  it('stops at ten days, where the site stops showing a story', () => {
+    const s = story({ id: 't', members: ['t1', 't2'], firstSeen: hoursAgo(10 * 24 + 1) })
+    const ev = evidence([['t1', hoursAgo(10 * 24)]], [['t1', state()], ['t2', state({ createdAt: hoursAgo(2) })]])
+    expect(selectStories([s], marks([['t1', 'thin']]), NOW, 48, ev)).toEqual([])
+  })
+  it('puts an old thin story after today’s stories', () => {
+    const old = story({ id: 'old', members: ['o1', 'o2'], firstSeen: hoursAgo(96), outlets: 2 })
+    const today = story({ id: 'today', firstSeen: hoursAgo(1) })
+    const ev = evidence([['o1', hoursAgo(95)]], [['o1', state()], ['o2', state({ createdAt: hoursAgo(2) })], ['today', state({ createdAt: hoursAgo(1) })]])
+    expect(ids(selectStories([old, today], marks([['o1', 'thin']]), NOW, 48, ev))).toEqual(['today', 'old'])
+  })
   it('puts stories with stored text before those without, then the usual order, retries last', () => {
     const bare = story({ id: 'bare', firstSeen: hoursAgo(1), outlets: 9 })
     const texty = story({ id: 'texty', firstSeen: hoursAgo(30), outlets: 1 })
