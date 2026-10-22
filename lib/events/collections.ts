@@ -17,6 +17,26 @@ export interface EventCollection {
   filter: EventQueryParams
   /** Params to prefill the interactive board link. */
   boardParams: Record<string, string>
+  /** The title search results show, `{years}` filled by `eventSeasonLabel`; else "<title> | FundOpsHQ". */
+  searchTitle?: string
+  /** The meta description (a search result's two lines); else the blurb. */
+  description?: string
+}
+
+/**
+ * The years a topic page's title names (2026-10-22): the board looks ahead about six months, so from October the
+ * next year's events are on it too and people search them by that year: "2026–27" from October, else "2026".
+ */
+export function eventSeasonLabel(today: Date = new Date()): string {
+  const year = today.getUTCFullYear()
+  return today.getUTCMonth() >= 9 ? `${year}–${String(year + 1).slice(-2)}` : String(year)
+}
+
+/** The page title for a collection, as search results show it. */
+export function collectionTitle(collection: EventCollection, today: Date = new Date()): string {
+  return collection.searchTitle
+    ? collection.searchTitle.replace('{years}', eventSeasonLabel(today))
+    : `${collection.title} | FundOpsHQ`
 }
 
 function cityCollection(slug: string, city: string, flavor: string): EventCollection {
@@ -30,8 +50,23 @@ function cityCollection(slug: string, city: string, flavor: string): EventCollec
   }
 }
 
-function topicCollection(slug: string, topic: string, title: string, heading: string, blurb: string): EventCollection {
-  return { slug, title, heading, blurb, filter: { topic }, boardParams: { topic } }
+function topicCollection(
+  slug: string,
+  topic: string,
+  title: string,
+  heading: string,
+  blurb: string,
+  search?: { title: string; description: string },
+): EventCollection {
+  return {
+    slug,
+    title,
+    heading,
+    blurb,
+    filter: { topic },
+    boardParams: { topic },
+    ...(search ? { searchTitle: search.title, description: search.description } : {}),
+  }
 }
 
 export const EVENT_COLLECTIONS: EventCollection[] = [
@@ -46,12 +81,22 @@ export const EVENT_COLLECTIONS: EventCollection[] = [
   cityCollection('washington-dc', 'Washington DC', 'where the industry meets policy.'),
   cityCollection('miami', 'Miami', 'the winter capital of alternatives.'),
   // Topics
+  // Compliance and fund finance: titles and lines for what people search (2026-10-22), "fund compliance
+  // conferences 2026". "Conferences and events", not "webinars": the board lists webinars only when submitted.
   topicCollection('compliance', 'compliance_regulatory', 'Fund Compliance & Regulatory Events',
-    'Compliance and regulatory events.',
-    'Conferences, forums, and webinars for CCOs, legal, and compliance teams at private fund managers — SEC developments, exam readiness, and regulatory change. Every date verified at the source.'),
+    'Fund compliance and regulatory events.',
+    'Conferences, forums and roundtables for CCOs, general counsel and compliance teams at private fund managers: SEC rule changes, exam readiness and the regulatory calendar. Every date verified at the organizer’s own page.',
+    {
+      title: 'Fund Compliance Conferences & Events {years} | FundOpsHQ',
+      description: 'Upcoming private fund compliance conferences, CCO forums and regulatory roundtables in North America: SEC rules, exams, regulatory change. Dates checked.',
+    }),
   topicCollection('fund-finance', 'fund_finance', 'Fund Finance Events',
-    'Fund finance events.',
-    'Subscription lines, NAV lending, GP financing — symposia, training, and networking for fund CFOs, treasurers, lenders, and fund finance counsel. Every date verified at the source.'),
+    'Fund finance conferences and events.',
+    'Subscription lines, NAV lending, GP financing: symposia, training and networking for fund CFOs, treasurers, lenders and fund finance counsel. Every date verified at the organizer’s own page.',
+    {
+      title: 'Fund Finance Conferences & Events {years} | FundOpsHQ',
+      description: 'Upcoming fund finance conferences in North America: subscription lines, NAV lending, GP financing, for fund CFOs, treasurers and lenders. Dates checked.',
+    }),
   topicCollection('accounting-tax', 'accounting_tax', 'Fund Accounting & Tax Events',
     'Accounting and tax events.',
     'CPE conferences, technical updates, and training for fund accounting, tax, and audit professionals across private markets. Every date verified at the source.'),
@@ -70,6 +115,18 @@ export const EVENT_COLLECTIONS: EventCollection[] = [
     blurb: 'CFO and COO forums, fund accounting and reporting, compliance and operations events across private markets — picked for finance and operations people at GPs, LPs and fund service providers. Every date verified at the source.',
     filter: { ops: '1' },
     boardParams: { ops: '1' },
+  },
+  // LPs (2026-10-22): the events whose audience is the allocators themselves (lib/events/audience.ts reads the
+  // event's name and organizer), not /events/fundraising, which is the GP side of the room.
+  {
+    slug: 'lps',
+    title: 'Events for LPs and Allocators',
+    heading: 'Events for LPs and allocators.',
+    blurb: 'Institutional investor forums, family office meetings, endowment, foundation and pension roundtables, and ILPA programs: where pensions, endowments, insurers and family offices meet. Every date verified at the organizer’s own page.',
+    filter: { audience: 'lp' },
+    boardParams: { audience: 'lp' },
+    searchTitle: 'LP & Allocator Conferences {years} | FundOpsHQ',
+    description: 'Upcoming conferences for LPs in North America: institutional investor forums, family office meetings, endowment and pension roundtables, ILPA. Dates checked.',
   },
   // Kinds & specials
   {
@@ -115,5 +172,6 @@ export const TOPIC_SHORTCUTS = [
   { label: 'CFO & ops', slug: 'cfo-ops' },
   { label: 'Compliance', slug: 'compliance' },
   { label: 'Fund finance', slug: 'fund-finance' },
-  { label: 'LPs & fundraising', slug: 'fundraising' },
+  { label: 'LPs', slug: 'lps' },
+  { label: 'Fundraising & IR', slug: 'fundraising' },
 ]

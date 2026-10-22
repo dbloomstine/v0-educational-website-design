@@ -14,6 +14,7 @@ import {
   formatEventDayHeading,
 } from '@/lib/events/constants'
 import type { EventFeedResponse, IndustryEvent, EventFacetCounts } from '@/lib/events/types'
+import { isEventAudience } from '@/lib/events/audience'
 
 // ── Filter constants ──────────────────────────────────────────────
 
@@ -48,7 +49,7 @@ const PAGE_SIZE = 100
 /** How long to wait for the list before saying so. Without it a stalled request left the skeleton up for minutes. */
 const FETCH_TIMEOUT_MS = 12_000
 
-const FILTER_KEYS = ['q', 'when', 'kind', 'format', 'cost', 'category', 'topic', 'city', 'ops'] as const
+const FILTER_KEYS = ['q', 'when', 'kind', 'format', 'cost', 'category', 'topic', 'city', 'ops', 'audience'] as const
 
 // useLayoutEffect warns when a client component renders on the server; there it has nothing to do.
 const useBeforePaint = typeof window === 'undefined' ? useEffect : useLayoutEffect
@@ -93,6 +94,8 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
   const [topic, setTopic] = useState('')
   const [city, setCity] = useState('')
   const [opsOnly, setOpsOnly] = useState(false)
+  // Who the events are for (`?audience=lp`, the /events/lps list). No pill of its own: it arrives in a link and shows as a chip to clear.
+  const [audience, setAudience] = useState('')
   const [filtersOpen, setFiltersOpen] = useState(false)
 
   // Data state
@@ -133,12 +136,14 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
       setTopic(params.get('topic') || '')
       setCity(params.get('city') || '')
       setOpsOnly(params.get('ops') === '1')
+      const asked = params.get('audience')
+      setAudience(isEventAudience(asked) ? asked : '')
     }
     setReady(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const activeFilterCount = [query, kind, format, cost, category, topic, city, opsOnly, when !== ''].filter(Boolean).length
+  const activeFilterCount = [query, kind, format, cost, category, topic, city, opsOnly, audience, when !== ''].filter(Boolean).length
   const pillFilterCount = [kind, format, cost, category, topic, city, opsOnly].filter(Boolean).length
 
   const buildParams = useCallback(
@@ -155,9 +160,10 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
       if (topic) params.set('topic', topic)
       if (city) params.set('city', city)
       if (opsOnly) params.set('ops', '1')
+      if (audience) params.set('audience', audience)
       return params
     },
-    [query, when, kind, format, cost, category, topic, city, opsOnly]
+    [query, when, kind, format, cost, category, topic, city, opsOnly, audience]
   )
 
   // Sync URL — default values are omitted so the bare /events URL stays clean
@@ -172,12 +178,13 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
     if (topic) params.set('topic', topic)
     if (city) params.set('city', city)
     if (opsOnly) params.set('ops', '1')
+    if (audience) params.set('audience', audience)
     const qs = params.toString()
     const base = pathname || '/events'
     // The address bar only: router.replace would ask the server for the page
     // again — and the page now carries a hundred events — on every filter click.
     window.history.replaceState(null, '', qs ? `${base}?${qs}` : base)
-  }, [pathname, query, when, kind, format, cost, category, topic, city, opsOnly])
+  }, [pathname, query, when, kind, format, cost, category, topic, city, opsOnly, audience])
 
   const fetchFeed = useCallback(
     async (newOffset = 0, append = false) => {
@@ -233,7 +240,7 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
     fetchFeed(0, false)
     syncUrl()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ready, query, when, kind, format, cost, category, topic, city, opsOnly])
+  }, [ready, query, when, kind, format, cost, category, topic, city, opsOnly, audience])
 
 
   const clearFilters = () => {
@@ -247,6 +254,7 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
     setTopic('')
     setCity('')
     setOpsOnly(false)
+    setAudience('')
   }
 
   // Top cities by upcoming-event count, from the live facets. A selected city
@@ -292,6 +300,7 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
     if (topic) params.set('topic', topic)
     if (city) params.set('city', city)
     if (opsOnly) params.set('ops', '1')
+    if (audience) params.set('audience', audience)
     const qs = params.toString()
     const url = `webcal://${window.location.host}/api/events/calendar${qs ? `?${qs}` : ''}`
     navigator.clipboard
@@ -379,6 +388,16 @@ export function EventsBoard({ initial }: { initial?: EventFeedResponse | null })
               <span className="rounded-full bg-blue-600 px-1.5 text-[9px] text-white">{pillFilterCount}</span>
             )}
           </button>
+
+          {audience === 'lp' && (
+            <button
+              onClick={() => setAudience('')}
+              title="Showing events for LPs: allocator forums, family office and institutional investor meetings"
+              className="inline-flex items-center gap-1 rounded-lg border border-amber-400/50 bg-amber-400/15 px-2.5 py-1.5 text-[11px] font-medium text-amber-300 shrink-0"
+            >
+              For LPs <X className="h-3 w-3" />
+            </button>
+          )}
 
           {activeFilterCount > 0 && (
             <button

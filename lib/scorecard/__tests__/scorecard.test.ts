@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { outreachWeek, scorecard, scorecardMail, unsubSpike, viewsOf, type MetricRow, type OutreachMessageRow, type PostRow, type SubscriberRow } from '../scorecard'
+import { formatWeek, outreachWeek, scorecard, scorecardMail, unsubSpike, viewsOf, type MetricRow, type OutreachMessageRow, type PostRow, type SubscriberRow } from '../scorecard'
 
 const NOW = Date.parse('2026-10-12T12:30:00Z')
 const ago = (days: number) => new Date(NOW - days * 86_400_000).toISOString()
@@ -16,7 +16,7 @@ describe('the weekly scorecard', () => {
     const { list } = scorecard({ subscribers, posts: [], metrics: [], sponsorLooks: 0, now: NOW })
     expect(list).toMatchObject({ confirmed: 6, joined: 3, joinedBefore: 1, left: 1 })
     expect(list.sources).toEqual([['linkedin', 2], ['not recorded', 1]])
-    expect(list.forms).toEqual([['not recorded', 1], ['the homepage field', 1], ['the signup box', 1]])
+    expect(list.forms).toEqual([['not recorded', 1], ['the homepage field', 1], ['the signup box', 1], ['the first-visit ask', 0], ['the events offer', 0]])
   })
 
   it('counts a post in the week it went out, at its latest reading; a network by its own measure', () => {
@@ -90,12 +90,75 @@ describe('the weekly scorecard', () => {
       { message_id: 'f1', type: 'email.delivered' }, { message_id: 'n1', type: 'email.bounced' },
       { message_id: 'old', type: 'email.delivered' }, { message_id: 'old', type: 'email.clicked' }, { message_id: null, type: 'email.delivered' },
     ]
-    expect(outreachWeek(messages, events, NOW - 7 * 86_400_000, NOW)).toEqual({ sent: 4, pitches: 2, notes: 1, followups: 1, delivered: 3, opened: 2, clicked: 1, replied: 1, bounced: 1, complained: 0 })
+    expect(outreachWeek(messages, events, NOW - 7 * 86_400_000, NOW)).toEqual({
+      sent: 4, pitches: 2, notes: 1, organizerNotes: 0, followups: 1, delivered: 3, opened: 2, clicked: 1, replied: 1, bounced: 1, complained: 0,
+      programs: [{ program: 'sponsor_pitch', sent: 3, replied: 1, bounced: 0 }, { program: 'news_note', sent: 1, replied: 0, bounced: 1 }, { program: 'organizer_note', sent: 0, replied: 0, bounced: 0 }],
+    })
     const card = scorecard({ subscribers: [], posts: [], metrics: [], sponsorLooks: 0, outreachMessages: messages, outreachEvents: events, now: NOW })
     expect(card.outreach?.before).toMatchObject({ sent: 1, clicked: 1 })
     const html = scorecardMail(card).html
     expect(html).toContain('<b>4</b> sent (2 sponsor pitches, 1 follow-up, 1 news note) <span style="color:#55647A;">(1 the week before)</span>: 3 delivered, <b>2</b> opened, <b>1</b> clicked, <b>1</b> replied, 1 bounced.')
+    expect(html).toContain('By program: Sponsor pitches 3 sent, <b>1</b> replied, 0 bounced · News notes 1 sent, <b>0</b> replied, 1 bounced · Organizer notes none sent.')
     // No outreach either week: the section is left out.
     expect(scorecardMail(scorecard({ subscribers: [], posts: [], metrics: [], sponsorLooks: 0, now: NOW })).html).not.toContain('>Outreach<')
+  })
+
+  it('counts organizer notes beside the news notes and sponsor pitches (2026-10-22)', () => {
+    const m = (id: string, program: string, extra: Partial<OutreachMessageRow> = {}): OutreachMessageRow => ({ id, program, kind: 'initial', status: 'sent', sent_at: ago(2), replied_at: null, ...extra })
+    const messages = [m('o1', 'organizer_note', { replied_at: ago(1) }), m('o2', 'organizer_note'), m('o3', 'organizer_note', { status: 'queued', sent_at: null }), m('n1', 'news_note'), m('p1', 'sponsor_pitch')]
+    const events = [{ message_id: 'o2', type: 'email.bounced' }, { message_id: 'o2', type: 'email.bounced' }]
+    const w = outreachWeek(messages, events, NOW - 7 * 86_400_000, NOW)
+    expect(w).toMatchObject({ sent: 4, organizerNotes: 2, notes: 1, pitches: 1, bounced: 1, replied: 1 })
+    expect(w.programs).toEqual([
+      { program: 'sponsor_pitch', sent: 1, replied: 0, bounced: 0 },
+      { program: 'news_note', sent: 1, replied: 0, bounced: 0 },
+      { program: 'organizer_note', sent: 2, replied: 1, bounced: 1 },
+    ])
+    const html = scorecardMail(scorecard({ subscribers: [], posts: [], metrics: [], sponsorLooks: 0, outreachMessages: messages, outreachEvents: events, now: NOW })).html
+    expect(html).toContain('(1 sponsor pitch, 1 news note, 2 organizer notes)')
+    expect(html).toContain('Organizer notes 2 sent, <b>1</b> replied, 1 bounced.')
+  })
+
+  it('names every signup form, the new ones at 0 too, and the page it was on (2026-10-22)', () => {
+    const subscribers = [
+      sub(1, { signup_form: 'firstvisit', signup_page: '/' }), sub(2, { signup_form: 'firstvisit', signup_page: '/story/x-1' }),
+      sub(3, { signup_form: 'events', signup_page: '/events/cfo-ops' }), sub(4, { signup_form: 'popup', signup_page: '/' }),
+      sub(5, { signup_form: 'someday' }), sub(10, { signup_form: 'events' }),
+    ]
+    const card = scorecard({ subscribers, posts: [], metrics: [], sponsorLooks: 0, now: NOW })
+    expect(card.list.forms).toEqual([['the first-visit ask', 2], ['someday', 1], ['the events offer', 1], ['the signup box', 1]])
+    expect(card.list.pages).toEqual([['/', 2], ['/events/cfo-ops', 1], ['/story/x-1', 1], ['not recorded', 1]])
+    const html = scorecardMail(card).html
+    expect(html).toContain('Where they signed up: the first-visit ask 2 · someday 1 · the events offer 1 · the signup box 1.')
+    expect(html).toContain('On which page: / 2 · /events/cfo-ops 1 · /story/x-1 1 · not recorded 1.')
+    // Nobody recorded a page: no page line.
+    expect(scorecardMail(scorecard({ subscribers: [sub(1, { signup_form: 'popup' })], posts: [], metrics: [], sponsorLooks: 0, now: NOW })).html).not.toContain('On which page')
+  })
+
+  it('averages the views of each format over the posts that have them, the new formats first (2026-10-22)', () => {
+    const posts = [
+      post('m1', '2026-10-08', { format: 'meme' }), post('m2', '2026-10-09', { format: 'meme', channel: 'instagram' }), post('m3', '2026-10-10', { format: 'meme' }),
+      post('c1', '2026-10-08'), post('c2', '2026-10-09'), post('c3', '2026-10-09', { channel: 'linkedin' }), post('c4', '2026-10-10'),
+      post('old', '2026-10-01', { format: 'fastStory' }),
+    ]
+    const metrics = [
+      reading('m1', '2026-10-09T00:00:00Z', { views: 100 }), reading('m1', '2026-10-11T00:00:00Z', { views: 300 }), reading('m2', '2026-10-11T00:00:00Z', { views: 101 }),
+      reading('m3', '2026-10-11T00:00:00Z', { reactions: 4 }), // a reading without views is not a zero
+      reading('c1', '2026-10-11T00:00:00Z', { views: 10 }), reading('c2', '2026-10-11T00:00:00Z', { views: 20 }), reading('c3', '2026-10-11T00:00:00Z', { impressions: 30 }), reading('c4', '2026-10-11T00:00:00Z', { views: 0 }),
+      reading('old', '2026-10-05T00:00:00Z', { views: 5000 }),
+    ]
+    const card = scorecard({ subscribers: [], posts, metrics, sponsorLooks: 0, now: NOW })
+    expect(card.formatWeek).toEqual([
+      { format: 'meme', name: 'Memes', posts: 3, measured: 2, average: 201, isNew: true },
+      { format: 'fastStory', name: 'Fast stories', posts: 0, measured: 0, average: 0, isNew: true },
+      { format: 'photoCard', name: 'Story cards', posts: 4, measured: 4, average: 15, isNew: false },
+    ])
+    const html = scorecardMail(card).html
+    expect(html).toContain('New: <b>Memes</b> 3 posts, <b>201 average views (2 with numbers)</b> · <b>Fast stories</b> none posted.')
+    expect(html).toContain('Story cards 4, 15 average views.')
+    expect(formatWeek([post('f', '2026-10-10', { format: 'fastStory' })], new Map())[0]).toMatchObject({ name: 'Fast stories', posts: 1, measured: 0 })
+    expect(scorecardMail(scorecard({ subscribers: [], posts: [post('f', '2026-10-10', { format: 'fastStory' })], metrics: [], sponsorLooks: 0, now: NOW })).html).toContain('<b>Fast stories</b> 1 post, <b>no numbers yet</b>')
+    // No post in the week: no format section.
+    expect(scorecardMail(scorecard({ subscribers: [], posts: [], metrics: [], sponsorLooks: 0, now: NOW })).html).not.toContain('Posts by format')
   })
 })

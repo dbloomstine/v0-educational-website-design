@@ -2,6 +2,7 @@ import { unstable_cache } from 'next/cache'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import type { IndustryEvent, EventFacetCounts, EventFeedResponse } from './types'
 import { SIMILAR_MAX, pickSimilarEvents } from './similar'
+import { isEventAudience, lpAudienceFilter } from './audience'
 
 export interface EventQueryParams {
   q?: string
@@ -14,6 +15,8 @@ export interface EventQueryParams {
   city?: string
   region?: string
   ops?: string
+  /** Who the event is for: `lp` (lib/events/audience.ts). Unknown values are ignored. */
+  audience?: string
   offset?: number
   limit?: number
 }
@@ -121,6 +124,9 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
   }
   if (params.ops === '1') {
     query = query.eq('ops_relevance', 'high')
+  }
+  if (isEventAudience(params.audience)) {
+    query = query.or(lpAudienceFilter())
   }
   if (params.q) {
     // Strip PostgREST or-syntax metacharacters from user input

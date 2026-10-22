@@ -25,6 +25,7 @@ export async function GET(req: Request) {
     city: params.get('city') || undefined,
     region: params.get('region') || undefined,
     ops: params.get('ops') || undefined,
+    audience: params.get('audience') || undefined,
     offset: params.get('offset') ? Number(params.get('offset')) : undefined,
     limit: params.get('limit') ? Number(params.get('limit')) : undefined,
   }

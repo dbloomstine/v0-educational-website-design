@@ -11,13 +11,15 @@
 import { OWNER_EMAIL, esc, type Mail } from '@/lib/sponsor/mail'
 import { emailWeek, type EditionRow, type EmailWeek } from './engagement'
 
-export interface SubscriberRow { status: string; created_at: string; unsubscribed_at: string | null; signup_source: string | null; signup_form: string | null; /** utm_campaign at signup: which post or link brought them (2026-10-16). */ signup_campaign?: string | null }
+export interface SubscriberRow { status: string; created_at: string; unsubscribed_at: string | null; signup_source: string | null; signup_form: string | null; /** utm_campaign at signup: which post or link brought them (2026-10-16). */ signup_campaign?: string | null; /** The page the form was on (2026-10-22). */ signup_page?: string | null }
 /** An outreach v2 message, for the week's outreach figures (2026-10-16). */
 export interface OutreachMessageRow { id: string; program: string; kind: string; status: string; sent_at: string | null; replied_at: string | null }
 /** A Resend event on an outreach message (outreach_v2_events): email.delivered, email.opened, email.clicked, email.bounced, email.complained. */
 export interface OutreachEventRow { message_id: string | null; type: string }
 
-export interface OutreachWeek { sent: number; pitches: number; notes: number; followups: number; delivered: number; opened: number; clicked: number; replied: number; bounced: number; complained: number }
+/** One outreach program's week (2026-10-22): every send of it, follow-ups included. */
+export interface ProgramWeek { program: string; sent: number; replied: number; bounced: number }
+export interface OutreachWeek { sent: number; pitches: number; notes: number; organizerNotes: number; followups: number; delivered: number; opened: number; clicked: number; replied: number; bounced: number; complained: number; /** Sponsor pitches, news notes, organizer notes, in that order, each listed even with nothing sent (a program not running shows). */ programs: ProgramWeek[] }
 /** This week's unsubscribes against the average of the four weeks before (2026-10-16): a spike is more than twice the average, and at least three. */
 export interface UnsubSpike { left: number; averageBefore: number; flagged: boolean }
 export interface PostRow { id: string; post_date: string; slug: string; format: string; channel: string; status: string; permalink: string | null; caption: string | null }
@@ -25,25 +27,38 @@ export interface MetricRow { post_id: string; captured_at: string; metrics: Reco
 
 const DAY = 86_400_000
 /** How a format is named to a reader of the scorecard. */
-const FORMATS: Record<string, string> = { photoCard: 'Story cards', dailyFive: 'The Daily Five', morningTen: 'The Morning Ten', sectorFive: 'The sector five', voiceBrief: 'The Brief', bigNumber: 'Big Number videos', explainer: 'Explainer videos', termCard: 'Explainer cards', leagueChart: 'League chart', leagueQuiz: 'Weekend quiz', weekNumbers: 'Week in Five Numbers', translated: 'Translated', eventsWeek: 'On the Calendar', dealTicket: 'The Ticket', quiz: 'Quiz', storyCard: 'Story card' }
-const NETWORKS: Record<string, string> = { tiktok: 'TikTok', linkedin: 'LinkedIn', instagram: 'Instagram' }
+const FORMATS: Record<string, string> = { meme: 'Memes', fastStory: 'Fast stories', photoCard: 'Story cards', dailyFive: 'The Daily Five', morningTen: 'The Morning Ten', sectorFive: 'The sector five', voiceBrief: 'The Brief', bigNumber: 'Big Number videos', explainer: 'Explainer videos', termCard: 'Explainer cards', leagueChart: 'League chart', leagueQuiz: 'Weekend quiz', weekNumbers: 'Week in Five Numbers', translated: 'Translated', eventsWeek: 'On the Calendar', dealTicket: 'The Ticket', quiz: 'Quiz', storyCard: 'Story card' }
+const NETWORKS: Record<string, string> = { tiktok: 'TikTok', linkedin: 'LinkedIn', instagram: 'Instagram', youtube: 'YouTube' }
+/** The formats new on 2026-10-22, called out in the letter until they have a record of their own. */
+export const NEW_FORMATS = ['meme', 'fastStory'] as const
+/** The signup forms (lib/newsletter/interests.ts SIGNUP_FORMS), as the letter names them. */
+const FORM_NAMES: Record<string, string> = { popup: 'the signup box', firstvisit: 'the first-visit ask', events: 'the events offer', hero: 'the homepage field', feed: 'the field in the feed', widget: 'the side panel', rail: 'the rail panel' }
+/** Always listed, at 0 too, when anyone joined: the box and the two forms new on 2026-10-22. */
+const FORMS_ALWAYS = ['popup', 'firstvisit', 'events']
+const PROGRAMS: [string, string][] = [['sponsor_pitch', 'Sponsor pitches'], ['news_note', 'News notes'], ['organizer_note', 'Organizer notes']]
 
 const median = (xs: number[]) => { if (!xs.length) return 0; const s = [...xs].sort((a, b) => a - b); const m = s.length >> 1; return s.length % 2 ? s[m] : Math.round((s[m - 1] + s[m]) / 2) }
 const count = <T,>(xs: T[], key: (x: T) => string) => { const m = new Map<string, number>(); for (const x of xs) m.set(key(x), (m.get(key(x)) ?? 0) + 1); return [...m].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])) }
 
 /** How far a post travelled: TikTok counts views, LinkedIn impressions. */
 export const viewsOf = (m: MetricRow['metrics']) => Number(m?.views ?? m?.impressions ?? 0) || 0
+/** Whether a reading has a measure of reach at all (a post with none is left out of an average, not counted as 0). */
+export const hasViews = (m: MetricRow['metrics'] | undefined) => m?.views != null || m?.impressions != null
 const actsOf = (m: MetricRow['metrics']) => (Number(m?.reactions ?? 0) || 0) + (Number(m?.comments ?? 0) || 0) + (Number(m?.shares ?? 0) || 0)
+
+export interface FormatWeek { format: string; name: string; posts: number; measured: number; average: number; isNew: boolean }
 
 export interface Scorecard {
   from: string; to: string
-  list: { confirmed: number; joined: number; joinedBefore: number; left: number; sources: [string, number][]; forms: [string, number][]; /** Which post or link brought them (utm_campaign), the week's joiners only. */ campaigns: [string, number][]; unsubSpike: UnsubSpike }
+  list: { confirmed: number; joined: number; joinedBefore: number; left: number; sources: [string, number][]; forms: [string, number][]; /** Which post or link brought them (utm_campaign), the week's joiners only. */ campaigns: [string, number][]; /** The page the form was on (signup_page), the week's joiners only. */ pages: [string, number][]; unsubSpike: UnsubSpike }
   /** Requests on the sponsor page in the week. */
   sponsorRequests: number
   /** Outreach v2 sends in the week and what happened to them, against the week before (null when nothing went either week). */
   outreach: { week: OutreachWeek; before: OutreachWeek } | null
   networks: { channel: string; name: string; posts: number; views: number; typical: number; acts: number; postsBefore: number; viewsBefore: number; typicalBefore: number }[]
   formats: { name: string; channel: string; posts: number; typical: number }[]
+  /** Every format posted in the week, all networks together: posts, how many have a reading, their average views (2026-10-22). */
+  formatWeek: FormatWeek[]
   best: { title: string; channel: string; views: number; link: string | null }[]
   /** The daily email: people who clicked a link, edition by edition, against the week before (lib/scorecard/engagement.ts). */
   email: EmailWeek
@@ -66,11 +81,34 @@ export function outreachWeek(messages: OutreachMessageRow[], events: OutreachEve
     sent: sent.length,
     pitches: sent.filter((m) => m.program === 'sponsor_pitch' && m.kind === 'initial').length,
     notes: sent.filter((m) => m.program === 'news_note').length,
+    organizerNotes: sent.filter((m) => m.program === 'organizer_note').length,
     followups: sent.filter((m) => m.kind !== 'initial').length,
     delivered: withEvent('email.delivered'), opened: withEvent('email.opened'), clicked: withEvent('email.clicked'),
     replied: sent.filter((m) => m.replied_at).length,
     bounced: withEvent('email.bounced'), complained: withEvent('email.complained'),
+    programs: PROGRAMS.map(([program]) => {
+      const of = sent.filter((m) => m.program === program)
+      const mine = new Set(of.map((m) => m.id))
+      const bounced = new Set(events.filter((e) => e.type === 'email.bounced' && e.message_id && mine.has(e.message_id)).map((e) => e.message_id)).size
+      return { program, sent: of.length, replied: of.filter((m) => m.replied_at).length, bounced }
+    }),
   }
+}
+
+/**
+ * The week's posts by format, all networks together (2026-10-22): how many went out, how many have a reading with
+ * views or impressions, and the average of those. The new formats come first, so a week's verdict on them is the
+ * first thing read; then the most posted.
+ */
+export function formatWeek(posts: PostRow[], latest: Map<string, MetricRow>): FormatWeek[] {
+  const by = new Map<string, PostRow[]>()
+  for (const p of posts) by.set(p.format, [...(by.get(p.format) ?? []), p])
+  for (const f of NEW_FORMATS) if (!by.has(f)) by.set(f, [])
+  return [...by].map(([format, ps]) => {
+    const read = ps.map((p) => latest.get(p.id)?.metrics).filter(hasViews)
+    const average = read.length ? Math.round(read.reduce((n, m) => n + viewsOf(m ?? null), 0) / read.length) : 0
+    return { format, name: FORMATS[format] ?? format, posts: ps.length, measured: read.length, average, isNew: (NEW_FORMATS as readonly string[]).includes(format) }
+  }).sort((a, b) => Number(b.isNew) - Number(a.isNew) || b.posts - a.posts || a.name.localeCompare(b.name))
 }
 
 /** Unsubscribes in the week against the four weeks before it. */
@@ -88,7 +126,11 @@ export function scorecard({ subscribers, posts, metrics, editions = [], sponsorL
   const real = subscribers.filter((s) => s.signup_form !== 'test')
   const joined = real.filter((s) => within(s.created_at, start, now))
   const source = (s: SubscriberRow) => (s.signup_source ?? '').trim().toLowerCase() || 'not recorded'
-  const form = (s: SubscriberRow) => ({ popup: 'the signup box', hero: 'the homepage field', feed: 'the field in the feed', widget: 'the side panel', rail: 'the rail panel' } as Record<string, string>)[s.signup_form ?? ''] ?? 'not recorded'
+  // A form the letter has no name for is shown as it is stored, never folded into "not recorded" (only a blank is).
+  const form = (s: SubscriberRow) => { const f = (s.signup_form ?? '').trim(); return f ? FORM_NAMES[f] ?? f : 'not recorded' }
+  const forms = count(joined, form)
+  for (const f of FORMS_ALWAYS) if (!forms.some(([k]) => k === FORM_NAMES[f])) forms.push([FORM_NAMES[f], 0])
+  const page = (s: SubscriberRow) => (s.signup_page ?? '').trim() || 'not recorded'
   const campaign = (s: SubscriberRow) => (s.signup_campaign ?? '').trim().toLowerCase() || 'not recorded'
 
   // The latest reading for each post.
@@ -110,8 +152,9 @@ export function scorecard({ subscribers, posts, metrics, editions = [], sponsorL
       confirmed: real.filter((s) => s.status === 'confirmed').length,
       joined: joined.length, joinedBefore: real.filter((s) => within(s.created_at, before, start)).length,
       left: real.filter((s) => within(s.unsubscribed_at, start, now)).length,
-      sources: count(joined, source), forms: count(joined, form),
+      sources: count(joined, source), forms,
       campaigns: count(joined, campaign),
+      pages: count(joined, page),
       unsubSpike: unsubSpike(real, now),
     },
     sponsorRequests,
@@ -125,6 +168,7 @@ export function scorecard({ subscribers, posts, metrics, editions = [], sponsorL
     }).filter((n) => n.posts || n.postsBefore),
     // A format is compared only where it has had three posts on a network in the week: fewer says nothing.
     formats: channels.flatMap((channel) => count(thisWeek.filter((p) => p.channel === channel), (p) => p.format).filter(([, n]) => n >= 3).map(([f, n]) => ({ name: FORMATS[f] ?? f, channel: NETWORKS[channel] ?? channel, posts: n, typical: median(thisWeek.filter((p) => p.channel === channel && p.format === f).map(views)) }))).sort((x, y) => y.typical - x.typical),
+    formatWeek: formatWeek(thisWeek, latest),
     best: [...thisWeek].sort((x, y) => views(y) - views(x)).slice(0, 3).filter((p) => views(p) > 0).map((p) => ({ title: title(p), channel: NETWORKS[p.channel] ?? p.channel, views: views(p), link: p.permalink })),
     email: emailWeek(editions, from, to),
     sponsorLooks,
@@ -159,15 +203,30 @@ function emailLines(e: EmailWeek): string[] {
   return out
 }
 
-/** Outreach v2 (sponsor pitches and news notes), as lines of the Monday letter. */
+/** The week's posts by format with their average views, the new formats first and in bold (2026-10-22). */
+function formatLines(f: FormatWeek[]): string[] {
+  if (!f.some((x) => x.posts)) return []
+  const avg = (x: FormatWeek) => (x.measured ? `${n(x.average)} average views${x.measured < x.posts ? ` (${n(x.measured)} with numbers)` : ''}` : 'no numbers yet')
+  const fresh = f.filter((x) => x.isNew)
+  const rest = f.filter((x) => !x.isNew && x.posts)
+  return [
+    h('Posts by format (all networks)'),
+    line(`New: ${fresh.map((x) => (x.posts ? `<b>${esc(x.name)}</b> ${n(x.posts)} post${x.posts === 1 ? '' : 's'}, <b>${avg(x)}</b>` : `<b>${esc(x.name)}</b> none posted`)).join(' · ')}.`),
+    rest.length ? line(`${rest.map((x) => `${esc(x.name)} ${n(x.posts)}, ${avg(x)}`).join(' · ')}.`) : '',
+  ].filter(Boolean)
+}
+
+/** Outreach v2 (sponsor pitches, news notes and organizer notes), as lines of the Monday letter. */
 function outreachLines(o: Scorecard['outreach']): string[] {
   if (!o) return []
   const w = o.week, b = o.before
-  const what = [w.pitches ? `${n(w.pitches)} sponsor pitch${w.pitches === 1 ? '' : 'es'}` : '', w.followups ? `${n(w.followups)} follow-up${w.followups === 1 ? '' : 's'}` : '', w.notes ? `${n(w.notes)} news note${w.notes === 1 ? '' : 's'}` : ''].filter(Boolean).join(', ')
+  const what = [w.pitches ? `${n(w.pitches)} sponsor pitch${w.pitches === 1 ? '' : 'es'}` : '', w.followups ? `${n(w.followups)} follow-up${w.followups === 1 ? '' : 's'}` : '', w.notes ? `${n(w.notes)} news note${w.notes === 1 ? '' : 's'}` : '', w.organizerNotes ? `${n(w.organizerNotes)} organizer note${w.organizerNotes === 1 ? '' : 's'}` : ''].filter(Boolean).join(', ')
+  const name = (p: string) => PROGRAMS.find(([k]) => k === p)?.[1] ?? p
   return [
     h('Outreach'),
     line(w.sent ? `<b>${n(w.sent)}</b> sent${what ? ` (${what})` : ''}${change(w.sent, b.sent)}: ${n(w.delivered)} delivered, <b>${n(w.opened)}</b> opened, <b>${n(w.clicked)}</b> clicked, <b>${n(w.replied)}</b> replied${w.bounced ? `, ${n(w.bounced)} bounced` : ''}${w.complained ? `, <b style="color:#9C2F1A;">${n(w.complained)} marked as spam</b>` : ''}.` : `Nothing went out this week${b.sent ? ` <span style="color:${MUTED};">(${n(b.sent)} the week before: ${n(b.opened)} opened, ${n(b.clicked)} clicked, ${n(b.replied)} replied)</span>` : ''}.`),
-  ]
+    line(`By program: ${w.programs.map((p) => (p.sent ? `${esc(name(p.program))} ${n(p.sent)} sent, <b>${n(p.replied)}</b> replied, ${n(p.bounced)} bounced` : `${esc(name(p.program))} none sent`)).join(' · ')}.`),
+  ].filter(Boolean)
 }
 
 /** The scorecard as the Monday email. */
@@ -178,6 +237,7 @@ export function scorecardMail(s: Scorecard): Mail {
     s.list.joined ? line(`Where they came from: ${list(s.list.sources)}.`) : '',
     s.list.joined ? line(`Where they signed up: ${list(s.list.forms)}.`) : '',
     s.list.joined && s.list.campaigns.some(([k]) => k !== 'not recorded') ? line(`Which post or link (utm_campaign): ${list(s.list.campaigns)}.`) : '',
+    s.list.joined && s.list.pages.some(([k]) => k !== 'not recorded') ? line(`On which page: ${list(s.list.pages.slice(0, 6))}.`) : '',
     s.list.unsubSpike.flagged ? line(`<b style="color:#9C2F1A;">Unsubscribes are up:</b> ${n(s.list.unsubSpike.left)} this week against ${s.list.unsubSpike.averageBefore} a week on average over the four before. Look at what changed in the editions.`) : '',
     ...emailLines(s.email),
     // ── SITE TRAFFIC goes here, between the email and the posts, once it is built (see the Scorecard type). ──
@@ -185,6 +245,7 @@ export function scorecardMail(s: Scorecard): Mail {
     ...(s.networks.length ? s.networks.map((x) => line(`<b>${esc(x.name)}</b>: ${n(x.posts)} posts${change(x.posts, x.postsBefore)}, ${n(x.views)} views in all${change(x.views, x.viewsBefore)}, ${n(x.typical)} for a typical post${change(x.typical, x.typicalBefore)}, ${n(x.acts)} likes, comments and shares.`)) : [line('No post went out this week.')]),
     s.formats.length ? h('What kind of post travelled (a typical post, three or more in the week)') : '',
     ...s.formats.map((f) => line(`${esc(f.name)} on ${esc(f.channel)}: ${n(f.typical)} views (${n(f.posts)} posts)`)),
+    ...formatLines(s.formatWeek),
     s.best.length ? h('The week’s best') : '',
     ...s.best.map((b) => line(`${n(b.views)} views on ${esc(b.channel)}: ${b.link ? `<a href="${esc(b.link)}" style="color:${INK};">${esc(b.title)}</a>` : esc(b.title)}`)),
     h('Sponsors'),

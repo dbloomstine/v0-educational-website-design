@@ -23,7 +23,7 @@ export async function GET(req: Request) {
   try {
     const since = new Date(now - 15 * DAY).toISOString().slice(0, 10)
     const [subs, posts, looks, editions, requests, outreach] = await Promise.all([
-      db.from('newsletter_subscribers').select('status, created_at, unsubscribed_at, signup_source, signup_form, signup_campaign').limit(20000),
+      db.from('newsletter_subscribers').select('status, created_at, unsubscribed_at, signup_source, signup_form, signup_campaign, signup_page').limit(20000),
       db.from('social_posts').select('id, post_date, slug, format, channel, status, permalink, caption').gte('post_date', since).eq('status', 'posted').limit(2000),
       db.from('sponsor_interest').select('id', { count: 'exact', head: true }).gte('seen_at', new Date(now - 7 * DAY).toISOString()),
       // The email's clicks, as counted each day by /api/pipeline/edition-engagement (never asked of Resend here).

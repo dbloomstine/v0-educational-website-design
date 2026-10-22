@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowUpRight, CalendarPlus, MapPin, Ticket, Users } from 'lu
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { queryEventBySlug, queryEventFeed, queryOrganizerUpcoming, queryRelatedEvents } from '@/lib/events/api'
-import { COLLECTION_BY_SLUG, EVENT_COLLECTIONS, type EventCollection } from '@/lib/events/collections'
+import { COLLECTION_BY_SLUG, EVENT_COLLECTIONS, collectionTitle, type EventCollection } from '@/lib/events/collections'
 import {
   EVENT_KIND_LABELS,
   EVENT_FORMAT_LABELS,
@@ -40,12 +40,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params
   const collection = COLLECTION_BY_SLUG.get(slug)
   if (collection) {
-    const title = `${collection.title} | FundOpsHQ`
+    // What search results show: "Fund Compliance Conferences & Events 2026–27 | FundOpsHQ" where the page has one.
+    const title = collectionTitle(collection)
+    const description = collection.description ?? collection.blurb
     return {
       title: { absolute: title },
-      description: collection.blurb,
+      description,
       alternates: { canonical: `https://fundopshq.com/events/${slug}` },
-      ...shareCard(title, collection.blurb, `/events/${slug}`),
+      ...shareCard(title, description, `/events/${slug}`),
     }
   }
   const event = await queryEventBySlug(slug)

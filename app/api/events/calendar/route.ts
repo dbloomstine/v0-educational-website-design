@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic'
 
 // iCalendar feed. Two modes:
 //   ?slug=<event-slug>  → single-event .ics download (detail pages)
-//   ?city=&topic=&kind=&cost=&format=&ops=  → subscribable filtered feed;
+//   ?city=&topic=&kind=&cost=&format=&ops=&audience=  → subscribable filtered feed;
 //     users add webcal://fundopshq.com/api/events/calendar?... to Outlook/
 //     Google/Apple Calendar and the board lives inside their calendar.
 export async function GET(req: Request) {
@@ -32,6 +32,7 @@ export async function GET(req: Request) {
       city: params.get('city') || undefined,
       region: params.get('region') || undefined,
       ops: params.get('ops') || undefined,
+      audience: params.get('audience') || undefined,
       limit: 200,
     })
 
@@ -39,6 +40,7 @@ export async function GET(req: Request) {
     if (params.get('city')) nameParts.push(params.get('city')!)
     if (params.get('topic')) nameParts.push(params.get('topic')!.replace(/_/g, ' '))
     if (params.get('cost') === 'free') nameParts.push('free')
+    if (params.get('audience') === 'lp') nameParts.push('for LPs')
 
     return icsResponse(buildIcsCalendar(result.events, nameParts.join(' — ')), 'fundopshq-events.ics')
   } catch {

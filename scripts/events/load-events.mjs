@@ -60,7 +60,7 @@ const RESERVED_SLUGS = new Set([
   'submit','new-york','london','boston','chicago','san-francisco','los-angeles','dallas',
   'washington-dc','miami','paris','luxembourg','dublin','dubai','singapore',
   'compliance','fund-finance','accounting-tax','tech-ai','fundraising',
-  'webinars','networking','free',
+  'cfo-ops','lps','webinars','networking','free',
 ])
 
 function slugify(name, takenSlugs) {
