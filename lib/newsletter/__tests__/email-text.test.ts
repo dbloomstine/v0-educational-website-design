@@ -164,7 +164,7 @@ describe('the plain-text part of the daily edition', () => {
 describe('the plain-text welcome note', () => {
   it('says what the HTML says, with links written out', () => {
     const text = renderWelcomeText('https://fundopshq.com/api/newsletter/unsubscribe?token=T', { preferencesUrl: 'https://fundopshq.com/preferences?token=T', interests: ['credit'] })
-    expect(text).toContain('Your first edition lands tomorrow morning.')
+    expect(text).toMatch(/Your first edition lands (this morning|tomorrow) by 7:30am ET\./)
     expect(text).toContain('https://fundopshq.com/news')
     expect(text).toContain('Unsubscribe: https://fundopshq.com/api/newsletter/unsubscribe?token=T')
     expect(text).toMatch(/You said you follow .*credit/i)
