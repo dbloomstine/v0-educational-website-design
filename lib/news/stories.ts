@@ -20,6 +20,7 @@ import { homeFactor } from './home-factor'
 import { normalizeSourceName } from './constants'
 import { creditOutlet } from './source-credit'
 import { cleanSummary } from './summary-clean'
+import { storyAdvisers, type StoryAdviser } from './advisers'
 
 export type StoryKind = 'fundraising' | 'deals' | 'people' | 'lps' | 'regulation' | 'providers'
 
@@ -80,6 +81,13 @@ export interface Story {
   publishedDate: string | null
   /** Editorial weight before time decay. */
   weight: number
+  /**
+   * Fund counsel, placement agents, fund-finance lenders and financial
+   * advisers named in the classifier's entities, merged across the story's
+   * rows (lib/news/advisers.ts, 2026-10-22). Absent when there are none, which
+   * is most stories: the cached copy stays small.
+   */
+  advisers?: StoryAdviser[]
 }
 
 const DAY_MS = 86_400_000
@@ -295,6 +303,9 @@ export function buildStories(rows: Row[]): Story[] {
       .map((c) => String(c.row.created_at ?? `${String(c.row.published_date).slice(0, 10)}T12:00:00Z`))
       .sort()[0]
     const bestRow = rowById.get(best.id)
+    const firms = namedFirms(bestRow, best)
+    // Advisers from every row of the story; none on a roundup (its rows mix several items).
+    const advisers = roundup ? [] : storyAdvisers(group.map((c) => c.row), best.eventType, [best.firmName, ...firms])
 
     const partial = {
       kind: KIND_OF[placement.section],
@@ -321,10 +332,11 @@ export function buildStories(rows: Row[]): Story[] {
       personName: best.personName,
       geography: best.geography,
       entities: best.headlineEntities,
-      firms: namedFirms(bestRow, best),
+      firms,
       firstSeen,
       publishedDate: best.publishedDate ? String(best.publishedDate).slice(0, 10) : null,
       weight: storyWeight(partial, Boolean(bestRow?.is_high_signal), Number(bestRow?.relevance_score ?? 0)),
+      ...(advisers.length ? { advisers } : {}),
     })
   }
 

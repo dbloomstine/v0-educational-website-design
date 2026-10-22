@@ -52,12 +52,15 @@ async function fetchStories(windowDays: number = STORY_WINDOW_DAYS): Promise<Sto
 // rows are known to be roundups. v7 / v4, the same day: a summary is shown
 // without the classifier's remarks. v8 / v5, 2026-10-14: secondaries, GP
 // stakes and continuation vehicles lead with their own asset class. v9 / v6,
-// 2026-10-22: a JD Supra alert is credited "Firm via JD Supra".)
+// 2026-10-22: a JD Supra alert is credited "Firm via JD Supra". v11 / v8, the
+// same day: a story carries the advisers its rows name (v10 / v7 were written
+// to site_cache by a dev server from code without the JD Supra credit, so
+// they are skipped).)
 //
 // buildOnce: when the cached entry goes stale, every request that notices
 // would rebuild it. Only one may (lib/cache/build-once.ts).
-const STORIES_KEY = 'front-page-stories-v9'
-const ARCHIVE_KEY = 'archive-stories-v6'
+const STORIES_KEY = 'front-page-stories-v11'
+const ARCHIVE_KEY = 'archive-stories-v8'
 
 const getStories = unstable_cache(() => buildOnce(STORIES_KEY, () => fetchStories(STORY_WINDOW_DAYS)), [STORIES_KEY], {
   revalidate: 600,

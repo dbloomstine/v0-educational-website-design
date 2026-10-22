@@ -234,13 +234,13 @@ export const loadRowsByShortId = unstable_cache(
  */
 export const loadOlderStory = unstable_cache(
   (id: string): Promise<OlderStory | null> => fetchOlderStory(getSupabaseAdmin(), id),
-  ['older-story-v2'],
+  ['older-story-v3'] /* v3 2026-10-22: stories carry advisers */,
   { revalidate: 86_400, tags: ['stories'] },
 )
 
 /** A day's stories, shared by every old story of that day; kept a day. */
 export const loadDayStories = unstable_cache(
   (day: string): Promise<Story[]> => fetchDayStories(getSupabaseAdmin(), day),
-  ['day-stories-v1'],
+  ['day-stories-v2'] /* v2 2026-10-22: stories carry advisers */,
   { revalidate: 86_400, tags: ['stories'] },
 )

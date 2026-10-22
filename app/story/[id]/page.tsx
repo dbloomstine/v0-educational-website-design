@@ -255,6 +255,26 @@ export default async function StoryPage({ params }: Params) {
                 )}
                 {story.geography.length > 0 && <Fact label="Geography">{story.geography.join(', ')}</Fact>}
               </dl>
+              {/* Advisers the reports name (lib/news/advisers.ts, 2026-10-22): one quiet line, no ranking claim. */}
+              {story.advisers && story.advisers.length > 0 && (
+                <p className="mt-3 font-ui text-[13px] leading-snug text-muted-foreground">
+                  <span className="font-bold uppercase tracking-[0.1em] text-[10.5px]">Advisers</span>{' '}
+                  {story.advisers.map((a, i) => {
+                    const href = firmPageHref(a.name, firmPages)
+                    return (
+                      <span key={a.name}>
+                        {i > 0 && ', '}
+                        {href ? (
+                          <Link prefetch={false} href={href} className="font-semibold text-foreground/85 underline decoration-foreground/25 underline-offset-[3px] hover:decoration-foreground">{a.name}</Link>
+                        ) : (
+                          <span className="font-semibold text-foreground/85">{a.name}</span>
+                        )}{' '}
+                        ({a.label})
+                      </span>
+                    )
+                  })}
+                </p>
+              )}
               <p className="mt-2 font-ui text-[11.5px] leading-snug text-muted-foreground">
                 {fromFirm && story.coverage.length === 0
                   ? 'The firm sent this news to FundOpsHQ, and we checked it before publishing. The summary and fields above are extracted from what the firm sent and can contain errors.'
