@@ -41,7 +41,7 @@ export default function PrivacyPolicyPage() {
             <div className="legal">
               <div className="">
                 <p className="text-sm text-muted-foreground mb-12">
-                  Last updated: October 8, 2026
+                  Last updated: October 22, 2026
                 </p>
 
                 {/* Introduction */}
@@ -108,6 +108,13 @@ export default function PrivacyPolicyPage() {
                     website, the advertisement itself and any logo you upload. We use it to review, run and bill the
                     sponsorship and to write to you about it. An approved advertisement, including the logo, is shown
                     publicly in the newsletter and on the Site.
+                  </p>
+
+                  <h3 className="text-xl font-semibold mb-3 mt-6">News Submissions</h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    If you send us news at /submit, we keep what you enter, including your name, email address and
+                    role, and a keyed hash of your IP address (never the address itself), which we use only to limit
+                    abuse of the form.
                   </p>
 
                   <h3 className="text-xl font-semibold mb-3 mt-6">Local Storage</h3>
