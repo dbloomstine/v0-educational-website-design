@@ -48,9 +48,7 @@ export default async function SubmitNewsPage({ searchParams }: Params) {
             <li>We may edit it for length and style, and we publish facts only.</li>
             <li>News about your own firm only: no rumours, and no bad news about other firms.</li>
           </ul>
-          <div className="panel panel-lead">
-            <SubmitNewsForm defaultFirm={defaultFirm} />
-          </div>
+          <SubmitNewsForm defaultFirm={defaultFirm} />
           <p className="mt-4 font-ui text-[12.5px] leading-relaxed text-muted-foreground">
             Sending news doesn&apos;t guarantee a story, and coverage is never traded for sponsorship. Hosting an event?{' '}
             <Link href="/events/submit" className="font-semibold text-foreground/80 underline underline-offset-2">Submit it to the events calendar</Link>.

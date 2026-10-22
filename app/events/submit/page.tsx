@@ -35,9 +35,7 @@ export default function SubmitEventPage() {
           </div>
         </div>
         <div className="mx-auto max-w-[760px] px-4 pb-12 pt-6 lg:px-6">
-          <div className="panel panel-lead">
-            <SubmitEventForm />
-          </div>
+          <SubmitEventForm />
         </div>
       </main>
       <SiteFooter />
