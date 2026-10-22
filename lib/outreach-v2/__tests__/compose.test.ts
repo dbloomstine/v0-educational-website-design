@@ -97,6 +97,11 @@ describe('sponsor pitch (Danny’s copy, 2026-10-14)', () => {
     expect(freshClause({ hook_clause: 'Congrats on the Series A.', hook_date: null }, '2026-10-14')).toBeNull()
   })
 
+  it("says 'an' before a vowel (2026-10-22: 'a iConnections week')", () => {
+    expect(pitch({ company: 'iConnections' }).text).toContain('what an iConnections week would look like')
+    expect(pitch({ company: 'ToltIQ' }).text).toContain('what a ToltIQ week would look like')
+  })
+
   it('writes possessives the way people do', () => {
     expect(possessive('ToltIQ')).toBe("ToltIQ's")
     expect(possessive('73 Strings')).toBe("73 Strings'")

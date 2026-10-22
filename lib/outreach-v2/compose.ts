@@ -82,6 +82,9 @@ export function bodyOf(text: string): string {
   return cut >= 0 ? text.slice(0, cut) : text
 }
 
+/** "a ToltIQ week", "an iConnections week": the article by the name's first letter. */
+export const aOrAn = (name: string) => (/^[aeiou]/i.test(name.trim()) ? 'an' : 'a')
+
 const greet = (firstName: string) => (firstName.trim() ? `Hi ${firstName.trim()},` : 'Hello,')
 
 /* ───────────────────────── sponsor pitch ───────────────────────── */
@@ -150,7 +153,7 @@ export function renderSponsorPitch(p: PitchInput): Rendered {
     [
       [greet(p.firstName)],
       [clause ? `${lead} ${clause}` : lead],
-      [`I mocked up what a ${c} week would look like: `, { text: `See ${possessive(c)} ad`, href: p.mockup }],
+      [`I mocked up what ${aOrAn(c)} ${c} week would look like: `, { text: `See ${possessive(c)} ad`, href: p.mockup }],
       [young],
       [`Worth trying a week in ${p.month}?`],
       [OPT_OUT],
