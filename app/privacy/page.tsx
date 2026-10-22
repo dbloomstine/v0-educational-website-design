@@ -119,9 +119,12 @@ export default function PrivacyPolicyPage() {
 
                   <h3 className="text-xl font-semibold mb-3 mt-6">News Submissions</h3>
                   <p className="text-muted-foreground leading-relaxed">
-                    If you send us news at /submit, we keep what you enter, including your name, email address and
-                    role, and a keyed hash of your IP address (never the address itself), which we use only to limit
-                    abuse of the form.
+                    If you send us news at /submit, we keep what you enter, including your name, work email address
+                    and role, any people you list as involved (kept for our review only and never published), and a
+                    keyed hash of your IP address (never the address itself), which we use only to limit abuse of the
+                    form. We email you one link to confirm the submission came from you; we keep only a scrambled copy
+                    of that link, and it stops working after seven days. Nothing you send is published until we have
+                    checked it, and we may edit it.
                   </p>
 
                   <h3 className="text-xl font-semibold mb-3 mt-6">Local Storage</h3>
