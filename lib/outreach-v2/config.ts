@@ -61,12 +61,15 @@ export const APOLLO_CREDITS_PER_DAY = 15 // 2026-10-21: FundOpsHQ outreach may s
 /** New sponsor pitches sent per New York day (follow-ups not counted). Danny, 2026-10-21: ramp the advertiser outreach. */
 export const SPONSOR_PITCHES_PER_DAY = 10
 /**
- * Sending stops (the halt flag, as for a complaint) when more than this share of the last
- * BOUNCE_WINDOW_DAYS' sends bounced, once at least BOUNCE_MIN_SENT went out (2026-10-21, with the ramp).
+ * Sending stops (the halt flag, as for a complaint) when more than this share of the last BOUNCE_WINDOW_DAYS' sends
+ * bounced, once at least BOUNCE_MIN_SENT went out and at least BOUNCE_MIN_COUNT bounced (2026-10-21, with the ramp).
+ * 2026-10-22: first set at 3% from 40 sends, it halted everything on 2 old bounces in 59 (3.4%); cold email is in
+ * trouble above ~5%, and two bounces are noise.
  */
-export const BOUNCE_HALT_RATE = 0.03
+export const BOUNCE_HALT_RATE = 0.05
 export const BOUNCE_WINDOW_DAYS = 14
-export const BOUNCE_MIN_SENT = 40
+export const BOUNCE_MIN_SENT = 60
+export const BOUNCE_MIN_COUNT = 3
 /** Organizer notes created per weekday (each costs about one Apollo credit). */
 export const ORGANIZER_NOTES_PER_DAY = 5
 /** Apollo credits the organizer-note program may spend per New York day. Hard. With the news notes' 15, 21 of the 25 a day. */

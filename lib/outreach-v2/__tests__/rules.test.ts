@@ -281,10 +281,12 @@ describe('the ramp and its brake (2026-10-21)', () => {
     expect(SPONSOR_PITCHES_PER_DAY).toBe(10)
     expect(APOLLO_CREDITS_PER_DAY).toBe(15)
   })
-  it('halts on bounces over 3% once enough went out, and not before', () => {
+  it('halts on bounces over 5% once 60 went out and 3 bounced, and not before (2026-10-22: 2 of 59 halted it)', () => {
+    expect(bounceVerdict(59, 2).halt).toBe(false)
     expect(bounceVerdict(BOUNCE_MIN_SENT - 1, 10).halt).toBe(false)
-    expect(bounceVerdict(100, 3).halt).toBe(false)
-    expect(bounceVerdict(100, 4).halt).toBe(true)
-    expect(bounceVerdict(100, 4).reason).toMatch(/4 of the last 100 sends/)
+    expect(bounceVerdict(100, 5).halt).toBe(false)
+    expect(bounceVerdict(60, 2).halt).toBe(false)
+    expect(bounceVerdict(100, 6).halt).toBe(true)
+    expect(bounceVerdict(100, 6).reason).toMatch(/6 of the last 100 sends/)
   })
 })

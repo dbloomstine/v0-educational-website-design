@@ -4,7 +4,7 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { filterSuppressed } from '@/lib/outreach/suppression'
-import { BOUNCE_HALT_RATE, BOUNCE_MIN_SENT, BOUNCE_WINDOW_DAYS, DAILY_SEND_CAP, RECONTACT_DAYS, envMode, nyDay, nyDayStart, type Mode, type Program } from './config'
+import { BOUNCE_HALT_RATE, BOUNCE_MIN_COUNT, BOUNCE_MIN_SENT, BOUNCE_WINDOW_DAYS, DAILY_SEND_CAP, RECONTACT_DAYS, envMode, nyDay, nyDayStart, type Mode, type Program } from './config'
 import { isIqeqEmail } from './exclusions'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -227,7 +227,7 @@ export async function sponsorPitchesSentToday(db: DbClient, now: Date = new Date
 
 /** Pure: should sending stop for bounces? Only once enough went out for the share to mean something. */
 export function bounceVerdict(sent: number, bounced: number): { halt: boolean; reason: string | null } {
-  if (sent < BOUNCE_MIN_SENT) return { halt: false, reason: null }
+  if (sent < BOUNCE_MIN_SENT || bounced < BOUNCE_MIN_COUNT) return { halt: false, reason: null }
   const rate = bounced / sent
   return rate > BOUNCE_HALT_RATE
     ? { halt: true, reason: `bounces: ${bounced} of the last ${sent} sends (${(rate * 100).toFixed(1)}%) in ${BOUNCE_WINDOW_DAYS} days, over ${(BOUNCE_HALT_RATE * 100).toFixed(0)}%` }
