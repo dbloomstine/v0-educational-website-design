@@ -134,3 +134,56 @@ export function sameFirm(a: string, b: string): boolean {
   const [short, long] = x.length <= y.length ? [x, y] : [y, x]
   return short.length >= 4 && long.startsWith(short) && ONLY_SUFFIXES.test(long.slice(short.length))
 }
+
+/* ───────────────────────── organizer notes ───────────────────────── */
+
+/**
+ * The people an organizer note goes to, best first (2026-10-22): whoever runs
+ * the organizer's events, then marketing, communications or partnerships; at a
+ * small organizer (an association, a community, a conference producer) the
+ * founder or executive director too. An events coordinator is the right person
+ * here, so only interns, assistants and the like are too junior.
+ */
+const ORGANIZER_TITLE_LADDER: RegExp[] = [
+  /\b(?:head|director|vp|vice president|chief|managing director|senior manager)\b.*\b(?:events?|conferences?|programs?|programming|meetings)\b|\bchief events?\b|\bevents? director\b|\bconference director\b/i,
+  /\bevents?\b|\bconferences?\b|\bconference producer\b|\bprogramming\b|\bmeetings?\b/i,
+  /\bmarketing\b|\bcommunications\b|\bpartnerships?\b|\bsponsorships?\b|\bmembership\b|\bcmo\b/i,
+]
+const SMALL_ORGANIZER_LEAD = /\b(?:co-?founder|founder|executive director|president|ceo|chief executive)\b/i
+const SMALL_ORGANIZER_TYPES = new Set(['association', 'community', 'conference_producer'])
+const ORGANIZER_JUNIOR = /\b(?:intern|internship|assistant(?! director| vice president)|receptionist|trainee|student|volunteer)\b/i
+
+export function organizerTitleRank(title: string | null | undefined, organizerType?: string | null): number | null {
+  const t = (title ?? '').trim()
+  if (!t || ORGANIZER_JUNIOR.test(t)) return null
+  const i = ORGANIZER_TITLE_LADDER.findIndex((re) => re.test(t))
+  if (i >= 0) return i
+  // "President" or "Founder" of a law or accounting firm is not who handles its events.
+  return SMALL_ORGANIZER_LEAD.test(t) && SMALL_ORGANIZER_TYPES.has(organizerType ?? '') ? ORGANIZER_TITLE_LADDER.length : null
+}
+
+/** The Apollo `person_titles` an organizer-note search asks for (the founder's titles only for a small organizer). */
+export function organizerTitles(organizerType?: string | null): string[] {
+  const base = [
+    'Head of Events',
+    'Director of Events',
+    'Events Director',
+    'VP Events',
+    'Events Manager',
+    'Event Manager',
+    'Conference Director',
+    'Conference Producer',
+    'Director of Programs',
+    'Events',
+    'Head of Marketing',
+    'Director of Marketing',
+    'Marketing Director',
+    'Marketing Manager',
+    'Director of Communications',
+    'Communications Director',
+    'Director of Partnerships',
+    'Head of Partnerships',
+    'Sponsorship Director',
+  ]
+  return SMALL_ORGANIZER_TYPES.has(organizerType ?? '') ? [...base, 'Executive Director', 'Founder', 'Co-Founder', 'President'] : base
+}

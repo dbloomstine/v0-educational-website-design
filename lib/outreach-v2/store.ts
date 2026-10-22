@@ -33,6 +33,8 @@ export interface MessageRow {
   ad_line: string | null
   mockup_url: string | null
   news_item_id: string | null
+  /** An organizer note's event (industry_events.id). */
+  event_id?: string | null
   story_url: string | null
   story_headline: string | null
   subject: string

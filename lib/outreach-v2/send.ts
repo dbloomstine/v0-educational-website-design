@@ -117,10 +117,13 @@ export interface DispatchResult {
   error?: string
 }
 
+/** A queued organizer note older than this is not sent (the event is nearer than the note says it was picked for). */
+export const ORGANIZER_QUEUE_DAYS = 3
+
 /**
  * Send the next queued message, if the mode, the hour and the daily cap all
- * allow it. Today's news notes go first (they are about today); then pitches
- * and follow-ups, oldest first. Every do-not-contact check runs again here,
+ * allow it. Today's news notes go first (they are about today); then organizer
+ * notes, then pitches and follow-ups, oldest first, all inside the one daily cap. Every do-not-contact check runs again here,
  * at the moment of sending.
  */
 export async function dispatchOne(db: DbClient, now: Date = new Date(), opts: { ignoreHours?: boolean } = {}): Promise<DispatchResult> {
@@ -143,12 +146,15 @@ export async function dispatchOne(db: DbClient, now: Date = new Date(), opts: { 
   // A news note is about today's edition: one that did not go out today never goes.
   const todayBatch = `news-${nyDay(now)}`
   await db.from('outreach_v2_messages').update({ status: 'cancelled', skip_reason: 'stale news note' }).eq('program', 'news_note').in('status', ['queued', 'preview']).neq('batch', todayBatch)
+  // An organizer note waits at most ORGANIZER_QUEUE_DAYS for its turn (2026-10-22).
+  const organizerCutoff = new Date(now.getTime() - ORGANIZER_QUEUE_DAYS * 86_400_000).toISOString()
+  await db.from('outreach_v2_messages').update({ status: 'cancelled', skip_reason: 'stale organizer note' }).eq('program', 'organizer_note').eq('status', 'queued').lt('queued_at', organizerCutoff)
 
   const { data, error } = await db
     .from('outreach_v2_messages')
     .select('*')
     .eq('status', 'queued')
-    .order('program', { ascending: true }) // 'news_note' sorts before 'sponsor_pitch': news notes first
+    .order('program', { ascending: true }) // 'news_note' < 'organizer_note' < 'sponsor_pitch': news notes first, then organizer notes
     .order('queued_at', { ascending: true })
     .limit(10)
   if (error) return { ok: false, error: error.message }

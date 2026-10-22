@@ -131,6 +131,7 @@ Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/cont
 /api/pipeline/outreach-monitor          → Cron: hourly reply/bounce detection for outreach
 /api/pipeline/backfill-domains          → One-shot: backfill firm domains for logos
 /api/pipeline/outreach-v2-news          → Cron (15:00 UTC weekdays): up to 10 "you were in FundOps Daily today" notes. See "Outreach v2"
+/api/pipeline/outreach-v2-organizers    → Cron (15:30 UTC weekdays): up to 5 "your event is on the FundOpsHQ events board" notes. See "Outreach v2"
 /api/pipeline/outreach-v2-dispatch      → Cron (every 5 min, 13–21 UTC weekdays): sends ONE queued outreach email, live mode only
 /api/pipeline/outreach-v2-followups     → Cron (13:00 UTC weekdays): queues the one sponsor-pitch follow-up (5 business days)
 /api/outreach/webhook                   → Resend webhook (own secret): replies on reply.fundopshq.com, bounces, complaints
@@ -884,6 +885,16 @@ contact at US firms in that morning's edition; Apollo, at most ten credits a day
   `scripts/outreach-v2/logo-sheet.ts mockups <batch> <headers dir> <out.png>` before a batch goes.
 - **Sponsor batch:** `npx tsx --env-file=.env.local scripts/outreach-v2/load-sponsor-batch.ts <file.json>` (stores `preview`
   rows, writes `<file>-preview.md`); after Danny reads it, `scripts/outreach-v2/release-batch.ts <batch>` queues it.
+- **Organizer notes (2026-10-22, third program, `lib/outreach-v2/organizer-notes.ts`):** up to five a weekday (six Apollo
+  credits) to the events / marketing contact at the organizer of a published North American in-person event on the board
+  starting 7 to 60 days out, one per organizer; organizer types association, conference producer, community, law firm,
+  accounting firm, tech vendor only (never fund_admin, media, other); never an organizer noted in 180 days (by domain or name),
+  never an event its organizer submitted; the contact's company and email must be on the organizer's own domain (event page,
+  registration page or `event_sources.url`, event platforms such as Cvent or Luma excluded). Own switch
+  `OUTREACH_V2_ORGANIZER_MODE`: it can only lower `OUTREACH_V2_MODE`, and unset keeps them in `preview`. A contact revealed for
+  an earlier preview is reused without a credit. The dispatcher sends them after news notes and before pitches, inside the
+  daily cap of 30; a queued one older than three days is cancelled. Needs `20261022_outreach_v2_organizer_note.sql`
+  (program check + `event_id`); the run refuses to start without it.
 
 ## Site audit fixes, 2026-10-16
 

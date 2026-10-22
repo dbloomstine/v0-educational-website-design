@@ -15,7 +15,7 @@
  * Written against a small set of ports (WebhookDeps) so the rules can be
  * tested without a database; app/api/outreach/webhook/route.ts supplies them.
  */
-import { FORWARD_TO, ALERT_TO, UNSUBSCRIBE_MAILBOX, bareAddress, isOutreachReplyAddress } from './config'
+import { FORWARD_TO, ALERT_TO, UNSUBSCRIBE_MAILBOX, bareAddress, isOutreachReplyAddress, programLabel } from './config'
 
 export interface MsgRef {
   id: string
@@ -156,7 +156,7 @@ export async function matchReply(
 const asList = (v: string[] | string | undefined) => (Array.isArray(v) ? v : v ? [v] : [])
 
 export function forwardMessage(r: { from: string; to: string[]; subject: string | null; receivedAt: string; text: string; matched: MsgRef | null; stopped: boolean }): { subject: string; text: string } {
-  const about = r.matched ? `${r.matched.company} (${r.matched.program === 'news_note' ? 'news note' : 'sponsor pitch'}, "${r.matched.subject}")` : 'no outreach message matched'
+  const about = r.matched ? `${r.matched.company} (${programLabel(r.matched.program)}, "${r.matched.subject}")` : 'no outreach message matched'
   const head = [
     `Reply received on the outreach address. Reply to this email to answer ${bareAddress(r.from)} from Gmail.`,
     `From: ${r.from}`,
@@ -266,7 +266,7 @@ async function handleBounceOrComplaint(type: 'email.bounced' | 'email.complained
       ALERT_TO,
       'Outreach stopped: a spam complaint',
       [
-        `${msg.email} at ${msg.company} marked a FundOpsHQ ${msg.program === 'news_note' ? 'news note' : 'sponsor pitch'} as spam ("${msg.subject}").`,
+        `${msg.email} at ${msg.company} marked a FundOpsHQ ${programLabel(msg.program)} as spam ("${msg.subject}").`,
         '',
         'All outreach sending has stopped automatically (outreach_v2_state.halted = true). The address is suppressed.',
         'Nothing else goes out until the flag is cleared by hand:',

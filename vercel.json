@@ -63,6 +63,10 @@
       "schedule": "0 15 * * 1-5"
     },
     {
+      "path": "/api/pipeline/outreach-v2-organizers",
+      "schedule": "30 15 * * 1-5"
+    },
+    {
       "path": "/api/pipeline/outreach-v2-dispatch",
       "schedule": "*/5 13-21 * * 1-5"
     }

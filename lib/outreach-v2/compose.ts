@@ -214,3 +214,65 @@ export function renderNewsNote(p: NewsNoteInput): Rendered {
     p.unsubToken,
   )
 }
+
+/* ───────────────────────── organizer note ───────────────────────── */
+
+const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+/**
+ * An event's dates as the row has them: "November 12", "November 12-14", "November 30 to December 2".
+ * The year is added only when the event is not in `todayYear` ("January 14, 2027").
+ */
+export function eventDateLabel(start: string, end: string | null | undefined, todayYear?: number): string {
+  const part = (iso: string) => {
+    const [y, m, d] = iso.slice(0, 10).split('-').map(Number)
+    return { y, m, d }
+  }
+  const s = part(start)
+  const e = end && end.slice(0, 10) > start.slice(0, 10) ? part(end) : null
+  const yearOf = (y: number) => (todayYear != null && y !== todayYear ? `, ${y}` : '')
+  if (!e) return `${MONTHS[s.m - 1]} ${s.d}${yearOf(s.y)}`
+  if (e.y === s.y && e.m === s.m) return `${MONTHS[s.m - 1]} ${s.d}-${e.d}${yearOf(s.y)}`
+  if (e.y === s.y) return `${MONTHS[s.m - 1]} ${s.d} to ${MONTHS[e.m - 1]} ${e.d}${yearOf(s.y)}`
+  return `${MONTHS[s.m - 1]} ${s.d}, ${s.y} to ${MONTHS[e.m - 1]} ${e.d}, ${e.y}`
+}
+
+/** The longest subject an organizer note gets, " on FundOpsHQ" included. */
+export const ORGANIZER_SUBJECT_MAX = 78
+
+/** "<Event name> on FundOpsHQ", the name cut at a word (with "…") when it would run past ORGANIZER_SUBJECT_MAX. */
+export function organizerNoteSubject(eventName: string): string {
+  const tail = ' on FundOpsHQ'
+  const name = eventName.trim().replace(/\s+/g, ' ')
+  if (name.length + tail.length <= ORGANIZER_SUBJECT_MAX) return `${name}${tail}`
+  const room = ORGANIZER_SUBJECT_MAX - tail.length - 1
+  const cut = name.slice(0, room + 1)
+  const atWord = cut.lastIndexOf(' ') > room / 2 ? cut.slice(0, cut.lastIndexOf(' ')) : name.slice(0, room)
+  return `${atWord.replace(/[\s,:;–-]+$/, '')}…${tail}`
+}
+
+export interface OrganizerNoteInput {
+  firstName: string
+  unsubToken: string
+  /** The event's name, exactly as the row has it. */
+  eventName: string
+  /** eventDateLabel of the row's dates. */
+  dateLabel: string
+  /** The event's page on fundopshq.com. */
+  eventUrl: string
+}
+
+export function renderOrganizerNote(p: OrganizerNoteInput): Rendered {
+  const name = p.eventName.trim().replace(/\s+/g, ' ')
+  return render(
+    organizerNoteSubject(name),
+    [
+      [greet(p.firstName)],
+      [`${name} on ${p.dateLabel} is listed on the FundOpsHQ events board, where fund CFOs, ops and compliance people find what's on: `, { text: name, href: p.eventUrl }],
+      ["If any detail is off, or you'd like your other events listed, just reply. Feel free to share the page with your attendees."],
+      [OPT_OUT],
+    ],
+    SIGN,
+    p.unsubToken,
+  )
+}

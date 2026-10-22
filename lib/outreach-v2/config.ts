@@ -1,6 +1,6 @@
 /**
  * Outreach v2 (2026-10-14): FundOpsHQ's own email outreach, sent through
- * Resend from Danny's fundopshq.com address. Two programs:
+ * Resend from Danny's fundopshq.com address. Three programs:
  *
  *  - sponsor_pitch: a hand-picked list of fund-tech companies, each pitched
  *    once with a link to a mock-up of their ad, and followed up once after
@@ -8,6 +8,10 @@
  *  - news_note: up to ten a day, a short "you were in FundOps Daily today"
  *    note to the marketing / IR / communications contact at a US firm named
  *    in that morning's edition.
+ *  - organizer_note (2026-10-22): up to five a weekday, a short "your event is
+ *    on the FundOpsHQ events board" note to the events / marketing contact at
+ *    the organizer of an event starting in the next 7 to 60 days
+ *    (organizer-notes.ts).
  *
  * Everything Danny chose by clicking on 2026-10-14 is in this file: the From
  * address and signature, where replies go, the postal address, the caps.
@@ -48,7 +52,7 @@ export const ALERT_TO = 'dbloomstine@gmail.com'
 export const POSTAL_ADDRESS = 'FundOpsHQ, 76 Ensign Dr, Mystic, CT 06355'
 export const SITE = 'https://fundopshq.com'
 
-/** All sends across both programs, per New York day. */
+/** All sends across every program, per New York day. */
 export const DAILY_SEND_CAP = 30
 /** News notes created per day (each costs about one Apollo credit). */
 export const NEWS_NOTES_PER_DAY = 10 // Danny, 2026-10-21: "at least 10 a day" (was five from 2026-10-19)
@@ -63,14 +67,26 @@ export const SPONSOR_PITCHES_PER_DAY = 10
 export const BOUNCE_HALT_RATE = 0.03
 export const BOUNCE_WINDOW_DAYS = 14
 export const BOUNCE_MIN_SENT = 40
-/** Nobody is emailed twice by either program inside this window (a follow-up in the same thread excepted). */
+/** Organizer notes created per weekday (each costs about one Apollo credit). */
+export const ORGANIZER_NOTES_PER_DAY = 5
+/** Apollo credits the organizer-note program may spend per New York day. Hard. With the news notes' 15, 21 of the 25 a day. */
+export const ORGANIZER_APOLLO_CREDITS_PER_DAY = 6
+/** An organizer (by web domain) gets at most one organizer note in this window. */
+export const ORGANIZER_NOTE_DAYS = 180
+/** An organizer note is about an event starting this many days ahead, at least and at most. */
+export const ORGANIZER_EVENT_MIN_DAYS = 7
+export const ORGANIZER_EVENT_MAX_DAYS = 60
+/** Nobody is emailed twice by any program inside this window (a follow-up in the same thread excepted). */
 export const RECONTACT_DAYS = 90
 /** A firm gets at most one news note in this window, whoever it went to. */
 export const FIRM_NEWS_NOTE_DAYS = 30
 /** A sponsor pitch is followed up once, this many business days after it went. */
 export const FOLLOWUP_BUSINESS_DAYS = 5
 
-export type Program = 'sponsor_pitch' | 'news_note'
+export type Program = 'sponsor_pitch' | 'news_note' | 'organizer_note'
+
+/** "news note", "organizer note", "sponsor pitch": for alerts and forwarded replies. */
+export const programLabel = (p: string): string => (p === 'news_note' ? 'news note' : p === 'organizer_note' ? 'organizer note' : 'sponsor pitch')
 export type Mode = 'off' | 'preview' | 'live'
 
 /**
@@ -92,6 +108,20 @@ export function envMode(value: string | undefined = process.env.OUTREACH_V2_MODE
  * `preview` at most.
  */
 export function newsMode(shared: Mode, value: string | undefined = process.env.OUTREACH_V2_NEWS_MODE): Mode {
+  return lowerMode(shared, value)
+}
+
+/**
+ * The organizer notes' own switch, OUTREACH_V2_ORGANIZER_MODE (2026-10-22), on
+ * the same terms as the news notes': it can only lower the shared mode, and
+ * unset it keeps them in `preview`, so nothing sends until it is set to live.
+ */
+export function organizerMode(shared: Mode, value: string | undefined = process.env.OUTREACH_V2_ORGANIZER_MODE): Mode {
+  return lowerMode(shared, value)
+}
+
+/** A program's own switch: `live`, `off`, or anything else (unset) as `preview`; never above the shared mode. */
+function lowerMode(shared: Mode, value: string | undefined): Mode {
   const rank: Record<Mode, number> = { off: 0, preview: 1, live: 2 }
   const own = (value ?? '').trim().toLowerCase()
   const cap: Mode = own === 'live' ? 'live' : own === 'off' ? 'off' : 'preview'
