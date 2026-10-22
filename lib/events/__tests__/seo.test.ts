@@ -49,6 +49,7 @@ describe('an event page title', () => {
     // 53 characters before the suffix: ": date, venue, cost" (72) is too long, ": date and venue" (69) fits.
     const name = 'Private Fund Ops and Compliance Leaders'
     expect(buildEventTitle({ ...lpgp, name })).toBe(`${name}, Chicago 2026: date and venue`)
+    expect(buildEventTitle({ ...lpgp, name }).length).toBeLessThanOrEqual(EVENT_TITLE_MAX)
     // Longer still: the name and its city and year alone.
     const long = 'Private Fund Operations and Compliance Leaders Forum'
     expect(buildEventTitle({ ...lpgp, name: long })).toBe(`${long}, Chicago 2026`)

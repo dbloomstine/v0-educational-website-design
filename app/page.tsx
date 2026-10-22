@@ -5,6 +5,8 @@ import { SiteFooter } from '@/components/site-footer'
 import { BackToTop } from '@/components/back-to-top'
 import { EventsRail, LatestRail, SectionBlock } from '@/components/home/Rail'
 import { LeagueStrip } from '@/components/home/LeagueStrip'
+import { EventsWeekStrip } from '@/components/home/EventsWeekStrip'
+import { pickNotableEvents } from '@/lib/events/highlights'
 import { LeadStory, SectionFlag, TopStory } from '@/components/story/StoryBlocks'
 import { StickySubscribeBar } from '@/components/news/StickySubscribeBar'
 import { InTheNews } from '@/components/home/InTheNews'
@@ -85,24 +87,27 @@ export default async function HomePage() {
   // Stories and the league throw if they cannot be had: this page is cached,
   // and failing to rebuild it keeps the last good copy on the site, where
   // rendering it empty would put the empty copy there for ten minutes.
-  const [stories, league, events] = await Promise.all([
+  const [stories, league, weekEvents] = await Promise.all([
     loadStories(),
     loadLeagueReport(),
-    // The week ahead, at most two a day: six events all happening this
-    // afternoon say less than a spread across the week.
     getEventFeed({ when: '1w', limit: 40 })
-      .then((feed) => {
-        const perDay = new Map<string, number>()
-        return feed.events
-          .filter((e) => {
-            const n = perDay.get(e.startDate) ?? 0
-            perDay.set(e.startDate, n + 1)
-            return n < 2
-          })
-          .slice(0, 6)
-      })
+      .then((feed) => feed.events)
       .catch<IndustryEvent[]>(() => []),
   ])
+  // "Events this week" near the top (2026-10-22): the most notable five of the week ahead. The rail then lists
+  // others from the week, at most two a day: six events all happening this afternoon say less than a spread.
+  const weekPicks = pickNotableEvents(weekEvents, 5)
+  const stripShown = weekPicks.length >= 3
+  const inStrip = new Set(stripShown ? weekPicks.map((e) => e.id) : [])
+  const perDay = new Map<string, number>()
+  const events = weekEvents
+    .filter((e) => {
+      if (inStrip.has(e.id)) return false
+      const n = perDay.get(e.startDate) ?? 0
+      perDay.set(e.startDate, n + 1)
+      return n < 2
+    })
+    .slice(0, 6)
 
   const nowMs = Date.now()
   const chart = chartData(league, nowMs)
@@ -140,6 +145,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-4 lg:px-6">
           <InTheNews firms={inTheNews} />
           <SponsorStrip className="mb-5" />
+          {stripShown && <EventsWeekStrip events={weekPicks} className="mb-5" />}
 
           {/* ─── Front: the league strip, lead + top stories, with the running rail ───
               On a desk the strip runs across the top of both columns. On a

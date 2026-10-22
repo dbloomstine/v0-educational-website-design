@@ -61,6 +61,16 @@ export const EVENT_COLLECTIONS: EventCollection[] = [
   topicCollection('fundraising', 'fundraising_ir', 'Fundraising & IR Events',
     'Fundraising and investor relations events.',
     'Cap-intro conferences, LP-GP forums, and emerging-manager programs for IR and capital formation teams. Every date verified at the source.'),
+  // The people the board is for (2026-10-22): the events rated most useful to fund finance and operations
+  // (ops_relevance = high). Their searches are what bring event traffic; /events links here as "CFO & ops".
+  {
+    slug: 'cfo-ops',
+    title: 'Fund CFO & Operations Events',
+    heading: 'Events for fund CFOs and operations teams.',
+    blurb: 'CFO and COO forums, fund accounting and reporting, compliance and operations events across private markets — picked for finance and operations people at GPs, LPs and fund service providers. Every date verified at the source.',
+    filter: { ops: '1' },
+    boardParams: { ops: '1' },
+  },
   // Kinds & specials
   {
     slug: 'webinars',
@@ -92,3 +102,18 @@ export const COLLECTION_BY_SLUG = new Map(EVENT_COLLECTIONS.map((c) => [c.slug, 
 
 /** The subset worth surfacing as browse links on the main board. */
 export const FEATURED_COLLECTIONS = ['new-york', 'boston', 'chicago', 'miami', 'webinars', 'compliance', 'fund-finance', 'free']
+
+/** /events' shortcut chips (2026-10-22): the five cities with the most events, then the topics this audience searches. */
+export const CITY_SHORTCUTS = [
+  { label: 'New York', slug: 'new-york' },
+  { label: 'Chicago', slug: 'chicago' },
+  { label: 'Miami', slug: 'miami' },
+  { label: 'Washington DC', slug: 'washington-dc' },
+  { label: 'Boston', slug: 'boston' },
+]
+export const TOPIC_SHORTCUTS = [
+  { label: 'CFO & ops', slug: 'cfo-ops' },
+  { label: 'Compliance', slug: 'compliance' },
+  { label: 'Fund finance', slug: 'fund-finance' },
+  { label: 'LPs & fundraising', slug: 'fundraising' },
+]

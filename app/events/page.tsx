@@ -9,6 +9,9 @@ import { EventsBoard } from '@/components/events/EventsBoard'
 import Link from 'next/link'
 import { getEventFeed } from '@/lib/events/api'
 import { EVENT_COLLECTIONS } from '@/lib/events/collections'
+import { EventsUpFront } from '@/components/events/EventsUpFront'
+import { EventsSignup } from '@/components/events/EventsSignup'
+import { newYorkToday, splitWeeks } from '@/lib/events/highlights'
 import type { EventFeedResponse, IndustryEvent } from '@/lib/events/types'
 
 // Re-rendered on a timer, so the board and its structured data track the
@@ -97,6 +100,8 @@ export default async function EventsPage() {
     // the client board fetches on its own
   }
   const jsonLdEvents: IndustryEvent[] = initial?.events.slice(0, 25) ?? []
+  // This week and next first (2026-10-22): the first hundred upcoming events cover well over two weeks.
+  const { thisWeek, nextWeek } = splitWeeks(initial?.events ?? [], newYorkToday())
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -130,6 +135,11 @@ export default async function EventsPage() {
         <section className="relative">
           <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
             <SponsorStrip className="mb-5" />
+            {initial && <EventsUpFront thisWeek={thisWeek} nextWeek={nextWeek} />}
+            <EventsSignup city={null} className="my-5" />
+            <h2 id="board" className="mb-3 scroll-mt-14 font-news text-[24px] font-medium leading-none tracking-[-0.01em] text-foreground">
+              All upcoming events
+            </h2>
             <EventsBoard initial={initial} />
 
             {/* Browse collections — internal-link surface for the landing pages */}
