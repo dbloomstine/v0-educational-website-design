@@ -138,7 +138,28 @@ describe('resolveGoogleNewsUrl', () => {
     }
     expect(await resolveGoogleNewsUrl(REAL[2].url, { fetch })).toEqual({ url: 'https://amwatch.com/page', method: 'html' })
     const dead = async () => { throw new Error('offline') }
-    expect(await resolveGoogleNewsUrl(REAL[2].url, { fetch: dead })).toEqual({ url: REAL[2].url, method: 'unresolved' })
+    expect(await resolveGoogleNewsUrl(REAL[2].url, { fetch: dead })).toEqual({ url: REAL[2].url, method: 'unresolved', detail: 'error Error' })
+  })
+  it('says when Google refuses, without asking batchexecute', async () => {
+    const calls: string[] = []
+    const fetch = async (input: string) => {
+      calls.push(input)
+      return page(input, 'Too many requests', 429)
+    }
+    expect(await resolveGoogleNewsUrl(REAL[2].url, { fetch })).toEqual({ url: REAL[2].url, method: 'unresolved', detail: 'page 429', refused: true })
+    expect(calls).toHaveLength(1)
+  })
+  it('flags a refused batchexecute and fetches the rss page form when asked', async () => {
+    const calls: string[] = []
+    const fetch = async (input: string) => {
+      calls.push(input)
+      if (input.endsWith('/batchexecute')) return page(input, '', 429)
+      return page(input, '<div data-n-a-sg="SIG" data-n-a-ts="42"></div>')
+    }
+    expect(await resolveGoogleNewsUrl(REAL[2].url, { fetch, pageForm: 'rss' })).toEqual({
+      url: REAL[2].url, method: 'unresolved', detail: 'batchexecute 429', refused: true,
+    })
+    expect(calls[0]).toMatch(/^https:\/\/news\.google\.com\/rss\/articles\//)
   })
 })
 

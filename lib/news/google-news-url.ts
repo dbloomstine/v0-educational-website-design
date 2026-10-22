@@ -30,7 +30,18 @@ const ARTICLE_PATH = /^\/(?:rss\/)?articles\/([A-Za-z0-9_-]+)\/?$/
 export type GoogleNewsResolution = {
   url: string
   method: 'not-google' | 'payload' | 'batchexecute' | 'redirect' | 'html' | 'unresolved'
+  /**
+   * Why an 'unresolved' link stayed unresolved, e.g. "page 429",
+   * "page sorry" (Google's captcha page), "page 200 no signature",
+   * "batchexecute 429", "batchexecute 200 no url", "error AbortError".
+   */
+  detail?: string
+  /** True when the detail is Google refusing us (429, 503, the captcha page): back off. */
+  refused?: boolean
 }
+
+/** Which article page to fetch for the signature. Both carry it; 'rss' skips a 302 and is ~600 KB instead of ~1 MB. */
+export type GoogleNewsPageForm = 'articles' | 'rss'
 
 export function isGoogleNewsUrl(url: string | null | undefined): boolean {
   return googleNewsArticleId(url) !== null
@@ -236,7 +247,7 @@ export type FetchLike = (input: string, init?: RequestInit) => Promise<Response>
  */
 export async function resolveGoogleNewsUrl(
   url: string,
-  opts: { fetch?: FetchLike; timeoutMs?: number } = {}
+  opts: { fetch?: FetchLike; timeoutMs?: number; pageForm?: GoogleNewsPageForm } = {}
 ): Promise<GoogleNewsResolution> {
   const id = googleNewsArticleId(url)
   if (!id) return { url, method: 'not-google' }
@@ -252,12 +263,25 @@ export async function resolveGoogleNewsUrl(
     return { ...init, signal: controller.signal }
   }
 
+  const isRefusal = (status: number) => status === 429 || status === 503 || status === 403
+  const pageUrl =
+    opts.pageForm === 'rss'
+      ? `https://${GOOGLE_NEWS_HOST}/rss/articles/${id}`
+      : `https://${GOOGLE_NEWS_HOST}/articles/${id}`
+  let detail = 'unknown'
+  let refused = false
   try {
     const res = await doFetch(
-      `https://${GOOGLE_NEWS_HOST}/articles/${id}`,
+      pageUrl,
       withTimeout({ method: 'GET', redirect: 'follow', headers: { 'User-Agent': UA, Accept: 'text/html,application/xhtml+xml' } })
     )
     if (res.url && isOutsideGoogle(res.url)) return { url: res.url, method: 'redirect' }
+    if (res.url && /\/sorry\//.test(res.url)) {
+      return { url, method: 'unresolved', detail: 'page sorry', refused: true }
+    }
+    if (isRefusal(res.status)) {
+      return { url, method: 'unresolved', detail: `page ${res.status}`, refused: true }
+    }
     const html = await res.text()
 
     const sig = readSignature(html)
@@ -273,13 +297,20 @@ export async function resolveGoogleNewsUrl(
       if (answer.ok) {
         const resolved = parseBatchexecuteResponse(await answer.text())
         if (resolved && isOutsideGoogle(resolved)) return { url: resolved, method: 'batchexecute' }
+        detail = 'batchexecute 200 no url'
+      } else {
+        detail = `batchexecute ${answer.status}`
+        refused = isRefusal(answer.status)
       }
+    } else {
+      detail = `page ${res.status} no signature`
     }
 
     const inHtml = findPublisherUrlInHtml(html)
     if (inHtml) return { url: inHtml, method: 'html' }
-  } catch {
+  } catch (e) {
     // network failure, timeout, or a shape we do not know: keep the Google URL
+    detail = `error ${e instanceof Error ? e.name : 'unknown'}`
   }
-  return { url, method: 'unresolved' }
+  return { url, method: 'unresolved', detail, ...(refused ? { refused } : {}) }
 }
