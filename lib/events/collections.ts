@@ -142,7 +142,8 @@ export const EVENT_COLLECTIONS: EventCollection[] = [
   cityCollection('miami', 'Miami', 'the winter capital of alternatives.'),
   // Topics
   // Compliance and fund finance: titles and lines for what people search (2026-10-22), "fund compliance
-  // conferences 2026". "Conferences and events", not "webinars": the board lists webinars only when submitted.
+  // conferences 2026". "Conferences and events", not "webinars": a topic page reads the default view, and
+  // webinars have their own page, /events/webinars (2026-10-22).
   topicCollection('compliance', 'compliance_regulatory', 'Fund Compliance & Regulatory Events',
     'Fund compliance and regulatory events.',
     'Conferences, forums and roundtables for CCOs, general counsel and compliance teams at private fund managers: SEC rule changes, exam readiness and the regulatory calendar. Every date verified at the organizer’s own page.',
@@ -209,8 +210,12 @@ export const EVENT_COLLECTIONS: EventCollection[] = [
     title: 'Fund Industry Webinars',
     heading: 'Webinars and virtual training.',
     blurb: 'Attend from anywhere — webcasts, virtual workshops, and online training from associations, law firms, and accounting firms serving private markets. Times listed with timezones; every date verified at the source.',
-    filter: { kind: 'webinar,training', format: 'virtual' },
-    boardParams: { kind: 'webinar,training' },
+    // The webinars lane (2026-10-22): every virtual event we list, scouted ones too, whatever the organizer calls
+    // it (NSCP's virtual "forums" and NAREIM's virtual roundtables are webinars to a reader). Was kind
+    // webinar/training AND virtual, which in practice listed only submitted webinars. Never a fund
+    // administrator's (lib/events/webinars.ts).
+    filter: { format: 'virtual' },
+    boardParams: { format: 'virtual' },
     // No year: a webinar is weeks out, and nobody searches one by season (2026-10-22).
     searchTitle: 'Private Equity & Fund Industry Webinars',
     description: '{Upcoming} private equity and fund industry webinars and virtual training from associations, law firms and accounting firms serving private markets.',

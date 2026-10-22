@@ -3,6 +3,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/client'
 import type { IndustryEvent, EventFacetCounts, EventFeedResponse } from './types'
 import { SIMILAR_MAX, pickSimilarEvents } from './similar'
 import { isEventAudience, lpAudienceFilter } from './audience'
+import { LANE_FORMAT_SCOPE, formatScopeFor, fundAdminGuardFilter, inDefaultView, isHiddenFundAdminEvent, requestedFormats } from './webinars'
 
 export interface EventQueryParams {
   q?: string
@@ -44,19 +45,13 @@ const BOARD_REGION = 'north_america'
 // — first use was a friend's London event. The region itself stays honest.
 const BOARD_SCOPE = `region.eq.${BOARD_REGION},board_exception.eq.true`
 
-// Per Danny (2026-09-05): the board and the daily email are IN-PERSON ONLY.
-// Virtual-only events are excluded everywhere the board is read. `hybrid` is
-// kept deliberately — those events DO have a live in-person component, which is
-// what the rule is about; they are in-person events that happen to also stream.
-// Virtual rows stay in the table (unlisted) so this is a one-line widen later,
-// not a re-scout — same approach as BOARD_REGION above.
-const BOARD_FORMATS = ['in_person', 'hybrid'] as const
-
-// The one way a virtual event is listed (Danny, 2026-10-13): its organizer sent it in through /events/submit
-// (`is_submitted`). A fund administrator's webinar had been approved, relabelled virtual from its own page, and
-// then appeared nowhere but its detail page. What we find ourselves stays in-person only; what someone takes
-// the trouble to submit is on the board and in the daily email, labelled for what it is.
-const BOARD_FORMAT_SCOPE = `event_format.in.(${BOARD_FORMATS.join(',')}),is_submitted.eq.true`
+// Formats (Danny, 2026-09-05; 2026-10-13; 2026-10-22). The board's default view and the daily email are in-person
+// and hybrid (hybrid has a live room; that is what the rule was about), plus a virtual event its organizer submitted.
+// Since 2026-10-22 a read that ASKS for virtual events (`?format=virtual`: the Virtual chip, /events/webinars, the
+// calendar feed) lists every virtual event, scouted ones too: the webinars lane. The rule and its scopes live in
+// ./webinars, with the fund-administrator guard every listing read carries (Danny, 2026-10-22: never list their
+// webinars). Virtual rows were never deleted, so the lane needed no re-scout.
+const FUND_ADMIN_GUARD = fundAdminGuardFilter()
 
 /**
  * The feed, kept for five minutes — what pages and the board's API read.
@@ -84,7 +79,8 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
     .select('*', { count: 'exact' })
     .eq('status', 'published')
     .or(BOARD_SCOPE)
-    .or(BOARD_FORMAT_SCOPE)
+    .or(formatScopeFor(params.format))
+    .or(FUND_ADMIN_GUARD)
     .gte('start_date', today)
     .order('start_date', { ascending: true })
     .order('name', { ascending: true })
@@ -101,14 +97,12 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
     query = query.in('event_kind', params.kind.split(','))
   }
   if (params.format) {
-    // A caller may narrow within the board scope but never widen past it.
-    // If nothing they asked for is in scope (e.g. format=virtual) the result
-    // is EMPTY — an empty `in` list matches no rows. Falling back to
-    // BOARD_FORMATS here would answer "show me virtual events" with a full
-    // page of in-person ones, which is worse than returning nothing.
-    // `virtual` may be asked for since 2026-10-13: the scope above already lets through only the submitted ones.
-    const requested = params.format.split(',').filter((f) => BOARD_FORMATS.includes(f as never) || f === 'virtual')
-    query = query.in('event_format', requested)
+    // A caller narrows to the formats it names. If none of them is a format
+    // (e.g. format=online) the result is EMPTY — an empty `in` list matches no
+    // rows. Falling back to every format here would answer a format we do not
+    // have with a full page of in-person events, which is worse than nothing.
+    // `virtual` may be asked for since 2026-10-13; since 2026-10-22 asking for it opens the webinars lane (above).
+    query = query.in('event_format', requestedFormats(params.format))
   }
   if (params.cost) {
     query = query.or(costFilter(params.cost))
@@ -144,7 +138,9 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
     throw new Error('Failed to query events')
   }
 
-  const all = (rows ?? []).map(mapRowToEvent)
+  // The guard again in JavaScript, for safety: the read above already left these out, so this drops nothing
+  // unless the two ever disagree (they are tested on the same names).
+  const all = (rows ?? []).map(mapRowToEvent).filter((e) => !isHiddenFundAdminEvent(e))
   const events = all.slice(0, limit)
   const hasMore = all.length > limit
 
@@ -201,7 +197,10 @@ function mapRowToEvent(row: any): IndustryEvent {
   }
 }
 
-/** Single event by slug — detail pages. Includes past events (archived pages stay up for SEO). */
+/**
+ * Single event by slug — detail pages and the one-event .ics. Includes past events (archived pages stay up for
+ * SEO). A fund administrator's webinar is null here, so its page is a 404 (Danny, 2026-10-22: never listed).
+ */
 export async function queryEventBySlug(slug: string): Promise<IndustryEvent | null> {
   const { data, error } = await getSupabaseAdmin()
     .from('industry_events')
@@ -211,13 +210,16 @@ export async function queryEventBySlug(slug: string): Promise<IndustryEvent | nu
     .maybeSingle()
 
   if (error || !data) return null
-  return mapRowToEvent(data)
+  const event = mapRowToEvent(data)
+  return isHiddenFundAdminEvent(event) ? null : event
 }
 
 /**
  * "Similar events" for a detail page (2026-10-22): a few upcoming events from the same city, the same topics
  * and the same asset classes, fetched side by side (each a small, index-ordered read of the board scope), then
  * ranked by pickSimilarEvents (lib/events/similar.ts). Was three sequential reads taking the first five found.
+ * A webinar's page reads the webinars lane (2026-10-22), so other webinars can be its similar events; every other
+ * page keeps the board's scope.
  */
 export async function queryRelatedEvents(event: IndustryEvent, limit = SIMILAR_MAX): Promise<IndustryEvent[]> {
   const today = todayIso()
@@ -227,7 +229,8 @@ export async function queryRelatedEvents(event: IndustryEvent, limit = SIMILAR_M
       .select('*')
       .eq('status', 'published')
       .or(BOARD_SCOPE)
-      .or(BOARD_FORMAT_SCOPE)
+      .or(formatScopeFor(event.eventFormat))
+      .or(FUND_ADMIN_GUARD)
       .gte('start_date', today)
       .order('start_date', { ascending: true })
       .limit(15)
@@ -251,22 +254,30 @@ export async function queryOrganizerUpcoming(event: IndustryEvent): Promise<Indu
     .eq('status', 'published')
     .eq('organizer_name', event.organizerName)
     .or(BOARD_SCOPE)
-    .or(BOARD_FORMAT_SCOPE)
+    .or(formatScopeFor(event.eventFormat))
+    .or(FUND_ADMIN_GUARD)
     .gte('start_date', todayIso())
     .order('start_date', { ascending: true })
     .limit(25)
   return (data ?? []).map(mapRowToEvent)
 }
 
-/** Slugs for the sitemap — board scope only (non-NA pages stay unlisted unless flagged board_exception). */
-/** Every listed event's page, with when its row last changed: the sitemap's honest "last modified". */
+/**
+ * Every listed event's page, with when its row last changed: the sitemap's honest "last modified". Board region
+ * only (non-NA pages stay unlisted unless flagged board_exception). Webinars are in it since 2026-10-22 (each is a
+ * page people search), except past ones, whose pages are noindex (isPastVirtualEvent), and never a fund
+ * administrator's.
+ */
 export async function queryAllEventSlugs(): Promise<{ slug: string; startDate: string; changedAt: string | null }[]> {
+  const today = todayIso()
   const { data } = await getSupabaseAdmin()
     .from('industry_events')
     .select('slug, start_date, created_at, updated_at, verified_at')
     .neq('status', 'draft')
     .or(BOARD_SCOPE)
-    .or(BOARD_FORMAT_SCOPE)
+    .or(LANE_FORMAT_SCOPE)
+    .or(FUND_ADMIN_GUARD)
+    .or(`event_format.neq.virtual,start_date.gte.${today},end_date.gte.${today}`)
     .order('start_date', { ascending: true })
     .limit(1000)
   return (data ?? []).map((r) => ({
@@ -278,13 +289,16 @@ export async function queryAllEventSlugs(): Promise<{ slug: string; startDate: s
 
 async function queryEventFacets(today: string): Promise<EventFacetCounts> {
   // Facets tally the full upcoming window (not the filtered view), matching
-  // how the news feed computes its counts.
+  // how the news feed computes its counts. Read across the webinars lane
+  // (2026-10-22) so the Virtual chip counts every webinar it would list; every
+  // other count, and the total, stays the board's default view.
   const { data: rows } = await getSupabaseAdmin()
     .from('industry_events')
-    .select('event_kind, event_format, cost_type, cost_verified, region, fund_categories, topics, city, ops_relevance')
+    .select('event_kind, event_format, cost_type, cost_verified, region, fund_categories, topics, city, ops_relevance, is_submitted')
     .eq('status', 'published')
     .or(BOARD_SCOPE)
-    .or(BOARD_FORMAT_SCOPE)
+    .or(LANE_FORMAT_SCOPE)
+    .or(FUND_ADMIN_GUARD)
     .gte('start_date', today)
 
   const kinds: Record<string, number> = {}
@@ -295,10 +309,14 @@ async function queryEventFacets(today: string): Promise<EventFacetCounts> {
   const topics: Record<string, number> = {}
   const cities: Record<string, number> = {}
   let opsHighCount = 0
+  let totalUpcoming = 0
 
   for (const row of rows ?? []) {
-    if (row.event_kind) kinds[row.event_kind] = (kinds[row.event_kind] ?? 0) + 1
     if (row.event_format) formats[row.event_format] = (formats[row.event_format] ?? 0) + 1
+    // A scouted webinar is in the lane, not the default view: it counts toward the Virtual chip only.
+    if (!inDefaultView(row)) continue
+    totalUpcoming++
+    if (row.event_kind) kinds[row.event_kind] = (kinds[row.event_kind] ?? 0) + 1
     // "Free" counts only the free events we checked, as the filter and the labels do.
     if (row.cost_type && (row.cost_type !== 'free' || row.cost_verified)) costs[row.cost_type] = (costs[row.cost_type] ?? 0) + 1
     if (row.region) regions[row.region] = (regions[row.region] ?? 0) + 1
@@ -321,6 +339,7 @@ async function queryEventFacets(today: string): Promise<EventFacetCounts> {
     topics,
     cities,
     opsHighCount,
-    totalUpcoming: rows?.length ?? 0,
+    totalUpcoming,
   }
 }
+

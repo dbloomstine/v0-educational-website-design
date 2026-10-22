@@ -31,6 +31,7 @@ import { MiniEventRow } from '@/components/events/MiniEventRow'
 import { buildEventTitle, eventMetaDescription } from '@/lib/events/seo'
 import { eventJsonLd, eventListJsonLd } from '@/lib/events/event-jsonld'
 import { pickNextEdition } from '@/lib/events/similar'
+import { isPastVirtualEvent } from '@/lib/events/webinars'
 
 export const revalidate = 3600
 
@@ -76,9 +77,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const title = buildEventTitle(event)
   // When, where and the checked cost first, then the organiser's words, cut to a search result's length.
   const description = eventMetaDescription(event)
+  // A webinar that has happened stays up but out of search (2026-10-22; no recording link in the table yet).
+  const today = new Date().toISOString().split('T')[0]
   return {
     title: { absolute: title },
     description,
+    ...(isPastVirtualEvent(event, today) ? { robots: { index: false, follow: true } } : {}),
     alternates: { canonical: `https://fundopshq.com/events/${slug}` },
     ...shareCard(title, description, `/events/${slug}`),
   }
