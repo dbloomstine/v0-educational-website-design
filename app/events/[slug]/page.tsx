@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft, ArrowUpRight, CalendarPlus, MapPin, Ticket, Users } from 'lucide-react'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { queryEventBySlug, queryEventFeed, queryRelatedEvents } from '@/lib/events/api'
+import { queryEventBySlug, queryEventFeed, queryOrganizerUpcoming, queryRelatedEvents } from '@/lib/events/api'
 import { COLLECTION_BY_SLUG, EVENT_COLLECTIONS, type EventCollection } from '@/lib/events/collections'
 import {
   EVENT_KIND_LABELS,
@@ -21,11 +21,13 @@ import {
 import { googleCalendarUrl } from '@/lib/events/ics'
 import { CATEGORY_LABELS } from '@/lib/news/constants'
 import { cn } from '@/lib/utils'
-import { breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
+import { breadcrumbJsonLd, shareCard } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 import { Panel } from '@/components/story/StoryBlocks'
 import type { IndustryEvent } from '@/lib/events/types'
 import { EventsSignup } from '@/components/events/EventsSignup'
+import { buildEventTitle, eventJsonLd, eventMetaDescription } from '@/lib/events/seo'
+import { pickNextEdition } from '@/lib/events/similar'
 
 export const revalidate = 3600
 
@@ -48,12 +50,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
   const event = await queryEventBySlug(slug)
   if (!event) return { title: 'Event not found' }
-  const dates = formatEventDates(event.startDate, event.endDate)
-  const title = `${event.name} — ${dates} | FundOpsHQ Events`
-  // The organiser's description is cut to a search result's length (it was sent whole, up to 300 characters).
-  const description = event.description
-    ? metaDescription(event.description)
-    : `${event.name} by ${event.organizerName}, ${dates}${event.city ? ` in ${event.city}` : ''}. Dates verified by FundOpsHQ.`
+  // Built to answer what people search an event by (2026-10-22): its name, city and year, then "date, venue,
+  // cost" for whichever of those the page has (lib/events/seo.ts). Was "<name> — <dates> | FundOpsHQ Events".
+  const title = buildEventTitle(event)
+  // When, where and the checked cost first, then the organiser's words, cut to a search result's length.
+  const description = eventMetaDescription(event)
   return {
     title: { absolute: title },
     description,
@@ -70,8 +71,15 @@ export default async function EventOrCollectionPage({ params }: { params: Promis
   }
   const event = await queryEventBySlug(slug)
   if (!event) notFound()
-  const related = await queryRelatedEvents(event)
-  return <EventDetailPage event={event} related={related} />
+  const today = new Date().toISOString().split('T')[0]
+  const isPast = (event.endDate ?? event.startDate) < today
+  // A past event's page stays up (people still search it); it points to the organizer's next one when there is one.
+  const [related, organizerNext] = await Promise.all([
+    queryRelatedEvents(event),
+    isPast ? queryOrganizerUpcoming(event).catch(() => []) : Promise.resolve([]),
+  ])
+  const next = isPast ? pickNextEdition(event, organizerNext, today) : null
+  return <EventDetailPage event={event} related={related} isPast={isPast} next={next} />
 }
 
 // ── Shared shell ──────────────────────────────────────────────────
@@ -178,43 +186,24 @@ async function CollectionPage({ collection }: { collection: EventCollection }) {
 
 // ── Event detail page ─────────────────────────────────────────────
 
-function EventDetailPage({ event, related }: { event: IndustryEvent; related: IndustryEvent[] }) {
+function EventDetailPage({
+  event,
+  related,
+  isPast,
+  next,
+}: {
+  event: IndustryEvent
+  related: IndustryEvent[]
+  isPast: boolean
+  next: { event: IndustryEvent; edition: boolean } | null
+}) {
   const kind = EVENT_KIND_LABELS[event.eventKind] ?? EVENT_KIND_LABELS.other
   // Said only where we saw it (2026-10-15): no Cost line at all rather than a guess.
   const cost = costDetail(event)
   const dates = formatEventDates(event.startDate, event.endDate)
   const location = formatEventLocation(event)
-  const isPast = event.startDate < new Date().toISOString().split('T')[0]
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Event',
-    name: event.name,
-    startDate: event.startDate,
-    ...(event.endDate ? { endDate: event.endDate } : {}),
-    description: event.description ?? undefined,
-    eventAttendanceMode:
-      event.eventFormat === 'virtual'
-        ? 'https://schema.org/OnlineEventAttendanceMode'
-        : event.eventFormat === 'hybrid'
-          ? 'https://schema.org/MixedEventAttendanceMode'
-          : 'https://schema.org/OfflineEventAttendanceMode',
-    location:
-      event.eventFormat === 'virtual'
-        ? { '@type': 'VirtualLocation', url: event.eventUrl }
-        : {
-            '@type': 'Place',
-            name: event.venue ?? event.city ?? 'TBA',
-            address: {
-              '@type': 'PostalAddress',
-              ...(event.city ? { addressLocality: event.city } : {}),
-              ...(event.stateRegion ? { addressRegion: event.stateRegion } : {}),
-              ...(event.country ? { addressCountry: event.country } : {}),
-            },
-          },
-    organizer: { '@type': 'Organization', name: event.organizerName },
-    url: `https://fundopshq.com/events/${event.slug}`,
-  }
+  // schema.org Event: dates, place, organizer, status, and the price only where we checked it (lib/events/seo.ts).
+  const jsonLd = eventJsonLd(event)
   // Front page → Events → this event, as the "All events" link above the name reads.
   const breadcrumbs = breadcrumbJsonLd([{ name: 'Events', path: '/events' }, { name: event.name }])
 
@@ -248,8 +237,26 @@ function EventDetailPage({ event, related }: { event: IndustryEvent; related: In
           <p className="mt-1.5 font-news text-[17px] text-foreground/70">by {event.organizerName}</p>
 
           {isPast && (
-            <p className="mt-4 inline-block rounded-md border border-amber-400/40 bg-amber-400/10 px-3 py-1.5 text-[12px] text-amber-300">
-              This event has passed — see <Link href="/events" className="underline hover:text-amber-200">upcoming events</Link>.
+            <p className="mt-4 max-w-[72ch] border-l-[3px] border-[var(--tab)] bg-card px-3 py-2 font-ui text-[13.5px] leading-snug text-foreground">
+              <strong className="font-bold">This event has passed.</strong>{' '}
+              {next ? (
+                <>
+                  {next.edition ? 'The next edition: ' : `Next from ${event.organizerName}: `}
+                  <Link prefetch={false} href={`/events/${next.event.slug}`} className="font-semibold underline underline-offset-2 hover:no-underline">
+                    {next.event.name}
+                  </Link>
+                  , {formatEventDates(next.event.startDate, next.event.endDate)}
+                  {next.event.city && next.event.eventFormat !== 'virtual' ? `, ${next.event.city}` : ''}.
+                </>
+              ) : (
+                <>
+                  See what is coming up on the{' '}
+                  <Link href="/events" className="font-semibold underline underline-offset-2 hover:no-underline">
+                    events board
+                  </Link>
+                  .
+                </>
+              )}
             </p>
           )}
 
@@ -340,7 +347,7 @@ function EventDetailPage({ event, related }: { event: IndustryEvent; related: In
 
           {related.length > 0 && (
             <div className="mt-6">
-              <Panel label="Related events">
+              <Panel label="Similar events" note="Upcoming">
                 <div className="-mx-[14px] -mb-[10px] -mt-1">
                   {related.map((e) => (
                     <MiniEventRow key={e.id} event={e} />

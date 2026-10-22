@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import type { IndustryEvent, EventFacetCounts, EventFeedResponse } from './types'
+import { SIMILAR_MAX, pickSimilarEvents } from './similar'
 
 export interface EventQueryParams {
   q?: string
@@ -205,14 +206,15 @@ export async function queryEventBySlug(slug: string): Promise<IndustryEvent | nu
   return mapRowToEvent(data)
 }
 
-/** Related events for a detail page: same city, then same topic, upcoming only. */
-export async function queryRelatedEvents(event: IndustryEvent, limit = 5): Promise<IndustryEvent[]> {
+/**
+ * "Similar events" for a detail page (2026-10-22): a few upcoming events from the same city, the same topics
+ * and the same asset classes, fetched side by side (each a small, index-ordered read of the board scope), then
+ * ranked by pickSimilarEvents (lib/events/similar.ts). Was three sequential reads taking the first five found.
+ */
+export async function queryRelatedEvents(event: IndustryEvent, limit = SIMILAR_MAX): Promise<IndustryEvent[]> {
   const today = todayIso()
-  const related: IndustryEvent[] = []
-  const seen = new Set([event.id])
-
-  const pull = async (filter: (q: any) => any) => {
-    let q = getSupabaseAdmin()
+  const upcoming = () =>
+    getSupabaseAdmin()
       .from('industry_events')
       .select('*')
       .eq('status', 'published')
@@ -220,26 +222,32 @@ export async function queryRelatedEvents(event: IndustryEvent, limit = 5): Promi
       .or(BOARD_FORMAT_SCOPE)
       .gte('start_date', today)
       .order('start_date', { ascending: true })
-      .limit(limit + 1)
-    q = filter(q)
-    const { data } = await q
-    for (const row of data ?? []) {
-      if (related.length >= limit || seen.has(row.id)) continue
-      seen.add(row.id)
-      related.push(mapRowToEvent(row))
-    }
-  }
+      .limit(15)
 
-  if (event.city) {
-    await pull((q) => q.eq('city', event.city))
-  }
-  if (related.length < limit && event.topics.length > 0) {
-    await pull((q) => q.overlaps('topics', event.topics))
-  }
-  if (related.length < limit) {
-    await pull((q) => q.overlaps('fund_categories', event.fundCategories.length ? event.fundCategories : ['PE']))
-  }
-  return related
+  const reads = [
+    event.city ? upcoming().eq('city', event.city) : null,
+    event.topics.length > 0 ? upcoming().overlaps('topics', event.topics) : null,
+    upcoming().overlaps('fund_categories', event.fundCategories.length ? event.fundCategories : ['PE']),
+  ].filter((q): q is NonNullable<typeof q> => q !== null)
+
+  const results = await Promise.all(reads)
+  const candidates = results.flatMap((r) => (r.data ?? []).map(mapRowToEvent))
+  return pickSimilarEvents(event, candidates, today, limit)
+}
+
+/** The organizer's upcoming events, for a past event's "next edition" link. Board scope; a handful, soonest first. */
+export async function queryOrganizerUpcoming(event: IndustryEvent): Promise<IndustryEvent[]> {
+  const { data } = await getSupabaseAdmin()
+    .from('industry_events')
+    .select('*')
+    .eq('status', 'published')
+    .eq('organizer_name', event.organizerName)
+    .or(BOARD_SCOPE)
+    .or(BOARD_FORMAT_SCOPE)
+    .gte('start_date', todayIso())
+    .order('start_date', { ascending: true })
+    .limit(25)
+  return (data ?? []).map(mapRowToEvent)
 }
 
 /** Slugs for the sitemap — board scope only (non-NA pages stay unlisted unless flagged board_exception). */
