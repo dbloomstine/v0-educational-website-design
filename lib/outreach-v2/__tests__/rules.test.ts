@@ -50,13 +50,14 @@ describe('exclusions', () => {
     expect(isUsCountry(null)).toBe(false)
   })
 
-  it('prefers marketing and communications, then IR, and never junior titles', () => {
-    expect(noteTitleRank('Head of Marketing')).toBe(0)
-    expect(noteTitleRank('Chief Marketing Officer')).toBe(0)
-    expect(noteTitleRank('Director, Corporate Communications')).toBe(0)
+  it('prefers senior IR, marketing and communications, then other comms, IR, marketing, and never junior titles', () => {
+    for (const t of ['Head of Investor Relations', 'Director of Investor Relations', 'VP, Investor Relations', 'Vice President - Investor Relations', 'Investor Relations Manager', 'Head of IR', 'Head of Marketing', 'Marketing Director', 'Chief Marketing Officer', 'CMO', 'Communications Director', 'Director, Corporate Communications', 'Partner, Head of Investor Relations', 'Managing Director, Communications']) {
+      expect(noteTitleRank(t), t).toBe(0)
+    }
     expect(noteTitleRank('Communications Manager')).toBe(1)
-    expect(noteTitleRank('Marketing Manager')).toBe(2)
-    expect(noteTitleRank('Investor Relations')).toBe(3)
+    expect(noteTitleRank('Investor Relations')).toBe(2)
+    expect(noteTitleRank('Principal, Capital Development & Investor Relations')).toBe(2)
+    expect(noteTitleRank('Marketing Manager')).toBe(3)
     expect(noteTitleRank('Marketing Coordinator')).toBeNull()
     expect(noteTitleRank('Marketing Intern')).toBeNull()
     expect(noteTitleRank('Managing Partner')).toBeNull()
@@ -179,6 +180,37 @@ describe('the Apollo contact checks', () => {
       { id: 'w', title: 'Marketing Intern', organization: { name: 'Acme Capital' } },
     ])
     expect(hit?.id).toBe('y')
+  })
+  it('picks the firm\'s press owner over other marketing, IR or proposal staff', () => {
+    const org = { name: 'Acme Capital' }
+    const hit = bestHit('Acme Capital', [
+      { id: 'a', title: 'Marketing Leader Proposal Management', organization: org },
+      { id: 'b', title: 'Marketing Manager', organization: org },
+      { id: 'c', title: 'Investor Relations Associate Director', organization: org },
+      { id: 'd', title: 'Vice President, Investor Relations', organization: org },
+      { id: 'e', title: 'Managing Partner', organization: org },
+    ])
+    expect(hit?.id).toBe('c')
+    expect(bestHit('Acme Capital', [
+      { id: 'b', title: 'Marketing Manager', organization: org },
+      { id: 'd', title: 'Vice President, Investor Relations', organization: org },
+    ])?.id).toBe('d')
+  })
+  it('falls back to an off-target press title only when no one better is found, and never to a partner or CEO', () => {
+    const org = { name: 'Acme Capital' }
+    expect(noteTitleRank('Marketing Leader Proposal Management')).toBe(4)
+    expect(noteTitleRank('Director, RFP & Proposals Marketing')).toBe(4)
+    expect(noteTitleRank('Product Marketing Manager')).toBe(4)
+    expect(bestHit('Acme Capital', [
+      { id: 'p', title: 'Managing Partner', organization: org },
+      { id: 'f', title: 'Marketing Leader Proposal Management', organization: org },
+    ])?.id).toBe('f')
+    expect(bestHit('Acme Capital', [
+      { id: 'p', title: 'Managing Partner', organization: org },
+      { id: 'q', title: 'Founder & CEO', organization: org },
+      { id: 'r', title: 'Partner', organization: org },
+    ])).toBeNull()
+    for (const t of ['Managing Partner', 'Founder', 'CEO', 'Partner', 'Chief Executive Officer', 'Chief Investment Officer']) expect(noteTitleRank(t), t).toBeNull()
   })
   it('accepts a verified US contact at the firm domain', () => {
     expect(checkMatch('Acme Capital', person).ok).toBe(true)

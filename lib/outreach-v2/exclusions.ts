@@ -73,38 +73,60 @@ export function isUsCountry(country: string | null | undefined): boolean {
 }
 
 /**
- * The people a news note goes to, best first: whoever looks after the firm's
- * own news. Null when the title is none of these, or junior.
+ * The people a news note goes to, best first (Danny, 2026-10-22: the person who
+ * owns the firm's press, never a partner or founder for being one).
+ *
+ *  0  a senior IR / marketing / communications owner: Head, Director, VP, Chief,
+ *     Managing Director or Partner of Investor Relations, Marketing,
+ *     Communications, PR, Media Relations, Corporate Affairs or Brand; CMO;
+ *     Investor Relations Manager.
+ *  1  any other communications / PR / media relations title.
+ *  2  any other investor relations title.
+ *  3  any other marketing title.
+ *  4  FALLBACK, used only when no one above is in the search: a press-adjacent
+ *     title whose job is not the firm's news (proposal / RFP writing, product
+ *     marketing, demand generation, digital or events marketing).
+ * Null when the title is none of these, or junior: a partner, founder or CEO
+ * with no IR / marketing / communications remit is never chosen.
  */
+const PRESS_FUNCTION = String.raw`(?:investor relations|marketing|communications|public relations|media relations|corporate affairs|brand|\bIR\b|\bPR\b)`
+const SENIOR = String.raw`\b(?:head|director|vp|svp|evp|vice president|chief|managing director|md|partner|leader|lead)\b`
+const OFF_TARGET = /\b(?:proposals?|rfps?|product marketing|demand gen(?:eration)?|growth marketing|performance marketing|digital marketing|events? marketing|field marketing|marketing operations|marketing technology)\b/i
 const NOTE_TITLE_LADDER: RegExp[] = [
-  /\b(?:head|director|vp|vice president|chief|managing director)\b.*\b(?:marketing|communications|public relations|investor relations|brand)\b|\bcmo\b|\bchief marketing\b|\bchief communications\b/i,
+  new RegExp(`${SENIOR}.*${PRESS_FUNCTION}|${PRESS_FUNCTION}.*${SENIOR}|\\bcmo\\b|\\bchief (?:marketing|communications)\\b|\\binvestor relations manager\\b|\\bmanager,? investor relations\\b`, 'i'),
   /\b(?:communications|public relations|media relations|corporate affairs)\b/i,
-  /\bmarketing\b/i,
   /\binvestor relations\b|\bIR\b/i,
+  /\bmarketing\b/i,
 ]
-const JUNIOR = /\b(?:intern|assistant|coordinator|analyst|receptionist|trainee|student|associate(?! director| vice president| principal))\b/i
+const NOTE_FALLBACK_RANK = NOTE_TITLE_LADDER.length
+const JUNIOR = /\b(?:intern|assistant(?! director| vice president)|coordinator|analyst|receptionist|trainee|student|associate(?! director| vice president| principal))\b/i
 
 export function noteTitleRank(title: string | null | undefined): number | null {
   const t = (title ?? '').trim()
   if (!t || JUNIOR.test(t)) return null
   const i = NOTE_TITLE_LADDER.findIndex((re) => re.test(t))
-  return i < 0 ? null : i
+  if (i < 0) return null
+  return OFF_TARGET.test(t) ? NOTE_FALLBACK_RANK : i
 }
 
-/** The Apollo `person_titles` a news-note search asks for. */
+/** The Apollo `person_titles` a news-note search asks for (one free search; titles are ORed). Danny's list first. */
 export const NOTE_TITLES = [
-  'Chief Marketing Officer',
-  'Head of Marketing',
-  'Director of Marketing',
-  'Marketing Director',
-  'VP Marketing',
-  'Head of Communications',
-  'Director of Communications',
-  'Communications Director',
-  'Corporate Communications',
-  'Public Relations',
   'Head of Investor Relations',
   'Director of Investor Relations',
+  'VP Investor Relations',
+  'Vice President Investor Relations',
+  'Investor Relations Manager',
+  'Head of Marketing',
+  'Marketing Director',
+  'Director of Marketing',
+  'VP Marketing',
+  'Chief Marketing Officer',
+  'Head of Communications',
+  'Communications Director',
+  'Director of Communications',
+  'VP Communications',
+  'Corporate Communications',
+  'Public Relations',
   'Investor Relations',
   'Marketing',
 ]
