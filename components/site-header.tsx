@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils"
 import { SECTIONS, sectionHref } from "@/lib/news/sections"
 import { openSignupCard } from "@/components/newsletter/SubscribePrompt"
 import { SiteMenu } from "@/components/site-menu"
+import { SiteProducts } from "@/components/site-products"
 
 /**
  * Masthead + section tabs (2026-10 redesign).
@@ -38,15 +39,6 @@ const TABS: Tab[] = [
     gap: i === 0 || s.slug === "private-equity" || s.slug === "lps",
   })),
 ]
-
-/**
- * Events is pinned at the right end of the strip instead of living in the
- * scrolling list. On a laptop-width window the list is longer than the
- * window, and the last tab — Events, half of what the site is — was simply
- * out of sight (Danny, 2026-10-01: "it's hard to know that you can scroll
- * right and left… to see the events on the far right").
- */
-const EVENTS_TAB = { label: "Events", href: "/events", match: (p: string) => p.startsWith("/events") }
 
 export function SiteHeader() {
   const pathname = usePathname() || "/"
@@ -210,7 +202,7 @@ export function SiteHeader() {
                       href={tab.href}
                       aria-current={active ? "page" : undefined}
                       className={cn(
-                        "relative flex h-10 items-center whitespace-nowrap px-2.5 font-ui text-[13px] transition-colors",
+                        "relative flex h-10 items-center whitespace-nowrap px-2.5 font-ui text-[13px] transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-foreground",
                         active ? "font-bold text-foreground" : "font-medium text-foreground/65 hover:text-foreground",
                       )}
                     >
@@ -245,18 +237,9 @@ export function SiteHeader() {
             )}
           </div>
 
-          {/* Pinned: always visible, whatever the window width. */}
-          <Link
-            href={EVENTS_TAB.href}
-            aria-current={EVENTS_TAB.match(pathname) ? "page" : undefined}
-            className={cn(
-              "relative flex h-10 shrink-0 items-center border-l border-foreground/15 px-3.5 font-ui text-[13px] transition-colors lg:mr-2",
-              EVENTS_TAB.match(pathname) ? "font-bold text-foreground" : "font-semibold text-foreground/80 hover:text-foreground",
-            )}
-          >
-            {EVENTS_TAB.label}
-            {EVENTS_TAB.match(pathname) && <span aria-hidden="true" className="absolute inset-x-3.5 bottom-0 h-[3px] bg-[#E6B045]" />}
-          </Link>
+          {/* Pinned: the league tables and the events board, always visible whatever the window width
+              (components/site-products.tsx). Events was pinned alone from 2026-10-01, when the scrolling list hid it. */}
+          <SiteProducts pathname={pathname} />
         </div>
       </nav>
 

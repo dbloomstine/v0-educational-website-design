@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import Link from "next/link"
-import { ArrowRight, Search, X } from "lucide-react"
+import { ArrowRight, CalendarDays, ListOrdered, Search, X } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { cn } from "@/lib/utils"
 import { SECTIONS, sectionHref } from "@/lib/news/sections"
@@ -28,9 +28,16 @@ const linkClass =
   "flex min-h-11 items-center border-b border-foreground/10 py-1.5 font-ui text-[15px] font-medium leading-tight text-foreground/85 active:text-foreground"
 const headClass = "mb-1 mt-6 font-ui text-[11px] font-bold uppercase tracking-[0.14em] text-foreground/45"
 
+/**
+ * The site's two other products, first after the subscribe button (2026-10-22, Danny: league tables "hard to
+ * find", events "a first citizen"). The same two the strip pins on a wider screen (site-products.tsx).
+ */
+const PRIMARY = [
+  { label: "League tables", href: "/league-tables", note: "The year's largest fund closes, by market", icon: ListOrdered },
+  { label: "Events", href: "/events", note: "Conferences and webinars, every date checked", icon: CalendarDays },
+]
+
 const MORE = [
-  { label: "Events calendar", href: "/events" },
-  { label: "League tables", href: "/league-tables" },
   { label: "Firms", href: "/firms" },
   { label: "Archive", href: "/archive" },
   { label: "Glossary", href: "/glossary" },
@@ -87,10 +94,11 @@ export function SiteMenu({ pathname, onClose, onSubscribe }: Props) {
 
   // The one entry for the page the reader is on: its own address, or failing that the page it sits under
   // (an event's page under Events). The front page and Latest are never a parent: every section is under /news.
-  const all = ["/", "/news", ...SECTIONS.map((x) => sectionHref(x.slug)), ...MORE.map((x) => x.href)]
+  const pages = [...PRIMARY, ...MORE].map((x) => x.href)
+  const all = ["/", "/news", ...SECTIONS.map((x) => sectionHref(x.slug)), ...pages]
   const current =
     all.find((h) => h === pathname) ??
-    MORE.map((x) => x.href)
+    pages
       .filter((h) => pathname.startsWith(`${h}/`))
       .sort((a, b) => b.length - a.length)[0]
 
@@ -162,6 +170,34 @@ export function SiteMenu({ pathname, onClose, onSubscribe }: Props) {
           Get FundOps Daily, free
           <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
         </button>
+
+        <nav aria-label="League tables and events" className="mt-4">
+          <ul className="grid grid-cols-2 gap-2">
+            {PRIMARY.map((x) => {
+              const here = x.href === current
+              const Icon = x.icon
+              return (
+                <li key={x.href}>
+                  <Link
+                    href={x.href}
+                    onClick={onClose}
+                    aria-current={here ? "page" : undefined}
+                    className={cn(
+                      "flex h-full min-h-[76px] flex-col rounded-sm border border-foreground/20 bg-foreground/[0.045] px-3 py-2.5 active:bg-foreground/10",
+                      here && "border-foreground/50",
+                    )}
+                  >
+                    <span className="flex items-center gap-1.5 font-ui text-[15px] font-bold leading-tight text-foreground">
+                      <Icon className="h-4 w-4 shrink-0 text-foreground/65" aria-hidden="true" />
+                      {x.label}
+                    </span>
+                    <span className="mt-1 font-ui text-[12.5px] leading-snug text-foreground/70">{x.note}</span>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
 
         {/* Two columns, so the whole site fits a phone's screen without a scroll. */}
         <div className="grid grid-cols-2 gap-x-5">
