@@ -175,7 +175,10 @@ export function firmHref(name: string | null | undefined): string | null {
  * can say why. With `sizeOptional` the size checks are skipped: that is how the
  * closes reported without a figure are counted.
  */
-export function leagueRejection(story: Story, opts: { sizeOptional?: boolean } = {}): string | null {
+export function leagueRejection(
+  story: Pick<Story, 'headline' | 'kind' | 'roundup' | 'leadEligible' | 'firmName' | 'closeType' | 'eventType' | 'sizeUsdM' | 'summary' | 'assetClasses' | 'fundName' | 'coverage'>,
+  opts: { sizeOptional?: boolean } = {},
+): string | null {
   // Quote marks sit inside the phrases the patterns look for: Keppel ‘very close’ to $2bn.
   const headline = story.headline.replace(/[‘’“”'"]/g, '')
   if (story.kind !== 'fundraising') return 'not a fundraising story'

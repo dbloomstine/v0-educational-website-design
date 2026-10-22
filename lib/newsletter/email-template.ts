@@ -33,6 +33,7 @@ import { entityKey, keysMatch } from './story-links'
 import { pullFollowed } from './personalize'
 import { followLineHtml } from './follow-line'
 import { pickEventsForEmail } from './email-events'
+import { pickRanks, rankHref, type RankList, type RankRow } from './ranks'
 import { EMAIL_FOLLOW_ROW } from './interests'
 import { interestLink } from './interest-link'
 import { cleanSummary } from '@/lib/news/summary-clean'
@@ -251,6 +252,45 @@ body, table, td, div, p, a, span { color-scheme: only light !important; }
   color: ${OCHRE};
   text-transform: uppercase;
   margin: 0 0 3px;
+}
+/* Today's biggest (lib/newsletter/ranks.ts): ranked one-liners, dense as a
+   league table. Layout lives here to keep the block small; every anchor
+   still carries its colour inline (see "The anchor color gotcha"). */
+.fops-rk-n {
+  padding: 5px 6px 5px 0;
+  vertical-align: top;
+  width: 14px;
+  font-family: ${FONT_MONO};
+  font-size: 11px;
+  line-height: 19px;
+  color: ${INK_MUTED};
+  border-bottom: 1px solid ${HAIRLINE};
+}
+.fops-rk-t {
+  padding: 5px 8px 5px 0;
+  vertical-align: top;
+  font-family: ${FONT_SERIF};
+  font-size: 14.5px;
+  line-height: 19px;
+  border-bottom: 1px solid ${HAIRLINE};
+}
+.fops-rk-t b { font-weight: 700; }
+.fops-rk-d {
+  font-family: ${FONT_SANS};
+  font-size: 12.5px;
+  color: ${INK_MUTED};
+}
+.fops-rk-s {
+  padding: 5px 0;
+  vertical-align: top;
+  white-space: nowrap;
+  text-align: right;
+  font-family: ${FONT_MONO};
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 19px;
+  color: ${INK};
+  border-bottom: 1px solid ${HAIRLINE};
 }
 .fops-blurb {
   color: ${INK_MUTED};
@@ -666,6 +706,43 @@ function renderTopStories(top: TopPick[]): string {
     </table>`
 }
 
+// ─── Today's biggest ───────────────────────────────────────────────────────
+// After the top stories: the edition's largest closes and deals, and its most
+// senior hires at firms a reader knows, each list ranked and cut off
+// (lib/newsletter/ranks.ts). An index of stories the edition already carries;
+// each row opens the story's page on the site.
+
+function renderRankRow(row: RankRow, n: number): string {
+  const text = row.isHeadline
+    ? renderHeadline(row.article)
+    : `<b>${escapeHtml(row.lead)}</b>${row.detail ? `<span class="fops-rk-d" style="color:${INK_MUTED};"> &middot; ${escapeHtml(row.detail)}</span>` : ''}`
+  const size = row.sizeUsdM ? `${row.converted ? '&asymp;' : ''}${escapeHtml(sizeWords(row.sizeUsdM))}` : ''
+  return `
+      <tr>
+        <td class="fops-rk-n fops-xs">${n}</td>
+        <td class="fops-rk-t"${size ? '' : ' colspan="2"'}><a href="${escapeHtml(rankHref(row.article))}${FROM_EMAIL}" style="color:${INK};text-decoration:none;" target="_blank">${text}</a></td>${size ? `
+        <td class="fops-rk-s" align="right">${size}</td>` : ''}
+      </tr>`
+}
+
+export function renderRanks(lists: RankList[]): string {
+  if (lists.length === 0) return ''
+  const blocks = lists
+    .map(
+      (list) => `
+      <tr>
+        <td colspan="3" class="fops-kicker" style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:1.5px;color:${OCHRE};text-transform:uppercase;padding:10px 0 3px;border-bottom:1px solid ${INK};">${escapeHtml(list.label)}</td>
+      </tr>${list.rows.map((row, i) => renderRankRow(row, i + 1)).join('')}`,
+    )
+    .join('')
+  return `
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom:20px;">
+      <tr>
+        <td colspan="3" class="fops-serif fops-ink" style="font-family:${FONT_SERIF};font-size:17px;font-weight:700;line-height:1.2;color:${INK};padding:0;">Today&rsquo;s <span class="fops-amber" style="font-style:italic;color:${AMBER};">biggest.</span></td>
+      </tr>${blocks}
+    </table>`
+}
+
 // ─── The week's largest closes (Mondays) ───────────────────────────────────
 // The league table's past seven days, as a small table: who, which fund, how
 // much. Each row opens the close's page on the site, where the reports are.
@@ -940,6 +1017,8 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   const formattedDate = formatDate(editionDate)
   const mastheadDate = formatMastheadDate(editionDate)
   const topBlock = renderTopStories(top)
+  // The whole edition's groups, less the stories it already leads with.
+  const ranksBlock = renderRanks(pickRanks(groups, top.map((t) => t.article)))
   const categoryBlocks = sections.map(renderCategory).join('')
   const sponsorTop = renderSponsorTop(sponsorSlate)
   const sponsorBottom = renderSponsorBottom(sponsorSlate, readerFirms)
@@ -1037,7 +1116,7 @@ export function renderNewsletterEmail(params: TemplateParams): string {
               <div class="fops-serif fops-ink" style="font-size:20px;font-weight:700;line-height:1.2;margin-bottom:${top.length > 0 ? 8 : 16}px;">
                 This morning&rsquo;s <span class="fops-amber" style="font-style:italic;">top stories.</span>
               </div>
-              ${topBlock}${followedBlock}
+              ${topBlock}${ranksBlock}${followedBlock}
               ${categoryBlocks}
             </td>
           </tr>

@@ -24,6 +24,7 @@ import { DEFAULT_SPONSOR_SLATE, type SponsorSlate } from './sponsors'
 import { arrangeEdition, kickerParts, sizeWords, type TopPick } from './top-stories'
 import { pullFollowed } from './personalize'
 import { pickEventsForEmail } from './email-events'
+import { pickRanks, rankHref, type RankList } from './ranks'
 import { FOLLOW } from '@/lib/brand/social'
 import { formatDate, readerLine, sponsorsInTheNews, topStoryLine, type TemplateParams, type WeekRecap } from './email-template'
 
@@ -57,6 +58,20 @@ function topStoryText(pick: TopPick): string {
 function sectionText(group: ArticleGroup): string {
   const rows = group.articles.map((a) => `- ${a.title}\n  ${a.sourceUrl}`)
   return `${heading(group.label.toUpperCase())}\n${rows.join('\n\n')}`
+}
+
+/** Today's biggest: each list under its label, numbered, the figure after the words, the story's page under it. */
+export function ranksText(lists: RankList[]): string {
+  if (lists.length === 0) return ''
+  const blocks = lists.map((list) => {
+    const rows = list.rows.map((r, i) => {
+      const words = r.detail ? `${r.lead} · ${r.detail}` : r.lead
+      const size = r.sizeUsdM ? ` · ${r.converted ? '~' : ''}${sizeWords(r.sizeUsdM)}` : ''
+      return `${i + 1}. ${words}${size}\n   ${rankHref(r.article)}${FROM_EMAIL}`
+    })
+    return `${list.label.toUpperCase()}\n${rows.join('\n')}`
+  })
+  return `${heading('TODAY’S BIGGEST')}\n\n${blocks.join('\n\n')}`
 }
 
 function recapText(recap: WeekRecap | null | undefined): string {
@@ -161,6 +176,8 @@ export function renderNewsletterText(params: TemplateParams): string {
   if (top.length > 0) {
     blocks.push(`${heading('THIS MORNING’S TOP STORIES')}\n\n${top.map(topStoryText).join('\n\n')}`)
   }
+  const ranksBlock = ranksText(pickRanks(groups, top.map((t) => t.article)))
+  if (ranksBlock) blocks.push(ranksBlock)
   if (followed) blocks.push(sectionText(followed))
   for (const group of sections) blocks.push(sectionText(group))
 
