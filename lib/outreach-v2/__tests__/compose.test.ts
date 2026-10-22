@@ -56,10 +56,11 @@ describe('sponsor pitch (Danny’s copy, 2026-10-14)', () => {
     const r = pitch({ hookClause: 'Congrats on the Series A.' })
     expect(r.subject).toBe('ToltIQ in FundOps Daily?')
     expect(r.text).toMatch(/^Hi David,\n\nToltIQ's buyers read FundOps Daily every morning: ops, finance and deal teams at GPs, LPs and the firms that serve them\. Congrats on the Series A\./)
-    expect(r.text).toContain(`I mocked up what a ToltIQ week would look like: ${MOCK}`)
+    expect(r.text).toContain(`I mocked up what a ToltIQ week in the email could look like: ${MOCK}`)
     expect(r.text).toContain("about 150 readers at 60+ firms, plus daily TikTok, Instagram and YouTube")
-    expect(r.text).toContain("it's a founding rate of $150 a week")
-    expect(r.text).toContain('Worth trying a week in November?')
+    expect(r.text.replace(/https?:\/\/\S+/g, "")).not.toMatch(/\$150|founding rate|sponsor/i)
+    expect(r.text).toContain("It's small and growing: about 150 readers at 60+ firms")
+    expect(r.text).toContain('Worth a look for November?')
     expect(r.text).toContain('Danny\nFounder, FundOpsHQ')
   })
 
@@ -77,7 +78,7 @@ describe('sponsor pitch (Danny’s copy, 2026-10-14)', () => {
     expect(audienceLine(null, 60)).toBeNull()
     const r = pitch({ audience: null })
     expect(r.text).not.toMatch(/readers at/)
-    expect(r.text).toContain("While the list is young it's a founding rate of $150 a week.")
+    expect(r.text).not.toMatch(/small and growing/)
   })
 
   it('rounds the figures down to ten', () => {
@@ -98,8 +99,8 @@ describe('sponsor pitch (Danny’s copy, 2026-10-14)', () => {
   })
 
   it("says 'an' before a vowel (2026-10-22: 'a iConnections week')", () => {
-    expect(pitch({ company: 'iConnections' }).text).toContain('what an iConnections week would look like')
-    expect(pitch({ company: 'ToltIQ' }).text).toContain('what a ToltIQ week would look like')
+    expect(pitch({ company: 'iConnections' }).text).toContain('what an iConnections week in the email could look like')
+    expect(pitch({ company: 'ToltIQ' }).text).toContain('what a ToltIQ week in the email could look like')
   })
 
   it('writes possessives the way people do', () => {

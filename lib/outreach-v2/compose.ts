@@ -145,17 +145,18 @@ export function renderSponsorPitch(p: PitchInput): Rendered {
   const c = p.company.trim()
   const clause = (p.hookClause ?? '').trim()
   const lead = `${possessive(c)} buyers read FundOps Daily every morning: ops, finance and deal teams at GPs, LPs and the firms that serve them.`
-  const young = p.audience
-    ? `One sponsor at a time takes over the email and fundopshq.com. While the list is young (${p.audience}) it's a founding rate of $150 a week.`
-    : "One sponsor at a time takes over the email and fundopshq.com. While the list is young it's a founding rate of $150 a week."
+  // No price and no "sponsor takes over" in a first email (2026-10-22: the Fundable test pitch landed in Gmail's
+  // Promotions tab, the news note in the inbox; offer language is what Gmail sorts as promotional). The rate is on
+  // the mock-up page and in a reply.
+  const audience = p.audience ? `It's small and growing: ${p.audience}.` : null
   return render(
     sponsorPitchSubject(c),
     [
       [greet(p.firstName)],
       [clause ? `${lead} ${clause}` : lead],
-      [`I mocked up what ${aOrAn(c)} ${c} week would look like: `, { text: `See ${possessive(c)} ad`, href: p.mockup }],
-      [young],
-      [`Worth trying a week in ${p.month}?`],
+      [`I mocked up what ${aOrAn(c)} ${c} week in the email could look like: `, { text: `See ${possessive(c)} ad`, href: p.mockup }],
+      ...(audience ? [[audience]] : []),
+      [`Worth a look for ${p.month}?`],
       [OPT_OUT],
     ],
     SIGN,
