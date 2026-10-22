@@ -10,7 +10,7 @@ import type { IndustryEvent } from '@/lib/events/types'
 import { LeadStory, RiverRow, SectionFlag, TopStory } from '@/components/story/StoryBlocks'
 import { loadStories, STORY_WINDOW_DAYS } from '@/lib/news/front-page'
 import { rankSection, type Story } from '@/lib/news/stories'
-import { ASSET_LABEL, KIND_LABEL, SECTIONS, SECTION_BY_SLUG, sectionHref, sectionNoun, storyInSection } from '@/lib/news/sections'
+import { ASSET_LABEL, KIND_LABEL, SECTIONS, SECTION_BY_SLUG, sectionHref, sectionNoun, sectionSearchTitle, storyInSection } from '@/lib/news/sections'
 import { OG_IMAGES, breadcrumbJsonLd } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 import { FilterTabs } from '@/components/news/FilterTabs'
@@ -41,14 +41,17 @@ export const facetHref = (slug: string, facet: string) => `${sectionHref(slug)}/
 export function sectionMetadata(slug: string): Metadata {
   const section = SECTION_BY_SLUG.get(slug)
   if (!section) return {}
-  const title = `${sectionNoun(section).replace(/^./, (c) => c.toUpperCase())} news`
+  // In the words people search with (2026-10-22): was "Private credit news | FundOpsHQ" with the short line
+  // under the H1 as its description. Both now live with the section (lib/news/sections.ts).
+  const title = sectionSearchTitle(section)
+  const description = section.metaDescription
   const url = `https://fundopshq.com${sectionHref(slug)}`
   return {
-    title,
-    description: section.description,
+    title: { absolute: title },
+    description,
     alternates: { canonical: url },
-    openGraph: { title: `${title} | FundOpsHQ`, description: section.description, type: 'website', url, images: OG_IMAGES },
-    twitter: { card: 'summary_large_image', title: `${title} | FundOpsHQ`, description: section.description, images: OG_IMAGES.map((i) => i.url) },
+    openGraph: { title, description, type: 'website', url, images: OG_IMAGES },
+    twitter: { card: 'summary_large_image', title, description, images: OG_IMAGES.map((i) => i.url) },
   }
 }
 

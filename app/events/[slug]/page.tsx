@@ -1,11 +1,12 @@
 import { Metadata } from 'next'
+import { cache } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, ArrowUpRight, CalendarPlus, MapPin, Ticket, Users } from 'lucide-react'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { queryEventBySlug, queryEventFeed, queryOrganizerUpcoming, queryRelatedEvents } from '@/lib/events/api'
-import { COLLECTION_BY_SLUG, EVENT_COLLECTIONS, collectionTitle, type EventCollection } from '@/lib/events/collections'
+import { COLLECTION_BY_SLUG, EVENT_COLLECTIONS, collectionDescription, collectionTitle, groupEventsByMonth, type EventCollection } from '@/lib/events/collections'
 import {
   EVENT_KIND_LABELS,
   EVENT_FORMAT_LABELS,
@@ -38,13 +39,29 @@ export async function generateStaticParams() {
   return EVENT_COLLECTIONS.map((c) => ({ slug: c.slug }))
 }
 
+/**
+ * A collection page's events, read once per render (2026-10-22). The meta description now says how many are
+ * upcoming, and React's cache hands generateMetadata and the page the same read, so the count costs no query.
+ * A failed read is null: the page still renders, with the board link.
+ */
+const collectionFeed = cache(async (slug: string) => {
+  const collection = COLLECTION_BY_SLUG.get(slug)
+  if (!collection) return null
+  try {
+    return await queryEventFeed({ ...collection.filter, limit: 60 })
+  } catch {
+    return null
+  }
+})
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const collection = COLLECTION_BY_SLUG.get(slug)
   if (collection) {
-    // What search results show: "Fund Compliance Conferences & Events 2026–27 | FundOpsHQ" where the page has one.
+    // What search results show: "Chicago Private Equity Events & Conferences 2026–27", the years from today's date.
     const title = collectionTitle(collection)
-    const description = collection.description ?? collection.blurb
+    const feed = await collectionFeed(slug)
+    const description = collectionDescription(collection, feed?.total ?? null)
     return {
       title: { absolute: title },
       description,
@@ -91,13 +108,11 @@ export default async function EventOrCollectionPage({ params }: { params: Promis
 // ── Collection landing page ───────────────────────────────────────
 
 async function CollectionPage({ collection }: { collection: EventCollection }) {
-  let events: IndustryEvent[] = []
-  try {
-    const feed = await queryEventFeed({ ...collection.filter, limit: 60 })
-    events = feed.events
-  } catch {
-    // page still renders with the board link
-  }
+  const feed = await collectionFeed(collection.slug)
+  const events: IndustryEvent[] = feed?.events ?? []
+  // A heading per month (2026-10-22): "November 2026" is how people plan, and what they search with.
+  const months = groupEventsByMonth(events)
+  const more = feed?.total != null && feed.total > events.length ? feed.total - events.length : 0
 
   const boardQs = new URLSearchParams(collection.boardParams).toString()
 
@@ -131,15 +146,34 @@ async function CollectionPage({ collection }: { collection: EventCollection }) {
         </div>
         <div className="mx-auto max-w-[1100px] px-4 pb-12 pt-6 lg:px-6">
           <EventsSignup city={collection.filter.city ?? null} monday={mondayEmailLive()} className="mb-6" />
-          <div className="panel overflow-hidden">
-            {events.length === 0 ? (
+          {events.length === 0 ? (
+            <div className="panel overflow-hidden">
               <p className="px-4 py-12 text-center text-sm text-muted-foreground">
                 Nothing upcoming here right now — check the <Link href="/events" className="font-semibold text-foreground underline underline-offset-2 hover:no-underline">full board</Link>.
               </p>
-            ) : (
-              events.map((e) => <MiniEventRow key={e.id} event={e} />)
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="space-y-5">
+              {months.map((m, i) => (
+                // The last month's count is left off when the list stops partway through it.
+                <Panel key={m.key} label={m.label} note={more > 0 && i === months.length - 1 ? undefined : m.events.length === 1 ? '1 event' : `${m.events.length} events`}>
+                  <div className="-mx-[14px] -mb-[10px] -mt-1">
+                    {m.events.map((e) => (
+                      <MiniEventRow key={e.id} event={e} />
+                    ))}
+                  </div>
+                </Panel>
+              ))}
+            </div>
+          )}
+          {more > 0 && (
+            <p className="mt-4 font-ui text-[13px] text-muted-foreground">
+              The next {events.length} of {feed!.total} upcoming.{' '}
+              <Link href={`/events?${boardQs}`} className="font-semibold text-foreground underline underline-offset-2 hover:no-underline">
+                See them all on the board →
+              </Link>
+            </p>
+          )}
 
           <p className="mt-8 text-[12px] text-muted-foreground">
             Know an event that belongs here?{' '}

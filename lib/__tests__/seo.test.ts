@@ -1,5 +1,17 @@
 import { describe, it, expect } from 'vitest'
-import { breadcrumbJsonLd, metaDescription, shareCard, OG_IMAGES } from '../seo'
+import { brandedTitle, breadcrumbJsonLd, metaDescription, shareCard, OG_IMAGES } from '../seo'
+
+describe('a branded search title', () => {
+  it('ends in the brand when it fits in 60 characters, and drops the brand rather than the words when not', () => {
+    expect(brandedTitle('Private credit news: fund closes, deals & hires')).toBe('Private credit news: fund closes, deals & hires | FundOpsHQ')
+    const long = 'Washington DC Private Equity Events & Conferences 2026–27'
+    expect(brandedTitle(long)).toBe(long)
+    // Exactly 60 with the brand still takes it.
+    const at60 = 'x'.repeat(48)
+    expect(brandedTitle(at60)).toHaveLength(60)
+    expect(brandedTitle(at60 + 'x')).toBe(at60 + 'x')
+  })
+})
 
 describe('the breadcrumb list', () => {
   it('starts at the front page, numbers the crumbs and leaves the page itself without an address', () => {

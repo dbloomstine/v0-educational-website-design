@@ -25,6 +25,20 @@ export function shareCard(title: string, description: string, path: string) {
   }
 }
 
+/** About what a search result shows of a title before it cuts it. */
+export const TITLE_MAX = 60
+
+/**
+ * A search title with " | FundOpsHQ" on the end when it still fits in a
+ * result, else the words alone (2026-10-22). The words people type come
+ * first and are the part worth keeping; Google shows the site's name above
+ * the result anyway, so the brand is the part to drop.
+ */
+export function brandedTitle(core: string, max = TITLE_MAX): string {
+  const branded = `${core} | FundOpsHQ`
+  return branded.length <= max ? branded : core
+}
+
 /**
  * A meta description cut to what a search result shows (about 160 characters),
  * on a word, with an ellipsis. Event descriptions were sent at 300.
