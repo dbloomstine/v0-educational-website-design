@@ -4,21 +4,28 @@ import { useEffect, useRef, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { ArrowRight, CheckCircle2, Loader2, X } from 'lucide-react'
 import { captureSignupSource } from '@/lib/newsletter/signup-source'
-import { INTERESTS, ROLES, interestWords } from '@/lib/newsletter/interests'
+import { INTERESTS, ROLES, eventSignupTags, interestWords } from '@/lib/newsletter/interests'
+import { eventsOfferHeadline } from '@/lib/events/offer'
 import { isMarkedSubscribed, markSubscribed } from '@/lib/newsletter/subscribed-flag'
 import { useSubscribe } from '@/lib/newsletter/use-subscribe'
 import {
+  ARRIVAL_DELAY_MS,
   DISMISSED_KEY,
+  SEEN_KEY,
   OPEN_SIGNUP_EVENT,
   SECONDS_KEY,
   SHOWN_KEY,
   VIEWS_KEY,
   arrivedAsSubscriber,
   arrivedFromPost,
+  isFirstVisit,
   isQuiet,
   isReadingPage,
   nextDismissal,
   parseDismissal,
+  promptForm,
+  promptLayout,
+  shouldShowOnArrival,
   shouldShowPrompt,
 } from '@/lib/newsletter/prompt-rules'
 import { FOLLOW } from '@/lib/brand/social'
@@ -43,6 +50,14 @@ import { FollowChoices, type FollowPass } from './FollowChoices'
  * real dialog now, it takes the keyboard focus, keeps Tab inside itself,
  * holds the page still behind it, and gives all of that back when it closes.
  * Mounted once, in the root layout.
+ *
+ * 2026-10-22: a first visit gets it on arrival (prompt-rules.ts). On a phone
+ * a box that came by itself is a bottom panel (`layout: 'sheet'`) that covers
+ * at most a third of the screen and leaves the page free to scroll: no tint,
+ * no held page, no focus taken. On an events page it offers the events
+ * (with the city, read from the page's events block) and records the opt-in.
+ * A signup through it is stored with the form `firstvisit` or `popup` and the
+ * page it appeared on.
  */
 
 function read(store: 'local' | 'session', key: string): string | null {
@@ -71,6 +86,13 @@ function readerFirms(): Promise<number | null> {
     .then((d) => (typeof d?.firms === 'number' ? d.firms : null))
     .catch(() => null)
   return firmsRequest
+}
+
+/** The events page the box is on, if any: the city from the page's events block ("" for none), or the events section. */
+function readEventsContext(pathname: string): { city: string | null } | null {
+  const block = document.querySelector('[data-signup-events]')
+  if (block) return { city: block.getAttribute('data-signup-events') || null }
+  return /^\/events(\/|$)/.test(pathname) ? { city: null } : null
 }
 
 function isTyping(): boolean {
@@ -121,7 +143,19 @@ export function SubscribePrompt() {
   const [cameFrom, setCameFrom] = useState<ReturnType<typeof arrivedFromPost>>(null)
   const [followed, setFollowed] = useState<string[]>([])
   const [role, setRole] = useState<string[]>([])
-  const sub = useSubscribe('popup', () => ({ interests: followed, role: role[0] }))
+  /** It came by itself on a first visit (counted as form `firstvisit`). */
+  const [firstVisit, setFirstVisit] = useState(false)
+  /** A bottom panel on a phone when it came by itself; the box in the middle otherwise. */
+  const [layout, setLayout] = useState<'sheet' | 'dialog'>('dialog')
+  /** The page it appeared on, stored with a signup (`signup_page`). */
+  const [appearedAt, setAppearedAt] = useState<string | null>(null)
+  /** On an events page: the city the page is about, if any. */
+  const [eventsCtx, setEventsCtx] = useState<{ city: string | null } | null>(null)
+  const sub = useSubscribe(promptForm(firstVisit && !requested), () => ({
+    interests: [...followed, ...(eventsCtx ? eventSignupTags(eventsCtx.city) : [])],
+    role: role[0],
+    ...(appearedAt ? { page: appearedAt } : {}),
+  }))
   const emailRef = useRef<HTMLInputElement>(null)
   const boxRef = useRef<HTMLDivElement>(null)
   const viewCounted = useRef<string | null>(null)
@@ -151,6 +185,44 @@ export function SubscribePrompt() {
     const fromPost = arrivedFromPost(captureSignupSource())
     setCameFrom(fromPost)
 
+    // It is here by itself: remember that this browser has seen it, and how and where it came.
+    const appear = (first: boolean) => {
+      shownInMemory = true
+      write('session', SHOWN_KEY, '1')
+      write('local', SEEN_KEY, String(Date.now()))
+      setFirstVisit(first)
+      setLayout(promptLayout(window.innerWidth, false))
+      setAppearedAt(pathname)
+      setEventsCtx(readEventsContext(pathname))
+      setRequested(false)
+      setOpen(true)
+    }
+
+    // A first visit: on arrival, once the page has painted and is on screen (2026-10-22).
+    if (isFirstVisit({ subscribed: false, seenBefore: Boolean(read('local', SEEN_KEY)), dismissal })) {
+      let visibleMs = 0
+      const STEP = 300
+      const arrival = window.setInterval(() => {
+        if (document.visibilityState !== 'visible') return
+        visibleMs += STEP
+        if (visibleMs < ARRIVAL_DELAY_MS || document.getElementById('site-menu')) return
+        const show = shouldShowOnArrival({
+          pathname,
+          subscribed: isMarkedSubscribed(),
+          seenBefore: Boolean(read('local', SEEN_KEY)),
+          shownThisVisit: Boolean(read('session', SHOWN_KEY)),
+          dismissal,
+          typing: isTyping(),
+          viewportHeight: window.innerHeight,
+        })
+        if (show) {
+          window.clearInterval(arrival)
+          appear(true)
+        }
+      }, STEP)
+      return () => window.clearInterval(arrival)
+    }
+
     const check = (leaving: boolean) => {
       // Not over the phone's menu: the reader is on their way somewhere. The clock asks again a second later.
       if (document.getElementById('site-menu')) return
@@ -169,12 +241,7 @@ export function SubscribePrompt() {
         viewportHeight: window.innerHeight,
         leaving,
       })
-      if (show) {
-        shownInMemory = true
-        write('session', SHOWN_KEY, '1')
-        setRequested(false)
-        setOpen(true)
-      }
+      if (show) appear(false)
     }
 
     const timer = window.setInterval(() => {
@@ -206,6 +273,11 @@ export function SubscribePrompt() {
       const d = (e as CustomEvent<Handed>).detail ?? {}
       shownInMemory = true
       write('session', SHOWN_KEY, '1')
+      write('local', SEEN_KEY, String(Date.now()))
+      setFirstVisit(false)
+      setLayout('dialog')
+      setAppearedAt(window.location.pathname)
+      setEventsCtx(readEventsContext(window.location.pathname))
       readerFirms().then(setFirms)
       setCameFrom(arrivedFromPost(captureSignupSource()))
       setHanded(typeof d.token === 'string' ? { token: d.token } : typeof d.ticket === 'string' ? { ticket: d.ticket, already: Boolean(d.already) } : null)
@@ -250,13 +322,27 @@ export function SubscribePrompt() {
   }, [ownTicket])
 
   const shown = open && (requested || isReadingPage(pathname))
+  const sheet = layout === 'sheet'
+
+  // Signed up from the bottom panel, which has no room for the tick-boxes: the box comes up in the middle to
+  // ask them, as it does after every other form. They have said yes; it is no longer an ask on arrival.
+  useEffect(() => {
+    if (!sheet) return
+    if (sub.status === 'success') {
+      if (sub.preferencesToken) setHanded({ token: sub.preferencesToken })
+      setLayout('dialog')
+    } else if (sub.status === 'already') {
+      setLayout('dialog')
+    }
+  }, [sheet, sub.status, sub.preferencesToken])
 
   // A dialog: the page behind holds still, the focus comes in, and both go
   // back as they were when it closes. A reader who pressed Subscribe gets the
   // cursor in the email field; one it appeared to does not (on a phone that
   // would throw the keyboard up over what they were reading).
   useEffect(() => {
-    if (!shown) return
+    // The bottom panel leaves the page as it is: it scrolls, and the focus stays where the reader put it.
+    if (!shown || sheet) return
     const before = document.activeElement as HTMLElement | null
     const root = document.documentElement
     const overflow = root.style.overflow
@@ -267,7 +353,7 @@ export function SubscribePrompt() {
       root.style.overflow = overflow
       before?.focus?.({ preventScroll: true })
     }
-  }, [shown, requested, finished])
+  }, [shown, sheet, requested, finished])
 
   function close(remember: 'dismissed' | 'subscribed' | 'none') {
     if (remember === 'dismissed') {
@@ -285,7 +371,7 @@ export function SubscribePrompt() {
     if (!shown) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') return close(closeKind)
-      if (e.key !== 'Tab' || !boxRef.current) return
+      if (sheet || e.key !== 'Tab' || !boxRef.current) return
       const stops = [...boxRef.current.querySelectorAll<HTMLElement>('button, input, a[href]')].filter((el) => !el.hasAttribute('disabled'))
       if (stops.length === 0) return
       const first = stops[0]
@@ -304,11 +390,84 @@ export function SubscribePrompt() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [shown, closeKind])
+  }, [shown, sheet, closeKind])
 
   if (!shown) return null
 
   const followedWords = interestWords(followed)
+  const skipLabel = requested ? 'No thanks' : 'No thanks, show me the page'
+
+  if (sheet && !finished) {
+    return (
+      // A bottom panel, at most a third of the screen: the page above stays readable and scrollable.
+      <div className="paper fixed inset-x-0 bottom-0 z-[70]" style={{ background: 'transparent' }}>
+        <div
+          ref={boxRef}
+          role="dialog"
+          aria-modal="false"
+          aria-label="Subscribe to FundOps Daily"
+          tabIndex={-1}
+          className="signup-sheet max-h-[34vh] overflow-y-auto border-t-[3px] border-[var(--tab)] bg-card text-foreground shadow-[0_-10px_36px_rgba(8,16,30,0.32)] outline-none"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+        >
+          <form onSubmit={sub.submit} className="px-4 pb-2.5 pt-3">
+            <div className="flex items-start justify-between gap-2">
+              <p className="font-news text-[17px] font-medium leading-[1.2] tracking-[-0.01em]">
+                {eventsCtx ? (
+                  <>
+                    {eventsOfferHeadline(eventsCtx.city)} <span className="italic" style={{ color: 'var(--display-accent)' }}>Free.</span>
+                  </>
+                ) : (
+                  <>
+                    Every fund close, deal and move, <span className="italic" style={{ color: 'var(--display-accent)' }}>in one free morning email.</span>
+                  </>
+                )}
+              </p>
+              <button
+                type="button"
+                onClick={() => close(closeKind)}
+                aria-label="Close"
+                className="-mr-1.5 -mt-1 shrink-0 rounded-sm p-1.5 text-foreground/60 hover:text-foreground"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <div className="mt-2 flex items-stretch gap-2">
+              <input
+                ref={emailRef}
+                type="email"
+                value={sub.email}
+                onChange={(e) => sub.setEmail(e.target.value)}
+                placeholder="name@firm.com"
+                required
+                autoComplete="email"
+                inputMode="email"
+                aria-label="Email address"
+                className="h-11 min-w-0 flex-1 rounded-sm border-2 border-foreground/35 bg-background px-3 font-ui text-[16px] text-foreground placeholder:text-muted-foreground/70 focus:border-foreground focus:outline-none"
+              />
+              <button
+                type="submit"
+                disabled={sub.status === 'loading'}
+                className="inline-flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-sm px-3.5 font-ui text-[12.5px] font-extrabold uppercase tracking-[0.07em] disabled:opacity-50"
+                style={{ background: 'var(--tab)', color: 'var(--ink)' }}
+              >
+                {sub.status === 'loading' ? <Loader2 className="h-4 w-4 animate-spin" /> : <>Subscribe <ArrowRight className="h-3.5 w-3.5" aria-hidden /></>}
+              </button>
+            </div>
+            {sub.status === 'error' && <p className="mt-1 font-ui text-xs text-red-400" role="alert">{sub.errorMsg}</p>}
+            <div className="mt-1 flex items-center justify-between gap-3 font-ui text-[12.5px] text-muted-foreground">
+              <button type="button" onClick={() => close(closeKind)} className="rounded-sm py-1.5 font-semibold text-foreground/75 underline underline-offset-2 hover:text-foreground">
+                {skipLabel}
+              </button>
+              <button type="button" onClick={() => close('subscribed')} className="rounded-sm py-1.5 underline underline-offset-2 hover:text-foreground">
+                I subscribe
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )
+  }
 
   return (
     // `.paper` brings the newsprint colours for the box; it also paints a cream
@@ -393,7 +552,12 @@ export function SubscribePrompt() {
         ) : (
           <form onSubmit={sub.submit} className="px-4 pb-4 pt-5 sm:px-6 sm:pb-5 sm:pt-6">
             <h2 className="font-news text-[25px] font-medium leading-[1.1] tracking-[-0.014em] sm:text-[32px]">
-              {cameFrom ? (
+              {eventsCtx ? (
+                <>
+                  {eventsOfferHeadline(eventsCtx.city)}{' '}
+                  <span className="italic" style={{ color: 'var(--display-accent)' }}>Free.</span>
+                </>
+              ) : cameFrom ? (
                 <>
                   You found {cameFrom.story ? 'this' : 'us'} on {cameFrom.network}.{' '}
                   <span className="italic" style={{ color: 'var(--display-accent)' }}>Get the whole day in one morning email.</span>
@@ -459,6 +623,17 @@ export function SubscribePrompt() {
             </div>
             {sub.status === 'error' && <p className="mt-1.5 font-ui text-xs text-red-400" role="alert">{sub.errorMsg}</p>}
 
+            {/* The way past it, said plainly: it is an ask, and the page is right there. */}
+            {!requested && (
+              <button
+                type="button"
+                onClick={() => close(closeKind)}
+                className="mt-3 block w-full rounded-sm py-1 text-center font-ui text-[13.5px] font-semibold text-foreground/75 underline underline-offset-[3px] hover:text-foreground"
+              >
+                {skipLabel}
+              </button>
+            )}
+
             <div className="mt-2.5 flex items-center justify-between gap-3 font-ui text-[12px] text-muted-foreground">
               <span>
                 Free. <span className="hidden sm:inline">One email a day. </span>Unsubscribe in one click.
@@ -467,9 +642,11 @@ export function SubscribePrompt() {
                 <button type="button" onClick={() => close('subscribed')} className="rounded-sm py-1 underline underline-offset-2 hover:text-foreground">
                   I subscribe
                 </button>
-                <button type="button" onClick={() => close(closeKind)} className="rounded-sm py-1 underline underline-offset-2 hover:text-foreground">
-                  No thanks
-                </button>
+                {requested && (
+                  <button type="button" onClick={() => close(closeKind)} className="rounded-sm py-1 underline underline-offset-2 hover:text-foreground">
+                    No thanks
+                  </button>
+                )}
               </span>
             </div>
           </form>
