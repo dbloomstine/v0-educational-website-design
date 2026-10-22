@@ -79,7 +79,7 @@ class ClassifierApiError extends Error {
   }
 }
 
-interface ArticleForClassification {
+export interface ArticleForClassification {
   id: string;
   title: string;
   description: string | null;
@@ -89,7 +89,7 @@ interface ArticleForClassification {
   extracted_data?: unknown;
 }
 
-interface ClassificationOutput {
+export interface ClassificationOutput {
   fund_categories: string[];
   article_type: string;
   source_type: string;
@@ -168,7 +168,7 @@ const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
 const DEFAULT_MODEL = 'claude-haiku-4-5-20251001';
 export const CLASSIFIER_MODEL = process.env.NEWS_CLASSIFIER_MODEL?.trim() || DEFAULT_MODEL;
 
-const SYSTEM_PROMPT = `You are classifying news articles about investment funds and alternative asset management for a professional intelligence database used by business development professionals.
+export const SYSTEM_PROMPT = `You are classifying news articles about investment funds and alternative asset management for a professional intelligence database used by business development professionals.
 
 For each article, return a JSON object with exactly these fields:
 {
@@ -201,7 +201,7 @@ For each article, return a JSON object with exactly these fields:
 RELEVANCE SCORING (follow strictly):
 0.8–1.0  Named fund launch/close WITH dollar amount or target size. Major M&A between fund managers or fund service providers. C-suite appointment at a top-50 GP.
 0.6–0.7  Fund launch/close without size. Executive move (MD+ level) at a known fund manager. Regulatory enforcement action naming a fund/GP. LP commitment announcement with amount.
-0.4–0.5  Industry analysis from a credible source about fund trends. Partnership or JV between fund-related firms. Capital raise progress update. New office/geography expansion by a GP.
+0.4–0.5  A named fund manager's deal: a GP, one of its funds or its named portfolio company buying, selling, exiting or taking a stake in a company or property (rule 21). Industry analysis from a credible source about fund trends. Partnership or JV between fund-related firms. Capital raise progress update. New office/geography expansion by a GP.
 0.2–0.3  General market commentary about PE/VC/credit markets that specifically discusses fund vehicles, LP allocations, or GP strategy. Awards/rankings of fund managers. Conference recaps focused on fund industry.
 0.0–0.1  EVERYTHING ELSE. If it is not DIRECTLY about investment funds, GPs, LPs, or fund service providers → 0.0. There is NO middle ground.
 
@@ -226,6 +226,7 @@ CRITICAL CLASSIFICATION RULES:
 18. FIRM NAME CASING: Use the firm's official name casing, not the headline's styling. Trade press often SHOUTS the lead firm ("EMERGING, Promethean eye $300m…") or abbreviates it — return "Emerging Travel Group" / "Promethean Investments", not "EMERGING". Never return an all-caps word as firm_name unless the firm genuinely styles itself that way (KKR, EQT, CVC, TPG).
 19. ENTITY COMPLETENESS: In "entities", list EVERY firm with a real role in the story — co-managers, the acquirer AND the target, JV partners, the LP and the GP, the law firms advising. Give confidence ≥ 0.9 only to firms whose role is explicit; a firm mentioned in passing gets ≤ 0.6. Downstream rendering shows a favicon per high-confidence firm, so a wrong high-confidence entity puts a wrong logo in front of readers.
 20. SERVICE PROVIDER STORIES: Lateral partner moves between law firms' fund practices, fund administrator M&A or mandate wins, auditor/valuation-firm appointments, prime brokerage and fund finance news are all IN SCOPE (relevance 0.5-0.8, fund_categories includes "service_provider"), even though no fund vehicle is raising capital. The audience includes the service providers themselves. CRITICAL: tag "service_provider" only when the PRIMARY firm is itself a service provider (law firm, fund administrator, auditor/CPA, valuation firm, insurance broker, fund finance lender, prime broker, placement agent, fund tech vendor). A fund manager hiring for capital formation, IR, or fundraising is NOT a service-provider story ("AEA Investors hires head of capital formation" → PE + executive_hire, no service_provider tag). An asset manager acquiring another asset manager (e.g. an ETF shop) is M&A between managers, not a service-provider story.
+21. A FUND MANAGER'S DEALS ARE IN SCOPE: when a named private equity, private credit, real estate, infrastructure, growth or venture firm (or one of its funds, or a portfolio company the headline names as its buyer) acquires, sells, exits or takes a stake in a company, a business unit, a portfolio or a property, that is article_type "acquisition", relevance 0.4–0.6 (higher for a large or well-known deal), even when the asset is one building or a small company. "Vista agrees to acquire HID's PKI business unit", "Fengate Private Equity takes majority stake in CRWF", "Kennedy Wilson JV acquires $176m San Jose multifamily property" are all acquisitions. Rules 1 and 11 do not override this: rule 11 is for sales between owners who are not investment firms, brokerage listings and construction. An operating company buying another, with no fund, fund manager or institutional investor as buyer or seller, stays "other".
 
 FUND SIZE RULES (CRITICAL — the classifier has historically leaked firm AUM and sector totals into this field, which then ran as newsletter subject lines):
 A. fund_size_usd_millions must describe a SPECIFIC named fund vehicle raising, launching, or closing capital. If the article is not about a specific fund's capital event, return null — even if a dollar figure is mentioned.
@@ -475,9 +476,11 @@ export async function classifyPendingArticles(
 
 // ─── Batch classification ────────────────────────────────────────────────────
 
-async function classifyBatch(
+/** One call to the classifier. `prompt`: another system prompt, for a side-by-side replay (scripts/classifier-prompt-replay.ts). */
+export async function classifyBatch(
   articles: ArticleForClassification[],
-  apiKey: string
+  apiKey: string,
+  prompt: string = SYSTEM_PROMPT
 ): Promise<(ClassificationOutput | null)[]> {
   const input = articles.map((a, i) => ({
     id: i,
@@ -507,7 +510,7 @@ async function classifyBatch(
       system: [
         {
           type: 'text',
-          text: SYSTEM_PROMPT,
+          text: prompt,
           cache_control: { type: 'ephemeral' },
         },
       ],
