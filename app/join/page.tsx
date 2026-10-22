@@ -12,7 +12,7 @@ import { shareCard } from '@/lib/seo'
 // left out when it cannot be read.
 
 const DESCRIPTION =
-  'FundOps Daily: the biggest fund closes, deals and hires in private markets, ranked, in your inbox every morning by 7:30 ET. Free.'
+  'FundOps Daily: the biggest fund closes, deals and hires in private markets, ranked, in your inbox every morning by 7:30am ET. Free.'
 
 export const metadata: Metadata = {
   title: 'Get FundOps Daily, free',
@@ -39,7 +39,7 @@ export default async function JoinPage() {
       <main id="main-content" className="paper flex-1">
         <div className="mx-auto max-w-[640px] px-4 pb-14 pt-8 sm:pt-12 lg:px-6">
           <h1 className="font-news text-[34px] font-medium leading-[1.04] tracking-[-0.02em] text-foreground sm:text-[46px]">
-            The biggest fund closes, deals and hires. Every morning by 7:30.
+            The biggest fund closes, deals and hires. Every morning by 7:30am ET.
           </h1>
           <p className="mt-3 font-news text-[18px] leading-snug text-foreground/75">
             FundOps Daily is the free morning email for GPs, LPs and fund service providers

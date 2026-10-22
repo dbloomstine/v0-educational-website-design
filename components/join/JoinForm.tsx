@@ -44,7 +44,7 @@ export function JoinForm() {
   if (status === 'success') {
     return (
       <p role="status" className="font-news text-[19px] leading-snug text-foreground">
-        {already ? 'You’re already on the list. See you at 7:30.' : 'You’re in. Your first edition lands tomorrow by 7:30 ET.'}
+        {already ? 'You’re already on the list. See you at 7:30am ET.' : 'You’re in. Your first edition lands tomorrow by 7:30am ET.'}
       </p>
     )
   }
