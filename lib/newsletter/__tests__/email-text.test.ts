@@ -172,3 +172,14 @@ describe('the plain-text welcome note', () => {
     expect(renderWelcomeText('https://u')).not.toContain('Choose what you follow')
   })
 })
+
+describe('the footer asks for news (/submit, 2026-10-22)', () => {
+  it('in the HTML and the text alike', () => {
+    const p = params()
+    const html = renderNewsletterEmail(p)
+    expect(html).toContain('Got news?')
+    expect(html).toContain('href="https://fundopshq.com/submit?utm_source=newsletter&amp;utm_medium=email"')
+    expect(html).toMatch(/Send us your fund close or hire&nbsp;&rarr;<\/a>/)
+    expect(renderNewsletterText(p)).toContain('Got news? Send us your fund close or hire: https://fundopshq.com/submit?utm_source=newsletter&utm_medium=email')
+  })
+})

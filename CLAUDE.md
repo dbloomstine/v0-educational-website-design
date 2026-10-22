@@ -98,6 +98,7 @@ The site was aggressively consolidated on 2026-04-10. These are the public route
                            buttons, the events signup block, "Similar events"). Past events stay up and point
                            to the organizer's next edition. See "Events as a product".
 /events/submit          → Public "Submit an event" form → event_submissions pending queue
+/submit                 → Public "Submit your news" form (2026-10-22) → news_submissions pending queue. See "News sent in by firms"
 /about                  → About page (rebuilt 2026-04-09)
 /glossary               → 88 private-markets terms, grouped, each with its definition (added 2026-10-12; see "The glossary")
 /glossary/[slug]        → One term: definition, explanation, example, why it matters, related terms, recent stories using it
@@ -116,6 +117,7 @@ Everything you might remember is gone: `/blog`, `/interviews`, `/guests`, `/cont
 /api/events/calendar                    → iCalendar: ?slug= for one event's .ics, or filtered webcal:// subscribe feed
 /api/events/click                       → Count-only outbound-click beacon (increment_event_click RPC)
 /api/events/submit                      → Public event submissions → event_submissions (pending queue)
+/api/news/submit                        → Public news submissions → news_submissions (pending queue); never publishes
 /api/pipeline/circuit-send              → Cron (Mon 12:00 UTC): The Circuit weekly events digest. SHIPS DARK —
                                            previews to Danny until CIRCUIT_ENABLED=true; ?preview=1 returns HTML
 /api/newsletter/subscribe               → Email signup — single opt-in, sends welcome email; stores where the visitor came from (see "Where subscribers come from")
@@ -351,6 +353,7 @@ with the server-side rules — needs a patch before the next manual run.
 | `sponsor_bookings`       | One row per sponsor run (2026-10-02), read by the daily send and by the site. See "Sponsors" below                                        |
 | `site_cache`             | Turnstile + last good copy for the shared datasets (2026-10-02). See "Speed, caching and the database" below. Safe to truncate           |
 | `social_posts`           | One row per social post per channel (2026-10-03), written by the nightly job in the `fundopshq-social` repo. See "Social desk" below      |
+| `news_submissions`       | News a firm sent on /submit (2026-10-22): a pending lead for the desk, never shown to readers. RLS on, no policies               |
 | `social_metrics`         | Readings of a social post's numbers over time (2026-10-03): a jsonb bag per reading, because each network reports different things        |
 
 Migrations are recorded in `supabase/migrations/`. Read "Speed, caching and the database" below before adding any query to a page.
@@ -922,3 +925,13 @@ Danny asked for an audit and fixes (2026-10-16); these were product decisions de
 - **The league never shows a bare fund number as a name** (`toFundClose`): a row with no `fund_name` shows "Fund not named in the reports" (the page already said so) instead of "Fund I" for every debut fund; the number stays on `FundClose.fundNumber` for matching (`fundNumbers`). One `league_overrides` row hides Green Street's "Stonelake beats target … $3b in powder" (buying power, not a close) so the $1B Fund VIII close stands; continuation-vehicle counting is unchanged on Danny's word.
 - **Event times carry the city's zone** (`eventTimeZone`, `timeNoteWithZone`, `eventTimeLabel` in `lib/events/constants.ts`; the board row, the email and the detail page use them): a note that states a clock time and names no zone gets ET/CT/MT/PT from the state or city, UK for London, HKT/SGT/JST/CET by country; a note that names its zone, or has no clock time, is left alone. Dead-link check the same day: NYC Bar Compliance Conference and J.P. Morgan U.S. Opportunities Forum are live (nothing changed); Texas Alternatives 2027's URL 404'd and now points at the organizer's 2027 page; RAISE GP Day had already been deduplicated on 2026-09-07.
 - **Story pages**: the share bar's LinkedIn button is labelled "LinkedIn" (it read "Share", beside Email and Copy link).
+
+## News sent in by firms: /submit (2026-10-22)
+
+A firm sends a fund close, launch, hire or deal at `/submit` ("Got news? Send us your fund close or hire →" in the site footer, under the description on /news and every section front, and in the daily email's footer, HTML and text). Modelled on /events/submit.
+
+- **A lead, never a story.** `POST /api/news/submit` stores a `pending` row in `news_submissions` (`supabase/migrations/20261022_news_submissions.sql`) and emails the owner a plain-text alert marked UNVERIFIED, replying to the sender (`lib/alerts/owner-alert.ts`, which the events form now uses too). Nothing is published from it: a story runs only when the firm's own announcement or a credible outlet says it, which is why the link is required. Every field is untrusted. Review: `select * from news_submissions where status = 'pending' order by created_at desc;`, then set `status` to `accepted`, `rejected` or `spam` with `review_notes`.
+- **Checks** (`lib/submit/news-submission.ts`, tested): firm, kind (`fund_close`, `fund_launch`, `hire`, `deal`, `other`), a one-line headline, an http(s) link with a real host name (no IP address, localhost or password; refused if too long, never cut), name and email required; details and role optional; control and direction-changing characters removed. Fields shared with the form are in `lib/submit/fields.ts` (browser-safe).
+- **Abuse control**: the hidden `website` field (told it worked, nothing kept), five a day from one IP address (kept only as a keyed hash, `ip_hash`, HMAC with `CRON_SECRET`), five waiting from one contact address, two hundred waiting in all; more than three web addresses in the headline and details is kept as `spam`, with no email and no signup. A failed count lets a submission through. If the insert fails the alert still goes, marked NOT SAVED; only when neither works is the sender told to try again.
+- **The newsletter tick** subscribes the sender through the subscribe route itself (its `POST`, called in-process), form `submit`, page `/submit`, with the browser's signup source; a live subscriber is left as is.
+

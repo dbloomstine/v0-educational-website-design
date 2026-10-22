@@ -190,6 +190,7 @@ export function renderNewsletterText(params: TemplateParams): string {
     'FundOps Daily, by FundOpsHQ',
     `On the site: https://fundopshq.com/news${FROM_EMAIL}`,
     `League tables: https://fundopshq.com/league-tables${FROM_EMAIL}`,
+    `Got news? Send us your fund close or hire: https://fundopshq.com/submit${FROM_EMAIL}`,
   ]
   if (covered.length > 0) {
     footer.push(

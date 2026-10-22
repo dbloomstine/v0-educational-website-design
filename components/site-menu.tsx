@@ -37,6 +37,7 @@ const MORE = [
   { label: "About", href: "/about" },
   { label: "Sponsor", href: "/sponsor" },
   { label: "Submit an event", href: "/events/submit" },
+  { label: "Submit news", href: "/submit" },
 ]
 
 interface Props {

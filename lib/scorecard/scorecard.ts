@@ -32,7 +32,7 @@ const NETWORKS: Record<string, string> = { tiktok: 'TikTok', linkedin: 'LinkedIn
 /** The formats new on 2026-10-22, called out in the letter until they have a record of their own. */
 export const NEW_FORMATS = ['meme', 'fastStory'] as const
 /** The signup forms (lib/newsletter/interests.ts SIGNUP_FORMS), as the letter names them. */
-const FORM_NAMES: Record<string, string> = { popup: 'the signup box', firstvisit: 'the first-visit ask', events: 'the events offer', hero: 'the homepage field', feed: 'the field in the feed', widget: 'the side panel', rail: 'the rail panel' }
+const FORM_NAMES: Record<string, string> = { popup: 'the signup box', firstvisit: 'the first-visit ask', events: 'the events offer', hero: 'the homepage field', feed: 'the field in the feed', widget: 'the side panel', rail: 'the rail panel', submit: 'the news submission form' }
 /** Always listed, at 0 too, when anyone joined: the box and the two forms new on 2026-10-22. */
 const FORMS_ALWAYS = ['popup', 'firstvisit', 'events']
 const PROGRAMS: [string, string][] = [['sponsor_pitch', 'Sponsor pitches'], ['news_note', 'News notes'], ['organizer_note', 'Organizer notes']]

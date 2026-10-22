@@ -4,6 +4,7 @@ import { Logo } from "@/components/logo"
 import { SECTIONS, sectionHref } from "@/lib/news/sections"
 import { SubscribeLink } from "@/components/newsletter/SubscribeLink"
 import { EDITOR, SOCIAL } from "@/lib/brand/social"
+import { GotNews } from "@/components/news/GotNews"
 
 const COMPANY_LINKS = [
   { label: "About", href: "/about" },
@@ -54,6 +55,8 @@ export function SiteFooter() {
               ))}
               .
             </p>
+            {/* News sent in by firms (/submit, 2026-10-22): leads for the desk, checked before anything runs. */}
+            <GotNews className="mt-2 text-[12px] text-foreground/60" />
           </div>
 
           <nav aria-label="News by story">

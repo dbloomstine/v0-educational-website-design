@@ -1106,6 +1106,10 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                       <a href="https://fundopshq.com/firms${FROM_EMAIL}" style="color:rgba(248,245,236,0.8);text-decoration:underline;">Firms</a>
                       &nbsp;·&nbsp;
                       <a href="https://fundopshq.com/events${FROM_EMAIL}" style="color:rgba(248,245,236,0.8);text-decoration:underline;">Events</a>
+                    </p>
+                    <p style="margin:0 0 10px;">
+                      <span style="color:rgba(248,245,236,0.45);">Got news?&nbsp;</span>
+                      <a href="https://fundopshq.com/submit${FROM_EMAIL}" style="color:rgba(248,245,236,0.8);text-decoration:underline;">Send us your fund close or hire&nbsp;&rarr;</a>
                     </p>${
                       covered.length > 0
                         ? `

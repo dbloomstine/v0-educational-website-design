@@ -69,7 +69,7 @@ describe('the sitemap', () => {
     expect(iso('/')).toBe('2026-09-02T09:00:00.000Z')
     expect(iso('/news/private-equity')).toBe('2026-09-02T09:00:00.000Z')
     // Pages that do not change carry no date.
-    for (const path of ['/about', '/terms', '/privacy', '/sponsor', '/events/submit', '/glossary', '/glossary/clawback']) expect(byUrl.get(path)?.lastModified, path).toBeUndefined()
+    for (const path of ['/about', '/terms', '/privacy', '/sponsor', '/events/submit', '/submit', '/glossary', '/glossary/clawback']) expect(byUrl.get(path)?.lastModified, path).toBeUndefined()
     // And nothing at all is stamped with the present.
     for (const e of entries) {
       if (e.lastModified) expect(built - new Date(e.lastModified).getTime(), e.url).toBeGreaterThan(86_400_000)

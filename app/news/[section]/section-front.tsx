@@ -14,6 +14,7 @@ import { ASSET_LABEL, KIND_LABEL, SECTIONS, SECTION_BY_SLUG, sectionHref, sectio
 import { OG_IMAGES, breadcrumbJsonLd } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 import { FilterTabs } from '@/components/news/FilterTabs'
+import { GotNews } from '@/components/news/GotNews'
 import { FundraisingChart } from '@/components/charts/FundraisingChart'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { loadLeagueReport } from '@/lib/news/league-data'
@@ -141,6 +142,7 @@ export async function SectionFront({ slug, facetKey }: { slug: string; facetKey?
               {section.title}
             </h1>
             <p className="mt-2 max-w-[72ch] font-news text-[16px] leading-snug text-foreground/70">{section.description}</p>
+            <GotNews className="mt-1.5" />
 
             {facets.length > 1 && (
               <FilterTabs

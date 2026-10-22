@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
+import { sendOwnerAlert } from '@/lib/alerts/owner-alert'
 
 export const dynamic = 'force-dynamic'
 
@@ -18,27 +19,19 @@ function clean(value: unknown, max: number): string | null {
 }
 
 async function notifyDanny(name: string, eventUrl: string, submitterEmail: string | null) {
-  const apiKey = process.env.RESEND_API_KEY
-  if (!apiKey) return
-  const from = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
-  await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from: `FundOpsHQ Events <${from}>`,
-      to: 'dbloomstine@gmail.com',
-      subject: `[Event submission] ${name.slice(0, 80)}`,
-      text: [
-        `New event submitted to fundopshq.com/events/submit:`,
-        '',
-        `Event: ${name}`,
-        `URL: ${eventUrl}`,
-        submitterEmail ? `Submitter: ${submitterEmail}` : 'Submitter: anonymous',
-        '',
-        'It is in the pending queue — the weekly scout run will verify and publish, or review it sooner with: select * from event_submissions where status = \'pending\';',
-      ].join('\n'),
-    }),
-  }).catch((err) => console.error('Failed to send submission notification:', err))
+  await sendOwnerAlert({
+    fromName: 'FundOpsHQ Events',
+    subject: `[Event submission] ${name.slice(0, 80)}`,
+    text: [
+      `New event submitted to fundopshq.com/events/submit:`,
+      '',
+      `Event: ${name}`,
+      `URL: ${eventUrl}`,
+      submitterEmail ? `Submitter: ${submitterEmail}` : 'Submitter: anonymous',
+      '',
+      'It is in the pending queue — the weekly scout run will verify and publish, or review it sooner with: select * from event_submissions where status = \'pending\';',
+    ].join('\n'),
+  })
 }
 
 export async function POST(req: Request) {

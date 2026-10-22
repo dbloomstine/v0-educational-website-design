@@ -14,6 +14,7 @@ import type { Story, StoryKind } from '@/lib/news/stories'
 import { ASSET_LABEL, KIND_LABEL } from '@/lib/news/sections'
 import { OG_IMAGES } from '@/lib/seo'
 import { FilterTabs } from '@/components/news/FilterTabs'
+import { GotNews } from '@/components/news/GotNews'
 
 // Latest: every story, newest first, with search and two filters. Rendered on
 // the server from the same stories as the fronts, so a story that is one line
@@ -100,6 +101,7 @@ export default async function NewsPage({ searchParams }: Params) {
               Every story, newest first — fund closes, launches, deals, moves and regulation. One line per story, however
               many outlets reported it.
             </p>
+            <GotNews className="mt-1.5" />
 
             <form action="/news" method="get" role="search" className="mt-3 flex max-w-[640px] items-center gap-2">
               <label className="relative flex-1">
