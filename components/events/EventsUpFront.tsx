@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 import { Panel } from '@/components/story/StoryBlocks'
 import { pickNotableEvents } from '@/lib/events/highlights'
@@ -65,12 +66,26 @@ function Chips({ label, items }: { label: string; items: { label: string; slug: 
   )
 }
 
-/** The top of /events: this week and next week first, then the cities and topics, one tap each. */
-export function EventsUpFront({ thisWeek, nextWeek }: { thisWeek: IndustryEvent[]; nextWeek: IndustryEvent[] }) {
+/**
+ * The top of /events: this week and next week first, then the cities and topics, one tap each.
+ *
+ * `afterThisWeek` (2026-10-22): what a phone or tablet shows between the two weeks, under the one-column layout only.
+ * The page passes its sponsor strip: on a phone it was the third block, above the first event.
+ */
+export function EventsUpFront({
+  thisWeek,
+  nextWeek,
+  afterThisWeek,
+}: {
+  thisWeek: IndustryEvent[]
+  nextWeek: IndustryEvent[]
+  afterThisWeek?: ReactNode
+}) {
   return (
     <div className="space-y-5">
       <div className="grid gap-5 lg:grid-cols-2">
         <WeekPanel label="This week" events={thisWeek} />
+        {afterThisWeek && <div className="lg:hidden">{afterThisWeek}</div>}
         <WeekPanel label="Next week" events={nextWeek} />
       </div>
       <nav aria-label="Events by city and topic" className="flex flex-col gap-3 border-y border-border py-3 md:flex-row md:flex-wrap md:items-center md:gap-x-8">

@@ -97,8 +97,11 @@ export default async function EventsPage() {
 
         <section className="relative">
           <div className="mx-auto max-w-[1320px] px-4 pb-10 pt-5 lg:px-6">
-            <SponsorStrip className="mb-5" />
-            {initial && <EventsUpFront thisWeek={thisWeek} nextWeek={nextWeek} />}
+            {/* The sponsor strip (or the house notice) heads the list on a desk. On a phone and a tablet it waits
+                until after this week's events (2026-10-22 design review): the page's job is finding an event, and
+                it was the third block a phone reader saw. */}
+            <SponsorStrip className={initial ? 'mb-5 hidden lg:block' : 'mb-5'} />
+            {initial && <EventsUpFront thisWeek={thisWeek} nextWeek={nextWeek} afterThisWeek={<SponsorStrip />} />}
             <EventsSignup city={null} monday={mondayEmailLive()} className="my-5" />
             <h2 id="board" className="mb-3 scroll-mt-14 font-news text-[24px] font-medium leading-none tracking-[-0.01em] text-foreground">
               All upcoming events

@@ -34,7 +34,13 @@ export function EventRow({ event }: { event: IndustryEvent }) {
     .join(' · ')
 
   // The row links to our detail page; the icon jumps straight to the organizer
-  // with a count-only beacon. A button, not an anchor — anchors cannot nest.
+  // with a count-only beacon.
+  //
+  // 2026-10-22: the row used to be one big link with the organizer button inside it. A control inside a link is
+  // invalid HTML, and a screen reader announced a link that held a button. Now the row is a plain box: the event
+  // name is the link, stretched over the whole row by its ::after (so a click anywhere still opens the event, as
+  // before), and the organizer link sits beside it, lifted above the stretch so it takes its own clicks. The look
+  // is unchanged; the row draws the focus ring when its link has the keyboard.
   const beacon = () => {
     try {
       navigator.sendBeacon(`/api/events/click?id=${event.id}`)
@@ -44,11 +50,7 @@ export function EventRow({ event }: { event: IndustryEvent }) {
   }
 
   return (
-    <Link
-      prefetch={false}
-      href={`/events/${event.slug}`}
-      className="group grid grid-cols-[76px_1fr] items-baseline gap-x-3 border-b border-border/30 px-2 py-1.5 transition-colors hover:bg-accent/40 last:border-b-0 sm:grid-cols-[92px_1fr_86px]"
-    >
+    <div className="group relative grid grid-cols-[76px_1fr] items-baseline gap-x-3 border-b border-border/30 px-2 py-1.5 transition-colors hover:bg-accent/40 last:border-b-0 has-[a[data-row-link]:focus-visible]:outline has-[a[data-row-link]:focus-visible]:outline-2 has-[a[data-row-link]:focus-visible]:-outline-offset-2 has-[a[data-row-link]:focus-visible]:outline-foreground sm:grid-cols-[92px_1fr_86px]">
       {/* A time range may take two lines ("8:30AM–" over "4:30PM CT"): kept to one, it ran under the name (2026-10-22). */}
       <span className="break-words font-mono text-[11.5px] uppercase leading-snug tabular-nums text-muted-foreground">
         {when.replace(/\s*[-–]\s*/, '–\u200b')}
@@ -59,22 +61,24 @@ export function EventRow({ event }: { event: IndustryEvent }) {
           {event.isFeatured && (
             <Star className="h-3 w-3 shrink-0 fill-[#D4A63A] text-[#D4A63A]" aria-label="Featured" />
           )}
-          <span className="text-[15px] font-semibold leading-normal text-foreground decoration-[#D4A63A] decoration-2 underline-offset-[3px] group-hover:underline">
+          <Link
+            prefetch={false}
+            href={`/events/${event.slug}`}
+            data-row-link=""
+            className="text-[15px] font-semibold leading-normal text-foreground decoration-[#D4A63A] decoration-2 underline-offset-[3px] outline-none after:absolute after:inset-0 after:content-[''] group-hover:underline focus-visible:outline-none"
+          >
             {event.name}
-          </span>
-          <button
-            type="button"
+          </Link>
+          <a
+            href={event.eventUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={beacon}
             aria-label={`${event.name} — organizer site`}
-            onClick={(e) => {
-              e.preventDefault()
-              e.stopPropagation()
-              beacon()
-              window.open(event.eventUrl, '_blank', 'noopener,noreferrer')
-            }}
-            className="-my-1.5 shrink-0 rounded-sm p-1.5 text-muted-foreground/0 transition-colors group-hover:text-muted-foreground/60 hover:!text-foreground focus-visible:!text-foreground [@media(hover:none)]:hidden"
+            className="relative z-10 -my-1.5 shrink-0 rounded-sm p-1.5 text-muted-foreground/0 transition-colors group-hover:text-muted-foreground/60 hover:!text-foreground focus-visible:!text-foreground [@media(hover:none)]:hidden"
           >
             <ExternalLink className="h-3 w-3" aria-hidden />
-          </button>
+          </a>
         </span>
         <span className="mt-0.5 block truncate font-mono text-[11px] uppercase tracking-wide text-muted-foreground">
           {under}
@@ -88,6 +92,6 @@ export function EventRow({ event }: { event: IndustryEvent }) {
       >
         {cost}
       </span>
-    </Link>
+    </div>
   )
 }

@@ -654,6 +654,16 @@
 .paper .league-strip .ls-firm { grid-area: firm; min-width: 0; }
 .paper .league-strip .ls-fund { grid-area: fund; min-width: 0; }
 .paper .league-strip .ls-foot-phone { padding: 4px 14px 9px; border-top: 1px solid var(--border); }
+/* 2026-10-22: on a phone the figure, the firm and the fund were links 15-19px tall, stacked about 17px apart, so a
+   thumb aimed at one could land on the next. Each is now at least 24px tall (WCAG 2.5.8), the row a little roomier.
+   The desk layout keeps its own sizes. */
+@media (max-width: 1023.98px) {
+  .paper .league-strip .ls-row { padding: 4px 0; row-gap: 0; }
+  .paper .league-strip .ls-amt { display: block; line-height: 24px; }
+  .paper .league-strip .ls-firm { display: block; padding: 2px 0; line-height: 20px; }
+  .paper .league-strip .ls-fund { display: block; padding: 4px 0; line-height: 16px; }
+  .paper .league-strip .ls-foot-phone a { display: inline-block; padding: 4px 0; line-height: 16px; }
+}
 @media (min-width: 1024px) {
   .paper .league-strip { display: grid; grid-template-columns: 208px minmax(0, 1fr); }
   .paper .league-strip .ls-head {
