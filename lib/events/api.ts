@@ -80,7 +80,8 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
 
   let query = getSupabaseAdmin()
     .from('industry_events')
-    .select('*')
+    // `count`: how many match in all, so the board can say "42 events" (2026-10-22); the table is a few hundred rows.
+    .select('*', { count: 'exact' })
     .eq('status', 'published')
     .or(BOARD_SCOPE)
     .or(BOARD_FORMAT_SCOPE)
@@ -136,7 +137,7 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
     }
   }
 
-  const { data: rows, error } = await query
+  const { data: rows, error, count } = await query
 
   if (error) {
     console.error('Supabase events query error:', error)
@@ -149,7 +150,7 @@ export async function queryEventFeed(params: EventQueryParams): Promise<EventFee
 
   const facets = await queryEventFacets(today)
 
-  return { events, facets, hasMore, offset, limit }
+  return { events, facets, hasMore, offset, limit, total: count ?? null }
 }
 
 const COST_TYPES = ['free', 'paid', 'member_only', 'invite_only', 'mixed']

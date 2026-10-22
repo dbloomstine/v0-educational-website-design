@@ -52,4 +52,6 @@ export interface EventFeedResponse {
   hasMore: boolean
   offset: number
   limit: number
+  /** How many events match the filters in all (null when the database did not say). */
+  total?: number | null
 }

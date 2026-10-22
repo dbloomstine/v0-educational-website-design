@@ -49,8 +49,9 @@ export function EventRow({ event }: { event: IndustryEvent }) {
       href={`/events/${event.slug}`}
       className="group grid grid-cols-[76px_1fr] items-baseline gap-x-3 border-b border-border/30 px-2 py-1.5 transition-colors hover:bg-accent/40 last:border-b-0 sm:grid-cols-[92px_1fr_86px]"
     >
-      <span className="whitespace-nowrap font-mono text-[11.5px] uppercase tabular-nums text-muted-foreground">
-        {when}
+      {/* A time range may take two lines ("8:30AM–" over "4:30PM CT"): kept to one, it ran under the name (2026-10-22). */}
+      <span className="break-words font-mono text-[11.5px] uppercase leading-snug tabular-nums text-muted-foreground">
+        {when.replace(/\s*[-–]\s*/, '–\u200b')}
       </span>
 
       <span className="min-w-0">

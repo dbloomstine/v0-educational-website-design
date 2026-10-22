@@ -94,7 +94,7 @@ function fmtMonth(iso: string | null): string | null {
 /** Only the figures we could actually compute, in the order a sponsor asks about them. */
 function figures(s: SponsorStats): { value: string; label: string; note?: string }[] {
   const out: { value: string; label: string; note?: string }[] = []
-  if (s.subscribers != null) out.push({ value: s.subscribers.toLocaleString('en-US'), label: 'Confirmed subscribers', note: 'Double opt-in' })
+  if (s.subscribers != null) out.push({ value: s.subscribers.toLocaleString('en-US'), label: 'Confirmed subscribers' })
   if (s.openRate != null) out.push({ value: `${s.openRate}%`, label: 'Open rate', note: `Last ${s.editionsMeasured} editions` })
   if (s.weeklyReach != null) out.push({ value: `${s.weeklyReach}%`, label: 'Open at least once a week' })
   if (s.firms != null) out.push({ value: s.firms.toLocaleString('en-US'), label: 'Firms reading' })
