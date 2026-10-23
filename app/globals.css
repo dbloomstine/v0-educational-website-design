@@ -811,3 +811,7 @@ svg:hover .wm-halloween .wm-eye { opacity: 0; }
 @keyframes stepper-in-up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 @keyframes stepper-in-down { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .stepper-in-fwd, .stepper-in-back { animation: none; } }
+
+/* Google ad units (components/ads/AdSlot.tsx, 2026-10-23). When Google has no ad
+   for a unit it marks it unfilled: the whole box, label and all, folds away. */
+.ad-slot:has(ins.adsbygoogle[data-ad-status="unfilled"]) { display: none; }

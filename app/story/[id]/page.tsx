@@ -1,4 +1,5 @@
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
+import { AdSlot } from '@/components/ads/AdSlot'
 import { firmHref } from '@/lib/news/league'
 import { firmPageHref } from '@/lib/news/firms'
 import { loadFirmPages } from '@/lib/news/firm-pages'
@@ -332,6 +333,8 @@ export default async function StoryPage({ params }: Params) {
             <aside className="min-w-0 space-y-5">
               <LatestRail stories={all.slice(0, 10)} />
               <SponsorCard />
+              {/* Google's unit (lib/ads/config.ts): under the sponsor's card, never in its place, and on a desk well below the headline. */}
+              <AdSlot placement="story" />
               <SubscribePanel title="Stories like this, every morning." body="FundOps Daily is the brief on fund closes, launches, deals and moves. Free, before the open." />
             </aside>
           </div>

@@ -8,6 +8,7 @@ import { Toaster } from "sonner"
 import { SignupSourceCapture } from "@/components/signup-source-capture"
 import { SubscribePrompt } from "@/components/newsletter/SubscribePrompt"
 import { SignupTakeover } from "@/components/newsletter/SignupTakeover"
+import { adsClient, adsMode, adsScriptSrc } from "@/lib/ads/config"
 import "./globals.css"
 
 // FundOpsHQ Brand Fonts:
@@ -137,12 +138,16 @@ export const metadata: Metadata = {
     ],
     apple: "/apple-icon.png",
   },
+  // Google AdSense's site check (lib/ads/config.ts): the account tag, only while the mode is verify or live.
+  ...(adsMode() !== 'off' ? { other: { 'google-adsense-account': adsClient() as string } } : {}),
   verification: {
     // Add your verification codes when available
     // google: 'your-google-verification-code',
     // yandex: 'your-yandex-verification-code',
   },
 }
+
+const ADSENSE_SRC = adsScriptSrc()
 
 export default function RootLayout({
   children,
@@ -153,6 +158,9 @@ export default function RootLayout({
     <html lang="en" className="dark" data-season={seasonOn(todayInNewYork()) ?? undefined} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: SEASON_SCRIPT }} />
+        {/* Google AdSense (lib/ads/config.ts), verify or live only: in the HTML itself so Google's crawler sees it,
+            and async so it never holds up the page. Manual units only; it places no ad by itself. */}
+        {ADSENSE_SRC && <script async src={ADSENSE_SRC} crossOrigin="anonymous" />}
       </head>
       <body className={`${inter.variable} ${dmSans.variable} ${fraunces.variable} ${jetbrainsMono.variable} ${newsreader.variable} ${franklin.variable} font-sans antialiased`}>
         <a

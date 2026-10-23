@@ -17,6 +17,7 @@ import { FilterTabs } from '@/components/news/FilterTabs'
 import { GotNews } from '@/components/news/GotNews'
 import { FundraisingChart } from '@/components/charts/FundraisingChart'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
+import { AdSlot } from '@/components/ads/AdSlot'
 import { loadLeagueReport } from '@/lib/news/league-data'
 import { weekCloses } from '@/lib/news/league'
 import { marketForAsset } from '@/lib/news/league-markets'
@@ -186,6 +187,9 @@ export async function SectionFront({ slug, facetKey }: { slug: string; facetKey?
                   ))}
                 </section>
               )}
+
+              {/* Google's unit between the top stories and the river (lib/ads/config.ts). Nothing unless live. */}
+              {top.length > 0 && <AdSlot placement="front" className="mt-8" />}
 
               {/* The river: every story in the section, by day */}
               {stories.length > 0 && (

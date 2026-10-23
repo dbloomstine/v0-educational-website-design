@@ -11,6 +11,7 @@ import { LeadStory, SectionFlag, TopStory } from '@/components/story/StoryBlocks
 import { StickySubscribeBar } from '@/components/news/StickySubscribeBar'
 import { InTheNews } from '@/components/home/InTheNews'
 import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
+import { AdSlot } from '@/components/ads/AdSlot'
 import { firmsInTheNews, storyFirmRef } from '@/lib/news/firms'
 import { loadFirmPages } from '@/lib/news/firm-pages'
 import { FundraisingChart } from '@/components/charts/FundraisingChart'
@@ -204,6 +205,11 @@ export default async function HomePage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Google's unit between the front and the asset-class band (lib/ads/config.ts). Nothing unless live. */}
+        <div className="mx-auto max-w-[1320px] px-4 lg:px-6">
+          <AdSlot placement="front" className="mb-8" />
         </div>
 
         {/* ─── By asset class: its own zone, on the deeper band ─── */}

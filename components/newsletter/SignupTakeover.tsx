@@ -22,6 +22,7 @@ import {
 } from '@/lib/newsletter/takeover-rules'
 import { firstEditionSentence } from '@/lib/newsletter/first-edition'
 import { FOLLOW } from '@/lib/brand/social'
+import { holdAds, releaseAds } from '@/lib/ads/hold'
 import { ChoiceChips } from './ChoiceChips'
 import { openSignupCard, readEventsContext } from './SubscribePrompt'
 import type { TakeoverStory } from '@/app/api/newsletter/top-stories/route'
@@ -130,6 +131,8 @@ export function SignupTakeover() {
 
     shownInMemory = true
     write('session', TAKEOVER_SHOWN_KEY, '1')
+    // No Google ad is requested behind this screen (lib/ads/hold.ts): held from now, released when it closes.
+    holdAds()
     setCameFrom(arrivedFromPost(source))
     setEventsCtx(readEventsContext(pathname))
     setAppearedAt(pathname)
@@ -167,6 +170,13 @@ export function SignupTakeover() {
     // Once, when the signup comes back.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finished])
+
+  // The ads wait while this covers the page; they are asked for once it closes.
+  useEffect(() => {
+    if (!open) return
+    holdAds()
+    return () => releaseAds()
+  }, [open])
 
   // A modal page: the site behind is held still and out of reach (inert), the cursor goes to the email field,
   // and both come back as they were when it closes.

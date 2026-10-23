@@ -1,4 +1,5 @@
 import { SponsorStrip } from '@/components/sponsor/SponsorSlot'
+import { AdSlot } from '@/components/ads/AdSlot'
 import { OG_IMAGES } from '@/lib/seo'
 import { Panel } from '@/components/story/StoryBlocks'
 import { Metadata } from 'next'
@@ -102,6 +103,8 @@ export default async function EventsPage() {
                 it was the third block a phone reader saw. */}
             <SponsorStrip className={initial ? 'mb-5 hidden lg:block' : 'mb-5'} />
             {initial && <EventsUpFront thisWeek={thisWeek} nextWeek={nextWeek} afterThisWeek={<SponsorStrip />} />}
+            {/* Google's unit under the weeks (lib/ads/config.ts); the sponsor strip above keeps its place. Nothing unless live. */}
+            <AdSlot placement="events" className="mt-5" />
             <EventsSignup city={null} monday={mondayEmailLive()} className="my-5" />
             <h2 id="board" className="mb-3 scroll-mt-14 font-news text-[24px] font-medium leading-none tracking-[-0.01em] text-foreground">
               All upcoming events

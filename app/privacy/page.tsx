@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { OG_IMAGES } from '@/lib/seo'
+import { adsMode } from '@/lib/ads/config'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -24,6 +25,11 @@ export const metadata: Metadata = {
   },
 }
 
+// Google AdSense (lib/ads/config.ts): the advertising paragraphs appear only while it is on, so the page never
+// promises "no advertising cookies" on a site that carries Google's ads, nor describes ads that are not there.
+const ADS_ON = adsMode() !== 'off'
+const GOOGLE_LINK = 'text-foreground underline underline-offset-4 hover:text-muted-foreground'
+
 export default function PrivacyPolicyPage() {
   return (
     <div className="flex min-h-screen flex-col">
@@ -41,7 +47,7 @@ export default function PrivacyPolicyPage() {
             <div className="legal">
               <div className="">
                 <p className="text-sm text-muted-foreground mb-12">
-                  Last updated: October 22, 2026
+                  Last updated: {ADS_ON ? 'October 23, 2026' : 'October 22, 2026'}
                 </p>
 
                 {/* Introduction */}
@@ -149,9 +155,44 @@ export default function PrivacyPolicyPage() {
                     <li>Security cookies to prevent cross-site request forgery</li>
                   </ul>
                   <p className="text-muted-foreground leading-relaxed mt-4">
-                    We do not use advertising cookies or third-party tracking cookies.
+                    {ADS_ON
+                      ? 'We do not set advertising cookies ourselves. The advertisements on the Site are served by Google, which may set its own cookies; see Advertising below.'
+                      : 'We do not use advertising cookies or third-party tracking cookies.'}
                   </p>
                 </div>
+
+                {ADS_ON && (
+                  <div className="mb-12">
+                    <h2 className="text-2xl font-bold tracking-tight mb-4">Advertising</h2>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      Some pages of the Site show advertisements served by Google AdSense, marked
+                      &quot;Advertisement.&quot; Google and its partners may use cookies and similar technologies to
+                      serve those ads, including ads based on your prior visits to this and other websites. We do not
+                      share your email address or newsletter preferences with Google, and there are no ads in our emails.
+                    </p>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      You can opt out of personalised advertising at{' '}
+                      <a href="https://adssettings.google.com" target="_blank" rel="noopener noreferrer" className={GOOGLE_LINK}>
+                        Google&apos;s Ads Settings
+                      </a>
+                      , or opt out of many third-party vendors at{' '}
+                      <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer" className={GOOGLE_LINK}>
+                        aboutads.info
+                      </a>
+                      . Readers in the European Economic Area, the United Kingdom and Switzerland are asked for consent
+                      through Google&apos;s consent message before personalised ads are shown. For how Google uses this
+                      information, see{' '}
+                      <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener noreferrer" className={GOOGLE_LINK}>
+                        how Google uses information from sites that use its services
+                      </a>
+                      {' '}and{' '}
+                      <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener noreferrer" className={GOOGLE_LINK}>
+                        Google&apos;s advertising policy
+                      </a>
+                      .
+                    </p>
+                  </div>
+                )}
 
                 {/* How We Use Information */}
                 <div className="mb-12">
@@ -207,6 +248,20 @@ export default function PrivacyPolicyPage() {
                     We use Vercel Analytics to collect anonymous usage data. Vercel Analytics is designed with
                     privacy in mind and does not use cookies or collect personally identifiable information.
                   </p>
+
+                  {ADS_ON && (
+                    <>
+                      <h3 className="text-xl font-semibold mb-3 mt-6">Google AdSense</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        Google AdSense serves the advertisements on the Site and may use cookies to do so, as described
+                        under Advertising above. See{' '}
+                        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className={GOOGLE_LINK}>
+                          Google&apos;s Privacy Policy
+                        </a>
+                        .
+                      </p>
+                    </>
+                  )}
                 </div>
 
                 {/* Data Retention */}
