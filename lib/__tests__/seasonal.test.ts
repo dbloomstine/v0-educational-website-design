@@ -22,8 +22,12 @@ describe('holiday marks', () => {
   it('the email swaps the O for the picture on holiday dates, keeping "O" for text-only readers', () => {
     expect(seasonalFundOps('2026-10-20')).toBe('FundOps')
     const h = seasonalFundOps('2026-10-28')
-    expect(h).toMatch(/^Fund<img src="https:\/\/fundopshq\.com\/seasonal\/o-pumpkin\.png" alt="O"/)
-    expect(h.endsWith('ps')).toBe(true)
+    // Outlook on Windows gets the letter; everyone else the mark, with "O" as its alt text in the wordmark's type.
+    expect(h).toMatch(/^Fund<!--\[if mso\]>O<!\[endif\]--><!--\[if !mso\]><!--><img src="https:\/\/fundopshq\.com\/seasonal\/o-pumpkin\.png" alt="O" width="34" height="30"/)
+    expect(h).toMatch(/style="[^"]*font-family:Georgia[^"]*font-size:34px/)
+    expect(h.endsWith('<!--<![endif]-->ps')).toBe(true)
+    // Images off and the comments read as nothing, the word is whole.
+    expect(h.replace(/<!--\[if !mso\]><!-->.*?<!--<!\[endif\]-->/, '').replace(/<!--\[if mso\]>(.*?)<!\[endif\]-->/, '$1')).toBe('FundOps')
   })
   it('today in New York is YYYY-MM-DD from the date parts, across midnight UTC', () => {
     expect(todayInNewYork(new Date('2026-10-22T02:30:00Z'))).toBe('2026-10-21')
@@ -46,5 +50,14 @@ describe('holiday marks', () => {
   it('the head script carries every window and the ?season override', () => {
     for (const s of SEASONS) expect(SEASON_SCRIPT).toContain(s.from)
     expect(SEASON_SCRIPT).toContain("get('season')")
+  })
+})
+
+describe('the seasonal O in a whole edition', () => {
+  it('survives the comment stripping: the mark for most clients, the letter for Outlook', async () => {
+    const { renderNewsletterEmail } = await import('@/lib/newsletter/email-template')
+    const html = renderNewsletterEmail({ groups: [], totalArticles: 0, editionDate: '2026-10-28', unsubscribeUrl: 'https://example.com/u' })
+    expect(html).toContain('Fund<!--[if mso]>O<![endif]--><!--[if !mso]><!--><img src="https://fundopshq.com/seasonal/o-pumpkin.png" alt="O"')
+    expect(html).toMatch(/<!--<!\[endif\]-->ps<\/span>/)
   })
 })

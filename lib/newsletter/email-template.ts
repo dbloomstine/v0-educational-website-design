@@ -39,6 +39,7 @@ import { EMAIL_FOLLOW_ROW } from './interests'
 import { interestLink } from './interest-link'
 import { cleanSummary } from '@/lib/news/summary-clean'
 import { titleJaccard } from '@/lib/news/story-dedup'
+import { POSTAL_ADDRESS } from '@/lib/outreach-v2/config'
 
 export interface TemplateParams {
   groups: ArticleGroup[]
@@ -527,13 +528,14 @@ function collapseTemplateWhitespace(html: string): string {
  * exists" in each message, against the size at which Gmail clips one.
  *
  * Outlook's conditional comments (`<!--[if mso]>…<![endif]-->`) are code, not
- * notes, and stay. CSS comments are removed inside <style> only: a "/*" in a
+ * notes, and stay, with the "not Outlook" form's inner `<!-->` and `<!--<![endif]-->`
+ * (the masthead's seasonal O, 2026-10-23). CSS comments are removed inside <style> only: a "/*" in a
  * link elsewhere is somebody's URL.
  */
 function stripComments(html: string): string {
   return html
     .replace(/<style>([\s\S]*?)<\/style>/g, (_, css: string) => `<style>${css.replace(/\/\*[\s\S]*?\*\//g, '')}</style>`)
-    .replace(/<!--(?!\[if)[\s\S]*?-->/g, '')
+    .replace(/<!--(?!\[if|>|<!\[endif)[\s\S]*?-->/g, '')
 }
 
 // ─── Firm identity (names only) ────────────────────────────────────────────
@@ -563,6 +565,10 @@ function renderHeadline(article: ArticleGroup['articles'][0]): string {
  * One event row, Gary's Guide-style: the time sits in a narrow left column so
  * a reader scans the day vertically by clock, and the bold event title carries
  * the row with organizer and city beneath it.
+ *
+ * The name is not a link (2026-10-23, the deliverability audit): fourteen to
+ * twenty event links made up a fifth of the edition's links, and in the week
+ * measured two readers clicked one. "Full calendar" under the week is the way in.
  */
 function renderEvent(event: IndustryEvent): string {
   const time = eventTimeLabel(event)
@@ -581,7 +587,7 @@ function renderEvent(event: IndustryEvent): string {
     <tr>
       <td class="fops-etd">${escapeHtml(when)}</td>
       <td class="fops-ecell">
-        <a href="https://fundopshq.com/events/${escapeHtml(event.slug)}" class="fops-etitle" style="color:${INK};text-decoration:none;" target="_blank">${escapeHtml(event.name)}</a>
+        <span class="fops-etitle" style="color:${INK};">${escapeHtml(event.name)}</span>
         <div class="fops-emeta">${escapeHtml(under)}</div>
       </td>
     </tr>`
@@ -604,7 +610,7 @@ function renderEventsSection(events: IndustryEvent[]): string {
                     ? `
                 <tr>
                   <td class="fops-etd"></td>
-                  <td class="fops-ecell"><a href="https://fundopshq.com/events" class="fops-emeta" style="color:${INK_MUTED};text-decoration:underline;" target="_blank">${day.more === 1 ? 'One more' : `${day.more} more`} on the calendar</a></td>
+                  <td class="fops-ecell"><span class="fops-emeta" style="color:${INK_MUTED};">${day.more === 1 ? 'One more' : `${day.more} more`} on the calendar</span></td>
                 </tr>`
                     : ''
                 }
@@ -621,7 +627,7 @@ function renderEventsSection(events: IndustryEvent[]): string {
               <div class="fops-xs" style="font-family:${FONT_MONO};font-size:10px;line-height:15px;color:${INK_MUTED};text-transform:uppercase;">Every date verified at the organizer</div>
               ${dayBlocks}
               <div style="padding-top:12px;">
-                <a href="https://fundopshq.com/events" class="fops-mono fops-xs" style="color:${INK};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;">Full calendar &rarr;</a>
+                <a href="https://fundopshq.com/events${FROM_EMAIL}" class="fops-mono fops-xs" style="color:${INK};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;">Full calendar &rarr;</a>
                 <span style="color:rgba(90,107,130,0.4);">&nbsp;&nbsp;</span>
                 <a href="https://fundopshq.com/events/submit" class="fops-mono fops-xs" style="color:${INK};font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none;">Submit an event &mdash; free</a>
               </div>
@@ -686,6 +692,18 @@ function renderWebinarsSection(picks: EmailWebinar[]): string {
 
 // ─── Single story row ──────────────────────────────────────────────────────
 
+/**
+ * Where a story's headline goes: its page on the site, which links on to the
+ * source (2026-10-23, the deliverability audit). One link per story, on our own
+ * domain: a corporate filter (Darktrace, on Danny's own inbox) marked the
+ * edition as graymail with "166 unique links", most of them to some thirty
+ * outside publishers. The same address as the "Today's biggest" rows, so a
+ * story listed twice is one link, not two.
+ */
+export function storyHref(article: Pick<ArticleGroup['articles'][0], 'id' | 'title'>): string {
+  return `${escapeHtml(rankHref(article))}${FROM_EMAIL}`
+}
+
 function renderArticle(article: ArticleGroup['articles'][0]): string {
   // Headlines only (2026-08-30, Danny: "The news section of the email should
   // be like the website now. It should be headlines only"). The summary blurb
@@ -695,7 +713,7 @@ function renderArticle(article: ArticleGroup['articles'][0]): string {
   return `
     <tr>
       <td class="fops-row">
-        <div><a href="${escapeHtml(article.sourceUrl)}" class="fops-title" style="color:${INK};text-decoration:none;font-weight:400;" target="_blank">${renderHeadline(article)}</a></div>
+        <div><a href="${storyHref(article)}" class="fops-title" style="color:${INK};text-decoration:none;font-weight:400;" target="_blank">${renderHeadline(article)}</a></div>
       </td>
     </tr>`
 }
@@ -756,7 +774,7 @@ function renderTopStory(pick: TopPick, isLast: boolean): string {
     <tr>
       <td style="padding:9px 0 10px;${isLast ? '' : `border-bottom:1px solid ${HAIRLINE};`}">
         <div class="fops-kicker" style="font-family:${FONT_MONO};font-size:10px;font-weight:700;letter-spacing:1.5px;color:${OCHRE};text-transform:uppercase;margin:0 0 3px;">${kicker}</div>
-        <div><a href="${escapeHtml(pick.article.sourceUrl)}" class="fops-top" style="color:${INK};text-decoration:none;font-family:${FONT_SERIF};font-size:18px;font-weight:400;line-height:1.27;" target="_blank">${renderHeadline(pick.article)}</a></div>
+        <div><a href="${storyHref(pick.article)}" class="fops-top" style="color:${INK};text-decoration:none;font-family:${FONT_SERIF};font-size:18px;font-weight:400;line-height:1.27;" target="_blank">${renderHeadline(pick.article)}</a></div>
         ${line ? `<div class="fops-blurb" style="color:${INK_MUTED};font-size:13px;line-height:1.45;font-family:${FONT_SANS};margin:3px 0 0;">${escapeHtml(line)}</div>` : ''}
       </td>
     </tr>`
@@ -860,7 +878,7 @@ function renderSponsorMark(sponsor: Sponsor, logoHeightPx: number): string {
   if (sponsor.wordmarkHtml) return sponsor.wordmarkHtml
   if (sponsor.logoUrl) {
     const width = sponsor.logoWidth ?? logoHeightPx * 5
-    return `<img src="${escapeHtml(sponsor.logoUrl)}" alt="${escapeHtml(sponsor.name)}" width="${width}" style="width:${width}px;height:auto;display:block;max-width:100%;" />`
+    return `<img src="${escapeHtml(sponsor.logoUrl)}" alt="${escapeHtml(sponsor.name)}" width="${width}" style="width:${width}px;height:auto;display:block;max-width:100%;border:0;font-family:${FONT_SERIF};font-size:${logoHeightPx}px;font-weight:800;line-height:1.2;color:${INK};" />`
   }
   return `<span class="fops-serif fops-ink" style="display:inline-block;font-size:${logoHeightPx}px;font-weight:800;letter-spacing:-0.3px;line-height:1;">${escapeHtml(sponsor.name)}</span>`
 }
@@ -1051,7 +1069,12 @@ export function seasonalFundOps(editionDate: string): string {
   const season = seasonOn(editionDate)
   if (!season) return 'FundOps'
   const o = SEASON_O_IMAGE[season]
-  return `Fund<img src="${o.src}" alt="O" width="${o.width}" height="30" style="height:30px;width:${o.width}px;vertical-align:-3px;margin:0 1px 0 0;border:0;display:inline-block;">ps`
+  // Images off, the word must still read "FundOps" (2026-10-23: Outlook with images blocked showed
+  // "Fund[broken]psDaily"). Outlook on Windows draws a blocked image as an empty box, so it gets the
+  // letter itself; every other client gets the mark, its alt text set in the wordmark's own type, which
+  // is what Gmail, Outlook on the web and Apple Mail show in its place.
+  const alt = `font-family:${FONT_SERIF};font-size:34px;font-weight:700;line-height:1;color:${CREAM};`
+  return `Fund<!--[if mso]>O<![endif]--><!--[if !mso]><!--><img src="${o.src}" alt="O" width="${o.width}" height="30" style="height:30px;width:${o.width}px;vertical-align:-3px;margin:0 1px 0 0;border:0;display:inline-block;${alt}"><!--<![endif]-->ps`
 }
 
 export function renderNewsletterEmail(params: TemplateParams): string {
@@ -1108,7 +1131,6 @@ export function renderNewsletterEmail(params: TemplateParams): string {
   const mailtoBody = `${shareText}\n\nSubscribe: ${shareUrl}`
   const shareMailto = `mailto:?subject=${encodeURIComponent('Thought this was worth passing along')}&body=${encodeURIComponent(mailtoBody)}`
   const shareLinkedIn = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`
-  const shareX = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`
 
   const html = `<!DOCTYPE html>
 <html lang="en" style="color-scheme:only light;supported-color-schemes:only light;">
@@ -1213,8 +1235,9 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                a friendly closer rather than a CTA blast. mailto pre-fills
                the subject + the top story headline + the subscribe URL,
                so the recipient can click-forward in one move. LinkedIn
-               and X links go through their share intents; readers hit
-               their own composer, nothing auto-posts. -->
+               goes through its share intent; nothing auto-posts. The X
+               button went on 2026-10-23 (the deliverability audit: fewer
+               links; the readers are on LinkedIn). -->
           <tr>
             <td class="fops-bg-cream fops-px" style="padding:8px 16px 20px;background-color:${CREAM};text-align:center;">
               <div class="fops-eyebrow" style="margin-bottom:10px;">Share this edition</div>
@@ -1224,7 +1247,6 @@ export function renderNewsletterEmail(params: TemplateParams): string {
               <div>
                 <a href="${escapeHtml(shareMailto)}" class="fops-mono fops-xs" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Forward by email</a>
                 <a href="${escapeHtml(shareLinkedIn)}" class="fops-mono fops-xs" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Post to LinkedIn</a>
-                <a href="${escapeHtml(shareX)}" class="fops-mono fops-xs" style="display:inline-block;background-color:${INK};color:${CREAM};font-size:10px;font-weight:700;padding:10px 16px;border-radius:2px;text-decoration:none;letter-spacing:1.5px;text-transform:uppercase;margin:0 4px 6px;">Share on X</a>
               </div>
               <div class="fops-mono fops-xs" style="padding-top:12px;font-size:10px;color:rgba(30,58,95,0.7);letter-spacing:1.5px;text-transform:uppercase;">
                 Forwarded to you? &nbsp;<a href="https://fundopshq.com/?ref=fwd" style="color:${INK};text-decoration:underline;font-weight:700;">Subscribe to FundOps Daily &rarr;</a>
@@ -1280,12 +1302,11 @@ export function renderNewsletterEmail(params: TemplateParams): string {
                       &nbsp;·&nbsp;`
                           : ''
                       }
-                      <a href="https://fundopshq.com" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Visit FundOpsHQ</a>
-                      &nbsp;·&nbsp;
                       <a href="https://fundopshq.com/about" style="color:rgba(248,245,236,0.65);text-decoration:underline;">About</a>
                       &nbsp;·&nbsp;
                       <a href="https://fundopshq.com/sponsor" style="color:rgba(248,245,236,0.65);text-decoration:underline;">Sponsor</a>
                     </p>
+                    <p style="margin:6px 0 0;color:rgba(248,245,236,0.45);">${escapeHtml(POSTAL_ADDRESS)}</p>
                   </td>
                 </tr>
               </table>

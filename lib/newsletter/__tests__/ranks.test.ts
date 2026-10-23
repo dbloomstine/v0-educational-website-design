@@ -3,7 +3,7 @@ import {
   pickRanks, closeRow, dealRow, hireRow, seniority, isWellKnownFirm, firmWords, rankHref,
   CLOSE_FLOOR_USD_M, DEAL_FLOOR_USD_M, MAX_RANK_ROWS, MAX_HIRE_ROWS,
 } from '../ranks'
-import { renderNewsletterEmail, renderRanks } from '../email-template'
+import { renderNewsletterEmail, renderRanks, storyHref } from '../email-template'
 import { renderNewsletterText, ranksText } from '../email-text'
 import { arrangeEdition } from '../top-stories'
 import { entityKey } from '../story-links'
@@ -272,10 +272,10 @@ describe('in the email', () => {
     const { top, sections } = arrangeEdition(p.groups, p.totalArticles)
     expect(top.length).toBeGreaterThan(0)
     const block = html.indexOf('biggest.')
-    expect(block).toBeGreaterThan(html.indexOf(`href="${top[top.length - 1].article.sourceUrl}"`))
+    expect(block).toBeGreaterThan(html.indexOf(`href="${storyHref(top[top.length - 1].article)}" class="fops-`))
     expect(block).toBeLessThan(html.indexOf(`>${sections[0].label}<`))
-    // Every story still runs once where it ran, linked to its source; the sections keep their order.
-    for (const g of p.groups) for (const a of g.articles) expect(html.split(`href="${a.sourceUrl}"`).length - 1).toBe(1)
+    // Every story still runs once where it ran, linked to its page; the sections keep their order.
+    for (const g of p.groups) for (const a of g.articles) expect(html.split(`href="${storyHref(a)}" class="fops-`).length - 1).toBe(1)
     const positions = sections.map((s) => html.indexOf(`>${s.label}<`))
     expect([...positions].sort((x, y) => x - y)).toEqual(positions)
   })

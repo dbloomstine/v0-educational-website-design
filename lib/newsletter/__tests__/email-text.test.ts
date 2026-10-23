@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { renderNewsletterText } from '../email-text'
-import { renderNewsletterEmail, type WeekRecap } from '../email-template'
+import { renderNewsletterEmail, storyHref, type WeekRecap } from '../email-template'
 import { arrangeEdition, kickerParts } from '../top-stories'
 import { renderWelcomeText } from '../welcome-email'
 import type { ArticleGroup, NewsletterArticle } from '../query-articles'
@@ -64,8 +64,11 @@ describe('the plain-text part of the daily edition', () => {
     for (const g of p.groups) {
       for (const a of g.articles) {
         expect(text.split(a.title).length - 1).toBe(1)
-        expect(text).toContain(a.sourceUrl)
-        expect(html).toContain(`href="${a.sourceUrl}"`)
+        // One link per story, to its page on the site (2026-10-23), the same in both parts; never the source.
+        expect(text).toContain(storyHref(a).replaceAll('&amp;', '&'))
+        expect(html).toContain(`href="${storyHref(a)}" class="fops-`)
+        expect(text).not.toContain(a.sourceUrl)
+        expect(html).not.toContain(a.sourceUrl)
       }
     }
   })
@@ -79,7 +82,7 @@ describe('the plain-text part of the daily edition', () => {
     expect([...positions].sort((a, b) => a - b)).toEqual(positions)
     expect(text.indexOf('THIS MORNING’S TOP STORIES')).toBeLessThan(positions[0])
     const apax = top.find((t) => t.article.firmName === 'Apax Partners')!
-    expect(text).toContain(`${kickerParts(apax).join(' · ').toUpperCase()}\n${apax.article.title}\nApax Partners is seeking $13.5 billion for its twelfth buyout fund, its largest yet.\n${apax.article.sourceUrl}`)
+    expect(text).toContain(`${kickerParts(apax).join(' · ').toUpperCase()}\n${apax.article.title}\nApax Partners is seeking $13.5 billion for its twelfth buyout fund, its largest yet.\n${storyHref(apax.article).replaceAll('&amp;', '&')}`)
     // The section rows stay headlines only.
     expect(text).not.toContain('The firm expects a first close')
   })
@@ -110,8 +113,11 @@ describe('the plain-text part of the daily edition', () => {
     ]
     const text = renderNewsletterText(params({ events }))
     expect(text).toContain('THE WEEK AHEAD')
-    expect(text).toMatch(/- 8:30am ET: PE CFO Forum\n {2}ACG · New York, NY · Free\n {2}https:\/\/fundopshq\.com\/events\/cfo/)
-    expect(text).toContain('One more on the calendar: https://fundopshq.com/events')
+    // No link per event since 2026-10-23: the full calendar is the way in.
+    expect(text).toMatch(/- 8:30am ET: PE CFO Forum\n {2}ACG · New York, NY · Free\n/)
+    expect(text).not.toContain('https://fundopshq.com/events/cfo')
+    expect(text).toContain('One more on the calendar\n')
+    expect(text).toContain('Full calendar: https://fundopshq.com/events?utm_source=newsletter&utm_medium=email')
     expect(text).not.toContain('Event C')
     expect(renderNewsletterText(params())).not.toContain('THE WEEK AHEAD')
   })
@@ -181,5 +187,34 @@ describe('the footer asks for news (/submit, 2026-10-22)', () => {
     expect(html).toContain('href="https://fundopshq.com/submit?utm_source=newsletter&amp;utm_medium=email"')
     expect(html).toMatch(/Send us your fund close or hire&nbsp;&rarr;<\/a>/)
     expect(renderNewsletterText(p)).toContain('Got news? Send us your fund close or hire: https://fundopshq.com/submit?utm_source=newsletter&utm_medium=email')
+  })
+})
+
+describe('what a strict work filter reads (2026-10-23, the deliverability audit)', () => {
+  const events = [
+    ev({ id: 'a', slug: 'cfo', name: 'PE CFO Forum', startDate: '2026-10-15' }),
+    ev({ id: 'b', slug: 'b', name: 'Event B', startDate: '2026-10-15' }),
+    ev({ id: 'c', slug: 'c', name: 'Event C', startDate: '2026-10-15' }),
+  ]
+  it('links each story once, to its own page, and each event not at all', () => {
+    const p = params({ events })
+    const html = renderNewsletterEmail(p)
+    const hrefs = [...html.matchAll(/href="([^"]+)"/g)].map((m) => m[1])
+    const stories = p.groups.flatMap((g) => g.articles)
+    // Every story's page, then a short list of the site's own pages and the reader's links.
+    expect(new Set(hrefs).size).toBeLessThanOrEqual(stories.length + 20)
+    // No link to the publishers (the fixture's sources are on example.com): the story page links on.
+    expect(hrefs.some((h) => h.includes('example.com'))).toBe(false)
+    expect(html).toContain('>PE CFO Forum<')
+    expect(html).not.toContain('fundopshq.com/events/cfo')
+    expect(html).not.toContain('twitter.com')
+  })
+  it('carries the postal address in both parts, and the welcome asks to save the sender', () => {
+    const p = params()
+    expect(renderNewsletterEmail(p)).toContain('76 Ensign Dr, Mystic, CT 06355')
+    expect(renderNewsletterText(p)).toContain('76 Ensign Dr, Mystic, CT 06355')
+    const welcome = renderWelcomeText('https://example.com/u')
+    expect(welcome).toMatch(/add \S+@fundopshq\.com to your contacts/)
+    expect(welcome).toContain('76 Ensign Dr, Mystic, CT 06355')
   })
 })

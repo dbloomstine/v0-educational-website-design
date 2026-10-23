@@ -28,6 +28,7 @@ import { pickRanks, rankHref, type RankList } from './ranks'
 import { FOLLOW } from '@/lib/brand/social'
 import { formatDate, readerLine, sponsorsInTheNews, topStoryLine, webinarsForEdition, type TemplateParams, type WeekRecap } from './email-template'
 import type { EmailWebinar } from './email-webinars'
+import { POSTAL_ADDRESS } from '@/lib/outreach-v2/config'
 
 /** Plain-text twin of the HTML's FROM_EMAIL: marks a visit from the reader's own copy. */
 const FROM_EMAIL = '?utm_source=newsletter&utm_medium=email'
@@ -50,14 +51,19 @@ function tagIfSponsor(url: string, readerTag?: string): string {
   return `${url}${url.includes('?') ? '&' : '?'}r=${readerTag}`
 }
 
+/** A story's page on the site, as the HTML links it (email-template.ts storyHref, 2026-10-23): one link per story, on our own domain. */
+function storyUrl(article: Pick<ArticleGroup['articles'][0], 'id' | 'title'>): string {
+  return `${rankHref(article)}${FROM_EMAIL}`
+}
+
 function topStoryText(pick: TopPick): string {
   const kicker = kickerParts(pick).join(' · ').toUpperCase()
   const line = topStoryLine(pick.article)
-  return [kicker, pick.article.title, line, pick.article.sourceUrl].filter(Boolean).join('\n')
+  return [kicker, pick.article.title, line, storyUrl(pick.article)].filter(Boolean).join('\n')
 }
 
 function sectionText(group: ArticleGroup): string {
-  const rows = group.articles.map((a) => `- ${a.title}\n  ${a.sourceUrl}`)
+  const rows = group.articles.map((a) => `- ${a.title}\n  ${storyUrl(a)}`)
   return `${heading(group.label.toUpperCase())}\n${rows.join('\n\n')}`
 }
 
@@ -97,14 +103,15 @@ function eventText(event: IndustryEvent): string {
   const under = [cleanEntityName(event.organizerName), formatEventLocation(event), isVerifiedFree(event) ? 'Free' : undefined]
     .filter(Boolean)
     .join(' · ')
-  return `- ${when}: ${event.name}${under ? `\n  ${under}` : ''}\n  https://fundopshq.com/events/${event.slug}`
+  // No link of its own since 2026-10-23, as in the HTML: the full calendar below is the way in.
+  return `- ${when}: ${event.name}${under ? `\n  ${under}` : ''}`
 }
 
 function eventsText(events: IndustryEvent[]): string {
   if (events.length === 0) return ''
   const days = pickEventsForEmail(events, (e) => formatEventDayHeading(e.startDate))
   const blocks = days.map((day) => {
-    const more = day.more > 0 ? `\n  ${day.more === 1 ? 'One more' : `${day.more} more`} on the calendar: https://fundopshq.com/events` : ''
+    const more = day.more > 0 ? `\n  ${day.more === 1 ? 'One more' : `${day.more} more`} on the calendar` : ''
     return `${day.heading}\n${day.shown.map(eventText).join('\n')}${more}`
   })
   return [
@@ -113,7 +120,7 @@ function eventsText(events: IndustryEvent[]): string {
     '',
     blocks.join('\n\n'),
     '',
-    'Full calendar: https://fundopshq.com/events',
+    `Full calendar: https://fundopshq.com/events${FROM_EMAIL}`,
     'Submit an event, free: https://fundopshq.com/events/submit',
   ].join('\n')
 }
@@ -239,6 +246,7 @@ export function renderNewsletterText(params: TemplateParams): string {
   footer.push(`Unsubscribe: ${unsubscribeUrl}`)
   if (preferencesUrl) footer.push(`Choose what you follow: ${preferencesUrl}`)
   footer.push(`Sponsor: ${tagIfSponsor(SPONSOR_PAGE, readerTag)}`)
+  footer.push(POSTAL_ADDRESS)
   blocks.push(footer.join('\n'))
 
   return `${blocks.join('\n\n')}\n`

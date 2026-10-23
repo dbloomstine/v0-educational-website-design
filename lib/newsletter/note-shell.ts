@@ -12,6 +12,7 @@
  *    user-agent `a:link` cascade.
  */
 import { followLineHtml } from './follow-line'
+import { POSTAL_ADDRESS } from '@/lib/outreach-v2/config'
 
 export const NAVY = '#1E3A5F'
 export const NAVY_DEEP = '#0F1E33'
@@ -175,6 +176,7 @@ ${o.body}            </td>
                       &nbsp;&middot;&nbsp;
                       <a href="https://fundopshq.com/about" style="color:rgba(248,245,236,0.65);text-decoration:underline;">About</a>
                     </p>
+                    <p style="margin:6px 0 0;color:rgba(248,245,236,0.45);">${escapeHtml(POSTAL_ADDRESS)}</p>
                   </td>
                 </tr>
               </table>

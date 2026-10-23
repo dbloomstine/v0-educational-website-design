@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildPreheader, renderNewsletterEmail, topStoryLine, TOP_LINE_MAX, type WeekRecap } from '../email-template'
+import { buildPreheader, renderNewsletterEmail, storyHref, topStoryLine, TOP_LINE_MAX, type WeekRecap } from '../email-template'
 import { arrangeEdition, HOME_FACTOR, homeFactor, kickerParts, pickTopStories, topCount } from '../top-stories'
 import type { ArticleGroup, NewsletterArticle } from '../query-articles'
 import type { SponsorSlate } from '../sponsors'
@@ -223,7 +223,7 @@ describe('the top of the edition', () => {
     expect(ids).toHaveLength(total)
     expect(new Set(ids).size).toBe(total)
     const html = render({ groups, totalArticles: total })
-    for (const g of groups) for (const a of g.articles) expect(count(html, `href="${a.sourceUrl}"`)).toBe(1)
+    for (const g of groups) for (const a of g.articles) expect(count(html, `href="${storyHref(a)}" class="fops-`)).toBe(1)
     // The lead is above the first section band.
     expect(html.indexOf('>Apax<')).toBeLessThan(html.indexOf('class="fops-cat-head'))
   })
@@ -399,7 +399,7 @@ describe('a reader who has said what they follow', () => {
     const hire = (groups[3].articles[4] = { ...groups[3].articles[4], fundCategories: ['credit'] })
     const html = renderNewsletterEmail({ groups, totalArticles: total, editionDate: '2026-10-02', unsubscribeUrl: 'https://example.com/u', interests: ['credit'] })
     const at = (needle: string) => html.indexOf(needle)
-    const link = (a: NewsletterArticle) => at(`href="${a.sourceUrl}"`)
+    const link = (a: NewsletterArticle) => at(`href="${storyHref(a)}" class="fops-`)
     expect(at('What you follow')).toBeGreaterThan(at('top stories.'))
     expect(link(clo)).toBeGreaterThan(at('What you follow'))
     expect(link(hire)).toBeGreaterThan(link(clo))
@@ -412,7 +412,7 @@ describe('a reader who has said what they follow', () => {
     const { groups, total } = busyMorning()
     const all = groups.flatMap((g) => g.articles)
     const html = renderNewsletterEmail({ groups, totalArticles: total, editionDate: '2026-10-02', unsubscribeUrl: 'https://example.com/u', interests: ['PE', 'credit'] })
-    for (const a of all) expect(count(html, `href="${a.sourceUrl}"`)).toBe(1)
+    for (const a of all) expect(count(html, `href="${storyHref(a)}" class="fops-`)).toBe(1)
   })
 
   it('links to the reader\'s own preferences page when the send supplies it', () => {

@@ -17,7 +17,17 @@
 import { interestWords } from './interests'
 import { FOLLOW } from '@/lib/brand/social'
 import { firstEditionSentence } from '@/lib/newsletter/first-edition'
+import { POSTAL_ADDRESS } from '@/lib/outreach-v2/config'
 import { AMBER, FONT_MONO, FONT_SANS, FONT_SERIF, INK, INK_MUTED, SIGNATURE_HTML, escapeHtml, renderNoteShell } from './note-shell'
+
+/**
+ * The edition comes from an address a new reader's mail has never seen, and a
+ * strict work filter files that as graymail ("No Association": Darktrace, on
+ * Danny's own corporate inbox, 2026-10-23). Saving the sender is the reader's
+ * one-step fix, so the welcome asks for it. The address is the one the daily
+ * goes out from (send-daily.ts: RESEND_FROM_EMAIL, else this).
+ */
+export const CONTACTS_LINE = `To make sure the brief lands in your inbox, add ${process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'} to your contacts.`
 
 export function renderWelcomeEmail(
   unsubscribeUrl: string,
@@ -86,6 +96,10 @@ ${tailored}
                 </tr>
               </table>
 
+              <p style="margin:0 0 16px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
+                ${CONTACTS_LINE}
+              </p>
+
               <p style="margin:0 0 32px;color:${INK};font-size:15px;line-height:1.7;font-family:${FONT_SANS};">
                 Thanks for being here.
               </p>
@@ -139,6 +153,8 @@ export function renderWelcomeText(
     ...tailored,
     'Reply any time with questions, story tips, or an event worth listing. I read everything.',
     '',
+    CONTACTS_LINE,
+    '',
     'Thanks for being here.',
     '',
     'Danny Bloomstine',
@@ -151,6 +167,7 @@ export function renderWelcomeText(
     `Unsubscribe: ${unsubscribeUrl}`,
     ...(options.preferencesUrl ? [`Choose what you follow: ${options.preferencesUrl}`] : []),
     'Visit FundOpsHQ: https://fundopshq.com',
+    POSTAL_ADDRESS,
     '',
   ].join('\n')
 }
