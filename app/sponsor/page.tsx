@@ -10,6 +10,7 @@ import { FOUNDING_NOTE, PACKAGES, openMondays, usd } from '@/lib/sponsor/package
 import { SponsorBuilder } from '@/components/sponsor/SponsorBuilder'
 import { ReaderBeacon } from '@/components/sponsor/ReaderBeacon'
 import { shareCard } from '@/lib/seo'
+import { AudienceReach } from '@/components/reach/AudienceReach'
 
 export const metadata: Metadata = {
   title: 'Sponsor FundOps Daily',
@@ -187,6 +188,9 @@ export default async function SponsorPage() {
               </p>
             </section>
           )}
+
+          {/* ─── Beyond the email: the site and the social videos (lib/reach) ─── */}
+          <AudienceReach label="Beyond the email" omitEmail />
 
           {/* ─── Who reads it ─── */}
           {stats && stats.readerFirms.length > 0 && (

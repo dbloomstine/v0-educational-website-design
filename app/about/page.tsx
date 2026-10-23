@@ -10,6 +10,7 @@ import { SectionFlag } from '@/components/story/StoryBlocks'
 import { SECTIONS, sectionHref } from '@/lib/news/sections'
 import { OG_IMAGES } from '@/lib/seo'
 import { EDITOR, SOCIAL } from '@/lib/brand/social'
+import { AudienceReach } from '@/components/reach/AudienceReach'
 
 export const metadata: Metadata = {
   title: 'About',
@@ -78,7 +79,10 @@ const METHOD = [
   },
 ] as const
 
-export default function AboutPage() {
+// Hourly, for the audience figures (lib/reach).
+export const revalidate = 3600
+
+export default async function AboutPage() {
   const byType = SECTIONS.filter((s) => s.group === 'type')
   const byAsset = SECTIONS.filter((s) => s.group === 'asset')
   return (
@@ -115,6 +119,8 @@ export default function AboutPage() {
               ))}
             </dl>
           </section>
+
+          <AudienceReach />
 
           <section aria-label="How it is made" className="mt-10">
             <SectionFlag label="How it is made" />
