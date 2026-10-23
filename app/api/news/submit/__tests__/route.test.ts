@@ -159,7 +159,7 @@ describe('a good submission', () => {
 
     const mails = toSender()
     expect(mails).toHaveLength(1)
-    expect(mails[0]).toMatchObject({ from: 'FundOpsHQ News Desk <feedback@fundopshq.com>', to: 'pat@example.com', reply_to: 'dbloomstine@gmail.com' })
+    expect(mails[0]).toMatchObject({ from: 'FundOpsHQ News Desk <danny@fundopshq.com>', to: 'pat@example.com', reply_to: 'danny@fundopshq.com' })
     const token = linkToken()
     expect(row.confirm_token_hash).toBe(hashToken(token))
     expect(JSON.stringify(row)).not.toContain(token)

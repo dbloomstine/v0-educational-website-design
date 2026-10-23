@@ -21,6 +21,7 @@ import { SAMPLE_SPONSOR_SLATE } from '../lib/newsletter/sponsors'
 import { slateFor, sponsorForEdition } from '../lib/sponsor/bookings'
 import { readerFirmDomains } from '../lib/sponsor/reader-firms'
 import { lastWeeksCloses } from '../lib/newsletter/recap'
+import { readerFromEmail, readerReplyTo } from '@/lib/newsletter/sender'
 
 // The events section is bounded by the DATE WINDOW, not by a count. A cap of
 // 24 silently truncated it to ~8 days once the board grew past ~24 events in
@@ -84,7 +85,7 @@ async function main() {
     events: upcomingEvents,
   })
 
-  const from = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
+  const from = readerFromEmail()
   const subject = `[TEST] FundOps Daily — ${editionDate} preview`
 
   console.log(`Sending test email to ${to}…`)
@@ -98,7 +99,7 @@ async function main() {
     body: JSON.stringify({
       from: `FundOps Daily <${from}>`,
       to,
-      reply_to: 'dbloomstine@gmail.com',
+      reply_to: readerReplyTo(),
       subject,
       html,
     }),

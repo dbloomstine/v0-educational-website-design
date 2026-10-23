@@ -5,6 +5,7 @@ import { insertSubscriber } from '@/lib/newsletter/insert-subscriber'
 import { sanitizePagePath, sanitizeSignupSource } from '@/lib/newsletter/signup-source'
 import { makeTicket } from '@/lib/newsletter/ticket'
 import { mergeSignupInterests, preferenceColumns, sanitizeInterests, sanitizeRole, sanitizeSignupForm, sanitizeSignupInterests } from '@/lib/newsletter/interests'
+import { readerFromEmail, readerReplyTo } from '@/lib/newsletter/sender'
 
 export async function POST(req: Request) {
   try {
@@ -104,7 +105,7 @@ export async function POST(req: Request) {
     // Fire-and-forget welcome email
     const apiKey = process.env.RESEND_API_KEY
     if (apiKey) {
-      const from = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
+      const from = readerFromEmail()
       const unsubscribeUrl = `https://fundopshq.com/api/newsletter/unsubscribe?token=${unsubscribeToken}`
       const preferencesUrl = `https://fundopshq.com/preferences?token=${unsubscribeToken}`
       await fetch('https://api.resend.com/emails', {
@@ -117,7 +118,7 @@ export async function POST(req: Request) {
           from: `FundOps Daily <${from}>`,
           to: trimmed,
           // Replies land directly in Danny's personal gmail.
-          reply_to: 'dbloomstine@gmail.com',
+          reply_to: readerReplyTo(),
           subject: 'Welcome to FundOps Daily — a note from Danny',
           html: renderWelcomeEmail(unsubscribeUrl, { preferencesUrl, interests: preferences.interests }),
           text: renderWelcomeText(unsubscribeUrl, { preferencesUrl, interests: preferences.interests }),

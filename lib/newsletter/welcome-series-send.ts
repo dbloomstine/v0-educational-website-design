@@ -34,13 +34,13 @@ import {
   type WelcomeEmailKey,
   type WelcomeStep,
 } from './welcome-series-schedule'
+import { readerFromEmail, readerReplyTo } from './sender'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>
 
 export const SERIES_TABLE = 'welcome_series_sends'
 const MIGRATION = 'supabase/migrations/20261023_welcome_series_sends.sql'
-const OWNER_EMAIL = 'dbloomstine@gmail.com'
 
 interface Subscriber extends SeriesSubscriber {
   unsubscribe_token: string
@@ -226,7 +226,7 @@ async function sendOne(
   ctx: SeriesContext,
 ): Promise<{ id?: string; subject: string; error?: string }> {
   const email = renderSeriesEmail(key, ctx)
-  const from = `FundOps Daily <${process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'}>`
+  const from = `FundOps Daily <${readerFromEmail()}>`
   try {
     const res = await fetchFn('https://api.resend.com/emails', {
       method: 'POST',
@@ -234,7 +234,7 @@ async function sendOne(
       body: JSON.stringify({
         from,
         to: sub.email,
-        reply_to: OWNER_EMAIL,
+        reply_to: readerReplyTo(),
         subject: email.subject,
         ...(email.html ? { html: email.html } : {}),
         text: email.text,

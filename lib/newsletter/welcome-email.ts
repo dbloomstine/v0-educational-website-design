@@ -19,15 +19,16 @@ import { FOLLOW } from '@/lib/brand/social'
 import { firstEditionSentence } from '@/lib/newsletter/first-edition'
 import { POSTAL_ADDRESS } from '@/lib/outreach-v2/config'
 import { AMBER, FONT_MONO, FONT_SANS, FONT_SERIF, INK, INK_MUTED, SIGNATURE_HTML, escapeHtml, renderNoteShell } from './note-shell'
+import { readerFromEmail } from './sender'
 
 /**
  * The edition comes from an address a new reader's mail has never seen, and a
  * strict work filter files that as graymail ("No Association": Darktrace, on
  * Danny's own corporate inbox, 2026-10-23). Saving the sender is the reader's
  * one-step fix, so the welcome asks for it. The address is the one the daily
- * goes out from (send-daily.ts: RESEND_FROM_EMAIL, else this).
+ * goes out from (lib/newsletter/sender.ts).
  */
-export const CONTACTS_LINE = `To make sure the brief lands in your inbox, add ${process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'} to your contacts.`
+export const CONTACTS_LINE = `To make sure the brief lands in your inbox, add ${readerFromEmail()} to your contacts.`
 
 export function renderWelcomeEmail(
   unsubscribeUrl: string,

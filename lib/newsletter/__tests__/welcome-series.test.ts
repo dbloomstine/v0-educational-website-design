@@ -345,7 +345,7 @@ describe('runWelcomeSeries', () => {
     const first = await runWelcomeSeries(deps as any)
     expect(first.actions[0]).toMatchObject({ step: 1, send: '1', result: 'sent' })
     expect(sent).toHaveLength(1)
-    expect(sent[0]).toMatchObject({ to: 'reader@firm.com', subject: 'What do you follow?', reply_to: 'dbloomstine@gmail.com' })
+    expect(sent[0]).toMatchObject({ to: 'reader@firm.com', subject: 'What do you follow?', reply_to: 'danny@fundopshq.com' })
     expect((sent[0].headers as Record<string, string>)['List-Unsubscribe']).toContain(READER.unsubscribe_token)
     expect(tables[SERIES_TABLE]).toEqual([expect.objectContaining({ step: 1, email_key: '1', status: 'sent', resend_email_id: 're_1' })])
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -22,6 +22,7 @@ import { readerFirmDomains } from '@/lib/sponsor/reader-firms'
 import { lastWeeksCloses } from './recap'
 import { interestKey } from './interests'
 import { makeInterestToken } from './interest-link'
+import { readerFromEmail, readerReplyTo } from '@/lib/newsletter/sender'
 
 // The events section is bounded by the DATE WINDOW, not by a count. A cap of
 // 24 silently truncated it to ~8 days once the board grew past ~24 events in
@@ -173,7 +174,7 @@ export async function sendDailyNewsletter(
   const headlineSubject = subjectStyleFor(editionDate) === 'B' ? buildHeadlineSubject(topPicks, content.totalArticles) : null
   const subjectStyle: SubjectStyle = headlineSubject ? 'B' : 'A'
   const subject = headlineSubject ?? buildSubject(content, topPicks)
-  const fromEmail = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
+  const fromEmail = readerFromEmail()
 
   // Render the full HTML body once with sentinel tokens, then per-subscriber
   // string-replace them with that reader's own links. This is load-bearing at
@@ -239,9 +240,8 @@ export async function sendDailyNewsletter(
     return {
       from: `FundOps Daily <${fromEmail}>`,
       to: sub.email,
-      // Replies route directly to Danny's personal gmail, skipping the
-      // ImprovMX forward hop that otherwise catches @fundopshq.com mail.
-      reply_to: 'dbloomstine@gmail.com',
+      // Replies go to the person the edition is from (lib/newsletter/sender.ts).
+      reply_to: readerReplyTo(),
       subject,
       html,
       text,

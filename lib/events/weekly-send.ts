@@ -26,6 +26,7 @@ import {
   weeklySubject,
 } from './weekly-email'
 import { readerCitySlugs, wantsEventsEmail } from '@/lib/newsletter/interests'
+import { readerFromEmail, readerReplyTo } from '@/lib/newsletter/sender'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DbClient = SupabaseClient<any, any>
@@ -183,7 +184,7 @@ export async function runEventsWeekly(opts: {
   if (claim === 'taken') return { ok: true, mode, weekOf, skipped: 'already_sent', readers: readers.length, ...counts }
   if (claim !== 'ok') return { ok: false, mode, weekOf, error: claim.error, readers: readers.length, ...counts }
 
-  const fromEmail = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
+  const fromEmail = readerFromEmail()
   const from = `FundOpsHQ Events <${fromEmail}>`
   const EVENTS_UNSUB = '__FUNDOPS_EVENTS_UNSUB__'
   const ALL_UNSUB = '__FUNDOPS_ALL_UNSUB__'
@@ -223,7 +224,7 @@ export async function runEventsWeekly(opts: {
       return {
         from,
         to: r.email,
-        reply_to: OWNER_EMAIL,
+        reply_to: readerReplyTo(),
         subject: render.subject,
         html: personal(render.html), // the two URLs carry one query parameter and no &, so they need no escaping in an attribute
         text: personal(render.text),

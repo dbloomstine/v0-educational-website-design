@@ -9,6 +9,7 @@
  */
 
 import { renderWelcomeEmail } from '../lib/newsletter/welcome-email'
+import { readerFromEmail, readerReplyTo } from '@/lib/newsletter/sender'
 
 async function main() {
   const to = process.env.TO
@@ -30,7 +31,7 @@ async function main() {
   const unsubscribeUrl = 'https://fundopshq.com/api/newsletter/unsubscribe?token=TEST'
   const html = renderWelcomeEmail(unsubscribeUrl)
 
-  const from = process.env.RESEND_FROM_EMAIL || 'feedback@fundopshq.com'
+  const from = readerFromEmail()
   const subject = '[TEST] Welcome to FundOps Daily — a note from Danny'
 
   console.log(`Sending welcome-email test to ${to}…`)
@@ -45,7 +46,7 @@ async function main() {
     body: JSON.stringify({
       from: `FundOps Daily <${from}>`,
       to,
-      reply_to: 'dbloomstine@gmail.com',
+      reply_to: readerReplyTo(),
       subject,
       html,
     }),

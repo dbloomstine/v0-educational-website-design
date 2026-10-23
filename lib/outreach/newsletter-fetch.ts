@@ -36,7 +36,13 @@ export interface NewsletterPayload {
   cleanedHtmlLength: number
 }
 
-const NEWSLETTER_FROM = 'feedback@fundopshq.com'
+// The edition's sender: danny@fundopshq.com since 2026-10-23 (lib/newsletter/sender.ts),
+// feedback@fundopshq.com before. Both are searched so either edition is found.
+export const NEWSLETTER_FROM = ['danny@fundopshq.com', 'feedback@fundopshq.com'] as const
+
+export function newsletterQuery(senders: readonly string[] = NEWSLETTER_FROM): string {
+  return `{${senders.map((s) => `from:${s}`).join(' ')}} -subject:"[TEST]" newer_than:1d`
+}
 
 /**
  * Fetch the most recent FundOps Daily newsletter delivery from Danny's
@@ -45,8 +51,8 @@ const NEWSLETTER_FROM = 'feedback@fundopshq.com'
  */
 export async function fetchTodaysNewsletter(): Promise<NewsletterPayload> {
   // Search query — find by sender only, limited to the last 24 hours.
-  // The sender address `feedback@fundopshq.com` is reserved for the
-  // newsletter, so it uniquely identifies the message. We don't filter
+  // The sender addresses (NEWSLETTER_FROM) are what the newsletter goes
+  // out from, so they identify the message. We don't filter
   // on subject because the newsletter subject varies daily (biggest fund
   // close + "N more moves" format) and no longer carries a stable
   // "FundOps Daily" prefix. Excludes `[TEST]`-prefixed subjects so that
@@ -54,7 +60,7 @@ export async function fetchTodaysNewsletter(): Promise<NewsletterPayload> {
   // forward-mode outreach if they land in the inbox before the real
   // newsletter. If the query returns nothing, the cron wasn't able to
   // read Danny's morning newsletter and we fail the run.
-  const query = `from:${NEWSLETTER_FROM} -subject:"[TEST]" newer_than:1d`
+  const query = newsletterQuery()
   const messages = await listInboxMessages({ query, maxResults: 5 })
 
   if (messages.length === 0) {
