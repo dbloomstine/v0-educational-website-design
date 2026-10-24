@@ -1,6 +1,7 @@
 import { SECTIONS, sectionHref } from '@/lib/news/sections'
 import { LEAGUE_MARKETS } from '@/lib/news/league-markets'
 import { SOCIAL } from '@/lib/brand/social'
+import { DIRECTORY_PATH, LIVE_CATEGORIES, directoryEnabled } from '@/lib/directory/taxonomy'
 
 /**
  * /llms.txt (2026-10-22, the seo-ai-visibility skill's audit): a plain-language description of the site at its root, for
@@ -15,6 +16,10 @@ const SITE = 'https://fundopshq.com'
 export function GET() {
   const sections = SECTIONS.map((s) => `- ${s.title}: ${SITE}${sectionHref(s.slug)}`).join('\n')
   const markets = LEAGUE_MARKETS.map((m) => `- Largest ${m.name} fund closes this year: ${SITE}/league-tables/${m.slug}`).join('\n')
+  // The directory (2026-10-24 night), only while it is switched on.
+  const directory = directoryEnabled()
+    ? `\n## Directory\nA free directory of the US professionals who work on private funds, each profile drawn from the firm's own\npublic bio page and linked to it. Listed in surname order; nobody pays to be listed or to rank: ${SITE}${DIRECTORY_PATH}\n${LIVE_CATEGORIES.map((c) => `- ${c.plural}: ${SITE}/${c.slug}`).join('\n')}\n`
+    : ''
   const social = SOCIAL.map((s) => `- ${s.name}: ${s.href}`).join('\n')
   const body = `# FundOpsHQ
 
@@ -33,7 +38,7 @@ export function GET() {
 
 ## Sections
 ${sections}
-
+${directory}
 ## League tables by market
 ${markets}
 

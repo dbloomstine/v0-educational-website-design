@@ -8,6 +8,12 @@
  *     crawler walking a thousand landing pages costs one query an hour.
  *   - `directory-person-v1`: one whole profile, by slug.
  *
+ *   - `directory-person-any-v1`: one whole profile by slug alone (slugs are
+ *     unique across the five trades), for the claim and request forms.
+ *   - `directory-summary-v1`: the index page's counts and top pages, and the
+ *     firms with people listed (for the cross-link on /firm/<slug>), built
+ *     from the per-trade lists above. Small, so a firm page reads it for free.
+ *
  * Tag `directory`: a hide, a removal request or an approved edit drops both
  * (revalidateTag). Plain unstable_cache, not buildOnce: the read is one small
  * indexed query, and buildOnce would write to the shared site_cache table.
@@ -17,8 +23,9 @@
  */
 import { unstable_cache } from 'next/cache'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
-import { CARD_COLUMNS, PERSON_COLUMNS, type Person, type PersonCard } from './people'
-import type { CategoryId } from './taxonomy'
+import { CARD_COLUMNS, PERSON_COLUMNS, isPublic, type Person, type PersonCard } from './people'
+import { LIVE_CATEGORIES, type CategoryId } from './taxonomy'
+import { summarize, type DirectorySummary } from './summary'
 
 export const DIRECTORY_TAG = 'directory'
 const PAGE = 1000
@@ -74,5 +81,43 @@ export async function loadPerson(category: CategoryId, slug: string): Promise<Pe
   } catch (err) {
     console.error('[directory] could not load a profile:', err instanceof Error ? err.message : err)
     return null
+  }
+}
+
+async function readPersonAny(slug: string): Promise<Person | null> {
+  const { data, error } = await getSupabaseAdmin().from('directory_people').select(PERSON_COLUMNS).eq('slug', slug).eq('status', 'published').maybeSingle()
+  if (error) throw new Error(error.message)
+  return (data as unknown as Person | null) ?? null
+}
+
+const cachedPersonAny = unstable_cache(readPersonAny, ['directory-person-any-v1'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
+
+/** A published profile in any trade, by slug (slugs are unique across trades): the claim and request forms. */
+export async function loadPersonBySlug(slug: string): Promise<Person | null> {
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length > 120) return null
+  try {
+    return await cachedPersonAny(slug)
+  } catch (err) {
+    console.error('[directory] could not load a profile:', err instanceof Error ? err.message : err)
+    return null
+  }
+}
+
+async function buildSummary(): Promise<DirectorySummary> {
+  const lists = await Promise.all(LIVE_CATEGORIES.map(async (c) => [c.id, (await loadPeople(c.id)).filter((p) => isPublic(p))] as const))
+  return summarize(new Map(lists))
+}
+
+const cachedSummary = unstable_cache(buildSummary, ['directory-summary-v1'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
+
+const EMPTY: DirectorySummary = { categories: LIVE_CATEGORIES.map((c) => ({ id: c.id, count: 0, firms: 0, cities: [], topics: [] })), firms: [] }
+
+/** The directory in numbers (the /directory page, the firm-page cross-link). Never throws. */
+export async function loadDirectorySummary(): Promise<DirectorySummary> {
+  try {
+    return await cachedSummary()
+  } catch (err) {
+    console.error('[directory] could not build the summary:', err instanceof Error ? err.message : err)
+    return EMPTY
   }
 }

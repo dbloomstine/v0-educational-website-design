@@ -10,6 +10,7 @@ import { SECTIONS, sectionHref } from "@/lib/news/sections"
 import { openSignupCard } from "@/components/newsletter/SubscribePrompt"
 import { SiteMenu } from "@/components/site-menu"
 import { SiteProducts } from "@/components/site-products"
+import { DIRECTORY_PATH, directoryEnabled } from "@/lib/directory/taxonomy"
 
 /**
  * Masthead + section tabs (2026-10 redesign).
@@ -128,6 +129,17 @@ export function SiteHeader() {
 
           {/* Search + subscribe */}
           <div className="flex items-center justify-end gap-2">
+            {/* The directory (2026-10-24 night): a quiet word in the masthead, laptops and up, so the pinned League /
+                Events group on the strip stays as Danny set it. Phones have it in the menu (site-menu.tsx). */}
+            {directoryEnabled() && !searchOpen && (
+              <Link
+                href={DIRECTORY_PATH}
+                aria-current={pathname === DIRECTORY_PATH ? "page" : undefined}
+                className="hidden h-8 items-center rounded-sm px-2 font-ui text-[12.5px] font-semibold text-foreground/70 transition-colors hover:bg-foreground/10 hover:text-foreground md:inline-flex"
+              >
+                Directory
+              </Link>
+            )}
             {searchOpen ? (
               <form action="/news" method="get" className="flex items-center gap-1" role="search">
                 <input

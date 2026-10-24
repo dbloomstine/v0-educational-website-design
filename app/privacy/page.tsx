@@ -4,7 +4,7 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { OG_IMAGES } from '@/lib/seo'
 import { adsMode } from '@/lib/ads/config'
-import { CATEGORIES, directoryEnabled } from '@/lib/directory/taxonomy'
+import { DIRECTORY_PATH, LIVE_CATEGORIES, directoryEnabled } from '@/lib/directory/taxonomy'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -272,14 +272,20 @@ export default function PrivacyPolicyPage() {
                   <div className="mb-12" id="directory">
                     <h2 className="text-2xl font-bold tracking-tight mb-4">The Directory</h2>
                     <p className="text-muted-foreground leading-relaxed mb-4">
-                      FundOpsHQ publishes a directory of professionals who advise private funds, starting with{' '}
-                      <Link href={`/${CATEGORIES.fund_lawyer.slug}`}>{CATEGORIES.fund_lawyer.plural.toLowerCase()}</Link>. It covers people at
-                      offices in the United States only.
+                      FundOpsHQ publishes a{' '}
+                      <Link href={DIRECTORY_PATH}>directory</Link> of professionals who advise private funds:{' '}
+                      {LIVE_CATEGORIES.map((c, i) => (
+                        <span key={c.id}>
+                          {i > 0 ? (i === LIVE_CATEGORIES.length - 1 ? ' and ' : ', ') : ''}
+                          <Link href={`/${c.slug}`}>{c.plural.toLowerCase()}</Link>
+                        </span>
+                      ))}
+                      . It covers people at offices in the United States only.
                     </p>
                     <ul className="list-disc list-inside text-muted-foreground space-y-2 mb-4">
                       <li>
-                        <strong>What we hold:</strong> a person&apos;s name, title, firm, office city, practice areas, bar admissions and
-                        education, the address of their bio page, and the date we read it. We do not copy the bio itself, and we never
+                        <strong>What we hold:</strong> a person&apos;s name, title, firm, office city, practice areas, bar admissions or
+                        professional licenses and registrations, education, the address of their bio page, and the date we read it. We do not copy the bio itself, and we never
                         publish a personal email address or phone number.
                       </li>
                       <li>

@@ -171,12 +171,15 @@ export function EditProfileForm({
   hiddenByOwner,
   profileHref,
   pending,
+  practices = PRACTICES.filter((p) => p.id !== 'other'),
 }: {
   initial: ProfileEdits
   hidden: boolean
   hiddenByOwner: boolean
   profileHref: string
   pending: boolean
+  /** The trade's own practice areas (lib/directory/taxonomy.ts practicesFor). */
+  practices?: { id: string; label: string }[]
 }) {
   const id = useId()
   const [d, setD] = useState<ProfileEdits>(initial)
@@ -294,7 +297,7 @@ export function EditProfileForm({
         <fieldset>
           <legend className={labelClass}>Practice areas</legend>
           <div className="grid gap-x-4 gap-y-1 sm:grid-cols-2">
-            {PRACTICES.filter((p) => p.id !== 'other').map((p) => (
+            {practices.map((p) => (
               <label key={p.id} className="flex min-h-9 items-center gap-2 font-ui text-[14px] text-foreground">
                 <input
                   type="checkbox"

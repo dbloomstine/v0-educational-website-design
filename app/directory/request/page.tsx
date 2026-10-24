@@ -3,9 +3,9 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { FormShell } from '@/components/directory/FormShell'
 import { RequestForm } from '@/components/directory/forms'
-import { loadPerson } from '@/lib/directory/data'
+import { loadPersonBySlug } from '@/lib/directory/data'
 import { profilePath } from '@/lib/directory/people'
-import { CATEGORIES, directoryEnabled } from '@/lib/directory/taxonomy'
+import { directoryEnabled } from '@/lib/directory/taxonomy'
 
 // "Request a correction or removal", from any profile, by anyone. A removal hides the profile at once.
 
@@ -16,7 +16,7 @@ type Params = { searchParams: Promise<{ p?: string | string[] }> }
 export default async function RequestPage({ searchParams }: Params) {
   if (!directoryEnabled()) notFound()
   const { p: slug } = await searchParams
-  const person = typeof slug === 'string' ? await loadPerson(CATEGORIES.fund_lawyer.id, slug) : null
+  const person = typeof slug === 'string' ? await loadPersonBySlug(slug) : null
   if (!person) notFound()
   return (
     <FormShell

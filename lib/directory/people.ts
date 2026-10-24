@@ -10,7 +10,7 @@
  *     description, photo, contact link, practice tags, notable matters), each
  *     reviewed by the desk before it shows. The loader never writes these.
  */
-import { CATEGORIES, type Category, type CategoryId, lowerNoun, practiceLabel } from './taxonomy'
+import { CATEGORIES, type Category, type CategoryId, lowerNoun, practiceLabel, practiceLower } from './taxonomy'
 import { cityOf, officeCity, officeLabel, stateCode, type Office } from './places'
 
 export type Status = 'review' | 'published' | 'hidden' | 'removed'
@@ -201,7 +201,7 @@ export function profileDescription(p: PersonCard, category: Category = CATEGORIE
   const areas = practiceAreas(p)
     .filter((a) => a !== 'other')
     .slice(0, 3)
-    .map((a) => practiceLabel(a).toLowerCase())
+    .map((a) => practiceLower(a))
   const role = p.title?.trim() ? `${p.title.trim()} at ${p.firm_name}` : `at ${p.firm_name}`
   const where = office ? ` in ${officeLabel(office)}` : ''
   const what = areas.length ? `, working on ${listJoin(areas)}` : ''

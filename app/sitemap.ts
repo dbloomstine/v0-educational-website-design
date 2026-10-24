@@ -9,7 +9,7 @@ import { LEAGUE_MARKETS } from '@/lib/news/league-markets'
 import { archiveHref, loadArchiveSpan, loadSitemapStories, monthsBetween, type ArchiveSpan, type SitemapStory } from '@/lib/news/archive'
 import { GLOSSARY_TERMS, glossaryHref } from '@/lib/glossary/terms'
 import { storyPath } from '@/lib/news/story-path'
-import { directoryEnabled, CATEGORIES } from '@/lib/directory/taxonomy'
+import { DIRECTORY_PATH, LIVE_CATEGORIES, directoryEnabled } from '@/lib/directory/taxonomy'
 import { loadPeople } from '@/lib/directory/data'
 import { allLandings } from '@/lib/directory/landing'
 import { isIndexable, isPublic, profilePath } from '@/lib/directory/people'
@@ -168,18 +168,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }))
 
-  // The directory (2026-10-24), only while it is switched on and only what is indexable: the hub once it has
-  // people, the landing pages that exist (lib/directory/landing.ts: five people or more), and the profiles
-  // with substance (lib/directory/people.ts isIndexable). No dates: the crawl date is per person, not per page.
+  // The directory (2026-10-24; five trades since that night), only while it is switched on and only what is
+  // indexable: the index and each hub once they have people, the landing pages that exist (lib/directory/landing.ts:
+  // five people or more), and the profiles with substance (lib/directory/people.ts isIndexable). No dates: the crawl
+  // date is per person, not per page.
   const directoryPages: MetadataRoute.Sitemap = []
   if (directoryEnabled()) {
-    const category = CATEGORIES.fund_lawyer
-    const people = (await loadPeople(category.id)).filter((p) => isPublic(p))
-    if (people.length) {
+    for (const category of LIVE_CATEGORIES) {
+      const people = (await loadPeople(category.id)).filter((p) => isPublic(p))
+      if (!people.length) continue
       directoryPages.push({ url: `${baseUrl}/${category.slug}`, changeFrequency: 'weekly', priority: 0.6 })
       for (const l of allLandings(category, people)) directoryPages.push({ url: `${baseUrl}${l.path}`, changeFrequency: 'weekly', priority: 0.5 })
       for (const p of people) if (isIndexable(p)) directoryPages.push({ url: `${baseUrl}${profilePath(p)}`, changeFrequency: 'monthly', priority: 0.4 })
     }
+    if (directoryPages.length) directoryPages.unshift({ url: `${baseUrl}${DIRECTORY_PATH}`, changeFrequency: 'weekly', priority: 0.6 })
   }
 
   return [...staticPages, ...sectionPages, ...glossaryPages, ...storyPages, ...archivePages, ...writtenPages, ...firmPages, ...collectionPages, ...eventPages, ...directoryPages]

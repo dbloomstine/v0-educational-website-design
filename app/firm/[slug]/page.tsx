@@ -13,7 +13,10 @@ import { SponsorCard, SponsorStrip } from '@/components/sponsor/SponsorSlot'
 import { GotNews } from '@/components/news/GotNews'
 import { submitNewsHref } from '@/lib/submit/fields'
 import { FIRM_WINDOW_DAYS, getFirm } from '@/lib/news/firm-data'
-import { storyFirmRef } from '@/lib/news/firms'
+import { firmPageHref, storyFirmRef } from '@/lib/news/firms'
+import { loadDirectorySummary } from '@/lib/directory/data'
+import { firmDirectoryLinks, type FirmDirectoryLink } from '@/lib/directory/summary'
+import { directoryEnabled } from '@/lib/directory/taxonomy'
 import { loadFirmPages } from '@/lib/news/firm-pages'
 import type { Story } from '@/lib/news/stories'
 import { LEAGUE_ASSET_LABEL as ASSET_LABEL, STAGE_LABEL } from '@/lib/news/league'
@@ -65,8 +68,10 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function FirmPage({ params }: Params) {
   const { slug } = await params
-  const [firm, firmPages] = await Promise.all([getFirm(slug), loadFirmPages()])
+  const [firm, firmPages, directory] = await Promise.all([getFirm(slug), loadFirmPages(), directoryEnabled() ? loadDirectorySummary() : null])
   if (!firm) notFound()
+  // "People at <firm> in the FundOpsHQ directory" (2026-10-24 night): from the directory's small cached summary, no query of its own.
+  const directoryLinks: FirmDirectoryLink[] = directory ? firmDirectoryLinks(directory, `/firm/${slug}`, (name) => firmPageHref(name, firmPages)) : []
   // In "Also named in", each story's own firm, when it has a page and it is not this one.
   const otherFirm = (s: Story) => {
     const ref = storyFirmRef(s, firmPages)
@@ -196,6 +201,20 @@ export default async function FirmPage({ params }: Params) {
                       </div>
                     ))}
                   </dl>
+                </Panel>
+              )}
+              {directoryLinks.length > 0 && (
+                <Panel label={`People at ${firm.name} in the FundOpsHQ directory`}>
+                  <ul className="pt-1">
+                    {directoryLinks.map((l) => (
+                      <li key={l.category} className="border-b border-border/70 last:border-0">
+                        <Link prefetch={false} href={l.href} className="flex items-baseline justify-between gap-3 py-[7px] font-news text-[15px] text-foreground hover:underline">
+                          <span>{l.label}</span>
+                          <span className="font-mono text-[13px] font-bold tabular-nums">{l.count.toLocaleString('en-US')}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
                 </Panel>
               )}
               <SponsorCard />

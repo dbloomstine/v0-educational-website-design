@@ -21,7 +21,7 @@
  *   - it links up to its parents and across to the nearby combinations that
  *     exist, and lists the people in pages of PAGE_SIZE.
  */
-import { CLIENT_FOCUS, PRACTICES, REPRESENTS, RESERVED_SLUGS, type Category, lowerNoun } from './taxonomy'
+import { CATEGORIES, CLIENT_FOCUS, PRACTICES, REPRESENTS, RESERVED_SLUGS, type Category, lowerNoun, practiceLower } from './taxonomy'
 import { PLACES, officeIn, placeBySlug, type Place } from './places'
 import { bySurname, cityTally, firmTally, isPublic, listJoin, practiceAreas, practiceTally, profilePath, type PersonCard } from './people'
 
@@ -29,18 +29,37 @@ export const LANDING_MIN = 5
 export const PAGE_SIZE = 50
 
 export type Topic =
-  | { kind: 'practice'; id: string; slug: string; adj: string }
+  | { kind: 'practice'; id: string; slug: string; adj: string; noun: string; work: string }
   | { kind: 'focus'; id: string; slug: string; label: string }
   | { kind: 'side'; id: string; slug: string; label: string }
 
+/** Every topic any trade can have: one slug space, so no address means two things in two trades. */
 export const TOPICS: Topic[] = [
-  ...PRACTICES.flatMap((p): Topic[] => (p.slug ? [{ kind: 'practice', id: p.id, slug: p.slug, adj: p.adj }] : [])),
+  ...PRACTICES.flatMap((p): Topic[] => (p.slug ? [{ kind: 'practice', id: p.id, slug: p.slug, adj: p.adj, noun: p.noun, work: p.work }] : [])),
   ...CLIENT_FOCUS.map((c): Topic => ({ kind: 'focus', id: c.id, slug: c.slug, label: c.label })),
   ...REPRESENTS.map((r): Topic => ({ kind: 'side', id: r.id, slug: r.slug, label: r.label })),
 ]
 
 const TOPIC_BY_SLUG = new Map(TOPICS.map((t) => [t.slug, t]))
-export const topicBySlug = (slug: string): Topic | null => TOPIC_BY_SLUG.get(slug) ?? null
+
+/**
+ * The topics one trade has pages for (2026-10-24 night): its own practice
+ * areas, every client focus (stage: emerging managers, first-time funds…),
+ * and GP or LP counsel for lawyers only.
+ */
+export function topicsFor(category: Category): Topic[] {
+  return TOPICS.filter((t) => (t.kind === 'practice' ? (category.practices as string[]).includes(t.id) : t.kind === 'focus' ? true : category.sides))
+}
+
+const topicsCache = new Map<string, Map<string, Topic>>()
+function topicMap(category: Category): Map<string, Topic> {
+  let m = topicsCache.get(category.id)
+  if (!m) topicsCache.set(category.id, (m = new Map(topicsFor(category).map((t) => [t.slug, t]))))
+  return m
+}
+
+/** A topic by its address, within a trade (default: any trade's). */
+export const topicBySlug = (slug: string, category?: Category): Topic | null => (category ? topicMap(category).get(slug) : TOPIC_BY_SLUG.get(slug)) ?? null
 
 export interface LandingKey {
   topic: Topic | null
@@ -51,17 +70,17 @@ export interface LandingKey {
  * The page an address names, or null for none. One segment is a topic or a
  * place; two are a topic then a place. Nothing else resolves.
  */
-export function resolveLanding(segments: string[]): LandingKey | null {
+export function resolveLanding(segments: string[], category: Category = CATEGORIES.fund_lawyer): LandingKey | null {
   if (segments.some((s) => RESERVED_SLUGS.has(s))) return null
   if (segments.length === 1) {
     const [a] = segments
-    const topic = topicBySlug(a)
+    const topic = topicBySlug(a, category)
     if (topic) return { topic, place: null }
     const place = placeBySlug(a)
     return place ? { topic: null, place } : null
   }
   if (segments.length === 2) {
-    const topic = topicBySlug(segments[0])
+    const topic = topicBySlug(segments[0], category)
     const place = placeBySlug(segments[1])
     return topic && place ? { topic, place } : null
   }
@@ -72,10 +91,14 @@ export function landingPath(category: Category, k: LandingKey): string {
   return `/${[category.slug, k.topic?.slug, k.place?.slug].filter(Boolean).join('/')}`
 }
 
-/** "Venture Fund Lawyers", "Fund Lawyers for Emerging Managers": the topic's own name. */
+/**
+ * The topic's own name: "Venture Fund Lawyers", "Venture Fund Auditors",
+ * "Placement Agents for Venture Funds", "Fund Finance Bankers for NAV
+ * Lending", "Fund Lawyers for Emerging Managers".
+ */
 export function topicTitle(category: Category, topic: Topic | null): string {
   if (!topic) return category.plural
-  if (topic.kind === 'practice') return `${topic.adj} ${category.trade}`
+  if (topic.kind === 'practice') return category.topicStyle === 'for' ? `${category.plural} for ${topic.noun}` : `${topic.adj} ${category.trade}`
   return `${category.plural} for ${topic.label}`
 }
 
@@ -115,8 +138,9 @@ export function allLandings(category: Category, people: PersonCard[], now = new 
     const key = `${t?.slug ?? ''}|${pl?.slug ?? ''}`
     counts.set(key, (counts.get(key) ?? 0) + 1)
   }
+  const topics0 = topicsFor(category)
   for (const p of live) {
-    const topics = TOPICS.filter((t) => hasTopic(p, t))
+    const topics = topics0.filter((t) => hasTopic(p, t))
     const places = PLACES.filter((pl) => p.offices.some((o) => officeIn(o, pl)))
     for (const t of topics) bump(t, null)
     for (const pl of places) {
@@ -128,7 +152,7 @@ export function allLandings(category: Category, people: PersonCard[], now = new 
   for (const [key, count] of counts) {
     if (count < LANDING_MIN) continue
     const [ts, ps] = key.split('|')
-    const k: LandingKey = { topic: ts ? topicBySlug(ts) : null, place: ps ? placeBySlug(ps) : null }
+    const k: LandingKey = { topic: ts ? topicBySlug(ts, category) : null, place: ps ? placeBySlug(ps) : null }
     out.push({ ...k, path: landingPath(category, k), title: landingTitle(category, k), count })
   }
   return out.sort((a, b) => b.count - a.count || a.path.localeCompare(b.path))
@@ -174,7 +198,7 @@ export function landingSentence(category: Category, k: LandingKey, people: Perso
   let first: string
   if (!k.topic) first = `${num(people.length)} ${noun} at ${num(firms.length)} ${firms.length === 1 ? 'firm' : 'firms'} have an office${where}.`
   else if (k.topic.kind === 'practice')
-    first = `${num(people.length)} ${noun} at ${num(firms.length)} ${firms.length === 1 ? 'firm' : 'firms'} list ${k.topic.adj.toLowerCase()} work${where}.`
+    first = `${num(people.length)} ${noun} at ${num(firms.length)} ${firms.length === 1 ? 'firm' : 'firms'} list ${k.topic.work} work${where}.`
   else if (k.topic.kind === 'focus')
     first = `${num(people.length)} ${noun} at ${num(firms.length)} ${firms.length === 1 ? 'firm' : 'firms'}${where} name ${k.topic.label.toLowerCase()} among their clients.`
   else first = `${num(people.length)} ${noun} at ${num(firms.length)} ${firms.length === 1 ? 'firm' : 'firms'}${where} act for ${k.topic.label.replace(/ and (\w)/, (_m, c: string) => ` and ${c.toLowerCase()}`)}.`
@@ -183,7 +207,7 @@ export function landingSentence(category: Category, k: LandingKey, people: Perso
   const practices = practiceTally(people)
     .filter((t) => !(k.topic?.kind === 'practice' && t.key === k.topic.id))
     .slice(0, 3)
-  if (practices.length) parts.push(`The practices listed most${k.topic?.kind === 'practice' ? ' alongside it' : ''}: ${listJoin(practices.map((t) => `${t.label.toLowerCase()} (${num(t.count)})`))}.`)
+  if (practices.length) parts.push(`The practices listed most${k.topic?.kind === 'practice' ? ' alongside it' : ''}: ${listJoin(practices.map((t) => `${practiceLower(t.key)} (${num(t.count)})`))}.`)
   const top = firms.slice(0, 3)
   if (top.length > 1) parts.push(`The most are at ${listJoin(top.map((t) => `${t.label} (${num(t.count)})`))}.`)
   if (!k.place || k.place.kind === 'state') {

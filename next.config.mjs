@@ -4,6 +4,9 @@ const SECTION_SLUGS = [
   'hedge-funds', 'lps', 'regulation', 'service-providers',
 ]
 
+// The directory's five hubs (lib/directory/taxonomy.ts CATEGORIES[*].slug).
+const DIRECTORY_SLUGS = ['fund-lawyers', 'fund-auditors', 'fund-tax-advisors', 'placement-agents', 'fund-finance-bankers']
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // The directory's switch (lib/directory/taxonomy.ts), read by the header and menus in the browser too.
@@ -85,8 +88,14 @@ const nextConfig = {
       // then served stale for up to an hour while one request refreshes it.
       // The browser still gets Next's own no-store header. (Section, story and
       // firm pages are static and need none of this.)
-      // The directory's hub and landing pages read ?q / ?page the same way (2026-10-24).
-      ...['/news', '/league-tables', '/firms', '/fund-lawyers', '/fund-lawyers/:a((?!people$)[^/]+)', '/fund-lawyers/:a((?!people$)[^/]+)/:b'].map((source) => ({
+      // The directory's hubs and landing pages read ?q / ?page the same way (2026-10-24; all five trades
+      // since that night, lib/directory/taxonomy.ts).
+      ...[
+        '/news',
+        '/league-tables',
+        '/firms',
+        ...DIRECTORY_SLUGS.flatMap((d) => [`/${d}`, `/${d}/:a((?!people$)[^/]+)`, `/${d}/:a((?!people$)[^/]+)/:b`]),
+      ].map((source) => ({
         source,
         headers: [{ key: 'Vercel-CDN-Cache-Control', value: 'max-age=300, stale-while-revalidate=3600' }],
       })),

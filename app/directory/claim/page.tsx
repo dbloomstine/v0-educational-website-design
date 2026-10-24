@@ -3,9 +3,9 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { FormShell } from '@/components/directory/FormShell'
 import { ClaimForm } from '@/components/directory/forms'
-import { loadPerson } from '@/lib/directory/data'
+import { loadPersonBySlug } from '@/lib/directory/data'
 import { displayDomain, profilePath } from '@/lib/directory/people'
-import { CATEGORIES, directoryEnabled } from '@/lib/directory/taxonomy'
+import { directoryEnabled } from '@/lib/directory/taxonomy'
 
 // "Is this you? Claim this profile" (2026-10-24): a work email at the firm's domain, then a one-time link.
 
@@ -16,7 +16,7 @@ type Params = { searchParams: Promise<{ p?: string | string[] }> }
 export default async function ClaimPage({ searchParams }: Params) {
   if (!directoryEnabled()) notFound()
   const { p: slug } = await searchParams
-  const person = typeof slug === 'string' ? await loadPerson(CATEGORIES.fund_lawyer.id, slug) : null
+  const person = typeof slug === 'string' ? await loadPersonBySlug(slug) : null
   if (!person) notFound()
   const domain = displayDomain(person.firm_domain)
   return (

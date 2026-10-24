@@ -13,8 +13,13 @@
  *     says nothing about the sixth). Back in a later crawl, the stamp clears.
  *   - US only: offices outside the US are dropped, and a person with no US
  *     office left is refused.
+ *   - Five trades, one file or several (2026-10-24 night): a line may name its
+ *     own `category`, else the file's (--category). Slugs are unique across
+ *     trades: a slug another trade already holds gets the trade's suffix
+ *     ("jane-smith-ey" the tax advisor becomes "jane-smith-ey-tax"), the same
+ *     one on every run, so a refresh finds the row it made.
  */
-import { RESERVED_SLUGS, isClientFocusId, isPracticeId, isRepresentsId, type CategoryId } from './taxonomy'
+import { CATEGORIES, RESERVED_SLUGS, isCategoryId, isClientFocusId, isPracticeId, isRepresentsId, type CategoryId } from './taxonomy'
 import { stateCode, type Office } from './places'
 import type { Education, Status } from './people'
 
@@ -32,6 +37,8 @@ export interface SourceRecord {
   bio_url: string | null
   fetched_at: string | null
   slug: string
+  /** The trade: the line's own `category`, else the file's. Never changed on an existing row. */
+  category: CategoryId
 }
 
 /** What the loader may write. Nothing else, ever. */
@@ -82,8 +89,8 @@ function httpUrl(v: unknown): string | null {
 
 export type Parsed = { ok: true; value: SourceRecord; warnings: string[] } | { ok: false; error: string }
 
-/** One line of the crawl, checked. */
-export function parseRecord(raw: unknown): Parsed {
+/** One line of the crawl, checked. `fallback`: the trade for a line that names none (the --category flag). */
+export function parseRecord(raw: unknown, fallback: CategoryId = 'fund_lawyer'): Parsed {
   if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return { ok: false, error: 'not an object' }
   const r = raw as Record<string, unknown>
   const warnings: string[] = []
@@ -96,6 +103,9 @@ export function parseRecord(raw: unknown): Parsed {
   if (!firm_domain) return { ok: false, error: `${full_name}: no usable firm_domain` }
   if (!slug || !SLUG_RE.test(slug)) return { ok: false, error: `${full_name}: bad slug ${JSON.stringify(r.slug)}` }
   if (RESERVED_SLUGS.has(slug)) return { ok: false, error: `${full_name}: slug "${slug}" is reserved` }
+  const rawCategory = r.category === undefined || r.category === null || r.category === '' ? fallback : r.category
+  if (!isCategoryId(rawCategory)) return { ok: false, error: `${slug}: unknown category ${JSON.stringify(r.category)}` }
+  const category: CategoryId = rawCategory
 
   const rawOffices = Array.isArray(r.offices) ? r.offices : []
   const offices: Office[] = []
@@ -111,6 +121,8 @@ export function parseRecord(raw: unknown): Parsed {
   const areas = strList(r.practice_areas, 40)
   const practice_areas = areas.filter(isPracticeId)
   for (const a of areas) if (!isPracticeId(a)) warnings.push(`${slug}: unknown practice area "${a}" dropped`)
+  const own = CATEGORIES[category].practices as string[]
+  for (const a of practice_areas) if (a !== 'other' && !own.includes(a)) warnings.push(`${slug}: "${a}" is not a ${CATEGORIES[category].singular.toLowerCase()} practice (kept as a tag, no page)`)
 
   const education: Education[] = Array.isArray(r.education)
     ? r.education.flatMap((e) => {
@@ -143,8 +155,50 @@ export function parseRecord(raw: unknown): Parsed {
       bio_url: httpUrl(r.bio_url),
       fetched_at,
       slug,
+      category,
     },
   }
+}
+
+/** The suffix a trade adds to a slug another trade holds. */
+export const CATEGORY_SLUG_SUFFIX: Record<CategoryId, string> = {
+  fund_lawyer: 'law',
+  fund_auditor: 'audit',
+  fund_tax_advisor: 'tax',
+  placement_agent: 'placement',
+  fund_finance_banker: 'banking',
+}
+
+type SlugOwner = Pick<ExistingRow, 'category' | 'full_name' | 'firm_domain'>
+
+/**
+ * The slug a line is stored under: its own, unless another trade holds it
+ * (in the table or earlier in this load); then `<slug>-<suffix>`, then
+ * `<slug>-<suffix>-2`… A suffixed slug is reused only by the same person (name
+ * and firm), so a refresh lands on the row it made and never on a stranger's.
+ * Null when every candidate is taken; `duplicate` when this trade already has
+ * the slug earlier in this load.
+ */
+export function assignSlug(
+  rec: Pick<SourceRecord, 'slug' | 'category' | 'full_name' | 'firm_domain'>,
+  existing: ReadonlyMap<string, SlugOwner>,
+  taken: ReadonlyMap<string, SlugOwner>,
+): { slug: string } | { duplicate: true } | null {
+  const suffix = CATEGORY_SLUG_SUFFIX[rec.category]
+  const candidates = [rec.slug, `${rec.slug}-${suffix}`, ...[2, 3, 4, 5, 6, 7, 8, 9].map((n) => `${rec.slug}-${suffix}-${n}`)]
+  for (const [i, c] of candidates.entries()) {
+    if (c.length > 120 || RESERVED_SLUGS.has(c)) continue
+    const inLoad = taken.get(c)
+    if (inLoad) {
+      if (i === 0 && inLoad.category === rec.category) return { duplicate: true }
+      continue
+    }
+    const row = existing.get(c)
+    if (!row) return { slug: c }
+    if (row.category !== rec.category) continue
+    if (i === 0 || (row.full_name === rec.full_name && row.firm_domain === rec.firm_domain)) return { slug: c }
+  }
+  return null
 }
 
 /** The row as the loader reads it back: firm-site fields plus what decides the merge. */
@@ -165,7 +219,7 @@ export type Merge =
 
 const same = (a: unknown, b: unknown) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null)
 
-export function mergeRecord(existing: ExistingRow | null, rec: SourceRecord, category: CategoryId): Merge {
+export function mergeRecord(existing: ExistingRow | null, rec: SourceRecord, category: CategoryId = rec.category): Merge {
   if (!existing) return { kind: 'insert', row: { ...rec, category, status: 'review', source: 'firm_site' } }
   if (existing.category !== category) return { kind: 'skip', slug: rec.slug, reason: `slug belongs to a ${existing.category}` }
   if (existing.status === 'removed') return { kind: 'skip', slug: rec.slug, reason: 'removed: never re-added by a crawl' }

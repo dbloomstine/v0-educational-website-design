@@ -7,7 +7,6 @@ import { cn } from "@/lib/utils"
 import { LEAGUE_MARKETS } from "@/lib/news/league-markets"
 import { LEAGUE_ASSET_LABEL } from "@/lib/news/league"
 import { CITY_SHORTCUTS, TOPIC_SHORTCUTS } from "@/lib/events/collections"
-import { CATEGORIES, directoryEnabled } from "@/lib/directory/taxonomy"
 
 /**
  * The site's two other products, pinned at the right end of the section strip (2026-10-22). Danny: "the league
@@ -57,8 +56,6 @@ export const PRODUCTS: Product[] = [
         ],
       },
       { links: [{ label: "Firms A–Z", href: "/firms" }] },
-      // The directory (2026-10-24) sits here rather than as a third pinned tab: the strip stays as Danny set it.
-      ...(directoryEnabled() ? [{ heading: "Directory", links: [{ label: CATEGORIES.fund_lawyer.plural, href: `/${CATEGORIES.fund_lawyer.slug}` }] }] : []),
     ],
   },
   {

@@ -7,7 +7,7 @@ import { EditProfileForm } from '@/components/directory/forms'
 import { SESSION_COOKIE, verifySession, type ProfileEdits } from '@/lib/directory/claim'
 import { profilePath } from '@/lib/directory/people'
 import { personById } from '@/lib/directory/server'
-import { CATEGORIES, directoryEnabled } from '@/lib/directory/taxonomy'
+import { CATEGORIES, DIRECTORY_PATH, directoryEnabled, practicesFor } from '@/lib/directory/taxonomy'
 
 // The claimed person's edit page: open for a day after they confirm a claim (a signed cookie). Every change
 // goes to the desk for review; hiding is immediate.
@@ -25,7 +25,7 @@ export default async function EditPage() {
         <p className="font-news text-[17px] text-foreground">Your edit session has expired.</p>
         <p className="mt-2 font-ui text-[14px] text-foreground/75">
           Sessions last a day. Open your profile and choose &ldquo;Is this you?&rdquo; to get a fresh link, or start from the{' '}
-          <Link href={`/${CATEGORIES.fund_lawyer.slug}`} className="font-semibold text-foreground underline underline-offset-2">
+          <Link href={DIRECTORY_PATH} className="font-semibold text-foreground underline underline-offset-2">
             directory
           </Link>
           .
@@ -63,6 +63,7 @@ export default async function EditPage() {
         hiddenByOwner={person.hidden_by === 'owner'}
         profileHref={profilePath(person)}
         pending={Boolean(pending)}
+        practices={practicesFor(CATEGORIES[person.category]).map((x) => ({ id: x.id, label: x.label }))}
       />
     </FormShell>
   )

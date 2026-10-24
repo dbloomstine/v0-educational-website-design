@@ -4,12 +4,15 @@
  *   npx tsx --env-file=.env.local scripts/directory/load-people.ts <file.jsonl>            # dry run
  *   npx tsx --env-file=.env.local scripts/directory/load-people.ts <file.jsonl> --apply
  *
- * Options: --category fund_lawyer (the default) | fund_auditor | placement_agent | ...
+ * Options: --category fund_lawyer (the default) | fund_auditor | fund_tax_advisor | placement_agent | fund_finance_banker
+ *            (the trade for a line that names no `category` of its own)
  *          --today YYYY-MM-DD (the date stamped on people missing from the crawl)
  *
  * One JSON object a line: full_name, title, firm_name, firm_domain,
  * offices [{city, state}], practice_areas [], client_focus [], represents [],
- * bar_admissions [], education [{school, degree, year}], bio_url, fetched_at, slug.
+ * bar_admissions [], education [{school, degree, year}], bio_url, fetched_at, slug,
+ * and optionally category. Slugs are unique across trades: one another trade
+ * holds gets this trade's suffix (lib/directory/loader.ts assignSlug).
  *
  * The rules (lib/directory/loader.ts, tested): upsert by slug; new people
  * arrive as `review` (not public); only the firm-site fields are written, never
@@ -20,7 +23,7 @@
 import { readFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
 import { CATEGORY_IDS, type CategoryId } from '@/lib/directory/taxonomy'
-import { FIRM_SITE_FIELDS, mergeRecord, missingFrom, parseRecord, type ExistingRow, type SourceRecord } from '@/lib/directory/loader'
+import { FIRM_SITE_FIELDS, assignSlug, mergeRecord, missingFrom, parseRecord, type ExistingRow, type SourceRecord } from '@/lib/directory/loader'
 
 const BATCH = 200
 
@@ -39,28 +42,7 @@ async function main() {
   if (!CATEGORY_IDS.includes(category)) throw new Error(`unknown category ${category}`)
   if (!/^\d{4}-\d{2}-\d{2}$/.test(today)) throw new Error('--today must be YYYY-MM-DD')
 
-  // Parse and check every line first: one bad file never half-loads.
-  const records = new Map<string, SourceRecord>()
-  const errors: string[] = []
-  const warnings: string[] = []
-  readFileSync(file, 'utf8')
-    .split('\n')
-    .forEach((text, i) => {
-      if (!text.trim()) return
-      let raw: unknown
-      try {
-        raw = JSON.parse(text)
-      } catch {
-        errors.push(`line ${i + 1}: not JSON`)
-        return
-      }
-      const parsed = parseRecord(raw)
-      if (!parsed.ok) return errors.push(`line ${i + 1}: ${parsed.error}`)
-      warnings.push(...parsed.warnings)
-      if (records.has(parsed.value.slug)) return errors.push(`line ${i + 1}: duplicate slug ${parsed.value.slug} (first kept)`)
-      records.set(parsed.value.slug, parsed.value)
-    })
-
+  // Read what is there first: a slug another trade holds decides this line's slug.
   const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
   const existing: ExistingRow[] = []
   const cols = ['id', 'slug', 'category', 'status', 'missing_since', ...FIRM_SITE_FIELDS].join(', ')
@@ -72,20 +54,52 @@ async function main() {
   }
   const bySlug = new Map(existing.map((e) => [e.slug, e]))
 
-  const merges = [...records.values()].map((r) => mergeRecord(bySlug.get(r.slug) ?? null, r, category))
+  // Parse and check every line first: one bad file never half-loads.
+  const records = new Map<string, SourceRecord>()
+  const errors: string[] = []
+  const warnings: string[] = []
+  const renamed: string[] = []
+  readFileSync(file, 'utf8')
+    .split('\n')
+    .forEach((text, i) => {
+      if (!text.trim()) return
+      let raw: unknown
+      try {
+        raw = JSON.parse(text)
+      } catch {
+        errors.push(`line ${i + 1}: not JSON`)
+        return
+      }
+      const parsed = parseRecord(raw, category)
+      if (!parsed.ok) return errors.push(`line ${i + 1}: ${parsed.error}`)
+      warnings.push(...parsed.warnings)
+      const slot = assignSlug(parsed.value, bySlug, records)
+      if (!slot) return errors.push(`line ${i + 1}: no free slug for ${parsed.value.slug}`)
+      if ('duplicate' in slot) return errors.push(`line ${i + 1}: duplicate slug ${parsed.value.slug} (first kept)`)
+      if (slot.slug !== parsed.value.slug) renamed.push(`${parsed.value.slug} -> ${slot.slug} (another trade holds ${parsed.value.slug})`)
+      records.set(slot.slug, { ...parsed.value, slug: slot.slug })
+    })
+
+  const merges = [...records.values()].map((r) => mergeRecord(bySlug.get(r.slug) ?? null, r))
   const inserts = merges.flatMap((m) => (m.kind === 'insert' ? [m.row] : []))
   const updates = merges.flatMap((m) => (m.kind === 'update' ? [m] : []))
   const skips = merges.flatMap((m) => (m.kind === 'skip' ? [m] : []))
   const unchanged = merges.filter((m) => m.kind === 'unchanged').length
   const firms = new Set([...records.values()].map((r) => r.firm_domain))
-  const missing = missingFrom(existing, new Set(records.keys()), firms, category)
+  // Missing, trade by trade: a file of auditors at a firm says nothing about that firm's tax advisors.
+  const trades = [...new Set([...records.values()].map((r) => r.category))]
+  const missing = trades.flatMap((t) => {
+    const mine = [...records.values()].filter((r) => r.category === t)
+    return missingFrom(existing, new Set(mine.map((r) => r.slug)), new Set(mine.map((r) => r.firm_domain)), t)
+  })
 
-  console.log(`${file}: ${records.size} people at ${firms.size} firms (${category})`)
+  console.log(`${file}: ${records.size} people at ${firms.size} firms (${trades.join(', ') || category})`)
   console.log(`  new (arrive as review): ${inserts.length}`)
   console.log(`  changed: ${updates.filter((u) => u.fields.length).length}   date only: ${updates.filter((u) => !u.fields.length).length}   unchanged: ${unchanged}`)
   console.log(`  skipped: ${skips.length}   to stamp missing_since ${today}: ${missing.length}`)
   for (const u of updates.filter((x) => x.fields.length).slice(0, 25)) console.log(`    ~ ${u.slug}: ${u.fields.join(', ')}`)
   for (const s of skips) console.log(`    - ${s.slug}: ${s.reason}`)
+  for (const r of renamed.slice(0, 25)) console.log(`    > ${r}`)
   for (const m of missing.slice(0, 25)) console.log(`    ? ${m.slug} (${m.firm_domain}) not in this crawl`)
   if (warnings.length) console.log(`  warnings (${warnings.length}):\n${warnings.slice(0, 30).map((w) => `    ${w}`).join('\n')}`)
   if (errors.length) console.log(`  refused lines (${errors.length}):\n${errors.slice(0, 50).map((e) => `    ${e}`).join('\n')}`)

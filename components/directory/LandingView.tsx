@@ -22,12 +22,14 @@ import {
   peopleFor,
   resolveLanding,
 } from '@/lib/directory/landing'
-import { CATEGORIES, directoryEnabled, type Category } from '@/lib/directory/taxonomy'
+import { CATEGORIES, DIRECTORY_PATH, directoryEnabled, type Category } from '@/lib/directory/taxonomy'
 import { breadcrumbJsonLd, shareCard } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 
 /**
- * The one template behind every generated directory page (2026-10-24):
+ * The one template behind every generated directory page, in every trade
+ * (2026-10-24; /fund-auditors, /fund-tax-advisors, /placement-agents and
+ * /fund-finance-bankers since that night):
  * /fund-lawyers/venture-funds, /fund-lawyers/new-york, /fund-lawyers/texas,
  * /fund-lawyers/venture-funds/san-francisco, /fund-lawyers/emerging-managers,
  * /fund-lawyers/lp-counsel… (lib/directory/landing.ts says which exist).
@@ -41,8 +43,8 @@ import { jsonLdScript } from '@/lib/news/story-jsonld'
 export type LandingProps = { segments: string[]; page?: string | string[]; category?: Category }
 
 async function build({ segments, page: rawPage, category = CATEGORIES.fund_lawyer }: LandingProps) {
-  if (!directoryEnabled()) return null
-  const key = resolveLanding(segments)
+  if (!directoryEnabled() || !category.live) return null
+  const key = resolveLanding(segments, category)
   if (!key) return null
   const all = await loadPeople(category.id)
   const people = peopleFor(all, key)
@@ -75,7 +77,7 @@ export async function LandingView(props: LandingProps) {
   const { category, key, paged, path, title, sentence, people } = b
   const landings = allLandings(category, b.all)
   const near = nearby(key, landings)
-  const crumbs = landingCrumbs(category, key)
+  const crumbs = [{ name: 'Directory', path: DIRECTORY_PATH }, ...landingCrumbs(category, key)]
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -87,7 +89,11 @@ export async function LandingView(props: LandingProps) {
         <div className="band">
           <header className="mx-auto max-w-[1320px] px-4 pb-5 pt-5 lg:px-6">
             <Crumbs crumbs={crumbs} />
-            <p className="mt-3 font-ui text-[10.5px] font-bold uppercase tracking-[0.14em] text-amber-400">Directory</p>
+            <p className="mt-3 font-ui text-[10.5px] font-bold uppercase tracking-[0.14em] text-amber-400">
+              <Link href={DIRECTORY_PATH} className="hover:underline">
+                Directory
+              </Link>
+            </p>
             <h1 className="mt-1 font-news text-[30px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[38px]">{title}</h1>
             <p className="mt-2 max-w-[75ch] font-news text-[16.5px] leading-snug text-foreground/75">{sentence}</p>
             <p className="mt-3 font-ui text-[12.5px] text-muted-foreground">
