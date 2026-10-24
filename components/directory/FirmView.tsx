@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { DIR_H1, DIR_LEDE } from '@/components/directory/hero'
 import { notFound } from 'next/navigation'
 import { ArrowUpRight } from 'lucide-react'
 import { SiteHeader } from '@/components/site-header'
@@ -119,8 +120,8 @@ export async function FirmView({ category, slug, page }: { category: Category; s
             <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
               <FirmMark name={firm.name} logo={logo} mono={monogram(firm.name)} size="lg" eager className="border border-border bg-card" />
               <div className="min-w-0">
-                <h1 className="font-news text-[30px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[38px]">{title}</h1>
-                <p className="mt-2 max-w-[75ch] font-news text-[16.5px] leading-snug text-foreground/80">{firmSentence(category, firm)}</p>
+                <h1 className={`${DIR_H1}`}>{title}</h1>
+                <p className={`mt-2 max-w-[75ch] ${DIR_LEDE}`}>{firmSentence(category, firm)}</p>
                 <Verified span={verifiedSpan(b.people)} against={displayDomain(firm.domain)} className="mt-2" />
                 <p className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1 font-ui text-[13px] font-semibold">
                   {site && (
@@ -245,8 +246,8 @@ export async function FirmsIndexView({ category }: { category: Category }) {
         <div className="band">
           <header className="mx-auto max-w-[1320px] px-4 pb-5 pt-5 lg:px-6">
             <Crumbs crumbs={crumbs} />
-            <h1 className="mt-3 font-news text-[30px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[38px]">{b.title}</h1>
-            <p className="mt-2 max-w-[72ch] font-news text-[16.5px] leading-snug text-foreground/80">
+            <h1 className={`mt-3 ${DIR_H1}`}>{b.title}</h1>
+            <p className={`mt-2 max-w-[72ch] ${DIR_LEDE}`}>
               {n(b.firms.length)} firms, biggest list first. Each page counts the firm&rsquo;s {category.plural.toLowerCase()} listed here, where they sit and what they work on.
             </p>
             <p className="mt-2 font-ui text-[12.5px] text-foreground/70">

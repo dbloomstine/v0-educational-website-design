@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { DIR_H1 } from '@/components/directory/hero'
 import { notFound } from 'next/navigation'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
@@ -56,7 +57,7 @@ export default async function DirectoryAbout() {
         <div className="band">
           <header className="mx-auto max-w-[760px] px-4 pb-5 pt-5 lg:px-6">
             <Crumbs crumbs={crumbs} />
-            <h1 className="mt-3 font-news text-[32px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[40px]">{TITLE}</h1>
+            <h1 className={`mt-3 ${DIR_H1}`}>{TITLE}</h1>
             <p className="mt-2 font-news text-[17px] leading-snug text-foreground/80">
               A free list of the US partners who work on private funds at law and accounting firms
               {total > 0 ? (

@@ -8,6 +8,8 @@ import { firmListSet } from '@/lib/directory/firm-lists'
 import { intentPage, parseIntent } from '@/lib/directory/intent-route'
 import { DirectoryBrowser } from '@/components/directory/DirectoryBrowser'
 import { FirmMark } from '@/components/directory/FirmMark'
+import { DIR_H1, DIR_LEDE, PopularLinks } from '@/components/directory/hero'
+import { QuickFacts, type Fact } from '@/components/directory/intent-parts'
 import { FIRM_MIN, firmPath, firmsIndexPath, firmsOf } from '@/lib/directory/firms'
 import { logoFor, monogram } from '@/lib/directory/logos'
 import { rowFirms, toRow } from '@/lib/directory/rows'
@@ -105,6 +107,17 @@ export async function HubView({ category: CATEGORY, searchParams: sp }: { catego
   const usedPractices = new Set(rows.flatMap((r) => r.p))
   const crumbs = [{ name: 'Directory', path: DIRECTORY_PATH }, { name: CATEGORY.plural }]
   const withPages = firms.filter((x) => x.count >= FIRM_MIN)
+  // The head's numbers (Zillow's agent finder: the place's numbers before the people) and its most-searched pages
+  // (Zocdoc's popular searches): the biggest strategy pages and the biggest city pages, three of each.
+  const senior = rows.filter((r) => r.sr).length
+  const facts: Fact[] = [
+    { label: 'Listed', value: n(people.length), note: people.length ? `${Math.round((senior / people.length) * 100)}% partners or MDs` : undefined },
+    { label: 'Firms', value: n(firmTally(people).length), note: 'ranked by people listed', href: firmsIndexPath(CATEGORY) },
+    { label: 'Cities', value: n(cities.length), note: cities[0] ? `most in ${cities[0].label}` : undefined },
+  ]
+  if (withPages[0]) facts.push({ label: 'Most listed', value: withPages[0].name, note: `${n(withPages[0].count)} people`, href: firmPath(CATEGORY, withPages[0].slug) })
+  const top = (xs: typeof landings) => [...xs].sort((a, b) => b.count - a.count).slice(0, 3)
+  const popular = [...top(byKind('practice').filter((l) => l.path !== `${PATH}/fund-formation`)), ...top(byKind('place', 'city'))].map((l) => ({ path: l.path, title: l.title, count: l.count }))
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -118,10 +131,14 @@ export async function HubView({ category: CATEGORY, searchParams: sp }: { catego
         <div className="band">
           <header className="mx-auto max-w-[1320px] px-4 pb-5 pt-5 lg:px-6">
             <Crumbs crumbs={crumbs} />
-            <h1 className="mt-3 font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">{heading}</h1>
-            <p className="mt-2 max-w-[72ch] font-news text-[16.5px] leading-snug text-foreground/80">{INTRO}</p>
-            {people.length > 0 && <p className="mt-1.5 font-ui text-[13px] font-semibold text-foreground/85">{countsSentence(people, CATEGORY)}.</p>}
-            {people.length > 0 && <Verified span={verifiedSpan(people)} className="mt-1" />}
+            {/* The page head (components/directory/hero.tsx), the same on every directory page. The list's own toolbar
+                below the band carries the search and any list/table switch; nothing here moves when one is added. */}
+            <h1 className={`mt-3 ${DIR_H1}`}>{heading}</h1>
+            <p className={`mt-2 max-w-[68ch] ${DIR_LEDE}`}>{INTRO}</p>
+            {people.length > 0 && <p className="sr-only">{countsSentence(people, CATEGORY)}.</p>}
+            {people.length > 0 && <QuickFacts facts={facts} />}
+            {people.length > 0 && <Verified span={verifiedSpan(people)} className="mt-2" />}
+            <PopularLinks items={popular} label="Most searched" className="mt-3 max-sm:hidden" />
             {suggested && (
               <p className="mt-3 font-ui text-[14px] text-foreground">
                 Looking for{' '}
@@ -141,10 +158,8 @@ export async function HubView({ category: CATEGORY, searchParams: sp }: { catego
                       className="flex h-full flex-col items-center gap-1 rounded-[3px] border border-transparent px-2 py-1.5 hover:border-foreground/25 hover:bg-card"
                     >
                       <FirmMark name={x.name} logo={logoFor(x.domain)} mono={monogram(x.name)} size="md" decorative eager />
-                      <span className="font-ui text-[12px] leading-tight text-foreground/75">
-                        <span className="sr-only">{x.name}: </span>
-                        {x.count} listed
-                      </span>
+                      <span className="max-w-[112px] truncate font-ui text-[12px] font-semibold leading-tight text-foreground">{x.name}</span>
+                      <span className="font-ui text-[11.5px] leading-tight text-foreground/65">{x.count} listed</span>
                     </Link>
                   </li>
                 ))}
@@ -205,3 +220,5 @@ export async function HubView({ category: CATEGORY, searchParams: sp }: { catego
     </div>
   )
 }
+
+const n = (x: number) => x.toLocaleString('en-US')

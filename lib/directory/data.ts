@@ -27,6 +27,7 @@ import { CARD_COLUMNS, PERSON_COLUMNS, isPublic, type Person, type PersonCard } 
 import { LIVE_CATEGORIES, type CategoryId } from './taxonomy'
 import { summarize, type DirectorySummary } from './summary'
 import { dedupePeople } from './quality'
+import { EMPTY_FINDER, buildFinder, type Finder } from './finder'
 
 export const DIRECTORY_TAG = 'directory'
 const PAGE = 1000
@@ -149,5 +150,20 @@ export async function loadDirectorySummary(): Promise<DirectorySummary> {
   } catch (err) {
     console.error('[directory] could not build the summary:', err instanceof Error ? err.message : err)
     return EMPTY
+  }
+}
+
+// ── The /directory front page (2026-10-24, design pass) ─────────────────────
+// The finder's entries, the strategy and city tables, the top firms and the trust facts, built from the one read of
+// every trade above, on its own NEW key (`directory-finder-v3`). Never throws.
+
+const cachedFinder = unstable_cache(async (): Promise<Finder> => buildFinder(await loadAllPeople()), ['directory-finder-v3'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
+
+export async function loadFinder(): Promise<Finder> {
+  try {
+    return await cachedFinder()
+  } catch (err) {
+    console.error('[directory] could not build the finder:', err instanceof Error ? err.message : err)
+    return EMPTY_FINDER
   }
 }

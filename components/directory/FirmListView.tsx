@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { DIR_H1, DIR_LEDE } from '@/components/directory/hero'
 import { notFound, permanentRedirect } from 'next/navigation'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
@@ -101,8 +102,8 @@ export async function FirmListView(props: FirmListProps) {
         <div className="band">
           <header className="mx-auto max-w-[1320px] px-4 pb-5 pt-5 lg:px-6">
             <Crumbs crumbs={crumbs} />
-            <h1 className="mt-3 font-news text-[30px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[40px]">{list.title}</h1>
-            <p className="mt-2 max-w-[68ch] font-news text-[18px] leading-snug text-foreground/80">{b.sentence}</p>
+            <h1 className={`mt-3 ${DIR_H1}`}>{list.title}</h1>
+            <p className={`mt-2 max-w-[68ch] ${DIR_LEDE}`}>{b.sentence}</p>
             <p className="mt-3 font-ui text-[13.5px]">
               <Link prefetch={false} href={list.peoplePath} className="font-semibold text-foreground underline underline-offset-2">
                 See all {n(people.length)} {peoplePhrase(category, key)}

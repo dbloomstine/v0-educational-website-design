@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound, permanentRedirect } from 'next/navigation'
 import Link from 'next/link'
+import { DIR_H1, DIR_LEDE } from '@/components/directory/hero'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { AboutLine, Crumbs, FirmListLinks, LandingLinks, Pager, PersonList, Verified } from '@/components/directory/parts'
@@ -191,8 +192,8 @@ export async function LandingView(props: LandingProps) {
         <div className="band">
           <header className="mx-auto max-w-[1320px] px-4 pb-5 pt-5 lg:px-6">
             <Crumbs crumbs={crumbs} />
-            <h1 className="mt-3 font-news text-[30px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[40px]">{title}</h1>
-            <p className="mt-2 max-w-[68ch] font-news text-[18px] leading-snug text-foreground/80">{answer}</p>
+            <h1 className={`mt-3 ${DIR_H1}`}>{title}</h1>
+            <p className={`mt-2 max-w-[68ch] ${DIR_LEDE}`}>{answer}</p>
             <LandingSearch
               rows={paged.items.map((p) => {
                 const r = toRow(p)
