@@ -19,7 +19,7 @@
  *     ("jane-smith-ey" the tax advisor becomes "jane-smith-ey-tax"), the same
  *     one on every run, so a refresh finds the row it made.
  */
-import { CATEGORIES, RESERVED_SLUGS, isCategoryId, isClientFocusId, isPracticeId, isRepresentsId, type CategoryId } from './taxonomy'
+import { CATEGORIES, RESERVED_SLUGS, isCategoryId, isClientFocusId, isPracticeId, isRepresentsId, type CategoryId, SENIOR_ONLY, isPartnerLevel } from './taxonomy'
 import { stateCode, type Office } from './places'
 import type { Education, Status } from './people'
 import { isCityBasis, isPersonSource, type CityBasis, type PersonSource } from './provenance'
@@ -135,6 +135,7 @@ export function parseRecord(raw: unknown, fallback: CategoryId = 'fund_lawyer'):
     else warnings.push(`${slug}: dropped office ${JSON.stringify(o)} (not a US city and state)`)
   }
   if (!offices.length) return { ok: false, error: `${slug}: no US office (US only)` }
+  if (SENIOR_ONLY.includes(category) && !isPartnerLevel(str(r.title, 160))) return { ok: false, error: `${slug}: below partner level ("${str(r.title, 160) ?? 'no title'}")` }
 
   // Other spellings the data agents use for practices we have (2026-10-24 night).
   const ALIASES: Record<string, string> = { private_equity_funds: 'buyout_funds', pe_funds: 'buyout_funds', fund_tax: 'tax_funds', partnership_tax: 'tax_funds' }

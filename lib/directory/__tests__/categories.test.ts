@@ -18,8 +18,8 @@ const L = CATEGORIES.fund_lawyer
 const many = (n: number, over: Parameters<typeof card>[0]) => Array.from({ length: n }, () => card(over))
 
 describe('the five trades', () => {
-  it('are all live, each at its own address', () => {
-    expect(LIVE_CATEGORIES.map((c) => c.slug)).toEqual(['fund-lawyers', 'fund-auditors', 'fund-tax-advisors', 'placement-agents', 'fund-finance-bankers'])
+  it('are the three live trades (placement agents and bankers hidden 2026-10-24), each at its own address', () => {
+    expect(LIVE_CATEGORIES.map((c) => c.slug)).toEqual(['fund-lawyers', 'fund-auditors', 'fund-tax-advisors'])
     for (const id of CATEGORY_IDS) expect(categoryBySlug(CATEGORIES[id].slug)?.id).toBe(id)
     expect(categoryBySlug('people')).toBeNull()
   })
@@ -129,13 +129,13 @@ describe('the directory summary', () => {
   const s = summarize(lists)
 
   it('counts every trade, with its biggest pages', () => {
-    expect(s.categories.map((c) => c.id)).toEqual(CATEGORY_IDS)
+    expect(s.categories.map((c) => c.id)).toEqual(LIVE_CATEGORIES.map((c) => c.id))
     const law = s.categories.find((c) => c.id === 'fund_lawyer')!
     expect(law).toMatchObject({ count: 7, firms: 1 })
     expect(law.cities[0]).toMatchObject({ path: '/fund-lawyers/new-york', title: 'Fund Lawyers in New York', count: 7 })
     expect(law.topics[0]).toMatchObject({ path: '/fund-lawyers/fund-formation' })
     expect(s.categories.find((c) => c.id === 'fund_auditor')!.cities.map((c) => c.path)).toEqual(['/fund-auditors/boston'])
-    expect(s.categories.find((c) => c.id === 'placement_agent')).toMatchObject({ count: 0, cities: [], topics: [] })
+    expect(s.categories.find((c) => c.id === 'placement_agent')).toBeUndefined()
   })
 
   it('cross-links a firm page to its people in each trade', () => {
@@ -150,7 +150,7 @@ describe('the directory summary', () => {
 })
 
 describe('loading several trades', () => {
-  const line = { full_name: 'Jane Smith', firm_name: 'EY', firm_domain: 'ey.com', offices: [{ city: 'New York', state: 'NY' }], slug: 'jane-smith-ey' }
+  const line = { full_name: 'Jane Smith', title: 'Partner', firm_name: 'EY', firm_domain: 'ey.com', offices: [{ city: 'New York', state: 'NY' }], slug: 'jane-smith-ey' }
 
   it('takes a line’s own category, else the file’s, and refuses an unknown one', () => {
     const own = parseRecord({ ...line, category: 'fund_tax_advisor' }, 'fund_auditor')
@@ -196,5 +196,13 @@ describe('loading several trades', () => {
     const taken = new Map([['jane-smith-ey', owner('fund_auditor')]])
     expect(assignSlug(rec('fund_tax_advisor'), new Map(), taken)).toEqual({ slug: 'jane-smith-ey-tax' })
     expect(assignSlug(rec('fund_auditor'), new Map(), taken)).toEqual({ duplicate: true })
+  })
+})
+
+describe('partner level or higher (2026-10-24)', () => {
+  it('keeps partners, shareholders, members, principals and chairs; refuses associates, counsel and directors', async () => {
+    const { isPartnerLevel } = await import('../taxonomy')
+    for (const t of ['Partner', 'Senior Partner', 'Tax Partner', 'Partner, Audit Services', 'Shareholder', 'Member', 'Principal - Assurance', 'Chair']) expect(isPartnerLevel(t), t).toBe(true)
+    for (const t of ['Associate', 'Counsel', 'Of Counsel', 'Senior Counsel', 'Director', 'Managing Director', 'Senior Paralegal', 'Associate Partner', null]) expect(isPartnerLevel(t), String(t)).toBe(false)
   })
 })

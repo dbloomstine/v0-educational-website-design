@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { card } from './fixtures'
 
 const rows = [
-  card({ category: 'placement_agent', slug: 'a' }),
+  card({ category: 'fund_tax_advisor', slug: 'a' }),
   card({ category: 'fund_lawyer', slug: 'b' }),
   card({ category: 'fund_lawyer', slug: 'c', status: 'published', missing_since: '2020-01-01' }),
 ]
@@ -29,7 +29,7 @@ describe('loadAllPeople', () => {
     const all = await loadAllPeople()
     // One query: filtered on status only, never once per trade.
     expect(calls).toEqual(['status'])
-    expect(all.get('placement_agent')?.map((p) => p.slug)).toEqual(['a'])
+    expect(all.get('fund_tax_advisor')?.map((p) => p.slug)).toEqual(['a'])
     expect(all.get('fund_lawyer')?.map((p) => p.slug)).toEqual(['b'])
     expect(all.get('fund_auditor')).toEqual([])
   })

@@ -104,7 +104,7 @@ export const CATEGORIES: Record<CategoryId, Category> = {
     intro: 'US placement agents who raise capital for private funds, each profile drawn from the firm’s own public bio page.',
     searchHint: 'e.g. Smith, Evercore, New York',
     firmHint: ['Evercore', 'Evercore Group L.L.C.'],
-    live: true,
+    live: false, // hidden 2026-10-24 (Danny: not good enough yet); data kept, routes 404
   },
   fund_finance_banker: {
     id: 'fund_finance_banker',
@@ -119,7 +119,7 @@ export const CATEGORIES: Record<CategoryId, Category> = {
     intro: 'US bankers who lend to private funds and their managers (subscription lines, NAV loans, GP financing), each profile drawn from the firm’s own public bio page.',
     searchHint: 'e.g. Smith, Wells Fargo, Charlotte',
     firmHint: ['Wells Fargo', 'Wells Fargo Bank, N.A.'],
-    live: true,
+    live: false, // hidden 2026-10-24 (Danny: not good enough yet); data kept, routes 404
   },
   fund_tax_advisor: {
     id: 'fund_tax_advisor',
@@ -243,3 +243,14 @@ export const isRepresentsId = (v: unknown): v is RepresentsId => REPRESENTS.some
 
 /** Words that can never be a landing page, a person or a place: the routes the directory owns. */
 export const RESERVED_SLUGS = new Set(['people', 'firms', 'claim', 'edit', 'request', 'search', 'page', 'all', 'about'])
+
+/**
+ * Partner level or higher (Danny, 2026-10-24: "make sure they're only partner level or higher"). For lawyers,
+ * auditors and tax advisers: Partner, Shareholder, Member, Principal (an accounting firm's non-CPA partner), Chair.
+ * Not Counsel, Of Counsel, Director, an accounting firm's Managing Director, associates or staff.
+ */
+export const SENIOR_ONLY: CategoryId[] = ['fund_lawyer', 'fund_auditor', 'fund_tax_advisor']
+export function isPartnerLevel(title: string | null | undefined): boolean {
+  const t = (title ?? '').trim()
+  return /\b(partner|shareholder|principal|member|chair|chairman|chairwoman|chairperson)\b/i.test(t) && !/\b(associate|paralegal|assistant)\b/i.test(t)
+}

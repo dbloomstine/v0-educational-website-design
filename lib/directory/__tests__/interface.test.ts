@@ -105,8 +105,8 @@ describe('firms', () => {
     expect(RESERVED_SLUGS.has('firms')).toBe(true)
   })
   it('gives each summary firm its directory slug', () => {
-    const people = [card({ category: 'placement_agent', firm_name: 'Eaton Partners (Stifel)', firm_domain: 'stifelinstitutional.com' })]
-    const s = summarize(new Map([['placement_agent', people]]))
+    const people = [card({ category: 'fund_auditor', firm_name: 'Eaton Partners (Stifel)', firm_domain: 'stifelinstitutional.com' })]
+    const s = summarize(new Map([['fund_auditor', people]]))
     expect(s.firms.find((f) => f.domain === 'stifelinstitutional.com')?.slug).toBe('eaton-partners')
   })
 })
