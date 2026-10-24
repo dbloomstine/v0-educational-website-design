@@ -1,0 +1,119 @@
+name: Directory refresh
+
+# Weekly re-crawl of the directory's firm sources (lib/directory/crawl,
+# scripts/directory/crawl). Non-headless sources only: the headless ones are
+# listed in the run's summary for a local monthly run.
+#
+# Secrets: ANTHROPIC_API_KEY (set). For the database steps also
+# NEXT_PUBLIC_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY. Without those the
+# job still crawls (registry from the committed seed), writes the QA report as
+# an artifact and changes nothing.
+#
+# Writes happen only when the repo variable DIRECTORY_REFRESH_APPLY is "true"
+# (or a manual run asks for apply). Even then new people arrive as `review`,
+# never public until the desk publishes them, and claimed fields are never written.
+# Budget: the run stops before the model call that would pass $5.
+
+on:
+  schedule:
+    # Mondays 07:00 UTC (GitHub runs schedules hours late; a weekly job does not mind).
+    - cron: '0 7 * * 1'
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: 'Write to the database (new rows arrive as review)'
+        type: choice
+        options: ['no', 'yes']
+        default: 'no'
+      category:
+        description: 'Only these trades (comma list, blank = all)'
+        required: false
+        default: ''
+      budget:
+        description: 'Stop at this many dollars of model spend'
+        required: false
+        default: '5'
+
+concurrency:
+  group: directory-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    permissions:
+      contents: read
+    env:
+      CI: 'true'
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      DIRECTORY_CRAWL_CACHE: ${{ github.workspace }}/.directory-cache
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci --legacy-peer-deps
+
+      - name: Check secrets
+        id: guard
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then echo "::error::ANTHROPIC_API_KEY secret is missing"; exit 1; fi
+          if [ -n "$NEXT_PUBLIC_SUPABASE_URL" ] && [ -n "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "db=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "db=no" >> "$GITHUB_OUTPUT"
+            echo "::warning::NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY not set: crawling from the committed seed registry, no database reads or writes."
+          fi
+          APPLY="no"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.apply }}" = "yes" ]; then APPLY="yes"; fi
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "${{ vars.DIRECTORY_REFRESH_APPLY }}" = "true" ]; then APPLY="yes"; fi
+          echo "apply=$APPLY" >> "$GITHUB_OUTPUT"
+          echo "run_dir=.directory-crawl/$(date -u +%F)" >> "$GITHUB_OUTPUT"
+
+      # Page cache with ETag / Last-Modified: an unchanged bio costs the firm a 304.
+      - uses: actions/cache@v4
+        with:
+          path: .directory-cache
+          key: directory-cache-${{ github.run_id }}
+          restore-keys: directory-cache-
+
+      - name: Crawl
+        env:
+          IN_BUDGET: ${{ inputs.budget || '5' }}
+          IN_CATEGORY: ${{ inputs.category }}
+        run: |
+          case "$IN_BUDGET" in ''|*[!0-9.]*) echo "::error::budget must be a number"; exit 1;; esac
+          case "$IN_CATEGORY" in *[!a-z_,]*) echo "::error::category must be a comma list of trade ids"; exit 1;; esac
+          ARGS="--ci --budget $IN_BUDGET --out ${{ steps.guard.outputs.run_dir }}"
+          if [ "${{ steps.guard.outputs.db }}" = "yes" ]; then ARGS="$ARGS --registry db"; else ARGS="$ARGS --registry scripts/directory/crawl/sources.seed.json"; fi
+          if [ "${{ steps.guard.outputs.db }}" = "yes" ] && [ "${{ steps.guard.outputs.apply }}" = "yes" ]; then ARGS="$ARGS --update-registry"; fi
+          if [ -n "$IN_CATEGORY" ]; then ARGS="$ARGS --category $IN_CATEGORY"; fi
+          npx tsx scripts/directory/crawl/run.ts $ARGS
+
+      - name: Diff against the directory (dry run)
+        if: steps.guard.outputs.db == 'yes'
+        run: npx tsx scripts/directory/crawl/refresh.ts ${{ steps.guard.outputs.run_dir }} | tee ${{ steps.guard.outputs.run_dir }}/diff.txt
+
+      - name: Apply
+        if: steps.guard.outputs.db == 'yes' && steps.guard.outputs.apply == 'yes'
+        run: npx tsx scripts/directory/crawl/refresh.ts ${{ steps.guard.outputs.run_dir }} --apply | tee ${{ steps.guard.outputs.run_dir }}/apply.txt
+
+      - name: Summary
+        if: always()
+        run: |
+          D=${{ steps.guard.outputs.run_dir }}
+          if [ -f "$D/qa.md" ]; then sed -n '1,60p' "$D/qa.md" >> "$GITHUB_STEP_SUMMARY"; fi
+          if [ -f "$D/diff.txt" ]; then { echo '## Diff'; echo '```'; sed -n '1,80p' "$D/diff.txt"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"; fi
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: directory-crawl-${{ github.run_id }}
+          path: ${{ steps.guard.outputs.run_dir }}
+          retention-days: 90

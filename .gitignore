@@ -41,3 +41,7 @@ next-env.d.ts
 
 # supabase CLI scratch
 supabase/.temp/
+
+# Directory crawler runs and page cache (scripts/directory/crawl)
+.directory-crawl/
+.directory-cache/

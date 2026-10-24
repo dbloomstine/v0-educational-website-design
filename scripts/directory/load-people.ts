@@ -11,7 +11,10 @@
  * One JSON object a line: full_name, title, firm_name, firm_domain,
  * offices [{city, state}], practice_areas [], client_focus [], represents [],
  * bar_admissions [], education [{school, degree, year}], bio_url, fetched_at, slug,
- * and optionally category. Slugs are unique across trades: one another trade
+ * and optionally category, and provenance: source (firm_site | event_speaker | press_release),
+ * source_url (required for the last two), city_basis (person | brokercheck | firm_single_office |
+ * team_page) and office_source_url. Provenance needs 20261025_directory_sources.sql applied; before
+ * it, a line that carries any is refused (never stored without where it came from). Slugs are unique across trades: one another trade
  * holds gets this trade's suffix (lib/directory/loader.ts assignSlug).
  *
  * The rules (lib/directory/loader.ts, tested): upsert by slug; new people
@@ -23,7 +26,7 @@
 import { readFileSync } from 'node:fs'
 import { createClient } from '@supabase/supabase-js'
 import { CATEGORY_IDS, type CategoryId } from '@/lib/directory/taxonomy'
-import { FIRM_SITE_FIELDS, assignSlug, mergeRecord, missingFrom, parseRecord, type ExistingRow, type SourceRecord } from '@/lib/directory/loader'
+import { FIRM_SITE_FIELDS, PROVENANCE_FIELDS, needsProvenance, assignSlug, mergeRecord, missingFrom, parseRecord, type ExistingRow, type SourceRecord } from '@/lib/directory/loader'
 
 const BATCH = 200
 
@@ -45,7 +48,10 @@ async function main() {
   // Read what is there first: a slug another trade holds decides this line's slug.
   const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
   const existing: ExistingRow[] = []
-  const cols = ['id', 'slug', 'category', 'status', 'missing_since', ...FIRM_SITE_FIELDS].join(', ')
+  // The provenance columns (source_url, city_basis, office_source_url) arrive with 20261025_directory_sources.sql.
+  const probe = await db.from('directory_people').select('source_url, city_basis, office_source_url').limit(1)
+  const hasProvenance = !probe.error
+  const cols = ['id', 'slug', 'category', 'status', 'missing_since', ...FIRM_SITE_FIELDS, ...(hasProvenance ? PROVENANCE_FIELDS : [])].join(', ')
   for (let from = 0; ; from += 1000) {
     const { data, error } = await db.from('directory_people').select(cols).order('slug').range(from, from + 999)
     if (error) throw new Error(`reading directory_people failed (is the migration applied?): ${error.message}`)
@@ -72,6 +78,8 @@ async function main() {
       }
       const parsed = parseRecord(raw, category)
       if (!parsed.ok) return errors.push(`line ${i + 1}: ${parsed.error}`)
+      if (!hasProvenance && needsProvenance(parsed.value)) return errors.push(`line ${i + 1}: ${parsed.value.slug} is a ${parsed.value.source} row / city from ${parsed.value.city_basis}: apply 20261025_directory_sources.sql first`)
+      if (!hasProvenance) for (const f of PROVENANCE_FIELDS) if (f !== 'source') delete parsed.value[f]
       warnings.push(...parsed.warnings)
       const slot = assignSlug(parsed.value, bySlug, records)
       if (!slot) return errors.push(`line ${i + 1}: no free slug for ${parsed.value.slug}`)

@@ -22,6 +22,7 @@
 import { CATEGORIES, RESERVED_SLUGS, isCategoryId, isClientFocusId, isPracticeId, isRepresentsId, type CategoryId } from './taxonomy'
 import { stateCode, type Office } from './places'
 import type { Education, Status } from './people'
+import { isCityBasis, isPersonSource, type CityBasis, type PersonSource } from './provenance'
 
 export interface SourceRecord {
   full_name: string
@@ -39,7 +40,24 @@ export interface SourceRecord {
   slug: string
   /** The trade: the line's own `category`, else the file's. Never changed on an existing row. */
   category: CategoryId
+  /**
+   * Provenance (2026-10-25, 20261025_directory_sources.sql): the kind of page the facts were read on,
+   * that page, how the office city is known and from where. Optional so a file from before carries none
+   * (then: firm_site, the bio, the person's own page).
+   */
+  source?: PersonSource
+  source_url?: string | null
+  city_basis?: CityBasis | null
+  office_source_url?: string | null
 }
+
+/** The provenance columns: written only once the 2026-10-25 migration is applied (load-people.ts checks). */
+export const PROVENANCE_FIELDS = ['source', 'source_url', 'city_basis', 'office_source_url'] as const satisfies readonly (keyof SourceRecord)[]
+export type ProvenanceField = (typeof PROVENANCE_FIELDS)[number]
+
+/** A line that cannot be stored without the provenance columns: a speaker page, a press release, an office from elsewhere. */
+export const needsProvenance = (r: SourceRecord) =>
+  (r.source && r.source !== 'firm_site') || (r.city_basis && r.city_basis !== 'person') || !!r.office_source_url
 
 /** What the loader may write. Nothing else, ever. */
 export const FIRM_SITE_FIELDS = [
@@ -137,6 +155,14 @@ export function parseRecord(raw: unknown, fallback: CategoryId = 'fund_lawyer'):
       }).slice(0, 8)
     : []
 
+  const source = r.source === undefined || r.source === null || r.source === '' ? 'firm_site' : r.source
+  if (!isPersonSource(source)) return { ok: false, error: `${slug}: unknown source ${JSON.stringify(r.source)}` }
+  const source_url = httpUrl(r.source_url)
+  if (source !== 'firm_site' && !source_url) return { ok: false, error: `${slug}: a ${source} row needs its source_url` }
+  const city_basis = r.city_basis === undefined || r.city_basis === null || r.city_basis === '' ? null : r.city_basis
+  if (city_basis !== null && !isCityBasis(city_basis)) return { ok: false, error: `${slug}: unknown city_basis ${JSON.stringify(r.city_basis)}` }
+  const office_source_url = httpUrl(r.office_source_url)
+
   const fetched = str(r.fetched_at, 40)
   const fetched_at = fetched && !Number.isNaN(new Date(fetched).getTime()) ? new Date(fetched).toISOString() : null
 
@@ -158,6 +184,10 @@ export function parseRecord(raw: unknown, fallback: CategoryId = 'fund_lawyer'):
       fetched_at,
       slug,
       category,
+      source,
+      source_url,
+      city_basis,
+      office_source_url,
     },
   }
 }
@@ -204,7 +234,7 @@ export function assignSlug(
 }
 
 /** The row as the loader reads it back: firm-site fields plus what decides the merge. */
-export type ExistingRow = Pick<SourceRecord, FirmSiteField> & {
+export type ExistingRow = Pick<SourceRecord, FirmSiteField> & Partial<Pick<SourceRecord, ProvenanceField>> & {
   id: string
   slug: string
   category: CategoryId
@@ -213,20 +243,22 @@ export type ExistingRow = Pick<SourceRecord, FirmSiteField> & {
 }
 
 export type Merge =
-  | { kind: 'insert'; row: SourceRecord & { category: CategoryId; status: 'review'; source: 'firm_site' } }
+  | { kind: 'insert'; row: SourceRecord & { category: CategoryId; status: 'review'; source: PersonSource } }
   /** `fields` names what really changed; empty when only the date we read the bio moved on. */
-  | { kind: 'update'; id: string; slug: string; changes: Partial<Pick<SourceRecord, FirmSiteField>> & { missing_since?: null }; fields: string[] }
+  | { kind: 'update'; id: string; slug: string; changes: Partial<Pick<SourceRecord, FirmSiteField | ProvenanceField>> & { missing_since?: null }; fields: string[] }
   | { kind: 'unchanged'; slug: string }
   | { kind: 'skip'; slug: string; reason: string }
 
 const same = (a: unknown, b: unknown) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null)
 
 export function mergeRecord(existing: ExistingRow | null, rec: SourceRecord, category: CategoryId = rec.category): Merge {
-  if (!existing) return { kind: 'insert', row: { ...rec, category, status: 'review', source: 'firm_site' } }
+  if (!existing) return { kind: 'insert', row: { ...rec, category, status: 'review', source: rec.source ?? 'firm_site' } }
   if (existing.category !== category) return { kind: 'skip', slug: rec.slug, reason: `slug belongs to a ${existing.category}` }
   if (existing.status === 'removed') return { kind: 'skip', slug: rec.slug, reason: 'removed: never re-added by a crawl' }
   const changes: Record<string, unknown> = {}
   for (const f of FIRM_SITE_FIELDS) if (!same(existing[f], rec[f])) changes[f] = rec[f]
+  // Provenance only where the table holds it (read back after the migration), and only when the line says something.
+  for (const f of PROVENANCE_FIELDS) if (f in existing && rec[f] !== undefined && !same(existing[f], rec[f])) changes[f] = rec[f]
   // An older read never replaces a newer one: the "as of" date only moves forward.
   if ('fetched_at' in changes && existing.fetched_at && (!rec.fetched_at || rec.fetched_at < existing.fetched_at)) delete changes.fetched_at
   const fields = Object.keys(changes).filter((f) => f !== 'fetched_at')
