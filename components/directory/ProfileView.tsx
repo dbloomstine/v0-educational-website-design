@@ -5,7 +5,8 @@ import { notFound } from 'next/navigation'
 import { ArrowUpRight } from 'lucide-react'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { AboutLine, ClaimedMark, Crumbs, LandingLinks, PracticeTags } from '@/components/directory/parts'
+import { AboutLine, ClaimedMark, Crumbs, FirmListLinks, LandingLinks, PracticeTags } from '@/components/directory/parts'
+import { firmListSet } from '@/lib/directory/firm-lists'
 import { FirmMark } from '@/components/directory/FirmMark'
 import { ViewBeacon } from '@/components/directory/owner'
 import { FIRM_MIN, firmPath, firmsOf, peopleAtFirm } from '@/lib/directory/firms'
@@ -13,7 +14,7 @@ import { logoFor, monogram } from '@/lib/directory/logos'
 import { displayTitle, seniority, visiblePractices } from '@/lib/directory/quality'
 import { OUTBOUND } from '@/components/story/StoryLink'
 import { loadPeople, loadPerson } from '@/lib/directory/data'
-import { allLandings, type Landing } from '@/lib/directory/landing'
+import { landingSet, type Landing } from '@/lib/directory/landing'
 import { peersOf } from '@/lib/directory/peers'
 import { cityOf, officeCity, officeLabel } from '@/lib/directory/places'
 import {
@@ -113,7 +114,12 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
   const peers = city ? peersOf(p, everyone, city.slug, CATEGORY) : []
 
   // Related pages that exist: the city, then each of the person's practices (in the city first, then anywhere).
-  const landings = allLandings(CATEGORY, everyone)
+  const set = landingSet(CATEGORY, everyone)
+  const landings = set.pages
+  // The firm rankings for the person's practices, here and nationally (lib/directory/firm-lists.ts).
+  const rankings = firmListSet(CATEGORY, everyone, set).lists.filter(
+    (x) => x.indexable && x.key.topic?.kind === 'practice' && practices.includes(x.key.topic.id) && (!x.key.place || x.key.place.slug === city?.slug),
+  )
   const related: Landing[] = []
   const add = (l?: Landing) => l && !related.some((r) => r.path === l.path) && related.push(l)
   if (city) add(landings.find((l) => !l.topic && l.place?.slug === city.slug))
@@ -423,6 +429,7 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
               </ul>
             </section>
             <LandingLinks title="Related pages" items={related.slice(0, 6)} />
+            <FirmListLinks title="Firm rankings" items={rankings.slice(0, 6)} />
           </aside>
 
           <footer className="border-t border-border pt-4 font-ui text-[12.5px] leading-relaxed text-foreground/70 lg:col-span-2">

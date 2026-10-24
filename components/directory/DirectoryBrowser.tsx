@@ -409,7 +409,7 @@ export function DirectoryBrowser(props: BrowserProps) {
 export function PersonRow({ r, firm, path, eager = false, hideFirm = false }: { r: Row; firm?: RowFirm; path: string; eager?: boolean; hideFirm?: boolean }) {
   const base = path.split('/').slice(0, 2).join('/')
   return (
-    <li className={hideFirm ? 'py-3' : 'grid grid-cols-[56px_minmax(0,1fr)] items-start gap-x-3 py-3 sm:grid-cols-[72px_minmax(0,1fr)] sm:gap-x-4'}>
+    <li data-slug={r.s} className={hideFirm ? 'py-3' : 'grid grid-cols-[56px_minmax(0,1fr)] items-start gap-x-3 py-3 sm:grid-cols-[72px_minmax(0,1fr)] sm:gap-x-4'}>
       {!hideFirm && (
         <span className="pt-0.5">
           {firm ? <FirmMark name={firm.name} logo={firm.logo} mono={firm.mono} size="sm" decorative eager={eager} className="max-sm:!h-[28px] max-sm:!w-[56px]" /> : null}

@@ -3,7 +3,9 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { AboutLine, Crumbs, EmptyDirectory, FirmsRail, LandingLinks, Verified } from '@/components/directory/parts'
+import { AboutLine, Crumbs, EmptyDirectory, FirmListLinks, FirmsRail, LandingLinks, Verified } from '@/components/directory/parts'
+import { firmListSet } from '@/lib/directory/firm-lists'
+import { intentPage, parseIntent } from '@/lib/directory/intent-route'
 import { DirectoryBrowser } from '@/components/directory/DirectoryBrowser'
 import { FirmMark } from '@/components/directory/FirmMark'
 import { FIRM_MIN, firmPath, firmsIndexPath, firmsOf } from '@/lib/directory/firms'
@@ -91,6 +93,11 @@ export async function HubView({ category: CATEGORY, searchParams: sp }: { catego
 
   const set = landingSet(CATEGORY, people)
   const landings = set.pages
+  const firmLists = firmListSet(CATEGORY, people, set).lists
+  // A search that names a page ("hedge fund law firms", "VC fund attorney new york"): offer that page (lib/directory/intent-route.ts).
+  const titles = new Map<string, string>([...landings.map((l) => [l.path, l.title] as const), ...firmLists.map((x) => [x.path, x.title] as const)])
+  const suggestion = f.q && !f.practice && !f.city ? intentPage(parseIntent(f.q, CATEGORY.id), (p) => titles.has(p)) : null
+  const suggested = suggestion && suggestion !== PATH && parseIntent(f.q!, CATEGORY.id).category === CATEGORY.id ? { path: suggestion, title: titles.get(suggestion)! } : null
   const heading = set.hubFolded ? foldedTitle(CATEGORY, { topic: null, place: null }, set.hubFolded) : CATEGORY.plural
   const byKind = (kind: string, placeKind?: 'city' | 'state') =>
     landings.filter((l) => (kind === 'place' ? !l.topic && l.place?.kind === placeKind : l.topic?.kind === kind && !l.place))
@@ -115,6 +122,15 @@ export async function HubView({ category: CATEGORY, searchParams: sp }: { catego
             <p className="mt-2 max-w-[72ch] font-news text-[16.5px] leading-snug text-foreground/80">{INTRO}</p>
             {people.length > 0 && <p className="mt-1.5 font-ui text-[13px] font-semibold text-foreground/85">{countsSentence(people, CATEGORY)}.</p>}
             {people.length > 0 && <Verified span={verifiedSpan(people)} className="mt-1" />}
+            {suggested && (
+              <p className="mt-3 font-ui text-[14px] text-foreground">
+                Looking for{' '}
+                <Link prefetch={false} href={suggested.path} className="font-semibold underline underline-offset-2">
+                  {suggested.title}
+                </Link>
+                ?
+              </p>
+            )}
             {withPages.length >= 2 && (
               <ul aria-label="Firms with the most people listed" className="tab-scroll -mx-4 mt-4 flex gap-x-2 overflow-x-auto px-4 pb-1 lg:hidden">
                 {withPages.slice(0, 8).map((x) => (
@@ -176,6 +192,7 @@ export async function HubView({ category: CATEGORY, searchParams: sp }: { catego
               <aside className="min-w-0 space-y-6 lg:pt-3" aria-label="Browse the directory">
                 <FirmsRail category={CATEGORY} firms={withPages} allHref={firmsIndexPath(CATEGORY)} />
                 <LandingLinks title="By practice" items={byKind('practice')} />
+                <FirmListLinks title="Firm rankings" items={firmLists.filter((x) => x.indexable && !x.key.place)} />
                 <LandingLinks title={CATEGORY.sides ? 'By client' : 'By stage'} items={[...byKind('focus'), ...byKind('side')]} />
                 <LandingLinks title="By city" items={byKind('place', 'city')} />
                 <LandingLinks title="By state" items={byKind('place', 'state')} />

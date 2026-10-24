@@ -6,6 +6,7 @@ import { pageHref, type Landing } from '@/lib/directory/landing'
 import { dedupePeople } from '@/lib/directory/quality'
 import { rowFirms, toRow } from '@/lib/directory/rows'
 import { firmPath, type FirmSummary } from '@/lib/directory/firms'
+import type { FirmList } from '@/lib/directory/firm-lists'
 import { logoFor, monogram } from '@/lib/directory/logos'
 import type { Category } from '@/lib/directory/taxonomy'
 import { FirmMark } from '@/components/directory/FirmMark'
@@ -193,5 +194,25 @@ export function AboutLine() {
     <Link href={DIRECTORY_ABOUT_PATH} className="font-semibold text-foreground/85 underline underline-offset-2 hover:text-foreground">
       How the directory works
     </Link>
+  )
+}
+
+/** Links to firm rankings (lib/directory/firm-lists.ts), with how many firms each ranks. Never a section of one. */
+export function FirmListLinks({ title, items }: { title: string; items: FirmList[] }) {
+  if (items.length < 2) return null
+  return (
+    <section aria-label={title}>
+      <h2 className="mb-1.5 border-t-2 border-foreground pt-1.5 font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">{title}</h2>
+      <ul>
+        {items.map((l) => (
+          <li key={l.path} className="border-b border-border/60 last:border-0">
+            <Link prefetch={false} href={l.path} className="flex items-baseline justify-between gap-3 py-[6px] font-news text-[15.5px] leading-snug text-foreground hover:underline">
+              <span>{l.title}</span>
+              <span className="shrink-0 font-mono text-[11px] tabular-nums text-muted-foreground">{l.firms.toLocaleString('en-US')} firms</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   )
 }

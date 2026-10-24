@@ -34,6 +34,7 @@
 import { CATEGORIES, CLIENT_FOCUS, PRACTICES, REPRESENTS, RESERVED_SLUGS, type Category, lowerNoun, practiceLower } from './taxonomy'
 import { PLACES, officeIn, placeBySlug, type Place } from './places'
 import { SENIOR_ONLY } from './taxonomy'
+import { intentHead } from './intent'
 import { bySurname, cityTally, displayName, firmTally, isPublic, lastChanged, listJoin, practiceAreas, practiceTally, profilePath, type PersonCard } from './people'
 
 /** People a page needs to exist (5 until 2026-10-24). */
@@ -124,6 +125,9 @@ export function landingPath(category: Category, k: LandingKey): string {
  */
 export function topicTitle(category: Category, topic: Topic | null): string {
   if (!topic) return category.plural
+  // The phrase people search, where it differs from the plain name (lib/directory/intent.ts).
+  const head = topic.kind === 'side' ? null : intentHead(category, topic.id)
+  if (head) return head
   if (topic.kind === 'practice') return category.topicStyle === 'for' ? `${category.plural} for ${topic.noun}` : `${topic.adj} ${category.trade}`
   return `${category.plural} for ${topic.label}`
 }

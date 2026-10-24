@@ -3,14 +3,22 @@ import { notFound, permanentRedirect } from 'next/navigation'
 import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { AboutLine, Crumbs, FirmsRail, LandingLinks, Pager, PersonList, Verified } from '@/components/directory/parts'
-import { firmsOf } from '@/lib/directory/firms'
+import { AboutLine, Crumbs, FirmListLinks, LandingLinks, Pager, PersonList, Verified } from '@/components/directory/parts'
+import { DirectoryCta, FaqList, FirmRanking, QuickFacts, SectionHead, type Fact } from '@/components/directory/intent-parts'
+import { LandingSearch } from '@/components/directory/LandingSearch'
+import { firmPath, firmsOf } from '@/lib/directory/firms'
+import { firmListFor, firmListSet, firmListTitle, rankFirms } from '@/lib/directory/firm-lists'
+import { landingFaq, peoplePhrase } from '@/lib/directory/faq'
+import { intentFor } from '@/lib/directory/intent'
+import { PLACES } from '@/lib/directory/places'
+import { toRow } from '@/lib/directory/rows'
 import { loadPeople } from '@/lib/directory/data'
 import {
   PAGE_SIZE,
   absorbedTopic,
   itemListJsonLd,
   landingCrumbs,
+  type LandingKey,
   landingDescription,
   landingPath,
   landingSet,
@@ -24,8 +32,8 @@ import {
   resolveLanding,
   searchTitle,
 } from '@/lib/directory/landing'
-import { verifiedSpan } from '@/lib/directory/people'
-import { CATEGORIES, DIRECTORY_PATH, directoryEnabled, type Category } from '@/lib/directory/taxonomy'
+import { cityTally, practiceTally, verifiedSpan } from '@/lib/directory/people'
+import { CATEGORIES, DIRECTORY_PATH, SENIOR_ONLY, directoryEnabled, practiceLabel, type Category } from '@/lib/directory/taxonomy'
 import { brandedTitle, breadcrumbJsonLd, shareCard } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 
@@ -70,6 +78,12 @@ async function build({ segments, page: rawPage, category = CATEGORIES.fund_lawye
   return { category, key, all, set, landing: page, people, paged, path, title, sentence }
 }
 
+/** The title tag's names, best first: "Hedge Fund Lawyers & Attorneys in New York", then the heading itself. */
+function titleNames(category: Category, key: LandingKey, title: string): string[] {
+  const alt = key.topic && key.topic.kind !== 'side' ? intentFor(category, key.topic.id).titleAlt : null
+  return alt ? [`${alt}${key.place ? ` in ${key.place.name}` : ''}`, title] : [title]
+}
+
 export async function landingMetadata(props: LandingProps): Promise<Metadata> {
   const b = await build(props)
   if (!b || 'redirectTo' in b) return { title: 'Not found', robots: { index: false } }
@@ -80,7 +94,7 @@ export async function landingMetadata(props: LandingProps): Promise<Metadata> {
   // A folded page counts the folded practice's own partners and firms, so the title's number is true of its words.
   const search = f
     ? searchTitle(b.title, b.category, f.count, f.firms, null, 60 - pageNote.length)
-    : searchTitle(b.title, b.category, b.people.length, b.landing.firms, absorbedTopic(b.path, b.set.pages), 60 - pageNote.length)
+    : searchTitle(titleNames(b.category, b.key, b.title), b.category, b.people.length, b.landing.firms, absorbedTopic(b.path, b.set.pages), 60 - pageNote.length)
   return {
     title: { absolute: brandedTitle(`${search}${pageNote}`) },
     description,
@@ -99,11 +113,73 @@ export async function LandingView(props: LandingProps) {
   const { category, key, paged, path, title, sentence, people } = b
   const landings = b.set.pages
   const near = nearby(key, landings)
-  const firms = firmsOf(people, category)
+  const tradeList = firmsOf(b.all, category)
   // Firm pages are counted on the whole trade (a firm with one person here may have ten elsewhere).
-  const tradeFirms = new Map(firmsOf(b.all, category).map((f) => [f.domain, f]))
-  const railFirms = firms.filter((f) => (tradeFirms.get(f.domain)?.count ?? 0) >= 2).map((f) => ({ ...f, slug: tradeFirms.get(f.domain)!.slug }))
+  const tradeFirms = new Map(tradeList.map((f) => [f.domain, f]))
+  const ranked = rankFirms(people, tradeList)
+  const lists = firmListSet(category, b.all, b.set)
+  const ownList = firmListFor(lists, category, key)
   const crumbs = [{ name: 'Directory', path: DIRECTORY_PATH }, ...landingCrumbs(category, key)]
+  const where = key.place ? ` in ${key.place.name}` : ''
+  const answer = sentence.split(/(?<=\.)\s+/)[0]
+  const span = verifiedSpan(people)
+  const practiceId = key.topic?.kind === 'practice' ? key.topic.id : undefined
+  const cityId = key.place?.kind === 'city' ? key.place.slug : undefined
+  const hub = `/${category.slug}`
+  const peopleHref = (f: { domain: string }) =>
+    `${hub}?${new URLSearchParams({ firm: f.domain, ...(practiceId ? { practice: practiceId } : {}), ...(cityId ? { city: cityId } : {}) }).toString()}`
+  const who = peoplePhrase(category, key)
+  const listId = 'landing-people'
+
+  // Quick facts: four numbers from the list (Zillow's agent finder puts the place's numbers before the people).
+  const facts: Fact[] = [
+    { label: SENIOR_ONLY.includes(category.id) ? 'Partners' : 'People', value: n(people.length), note: SENIOR_ONLY.includes(category.id) ? 'all at partner level' : undefined },
+    { label: 'Firms', value: n(ranked.length), note: ownList ? 'ranked by partners' : undefined, href: ownList?.path },
+  ]
+  if (ranked[0] && ranked.length >= 2) {
+    const top = ranked[0]
+    const t = tradeFirms.get(top.domain)
+    facts.push({ label: 'Most partners', value: top.name, note: `${n(top.count)} listed here`, href: t && t.count >= 2 ? firmPath(category, t.slug) : undefined })
+  }
+  if (!key.place || key.place.kind === 'state') {
+    const c = cityTally(people).filter((t) => !key.place || PLACES.find((p) => p.slug === t.key)?.state === key.place.state)[0]
+    if (c) {
+      const page = landings.find((l) => !l.topic && l.place?.slug === c.key)
+      facts.push({ label: 'Biggest city', value: c.label, note: `${n(c.count)} here`, href: page ? landingPath(category, { topic: key.topic, place: page.place }) : undefined })
+    }
+  } else if (key.topic) {
+    const placePage = landings.find((l) => !l.topic && l.place?.slug === key.place!.slug)
+    if (placePage) facts.push({ label: `Of all in ${key.place.name}`, value: `${Math.round((people.length / placePage.count) * 100)}%`, note: `${n(people.length)} of ${n(placePage.count)}`, href: placePage.path })
+  } else {
+    const t = practiceTally(people)[0]
+    if (t) facts.push({ label: 'Practice listed most', value: practiceLabel(t.key), note: `${n(t.count)} partners` })
+  }
+
+  const elsewhere = near.sameTopic.filter((l) => l.place?.kind === 'city').map((l) => ({ name: l.place!.name, count: l.count }))
+  const faq = landingFaq({ category, key, people, ranked, verified: span, firmList: ownList ? { path: ownList.path, firms: ownList.firms } : null, elsewhere })
+  // Firm rankings next to this one: this place's other practices, this practice's other places.
+  const siblingLists = lists.lists.filter(
+    (x) => x.path !== ownList?.path && x.indexable && ((x.key.place?.slug ?? null) === (key.place?.slug ?? null) || (key.topic && x.key.topic?.slug === key.topic.slug)),
+  )
+
+  // Auditor searches are firm searches (the intent map): their pages put the firms first.
+  const firmsFirst = category.id === 'fund_auditor'
+  const firmsBlock = ranked.length >= 2 && (
+                <section aria-labelledby="landing-firms">
+                  <SectionHead
+                    id="landing-firms"
+                    title={`${firmListTitle(category, key)}, by partners listed`}
+                    aside={
+                      ownList ? (
+                        <Link prefetch={false} href={ownList.path} className="font-semibold text-foreground underline underline-offset-2">
+                          All {n(ranked.length)} ranked
+                        </Link>
+                      ) : undefined
+                    }
+                  />
+                  <FirmRanking category={category} firms={ranked} max={8} peopleHref={peopleHref} label={firmListTitle(category, key)} />
+                </section>
+              )
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -115,44 +191,70 @@ export async function LandingView(props: LandingProps) {
         <div className="band">
           <header className="mx-auto max-w-[1320px] px-4 pb-5 pt-5 lg:px-6">
             <Crumbs crumbs={crumbs} />
-            <h1 className="mt-3 font-news text-[30px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[38px]">{title}</h1>
-            <p className="mt-2 max-w-[75ch] font-news text-[16.5px] leading-snug text-foreground/75">{sentence}</p>
-            <Verified span={verifiedSpan(people)} className="mt-2" />
-            <p className="mt-3 font-ui text-[12.5px] text-muted-foreground">
-              Looking for someone in particular?{' '}
-              <Link href={`/${category.slug}`} className="font-semibold text-foreground/85 underline underline-offset-2 hover:text-foreground">
-                Search all {category.plural.toLowerCase()}
-              </Link>
-              .
-            </p>
+            <h1 className="mt-3 font-news text-[30px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[40px]">{title}</h1>
+            <p className="mt-2 max-w-[68ch] font-news text-[18px] leading-snug text-foreground/80">{answer}</p>
+            <LandingSearch
+              rows={paged.items.map((p) => {
+                const r = toRow(p)
+                return { s: r.s, n: r.n, f: r.f, o: r.o, c: r.c, p: r.p }
+              })}
+              total={people.length}
+              action={hub}
+              practice={practiceId}
+              city={cityId}
+              listId={listId}
+              label={`Search ${title.toLowerCase()}`}
+              hint={`Search ${n(people.length)} by name, firm or city`}
+            />
+            <QuickFacts facts={facts} />
+            <Verified span={span} className="mt-2" />
+            <nav aria-label="On this page" className="mt-2 flex flex-wrap gap-x-4 gap-y-1 font-ui text-[13px] font-semibold">
+              <a href="#landing-list" className="inline-flex min-h-[24px] items-center text-foreground underline underline-offset-2">
+                {cap(who)}, A to Z
+              </a>
+              {ranked.length >= 2 && (
+                <a href={ownList ? ownList.path : '#landing-firms'} className="inline-flex min-h-[24px] items-center text-foreground underline underline-offset-2">
+                  {firmListTitle(category, key)}, ranked
+                </a>
+              )}
+              <a href="#faq" className="inline-flex min-h-[24px] items-center text-foreground underline underline-offset-2">
+                Questions
+              </a>
+            </nav>
           </header>
         </div>
 
-        <div className="mx-auto max-w-[1320px] px-4 pb-12 pt-5 lg:px-6">
-          <div className="grid gap-x-10 gap-y-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-            <section aria-labelledby="landing-list" className="min-w-0">
-              <div className="mb-1 flex items-baseline justify-between gap-3 border-t-2 border-foreground pt-1.5">
-                <h2 id="landing-list" className="font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">
-                  A to Z by surname
-                </h2>
-                <p className="font-ui text-[12.5px] text-foreground/70">
-                  {people.length.toLocaleString('en-US')} people
-                  {paged.pages > 1 ? ` · ${(paged.page - 1) * PAGE_SIZE + 1}–${(paged.page - 1) * PAGE_SIZE + paged.items.length}` : ''}
-                </p>
-              </div>
-              <PersonList people={paged.items} label={title} firms={[...tradeFirms.values()]} path={`/${category.slug}`} />
-              <Pager path={path} page={paged.page} pages={paged.pages} />
-              <p className="mt-6 max-w-[70ch] font-ui text-[12.5px] leading-relaxed text-muted-foreground">
+        <div className="mx-auto max-w-[1320px] px-4 pb-12 pt-6 lg:px-6">
+          <div className="grid gap-x-10 gap-y-10 lg:grid-cols-[minmax(0,1fr)_320px]">
+            <div className="min-w-0 space-y-10">
+              {firmsFirst && firmsBlock}
+              <section aria-labelledby="landing-list" className="min-w-0">
+                <SectionHead
+                  id="landing-list"
+                  title={`${cap(who)}${where}, A to Z`}
+                  aside={`${n(people.length)} ${paged.pages > 1 ? `· ${(paged.page - 1) * PAGE_SIZE + 1}–${(paged.page - 1) * PAGE_SIZE + paged.items.length}` : ''}`}
+                />
+                <div id={listId}>
+                  <PersonList people={paged.items} label={title} firms={[...tradeFirms.values()]} path={hub} />
+                </div>
+                <Pager path={path} page={paged.page} pages={paged.pages} />
+              </section>
+
+              {!firmsFirst && firmsBlock}
+
+              <FaqList items={faq} title="Questions" />
+              <DirectoryCta />
+              <p className="max-w-[70ch] font-ui text-[12.5px] leading-relaxed text-muted-foreground">
                 Who is listed here comes from each firm&rsquo;s own public bio page: the practices, clients and offices it names. Nobody pays to be
                 listed or to rank. <AboutLine />
               </p>
-            </section>
+            </div>
 
             <aside className="min-w-0 space-y-6" aria-label="Related pages">
-              <FirmsRail category={category} firms={railFirms} title={`Firms here`} max={10} />
               <LandingLinks title="Up a level" items={near.parents} />
               <LandingLinks title={key.place ? `Also in ${key.place.name}` : 'Other practices and clients'} items={near.samePlace} />
               <LandingLinks title={key.place?.kind === 'state' ? `Cities in ${key.place.name}, and elsewhere` : 'Other places'} items={near.sameTopic} />
+              <FirmListLinks title="Firm rankings" items={siblingLists.slice(0, 10)} />
             </aside>
           </div>
         </div>
@@ -161,6 +263,9 @@ export async function LandingView(props: LandingProps) {
     </div>
   )
 }
+
+const n = (x: number) => x.toLocaleString('en-US')
+const cap = (s: string) => (s ? s[0].toUpperCase() + s.slice(1) : s)
 
 /** Anything in the address besides ?page: a filter, a search or a tag (the page itself ignores it). */
 export const hasQuery = (sp: Record<string, unknown>) => Object.keys(sp).some((k) => k !== 'page')

@@ -95,7 +95,8 @@ const nextConfig = {
         '/league-tables',
         '/firms',
         '/directory',
-        ...DIRECTORY_SLUGS.flatMap((d) => [`/${d}`, `/${d}/:a((?!people$)[^/]+)`, `/${d}/:a((?!people$)[^/]+)/:b`]),
+        // And the firm rankings three segments deep, /<trade>/<topic>/<place>/firms (2026-10-24).
+        ...DIRECTORY_SLUGS.flatMap((d) => [`/${d}`, `/${d}/:a((?!people$)[^/]+)`, `/${d}/:a((?!people$)[^/]+)/:b`, `/${d}/:a((?!people$)[^/]+)/:b/firms`]),
       ].map((source) => ({
         source,
         headers: [{ key: 'Vercel-CDN-Cache-Control', value: 'max-age=300, stale-while-revalidate=3600' }],

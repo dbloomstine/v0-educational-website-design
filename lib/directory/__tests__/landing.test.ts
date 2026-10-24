@@ -74,7 +74,7 @@ describe('slug routing', () => {
     expect(landingPath(L, k)).toBe('/fund-lawyers/venture-funds/san-francisco')
     expect(landingTitle(L, k)).toBe('Venture Fund Lawyers in San Francisco')
     expect(landingTitle(L, resolveLanding(['new-york'])!)).toBe('Fund Lawyers in New York')
-    expect(landingTitle(L, resolveLanding(['emerging-managers'])!)).toBe('Fund Lawyers for Emerging Managers')
+    expect(landingTitle(L, resolveLanding(['emerging-managers'])!)).toBe('Lawyers for Emerging Fund Managers')
     expect(landingTitle(L, resolveLanding(['lp-counsel'])!)).toBe('Fund Lawyers for LPs and Investors')
     expect(landingCrumbs(L, k).map((c) => c.name)).toEqual(['Fund Lawyers', 'Venture Fund Lawyers', 'San Francisco'])
   })

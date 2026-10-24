@@ -9,9 +9,10 @@ import { FirmMark } from '@/components/directory/FirmMark'
 import { OUTBOUND } from '@/components/story/StoryLink'
 import { loadPeople } from '@/lib/directory/data'
 import { FIRM_MIN, firmPath, firmTitle, firmsIndexPath, firmsOf, firmsWithPages, peopleAtFirm, type FirmSummary } from '@/lib/directory/firms'
-import { LANDING_MIN, allLandings, itemListJsonLd, pageHref, paginate, parsePage, PAGE_SIZE } from '@/lib/directory/landing'
+import { firmListSet, rankFirms } from '@/lib/directory/firm-lists'
+import { LANDING_MIN, allLandings, peopleFor, itemListJsonLd, pageHref, paginate, parsePage, PAGE_SIZE } from '@/lib/directory/landing'
 import { logoFor, monogram } from '@/lib/directory/logos'
-import { displayDomain, firmUrl, listJoin, verifiedSpan } from '@/lib/directory/people'
+import { displayDomain, firmUrl, isPublic, listJoin, verifiedSpan } from '@/lib/directory/people'
 import { DIRECTORY_PATH, SENIOR_ONLY, directoryEnabled, lowerNoun, type Category } from '@/lib/directory/taxonomy'
 import { brandedTitle, breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
@@ -76,6 +77,15 @@ export async function FirmView({ category, slug, page }: { category: Category; s
   const cityPage = (key: string) => landings.find((l) => !l.topic && l.place?.kind === 'city' && l.place.slug === key)?.path
   const practicePage = (key: string) => landings.find((l) => l.topic?.kind === 'practice' && l.topic.id === key && !l.place)?.path
   const others = firmsWithPages(b.firms).filter((f) => f.domain !== firm.domain)
+  // Where the firm stands in each national firm ranking it is on (lib/directory/firm-lists.ts): a count's rank, a fact.
+  const standings = firmListSet(category, b.all)
+    .lists.filter((x) => x.indexable && !x.key.place)
+    .flatMap((x) => {
+      const ranked = rankFirms(x.key.topic ? peopleFor(b.all, x.key) : b.all.filter((p) => isPublic(p)), b.firms)
+      const me = ranked.find((r) => r.domain === firm.domain)
+      return me ? [{ label: x.title, rank: me.rank, of: ranked.length, href: x.path }] : []
+    })
+    .sort((a, b2) => a.rank - b2.rank || a.label.localeCompare(b2.label, 'en'))
   const crumbs = [
     { name: 'Directory', path: DIRECTORY_PATH },
     { name: category.plural, path: `/${category.slug}` },
@@ -155,6 +165,24 @@ export async function FirmView({ category, slug, page }: { category: Category; s
               )}
               {firm.practices.length >= 2 && (
                 <Facts title="Practices" items={firm.practices.map((p) => ({ label: p.label, count: p.count, href: practicePage(p.key) ? `/${category.slug}?firm=${encodeURIComponent(firm.domain)}&practice=${p.key}` : undefined }))} />
+              )}
+              {standings.length > 0 && (
+                <section aria-label="Firm rankings">
+                  <h2 className="mb-1 border-t-2 border-foreground pt-1.5 font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">Firm rankings</h2>
+                  <p className="mb-1 font-ui text-[12px] leading-snug text-foreground/65">By partners listed for each practice: a count, not a rating.</p>
+                  <ul>
+                    {standings.slice(0, 8).map((x) => (
+                      <li key={x.href} className="border-b border-border/60 last:border-0">
+                        <Link prefetch={false} href={x.href} className="flex items-baseline justify-between gap-3 py-[6px] font-news text-[15.5px] leading-snug text-foreground hover:underline">
+                          <span>{x.label}</span>
+                          <span className="shrink-0 font-mono text-[11.5px] tabular-nums text-foreground/65">
+                            #{x.rank} of {x.of}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
               )}
               <FirmsRail category={category} firms={others} title="Other firms" max={8} allHref={firmsIndexPath(category)} />
             </aside>

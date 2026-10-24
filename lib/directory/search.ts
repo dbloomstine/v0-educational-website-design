@@ -9,6 +9,10 @@
  */
 import { bySurname, surname } from './people'
 import type { FirmLogo } from './logos'
+import { PRACTICE_WORDS, SOFT_WORDS, practiceWords } from './intent'
+
+/** Short strategy words ("vc", "pe", "sec"): matched whole everywhere, so "pe" finds private equity, not every Peter. */
+const SHORT_SYNONYMS = new Set(Object.values(PRACTICE_WORDS).flat().filter((w) => w.length <= 3))
 
 /** One person as the browser needs them: short keys, display-ready values. */
 export interface Row {
@@ -94,30 +98,43 @@ export interface Haystack {
   name: string[]
   firm: string[]
   place: string[]
+  /** The person's practices as everyday words ("vc", "pe", "hedge"): lib/directory/intent.ts PRACTICE_WORDS. */
+  practice?: string[]
 }
 
-export const haystack = (r: Pick<Row, 'n' | 'f' | 'o'>, cities: string[] = []): Haystack => ({
+export const haystack = (r: Pick<Row, 'n' | 'f' | 'o'> & { p?: string[] }, cities: string[] = []): Haystack => ({
   name: fold(r.n).split(' ').filter(Boolean),
   firm: fold(r.f).split(' ').filter(Boolean),
   place: fold([r.o ?? '', ...cities.map((c) => c.replace(/-/g, ' '))].join(' ')).split(' ').filter(Boolean),
+  practice: practiceWords(r.p ?? []),
 })
 
-/** The record's score for a query: 0 when any word finds no home, else higher for better fits (names first). */
+/**
+ * The record's score for a query: 0 when any word finds no home, else higher for better fits (names first).
+ * A strategy's everyday word ("vc", "hedge", "pe") finds the people who list it; a soft word ("lawyer", "attorney",
+ * "cpa", "to help set up a") counts when it fits and is skipped when it does not (lib/directory/intent.ts).
+ */
 export function scoreQuery(q: string, h: Haystack): number {
   const words = fold(q).split(' ').filter((w) => w && w !== 'and')
   if (!words.length) return 1
   let total = 0
   for (const w of words) {
+    const fit = SHORT_SYNONYMS.has(w) ? (a: string, b: string) => (a === b ? 4 : 0) : wordScore
     const best = Math.max(
-      ...h.name.map((x) => wordScore(w, x) * 3),
-      ...h.firm.map((x) => wordScore(w, x) * 2),
-      ...h.place.map((x) => wordScore(w, x)),
+      ...h.name.map((x) => fit(w, x) * 3),
+      ...h.firm.map((x) => fit(w, x) * 2),
+      ...h.place.map((x) => fit(w, x)),
+      // Everyday practice words match whole (no slips: "pe" must not find "pet").
+      ...(h.practice ?? []).map((x) => (x === w ? 8 : 0)),
       0,
     )
-    if (!best) return 0
+    if (!best) {
+      if (SOFT_WORDS.has(w)) continue
+      return 0
+    }
     total += best
   }
-  return total
+  return Math.max(total, 1)
 }
 
 // ── Filtering and sorting ───────────────────────────────────────────────────
