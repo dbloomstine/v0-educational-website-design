@@ -1,0 +1,53 @@
+name: Directory stats email
+
+# The monthly "your profile was viewed N times" email to people who claimed a
+# directory profile (scripts/directory/stats-email.ts). Danny 2026-10-24: on.
+# GitHub runs schedules hours late, so it fires on each of the 1st-3rd; the
+# script logs every send in directory_desk_log and skips a profile already
+# sent for that month, so extra firings send nothing twice.
+#
+# Secrets: NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, RESEND_API_KEY.
+# Without the database secrets the job stops with a warning.
+
+on:
+  schedule:
+    - cron: '0 14 1-3 * *'
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: 'Send for real (no = print who would get what)'
+        type: choice
+        options: ['no', 'yes']
+        default: 'no'
+
+concurrency:
+  group: directory-stats-email
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      DIRECTORY_STATS_EMAIL: 'on'
+      DIRECTORY_STATS_EMAIL_SKIP: ${{ vars.DIRECTORY_STATS_EMAIL_SKIP }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - name: Send
+        run: |
+          if [ -z "$NEXT_PUBLIC_SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ]; then
+            echo "::warning::Database secrets not set: nothing sent."; exit 0
+          fi
+          APPLY=""
+          if [ "${{ github.event_name }}" = "schedule" ] || [ "${{ inputs.apply }}" = "yes" ]; then APPLY="--apply"; fi
+          npx tsx scripts/directory/stats-email.ts $APPLY
