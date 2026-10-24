@@ -1,0 +1,169 @@
+/* The directory's table explorer (components/directory/explore/Explorer.tsx).
+   Set like a newspaper's market-data table (the FT's and the Journal's stock tables): hairline rules, tabular figures,
+   the name in the house serif, everything else in the house sans, no boxes around cells. Interaction from the Lead
+   Desk grid (app/desk): sticky header and first column, a row opens a side panel, a column picker, a density switch.
+   All colours are the .paper tokens, so it sits on the cream page like the rest of the directory. */
+
+.frame {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: calc(100dvh - var(--dir-sticky, 42px));
+  min-height: 420px;
+}
+
+.scroller {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: 2px solid var(--foreground);
+  -webkit-overflow-scrolling: touch;
+}
+.scroller:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+
+.table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: max-content;
+  min-width: 100%;
+  table-layout: fixed;
+  font-family: var(--font-franklin), "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--foreground);
+}
+
+.table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  height: 34px;
+  padding: 0;
+  background: var(--band);
+  border-bottom: 1px solid color-mix(in oklab, var(--foreground) 35%, transparent);
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.sortBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.sortBtn:hover { background: color-mix(in oklab, var(--foreground) 6%, transparent); }
+.sortBtn:focus-visible { outline: 2px solid var(--ring); outline-offset: -2px; }
+.thPlain { display: flex; align-items: center; height: 34px; padding: 0 10px; }
+.sortMark { opacity: 0.35; font-size: 10px; }
+.sortOn .sortMark { opacity: 1; }
+
+.table tbody td,
+.table tbody th {
+  height: var(--row-h, 38px);
+  padding: 0 10px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: var(--card);
+  text-align: left;
+  font-weight: 400;
+  vertical-align: middle;
+}
+.table tbody tr { cursor: pointer; }
+.table tbody tr:hover > * { background: color-mix(in oklab, var(--band) 70%, var(--card)); }
+.table tbody tr:focus { outline: none; }
+.table tbody tr:focus-visible > * { background: color-mix(in oklab, var(--band) 85%, var(--card)); }
+.table tbody tr:focus-visible > :first-child { box-shadow: inset 3px 0 0 var(--foreground); }
+.rowOpen > * { background: color-mix(in oklab, var(--tab) 14%, var(--card)) !important; }
+.rowOpen > :first-child { box-shadow: inset 4px 0 0 var(--tab) !important; }
+
+/* The name stays in view while the rest scrolls sideways. */
+.stick {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+}
+.table thead .stick { z-index: 4; }
+.table tbody .stick { border-right: 1px solid var(--border); }
+.table thead .stick { border-right: 1px solid color-mix(in oklab, var(--foreground) 20%, transparent); }
+
+.name {
+  font-family: var(--font-newsreader), Georgia, serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--foreground);
+  text-decoration: none;
+}
+.name:hover { text-decoration: underline; text-underline-offset: 2px; }
+.comfy .name { font-size: 16px; }
+.soft { color: color-mix(in oklab, var(--foreground) 62%, transparent); }
+.dash { color: color-mix(in oklab, var(--foreground) 35%, transparent); }
+.primaryTag { font-weight: 700; }
+.num { text-align: right; }
+
+.empty {
+  padding: 28px 16px;
+  white-space: normal !important;
+  height: auto !important;
+}
+
+/* The facet rail. */
+.rail {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 6px;
+}
+.facet { border-top: 1px solid var(--border); padding: 8px 0 10px; }
+.facet:first-child { border-top: 2px solid var(--foreground); }
+.facetHead {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0;
+  font-family: var(--font-franklin), "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--foreground);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+}
+.facetHead:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.opt {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  font-family: var(--font-franklin), "Libre Franklin", "Helvetica Neue", Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.25;
+  color: var(--foreground);
+  cursor: pointer;
+}
+.opt input { width: 15px; height: 15px; margin: 0; accent-color: var(--foreground); }
+.opt .ct { font-variant-numeric: tabular-nums; font-size: 12px; color: color-mix(in oklab, var(--foreground) 60%, transparent); }
+.optZero { color: color-mix(in oklab, var(--foreground) 50%, transparent); }
+
+@media (max-width: 767px) {
+  .frame { height: calc(100dvh - var(--dir-sticky, 42px)); }
+  .name { font-size: 14.5px; }
+  .table { font-size: 12.5px; }
+}

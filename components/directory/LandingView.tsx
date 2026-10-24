@@ -7,6 +7,8 @@ import { SiteFooter } from '@/components/site-footer'
 import { AboutLine, Crumbs, FirmListLinks, LandingLinks, Pager, PersonList, Verified } from '@/components/directory/parts'
 import { DirectoryCta, FaqList, FirmRanking, QuickFacts, SectionHead, type Fact } from '@/components/directory/intent-parts'
 import { LandingSearch } from '@/components/directory/LandingSearch'
+import { ViewToggle } from '@/components/directory/ViewToggle'
+import { tableHrefFrom } from '@/lib/directory/explore'
 import { firmPath, firmsOf } from '@/lib/directory/firms'
 import { firmListFor, firmListSet, firmListTitle, rankFirms } from '@/lib/directory/firm-lists'
 import { landingFaq, peoplePhrase } from '@/lib/directory/faq'
@@ -235,6 +237,19 @@ export async function LandingView(props: LandingProps) {
                   title={`${cap(who)}${where}, A to Z`}
                   aside={`${n(people.length)} ${paged.pages > 1 ? `· ${(paged.page - 1) * PAGE_SIZE + 1}–${(paged.page - 1) * PAGE_SIZE + paged.items.length}` : ''}`}
                 />
+                <div className="mb-1 mt-2 flex justify-end">
+                  <ViewToggle
+                    listHref={pageHref(path, paged.page)}
+                    tableHref={tableHrefFrom(`${hub}/explore`, {
+                      practice: key.topic?.kind === 'practice' ? key.topic.id : undefined,
+                      focus: key.topic?.kind === 'focus' ? key.topic.id : undefined,
+                      side: key.topic?.kind === 'side' ? key.topic.id : undefined,
+                      city: key.place?.kind === 'city' ? key.place.slug : undefined,
+                      state: key.place?.kind === 'state' ? key.place.state : undefined,
+                    })}
+                    current="list"
+                  />
+                </div>
                 <div id={listId}>
                   <PersonList people={paged.items} label={title} firms={[...tradeFirms.values()]} path={hub} />
                 </div>

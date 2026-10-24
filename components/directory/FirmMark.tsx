@@ -12,6 +12,8 @@ import type { FirmLogo } from '@/lib/directory/logos'
  */
 
 const SIZES = {
+  // A table cell (components/directory/explore): one line high.
+  xs: { w: 48, h: 24, pad: 2, type: 'text-[11px]' },
   // A row in a list: wide enough for a wordmark, short enough to sit beside two lines of text.
   sm: { w: 72, h: 36, pad: 4, type: 'text-[14px]' },
   md: { w: 112, h: 48, pad: 6, type: 'text-[18px]' },

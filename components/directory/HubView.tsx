@@ -7,6 +7,8 @@ import { AboutLine, Crumbs, EmptyDirectory, FirmListLinks, FirmsRail, LandingLin
 import { firmListSet } from '@/lib/directory/firm-lists'
 import { intentPage, parseIntent } from '@/lib/directory/intent-route'
 import { DirectoryBrowser } from '@/components/directory/DirectoryBrowser'
+import { ViewToggle } from '@/components/directory/ViewToggle'
+import { tableHrefFrom } from '@/lib/directory/explore'
 import { FirmMark } from '@/components/directory/FirmMark'
 import { DIR_H1, DIR_LEDE, PopularLinks } from '@/components/directory/hero'
 import { QuickFacts, type Fact } from '@/components/directory/intent-parts'
@@ -176,6 +178,9 @@ export async function HubView({ category: CATEGORY, searchParams: sp }: { catego
           ) : (
             <div className="grid gap-x-10 gap-y-8 lg:grid-cols-[minmax(0,1fr)_300px]">
               <section aria-label={`${CATEGORY.plural}, searchable`} className="min-w-0">
+                <div className="mb-1 flex justify-end">
+                  <ViewToggle listHref={PATH} tableHref={tableHrefFrom(`${PATH}/explore`, { ...f, level })} current="list" />
+                </div>
                 <DirectoryBrowser
                   path={PATH}
                   plural={CATEGORY.plural}
