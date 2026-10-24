@@ -30,7 +30,7 @@ import {
 } from '@/lib/directory/people'
 import { DIRECTORY_PATH, directoryEnabled, lowerNoun, type Category } from '@/lib/directory/taxonomy'
 import { firmPageHref } from '@/lib/news/firms'
-import { loadFirmPages } from '@/lib/news/firm-pages'
+import { peekFirmPages } from '@/lib/news/firm-pages'
 import { breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 
@@ -75,8 +75,9 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
   const p = await load(CATEGORY, slug)
   if (!p) notFound()
 
-  const [firmPages, everyone] = await Promise.all([loadFirmPages(), loadPeople(CATEGORY.id)])
-  const newsHref = firmPageHref(p.firm_name, firmPages)
+  // The news firm-page set is an extra: read only if it comes within a second (never wait on a cold build of it).
+  const [firmPages, everyone] = await Promise.all([peekFirmPages(1000), loadPeople(CATEGORY.id)])
+  const newsHref = firmPages ? firmPageHref(p.firm_name, firmPages) : null
   const office = primaryOffice(p)
   const city = office ? cityOf(office) : null
   const domain = displayDomain(p.firm_domain)

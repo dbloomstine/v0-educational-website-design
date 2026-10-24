@@ -58,3 +58,21 @@ export async function loadFirmPages(): Promise<ReadonlySet<string>> {
     return memo?.pages ?? new Set()
   }
 }
+
+/**
+ * The same set, without waiting for it (2026-10-24 night, for directory profiles): this server's copy when it has
+ * one, else whatever the load brings within `ms` (one second by default), else null and the page renders without
+ * the link. The load carries on in the background either way, so the next page finds it warm. Never throws.
+ */
+export async function peekFirmPages(ms = 1000): Promise<ReadonlySet<string> | null> {
+  if (memo && Date.now() - memo.at < MEMO_MS) return memo.pages
+  let timer: ReturnType<typeof setTimeout> | undefined
+  const late = new Promise<null>((r) => {
+    timer = setTimeout(() => r(null), ms)
+  })
+  try {
+    return await Promise.race([loadFirmPages(), late])
+  } finally {
+    clearTimeout(timer)
+  }
+}

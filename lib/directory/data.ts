@@ -105,9 +105,37 @@ export async function loadPersonBySlug(slug: string): Promise<Person | null> {
   }
 }
 
+// ── Every trade at once (2026-10-24 night) ──────────────────────────────────
+// The sitemap and the /directory summary need every trade. Five per-trade reads on a cold cache (during a build,
+// say) were five queries racing a small instance; this is one read of the same short columns, on its own key.
+
+async function readAllCards(): Promise<PersonCard[]> {
+  const db = getSupabaseAdmin()
+  const out: PersonCard[] = []
+  for (let from = 0; from < MAX_ROWS * 3; from += PAGE) {
+    const { data, error } = await db.from('directory_people').select(CARD_COLUMNS).eq('status', 'published').order('slug').range(from, from + PAGE - 1)
+    if (error) throw new Error(error.message)
+    out.push(...((data ?? []) as unknown as PersonCard[]))
+    if (!data || data.length < PAGE) break
+  }
+  return out
+}
+
+const cachedAllCards = unstable_cache(readAllCards, ['directory-people-all-v1'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
+
+/** Every live trade's public people, from one cached read. Never throws: an empty map when the database cannot answer. */
+export async function loadAllPeople(): Promise<Map<CategoryId, PersonCard[]>> {
+  const out = new Map<CategoryId, PersonCard[]>(LIVE_CATEGORIES.map((c) => [c.id, []]))
+  try {
+    for (const p of dedupePeople(await cachedAllCards())) if (isPublic(p)) out.get(p.category)?.push(p)
+  } catch (err) {
+    console.error('[directory] could not load everyone:', err instanceof Error ? err.message : err)
+  }
+  return out
+}
+
 async function buildSummary(): Promise<DirectorySummary> {
-  const lists = await Promise.all(LIVE_CATEGORIES.map(async (c) => [c.id, (await loadPeople(c.id)).filter((p) => isPublic(p))] as const))
-  return summarize(new Map(lists))
+  return summarize(await loadAllPeople())
 }
 
 const cachedSummary = unstable_cache(buildSummary, ['directory-summary-v2'], { revalidate: 3600, tags: [DIRECTORY_TAG] })

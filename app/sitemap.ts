@@ -10,10 +10,10 @@ import { archiveHref, loadArchiveSpan, loadSitemapStories, monthsBetween, type A
 import { GLOSSARY_TERMS, glossaryHref } from '@/lib/glossary/terms'
 import { storyPath } from '@/lib/news/story-path'
 import { DIRECTORY_PATH, LIVE_CATEGORIES, directoryEnabled } from '@/lib/directory/taxonomy'
-import { loadPeople } from '@/lib/directory/data'
+import { loadAllPeople } from '@/lib/directory/data'
 import { LANDING_MIN, allLandings } from '@/lib/directory/landing'
 import { firmPath, firmsIndexPath, firmsOf, firmsWithPages } from '@/lib/directory/firms'
-import { isIndexable, isPublic, profilePath } from '@/lib/directory/people'
+import { isIndexable, profilePath } from '@/lib/directory/people'
 
 /**
  * The sitemap, with HONEST dates.
@@ -175,8 +175,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // date is per person, not per page.
   const directoryPages: MetadataRoute.Sitemap = []
   if (directoryEnabled()) {
-    for (const category of LIVE_CATEGORIES) {
-      const people = (await loadPeople(category.id)).filter((p) => isPublic(p))
+    // One cached read for every trade (lib/directory/data.ts loadAllPeople), and never more than ten seconds of a
+    // build: a slow database leaves the directory out of this copy rather than failing the deploy.
+    const all = await Promise.race([loadAllPeople(), new Promise<null>((r) => setTimeout(() => r(null), 10_000))])
+    for (const category of all ? LIVE_CATEGORIES : []) {
+      const people = all!.get(category.id) ?? []
       if (!people.length) continue
       directoryPages.push({ url: `${baseUrl}/${category.slug}`, changeFrequency: 'weekly', priority: 0.6 })
       for (const l of allLandings(category, people)) directoryPages.push({ url: `${baseUrl}${l.path}`, changeFrequency: 'weekly', priority: 0.5 })

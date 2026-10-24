@@ -18,7 +18,9 @@ import { jsonLdScript } from '@/lib/news/story-jsonld'
 // count and its biggest city and practice pages. One small cached read
 // (lib/directory/data.ts loadDirectorySummary), kept an hour.
 
-export const revalidate = 3600
+// Rendered on request, never at build time (2026-10-24 night: a build that prerendered directory pages failed on
+// database timeouts). The data is one cached read (lib/directory/data.ts); the edge keeps the page (next.config.mjs).
+export const dynamic = 'force-dynamic'
 
 const INTRO =
   'The outside professionals who work on private funds in the US: fund lawyers, auditors, tax advisors, placement agents and fund finance bankers. Every profile is drawn from the firm’s own public bio page and links to it. Free to search; nobody pays to be listed or to rank.'

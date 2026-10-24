@@ -78,8 +78,9 @@ const fold = (s: string) =>
     .replace(/[^a-z]+/g, ' ')
     .trim()
 
-/** The key two rows for one person share: their name without initials or suffixes, and the firm. */
-export const personKey = (p: Pick<PersonCard, 'full_name' | 'firm_domain'>) => `${fold(p.full_name)}|${p.firm_domain.toLowerCase()}`
+/** The key two rows for one person share: their name without initials or suffixes, the firm, and the trade (a firm's
+ * auditor and its tax advisor of one name are two listings, each on its own trade's pages). */
+export const personKey = (p: Pick<PersonCard, 'full_name' | 'firm_domain'> & { category?: string }) => `${p.category ?? ''}|${fold(p.full_name)}|${p.firm_domain.toLowerCase()}`
 
 const richness = (p: PersonCard) => (p.claimed_at ? 100 : 0) + (p.title ? 4 : 0) + practiceAreas(p).length + p.offices.length
 

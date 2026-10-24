@@ -94,6 +94,7 @@ const nextConfig = {
         '/news',
         '/league-tables',
         '/firms',
+        '/directory',
         ...DIRECTORY_SLUGS.flatMap((d) => [`/${d}`, `/${d}/:a((?!people$)[^/]+)`, `/${d}/:a((?!people$)[^/]+)/:b`]),
       ].map((source) => ({
         source,
