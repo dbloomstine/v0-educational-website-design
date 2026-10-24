@@ -3,7 +3,7 @@
  * so the browser's bundle carries the matching code and not the logo manifest.
  */
 import { cityOf, officeLabel, type Office } from './places'
-import type { PersonCard } from './people'
+import { displayName, type PersonCard } from './people'
 import { displayTitle, seniority, visiblePractices } from './quality'
 import { logoFor, monogram } from './logos'
 import { FIRM_MIN, firmSlug, type FirmSummary } from './firms'
@@ -16,7 +16,7 @@ export function toRow(p: PersonCard): Row {
   const office = primary(p.offices)
   return {
     s: p.slug,
-    n: p.full_name,
+    n: displayName(p.full_name),
     t: displayTitle(p.title),
     f: p.firm_name,
     d: p.firm_domain.toLowerCase(),

@@ -9,11 +9,9 @@ import { LEAGUE_MARKETS } from '@/lib/news/league-markets'
 import { archiveHref, loadArchiveSpan, loadSitemapStories, monthsBetween, type ArchiveSpan, type SitemapStory } from '@/lib/news/archive'
 import { GLOSSARY_TERMS, glossaryHref } from '@/lib/glossary/terms'
 import { storyPath } from '@/lib/news/story-path'
-import { DIRECTORY_PATH, LIVE_CATEGORIES, directoryEnabled } from '@/lib/directory/taxonomy'
+import { LIVE_CATEGORIES, directoryEnabled } from '@/lib/directory/taxonomy'
 import { loadAllPeople } from '@/lib/directory/data'
-import { LANDING_MIN, allLandings } from '@/lib/directory/landing'
-import { firmPath, firmsIndexPath, firmsOf, firmsWithPages } from '@/lib/directory/firms'
-import { isIndexable, profilePath } from '@/lib/directory/people'
+import { directorySitemap } from '@/lib/directory/sitemap'
 
 /**
  * The sitemap, with HONEST dates.
@@ -169,27 +167,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }))
 
-  // The directory (2026-10-24; five trades since that night), only while it is switched on and only what is
-  // indexable: the index and each hub once they have people, the landing pages that exist (lib/directory/landing.ts:
-  // five people or more), and the profiles with substance (lib/directory/people.ts isIndexable). No dates: the crawl
-  // date is per person, not per page.
-  const directoryPages: MetadataRoute.Sitemap = []
+  // The directory (2026-10-24), only while it is switched on and only what is indexable (lib/directory/sitemap.ts):
+  // the index, its methodology page, each hub, the landing pages that are not near-copies of another, the firm pages
+  // with eight people or more and the profiles with substance. Each dated by its newest read or edit.
+  let directoryPages: MetadataRoute.Sitemap = []
   if (directoryEnabled()) {
     // One cached read for every trade (lib/directory/data.ts loadAllPeople), and never more than ten seconds of a
     // build: a slow database leaves the directory out of this copy rather than failing the deploy.
     const all = await Promise.race([loadAllPeople(), new Promise<null>((r) => setTimeout(() => r(null), 10_000))])
-    for (const category of all ? LIVE_CATEGORIES : []) {
-      const people = all!.get(category.id) ?? []
-      if (!people.length) continue
-      directoryPages.push({ url: `${baseUrl}/${category.slug}`, changeFrequency: 'weekly', priority: 0.6 })
-      for (const l of allLandings(category, people)) directoryPages.push({ url: `${baseUrl}${l.path}`, changeFrequency: 'weekly', priority: 0.5 })
-      // Firm pages (2026-10-24 night): indexed, and listed, from LANDING_MIN people (components/directory/FirmView.tsx).
-      const firms = firmsWithPages(firmsOf(people, category))
-      if (firms.length >= 2) directoryPages.push({ url: `${baseUrl}${firmsIndexPath(category)}`, changeFrequency: 'weekly', priority: 0.5 })
-      for (const f of firms) if (f.count >= LANDING_MIN) directoryPages.push({ url: `${baseUrl}${firmPath(category, f.slug)}`, changeFrequency: 'weekly', priority: 0.5 })
-      for (const p of people) if (isIndexable(p)) directoryPages.push({ url: `${baseUrl}${profilePath(p)}`, changeFrequency: 'monthly', priority: 0.4 })
-    }
-    if (directoryPages.length) directoryPages.unshift({ url: `${baseUrl}${DIRECTORY_PATH}`, changeFrequency: 'weekly', priority: 0.6 })
+    if (all) directoryPages = directorySitemap(all, LIVE_CATEGORIES).map((e) => ({ url: `${baseUrl}${e.path}`, lastModified: at(e.lastmod), changeFrequency: e.changeFrequency, priority: e.priority }))
   }
 
   return [...staticPages, ...sectionPages, ...glossaryPages, ...storyPages, ...archivePages, ...writtenPages, ...firmPages, ...collectionPages, ...eventPages, ...directoryPages]

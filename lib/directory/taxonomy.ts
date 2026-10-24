@@ -55,6 +55,8 @@ export interface Category {
   firmHint: [string, string]
   /** Built and switched on (2026-10-24 night: all five, Danny). */
   live: boolean
+  /** The hub's search title, the words people type (2026-10-24 SEO audit): "Private Fund Lawyers: 1,218 Partners…". */
+  searchName?: string
 }
 
 /** Strategies every trade works on: the fund types. */
@@ -75,6 +77,7 @@ export const CATEGORIES: Record<CategoryId, Category> = {
     searchHint: 'e.g. Smith, Kirkland, Boston',
     firmHint: ['Kirkland', 'Kirkland & Ellis LLP'],
     live: true,
+    searchName: 'Private Fund Lawyers',
   },
   fund_auditor: {
     id: 'fund_auditor',
@@ -90,6 +93,7 @@ export const CATEGORIES: Record<CategoryId, Category> = {
     searchHint: 'e.g. Smith, Deloitte, Chicago',
     firmHint: ['Deloitte', 'Deloitte & Touche LLP'],
     live: true,
+    searchName: 'Private Fund Auditors',
   },
   placement_agent: {
     id: 'placement_agent',
@@ -135,6 +139,7 @@ export const CATEGORIES: Record<CategoryId, Category> = {
     searchHint: 'e.g. Smith, KPMG, New York',
     firmHint: ['KPMG', 'KPMG LLP'],
     live: true,
+    searchName: 'Fund Tax Advisors and Accountants',
   },
 }
 
@@ -149,6 +154,9 @@ export const categoryBySlug = (slug: string): Category | null => Object.values(C
 
 /** The directory's index page. */
 export const DIRECTORY_PATH = '/directory'
+
+/** How the directory works: who is listed, from where, how often, and how to claim or remove (2026-10-24). */
+export const DIRECTORY_ABOUT_PATH = '/directory/about'
 
 /** "fund lawyers", "fund lawyer": the words in a sentence. */
 export const lowerNoun = (c: Category, n: number) => (n === 1 ? c.singular : c.plural).toLowerCase()

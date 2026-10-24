@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 import { ArrowUpRight } from 'lucide-react'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { ClaimedMark, Crumbs, LandingLinks, PracticeTags } from '@/components/directory/parts'
+import { AboutLine, ClaimedMark, Crumbs, LandingLinks, PracticeTags } from '@/components/directory/parts'
 import { FirmMark } from '@/components/directory/FirmMark'
 import { FIRM_MIN, firmPath, firmsOf, peopleAtFirm } from '@/lib/directory/firms'
 import { logoFor, monogram } from '@/lib/directory/logos'
@@ -13,11 +13,13 @@ import { displayTitle, seniority, visiblePractices } from '@/lib/directory/quali
 import { OUTBOUND } from '@/components/story/StoryLink'
 import { loadPeople, loadPerson } from '@/lib/directory/data'
 import { allLandings, type Landing } from '@/lib/directory/landing'
+import { peersOf } from '@/lib/directory/peers'
 import { cityOf, officeCity, officeLabel } from '@/lib/directory/places'
 import {
   asOf,
   bySurname,
   displayDomain,
+  displayName,
   firmUrl,
   isIndexable,
   isPublic,
@@ -29,7 +31,7 @@ import {
   safeHttpsUrl,
   type PersonCard,
 } from '@/lib/directory/people'
-import { DIRECTORY_PATH, directoryEnabled, lowerNoun, type Category } from '@/lib/directory/taxonomy'
+import { DIRECTORY_ABOUT_PATH, DIRECTORY_PATH, SENIOR_ONLY, directoryEnabled, lowerNoun, practiceLabel, practiceLower, type Category } from '@/lib/directory/taxonomy'
 import { firmPageHref } from '@/lib/news/firms'
 import { peekFirmPages } from '@/lib/news/firm-pages'
 import { breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
@@ -106,6 +108,9 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
   const rank = (x: PersonCard) => (x.offices.some((o) => myCities.has(cityOf(o)?.slug ?? '')) ? 0 : 2) + (seniority(x.title) === 'senior' ? 0 : 1)
   const colleagues = [...colleaguesAll].sort((a, b) => rank(a) - rank(b) || bySurname(a, b)).slice(0, 8)
 
+  // Partners in the same city with practices in common, at other firms (2026-10-24): who else a reader might call.
+  const peers = city ? peersOf(p, everyone, city.slug, CATEGORY) : []
+
   // Related pages that exist: the city, then each of the person's practices (in the city first, then anywhere).
   const landings = allLandings(CATEGORY, everyone)
   const related: Landing[] = []
@@ -117,12 +122,18 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
   }
   const cityPage = city ? landings.find((l) => !l.topic && l.place?.slug === city.slug) : undefined
 
+  const name = displayName(p.full_name)
   const crumbs = [
     { name: 'Directory', path: DIRECTORY_PATH },
     { name: CATEGORY.plural, path: `/${CATEGORY.slug}` },
     ...(cityPage && city ? [{ name: city.name, path: cityPage.path }] : []),
-    { name: p.full_name },
+    { name },
   ]
+  const ld = personJsonLd(p, {
+    sameAs: fromFirm ? bio : null,
+    knowsAbout: practices.map(practiceLabel),
+    description: profileDescription(p, CATEGORY),
+  })
 
   const firmName = firmHref ? (
     <Link href={firmHref} className="font-semibold text-foreground underline decoration-foreground/30 underline-offset-2 hover:decoration-foreground">
@@ -135,7 +146,7 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(personJsonLd(p)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(ld) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbJsonLd(crumbs)) }} />
 
       <main id="main-content" className="paper flex-1">
@@ -144,11 +155,11 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
             <Crumbs crumbs={crumbs} />
             <div className="mt-4 flex items-start gap-4 sm:gap-5">
               {photo ? (
-                <img src={photo} alt={p.full_name} width={96} height={96} className="h-[72px] w-[72px] shrink-0 rounded-[3px] border border-border object-cover sm:h-[96px] sm:w-[96px]" />
+                <img src={photo} alt={name} width={96} height={96} className="h-[72px] w-[72px] shrink-0 rounded-[3px] border border-border object-cover sm:h-[96px] sm:w-[96px]" />
               ) : null}
               <div className="min-w-0 flex-1">
                 <FirmMark name={p.firm_name} logo={logo} mono={monogram(p.firm_name)} size="md" eager decorative className="mb-3 sm:hidden" />
-                <h1 className="font-news text-[32px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[42px]">{p.full_name}</h1>
+                <h1 className="font-news text-[32px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[42px]">{name}</h1>
                 <p className="mt-2 font-ui text-[15.5px] leading-snug text-foreground/85">
                   {title ? (
                     <>
@@ -183,6 +194,14 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
                     </Link>
                   )}
                 </div>
+                {fetched && (
+                  <p className="mt-3 font-ui text-[12.5px] text-foreground/70">
+                    Last verified {fetched} against {fromFirm ? domain : `the ${prov.label.replace(/^./, (c) => c.toLowerCase())}`}.{' '}
+                    <Link href={DIRECTORY_ABOUT_PATH} className="underline underline-offset-2 hover:text-foreground">
+                      How we check
+                    </Link>
+                  </p>
+                )}
               </div>
               <div className="hidden shrink-0 sm:block">
                 {firmHref ? (
@@ -201,7 +220,7 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
           <div className="min-w-0 space-y-7">
             {p.missing_since && (
               <p role="note" className="border-l-4 border-[#E6B045] bg-card px-3 py-2 font-ui text-[13px] text-foreground/85">
-                This profile was not on {domain} when we last checked ({asOf(p.missing_since)}). {p.full_name} may have left the firm.
+                This profile was not on {domain} when we last checked ({asOf(p.missing_since)}). {name} may have left the firm.
               </p>
             )}
 
@@ -214,7 +233,7 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
                 {p.description && <p className="mt-2 whitespace-pre-line font-news text-[16.5px] leading-[1.5] text-foreground/85">{p.description}</p>}
                 {contact && (
                   <a href={contact} {...OUTBOUND} className="mt-3 inline-flex items-center gap-1 font-ui text-[13px] font-semibold text-foreground underline underline-offset-2">
-                    Contact {p.full_name.split(' ')[0]}
+                    Contact {name.split(' ')[0]}
                     <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
                     <span className="sr-only">(opens {displayDomain(new URL(contact).hostname)})</span>
                   </a>
@@ -314,12 +333,45 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
                     return (
                       <li key={c.id} className="border-b border-border/60 py-2">
                         <Link prefetch={false} href={profilePath(c)} className="hl font-news text-[16px] font-bold leading-snug text-foreground">
-                          {c.full_name}
+                          {displayName(c.full_name)}
                         </Link>
                         <p className="font-ui text-[12.5px] leading-snug text-foreground/70">{[displayTitle(c.title), o ? officeCity(o) : null].filter(Boolean).join(' · ')}</p>
                       </li>
                     )
                   })}
+                </ul>
+              </section>
+            )}
+
+            {city && peers.length >= 2 && (
+              <section aria-labelledby="peers">
+                <div className="flex items-baseline justify-between gap-3 border-t-2 border-foreground pt-1.5">
+                  <h2 id="peers" className="font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">
+                    {CATEGORY.plural} in {city.name} at other firms
+                  </h2>
+                  {cityPage && (
+                    <Link prefetch={false} href={cityPage.path} className="shrink-0 font-ui text-[12.5px] font-semibold text-foreground underline underline-offset-2">
+                      All {n(cityPage.count)}
+                    </Link>
+                  )}
+                </div>
+                <p className="mt-1 font-ui text-[12.5px] text-foreground/70">
+                  {SENIOR_ONLY.includes(CATEGORY.id) ? 'Partners' : 'People'} with practices in common with {name.split(' ')[0]}, most in common first.
+                </p>
+                <ul className="mt-1 grid sm:grid-cols-2 sm:gap-x-8">
+                  {peers.map(({ person: c, shared }) => (
+                    <li key={c.id} className="border-b border-border/60 py-2">
+                      <Link prefetch={false} href={profilePath(c)} className="hl font-news text-[16px] font-bold leading-snug text-foreground">
+                        {displayName(c.full_name)}
+                      </Link>
+                      <p className="font-ui text-[12.5px] leading-snug text-foreground/70">
+                        {c.firm_name}
+                        <span aria-hidden="true"> · </span>
+                        <span className="sr-only">Practices in common: </span>
+                        {shared.slice(0, 2).map(practiceLower).join(', ')}
+                      </p>
+                    </li>
+                  ))}
                 </ul>
               </section>
             )}
@@ -370,7 +422,7 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
               <Link href={`/directory/request?p=${p.slug}`} className="font-semibold text-foreground/90 underline underline-offset-2 hover:text-foreground">
                 Request a correction or removal
               </Link>
-              .
+              . <AboutLine />
             </p>
           </footer>
         </div>

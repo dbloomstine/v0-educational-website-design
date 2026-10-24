@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { BadgeCheck } from 'lucide-react'
 import { type PersonCard } from '@/lib/directory/people'
-import { practiceLabel } from '@/lib/directory/taxonomy'
+import { DIRECTORY_ABOUT_PATH, practiceLabel } from '@/lib/directory/taxonomy'
 import { pageHref, type Landing } from '@/lib/directory/landing'
 import { dedupePeople } from '@/lib/directory/quality'
 import { rowFirms, toRow } from '@/lib/directory/rows'
@@ -171,5 +171,27 @@ export function FirmsRail({ category, firms, title = 'Firms', max = 12, allHref 
         </Link>
       )}
     </section>
+  )
+}
+
+/** "Last verified Oct 21–24, 2026 against the firms' own sites": when this list's facts were last read. */
+export function Verified({ span, against = 'the firms’ own sites', className = '' }: { span: string | null; against?: string; className?: string }) {
+  if (!span) return null
+  return (
+    <p className={`font-ui text-[12.5px] text-foreground/70 ${className}`}>
+      Last verified {span} against {against}.{' '}
+      <Link href={DIRECTORY_ABOUT_PATH} className="underline underline-offset-2 hover:text-foreground">
+        How we check
+      </Link>
+    </p>
+  )
+}
+
+/** The link to the methodology page, for the foot of every directory page. */
+export function AboutLine() {
+  return (
+    <Link href={DIRECTORY_ABOUT_PATH} className="font-semibold text-foreground/85 underline underline-offset-2 hover:text-foreground">
+      How the directory works
+    </Link>
   )
 }

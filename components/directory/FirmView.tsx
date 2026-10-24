@@ -4,16 +4,16 @@ import { notFound } from 'next/navigation'
 import { ArrowUpRight } from 'lucide-react'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { Crumbs, FirmsRail, Pager, PersonList } from '@/components/directory/parts'
+import { AboutLine, Crumbs, FirmsRail, Pager, PersonList, Verified } from '@/components/directory/parts'
 import { FirmMark } from '@/components/directory/FirmMark'
 import { OUTBOUND } from '@/components/story/StoryLink'
 import { loadPeople } from '@/lib/directory/data'
 import { FIRM_MIN, firmPath, firmTitle, firmsIndexPath, firmsOf, firmsWithPages, peopleAtFirm, type FirmSummary } from '@/lib/directory/firms'
 import { LANDING_MIN, allLandings, itemListJsonLd, pageHref, paginate, parsePage, PAGE_SIZE } from '@/lib/directory/landing'
 import { logoFor, monogram } from '@/lib/directory/logos'
-import { displayDomain, firmUrl, listJoin } from '@/lib/directory/people'
-import { DIRECTORY_PATH, directoryEnabled, lowerNoun, type Category } from '@/lib/directory/taxonomy'
-import { breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
+import { displayDomain, firmUrl, listJoin, verifiedSpan } from '@/lib/directory/people'
+import { DIRECTORY_PATH, SENIOR_ONLY, directoryEnabled, lowerNoun, type Category } from '@/lib/directory/taxonomy'
+import { brandedTitle, breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 
 /**
@@ -21,7 +21,7 @@ import { jsonLdScript } from '@/lib/news/story-jsonld'
  * Crunchbase's organisation page and Chambers' firm page for structure: the mark and the name, what the firm's people
  * here add up to (how many, how senior, where, on what), the people themselves, and the firm's own website. Facts only, each one counted from the list below it.
  *
- * Exists with FIRM_MIN people or more; indexed with LANDING_MIN or more (a thin page is still useful to a reader who
+ * Exists with FIRM_MIN people or more; indexed with LANDING_MIN (eight since 2026-10-24) or more (a thin page is still useful to a reader who
  * clicked a firm's name, but not one to offer a search engine).
  */
 
@@ -54,9 +54,11 @@ export async function firmMetadata(category: Category, slug: string, page?: stri
   if (!b) return { title: 'Not found', robots: { index: false } }
   const description = metaDescription(firmSentence(category, b.firm))
   const at = pageHref(b.path, b.paged.page)
+  const pageNote = b.paged.page > 1 ? ` (page ${b.paged.page})` : ''
+  const counted = `${b.title}: ${n(b.firm.count)} ${SENIOR_ONLY.includes(category.id) ? 'Partners' : 'People'}`
   return {
-    title: `${b.title}${b.paged.page > 1 ? ` (page ${b.paged.page})` : ''}`,
-    description,
+    title: { absolute: brandedTitle(`${counted.length + pageNote.length <= 60 ? counted : b.title}${pageNote}`) },
+    description: b.paged.page > 1 ? metaDescription(`Page ${b.paged.page}: ${firmSentence(category, b.firm)}`) : description,
     alternates: { canonical: `${SITE}${at}` },
     robots: b.firm.count >= LANDING_MIN ? undefined : { index: false, follow: true },
     ...shareCard(`${b.title} | FundOpsHQ`, description, at),
@@ -109,6 +111,7 @@ export async function FirmView({ category, slug, page }: { category: Category; s
               <div className="min-w-0">
                 <h1 className="font-news text-[30px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[38px]">{title}</h1>
                 <p className="mt-2 max-w-[75ch] font-news text-[16.5px] leading-snug text-foreground/80">{firmSentence(category, firm)}</p>
+                <Verified span={verifiedSpan(b.people)} against={displayDomain(firm.domain)} className="mt-2" />
                 <p className="mt-2.5 flex flex-wrap gap-x-4 gap-y-1 font-ui text-[13px] font-semibold">
                   {site && (
                     <a href={site} {...OUTBOUND} className="inline-flex items-center gap-1 text-foreground underline underline-offset-2">
@@ -140,6 +143,9 @@ export async function FirmView({ category, slug, page }: { category: Category; s
                 <Link prefetch={false} href={`/${category.slug}?firm=${encodeURIComponent(firm.domain)}`} className="font-semibold text-foreground underline underline-offset-2">
                   Search and filter {firm.name}&rsquo;s {category.plural.toLowerCase()}
                 </Link>
+              </p>
+              <p className="mt-4 font-ui text-[12.5px] text-muted-foreground">
+                Facts from {displayDomain(firm.domain)}, in surname order. Nobody pays to be listed or to rank. <AboutLine />
               </p>
             </section>
 
@@ -196,7 +202,7 @@ export async function firmsIndexMetadata(category: Category): Promise<Metadata> 
   const b = await buildIndex(category)
   if (!b) return { title: 'Not found', robots: { index: false } }
   const description = metaDescription(`${b.firms.length} firms with ${category.plural.toLowerCase()} listed in the FundOpsHQ directory, each with its people, offices and practices. ${category.intro}`)
-  return { title: b.title, description, alternates: { canonical: `${SITE}${firmsIndexPath(category)}` }, ...shareCard(`${b.title} | FundOpsHQ`, description, firmsIndexPath(category)) }
+  return { title: { absolute: brandedTitle(`${b.title}: ${n(b.firms.length)} Firms`) }, description, alternates: { canonical: `${SITE}${firmsIndexPath(category)}` }, ...shareCard(`${b.title} | FundOpsHQ`, description, firmsIndexPath(category)) }
 }
 
 export async function FirmsIndexView({ category }: { category: Category }) {
@@ -214,6 +220,9 @@ export async function FirmsIndexView({ category }: { category: Category }) {
             <h1 className="mt-3 font-news text-[30px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[38px]">{b.title}</h1>
             <p className="mt-2 max-w-[72ch] font-news text-[16.5px] leading-snug text-foreground/80">
               {n(b.firms.length)} firms, biggest list first. Each page counts the firm&rsquo;s {category.plural.toLowerCase()} listed here, where they sit and what they work on.
+            </p>
+            <p className="mt-2 font-ui text-[12.5px] text-foreground/70">
+              <AboutLine />
             </p>
           </header>
         </div>

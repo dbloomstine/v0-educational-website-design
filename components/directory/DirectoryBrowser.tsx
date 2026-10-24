@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { BadgeCheck, Search, SlidersHorizontal, X } from 'lucide-react'
 import { FirmMark } from '@/components/directory/FirmMark'
 import { practiceLabel } from '@/lib/directory/taxonomy'
-import { QUERY_PAGE, SORTS, facetCounts, haystack, isSortKey, runQuery, type Query, type Row, type RowFirm, type SortKey } from '@/lib/directory/search'
+import { QUERY_PAGE, SORTS, facetCounts, haystack, isSortKey, normalQuery, queryHref, runQuery, type Query, type Row, type RowFirm, type SortKey } from '@/lib/directory/search'
 import { decodeIndex, type CompactIndex } from '@/lib/directory/search-index'
 
 /**
@@ -43,14 +43,7 @@ export interface BrowserProps {
 type Facet = 'practice' | 'city' | 'firm' | 'level'
 const FACETS: Facet[] = ['practice', 'city', 'firm', 'level']
 
-const clean = (q: Query) => Object.fromEntries(Object.entries(q).filter(([k, v]) => v && !(k === 'sort' && v === 'name'))) as Record<string, string>
-
-function href(path: string, q: Query, page: number) {
-  const sp = new URLSearchParams(clean(q))
-  if (page > 1) sp.set('page', String(page))
-  const s = sp.toString()
-  return s ? `${path}?${s}` : path
-}
+const href = queryHref
 
 const n = (x: number) => x.toLocaleString('en-US')
 
@@ -90,7 +83,10 @@ export function DirectoryBrowser(props: BrowserProps) {
   const typed = useDeferredValue(q)
   const hay = useMemo(() => (rows ? rows.map((r) => haystack(r, r.c)) : []), [rows])
   const query: Query = useMemo(() => ({ q: typed.trim(), practice, city, firm, level, sort }), [typed, practice, city, firm, level, sort])
-  const initialKey = useMemo(() => href(path, { ...props.initial, q: (props.initial.q ?? '').trim(), level: props.initial.level === 'senior' ? 'senior' : '' }, props.initial.page), [path, props.initial])
+  // The address the server rendered, built from the same fields as the live query and nothing else. (Until 2026-10-24
+  // it spread `initial` whole, page included, so "?page=1" never matched the live "" and a fresh hub sat faded on
+  // "Searching…" with aria-busy until the reader touched a control.)
+  const initialKey = useMemo(() => href(path, normalQuery(props.initial), props.initial.page), [path, props.initial])
   const changed = href(path, query, page) !== initialKey
   const shown = useMemo(() => (rows ? runQuery(rows, query, hay) : null), [rows, query, hay])
   const total = shown ? shown.length : props.first.total

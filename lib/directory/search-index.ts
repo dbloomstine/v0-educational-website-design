@@ -15,7 +15,7 @@
  */
 import type { Row } from './search'
 
-export const INDEX_VERSION = 1
+export const INDEX_VERSION = 2
 
 export type PersonTuple = [s: string, n: string, f: number, t: number, o: number, om: number, c: number[], p: number[], flags: number]
 

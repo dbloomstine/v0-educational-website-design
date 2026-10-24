@@ -13,9 +13,19 @@
  * an address resolves one way only. Profiles live apart, at
  * /fund-lawyers/people/<slug>, and cannot collide with any of this.
  *
- * Guardrails for Google's scaled-content policy:
- *   - a page EXISTS only with at least LANDING_MIN public people; below that it
- *     is a 404 and is not in the sitemap;
+ * Guardrails for Google's scaled-content and doorway policies (tightened
+ * 2026-10-24, the SEO audit: fewer, better pages):
+ *   - a page EXISTS only with at least LANDING_MIN public people at
+ *     LANDING_MIN_FIRMS firms or more; below that it is a 404 and is not in
+ *     the sitemap (a one-firm list is that firm's page);
+ *   - a state page exists only when it adds people beyond its main city: when
+ *     the biggest city holds STATE_CITY_MAX of its list or more, the state
+ *     address redirects to the city's (New York State was New York City, to
+ *     the person);
+ *   - a page whose list is more than OVERLAP_MAX the same as a broader page's
+ *     (the hub, its topic, its place) or a sibling's is kept for readers but
+ *     noindexed and left out of the sitemap: "Fund Formation Lawyers" when
+ *     82% of all fund lawyers list fund formation is the hub again;
  *   - it opens with a sentence computed from its own list (count, firms, the
  *     practices and cities that list actually holds), so no two read alike;
  *   - it links up to its parents and across to the nearby combinations that
@@ -23,9 +33,17 @@
  */
 import { CATEGORIES, CLIENT_FOCUS, PRACTICES, REPRESENTS, RESERVED_SLUGS, type Category, lowerNoun, practiceLower } from './taxonomy'
 import { PLACES, officeIn, placeBySlug, type Place } from './places'
-import { bySurname, cityTally, firmTally, isPublic, listJoin, practiceAreas, practiceTally, profilePath, type PersonCard } from './people'
+import { SENIOR_ONLY } from './taxonomy'
+import { bySurname, cityTally, displayName, firmTally, isPublic, lastChanged, listJoin, practiceAreas, practiceTally, profilePath, type PersonCard } from './people'
 
-export const LANDING_MIN = 5
+/** People a page needs to exist (5 until 2026-10-24). */
+export const LANDING_MIN = 8
+/** Firms a page needs to exist: one firm's people are its firm page. */
+export const LANDING_MIN_FIRMS = 2
+/** A state page exists only while its biggest city holds less than this share of its people. */
+export const STATE_CITY_MAX = 0.9
+/** A page this similar (people in common over people in either) to a broader page or a sibling is not indexed. */
+export const OVERLAP_MAX = 0.8
 export const PAGE_SIZE = 50
 
 export type Topic =
@@ -124,38 +142,213 @@ export interface Landing extends LandingKey {
   path: string
   title: string
   count: number
+  firms: number
+  /** Offered to search engines and listed in the sitemap. */
+  indexable: boolean
+  /** When not indexable: the page whose list it repeats (the hub's path for the hub). */
+  duplicateOf: string | null
+  /** The newest read or edit among its people (the sitemap's lastmod). */
+  lastmod: string | null
 }
 
-/**
- * Every page that exists for a category: each topic, each place and each
- * topic in each place, with at least LANDING_MIN people. Computed in one pass
- * over the list (a few thousand people, a few hundred keys).
- */
-export function allLandings(category: Category, people: PersonCard[], now = new Date()): Landing[] {
-  const live = people.filter((p) => isPublic(p, now))
-  const counts = new Map<string, number>()
-  const bump = (t: Topic | null, pl: Place | null) => {
-    const key = `${t?.slug ?? ''}|${pl?.slug ?? ''}`
-    counts.set(key, (counts.get(key) ?? 0) + 1)
+export interface LandingSet {
+  /** Every page that exists, biggest first. */
+  pages: Landing[]
+  /** State addresses that do not exist because their main city is the same list: where each one goes instead. */
+  merged: { path: string; into: string; share: number }[]
+}
+
+/** People in common over people in either: 1 for the same list, 0 for none in common. Both sorted ascending. */
+export function jaccard(a: number[], b: number[]): number {
+  let i = 0
+  let j = 0
+  let both = 0
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) {
+      both++
+      i++
+      j++
+    } else if (a[i] < b[j]) i++
+    else j++
   }
+  const either = a.length + b.length - both
+  return either ? both / either : 0
+}
+
+const intersect = (a: number[], b: number[]) => {
+  let i = 0
+  let j = 0
+  let both = 0
+  while (i < a.length && j < b.length) {
+    if (a[i] === b[j]) {
+      both++
+      i++
+      j++
+    } else if (a[i] < b[j]) i++
+    else j++
+  }
+  return both
+}
+
+const keyOf = (t: Topic | null, pl: Place | null) => `${t?.slug ?? ''}|${pl?.slug ?? ''}`
+
+/**
+ * Every page that exists for a category, and which of them are indexed (the rules in the header). One pass over the
+ * list for the members of every key, then the state rule, then the overlap rule. A few thousand people and a few
+ * hundred keys: milliseconds.
+ */
+export function landingSet(category: Category, people: PersonCard[], now = new Date()): LandingSet {
+  const live = people.filter((p) => isPublic(p, now))
+  const members = new Map<string, number[]>()
+  const firmsOf = new Map<string, Set<string>>()
   const topics0 = topicsFor(category)
-  for (const p of live) {
+  const add = (t: Topic | null, pl: Place | null, i: number, firm: string) => {
+    const key = keyOf(t, pl)
+    let m = members.get(key)
+    if (!m) members.set(key, (m = []))
+    m.push(i)
+    let f = firmsOf.get(key)
+    if (!f) firmsOf.set(key, (f = new Set()))
+    f.add(firm)
+  }
+  live.forEach((p, i) => {
+    const firm = p.firm_domain.toLowerCase()
     const topics = topics0.filter((t) => hasTopic(p, t))
     const places = PLACES.filter((pl) => p.offices.some((o) => officeIn(o, pl)))
-    for (const t of topics) bump(t, null)
+    for (const t of topics) add(t, null, i, firm)
     for (const pl of places) {
-      bump(null, pl)
-      for (const t of topics) bump(t, pl)
+      add(null, pl, i, firm)
+      for (const t of topics) add(t, pl, i, firm)
+    }
+  })
+
+  const big = (key: string) => (members.get(key)?.length ?? 0) >= LANDING_MIN && (firmsOf.get(key)?.size ?? 0) >= LANDING_MIN_FIRMS
+  const parse = (key: string): LandingKey => {
+    const [ts, ps] = key.split('|')
+    return { topic: ts ? topicBySlug(ts, category) : null, place: ps ? placeBySlug(ps) : null }
+  }
+
+  // The state rule: a state page is its biggest city again when that city holds STATE_CITY_MAX of its people.
+  const merged: LandingSet['merged'] = []
+  const exists = new Set<string>()
+  for (const key of members.keys()) {
+    if (!big(key)) continue
+    const k = parse(key)
+    if (k.place?.kind === 'state') {
+      const list = members.get(key)!
+      let best: { key: string; both: number } | null = null
+      for (const c of PLACES) {
+        if (c.kind !== 'city' || c.state !== k.place.state) continue
+        const ck = keyOf(k.topic, c)
+        const cl = members.get(ck)
+        if (!cl) continue
+        const both = intersect(list, cl)
+        if (!best || both > best.both) best = { key: ck, both }
+      }
+      if (best && best.both / list.length >= STATE_CITY_MAX) {
+        const into = parse(best.key)
+        if (big(best.key)) merged.push({ path: landingPath(category, k), into: landingPath(category, into), share: best.both / list.length })
+        continue
+      }
+    }
+    exists.add(key)
+  }
+
+  // The overlap rule. Each page against the broader pages it sits under, then against its siblings.
+  const dup = new Map<string, string>()
+  const hubPath = `/${category.slug}`
+  const all = live.map((_, i) => i)
+  const note = (key: string, of: string) => {
+    if (!dup.has(key)) dup.set(key, of)
+  }
+  for (const key of exists) {
+    const k = parse(key)
+    const list = members.get(key)!
+    // The hub: every page is inside it.
+    if (list.length / all.length > OVERLAP_MAX) note(key, hubPath)
+    const broader: string[] = []
+    if (k.topic && k.place) broader.push(keyOf(k.topic, null), keyOf(null, k.place))
+    for (const b of broader) if (exists.has(b) && jaccard(list, members.get(b)!) > OVERLAP_MAX) note(key, landingPath(category, parse(b)))
+    // A city and its state: the state is the extra page (people search the city), so the state gives way.
+    if (k.place?.kind === 'city') {
+      const sk = PLACES.find((x) => x.kind === 'state' && x.state === k.place!.state)
+      const skey = sk ? keyOf(k.topic, sk) : null
+      if (skey && exists.has(skey) && jaccard(list, members.get(skey)!) > OVERLAP_MAX) note(skey, landingPath(category, k))
     }
   }
-  const out: Landing[] = []
-  for (const [key, count] of counts) {
-    if (count < LANDING_MIN) continue
-    const [ts, ps] = key.split('|')
-    const k: LandingKey = { topic: ts ? topicBySlug(ts, category) : null, place: ps ? placeBySlug(ps) : null }
-    out.push({ ...k, path: landingPath(category, k), title: landingTitle(category, k), count })
+  // Siblings: the same place with another topic, or the same topic in another place. The smaller list gives way.
+  const keys = [...exists].sort((a, b) => members.get(b)!.length - members.get(a)!.length || a.localeCompare(b))
+  for (let x = 0; x < keys.length; x++) {
+    // Only against a page that is itself indexed: two pages that both repeat a third must not take each other out.
+    if (dup.has(keys[x])) continue
+    const a = parse(keys[x])
+    const la = members.get(keys[x])!
+    for (let y = x + 1; y < keys.length; y++) {
+      const lb = members.get(keys[y])!
+      if (lb.length / la.length <= OVERLAP_MAX) continue // cannot be that similar: b is too much smaller
+      const b = parse(keys[y])
+      const sameTopic = (a.topic?.slug ?? null) === (b.topic?.slug ?? null)
+      const samePlace = (a.place?.slug ?? null) === (b.place?.slug ?? null)
+      const sibling = (sameTopic && !samePlace && Boolean(a.place) && Boolean(b.place) && a.place!.kind === b.place!.kind) || (samePlace && !sameTopic && Boolean(a.topic) && Boolean(b.topic))
+      if (sibling && !dup.has(keys[y]) && jaccard(la, lb) > OVERLAP_MAX) note(keys[y], landingPath(category, a))
+    }
   }
-  return out.sort((a, b) => b.count - a.count || a.path.localeCompare(b.path))
+
+  const pages: Landing[] = []
+  for (const key of exists) {
+    const k = parse(key)
+    const list = members.get(key)!
+    const path = landingPath(category, k)
+    pages.push({
+      ...k,
+      path,
+      title: landingTitle(category, k),
+      count: list.length,
+      firms: firmsOf.get(key)!.size,
+      indexable: !dup.has(key),
+      duplicateOf: dup.get(key) ?? null,
+      lastmod: lastChanged(list.map((i) => live[i])),
+    })
+  }
+  pages.sort((a, b) => b.count - a.count || a.path.localeCompare(b.path))
+  merged.sort((a, b) => a.path.localeCompare(b.path))
+  return { pages, merged }
+}
+
+/** Every page that exists for a category (lib/directory/landing.ts landingSet), biggest first. */
+export function allLandings(category: Category, people: PersonCard[], now = new Date()): Landing[] {
+  return landingSet(category, people, now).pages
+}
+
+/** The pages offered to search engines: the sitemap's list. */
+export const indexableLandings = (category: Category, people: PersonCard[], now = new Date()) => allLandings(category, people, now).filter((l) => l.indexable)
+
+const count = (x: number) => x.toLocaleString('en-US')
+
+/** "Partners" for the trades listed at partner level only; "People" for the rest. */
+const whoWord = (category: Category, n: number) => (SENIOR_ONLY.includes(category.id) ? (n === 1 ? 'Partner' : 'Partners') : n === 1 ? 'Person' : 'People')
+
+/**
+ * The search title (2026-10-24): the words people type, then the count. "Fund Formation Lawyers in New York: 412
+ * Partners at 31 Firms". Shortened to fit a result (60 characters) by dropping the firms, then the count; the
+ * brand goes on only when it still fits (lib/seo.ts brandedTitle, applied by the caller).
+ */
+export function searchTitle(name: string | string[], category: Category, people: number, firms: number, absorbed?: { noun: string; count: number } | null, max = 60): string {
+  const names = Array.isArray(name) ? name : [name]
+  const who = `${count(people)} ${whoWord(category, people)}`
+  // The absorbed practice's words first (they are the search the noindexed page would have answered), then the firms.
+  const tries = [
+    ...(absorbed ? names.map((nm) => `${nm}: ${who}, ${count(absorbed.count)} in ${absorbed.noun}`) : []),
+    ...names.map((nm) => `${nm}: ${who} at ${count(firms)} ${firms === 1 ? 'Firm' : 'Firms'}`),
+    ...names.map((nm) => `${nm}: ${who}`),
+  ]
+  return tries.find((t) => t.length <= max) ?? names[names.length - 1]
+}
+
+/** The practice page a page stands in for (its near-copy, noindexed in its favour), for the title: the biggest. */
+export function absorbedTopic(path: string, pages: Landing[]): { noun: string; count: number } | null {
+  const l = pages.filter((x) => x.duplicateOf === path && x.topic?.kind === 'practice').sort((a, b) => b.count - a.count)[0]
+  return l?.topic?.kind === 'practice' ? { noun: l.topic.noun, count: l.count } : null
 }
 
 /**
@@ -256,7 +449,7 @@ export function itemListJsonLd(name: string, path: string, people: PersonCard[],
     '@type': 'ItemList',
     name,
     url: `${SITE}${path}`,
-    itemListElement: people.map((p, i) => ({ '@type': 'ListItem', position: offset + i + 1, url: `${SITE}${profilePath(p)}`, name: p.full_name })),
+    itemListElement: people.map((p, i) => ({ '@type': 'ListItem', position: offset + i + 1, url: `${SITE}${profilePath(p)}`, name: displayName(p.full_name) })),
   }
 }
 

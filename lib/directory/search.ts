@@ -176,3 +176,20 @@ export function facetCounts(rows: Row[], query: Query, facet: 'practice' | 'city
 }
 
 export const QUERY_PAGE = 50
+
+// ── Addresses ───────────────────────────────────────────────────────────────
+
+const cleanQuery = (q: Query) => Object.fromEntries(Object.entries(q).filter(([k, v]) => v && !(k === 'sort' && v === 'name'))) as Record<string, string>
+
+/** A view's address: its query (defaults left out) and its page. The browser's address and its "has it changed" test. */
+export function queryHref(path: string, q: Query, page: number): string {
+  const sp = new URLSearchParams(cleanQuery(q))
+  if (page > 1) sp.set('page', String(page))
+  const s = sp.toString()
+  return s ? `${path}?${s}` : path
+}
+
+/** The query the server rendered, in exactly the fields the browser's live query has (nothing else, no page). */
+export function normalQuery(i: Query): Query {
+  return { q: (i.q ?? '').trim(), practice: i.practice ?? '', city: i.city ?? '', firm: i.firm ?? '', level: i.level === 'senior' ? 'senior' : '', sort: isSortKey(i.sort) ? i.sort : 'name' }
+}

@@ -1,19 +1,19 @@
 import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, permanentRedirect } from 'next/navigation'
 import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { Crumbs, FirmsRail, LandingLinks, Pager, PersonList } from '@/components/directory/parts'
+import { AboutLine, Crumbs, FirmsRail, LandingLinks, Pager, PersonList, Verified } from '@/components/directory/parts'
 import { firmsOf } from '@/lib/directory/firms'
 import { loadPeople } from '@/lib/directory/data'
 import {
-  LANDING_MIN,
   PAGE_SIZE,
-  allLandings,
+  absorbedTopic,
   itemListJsonLd,
   landingCrumbs,
   landingDescription,
   landingPath,
+  landingSet,
   landingSentence,
   landingTitle,
   nearby,
@@ -22,9 +22,11 @@ import {
   parsePage,
   peopleFor,
   resolveLanding,
+  searchTitle,
 } from '@/lib/directory/landing'
+import { verifiedSpan } from '@/lib/directory/people'
 import { CATEGORIES, DIRECTORY_PATH, directoryEnabled, type Category } from '@/lib/directory/taxonomy'
-import { breadcrumbJsonLd, shareCard } from '@/lib/seo'
+import { brandedTitle, breadcrumbJsonLd, shareCard } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 
 /**
@@ -35,39 +37,52 @@ import { jsonLdScript } from '@/lib/news/story-jsonld'
  * /fund-lawyers/venture-funds/san-francisco, /fund-lawyers/emerging-managers,
  * /fund-lawyers/lp-counsel… (lib/directory/landing.ts says which exist).
  *
- * A page exists only with LANDING_MIN people; otherwise it is a 404. Its
+ * A page exists only as lib/directory/landing.ts landingSet says (eight people
+ * at two firms or more; a state only when it adds to its main city, else its
+ * address redirects there); a near-copy of a broader page is noindexed. Its
  * opening sentence is computed from its own list; it links to its parents
  * and the nearby pages that exist; it carries an ItemList and a
  * BreadcrumbList; page 2 onward is ?page=n, each its own canonical.
  */
 
-export type LandingProps = { segments: string[]; page?: string | string[]; category?: Category }
+/** `query`: the address carries something other than ?page (a filter or a tracking tag): canonical to the clean page, noindexed. */
+export type LandingProps = { segments: string[]; page?: string | string[]; category?: Category; query?: boolean }
 
 async function build({ segments, page: rawPage, category = CATEGORIES.fund_lawyer }: LandingProps) {
   if (!directoryEnabled() || !category.live) return null
   const key = resolveLanding(segments, category)
   if (!key) return null
   const all = await loadPeople(category.id)
+  const set = landingSet(category, all)
+  const path = landingPath(category, key)
+  const page = set.pages.find((l) => l.path === path)
+  if (!page) {
+    // A state whose list is its main city's: the city's page is the one address (2026-10-24).
+    const m = set.merged.find((x) => x.path === path)
+    return m ? { redirectTo: m.into } : null
+  }
   const people = peopleFor(all, key)
-  if (people.length < LANDING_MIN) return null
   const paged = paginate(people, parsePage(rawPage))
   if (!paged) return null
-  const path = landingPath(category, key)
   const title = landingTitle(category, key)
   const sentence = landingSentence(category, key, people)
-  return { category, key, all, people, paged, path, title, sentence }
+  return { category, key, all, set, landing: page, people, paged, path, title, sentence }
 }
 
 export async function landingMetadata(props: LandingProps): Promise<Metadata> {
   const b = await build(props)
-  if (!b) return { title: 'Not found', robots: { index: false } }
+  if (!b || 'redirectTo' in b) return { title: 'Not found', robots: { index: false } }
   const pageNote = b.paged.page > 1 ? ` (page ${b.paged.page})` : ''
-  const description = landingDescription(b.sentence)
+  const description = landingDescription(b.paged.page > 1 ? `Page ${b.paged.page}: ${b.sentence}` : b.sentence)
   const canonical = `https://fundopshq.com${pageHref(b.path, b.paged.page)}`
+  const search = searchTitle(b.title, b.category, b.people.length, b.landing.firms, absorbedTopic(b.path, b.set.pages), 60 - pageNote.length)
   return {
-    title: `${b.title}${pageNote}`,
+    title: { absolute: brandedTitle(`${search}${pageNote}`) },
     description,
     alternates: { canonical },
+    // A near-copy of a broader page (lib/directory/landing.ts OVERLAP_MAX), or the page under a query string: kept for
+    // readers, not offered to search engines.
+    robots: b.landing.indexable && !props.query ? undefined : { index: false, follow: true },
     ...shareCard(`${b.title} | FundOpsHQ`, description, pageHref(b.path, b.paged.page)),
   }
 }
@@ -75,8 +90,9 @@ export async function landingMetadata(props: LandingProps): Promise<Metadata> {
 export async function LandingView(props: LandingProps) {
   const b = await build(props)
   if (!b) notFound()
+  if ('redirectTo' in b) permanentRedirect(b.redirectTo as string)
   const { category, key, paged, path, title, sentence, people } = b
-  const landings = allLandings(category, b.all)
+  const landings = b.set.pages
   const near = nearby(key, landings)
   const firms = firmsOf(people, category)
   // Firm pages are counted on the whole trade (a firm with one person here may have ten elsewhere).
@@ -96,6 +112,7 @@ export async function LandingView(props: LandingProps) {
             <Crumbs crumbs={crumbs} />
             <h1 className="mt-3 font-news text-[30px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[38px]">{title}</h1>
             <p className="mt-2 max-w-[75ch] font-news text-[16.5px] leading-snug text-foreground/75">{sentence}</p>
+            <Verified span={verifiedSpan(people)} className="mt-2" />
             <p className="mt-3 font-ui text-[12.5px] text-muted-foreground">
               Looking for someone in particular?{' '}
               <Link href={`/${category.slug}`} className="font-semibold text-foreground/85 underline underline-offset-2 hover:text-foreground">
@@ -122,7 +139,7 @@ export async function LandingView(props: LandingProps) {
               <Pager path={path} page={paged.page} pages={paged.pages} />
               <p className="mt-6 max-w-[70ch] font-ui text-[12.5px] leading-relaxed text-muted-foreground">
                 Who is listed here comes from each firm&rsquo;s own public bio page: the practices, clients and offices it names. Nobody pays to be
-                listed or to rank.
+                listed or to rank. <AboutLine />
               </p>
             </section>
 
@@ -139,3 +156,6 @@ export async function LandingView(props: LandingProps) {
     </div>
   )
 }
+
+/** Anything in the address besides ?page: a filter, a search or a tag (the page itself ignores it). */
+export const hasQuery = (sp: Record<string, unknown>) => Object.keys(sp).some((k) => k !== 'page')

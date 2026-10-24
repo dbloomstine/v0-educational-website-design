@@ -10,8 +10,8 @@ import { FirmMark } from '@/components/directory/FirmMark'
 import { FIRM_MIN, firmPath } from '@/lib/directory/firms'
 import { logoFor, monogram } from '@/lib/directory/logos'
 import { listJoin } from '@/lib/directory/people'
-import { CATEGORIES, DIRECTORY_PATH, directoryEnabled, lowerNoun } from '@/lib/directory/taxonomy'
-import { breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
+import { CATEGORIES, DIRECTORY_ABOUT_PATH, DIRECTORY_PATH, LIVE_CATEGORIES, directoryEnabled, lowerNoun } from '@/lib/directory/taxonomy'
+import { brandedTitle, breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 
 // /directory (2026-10-24 night): the five trades in one place, each with its
@@ -22,8 +22,11 @@ import { jsonLdScript } from '@/lib/news/story-jsonld'
 // database timeouts). The data is one cached read (lib/directory/data.ts); the edge keeps the page (next.config.mjs).
 export const dynamic = 'force-dynamic'
 
-const INTRO =
-  'The outside professionals who work on private funds in the US: fund lawyers, auditors, tax advisors, placement agents and fund finance bankers. Every profile is drawn from the firm’s own public bio page and links to it. Free to search; nobody pays to be listed or to rank.'
+// The live trades only (2026-10-24: placement agents and fund finance bankers are hidden; the title, H1 and intro named
+// them). Built from LIVE_CATEGORIES, so a trade switched on or off changes the words with it.
+const TRADES = listJoin(LIVE_CATEGORIES.map((c) => c.plural.replace(/^Fund /, '').toLowerCase()))
+const HEADING = `Fund ${listJoin(LIVE_CATEGORIES.map((c) => c.plural.replace(/^Fund /, '')))}`
+const INTRO = `The partners who work on private funds in the US, at the law and accounting firms: fund ${TRADES}. Every profile is drawn from the firm’s own public bio page and links to it. Free to search; nobody pays to be listed or to rank.`
 
 const n = (x: number) => x.toLocaleString('en-US')
 
@@ -33,8 +36,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const total = s.categories.reduce((a, c) => a + c.count, 0)
   const description = metaDescription(INTRO)
   return {
-    title: 'Directory of Fund Lawyers, Auditors and Placement Agents',
-    description,
+    // "Directory of Fund Lawyers, Auditors and Tax Advisors" (52): the brand goes on only if it fits in 60.
+    title: { absolute: brandedTitle(`Directory of ${HEADING}`) },
+    description: total ? metaDescription(`${n(total)} partners listed. ${INTRO}`) : description,
     alternates: { canonical: `https://fundopshq.com${DIRECTORY_PATH}` },
     // Nothing to offer a search engine until someone is listed.
     robots: total ? undefined : { index: false, follow: true },
@@ -128,9 +132,9 @@ export default async function DirectoryIndex() {
         <div className="band">
           <header className="mx-auto max-w-[1080px] px-4 pb-5 pt-5 lg:px-6">
             <Crumbs crumbs={[{ name: 'Directory' }]} />
-            <h1 className="mt-3 font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">Directory</h1>
+            <h1 className="mt-3 font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">{HEADING}</h1>
             <p className="mt-2 max-w-[75ch] font-news text-[16.5px] leading-snug text-foreground/80">{INTRO}</p>
-            {total > 0 && <p className="mt-1.5 font-ui text-[13px] font-semibold text-foreground/80">{n(total)} people listed.</p>}
+            {total > 0 && <p className="mt-1.5 font-ui text-[13px] font-semibold text-foreground/80">{n(total)} partners listed.</p>}
           </header>
         </div>
         <div className="mx-auto max-w-[1080px] space-y-8 px-4 pb-12 pt-6 lg:px-6">
@@ -148,8 +152,12 @@ export default async function DirectoryIndex() {
           <p className="max-w-[70ch] border-t border-border pt-4 font-ui text-[12.5px] leading-relaxed text-muted-foreground">
             Lists are in surname order, never ranked. Anyone listed can claim their profile with a work email at their firm, correct it or have
             it removed from the link on their page. See{' '}
-            <Link href="/privacy#directory" className="underline underline-offset-2">
+            <Link href={DIRECTORY_ABOUT_PATH} className="underline underline-offset-2">
               how the directory works
+            </Link>{' '}
+            and the{' '}
+            <Link href="/privacy#directory" className="underline underline-offset-2">
+              privacy notice
             </Link>
             .
           </p>

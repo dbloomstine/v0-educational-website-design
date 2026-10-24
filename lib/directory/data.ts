@@ -50,7 +50,7 @@ async function readCards(category: CategoryId): Promise<PersonCard[]> {
   return out
 }
 
-const cachedCards = unstable_cache(readCards, ['directory-people-v2'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
+const cachedCards = unstable_cache(readCards, ['directory-people-v3'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
 
 export async function loadPeople(category: CategoryId): Promise<PersonCard[]> {
   try {
@@ -74,7 +74,7 @@ async function readPerson(category: CategoryId, slug: string): Promise<Person | 
   return (data as unknown as Person | null) ?? null
 }
 
-const cachedPerson = unstable_cache(readPerson, ['directory-person-v3'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
+const cachedPerson = unstable_cache(readPerson, ['directory-person-v4'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
 
 export async function loadPerson(category: CategoryId, slug: string): Promise<Person | null> {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length > 120) return null
@@ -92,7 +92,7 @@ async function readPersonAny(slug: string): Promise<Person | null> {
   return (data as unknown as Person | null) ?? null
 }
 
-const cachedPersonAny = unstable_cache(readPersonAny, ['directory-person-any-v3'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
+const cachedPersonAny = unstable_cache(readPersonAny, ['directory-person-any-v4'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
 
 /** A published profile in any trade, by slug (slugs are unique across trades): the claim and request forms. */
 export async function loadPersonBySlug(slug: string): Promise<Person | null> {
@@ -121,7 +121,7 @@ async function readAllCards(): Promise<PersonCard[]> {
   return out
 }
 
-const cachedAllCards = unstable_cache(readAllCards, ['directory-people-all-v2'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
+const cachedAllCards = unstable_cache(readAllCards, ['directory-people-all-v3'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
 
 /** Every live trade's public people, from one cached read. Never throws: an empty map when the database cannot answer. */
 export async function loadAllPeople(): Promise<Map<CategoryId, PersonCard[]>> {
@@ -138,7 +138,7 @@ async function buildSummary(): Promise<DirectorySummary> {
   return summarize(await loadAllPeople())
 }
 
-const cachedSummary = unstable_cache(buildSummary, ['directory-summary-v3'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
+const cachedSummary = unstable_cache(buildSummary, ['directory-summary-v4'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
 
 const EMPTY: DirectorySummary = { categories: LIVE_CATEGORIES.map((c) => ({ id: c.id, count: 0, firms: 0, cities: [], topics: [] })), firms: [] }
 

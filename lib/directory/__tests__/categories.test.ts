@@ -16,6 +16,9 @@ const B = CATEGORIES.fund_finance_banker
 const L = CATEGORIES.fund_lawyer
 
 const many = (n: number, over: Parameters<typeof card>[0]) => Array.from({ length: n }, () => card(over))
+/** n people at two firms, alternating (a page needs two firms since 2026-10-24). */
+const spread = (n: number, over: Parameters<typeof card>[0]) =>
+  Array.from({ length: n }, (_, i) => card({ ...over, ...(i % 2 ? { firm_name: 'Ropes & Gray', firm_domain: 'ropesgray.com' } : {}) }))
 
 describe('the five trades', () => {
   it('are the three live trades (placement agents and bankers hidden 2026-10-24), each at its own address', () => {
@@ -98,18 +101,21 @@ describe('routing per trade', () => {
   })
 })
 
-describe('the five-people rule, per trade', () => {
-  it('builds a page at five people and not at four', () => {
-    const four = many(4, { category: 'fund_auditor', offices: [{ city: 'Chicago', state: 'IL' }], practice_areas: ['hedge_funds'] })
-    expect(allLandings(A, four).map((l) => l.path)).toEqual([])
-    const five = [...four, card({ category: 'fund_auditor', offices: [{ city: 'Chicago', state: 'IL' }], practice_areas: ['hedge_funds'] })]
-    const paths = allLandings(A, five).map((l) => l.path)
-    expect(paths).toEqual(expect.arrayContaining(['/fund-auditors/chicago', '/fund-auditors/illinois', '/fund-auditors/hedge-funds', '/fund-auditors/hedge-funds/chicago']))
-    expect(allLandings(A, five).every((l) => l.count >= LANDING_MIN)).toBe(true)
+describe('the page minimum, per trade (eight people at two firms since 2026-10-24)', () => {
+  it(`builds a page at ${LANDING_MIN} people at two firms, not at one fewer, and not at one firm`, () => {
+    const at = (n: number, two = true) =>
+      (two ? spread : many)(n, { category: 'fund_auditor', firm_name: 'Deloitte', firm_domain: 'deloitte.com', offices: [{ city: 'Chicago', state: 'IL' }], practice_areas: ['hedge_funds'] })
+    expect(allLandings(A, at(LANDING_MIN - 1)).map((l) => l.path)).toEqual([])
+    expect(allLandings(A, at(LANDING_MIN, false)).map((l) => l.path)).toEqual([])
+    const paths = allLandings(A, at(LANDING_MIN)).map((l) => l.path)
+    expect(paths).toEqual(expect.arrayContaining(['/fund-auditors/chicago', '/fund-auditors/hedge-funds', '/fund-auditors/hedge-funds/chicago']))
+    // Illinois is Chicago again: no page of its own.
+    expect(paths).not.toContain('/fund-auditors/illinois')
+    expect(allLandings(A, at(LANDING_MIN)).every((l) => l.count >= LANDING_MIN && l.firms >= 2)).toBe(true)
   })
 
   it('never builds a page the trade has no topic for, whatever the data says', () => {
-    const people = many(8, { category: 'fund_auditor', represents: ['investors_lps'], practice_areas: ['fund_formation'] })
+    const people = spread(8, { category: 'fund_auditor', represents: ['investors_lps'], practice_areas: ['fund_formation'] })
     const paths = allLandings(A, people).map((l) => l.path)
     expect(paths.some((p) => p.includes('lp-counsel') || p.includes('fund-formation'))).toBe(false)
     expect(paths).toContain('/fund-auditors/new-york')
@@ -123,7 +129,7 @@ describe('the five-people rule, per trade', () => {
 
 describe('the directory summary', () => {
   const lists = new Map<CategoryId, ReturnType<typeof card>[]>([
-    ['fund_lawyer', many(7, {})],
+    ['fund_lawyer', spread(8, {})],
     ['fund_auditor', [...many(5, { category: 'fund_auditor', firm_name: 'Deloitte', firm_domain: 'deloitte.com', offices: [{ city: 'Boston', state: 'MA' }] }), card({ category: 'fund_auditor', firm_name: 'Kirkland & Ellis', firm_domain: 'kirkland.com' })]],
   ])
   const s = summarize(lists)
@@ -131,17 +137,18 @@ describe('the directory summary', () => {
   it('counts every trade, with its biggest pages', () => {
     expect(s.categories.map((c) => c.id)).toEqual(LIVE_CATEGORIES.map((c) => c.id))
     const law = s.categories.find((c) => c.id === 'fund_lawyer')!
-    expect(law).toMatchObject({ count: 7, firms: 1 })
-    expect(law.cities[0]).toMatchObject({ path: '/fund-lawyers/new-york', title: 'Fund Lawyers in New York', count: 7 })
+    expect(law).toMatchObject({ count: 8, firms: 2 })
+    expect(law.cities[0]).toMatchObject({ path: '/fund-lawyers/new-york', title: 'Fund Lawyers in New York', count: 8 })
     expect(law.topics[0]).toMatchObject({ path: '/fund-lawyers/fund-formation' })
-    expect(s.categories.find((c) => c.id === 'fund_auditor')!.cities.map((c) => c.path)).toEqual(['/fund-auditors/boston'])
+    // Six auditors, one firm in Boston: no city page (eight people at two firms or more).
+    expect(s.categories.find((c) => c.id === 'fund_auditor')!.cities.map((c) => c.path)).toEqual([])
     expect(s.categories.find((c) => c.id === 'placement_agent')).toBeUndefined()
   })
 
   it('cross-links a firm page to its people in each trade', () => {
     const hrefOf = (name: string) => (name.startsWith('Kirkland') ? '/firm/kirkland-ellis' : name === 'Deloitte' ? '/firm/deloitte' : null)
     expect(firmDirectoryLinks(s, '/firm/kirkland-ellis', hrefOf)).toEqual([
-      { category: 'fund_lawyer', href: '/fund-lawyers?firm=kirkland.com', label: 'Fund Lawyers', count: 7 },
+      { category: 'fund_lawyer', href: '/fund-lawyers?firm=kirkland.com', label: 'Fund Lawyers', count: 4 },
       { category: 'fund_auditor', href: '/fund-auditors?firm=kirkland.com', label: 'Fund Auditors', count: 1 },
     ])
     expect(firmDirectoryLinks(s, '/firm/deloitte', hrefOf)).toHaveLength(1)

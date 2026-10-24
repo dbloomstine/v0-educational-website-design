@@ -43,6 +43,9 @@ export interface PersonCard {
   missing_since: string | null
   claimed_at: string | null
   claimed_practice_areas: string[] | null
+  /** When the facts were last read from the source (the "last verified" date), and when the row last changed. */
+  fetched_at?: string | null
+  updated_at?: string | null
 }
 
 /** A whole profile. */
@@ -50,7 +53,6 @@ export interface Person extends PersonCard {
   bar_admissions: string[]
   education: Education[]
   bio_url: string | null
-  fetched_at: string | null
   headline: string | null
   description: string | null
   photo_url: string | null
@@ -63,10 +65,12 @@ export interface Person extends PersonCard {
   office_source_url?: string | null
 }
 
+// fetched_at and updated_at joined the card on 2026-10-24 (the sitemap's lastmod and the "last verified" lines); the
+// cache keys in lib/directory/data.ts moved with them.
 export const CARD_COLUMNS =
-  'id, category, slug, full_name, title, firm_name, firm_domain, offices, practice_areas, client_focus, represents, status, missing_since, claimed_at, claimed_practice_areas'
+  'id, category, slug, full_name, title, firm_name, firm_domain, offices, practice_areas, client_focus, represents, status, missing_since, claimed_at, claimed_practice_areas, fetched_at, updated_at'
 
-export const PERSON_COLUMNS = `${CARD_COLUMNS}, bar_admissions, education, bio_url, fetched_at, headline, description, photo_url, contact_url, notable, source, source_url, city_basis, office_source_url`
+export const PERSON_COLUMNS = `${CARD_COLUMNS}, bar_admissions, education, bio_url, headline, description, photo_url, contact_url, notable, source, source_url, city_basis, office_source_url`
 
 /** A person whose bio page has gone stays listed (with a note) this long, then drops out. */
 export const MISSING_GRACE_DAYS = 30
@@ -103,9 +107,44 @@ export function primaryOffice(p: Pick<PersonCard, 'offices'>): Office | null {
 
 const SUFFIX = /^(jr|sr|ii|iii|iv|esq|pc|p c|phd|llm|jd)\.?$/i
 
-/** "Smith" from "Jane A. Smith Jr.": the name a directory sorts on. */
+/** A nickname in brackets: one short word ("(Jeff)", "(Chip)"), not "(she/her)" or "(Ret.)". */
+const NICK = /^\(([A-Z][A-Za-z'’-]{1,14})\)$/
+
+/**
+ * A name as the pages show it (2026-10-24): a nickname a firm's page put at the end moves next to the first name,
+ * where a reader expects it. "Jeffrey Misher (Jeff)" → "Jeffrey (Jeff) Misher"; "Charles (Chip) Parsons" is left alone.
+ */
+export function displayName(full: string): string {
+  const parts = full.trim().split(/\s+/)
+  const last = parts[parts.length - 1] ?? ''
+  if (parts.length >= 3 && NICK.test(last) && !parts.slice(0, -1).some((x) => x.startsWith('('))) return [parts[0], last, ...parts.slice(1, -1)].join(' ')
+  return parts.join(' ')
+}
+
+/** The nickname, if the name carries one: "Jeff". */
+export function nickname(full: string): string | null {
+  for (const x of full.trim().split(/\s+/)) {
+    const m = NICK.exec(x)
+    if (m) return m[1]
+  }
+  return null
+}
+
+/** "Jeff Misher": the name with the nickname in place of the first name, for structured data's alternateName. */
+export function alternateName(full: string): string | null {
+  const nick = nickname(full)
+  if (!nick) return null
+  const rest = full.trim().split(/\s+/).filter((x) => !x.startsWith('('))
+  return rest.length >= 2 ? `${nick} ${rest[rest.length - 1]}` : null
+}
+
+/** "Smith" from "Jane A. Smith Jr." (or "Jane Smith (Janie)"): the name a directory sorts on. */
 export function surname(full: string): string {
-  const parts = full.trim().split(/\s+/).map((x) => x.replace(/,$/, ''))
+  const parts = full
+    .trim()
+    .split(/\s+/)
+    .filter((x) => !/^\(.*\)$/.test(x))
+    .map((x) => x.replace(/,$/, ''))
   while (parts.length > 1 && SUFFIX.test(parts[parts.length - 1])) parts.pop()
   return parts[parts.length - 1] ?? full
 }
@@ -196,7 +235,8 @@ export function countsSentence(people: PersonCard[], category: Category = CATEGO
 export function profileTitle(p: PersonCard, category: Category = CATEGORIES[p.category]): string {
   const office = primaryOffice(p)
   const city = office ? officeCity(office) : ''
-  const who = p.title?.trim() ? `${p.full_name}, ${p.title.trim()} at ${p.firm_name}` : `${p.full_name}, ${p.firm_name}`
+  const name = displayName(p.full_name)
+  const who = p.title?.trim() ? `${name}, ${p.title.trim()} at ${p.firm_name}` : `${name}, ${p.firm_name}`
   return `${who}: ${category.singular}${city ? ` in ${city}` : ''}`
 }
 
@@ -210,7 +250,7 @@ export function profileDescription(p: PersonCard, category: Category = CATEGORIE
   const role = p.title?.trim() ? `${p.title.trim()} at ${p.firm_name}` : `at ${p.firm_name}`
   const where = office ? ` in ${officeLabel(office)}` : ''
   const what = areas.length ? `, working on ${listJoin(areas)}` : ''
-  return `${p.full_name} is a ${category.singular.toLowerCase()}, ${role}${where}${what}. Profile from the firm's own public bio, with a link to it.`
+  return `${displayName(p.full_name)} is a ${category.singular.toLowerCase()}, ${role}${where}${what}. Profile from the firm's own public bio, with a link to it.`
 }
 
 export function listJoin(xs: string[]): string {
@@ -236,15 +276,33 @@ export function displayDomain(domain: string): string {
   return domain.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/.*$/, '')
 }
 
-/** schema.org Person: only what the page itself shows. */
-export function personJsonLd(p: Person) {
+export interface PersonLdExtras {
+  /** The firm's own bio page for the person (only a firm page: a speaker page or a press release is not "the same person"). */
+  sameAs?: string | null
+  /** The practice areas the page shows, as labels. */
+  knowsAbout?: string[]
+  /** The page's one-sentence description. */
+  description?: string | null
+}
+
+/**
+ * schema.org Person: only what the page itself shows (2026-10-24: sameAs, knowsAbout, description and the nickname as
+ * alternateName added). A claimed profile is the person's own page on the site, so it is wrapped in a ProfilePage with
+ * its dates (Google: ProfilePage is for a person affiliated with the site; an unclaimed listing is not).
+ */
+export function personJsonLd(p: Person, extras: PersonLdExtras = {}) {
   const office = primaryOffice(p)
   const firmSite = firmUrl(p.firm_domain)
-  return {
-    '@context': 'https://schema.org',
+  const url = `${SITE}${profilePath(p)}`
+  const alt = alternateName(p.full_name)
+  const sameAs = safeHttpsUrl(extras.sameAs)
+  const knows = (extras.knowsAbout ?? []).filter(Boolean)
+  const person = {
     '@type': 'Person',
-    name: p.full_name,
-    url: `${SITE}${profilePath(p)}`,
+    name: displayName(p.full_name),
+    ...(alt ? { alternateName: alt } : {}),
+    url,
+    ...(extras.description ? { description: extras.description } : {}),
     ...(p.title?.trim() ? { jobTitle: p.title.trim() } : {}),
     worksFor: { '@type': 'Organization', name: p.firm_name, ...(firmSite ? { url: firmSite } : {}) },
     ...(office
@@ -257,7 +315,58 @@ export function personJsonLd(p: Person) {
           },
         }
       : {}),
+    ...(knows.length ? { knowsAbout: knows } : {}),
+    ...(sameAs ? { sameAs: [sameAs] } : {}),
   }
+  if (!p.claimed_at) return { '@context': 'https://schema.org', ...person }
+  const modified = latest([p.updated_at, p.claimed_at])
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    url,
+    ...(p.claimed_at ? { dateCreated: p.claimed_at } : {}),
+    ...(modified ? { dateModified: modified } : {}),
+    mainEntity: person,
+  }
+}
+
+/** The newest of some timestamps (ISO strings compare as dates), or null. */
+export function latest(xs: (string | null | undefined)[]): string | null {
+  let best: string | null = null
+  let bestT = -Infinity
+  for (const x of xs) {
+    if (!x) continue
+    const t = new Date(x).getTime()
+    if (!Number.isNaN(t) && t > bestT) {
+      bestT = t
+      best = x
+    }
+  }
+  return best
+}
+
+/** When a page about these people last changed: the newest read or edit among them (the sitemap's lastmod). */
+export function lastChanged(people: Pick<PersonCard, 'fetched_at' | 'updated_at'>[]): string | null {
+  return latest(people.flatMap((p) => [p.fetched_at, p.updated_at]))
+}
+
+/**
+ * When a list's facts were last read from the firms' sites, as the page says it: "Oct 24, 2026", or a span
+ * "Oct 21–24, 2026" / "Sep 30 – Oct 24, 2026" when the reads were on different days. Null with no dates.
+ */
+export function verifiedSpan(people: Pick<PersonCard, 'fetched_at'>[]): string | null {
+  const ts = people.map((p) => (p.fetched_at ? new Date(p.fetched_at).getTime() : NaN)).filter((t) => !Number.isNaN(t))
+  if (!ts.length) return null
+  const lo = new Date(Math.min(...ts))
+  const hi = new Date(Math.max(...ts))
+  const part = (d: Date, o: Intl.DateTimeFormatOptions) => d.toLocaleDateString('en-US', { ...o, timeZone: 'America/New_York' })
+  const a = part(lo, { month: 'short', day: 'numeric', year: 'numeric' })
+  const b = part(hi, { month: 'short', day: 'numeric', year: 'numeric' })
+  if (a === b) return b
+  const sameYear = part(lo, { year: 'numeric' }) === part(hi, { year: 'numeric' })
+  const sameMonth = sameYear && part(lo, { month: 'short' }) === part(hi, { month: 'short' })
+  if (sameMonth) return `${part(lo, { month: 'short' })} ${part(lo, { day: 'numeric' })}–${part(hi, { day: 'numeric' })}, ${part(hi, { year: 'numeric' })}`
+  return sameYear ? `${part(lo, { month: 'short', day: 'numeric' })} – ${b}` : `${a} – ${b}`
 }
 
 /** "Oct 24, 2026" from a timestamp, or null. */
