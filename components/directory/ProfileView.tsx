@@ -4,25 +4,31 @@ import { notFound } from 'next/navigation'
 import { ArrowUpRight } from 'lucide-react'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { ClaimedMark, Crumbs, PracticeTags } from '@/components/directory/parts'
+import { ClaimedMark, Crumbs, LandingLinks, PracticeTags } from '@/components/directory/parts'
+import { FirmMark } from '@/components/directory/FirmMark'
+import { FIRM_MIN, firmPath, firmsOf, peopleAtFirm } from '@/lib/directory/firms'
+import { logoFor, monogram } from '@/lib/directory/logos'
+import { displayTitle, seniority, visiblePractices } from '@/lib/directory/quality'
 import { OUTBOUND } from '@/components/story/StoryLink'
 import { loadPeople, loadPerson } from '@/lib/directory/data'
-import { LANDING_MIN, landingPath, peopleFor } from '@/lib/directory/landing'
-import { cityOf, officeLabel } from '@/lib/directory/places'
+import { allLandings, type Landing } from '@/lib/directory/landing'
+import { cityOf, officeCity, officeLabel } from '@/lib/directory/places'
 import {
   asOf,
+  bySurname,
   displayDomain,
+  firmUrl,
   isIndexable,
   isPublic,
   personJsonLd,
-  practiceAreas,
   primaryOffice,
   profileDescription,
   profilePath,
   profileTitle,
   safeHttpsUrl,
+  type PersonCard,
 } from '@/lib/directory/people'
-import { DIRECTORY_PATH, directoryEnabled, type Category } from '@/lib/directory/taxonomy'
+import { DIRECTORY_PATH, directoryEnabled, lowerNoun, type Category } from '@/lib/directory/taxonomy'
 import { firmPageHref } from '@/lib/news/firms'
 import { loadFirmPages } from '@/lib/news/firm-pages'
 import { breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
@@ -55,31 +61,70 @@ export async function profileMetadata(CATEGORY: Category, slug: string): Promise
   }
 }
 
-const factHead = 'font-ui text-[11px] font-bold uppercase tracking-[0.12em] text-foreground/60'
+const factHead = 'font-ui text-[12px] font-bold uppercase tracking-[0.1em] text-foreground/70'
+const sectionHead = 'border-t-2 border-foreground pt-1.5 font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground'
+const n = (x: number) => x.toLocaleString('en-US')
 
+/**
+ * The profile (2026-10-24 night, redesigned). Structure from Chambers and Partners' lawyer pages (the firm's mark and
+ * name beside the person, practice areas up top, offices, then the detail) and Crunchbase's people pages (the "works
+ * at" card, colleagues at the same organisation, where to go next). The source of every fact sits right under the
+ * facts: the firm's domain, the date it was read, and the link to the bio itself.
+ */
 export async function ProfileView({ category: CATEGORY, slug }: { category: Category; slug: string }) {
   const p = await load(CATEGORY, slug)
   if (!p) notFound()
 
   const [firmPages, everyone] = await Promise.all([loadFirmPages(), loadPeople(CATEGORY.id)])
-  const firmHref = firmPageHref(p.firm_name, firmPages)
+  const newsHref = firmPageHref(p.firm_name, firmPages)
   const office = primaryOffice(p)
   const city = office ? cityOf(office) : null
   const domain = displayDomain(p.firm_domain)
   const fetched = asOf(p.fetched_at)
   const bio = safeHttpsUrl(p.bio_url) ?? (p.bio_url?.startsWith('http://') ? p.bio_url : null)
-  const colleagues = everyone.filter((x) => x.firm_domain === p.firm_domain && x.id !== p.id && isPublic(x)).length
-  const cityPage = city && peopleFor(everyone, { topic: null, place: { kind: 'city', slug: city.slug, name: city.name, state: city.state } }).length >= LANDING_MIN
   const claimed = Boolean(p.claimed_at)
   const photo = claimed ? safeHttpsUrl(p.photo_url) : null
   const contact = claimed ? safeHttpsUrl(p.contact_url) : null
+  const title = displayTitle(p.title)
+  const practices = visiblePractices(p, CATEGORY)
+
+  const firms = firmsOf(everyone, CATEGORY)
+  const firm = firms.find((f) => f.domain === p.firm_domain.toLowerCase()) ?? null
+  const firmHref = firm && firm.count >= FIRM_MIN ? firmPath(CATEGORY, firm.slug) : null
+  const logo = logoFor(p.firm_domain)
+  const site = firmUrl(p.firm_domain)
+
+  // Colleagues: the same firm, the same city first, then partners and MDs, then A to Z.
+  const myCities = new Set(p.offices.flatMap((o) => (cityOf(o) ? [cityOf(o)!.slug] : [])))
+  const colleaguesAll = peopleAtFirm(everyone, p.firm_domain).filter((x) => x.id !== p.id)
+  const rank = (x: PersonCard) => (x.offices.some((o) => myCities.has(cityOf(o)?.slug ?? '')) ? 0 : 2) + (seniority(x.title) === 'senior' ? 0 : 1)
+  const colleagues = [...colleaguesAll].sort((a, b) => rank(a) - rank(b) || bySurname(a, b)).slice(0, 8)
+
+  // Related pages that exist: the city, then each of the person's practices (in the city first, then anywhere).
+  const landings = allLandings(CATEGORY, everyone)
+  const related: Landing[] = []
+  const add = (l?: Landing) => l && !related.some((r) => r.path === l.path) && related.push(l)
+  if (city) add(landings.find((l) => !l.topic && l.place?.slug === city.slug))
+  for (const id of practices) {
+    if (city) add(landings.find((l) => l.topic?.kind === 'practice' && l.topic.id === id && l.place?.slug === city.slug))
+    add(landings.find((l) => l.topic?.kind === 'practice' && l.topic.id === id && !l.place))
+  }
+  const cityPage = city ? landings.find((l) => !l.topic && l.place?.slug === city.slug) : undefined
 
   const crumbs = [
     { name: 'Directory', path: DIRECTORY_PATH },
     { name: CATEGORY.plural, path: `/${CATEGORY.slug}` },
-    ...(cityPage && city ? [{ name: city.name, path: landingPath(CATEGORY, { topic: null, place: { kind: 'city', slug: city.slug, name: city.name, state: city.state } }) }] : []),
+    ...(cityPage && city ? [{ name: city.name, path: cityPage.path }] : []),
     { name: p.full_name },
   ]
+
+  const firmName = firmHref ? (
+    <Link href={firmHref} className="font-semibold text-foreground underline decoration-foreground/30 underline-offset-2 hover:decoration-foreground">
+      {p.firm_name}
+    </Link>
+  ) : (
+    <span className="font-semibold text-foreground">{p.firm_name}</span>
+  )
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -89,141 +134,222 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
 
       <main id="main-content" className="paper flex-1">
         <div className="band">
-          <header className="mx-auto max-w-[920px] px-4 pb-6 pt-5 lg:px-6">
+          <header className="mx-auto max-w-[1080px] px-4 pb-6 pt-5 lg:px-6">
             <Crumbs crumbs={crumbs} />
-            <div className="mt-4 flex items-start gap-4">
-              {photo && (
-                <img src={photo} alt={p.full_name} width={88} height={88} className="h-[88px] w-[88px] shrink-0 rounded-sm border border-border object-cover" />
-              )}
-              <div className="min-w-0">
-                <p className="font-ui text-[10.5px] font-bold uppercase tracking-[0.14em] text-amber-400">{CATEGORY.singular}</p>
-                <h1 className="mt-1 font-news text-[32px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[40px]">{p.full_name}</h1>
-                <p className="mt-2 font-ui text-[15px] leading-snug text-foreground/80">
-                  {p.title && <span>{p.title} · </span>}
-                  {firmHref ? (
-                    <Link href={firmHref} className="font-semibold text-foreground underline decoration-foreground/30 underline-offset-2 hover:decoration-foreground">
-                      {p.firm_name}
-                    </Link>
+            <div className="mt-4 flex items-start gap-4 sm:gap-5">
+              {photo ? (
+                <img src={photo} alt={p.full_name} width={96} height={96} className="h-[72px] w-[72px] shrink-0 rounded-[3px] border border-border object-cover sm:h-[96px] sm:w-[96px]" />
+              ) : null}
+              <div className="min-w-0 flex-1">
+                <FirmMark name={p.firm_name} logo={logo} mono={monogram(p.firm_name)} size="md" eager decorative className="mb-3 sm:hidden" />
+                <h1 className="font-news text-[32px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[42px]">{p.full_name}</h1>
+                <p className="mt-2 font-ui text-[15.5px] leading-snug text-foreground/85">
+                  {title ? (
+                    <>
+                      {title}, {firmName}
+                    </>
                   ) : (
-                    <span className="font-semibold text-foreground">{p.firm_name}</span>
+                    firmName
                   )}
-                  {office && <span> · {officeLabel(office)}</span>}
                 </p>
-                <PracticeTags areas={practiceAreas(p)} className="mt-2.5" />
-                <div className="mt-3">
+                {p.offices.length > 0 && <p className="mt-0.5 font-ui text-[14.5px] leading-snug text-foreground/75">{p.offices.map(officeLabel).join(' · ')}</p>}
+                <PracticeTags areas={practices} className="mt-3" />
+                <div className="mt-4 flex flex-wrap items-center gap-2.5">
+                  {bio && (
+                    <a
+                      href={bio}
+                      {...OUTBOUND}
+                      rel="nofollow noopener noreferrer"
+                      className="inline-flex h-10 items-center gap-1.5 rounded-[3px] bg-foreground px-3.5 font-ui text-[13.5px] font-semibold text-background hover:bg-foreground/85"
+                    >
+                      Full bio on {domain}
+                      <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                    </a>
+                  )}
                   {claimed ? (
                     <ClaimedMark />
                   ) : (
                     <Link
                       href={`/directory/claim?p=${p.slug}`}
-                      className="font-ui text-[13px] font-semibold text-foreground/85 underline decoration-foreground/30 underline-offset-2 hover:text-foreground"
+                      className="inline-flex h-10 items-center rounded-[3px] border border-foreground/35 bg-card px-3.5 font-ui text-[13.5px] font-semibold text-foreground hover:border-foreground"
                     >
                       Is this you? Claim this profile
                     </Link>
                   )}
                 </div>
               </div>
+              <div className="hidden shrink-0 sm:block">
+                {firmHref ? (
+                  <Link href={firmHref} aria-label={`${p.firm_name}: all ${CATEGORY.plural.toLowerCase()} at the firm`}>
+                    <FirmMark name={p.firm_name} logo={logo} mono={monogram(p.firm_name)} size="lg" eager className="border border-border bg-card" />
+                  </Link>
+                ) : (
+                  <FirmMark name={p.firm_name} logo={logo} mono={monogram(p.firm_name)} size="lg" eager className="border border-border bg-card" />
+                )}
+              </div>
             </div>
           </header>
         </div>
 
-        <div className="mx-auto max-w-[920px] space-y-7 px-4 pb-12 pt-6 lg:px-6">
-          {p.missing_since && (
-            <p role="note" className="border-l-4 border-[#E6B045] bg-card px-3 py-2 font-ui text-[13px] text-foreground/80">
-              This profile was not on {domain} when we last checked ({asOf(p.missing_since)}). {p.full_name} may have left the firm.
-            </p>
-          )}
+        <div className="mx-auto grid max-w-[1080px] gap-x-10 gap-y-8 px-4 pb-12 pt-6 lg:grid-cols-[minmax(0,1fr)_300px] lg:px-6">
+          <div className="min-w-0 space-y-7">
+            {p.missing_since && (
+              <p role="note" className="border-l-4 border-[#E6B045] bg-card px-3 py-2 font-ui text-[13px] text-foreground/85">
+                This profile was not on {domain} when we last checked ({asOf(p.missing_since)}). {p.full_name} may have left the firm.
+              </p>
+            )}
 
-          {claimed && (p.headline || p.description || contact) && (
-            <section aria-labelledby="own-words" className="panel panel-lead">
-              <h2 id="own-words" className={factHead}>
-                In their own words
+            {claimed && (p.headline || p.description || contact) && (
+              <section aria-labelledby="own-words" className="panel panel-lead">
+                <h2 id="own-words" className={factHead}>
+                  In their own words
+                </h2>
+                {p.headline && <p className="mt-2 font-news text-[19px] font-semibold leading-snug text-foreground">{p.headline}</p>}
+                {p.description && <p className="mt-2 whitespace-pre-line font-news text-[16.5px] leading-[1.5] text-foreground/85">{p.description}</p>}
+                {contact && (
+                  <a href={contact} {...OUTBOUND} className="mt-3 inline-flex items-center gap-1 font-ui text-[13px] font-semibold text-foreground underline underline-offset-2">
+                    Contact {p.full_name.split(' ')[0]}
+                    <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    <span className="sr-only">(opens {displayDomain(new URL(contact).hostname)})</span>
+                  </a>
+                )}
+              </section>
+            )}
+
+            <section aria-labelledby="from-firm">
+              <h2 id="from-firm" className={sectionHead}>
+                From the firm&rsquo;s bio
               </h2>
-              {p.headline && <p className="mt-2 font-news text-[19px] font-semibold leading-snug text-foreground">{p.headline}</p>}
-              {p.description && <p className="mt-2 whitespace-pre-line font-news text-[16.5px] leading-[1.5] text-foreground/80">{p.description}</p>}
-              {contact && (
-                <a href={contact} {...OUTBOUND} className="mt-3 inline-flex items-center gap-1 font-ui text-[13px] font-semibold text-foreground underline underline-offset-2">
-                  Contact {p.full_name.split(' ')[0]}
-                  <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                  <span className="sr-only">(opens {displayDomain(new URL(contact).hostname)})</span>
-                </a>
-              )}
+              <dl className="mt-3 grid gap-x-8 gap-y-4 sm:grid-cols-2">
+                {p.offices.length > 0 && (
+                  <div>
+                    <dt className={factHead}>{p.offices.length === 1 ? 'Office' : 'Offices'}</dt>
+                    <dd className="mt-1 font-news text-[16.5px] leading-snug text-foreground">{p.offices.map(officeLabel).join('; ')}</dd>
+                  </div>
+                )}
+                {p.bar_admissions.length > 0 && (
+                  <div>
+                    <dt className={factHead}>{CATEGORY.credentialLabel}</dt>
+                    <dd className="mt-1 font-news text-[16.5px] leading-snug text-foreground">{p.bar_admissions.join(', ')}</dd>
+                  </div>
+                )}
+                {p.education.length > 0 && (
+                  <div className="sm:col-span-2">
+                    <dt className={factHead}>Education</dt>
+                    <dd className="mt-1">
+                      <ul className="font-news text-[16.5px] leading-snug text-foreground">
+                        {p.education.map((e, i) => (
+                          <li key={i}>
+                            {e.school}
+                            {e.degree ? `, ${e.degree}` : ''}
+                            {e.year ? ` (${e.year})` : ''}
+                          </li>
+                        ))}
+                      </ul>
+                    </dd>
+                  </div>
+                )}
+              </dl>
+              <p className="mt-4 font-ui text-[13px] leading-relaxed text-foreground/75">
+                Source: {domain}
+                {fetched ? `, as of ${fetched}` : ''}.{' '}
+                {bio && (
+                  <a href={bio} {...OUTBOUND} rel="nofollow noopener noreferrer" className="inline-flex items-center gap-0.5 font-semibold text-foreground underline underline-offset-2">
+                    View the bio
+                    <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                  </a>
+                )}
+              </p>
             </section>
-          )}
 
-          <section aria-labelledby="from-firm">
-            <div className="flex flex-wrap items-baseline justify-between gap-2 border-t-2 border-foreground pt-1.5">
-              <h2 id="from-firm" className="font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">
-                From {domain}
-                {fetched ? <span className="font-semibold normal-case tracking-normal text-muted-foreground"> (as of {fetched})</span> : null}
-              </h2>
-              {bio && (
-                <a href={bio} {...OUTBOUND} rel="nofollow noopener noreferrer" className="inline-flex items-center gap-1 font-ui text-[13px] font-semibold text-foreground underline underline-offset-2">
-                  Full bio on {domain}
-                  <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                </a>
-              )}
-            </div>
-            <dl className="mt-2 grid gap-x-8 gap-y-4 sm:grid-cols-2">
-              {p.offices.length > 0 && (
-                <div>
-                  <dt className={factHead}>{p.offices.length === 1 ? 'Office' : 'Offices'}</dt>
-                  <dd className="mt-1 font-news text-[16px] leading-snug text-foreground">{p.offices.map(officeLabel).join('; ')}</dd>
-                </div>
-              )}
-              {p.bar_admissions.length > 0 && (
-                <div>
-                  <dt className={factHead}>{CATEGORY.credentialLabel}</dt>
-                  <dd className="mt-1 font-news text-[16px] leading-snug text-foreground">{p.bar_admissions.join(', ')}</dd>
-                </div>
-              )}
-              {p.education.length > 0 && (
-                <div className="sm:col-span-2">
-                  <dt className={factHead}>Education</dt>
-                  <dd className="mt-1">
-                    <ul className="font-news text-[16px] leading-snug text-foreground">
-                      {p.education.map((e, i) => (
-                        <li key={i}>
-                          {e.school}
-                          {e.degree ? `, ${e.degree}` : ''}
-                          {e.year ? ` (${e.year})` : ''}
-                        </li>
-                      ))}
-                    </ul>
-                  </dd>
-                </div>
-              )}
-            </dl>
-          </section>
+            {claimed && p.notable.length > 0 && (
+              <section aria-labelledby="notable">
+                <h2 id="notable" className={sectionHead}>
+                  Notable matters <span className="font-semibold normal-case tracking-normal text-foreground/70">(self-reported)</span>
+                </h2>
+                <ul className="mt-2 list-disc space-y-1 pl-5 font-news text-[16px] leading-snug text-foreground/85">
+                  {p.notable.map((x, i) => (
+                    <li key={i}>
+                      {x.text}
+                      {x.year ? ` (${x.year})` : ''}
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            )}
 
-          {claimed && p.notable.length > 0 && (
-            <section aria-labelledby="notable">
-              <h2 id="notable" className="border-t-2 border-foreground pt-1.5 font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">
-                Notable matters <span className="font-semibold normal-case tracking-normal text-muted-foreground">(self-reported)</span>
+            {colleagues.length >= 2 && (
+              <section aria-labelledby="colleagues">
+                <div className="flex items-baseline justify-between gap-3 border-t-2 border-foreground pt-1.5">
+                  <h2 id="colleagues" className="font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">
+                    Colleagues at {p.firm_name}
+                  </h2>
+                  {firmHref && colleaguesAll.length > colleagues.length && (
+                    <Link prefetch={false} href={firmHref} className="shrink-0 font-ui text-[12.5px] font-semibold text-foreground underline underline-offset-2">
+                      All {n(colleaguesAll.length + 1)}
+                    </Link>
+                  )}
+                </div>
+                <ul className="mt-1 grid sm:grid-cols-2 sm:gap-x-8">
+                  {colleagues.map((c) => {
+                    const o = primaryOffice(c)
+                    return (
+                      <li key={c.id} className="border-b border-border/60 py-2">
+                        <Link prefetch={false} href={profilePath(c)} className="hl font-news text-[16px] font-bold leading-snug text-foreground">
+                          {c.full_name}
+                        </Link>
+                        <p className="font-ui text-[12.5px] leading-snug text-foreground/70">{[displayTitle(c.title), o ? officeCity(o) : null].filter(Boolean).join(' · ')}</p>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </section>
+            )}
+          </div>
+
+          <aside className="min-w-0 space-y-6" aria-label="The firm and related pages">
+            <section aria-labelledby="firm-card" className="panel px-4 py-4">
+              <h2 id="firm-card" className="sr-only">
+                The firm
               </h2>
-              <ul className="mt-2 list-disc space-y-1 pl-5 font-news text-[16px] leading-snug text-foreground/85">
-                {p.notable.map((n, i) => (
-                  <li key={i}>
-                    {n.text}
-                    {n.year ? ` (${n.year})` : ''}
+              <p className=" font-news text-[18px] font-semibold leading-snug text-foreground">{p.firm_name}</p>
+              {firm && (
+                <p className="mt-0.5 font-ui text-[13px] text-foreground/75">
+                  {n(firm.count)} {lowerNoun(CATEGORY, firm.count)} listed{firm.cities.length > 1 ? ` in ${n(firm.cities.length)} cities` : ''}
+                </p>
+              )}
+              <ul className="mt-3 space-y-1.5 font-ui text-[13px] font-semibold">
+                {firmHref && (
+                  <li>
+                    <Link prefetch={false} href={firmHref} className="text-foreground underline underline-offset-2">
+                      {CATEGORY.plural} at {p.firm_name}
+                    </Link>
                   </li>
-                ))}
+                )}
+                {newsHref && (
+                  <li>
+                    <Link href={newsHref} className="text-foreground underline underline-offset-2">
+                      {p.firm_name} in the news
+                    </Link>
+                  </li>
+                )}
+                {site && (
+                  <li>
+                    <a href={site} {...OUTBOUND} className="inline-flex items-center gap-1 text-foreground underline underline-offset-2">
+                      {domain}
+                      <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </a>
+                  </li>
+                )}
               </ul>
             </section>
-          )}
+            <LandingLinks title="Related pages" items={related.slice(0, 6)} />
+          </aside>
 
-          {colleagues > 0 && (
-            <p className="font-ui text-[13.5px] text-foreground/80">
-              <Link prefetch={false} href={`/${CATEGORY.slug}?firm=${encodeURIComponent(p.firm_domain)}`} className="font-semibold text-foreground underline underline-offset-2">
-                {colleagues.toLocaleString('en-US')} other {colleagues === 1 ? CATEGORY.singular.toLowerCase() : CATEGORY.plural.toLowerCase()} at {p.firm_name}
-              </Link>
-            </p>
-          )}
-
-          <footer className="border-t border-border pt-4 font-ui text-[12.5px] leading-relaxed text-muted-foreground">
+          <footer className="border-t border-border pt-4 font-ui text-[12.5px] leading-relaxed text-foreground/70 lg:col-span-2">
             <p>
               FundOpsHQ lists facts the firm publishes on its own site and links to the source. No ranking, no reviews, and nobody pays to be listed.{' '}
-              <Link href={`/directory/request?p=${p.slug}`} className="font-semibold text-foreground/85 underline underline-offset-2 hover:text-foreground">
+              <Link href={`/directory/request?p=${p.slug}`} className="font-semibold text-foreground/90 underline underline-offset-2 hover:text-foreground">
                 Request a correction or removal
               </Link>
               .

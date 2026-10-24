@@ -5,6 +5,7 @@
  */
 import { allLandings } from './landing'
 import { firmTally, type PersonCard } from './people'
+import { firmSlug, firmsOf } from './firms'
 import { CATEGORIES, LIVE_CATEGORIES, type CategoryId } from './taxonomy'
 
 export interface SummaryLink {
@@ -30,6 +31,8 @@ export interface SummaryFirm {
   domain: string
   category: CategoryId
   count: number
+  /** Its page in the directory: /<trade>/firms/<slug> (lib/directory/firms.ts). */
+  slug: string
 }
 
 export interface DirectorySummary {
@@ -55,7 +58,8 @@ export function summarize(lists: ReadonlyMap<CategoryId, PersonCard[]>, now = ne
       cities: landings.filter((l) => !l.topic && l.place?.kind === 'city').slice(0, top).map(link),
       topics: landings.filter((l) => l.topic && !l.place).slice(0, top).map(link),
     })
-    for (const t of tally) firms.push({ name: t.label, domain: t.key, category: c.id, count: t.count })
+    const slugs = new Map(firmsOf(people, CATEGORIES[c.id], now).map((f) => [f.domain, f.slug]))
+    for (const t of tally) firms.push({ name: t.label, domain: t.key, category: c.id, count: t.count, slug: slugs.get(t.key.toLowerCase()) ?? firmSlug(t.label) })
   }
   return { categories, firms }
 }

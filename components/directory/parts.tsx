@@ -1,9 +1,15 @@
 import Link from 'next/link'
 import { BadgeCheck } from 'lucide-react'
-import { officeLabel } from '@/lib/directory/places'
-import { practiceAreas, primaryOffice, profilePath, type PersonCard } from '@/lib/directory/people'
+import { type PersonCard } from '@/lib/directory/people'
 import { practiceLabel } from '@/lib/directory/taxonomy'
 import { pageHref, type Landing } from '@/lib/directory/landing'
+import { dedupePeople } from '@/lib/directory/quality'
+import { rowFirms, toRow } from '@/lib/directory/rows'
+import { firmPath, type FirmSummary } from '@/lib/directory/firms'
+import { logoFor, monogram } from '@/lib/directory/logos'
+import type { Category } from '@/lib/directory/taxonomy'
+import { FirmMark } from '@/components/directory/FirmMark'
+import { PersonRow as BrowserRow } from '@/components/directory/DirectoryBrowser'
 
 /**
  * The directory's building blocks, in the house style: names set like
@@ -35,28 +41,13 @@ export function ClaimedMark({ className = '' }: { className?: string }) {
   )
 }
 
-export function PersonRow({ p }: { p: PersonCard }) {
-  const office = primaryOffice(p)
-  const facts = [p.title, p.firm_name, office ? officeLabel(office) : null].filter(Boolean)
+/** A server-rendered list (landing pages, firm pages): the same rows as the hub's browser, logos and all. */
+export function PersonList({ people, label, firms, path, hideFirm = false }: { people: PersonCard[]; label: string; firms: FirmSummary[]; path: string; hideFirm?: boolean }) {
+  const marks = rowFirms(people, firms)
   return (
-    <li className="border-b border-border/70 py-[9px] last:border-0">
-      <div className="flex flex-wrap items-baseline gap-x-2">
-        <Link prefetch={false} href={profilePath(p)} className="hl font-news text-[17.5px] font-bold leading-snug text-foreground">
-          {p.full_name}
-        </Link>
-        {p.claimed_at && <ClaimedMark />}
-      </div>
-      <p className="mt-0.5 font-ui text-[13px] leading-snug text-foreground/70">{facts.join(' · ')}</p>
-      <PracticeTags areas={practiceAreas(p)} className="mt-1.5" />
-    </li>
-  )
-}
-
-export function PersonList({ people, label }: { people: PersonCard[]; label: string }) {
-  return (
-    <ul aria-label={label} className="river">
-      {people.map((p) => (
-        <PersonRow key={p.id} p={p} />
+    <ul aria-label={label} className="divide-y divide-border/80">
+      {dedupePeople(people).map((p, i) => (
+        <BrowserRow key={p.id} r={toRow(p)} firm={marks[p.firm_domain.toLowerCase()]} path={path} eager={i < 8} hideFirm={hideFirm} />
       ))}
     </ul>
   )
@@ -88,7 +79,8 @@ export function Pager({ path, page, pages, query = '' }: { path: string; page: n
 
 /** A short list of other directory pages, with how many people each holds. */
 export function LandingLinks({ title, items }: { title: string; items: Landing[] }) {
-  if (!items.length) return null
+  // Never a section of one: a list of one link is not a list (2026-10-24 night).
+  if (items.length < 2) return null
   return (
     <section aria-label={title}>
       <h2 className="mb-1.5 border-t-2 border-foreground pt-1.5 font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">{title}</h2>
@@ -148,5 +140,36 @@ export function EmptyDirectory({ noun }: { noun: string }) {
         and we will say when it opens.
       </p>
     </div>
+  )
+}
+
+/**
+ * The firms on a list, each with its mark and how many people it has here, linking to its page in the directory.
+ * Sales Navigator's account list, set as a newspaper's index. Never a section of one.
+ */
+export function FirmsRail({ category, firms, title = 'Firms', max = 12, allHref }: { category: Category; firms: FirmSummary[]; title?: string; max?: number; allHref?: string }) {
+  // The caller passes only firms with a page of their own (lib/directory/firms.ts firmsWithPages).
+  const withPages = firms
+  if (withPages.length < 2) return null
+  return (
+    <section aria-label={title}>
+      <h2 className="mb-1 border-t-2 border-foreground pt-1.5 font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">{title}</h2>
+      <ul>
+        {withPages.slice(0, max).map((f) => (
+          <li key={f.domain} className="border-b border-border/60 last:border-0">
+            <Link prefetch={false} href={firmPath(category, f.slug)} className="group flex items-center gap-3 py-[7px]">
+              <FirmMark name={f.name} logo={logoFor(f.domain)} mono={monogram(f.name)} size="sm" decorative />
+              <span className="min-w-0 flex-1 font-news text-[15.5px] leading-snug text-foreground group-hover:underline">{f.name}</span>
+              <span className="shrink-0 font-mono text-[11.5px] tabular-nums text-foreground/65">{f.count.toLocaleString('en-US')}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      {allHref && withPages.length > max && (
+        <Link prefetch={false} href={allHref} className="mt-1.5 inline-block font-ui text-[13px] font-semibold text-foreground underline underline-offset-2">
+          All {withPages.length} firms
+        </Link>
+      )}
+    </section>
   )
 }

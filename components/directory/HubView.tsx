@@ -1,14 +1,19 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Search, X } from 'lucide-react'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { Crumbs, EmptyDirectory, LandingLinks, Pager, PersonList } from '@/components/directory/parts'
+import { Crumbs, EmptyDirectory, FirmsRail, LandingLinks } from '@/components/directory/parts'
+import { DirectoryBrowser } from '@/components/directory/DirectoryBrowser'
+import { FirmMark } from '@/components/directory/FirmMark'
+import { FIRM_MIN, firmPath, firmsIndexPath, firmsOf } from '@/lib/directory/firms'
+import { logoFor, monogram } from '@/lib/directory/logos'
+import { rowFirms, toRow } from '@/lib/directory/rows'
+import { QUERY_PAGE, isSortKey, runQuery } from '@/lib/directory/search'
 import { loadPeople } from '@/lib/directory/data'
-import { allLandings, itemListJsonLd, paginate, parsePage, PAGE_SIZE } from '@/lib/directory/landing'
-import { bySurname, cityTally, countsSentence, filterPeople, firmTally, isPublic, type Filters } from '@/lib/directory/people'
-import { DIRECTORY_PATH, directoryEnabled, practiceLabel, practicesFor, type Category } from '@/lib/directory/taxonomy'
+import { allLandings, itemListJsonLd, parsePage, PAGE_SIZE } from '@/lib/directory/landing'
+import { bySurname, cityTally, countsSentence, isPublic, type Filters } from '@/lib/directory/people'
+import { DIRECTORY_PATH, directoryEnabled, practicesFor, type Category } from '@/lib/directory/taxonomy'
 import { breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 
@@ -19,7 +24,7 @@ import { jsonLdScript } from '@/lib/news/story-jsonld'
 // keeps each URL for five minutes (next.config.mjs). A filtered or searched
 // view is not indexed.
 
-export type HubSearchParams = { q?: string; practice?: string; city?: string; firm?: string; page?: string }
+export type HubSearchParams = { q?: string; practice?: string; city?: string; firm?: string; level?: string; sort?: string; page?: string }
 
 const one = (v: unknown) => (typeof v === 'string' ? v.trim().slice(0, 80) : '')
 
@@ -27,7 +32,7 @@ function readFilters(sp: HubSearchParams): Filters {
   return { q: one(sp.q), practice: one(sp.practice), city: one(sp.city), firm: one(sp.firm) }
 }
 
-const filtered = (f: Filters) => Boolean(f.q || f.practice || f.city || f.firm)
+const filtered = (f: Filters, sp?: HubSearchParams) => Boolean(f.q || f.practice || f.city || f.firm || sp?.level || (sp?.sort && sp.sort !== 'name'))
 
 export async function hubMetadata(CATEGORY: Category, sp: HubSearchParams): Promise<Metadata> {
   if (!directoryEnabled() || !CATEGORY.live) return { title: 'Not found', robots: { index: false } }
@@ -42,7 +47,7 @@ export async function hubMetadata(CATEGORY: Category, sp: HubSearchParams): Prom
     description,
     alternates: { canonical: url },
     // Indexed once there are people, and only the plain list: a search or a filter is a view of it.
-    robots: people.length && !filtered(readFilters(sp)) ? undefined : { index: false, follow: true },
+    robots: people.length && !filtered(readFilters(sp), sp) ? undefined : { index: false, follow: true },
     ...shareCard(`${CATEGORY.plural} | FundOpsHQ`, description, PATH),
   }
 }
@@ -54,148 +59,89 @@ export async function HubView({ category: CATEGORY, searchParams: sp }: { catego
   const f = readFilters(sp)
   const page = parsePage(sp.page)
   const people = (await loadPeople(CATEGORY.id)).filter((p) => isPublic(p)).sort(bySurname)
-  const shown = filterPeople(people, f)
-  const paged = paginate(shown, page)
-  if (!paged) notFound()
+  const rows = people.map(toRow)
+  const firms = firmsOf(people, CATEGORY)
+  const marks = rowFirms(people, firms)
+  const sort = isSortKey(sp.sort) ? sp.sort : 'name'
+  const level = one(sp.level) === 'senior' ? 'senior' : ''
+  // The first page a reader (or a crawler) is served is the browser's own first render; an address past the last page is a 404.
+  const shown = runQuery(rows, { ...f, level, sort })
+  if (!Number.isInteger(page) || page < 1 || (page > 1 && page > Math.ceil(shown.length / QUERY_PAGE))) notFound()
+  const firstPage = shown.slice((page - 1) * QUERY_PAGE, page * QUERY_PAGE)
 
   const landings = allLandings(CATEGORY, people)
   const byKind = (kind: string, placeKind?: 'city' | 'state') =>
     landings.filter((l) => (kind === 'place' ? !l.topic && l.place?.kind === placeKind : l.topic?.kind === kind && !l.place))
-  const firms = firmTally(people)
   const cities = cityTally(people)
-  const query = new URLSearchParams(Object.entries(f).filter(([, v]) => v) as [string, string][]).toString()
+  const usedPractices = new Set(rows.flatMap((r) => r.p))
   const crumbs = [{ name: 'Directory', path: DIRECTORY_PATH }, { name: CATEGORY.plural }]
-
-  const selectClass =
-    'h-10 w-full rounded-sm border border-foreground/25 bg-card px-2 font-ui text-[14px] text-foreground focus:border-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground'
-  const labelClass = 'mb-1 block font-ui text-[11px] font-bold uppercase tracking-[0.12em] text-foreground/65'
+  const withPages = firms.filter((x) => x.count >= FIRM_MIN)
 
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbJsonLd([{ name: 'Directory', path: DIRECTORY_PATH }, { name: CATEGORY.plural, path: PATH }])) }} />
-      {paged.items.length > 0 && !filtered(f) && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(itemListJsonLd(CATEGORY.plural, PATH, paged.items, (paged.page - 1) * PAGE_SIZE)) }} />
+      {firstPage.length > 0 && !filtered(f) && (
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(itemListJsonLd(CATEGORY.plural, PATH, people.filter((p) => firstPage.some((r) => r.s === p.slug)), (page - 1) * PAGE_SIZE)) }} />
       )}
 
       <main id="main-content" className="paper flex-1">
         <div className="band">
           <header className="mx-auto max-w-[1320px] px-4 pb-5 pt-5 lg:px-6">
             <Crumbs crumbs={crumbs} />
-            <p className="mt-3 font-ui text-[10.5px] font-bold uppercase tracking-[0.14em] text-amber-400">
-              <Link href={DIRECTORY_PATH} className="hover:underline">
-                Directory
-              </Link>
-            </p>
-            <h1 className="mt-1 font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">{CATEGORY.plural}</h1>
-            <p className="mt-2 max-w-[72ch] font-news text-[16.5px] leading-snug text-foreground/75">{INTRO}</p>
-            {people.length > 0 && <p className="mt-1.5 font-ui text-[13px] font-semibold text-foreground/80">{countsSentence(people, CATEGORY)}.</p>}
-
-            {people.length > 0 && (
-              <form action={PATH} method="get" role="search" aria-label={`Search ${CATEGORY.plural.toLowerCase()}`} className="mt-4 grid max-w-[1000px] gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.6fr)_repeat(3,minmax(0,1fr))_auto] lg:items-end">
-                <div className="sm:col-span-2 lg:col-span-1">
-                  <label htmlFor="dir-q" className={labelClass}>
-                    Name, firm or city
-                  </label>
-                  <div className="relative">
-                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-                    <input
-                      id="dir-q"
-                      type="search"
-                      name="q"
-                      defaultValue={f.q}
-                      placeholder={CATEGORY.searchHint}
-                      className="h-10 w-full rounded-sm border border-foreground/25 bg-card pl-9 pr-3 font-ui text-[16px] text-foreground placeholder:text-muted-foreground focus:border-foreground focus:outline-none focus-visible:ring-1 focus-visible:ring-foreground sm:text-[14px]"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label htmlFor="dir-practice" className={labelClass}>
-                    Practice
-                  </label>
-                  <select id="dir-practice" name="practice" defaultValue={f.practice} className={selectClass}>
-                    <option value="">All practices</option>
-                    {practicesFor(CATEGORY).map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="dir-city" className={labelClass}>
-                    City
-                  </label>
-                  <select id="dir-city" name="city" defaultValue={f.city} className={selectClass}>
-                    <option value="">All cities</option>
-                    {cities.map((c) => (
-                      <option key={c.key} value={c.key}>
-                        {c.label} ({c.count})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor="dir-firm" className={labelClass}>
-                    Firm
-                  </label>
-                  <select id="dir-firm" name="firm" defaultValue={f.firm} className={selectClass}>
-                    <option value="">All firms</option>
-                    {[...firms].sort((a, b) => a.label.localeCompare(b.label, 'en')).map((x) => (
-                      <option key={x.key} value={x.key}>
-                        {x.label} ({x.count})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button type="submit" className="h-10 rounded-sm bg-foreground px-4 font-ui text-[12.5px] font-bold uppercase tracking-[0.06em] text-background hover:bg-foreground/85">
-                    Find
-                  </button>
-                  {filtered(f) && (
-                    <Link href={PATH} className="inline-flex h-10 items-center gap-1 px-1 font-ui text-[12.5px] text-muted-foreground hover:text-foreground">
-                      <X className="h-3.5 w-3.5" aria-hidden="true" />
-                      Clear
+            <h1 className="mt-3 font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">{CATEGORY.plural}</h1>
+            <p className="mt-2 max-w-[72ch] font-news text-[16.5px] leading-snug text-foreground/80">{INTRO}</p>
+            {people.length > 0 && <p className="mt-1.5 font-ui text-[13px] font-semibold text-foreground/85">{countsSentence(people, CATEGORY)}.</p>}
+            {withPages.length >= 2 && (
+              <ul aria-label="Firms with the most people listed" className="tab-scroll -mx-4 mt-4 flex gap-x-2 overflow-x-auto px-4 pb-1 lg:hidden">
+                {withPages.slice(0, 8).map((x) => (
+                  <li key={x.domain} className="relative shrink-0">
+                    <Link
+                      prefetch={false}
+                      href={firmPath(CATEGORY, x.slug)}
+                      className="flex h-full flex-col items-center gap-1 rounded-[3px] border border-transparent px-2 py-1.5 hover:border-foreground/25 hover:bg-card"
+                    >
+                      <FirmMark name={x.name} logo={logoFor(x.domain)} mono={monogram(x.name)} size="md" decorative eager />
+                      <span className="font-ui text-[12px] leading-tight text-foreground/75">
+                        <span className="sr-only">{x.name}: </span>
+                        {x.count} listed
+                      </span>
                     </Link>
-                  )}
-                </div>
-              </form>
+                  </li>
+                ))}
+              </ul>
             )}
           </header>
         </div>
 
-        <div className="mx-auto max-w-[1320px] px-4 pb-12 pt-5 lg:px-6">
+        <div className="mx-auto max-w-[1320px] px-4 pb-12 lg:px-6">
           {people.length === 0 ? (
-            <div className="max-w-[720px]">
+            <div className="max-w-[720px] pt-5">
               <EmptyDirectory noun={CATEGORY.singular.toLowerCase()} />
             </div>
           ) : (
-            <div className="grid gap-x-10 gap-y-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-              <section aria-labelledby="dir-results" className="min-w-0">
-                <div className="mb-1 flex items-baseline justify-between gap-3 border-t-2 border-foreground pt-1.5">
-                  <h2 id="dir-results" className="font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">
-                    {filtered(f) ? 'Matching' : 'A to Z by surname'}
-                  </h2>
-                  <p className="font-ui text-[11.5px] text-muted-foreground" role="status">
-                    {shown.length.toLocaleString('en-US')} {shown.length === 1 ? 'person' : 'people'}
-                    {f.practice ? ` · ${practiceLabel(f.practice)}` : ''}
-                  </p>
-                </div>
-                {shown.length === 0 ? (
-                  <p className="py-8 font-news text-[17px] text-muted-foreground">
-                    Nobody matches that. Try fewer words, or a firm&rsquo;s short name (&ldquo;{CATEGORY.firmHint[0]}&rdquo;, not &ldquo;{CATEGORY.firmHint[1]}&rdquo;).
-                  </p>
-                ) : (
-                  <PersonList people={paged.items} label={CATEGORY.plural} />
-                )}
-                <Pager path={PATH} page={paged.page} pages={paged.pages} query={query} />
-                <p className="mt-6 max-w-[70ch] font-ui text-[12.5px] leading-relaxed text-muted-foreground">
-                  Listed in surname order; nobody pays to be listed or to rank. Facts come from each firm&rsquo;s public bio page, dated on the
-                  profile. Anyone listed can claim their profile, correct it or have it removed.
+            <div className="grid gap-x-10 gap-y-8 lg:grid-cols-[minmax(0,1fr)_300px]">
+              <section aria-label={`${CATEGORY.plural}, searchable`} className="min-w-0">
+                <DirectoryBrowser
+                  path={PATH}
+                  plural={CATEGORY.plural}
+                  singular={CATEGORY.singular}
+                  searchHint={CATEGORY.searchHint}
+                  firmHint={CATEGORY.firmHint}
+                  rows={rows}
+                  firms={marks}
+                  practices={practicesFor(CATEGORY).filter((p) => usedPractices.has(p.id)).map((p) => ({ id: p.id, label: p.label }))}
+                  cities={cities.map((c) => ({ key: c.key, label: c.label }))}
+                  initial={{ ...f, level, sort, page }}
+                />
+                <p className="mt-6 max-w-[70ch] font-ui text-[12.5px] leading-relaxed text-foreground/70">
+                  Nobody pays to be listed or to rank. Facts come from each firm&rsquo;s public bio page, dated on the profile. Anyone listed
+                  can claim their profile, correct it or have it removed.
                 </p>
               </section>
 
-              <aside className="min-w-0 space-y-6" aria-label="Browse the directory">
+              <aside className="min-w-0 space-y-6 lg:pt-3" aria-label="Browse the directory">
+                <FirmsRail category={CATEGORY} firms={withPages} allHref={firmsIndexPath(CATEGORY)} />
                 <LandingLinks title="By practice" items={byKind('practice')} />
                 <LandingLinks title={CATEGORY.sides ? 'By client' : 'By stage'} items={[...byKind('focus'), ...byKind('side')]} />
                 <LandingLinks title="By city" items={byKind('place', 'city')} />

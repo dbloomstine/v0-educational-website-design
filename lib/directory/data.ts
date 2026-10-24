@@ -10,7 +10,7 @@
  *
  *   - `directory-person-any-v1`: one whole profile by slug alone (slugs are
  *     unique across the five trades), for the claim and request forms.
- *   - `directory-summary-v1`: the index page's counts and top pages, and the
+ *   - `directory-summary-v2` (v2 2026-10-24 night: each firm's directory slug): the index page's counts and top pages, and the
  *     firms with people listed (for the cross-link on /firm/<slug>), built
  *     from the per-trade lists above. Small, so a firm page reads it for free.
  *
@@ -26,6 +26,7 @@ import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { CARD_COLUMNS, PERSON_COLUMNS, isPublic, type Person, type PersonCard } from './people'
 import { LIVE_CATEGORIES, type CategoryId } from './taxonomy'
 import { summarize, type DirectorySummary } from './summary'
+import { dedupePeople } from './quality'
 
 export const DIRECTORY_TAG = 'directory'
 const PAGE = 1000
@@ -53,7 +54,8 @@ const cachedCards = unstable_cache(readCards, ['directory-people-v1'], { revalid
 
 export async function loadPeople(category: CategoryId): Promise<PersonCard[]> {
   try {
-    return await cachedCards(category)
+    // One row per person per firm on every page (a firm's site listing someone twice is not two people).
+    return dedupePeople(await cachedCards(category))
   } catch (err) {
     console.error('[directory] could not load people:', err instanceof Error ? err.message : err)
     return []
@@ -108,7 +110,7 @@ async function buildSummary(): Promise<DirectorySummary> {
   return summarize(new Map(lists))
 }
 
-const cachedSummary = unstable_cache(buildSummary, ['directory-summary-v1'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
+const cachedSummary = unstable_cache(buildSummary, ['directory-summary-v2'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
 
 const EMPTY: DirectorySummary = { categories: LIVE_CATEGORIES.map((c) => ({ id: c.id, count: 0, firms: 0, cities: [], topics: [] })), firms: [] }
 

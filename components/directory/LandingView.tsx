@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
-import { Crumbs, LandingLinks, Pager, PersonList } from '@/components/directory/parts'
+import { Crumbs, FirmsRail, LandingLinks, Pager, PersonList } from '@/components/directory/parts'
+import { firmsOf } from '@/lib/directory/firms'
 import { loadPeople } from '@/lib/directory/data'
 import {
   LANDING_MIN,
@@ -77,6 +78,10 @@ export async function LandingView(props: LandingProps) {
   const { category, key, paged, path, title, sentence, people } = b
   const landings = allLandings(category, b.all)
   const near = nearby(key, landings)
+  const firms = firmsOf(people, category)
+  // Firm pages are counted on the whole trade (a firm with one person here may have ten elsewhere).
+  const tradeFirms = new Map(firmsOf(b.all, category).map((f) => [f.domain, f]))
+  const railFirms = firms.filter((f) => (tradeFirms.get(f.domain)?.count ?? 0) >= 2).map((f) => ({ ...f, slug: tradeFirms.get(f.domain)!.slug }))
   const crumbs = [{ name: 'Directory', path: DIRECTORY_PATH }, ...landingCrumbs(category, key)]
 
   return (
@@ -89,12 +94,7 @@ export async function LandingView(props: LandingProps) {
         <div className="band">
           <header className="mx-auto max-w-[1320px] px-4 pb-5 pt-5 lg:px-6">
             <Crumbs crumbs={crumbs} />
-            <p className="mt-3 font-ui text-[10.5px] font-bold uppercase tracking-[0.14em] text-amber-400">
-              <Link href={DIRECTORY_PATH} className="hover:underline">
-                Directory
-              </Link>
-            </p>
-            <h1 className="mt-1 font-news text-[30px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[38px]">{title}</h1>
+            <h1 className="mt-3 font-news text-[30px] font-medium leading-[1.05] tracking-[-0.02em] text-foreground sm:text-[38px]">{title}</h1>
             <p className="mt-2 max-w-[75ch] font-news text-[16.5px] leading-snug text-foreground/75">{sentence}</p>
             <p className="mt-3 font-ui text-[12.5px] text-muted-foreground">
               Looking for someone in particular?{' '}
@@ -113,12 +113,12 @@ export async function LandingView(props: LandingProps) {
                 <h2 id="landing-list" className="font-ui text-[12px] font-extrabold uppercase tracking-[0.12em] text-foreground">
                   A to Z by surname
                 </h2>
-                <p className="font-ui text-[11.5px] text-muted-foreground">
+                <p className="font-ui text-[12.5px] text-foreground/70">
                   {people.length.toLocaleString('en-US')} people
                   {paged.pages > 1 ? ` · ${(paged.page - 1) * PAGE_SIZE + 1}–${(paged.page - 1) * PAGE_SIZE + paged.items.length}` : ''}
                 </p>
               </div>
-              <PersonList people={paged.items} label={title} />
+              <PersonList people={paged.items} label={title} firms={[...tradeFirms.values()]} path={`/${category.slug}`} />
               <Pager path={path} page={paged.page} pages={paged.pages} />
               <p className="mt-6 max-w-[70ch] font-ui text-[12.5px] leading-relaxed text-muted-foreground">
                 Who is listed here comes from each firm&rsquo;s own public bio page: the practices, clients and offices it names. Nobody pays to be
@@ -127,6 +127,7 @@ export async function LandingView(props: LandingProps) {
             </section>
 
             <aside className="min-w-0 space-y-6" aria-label="Related pages">
+              <FirmsRail category={category} firms={railFirms} title={`Firms here`} max={10} />
               <LandingLinks title="Up a level" items={near.parents} />
               <LandingLinks title={key.place ? `Also in ${key.place.name}` : 'Other practices and clients'} items={near.samePlace} />
               <LandingLinks title={key.place?.kind === 'state' ? `Cities in ${key.place.name}, and elsewhere` : 'Other places'} items={near.sameTopic} />

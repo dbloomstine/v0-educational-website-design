@@ -242,4 +242,4 @@ export const REPRESENTS: { id: RepresentsId; slug: string; label: string }[] = [
 export const isRepresentsId = (v: unknown): v is RepresentsId => REPRESENTS.some((r) => r.id === v)
 
 /** Words that can never be a landing page, a person or a place: the routes the directory owns. */
-export const RESERVED_SLUGS = new Set(['people', 'claim', 'edit', 'request', 'search', 'page', 'all', 'about'])
+export const RESERVED_SLUGS = new Set(['people', 'firms', 'claim', 'edit', 'request', 'search', 'page', 'all', 'about'])

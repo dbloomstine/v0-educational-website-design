@@ -11,7 +11,8 @@ import { GLOSSARY_TERMS, glossaryHref } from '@/lib/glossary/terms'
 import { storyPath } from '@/lib/news/story-path'
 import { DIRECTORY_PATH, LIVE_CATEGORIES, directoryEnabled } from '@/lib/directory/taxonomy'
 import { loadPeople } from '@/lib/directory/data'
-import { allLandings } from '@/lib/directory/landing'
+import { LANDING_MIN, allLandings } from '@/lib/directory/landing'
+import { firmPath, firmsIndexPath, firmsOf, firmsWithPages } from '@/lib/directory/firms'
 import { isIndexable, isPublic, profilePath } from '@/lib/directory/people'
 
 /**
@@ -179,6 +180,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       if (!people.length) continue
       directoryPages.push({ url: `${baseUrl}/${category.slug}`, changeFrequency: 'weekly', priority: 0.6 })
       for (const l of allLandings(category, people)) directoryPages.push({ url: `${baseUrl}${l.path}`, changeFrequency: 'weekly', priority: 0.5 })
+      // Firm pages (2026-10-24 night): indexed, and listed, from LANDING_MIN people (components/directory/FirmView.tsx).
+      const firms = firmsWithPages(firmsOf(people, category))
+      if (firms.length >= 2) directoryPages.push({ url: `${baseUrl}${firmsIndexPath(category)}`, changeFrequency: 'weekly', priority: 0.5 })
+      for (const f of firms) if (f.count >= LANDING_MIN) directoryPages.push({ url: `${baseUrl}${firmPath(category, f.slug)}`, changeFrequency: 'weekly', priority: 0.5 })
       for (const p of people) if (isIndexable(p)) directoryPages.push({ url: `${baseUrl}${profilePath(p)}`, changeFrequency: 'monthly', priority: 0.4 })
     }
     if (directoryPages.length) directoryPages.unshift({ url: `${baseUrl}${DIRECTORY_PATH}`, changeFrequency: 'weekly', priority: 0.6 })
