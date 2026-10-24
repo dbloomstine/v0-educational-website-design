@@ -107,7 +107,7 @@
   "bdo.com": {
    "name": "BDO USA",
    "file": null,
-   "why": "the logo and icons it publishes could not be fetched or are too small",
+   "why": "header: the SVG holds script",
    "fetched_at": "2026-10-24"
   },
   "bracewell.com": {
@@ -230,8 +230,10 @@
   "davispolk.com": {
    "name": "Davis Polk & Wardwell",
    "file": null,
-   "why": "the logo and icons it publishes could not be fetched or are too small",
-   "fetched_at": "2026-10-24"
+   "rejected": true,
+   "why": "its SVG icon is a plain gradient square, not the firm’s mark",
+   "fetched_at": "2026-10-24",
+   "source_url": "https://www.davispolk.com/themes/custom/dpw_2020/favicon-davispolk.svg"
   },
   "debevoise.com": {
    "name": "Debevoise & Plimpton",
@@ -307,8 +309,10 @@
   "ey.com": {
    "name": "EY",
    "file": null,
-   "why": "name too short to match safely",
-   "fetched_at": "2026-10-24"
+   "rejected": true,
+   "why": "the header mark carries the tagline “Shape the future with confidence”, unreadable at list size; initials read better",
+   "fetched_at": "2026-10-24",
+   "source_url": "https://www.ey.com/en_us"
   },
   "forvismazars.us": {
    "name": "Forvis Mazars",
@@ -449,8 +453,10 @@
   "hodesweill.com": {
    "name": "Hodes Weill & Associates",
    "file": null,
-   "why": "the logo and icons it publishes could not be fetched or are too small",
-   "fetched_at": "2026-10-24"
+   "rejected": true,
+   "why": "its apple-touch-icon is a stock drawing of an office building, not the firm’s mark",
+   "fetched_at": "2026-10-24",
+   "source_url": "https://static.wixstatic.com/media/abfec0_8c5891c73fa5468a866c172a43c46830%7Emv2.png/v1/fill/w_180%2Ch_180%2Clg_1%2Cusm_0.66_1.00_0.01/abfec0_8c5891c73fa5468a866c172a43c46830%7Emv2.png"
   },
   "huschblackwell.com": {
    "name": "Husch Blackwell",
@@ -467,8 +473,13 @@
   },
   "jonesday.com": {
    "name": "Jones Day",
-   "file": null,
-   "why": "the home page shows no logo in its header and publishes no icon of 96 px or more",
+   "file": "/logos/directory/jonesday.com.png",
+   "width": 163,
+   "height": 112,
+   "mode": "ink",
+   "via": "Wikimedia Commons (public domain)",
+   "page": "https://commons.wikimedia.org/wiki/File:Jones_Day_Logo.svg",
+   "source_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d7/Jones_Day_Logo.svg/960px-Jones_Day_Logo.svg.png",
    "fetched_at": "2026-10-24"
   },
   "katten.com": {
@@ -682,7 +693,7 @@
   "parkmadisonpartners.com": {
    "name": "Park Madison Partners",
    "file": null,
-   "why": "the logo and icons it publishes could not be fetched or are too small",
+   "why": "png-icon: the icon is only 16x16",
    "fetched_at": "2026-10-24"
   },
   "paulhastings.com": {
@@ -943,7 +954,7 @@
   "velaw.com": {
    "name": "Vinson & Elkins",
    "file": null,
-   "why": "the home page (www.velaw.com) does not speak of Vinson & Elkins",
+   "why": "the home page (www.velaw.com) does not name Vinson & Elkins",
    "fetched_at": "2026-10-24"
   },
   "weil.com": {
@@ -975,6 +986,7 @@
   "winstontaylor.com": {
    "name": "Winston & Strawn (now Winston Taylor)",
    "file": null,
+   "rejected": true,
    "why": "its apple-touch-icon is a plain purple square, not the firm’s mark",
    "fetched_at": "2026-10-24",
    "source_url": "https://www.winstontaylor.com/apple-touch-icon.png"
@@ -999,5 +1011,5 @@
    "fetched_at": "2026-10-24"
   }
  },
- "note": "Each firm’s own mark, from its own website (the logo in its header, an inline SVG drawn to PNG, or its apple-touch-icon), cropped to the mark; used only to identify the firm. mode: ink = drawn as a one-colour silhouette; plate = mixed light and dark parts, shown in greys on an ink plate; own = the file has its own background, shown in greys. Looked up with the social desk’s lookupSite (social/engine/logos.mjs) keyed by the domain on file."
+ "note": "Each firm’s own mark, from its own website (the logo in its header, an inline SVG, or its apple-touch-icon / SVG / PNG icon) or Wikimedia Commons (public domain, matched by the firm’s own domain), cropped to the mark; used only to identify the firm. Kept up to date by scripts/directory/logos.ts (skips firms on file, re-asks misses after 30 days, never re-fetches a rejected one). mode: ink = one-colour silhouette; plate = mixed light and dark parts, greys on an ink plate; own = the file has its own background."
 }

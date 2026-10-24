@@ -194,14 +194,16 @@ describe('logos', () => {
     expect(logoFor('nobody-here.example')).toBeNull()
   })
   it('lists a source and a date for every mark, and every file it names exists', () => {
-    const firms = (manifest as { firms: Record<string, { file: string | null; source_url?: string; page?: string; fetched_at?: string; mode?: string; width?: number; height?: number; moved_to?: string }> }).firms
+    const firms = (manifest as { firms: Record<string, { file: string | null; source_url?: string; page?: string; fetched_at?: string; mode?: string; width?: number; height?: number; moved_to?: string; via?: string }> }).firms
     for (const [domain, e] of Object.entries(firms)) {
       expect(e.fetched_at, domain).toMatch(/^\d{4}-\d{2}-\d{2}$/)
       if (!e.file) continue
       expect(e.source_url, domain).toMatch(/^https:\/\//)
       // From the firm's own site: the page it was read from is on the firm's own domain (or the one it forwards to).
       const host = new URL(e.page!).hostname.replace(/^www\./, '')
-      expect(host.endsWith(domain) || host === e.moved_to, domain).toBe(true)
+      // …or Wikimedia Commons, public domain, matched by the firm's own domain (scripts/directory/logos.ts).
+      const commons = /Commons/.test(e.via ?? '') && /(^|\.)wikimedia\.org$/.test(host)
+      expect(host.endsWith(domain) || host === e.moved_to || commons, domain).toBe(true)
       expect(['ink', 'plate', 'own']).toContain(e.mode)
       expect(e.width! > 0 && e.height! > 0, domain).toBe(true)
       expect(existsSync(join(process.cwd(), 'public', e.file)), e.file).toBe(true)

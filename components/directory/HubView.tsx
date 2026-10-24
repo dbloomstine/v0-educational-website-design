@@ -9,7 +9,8 @@ import { FirmMark } from '@/components/directory/FirmMark'
 import { FIRM_MIN, firmPath, firmsIndexPath, firmsOf } from '@/lib/directory/firms'
 import { logoFor, monogram } from '@/lib/directory/logos'
 import { rowFirms, toRow } from '@/lib/directory/rows'
-import { QUERY_PAGE, isSortKey, runQuery } from '@/lib/directory/search'
+import { QUERY_PAGE, facetCounts, isSortKey, runQuery } from '@/lib/directory/search'
+import { indexUrl } from '@/lib/directory/search-index'
 import { loadPeople } from '@/lib/directory/data'
 import { allLandings, itemListJsonLd, parsePage, PAGE_SIZE } from '@/lib/directory/landing'
 import { bySurname, cityTally, countsSentence, isPublic, type Filters } from '@/lib/directory/people'
@@ -65,7 +66,8 @@ export async function HubView({ category: CATEGORY, searchParams: sp }: { catego
   const sort = isSortKey(sp.sort) ? sp.sort : 'name'
   const level = one(sp.level) === 'senior' ? 'senior' : ''
   // The first page a reader (or a crawler) is served is the browser's own first render; an address past the last page is a 404.
-  const shown = runQuery(rows, { ...f, level, sort })
+  const initialQuery = { ...f, level, sort }
+  const shown = runQuery(rows, initialQuery)
   if (!Number.isInteger(page) || page < 1 || (page > 1 && page > Math.ceil(shown.length / QUERY_PAGE))) notFound()
   const firstPage = shown.slice((page - 1) * QUERY_PAGE, page * QUERY_PAGE)
 
@@ -128,7 +130,17 @@ export async function HubView({ category: CATEGORY, searchParams: sp }: { catego
                   singular={CATEGORY.singular}
                   searchHint={CATEGORY.searchHint}
                   firmHint={CATEGORY.firmHint}
-                  rows={rows}
+                  first={{
+                    items: firstPage,
+                    total: shown.length,
+                    counts: {
+                      practice: [...facetCounts(rows, initialQuery, 'practice')],
+                      city: [...facetCounts(rows, initialQuery, 'city')],
+                      firm: [...facetCounts(rows, initialQuery, 'firm')],
+                      level: [...facetCounts(rows, initialQuery, 'level')],
+                    },
+                  }}
+                  indexUrl={indexUrl(CATEGORY.slug)}
                   firms={marks}
                   practices={practicesFor(CATEGORY).filter((p) => usedPractices.has(p.id)).map((p) => ({ id: p.id, label: p.label }))}
                   cities={cities.map((c) => ({ key: c.key, label: c.label }))}

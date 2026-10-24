@@ -7,22 +7,19 @@ import { SiteFooter } from '@/components/site-footer'
 import { Crumbs, FirmsRail, Pager, PersonList } from '@/components/directory/parts'
 import { FirmMark } from '@/components/directory/FirmMark'
 import { OUTBOUND } from '@/components/story/StoryLink'
-import { loadDirectorySummary, loadPeople } from '@/lib/directory/data'
+import { loadPeople } from '@/lib/directory/data'
 import { FIRM_MIN, firmPath, firmTitle, firmsIndexPath, firmsOf, firmsWithPages, peopleAtFirm, type FirmSummary } from '@/lib/directory/firms'
 import { LANDING_MIN, allLandings, itemListJsonLd, pageHref, paginate, parsePage, PAGE_SIZE } from '@/lib/directory/landing'
 import { logoFor, monogram } from '@/lib/directory/logos'
 import { displayDomain, firmUrl, listJoin } from '@/lib/directory/people'
-import { CATEGORIES, DIRECTORY_PATH, directoryEnabled, lowerNoun, type Category } from '@/lib/directory/taxonomy'
-import { firmPageHref } from '@/lib/news/firms'
-import { loadFirmPages } from '@/lib/news/firm-pages'
+import { DIRECTORY_PATH, directoryEnabled, lowerNoun, type Category } from '@/lib/directory/taxonomy'
 import { breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 
 /**
  * A firm inside the directory (2026-10-24 night): /placement-agents/firms/evercore, "Placement Agents at Evercore".
  * Crunchbase's organisation page and Chambers' firm page for structure: the mark and the name, what the firm's people
- * here add up to (how many, how senior, where, on what), the people themselves, and the way across to the same firm
- * in other trades and to its news. Facts only, each one counted from the list below it.
+ * here add up to (how many, how senior, where, on what), the people themselves, and the firm's own website. Facts only, each one counted from the list below it.
  *
  * Exists with FIRM_MIN people or more; indexed with LANDING_MIN or more (a thin page is still useful to a reader who
  * clicked a firm's name, but not one to offer a search engine).
@@ -70,13 +67,9 @@ export async function FirmView({ category, slug, page }: { category: Category; s
   const b = await build(category, slug, page)
   if (!b) notFound()
   const { firm, paged, path, title } = b
-  const [summary, firmPages] = await Promise.all([loadDirectorySummary(), loadFirmPages()])
+  // One read: the trade's cached list, the same one its hub uses (lib/directory/data.ts loadPeople). No second
+  // query on a cold cache: the news firm pages and the cross-trade summary are left to the firm's own /firm page.
   const site = firmUrl(firm.domain)
-  const news = firmPageHref(firm.name, firmPages)
-  // The same firm in the directory's other trades (Deloitte's auditors and its tax advisors).
-  const elsewhere = summary.firms
-    .filter((x) => x.domain.toLowerCase() === firm.domain && x.category !== category.id && x.count >= FIRM_MIN)
-    .map((x) => ({ c: CATEGORIES[x.category], count: x.count }))
   const landings = allLandings(category, b.all)
   const cityPage = (key: string) => landings.find((l) => !l.topic && l.place?.kind === 'city' && l.place.slug === key)?.path
   const practicePage = (key: string) => landings.find((l) => l.topic?.kind === 'practice' && l.topic.id === key && !l.place)?.path
@@ -123,16 +116,6 @@ export async function FirmView({ category, slug, page }: { category: Category; s
                       <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
                     </a>
                   )}
-                  {news && (
-                    <Link href={news} className="text-foreground underline underline-offset-2">
-                      {firm.name} in the news
-                    </Link>
-                  )}
-                  {elsewhere.map((e) => (
-                    <Link key={e.c.id} prefetch={false} href={`/${e.c.slug}?firm=${encodeURIComponent(firm.domain)}`} className="text-foreground underline underline-offset-2">
-                      {n(e.count)} {lowerNoun(e.c, e.count)} at {firm.name}
-                    </Link>
-                  ))}
                 </p>
               </div>
             </div>
