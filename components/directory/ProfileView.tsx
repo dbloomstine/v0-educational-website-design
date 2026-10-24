@@ -7,6 +7,7 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { AboutLine, ClaimedMark, Crumbs, LandingLinks, PracticeTags } from '@/components/directory/parts'
 import { FirmMark } from '@/components/directory/FirmMark'
+import { ViewBeacon } from '@/components/directory/owner'
 import { FIRM_MIN, firmPath, firmsOf, peopleAtFirm } from '@/lib/directory/firms'
 import { logoFor, monogram } from '@/lib/directory/logos'
 import { displayTitle, seniority, visiblePractices } from '@/lib/directory/quality'
@@ -146,6 +147,7 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
   return (
     <div className="flex min-h-screen flex-col">
       <SiteHeader />
+      <ViewBeacon id={p.id} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(ld) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdScript(breadcrumbJsonLd(crumbs)) }} />
 
@@ -184,9 +186,15 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
                     </a>
                   )}
                   {claimed ? (
-                    <ClaimedMark />
+                    <>
+                      <ClaimedMark />
+                      <Link prefetch={false} href={`/directory/claim?p=${p.slug}`} className="font-ui text-[12.5px] font-semibold text-foreground/80 underline underline-offset-2 hover:text-foreground">
+                        Sign in to edit
+                      </Link>
+                    </>
                   ) : (
                     <Link
+                      prefetch={false}
                       href={`/directory/claim?p=${p.slug}`}
                       className="inline-flex h-10 items-center rounded-[3px] border border-foreground/35 bg-card px-3.5 font-ui text-[13.5px] font-semibold text-foreground hover:border-foreground"
                     >
@@ -194,6 +202,7 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
                     </Link>
                   )}
                 </div>
+                {!claimed && <p className="mt-2 font-ui text-[12.5px] text-foreground/70">Claim it to add to it, and to see how many people view it. Free.</p>}
                 {fetched && (
                   <p className="mt-3 font-ui text-[12.5px] text-foreground/70">
                     Last verified {fetched} against {fromFirm ? domain : `the ${prov.label.replace(/^./, (c) => c.toLowerCase())}`}.{' '}

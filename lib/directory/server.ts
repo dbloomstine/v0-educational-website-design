@@ -64,3 +64,42 @@ export async function storePhoto(personId: string, photo: { bytes: Buffer; ext: 
   }
   return store.getPublicUrl(path).data.publicUrl
 }
+
+// ── Owners (2026-10-24, workstream B) ───────────────────────────────────────
+
+export interface ClaimRow {
+  id: string
+  email: string
+  confirmed_at: string | null
+  created_at?: string
+}
+
+/** Every confirmed claim on a profile, newest first. */
+export async function confirmedClaims(personId: string): Promise<ClaimRow[]> {
+  const { data, error } = await getSupabaseAdmin()
+    .from('directory_claims')
+    .select('id, email, confirmed_at, created_at')
+    .eq('person_id', personId)
+    .not('confirmed_at', 'is', null)
+    .order('confirmed_at', { ascending: false })
+    .limit(50)
+  if (error) throw new Error(error.message)
+  return (data ?? []) as ClaimRow[]
+}
+
+/**
+ * The address to write to about a profile: the claim a session or an edit came from when it is known and
+ * confirmed for this person, otherwise the newest confirmed claim. Null when nobody has claimed it.
+ */
+export async function ownerEmail(personId: string, claimId?: string | null): Promise<string | null> {
+  const claims = await confirmedClaims(personId).catch(() => [] as ClaimRow[])
+  return (claimId ? claims.find((c) => c.id === claimId) : undefined)?.email ?? claims[0]?.email ?? null
+}
+
+/** The profile's daily view rows, the last 400 days. Empty if the table is not there yet. */
+export async function profileViewRows(personId: string): Promise<{ day: string; views: number }[]> {
+  const since = new Date(Date.now() - 400 * 86_400_000).toISOString().slice(0, 10)
+  const { data, error } = await getSupabaseAdmin().from('directory_profile_views').select('day, views').eq('person_id', personId).gte('day', since)
+  if (error) return []
+  return (data ?? []) as { day: string; views: number }[]
+}

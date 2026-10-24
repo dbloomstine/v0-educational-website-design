@@ -5,10 +5,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Loader2 } from 'lucide-react'
 import { EDIT_LIMITS, type ProfileEdits } from '@/lib/directory/edit-shape'
+import { completeness } from '@/lib/directory/completeness'
 import { PRACTICES } from '@/lib/directory/taxonomy'
+import { CompletenessMeter } from './owner'
 
-// The directory's four small forms (2026-10-24): claim, confirm a claim, edit a
-// claimed profile, and ask for a correction or removal. Plain labelled fields,
+// The directory's small forms (2026-10-24): claim (or sign in to edit), confirm,
+// edit a claimed profile, ask for a correction or removal, and suggest a firm
+// or add yourself. Plain labelled fields,
 // errors tied to their field (aria-describedby) and announced (role="alert"),
 // a hidden field for bots, 16px inputs so a phone does not zoom.
 
@@ -50,7 +53,7 @@ async function post(url: string, body: unknown): Promise<{ ok: boolean; json: Re
 
 // ── Claim ───────────────────────────────────────────────────────────────────
 
-export function ClaimForm({ slug, domain }: { slug: string; domain: string }) {
+export function ClaimForm({ slug, domain, signin = false }: { slug: string; domain: string; /** The profile is claimed: this is "Sign in to edit". */ signin?: boolean }) {
   const id = useId()
   const [state, setState] = useState<'idle' | 'sending' | 'sent'>('idle')
   const [error, setError] = useState<string | null>(null)
@@ -73,7 +76,7 @@ export function ClaimForm({ slug, domain }: { slug: string; domain: string }) {
       <div role="status">
         <p className="font-news text-[18px] font-semibold text-foreground">Check your inbox.</p>
         <p className="mt-2 font-ui text-[14px] leading-relaxed text-foreground/75">
-          We sent a link to <strong>{email}</strong>. Open it and press the button to confirm. It works once, for seven days.
+          We sent a link to <strong>{email}</strong>. Open it and press the button{signin ? ' to edit your profile' : ' to confirm'}. It works once, for seven days.
         </p>
       </div>
     )
@@ -99,7 +102,9 @@ export function ClaimForm({ slug, domain }: { slug: string; domain: string }) {
         className={inputClass}
       />
       <p id={`${id}-hint`} className={hintClass}>
-        It must be at {domain}. We email you a one-time link; nothing changes until you confirm.
+        {signin
+          ? `Use the address you claimed it with and we email you a link to sign in. No password. Someone else at ${domain}? Your own work address there works too.`
+          : `It must be at ${domain}. We email you a one-time link; nothing changes until you confirm.`}
       </p>
       <ErrorText id={`${id}-err`} error={error} />
       <button type="submit" disabled={state === 'sending' || !email.trim()} className={`${buttonClass} mt-4`}>
@@ -113,20 +118,22 @@ export function ClaimForm({ slug, domain }: { slug: string; domain: string }) {
 // ── Confirm ─────────────────────────────────────────────────────────────────
 
 const CONFIRM_MESSAGES: Record<string, { title: string; body: string }> = {
-  already: { title: 'This link has been used.', body: 'Each link works once. To edit your profile again, claim it again from its page and we will send a fresh link.' },
-  expired: { title: 'This link has expired.', body: 'Links work for seven days. Claim the profile again from its page and we will send a fresh one.' },
+  already: { title: 'This link has been used.', body: 'Each link works once. To edit your profile again, choose “Sign in to edit” on it and we will send a fresh link.' },
+  expired: { title: 'This link has expired.', body: 'Links work for seven days. Choose “Sign in to edit” (or “Is this you?”) on your profile and we will send a fresh one.' },
   invalid: { title: "This link doesn't work.", body: 'It may be incomplete: try copying the whole link from the email.' },
   error: { title: 'Something went wrong.', body: 'Please try again in a minute.' },
 }
 
-export function ConfirmClaim({ token }: { token: string }) {
+export function ConfirmClaim({ token, offerNewsletter = false }: { token: string; /** Ask "Also send me FundOps Daily?" (not shown to a current subscriber). */ offerNewsletter?: boolean }) {
   const router = useRouter()
+  const id = useId()
   const [state, setState] = useState<string>(token ? 'idle' : 'invalid')
+  const [newsletter, setNewsletter] = useState(false)
 
   async function confirm() {
     if (state === 'sending') return
     setState('sending')
-    const { json } = await post('/api/directory/claim/confirm', { token })
+    const { json } = await post('/api/directory/claim/confirm', { token, newsletter: offerNewsletter && newsletter })
     const o = typeof json.outcome === 'string' ? json.outcome : 'error'
     if (o === 'confirmed') return router.push('/directory/edit')
     setState(CONFIRM_MESSAGES[o] ? o : 'error')
@@ -138,6 +145,14 @@ export function ConfirmClaim({ token }: { token: string }) {
         <p className="font-news text-[16.5px] leading-snug text-foreground/80">
           Press the button to confirm this is your profile. You can then add to it, or hide it.
         </p>
+        {offerNewsletter && (
+          <label htmlFor={`${id}-nl`} className="mt-4 flex items-start gap-2.5 font-ui text-[14px] leading-snug text-foreground">
+            <input id={`${id}-nl`} type="checkbox" checked={newsletter} onChange={(e) => setNewsletter(e.target.checked)} className="mt-0.5 h-4 w-4 shrink-0 accent-[#13233A]" />
+            <span>
+              Also send me <strong>FundOps Daily</strong>, the free morning news brief for GPs, LPs and fund service providers. Unsubscribe in one click.
+            </span>
+          </label>
+        )}
         <button type="button" onClick={confirm} disabled={state === 'sending'} className={`${buttonClass} mt-4`}>
           {state === 'sending' && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />}
           Confirm my profile
@@ -197,6 +212,8 @@ export function EditProfileForm({
   const [visState, setVisState] = useState<'idle' | 'sending'>('idle')
   const [visError, setVisError] = useState<string | null>(null)
 
+  const meter = completeness({ ...d, photo_data: photoData, notable: notes.filter((x) => x.text.trim()).map((x) => ({ text: x.text, year: null })) })
+
   const err = (field: string) => (error?.field === field ? error.text : null)
   const described = (field: string, hint = true) => [hint ? `${id}-${field}-hint` : '', err(field) ? `${id}-${field}-err` : ''].filter(Boolean).join(' ') || undefined
 
@@ -254,6 +271,7 @@ export function EditProfileForm({
           You have changes waiting for review. Saving again replaces them.
         </p>
       )}
+      <CompletenessMeter c={meter} />
       <form onSubmit={save} noValidate className="space-y-5">
         <div>
           <label htmlFor={`${id}-headline`} className={labelClass}>
@@ -524,6 +542,150 @@ export function RequestForm({ slug, name }: { slug: string; name: string }) {
         <ErrorText id={`${id}-email-err`} error={err('contact_email')} />
       </div>
       <ErrorText id={`${id}-form-err`} error={err('form') ?? err('slug') ?? err('kind')} />
+      <button type="submit" disabled={state === 'sending'} className={buttonClass}>
+        {state === 'sending' && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />}
+        Send
+      </button>
+    </form>
+  )
+}
+
+// ── Suggest a firm or add yourself ──────────────────────────────────────────
+
+const SUGGEST_KINDS = [
+  { id: 'add_self', label: 'Add myself' },
+  { id: 'person', label: 'Suggest someone' },
+  { id: 'firm', label: 'Suggest a firm' },
+] as const
+type SuggestKind = (typeof SUGGEST_KINDS)[number]['id']
+
+export function SuggestForm({
+  trades,
+  initialTrade,
+  fromQuery = '',
+}: {
+  trades: { id: string; label: string }[]
+  initialTrade?: string
+  /** The search that found nobody, when they came from one: kept with the suggestion. */
+  fromQuery?: string
+}) {
+  const id = useId()
+  const [kind, setKind] = useState<SuggestKind>('add_self')
+  const [v, setV] = useState({ category: initialTrade && trades.some((t) => t.id === initialTrade) ? initialTrade : (trades[0]?.id ?? ''), full_name: '', firm_name: '', firm_website: '', bio_url: '', contact_email: '', message: '' })
+  const [state, setState] = useState<'idle' | 'sending' | 'sent'>('idle')
+  const [error, setError] = useState<{ field: string; text: string } | null>(null)
+  const set = (k: keyof typeof v) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setV({ ...v, [k]: e.target.value })
+  const err = (f: string) => (error?.field === f ? error.text : null)
+  const field = (f: string, hint?: boolean) => ({
+    'aria-invalid': err(f) ? true : undefined,
+    'aria-describedby': [hint ? `${id}-${f}-hint` : '', err(f) ? `${id}-${f}-err` : ''].filter(Boolean).join(' ') || undefined,
+  })
+
+  async function submit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    if (state === 'sending') return
+    setState('sending')
+    setError(null)
+    const website = (new FormData(e.currentTarget).get('website') as string) ?? ''
+    const { ok, json } = await post('/api/directory/suggest', { kind, ...v, from_query: fromQuery, website })
+    if (ok) return setState('sent')
+    setError({ field: typeof json.field === 'string' ? json.field : 'form', text: typeof json.error === 'string' ? json.error : 'Something went wrong. Please try again.' })
+    setState('idle')
+  }
+
+  if (state === 'sent') {
+    return (
+      <div role="status">
+        <p className="font-news text-[18px] font-semibold text-foreground">Thank you. It is with us.</p>
+        <p className="mt-2 font-ui text-[14px] leading-relaxed text-foreground/75">
+          We check every suggestion against the firm&rsquo;s own site and the directory&rsquo;s rules (partner level or above, a fund practice), and reply to{' '}
+          {v.contact_email} within a few business days.
+        </p>
+      </div>
+    )
+  }
+
+  const self = kind === 'add_self'
+  return (
+    <form onSubmit={submit} noValidate className="relative space-y-5">
+      <Honeypot />
+      <fieldset>
+        <legend className={labelClass}>What would you like to do?</legend>
+        <div className="space-y-1">
+          {SUGGEST_KINDS.map((k) => (
+            <label key={k.id} className="flex min-h-10 items-center gap-2 font-ui text-[14.5px] text-foreground">
+              <input type="radio" name="kind" value={k.id} checked={kind === k.id} onChange={() => setKind(k.id)} className="h-4 w-4 accent-[#13233A]" />
+              {k.label}
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <div>
+        <label htmlFor={`${id}-category`} className={labelClass}>
+          Trade
+        </label>
+        <select id={`${id}-category`} value={v.category} onChange={set('category')} {...field('category')} className={inputClass}>
+          {trades.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.label}
+            </option>
+          ))}
+        </select>
+        <ErrorText id={`${id}-category-err`} error={err('category')} />
+      </div>
+      {kind !== 'firm' && (
+        <div>
+          <label htmlFor={`${id}-full_name`} className={labelClass}>
+            {self ? 'Your name' : 'Their name'}
+          </label>
+          <input id={`${id}-full_name`} value={v.full_name} onChange={set('full_name')} autoComplete={self ? 'name' : 'off'} maxLength={120} {...field('full_name')} className={inputClass} />
+          <ErrorText id={`${id}-full_name-err`} error={err('full_name')} />
+        </div>
+      )}
+      <div>
+        <label htmlFor={`${id}-firm_name`} className={labelClass}>
+          Firm
+        </label>
+        <input id={`${id}-firm_name`} value={v.firm_name} onChange={set('firm_name')} autoComplete={self ? 'organization' : 'off'} maxLength={160} {...field('firm_name')} className={inputClass} />
+        <ErrorText id={`${id}-firm_name-err`} error={err('firm_name')} />
+      </div>
+      <div>
+        <label htmlFor={`${id}-firm_website`} className={labelClass}>
+          Firm website
+        </label>
+        <input id={`${id}-firm_website`} value={v.firm_website} onChange={set('firm_website')} placeholder="example.com" inputMode="url" {...field('firm_website')} className={inputClass} />
+        <ErrorText id={`${id}-firm_website-err`} error={err('firm_website')} />
+      </div>
+      {kind !== 'firm' && (
+        <div>
+          <label htmlFor={`${id}-bio_url`} className={labelClass}>
+            {self ? 'Your bio on the firm’s site' : 'Their bio on the firm’s site'}
+          </label>
+          <input id={`${id}-bio_url`} type="url" value={v.bio_url} onChange={set('bio_url')} placeholder="https://" {...field('bio_url', true)} className={inputClass} />
+          <p id={`${id}-bio_url-hint`} className={hintClass}>
+            The directory lists only what a firm publishes on its own site, so this is what we read.
+          </p>
+          <ErrorText id={`${id}-bio_url-err`} error={err('bio_url')} />
+        </div>
+      )}
+      <div>
+        <label htmlFor={`${id}-message`} className={labelClass}>
+          Anything we should know (optional)
+        </label>
+        <textarea id={`${id}-message`} rows={4} value={v.message} onChange={set('message')} maxLength={1500} {...field('message')} className={inputClass} />
+        <ErrorText id={`${id}-message-err`} error={err('message')} />
+      </div>
+      <div>
+        <label htmlFor={`${id}-contact_email`} className={labelClass}>
+          {self ? 'Your work email' : 'Your email'}
+        </label>
+        <input id={`${id}-contact_email`} type="email" autoComplete="email" value={v.contact_email} onChange={set('contact_email')} {...field('contact_email', true)} className={inputClass} />
+        <p id={`${id}-contact_email-hint`} className={hintClass}>
+          {self ? 'At your firm, so we know it is you. Only to reply; never shown.' : 'Only to reply to you. It is never shown.'}
+        </p>
+        <ErrorText id={`${id}-contact_email-err`} error={err('contact_email')} />
+      </div>
+      <ErrorText id={`${id}-form-err`} error={err('form') ?? err('kind')} />
       <button type="submit" disabled={state === 'sending'} className={buttonClass}>
         {state === 'sending' && <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />}
         Send

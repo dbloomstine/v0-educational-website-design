@@ -73,7 +73,7 @@ export const ROLES = [
  * `inline-story`, `inline-event`, `inline-firm`, `inline-league` are the one-line asks inside the reading column of story,
  * event, firm and league-table pages (2026-10-22, components/newsletter/InlineSignup.tsx).
  */
-export const SIGNUP_FORMS = ['popup', 'hero', 'feed', 'widget', 'rail', 'events', 'firstvisit', 'submit', 'join', 'takeover', 'inline-story', 'inline-event', 'inline-firm', 'inline-league'] as const
+export const SIGNUP_FORMS = ['popup', 'hero', 'feed', 'widget', 'rail', 'events', 'firstvisit', 'submit', 'join', 'takeover', 'inline-story', 'inline-event', 'inline-firm', 'inline-league', 'directory-claim', 'directory-edit'] as const
 
 /** The known ids among whatever was sent, once each, in list order. */
 export function sanitizeInterests(raw: unknown): string[] {

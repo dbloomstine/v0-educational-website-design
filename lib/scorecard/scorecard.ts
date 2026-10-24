@@ -32,7 +32,7 @@ const NETWORKS: Record<string, string> = { tiktok: 'TikTok', linkedin: 'LinkedIn
 /** The formats new on 2026-10-22, called out in the letter until they have a record of their own. */
 export const NEW_FORMATS = ['meme', 'fastStory'] as const
 /** The signup forms (lib/newsletter/interests.ts SIGNUP_FORMS), as the letter names them. */
-const FORM_NAMES: Record<string, string> = { popup: 'the signup box', firstvisit: 'the first-visit ask', events: 'the events offer', hero: 'the homepage field', feed: 'the field in the feed', widget: 'the side panel', rail: 'the rail panel', submit: 'the news submission form', takeover: 'the welcome screen', join: 'the join page', 'inline-story': 'the line under a story', 'inline-event': 'the line under an event', 'inline-firm': 'the line on a firm page', 'inline-league': 'the line on the league tables' }
+const FORM_NAMES: Record<string, string> = { popup: 'the signup box', firstvisit: 'the first-visit ask', events: 'the events offer', hero: 'the homepage field', feed: 'the field in the feed', widget: 'the side panel', rail: 'the rail panel', submit: 'the news submission form', takeover: 'the welcome screen', join: 'the join page', 'inline-story': 'the line under a story', 'inline-event': 'the line under an event', 'inline-firm': 'the line on a firm page', 'inline-league': 'the line on the league tables', 'directory-claim': 'the directory claim', 'directory-edit': 'the directory edit page' }
 /** Always listed, at 0 too, when anyone joined: the box, the two forms new on 2026-10-22 and the welcome screen that replaced the box's asks. */
 const FORMS_ALWAYS = ['takeover', 'popup', 'firstvisit', 'events']
 /** The conversion section lists these at 0 too: the welcome screen and the in-page lines, all new on 2026-10-22. */

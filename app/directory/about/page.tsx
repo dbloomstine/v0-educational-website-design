@@ -161,7 +161,8 @@ export default async function DirectoryAbout() {
               <li>
                 <span className="font-semibold">Claim it.</span> &ldquo;Is this you? Claim this profile&rdquo; on any profile sends a link to your work
                 email at your firm&rsquo;s domain. Once claimed, you can add a headline, a description, a photo, a contact link and notable matters; each
-                change is reviewed before it shows, and is marked as written by you.
+                change is reviewed before it shows, and is marked as written by you. To come back later, choose &ldquo;Sign in to edit&rdquo; on the
+                profile: a one-time link goes to the address you claimed it with. There is no password.
               </li>
               <li>
                 <span className="font-semibold">Correct it or have it removed.</span> &ldquo;Request a correction or removal&rdquo; at the foot of every
@@ -169,11 +170,11 @@ export default async function DirectoryAbout() {
               </li>
               <li>
                 <span className="font-semibold">Missing someone?</span> The directory adds people from the firms&rsquo; own pages; a firm or a partner
-                who should be listed can say so from the{' '}
-                <Link href="/about" className={link}>
-                  contact details on our About page
+                who should be listed can{' '}
+                <Link href="/directory/suggest" className={link}>
+                  suggest a firm or add themselves
                 </Link>
-                .
+                , and we check the firm&rsquo;s own site before listing anyone.
               </li>
             </ul>
             <p className={body}>

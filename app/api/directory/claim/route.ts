@@ -1,25 +1,30 @@
 import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
-import { sendConfirmEmail } from '@/lib/submit/confirm-mail'
 import { clientIp, hashIp } from '@/lib/submit/news-submission'
 import {
   CLAIMS_PER_EMAIL_PER_DAY,
   CLAIMS_PER_IP_PER_DAY,
   CLAIMS_PER_PERSON_PER_DAY,
+  canClaim,
   claimDomainMatches,
   claimEmail,
+  claimKind,
   newConfirmToken,
 } from '@/lib/directory/claim'
+import { sendDirectoryMail, signInEmail } from '@/lib/directory/owner-mail'
 import { displayDomain } from '@/lib/directory/people'
-import { personBySlug } from '@/lib/directory/server'
+import { confirmedClaims, personBySlug } from '@/lib/directory/server'
 import { directoryEnabled } from '@/lib/directory/taxonomy'
 
 export const dynamic = 'force-dynamic'
 
 /**
- * POST { slug, email, website }: "Is this you? Claim this profile" (2026-10-24).
- * The address must be at the firm's own domain; we email a one-time link
- * (lib/directory/claim.ts). Nothing about the profile changes here.
+ * POST { slug, email, website }: "Is this you? Claim this profile" and, on a
+ * claimed profile, "Sign in to edit" (2026-10-24). The address must be at the
+ * firm's own domain; we email a one-time link (lib/directory/claim.ts). An
+ * address that has confirmed a claim on this profile before gets a sign-in
+ * email; any other gets the claim email. The answer is the same either way, so
+ * nobody learns from it who claimed what. Nothing about the profile changes here.
  */
 export async function POST(req: Request) {
   if (!directoryEnabled()) return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -35,7 +40,8 @@ export async function POST(req: Request) {
   if (typeof body.website === 'string' && body.website.trim()) return NextResponse.json({ success: true })
 
   const person = await personBySlug(typeof body.slug === 'string' ? body.slug : '').catch(() => null)
-  if (!person || !['published', 'hidden'].includes(person.status)) return NextResponse.json({ error: 'We could not find that profile.' }, { status: 404 })
+  // B13: only a published profile, or one its owner hid, can be claimed (the claim page 404s for the rest).
+  if (!person || !canClaim(person)) return NextResponse.json({ error: 'We could not find that profile.' }, { status: 404 })
 
   const check = claimDomainMatches(body.email, person.firm_domain)
   if (!check.ok) {
@@ -67,7 +73,9 @@ export async function POST(req: Request) {
     console.error('[directory] claim not saved:', error.code, error.message)
     return NextResponse.json({ error: 'Something went wrong on our side. Please try again.' }, { status: 500 })
   }
-  const sent = await sendConfirmEmail(check.email, claimEmail(person, token))
+  const earlier = person.claimed_at ? await confirmedClaims(person.id).catch(() => []) : []
+  const mail = claimKind(check.email, earlier) === 'signin' ? signInEmail(person, token) : claimEmail(person, token)
+  const sent = await sendDirectoryMail(check.email, mail)
   if (!sent) return NextResponse.json({ error: 'We could not send the email. Please try again in a minute.' }, { status: 502 })
   return NextResponse.json({ success: true })
 }

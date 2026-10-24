@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic'
 export async function POST(req: Request) {
   if (!directoryEnabled()) return NextResponse.json({ error: 'Not found' }, { status: 404 })
   const personId = verifySession((await cookies()).get(SESSION_COOKIE)?.value)
-  if (!personId) return NextResponse.json({ error: 'Your edit session has expired. Claim the profile again from its page.' }, { status: 401 })
+  if (!personId) return NextResponse.json({ error: 'Your edit session has expired. Choose “Sign in to edit” on your profile for a fresh link.' }, { status: 401 })
   const hidden = ((await req.json().catch(() => ({}))) as { hidden?: unknown }).hidden
   if (typeof hidden !== 'boolean') return NextResponse.json({ error: 'Invalid request' }, { status: 400 })
 

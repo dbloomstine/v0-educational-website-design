@@ -8,7 +8,9 @@
  *      seven days, single use, confirmed by a button press so a mail scanner
  *      opening the link confirms nothing.
  *   3. Confirming marks the profile claimed and opens an edit session: a
- *      signed, http-only cookie for one person, good for a day.
+ *      signed, http-only cookie for one person, good for a day. Coming back
+ *      later is "Sign in to edit": the same link, emailed to an address that
+ *      confirmed a claim on the profile before (claimKind), no password.
  *   4. Edits are stored as `pending_edits` for the desk to approve; nothing a
  *      claimer types shows until then. Hiding the profile is immediate.
  */
@@ -90,27 +92,88 @@ export function claimEmail(person: { full_name: string; firm_name: string }, tok
 export const SESSION_COOKIE = 'fohq_dir_edit'
 export const SESSION_HOURS = 24
 
-const secret = () => process.env.CRON_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || ''
+// A dedicated secret first (2026-10-24, B14); the older fallbacks keep a deploy without it working.
+const secret = () => process.env.DIRECTORY_SESSION_SECRET || process.env.CRON_SECRET || process.env.SUPABASE_SERVICE_ROLE_KEY || ''
 
 const sign = (payload: string, key: string) => createHmac('sha256', key).update(`directory-edit:${payload}`).digest('base64url')
 
-/** "<person id>.<expiry ms>.<signature>". Null without a server secret. */
-export function signSession(personId: string, now = Date.now(), key = secret()): string | null {
+const UUID_RE = /^[0-9a-f-]{36}$/i
+
+/**
+ * "<person id>.<claim id>.<expiry ms>.<signature>": the claim id says which confirmed address the session came
+ * from (so an edit, or a newsletter signup, is tied to that address). "<person id>.<expiry ms>.<signature>"
+ * without one. Null without a server secret.
+ */
+export function signSession(personId: string, now = Date.now(), key = secret(), claimId?: string | null): string | null {
   if (!key) return null
-  const payload = `${personId}.${now + SESSION_HOURS * 3_600_000}`
+  const payload = claimId ? `${personId}.${claimId}.${now + SESSION_HOURS * 3_600_000}` : `${personId}.${now + SESSION_HOURS * 3_600_000}`
   return `${payload}.${sign(payload, key)}`
+}
+
+/** Who a session cookie is good for: the person, and the claim it came from (null for an older session). */
+export function readSession(raw: string | null | undefined, now = Date.now(), key = secret()): { personId: string; claimId: string | null } | null {
+  if (!raw || !key) return null
+  const parts = raw.split('.')
+  if (parts.length !== 3 && parts.length !== 4) return null
+  const [id, ...rest] = parts
+  const sig = rest.pop()!
+  const exp = rest.pop()!
+  const claimId = rest[0] ?? null
+  if (!UUID_RE.test(id) || (claimId !== null && !UUID_RE.test(claimId)) || !/^\d{13}$/.test(exp) || Number(exp) <= now) return null
+  const want = Buffer.from(sign(parts.slice(0, -1).join('.'), key))
+  const got = Buffer.from(sig)
+  return want.length === got.length && timingSafeEqual(want, got) ? { personId: id, claimId } : null
 }
 
 /** The person id a session cookie is good for, or null. */
 export function verifySession(raw: string | null | undefined, now = Date.now(), key = secret()): string | null {
-  if (!raw || !key) return null
-  const parts = raw.split('.')
-  if (parts.length !== 3) return null
-  const [id, exp, sig] = parts
-  if (!/^[0-9a-f-]{36}$/i.test(id) || !/^\d{13}$/.test(exp) || Number(exp) <= now) return null
-  const want = Buffer.from(sign(`${id}.${exp}`, key))
-  const got = Buffer.from(sig)
-  return want.length === got.length && timingSafeEqual(want, got) ? id : null
+  return readSession(raw, now, key)?.personId ?? null
+}
+
+// ── Claims, sign-ins and who may claim ──────────────────────────────────────
+
+/**
+ * Who may claim a profile: a published one, or one its owner hid (they come back to show it again). Not one in
+ * review, removed, or hidden by the desk or a request (B13: the claim page already 404s for those).
+ */
+export function canClaim(p: { status: string; hidden_by?: string | null }): boolean {
+  return p.status === 'published' || (p.status === 'hidden' && p.hidden_by === 'owner')
+}
+
+/**
+ * A claim row confirmed by an address that has confirmed a claim on this profile before is a sign-in, not a
+ * new claim: no alert, no "someone else claimed it" email. Anything else is a claim.
+ */
+export function claimKind(email: string, earlier: { email: string; confirmed_at: string | null }[]): 'signin' | 'claim' {
+  const e = email.trim().toLowerCase()
+  return earlier.some((c) => c.confirmed_at && c.email.trim().toLowerCase() === e) ? 'signin' : 'claim'
+}
+
+/**
+ * A claim proves the address is at the firm, not that it is the person (B2). True when the address's local
+ * part plausibly belongs to the name: it contains the surname, or the first name, or initial plus surname.
+ * False flags the claim for the desk; it never refuses it (assistants and marketing teams claim for partners).
+ */
+export function emailLooksLikeName(email: string, fullName: string): boolean {
+  const local = email.split('@')[0]?.toLowerCase().replace(/[^a-z]/g, '') ?? ''
+  const words = fullName
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, ' ')
+    .split(/[^a-z]+/)
+    .filter((w) => w.length > 1 && !['jr', 'sr', 'ii', 'iii', 'iv', 'esq', 'cpa'].includes(w))
+  if (!local || !words.length) return false
+  const first = words[0]
+  const last = words[words.length - 1]
+  // A nickname in brackets counts as a first name: "Jeffrey (Jeff) Misher" is jeff@.
+  const nicknames = [...fullName.matchAll(/\(([^)]+)\)/g)].map((m) => m[1].toLowerCase().replace(/[^a-z]/g, '')).filter((w) => w.length > 2)
+  return (
+    (last.length > 2 && local.includes(last)) ||
+    [first, ...nicknames].some((f) => f.length > 2 && local.includes(f)) ||
+    local === `${first[0]}${last}` ||
+    local === `${first}${last[0]}`
+  )
 }
 
 // ── What a claimer may send ─────────────────────────────────────────────────
@@ -163,7 +226,8 @@ export function editAlertText(person: { full_name: string; firm_name: string; sl
     ...(e.notable.length ? e.notable.map((n) => `  - ${n.text}${n.year ? ` (${n.year})` : ''}`) : ['  (none)']),
     '',
     `Approve: npx tsx --env-file=.env.local scripts/directory/review.ts approve-edits ${person.slug} --apply`,
-    `Reject:  npx tsx --env-file=.env.local scripts/directory/review.ts reject-edits ${person.slug} --apply`,
+    `Reject:  npx tsx --env-file=.env.local scripts/directory/review.ts reject-edits ${person.slug} --reason "why, in a sentence they will read" --apply`,
+    'Either emails the claimer (add --no-email to skip).',
   ].join('\n')
 }
 

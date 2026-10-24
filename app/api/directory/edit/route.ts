@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 import { sendOwnerAlert } from '@/lib/alerts/owner-alert'
-import { SESSION_COOKIE, editAlertText, validateEdits, verifySession } from '@/lib/directory/claim'
+import { SESSION_COOKIE, editAlertText, readSession, validateEdits } from '@/lib/directory/claim'
 import { profilePath } from '@/lib/directory/people'
 import { personById, readPhoto, storePhoto } from '@/lib/directory/server'
 import { directoryEnabled } from '@/lib/directory/taxonomy'
@@ -13,12 +13,14 @@ export const dynamic = 'force-dynamic'
  * POST the claimer's edits (headline, description, photo, contact link,
  * practice tags, notable matters). Needs the edit session from confirming a
  * claim. Stored as pending_edits: NOTHING shows until the desk approves it
- * (scripts/directory/review.ts approve-edits). The owner is emailed.
+ * (scripts/directory/review.ts approve-edits, which emails the claimer).
+ * Danny is alerted on every edit.
  */
 export async function POST(req: Request) {
   if (!directoryEnabled()) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  const personId = verifySession((await cookies()).get(SESSION_COOKIE)?.value)
-  if (!personId) return NextResponse.json({ error: 'Your edit session has expired. Claim the profile again from its page.' }, { status: 401 })
+  const session = readSession((await cookies()).get(SESSION_COOKIE)?.value)
+  if (!session) return NextResponse.json({ error: 'Your edit session has expired. Choose “Sign in to edit” on your profile for a fresh link.' }, { status: 401 })
+  const personId = session.personId
 
   let body: Record<string, unknown>
   try {
@@ -43,7 +45,8 @@ export async function POST(req: Request) {
 
   const { error } = await getSupabaseAdmin()
     .from('directory_people')
-    .update({ pending_edits: edits, pending_edits_at: new Date().toISOString() })
+    // Which confirmed address sent them, so the desk's "live" or "not accepted" email goes back to it.
+    .update({ pending_edits: { ...edits, submitted_by_claim: session.claimId }, pending_edits_at: new Date().toISOString() })
     .eq('id', person.id)
   if (error) {
     console.error('[directory] edits not saved:', error.message)

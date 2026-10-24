@@ -4,6 +4,7 @@ import { useCallback, useDeferredValue, useEffect, useMemo, useRef, useState } f
 import Link from 'next/link'
 import { BadgeCheck, Search, SlidersHorizontal, X } from 'lucide-react'
 import { FirmMark } from '@/components/directory/FirmMark'
+import { SearchMissBeacon } from '@/components/directory/owner'
 import { practiceLabel } from '@/lib/directory/taxonomy'
 import { QUERY_PAGE, SORTS, facetCounts, haystack, isSortKey, normalQuery, queryHref, runQuery, type Query, type Row, type RowFirm, type SortKey } from '@/lib/directory/search'
 import { decodeIndex, type CompactIndex } from '@/lib/directory/search-index'
@@ -46,6 +47,15 @@ const FACETS: Facet[] = ['practice', 'city', 'firm', 'level']
 const href = queryHref
 
 const n = (x: number) => x.toLocaleString('en-US')
+
+/** The trade's slug, read from its index address ("/api/directory/index?trade=fund-lawyers"). */
+const tradeOf = (indexUrl: string) => {
+  try {
+    return new URL(indexUrl, 'https://fundopshq.com').searchParams.get('trade') ?? ''
+  } catch {
+    return ''
+  }
+}
 
 const control =
   'h-10 w-full rounded-[3px] border border-foreground/30 bg-card px-2.5 font-ui text-[14px] text-foreground focus:border-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/40'
@@ -339,6 +349,19 @@ export function DirectoryBrowser(props: BrowserProps) {
                 .
               </>
             )}
+          </p>
+          {/* Workstream B (2026-10-24): log the miss (aggregated, lib/directory/views.ts) and offer a way to add who is missing. */}
+          <SearchMissBeacon trade={tradeOf(props.indexUrl)} q={filtersOn ? '' : typed} />
+          <p className="mt-3 font-ui text-[13.5px] leading-relaxed text-foreground/75">
+            Someone missing?{' '}
+            <Link
+              prefetch={false}
+              href={`/directory/suggest?trade=${encodeURIComponent(tradeOf(props.indexUrl))}${typed.trim() ? `&q=${encodeURIComponent(typed.trim().slice(0, 60))}` : ''}`}
+              className="font-semibold text-foreground underline underline-offset-2"
+            >
+              Suggest a firm or add yourself
+            </Link>
+            .
           </p>
         </div>
       ) : (
