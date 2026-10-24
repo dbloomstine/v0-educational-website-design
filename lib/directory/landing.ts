@@ -46,6 +46,14 @@ export const STATE_CITY_MAX = 0.9
 export const OVERLAP_MAX = 0.8
 export const PAGE_SIZE = 50
 
+/**
+ * A practice so near to the whole trade that its page and the trade's page are one (2026-10-24, the coordinator's
+ * call on the SEO plan): nearly every fund lawyer does fund formation, and "fund formation lawyer" is the search.
+ * Where the overlap rule flags /fund-lawyers/fund-formation[/<place>] as a copy of the hub or of the place page, the
+ * copy is not built: its address 308-redirects there, and the hub or place page takes its words as its heading.
+ */
+export const FOLDED_PRACTICE: Partial<Record<string, string>> = { fund_lawyer: 'fund_formation' }
+
 export type Topic =
   | { kind: 'practice'; id: string; slug: string; adj: string; noun: string; work: string }
   | { kind: 'focus'; id: string; slug: string; label: string }
@@ -149,6 +157,17 @@ export interface Landing extends LandingKey {
   duplicateOf: string | null
   /** The newest read or edit among its people (the sitemap's lastmod). */
   lastmod: string | null
+  /** The practice page folded into this one (FOLDED_PRACTICE): its people and firms, for the heading and title. */
+  folded: Folded | null
+}
+
+export interface Folded {
+  /** "Fund Formation". */
+  adj: string
+  noun: string
+  /** People and firms on the folded practice's own list (a part of this page's list). */
+  count: number
+  firms: number
 }
 
 export interface LandingSet {
@@ -156,6 +175,8 @@ export interface LandingSet {
   pages: Landing[]
   /** State addresses that do not exist because their main city is the same list: where each one goes instead. */
   merged: { path: string; into: string; share: number }[]
+  /** The hub's folded practice, when it has one (the hub is not a Landing). */
+  hubFolded: Folded | null
 }
 
 /** People in common over people in either: 1 for the same list, 0 for none in common. Both sorted ascending. */
@@ -294,15 +315,39 @@ export function landingSet(category: Category, people: PersonCard[], now = new D
     }
   }
 
+  // The folded practice: a flagged copy of the hub or of its own place page is not built; it redirects there.
+  const foldId = FOLDED_PRACTICE[category.id]
+  const foldInto = new Map<string, Folded>()
+  if (foldId) {
+    for (const key of [...exists]) {
+      const k = parse(key)
+      if (k.topic?.kind !== 'practice' || k.topic.id !== foldId) continue
+      const parentKey = keyOf(null, k.place)
+      const parentPath = k.place ? landingPath(category, { topic: null, place: k.place }) : hubPath
+      // Flagged by the overlap rule, and a copy of this very parent (it may have been noted first against the hub).
+      if (!dup.has(key)) continue
+      if (k.place ? !exists.has(parentKey) || jaccard(members.get(key)!, members.get(parentKey)!) <= OVERLAP_MAX : dup.get(key) !== hubPath) continue
+      exists.delete(key)
+      dup.delete(key)
+      foldInto.set(parentKey, { adj: k.topic.adj, noun: k.topic.noun, count: members.get(key)!.length, firms: firmsOf.get(key)!.size })
+      merged.push({ path: landingPath(category, k), into: parentPath, share: members.get(key)!.length / (k.place ? members.get(parentKey)!.length : all.length) })
+    }
+    // A merged state that pointed at a page now folded goes straight to where that page went (no redirect chains).
+    const target = new Map(merged.map((m) => [m.path, m.into]))
+    for (const m of merged) while (target.has(m.into) && target.get(m.into) !== m.into) m.into = target.get(m.into)!
+  }
+
   const pages: Landing[] = []
   for (const key of exists) {
     const k = parse(key)
     const list = members.get(key)!
     const path = landingPath(category, k)
+    const folded = foldInto.get(key) ?? null
     pages.push({
       ...k,
       path,
-      title: landingTitle(category, k),
+      title: folded ? foldedTitle(category, k, folded) : landingTitle(category, k),
+      folded,
       count: list.length,
       firms: firmsOf.get(key)!.size,
       indexable: !dup.has(key),
@@ -312,7 +357,12 @@ export function landingSet(category: Category, people: PersonCard[], now = new D
   }
   pages.sort((a, b) => b.count - a.count || a.path.localeCompare(b.path))
   merged.sort((a, b) => a.path.localeCompare(b.path))
-  return { pages, merged }
+  return { pages, merged, hubFolded: foldInto.get(keyOf(null, null)) ?? null }
+}
+
+/** "Fund Formation Lawyers in New York": a page's heading once a practice is folded into it. */
+export function foldedTitle(category: Category, k: LandingKey, f: Pick<Folded, 'adj'>): string {
+  return `${f.adj} ${category.trade}${k.place ? ` in ${k.place.name}` : ''}`
 }
 
 /** Every page that exists for a category (lib/directory/landing.ts landingSet), biggest first. */

@@ -138,8 +138,9 @@ describe('the directory summary', () => {
     expect(s.categories.map((c) => c.id)).toEqual(LIVE_CATEGORIES.map((c) => c.id))
     const law = s.categories.find((c) => c.id === 'fund_lawyer')!
     expect(law).toMatchObject({ count: 8, firms: 2 })
-    expect(law.cities[0]).toMatchObject({ path: '/fund-lawyers/new-york', title: 'Fund Lawyers in New York', count: 8 })
-    expect(law.topics[0]).toMatchObject({ path: '/fund-lawyers/fund-formation' })
+    // All eight do fund formation: its page is folded into the hub and the city page, which take its name.
+    expect(law.cities[0]).toMatchObject({ path: '/fund-lawyers/new-york', title: 'Fund Formation Lawyers in New York', count: 8 })
+    expect(law.topics.map((t) => t.path)).not.toContain('/fund-lawyers/fund-formation')
     // Six auditors, one firm in Boston: no city page (eight people at two firms or more).
     expect(s.categories.find((c) => c.id === 'fund_auditor')!.cities.map((c) => c.path)).toEqual([])
     expect(s.categories.find((c) => c.id === 'placement_agent')).toBeUndefined()

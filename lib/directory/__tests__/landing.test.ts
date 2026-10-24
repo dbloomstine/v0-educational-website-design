@@ -6,6 +6,7 @@ import {
   STATE_CITY_MAX,
   absorbedTopic,
   allLandings,
+  foldedTitle,
   indexableLandings,
   jaccard,
   landingSet,
@@ -212,6 +213,52 @@ describe('no doorway pages (2026-10-24)', () => {
   it('dates each page by its newest read or edit', () => {
     const people = crowd(10, 'Boston', 'MA').map((p, i) => ({ ...p, fetched_at: `2026-10-${String(10 + i).padStart(2, '0')}T12:00:00Z`, updated_at: '2026-10-01T00:00:00Z' }))
     expect(allLandings(L, people).find((l) => l.path === '/fund-lawyers/boston')?.lastmod).toBe('2026-10-19T12:00:00Z')
+  })
+})
+
+describe('fund formation folded into the lawyers’ hub and place pages (2026-10-24)', () => {
+  const at = (i: number, city: string, state: string, practices: string[], over = {}) =>
+    card({ firm_domain: `firm${i % 4}.com`, firm_name: `Firm ${i % 4}`, offices: [{ city, state }], practice_areas: practices, ...over })
+  // 40 lawyers: 36 in fund formation (so formation is the hub again), Boston 30 of them, New York 10.
+  const people = [
+    ...Array.from({ length: 27 }, (_, i) => at(i, 'Boston', 'MA', ['fund_formation'])),
+    ...Array.from({ length: 3 }, (_, i) => at(i, 'Boston', 'MA', ['hedge_funds'])),
+    ...Array.from({ length: 9 }, (_, i) => at(i, 'New York', 'NY', ['fund_formation'])),
+    at(1, 'New York', 'NY', ['hedge_funds']),
+  ]
+
+  it('builds no fund formation copy: its addresses redirect to the hub and the place page', () => {
+    const set = landingSet(L, people)
+    const paths = set.pages.map((l) => l.path)
+    expect(paths).not.toContain('/fund-lawyers/fund-formation')
+    expect(paths).not.toContain('/fund-lawyers/fund-formation/boston')
+    const into = new Map(set.merged.map((m) => [m.path, m.into]))
+    expect(into.get('/fund-lawyers/fund-formation')).toBe('/fund-lawyers')
+    expect(into.get('/fund-lawyers/fund-formation/boston')).toBe('/fund-lawyers/boston')
+    // The state copy went to the formation city page, which went to the city: one hop, not two.
+    expect(into.get('/fund-lawyers/fund-formation/massachusetts')).toBe('/fund-lawyers/boston')
+    expect(indexableLandings(L, people).some((l) => l.path.includes('fund-formation'))).toBe(false)
+  })
+
+  it('gives the hub and the place pages the folded practice’s heading and counts', () => {
+    const set = landingSet(L, people)
+    expect(set.hubFolded).toEqual({ adj: 'Fund Formation', noun: 'Fund Formation', count: 36, firms: 4 })
+    const boston = set.pages.find((l) => l.path === '/fund-lawyers/boston')!
+    expect(boston).toMatchObject({ title: 'Fund Formation Lawyers in Boston', count: 30, indexable: true, folded: { count: 27, firms: 4 } })
+    expect(searchTitle(boston.title, L, boston.folded!.count, boston.folded!.firms)).toBe('Fund Formation Lawyers in Boston: 27 Partners at 4 Firms')
+    expect(foldedTitle(L, { topic: null, place: null }, set.hubFolded!)).toBe('Fund Formation Lawyers')
+  })
+
+  it('folds only where the overlap rule flagged the copy, and only for lawyers', () => {
+    // Formation is a minority here: its page stands on its own.
+    const mixed = [...Array.from({ length: 10 }, (_, i) => at(i, 'Boston', 'MA', ['fund_formation'])), ...Array.from({ length: 30 }, (_, i) => at(i, 'Boston', 'MA', ['hedge_funds']))]
+    const set = landingSet(L, mixed)
+    expect(set.pages.find((l) => l.path === '/fund-lawyers/fund-formation')?.indexable).toBe(true)
+    expect(set.hubFolded).toBeNull()
+    const tax = people.map((p) => ({ ...p, category: 'fund_tax_advisor' as const }))
+    const taxSet = landingSet(CATEGORIES.fund_tax_advisor, tax)
+    expect(taxSet.hubFolded).toBeNull()
+    expect(taxSet.pages.find((l) => l.path === '/fund-tax-advisors/fund-formation')).toMatchObject({ indexable: false })
   })
 })
 

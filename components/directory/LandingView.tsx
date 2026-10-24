@@ -64,7 +64,8 @@ async function build({ segments, page: rawPage, category = CATEGORIES.fund_lawye
   const people = peopleFor(all, key)
   const paged = paginate(people, parsePage(rawPage))
   if (!paged) return null
-  const title = landingTitle(category, key)
+  // The heading: the page's own name, or the folded practice's ("Fund Formation Lawyers in New York").
+  const title = page.title
   const sentence = landingSentence(category, key, people)
   return { category, key, all, set, landing: page, people, paged, path, title, sentence }
 }
@@ -75,7 +76,11 @@ export async function landingMetadata(props: LandingProps): Promise<Metadata> {
   const pageNote = b.paged.page > 1 ? ` (page ${b.paged.page})` : ''
   const description = landingDescription(b.paged.page > 1 ? `Page ${b.paged.page}: ${b.sentence}` : b.sentence)
   const canonical = `https://fundopshq.com${pageHref(b.path, b.paged.page)}`
-  const search = searchTitle(b.title, b.category, b.people.length, b.landing.firms, absorbedTopic(b.path, b.set.pages), 60 - pageNote.length)
+  const f = b.landing.folded
+  // A folded page counts the folded practice's own partners and firms, so the title's number is true of its words.
+  const search = f
+    ? searchTitle(b.title, b.category, f.count, f.firms, null, 60 - pageNote.length)
+    : searchTitle(b.title, b.category, b.people.length, b.landing.firms, absorbedTopic(b.path, b.set.pages), 60 - pageNote.length)
   return {
     title: { absolute: brandedTitle(`${search}${pageNote}`) },
     description,

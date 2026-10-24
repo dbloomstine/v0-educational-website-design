@@ -12,7 +12,7 @@ import { rowFirms, toRow } from '@/lib/directory/rows'
 import { QUERY_PAGE, facetCounts, isSortKey, runQuery } from '@/lib/directory/search'
 import { indexUrl } from '@/lib/directory/search-index'
 import { loadPeople } from '@/lib/directory/data'
-import { absorbedTopic, allLandings, itemListJsonLd, parsePage, PAGE_SIZE, searchTitle } from '@/lib/directory/landing'
+import { absorbedTopic, allLandings, foldedTitle, itemListJsonLd, landingSet, parsePage, PAGE_SIZE, searchTitle } from '@/lib/directory/landing'
 import { bySurname, cityTally, countsSentence, firmTally, isPublic, verifiedSpan, type Filters } from '@/lib/directory/people'
 import { DIRECTORY_PATH, directoryEnabled, practicesFor, type Category } from '@/lib/directory/taxonomy'
 import { brandedTitle, breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
@@ -46,15 +46,21 @@ export async function hubMetadata(CATEGORY: Category, sp: HubSearchParams): Prom
   const page = parsePage(sp.page)
   const query = isQuery(sp)
   // The practice page that is this list again (fund formation, for lawyers) gives its words to the hub's title.
-  const absorbed = absorbedTopic(PATH, allLandings(CATEGORY, people))
+  const set = landingSet(CATEGORY, people)
+  const folded = set.hubFolded
+  const absorbed = folded ? { noun: folded.noun, count: folded.count } : absorbedTopic(PATH, set.pages)
   const firms = firmTally(people).length
   const pageNote = page > 1 && !query ? ` (page ${page})` : ''
   const lead = people.length ? `${countsSentence(people, CATEGORY)}${absorbed ? `, ${absorbed.count.toLocaleString('en-US')} of them in ${absorbed.noun.toLowerCase()}` : ''}. ` : ''
   const description = metaDescription(`${pageNote ? `Page ${page}: ` : ''}${lead}${INTRO}`)
   const url = `https://fundopshq.com${PATH}${pageNote ? `?page=${page}` : ''}`
-  const title = people.length
-    ? searchTitle([CATEGORY.searchName ?? CATEGORY.plural, CATEGORY.plural], CATEGORY, people.length, firms, absorbed, 60 - pageNote.length)
-    : CATEGORY.plural
+  // A folded practice (fund formation, for lawyers) names the hub, counted on its own partners and firms; "fund
+  // lawyers" stays in the description and the intro, so both searches find the page.
+  const title = !people.length
+    ? CATEGORY.plural
+    : folded
+      ? searchTitle(foldedTitle(CATEGORY, { topic: null, place: null }, folded), CATEGORY, folded.count, folded.firms, null, 60 - pageNote.length)
+      : searchTitle([CATEGORY.searchName ?? CATEGORY.plural, CATEGORY.plural], CATEGORY, people.length, firms, absorbed, 60 - pageNote.length)
   return {
     title: { absolute: brandedTitle(`${title}${pageNote}`) },
     description,
@@ -83,7 +89,9 @@ export async function HubView({ category: CATEGORY, searchParams: sp }: { catego
   if (!Number.isInteger(page) || page < 1 || (page > 1 && page > Math.ceil(shown.length / QUERY_PAGE))) notFound()
   const firstPage = shown.slice((page - 1) * QUERY_PAGE, page * QUERY_PAGE)
 
-  const landings = allLandings(CATEGORY, people)
+  const set = landingSet(CATEGORY, people)
+  const landings = set.pages
+  const heading = set.hubFolded ? foldedTitle(CATEGORY, { topic: null, place: null }, set.hubFolded) : CATEGORY.plural
   const byKind = (kind: string, placeKind?: 'city' | 'state') =>
     landings.filter((l) => (kind === 'place' ? !l.topic && l.place?.kind === placeKind : l.topic?.kind === kind && !l.place))
   const cities = cityTally(people)
@@ -103,7 +111,7 @@ export async function HubView({ category: CATEGORY, searchParams: sp }: { catego
         <div className="band">
           <header className="mx-auto max-w-[1320px] px-4 pb-5 pt-5 lg:px-6">
             <Crumbs crumbs={crumbs} />
-            <h1 className="mt-3 font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">{CATEGORY.plural}</h1>
+            <h1 className="mt-3 font-news text-[32px] font-medium leading-none tracking-[-0.02em] text-foreground sm:text-[40px]">{heading}</h1>
             <p className="mt-2 max-w-[72ch] font-news text-[16.5px] leading-snug text-foreground/80">{INTRO}</p>
             {people.length > 0 && <p className="mt-1.5 font-ui text-[13px] font-semibold text-foreground/85">{countsSentence(people, CATEGORY)}.</p>}
             {people.length > 0 && <Verified span={verifiedSpan(people)} className="mt-1" />}
