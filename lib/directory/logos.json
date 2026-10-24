@@ -15,16 +15,11 @@
   },
   "anchin.com": {
    "name": "Anchin",
-   "file": "/logos/directory/anchin.com.png",
-   "width": 134,
-   "height": 112,
-   "kind": "icon",
-   "tone": "dark",
-   "via": "apple-touch-icon",
-   "page": "https://www.anchin.com/",
-   "source_url": "https://www.anchin.com/wp-content/uploads/2021/12/cropped-anchin-180x180.png",
+   "file": null,
+   "rejected": true,
+   "why": "its apple-touch-icon is an abstract swoosh nobody would read as Anchin; initials read better (2026-10-24)",
    "fetched_at": "2026-10-24",
-   "mode": "ink"
+   "source_url": "https://www.anchin.com/wp-content/uploads/2021/12/cropped-anchin-180x180.png"
   },
   "aoshearman.com": {
    "name": "A&O Shearman",
@@ -138,16 +133,11 @@
   },
   "cbh.com": {
    "name": "Cherry Bekaert",
-   "file": "/logos/directory/cbh.com.png",
-   "width": 114,
-   "height": 112,
-   "kind": "icon",
-   "tone": "dark",
-   "via": "apple-touch-icon",
-   "page": "https://www.cbh.com/",
-   "source_url": "https://www.cbh.com/static/images/apple-touch-icon.png",
+   "file": null,
+   "rejected": true,
+   "why": "its apple-touch-icon is an abstract mark nobody would read as Cherry Bekaert; initials read better (2026-10-24)",
    "fetched_at": "2026-10-24",
-   "mode": "own"
+   "source_url": "https://www.cbh.com/static/images/apple-touch-icon.png"
   },
   "cbiz.com": {
    "name": "CBIZ (incl. Marcum)",
@@ -776,16 +766,11 @@
   },
   "proskauer.com": {
    "name": "Proskauer Rose",
-   "file": "/logos/directory/proskauer.com.png",
-   "width": 112,
-   "height": 112,
-   "kind": "icon",
-   "tone": "dark",
-   "via": "apple-touch-icon",
-   "page": "https://www.proskauer.com/",
-   "source_url": "https://www.proskauer.com/assets/front/assets/images/favicons/apple-touch-icon.png?v=1",
+   "file": null,
+   "rejected": true,
+   "why": "its apple-touch-icon is a fragment of a graphic, not the firm’s wordmark (checked by eye 2026-10-24)",
    "fetched_at": "2026-10-24",
-   "mode": "own"
+   "source_url": "https://www.proskauer.com/assets/front/assets/images/favicons/apple-touch-icon.png?v=1"
   },
   "rede-partners.com": {
    "name": "Rede Partners",
