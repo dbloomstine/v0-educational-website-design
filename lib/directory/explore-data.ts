@@ -1,6 +1,6 @@
 /**
  * The explorer's read (2026-10-24): a trade's published cards plus the fields only the table uses (education, and the
- * columns migration 20261026_directory_fields.sql adds). Its own cache key, `directory-explore-v1`, tagged `directory`
+ * columns migration 20261026_directory_fields.sql adds). Its own cache key, `directory-explore-v2`, tagged `directory`
  * like the rest, so a hide or an approved edit drops it too. Plain unstable_cache (never the shared site_cache table).
  *
  * Before that migration is applied the extra columns do not exist and Postgres refuses the select (42703): the read
@@ -40,7 +40,7 @@ async function readExplore(category: CategoryId): Promise<ExploreSource[]> {
   }
 }
 
-const cachedExplore = unstable_cache(readExplore, ['directory-explore-v1'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
+const cachedExplore = unstable_cache(readExplore, ['directory-explore-v2'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
 
 /** A trade's public people with the explorer's fields, one row per person per firm. Never throws. */
 export async function loadExplorePeople(category: CategoryId): Promise<ExploreSource[]> {

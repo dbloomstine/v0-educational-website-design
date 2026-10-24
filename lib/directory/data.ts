@@ -155,9 +155,9 @@ export async function loadDirectorySummary(): Promise<DirectorySummary> {
 
 // ── The /directory front page (2026-10-24, design pass) ─────────────────────
 // The finder's entries, the strategy and city tables, the top firms and the trust facts, built from the one read of
-// every trade above, on its own NEW key (`directory-finder-v3`). Never throws.
+// every trade above, on its own NEW key (`directory-finder-v4`). Never throws.
 
-const cachedFinder = unstable_cache(async (): Promise<Finder> => buildFinder(await loadAllPeople()), ['directory-finder-v3'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
+const cachedFinder = unstable_cache(async (): Promise<Finder> => buildFinder(await loadAllPeople()), ['directory-finder-v4'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
 
 export async function loadFinder(): Promise<Finder> {
   try {
