@@ -92,6 +92,7 @@ export async function crawlSource(
   log(`${s.key}: ${jobs.length} pages to read${discovery.notes.length ? ` (${discovery.notes.slice(0, 3).join('; ')})` : ''}`)
 
   let failRun = 0
+  let readError: unknown
   const inflight = new Set<Promise<void>>()
   const read = async (job: PageJob, text: string, fetched_at: string, chunk: number): Promise<void> => {
     // An unchanged page under an unchanged prompt gets its earlier reading back: no spend, and no
@@ -137,13 +138,20 @@ export async function crawlSource(
       const fetched_at = new Date().toISOString()
       for (const [ci, c] of chunks.entries()) {
         if (c.trim().length < 40) continue
-        const p = read(job, c, fetched_at, ci)
+        // A failed reading is caught here, never left as an unhandled rejection (that crashed the
+        // 2026-10-24 CI run at the budget cap instead of stopping cleanly with what it had).
+        const p: Promise<void> = read(job, c, fetched_at, ci).catch((e) => {
+          readError ??= e
+        })
         inflight.add(p)
-        p.finally(() => inflight.delete(p))
+        void p.finally(() => inflight.delete(p))
         while (inflight.size >= (opt.concurrency ?? 4)) await Promise.race(inflight)
+        if (readError) throw readError
       }
+      if (readError) throw readError
     }
     await Promise.all(inflight)
+    if (readError) throw readError
   } catch (e) {
     await Promise.allSettled(inflight)
     if (e instanceof BudgetExceeded) res.stopped = e.message
