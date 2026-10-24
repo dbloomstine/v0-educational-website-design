@@ -74,7 +74,7 @@ async function readPerson(category: CategoryId, slug: string): Promise<Person | 
   return (data as unknown as Person | null) ?? null
 }
 
-const cachedPerson = unstable_cache(readPerson, ['directory-person-v1'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
+const cachedPerson = unstable_cache(readPerson, ['directory-person-v2'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
 
 export async function loadPerson(category: CategoryId, slug: string): Promise<Person | null> {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || slug.length > 120) return null
@@ -92,7 +92,7 @@ async function readPersonAny(slug: string): Promise<Person | null> {
   return (data as unknown as Person | null) ?? null
 }
 
-const cachedPersonAny = unstable_cache(readPersonAny, ['directory-person-any-v1'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
+const cachedPersonAny = unstable_cache(readPersonAny, ['directory-person-any-v2'], { revalidate: 3600, tags: [DIRECTORY_TAG] })
 
 /** A published profile in any trade, by slug (slugs are unique across trades): the claim and request forms. */
 export async function loadPersonBySlug(slug: string): Promise<Person | null> {
