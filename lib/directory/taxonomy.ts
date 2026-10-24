@@ -255,10 +255,13 @@ export const RESERVED_SLUGS = new Set(['people', 'firms', 'claim', 'edit', 'requ
 /**
  * Partner level or higher (Danny, 2026-10-24: "make sure they're only partner level or higher"). For lawyers,
  * auditors and tax advisers: Partner, Shareholder, Member, Principal (an accounting firm's non-CPA partner), Chair.
- * Not Counsel, Of Counsel, Director, an accounting firm's Managing Director, associates or staff.
+ * Not Counsel, Of Counsel, Director, associates or staff. A Managing Director counts for auditors and tax
+ * advisers only (Danny 2026-10-24: Big Four MDs run client relationships like partners), never for lawyers.
  */
 export const SENIOR_ONLY: CategoryId[] = ['fund_lawyer', 'fund_auditor', 'fund_tax_advisor']
-export function isPartnerLevel(title: string | null | undefined): boolean {
+export function isPartnerLevel(title: string | null | undefined, category?: CategoryId): boolean {
   const t = (title ?? '').trim()
-  return /\b(partner|shareholder|principal|member|chair|chairman|chairwoman|chairperson)\b/i.test(t) && !/\b(associate|paralegal|assistant)\b/i.test(t)
+  if (/\b(associate|paralegal|assistant)\b/i.test(t)) return false
+  if (/\b(partner|shareholder|principal|member|chair|chairman|chairwoman|chairperson)\b/i.test(t)) return true
+  return (category === 'fund_auditor' || category === 'fund_tax_advisor') && /\bmanaging director\b/i.test(t)
 }

@@ -135,7 +135,7 @@ export function parseRecord(raw: unknown, fallback: CategoryId = 'fund_lawyer'):
     else warnings.push(`${slug}: dropped office ${JSON.stringify(o)} (not a US city and state)`)
   }
   if (!offices.length) return { ok: false, error: `${slug}: no US office (US only)` }
-  if (SENIOR_ONLY.includes(category) && !isPartnerLevel(str(r.title, 160))) return { ok: false, error: `${slug}: below partner level ("${str(r.title, 160) ?? 'no title'}")` }
+  if (SENIOR_ONLY.includes(category) && !isPartnerLevel(str(r.title, 160), category)) return { ok: false, error: `${slug}: below partner level ("${str(r.title, 160) ?? 'no title'}")` }
 
   // Other spellings the data agents use for practices we have (2026-10-24 night).
   const ALIASES: Record<string, string> = { private_equity_funds: 'buyout_funds', pe_funds: 'buyout_funds', fund_tax: 'tax_funds', partnership_tax: 'tax_funds' }
