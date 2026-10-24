@@ -118,7 +118,9 @@ export function parseRecord(raw: unknown, fallback: CategoryId = 'fund_lawyer'):
   }
   if (!offices.length) return { ok: false, error: `${slug}: no US office (US only)` }
 
-  const areas = strList(r.practice_areas, 40)
+  // Other spellings the data agents use for practices we have (2026-10-24 night).
+  const ALIASES: Record<string, string> = { private_equity_funds: 'buyout_funds', pe_funds: 'buyout_funds', fund_tax: 'tax_funds', partnership_tax: 'tax_funds' }
+  const areas = [...new Set(strList(r.practice_areas, 40).map((a) => ALIASES[a] ?? a))]
   const practice_areas = areas.filter(isPracticeId)
   for (const a of areas) if (!isPracticeId(a)) warnings.push(`${slug}: unknown practice area "${a}" dropped`)
   const own = CATEGORIES[category].practices as string[]

@@ -58,7 +58,7 @@ export interface Category {
 }
 
 /** Strategies every trade works on: the fund types. */
-const STRATEGIES: PracticeId[] = ['venture_funds', 'private_credit_funds', 'real_estate_funds', 'infrastructure_funds', 'hedge_funds', 'secondaries']
+const STRATEGIES: PracticeId[] = ['buyout_funds', 'venture_funds', 'private_credit_funds', 'real_estate_funds', 'infrastructure_funds', 'hedge_funds', 'secondaries']
 
 export const CATEGORIES: Record<CategoryId, Category> = {
   fund_lawyer: {
@@ -165,6 +165,7 @@ export type PracticeId =
   | 'real_estate_funds'
   | 'venture_funds'
   | 'infrastructure_funds'
+  | 'buyout_funds'
   | 'tax_funds'
   | 'subscription_lines'
   | 'nav_lending'
@@ -187,6 +188,8 @@ export interface Practice {
 
 export const PRACTICES: Practice[] = [
   { id: 'fund_formation', label: 'Fund formation', slug: 'fund-formation', adj: 'Fund Formation', noun: 'Fund Formation', work: 'fund formation' },
+  // Buyout / private equity funds (2026-10-24 night: the placement-agent data used it and it had no page).
+  { id: 'buyout_funds', label: 'Private equity funds', slug: 'private-equity-funds', adj: 'Private Equity Fund', noun: 'Private Equity Funds', work: 'private equity fund' },
   { id: 'venture_funds', label: 'Venture funds', slug: 'venture-funds', adj: 'Venture Fund', noun: 'Venture Funds', work: 'venture fund' },
   { id: 'private_credit_funds', label: 'Private credit funds', slug: 'private-credit-funds', adj: 'Private Credit Fund', noun: 'Private Credit Funds', work: 'private credit fund' },
   { id: 'real_estate_funds', label: 'Real estate funds', slug: 'real-estate-funds', adj: 'Real Estate Fund', noun: 'Real Estate Funds', work: 'real estate fund' },
