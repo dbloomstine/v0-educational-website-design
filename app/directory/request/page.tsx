@@ -7,7 +7,7 @@ import { loadPersonBySlug } from '@/lib/directory/data'
 import { profilePath } from '@/lib/directory/people'
 import { directoryEnabled } from '@/lib/directory/taxonomy'
 
-// "Request a correction or removal", from any profile, by anyone. A removal hides the profile at once.
+// "Request a correction or removal", from any profile, by anyone. A removal is reviewed by the desk (no longer hides at once: 2026-10-24).
 
 export const metadata: Metadata = { title: 'Request a correction or removal', robots: { index: false, follow: false } }
 

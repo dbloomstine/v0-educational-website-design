@@ -461,7 +461,7 @@ export function RequestForm({ slug, name }: { slug: string; name: string }) {
   if (state === 'sent') {
     return (
       <div role="status">
-        <p className="font-news text-[18px] font-semibold text-foreground">{kind === 'removal' ? 'Done. The profile is hidden while we review your request.' : 'Thank you. We will check it against the source.'}</p>
+        <p className="font-news text-[18px] font-semibold text-foreground">{kind === 'removal' ? 'Thank you. We review removal requests within two business days. If this is your own profile, you can hide it at once by claiming it with your work email.' : 'Thank you. We will check it against the source.'}</p>
         <p className="mt-2 font-ui text-[14px] leading-relaxed text-foreground/75">We reply to {email} within two business days.</p>
       </div>
     )
@@ -486,7 +486,7 @@ export function RequestForm({ slug, name }: { slug: string; name: string }) {
             </label>
           ))}
         </div>
-        {kind === 'removal' && <p className={hintClass}>The profile comes off the site as soon as you send this, while we review the request.</p>}
+        {kind === 'removal' && <p className={hintClass}>We review removal requests within two business days. If it is your own profile, claim it with your work email to hide it at once.</p>}
       </fieldset>
       <div>
         <label htmlFor={`${id}-message`} className={labelClass}>

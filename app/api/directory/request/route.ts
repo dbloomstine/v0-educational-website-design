@@ -12,8 +12,10 @@ export const dynamic = 'force-dynamic'
 /**
  * POST { slug, kind: removal|correction, message, contact_email, website }:
  * anyone, from any profile. Filed in directory_requests and emailed to the
- * owner. A removal request hides the profile AT ONCE (hidden_by request),
- * pending review; the desk then removes it or shows it again.
+ * owner. A removal request does NOT hide the profile by itself (2026-10-24: an
+ * unchecked email let anyone take any profile down); the desk reviews it within
+ * two business days and removes or keeps it. The person can always hide their
+ * own profile at once by claiming it (work-email confirmed).
  */
 export async function POST(req: Request) {
   if (!directoryEnabled()) return NextResponse.json({ error: 'Not found' }, { status: 404 })
@@ -45,22 +47,15 @@ export async function POST(req: Request) {
   const { error } = await db.from('directory_requests').insert({ person_id: person.id, person_slug: person.slug, kind: r.kind, message: r.message, contact_email: r.contact_email, ip_hash: ipHash })
   if (error) console.error('[directory] request not saved:', error.code, error.message)
 
-  let hid = false
-  if (r.kind === 'removal' && person.status === 'published') {
-    const { error: hideError } = await db.from('directory_people').update({ status: 'hidden', hidden_by: 'request' }).eq('id', person.id).eq('status', 'published')
-    if (hideError) console.error('[directory] could not hide after a removal request:', hideError.message)
-    else {
-      hid = true
-      refreshDirectory()
-    }
-  }
+  // A removal is reviewed by the desk, never applied by an unverified request (2026-10-24).
+  const hid = false
 
   const alerted = await sendOwnerAlert({
     fromName: 'FundOpsHQ Directory',
     subject: `[Directory] ${r.kind === 'removal' ? 'Removal' : 'Correction'} request: ${person.full_name} (${person.firm_name})`,
     text: [
       `${r.kind === 'removal' ? 'Removal' : 'Correction'} request for ${person.full_name} (${person.firm_name}).`,
-      r.kind === 'removal' ? (hid ? 'The profile is HIDDEN now, pending your review.' : `The profile was not hidden (status ${person.status}).`) : '',
+      r.kind === 'removal' ? 'The profile is still live: review within two business days (remove, or resolve as rejected).' : '',
       error ? 'NOT SAVED: the database refused the row. This email is the only copy.' : '',
       `Profile: ${SITE}${profilePath(person)}`,
       '',
