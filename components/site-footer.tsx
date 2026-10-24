@@ -5,6 +5,7 @@ import { SECTIONS, sectionHref } from "@/lib/news/sections"
 import { SubscribeLink } from "@/components/newsletter/SubscribeLink"
 import { DAILY_SOCIAL, EDITOR } from "@/lib/brand/social"
 import { GotNews } from "@/components/news/GotNews"
+import { CATEGORIES, directoryEnabled } from "@/lib/directory/taxonomy"
 
 const COMPANY_LINKS = [
   { label: "Get FundOps Daily", href: "/join" },
@@ -85,6 +86,9 @@ export function SiteFooter() {
             <ul className="space-y-0.5">
               <li><Link href="/league-tables" className={linkClass}>League tables</Link></li>
               <li><Link href="/firms" className={linkClass}>Firms</Link></li>
+              {directoryEnabled() && (
+                <li><Link href={`/${CATEGORIES.fund_lawyer.slug}`} className={linkClass}>Directory: {CATEGORIES.fund_lawyer.plural}</Link></li>
+              )}
               {/* Not prefetched: the archive is built on request, and this link is on every page. */}
               <li><Link href="/archive" prefetch={false} className={linkClass}>Archive</Link></li>
               <li><Link href="/events" className={linkClass}>Events calendar</Link></li>

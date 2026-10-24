@@ -4,6 +4,7 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { OG_IMAGES } from '@/lib/seo'
 import { adsMode } from '@/lib/ads/config'
+import { CATEGORIES, directoryEnabled } from '@/lib/directory/taxonomy'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
@@ -28,6 +29,8 @@ export const metadata: Metadata = {
 // Google AdSense (lib/ads/config.ts): the advertising paragraphs appear only while it is on, so the page never
 // promises "no advertising cookies" on a site that carries Google's ads, nor describes ads that are not there.
 const ADS_ON = adsMode() !== 'off'
+// The directory section (2026-10-24) appears once the directory is switched on (DIRECTORY_ENABLED).
+const DIRECTORY_ON = directoryEnabled()
 const GOOGLE_LINK = 'text-foreground underline underline-offset-4 hover:text-muted-foreground'
 
 export default function PrivacyPolicyPage() {
@@ -47,7 +50,7 @@ export default function PrivacyPolicyPage() {
             <div className="legal">
               <div className="">
                 <p className="text-sm text-muted-foreground mb-12">
-                  Last updated: {ADS_ON ? 'October 23, 2026' : 'October 22, 2026'}
+                  Last updated: {DIRECTORY_ON ? 'October 24, 2026' : ADS_ON ? 'October 23, 2026' : 'October 22, 2026'}
                 </p>
 
                 {/* Introduction */}
@@ -263,6 +266,47 @@ export default function PrivacyPolicyPage() {
                     </>
                   )}
                 </div>
+
+                {/* The directory (2026-10-24) */}
+                {DIRECTORY_ON && (
+                  <div className="mb-12" id="directory">
+                    <h2 className="text-2xl font-bold tracking-tight mb-4">The Directory</h2>
+                    <p className="text-muted-foreground leading-relaxed mb-4">
+                      FundOpsHQ publishes a directory of professionals who advise private funds, starting with{' '}
+                      <Link href={`/${CATEGORIES.fund_lawyer.slug}`}>{CATEGORIES.fund_lawyer.plural.toLowerCase()}</Link>. It covers people at
+                      offices in the United States only.
+                    </p>
+                    <ul className="list-disc list-inside text-muted-foreground space-y-2 mb-4">
+                      <li>
+                        <strong>What we hold:</strong> a person&apos;s name, title, firm, office city, practice areas, bar admissions and
+                        education, the address of their bio page, and the date we read it. We do not copy the bio itself, and we never
+                        publish a personal email address or phone number.
+                      </li>
+                      <li>
+                        <strong>Where it comes from:</strong> the firm&apos;s own public bio page for that person, which every profile links
+                        to and dates. We do not use LinkedIn or paid data providers. We check the firms&apos; pages again regularly; when a
+                        bio page disappears, the profile says so and then comes down.
+                      </li>
+                      <li>
+                        <strong>Claiming a profile:</strong> the person can claim it with their work email at the firm&apos;s domain. They
+                        can then add a headline, a short description, a photo, a contact link and notable matters (shown as
+                        self-reported), all reviewed by us before they appear, and hide the profile at any time. We keep the email address
+                        used to claim, and the date, to show the claim was genuine.
+                      </li>
+                      <li>
+                        <strong>Corrections and removal:</strong> anyone can ask from the link on every profile. A removal request takes
+                        the profile off the site at once while we review it; we answer within two business days.
+                      </li>
+                      <li>
+                        <strong>Search engines:</strong> a profile is offered to search engines only when it has a title, a firm, an office
+                        and a practice area, or when its owner has claimed it.
+                      </li>
+                    </ul>
+                    <p className="text-muted-foreground leading-relaxed">
+                      Nobody pays to be listed or to rank, and there are no reviews or ratings.
+                    </p>
+                  </div>
+                )}
 
                 {/* Data Retention */}
                 <div className="mb-12">

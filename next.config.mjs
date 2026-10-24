@@ -6,6 +6,11 @@ const SECTION_SLUGS = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // The directory's switch (lib/directory/taxonomy.ts), read by the header and menus in the browser too.
+  // Inlined at build: turning it on or off takes a redeploy, as any Vercel env change does.
+  env: {
+    DIRECTORY_ENABLED: process.env.DIRECTORY_ENABLED ?? '',
+  },
   images: {
     unoptimized: true,
   },
@@ -80,7 +85,8 @@ const nextConfig = {
       // then served stale for up to an hour while one request refreshes it.
       // The browser still gets Next's own no-store header. (Section, story and
       // firm pages are static and need none of this.)
-      ...['/news', '/league-tables', '/firms'].map((source) => ({
+      // The directory's hub and landing pages read ?q / ?page the same way (2026-10-24).
+      ...['/news', '/league-tables', '/firms', '/fund-lawyers', '/fund-lawyers/:a((?!people$)[^/]+)', '/fund-lawyers/:a((?!people$)[^/]+)/:b'].map((source) => ({
         source,
         headers: [{ key: 'Vercel-CDN-Cache-Control', value: 'max-age=300, stale-while-revalidate=3600' }],
       })),

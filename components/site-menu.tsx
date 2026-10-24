@@ -7,6 +7,7 @@ import { Logo } from "@/components/logo"
 import { cn } from "@/lib/utils"
 import { SECTIONS, sectionHref } from "@/lib/news/sections"
 import { DAILY_SOCIAL } from "@/lib/brand/social"
+import { CATEGORIES, directoryEnabled } from "@/lib/directory/taxonomy"
 
 /**
  * The phone's menu (2026-10-11). Danny: "the mobile responsive website...
@@ -39,6 +40,8 @@ const PRIMARY = [
 
 const MORE = [
   { label: "Firms", href: "/firms" },
+  // The directory (2026-10-24), behind DIRECTORY_ENABLED until it launches.
+  ...(directoryEnabled() ? [{ label: "Directory", href: `/${CATEGORIES.fund_lawyer.slug}` }] : []),
   { label: "Archive", href: "/archive" },
   { label: "Glossary", href: "/glossary" },
   { label: "About", href: "/about" },
