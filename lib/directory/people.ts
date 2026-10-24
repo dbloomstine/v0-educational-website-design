@@ -56,12 +56,17 @@ export interface Person extends PersonCard {
   photo_url: string | null
   contact_url: string | null
   notable: Notable[]
+  /** Provenance (2026-10-25, lib/directory/provenance.ts): where the facts and the office city were read. */
+  source?: string | null
+  source_url?: string | null
+  city_basis?: string | null
+  office_source_url?: string | null
 }
 
 export const CARD_COLUMNS =
   'id, category, slug, full_name, title, firm_name, firm_domain, offices, practice_areas, client_focus, represents, status, missing_since, claimed_at, claimed_practice_areas'
 
-export const PERSON_COLUMNS = `${CARD_COLUMNS}, bar_admissions, education, bio_url, fetched_at, headline, description, photo_url, contact_url, notable`
+export const PERSON_COLUMNS = `${CARD_COLUMNS}, bar_admissions, education, bio_url, fetched_at, headline, description, photo_url, contact_url, notable, source, source_url, city_basis, office_source_url`
 
 /** A person whose bio page has gone stays listed (with a note) this long, then drops out. */
 export const MISSING_GRACE_DAYS = 30

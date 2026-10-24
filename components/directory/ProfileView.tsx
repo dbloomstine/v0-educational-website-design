@@ -1,3 +1,4 @@
+import { provenance } from '@/lib/directory/provenance'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
@@ -82,7 +83,11 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
   const city = office ? cityOf(office) : null
   const domain = displayDomain(p.firm_domain)
   const fetched = asOf(p.fetched_at)
-  const bio = safeHttpsUrl(p.bio_url) ?? (p.bio_url?.startsWith('http://') ? p.bio_url : null)
+  // Where the facts were read (2026-10-25): a firm bio, a conference speaker page or a press release, said plainly.
+  const prov = provenance({ source: p.source, source_url: p.source_url, bio_url: p.bio_url, firm_name: p.firm_name, firm_domain: p.firm_domain, city_basis: p.city_basis, office_source_url: p.office_source_url })
+  const fromFirm = prov.source === 'firm_site'
+  const bio = safeHttpsUrl(prov.url) ?? (prov.url?.startsWith('http://') ? prov.url : null)
+  const officeUrl = safeHttpsUrl(prov.officeUrl)
   const claimed = Boolean(p.claimed_at)
   const photo = claimed ? safeHttpsUrl(p.photo_url) : null
   const contact = claimed ? safeHttpsUrl(p.contact_url) : null
@@ -163,7 +168,7 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
                       rel="nofollow noopener noreferrer"
                       className="inline-flex h-10 items-center gap-1.5 rounded-[3px] bg-foreground px-3.5 font-ui text-[13.5px] font-semibold text-background hover:bg-foreground/85"
                     >
-                      Full bio on {domain}
+                      {fromFirm ? <>Full bio on {domain}</> : prov.linkText}
                       <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
                     </a>
                   )}
@@ -219,7 +224,7 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
 
             <section aria-labelledby="from-firm">
               <h2 id="from-firm" className={sectionHead}>
-                From the firm&rsquo;s bio
+                {fromFirm ? <>From the firm&rsquo;s bio</> : prov.label}
               </h2>
               <dl className="mt-3 grid gap-x-8 gap-y-4 sm:grid-cols-2">
                 {p.offices.length > 0 && (
@@ -252,13 +257,25 @@ export async function ProfileView({ category: CATEGORY, slug }: { category: Cate
                 )}
               </dl>
               <p className="mt-4 font-ui text-[13px] leading-relaxed text-foreground/75">
-                Source: {domain}
+                Source: {fromFirm ? domain : prov.label}
                 {fetched ? `, as of ${fetched}` : ''}.{' '}
                 {bio && (
                   <a href={bio} {...OUTBOUND} rel="nofollow noopener noreferrer" className="inline-flex items-center gap-0.5 font-semibold text-foreground underline underline-offset-2">
-                    View the bio
+                    {prov.linkText}
                     <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
                   </a>
+                )}
+                {prov.officeNote && (
+                  <>
+                    {' '}
+                    {officeUrl ? (
+                      <a href={officeUrl} {...OUTBOUND} rel="nofollow noopener noreferrer" className="underline underline-offset-2">
+                        {prov.officeNote}
+                      </a>
+                    ) : (
+                      prov.officeNote
+                    )}
+                  </>
                 )}
               </p>
             </section>
