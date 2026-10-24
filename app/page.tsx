@@ -241,7 +241,6 @@ export default async function HomePage() {
                     line, and ranked by size, breadth of coverage and recency. Every headline links to its publisher.
                   </p>
                   <p className="mt-2 font-news text-[15px] leading-[1.4] opacity-85">
-                    Edited by Danny Bloomstine.{' '}
                     <a href="/about" className="font-semibold underline underline-offset-2">About FundOpsHQ</a>
                   </p>
                 </section>

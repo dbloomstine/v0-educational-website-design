@@ -302,10 +302,10 @@ export default function TermsPage() {
                     </p>
                     <p>
                       <a
-                        href="mailto:danny.bloomstine@iqeq.com"
+                        href="mailto:danny@fundopshq.com"
                         className="text-foreground underline underline-offset-4 hover:text-primary"
                       >
-                        danny.bloomstine@iqeq.com
+                        danny@fundopshq.com
                       </a>
                     </p>
                   </div>

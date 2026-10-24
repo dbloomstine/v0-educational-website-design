@@ -210,7 +210,7 @@ export default async function LeagueTablesPage({ searchParams }: Params) {
                   <li><strong className="font-bold text-foreground">Coverage.</strong> From {since}. It ranks the closes in the stories we carried; it is not a census of every fund.</li>
                   <li>
                     <strong className="font-bold text-foreground">Corrections.</strong> The fields are extracted from the reports by software and can be wrong.{' '}
-                    <a href="mailto:dbloomstine@gmail.com?subject=League%20table%20correction" className="underline underline-offset-2">Tell us</a> and we will fix the row.
+                    <a href="mailto:danny@fundopshq.com?subject=League%20table%20correction" className="underline underline-offset-2">Tell us</a> and we will fix the row.
                   </li>
                 </ul>
               </Panel>

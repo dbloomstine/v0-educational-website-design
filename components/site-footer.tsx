@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react"
 import { Logo } from "@/components/logo"
 import { SECTIONS, sectionHref } from "@/lib/news/sections"
 import { SubscribeLink } from "@/components/newsletter/SubscribeLink"
-import { DAILY_SOCIAL, EDITOR } from "@/lib/brand/social"
+import { DAILY_SOCIAL } from "@/lib/brand/social"
 import { GotNews } from "@/components/news/GotNews"
 import { DIRECTORY_ABOUT_PATH, DIRECTORY_PATH, directoryEnabled } from "@/lib/directory/taxonomy"
 
@@ -17,8 +17,6 @@ const COMPANY_LINKS = [
   { label: "Terms", href: "/terms" },
 ]
 
-const LINKEDIN_PATH =
-  "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"
 
 const linkClass = "inline-block py-1 font-ui text-[13px] text-foreground/70 transition-colors hover:text-foreground"
 const headClass = "mb-3 font-ui text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground"
@@ -38,7 +36,7 @@ export function SiteFooter() {
             </Link>
             <p className="mt-3 font-news text-[15px] leading-snug text-foreground/75">
               Fund closes, launches, deals and moves across private markets — reported by 200+ sources, read in one
-              place. Edited by Danny Bloomstine.
+              place.
             </p>
             <SubscribeLink className="group mt-4 inline-flex h-9 items-center gap-2 rounded-sm bg-[#E6B045] px-4 font-ui text-[12px] font-bold uppercase tracking-[0.08em] text-[#13233A] transition-colors hover:bg-white">
               Get FundOps Daily
@@ -107,17 +105,13 @@ export function SiteFooter() {
           <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/70">
             © {new Date().getFullYear()} FundOpsHQ · Headlines link to their original publishers
           </p>
-          <a
-            href={EDITOR.href}
-            target="_blank"
-            rel="noopener noreferrer"
+          {/* Danny, 2026-10-24: his name pulled back from every page; the About page still says who runs it. */}
+          <Link
+            href="/about"
             className="inline-flex items-center gap-2 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-foreground/70 transition-colors hover:text-foreground"
           >
-            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d={LINKEDIN_PATH} />
-            </svg>
-            Danny Bloomstine
-          </a>
+            About FundOpsHQ
+          </Link>
         </div>
       </div>
     </footer>

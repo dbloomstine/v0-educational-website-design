@@ -97,7 +97,7 @@ export default function GlossaryPage() {
               ))}
               <p className="mt-5 font-ui text-[12.5px] text-muted-foreground">
                 Definitions, not advice; where usage varies the entry says so. A term wrong or missing?{' '}
-                <a href="mailto:dbloomstine@gmail.com" className="underline underline-offset-2 hover:text-foreground">Tell the desk</a>.
+                <a href="mailto:danny@fundopshq.com" className="underline underline-offset-2 hover:text-foreground">Tell the desk</a>.
               </p>
             </div>
 

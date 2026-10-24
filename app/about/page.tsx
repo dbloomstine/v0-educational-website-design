@@ -217,7 +217,7 @@ export default async function AboutPage() {
             </SubscribeLink>
             <p className="font-ui text-[13px] opacity-85">
               Story tips and corrections:{' '}
-              <a href="mailto:dbloomstine@gmail.com" className="font-semibold underline underline-offset-4 hover:no-underline">
+              <a href="mailto:danny@fundopshq.com" className="font-semibold underline underline-offset-4 hover:no-underline">
                 email the desk
               </a>
               . Sponsorship: <Link href="/sponsor" className="font-semibold underline underline-offset-4 hover:no-underline">see the sponsor page</Link>.

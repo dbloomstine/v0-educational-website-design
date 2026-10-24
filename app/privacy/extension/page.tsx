@@ -142,10 +142,10 @@ export default function ExtensionPrivacyPolicyPage() {
                   <p className="text-muted-foreground leading-relaxed">
                     Questions about this policy can be sent to{' '}
                     <a
-                      href="mailto:danny.bloomstine@iqeq.com"
+                      href="mailto:danny@fundopshq.com"
                       className="text-foreground underline underline-offset-4 hover:text-muted-foreground"
                     >
-                      danny.bloomstine@iqeq.com
+                      danny@fundopshq.com
                     </a>
                     . For the website&apos;s general privacy policy, see{' '}
                     <Link href="/privacy" className="text-primary hover:underline">

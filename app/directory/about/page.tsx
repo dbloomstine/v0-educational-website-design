@@ -8,7 +8,6 @@ import { loadDirectorySummary } from '@/lib/directory/data'
 import { LANDING_MIN, LANDING_MIN_FIRMS } from '@/lib/directory/landing'
 import { MISSING_GRACE_DAYS, listJoin } from '@/lib/directory/people'
 import { CATEGORIES, DIRECTORY_ABOUT_PATH, DIRECTORY_PATH, LIVE_CATEGORIES, directoryEnabled, lowerNoun } from '@/lib/directory/taxonomy'
-import { EDITOR } from '@/lib/brand/social'
 import { brandedTitle, breadcrumbJsonLd, metaDescription, shareCard } from '@/lib/seo'
 import { jsonLdScript } from '@/lib/news/story-jsonld'
 
@@ -65,11 +64,7 @@ export default async function DirectoryAbout() {
                   : {counts}, {n(total)} in all, at {n(firms)} firms
                 </>
               ) : null}
-              . Run by FundOpsHQ, the private markets news site, and edited by{' '}
-              <a href={EDITOR.href} className={link} rel="noopener noreferrer" target="_blank">
-                {EDITOR.name}
-              </a>
-              .
+              . Run by FundOpsHQ, the private markets news site.
             </p>
           </header>
         </div>

@@ -115,7 +115,7 @@ export default async function GlossaryTermPage({ params }: Params) {
 
               <p className="font-ui text-[12.5px] text-muted-foreground">
                 A definition, not advice; where usage varies the entry says so. Something wrong?{' '}
-                <a href="mailto:dbloomstine@gmail.com" className="underline underline-offset-2 hover:text-foreground">Tell the desk</a>.
+                <a href="mailto:danny@fundopshq.com" className="underline underline-offset-2 hover:text-foreground">Tell the desk</a>.
               </p>
             </article>
 

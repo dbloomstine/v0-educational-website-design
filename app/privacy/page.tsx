@@ -388,10 +388,10 @@ export default function PrivacyPolicyPage() {
                   </p>
                   <p className="text-muted-foreground leading-relaxed">
                     <a
-                      href="mailto:danny.bloomstine@iqeq.com"
+                      href="mailto:danny@fundopshq.com"
                       className="text-foreground underline underline-offset-4 hover:text-muted-foreground"
                     >
-                      danny.bloomstine@iqeq.com
+                      danny@fundopshq.com
                     </a>
                   </p>
                 </div>

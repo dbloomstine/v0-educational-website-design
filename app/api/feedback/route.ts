@@ -1,3 +1,4 @@
+import { OWNER_EMAIL } from '@/lib/alerts/owner-alert'
 import { NextResponse } from 'next/server'
 import { getSupabaseAdmin } from '@/lib/supabase/client'
 
@@ -25,7 +26,8 @@ async function sendNotification(category: string, message: string, email: string
     },
     body: JSON.stringify({
       from: `FundOpsHQ Feedback <${from}>`,
-      to: 'danny.bloomstine@iqeq.com',
+      // Never the day-job inbox (2026-10-24).
+      to: OWNER_EMAIL,
       subject: `[${label}] New feedback on ${page}`,
       text: [
         `Category: ${label}`,
